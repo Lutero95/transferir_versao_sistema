@@ -1,0 +1,78 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+footer{
+    padding-top: 50px;
+}
+
+.navbar-brand{
+    color:white;
+}
+
+.navbar-fixed-top{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.jumbotron{
+    padding-bottom: 20px;
+}
+
+#topo{
+
+}
+
+#menu{
+    margin-top: 48px;
+}
+
+.navbar{
+    border-radius: 0;
+}
+
+nav{
+    border-radius: 5px 5px 0 0;
+}
+
+/*=================================
+Estilização do formulário de Login
+===================================*/
+
+.form-signin {
+    max-width: 330px !important;
+    padding: 15px !important;
+    margin: 0 auto !important;
+    margin-top: 50px !important;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px !important;
+}
+.form-signin .checkbox {
+    font-weight: normal !important;
+}
+.form-signin .form-control {
+    position: relative !important;
+    height: auto !important;
+    -webkit-box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+    box-sizing: border-box !important;
+    padding: 10px !important;
+    font-size: 16px !important;
+}
+.form-signin .form-control:focus {
+    z-index: 2 !important;
+}
+.form-signin input[type="email"] {
+    margin-bottom: -1px !important;
+    border-bottom-right-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+.form-signin input[type="password"] {
+    margin-bottom: 10px !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}

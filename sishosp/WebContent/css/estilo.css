@@ -1,0 +1,26 @@
+body {
+   	margin:0 auto;
+	padding:0;
+	background-color:#00007d;
+	font: 17px/1.5em  Verdana, Arial, Serif;
+}
+
+#container{
+	background-color: #00007d;
+}
+#cabecalho{
+	margin: 0 auto;
+	width: 1000px;
+	height: 120px;
+	background-color: #2e59ed;
+}
+#rodape{
+	margin: 0 auto;
+	width: 1000px;
+	height: 60px;
+	background-color: #2e59ed;
+}
+
+.button .ui-widget button.ui-state-default{
+	background-color: #2E59ED;
+}

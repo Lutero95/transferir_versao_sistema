@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorioTesteFonte" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="6dbad790-e9c5-4d1f-9507-fa9194d379bc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[select * from clin.venda order by dtemissao]]>
+	</queryString>
+	<field name="codvenda" class="java.lang.Integer"/>
+	<field name="codfilial" class="java.lang.Integer"/>
+	<field name="codcliente" class="java.lang.Integer"/>
+	<field name="dtemissao" class="java.sql.Date"/>
+	<field name="valorpago" class="java.math.BigDecimal"/>
+	<field name="situacao" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="64" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="63" width="555" height="1" uuid="15bfd729-c8fc-4b30-8c8c-f4f1d390f941"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="63" uuid="2fe5c053-ec68-403a-9c6b-eb87c0784089"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de Vendas Realizadas]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="29" splitType="Stretch">
+			<line>
+				<reportElement x="1" y="26" width="554" height="1" uuid="cdeb5b5c-594f-4bbc-9a9a-d207a44afbde"/>
+			</line>
+			<staticText>
+				<reportElement x="18" y="6" width="100" height="20" uuid="228d87d3-2d93-45f8-a951-29ec677ad263"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<text><![CDATA[Cód. Venda]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="6" width="100" height="20" uuid="8c3fedc5-516a-4c26-add7-ef4de2b09d32"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<text><![CDATA[Cód Cliente]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField>
+				<reportElement x="18" y="4" width="100" height="20" uuid="e49518b8-5b2c-4e78-8ef7-fbb872634144"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codvenda}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="118" y="4" width="100" height="20" uuid="86e937ca-c7b0-4164-87c9-0f16898ec6d6"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codcliente}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="404" y="34" width="110" height="20" uuid="78921aec-22da-4b60-889c-4918564018df"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="514" y="34" width="40" height="20" uuid="39cd69d4-a5c1-4715-b3f6-3385e3fcc939"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="17" y="34" width="199" height="20" uuid="252270a4-56f1-4db0-8f01-0842eba483c8"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="23" width="553" height="1" uuid="fe49e932-83d4-42f9-a22e-c63479ce6697"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>

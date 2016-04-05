@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relPlanejamentoVendaSint_subreport1" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="44cb07ad-2a83-47c5-89f8-6ba8f51058fe">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="codfunc" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select distinct codprocedimento,e.descricao as proced,
+pvp.valor,
+round(pvp.valor/pv.valortotal,2) perc,
+pv.mes, pv.ano,pv.valortotal
+  from clin.planejamento_venda pv
+left join clin.planejamento_venda_detalhe_procedimento pvp on pvp.codplanejamento_venda = pv.codplanejamento_venda
+join clin.estoque e on e.codprod = pvp.codprocedimento
+where pv.mes=1 and ano=2015
+order by e.descricao]]>
+	</queryString>
+	<field name="codprocedimento" class="java.lang.Integer"/>
+	<field name="proced" class="java.lang.String"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="perc" class="java.math.BigDecimal"/>
+	<field name="mes" class="java.lang.Integer"/>
+	<field name="ano" class="java.lang.Integer"/>
+	<field name="valortotal" class="java.math.BigDecimal"/>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="272" y="10" width="100" height="20" uuid="bae33dd1-d937-425f-bb44-8da38dcb67b5"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<text><![CDATA[Valor Previsto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="411" y="10" width="100" height="20" uuid="5fbae6e5-e886-4736-9107-643f74cd9cea"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<text><![CDATA[Percentual]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="10" width="100" height="20" uuid="79020397-df3a-4946-b491-4b8b0ff6dc28"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<text><![CDATA[Procedimento]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="29" width="555" height="1" uuid="18bec071-f76c-4d74-af3e-9dbcd5804919"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="272" y="0" width="100" height="20" uuid="6dfbd19a-12d2-41a7-be37-47c2ea4e7b6a"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="411" y="0" width="100" height="20" uuid="0a3b48dc-0289-4499-b503-acd734c46508"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{perc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="256" height="20" uuid="596328b1-3c59-422f-9356-81e994e8aa28"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{proced}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

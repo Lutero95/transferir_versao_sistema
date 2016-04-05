@@ -1,0 +1,51 @@
+@CHARSET "ISO-8859-1";
+
+#container  
+{  
+    margin:auto;  
+    width:270px;  
+    position:relative;  
+    height:170px;  
+      
+    /*this is just to make it sit further down 
+    the browser, you don't need this*/  
+    margin-top:100px;  
+}  
+  
+.slideshow-item  
+{  
+    height:170px;  
+    width:270px;  
+    overflow:hidden;  
+    width:auto;  
+    position:absolute;  
+    top:0px;  
+}  
+  
+/*styling to ensure all content is displayed if JS 
+is disabled, this class is removed by JS onDomReady*/  
+.noscript .slideshow-item  
+{  
+    position:relative;  
+}  
+  
+.slideshow-item .slideshow-text  
+{  
+    padding:8px;  
+    position:absolute;  
+    bottom:0px;  
+    left:0px;  
+    color:#ffffff;  
+    background-color:#000000;  
+    width:254px;  
+    opacity:0.8;  
+    filter:alpha(opacity=80);  
+    -moz-opacity:0.8;  
+    z-index:1000;  
+}  
+  
+.slideshow-item img  
+{  
+    float:left;  
+    padding-right:8px;  
+}  

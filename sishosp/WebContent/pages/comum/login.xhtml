@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+
+    <h:head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+   
+    <h:outputStylesheet library="bootstrap/css" name="bootstrap.min.css" />
+    <h:outputStylesheet library="bootstrap/css" name="animate.css" />
+    <h:outputStylesheet library="bootstrap/css" name="bootstrap-theme.min.css" />
+    <h:outputScript library="bootstrap/js" name="bootstrap.min.js" />
+    <h:outputScript library="jquery" name="jquery-1.11.3.min.js" /> 
+    <h:outputStylesheet library="novoCss" name="siimm.css" />
+    <h:outputScript library="novoCss" name="bootstrap.min.css" />
+   
+
+</h:head>
+
+    <h:body>
+    <b:navBar brand="SISHOSP" brandHref="#" fixed="top">
+			<b:navbarLinks>
+			</b:navbarLinks>
+		</b:navBar>
+<h:graphicImage library="bootstrap/img" name="LOGOOO.png" style="position:absolute; top:10%; right:45%;" />
+		<div class="row" style="padding-top: 130px;">
+		<div class="form-signin">
+			 <h:form>
+				<h2 class="form-signin-heading">Acesse sua conta</h2>
+				<h:panelGroup rendered="#{param['erro'] != null}">
+					<div id="msg" class="alert alert-danger" role="alert">login ou senha incorretos!</div>
+				</h:panelGroup>
+				<!-- <p:inputMask style="padding:10px;" placeholder="CPF" mask="999-999-999-99" value="#{usuarioController.usuario.cpf}"></p:inputMask> -->
+				<p:inputText id="usuario" size="20" style="padding:10px;" placeholder="Usuario" 
+                                    required="true" requiredMessage="Informe o usuário."
+                                    value="#{MBUsuarios.funcionario.login}" />
+				<p:inputText style="padding:10px;" required="true" requiredMessage="Informe a Senha."  placeholder="Senha" type="password" value="#{MBUsuarios.funcionario.senha}"></p:inputText>
+				<div class="checkbox">
+					<label class="checkbox"> 
+						<input type="checkbox" id="remember-me" name="remember-me" checked="checked" /> Mantenha-me conectado.
+					</label>
+				</div>
+				<p class="pull-right">
+					<a href="#">Esqueceu sua senha?</a>
+				</p>
+	            <h:commandButton value="Entrar" style="width: 100px; height: 40px;" styleClass="btn btn-sm btn-success"  action="#{MBUsuarios.login()}"></h:commandButton>
+				<br />
+			</h:form>
+		</div>
+        <div class="container">
+            <p:outputPanel id="outExpired" autoUpdate="false">
+                <p:dialog widgetVar="expiredSession" modal="true" header="Atenção" showEffect="bounce" 
+                    resizable="false" visible="false">
+                    <h:form id="formEXP">
+                        <h:panelGrid columns="1">
+                            <div class="alert alert-info" role="alert">
+                                A sessão expirou! Faça login novamente.
+                            </div>
+                            <p:commandButton value="OK" style="font-size:14px;" action="#{MBUsuarios.fecharDlgExpired()}" process="@this" />
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+            </p:outputPanel>
+
+            <footer>
+                <hr />
+                <p>&copy; SISHOP - 2016</p>
+                <p class="small">Versão: 1.0.0</p>
+            </footer>
+        </div>
+         </div>
+    </h:body>
+</html>

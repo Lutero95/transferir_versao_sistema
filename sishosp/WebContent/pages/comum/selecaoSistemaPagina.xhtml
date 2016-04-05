@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:b="http://bootsfaces.net/ui"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="../../template/templatepagsistemas.xhtml">
+
+        <ui:define name="body">
+            
+            <div class="sistemas">
+                <h:form id="formSIS">
+                    <p:outputPanel autoUpdate="true">
+                        <ui:repeat var="sis" value="#{MBUsuarios.sistemasUsuarioLogado}" 
+                            varStatus="status">
+                            
+                            <div class="col-md-3">
+                                <div class="thumbnail sistemas-opc">
+                                    <p:graphicImage value="#{sis.imagem}" />
+
+                                    <div class="panel-body">
+                                        <p:outputLabel value="#{sis.descricao}" 
+                                            escape="true" />
+                                    </div>
+                                </div>
+
+                                <div class="thumbnail sistemas-opc-bt">
+                                    <p:commandButton value="Acesse" 
+                                        style="background-color:#704214 !important;" 
+                                        styleClass="btn btn-block btn-primary" 
+                                        actionListener="#{MBUsuarios.recSistemaLogado(sis)}" 
+                                        action="#{MBUsuarios.redirecionar(sis.url)}" />
+                                </div>
+                            </div>
+                            
+                        </ui:repeat>
+                    </p:outputPanel>
+                </h:form>
+            </div>
+            
+        </ui:define>
+    </ui:composition>
+</html>

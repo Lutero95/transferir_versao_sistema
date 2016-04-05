@@ -1,0 +1,353 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+
+
+	<link href="../../novoCss/bootstrap.min.css" rel="stylesheet" />
+	<link href="../../novoCss/siimm.css" rel="stylesheet" />
+	<link href="../../css/estilo2.css" rel="stylesheet" />
+
+
+	<title>Beauty Clinic</title>
+
+
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+
+
+
+</h:head>
+
+
+
+
+
+<h:body>
+
+
+	<p:growl id="grwgeral" />
+	<p:ajaxStatus onstart="statusDialog.show();"
+		onsuccess="statusDialog.hide();" />
+
+
+	<p:dialog id="myDialogId" styleClass="process_msg" header="Aguarde" modal="true"
+		style="width:50; height:80; border: 0;" resizable="false"
+		widgetVar="statusDialog" draggable="false" closable="false">
+
+		<center>
+			<p:graphicImage value="../imgs/test.gif" height="30" />
+		</center>
+
+	</p:dialog>
+
+        <p:idleMonitor timeout="1200000">
+            <p:ajax event="idle" listener="#{MBUsuarios.timeOut()}" />
+	</p:idleMonitor>
+
+	<div style="background: #428bca !important;">
+		<div id="topo"
+			class="navbar navbar-default navbar-static-top navbar-inverse"
+			style="background: #428bca !important; margin-top: -50px; height: 80px; color: white;">
+
+			<div>
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<div class="col-md-2"></div>
+					<div class="col-md-12">
+						<h5 style="font-size: 20px !important;">Pro Clinica</h5>
+						<h4>Sistema de Gerenciamento Comercial</h4>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div style="margin-top: -20px;">
+
+
+		<nav class="navbar navbar-default" role="navigation">
+
+		<div class="container-fluid" style="font-size: 12px;">
+			<!-- Brand and toggle get grouped for better mobile display -->
+
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+
+
+				<a class="navbar-brand" href="main.faces?faces-redirect=true"> <span
+					style="margin-right: 5px;" class="glyphicon glyphicon-home"></span>
+					Inicio
+				</a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"><span style="margin-right: 5px;"
+							class="glyphicon glyphicon-plus"></span>Cadastro <span
+							class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+
+							<li style="font-size: 12px; font-weight: bold;"><a><b>Cadastros
+										Prioritários</b></a></li>
+
+							<li><a href="cadempresa.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-home"></span>Empresa</a></li>
+							<li><a href="cadcliente.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-user"></span>Clientes</a></li>
+							<li><a href="cadfunc.faces?faces-redirect=true"><span
+									style="margin-right: 5px; color: blue;"
+									class="glyphicon glyphicon-user"></span>Colaborador</a></li>
+							<li class="divider"></li>
+							<li><a href="cadtipdoc.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-file"></span>Tipo
+									Documento</a></li>
+
+							<li><a href="tabelapreco.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-usd"></span>Tabela
+									de Preço</a></li>
+
+							<li class="divider"></li>
+
+
+							<li style="font-size: 12px;"><a><b>Outros Cadastros</b></a></li>
+							<li><a href="cadprocedimento.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-asterisk"></span>Procedimento</a></li>
+							<li><a href="cadport.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-asterisk"></span>Portador</a></li>
+							<li><a href="caddivisao.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-asterisk"></span>Divisão</a></li>
+							<li><a href="cadsecao.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-asterisk"></span>Seção</a></li>
+							<li><a href="cadgrupo.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-asterisk"></span>Grupo</a></li>
+							<li><a href="cadsubgrupo.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-asterisk"></span>SubGrupo</a></li>
+							<li><a href="cadclasse.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-asterisk"></span>Classe</a></li>
+							<li><a href="cadcategoria.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-asterisk"></span>Categoria</a></li>
+
+
+
+						</ul></li>
+
+
+
+
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"><span style="margin-right: 5px;"
+							class="glyphicon glyphicon-refresh"></span>Movimentação <span
+							class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+
+							<li style="font-size: 12px;"><a><b>Sequência Básica</b></a></li>
+
+							<li><a href="avaliacao.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="	glyphicon glyphicon-search"></span>Avaliação</a></li>
+							<li><a href="orcamento.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-usd"></span>Orçamento</a></li>
+							<li><a href="venda.faces?faces-redirect=true"><span
+									style="margin-right: 5px; color: green;"
+									class="glyphicon glyphicon-usd"></span>Venda</a></li>
+
+							<li><a href="cortesia.faces?faces-redirect=true"><span
+									style="margin-right: 5px;"
+									class="glyphicon glyphicon-thumbs-up
+"></span>Cortesia </a></li>
+							<li><a href="agenda2.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-calendar"></span>Agenda</a></li>
+
+							<li><a href="recibo.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-list-alt"></span>Recibo</a></li>
+
+
+
+						</ul></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"><span style="margin-right: 5px;"
+							class="glyphicon glyphicon-shopping-cart"></span>Caixa <span
+							class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+
+
+
+							<li><a href="gerenciamentoCaixa.faces?faces-redirect=true"><span
+									style="margin-right: 5px;"
+									class="glyphicon glyphicon-shopping-cart"></span>Gerenciamento
+									Caixa</a></li>
+							<li><a href="consultaCaixa.faces?faces-redirect=true"><span
+									style="margin-right: 5px;"
+									class="glyphicon glyphicon-shopping-cart"></span>Consultar
+									Caixa</a></li>
+
+						</ul></li>
+
+
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"><span style="margin-right: 5px;"
+							class="glyphicon glyphicon-list"></span>Gerenciamento <span
+							class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+
+
+
+							<li><a href="cadempresa.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-cog"></span>Habilitação
+							</a></li>
+
+
+
+
+						</ul></li>
+
+
+
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"><span style="margin-right: 5px;"
+							class="glyphicon glyphicon-cog"></span>Administração<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+
+							<li><a href="cadastroUsuario.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-cog"></span>Cadastro
+									de Usuários </a></li>
+
+
+
+						</ul></li>
+
+
+
+
+
+					<li>
+						<ul class="nav navbar-nav navbar-right">
+
+							<li><a href="campanha.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-signal"></span>Campanha</a></li>
+
+						</ul>
+
+					</li>
+
+					<li>
+						<ul class="nav navbar-nav navbar-right">
+
+							<li><a href="#"><span style="margin-right: 5px;"
+									class="glyphicon glyphicon-barcode"></span>Planejamento de
+									Vendas</a></li>
+
+						</ul>
+					</li>
+
+
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"><span style="margin-right: 5px;"
+							class="	glyphicon glyphicon-print"></span>Relatórios <span
+							class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+
+							<li style="font-size: 12px;"><a><b>Relatórios
+										Básicos</b></a></li>
+
+							<li><a href="reportVendasPeriodo.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="	glyphicon glyphicon-print"></span>Vendas
+									no Período</a></li>
+							<li><a
+								href="reportOrcamentoPeriodo.faces?faces-redirect=true"><span
+									style="margin-right: 5px;" class="glyphicon glyphicon-print"></span>Orçamentos
+									no Período</a></li>
+
+
+
+
+
+						</ul></li>
+
+
+
+					<li>
+						<ul class="nav navbar-nav navbar-right">
+
+							<li><a href="#"><span style="margin-right: 5px;"
+									class="glyphicon glyphicon-comment"></span>Fale Conosco</a></li>
+
+						</ul>
+
+					</li>
+
+
+
+
+				</ul>
+
+
+
+
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="#"><span style="margin-right: 5px;"
+							class="glyphicon glyphicon-off"></span>Sair</a></li>
+
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid --> </nav>
+
+
+	</div>
+
+
+
+
+	<div id="colCentral" style="margin-top: 10px;">
+		<ui:insert name="body" />
+
+	</div>
+
+
+	<!-- 	<div class="container"> -->
+	<!-- 		<div class="page-header"> -->
+	<!-- 			<h2>Nome Empresa</h2> -->
+	<!-- 		</div> -->
+	<!-- 		<p style="margin-top: -20px;" class="lead">Sistema de -->
+	<!-- 			Gerenciamento de Clínicas</p> -->
+	<!-- 		<p> -->
+	<!-- 			Versão <a href="../sticky-footer-navbar">0.1</a> Atualizada. -->
+	<!-- 		</p> -->
+	<!-- 	</div> -->
+
+	<!-- 	<div class="footer"> -->
+	<!-- 		<div class="container"> -->
+	<!-- 			<p class="text-muted">&copy; 2014</p> -->
+	<!-- 		</div> -->
+	<!-- 	</div> -->
+
+
+
+
+</h:body>
+</html>

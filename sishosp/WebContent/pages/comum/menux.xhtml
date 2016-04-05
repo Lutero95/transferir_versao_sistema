@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <body>
+        <h:form>
+
+            <p:menubar
+                style="font-size:14px !important;width:80%;float:right;height:50px;"
+                styleClass="menu-sistema">
+
+                <p:menuitem value="Início" icon="ui-icon-home"
+                            action="main2.faces?faces-redirect=true" />
+                
+                <p:submenu label="Cadastro" icon="ui-icon-plus">
+
+                    <p:menuitem value="Cliente" icon="ui-icon-person"
+                                action="cadcliente.faces?faces-redirect=true" />
+                    
+                    <p:menuitem value="Banco" icon="ui-icon-person"
+                                action="gerenciarBanco.faces?faces-redirect=true" />
+                    
+                    <p:menuitem value="Despesa" icon="ui-icon-person"
+                                action="gerenciarDespesa.faces?faces-redirect=true" />
+
+                    <p:menuitem value="Fornecedor" icon="ui-icon-person"
+                                action="cadfornecedor.faces?faces-redirect=true" />
+                    
+                    <p:menuitem value="Fonte de Receita" icon="ui-icon-person"
+                                action="gerenciarFonteReceita.faces?faces-redirect=true" />
+
+                    <p:submenu label="Pagamento" icon="ui-icon-suitcase ">
+
+                        <p:menuitem value="Tipo Pagamento"
+                                    action="cadastrotipopag.faces?faces-redirect=truee" />
+
+                        <p:menuitem value="Tipo Documento"
+                                    action="cadtipodoc.faces?faces-redirect=truee" />
+
+                        <p:menuitem value="Tabela de Preço"
+                                    action="tabelapreco.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Portador"
+                                    action="cadport.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Categoria"
+                                    action="cadcategoria.faces?faces-redirect=true" />
+
+                    </p:submenu>
+                    <p:submenu label="Procedimentos" icon="ui-icon-clipboard">
+
+                        <p:menuitem value="Procedimento"
+                                    action="cadprocedimento.faces?faces-redirect=true" />
+                        <p:menuitem value="Grupo"
+                                    action="cadgrupo.faces?faces-redirect=true" />
+                        <p:menuitem value="Subgrupo"
+                                    action="cadsubgrupo.faces?faces-redirect=true" />
+                        <p:menuitem value="Classe"
+                                    action="cadclasse.faces?faces-redirect=true" />
+                        <p:menuitem value="Divisão"
+                                    action="caddivisao.faces?faces-redirect=true" />
+                        <p:menuitem value="Seção"
+                                    action="cadsecao.faces?faces-redirect=true" />
+
+                    </p:submenu>
+
+                    <p:submenu label="Endereço" icon="ui-icon-home">
+
+                        <p:menuitem value="Cidade"
+                                    action="cadcidade.faces?faces-redirect=true" />
+                        <p:menuitem value="Estado"
+                                    action="cadestado.faces?faces-redirect=true" />
+                        <p:menuitem value="Bairro"
+                                    action="cadbairro.faces?faces-redirect=true" />
+
+
+                    </p:submenu>
+                    <p:submenu label="Outros Cadastros"
+                               icon="ui-icon-arrowreturnthick-1-e">
+
+						<p:menuitem value="Estado Civil"
+                                    action="gerenciarEstadosCivis.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Profissão"
+                                    action="cadprofis.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Kit Procedimento"
+                                    action="cadkit.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Sala" action="cadsala.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Configuração de horário - Agenda" action="cadconfigagenda.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Centro de Custo"
+                                    action="cadccusto.faces?faces-redirect=true" />
+
+                    </p:submenu>
+
+
+
+                </p:submenu>
+
+                <p:submenu label="Movimentação" icon="ui-icon-arrowreturnthick-1-e">
+
+                    <p:menuitem value="Avaliação" icon="ui-icon-zoomout" disabled="true"
+                                action="avaliacao.faces?faces-redirect=true" />
+                    <p:menuitem value="Orçamento" icon="ui-icon-contact"
+                                action="orcamento.faces?faces-redirect=true" />
+                    <p:menuitem value="Venda" action="venda.faces?faces-redirect=true"
+                                icon="ui-icon-cart" />
+                    <p:menuitem value="Cortesia" icon="ui-icon-star" disabled="true"
+                                action="cortesia.faces?faces-redirect=true" />
+                    <p:menuitem value="Agenda" icon="ui-icon-calendar"
+                                action="agenda2.faces?faces-redirect=true" />
+                    <p:menuitem value="Recibo" action="recibo.faces?faces-redirect=true"
+                                icon="ui-icon-print" />
+
+                </p:submenu>
+
+                <p:submenu label="Caixa" icon="ui-icon-cart">
+
+                    <p:menuitem value="Gerenciamento Caixa" icon="ui-icon-gear"
+                                action="gerenciamentoCaixa.faces?faces-redirect=true" />
+                    <p:menuitem value="Consultar Caixa" icon="ui-icon-search"
+                                action="consultaCaixa.faces?faces-redirect=true" />
+
+                </p:submenu>
+
+                <p:submenu label="Financeiro" icon="ui-icon-bookmark">
+
+                    <p:menuitem value="Documentos a Receber"
+                                action="gerenciamentoFinanceiro.faces?faces-redirect=true" />
+
+                    <p:menuitem value="Documentos a Pagar"
+                                action="gerenciamentoFinanceiro2.faces?faces-redirect=true" />
+                   
+                    <p:menuitem value="Tesouraria"
+                   				action="tesouraria.faces?faces-redirect=true" />
+
+                    <p:submenu label="Relatórios">
+
+                        <p:menuitem value="A pagar" onclick="PF('dlgPagar').show();" />
+
+                        <p:menuitem value="A receber" onclick="PF('dlgReceber').show();" />
+
+
+                    </p:submenu>
+
+
+                </p:submenu>
+
+                <p:submenu label="Relatórios" icon="ui-icon-print">
+                    <p:submenu label="Vendas" icon="ui-icon-plus">
+                        <p:menuitem value="Vendas no Período" icon="ui-icon-home"
+                                    action="reportVendasPeriodo.faces?faces-redirect=true" />
+                        <p:menuitem value="Vendas por Produto" icon="ui-icon-home"
+                                    action="reportVendasProduto.faces?faces-redirect=true" />
+                        <p:menuitem value="Recebimentos por Venda" icon="ui-icon-home"
+                                    action="reportRecebimentosVendas.faces?faces-redirect=true" />
+                        <p:menuitem value="Planejamento de Vendas" icon="ui-icon-home"
+                                    action="reportPlanejamentoVenda.faces?faces-redirect=true" />
+                        <p:menuitem value="Servços X Execuções" icon="ui-icon-home"
+                                    action="reportServicosExecucao.faces?faces-redirect=true" />
+                    </p:submenu>
+                    <p:submenu label="Orçamentos" icon="ui-icon-plus">
+                        <p:menuitem value="Orçamentos no Período" icon="ui-icon-home"
+                                    action="reportOrcamentoPeriodo.faces?faces-redirect=true" />
+                        <p:menuitem value="Orçamentos por Produto" icon="ui-icon-home"
+                                    action="reportOrcamentoProduto.faces?faces-redirect=true" />
+                    </p:submenu>
+                    <p:submenu label="Agenda" icon="ui-icon-plus">
+                        <p:menuitem value="Agendamentos no Período" icon="ui-icon-home"
+                                    action="reportAgendamentoPeriodo.faces?faces-redirect=true" />
+                    </p:submenu>
+                    <p:submenu label="Cortesias" icon="ui-icon-plus">
+                        <p:menuitem value="Cortesia no Período" icon="ui-icon-home"
+                                    action="reportCortesiaPeriodo.faces?faces-redirect=true" />
+                    </p:submenu>
+                    <p:submenu label="Produção" icon="ui-icon-plus">
+                        <p:menuitem value="Execuções no Período" icon="ui-icon-home"
+                                    action="reportExecucoesPeriodo.faces?faces-redirect=true" />
+                    </p:submenu>
+
+                </p:submenu>
+
+
+                <p:submenu label="Administração" icon="ui-icon-wrench">
+
+                    <p:menuitem value="Cadastro de Funcionários" icon="ui-icon-home"
+                                action="cadastroUsuario.faces?faces-redirect=true" />
+
+                </p:submenu>
+                <p:submenu label="Extras" icon="ui-icon-plus">
+
+                    <p:menuitem value="Campanha" icon="ui-icon-tag"
+                                action="campanha.faces?faces-redirect=true" />
+
+                    <p:menuitem value="Planejamento de Vendas" icon="ui-icon-calendar"
+                                action="planejamentovenda.faces?faces-redirect=true" />
+
+                </p:submenu>
+
+
+                <p:menuitem value="Fale Conosco" icon="ui-icon-comment" action="#" />
+
+                <p:menuitem value="Sair" icon="ui-icon-power"
+                    action="#{MBUsuarios.logout()}" />
+
+            </p:menubar>
+
+        </h:form>
+
+    </body>
+</html>

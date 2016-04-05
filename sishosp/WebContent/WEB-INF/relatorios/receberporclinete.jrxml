@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="receberporclinete" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="969e9a54-e1c4-4905-9a27-7119883c9978">
+	<property name="ireport.zoom" value="1.1000000000000005"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="codcliente" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select r.data_emissao, r.competencia,r.valor ,r.desconto ,r.vencimento ,r.status , c.nome,p.descricao from clin.recdup
+	r join clin.cliente c on (r.id_cliente = c.codcliente)
+	join clin.portador p on (r.id_portador = p.codportador)
+
+where r.id_cliente =$P{codcliente}order by c.nome;]]>
+	</queryString>
+	<field name="data_emissao" class="java.sql.Date"/>
+	<field name="competencia" class="java.sql.Date"/>
+	<field name="valor" class="java.lang.Double"/>
+	<field name="desconto" class="java.lang.Double"/>
+	<field name="vencimento" class="java.sql.Date"/>
+	<field name="status" class="java.lang.String">
+		<fieldDescription><![CDATA[L - Livre]]></fieldDescription>
+	</field>
+	<field name="nome" class="java.lang.String"/>
+	<field name="descricao" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="131" y="23" width="325" height="30" uuid="5763ffb8-5664-4a42-a98e-eca49c01880c"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Documentos a Receber]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="8" width="60" height="20" uuid="bd3ba12e-b957-4233-8a82-cfe8d38f958e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="60" y="8" width="502" height="20" uuid="9cf07a99-c238-493d-a554-5c21ae2de0d2"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="29" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="9" width="93" height="20" uuid="bd3ba12e-b957-4233-8a82-cfe8d38f958e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data Emissão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="93" y="9" width="93" height="20" uuid="bd3ba12e-b957-4233-8a82-cfe8d38f958e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Competência]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="186" y="9" width="127" height="20" uuid="bd3ba12e-b957-4233-8a82-cfe8d38f958e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Portador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="313" y="9" width="93" height="20" uuid="bd3ba12e-b957-4233-8a82-cfe8d38f958e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vencimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="406" y="9" width="63" height="20" uuid="bd3ba12e-b957-4233-8a82-cfe8d38f958e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="469" y="9" width="67" height="20" uuid="bd3ba12e-b957-4233-8a82-cfe8d38f958e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Desconto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="536" y="9" width="36" height="20" uuid="bd3ba12e-b957-4233-8a82-cfe8d38f958e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="28" width="572" height="1" uuid="72ae5a46-0c3a-4a02-a233-e067042fb55b"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="93" y="0" width="93" height="20" uuid="84b6593b-099a-4490-8fec-c49bcd43f2e1"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{competencia}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="406" y="0" width="63" height="20" uuid="324f0351-301f-445e-8e5a-b8df96288299"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="186" y="0" width="127" height="20" uuid="5c0b38bb-3ea8-44b9-a786-fae6c42bf843"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="469" y="0" width="67" height="20" uuid="556ed71f-2927-4cfc-8138-2b2a6e8d2d8a"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{desconto}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="313" y="0" width="93" height="20" uuid="706ee7ab-5272-499d-9042-0f540e4444dc"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vencimento}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="536" y="0" width="36" height="20" uuid="8d00d838-7846-4372-b1a1-40fd9a7f4e0e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="93" height="20" uuid="f973ab0c-3d09-4cc5-a19f-8f857718c10b"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data_emissao}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

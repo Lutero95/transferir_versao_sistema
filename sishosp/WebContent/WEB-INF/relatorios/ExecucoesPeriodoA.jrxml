@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ProcPorSecNatureza.jrxml" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="14d94901-172f-4784-b8e9-e51ad94c7c9a">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="dataini" class="java.util.Date"/>
+	<parameter name="datafim" class="java.util.Date"/>
+	<parameter name="codexecutor" class="java.lang.Integer"/>
+	<parameter name="codprod" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT f.nome nomeexecutor,CASE WHEN V.STATUS='FEC' THEN 'S' ELSE 'N' END AS PG,
+EX.CODPRODUTO,e.descricao descprocedimento, EX.CODCLIENTE,
+c.nome cliente, EX.VALOR,
+EX.VALORFIXO, EX.DATA,EX.EXECUTOR, E.DESCRICAO,EX.CODVENDA, EX.CODCORTESIA,EX.PERCENTUAL_COMISSAO,
+case when coalesce(VALORFIXO,0)>0 then valorfixo
+else (coalesce(EX.PERCENTUAL_COMISSAO,0)/100)*ex.valor end valorcomissao
+FROM clin.EXECUCOES EX
+LEFT JOIN clin.ESTOQUE E ON EX.CODPRODUTO = E.CODPROD
+LEFT JOIN clin.VENDA V ON V.CODVENDA = EX.CODVENDA
+join clin.cliente c on c.codcliente = ex.codcliente
+join clin.func f on f.codfunc = ex.executor
+WHERE EX.DATA >= $P{dataini} AND EX.DATA <= $P{datafim}
+and (( $P{codexecutor} >0 and ex.executor=$P{codexecutor}) or (($P{codexecutor} =0 ) or (($P{codexecutor} is null ))))
+and (( $P{codprod} >0 and e.codprod=$P{codprod})or (($P{codprod} =0 ) or (($P{codprod} is null ))))
+]]>
+	</queryString>
+	<field name="nomeexecutor" class="java.lang.String"/>
+	<field name="pg" class="java.lang.String"/>
+	<field name="codproduto" class="java.lang.Integer"/>
+	<field name="descprocedimento" class="java.lang.String"/>
+	<field name="codcliente" class="java.lang.Integer"/>
+	<field name="cliente" class="java.lang.String"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="valorfixo" class="java.math.BigDecimal"/>
+	<field name="data" class="java.sql.Date"/>
+	<field name="executor" class="java.lang.Integer"/>
+	<field name="descricao" class="java.lang.String"/>
+	<field name="codvenda" class="java.lang.Integer"/>
+	<field name="codcortesia" class="java.lang.Integer"/>
+	<field name="percentual_comissao" class="java.lang.Double"/>
+	<field name="valorcomissao" class="java.lang.Double"/>
+	<group name="grpexecutor" isStartNewPage="true">
+		<groupHeader>
+			<band height="63">
+				<staticText>
+					<reportElement x="0" y="43" width="41" height="20" uuid="9604c26c-eecc-483d-9287-4f3aa35818e0"/>
+					<textElement>
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<text><![CDATA[Data]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="43" width="41" height="20" uuid="9604c26c-eecc-483d-9287-4f3aa35818e0"/>
+					<textElement>
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<text><![CDATA[Cliente]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="216" y="43" width="120" height="20" uuid="9604c26c-eecc-483d-9287-4f3aa35818e0"/>
+					<textElement>
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<text><![CDATA[Procedimento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="417" y="43" width="69" height="20" uuid="9604c26c-eecc-483d-9287-4f3aa35818e0"/>
+					<textElement>
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<text><![CDATA[Cód. Venda]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="486" y="43" width="15" height="20" uuid="9604c26c-eecc-483d-9287-4f3aa35818e0"/>
+					<textElement>
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<text><![CDATA[TP]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="513" y="43" width="46" height="20" uuid="9604c26c-eecc-483d-9287-4f3aa35818e0"/>
+					<textElement>
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<text><![CDATA[Sessões]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="567" y="43" width="63" height="20" uuid="9604c26c-eecc-483d-9287-4f3aa35818e0"/>
+					<textElement>
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<text><![CDATA[Valor Venda]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="57" y="0" width="359" height="20" uuid="c4fb6895-1f57-4476-a0c4-fd05d9490e69"/>
+					<textElement>
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nomeexecutor}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="57" height="20" uuid="9604c26c-eecc-483d-9287-4f3aa35818e0"/>
+					<textElement>
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<text><![CDATA[Executor:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="643" y="43" width="63" height="20" uuid="9604c26c-eecc-483d-9287-4f3aa35818e0"/>
+					<textElement>
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<text><![CDATA[% Comissão]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="716" y="43" width="86" height="20" uuid="9a430213-09f0-43f6-9731-639a1f517980"/>
+					<textElement textAlignment="Right">
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<text><![CDATA[Valor Comissão]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band/>
+	</title>
+	<pageHeader>
+		<band height="143">
+			<staticText>
+				<reportElement key="staticText-101" x="89" y="0" width="387" height="23" uuid="02d0b077-ea38-472b-9b68-ab39ccc004c1"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="DejaVu Sans" size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Beauty Clinic]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-102" x="89" y="23" width="454" height="15" uuid="bf584b2c-dae7-413c-8c15-2f2b52880969"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="DejaVu Sans" size="12" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Sistema de Gerenciamento Comercial]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-128" x="57" y="41" width="586" height="20" uuid="dc4d9929-935b-427d-affa-214629bd906f"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="DejaVu Sans" size="14" isBold="true" isItalic="true" pdfFontName="Helvetica-BoldOblique"/>
+				</textElement>
+				<text><![CDATA[Execuções no Período]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line-2" x="0" y="123" width="835" height="1" uuid="828f5b32-6733-4619-af56-7b6fcbe1c6e9"/>
+			</line>
+			<staticText>
+				<reportElement x="258" y="61" width="47" height="20" uuid="5a1bae3c-491c-425e-be47-6571b53b6e98"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<text><![CDATA[Período:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="305" y="61" width="61" height="20" uuid="a49f2c06-0555-42bd-acd6-c5639069952c"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dataini}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="377" y="61" width="100" height="20" uuid="4689a0c5-f22a-4dfc-ae7d-7984db9e8b4c"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{datafim}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="366" y="61" width="11" height="20" uuid="5a1bae3c-491c-425e-be47-6571b53b6e98"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<text><![CDATA[a]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band height="21">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="0" width="67" height="20" uuid="335e39e5-55ac-4a2a-b3a3-620be74047cc"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="1" width="100" height="20" uuid="d9ad1821-5362-45e9-a279-856d3683a649"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="216" y="1" width="100" height="20" uuid="2ca25b05-c720-4e16-957c-a083fe09d4a7"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descprocedimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="417" y="0" width="58" height="20" uuid="f01a1503-2cd3-4fc4-98b0-5988c9bebd33"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codvenda}]]></textFieldExpression>
+			</textField>
+			<textField pattern="R$ #,##0.00">
+				<reportElement x="567" y="0" width="63" height="20" uuid="d51fccf7-9c63-4fa9-bb9c-d21e423be3c1"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="643" y="0" width="63" height="20" uuid="c36afe03-e2ad-4c8d-bd1c-43904432b2a7"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{percentual_comissao}]]></textFieldExpression>
+			</textField>
+			<textField pattern="R$ #,##0.00">
+				<reportElement x="716" y="0" width="86" height="20" uuid="1fdd2975-938b-4b5c-b2ea-c2bccd1d9ab6"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valorcomissao}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="28">
+			<textField evaluationTime="Report" isBlankWhenNull="false">
+				<reportElement key="textField-26" x="791" y="7" width="27" height="18" uuid="c666d4fd-3798-4bcb-9b6f-8ee896314d56"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER} + ""]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="dd/MM/yyyy" isBlankWhenNull="false">
+				<reportElement key="textField-24" x="0" y="12" width="78" height="16" uuid="4b8f8e74-193c-43bd-9d82-8e0052894437"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="HH:mm:ss" isBlankWhenNull="false">
+				<reportElement key="textField-25" x="57" y="12" width="78" height="16" uuid="cf632a10-b2b0-4271-8932-c86581648698"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-27" x="705" y="7" width="85" height="18" uuid="6f1c6a42-faf3-42ea-ab51-dd54b6a19593"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina : " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

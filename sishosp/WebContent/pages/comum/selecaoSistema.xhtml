@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:b="http://bootsfaces.net/ui"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="../../template/templatepagsistemas.xhtml">
+
+        <ui:define name="body">
+                  <h:form id="form" styleClass="">
+                    <p:commandButton value="CONSULTA" icon="Receber" 
+                        styleClass=""  
+                        style="float:; width:100px; margin-top:10px; margin-right:10px;"
+                        action="#{MBUsuarios.logout}" />
+             
+                    <p:commandButton value="AGENDAR" icon="entrar" 
+                        styleClass=""  
+                        style="float:center; width:100px; margin-top:10px; margin-right:10px;"
+                        action="#{MBUsuarios.logout}" />
+          
+                    <p:commandButton value="SOBRE" icon="anexo" 
+                        styleClass=""  
+                        style="float:right; width:100px; margin-top:1px; margin-right:1px;"
+                        action="#{MBUsuarios.logout}" />
+                        
+                </h:form>
+                
+                
+                <div class="categories">
+                    <div class="title">
+                        <h1>MENUS</h1>
+                    </div>
+                    <ul class="grid cs-style-5">
+                        <li>
+                            <figure>
+                                <img src="../../imgs/sistemasimgs/aclSistema.jpg" alt="img01"></img>
+                                    <figcaption>
+                                            <h3>ACL</h3>
+                                            <span>Thulio Buarque</span>
+                                            <a href="#">Veja mais</a>
+                                    </figcaption>
+                            </figure>
+                        </li>
+                        <li>
+                            <figure>
+                                <img src="../../imgs/sistemasimgs/calendario-icone.jpg" alt="img03"></img>
+                                    <figcaption>
+                                            <h3>Agendamento de Consultas</h3>
+                                            <span>Thulio Buarque</span>
+                                            <a href="/">Veja mais</a>
+                                    </figcaption>
+                            </figure>
+                        </li>
+                        <li>
+                            <figure>
+                                <img src="../../imgs/sistemasimgs/cadastros.jpg" alt="img04"></img>
+                                    <figcaption>
+                                            <h3>Cadastros</h3>
+                                            <span>Thulio Buarque</span>
+                                            <a href="/">Veja mais</a>
+                                    </figcaption>
+                            </figure>
+                        </li>
+                        <li>
+                            <figure>
+                                <img src="../../imgs/testeimgs/categoria-back-end-new.png" alt="img02"></img>
+                                    <figcaption>
+                                            <h3>A desenvolver</h3>
+                                            <span>Thulio Buarque</span>
+                                            <a href="/">Veja mais</a>
+                                    </figcaption>
+                            </figure>
+                        </li>
+                </ul>
+                </div>
+            
+            
+        </ui:define>
+    </ui:composition>
+</html>
