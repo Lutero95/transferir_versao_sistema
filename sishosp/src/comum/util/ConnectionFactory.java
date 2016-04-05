@@ -19,7 +19,7 @@ public class ConnectionFactory {
     private static final String USER = "postgres";
     private static final String PASS = "post";
     public static Connection getConnection() {
-    testeww1    
+        
         Connection conexao = null;
 
         try {            
