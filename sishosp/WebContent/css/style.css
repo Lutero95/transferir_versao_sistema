@@ -133,7 +133,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, 
 .footer {
     margin: -30px auto 0;
     min-width: 1000px;
-    height: 30px;
+    height: 30px;	
     background: #004a77 !important;
     position: relative;
 }
