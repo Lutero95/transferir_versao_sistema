@@ -51,45 +51,40 @@
 
 <h:body>
 	<h:form id="mainFormtempSist">
-		<b:navBar brand="SISHOSP" brandHref="/sishosp/pages/comum/selecaoSistema.faces">
-			<b:navbarLinks>
-			<b:dropMenu value="Gerenciar">
-			<b:navLink value="Gerenciar Pacientes" href="/pages/sishosp/gerenciarPaciente.faces"></b:navLink>
-			</b:dropMenu>
-				<b:dropMenu value="Cadastros">
-					<b:navLink value="Bairros" href="../leilao/list.faces"></b:navLink>
-					<b:navLink value="Convênios"  href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Escolaridades" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Escolas" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Equipes" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Feriados" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Especialidades" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Grupos" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Convênios" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Logradouros" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Profissionais" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Municipios" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Profissiões" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Procedimentos" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Programas" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Tipos de escolas" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink value="Laudos" href="../vendedor/list.faces"></b:navLink>
-					<b:navLink></b:navLink>
-					<b:navLink header="Cadastros básicos"></b:navLink>
-					<b:navLink value="Cadastro de Pacientes" href="/pages/sishosp/cadastroPaciente.faces"></b:navLink>
-	
-				</b:dropMenu>
-			<b:dropMenu value="Movimento">
-					<b:navLink value="Agenda Médica"  href="/pages/sishosp/agendaPaciente.faces"></b:navLink>
-					
-					</b:dropMenu>
-					<b:dropMenu value="Relatorios">
-					<b:navLink value="Relatorios Administrativos" onclick="PF('dlgbuscaatendimento').show();"></b:navLink>
-					</b:dropMenu>
-			
-				<b:navLink value="Sair"  href="/pages/comum/login.faces"></b:navLink>
-			</b:navbarLinks>
-		</b:navBar>
+
+		
+		<p:menubar autoDisplay="true">
+		<p:submenu label="Gerenciar" icon="ui-icon-document">
+		<p:menuitem value="Gerenciar Pacientes" url="/pages/sishosp/gerenciarPaciente.faces" />
+		</p:submenu>
+        <p:submenu label="Cadastros" icon="ui-icon-document">
+           
+            <p:menuitem value="Bairros" url="../leilao/list.faces" />
+            <p:menuitem value="Convênios" url="../leilao/list.faces" />
+            <p:menuitem value="Escolaridades" url="../leilao/list.faces" />
+            <p:menuitem value="Escolas" url="../leilao/list.faces" />
+            <p:menuitem value="Equipes" url="../leilao/list.faces" />
+            <p:menuitem value="Feriados" url="../leilao/list.faces" />
+            <p:menuitem value="Especialidades" url="../leilao/list.faces" />
+            <p:menuitem value="Grupos" url="../leilao/list.faces" />
+            <p:menuitem value="Logradouros" url="../leilao/list.faces" />
+            <p:menuitem value="Profissionais" url="../leilao/list.faces" />
+            <p:menuitem value="Procedimentos" url="../leilao/list.faces" />
+            <p:menuitem value="Programas" url="../leilao/list.faces" />
+            <p:menuitem value="Tipos de escolas" url="../leilao/list.faces" />
+            <p:menuitem value="Laudos" url="../leilao/list.faces" />
+            <p:separator />
+            <p:menuitem value="Cadastro de Pacientes" url="/pages/sishosp/cadastroPaciente.faces" />
+        </p:submenu>
+         <p:submenu label="Movimento" icon="ui-icon-document">
+          <p:menuitem value="Agenda Médica" url="/pages/sishosp/agendaPaciente.faces" />
+         </p:submenu>
+           <p:submenu label="Relatorios" icon="ui-icon-document">
+        <p:menuitem value="Relatorios Administrativos" onclick="PF('dlgbuscaatendimento').show();" />
+        </p:submenu>
+
+        </p:menubar>
+			<p:commandButton value="Sair" style="position:absolute; left:90%; width:100px; " icon="sair"  action="#{MBUsuarios.logout}"></p:commandButton>
 		</h:form>
 		<div class="container">
 
@@ -103,7 +98,6 @@
 	<br/>
 	<br/>
 	<br/>
-
 
         <footer class="footer-page" style="bottom:-180px;" fixed="bottom"> 
             <div class="container">
@@ -119,113 +113,13 @@
                 <!--  <a href="#"><img alt="envato" class="logo-image" src="../../imgs/LOGOOO.png"></img></a>-->
            </div>
         </footer>
-        
-          <!-- .footer -->
-	      <!--   <footer class="footer" style="bottom:-180px;">
-            <div class="connect">
-                <a href="#" target="_blank">
-                    <img src="../../imgs/facebook.png" /></a> 
-                <a href="#" target="_blank">
-                    <img src="../../imgs/twitter.png" /></a>      
-            </div>
-            
-            <div class="direito">
-                © SISHOP - 2016. Todos os direitos reservados.
-            </div>
-        </footer>-->
-        
-            
-
-	<!--  <div style="margin-left:40px;">
-		<footer  style="background-color: #EEEEEE;">
-			<hr />
-			<p>&copy; SISHOP - 2016</p>
-			<p class="small">Versão: 1.0.0</p>
-		</footer>
-	</div>-->
 
 	<script type="text/javascript">
 		setTimeout(function() {
 			$('.msg').fadeOut('fast');
 		}, 3000);
 	</script>
-	
-	
-	 <p:dialog style="font-size: 12px;" widgetVar="dlgbuscaatendimento" 
-                        height="460" width="800" modal="true" resizable="false">
 
-                <f:facet name="header">
-                    <h:panelGroup>
-                        <h:outputText id="n74" value="Lista de Deficiências"></h:outputText>
-                    </h:panelGroup>
-                </f:facet>
-                    <h:form id="buscadeficiencia">
-                    <h:panelGrid id="p6" columns="5" styleClass="semBorda">
-                        <h:outputText id="n75" styleClass="rotulosBold" value="Nome Deficiência" />
-                        <p:inputText size="30" id="buscanomedeficiencia"
-                                     value="#{MBUsuarioCadastro.pessoaselecionada.nome}" />
-                        <h:outputText id="n76" styleClass="rotulosBold" value="Codigo" />
-                        <p:inputText styleClass="legend" size="15" id="buscacodigodeficiencia"
-                                     value="#{MBUsuarioCadastro.pessoaselecionada.cpf}" />
-                        <p:commandButton id="n77" icon="btPesquisar" update="buscadeficiencia:tabledeficiencia"
-                                         value="Pesquisa" action="#{MBUsuarioCadastro.buscarpessoa()}"/>
-
-                    </h:panelGrid>
-
-                    <center>
-                        <p:outputPanel id="outinter6">
-                            <p:dataTable value="#{MBUsuarioCadastro.buscapessoa}"
-                                         var="busca" paginator="true" paginatorPosition="bottom"
-                                         id="tabledeficiencia" emptyMessage="Nenhum Interessado" sortMode="single"
-                                         rows="11" styleClass="fonteForm" widgetVar="800" >
-
-                                <p:column id="n78" style="width:50px">
-                                    <f:facet name="header">
-                                        <h:outputText id="n79" value="Id Deficiencia" styleClass="fonteForm" />
-                                    </f:facet>
-                                    <h:outputText id="n80" styleClass="fonteForm"
-                                                  value="#{busca.id_pessoa}" />
-                                </p:column>
-
-                                <p:column id="n81" style="width:380px">
-                                    <f:facet name="header">
-                                        <h:outputText id="n82" value="Nome Deficiência" styleClass="fonteForm" />
-                                    </f:facet>
-                                    <h:outputText id="n83" styleClass="fonteForm"
-                                                  value="#{busca.nome}" />
-                                </p:column>
-                                <p:column id="n84" style=" width:100px;text-align:center;">
-                                    <f:facet name="header">
-                                        <h:outputText id="n85" value="Codigo" styleClass="fonteForm" />
-                                    </f:facet>
-                                    <h:outputText id="n86" styleClass="fonteForm"
-                                                  value="#{busca.cpf}" />
-                                </p:column>
-
-                                <p:column id="n87" style="width:50px">
-                                    <f:facet name="header">
-                                        <h:outputText id="n88" value="Ação" styleClass="fonteForm" />
-                                    </f:facet>
-
-                                    <p:commandButton 
-                                                     oncomplete="dlgbuscaatendimento.hide()" icon="podeGravar"
-                                                     id="confirmar">
-
-                                        <f:setPropertyActionListener value="#{busca.id_pessoa}"
-                                                                     target="#{MBUsuarioCadastro.usuario.idpessoa}" />
-                                        <f:setPropertyActionListener value="#{busca.nome}"
-                                                                     target="#{MBUsuarioCadastro.usuario.nome}" />
-                                        <f:setPropertyActionListener value="#{busca.cpf}"
-                                                                     target="#{MBUsuarioCadastro.usuario.cpf}" />
-                                        <p:tooltip for="confirmar" value="Selecionar Deficiência"></p:tooltip>
-                                    </p:commandButton>
-                                </p:column>
-                                
-                            </p:dataTable>
-                        </p:outputPanel>
-                    </center>
-                </h:form>
-            </p:dialog>
 	
 </h:body>
 </html>
