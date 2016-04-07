@@ -38,8 +38,8 @@ import org.primefaces.model.menu.MenuModel;
 
 /**
  *
- * @author Emerson Gama & Jerônimo do Nascimento & Arthur Alves
- * @since 26/03/2015
+ * @author Thulio e Thiago
+ * @since 06/04/2016
  */
 public class UsuarioController {
 
@@ -101,117 +101,6 @@ public class UsuarioController {
         
         rendDlgSetores = false;
     }
-    
-    public String verificarTamSetores(String setores) {
-        
-        Integer tamanho = setores.length();
-        System.out.println("TAMANHO STRING: " + tamanho);
-        
-        String setoresAux = "";
-        
-        if(tamanho > 60) {
-            String[] caracteres = setores.split("");
-            System.out.println("TAMANHO ARRAY: " + caracteres.length);
-            rendDlgSetores = true;
-            
-            for(int i = 0; i <= 60; i++) {
-                setoresAux += caracteres[i];
-            }
-        } else {
-            rendDlgSetores = false;
-            setoresAux = setores;
-        }
-        return setoresAux;
-    }
-
-    public void idleListener() {
-        FacesContext.getCurrentInstance().addMessage(
-                null,
-                new FacesMessage(FacesMessage.SEVERITY_WARN,
-                        "Your session is closed",
-                        "You have been idle for at least 5 seconds"));
-
-        // invalidate session
-    }
-
-    public void activeListener() {
-        FacesContext.getCurrentInstance().addMessage(
-                null,
-                new FacesMessage(FacesMessage.SEVERITY_WARN, "Welcome Back",
-                        "That's a long coffee break!"));
-    }
-
-    public void verificaUserCadastrado(FacesContext context,
-            UIComponent toValidate, Object value) throws ProjetoException {
-
-        IUsuarioDAO icdao = new UsuarioDAO();
-        String cpf = (String) value;
-
-        String isExist = icdao.verificaUserCadastrado(cpf);
-
-        if (isExist == "S") {
-
-            ((EditableValueHolder) toValidate).setValid(false);
-            FacesMessage message = new FacesMessage(
-                    " Usuario ja Cadastrado para este CPF!");
-            context.addMessage(toValidate.getClientId(context), message);
-
-        }
-    }
-
-    public void verificaLoginCadastrado(FacesContext context,
-            UIComponent toValidate, Object value) throws ProjetoException {
-        IUsuarioDAO icdao = new UsuarioDAO();
-        String login = (String) value;
-
-        String isExist = icdao.verificaLoginCadastrado(login);
-
-        if (isExist == "S") {
-            ((EditableValueHolder) toValidate).setValid(false);
-            FacesMessage message = new FacesMessage(" Login já em uso");
-            context.addMessage(toValidate.getClientId(context), message);
-
-        }
-    }
-
-    // ** controle de usuário -----------------------
-    public boolean verificarProtocolar() {
-
-        UsuarioBean user_session = (UsuarioBean) FacesContext
-                .getCurrentInstance().getExternalContext().getSessionMap()
-                .get("obj_usuario");
-
-        return user_session.getPermissao().getProtocolar();
-    }
-
-    public boolean verificarEditarNatureza() {
-
-        UsuarioBean user_session = (UsuarioBean) FacesContext
-                .getCurrentInstance().getExternalContext().getSessionMap()
-                .get("obj_usuario");
-        
-        return user_session.getPermissao().getAlterarNatureza();
-    }
-
-    public boolean verificarTramite() {
-
-        UsuarioBean user_session = (UsuarioBean) FacesContext
-                .getCurrentInstance().getExternalContext().getSessionMap()
-                .get("obj_usuario");
-
-        return user_session.getPermissao().getTramitar();
-
-    }
-
-    public boolean verificarManterProcesso() {
-
-        UsuarioBean user_session = (UsuarioBean) FacesContext
-                .getCurrentInstance().getExternalContext().getSessionMap()
-                .get("obj_usuario");
-
-        return user_session.getPermissao().getAlterarProtocolo();
-
-    }
 
     public boolean adm() {
 
@@ -261,99 +150,12 @@ public class UsuarioController {
 
             return "";
         } else {
-            nomeSetor = DescSetor;           
-            
-            // ACL =============================================================
-            
-            FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().put("obj_usuario", user);
-            
-            List<Sistema> sistemas = udao.carregarSistemasUsuario(user);
-            
-            FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().put("perms_usuario_sis", sistemas);
-            
-            List<Permissoes> permissoes = udao.carregarPermissoes(user);
-            
-            sistemaLogado.setDescricao("Sem Sistema");
-            sistemaLogado.setSigla("Sem Sistema");
-            FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().put("sistema_logado", sistemaLogado);
-            
-            for(Sistema s : sistemas) {
-                Menu m = new Menu();
-                m.setDescricao("Principal");
-                m.setUrl(s.getUrl());
-                m.setTipo("injetado");
-                Permissoes perms = new Permissoes();
-                perms.setMenu(m);
-                permissoes.add(perms);
-            }
-            
-            Permissoes perms = new Permissoes();
-            Menu m2 = new Menu();
-            m2.setDescricao("Fale Conosco");
-            m2.setUrl("/pages/comum/contato.faces");
-            m2.setTipo("injetado");
-            perms.setMenu(m2);
-            permissoes.add(perms);
-            
-            Permissoes perms2 = new Permissoes();            
-            Menu m3 = new Menu();
-            m3.setDescricao("Primeiro Acesso");
-            m3.setUrl("/pages/comum/primeiroAcesso.faces");
-            m3.setTipo("injetado");
-            perms2.setMenu(m3);
-            permissoes.add(perms2);
-            
-            /*Permissoes perms2 = new Permissoes();            
-            Menu m = new Menu();
-            m.setDescricao("Primeiro Acesso");
-            m.setUrl("/pages/comum/primeiroAcesso.faces");
-            m.setTipo("injetado");
-            perms2.setMenu(m);
-            permissoes.add(perms2);
-            
-            Permissoes perms3 = new Permissoes();
-            Menu m2 = new Menu();
-            m2.setDescricao("Fale Conosco");
-            m2.setUrl("/pages/comum/contato.faces");
-            m2.setTipo("injetado");
-            perms3.setMenu(m2);
-            permissoes.add(perms3);*/
-            
-            FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().put("perms_usuario", permissoes);
-                        
-            recoverDataFromSession();
-            
-            // =================================================================
-
-            if (user.isPrimeiroAcesso() == true) {
-
-                return "/pages/comum/primeiroAcesso.faces?faces-redirect=true";
-            } else {
-                HttpSession session = SessionUtil.getSession();
-                session.setAttribute("User", user.getLogin());
-                
+          
                 return "/pages/comum/selecaoSistema.faces?faces-redirect=true";
-            }
+            
         }
     }
-    
-    public boolean verificarPermComp(String codigo, Integer idSistema) {
-        boolean valida = false;       
-        for(Permissoes perms : permsUsuarioLogado) {            
-            if(perms.getIdSistemaFunc() != null && perms.getCodigoFuncao() != null) {
-                if(perms.getIdSistemaFunc().equals(idSistema) 
-                    && perms.getCodigoFuncao().equals(codigo)) {               
-                    valida = true;
-                }  
-            }                     
-        }
-        return valida;
-    }
-    
+       
     public String redirecionar(String url) {
         gerarMenus(sistemaLogado);
         return url;
@@ -377,10 +179,7 @@ public class UsuarioController {
         permsUsuarioLogado = (List<Permissoes>) FacesContext
             .getCurrentInstance().getExternalContext().getSessionMap()
             .get("perms_usuario");
-        
-        setoresUsuarioLogado = (String) FacesContext
-            .getCurrentInstance().getExternalContext().getSessionMap()
-            .get("setores_usuario");
+
     }
     
     /* Menu dinâmico
@@ -562,112 +361,8 @@ public class UsuarioController {
         return "/pages/comum/login.faces?faces-redirect=true";
     }
 
-    public List getListaUsuarioSecretaria() throws ProjetoException {
-        if (listaUserSecretaria == null) {
-            IUsuarioDAO icdao = new UsuarioDAO();
 
-            listaUserSecretaria = icdao.buscaUsuariosSecretaria();
-        }
-        return listaUserSecretaria;
-    }
-
-    public void alterSenha() throws ProjetoException {
-
-        IUsuarioDAO icdao = new UsuarioDAO();
-        icdao.updateEditSenha(editausuario);
-
-    }
-
-    public void alterUsuario() throws ProjetoException {
-
-        IUsuarioDAO icdao = new UsuarioDAO();
-        boolean resultado = false;
-        resultado = icdao.updateEditUsuario(editausuario);
-        if (resultado == true) {
-
-            FacesContext context = FacesContext.getCurrentInstance();
-
-            context.addMessage(null, new FacesMessage(
-                    "Usuário alterado com sucesso"));
-
-        } else {
-            FacesContext context = FacesContext.getCurrentInstance();
-
-            context.addMessage(null, new FacesMessage(
-                    "Falha na alteração dos dados do usuário!"));
-
-        }
-
-    }
-
-    public void record() throws ProjetoException {
-
-        IUsuarioDAO icdao = new UsuarioDAO();
-        icdao.newUser(novousuario);
-        novousuario = new UsuarioBean();
-
-    }
-
-    public void desativarusuario() throws ProjetoException {
-
-        IUsuarioDAO icdao = new UsuarioDAO();
-        icdao.desativarUser();
-        listaUserSecretaria = null;
-
-    }
-
-    public void ativarusuario() throws ProjetoException {
-        boolean pode_ativar = false;
-        IUsuarioDAO icdao = new UsuarioDAO();
-
-        pode_ativar = icdao.existeUsuarioAtivo(editausuario.getCpf());
-        if (pode_ativar) {
-            icdao.ativarUser();
-            listaUserSecretaria = null;
-        } else {
-            FacesContext context = FacesContext.getCurrentInstance();
-
-            context.addMessage(
-                    null,
-                    new FacesMessage(
-                            "Ativação não permitida! Usuário já possui cadastro ativo!"));
-        }
-
-    }
-
-    public String alteraSenha() throws ProjetoException {
-        IUsuarioDAO icdao = new UsuarioDAO();
-        String alteracao = icdao.alteraSenha(editausuario);
-
-        if (alteracao.equals("success")) {
-            UsuarioBean user_session = (UsuarioBean) FacesContext
-                    .getCurrentInstance().getExternalContext().getSessionMap()
-                    .get("obj_usuario");
-            HttpSession session = SessionUtil.getSession();
-            session.setAttribute("User", user_session.getLogin());
-
-            return "selecaoSistema.faces?faces-redirect=true";
-        } else {
-            return "";
-        }
-    }
-
-    public void verificaUltimoAdm(FacesContext context, UIComponent toValidate,
-            Object value) throws ProjetoException {
-        IUsuarioDAO icdao = new UsuarioDAO();
-        String alteracao = String.valueOf(value);
-
-        Integer I = icdao.verificaUltimoAdm(editausuario);
-
-        if ((I == 1)) {
-            if (alteracao.equals("false")) {
-                ((EditableValueHolder) toValidate).setValid(false);
-                FacesMessage message = new FacesMessage(
-                        " Operacao nao permitida! ultimo Administrador do Sistema");
-                context.addMessage(toValidate.getClientId(context), message);
-            }
-        }
-    }
+    
 
     public UsuarioBean getUsuario() {
         return usuario;
@@ -683,91 +378,6 @@ public class UsuarioController {
 
     public void setId_tupla(UIData id_tupla) {
         this.id_tupla = id_tupla;
-    }
-
-    @Override
-    public String toString() {
-
-        return "" + nomeSecretaria + "/" + nomeSetor + "\n";
-    }
-
-    public String encrypt(String senha) throws NoSuchAlgorithmException,
-            InvalidKeyException, SignatureException {
-
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA");
-        } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        md.update(senha.getBytes());
-        BigInteger hash = new BigInteger(1, md.digest());
-        String retornaSenha = hash.toString(32);
-
-        return retornaSenha;
-
-    }
-
-    public String encryptLogin(String senha) {
-
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA");
-        } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        md.update(senha.getBytes());
-        BigInteger hash = new BigInteger(1, md.digest());
-        String retornaSenha = hash.toString(32);
-
-        return retornaSenha;
-
-    }
-
-    public void getAtualizar() {
-
-        UsuarioDAO dao = new UsuarioDAO();
-
-        ArrayList<UsuarioBean> list = new ArrayList<>();
-        ArrayList<UsuarioBean> list2 = new ArrayList<>();
-
-        try {
-            list = dao.listUsuario();
-        } catch (ProjetoException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA");
-        } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        for (int i = 0; i < list.size(); i++) {
-            UsuarioBean user = new UsuarioBean();
-            md.update(list.get(i).getSenha().toUpperCase().getBytes());
-            BigInteger hash = new BigInteger(1, md.digest());
-            user.setCodigo(list.get(i).getCodigo());
-            user.setSenha(hash.toString(32));
-
-            list2.add(user);
-
-        }
-
-        try {
-            dao.updateSenha(list2);
-        } catch (ProjetoException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
     }
 
     public String getTimeSession() {
@@ -792,14 +402,7 @@ public class UsuarioController {
         return senhaInput;
     }
 
-    public String getPermissaoProcessos() {
-        return permissaoProcessos;
-    }
-
-    public void setPermissaoProcessos(String permissaoProcessos) {
-        permissaoProcessos = permissaoProcessos;
-    }
-
+ 
     public void setSenhaInput(UIInput senhaInput) {
         this.senhaInput = senhaInput;
     }
