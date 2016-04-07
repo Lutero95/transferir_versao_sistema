@@ -50,7 +50,7 @@ public class UsuarioCadastroControll implements Serializable {
 
     // busca personalizada
     private String valor;
-    private String tipoBusca;
+	private String tipoBusca;
     private String rendererSetor;
     private PessoaBean pessoaselecionada;
     private List<PessoaBean> buscapessoa;    
@@ -65,9 +65,6 @@ public class UsuarioCadastroControll implements Serializable {
     public UsuarioCadastroControll() {
 
         // ACL
-     
-        
-       
         usuario = new UsuarioBean();
         
 
@@ -75,7 +72,45 @@ public class UsuarioCadastroControll implements Serializable {
         
     
 
- 
+    public String getValor() {
+		return valor;
+	}
+
+	public void setValor(String valor) {
+		this.valor = valor;
+	}
+
+	public String getTipoBusca() {
+		return tipoBusca;
+	}
+
+	public void setTipoBusca(String tipoBusca) {
+		this.tipoBusca = tipoBusca;
+	}
+
+	public String getRendererSetor() {
+		return rendererSetor;
+	}
+
+	public void setRendererSetor(String rendererSetor) {
+		this.rendererSetor = rendererSetor;
+	}
+
+	public PessoaBean getPessoaselecionada() {
+		return pessoaselecionada;
+	}
+
+	public void setPessoaselecionada(PessoaBean pessoaselecionada) {
+		this.pessoaselecionada = pessoaselecionada;
+	}
+
+	public List<PessoaBean> getBuscapessoa() {
+		return buscapessoa;
+	}
+
+	public void setBuscapessoa(List<PessoaBean> buscapessoa) {
+		this.buscapessoa = buscapessoa;
+	}
  
     
     public String getLogin() {
