@@ -1,0 +1,442 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:body>
+
+	<p:dialog header="Cadastro de Bairros" closable="true"
+		resizable="false" widgetVar="dlgCadBairro" modal="true"
+		styleClass="semBorda">
+		<h:form>
+
+			<p:panelGrid columns="3" style="width: 500px">
+				<p:outputLabel for="cid" value="Cidade" />
+				<p:inputText id="cid" value="Nome da cidade" readonly="true"
+					style="width: 300px" />
+				<p:commandButton value="Buscar" />
+			</p:panelGrid>
+
+			<p:panelGrid columns="4">
+				<p:outputLabel for="descB" value="Descrição do bairro" />
+				<p:inputText id="descB" value="" style="width: 300px" />
+				<p:outputLabel for="mr" value="MR" />
+				<p:inputText id="mr" value="" style="width: 40%" />
+			</p:panelGrid>
+
+			<p:separator />
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Convênios" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadConvenio"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="conv" value="Descrição do convênio" />
+				<p:inputText id="conv" value="" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Escolaridades" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadEscolaridade"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="esc" value="Descrição da escolaridade" />
+				<p:inputText id="esc" value="" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Escolas" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadEscola"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="escola" value="Descrição da escola" />
+				<p:inputText id="escola" value="" style="width: 300px" />
+
+				<p:outputLabel for="tipoE" value="Tipo" />
+				<p:outputPanel>
+					<p:inputText id="tipoE" value="Tipo Escola" style="width: 300px"
+						readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Equipes" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadEquipe"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="equipe" value="Descrição da equipe" />
+				<p:inputText id="equipe" value="" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Feriados" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadFeriado"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="feriado" value="Descrição do feriado" />
+				<p:inputText id="feriado" value="" style="width: 300px" />
+
+				<p:outputLabel for="data" value="Data" />
+				<p:calendar id="data" locale="pt" navigator="true"
+					pattern="dd/MM/yyyy" />
+
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Especialidades" closable="true"
+		resizable="false" styleClass="semBorda"
+		widgetVar="dlgCadEspecialidade" modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="espec" value="Descrição da especialidade" />
+				<p:inputText id="espec" value="" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Grupos" closable="true" resizable="false"
+		styleClass="semBorda" widgetVar="dlgCadGrupo" modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="grupo" value="Descrição do grupo" />
+				<p:inputText id="grupo" value="" style="width: 300px" />
+
+				<p:outputLabel for="qtdGrupo" value="Quantidade de Frequência" />
+				<p:spinner id="qtdGrupo" min="0" max="100" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Logradouros" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadLogradouro"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="cidade" value="Cidade" />
+				<p:outputPanel>
+					<p:inputText id="cidade" value="Aqui cidade" style="width: 300px"
+						readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="bairroL" value="Bairro" />
+				<p:outputPanel>
+					<p:inputText id="bairroL" value="Aqui bairro" style="width: 300px"
+						readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="cepL" value="CEP" />
+				<p:inputMask id="cepL" mask="99.999-999" />
+
+				<p:outputLabel for="logra" value="Logradouro" />
+				<p:inputText id="logra" value="aqui lougradouro"
+					style="width: 300px" />
+
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Profissional" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadProfissional"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="programa" value="Programa" />
+				<p:outputPanel>
+					<p:inputText id="programa" value="Aqui programa"
+						style="width: 300px" readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="espP" value="Especialidade" />
+				<p:outputPanel>
+					<p:inputText id="espP" value="Aqui especialidade"
+						style="width: 300px" readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="cbo" value="CBO" />
+				<p:outputPanel>
+					<p:inputText id="cbo" value="Aqui CBO" style="width: 300px"
+						readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="proced1" value="Procedimento 1" />
+				<p:outputPanel>
+					<p:inputText id="proced1" value="Aqui proc1" style="width: 300px"
+						readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="proced2" value="Procedimento 2" />
+				<p:outputPanel>
+					<p:inputText id="proced2" value="Aqui proc2" style="width: 300px"
+						readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="descProf" value="Descrição do Profissional" />
+				<p:inputText id="descProf" value="aqui descProf"
+					style="width: 450px" />
+
+				<p:panelGrid columns="4">
+					<p:outputLabel for="cns" value="CNS" />
+					<p:inputText id="cns" value="" style="width: 250px" />
+					<p:outputLabel for="ativo" value="Ativo" />
+					<p:selectOneMenu id="ativo" style="width:75px">
+						<f:selectItem itemLabel="SIM" itemValue="S" />
+						<f:selectItem itemLabel="NÃO" itemValue="N" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Procedimentos" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadProcedimento"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+
+				<p:outputLabel for="procedimento" value="Descrição do Procedimento" />
+				<p:inputText id="procedimento" value="aqui descproc"
+					style="width: 300px" />
+
+				<p:panelGrid columns="4" styleClass="semBorda">
+					<p:outputLabel for="codigo" value="Código" />
+					<p:inputText id="codigo" value="aqui codigo" style="width: 100px" />
+
+					<p:selectManyCheckbox id="checkCodigo" columns="2">
+						<f:selectItem itemLabel="Apac" itemValue="APAC" />
+						<f:selectItem itemLabel="BPI" itemValue="BPI" />
+					</p:selectManyCheckbox>
+				</p:panelGrid>
+
+				<center>
+					<p:selectManyCheckbox id="check" columns="2">
+						<f:selectItem itemLabel="Auditivo" itemValue="AUDITIVO" />
+						<br />
+						<f:selectItem itemLabel="Utiliza Equipamento" itemValue="UTILIZA" />
+					</p:selectManyCheckbox>
+				</center>
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Programas" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadPrograma"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="programa" value="Descrição do programa" />
+				<p:inputText id="programa" value="" style="width: 300px" />
+
+				<p:outputLabel for="codProg" value="Código unificado" />
+				<p:inputText id="codProg" value="" style="width: 100px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Tipo de Escola" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadTipoEscola"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="tipoEscola" value="Descrição do tipo da escola" />
+				<p:inputText id="tipoEscola" value="" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Laudos" closable="true" resizable="false"
+		styleClass="semBorda" widgetVar="dlgCadLaudo" modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="grupoLaudo" value="Grupo" />
+				<p:outputPanel>
+					<p:inputText id="grupoLaudo" value="aqui grupo" readonly="true"
+						style="width: 300px" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<p:outputLabel for="dataInicial" value="Mês/Ano Inicial" />
+					<p:outputLabel for="dataFinal" value="Mês/Ano Final" />
+					<p:inputMask id="dataInicial" mask="99/9999" />
+					<p:inputMask id="dataFinal" mask="99/9999" />
+
+				</p:panelGrid>
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" />
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>

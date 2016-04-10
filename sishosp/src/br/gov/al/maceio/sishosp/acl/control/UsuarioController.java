@@ -141,6 +141,7 @@ public class UsuarioController {
 
         UsuarioBean user = null;
         UsuarioDAO udao = new UsuarioDAO();
+        System.out.println("NOME USER: "+usuario.getLogin());
         user = udao.autenticarUsuario(usuario);
 
         if(user == null) {
