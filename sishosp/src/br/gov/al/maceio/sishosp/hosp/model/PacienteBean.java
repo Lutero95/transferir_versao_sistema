@@ -17,8 +17,10 @@ public class PacienteBean {
     private String associado;
     private String trabalha;
     private String corRaca;
+    
     private String localtrabalha;
     private Integer codProfissao;
+    private Integer codRaca;
     
    
     private String deficiencia;
@@ -64,6 +66,7 @@ public class PacienteBean {
     private EncaminhamentoBean encaminhamento;
     private ProfissaoBean profissao;
     private EncaminhadoBean encaminhado;
+    private FormaTransporteBean formatransporte;
     
    
 
@@ -77,6 +80,7 @@ public class PacienteBean {
 		escolaridade = new EscolaridadeBean();
 		especialidade = new EspecialidadeBean();
         encaminhamento = new EncaminhamentoBean();
+        formatransporte = new FormaTransporteBean();
         encaminhado = new EncaminhadoBean();
         profissao = new ProfissaoBean();
         
@@ -221,6 +225,7 @@ public class PacienteBean {
 	}
 
 	public List<Integer> getListaCorRaca() {
+		
 		return listaCorRaca;
 	}
 
@@ -480,6 +485,22 @@ public class PacienteBean {
 
 		public void setCtps(Integer ctps) {
 			this.ctps = ctps;
+		}
+
+		public FormaTransporteBean getFormatransporte() {
+			return formatransporte;
+		}
+
+		public void setFormatransporte(FormaTransporteBean formatransporte) {
+			this.formatransporte = formatransporte;
+		}
+
+		public Integer getCodRaca() {
+			return codRaca;
+		}
+
+		public void setCodRaca(Integer codRaca) {
+			this.codRaca = codRaca;
 		}
 		
 		

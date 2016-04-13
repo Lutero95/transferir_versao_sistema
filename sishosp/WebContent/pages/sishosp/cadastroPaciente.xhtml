@@ -162,14 +162,10 @@
                     <div class="form-group">
                          <h:outputLabel for="cor" value="Cor/Raça"
                     styleClass="col-sm-3 control-label" />
-                <div class="col-sm-6">
-                   <p:selectOneMenu disable="true"   value="#{PacienteController.paciente.corRaca}" id="cor">
-                                            <f:selectItem itemLabel="Selecione" itemValue="" />
-                                            <f:selectItem itemLabel="Branca" itemValue="Branca" />
-                                            <f:selectItem itemLabel="Preta" itemValue="Preta" />
-                                            <f:selectItem itemLabel="Amarela" itemValue="Amarela" />
-                                            <f:selectItem itemLabel="Parda" itemValue="Parda" />
-                                            <f:selectItem itemLabel="Indígena" itemValue="Indígena" />
+                <div class="col-sm-6">        
+                   <p:selectOneMenu disable="true"   value="#{PacienteController.SelecionadoRaca}" id="cor">          
+                                            <f:selectItems value="#{PacienteController.listaRaca}" 
+                                                var="sis" itemLabel="#{sis.corRaca}" itemValue="#{sis.codRaca}" />
                                              <f:ajax event="blur" render="m_cor" />
                                         </p:selectOneMenu>
                                          <h:message id="m_cor" for="cor"
@@ -687,21 +683,21 @@
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>              <div class="col-sm-6">
                                             
-                                            <!--<p:autoComplete styleClass="col-sm-3 control-label" label="Digite o transporte" emptyMessage="Digite o transporte" 
+                                            <p:autoComplete styleClass="col-sm-3 control-label" label="Digite o transporte" emptyMessage="Digite o transporte" 
                                             id="escolacomplete5" style="font-size:12px"  
-                                            value="#{PacienteController.encaminhado.descencaminhado}" size="45" 
-                                            completeMethod="#{EncaminhadoController.completeText}" effect="fade" 
+                                            value="#{FormaTransporteController.transporteSuggestion}" size="45" 
+                                            completeMethod="#{FormaTransporteController.completeText}" effect="fade" 
                                             var="theme" forceSelection="true" minQueryLength="3" 
-                                            itemValue="#{theme}" itemLabel="#{theme.descencaminhado}" 
-                                            converter="conEncaminhamento"  >
-                                            <p:ajax event="itemSelect" listener="#{EncaminhadoController.onItemSelect}"/>
-                                            </p:autoComplete>-->                                      
+                                            itemValue="#{theme}" itemLabel="#{theme.descformatransporte}" 
+                                            converter="conFormaTransporte">
+                                            <p:ajax event="itemSelect" listener="#{FormaTransporteController.onItemSelect}"/>
+                                            </p:autoComplete>                                      
                                      
-                                        <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label"> 
+                                        <!-- <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label"> 
                                             <p:inputText id="nome10" size="45" required="false" readonly="false"
                                                 requiredMessage="O campo nome é obrigatório."
                                                 value="#{PacienteController.paciente.codFormaTransporte}" />
-                                        </p:outputPanel>
+                                        </p:outputPanel> -->
                                         </div>
                                               <p:commandButton value="Como chegou a Adefal" onclick="PF('dlgbuscacomochegou').show();" icon="buscaProcess"/> 
                                 <!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
@@ -1003,7 +999,7 @@
 
                     <center>
                         <p:outputPanel id="outinter4">
-                            <p:dataTable value="#{MBUsuarioCadastro.buscapessoa}"
+                            <p:dataTable value="#{PacienteController.listaEncaminhado}"
                                          var="busca" paginator="true" paginatorPosition="bottom"
                                          id="tableencaminhado" emptyMessage="Nenhum Interessado" sortMode="single"
                                          rows="11" styleClass="fonteForm" widgetVar="800" >
@@ -1013,7 +1009,7 @@
                                         <h:outputText id="n51" value="Id Encaminhado" styleClass="fonteForm" />
                                     </f:facet>
                                     <h:outputText id="n52" styleClass="fonteForm"
-                                                  value="#{busca.id_pessoa}" />
+                                                  value="#{busca.codencaminhado}" />
                                 </p:column>
 
                                 <p:column id="n53" style="width:380px">
@@ -1021,15 +1017,9 @@
                                         <h:outputText id="n54" value="Nome Encaminhado" styleClass="fonteForm" />
                                     </f:facet>
                                     <h:outputText id="n55" styleClass="fonteForm"
-                                                  value="#{busca.nome}" />
+                                                  value="#{busca.descencaminhado}" />
                                 </p:column>
-                                <p:column id="n56" style=" width:100px;text-align:center;">
-                                    <f:facet name="header">
-                                        <h:outputText id="n57" value="Codigo" styleClass="fonteForm" />
-                                    </f:facet>
-                                    <h:outputText id="n58" styleClass="fonteForm"
-                                                  value="#{busca.cpf}" />
-                                </p:column>
+                            
 
                                 <p:column id="n59" style="width:50px">
                                     <f:facet name="header">
@@ -1040,12 +1030,11 @@
                                                      oncomplete="dlgbuscaencaminhado.hide()" icon="podeGravar"
                                                      id="confirmar">
 
-                                        <f:setPropertyActionListener value="#{busca.id_pessoa}"
-                                                                     target="#{MBUsuarioCadastro.usuario.idpessoa}" />
-                                        <f:setPropertyActionListener value="#{busca.nome}"
-                                                                     target="#{MBUsuarioCadastro.usuario.nome}" />
-                                        <f:setPropertyActionListener value="#{busca.cpf}"
-                                                                     target="#{MBUsuarioCadastro.usuario.cpf}" />
+                                        <f:setPropertyActionListener value="#{busca.codencaminhado}"
+                                                                     target="#{PacienteController.encaminhado.codencaminhado}" />
+                                        <f:setPropertyActionListener value="#{busca.descencaminhado}"
+                                                                     target="#{PacienteController.encaminhado.descencaminhado}" />
+                                
                                         <p:tooltip for="confirmar" value="Selecionar Encaminhado"></p:tooltip>
                                     </p:commandButton>
                                 </p:column>
@@ -1079,7 +1068,7 @@
 
                     <center>
                         <p:outputPanel id="outinter5">
-                            <p:dataTable value="#{MBUsuarioCadastro.buscapessoa}"
+                            <p:dataTable value="#{PacienteController.listaTransporte}"
                                          var="busca" paginator="true" paginatorPosition="bottom"
                                          id="tabletransporte" emptyMessage="Nenhum Interessado" sortMode="single"
                                          rows="11" styleClass="fonteForm" widgetVar="800" >
@@ -1089,7 +1078,7 @@
                                         <h:outputText id="n64" value="Id Transporte" styleClass="fonteForm" />
                                     </f:facet>
                                     <h:outputText id="n65" styleClass="fonteForm"
-                                                  value="#{busca.id_pessoa}" />
+                                                  value="#{busca.codformatransporte}" />
                                 </p:column>
 
                                 <p:column id="n66" style="width:380px">
@@ -1097,15 +1086,9 @@
                                         <h:outputText id="n67" value="Nome Transporte" styleClass="fonteForm" />
                                     </f:facet>
                                     <h:outputText id="n68" styleClass="fonteForm"
-                                                  value="#{busca.nome}" />
+                                                  value="#{busca.descformatransporte}" />
                                 </p:column>
-                                <p:column id="n69" style=" width:100px;text-align:center;">
-                                    <f:facet name="header">
-                                        <h:outputText id="n70" value="Codigo" styleClass="fonteForm" />
-                                    </f:facet>
-                                    <h:outputText id="n71" styleClass="fonteForm"
-                                                  value="#{busca.cpf}" />
-                                </p:column>
+                           
 
                                 <p:column id="n72" style="width:50px">
                                     <f:facet name="header">
@@ -1116,12 +1099,11 @@
                                                      oncomplete="dlgbuscacomochegou.hide()" icon="podeGravar"
                                                      id="confirmar">
 
-                                        <f:setPropertyActionListener value="#{busca.id_pessoa}"
-                                                                     target="#{MBUsuarioCadastro.usuario.idpessoa}" />
-                                        <f:setPropertyActionListener value="#{busca.nome}"
-                                                                     target="#{MBUsuarioCadastro.usuario.nome}" />
-                                        <f:setPropertyActionListener value="#{busca.cpf}"
-                                                                     target="#{MBUsuarioCadastro.usuario.cpf}" />
+                                        <f:setPropertyActionListener value="#{busca.codformatransporte}"
+                                                                     target="#{PacienteController.transporte.codformatransporte}" />
+                                        <f:setPropertyActionListener value="#{busca.descformatransporte}"
+                                                                     target="#{PacienteController.transporte.descformatransporte}" />
+                                     
                                         <p:tooltip for="confirmar" value="Selecionar Transporte"></p:tooltip>
                                     </p:commandButton>
                                 </p:column>

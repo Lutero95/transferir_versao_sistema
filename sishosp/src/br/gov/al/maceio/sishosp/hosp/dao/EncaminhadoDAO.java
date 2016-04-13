@@ -67,7 +67,7 @@ public class EncaminhadoDAO {
             
             public Boolean alterar(EncaminhadoBean encaminhado) throws ProjetoException {
                 boolean alterou = false;
-                String sql = "update hosp.encaminhado set descencaminhado = ? where codencaminhado = ?";
+                String sql = "update hosp.encaminhado set descencaminhado = ? where id_encaminhado = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -91,7 +91,7 @@ public class EncaminhadoDAO {
             }
             public Boolean excluir(EncaminhadoBean encaminhado) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.encaminhado where codencaminhado = ?";
+                String sql =  "delete from hosp.encaminhado where id_encaminhado = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -117,7 +117,7 @@ public class EncaminhadoDAO {
             
             public ArrayList<EncaminhadoBean> listaEncaminhados() {
 
-                String sql = "select * from hosp.encaminhado order by codencaminhado,descencaminhado";
+                String sql = "select * from hosp.encaminhado order by id_encaminhado,descencaminhado";
 
                 ArrayList<EncaminhadoBean> lista = new ArrayList();
 
@@ -129,7 +129,7 @@ public class EncaminhadoDAO {
                     while (rs.next()) {
                     	EncaminhadoBean p = new EncaminhadoBean();
     	            	
-    	                p.setCodencaminhado(rs.getInt("codencaminhado"));
+    	                p.setCodencaminhado(rs.getInt("id_encaminhado"));
     	                p.setDescencaminhado(rs.getString("descencaminhado").toLowerCase());
 	                
     	                lista.add(p);
@@ -154,7 +154,7 @@ public class EncaminhadoDAO {
 
         		try {
         			  
-        			String sql = "select codencaminhado, descencaminhado from hosp.encaminhado where codencaminhado=? order by descencaminhado";
+        			String sql = "select id_encaminhado, descencaminhado from hosp.encaminhado where id_encaminhado=? order by descencaminhado";
         			 
         			ps = conexao.prepareStatement(sql);
         			ps.setInt(1, i);
@@ -193,7 +193,7 @@ public class EncaminhadoDAO {
 
             			try {
             				List<EncaminhadoBean> listaencaminhados = new ArrayList<EncaminhadoBean>();  
-            				String sql = "select codencaminhado, descencaminhado from hosp.encaminhado where upper(descencaminhado) like ? order by descencaminhado";
+            				String sql = "select id_encaminhado, descencaminhado from hosp.encaminhado where upper(descencaminhado) like ? order by descencaminhado";
             				 
             				ps = conexao.prepareStatement(sql);
             				ps.setString(1, "%"+s.toUpperCase()+"%");

@@ -67,7 +67,7 @@ public class EscolaridadeDAO {
             
             public Boolean alterar(EscolaridadeBean escolaridade) throws ProjetoException {
                 boolean alterou = false;
-                String sql = "update hosp.escolaridade set descescolaridade = ? where codescolaridade = ?";
+                String sql = "update hosp.escolaridade set descescolaridade = ? where id_escolaridade = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -91,7 +91,7 @@ public class EscolaridadeDAO {
             }
             public Boolean excluir(EscolaridadeBean escolaridade) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.escolaridade where codescolaridade = ?";
+                String sql =  "delete from hosp.escolaridade where id_escolaridade = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -117,7 +117,7 @@ public class EscolaridadeDAO {
             
             public ArrayList<EscolaridadeBean> listaEscolaridade() {
 
-                String sql = "select * from hosp.escolaridade order by codescolaridade,descescolaridade";
+                String sql = "select * from hosp.escolaridade order by id_escolaridade,descescolaridade";
 
                 ArrayList<EscolaridadeBean> lista = new ArrayList();
 
@@ -129,7 +129,7 @@ public class EscolaridadeDAO {
                     while (rs.next()) {
                     	EscolaridadeBean e = new EscolaridadeBean();
     	            	
-    	                e.setCodescolaridade(rs.getInt("codescolaridade"));
+    	                e.setCodescolaridade(rs.getInt("id_escolaridade"));
     	                e.setDescescolaridade(rs.getString("descescolaridade").toLowerCase());
     	                
     	                
@@ -155,7 +155,7 @@ public class EscolaridadeDAO {
 
         		try {
         			  
-        			String sql = "select codescolaridade, descescolaridade from hosp.escolaridade where codescolaridade=? order by descescolaridade";
+        			String sql = "select id_escolaridade, descescolaridade from hosp.escolaridade where id_escolaridade=? order by descescolaridade";
         			 
         			ps = conexao.prepareStatement(sql);
         			ps.setInt(1, i);
@@ -194,7 +194,7 @@ public class EscolaridadeDAO {
 
             			try {
             				List<EscolaridadeBean> listaescolaridades = new ArrayList<EscolaridadeBean>();  
-            				String sql = "select codescolaridade, descescolaridade from hosp.escolaridade where upper(descescolaridade) like ? order by descescolaridade";
+            				String sql = "select id_escolaridade, descescolaridade from hosp.escolaridade where upper(descescolaridade) like ? order by descescolaridade";
             				 
             				ps = conexao.prepareStatement(sql);
             				ps.setString(1, "%"+s.toUpperCase()+"%");

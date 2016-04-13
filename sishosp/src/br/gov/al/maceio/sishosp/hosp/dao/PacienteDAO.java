@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-
 import javax.faces.context.FacesContext;
 
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ public class PacienteDAO {
                 		+ "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, trabalha, localtrabalha, codparentesco, "
                 		+ "nomeresp, rgresp, cpfresp, dtanascimentoresp) "
                 		+ " values (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ? , ? , "
-                		+ "? , ? , ?, ?, ?, ? , ? , ?, ? , ?) returning codpaciente";
+                		+ "? , ? , ?, ?, ?, ? , ? , ?, ? , ?) returning id_paciente";
 
                     try {
                     	System.out.println("passou aqui 3");
@@ -111,7 +110,7 @@ public class PacienteDAO {
                         if(rs.next()) { 
                     PacienteBean p = paciente;
                     String idRetorno = null;
-                    idRetorno = String.valueOf(rs.getLong("codpaciente"));
+                    idRetorno = String.valueOf(rs.getLong("id_paciente"));
                     p.setId_paciente(Long.parseLong(idRetorno));
                     System.out.println("|THU1|"+ idRetorno);
                     }
@@ -154,7 +153,7 @@ public class PacienteDAO {
             
             public Boolean excluir(PacienteBean paciente) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.pacientes where codpaciente = ?";
+                String sql =  "delete from hosp.pacientes where id_paciente = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -178,9 +177,9 @@ public class PacienteDAO {
                 }
             }
             
-            public ArrayList<PacienteBean> listaPacientes() {
+            public ArrayList<PacienteBean> listaPacientes(Integer idPaciente) {
 
-                String sql = "select codpaciente, nome, lpad(trim(to_char(cpf,'99999999999')),11,'0') as cpf, rg  from hosp.pacientes order by nome";
+                String sql = "select id_paciente, nome, lpad(trim(to_char(cpf,'99999999999')),11,'0') as cpf, rg, id_raca  from hosp.pacientes order by nome";
 
                 ArrayList<PacienteBean> lista = new ArrayList();
 
@@ -192,10 +191,11 @@ public class PacienteDAO {
                     while (rs.next()) {
                     	PacienteBean p = new PacienteBean();
     	            	System.out.println("|1|");
-    	                p.setId_paciente(rs.getLong("codpaciente"));
+    	                p.setId_paciente(rs.getLong("id_paciente"));
     	                p.setNome(rs.getString("nome").toLowerCase());    
     	                p.setCpf(rs.getDouble("cpf")); 
     	                p.setRg(rs.getString("rg").toLowerCase()); 
+    	                p.setCodRaca(rs.getInt("id_raca"));
     	                
     	                lista.add(p);
                     }
@@ -212,6 +212,38 @@ public class PacienteDAO {
                 return lista;
             }
             
+            public ArrayList<PacienteBean> listaCor() {
+
+                String sql = "select  id_raca, descraca from hosp.raca order by descraca";
+
+                ArrayList<PacienteBean> lista = new ArrayList();
+
+                try {
+                    conexao = ConnectionFactory.getConnection();
+                    PreparedStatement stm = conexao.prepareStatement(sql);
+                    ResultSet rs = stm.executeQuery();
+
+                    while (rs.next()) {
+                    	PacienteBean p = new PacienteBean();
+    	            	System.out.println("|1|");
+    	                p.setCodRaca(rs.getInt("id_raca"));
+    	                p.setCorRaca(rs.getString("descraca").toLowerCase());    
+    	             
+    	                
+    	                lista.add(p);
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                } finally {
+                    try {
+                        conexao.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        System.exit(1);
+                    }
+                }
+                return lista;
+            }
             
             
             public ArrayList<EscolaBean> listaEscolas() {
@@ -253,7 +285,7 @@ public class PacienteDAO {
 
         		try {
         			  
-        			String sql = "select codprofissao from hosp.paciente where codpaciente=? order by codprofissao";
+        			String sql = "select codprofissao from hosp.paciente where id_paciente=? order by codprofissao";
         			 
         			ps = conexao.prepareStatement(sql);
         			ps.setInt(1, i);

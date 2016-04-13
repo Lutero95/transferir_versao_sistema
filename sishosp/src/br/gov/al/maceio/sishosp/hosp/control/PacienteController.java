@@ -4,19 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-
-
-
-
-
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.EncaminhadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaridadeDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.FormaTransporteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissaoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ConvenioBean;
@@ -26,13 +25,16 @@ import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 
 
-
+@ManagedBean
+@ViewScoped
 public class PacienteController {
 	private Integer abaAtiva = 0;
+	private String SelecionadoRaca;
 	
 	//CLASSES HERDADAS
 	private PacienteBean paciente;
@@ -44,13 +46,19 @@ public class PacienteController {
 	private EncaminhamentoBean encaminhamento;
 	private ProfissaoBean profissao;
 	private EncaminhadoBean encaminhado;
+	private FormaTransporteBean transporte;
+	
+	
 	
 	//LISTAS 
 	private List<PacienteBean> listaPacientes;
+	private List<PacienteBean> listaRaca;
 	private List<EscolaBean> listaEscolas;
 	private List<EscolaridadeBean> listaEscolararidade;
 	private List<ProfissaoBean> listaProfissao;
-	
+	private List<EncaminhadoBean> listaEncaminhado;
+	private List<FormaTransporteBean>listaTransporte;
+
 
 
 public PacienteController(){
@@ -62,17 +70,23 @@ public PacienteController(){
         encaminhamento = new EncaminhamentoBean();
         encaminhado = new EncaminhadoBean();
         profissao = new ProfissaoBean();
+        transporte = new FormaTransporteBean();
         
         //LISTAS
         listaPacientes = new ArrayList<>();
         listaPacientes = null;
+        listaRaca = new ArrayList<>();
+        listaRaca = null;
         listaEscolas = new ArrayList<>();
         listaEscolas = null;
         listaEscolararidade = new ArrayList<>();
         listaEscolararidade = null;
         listaProfissao = new ArrayList<>();
         listaProfissao = null;
-		
+        listaEncaminhado = new ArrayList<>();
+        listaEncaminhado = null;
+        listaTransporte = new ArrayList<>();
+        listaTransporte = null;
 	}
 
 	public void gravarPaciente() throws ProjetoException {
@@ -196,10 +210,10 @@ System.out.println("passou aqui");
 
 	public List<EscolaBean> getListaEscolas(){
 		   if(listaEscolas == null) {
-			   System.out.println("passou aqui");
+			
 	            EscolaDAO fdao = new EscolaDAO();
 	            listaEscolas = fdao.listaEscolas();
-	            System.out.println("passou aqui2");
+	      
 	        }
 		return listaEscolas;
 	}
@@ -210,10 +224,10 @@ System.out.println("passou aqui");
 
 	public List<EscolaridadeBean> getListaEscolararidade() {
 		  if(listaEscolararidade == null) {
-			   System.out.println("passou aqui");
+			 
 	            EscolaridadeDAO fdao = new EscolaridadeDAO();
 	            listaEscolararidade = fdao.listaEscolaridade();
-	            System.out.println("passou aqui2");
+	    
 	        }
 		return listaEscolararidade;
 	}
@@ -224,10 +238,10 @@ System.out.println("passou aqui");
 
 	public List<ProfissaoBean> getListaProfissao() {
 		if(listaProfissao == null) {
-			   System.out.println("passou aqui");
+			  
 	            ProfissaoDAO fdao = new ProfissaoDAO();
 	            listaProfissao = fdao.listaProfissoes();
-	            System.out.println("passou aqui2");
+	         
 	        }
 		return listaProfissao;
 	}
@@ -246,16 +260,74 @@ System.out.println("passou aqui");
 
 	public List<PacienteBean> getListaPacientes() {
 		if(listaPacientes == null) {
-			   System.out.println("passou aqui");
+			  
 	            PacienteDAO fdao = new PacienteDAO();
-	            listaPacientes = fdao.listaPacientes();
-	            System.out.println("passou aqui2");
+	            listaPacientes = fdao.listaPacientes(Integer.parseInt(SelecionadoRaca));
+	           
 	        }
 		return listaPacientes;
 	}
 
 	public void setListaPacientes(List<PacienteBean> listaPacientes) {
 		this.listaPacientes = listaPacientes;
+	}
+
+	public List<EncaminhadoBean> getListaEncaminhado() {
+		if(listaEncaminhado == null) {
+			  
+	            EncaminhadoDAO fdao = new EncaminhadoDAO();
+	            listaEncaminhado = fdao.listaEncaminhados();
+	          
+	        }
+		return listaEncaminhado;
+	}
+
+	public void setListaEncaminhado(List<EncaminhadoBean> listaEncaminhado) {
+		this.listaEncaminhado = listaEncaminhado;
+	}
+
+	public FormaTransporteBean getTransporte() {
+		return transporte;
+	}
+
+	public void setTransporte(FormaTransporteBean transporte) {
+		this.transporte = transporte;
+	}
+
+	public List<FormaTransporteBean> getListaTransporte() {
+		if(listaTransporte == null) {
+			  
+            FormaTransporteDAO fdao = new FormaTransporteDAO();
+            listaTransporte = fdao.listaTransportes();
+          
+        }
+		return listaTransporte;
+	}
+
+	public void setListaTransporte(List<FormaTransporteBean> listaTransporte) {
+		this.listaTransporte = listaTransporte;
+	}
+
+	public List<PacienteBean> getListaRaca() {
+		if(listaRaca == null) {
+			  
+            PacienteDAO fdao = new PacienteDAO();
+            listaRaca = fdao.listaCor();
+          
+        }
+		return listaRaca;
+	}
+
+	public void setListaRaca(List<PacienteBean> listaRaca) {
+		this.listaRaca = listaRaca;
+	}
+
+	public String getSelecionadoRaca() {
+		return SelecionadoRaca;
+	}
+
+	public void setSelecionadoRaca(String selecionadoRaca) {
+		SelecionadoRaca = selecionadoRaca;
 	}
 	
 	

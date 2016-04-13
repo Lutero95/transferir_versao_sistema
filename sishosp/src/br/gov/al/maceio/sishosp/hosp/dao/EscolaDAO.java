@@ -68,7 +68,7 @@ public class EscolaDAO {
             
             public Boolean alterar(EscolaBean escola) throws ProjetoException {
                 boolean alterou = false;
-                String sql = "update hosp.escola set descescola = ? where codescola = ?";
+                String sql = "update hosp.escola set descescola = ? where id_escola = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -92,7 +92,7 @@ public class EscolaDAO {
             }
             public Boolean excluir(EscolaBean escola) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.escola where codescola = ?";
+                String sql =  "delete from hosp.escola where id_escola = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -130,7 +130,7 @@ public class EscolaDAO {
                     while (rs.next()) {
                     	EscolaBean p = new EscolaBean();
     	            
-    	                p.setCodEscola(rs.getInt("codescola"));
+    	                p.setCodEscola(rs.getInt("id_escola"));
     	                p.setDescescola(rs.getString("descescola").toLowerCase());
     	                p.setCodtipoescola(rs.getInt("codtipoescola"));
     	                
@@ -156,7 +156,7 @@ public class EscolaDAO {
 
         		try {
         			  
-        			String sql = "select codescola, descescola from hosp.escola where codescola=? order by descescola";
+        			String sql = "select id_escola, descescola from hosp.escola where id_escola=? order by descescola";
         			 
         			ps = conexao.prepareStatement(sql);
         			ps.setInt(1, i);
@@ -195,7 +195,7 @@ public class EscolaDAO {
 
             			try {
             				List<EscolaBean> listaescolas = new ArrayList<EscolaBean>();  
-            				String sql = "select codescola, descescola from hosp.escola where upper(descescola) like ? order by descescola";
+            				String sql = "select id_escola, descescola from hosp.escola where upper(descescola) like ? order by descescola";
             				 
             				ps = conexao.prepareStatement(sql);
             				ps.setString(1, "%"+s.toUpperCase()+"%");

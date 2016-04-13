@@ -69,7 +69,7 @@ public class ProfissaoDAO {
             
             public Boolean alterar(ProfissaoBean profissao) throws ProjetoException {
                 boolean alterou = false;
-                String sql = "update hosp.escola set descprofissao = ? where codprofissao = ?";
+                String sql = "update hosp.escola set descprofissao = ? where id_profissao = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -93,7 +93,7 @@ public class ProfissaoDAO {
             }
             public Boolean excluir(ProfissaoBean profissao) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.escola where codprofissao = ?";
+                String sql =  "delete from hosp.escola where id_profissao = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -119,7 +119,7 @@ public class ProfissaoDAO {
             
             public ArrayList<ProfissaoBean> listaProfissoes() {
 
-                String sql = "select * from hosp.profissao order by codprofissao,descprofissao";
+                String sql = "select * from hosp.profissao order by id_profissao,descprofissao";
 
                 ArrayList<ProfissaoBean> lista = new ArrayList();
 
@@ -131,7 +131,7 @@ public class ProfissaoDAO {
                     while (rs.next()) {
                     	ProfissaoBean p = new ProfissaoBean();
     	            	
-    	                p.setCodprofissao(rs.getInt("codprofissao"));
+    	                p.setCodprofissao(rs.getInt("id_profissao"));
     	                p.setDescprofissao(rs.getString("descprofissao").toLowerCase());
 	                
     	                lista.add(p);
@@ -156,7 +156,7 @@ public class ProfissaoDAO {
 
         		try {
         			  
-        			String sql = "select codprofissao, descprofissao from hosp.profissao where codprofissao=? order by descprofissao";
+        			String sql = "select id_profissao, descprofissao from hosp.profissao where id_profissao=? order by descprofissao";
         			 
         			ps = conexao.prepareStatement(sql);
         			ps.setInt(1, i);
@@ -195,7 +195,7 @@ public class ProfissaoDAO {
 
             			try {
             				List<ProfissaoBean> listaprofissoes = new ArrayList<ProfissaoBean>();  
-            				String sql = "select codprofissao, descprofissao from hosp.profissao where upper(descprofissao) like ? order by descprofissao";
+            				String sql = "select id_profissao, descprofissao from hosp.profissao where upper(descprofissao) like ? order by descprofissao";
             				 
             				ps = conexao.prepareStatement(sql);
             				ps.setString(1, "%"+s.toUpperCase()+"%");
