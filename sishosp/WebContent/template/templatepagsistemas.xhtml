@@ -96,15 +96,24 @@
 	<h:form id="mainFormtempSist">
 
 
-		<p:menubar autoDisplay="true">
+		<p:menubar autoDisplay="true" >
+		<p:menuitem value="Home"  action="/pages/comum/selecaoSistema.faces?faces-redirect=true" ajax="false" icon="sair"  />
 			<p:submenu label="Gerenciar" icon="ui-icon-document">
 				<p:menuitem value="Gerenciar Pacientes"
 					url="/pages/sishosp/gerenciarPaciente.faces" />
 			</p:submenu>
 			<p:submenu label="Cadastros" icon="ui-icon-document">
-
+                <p:submenu label="Agenda" icon="ui-icon-document">
+					<p:menuitem value="Configuração da Agenda"
+						url="/pages/sishosp/agendaPaciente.faces" />
+						<p:menuitem value="Configuração da Agenda por equipe"
+						url="/pages/sishosp/agendaPaciente.faces" />
+					<p:menuitem value="Bloqueio"
+						url="/pages/sishosp/agendaPaciente.faces" />
+				</p:submenu>
 				<p:menuitem value="Bairros" onclick="PF('dlgCadBairro').show();" />
 				<p:menuitem value="Convênios" onclick="PF('dlgCadConvenio').show();" />
+				<p:menuitem value="CBO" onclick="PF('dlgCadTipoEscola').show();"  />
 				<p:menuitem value="Escolaridades" onclick="PF('dlgCadEscolaridade').show();" />
 				<p:menuitem value="Escolas" onclick="PF('dlgCadEscola').show();" />
 				<p:menuitem value="Equipes" onclick="PF('dlgCadEquipe').show();" />
@@ -112,11 +121,15 @@
 				<p:menuitem value="Especialidades" onclick="PF('dlgCadEspecialidade').show();" />
 				<p:menuitem value="Grupos" onclick="PF('dlgCadGrupo').show();" />
 				<p:menuitem value="Logradouros" onclick="PF('dlgCadLogradouro').show();"  />
+				<p:menuitem value="Laudos" onclick="PF('dlgCadLaudo').show();"  />
+				<p:menuitem value="Municipios" onclick="PF('dlgCadMunicipio').show();"  />
 				<p:menuitem value="Profissionais" onclick="PF('dlgCadProfissional').show();"  />
+				<p:menuitem value="Profissões" onclick="PF('dlgCadProfissional').show();"  />
 				<p:menuitem value="Procedimentos" onclick="PF('dlgCadProcedimento').show();"  />
 				<p:menuitem value="Programas"  onclick="PF('dlgCadPrograma').show();"  />
 				<p:menuitem value="Tipos de escolas" onclick="PF('dlgCadTipoEscola').show();"  />
-				<p:menuitem value="Laudos" onclick="PF('dlgCadLaudo').show();"  />
+				<p:menuitem value="Tipos de atendimento" onclick="PF('dlgCadTipoAtendimento').show();"  />
+				
 				<p:separator style="width:230px;height:5px;" />
 				<p:menuitem value="Cadastro de Pacientes"
 					url="/pages/sishosp/cadastroPaciente.faces" />
@@ -126,34 +139,33 @@
 					url="/pages/sishosp/agendaPaciente.faces" />
 				<p:menuitem value="Atendimento"
 					url="/pages/sishosp/agendaPaciente.faces" />
-				<p:submenu label="Orteses e Proteses" icon="ui-icon-contact">
-					<p:submenu label="Encaminhamentos" icon="ui-icon-contact">
-						<p:menuitem value="Digita"
+						<p:menuitem value="Consulta Agendamento"
+					url="/pages/sishosp/agendaPaciente.faces" />
+					<p:submenu label="Serviço Social" icon="ui-icon-contact">
+						<p:menuitem value="Primeiro Atendimento"
 							url="/pages/sishosp/agendaPaciente.faces" />
-					</p:submenu>
-					<p:submenu label="BPLs" icon="ui-icon-contact">
-						<p:menuitem value="Digita"
-							url="/pages/sishosp/agendaPaciente.faces" />
-						<p:menuitem value="Controle"
-							url="/pages/sishosp/agendaPaciente.faces" />
-						<p:submenu label="Manuntenção" icon="ui-icon-contact">
-							<p:menuitem value="Limpa BPI avulsa"
-								url="/pages/sishosp/agendaPaciente.faces" />
-						</p:submenu>
-					</p:submenu>
 				</p:submenu>
-				<p:submenu label="Auditivo" icon="ui-icon-contact">
+				
+				
 					<p:submenu label="APACs" icon="ui-icon-contact">
 						<p:menuitem value="Digita"
 							url="/pages/sishosp/agendaPaciente.faces" />
 						<p:menuitem value="Controle"
 							url="/pages/sishosp/agendaPaciente.faces" />
-						<p:submenu label="Manuntenção" icon="ui-icon-contact">
-							<p:menuitem value="Limpa APACs avulsa"
+						
+					</p:submenu>
+		
+					<p:submenu label="BPis" icon="ui-icon-contact">
+						<p:submenu label="Encaminhamentos" icon="ui-icon-contact">
+							<p:menuitem value="Digita"
 								url="/pages/sishosp/agendaPaciente.faces" />
 						</p:submenu>
+						<p:menuitem value="Digita"
+							url="/pages/sishosp/agendaPaciente.faces" />
+						<p:menuitem value="Controle"
+							url="/pages/sishosp/agendaPaciente.faces" />					
 					</p:submenu>
-				</p:submenu>
+	
 				<p:submenu label="Laudo" icon="ui-icon-contact">
 					<p:menuitem value="Digita"
 						url="/pages/sishosp/agendaPaciente.faces" />
@@ -173,9 +185,9 @@
 						url="/pages/sishosp/agendaPaciente.faces" />
 					<p:menuitem value="Atendimentos p/ Programa"
 						url="/pages/sishosp/agendaPaciente.faces" />
-					<p:menuitem value="Dias de Atendimentos"
+					<p:menuitem value="Atendimentos p/ Procedimentos"
 						url="/pages/sishosp/agendaPaciente.faces" />
-					<p:menuitem value="Pacientes p/ Idade"
+					<p:menuitem value="Faltas por programa"
 						url="/pages/sishosp/agendaPaciente.faces" />
 					<p:submenu label="Pacientes" icon="ui-icon-contact">
 						<p:menuitem value="Geral Analitico"
@@ -198,18 +210,7 @@
 					</p:submenu>
 
 				</p:submenu>
-				<p:menuitem value="Cidade" url="/pages/sishosp/agendaPaciente.faces" />
-				<p:submenu label="Escolas" icon="ui-icon-contact">
-					<p:menuitem value="Geral" url="/pages/sishosp/agendaPaciente.faces" />
-					<p:menuitem value="Por tipo de Escola"
-						url="/pages/sishosp/agendaPaciente.faces" />
-				</p:submenu>
-				<p:submenu label="Etiquetas" icon="ui-icon-contact">
-					<p:menuitem value="Pastas"
-						url="/pages/sishosp/agendaPaciente.faces" />
-					<p:menuitem value="Laudos"
-						url="/pages/sishosp/agendaPaciente.faces" />
-				</p:submenu>
+			
 				<p:submenu label="Pacientes" icon="ui-icon-contact">
 					<p:submenu label="Cadastros" icon="ui-icon-contact">
 						<p:menuitem value="Antigos"
@@ -233,60 +234,17 @@
 				</p:submenu>
 				<p:menuitem value="Prontuário"
 					url="/pages/sishosp/agendaPaciente.faces" />
-				<p:submenu label="Órtese e Prótese" icon="ui-icon-contact">
-					<p:submenu label="Encaminhamento" icon="ui-icon-contact">
-						<p:menuitem value="Emissão"
-							url="/pages/sishosp/agendaPaciente.faces" />
-						<p:menuitem value="Protocolo"
-							url="/pages/sishosp/agendaPaciente.faces" />
-					</p:submenu>
-					<p:menuitem value="Termo Completo"
-						url="/pages/sishosp/agendaPaciente.faces" />
-					<p:menuitem value="Demanda Aparelhos"
-						url="/pages/sishosp/agendaPaciente.faces" />
-				</p:submenu>
-				<p:submenu label="Auditivo" icon="ui-icon-contact">
-					<p:menuitem value="Etiquetas Laudos"
-						url="/pages/sishosp/agendaPaciente.faces" />
-				</p:submenu>
-				<p:submenu label="Impressos" icon="ui-icon-contact">
-					<p:submenu label="Laudo" icon="ui-icon-contact">
-						<p:menuitem value="Individual"
-							url="/pages/sishosp/agendaPaciente.faces" />
-						<p:menuitem value="Por grupo"
-							url="/pages/sishosp/agendaPaciente.faces" />
-						<p:menuitem value="Em Branco"
-							url="/pages/sishosp/agendaPaciente.faces" />
-					</p:submenu>
-					<p:submenu label="Frequência" icon="ui-icon-contact">
-						<p:menuitem value="Individual"
-							url="/pages/sishosp/agendaPaciente.faces" />
-						<p:menuitem value="Grupo"
-							url="/pages/sishosp/agendaPaciente.faces" />
-					</p:submenu>
-					<p:submenu label="Avaliação" icon="ui-icon-contact">
-						<p:menuitem value="Individual"
-							url="/pages/sishosp/agendaPaciente.faces" />
-						<p:menuitem value="Grupo"
-							url="/pages/sishosp/agendaPaciente.faces" />
-					</p:submenu>
-				</p:submenu>
-				<!--  <p:menuitem value="Relatorios Administrativos" onclick="PF('dlgbuscaatendimento').show();" />-->
+
 			</p:submenu>
 			<p:submenu label="Suporte" icon="ui-icon-document">
 				<p:menuitem value="Cadastros de Usuários"
 					url="/pages/sishosp/agendaPaciente.faces" />
-				<p:submenu label="Agenda" icon="ui-icon-document">
-					<p:menuitem value="Configuração da Agenda"
-						url="/pages/sishosp/agendaPaciente.faces" />
-					<p:menuitem value="Bloqueio"
-						url="/pages/sishosp/agendaPaciente.faces" />
-				</p:submenu>
+				
 			</p:submenu>
 
 		</p:menubar>
 		<p:commandButton value="Sair"
-			style="position:relative; left:91%; width:100px; " icon="sair"
+			style="position:relative; left:91%; width:100px; " icon="btlogout"
 			action="#{MBUsuarios.logout}"></p:commandButton>
 	</h:form>
 	<div class="container">

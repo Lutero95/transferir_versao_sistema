@@ -407,6 +407,43 @@
 			</center>
 		</h:form>
 	</p:dialog>
+	
+	<p:dialog header="Cadastro de Tipo de Atendimento" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadTipoAtendimento"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="tipoAtendimento" value="Descrição do tipo de Atendimento" />
+				<p:inputText id="tipoAtendimento" value="desc" style="width: 300px" />
+				</p:panelGrid>
+				<p:panelGrid columns="6">
+				<p:outputLabel  value="Grupo" />
+				<p:selectOneMenu value="desc3" disable="true" id="grupo1">
+                     
+                    <f:selectItem itemLabel="Selecione" itemValue="" />
+                       <f:selectItem itemLabel="Auditivo" itemValue="1" />
+                                            <f:selectItem itemLabel="Intelectual" itemValue="2" />
+                                            <f:selectItem itemLabel="Fisica" itemValue="3" />
+                                            <f:ajax event="blur" render="m_grupo1" />
+                        </p:selectOneMenu>
+                        <p:outputLabel  value="Primeiro Atendimento" />
+                       <p:selectBooleanCheckbox value="TESTE BOX"></p:selectBooleanCheckbox>
+                        <p:outputLabel  value="Terapia" />
+                       <p:selectBooleanCheckbox value="TESTE BOX2"></p:selectBooleanCheckbox>
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair"  onclick="PF('dlgCadTipoAtendimento').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
 
 	<p:dialog header="Cadastro de Laudos" closable="true" resizable="false"
 		styleClass="semBorda" widgetVar="dlgCadLaudo" modal="true">
@@ -435,6 +472,32 @@
 					<p:commandButton value="Consultar" />
 					<p:commandButton value="Limpar" />
 					<p:commandButton value="Sair"  onclick="PF('dlgCadLaudo').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog header="Cadastro de Municipios" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadMunicipio"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="3">
+				<p:outputLabel for="muni" value="Descrição do Municipio" />
+				<p:inputText id="muni" value="aqui desc" style="width: 300px" />
+				<p:outputLabel for="muni1" value="Cod Federal" />
+				<p:inputText id="muni1" value="aqui desc1" style="width: 300px" />
+				<p:outputLabel for="muni2" value="Cod MacRegião" />
+				<p:inputText id="muni2" value="aqui desc2" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Consultar" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair" onclick="PF('dlgCadMunicipio').hide();"/>
 				</p:panelGrid>
 			</center>
 		</h:form>
