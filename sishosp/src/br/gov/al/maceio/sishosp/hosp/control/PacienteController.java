@@ -28,13 +28,14 @@ import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
+import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
 
 @ManagedBean
 @ViewScoped
 public class PacienteController {
 	private Integer abaAtiva = 0;
-	private String SelecionadoRaca;
+	private Integer SelecionadoRaca;
 	
 	//CLASSES HERDADAS
 	private PacienteBean paciente;
@@ -52,7 +53,7 @@ public class PacienteController {
 	
 	//LISTAS 
 	private List<PacienteBean> listaPacientes;
-	private List<PacienteBean> listaRaca;
+	private List<RacaBean> listaRaca;
 	private List<EscolaBean> listaEscolas;
 	private List<EscolaridadeBean> listaEscolararidade;
 	private List<ProfissaoBean> listaProfissao;
@@ -262,7 +263,7 @@ System.out.println("passou aqui");
 		if(listaPacientes == null) {
 			  
 	            PacienteDAO fdao = new PacienteDAO();
-	            listaPacientes = fdao.listaPacientes(Integer.parseInt(SelecionadoRaca));
+	            listaPacientes = fdao.listaPacientes();
 	           
 	        }
 		return listaPacientes;
@@ -308,7 +309,7 @@ System.out.println("passou aqui");
 		this.listaTransporte = listaTransporte;
 	}
 
-	public List<PacienteBean> getListaRaca() {
+	public List<RacaBean> getListaRaca() {
 		if(listaRaca == null) {
 			  
             PacienteDAO fdao = new PacienteDAO();
@@ -318,15 +319,15 @@ System.out.println("passou aqui");
 		return listaRaca;
 	}
 
-	public void setListaRaca(List<PacienteBean> listaRaca) {
+	public void setListaRaca(List<RacaBean> listaRaca) {
 		this.listaRaca = listaRaca;
 	}
 
-	public String getSelecionadoRaca() {
+	public Integer getSelecionadoRaca() {
 		return SelecionadoRaca;
 	}
 
-	public void setSelecionadoRaca(String selecionadoRaca) {
+	public void setSelecionadoRaca(Integer selecionadoRaca) {
 		SelecionadoRaca = selecionadoRaca;
 	}
 	

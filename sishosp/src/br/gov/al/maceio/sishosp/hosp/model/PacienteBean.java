@@ -23,7 +23,7 @@ public class PacienteBean {
     private Integer codRaca;
     
    
-    private String deficiencia;
+    private boolean deficiencia;
     private String tipoDeficiencia;
     
     //ENCAMINHADO ATRIBUTOS
@@ -344,11 +344,11 @@ public class PacienteBean {
 			this.codFormaTransporte = codFormaTransporte;
 		}
 
-		public String getDeficiencia() {
+		public boolean getDeficiencia() {
 			return deficiencia;
 		}
 
-		public void setDeficiencia(String deficiencia) {
+		public void setDeficiencia(boolean deficiencia) {
 			this.deficiencia = deficiencia;
 		}
 

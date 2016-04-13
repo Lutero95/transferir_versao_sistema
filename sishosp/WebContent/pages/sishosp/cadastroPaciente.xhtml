@@ -163,9 +163,9 @@
                          <h:outputLabel for="cor" value="Cor/Raça"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">        
-                   <p:selectOneMenu disable="true"   value="#{PacienteController.SelecionadoRaca}" id="cor">          
+                   <p:selectOneMenu disable="true"   value="#{PacienteController.selecionadoRaca}" id="cor">          
                                             <f:selectItems value="#{PacienteController.listaRaca}" 
-                                                var="sis" itemLabel="#{sis.corRaca}" itemValue="#{sis.codRaca}" />
+                                                var="sis" itemLabel="#{sis.descRaca}" itemValue="#{sis.codRaca}" />
                                              <f:ajax event="blur" render="m_cor" />
                                         </p:selectOneMenu>
                                          <h:message id="m_cor" for="cor"
@@ -711,22 +711,28 @@
                        <div class="col-sm-6">                  
                  	<p:selectOneRadio style="width:40%;" id="options4" required="false"
 													requiredMessage="Aba Dados:Informe a formalidade"
-													value="#{PacienteController.paciente.deficiencia}">
-													<f:selectItem itemLabel="Sim" itemValue="S" />
-													<f:selectItem itemLabel="Não" itemValue="N" />
-													<!--  <p:ajax update="pgSetor2"></p:ajax>-->
+													value="#{PacienteController.paciente.deficiencia}" >
+													<f:selectItem itemLabel="Sim" itemValue="true" />
+													<f:selectItem itemLabel="Não" itemValue="false" />
+													<p:ajax update="outDeficiencia" event="change"></p:ajax>
 												</p:selectOneRadio>
 												</div>
 												</div>
+						<p:outputPanel id="outDeficiencia" autoUpdate="true">
+							<p:panel id="panelTeste" renderer="#{PacienteController.paciente.deficiencia}">
+								<p>RESTETESTE </p>
+							</p:panel>
+						
+						</p:outputPanel>
 												
 												      
-                                   <div class="form-group">
+                                   <!-- <div class="form-group">
                                             <p:outputLabel value="Nome: " styleClass="col-sm-3 control-label"  >
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel> 
                                             <div class="col-sm-6">  
                                             
-                                           <!--<p:autoComplete styleClass="col-sm-3 control-label" label="Digite o transporte" emptyMessage="Digite o transporte" 
+                                           p:autoComplete styleClass="col-sm-3 control-label" label="Digite o transporte" emptyMessage="Digite o transporte" 
                                             id="escolacomplete6" style="font-size:12px"  
                                             value="#{PacienteController.encaminhado.descencaminhado}" size="45" 
                                             completeMethod="#{EncaminhadoController.completeText}" effect="fade" 
@@ -734,7 +740,7 @@
                                             itemValue="#{theme}" itemLabel="#{theme.descencaminhado}" 
                                             converter="conEncaminhamento"  >
                                             <p:ajax event="itemSelect" listener="#{EncaminhadoController.onItemSelect}"/>
-                                            </p:autoComplete> -->                                            
+                                            </p:autoComplete>                                             
                                        
                                         <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label" > 
                                             <p:inputText id="nome11" size="45" required="false" readonly="false"
@@ -743,8 +749,8 @@
                                         </p:outputPanel>
                                            </div>
                                               <p:commandButton value="Tipo Deficiência" onclick="PF('dlgbuscaatendimento').show();" icon="buscaProcess"/> 
-                                <!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
-                         </div>
+                                  actionListener="#{MBPaciente.limparbuscaescola()}" />
+                         </div> -->
                                      
                   
                  </p:tab>

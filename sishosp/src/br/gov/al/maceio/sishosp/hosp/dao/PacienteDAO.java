@@ -17,6 +17,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
 
 
@@ -177,7 +178,7 @@ public class PacienteDAO {
                 }
             }
             
-            public ArrayList<PacienteBean> listaPacientes(Integer idPaciente) {
+            public ArrayList<PacienteBean> listaPacientes() {
 
                 String sql = "select id_paciente, nome, lpad(trim(to_char(cpf,'99999999999')),11,'0') as cpf, rg, id_raca  from hosp.pacientes order by nome";
 
@@ -212,11 +213,11 @@ public class PacienteDAO {
                 return lista;
             }
             
-            public ArrayList<PacienteBean> listaCor() {
+            public ArrayList<RacaBean> listaCor() {
 
                 String sql = "select  id_raca, descraca from hosp.raca order by descraca";
 
-                ArrayList<PacienteBean> lista = new ArrayList();
+                ArrayList<RacaBean> lista = new ArrayList();
 
                 try {
                     conexao = ConnectionFactory.getConnection();
@@ -224,10 +225,10 @@ public class PacienteDAO {
                     ResultSet rs = stm.executeQuery();
 
                     while (rs.next()) {
-                    	PacienteBean p = new PacienteBean();
+                    	RacaBean p = new RacaBean();
     	            	System.out.println("|1|");
     	                p.setCodRaca(rs.getInt("id_raca"));
-    	                p.setCorRaca(rs.getString("descraca").toLowerCase());    
+    	                p.setDescRaca(rs.getString("descraca").toUpperCase());    
     	             
     	                
     	                lista.add(p);
