@@ -1,0 +1,793 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:body>
+
+	<p:dialog header="Cadastro de Bairros" closable="true"
+		resizable="false" widgetVar="dlgCadBairro" modal="true"
+		styleClass="semBorda">
+		<h:form>
+
+			<p:panelGrid columns="3" style="width: 500px">
+				<p:outputLabel for="cid" value="Cidade" />
+				<p:inputText id="cid" value="Nome da cidade" readonly="true"
+					style="width: 300px" />
+				<p:commandButton value="Buscar" />
+			</p:panelGrid>
+
+			<p:panelGrid columns="4">
+				<p:outputLabel for="descB" value="Descrição do bairro" />
+				<p:inputText id="descB" value="aqui descricao" style="width: 300px" />
+				<p:outputLabel for="mr" value="MR" />
+				<p:inputText id="mr" value="mr" style="width: 40%" />
+			</p:panelGrid>
+
+			<p:separator />
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir"  icon="confirmar"/>
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair"  icon="cancelar" onclick="PF('dlgCadBairro').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Convênios" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadConvenio"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="conv" value="Descrição do convênio" />
+				<p:inputText id="conv" value="aqui desc" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" icon="confirmar" />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadConvenio').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Escolaridades" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadEscolaridade"
+		modal="true">
+		<h:form id="formEscolaridade">
+		<p:growl id="msg"/>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="esc" value="Descrição da escolaridade" />
+				<p:inputText id="esc" value="#{EscolaridadeController.escolaridade.descescolaridade}" pt:placeholder="Escreva a escolaridade" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" action="#{EscolaridadeController.gravarEscolaridade()}" icon="confirmar"  update=":formEscolaridade:msg,:formEscolaridade" />	
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadEscolaridade').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Escolas" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadEscola"
+		modal="true">
+		<h:form id="formEscola">
+		<p:growl id="msg"/>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="escola" value="Descrição da escola" />
+				<p:inputText id="escola" value="#{EscolaController.escola.descescola}" style="width: 300px" />
+               <p:outputPanel autoUpdate="true">
+				<p:outputLabel for="tipoE" value="Tipo" />
+				<p:outputPanel>
+					<p:inputText id="tipoE" value="#{EscolaController.escola.codtipoescola}" style="width: 50px" readonly="true" />
+					<p:commandButton value="Buscar" onclick="PF('dlgbuscatipoescola').show();" style="margin-left:20px;" icon="buscaProcess" />
+				</p:outputPanel>
+                </p:outputPanel>
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" action="#{EscolaController.gravarEscola()}" icon="confirmar" update=":formEscola:msg,:formEscola" />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadEscola').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Equipes" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadEquipe"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="equipe" value="Descrição da equipe" />
+				<p:inputText id="equipe" value="desc" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" icon="confirmar" />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadEquipe').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Feriados" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadFeriado"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="feriado" value="Descrição do feriado" />
+				<p:inputText id="feriado" value="desc" style="width: 300px" />
+
+				<p:outputLabel for="data" value="Data" />
+				<p:calendar id="data" locale="pt" navigator="true"
+					pattern="dd/MM/yyyy" />
+
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" icon="confirmar" />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadFeriado').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Especialidades" closable="true"
+		resizable="false" styleClass="semBorda"
+		widgetVar="dlgCadEspecialidade" modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="espec" value="Descrição da especialidade" />
+				<p:inputText id="espec" value="desc" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" icon="confirmar" />
+					<p:commandButton value="Limpar"  icon="limpar"  />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadEspecialidade').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Grupos" closable="true" resizable="false"
+		styleClass="semBorda" widgetVar="dlgCadGrupo" modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="grupo" value="Descrição do grupo" />
+				<p:inputText id="grupo" value="desc" style="width: 300px" />
+
+				<p:outputLabel for="qtdGrupo" value="Quantidade de Frequência" />
+				<p:spinner id="qtdGrupo" min="0" max="100" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" icon="confirmar" />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadGrupo').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Logradouros" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadLogradouro"
+		modal="true">
+		<h:form id="formLogra">
+		 <p:growl id="msg"/>
+			<p:panelGrid columns="1">
+		
+				<p:outputLabel for="cidadeDesc" value="Cidade" />
+				<p:outputPanel autoUpdate="true">
+				<p:inputText id="cidadeCod" value="#{EnderecoController.endereco.codmunicipio}" style="width: 50px" readonly="true" pt:placeholder="COD" />
+					<p:inputText id="cidadeDesc" value="#{EnderecoController.endereco.municipio}"  pt:placeholder="Nome Cidade" style="width: 300px"
+						readonly="true" />
+					<p:commandButton value="Buscar" onclick="PF('dlgbuscacidade').show();" style="margin-left:20px;" icon="buscaProcess" />
+				</p:outputPanel>
+
+				<p:outputLabel for="bairroL" value="Bairro"  />
+				<p:outputPanel autoUpdate="true">
+				<p:inputText id="bairroCod" value="#{EnderecoController.endereco.codbairro}" style="width: 50px" readonly="true" pt:placeholder="COD" />
+					<p:inputText id="bairroL" value="#{EnderecoController.endereco.bairro}" style="width: 300px" pt:placeholder="Nome Bairro"
+						readonly="true" />
+					<p:commandButton value="Buscar" onclick="PF('dlgbuscabairro').show();" style="margin-left:20px;" icon="buscaProcess" />
+				</p:outputPanel>
+
+				<p:outputLabel for="cepL" value="CEP" />
+				<!--  <p:inputMask id="cepL" mask="99.999-999" value="#{EnderecoController.endereco.cep}" /> -->
+				<p:inputText id="cepL" value="#{EnderecoController.endereco.cep}"
+					style="width: 150px" />
+
+				<p:outputLabel for="logra" value="Logradouro" />
+				<p:inputText id="logra" value="#{EnderecoController.endereco.logradouro}"
+					style="width: 300px" />
+
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" action="#{EnderecoController.gravarLogradouro()}" icon="confirmar"  update=":formLogra:msg,:formLogra" />
+					<p:commandButton value="Limpar" icon="limpar" actionListener="#{PacienteController.limparDados()}" update=":formLogra"/>
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadLogradouro').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Profissional" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadProfissional"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="programa" value="Programa" />
+				<p:outputPanel>
+					<p:inputText id="programa" value="Aqui programa"
+						style="width: 300px" readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="espP" value="Especialidade" />
+				<p:outputPanel>
+					<p:inputText id="espP" value="Aqui especialidade"
+						style="width: 300px" readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="cbo" value="CBO" />
+				<p:outputPanel>
+					<p:inputText id="cbo" value="Aqui CBO" style="width: 300px"
+						readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="proced1" value="Procedimento 1" />
+				<p:outputPanel>
+					<p:inputText id="proced1" value="Aqui proc1" style="width: 300px"
+						readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="proced2" value="Procedimento 2" />
+				<p:outputPanel>
+					<p:inputText id="proced2" value="Aqui proc2" style="width: 300px"
+						readonly="true" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+
+				<p:outputLabel for="descProf" value="Descrição do Profissional" />
+				<p:inputText id="descProf" value="aqui descProf"
+					style="width: 450px" />
+
+				<p:panelGrid columns="4">
+					<p:outputLabel for="cns" value="CNS" />
+					<p:inputText id="cns" value="cns" style="width: 250px" />
+					<p:outputLabel for="ativo" value="Ativo" />
+					<p:selectOneMenu id="ativo" style="width:75px">
+						<f:selectItem itemLabel="SIM" itemValue="S" />
+						<f:selectItem itemLabel="NÃO" itemValue="N" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" icon="confirmar" />	
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar"  onclick="PF('dlgCadProfissional').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Procedimentos" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadProcedimento"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+
+				<p:outputLabel for="procedimento" value="Descrição do Procedimento" />
+				<p:inputText id="procedimento" value="aqui descproc"
+					style="width: 300px" />
+
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<p:outputLabel for="codigo" value="Código" />
+					<p:inputText id="codigo" value="aqui codigo" style="width: 100px" />
+                </p:panelGrid>
+					<p:selectManyCheckbox id="checkCodAPAC" columns="1" style="position:absolute; top:80px; left:230px;">
+						<f:selectItem itemLabel="Apac" itemValue="APAC" />
+					</p:selectManyCheckbox>
+					
+					<p:selectManyCheckbox id="checkCodBPI" columns="1" style="position:absolute; top:100px; left:230px;">
+						<f:selectItem itemLabel="BPI" itemValue="BPI" />
+					</p:selectManyCheckbox>
+				
+					<p:selectManyCheckbox id="checkA" columns="2" style="position:absolute; top:140px; left:90px;">
+						<f:selectItem itemLabel="Auditivo" itemValue="AUDITIVO" />
+					</p:selectManyCheckbox>
+					<p:selectManyCheckbox id="checkU" columns="2" style="position:absolute; top:140px; left:190px;">
+						<f:selectItem itemLabel="Utiliza Equipamento" itemValue="UTILIZA" />
+					</p:selectManyCheckbox>
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" icon="confirmar" />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar"  onclick="PF('dlgCadProcedimento').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Programas" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadPrograma"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="programa" value="Descrição do programa" />
+				<p:inputText id="programa" value="desc" style="width: 300px" />
+
+				<p:outputLabel for="codProg" value="Código unificado" />
+				<p:inputText id="codProg" value="cd" style="width: 100px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" />
+					<p:commandButton value="Limpar" />
+					<p:commandButton value="Sair"  onclick="PF('dlgCadPrograma').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Tipo de Escola" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadTipoEscola"
+		modal="true">
+		<h:form id="formTipoEscola">
+		<p:growl id="msg"/>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="tipoEscola" value="Descrição do tipo da escola" />
+				<p:inputText id="tipoEscola" value="#{EscolaController.escola.desctipoescola}" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" action="#{EscolaController.gravarTipoEscola()}" icon="confirmar" update=":formTipoEscola:msg, :formTipoEscola" />			
+					<p:commandButton value="Limpar" actionListener="#{EscolaController.limparDados()}" icon="limpar" update=":formTipoEscola" />
+					<p:commandButton value="Sair" icon="cancelar"  onclick="PF('dlgCadTipoEscola').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog header="Cadastro de Tipo de Atendimento" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadTipoAtendimento"
+		modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="tipoAtendimento" value="Descrição do tipo de Atendimento" />
+				<p:inputText id="tipoAtendimento" value="desc" style="width: 300px" />
+				</p:panelGrid>
+				<p:panelGrid columns="6">
+				<p:outputLabel  value="Grupo" />
+				<p:selectOneMenu value="desc3" disable="true" id="grupo1">
+                     
+                    <f:selectItem itemLabel="Selecione" itemValue="" />
+                       <f:selectItem itemLabel="Auditivo" itemValue="1" />
+                                            <f:selectItem itemLabel="Intelectual" itemValue="2" />
+                                            <f:selectItem itemLabel="Fisica" itemValue="3" />
+                                            <f:ajax event="blur" render="m_grupo1" />
+                        </p:selectOneMenu>
+                        <p:outputLabel  value="Primeiro Atendimento" />
+                       <p:selectBooleanCheckbox value="TESTE BOX"></p:selectBooleanCheckbox>
+                        <p:outputLabel  value="Terapia" />
+                       <p:selectBooleanCheckbox value="TESTE BOX2"></p:selectBooleanCheckbox>
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" icon="confirmar" />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadTipoAtendimento').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Cadastro de Laudos" closable="true" resizable="false"
+		styleClass="semBorda" widgetVar="dlgCadLaudo" modal="true">
+		<h:form>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="grupoLaudo" value="Grupo" />
+				<p:outputPanel>
+					<p:inputText id="grupoLaudo" value="aqui grupo" readonly="true"
+						style="width: 300px" />
+					<p:commandButton value="Buscar" />
+				</p:outputPanel>
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<p:outputLabel for="dataInicial" value="Mês/Ano Inicial" />
+					<p:outputLabel for="dataFinal" value="Mês/Ano Final" />
+					<p:inputMask id="dataInicial" mask="99/9999" />
+					<p:inputMask id="dataFinal" mask="99/9999" />
+
+				</p:panelGrid>
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" icon="confirmar" />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar"  onclick="PF('dlgCadLaudo').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog header="Cadastro de Municipios" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadMunicipio"
+		modal="true">
+		<h:form id="formMuni">
+		 <p:growl id="msg"/>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="muni" value="Descrição do Municipio" />
+				<p:inputText id="muni" value="#{EnderecoController.endereco.municipio}" pt:placeholder="Nome Cidade" style="width: 300px" />
+				<p:outputLabel for="muni1" value="Cod Federal" />
+				<p:inputText id="muni1" value="#{EnderecoController.endereco.codfederal}" pt:placeholder="COD FEDERAL" style="width: 300px" />
+				<p:outputLabel for="muni2" value="Cod MacRegião" />
+				<p:inputText id="muni2" value="#{EnderecoController.endereco.codmacregiao}" pt:placeholder="COD MAC REGIAO" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="4">
+					<p:commandButton value="Incluir" action="#{EnderecoController.gravarMunicipios()}" icon="confirmar" update=":formMuni:msg,:formMuni"   />
+					<p:commandButton value="Limpar" actionListener="#{PacienteController.limparDados()}" icon="limpar" update=":formLogra" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadMunicipio').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+	
+	<!--  DIALOGS DENTRO  -->
+	<p:dialog style="font-size: 12px;" widgetVar="dlgbuscacidade" 
+                        height="460" width="800" modal="true" resizable="false">
+
+                <f:facet name="header">
+                    <h:panelGroup>
+                        <h:outputText value="Lista de Cidades"></h:outputText>
+                    </h:panelGroup>
+                </f:facet>
+                    <h:form id="buscacidade">
+                    <h:panelGrid columns="5" styleClass="semBorda">
+                        <h:outputText styleClass="rotulosBold" value="Nome Municipio" />
+                        <p:inputText size="30" id="buscanomecidade"
+                                     value="#{EnderecoController.endereco.municipio}" />
+                        <h:outputText  styleClass="rotulosBold" value="Codigo" />
+                        <p:inputText styleClass="legend" size="15" id="buscacodigocidade"
+                                     value="#{EnderecoController.endereco.codmunicipio}" />
+                        <p:commandButton  icon="btPesquisar" update="buscacidade:tablecidade"
+                                         value="Pesquisa" action="#{MBUsuarioCadastro.buscarpessoa()}"/>
+
+                    </h:panelGrid>
+
+                    <center>
+                        <p:outputPanel id="outinter">
+                            <p:dataTable value="#{EnderecoController.listaMunicipios}"
+                                         var="busca" paginator="true" paginatorPosition="bottom"
+                                         id="tablecidade" emptyMessage="Nenhum Interessado" sortMode="single"
+                                         rows="11" styleClass="fonteForm" widgetVar="800" >
+
+                                <p:column style="width:50px">
+                                    <f:facet name="header">
+                                        <h:outputText value="Id Cidade" styleClass="fonteForm" />
+                                    </f:facet>
+                                    <h:outputText styleClass="fonteForm"
+                                                  value="#{busca.codmunicipio}" />
+                                </p:column>
+
+                                <p:column style="width:380px">
+                                    <f:facet name="header">
+                                        <h:outputText  value="Nome Cidade" styleClass="fonteForm" />
+                                    </f:facet>
+                                    <h:outputText  styleClass="fonteForm"
+                                                  value="#{busca.municipio}" />
+                                </p:column>
+
+                                <p:column  style="width:50px">
+                                    <f:facet name="header">
+                                        <h:outputText value="Ação" styleClass="fonteForm" />
+                                    </f:facet>
+
+                                    <p:commandButton 
+                                                     oncomplete="PF('dlgbuscacidade').hide();" icon="podeGravar"
+                                                     id="confirmar">
+
+                                        <f:setPropertyActionListener value="#{busca.codmunicipio}"
+                                                                     target="#{EnderecoController.endereco.codmunicipio}" />
+                                        <f:setPropertyActionListener value="#{busca.municipio}"
+                                                                     target="#{EnderecoController.endereco.municipio}" />
+                                        <p:tooltip for="confirmar" value="Selecionar Cidade"></p:tooltip>
+                                    </p:commandButton>
+                                </p:column>
+                                
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog style="font-size: 12px;" widgetVar="dlgbuscatipoescola" 
+                        height="460" width="800" modal="true" resizable="false">
+
+                <f:facet name="header">
+                    <h:panelGroup>
+                        <h:outputText value="Lista de Tipo de Escola"></h:outputText>
+                    </h:panelGroup>
+                </f:facet>
+                    <h:form id="buscatipoescola">
+                    <h:panelGrid columns="5" styleClass="semBorda">
+                        <h:outputText styleClass="rotulosBold" value="Nome Tipo Escola" />
+                        <p:inputText size="30" id="buscanometipoescola"
+                                     value="#{EscolaController.escola.desctipoescola}" />
+                        <h:outputText  styleClass="rotulosBold" value="Codigo" />
+                        <p:inputText styleClass="legend" size="15" id="buscacodigotipoescola"
+                                     value="#{EscolaController.escola.codtipoescola}" />
+                        <p:commandButton  icon="btPesquisar" update="buscatipoescola:tabletipoescola"
+                                         value="Pesquisa" action="#{MBUsuarioCadastro.buscarpessoa()}"/>
+
+                    </h:panelGrid>
+
+                    <center>
+                        <p:outputPanel id="outinter">
+                            <p:dataTable value="#{EscolaController.listaTipoEscola}"
+                                         var="busca" paginator="true" paginatorPosition="bottom"
+                                         id="tabletipoescola" emptyMessage="Nenhum Interessado" sortMode="single"
+                                         rows="11" styleClass="fonteForm" widgetVar="800" >
+
+                                <p:column style="width:50px">
+                                    <f:facet name="header">
+                                        <h:outputText value="Id Tipo Escola" styleClass="fonteForm" />
+                                    </f:facet>
+                                    <h:outputText styleClass="fonteForm"
+                                                  value="#{busca.codtipoescola}" />
+                                </p:column>
+
+                                <p:column style="width:380px">
+                                    <f:facet name="header">
+                                        <h:outputText  value="Nome Tipo Escola" styleClass="fonteForm" />
+                                    </f:facet>
+                                    <h:outputText  styleClass="fonteForm"
+                                                  value="#{busca.desctipoescola}" />
+                                </p:column>
+
+                                <p:column  style="width:50px">
+                                    <f:facet name="header">
+                                        <h:outputText value="Ação" styleClass="fonteForm" />
+                                    </f:facet>
+
+                                    <p:commandButton 
+                                                     oncomplete="PF('dlgbuscatipoescola').hide();" icon="podeGravar"
+                                                     id="confirmar">
+
+                                        <f:setPropertyActionListener value="#{busca.codtipoescola}"
+                                                                     target="#{EscolaController.escola.codtipoescola}" />
+                                        <f:setPropertyActionListener value="#{busca.desctipoescola}"
+                                                                     target="#{EscolaController.escola.desctipoescola}" />
+                                        <p:tooltip for="confirmar" value="Selecionar Tipo Escola"></p:tooltip>
+                                    </p:commandButton>
+                                </p:column>
+                                
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            
+            <p:dialog style="font-size: 12px;" widgetVar="dlgbuscabairro" 
+                        height="460" width="800" modal="true" resizable="false">
+
+                <f:facet name="header">
+                    <h:panelGroup>
+                        <h:outputText value="Lista de Bairros"></h:outputText>
+                    </h:panelGroup>
+                </f:facet>
+                    <h:form id="buscabairro">
+                    <h:panelGrid columns="5" styleClass="semBorda">
+                        <h:outputText styleClass="rotulosBold" value="Nome Bairro" />
+                        <p:inputText size="30" id="buscanomebairro"
+                                     value="#{EnderecoController.endereco.bairro}" />
+                        <h:outputText  styleClass="rotulosBold" value="Codigo" />
+                        <p:inputText styleClass="legend" size="15" id="buscacodigobairro"
+                                     value="#{EnderecoController.endereco.codbairro}" />
+                        <p:commandButton  icon="btPesquisar" update="buscabairro:tablebairro"
+                                         value="Pesquisa" action="#{MBUsuarioCadastro.buscarpessoa()}"/>
+
+                    </h:panelGrid>
+
+                    <center>
+                        <p:outputPanel id="outinter">
+                            <p:dataTable value="#{EnderecoController.listaBairros}"
+                                         var="busca" paginator="true" paginatorPosition="bottom"
+                                         id="tablebairro" emptyMessage="Nenhum Interessado" sortMode="single"
+                                         rows="11" styleClass="fonteForm" widgetVar="800" >
+
+                                <p:column style="width:50px">
+                                    <f:facet name="header">
+                                        <h:outputText value="Id Bairro" styleClass="fonteForm" />
+                                    </f:facet>
+                                    <h:outputText styleClass="fonteForm"
+                                                  value="#{busca.codbairro}" />
+                                </p:column>
+
+                                <p:column style="width:380px">
+                                    <f:facet name="header">
+                                        <h:outputText  value="Nome Bairro" styleClass="fonteForm" />
+                                    </f:facet>
+                                    <h:outputText  styleClass="fonteForm"
+                                                  value="#{busca.bairro}" />
+                                </p:column>
+
+                                <p:column  style="width:50px">
+                                    <f:facet name="header">
+                                        <h:outputText value="Ação" styleClass="fonteForm" />
+                                    </f:facet>
+
+                                    <p:commandButton 
+                                                     oncomplete="PF('dlgbuscabairro').hide();" icon="podeGravar"
+                                                     id="confirmar">
+
+                                        <f:setPropertyActionListener value="#{busca.codbairro}"
+                                                                     target="#{EnderecoController.endereco.codbairro}" />
+                                        <f:setPropertyActionListener value="#{busca.bairro}"
+                                                                     target="#{EnderecoController.endereco.bairro}" />
+                                        <p:tooltip for="confirmar" value="Selecionar Bairro"></p:tooltip>
+                                    </p:commandButton>
+                                </p:column>
+                                
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog header="Cadastro de Cor/Raça" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadRaca"
+		modal="true">
+		<h:form id="formRaca">
+		 <p:growl id="msg"/>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="raca" value="Descrição do cor/raça" />
+				<p:inputText id="raca" value="#{PacienteController.raca.descRaca}" pt:placeholder="Escreva a cor da pele" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" action="#{PacienteController.gravarRaca()}" icon="confirmar" update=":formRaca:msg,:formRaca" />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadRaca').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog header="Cadastro de Encaminhado" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadEncaminhado"
+		modal="true">
+		<h:form id="formEncaminhado">
+		<p:growl id="msg"/>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="encaminhado" value="Descrição do Encaminhado" />
+				<p:inputText id="encaminhado" value="#{EncaminhadoController.encaminhado.descencaminhado}" pt:placeholder="Escreva o encaminhamento" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" action="#{EncaminhadoController.gravarEncaminhado()}" icon="confirmar" update=":formEncaminhado:msg,:formEncaminhado" />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadEncaminhado').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog header="Cadastro de Forma Transporte" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadTransporte"
+		modal="true">
+		<h:form id="formTransporte">
+		<p:growl id="msg"/>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="transporte" value="Descrição do Transporte" />
+				<p:inputText id="transporte" value="#{FormaTransporteController.transporte.descformatransporte}" pt:placeholder="Escreva a forma de transporte" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" action="#{FormaTransporteController.gravarTransporte()}" icon="confirmar" update=":formTransporte:msg,:formTransporte"  />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadTransporte').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+	
+	
+	<p:dialog header="Cadastro de Profissões" closable="true"
+		resizable="false" styleClass="semBorda" widgetVar="dlgCadProfissoes"
+		modal="true">
+		<h:form id="formProfissoes">
+		<p:growl id="msg"/>
+			<p:panelGrid columns="1">
+				<p:outputLabel for="profissoes" value="Descrição da Profissão" />
+				<p:inputText id="profissoes" value="#{ProfissaoController.profissao.descprofissao}" pt:placeholder="Escreva a forma de transporte" style="width: 300px" />
+			</p:panelGrid>
+
+			<p:separator />
+			
+			<center>
+				<p:panelGrid columns="3">
+					<p:commandButton value="Incluir" action="#{ProfissaoController.gravarProfissao()}" icon="confirmar" update=":formProfissoes:msg,:formProfissoes"  />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadProfissoes').hide();"/>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</p:dialog>
+	
+</h:body>
+</html>

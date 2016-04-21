@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<ui:insert name="title">
+		<title>SISHOSP</title>
+	</ui:insert>
+	<link rel="StyleSheet" type="text/css" href="../../css/style.css" />
+	<link rel="StyleSheet" type="text/css"
+		href="../../resources/css/icons.css" />
+	<link type="text/css" rel="stylesheet" href="../../css/estilo2.css" />
+
+	<link rel="stylesheet" type="text/css" href="../../css/styleThulio.css"></link>
+	<link rel="stylesheet" type="text/css" href="../../css/default.css"></link>
+	<link rel="stylesheet" type="text/css" href="../../css/component.css"></link>
+
+	<link rel="stylesheet" type="text/css"
+		href="../../resources/css/callout.css" />
+	<link rel="stylesheet" type="text/css"
+		href="../../resources/css/panelgrid.css" />
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+		integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+		crossorigin="anonymous" />
+
+	<!-- JavaScript FIGURAS E EFEITOS 
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script src="../../js/modernizr.custom.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="../../js/navbar.js"></script>
+        <script type="text/javascript" src="../js/styleThulio.js"></script> 
+        <script src="../../js/toucheffects.js"></script>-->
+
+	<style>
+.row {
+	padding: 3px !important;
+}
+
+* {
+	font-size: 12px;
+}
+</style>
+	<script type="text/javascript"
+		src="../../resources/js/bootstrapValidator.js"></script>
+	<link rel="stylesheet"
+		href="../../resources/css/bootstrapValidator.min.css" />
+
+
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
+
+	<script type="text/javascript">
+            PrimeFaces.locales['pt'] = {
+                closeText: 'Fechar',
+                prevText: 'Anterior',
+                nextText: 'Próximo',
+                currentText: 'Começo',
+                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio',
+                    'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
+                    'Novembro', 'Dezembro'],
+                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+                    'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta',
+                    'Sexta', 'Sábado'],
+                dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+                dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+                weekHeader: 'Semana',
+                firstDay: 0,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Só Horas',
+                timeText: 'Tempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                ampm: false,
+                month: 'Mês',
+                week: 'Semana',
+                day: 'Dia',
+                allDayText: 'Todo o Dia'
+            };
+        </script>
+	
+</h:head>
+
+<h:body>
+	<ui:include src="dlgsCadastro.xhtml" />
+	<h:form id="mainFormtempSist">
+
+
+		<p:menubar autoDisplay="true" >
+		<p:menuitem value="Home"  action="/pages/comum/selecaoSistema.faces?faces-redirect=true" ajax="false" icon="sair"  />
+			<p:submenu label="Gerenciar" icon="ui-icon-document">
+				<p:menuitem value="Gerenciar Pacientes"
+					url="/pages/sishosp/gerenciarPaciente.faces" />
+			</p:submenu>
+			<p:submenu label="Cadastros" icon="ui-icon-document">
+                <p:submenu label="Agenda" icon="ui-icon-document">
+					<p:menuitem value="Configuração da Agenda"
+						url="/pages/sishosp/agendaPaciente.faces" />
+						<p:menuitem value="Configuração da Agenda por equipe"
+						url="/pages/sishosp/agendaPaciente.faces" />
+					<p:menuitem value="Bloqueio"
+						url="/pages/sishosp/agendaPaciente.faces" />
+				</p:submenu>
+				<!-- <p:menuitem value="Bairros" onclick="PF('dlgCadBairro').show();" /> -->
+				<p:menuitem value="Convênios" onclick="PF('dlgCadConvenio').show();" />
+				<p:menuitem value="CBO" onclick="PF('dlgCadTipoEscola').show();"  />
+				<p:menuitem value="Escolaridades" onclick="PF('dlgCadEscolaridade').show();" />
+				<p:menuitem value="Escolas" onclick="PF('dlgCadEscola').show();" />
+				<p:menuitem value="Equipes" onclick="PF('dlgCadEquipe').show();" />
+				<p:menuitem value="Feriados" onclick="PF('dlgCadFeriado').show();"/>
+				<p:menuitem value="Forma Transporte" onclick="PF('dlgCadTransporte').show();"/>
+				<p:menuitem value="Especialidades" onclick="PF('dlgCadEspecialidade').show();" />
+				<p:menuitem value="Grupos" onclick="PF('dlgCadGrupo').show();" />
+				<!--<p:menuitem value="Logradouros" onclick="PF('dlgCadLogradouro').show();" actionListener="#{PacienteController.limparDados()}" />-->
+				<p:menuitem value="Laudos" onclick="PF('dlgCadLaudo').show();"  />
+				<p:menuitem value="Municipios" onclick="PF('dlgCadMunicipio').show();" actionListener="#{PacienteController.limparDados()}" update=":formMuni" process="@this,:formMuni"  />
+				<p:menuitem value="Profissionais" onclick="PF('dlgCadProfissional').show();"  />
+				<p:menuitem value="Profissões" onclick="PF('dlgCadProfissoes').show();"  />
+				<p:menuitem value="Procedimentos" onclick="PF('dlgCadProcedimento').show();"  />
+				<p:menuitem value="Programas"  onclick="PF('dlgCadPrograma').show();"  />
+				<p:menuitem value="Raça" onclick="PF('dlgCadRaca').show();"/>
+				<p:menuitem value="Tipos de escolas" onclick="PF('dlgCadTipoEscola').show();"  />
+				<p:menuitem value="Tipos de encaminhamento" onclick="PF('dlgCadEncaminhado').show();"  />
+				<p:menuitem value="Tipos de atendimento" onclick="PF('dlgCadTipoAtendimento').show();"  />
+				
+				<p:separator style="width:230px;height:5px;" />
+				<p:menuitem value="Cadastro de Pacientes"
+					url="/pages/sishosp/cadastroPaciente.faces" />
+			</p:submenu>
+			<p:submenu label="Movimento" icon="ui-icon-document">
+				<p:menuitem value="Agenda Médica"
+					url="/pages/sishosp/agendaPaciente.faces" />
+				<p:menuitem value="Atendimento"
+					url="/pages/sishosp/agendaPaciente.faces" />
+						<p:menuitem value="Consulta Agendamento"
+					url="/pages/sishosp/agendaPaciente.faces" />
+					<p:submenu label="Serviço Social" icon="ui-icon-contact">
+						<p:menuitem value="Primeiro Atendimento"
+							url="/pages/sishosp/agendaPaciente.faces" />
+				</p:submenu>
+				
+				
+					<p:submenu label="APACs" icon="ui-icon-contact">
+						<p:menuitem value="Digita"
+							url="/pages/sishosp/agendaPaciente.faces" />
+						<p:menuitem value="Controle"
+							url="/pages/sishosp/agendaPaciente.faces" />
+						
+					</p:submenu>
+		
+					<p:submenu label="BPis" icon="ui-icon-contact">
+						<p:submenu label="Encaminhamentos" icon="ui-icon-contact">
+							<p:menuitem value="Digita"
+								url="/pages/sishosp/agendaPaciente.faces" />
+						</p:submenu>
+						<p:menuitem value="Digita"
+							url="/pages/sishosp/agendaPaciente.faces" />
+						<p:menuitem value="Controle"
+							url="/pages/sishosp/agendaPaciente.faces" />					
+					</p:submenu>
+	
+				<p:submenu label="Laudo" icon="ui-icon-contact">
+					<p:menuitem value="Digita"
+						url="/pages/sishosp/agendaPaciente.faces" />
+					<p:menuitem value="Controle"
+						url="/pages/sishosp/agendaPaciente.faces" />
+				</p:submenu>
+			</p:submenu>
+			<p:submenu label="Relatórios" icon="ui-icon-document">
+				<p:submenu label="Administrativos" icon="ui-icon-contact">
+					<p:submenu label="Agenda" icon="ui-icon-contact">
+						<p:menuitem value="Configuração"
+							url="/pages/sishosp/agendaPaciente.faces" />
+					</p:submenu>
+					<p:menuitem value="Agendamentos p/ Profissional"
+						url="/pages/sishosp/agendaPaciente.faces" />
+					<p:menuitem value="Atendimentos p/ Profissional"
+						url="/pages/sishosp/agendaPaciente.faces" />
+					<p:menuitem value="Atendimentos p/ Programa"
+						url="/pages/sishosp/agendaPaciente.faces" />
+					<p:menuitem value="Atendimentos p/ Procedimentos"
+						url="/pages/sishosp/agendaPaciente.faces" />
+					<p:menuitem value="Faltas por programa"
+						url="/pages/sishosp/agendaPaciente.faces" />
+					<p:submenu label="Pacientes" icon="ui-icon-contact">
+						<p:menuitem value="Geral Analitico"
+							url="/pages/sishosp/agendaPaciente.faces" />
+						<p:menuitem value="Geral Sintetico"
+							url="/pages/sishosp/agendaPaciente.faces" />
+					</p:submenu>
+					<p:separator></p:separator>
+					<p:submenu label="Auditivo" icon="ui-icon-contact">
+						<p:menuitem value="Financeiro"
+							url="/pages/sishosp/agendaPaciente.faces" />
+						<p:menuitem value="Mapas laudos"
+							url="/pages/sishosp/agendaPaciente.faces" />
+					</p:submenu>
+					<p:submenu label="Órteses e Prótese" icon="ui-icon-contact">
+						<p:menuitem value="Financeiro"
+							url="/pages/sishosp/agendaPaciente.faces" />
+						<p:menuitem value="Mapas laudos"
+							url="/pages/sishosp/agendaPaciente.faces" />
+					</p:submenu>
+
+				</p:submenu>
+			
+				<p:submenu label="Pacientes" icon="ui-icon-contact">
+					<p:submenu label="Cadastros" icon="ui-icon-contact">
+						<p:menuitem value="Antigos"
+							url="/pages/sishosp/agendaPaciente.faces" />
+						<p:menuitem value="Novos"
+							url="/pages/sishosp/agendaPaciente.faces" />
+						<p:separator></p:separator>
+						<p:menuitem value="Geral"
+							url="/pages/sishosp/agendaPaciente.faces" />
+					</p:submenu>
+					<p:submenu label="Dependetes" icon="ui-icon-contact">
+						<p:menuitem value="Alfabetica"
+							url="/pages/sishosp/agendaPaciente.faces" />
+						<p:menuitem value="Data Nasc."
+							url="/pages/sishosp/agendaPaciente.faces" />
+					</p:submenu>
+					<p:menuitem value="Por Bairro"
+						url="/pages/sishosp/agendaPaciente.faces" />
+					<p:menuitem value="Histórico"
+						url="/pages/sishosp/agendaPaciente.faces" />
+				</p:submenu>
+				<p:menuitem value="Prontuário"
+					url="/pages/sishosp/agendaPaciente.faces" />
+
+			</p:submenu>
+			<p:submenu label="Suporte" icon="ui-icon-document">
+				<p:menuitem value="Cadastros de Usuários"
+					url="/pages/sishosp/agendaPaciente.faces" />
+				
+			</p:submenu>
+
+		</p:menubar>
+		<p:commandButton value="Sair"
+			style="position:relative; left:91%; width:100px; " icon="btlogout"
+			action="#{MBUsuarios.logout}"></p:commandButton>
+	</h:form>
+	<div class="container">
+
+
+
+		<ui:insert name="body" />
+
+
+
+	</div>
+	<br />
+	<br />
+	<br />
+
+	<footer id="footer" class="footer-page">
+	<div class="container">
+
+		<div class="connect">
+			<a href="#" target="_blank"> <img src="../../imgs/facebook.png" /></a>
+			<a href="#" target="_blank"> <img src="../../imgs/twitter.png" /></a>
+		</div>
+
+		<div class="copyright">© SISHOP - 2016. Todos os direitos
+			reservados.</div>
+		<!--  <a href="#"><img alt="envato" class="logo-image" src="../../imgs/LOGOOO.png"></img></a>-->
+	</div>
+	</footer>
+
+	<script type="text/javascript">
+		setTimeout(function() {
+			$('.msg').fadeOut('fast');
+		}, 3000);
+	</script>
+
+
+</h:body>
+
+
+</html>

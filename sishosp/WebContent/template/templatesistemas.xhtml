@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<ui:insert name="title">
+		<title>Agreste Leilão</title>
+	</ui:insert>
+	<link rel="stylesheet" type="text/css" href="../../resources/css/callout.css" />
+	<link rel="stylesheet" type="text/css" href="../../resources/css/panelgrid.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous" />
+	
+	 <style>
+    	.row{
+    		padding:3px !important;
+    	}
+    	
+    	* {
+    		font-size:12px;
+    	}
+    		
+    </style>
+    <script type="text/javascript" src="../../js/bootstrapValidator.js"></script>
+    <link rel="stylesheet"  href="../../css/bootstrapValidator.min.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
+</h:head>
+
+<h:body>
+	<h:form id="mainFormtempSist">
+		<b:navBar brand="Agreste Leilão" brandHref="/leilao/pages/comum/home.faces">
+			<b:navbarLinks>
+				<b:navLink value="Meus leilões" href="/pages/comum/selectLeilao.faces"></b:navLink>
+				<b:dropMenu value="Cadastros">
+					<b:navLink value="Leilão" href="../leilao/list.faces"></b:navLink>
+					<b:navLink value="Compradores/Vendedores" href="../vendedor/list.faces"></b:navLink>
+					<b:navLink></b:navLink>
+					<b:navLink header="Cadastros básicos"></b:navLink>
+					<b:navLink value="Raça" href="../raca/list.faces"></b:navLink>
+					<b:navLink value="Banco" href="../banco/list.faces"></b:navLink>
+					<b:navLink value="Animal" href="../animal/list.faces"></b:navLink>
+				</b:dropMenu>
+				<b:navLink value="Sair" href="/pages/comum/login.faces"></b:navLink>
+			</b:navbarLinks>
+		</b:navBar>
+		</h:form>
+		<div class="container">
+			<h:panelGroup rendered="#{param['sucesso'] != null}">
+				<div class="msg alert alert-success" role="alert"><h:outputText value="#{param['sucesso']}" /></div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{param['erro'] != null}">
+				<div class="msg alert alert-danger" role="alert"><h:outputText value="#{param['erro']}" /></div>			
+			</h:panelGroup>
+<!-- 			<p:outputPanel rendered="#{leilaoController.retornoLeilaoEscolhido() != null}"> -->
+<!-- 				<ol class="breadcrumb"> -->
+<!-- 					<li><a href="../comum/homeLeilao.faces">Leilão : #{leilaoController.retornoLeilaoEscolhido().getNome()}</a></li> -->
+<!-- 				</ol> -->
+<!-- 			</p:outputPanel> -->
+
+			<ui:insert name="body" />
+
+		</div>
+		
+	
+	
+	
+	<br/>
+	<br/>
+	<br/>
+
+	<div style="margin-left:40px;">
+		<footer>
+			<hr />
+			<p>&copy; MakeCode</p>
+			<p class="small">Versão: 1.0.0</p>
+		</footer>
+	</div>
+
+	<script type="text/javascript">
+		setTimeout(function() {
+			$('.msg').fadeOut('fast');
+		}, 3000);
+	</script>
+	
+</h:body>
+</html>
