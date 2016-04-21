@@ -592,7 +592,11 @@ public void buscaEscolaridadeCod(Integer codescolaridade) throws Exception {
 		        raca = new RacaBean();
   		
 		  	   }
-		  	    
+    
+		  	  public void buscarescolaridade(){
+		  		  
+		  		  
+		  	  }
 		  	  
 		  	    
 	public Integer getAbaAtiva() {

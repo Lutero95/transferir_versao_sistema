@@ -42,8 +42,7 @@
              <h:outputLabel for="nascimento" value="Nascimento"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-            	<p:calendar pattern="dd/MM/yyyy" id="nascimento" navigator="true" pages="1" showOn="button" size="12"
-											maxlength="10"
+            	<p:calendar pattern="dd/MM/yyyy" id="nascimento" yearRange="-111:+39" navigator="true" pages="1" showOn="button" size="12"
 											value="#{PacienteController.paciente.dtanascimento}"
 											locale="pt" required="false"
 											requiredMessage="Informe o nascimento do Responsavel" />
@@ -344,8 +343,7 @@
              <h:outputLabel for="dtaexpedicao" value="Dta.Expedição"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                      <p:calendar pattern="dd/MM/yyyy" id="dtaexpedicao" navigator="true" pages="1" showOn="button" size="12"
-											maxlength="10"
+                      <p:calendar pattern="dd/MM/yyyy" id="dtaexpedicao" yearRange="-111:+39" navigator="true" pages="1" showOn="button" size="12"
 											value="#{PacienteController.paciente.dataExpedicao1}"
 											locale="pt" required="false"
 											requiredMessage="Informe o nascimento do Responsavel" />
@@ -484,8 +482,7 @@
              <h:outputLabel for="dtaexpedicao2" value="Dta.Expedição"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-              <p:calendar pattern="dd/MM/yyyy" id="dtaexpedicao2" navigator="true" pages="1"  showOn="button" size="12"
-											maxlength="10"
+              <p:calendar pattern="dd/MM/yyyy" id="dtaexpedicao2" yearRange="-111:+39"  navigator="true" pages="1"  showOn="button" size="12"
 											value="#{PacienteController.paciente.dataExpedicao2}"
 											locale="pt" required="false"
 											requiredMessage="Informe o nascimento do Responsavel" />
@@ -664,8 +661,7 @@
                                         <div class="form-group">
 										<p:outputLabel value="Nascimento Resp" styleClass="col-sm-3 control-label"> <font color="red">*</font></p:outputLabel>
 										<div class="col-sm-6">
-										<p:calendar pattern="dd/MM/yyyy" navigator="true" pages="1" showOn="button" size="12"
-											maxlength="10"
+										<p:calendar pattern="dd/MM/yyyy" navigator="true" yearRange="-111:+39"  pages="1" showOn="button" size="12"
 											value="#{PacienteController.paciente.dataNascimentoresp}"
 											locale="pt" required="false"
 											requiredMessage="Informe o nascimento do Responsavel" />
@@ -863,7 +859,7 @@
                         <p:inputText styleClass="legend" size="15" id="buscacodigoescola"
                                      value="#{PacienteController.escolaridade.codescolaridade}" />
                         <p:commandButton id="n5" icon="btPesquisar" update="buscaescolaridade:tableescolaridade"
-                                         value="Pesquisa" action="#{MBUsuarioCadastro.buscarpessoa()}"/>
+                                         value="Pesquisa" action="#{PacienteController.buscarescolaridade()}"/>
 
                     </h:panelGrid>
 
