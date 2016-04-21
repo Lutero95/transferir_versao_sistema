@@ -11,9 +11,18 @@ public class EnderecoBean {
 	private String uf;
 	private String numero;
 	private String logradouro;
+	private Integer codbairro;
+	private Integer codmunicipio;
+	private Integer codfederal;
+	private Integer codmacregiao;
 	private String complemento;
 	private Integer cep;
 	private String bairro;
+	
+	private String telefoneres;
+	private String telefonecel;
+	private String telefonetrab;
+	private String telefoneorelhao;
 	
 	private Date dataCadastro;
 	private Date dataAlteracao;
@@ -121,4 +130,72 @@ public class EnderecoBean {
 	public void setListaEstado(List<Integer> listaEstado) {
 		this.listaEstado = listaEstado;
 	}
+
+	public String getTelefoneres() {
+		return telefoneres;
+	}
+
+	public void setTelefoneres(String telefoneres) {
+		this.telefoneres = telefoneres;
+	}
+
+	public String getTelefonecel() {
+		return telefonecel;
+	}
+
+	public void setTelefonecel(String telefonecel) {
+		this.telefonecel = telefonecel;
+	}
+
+	public String getTelefonetrab() {
+		return telefonetrab;
+	}
+
+	public void setTelefonetrab(String telefonetrab) {
+		this.telefonetrab = telefonetrab;
+	}
+
+	public String getTelefoneorelhao() {
+		return telefoneorelhao;
+	}
+
+	public void setTelefoneorelhao(String telefoneorelhao) {
+		this.telefoneorelhao = telefoneorelhao;
+	}
+
+	public Integer getCodbairro() {
+		return codbairro;
+	}
+
+	public void setCodbairro(Integer codbairro) {
+		this.codbairro = codbairro;
+	}
+
+	public Integer getCodmunicipio() {
+		return codmunicipio;
+	}
+
+	public void setCodmunicipio(Integer codmunicipio) {
+		this.codmunicipio = codmunicipio;
+	}
+
+	public Integer getCodfederal() {
+		return codfederal;
+	}
+
+	public void setCodfederal(Integer codfederal) {
+		this.codfederal = codfederal;
+	}
+
+	public Integer getCodmacregiao() {
+		return codmacregiao;
+	}
+
+	public void setCodmacregiao(Integer codmacregiao) {
+		this.codmacregiao = codmacregiao;
+	}
+
+
+	
+	
 }

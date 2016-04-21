@@ -36,14 +36,15 @@ public class EscolaDAO {
                         .getCurrentInstance().getExternalContext().getSessionMap()
                         .get("obj_paciente");*/
 
-                String sql = "insert into hosp.escola (descescola, dtacadastro)"
-                		+ " values (?, CURRENT_TIMESTAMP)";
+                String sql = "insert into hosp.escola (descescola, codtipoescola)"
+                		+ " values (?, ?)";
                 //returning id_paciente
                     try {
                     	System.out.println("passou aqui 3");
                         conexao = ConnectionFactory.getConnection();
                         PreparedStatement stmt = conexao.prepareStatement(sql);
                         stmt.setString(1, escola.getDescescola().toUpperCase().trim());
+                        stmt.setInt(2, escola.getCodtipoescola());
                         //stmt.setString(2, paciente.getCpf().replaceAll("[^0-9]", ""));  
                         //stmt.setBoolean(3, true);
                         //stmt.setInt(3, paciente.getIdpessoa());
@@ -58,6 +59,7 @@ public class EscolaDAO {
                     stmt.execute();   
                     System.out.println("passou aqui 4");
                     conexao.commit();
+                    cadastrou = true;
                     conexao.close();
 
                     return cadastrou;
@@ -115,6 +117,88 @@ public class EscolaDAO {
                     }
                 }
             }
+            
+            public Boolean cadastrarTipoEscola(EscolaBean escola) throws ProjetoException {
+                boolean cadastrou = false;
+                System.out.println("passou aqui 2");
+
+                /*PacienteBean user_session = (PacienteBean) FacesContext
+                        .getCurrentInstance().getExternalContext().getSessionMap()
+                        .get("obj_paciente");*/
+
+                String sql = "insert into hosp.tipoescola (desctipoescola)"
+                		+ " values (?)";
+                
+                    try {
+                    	System.out.println("passou aqui 3");
+                        conexao = ConnectionFactory.getConnection();
+                        PreparedStatement stmt = conexao.prepareStatement(sql);
+                        stmt.setString(1, escola.getDesctipoescola().toUpperCase().trim());
+                        
+                    
+                    stmt.execute();   
+                    System.out.println("passou aqui 4");
+                    conexao.commit();
+                    cadastrou = true;
+                    conexao.close();
+
+                    return cadastrou;
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            
+            public Boolean alterarTipoEscola(EscolaBean escola) throws ProjetoException {
+                boolean alterou = false;
+                String sql = "update hosp.tipoescola set desctipoescola = ? where codtipoescola = ?";
+                try {
+                    conexao = ConnectionFactory.getConnection();
+                    PreparedStatement stmt = conexao.prepareStatement(sql);
+                    stmt.setString(1, escola.getDesctipoescola());
+                    stmt.executeUpdate();
+
+                    conexao.commit();
+                    
+                    alterou = true;
+                    
+                    return alterou;
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                } finally {
+                    try {
+                        conexao.close();
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
+                    }
+                }
+            }
+            
+            public Boolean excluirTipoEscola(EscolaBean escola) throws ProjetoException {
+                boolean excluir = false;
+                String sql =  "delete from hosp.escola where codtipoescola = ?";
+                try {
+                    conexao = ConnectionFactory.getConnection();
+                    PreparedStatement stmt = conexao.prepareStatement(sql);
+                    stmt.setLong(1, escola.getCodtipoescola());
+                    stmt.execute();
+
+                    
+                    conexao.commit();
+                    
+                    excluir = true;
+                    
+                    return excluir;
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                } finally {
+                    try {
+                        conexao.close();
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
+                    }
+                }
+            }
+            
             
             public ArrayList<EscolaBean> listaEscolas() {
 
@@ -228,5 +312,39 @@ public class EscolaDAO {
             				}
 
             			}
-            		}	
+            		}
+            
+            public ArrayList<EscolaBean> listaTipoEscola() {
+
+                String sql = "select * from hosp.tipoescola order by desctipoescola";
+
+                ArrayList<EscolaBean> lista = new ArrayList();
+
+                try {
+                    conexao = ConnectionFactory.getConnection();
+                    PreparedStatement stm = conexao.prepareStatement(sql);
+                    ResultSet rs = stm.executeQuery();
+
+                    while (rs.next()) {
+                    	EscolaBean p = new EscolaBean();
+    	            
+                    	p.setCodtipoescola(rs.getInt("codtipoescola"));
+    	                p.setDesctipoescola(rs.getString("desctipoescola").toLowerCase());
+    	                
+    	                
+    	                lista.add(p);
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                } finally {
+                    try {
+                        conexao.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        System.exit(1);
+                    }
+                }
+                return lista;
+            }
+            
 }

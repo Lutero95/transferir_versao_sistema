@@ -42,13 +42,12 @@
              <h:outputLabel for="nascimento" value="Nascimento"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-            	<p:calendar pattern="dd/MM/yyyy" showOn="button" id="nascimento" size="12"
+            	<p:calendar pattern="dd/MM/yyyy" id="nascimento" navigator="true" pages="1" showOn="button" size="12"
 											maxlength="10"
 											value="#{PacienteController.paciente.dtanascimento}"
-											
 											locale="pt" required="false"
-											requiredMessage="Informe o nascimento" />
-                                         
+											requiredMessage="Informe o nascimento do Responsavel" />
+                <!-- <p:inputMask id="nascimento" required="false" size="12" value="#{PacienteController.paciente.dtanascimento}" mask="99/99/9999" requiredMessage="Informe o nascimento"/>   -->     
                      </div>
                         </div>
                         
@@ -60,11 +59,11 @@
                      <p:selectOneMenu value="#{PacienteController.paciente.estadoCivil}" disable="true" id="estadocivil">
                      
                     <f:selectItem itemLabel="Selecione" itemValue="" />
-                       <f:selectItem itemLabel="Solteiro" itemValue="Solteiro" />
-                                            <f:selectItem itemLabel="Casado" itemValue="1" />
-                                            <f:selectItem itemLabel="Viúvo" itemValue="2" />
-                                            <f:selectItem itemLabel="Divorciado" itemValue="3" />
-                                            <f:selectItem itemLabel="Outros" itemValue="4" />
+                       <f:selectItem itemLabel="Solteiro" itemValue="S" />
+                                            <f:selectItem itemLabel="Casado" itemValue="C" />
+                                            <f:selectItem itemLabel="Viúvo" itemValue="V" />
+                                            <f:selectItem itemLabel="Divorciado" itemValue="D" />
+                                            <f:selectItem itemLabel="Outros" itemValue="O" />
                                             <f:ajax event="blur" render="m_estadocivil" />
                         </p:selectOneMenu>
                          <h:message id="m_estadocivil" for="estadocivil"
@@ -78,8 +77,8 @@
                 <p:selectOneMenu required="false" disable="true"  requiredMessage="Informe o sexo" id="sexo"
                                                          value="#{PacienteController.paciente.sexo}">
                                             <f:selectItem itemLabel="Selecione" itemValue="" />
-                                            <f:selectItem itemLabel="Masculino" itemValue="1" />
-                                            <f:selectItem itemLabel="Feminino" itemValue="2" />
+                                            <f:selectItem itemLabel="Masculino" itemValue="M" />
+                                            <f:selectItem itemLabel="Feminino" itemValue="F" />
                                               <f:ajax event="blur" render="m_sexo" />
                                         </p:selectOneMenu>
                                            <h:message id="m_sexo" for="sexo"
@@ -143,19 +142,19 @@
                 </div>
             </div>
             <div class="form-group">
-                <h:outputLabel for="conjugue" value="Conjugue"
+                <h:outputLabel for="conjuge" value="Conjuge"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <h:inputText  disable="true" value="#{PacienteController.paciente.conjugue}" class="form-control"
-                        id="conjugue"
-                        pt:placeholder="Digite aqui seu conjugue entre 2 e 30 caracteres"
+                    <h:inputText  disable="true" value="#{PacienteController.paciente.conjuge}" class="form-control"
+                        id="conjuge"
+                        pt:placeholder="Digite aqui seu conjuge entre 2 e 30 caracteres"
                         required="false"
-                        validatorMessage="Conjugue deve conter entre 2 e 30 caracteres."
+                        validatorMessage="Conjuge deve conter entre 2 e 30 caracteres."
                         requiredMessage="é necessário que você informe seu nome.">
                         <f:validateLength minimum="2" maximum="40" />
-                        <f:ajax event="blur" render="m_conjugue" />
+                        <f:ajax event="blur" render="m_conjuge" />
                     </h:inputText>
-                    <h:message id="m_conjugue" for="conjugue"
+                    <h:message id="m_conjuge" for="conjuge"
                         style="color:#D74937;" />
                 </div>
             </div>
@@ -163,7 +162,7 @@
                          <h:outputLabel for="cor" value="Cor/Raça"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">        
-                   <p:selectOneMenu disable="true"   value="#{PacienteController.selecionadoRaca}" id="cor">          
+                   <p:selectOneMenu disable="true"   value="#{PacienteController.paciente.codRaca}" id="cor">          
                                             <f:selectItems value="#{PacienteController.listaRaca}" 
                                                 var="sis" itemLabel="#{sis.descRaca}" itemValue="#{sis.codRaca}" />
                                              <f:ajax event="blur" render="m_cor" />
@@ -201,12 +200,33 @@
                 <div class="col-sm-6">
                      <p:selectOneMenu value="#{PacienteController.paciente.endereco.uf}"    id="estado">
                       <f:selectItem itemLabel="Selecione" itemValue="" />
-                       <f:selectItem itemLabel="AL" itemValue="1" />
-                                            <f:selectItem itemLabel="PE" itemValue="2" />
-                                            <f:selectItem itemLabel="SP" itemValue="3" />
-                                            <f:selectItem itemLabel="RJ" itemValue="4" />
-                                            <f:selectItem itemLabel="MP" itemValue="5" />
-                                            <f:selectItem itemLabel="Outros" itemValue="6" />
+                       <f:selectItem itemLabel="AC" itemValue="AC" />
+                       <f:selectItem itemLabel="AL" itemValue="AL" />
+                       <f:selectItem itemLabel="AC" itemValue="AP" />
+                       <f:selectItem itemLabel="AM" itemValue="AM" />
+                       <f:selectItem itemLabel="BA" itemValue="BA" />
+                       <f:selectItem itemLabel="CE" itemValue="CE" />
+                       <f:selectItem itemLabel="AC" itemValue="DF" />
+                       <f:selectItem itemLabel="ES" itemValue="ES" />
+                       <f:selectItem itemLabel="GO" itemValue="GO" />
+                       <f:selectItem itemLabel="MA" itemValue="MA" />
+                       <f:selectItem itemLabel="MT" itemValue="MT" />
+                       <f:selectItem itemLabel="MS" itemValue="MS" />
+                       <f:selectItem itemLabel="MG" itemValue="MG" />
+                       <f:selectItem itemLabel="PA" itemValue="PA" />
+                       <f:selectItem itemLabel="PB" itemValue="PB" />
+                       <f:selectItem itemLabel="PR" itemValue="PR" />
+                       <f:selectItem itemLabel="PE" itemValue="PE" />
+                       <f:selectItem itemLabel="PI" itemValue="PI" />
+                       <f:selectItem itemLabel="RJ" itemValue="RJ" />
+                       <f:selectItem itemLabel="RN" itemValue="RN" />
+                       <f:selectItem itemLabel="RS" itemValue="RS" />
+                       <f:selectItem itemLabel="RO" itemValue="RO" />
+                       <f:selectItem itemLabel="RR" itemValue="RR" />
+                       <f:selectItem itemLabel="SC" itemValue="SC" />
+                       <f:selectItem itemLabel="SP" itemValue="SP" />
+                       <f:selectItem itemLabel="SE" itemValue="SE" />
+                       <f:selectItem itemLabel="TO" itemValue="TO" />                   
                         </p:selectOneMenu>
                         </div>
                         </div>
@@ -215,14 +235,10 @@
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
                      <p:selectOneMenu value="#{PacienteController.paciente.endereco.municipio}" id="municipio">
-                      <f:selectItem itemLabel="Selecione" itemValue="" />
-                       <f:selectItem itemLabel="Arapiraca" itemValue="1" />
-                                            <f:selectItem itemLabel="Maceió" itemValue="2" />
-                                            <f:selectItem itemLabel="Rio de Janeiro" itemValue="3" />
-                                            <f:selectItem itemLabel="Recife" itemValue="4" />
-                                            <f:selectItem itemLabel="São Paulo" itemValue="5" />
-                                            <f:selectItem itemLabel="Outros" itemValue="6" />
-                        </p:selectOneMenu>
+                      <f:selectItems value="#{PacienteController.listaMunicipios}" 
+                      var="sis" itemLabel="#{sis.municipio}" itemValue="#{sis.codmunicipio}" />
+                                    
+                        </p:selectOneMenu>  
                         </div>
                         </div>
                               <div class="form-group">
@@ -277,6 +293,20 @@
                     </h:inputText>
                 </div>
             </div>
+            <h:panelGrid columns="2" cellpadding="6">
+            <p:outputLabel for="phone1" value="Telefone Res:" />
+            <p:inputMask id="phone1" value="#{PacienteController.paciente.endereco.telefoneres}" mask="(99) 9999-9999" style=" margin-bottom:20px;"/>
+            
+             <p:outputLabel for="phone2" value="Telefone Cel:" />
+            <p:inputMask id="phone2" value="#{PacienteController.paciente.endereco.telefonecel}" mask="(99) 99999-9999" style=" margin-bottom:20px;"/>
+            
+             <p:outputLabel for="phone3" value="Telefone Trab:" />
+            <p:inputMask id="phone3" value="#{PacienteController.paciente.endereco.telefonetrab}" mask="(99) 99999-9999" style=" margin-bottom:20px;"/>
+            
+            <p:outputLabel for="phone4" value="Orelhão:" />
+            <p:inputMask id="phone4" value="#{PacienteController.paciente.endereco.telefoneorelhao}" mask="(99) 9999-9999" style=" margin-bottom:20px;"/>
+            </h:panelGrid>
+            
             </p:panel>
             
                 </p:tab>
@@ -314,11 +344,13 @@
              <h:outputLabel for="dtaexpedicao" value="Dta.Expedição"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                        	<p:calendar pattern="dd/MM/yyyy" showOn="button" size="12"
+                      <p:calendar pattern="dd/MM/yyyy" id="dtaexpedicao" navigator="true" pages="1" showOn="button" size="12"
 											maxlength="10"
 											value="#{PacienteController.paciente.dataExpedicao1}"
 											locale="pt" required="false"
-											requiredMessage="Aba Competência: Informe a vigência inicial" />
+											requiredMessage="Informe o nascimento do Responsavel" />
+                  	
+			<!--  <p:inputMask id="dtaexpedicao" required="false" size="12" value="#{PacienteController.paciente.dataExpedicao1}" mask="99/99/9999" requiredMessage="Aba Competência: Informe a vigência inicial"/> -->    
                         </div>
                         </div>
             
@@ -452,11 +484,13 @@
              <h:outputLabel for="dtaexpedicao2" value="Dta.Expedição"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                 	<p:calendar pattern="dd/MM/yyyy" showOn="button" size="12"
+              <p:calendar pattern="dd/MM/yyyy" id="dtaexpedicao2" navigator="true" pages="1"  showOn="button" size="12"
 											maxlength="10"
 											value="#{PacienteController.paciente.dataExpedicao2}"
 											locale="pt" required="false"
-											requiredMessage="Aba Competência: Informe a vigência inicial" />
+											requiredMessage="Informe o nascimento do Responsavel" />
+			   <!-- <p:inputMask id="dtaexpedicao2" required="false" size="12" value="#{PacienteController.paciente.dataExpedicao2}" mask="99/99/9999" requiredMessage="Aba Competência: Informe a vigência inicial"/>  -->
+											
                         </div>
                         </div>
        </p:panel>
@@ -483,15 +517,15 @@
                                             </p:outputLabel>    <div class="col-sm-6">
                                             
                                           <!--   autoUpdate="true"-->
-                                          <p:autoComplete styleClass="col-sm-3 control-label" label="Digite a escolaridade" emptyMessage="Digite a Escolaridade" 
+                                           <p:autoComplete styleClass="col-sm-3 control-label" label="Digite a escolaridade" emptyMessage="Digite a Escolaridade" 
                                             id="escolacomplete1" style="font-size:12px"  
-                                            value="#{EscolaridadeController.escolaridadeSuggestion}" size="45" 
-                                            completeMethod="#{EscolaridadeController.completeText}" effect="fade" 
+                                            value="#{PacienteController.escolaridadeSuggestion}" size="45" 
+                                            completeMethod="#{PacienteController.completeText2}" effect="fade" 
                                             var="theme" forceSelection="true" minQueryLength="3" 
                                             itemValue="#{theme}" itemLabel="#{theme.descescolaridade}" 
                                             converter="conEscolaridade"  >
-                                            <p:ajax event="itemSelect" listener="#{EscolaridadeController.onItemSelect}"/>
-                                            </p:autoComplete>  
+                                            <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect2}"/>
+                                            </p:autoComplete> 
                                           
                                             
                                         <!--  <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label"> 
@@ -514,19 +548,15 @@
                                             
                                               <p:autoComplete styleClass="col-sm-3 control-label" label="Digite a escola" emptyMessage="Digite a Escola" 
                                             id="escolacomplete2" style="font-size:12px"  
-                                            value="#{EscolaController.escolaSuggestion}" size="45" 
-                                            completeMethod="#{EscolaController.completeText}" effect="fade" 
+                                            value="#{PacienteController.escolaSuggestion}" size="45" 
+                                            completeMethod="#{PacienteController.completeText}" effect="fade" 
                                             var="theme" forceSelection="true" minQueryLength="3" 
                                             itemValue="#{theme}" itemLabel="#{theme.descescola}" 
                                             converter="conEscola"  >
-                                            <p:ajax event="itemSelect" listener="#{EscolaController.onItemSelect}"/>
+                                            <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect}"/>
                                             </p:autoComplete>                                          
                                     
-                                    <!-- <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label" > 
-                                            <p:inputText id="nome2" size="45" required="false" readonly="false"
-                                                requiredMessage="O campo nome é obrigatório."
-                                                value="#{PacienteController.escola.descescola}" />
-                                        </p:outputPanel> -->
+                                    
                                             </div>
                                                <p:commandButton value="Local onde Estuda" onclick="PF('dlgbuscaescola').show();" icon="buscaProcess"/> 
                                 <!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
@@ -541,19 +571,15 @@
                                             
                                             <p:autoComplete styleClass="col-sm-3 control-label" label="Digite a profissão" emptyMessage="Digite a Profissão" 
                                             id="escolacomplete3" style="font-size:12px"  
-                                            value="#{ProfissaoController.profissaoSuggestion}" size="45" 
-                                            completeMethod="#{ProfissaoController.completeText}" effect="fade" 
+                                            value="#{PacienteController.profissaoSuggestion}" size="45" 
+                                            completeMethod="#{PacienteController.completeText6}" effect="fade" 
                                             var="theme" forceSelection="true" minQueryLength="3" 
                                             itemValue="#{theme}" itemLabel="#{theme.descprofissao}" 
                                             converter="conProfissao"  >
-                                            <p:ajax event="itemSelect" listener="#{ProfissaoController.onItemSelect}"/>
+                                            <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect6}"/>
                                             </p:autoComplete>                                             
                                       
-                                        <!--  <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label" > 
-                                            <p:inputText id="nome3" size="45" required="false" readonly="false"
-                                                requiredMessage="O campo nome é obrigatório."
-                                                value="#{PacienteController.profissao.descprofissao}" />
-                                        </p:outputPanel>-->
+                                      
                                          </div>
                                             <p:commandButton value="Profissão" onclick="PF('dlgbuscaprofissao').show();" icon="buscaProcess"/> 
                                             <!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
@@ -576,7 +602,7 @@
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>
                                              <div class="col-sm-6">    
-												 <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label" > 
+												 <p:outputPanel styleClass="col-sm-3 control-label" > 
                                             <p:inputText id="nome4" size="45" required="false"
                                                 requiredMessage="O campo nome é obrigatório."
                                                 value="#{PacienteController.paciente.localtrabalha}" />
@@ -602,7 +628,7 @@
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>   
                                             <div class="col-sm-6"> 
-												 <p:outputPanel autoUpdate="true"  styleClass="col-sm-3 control-label"> 
+												 <p:outputPanel styleClass="col-sm-3 control-label"> 
                                             <p:inputText id="nome5" size="45" required="false"
                                                 requiredMessage="O campo nome é obrigatório."
                                                 value="#{PacienteController.paciente.nomeresp}" />
@@ -615,7 +641,7 @@
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>
                                               <div class="col-sm-6">    
-												 <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label"> 
+												 <p:outputPanel styleClass="col-sm-3 control-label"> 
                                             <p:inputText id="nome6" size="45" required="false"
                                                 requiredMessage="O campo nome é obrigatório."
                                                 value="#{PacienteController.paciente.rgresp}" />
@@ -627,7 +653,7 @@
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>   
                                             <div class="col-sm-6">    
-												 <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label"> 
+												 <p:outputPanel styleClass="col-sm-3 control-label"> 
                                             <p:inputText id="nome7" size="45" required="false"
                                                 requiredMessage="O campo nome é obrigatório."
                                                 value="#{PacienteController.paciente.cpfresp}" />
@@ -636,13 +662,15 @@
                                         </div>
                                         
                                         <div class="form-group">
-										<p:outputLabel value="Nascimento" styleClass="col-sm-3 control-label"> <font color="red">*</font></p:outputLabel>
+										<p:outputLabel value="Nascimento Resp" styleClass="col-sm-3 control-label"> <font color="red">*</font></p:outputLabel>
 										<div class="col-sm-6">
-										<p:calendar pattern="dd/MM/yyyy" showOn="button" size="12"
+										<p:calendar pattern="dd/MM/yyyy" navigator="true" pages="1" showOn="button" size="12"
 											maxlength="10"
 											value="#{PacienteController.paciente.dataNascimentoresp}"
 											locale="pt" required="false"
 											requiredMessage="Informe o nascimento do Responsavel" />
+											
+											<!--   <p:inputMask id="nascimentoresp" required="false" size="12" value="#{PacienteController.paciente.dataNascimentoresp}" mask="99/99/9999" requiredMessage="Informe o nascimento do Responsavel"/> -->   
 								        </div>
                                         </div>
                                
@@ -657,22 +685,18 @@
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>  	<div class="col-sm-6">                                            
                                         
-                                         <p:autoComplete styleClass="col-sm-3 control-label" label="Digite onde estar sendo encaminhado" emptyMessage="Digite onde estar sendo encaminhado" 
+                                            <p:autoComplete styleClass="col-sm-3 control-label" label="Digite onde estar sendo encaminhado" emptyMessage="Digite onde estar sendo encaminhado" 
                                             id="escolacomplete4" style="font-size:12px"  
-                                            value="#{EncaminhadoController.encaminhadoSuggestion}" size="45" 
-                                            completeMethod="#{EncaminhadoController.completeText}" effect="fade" 
+                                            value="#{PacienteController.encaminhadoSuggestion}" size="45" 
+                                            completeMethod="#{PacienteController.completeText4}" effect="fade" 
                                             var="theme" forceSelection="true" minQueryLength="3" 
                                             itemValue="#{theme}" itemLabel="#{theme.descencaminhado}" 
                                             converter="conEncaminhado"  >
-                                            <p:ajax event="itemSelect" listener="#{EncaminhadoController.onItemSelect}"/>
-                                            </p:autoComplete>    
+                                            <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect4}"/>
+                                            </p:autoComplete>   
                                         
                                         
-                                       <!--  <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label"> 
-                                            <p:inputText id="nome9" size="45" required="false" readonly="false"
-                                                requiredMessage="O campo nome é obrigatório."
-                                                value="#{PacienteController.encaminhado.especificacao}" />
-                                        </p:outputPanel>--> 
+                                     
                                         </div>
                                          <p:commandButton value="Encaminhado" onclick="PF('dlgbuscaencaminhado').show();" icon="buscaProcess"/> 
                                 <!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
@@ -685,20 +709,16 @@
                                             
                                             <p:autoComplete styleClass="col-sm-3 control-label" label="Digite o transporte" emptyMessage="Digite o transporte" 
                                             id="escolacomplete5" style="font-size:12px"  
-                                            value="#{FormaTransporteController.transporteSuggestion}" size="45" 
-                                            completeMethod="#{FormaTransporteController.completeText}" effect="fade" 
+                                            value="#{PacienteController.transporteSuggestion}" size="45" 
+                                            completeMethod="#{PacienteController.completeText5}" effect="fade" 
                                             var="theme" forceSelection="true" minQueryLength="3" 
                                             itemValue="#{theme}" itemLabel="#{theme.descformatransporte}" 
                                             converter="conFormaTransporte">
-                                            <p:ajax event="itemSelect" listener="#{FormaTransporteController.onItemSelect}"/>
-                                            </p:autoComplete>                                      
+                                            <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect5}"/>
+                                            </p:autoComplete>                                       
                                      
-                                        <!-- <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label"> 
-                                            <p:inputText id="nome10" size="45" required="false" readonly="false"
-                                                requiredMessage="O campo nome é obrigatório."
-                                                value="#{PacienteController.paciente.codFormaTransporte}" />
-                                        </p:outputPanel> -->
-                                        </div>
+                                       
+                                             </div>
                                               <p:commandButton value="Como chegou a Adefal" onclick="PF('dlgbuscacomochegou').show();" icon="buscaProcess"/> 
                                 <!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
                                         </div>
@@ -706,52 +726,34 @@
                  </p:tab>
                  
                   <p:tab title="COMPLEMENTO 3">
-                       <div class="form-group">
+                  <p:outputPanel id="outDeficiencia" autoUpdate="true"> 
+                       <div class="form-group">   
                        <p:outputLabel value="Apresenta Deficiência:" styleClass="col-sm-3 control-label"><font color="#FF0000">*</font></p:outputLabel> 
                        <div class="col-sm-6">                  
-                 	<p:selectOneRadio style="width:40%;" id="options4" required="false"
+                 	<p:selectOneRadio style="width:40%;" required="false"
 													requiredMessage="Aba Dados:Informe a formalidade"
 													value="#{PacienteController.paciente.deficiencia}" >
-													<f:selectItem itemLabel="Sim" itemValue="true" />
-													<f:selectItem itemLabel="Não" itemValue="false" />
-													<p:ajax update="outDeficiencia" event="change"></p:ajax>
-												</p:selectOneRadio>
+													<f:selectItem itemLabel="Sim" itemValue="S" />
+													<f:selectItem itemLabel="Não" itemValue="N" />
+													 <p:ajax update="outDeficiencia"></p:ajax> 
+												</p:selectOneRadio> 
 												</div>
 												</div>
-						<p:outputPanel id="outDeficiencia" autoUpdate="true">
-							<p:panel id="panelTeste" renderer="#{PacienteController.paciente.deficiencia}">
-								<p>RESTETESTE </p>
-							</p:panel>
 						
-						</p:outputPanel>
-												
-												      
-                                   <!-- <div class="form-group">
-                                            <p:outputLabel value="Nome: " styleClass="col-sm-3 control-label"  >
-                                                <font color="#FF0000">*</font>
-                                            </p:outputLabel> 
-                                            <div class="col-sm-6">  
-                                            
-                                           p:autoComplete styleClass="col-sm-3 control-label" label="Digite o transporte" emptyMessage="Digite o transporte" 
-                                            id="escolacomplete6" style="font-size:12px"  
-                                            value="#{PacienteController.encaminhado.descencaminhado}" size="45" 
-                                            completeMethod="#{EncaminhadoController.completeText}" effect="fade" 
-                                            var="theme" forceSelection="true" minQueryLength="3" 
-                                            itemValue="#{theme}" itemLabel="#{theme.descencaminhado}" 
-                                            converter="conEncaminhamento"  >
-                                            <p:ajax event="itemSelect" listener="#{EncaminhadoController.onItemSelect}"/>
-                                            </p:autoComplete>                                             
-                                       
-                                        <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label" > 
-                                            <p:inputText id="nome11" size="45" required="false" readonly="false"
-                                                requiredMessage="O campo nome é obrigatório."
-                                                value="#{PacienteController.paciente.tipoDeficiencia}" />
-                                        </p:outputPanel>
-                                           </div>
-                                              <p:commandButton value="Tipo Deficiência" onclick="PF('dlgbuscaatendimento').show();" icon="buscaProcess"/> 
-                                  actionListener="#{MBPaciente.limparbuscaescola()}" />
-                         </div> -->
-                                     
+							 <p:panel style="height:auto; width:100px; background-color: #F5F5F5;" rendered="#{PacienteController.paciente.deficiencia == 'S'}" >
+								<p:outputLabel value="Tipo:"></p:outputLabel>
+								<p:selectOneRadio id="grid2" layout="grid" value="#{PacienteController.paciente.tipoDeficiencia}" columns="1">
+								<f:selectItem itemLabel="Física" itemValue="f"></f:selectItem>
+								<f:selectItem itemLabel="Mental" itemValue="m"></f:selectItem>
+								<f:selectItem itemLabel="Auditiva" itemValue="a"></f:selectItem>
+								<f:selectItem itemLabel="Visual" itemValue="v"></f:selectItem>
+								<f:selectItem itemLabel="Múltipla" itemValue="u"></f:selectItem>
+								
+								</p:selectOneRadio>
+							</p:panel>  
+						
+					 	</p:outputPanel> 
+												                  
                   
                  </p:tab>
                  
@@ -762,7 +764,7 @@
                          <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-12">
                     <h:commandButton action="#{PacienteController.gravarPaciente()}"   
-                    update=":formCADU:message,:formCADU:pnlCadPaciente" value="Cadastrar"
+                    update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Cadastrar"
                         styleClass="btn btn-sm btn-success" />
                 </div>
             </div>
@@ -825,7 +827,7 @@
                                     </f:facet>
 
                                     <p:commandButton 
-                                                     oncomplete="dlgbuscaescola.hide()" icon="podeGravar"
+                                                     oncomplete="PF('dlgbuscaescola').hide()" icon="podeGravar"
                                                      id="confirmar">
 
                                         <f:setPropertyActionListener value="#{busca.codEscola}"
@@ -895,13 +897,13 @@
                                     </f:facet>
 
                                     <p:commandButton 
-                                                     oncomplete="dlgbuscaescolaridade.hide()" icon="podeGravar"
+                                                     oncomplete="PF('dlgbuscaescolaridade').hide();" icon="podeGravar"
                                                      id="confirmar">
 
                                         <f:setPropertyActionListener value="#{busca.codescolaridade}"
                                                                      target="#{PacienteController.escolaridade.codescolaridade}" />
                                         <f:setPropertyActionListener value="#{busca.descescolaridade}"
-                                                                     target="#{PacienteController.escolaridade.descescolaridade}" />
+                                                                     target="#{PacienteController.escolaridadeSuggestion}" />
                                         <p:tooltip for="confirmar" value="Selecionar Escolaridade"></p:tooltip>
                                     </p:commandButton>
                                 </p:column>
@@ -963,7 +965,7 @@
                                     </f:facet>
 
                                     <p:commandButton 
-                                                     oncomplete="dlgbuscaprofissao.hide()" icon="podeGravar"
+                                                     oncomplete="PF('dlgbuscaprofissao').hide()" icon="podeGravar"
                                                      id="confirmar">
 
                                         <f:setPropertyActionListener value="#{busca.codprofissao}"
@@ -1033,7 +1035,7 @@
                                     </f:facet>
 
                                     <p:commandButton 
-                                                     oncomplete="dlgbuscaencaminhado.hide()" icon="podeGravar"
+                                                     oncomplete="PF('dlgbuscaencaminhado').hide()" icon="podeGravar"
                                                      id="confirmar">
 
                                         <f:setPropertyActionListener value="#{busca.codencaminhado}"
@@ -1102,7 +1104,7 @@
                                     </f:facet>
 
                                     <p:commandButton 
-                                                     oncomplete="dlgbuscacomochegou.hide()" icon="podeGravar"
+                                                     oncomplete="PF('dlgbuscacomochegou').hide();" icon="podeGravar"
                                                      id="confirmar">
 
                                         <f:setPropertyActionListener value="#{busca.codformatransporte}"
@@ -1178,7 +1180,7 @@
                                     </f:facet>
 
                                     <p:commandButton 
-                                                     oncomplete="dlgbuscaatendimento.hide()" icon="podeGravar"
+                                                     oncomplete="PF('dlgbuscaatendimento').hide()" icon="podeGravar"
                                                      id="confirmar">
 
                                         <f:setPropertyActionListener value="#{busca.id_pessoa}"

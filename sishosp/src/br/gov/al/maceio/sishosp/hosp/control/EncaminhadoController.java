@@ -16,136 +16,93 @@ import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
 
 public class EncaminhadoController {
 	
-	private EncaminhadoBean encaminhadogeral;
-	private EncaminhadoBean encaminhadoselecionado,encaminhadoselecionadoaux, encaminhadobuscarapida, encaminhadoselecionadocomposicao, encaminhadoSelecionadoExclusao;
-	private EncaminhadoBean encaminhadoSuggestion;
+	private EncaminhadoBean encaminhado;
 
 	
 	public EncaminhadoController(){
-		
+    encaminhado = new EncaminhadoBean();
 		
 	}
 	
 	
-public void buscaEncaminhadoCod(Integer codencaminhado) throws Exception {
-		
-		EncaminhadoBean encaminhado = new EncaminhadoBean();
-		
-		
-		Integer in = (Integer)Integer.valueOf(codencaminhado);	
-		
-		EncaminhadoDAO icdao = new EncaminhadoDAO();
-		
-		encaminhado=icdao.buscaencaminhadocodigo(Integer.valueOf(codencaminhado)); 
-		if (encaminhado.getCodencaminhado()!=null){
-		encaminhadoselecionado = encaminhado;
-		encaminhadobuscarapida = new EncaminhadoBean();
-		
-		encaminhadogeral  = encaminhadoselecionado;
-		 icdao = new EncaminhadoDAO();
+	public void gravarEncaminhado() throws ProjetoException {
+        EncaminhadoDAO udao = new EncaminhadoDAO();    
+                boolean cadastrou = udao.cadastrar(encaminhado);
+
+                if(cadastrou == true) {
+                	limparDados();
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Encaminhado cadastrado com sucesso!", "Sucesso");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+
+                    
+
+                } else {
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Ocorreu um erro durante o cadastro!", "Erro");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+
+ 
+                }
+            
+    }
 	
-		}
-		else
-		{
-			encaminhadobuscarapida = new EncaminhadoBean();
-			FacesMessage message = new FacesMessage(
-					" Código do Encaminhado incorreto!");
-			 FacesContext.getCurrentInstance().addMessage(null, message);
-		}
+	public void alterarEncaminhado() throws ProjetoException {
+
+		EncaminhadoDAO rdao = new EncaminhadoDAO();
+         boolean alterou = rdao.alterar(encaminhado);
+
+         if(alterou == true) {
+
+             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                 "Encaminhado alterado com sucesso!", "Sucesso");
+             FacesContext.getCurrentInstance().addMessage(null, msg);
+
+             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+         } else {
+             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                 "Ocorreu um erro durante o cadastro!", "Erro");
+             FacesContext.getCurrentInstance().addMessage(null, msg);
+
+             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+         }
 		
-		
-	}   
+	}
 	
-	public List<EncaminhadoBean> completeText(String query) throws ProjetoException {
-		 List<EncaminhadoBean> result = new ArrayList<EncaminhadoBean>();
-	        EncaminhadoDAO icdao = new EncaminhadoDAO();
-          result = icdao.buscaencaminhado(query);    
-	        return result;
-	    }
-	    public void onItemSelect(SelectEvent event) throws Exception {
-	    	
-	    	EncaminhadoBean prodsel = new EncaminhadoBean();
-	    	prodsel =(EncaminhadoBean) event.getObject();
-	    	
-	    	EncaminhadoDAO dao = new EncaminhadoDAO();
-	    	buscaEncaminhadoCod(prodsel.getCodencaminhado());
-	    	encaminhadoSuggestion = new EncaminhadoBean();
-	    	encaminhadoSuggestion = null;
-	       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", prodsel.getDescricao()));
-	    }
+	public void excluirEncaminhado() throws ProjetoException {
+		EncaminhadoDAO udao = new EncaminhadoDAO();
+
+        boolean excluio = udao.excluir(encaminhado);
+
+        if(excluio == true) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Encaminhado excluido com sucesso!", "Sucesso");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+
+            //RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Ocorreu um erro durante a exclusao!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+
+            //RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+        }
+	}
+	
+	public void limparDados(){
+		
+		 encaminhado = new EncaminhadoBean();
+	}
+	
+	public EncaminhadoBean getEncaminhado() {
+		return encaminhado;
+	}
 
 
-		public EncaminhadoBean getEncaminhadogeral() {
-			return encaminhadogeral;
-		}
+	public void setEncaminhado(EncaminhadoBean encaminhado) {
+		this.encaminhado = encaminhado;
+	}
 
-
-		public void setEncaminhadogeral(EncaminhadoBean encaminhadogeral) {
-			this.encaminhadogeral = encaminhadogeral;
-		}
-
-
-		public EncaminhadoBean getEncaminhadoselecionado() {
-			return encaminhadoselecionado;
-		}
-
-
-		public void setEncaminhadoselecionado(EncaminhadoBean encaminhadoselecionado) {
-			this.encaminhadoselecionado = encaminhadoselecionado;
-		}
-
-
-		public EncaminhadoBean getEncaminhadoselecionadoaux() {
-			return encaminhadoselecionadoaux;
-		}
-
-
-		public void setEncaminhadoselecionadoaux(
-				EncaminhadoBean encaminhadoselecionadoaux) {
-			this.encaminhadoselecionadoaux = encaminhadoselecionadoaux;
-		}
-
-
-		public EncaminhadoBean getEncaminhadobuscarapida() {
-			return encaminhadobuscarapida;
-		}
-
-
-		public void setEncaminhadobuscarapida(EncaminhadoBean encaminhadobuscarapida) {
-			this.encaminhadobuscarapida = encaminhadobuscarapida;
-		}
-
-
-		public EncaminhadoBean getEncaminhadoselecionadocomposicao() {
-			return encaminhadoselecionadocomposicao;
-		}
-
-
-		public void setEncaminhadoselecionadocomposicao(
-				EncaminhadoBean encaminhadoselecionadocomposicao) {
-			this.encaminhadoselecionadocomposicao = encaminhadoselecionadocomposicao;
-		}
-
-
-		public EncaminhadoBean getEncaminhadoSelecionadoExclusao() {
-			return encaminhadoSelecionadoExclusao;
-		}
-
-
-		public void setEncaminhadoSelecionadoExclusao(
-				EncaminhadoBean encaminhadoSelecionadoExclusao) {
-			this.encaminhadoSelecionadoExclusao = encaminhadoSelecionadoExclusao;
-		}
-
-
-		public EncaminhadoBean getEncaminhadoSuggestion() {
-			return encaminhadoSuggestion;
-		}
-
-
-		public void setEncaminhadoSuggestion(EncaminhadoBean encaminhadoSuggestion) {
-			this.encaminhadoSuggestion = encaminhadoSuggestion;
-		}
-	    
-	    
 }
+
+

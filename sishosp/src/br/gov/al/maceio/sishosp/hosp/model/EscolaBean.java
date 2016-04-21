@@ -3,7 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.model;
 public class EscolaBean {
 	private Integer codEscola;
 	private String descescola;
-	private Integer codtipoescola;
+	private Integer codtipoescola;	
+	private String desctipoescola;
 	
 	public EscolaBean(){
 		
@@ -27,6 +28,14 @@ public class EscolaBean {
 	}
 	public void setCodtipoescola(Integer codtipoescola) {
 		this.codtipoescola = codtipoescola;
+	}
+
+	public String getDesctipoescola() {
+		return desctipoescola;
+	}
+
+	public void setDesctipoescola(String desctipoescola) {
+		this.desctipoescola = desctipoescola;
 	}
 	
 }

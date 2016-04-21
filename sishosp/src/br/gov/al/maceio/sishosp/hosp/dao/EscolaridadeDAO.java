@@ -35,8 +35,8 @@ public class EscolaridadeDAO {
                         .getCurrentInstance().getExternalContext().getSessionMap()
                         .get("obj_paciente");*/
 
-                String sql = "insert into hosp.escolaridade (descescolaridade, dtacadastro)"
-                		+ " values (?, CURRENT_TIMESTAMP)";
+                String sql = "insert into hosp.escolaridade (descescolaridade)"
+                		+ " values (?)";
                 //returning id_paciente
                     try {
                     	System.out.println("passou aqui 3");
@@ -57,6 +57,7 @@ public class EscolaridadeDAO {
                     stmt.execute();   
                     System.out.println("passou aqui 4");
                     conexao.commit();
+                    cadastrou = true;
                     conexao.close();
 
                     return cadastrou;

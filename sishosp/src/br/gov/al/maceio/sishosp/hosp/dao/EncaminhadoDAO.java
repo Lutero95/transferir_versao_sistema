@@ -35,8 +35,8 @@ public class EncaminhadoDAO {
                         .getCurrentInstance().getExternalContext().getSessionMap()
                         .get("obj_paciente");*/
 
-                String sql = "insert into hosp.encaminhado (descencaminhado, dtacadastro)"
-                		+ " values (?, CURRENT_TIMESTAMP)";
+                String sql = "insert into hosp.encaminhado (descencaminhado)"
+                		+ " values (?)";
                 //returning id_paciente
                     try {
                     	System.out.println("passou aqui 3");
@@ -57,6 +57,7 @@ public class EncaminhadoDAO {
                     stmt.execute();   
                     System.out.println("passou aqui 4");
                     conexao.commit();
+                    cadastrou = true;
                     conexao.close();
 
                     return cadastrou;
@@ -154,7 +155,7 @@ public class EncaminhadoDAO {
 
         		try {
         			  
-        			String sql = "select id_encaminhado, descencaminhado from hosp.encaminhado where id_encaminhado=? order by descencaminhado";
+        			String sql = "select id_encaminhado, descencaminhado from hosp.encaminhado where id_encaminhado = ? order by descencaminhado";
         			 
         			ps = conexao.prepareStatement(sql);
         			ps.setInt(1, i);
@@ -208,7 +209,7 @@ public class EncaminhadoDAO {
             					encaminhado.setDescencaminhado(rs.getString(2));
             					colecao.add(encaminhado);
             					
-            	;
+            	
             				
             				}
             				return colecao;

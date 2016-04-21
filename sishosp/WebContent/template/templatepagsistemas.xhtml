@@ -111,23 +111,26 @@
 					<p:menuitem value="Bloqueio"
 						url="/pages/sishosp/agendaPaciente.faces" />
 				</p:submenu>
-				<p:menuitem value="Bairros" onclick="PF('dlgCadBairro').show();" />
+				<!-- <p:menuitem value="Bairros" onclick="PF('dlgCadBairro').show();" /> -->
 				<p:menuitem value="Convênios" onclick="PF('dlgCadConvenio').show();" />
 				<p:menuitem value="CBO" onclick="PF('dlgCadTipoEscola').show();"  />
 				<p:menuitem value="Escolaridades" onclick="PF('dlgCadEscolaridade').show();" />
 				<p:menuitem value="Escolas" onclick="PF('dlgCadEscola').show();" />
 				<p:menuitem value="Equipes" onclick="PF('dlgCadEquipe').show();" />
 				<p:menuitem value="Feriados" onclick="PF('dlgCadFeriado').show();"/>
+				<p:menuitem value="Forma Transporte" onclick="PF('dlgCadTransporte').show();"/>
 				<p:menuitem value="Especialidades" onclick="PF('dlgCadEspecialidade').show();" />
 				<p:menuitem value="Grupos" onclick="PF('dlgCadGrupo').show();" />
-				<p:menuitem value="Logradouros" onclick="PF('dlgCadLogradouro').show();"  />
+				<!--<p:menuitem value="Logradouros" onclick="PF('dlgCadLogradouro').show();" actionListener="#{PacienteController.limparDados()}" />-->
 				<p:menuitem value="Laudos" onclick="PF('dlgCadLaudo').show();"  />
-				<p:menuitem value="Municipios" onclick="PF('dlgCadMunicipio').show();"  />
+				<p:menuitem value="Municipios" onclick="PF('dlgCadMunicipio').show();" actionListener="#{PacienteController.limparDados()}" update=":formMuni" process="@this,:formMuni"  />
 				<p:menuitem value="Profissionais" onclick="PF('dlgCadProfissional').show();"  />
-				<p:menuitem value="Profissões" onclick="PF('dlgCadProfissional').show();"  />
+				<p:menuitem value="Profissões" onclick="PF('dlgCadProfissoes').show();"  />
 				<p:menuitem value="Procedimentos" onclick="PF('dlgCadProcedimento').show();"  />
 				<p:menuitem value="Programas"  onclick="PF('dlgCadPrograma').show();"  />
+				<p:menuitem value="Raça" onclick="PF('dlgCadRaca').show();"/>
 				<p:menuitem value="Tipos de escolas" onclick="PF('dlgCadTipoEscola').show();"  />
+				<p:menuitem value="Tipos de encaminhamento" onclick="PF('dlgCadEncaminhado').show();"  />
 				<p:menuitem value="Tipos de atendimento" onclick="PF('dlgCadTipoAtendimento').show();"  />
 				
 				<p:separator style="width:230px;height:5px;" />

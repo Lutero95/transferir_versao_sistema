@@ -13,7 +13,7 @@ public class PacienteBean {
     private String nomeMae;
     private String nomePai;
     private String sangue;
-    private String conjugue;
+    private String conjuge;
     private String associado;
     private String trabalha;
     private String corRaca;
@@ -22,8 +22,8 @@ public class PacienteBean {
     private Integer codProfissao;
     private Integer codRaca;
     
-   
-    private boolean deficiencia;
+    
+    private String deficiencia;
     private String tipoDeficiencia;
     
     //ENCAMINHADO ATRIBUTOS
@@ -84,6 +84,8 @@ public class PacienteBean {
         encaminhado = new EncaminhadoBean();
         profissao = new ProfissaoBean();
         
+        
+        
     }
 
 	public Long getId_paciente() {
@@ -136,12 +138,12 @@ public class PacienteBean {
 		this.nomePai = nomePai;
 	}
 
-	public String getConjugue() {
-		return conjugue;
+	public String getConjuge() {
+		return conjuge;
 	}
 
-	public void setConjugue(String conjugue) {
-		this.conjugue = conjugue;
+	public void setConjuge(String conjuge) {
+		this.conjuge = conjuge;
 	}
 
 	public Double getCpf() {
@@ -344,14 +346,6 @@ public class PacienteBean {
 			this.codFormaTransporte = codFormaTransporte;
 		}
 
-		public boolean getDeficiencia() {
-			return deficiencia;
-		}
-
-		public void setDeficiencia(boolean deficiencia) {
-			this.deficiencia = deficiencia;
-		}
-
 		public String getTipoDeficiencia() {
 			return tipoDeficiencia;
 		}
@@ -502,7 +496,14 @@ public class PacienteBean {
 		public void setCodRaca(Integer codRaca) {
 			this.codRaca = codRaca;
 		}
-		
+
+		public String getDeficiencia() {
+			return deficiencia;
+		}
+
+		public void setDeficiencia(String deficiencia) {
+			this.deficiencia = deficiencia;
+		}
 		
 		
 		

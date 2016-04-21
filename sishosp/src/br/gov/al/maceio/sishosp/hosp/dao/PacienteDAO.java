@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Date;
 
 import javax.faces.context.FacesContext;
@@ -34,23 +35,16 @@ public class PacienteDAO {
                         .getCurrentInstance().getExternalContext().getSessionMap()
                         .get("obj_paciente");*/
                 
-                /* cep, numero, complemento, referencia, rg, oe, "
-                		+ "dtaexpedicaoorg, cpf, cns, localtrabalha, nomeresp,rgresp, "
-                		+ "cpfresp,dtanascimentoresp, cartorio, folha, livro, dtaregistro, "
-                		+ "reservista, ctps, serie, dgserie, pis, deficiencia, trabalha, "
-                		+ "logradouro, cidade, uf, bairro*/
-               // , dtanascimento  , cep, uf, cidade, logradouro, cidade, bairro, numero, complemento, referencia 
+              
                 String sql = "insert into hosp.pacientes (dtacadastro, nome, dtanascimento, estcivil, sexo, sangue, "
-                		+ "pai, mae, conjuge, cep, uf, cidade, bairro, logradouro, numero, complemento, referencia, rg, oe, dtaexpedicaorg, cpf, cns, protreab, "
-                		+ "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, trabalha, localtrabalha, codparentesco, "
-                		+ "nomeresp, rgresp, cpfresp, dtanascimentoresp) "
+                		+ "pai, mae, conjuge,codraca, cep, uf, cidade, bairro, logradouro, numero, complemento, referencia, telres, telcel, teltrab, telorelhao, rg, oe, dtaexpedicaorg, cpf, cns, protreab, "
+                		+ "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, contribuinte, codescolaridade, codescola, codprofissao, trabalha, localtrabalha, codparentesco, "
+                		+ "nomeresp, rgresp, cpfresp, dtanascimentoresp, codencaminhado, codformatransporte ,deficiencia, tipodeficiencia)"
                 		+ " values (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ? , ? , "
-                		+ "? , ? , ?, ?, ?, ? , ? , ?, ? , ?) returning id_paciente";
+                		+ "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                     try {
-                    	System.out.println("passou aqui 3");
-                    	System.out.println("|WAL|"+ paciente.getNome());
-                        conexao = ConnectionFactory.getConnection();
+                    	conexao = ConnectionFactory.getConnection();
                         PreparedStatement stmt = conexao.prepareStatement(sql);
                         stmt.setString(1, paciente.getNome().toUpperCase().trim());
                         stmt.setDate(2, new java.sql.Date(paciente.getDtanascimento().getTime()));
@@ -59,66 +53,105 @@ public class PacienteDAO {
                         stmt.setString(5, paciente.getSangue());
                         stmt.setString(6, paciente.getNomePai().toUpperCase().trim());
                         stmt.setString(7, paciente.getNomeMae().toUpperCase().trim());
-                        stmt.setString(8, paciente.getConjugue().toUpperCase().trim());
-                        //stmt.setInt(9, paciente.getCorRaca());
-                        stmt.setInt(9, paciente.getEndereco().getCep());
-                        stmt.setString(10, paciente.getEndereco().getUf().toUpperCase().trim());
-                        stmt.setString(11, paciente.getEndereco().getMunicipio().toUpperCase().trim());
-                        stmt.setString(12, paciente.getEndereco().getBairro().toUpperCase().trim());
-                        stmt.setString(13, paciente.getEndereco().getLogradouro().toUpperCase().trim());
-                        stmt.setString(14, paciente.getEndereco().getNumero().toUpperCase().trim());
-                        stmt.setString(15, paciente.getEndereco().getComplemento().toUpperCase().trim());
-                        stmt.setString(16, paciente.getEndereco().getReferencia().toUpperCase().trim());
-                        stmt.setString(17, paciente.getRg().toUpperCase().trim());
-                        stmt.setString(18, paciente.getOe().toUpperCase().trim());
-                        stmt.setDate(19, new java.sql.Date(paciente.getDataExpedicao1().getTime()));
-                        stmt.setDouble(20, paciente.getCpf());
-                        stmt.setString(21, paciente.getCns().toUpperCase().trim());
-                        stmt.setDouble(22, paciente.getProtant());
-                        stmt.setString(23, paciente.getReservista().toUpperCase().trim());
-                        stmt.setInt(24, paciente.getCtps());
-                        stmt.setInt(25, paciente.getSerie());
-                        stmt.setString(26, paciente.getPis().toUpperCase().trim());
-                        stmt.setString(27, paciente.getCartorio().toUpperCase().trim());
-                        stmt.setString(28, paciente.getNumeroCartorio().toUpperCase().trim());
-                        stmt.setString(29, paciente.getLivro().toUpperCase().trim());
-                        stmt.setInt(30, paciente.getFolha());
-                        stmt.setDate(31, new java.sql.Date(paciente.getDataExpedicao2().getTime()));
-                        //stmt.setString(32, paciente.getAssociado().toUpperCase().trim());
-                        //stmt.setInt(33, paciente.getEscolaridade().getCodescolaridade());
-                        //stmt.setInt(34, paciente.getEscola().getCodescola());
-                        //stmt.setInt(35, paciente.getProfissao().getCodprofissao());
-                        stmt.setString(32, paciente.getTrabalha().toUpperCase().trim());
-                        stmt.setString(33, paciente.getLocaltrabalha().toUpperCase().trim());
-                        stmt.setInt(34, paciente.getCodparentesco());
-                        stmt.setString(35, paciente.getNomeresp().toUpperCase().trim());
-                        stmt.setString(36, paciente.getRgresp().toUpperCase().trim());
-                        stmt.setDouble(37, paciente.getCpfresp());
-                        stmt.setDate(38, new java.sql.Date(paciente.getDataNascimentoresp().getTime()));
-                        //stmt.setInt(39, paciente.getEncaminhado().getCodencaminhado());
-                        //stmt.setInt(40, paciente.getCodFormaTransporte());
-                        //stmt.setString(41, paciente.getDeficiencia());
-                        //stmt.setString(42, paciente.getTipoDeficiencia());
+                        stmt.setString(8, paciente.getConjuge().toUpperCase().trim());
+                        stmt.setInt(9, paciente.getCodRaca());
+                        stmt.setInt(10, paciente.getEndereco().getCep());
+                        stmt.setString(11, paciente.getEndereco().getUf().toUpperCase().trim());
+                        stmt.setString(12, paciente.getEndereco().getMunicipio().toUpperCase().trim());
+                        stmt.setString(13, paciente.getEndereco().getBairro().toUpperCase().trim());
+                        stmt.setString(14, paciente.getEndereco().getLogradouro().toUpperCase().trim());
+                        stmt.setString(15, paciente.getEndereco().getNumero().toUpperCase().trim());
+                        stmt.setString(16, paciente.getEndereco().getComplemento().toUpperCase().trim());
+                        stmt.setString(17, paciente.getEndereco().getReferencia().toUpperCase().trim());
+                        if (paciente.getEndereco().getTelefoneres() == null) {
+                       	 stmt.setNull(18, Types.CHAR);
+           			    } else {
+           				 stmt.setString(18, paciente.getEndereco().getTelefoneres());
+           			    }
+                        if (paciente.getEndereco().getTelefonecel() == null) {
+                          	 stmt.setNull(19, Types.CHAR);
+              			} else {
+              		     stmt.setString(19, paciente.getEndereco().getTelefonecel());
+              			}
+                        if (paciente.getEndereco().getTelefonetrab() == null) {
+                         	 stmt.setNull(20, Types.CHAR);
+             			} else {
+             		     stmt.setString(20, paciente.getEndereco().getTelefonetrab());
+             			}  
+                        if (paciente.getEndereco().getTelefoneorelhao() == null) {
+                        	 stmt.setNull(21, Types.CHAR);
+            			} else {
+            		     stmt.setString(21, paciente.getEndereco().getTelefoneorelhao());
+            			}
+                        stmt.setString(22, paciente.getRg().toUpperCase().trim());
+                        stmt.setString(23, paciente.getOe().toUpperCase().trim());
+                        stmt.setDate(24, new java.sql.Date(paciente.getDataExpedicao1().getTime()));
+                        stmt.setDouble(25, paciente.getCpf());
+                        stmt.setString(26, paciente.getCns().toUpperCase().trim());
+                        stmt.setDouble(27, paciente.getProtant());
+                        stmt.setString(28, paciente.getReservista().toUpperCase().trim());
+                        stmt.setInt(29, paciente.getCtps());
+                        stmt.setInt(30, paciente.getSerie());
+                        stmt.setString(31, paciente.getPis().toUpperCase().trim());
+                        stmt.setString(32, paciente.getCartorio().toUpperCase().trim());
+                        stmt.setString(33, paciente.getNumeroCartorio().toUpperCase().trim());
+                        stmt.setString(34, paciente.getLivro().toUpperCase().trim());
+                        stmt.setInt(35, paciente.getFolha());
+                        stmt.setDate(36, new java.sql.Date(paciente.getDataExpedicao2().getTime()));
+                        stmt.setString(37, paciente.getAssociado().toUpperCase().trim());
+                        if (paciente.getEscolaridade().getCodescolaridade() == null) {
+                       	 stmt.setNull(38, Types.INTEGER);
+           			    } else {
+           				 stmt.setInt(38, paciente.getEscolaridade().getCodescolaridade());
+           			    }
+                        if (paciente.getEscola().getCodEscola() == null) {
+                        	 stmt.setInt(39, Types.INTEGER);
+            			} else {
+            				 stmt.setInt(39, paciente.getEscola().getCodEscola());
+            			}
+                        if (paciente.getProfissao().getCodprofissao() == null) {
+                       	 stmt.setNull(40, Types.INTEGER);
+           			    } else {
+           				 stmt.setInt(40, paciente.getProfissao().getCodprofissao());
+           			    }
+                        stmt.setString(41, paciente.getTrabalha().toUpperCase().trim());
+                        stmt.setString(42, paciente.getLocaltrabalha().toUpperCase().trim());
+                        stmt.setInt(43, paciente.getCodparentesco());
+                        stmt.setString(44, paciente.getNomeresp().toUpperCase().trim());
+                        stmt.setString(45, paciente.getRgresp().toUpperCase().trim());
+                        stmt.setDouble(46, paciente.getCpfresp());
+                        stmt.setDate(47, new java.sql.Date(paciente.getDataNascimentoresp().getTime()));
+                        if (paciente.getEncaminhado().getCodencaminhado() == null) {
+                      	 stmt.setNull(48, Types.INTEGER);
+          			    } else {
+          				 stmt.setInt(48, paciente.getEncaminhado().getCodencaminhado());
+          			    }
+                        if (paciente.getCodFormaTransporte() == null) {
+                     	 stmt.setNull(49, Types.INTEGER);
+         			    } else {
+         				 stmt.setInt(49, paciente.getFormatransporte().getCodformatransporte());
+         			    }
+                        stmt.setString(50, paciente.getDeficiencia().toUpperCase().trim());
+                        if (paciente.getTipoDeficiencia() == null) {
+                    	 stmt.setNull(51, Types.CHAR);
+        			    } else {
+        				 stmt.setString(51, paciente.getTipoDeficiencia());
+        			    }
                         
                         
-                        
-     
-                        
-                        //stmt.setString(2, paciente.getCpf().replaceAll("[^0-9]", ""));  
-                        //stmt.setBoolean(3, true);
-                        //stmt.setInt(3, paciente.getIdpessoa());
-                        ResultSet rs = stmt.executeQuery();  
-                        if(rs.next()) { 
+                        //ResultSet rs = stmt.executeQuery();  
+                       /* if(rs.next()) { 
                     PacienteBean p = paciente;
                     String idRetorno = null;
                     idRetorno = String.valueOf(rs.getLong("id_paciente"));
                     p.setId_paciente(Long.parseLong(idRetorno));
                     System.out.println("|THU1|"+ idRetorno);
-                    }
+                    }*/
                     stmt.execute();   
                     System.out.println("|THU|"+ paciente.getNome());
                     System.out.println("passou aqui 4");
                     conexao.commit();
+                    cadastrou = true;
                     conexao.close();
 
                     return cadastrou;
@@ -180,7 +213,7 @@ public class PacienteDAO {
             
             public ArrayList<PacienteBean> listaPacientes() {
 
-                String sql = "select id_paciente, nome, lpad(trim(to_char(cpf,'99999999999')),11,'0') as cpf, rg, id_raca  from hosp.pacientes order by nome";
+                String sql = "select id_paciente, nome, lpad(trim(to_char(cpf,'99999999999')),11,'0') as cpf, rg from hosp.pacientes order by nome";
 
                 ArrayList<PacienteBean> lista = new ArrayList();
 
@@ -196,7 +229,7 @@ public class PacienteDAO {
     	                p.setNome(rs.getString("nome").toLowerCase());    
     	                p.setCpf(rs.getDouble("cpf")); 
     	                p.setRg(rs.getString("rg").toLowerCase()); 
-    	                p.setCodRaca(rs.getInt("id_raca"));
+    	                
     	                
     	                lista.add(p);
                     }

@@ -20,7 +20,21 @@
 	
 		<managed-bean-scope>session</managed-bean-scope></managed-bean>
 		
-			<managed-bean>
+		  <managed-bean>
+		<description>O Bean Endereco Controller</description>
+		<managed-bean-name>EnderecoController</managed-bean-name>
+		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.EnderecoController</managed-bean-class>
+	
+		<managed-bean-scope>session</managed-bean-scope></managed-bean>
+		
+		  <managed-bean>
+		<description>O Bean Encaminhado Controller</description>
+		<managed-bean-name>EncaminhadoController</managed-bean-name>
+		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.EncaminhadoController</managed-bean-class>
+	
+		<managed-bean-scope>session</managed-bean-scope></managed-bean>
+		
+		<managed-bean>
 		<description>O Bean Escola Controller</description>
 		<managed-bean-name>EscolaController</managed-bean-name>
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.EscolaController</managed-bean-class>
@@ -35,24 +49,16 @@
 		<managed-bean-scope>session</managed-bean-scope></managed-bean>
 		
 		<managed-bean>
-		<description>O Bean Profissao Controller</description>
-		<managed-bean-name>ProfissaoController</managed-bean-name>
-		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.ProfissaoController</managed-bean-class>
+		<description>O Bean Forma Transporte Controller</description>
+		<managed-bean-name>FormaTransporteController</managed-bean-name>
+		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.FormaTransporteController</managed-bean-class>
 	
 		<managed-bean-scope>session</managed-bean-scope></managed-bean>
 		
 		<managed-bean>
-		<description>O Bean Encaminhado Controller</description>
-		<managed-bean-name>EncaminhadoController</managed-bean-name>
-		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.EncaminhadoController</managed-bean-class>
-	
-		<managed-bean-scope>session</managed-bean-scope></managed-bean>
-		
-		
-	    <managed-bean>
-		<description>O Bean Transporte Controller</description>
-		<managed-bean-name>FormaTransporteController</managed-bean-name>
-		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.FormaTransporteController</managed-bean-class>
+		<description>O Bean Profissao Controller</description>
+		<managed-bean-name>ProfissaoController</managed-bean-name>
+		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.ProfissaoController</managed-bean-class>
 	
 		<managed-bean-scope>session</managed-bean-scope></managed-bean>
       

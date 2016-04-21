@@ -9,154 +9,182 @@ import javax.faces.context.FacesContext;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 
 public class EscolaController {
 	
-	private EscolaBean escolageral;
-	private EscolaBean escolaselecionado,escolaselecionadoaux, escolabuscarapida, escolaselecionadocomposicao, produtoSelecionadoExclusao;
-	private EscolaBean escolaSuggestion;
+	private EscolaBean escola;
+	
+	//LISTAS
+	private List<EscolaBean> listaTipoEscola;
 	
 	public EscolaController(){
 		
+		escola = new EscolaBean();
+		
+		 listaTipoEscola = new ArrayList<>();
+	     listaTipoEscola = null;
+	}
+	
+	public void gravarEscola() throws ProjetoException {
+		EscolaDAO udao = new EscolaDAO();    
+                boolean cadastrou = udao.cadastrar(escola);
+
+                if(cadastrou == true) {
+                	limparDados();
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Escola cadastrado com sucesso!", "Sucesso");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+
+                    
+
+                } else {
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Ocorreu um erro durante o cadastro!", "Erro");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+
+ 
+                }
+            
+    }
+	
+	public void alterarEscola() throws ProjetoException {
+
+		EscolaDAO rdao = new EscolaDAO();
+         boolean alterou = rdao.alterar(escola);
+
+         if(alterou == true) {
+
+             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                 "Escola alterado com sucesso!", "Sucesso");
+             FacesContext.getCurrentInstance().addMessage(null, msg);
+
+             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+         } else {
+             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                 "Ocorreu um erro durante o cadastro!", "Erro");
+             FacesContext.getCurrentInstance().addMessage(null, msg);
+
+             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+         }
 		
 	}
 	
+	public void excluirEscola() throws ProjetoException {
+		EscolaDAO udao = new EscolaDAO();
+
+        boolean excluio = udao.excluir(escola);
+
+        if(excluio == true) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Escola excluido com sucesso!", "Sucesso");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+
+            //RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Ocorreu um erro durante a exclusao!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+
+            //RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+        }
+	}
+	
+	public void gravarTipoEscola() throws ProjetoException {
+		EscolaDAO udao = new EscolaDAO();  
+		
+                boolean cadastrou = udao.cadastrarTipoEscola(escola);
+                
+                if(cadastrou == true) {
+                	limparDados();
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Tipo Escola cadastrado com sucesso!", "Sucesso");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+
+                    
+
+                } else {
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Ocorreu um erro durante o cadastro!", "Erro");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+
+ 
+                }
+            
+    }
+	
+	public void alterarTipoEscola() throws ProjetoException {
+
+		EscolaDAO rdao = new EscolaDAO();
+         boolean alterou = rdao.alterarTipoEscola(escola);
+
+         if(alterou == true) {
+
+             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                 "Tipo Escola alterado com sucesso!", "Sucesso");
+             FacesContext.getCurrentInstance().addMessage(null, msg);
+
+             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+         } else {
+             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                 "Ocorreu um erro durante o cadastro!", "Erro");
+             FacesContext.getCurrentInstance().addMessage(null, msg);
+
+             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+         }
+		
+	}
+	
+	public void excluirTipoEscola() throws ProjetoException {
+		EscolaDAO udao = new EscolaDAO();
+
+        boolean excluio = udao.excluirTipoEscola(escola);
+
+        if(excluio == true) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Tipo Escola excluido com sucesso!", "Sucesso");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+
+            //RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Ocorreu um erro durante a exclusao!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+
+            //RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+        }
+	}
+	
+	public void limparDados(){
+		escola = new EscolaBean();
+	
+	}
+	
+
+	public EscolaBean getEscola() {
+		return escola;
+	}
+
+	public void setEscola(EscolaBean escola) {
+		this.escola = escola;
+	}
+
+	public List<EscolaBean> getListaTipoEscola() {
+		if(listaTipoEscola == null) {
+			
+            EscolaDAO fdao = new EscolaDAO();
+            listaTipoEscola  = fdao.listaTipoEscola(); 
+        }
+		return listaTipoEscola;
+	}
+
+	public void setListaTipoEscola(List<EscolaBean> listaTipoEscola) {
+		this.listaTipoEscola = listaTipoEscola;
+	}
 	
 	
-	public void buscaEscolaCod(Integer codescola) throws Exception {
-		
-		EscolaBean escola = new EscolaBean();
-		
-		
-		Integer in = (Integer)Integer.valueOf(codescola);	
-		
-		EscolaDAO icdao = new EscolaDAO();
-		
-		escola=icdao.buscaescolacodigo(Integer.valueOf(codescola)); 
-		if (escola.getCodEscola()!=null){
-		escolaselecionado = escola;
-		escolabuscarapida = new EscolaBean();
-		
-		escolageral  = escolaselecionado;
-		 icdao = new EscolaDAO();
-	
-		}
-		else
-		{
-			escolabuscarapida = new EscolaBean();
-			FacesMessage message = new FacesMessage(
-					" Código da Escola incorreto!");
-			 FacesContext.getCurrentInstance().addMessage(null, message);
-		}
-		
-		
-	}   
-	
-	public List<EscolaBean> completeText(String query) throws ProjetoException {
-		 List<EscolaBean> result = new ArrayList<EscolaBean>();
-	        EscolaDAO icdao = new EscolaDAO();
-          result = icdao.buscaescola(query);    
-	        return result;
-	    }
-	    public void onItemSelect(SelectEvent event) throws Exception {
-	    	
-	    	EscolaBean prodsel = new EscolaBean();
-	    	prodsel =(EscolaBean) event.getObject();
-	    	
-	    	EscolaDAO dao = new EscolaDAO();
-	    	buscaEscolaCod(prodsel.getCodEscola());
-	    	escolaSuggestion = new EscolaBean();
-	    	escolaSuggestion = null;
-	       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Item Selected", prodsel.getDescricao()));
-	    }
-
-
-
-		public EscolaBean getEscolateste() {
-			return escolageral;
-		}
-
-
-
-		public void setEscolateste(EscolaBean escolageral) {
-			this.escolageral = escolageral;
-		}
-
-
-
-		public EscolaBean getEscolaselecionado() {
-			return escolaselecionado;
-		}
-
-
-
-		public void setEscolaselecionado(EscolaBean escolaselecionado) {
-			this.escolaselecionado = escolaselecionado;
-		}
-
-
-
-		public EscolaBean getEscolaselecionadoaux() {
-			return escolaselecionadoaux;
-		}
-
-
-
-		public void setEscolaselecionadoaux(EscolaBean escolaselecionadoaux) {
-			this.escolaselecionadoaux = escolaselecionadoaux;
-		}
-
-
-
-		public EscolaBean getEscolabuscarapida() {
-			return escolabuscarapida;
-		}
-
-
-
-		public void setEscolabuscarapida(EscolaBean escolabuscarapida) {
-			this.escolabuscarapida = escolabuscarapida;
-		}
-
-
-
-		public EscolaBean getEscolaselecionadocomposicao() {
-			return escolaselecionadocomposicao;
-		}
-
-
-
-		public void setEscolaselecionadocomposicao(
-				EscolaBean escolaselecionadocomposicao) {
-			this.escolaselecionadocomposicao = escolaselecionadocomposicao;
-		}
-
-
-
-		public EscolaBean getProdutoSelecionadoExclusao() {
-			return produtoSelecionadoExclusao;
-		}
-
-
-
-		public void setProdutoSelecionadoExclusao(EscolaBean produtoSelecionadoExclusao) {
-			this.produtoSelecionadoExclusao = produtoSelecionadoExclusao;
-		}
-
-
-
-		public EscolaBean getEscolaSuggestion() {
-			return escolaSuggestion;
-		}
-
-
-
-		public void setEscolaSuggestion(EscolaBean escolaSuggestion) {
-			this.escolaSuggestion = escolaSuggestion;
-		}
-	     
 	    
 	    
 
