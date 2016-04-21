@@ -1,5 +1,5 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class Teste {
+public class Teste2 {
 walter
 }
