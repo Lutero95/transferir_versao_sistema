@@ -319,27 +319,27 @@
                 <h:outputLabel for="rg" value="RG"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <p:inputMask  disable="true" value="#{PacienteController.paciente.rg}" mask="9999999-9"  class="form-control"
+                    <h:inputText  disable="true" value="#{PacienteController.paciente.rg}" class="form-control"
                         id="rg"
-                        pt:placeholder="RG deve conter entre 8 digitos."
+                        pt:placeholder=" Digite seu RG"
                         required="false"
                         validatorMessage="RG deve conter entre 8 digitos."
                         requiredMessage="é necessário que você informe seu RG.">
-                         <f:validateLength minimum="9" maximum="9" />
-                        <f:ajax event="blur" render="m_rg" />
-                    </p:inputMask>
+                         <!-- <f:validateLength minimum="9" maximum="9" />  -->
+                      <!--  <f:ajax event="blur" render="m_rg" />-->
+                    </h:inputText>
                     <h:message id="m_rg" for="rg"
                         style="color:#D74937;" />
                 </div>
             </div>
             <div class="form-group">
-                <h:outputLabel for="oe" value="OE"
+                <h:outputLabel for="oe" value="Órgão Expedidor"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <h:inputText value="#{PacienteController.paciente.oe}" class="form-control"
+                    <p:inputMask value="#{PacienteController.paciente.oe}" class="form-control" mask="a**-a*"
                         id="oe"
-                        pt:placeholder="Digite aqui seu OE">
-                    </h:inputText>
+                        pt:placeholder="EX: SSP-AL">
+                    </p:inputMask>
                 </div>
             </div>
                         <div class="form-group">
@@ -379,12 +379,12 @@
                 <div class="col-sm-6">
                     <h:inputText value="#{PacienteController.paciente.cns}" class="form-control"
                         id="cns"
-                        pt:placeholder="Digite aqui seu cns entre 15 digitos"
+                        pt:placeholder="Digite aqui seu cns"
                         required="false"
                         validatorMessage="CNS deve conter entre 15 digitos."
                         requiredMessage="é necessário que você informe seu cns.">
-                        <f:validateLength minimum="15" maximum="15" /> 
-                        <f:ajax event="blur" render="m_cns" />
+                        <!--  <f:validateLength minimum="15" maximum="15" /> -->
+                        <!--  <f:ajax event="blur" render="m_cns" /> -->
                     </h:inputText>
                     <h:message id="m_cns" for="cns"
                         style="color:#D74937;" />
@@ -409,8 +409,8 @@
                         pt:placeholder="Digite aqui sua Reservista"
                         validatorMessage="Numero da Reservista deve conter entre 12 digitos."
                         requiredMessage="é necessário que você informe seu Numero da Reservista.">
-                        <f:validateLength minimum="12" maximum="12" />
-                          <f:ajax event="blur" render="m_reservista" /> 
+                          <!-- <f:validateLength minimum="12" maximum="12" /> -->
+                          <!-- <f:ajax event="blur" render="m_reservista" /> -->
                     </h:inputText>
                       <h:message id="m_reservista" for="reservista"
                         style="color:#D74937;" />
@@ -529,7 +529,7 @@
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>    <div class="col-sm-6">
                                             
-                                          <!--   autoUpdate="true"-->
+                                           <p:outputPanel autoUpdate="true">
                                            <p:autoComplete styleClass="col-sm-3 control-label" label="Digite a escolaridade" emptyMessage="Digite a Escolaridade" 
                                             id="escolacomplete1" style="font-size:12px"  
                                             value="#{PacienteController.escolaridadeSuggestion}" size="45" 
@@ -540,7 +540,7 @@
                                             <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect2}"/>
                                             </p:autoComplete> 
                                           
-                                            
+                                            </p:outputPanel>
                                         <!--  <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label"> 
                                             <p:inputText id="nome1" size="45" required="false" readonly="false"
                                                 requiredMessage="O campo nome é obrigatório."
@@ -914,7 +914,7 @@
 
                                         <f:setPropertyActionListener value="#{busca.codescolaridade}"
                                                                      target="#{PacienteController.escolaridade.codescolaridade}" />
-                                        <f:setPropertyActionListener value="#{busca.descescolaridade}"
+                                        <f:setPropertyActionListener value="#{busca}"
                                                                      target="#{PacienteController.escolaridadeSuggestion}" />
                                         <p:tooltip for="confirmar" value="Selecionar Escolaridade"></p:tooltip>
                                     </p:commandButton>

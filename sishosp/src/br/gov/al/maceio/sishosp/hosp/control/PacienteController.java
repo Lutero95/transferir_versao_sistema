@@ -195,7 +195,7 @@ public PacienteController(){
                 System.out.println("excluio");
                 
                 boolean excluio = udao.excluir(paciente);
-
+                listaPacientes = null;
                 if(excluio == true) {
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Paciente excluido com sucesso!", "Sucesso");

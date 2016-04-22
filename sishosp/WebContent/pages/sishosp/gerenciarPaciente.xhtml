@@ -28,11 +28,11 @@
                         <h:panelGrid columns="7" style="font-size:12px !important;">
                         <p:outputPanel autoUpdate="true">
                         <p:outputLabel value="Pesquisa: "/>
-						<p:inputText value="#{clienteController.descBusca}" id="campoBusca"/>
-						<p:commandButton value="Buscar" actionListener="#{clienteController.limpaListaClientes()}"
+						<p:inputText value="#{PacienteController.paciente.nome}" id="campoBusca"/>
+						<p:commandButton value="Buscar" actionListener="#{PacienteController.limparDados()}"
 						icon="ui-icon-search"
-						action="#{clienteController.buscarPorDescricao()}" />
-						<p:commandButton value="Limpar Busca" actionListener="#{clienteController.limparDadosBusca()}"
+						action="#{PacienteController.buscarescolaridade()}" />
+						<p:commandButton value="Limpar Busca" actionListener="#{PacienteController.limparDados()}"
 						style="margin-left:20px"/>
 						<br/>
 
@@ -79,8 +79,8 @@
                              selectionMode="single" selection="#{PacienteController.paciente}"
                              rowKey="#{tab.id_paciente}">
 
-                    <p:ajax event="rowSelect" oncomplete="PF('dlgacoes').show();"
-                            listener="#{PacienteController.onRowSelect}" />
+                    <!--  <p:ajax event="rowSelect" oncomplete="PF('dlgacoes').show();"
+                            listener="#{PacienteController.onRowSelect}" />-->
 
                     <p:column headerText="Cód." style="font-weight:bold;width:5%;">
                         <h:outputText value="#{tab.id_paciente}" />
@@ -121,7 +121,7 @@
             <p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
                       resizable="false">
 
-
+<h:form id="dlgexcluir">
                 <h:panelGrid columns="1">
 
 
@@ -135,8 +135,8 @@
                 <center>
 
                     <p:commandButton value="Sim" 
-                                     actionListener="#{PacienteController.excluirPaciente()}"
-                                     icon="ui-icon-check" style="font-size:14px;">
+                                     action="#{PacienteController.excluirPaciente()}"
+                                     icon="ui-icon-check" style="font-size:14px;" update=":frmmensagem:tabela">
                     </p:commandButton>
 
                     <p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
@@ -145,7 +145,7 @@
                 </center>
 
 
-
+</h:form>
             </p:dialog>
         
     
