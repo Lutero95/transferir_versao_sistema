@@ -161,9 +161,11 @@
                          <h:outputLabel for="cor" value="Cor/Raça"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">        
-                   <p:selectOneMenu disable="true"   value="#{PacienteController.paciente.codRaca}" id="cor">          
+                   <p:selectOneMenu disable="true"   value="#{PacienteController.paciente.codRaca}" id="cor"> 
+                   <f:selectItem itemLabel="Selecione" itemValue="0"/>         
                                             <f:selectItems value="#{PacienteController.listaRaca}" 
                                                 var="sis" itemLabel="#{sis.descRaca}" itemValue="#{sis.codRaca}" />
+                                                
                                              <f:ajax event="blur" render="m_cor" />
                                         </p:selectOneMenu>
                                          <h:message id="m_cor" for="cor"
@@ -186,7 +188,7 @@
                         required="false"
                         validatorMessage="Cep deve conter entre 8 digitos"
                         requiredMessage="é necessário que você informe seu cep.">
-                        <f:validateLength minimum="1" maximum="1" />
+                        <f:validateLength minimum="8" maximum="8" />
                         <f:ajax event="blur" render="m_inputcep" />
                     </h:inputText>
                     <h:message id="m_inputcep" for="inputcep"
@@ -234,6 +236,7 @@
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
                      <p:selectOneMenu value="#{PacienteController.paciente.endereco.municipio}" id="municipio">
+                      <f:selectItem itemLabel="Selecione" itemValue="0"/> 
                       <f:selectItems value="#{PacienteController.listaMunicipios}" 
                       var="sis" itemLabel="#{sis.municipio}" itemValue="#{sis.codmunicipio}" />
                                     
@@ -316,15 +319,15 @@
                 <h:outputLabel for="rg" value="RG"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <h:inputText  disable="true" value="#{PacienteController.paciente.rg}" class="form-control"
+                    <p:inputMask  disable="true" value="#{PacienteController.paciente.rg}" mask="9999999-9"  class="form-control"
                         id="rg"
-                        pt:placeholder="Ex:82996107590"
+                        pt:placeholder="RG deve conter entre 8 digitos."
                         required="false"
-                        validatorMessage="RG deve conter entre 11 digitos."
+                        validatorMessage="RG deve conter entre 8 digitos."
                         requiredMessage="é necessário que você informe seu RG.">
-                        <!-- <f:validateLength minimum="11" maximum="11" />-->
+                         <f:validateLength minimum="9" maximum="9" />
                         <f:ajax event="blur" render="m_rg" />
-                    </h:inputText>
+                    </p:inputMask>
                     <h:message id="m_rg" for="rg"
                         style="color:#D74937;" />
                 </div>
@@ -353,19 +356,19 @@
                         </div>
             
              <div class="form-group">
-                <h:outputLabel for="inputcpf" value="CPF"
+                <h:outputLabel for="cpf" value="CPF"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
                     <h:inputText value="#{PacienteController.paciente.cpf}" class="form-control"
-                        id="inputcpf"
+                        id="cpf"
                         pt:placeholder="Digite aqui seu cpf entre 11 digitos"
                         required="false"
                         validatorMessage="Cpf deve conter entre 11 digitos."
                         requiredMessage="é necessário que você informe seu cpf.">
-                       <!--  <f:validateLength minimum="11" maximum="11" />  -->
-                        <f:ajax event="blur" render="m_inputcpf" />
+                        <!-- <f:validateLength minimum="11" maximum="11" /> -->
+                        <!-- <f:ajax event="blur" render="m_cpf" />  -->
                     </h:inputText>
-                    <h:message id="m_inputcpf" for="inputcpf"
+                    <h:message id="m_cpf" for="cpf"
                         style="color:#D74937;" />
                 </div>
             </div>
@@ -375,11 +378,11 @@
                 <div class="col-sm-6">
                     <h:inputText value="#{PacienteController.paciente.cns}" class="form-control"
                         id="cns"
-                        pt:placeholder="Digite aqui seu cns entre 11 digitos"
+                        pt:placeholder="Digite aqui seu cns entre 15 digitos"
                         required="false"
-                        validatorMessage="Cpf deve conter entre 11 digitos."
+                        validatorMessage="CNS deve conter entre 15 digitos."
                         requiredMessage="é necessário que você informe seu cns.">
-                       <!--  <f:validateLength minimum="11" maximum="11" />  -->
+                        <f:validateLength minimum="15" maximum="15" /> 
                         <f:ajax event="blur" render="m_cns" />
                     </h:inputText>
                     <h:message id="m_cns" for="cns"
@@ -402,8 +405,14 @@
                 <div class="col-sm-6">
                     <h:inputText value="#{PacienteController.paciente.reservista}" class="form-control"
                         id="reservista"
-                        pt:placeholder="Digite aqui sua Reservista">
+                        pt:placeholder="Digite aqui sua Reservista"
+                        validatorMessage="Numero da Reservista deve conter entre 12 digitos."
+                        requiredMessage="é necessário que você informe seu Numero da Reservista.">
+                        <f:validateLength minimum="12" maximum="12" />
+                          <f:ajax event="blur" render="m_reservista" /> 
                     </h:inputText>
+                      <h:message id="m_reservista" for="reservista"
+                        style="color:#D74937;" />
                 </div>
             </div>
                <div class="form-group">
@@ -432,8 +441,14 @@
                 <div class="col-sm-6">
                     <h:inputText value="#{PacienteController.paciente.pis}" class="form-control"
                         id="pis"
-                        pt:placeholder="Digite aqui seu pis">
+                        pt:placeholder="Digite aqui seu pis"
+                        validatorMessage="pis deve conter entre 11 digitos."
+                        requiredMessage="é necessário que você informe seu pis.">
+                        <f:validateLength minimum="11" maximum="11" />
+                          <f:ajax event="blur" render="m_pis" /> 
                     </h:inputText>
+                    <h:message id="m_pis" for="pis"
+                        style="color:#D74937;" />
                 </div>
             </div>
            
