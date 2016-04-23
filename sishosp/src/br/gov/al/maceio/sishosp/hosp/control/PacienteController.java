@@ -34,8 +34,7 @@ import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
-@ManagedBean
-@ViewScoped
+
 public class PacienteController {
 	private Integer abaAtiva = 0;
 	private Integer SelecionadoRaca;

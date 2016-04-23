@@ -35,7 +35,7 @@ public class PacienteBean {
     private String responsavel;
     private String nomeresp;
     private String rgresp;
-    private Double cpfresp;
+    private String cpfresp;
     private Date dataNascimentoresp;
     
     //DOCUMENTOS
@@ -298,11 +298,11 @@ public class PacienteBean {
 			this.rgresp = rgresp;
 		}
 
-		public Double getCpfresp() {
+		public String getCpfresp() {
 			return cpfresp;
 		}
 
-		public void setCpfresp(Double cpfresp) {
+		public void setCpfresp(String cpfresp) {
 			this.cpfresp = cpfresp;
 		}
 

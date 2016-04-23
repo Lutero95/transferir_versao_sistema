@@ -124,7 +124,7 @@ public class PacienteDAO {
 			stmt.setInt(43, paciente.getCodparentesco());
 			stmt.setString(44, paciente.getNomeresp().toUpperCase().trim());
 			stmt.setString(45, paciente.getRgresp().toUpperCase().trim());
-			stmt.setDouble(46, paciente.getCpfresp());
+			stmt.setString(46, paciente.getCpfresp());
 			stmt.setDate(47, new java.sql.Date(paciente.getDataNascimentoresp()
 					.getTime()));
 			if (paciente.getEncaminhado().getCodencaminhado() == null) {
@@ -215,39 +215,91 @@ public class PacienteDAO {
 		}
 	}
 
-	public ArrayList<PacienteBean> listaPacientes() {
+	  public ArrayList<PacienteBean> listaPacientes() {
 
-		String sql = "select id_paciente, nome, lpad(trim(to_char(cpf,'99999999999')),11,'0') as cpf, rg from hosp.pacientes order by nome";
+          String sql = "select id_paciente, nome, dtanascimento, estcivil, sexo, sangue, "
+          		+ "pai, mae, conjuge,codraca, cep, uf, cidade, bairro, logradouro, numero, complemento, referencia, telres, telcel, teltrab, telorelhao, rg, oe, dtaexpedicaorg, cpf, cns, protreab, "
+          		+ "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, contribuinte, codescolaridade, codescola, codprofissao, trabalha, localtrabalha, codparentesco, "
+          		+ "nomeresp, rgresp, cpfresp, dtanascimentoresp, codencaminhado, codformatransporte ,deficiencia, tipodeficiencia from hosp.pacientes order by nome";
 
-		ArrayList<PacienteBean> lista = new ArrayList<PacienteBean>();
+          ArrayList<PacienteBean> lista = new ArrayList();
 
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stm = conexao.prepareStatement(sql);
-			ResultSet rs = stm.executeQuery();
+          try {
+              conexao = ConnectionFactory.getConnection();
+              PreparedStatement stm = conexao.prepareStatement(sql);
+              ResultSet rs = stm.executeQuery();
 
-			while (rs.next()) {
-				PacienteBean p = new PacienteBean();
-				System.out.println("|1|");
-				p.setId_paciente(rs.getLong("id_paciente"));
-				p.setNome(rs.getString("nome").toLowerCase());
-				p.setCpf(rs.getString("cpf"));
-				p.setRg(rs.getString("rg").toLowerCase());
-
-				lista.add(p);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+              while (rs.next()) {
+              	PacienteBean p = new PacienteBean();
+	                p.setId_paciente(rs.getLong("id_paciente"));
+	                p.setNome(rs.getString("nome").toLowerCase());
+	                p.setDtanascimento(rs.getDate("dtanascimento"));
+	                p.setEstadoCivil(rs.getString("estcivil"));
+	                p.setSexo(rs.getString("sexo"));
+	                p.setSangue(rs.getString("sangue"));
+	                p.setNomePai(rs.getString("pai"));
+	                p.setNomeMae(rs.getString("mae"));
+	                p.setConjuge(rs.getString("conjuge"));
+	                p.setCodRaca(rs.getInt("codraca"));
+	                p.getEndereco().setCep(rs.getInt("cep"));
+	                p.getEndereco().setUf(rs.getString("uf"));
+	                p.getEndereco().setMunicipio(rs.getString("cidade"));
+	                p.getEndereco().setBairro(rs.getString("bairro"));
+	                p.getEndereco().setLogradouro(rs.getString("logradouro"));
+	                p.getEndereco().setNumero(rs.getString("numero"));
+	                p.getEndereco().setComplemento(rs.getString("complemento"));
+	                p.getEndereco().setReferencia(rs.getString("referencia"));
+	                p.getEndereco().setTelefoneres(rs.getString("telres"));
+	                p.getEndereco().setTelefonecel(rs.getString("telcel"));
+	                p.getEndereco().setTelefonetrab(rs.getString("teltrab"));
+	                p.getEndereco().setTelefoneorelhao(rs.getString("telorelhao"));             
+	                p.setRg(rs.getString("rg").toLowerCase());
+	                p.setOe(rs.getString("oe").toLowerCase());
+	                p.setDataExpedicao1(rs.getDate("dtaexpedicaorg"));
+	                p.setCpf(rs.getString("cpf"));
+	                p.setCns(rs.getString("cns"));
+	                p.setProtant(rs.getInt("protreab"));
+	                p.setReservista(rs.getString("reservista"));
+	                p.setCtps(rs.getInt("ctps"));
+	                p.setSerie(rs.getInt("serie"));
+	                p.setPis(rs.getString("pis"));
+	                p.setCartorio(rs.getString("cartorio"));
+	                p.setNumeroCartorio(rs.getString("regnascimento"));
+	                p.setLivro(rs.getString("livro"));
+	                p.setFolha(rs.getInt("folha"));
+	                p.setDataExpedicao2(rs.getDate("dtaregistro"));
+	                p.setAssociado(rs.getString("contribuinte"));
+	                p.getEscolaridade().setCodescolaridade(rs.getInt("codescolaridade"));
+	                p.getEscola().setCodEscola(rs.getInt("codescola"));
+	                p.getProfissao().setCodprofissao(rs.getInt("codprofissao"));
+	                p.setTrabalha(rs.getString("trabalha"));
+	                p.setLocaltrabalha(rs.getString("localtrabalha"));
+	                p.setCodparentesco(rs.getInt("codparentesco"));
+	                p.setNomeresp(rs.getString("nomeresp"));
+	                p.setRgresp(rs.getString("rgresp"));
+	                p.setCpfresp(rs.getString("cpfresp"));
+	                p.setDataNascimentoresp(rs.getDate("dtanascimentoresp"));
+	                p.getEncaminhado().setCodencaminhado(rs.getInt("codencaminhado"));
+	                p.getFormatransporte().setCodformatransporte(rs.getInt("codformatransporte"));
+	                p.setDeficiencia(rs.getString("deficiencia"));
+	                p.setTipoDeficiencia(rs.getString("tipodeficiencia"));
+	                
+	                 
+	                
+	                lista.add(p);
+              }
+          } catch (SQLException ex) {
+              throw new RuntimeException(ex);
+          } finally {
+              try {
+                  conexao.close();
+              } catch (Exception ex) {
+                  ex.printStackTrace();
+                  System.exit(1);
+              }
+          }
+          return lista;
+      }
 
 	public ArrayList<RacaBean> listaCor() {
 
