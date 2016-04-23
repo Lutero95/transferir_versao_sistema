@@ -359,15 +359,16 @@
                 <h:outputLabel for="cpf" value="CPF"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <h:inputText value="#{PacienteController.paciente.cpf}" class="form-control"
+                    <p:inputMask value="#{PacienteController.paciente.cpf}" class="form-control"
                         id="cpf"
+                        mask="999-999-999-99"
                         pt:placeholder="Digite aqui seu cpf entre 11 digitos"
                         required="false"
                         validatorMessage="Cpf deve conter entre 11 digitos."
                         requiredMessage="é necessário que você informe seu cpf.">
                         <!-- <f:validateLength minimum="11" maximum="11" /> -->
                         <!-- <f:ajax event="blur" render="m_cpf" />  -->
-                    </h:inputText>
+                    </p:inputMask>
                     <h:message id="m_cpf" for="cpf"
                         style="color:#D74937;" />
                 </div>
@@ -529,7 +530,7 @@
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>    <div class="col-sm-6">
                                             
-                                           <p:outputPanel autoUpdate="true">
+                                        
                                            <p:autoComplete styleClass="col-sm-3 control-label" label="Digite a escolaridade" emptyMessage="Digite a Escolaridade" 
                                             id="escolacomplete1" style="font-size:12px"  
                                             value="#{PacienteController.escolaridadeSuggestion}" size="45" 
@@ -540,7 +541,7 @@
                                             <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect2}"/>
                                             </p:autoComplete> 
                                           
-                                            </p:outputPanel>
+                                         
                                         <!--  <p:outputPanel autoUpdate="true" styleClass="col-sm-3 control-label"> 
                                             <p:inputText id="nome1" size="45" required="false" readonly="false"
                                                 requiredMessage="O campo nome é obrigatório."

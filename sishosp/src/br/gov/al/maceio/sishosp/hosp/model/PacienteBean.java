@@ -35,18 +35,18 @@ public class PacienteBean {
     private String responsavel;
     private String nomeresp;
     private String rgresp;
-    private Double cpfresp;
+    private String cpfresp;
     private Date dataNascimentoresp;
     
     //DOCUMENTOS
-    private Double cpf;
+    private String cpf;
     private String oe;
     private String rg;
     private String reservista;
     private Integer ctps;
     private String pis;
     private String cns;
-    private Double protant;
+    private String protant;
     private Integer serie;
     private Date dataExpedicao1;
     //REGISTROS DO CARTORIO
@@ -146,11 +146,11 @@ public class PacienteBean {
 		this.conjuge = conjuge;
 	}
 
-	public Double getCpf() {
+	public String getCpf() {
 		return cpf;
 	}
 
-	public void setCpf(Double cpf) {
+	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
 
@@ -298,11 +298,11 @@ public class PacienteBean {
 			this.rgresp = rgresp;
 		}
 
-		public Double getCpfresp() {
+		public String getCpfresp() {
 			return cpfresp;
 		}
 
-		public void setCpfresp(Double cpfresp) {
+		public void setCpfresp(String cpfresp) {
 			this.cpfresp = cpfresp;
 		}
 
@@ -433,11 +433,11 @@ public class PacienteBean {
 			this.oe = oe;
 		}
 
-		public Double getProtant() {
+		public String getProtant() {
 			return protant;
 		}
 
-		public void setProtant(Double protant) {
+		public void setProtant(String protant) {
 			this.protant = protant;
 		}
 

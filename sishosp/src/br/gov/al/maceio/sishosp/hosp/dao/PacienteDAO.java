@@ -86,9 +86,9 @@ public class PacienteDAO {
                         stmt.setString(22, paciente.getRg().toUpperCase().trim());
                         stmt.setString(23, paciente.getOe().toUpperCase().trim());
                         stmt.setDate(24, new java.sql.Date(paciente.getDataExpedicao1().getTime()));
-                        stmt.setDouble(25, paciente.getCpf());
+                        stmt.setString(25, paciente.getCpf());
                         stmt.setString(26, paciente.getCns().toUpperCase().trim());
-                        stmt.setDouble(27, paciente.getProtant());
+                        stmt.setString(27, paciente.getProtant());
                         stmt.setString(28, paciente.getReservista().toUpperCase().trim());
                         stmt.setInt(29, paciente.getCtps());
                         stmt.setInt(30, paciente.getSerie());
@@ -119,7 +119,7 @@ public class PacienteDAO {
                         stmt.setInt(43, paciente.getCodparentesco());
                         stmt.setString(44, paciente.getNomeresp().toUpperCase().trim());
                         stmt.setString(45, paciente.getRgresp().toUpperCase().trim());
-                        stmt.setDouble(46, paciente.getCpfresp());
+                        stmt.setString(46, paciente.getCpfresp());
                         stmt.setDate(47, new java.sql.Date(paciente.getDataNascimentoresp().getTime()));
                         if (paciente.getEncaminhado().getCodencaminhado() == null) {
                       	 stmt.setNull(48, Types.INTEGER);
@@ -213,7 +213,7 @@ public class PacienteDAO {
             
             public ArrayList<PacienteBean> listaPacientes() {
 
-                String sql = "select id_paciente, nome, lpad(trim(to_char(cpf,'99999999999')),11,'0') as cpf, rg from hosp.pacientes order by nome";
+                String sql = "select id_paciente, nome, cpf, rg from hosp.pacientes order by nome";
 
                 ArrayList<PacienteBean> lista = new ArrayList();
 
@@ -227,7 +227,7 @@ public class PacienteDAO {
     	            	System.out.println("|1|");
     	                p.setId_paciente(rs.getLong("id_paciente"));
     	                p.setNome(rs.getString("nome").toLowerCase());    
-    	                p.setCpf(rs.getDouble("cpf")); 
+    	                p.setCpf(rs.getString("cpf")); 
     	                p.setRg(rs.getString("rg").toLowerCase()); 
     	                
     	                

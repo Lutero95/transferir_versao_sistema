@@ -1,5 +1,6 @@
 @media screen and (min-width: 768px){
 	/* Styles before scroll */ 
+	
 	#custom-nav {
             background: rgba(0,0,0,0);
 	    border: 0;
@@ -140,6 +141,9 @@
 }
 
 .footer-page {
+	position:fixed;
+	bottom:0;
+	width:100%;
     padding-top: 25px;
     padding-bottom: 22px;
     background-color: #1b8ddb; 
