@@ -17,7 +17,7 @@
                         action="#{MBUsuarios.logout}" />
              
                     <p:commandButton value="AGENDAR" icon="entrar" 
-                        styleClass=""  
+                        styleClass="" action="#{AgendaController.limparDados()}"
                         style="float:center; width:100px; margin-top:10px; margin-right:10px;"
                         onclick="PF('dlgAgendaMedica').show();"/>
           
