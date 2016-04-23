@@ -148,7 +148,7 @@
 					<p:outputPanel>
 						<h:outputLabel for="op" value="Opção" />
 						<br />
-						<p:selectOneMenu id="op" value="#">
+						<p:selectOneMenu id="op" value="#{PacienteController.tipoBuscar}">
 							<f:selectItem itemLabel="Escolha Opção" itemValue="-1" />
 							<f:selectItem itemLabel="CPF" itemValue="CPF" />
 							<f:selectItem itemLabel="Nome" itemValue="NOME" />
@@ -160,29 +160,35 @@
 					<p:outputPanel>
 						<h:outputLabel for="descPac" value="Descrição" />
 						<br />
-						<p:inputText id="descPac" value="#" style="width: 300px" />
+						<p:inputText id="descPac" value="#{PacienteController.descricaoParaBuscar}" style="width: 300px" />
 					</p:outputPanel>
 				</p:panelGrid>
 
 				<p:separator style="margin-top: 10px;" />
 
 				<p:panelGrid columns="3" styleClass="semBorda">
-					<p:commandButton value="OK" icon="ui-icon-check" />
+					<p:commandButton value="OK" icon="ui-icon-check" action="{}"/>
 					<p:commandButton value="Nova Consulta" icon="ui-icon-search" />
 					<p:commandButton value="Sair" icon="ui-icon-close" />
 				</p:panelGrid>
 			</center>
-			<p:dataTable value="#" resizableColumns="true">
+			<p:dataTable resizableColumns="true"
+				value="#{PacienteController.listaPacientesParaAgenda}" var="pacie"
+				emptyMessage="Não existe nenhum paciente cadastrado!">
 				<p:column headerText="PRONTUÁRIO">
+					<p:outputLabel value="#{pacie.id_paciente}" />
 				</p:column>
 
 				<p:column headerText="PRONT ANT.">
+					<p:outputLabel value="#{pacie.protant}" />
 				</p:column>
 
 				<p:column headerText="NOME">
+					<p:outputLabel value="#{pacie.nome}" />
 				</p:column>
 
 				<p:column headerText="CPF">
+					<p:outputLabel value="#{pacie.cpf}" />
 				</p:column>
 			</p:dataTable>
 		</h:form>

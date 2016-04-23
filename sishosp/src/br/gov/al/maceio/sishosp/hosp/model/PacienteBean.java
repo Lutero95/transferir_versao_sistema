@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 public class PacienteBean {
-	
     //ATRIBUTOS
 	private Long id_paciente;
     private String nome;
@@ -36,19 +35,18 @@ public class PacienteBean {
     private String responsavel;
     private String nomeresp;
     private String rgresp;
-    private String cpfresp;
+    private Double cpfresp;
     private Date dataNascimentoresp;
     
     //DOCUMENTOS
-    
-    private String oe;
     private String cpf;
+    private String oe;
     private String rg;
     private String reservista;
     private Integer ctps;
     private String pis;
     private String cns;
-    private String protant;
+    private Double protant;
     private Integer serie;
     private Date dataExpedicao1;
     //REGISTROS DO CARTORIO
@@ -300,11 +298,11 @@ public class PacienteBean {
 			this.rgresp = rgresp;
 		}
 
-		public String getCpfresp() {
+		public Double getCpfresp() {
 			return cpfresp;
 		}
 
-		public void setCpfresp(String cpfresp) {
+		public void setCpfresp(Double cpfresp) {
 			this.cpfresp = cpfresp;
 		}
 
@@ -435,11 +433,11 @@ public class PacienteBean {
 			this.oe = oe;
 		}
 
-		public String getProtant() {
+		public Double getProtant() {
 			return protant;
 		}
 
-		public void setProtant(String protant) {
+		public void setProtant(Double protant) {
 			this.protant = protant;
 		}
 
