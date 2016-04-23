@@ -46,7 +46,7 @@ public class PacienteBean {
     private Integer ctps;
     private String pis;
     private String cns;
-    private Double protant;
+    private Integer protant;
     private Integer serie;
     private Date dataExpedicao1;
     //REGISTROS DO CARTORIO
@@ -433,11 +433,11 @@ public class PacienteBean {
 			this.oe = oe;
 		}
 
-		public Double getProtant() {
+		public Integer getProtant() {
 			return protant;
 		}
 
-		public void setProtant(Double protant) {
+		public void setProtant(Integer protant) {
 			this.protant = protant;
 		}
 

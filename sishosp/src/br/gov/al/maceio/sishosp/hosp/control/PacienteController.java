@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,8 +150,7 @@ public class PacienteController {
 	}
 
 	public List<PacienteBean> getListaPacientesParaAgenda() {
-		PacienteDAO pDao = new PacienteDAO();
-		listaPacientesParaAgenda = pDao.listarPacientesAgenda();
+		
 		return listaPacientesParaAgenda;
 	}
 
@@ -187,15 +187,15 @@ public class PacienteController {
 
 	}
 
-	public void buscarPacientePorCpf() throws ProjetoException {
+	public void buscarPaciente() throws ProjetoException, SQLException {
 		PacienteDAO udao = new PacienteDAO();
-		this.pacienteBuscado = udao.buscarPacientePorCPF(descricaoParaBuscar);
-
-		if (this.pacienteBuscado == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Não existe paciente com esse CPF!",
-					"Paciente não encontrado");
+		this.pacienteBuscado = udao.buscarPacienteAgenda(tipoBuscar, descricaoParaBuscar);
+		if (this.pacienteBuscado.getNome()==null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Não existe paciente com essa discrição!", "Paciente não encontrado");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}else{
+			this.listaPacientesParaAgenda = new ArrayList<PacienteBean>();
+			this.listaPacientesParaAgenda.add(this.pacienteBuscado);
 		}
 
 	}
@@ -614,6 +614,7 @@ public class PacienteController {
 		escolaridadeSuggestion = new EscolaridadeBean();
 		escolaSuggestion = new EscolaBean();
 		paciente = new PacienteBean();
+		pacienteBuscado = new PacienteBean();
 		endereco = new EnderecoBean();
 		escola = new EscolaBean();
 		escolaridade = new EscolaridadeBean();
@@ -623,6 +624,10 @@ public class PacienteController {
 		profissao = new ProfissaoBean();
 		transporte = new FormaTransporteBean();
 		raca = new RacaBean();
+		
+		tipoBuscar = "";
+		descricaoParaBuscar = "";
+		listaPacientesParaAgenda = new ArrayList<>();
 
 	}
 

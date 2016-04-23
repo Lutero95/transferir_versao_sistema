@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +16,7 @@ import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
 public class PacienteDAO {
 	private Connection conexao = null;
+	private PreparedStatement ps;
 
 	// COMEÇO DO CODIGO
 
@@ -92,7 +91,7 @@ public class PacienteDAO {
 					.getTime()));
 			stmt.setString(25, paciente.getCpf());
 			stmt.setString(26, paciente.getCns().toUpperCase().trim());
-			stmt.setDouble(27, paciente.getProtant());
+			stmt.setInt(27, paciente.getProtant());
 			stmt.setString(28, paciente.getReservista().toUpperCase().trim());
 			stmt.setInt(29, paciente.getCtps());
 			stmt.setInt(30, paciente.getSerie());
@@ -362,7 +361,7 @@ public class PacienteDAO {
             while (rs.next()) {
             	PacienteBean paci = new PacienteBean();
             	paci.setId_paciente(rs.getLong("id_paciente"));
-            	paci.setProtant(rs.getDouble("protreab"));
+            	paci.setProtant(rs.getInt("protreab"));
             	paci.setNome(rs.getString("nome"));
             	paci.setCpf(rs.getString("cpf"));
                 lista.add(paci);
@@ -380,21 +379,40 @@ public class PacienteDAO {
 		return lista;
 	}
 	
-	public PacienteBean buscarPacientePorCPF(String cpf) throws ProjetoException {
-		PreparedStatement ps = null;
+	public PacienteBean buscarPacienteAgenda(String tipo, String conteudo) throws ProjetoException, SQLException {
+		
+		String sql = "";
 		conexao = ConnectionFactory.getConnection();
-
-		try {
-			String sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where cpf = ? ;";
-
+		if(tipo.equals("CPF")){
+			System.out.println("Vai buscar por cpf");
+			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where cpf = ? ;";
 			ps = conexao.prepareStatement(sql);
-			ps.setString(1, cpf);
+			ps.setString(1, conteudo.toUpperCase());
+		}
+		if(tipo.equals("NOME")){
+			System.out.println("Vai buscar por NOME");
+			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where nome LIKE '%?%' ;";
+			ps = conexao.prepareStatement(sql);
+			ps.setString(1, conteudo.toUpperCase());
+		}
+		if(tipo.equals("PRONTVELHO")){
+			System.out.println("Vai buscar por pront velho");
+			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where protreab = ? ;";
+			ps = conexao.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(conteudo));
+		}
+		if(tipo.equals("PRONTNOVO")){
+			System.out.println("Vai buscar por pront novo");
+			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where id_paciente = ? ;";
+			ps = conexao.prepareStatement(sql);
+			ps.setLong(1, Long.parseLong(conteudo));
+		}
+		try {
 			ResultSet rs = ps.executeQuery();
-
 			PacienteBean paciente = new PacienteBean();
 			while (rs.next()) {
 				paciente.setId_paciente(rs.getLong("id_paciente"));
-				paciente.setProtant(rs.getDouble("protreab"));
+				paciente.setProtant(rs.getInt("protreab"));
 				paciente.setNome(rs.getString("nome"));
 				paciente.setCpf(rs.getString("cpf"));
 			}
@@ -410,5 +428,7 @@ public class PacienteDAO {
 			}
 		}
 	}
+	
+
 
 }
