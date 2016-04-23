@@ -39,8 +39,9 @@ public class PacienteBean {
     private Date dataNascimentoresp;
     
     //DOCUMENTOS
-    private String cpf;
+    
     private String oe;
+    private String cpf;
     private String rg;
     private String reservista;
     private Integer ctps;

@@ -213,7 +213,7 @@ public class PacienteDAO {
             
             public ArrayList<PacienteBean> listaPacientes() {
 
-                String sql = "select id_paciente, nome, cpf, rg from hosp.pacientes order by nome";
+                String sql = "select id_paciente, nome, rg, cpf from hosp.pacientes order by nome";
 
                 ArrayList<PacienteBean> lista = new ArrayList();
 
@@ -226,9 +226,9 @@ public class PacienteDAO {
                     	PacienteBean p = new PacienteBean();
     	            	System.out.println("|1|");
     	                p.setId_paciente(rs.getLong("id_paciente"));
-    	                p.setNome(rs.getString("nome").toLowerCase());    
-    	                p.setCpf(rs.getString("cpf")); 
+    	                p.setNome(rs.getString("nome").toLowerCase());         
     	                p.setRg(rs.getString("rg").toLowerCase()); 
+    	                p.setCpf(rs.getString("cpf"));
     	                
     	                
     	                lista.add(p);
