@@ -12,23 +12,40 @@
 		<h:form id="formAgendaMedica">
 			<p:panelGrid columns="3" styleClass="semBorda">
 				<h:outputLabel for="pac" value="Paciente" />
-				<p:inputText id="pac" value="dados paciente" readonly="true"
-					style="width: 300px" />
+				<p:outputPanel>
+					<p:inputText id="codPac" value="dados paciente" readonly="true"
+						style="width: 40px" />
+					<p:inputText id="pac" value="dados paciente" readonly="true"
+						style="width: 300px" />
+				</p:outputPanel>
 				<p:commandButton value="Buscar" onclick="PF('dlgConsuPac').show();" />
 
 				<h:outputLabel for="prog" value="Programa" />
-				<p:inputText id="prog" value="dados programa" readonly="true"
-					style="width: 300px" />
+				<p:outputPanel>
+					<p:inputText id="codProg" value="dados paciente" readonly="true"
+						style="width: 40px" />
+					<p:inputText id="prog" value="dados programa" readonly="true"
+						style="width: 300px" />
+				</p:outputPanel>
 				<p:commandButton value="Buscar" onclick="PF('dlgConsuProg').show();" />
 
 				<h:outputLabel for="grupo" value="Grupo" />
-				<p:inputText id="grupo" value="dados grupo" readonly="true"
-					style="width: 300px" />
-				<p:commandButton value="Buscar" onclick="PF('dlgConsuGrop').show();"/>
+				<p:outputPanel id="outGrupo">
+					<p:inputText id="codGrupo"
+						value="#{AgendaController.grupo.idGrupo}" readonly="true"
+						style="width: 40px" />  
+					<p:inputText id="grupo" value="#{AgendaController.grupo.descGrupo}"
+						readonly="true" style="width: 300px" />
+				</p:outputPanel>
+				<p:commandButton value="Buscar" onclick="PF('dlgConsuGrop').show();" />
 
 				<h:outputLabel for="tipoAt" value="Tipo At." />
-				<p:inputText id="tipoAt" value="dados tipoAt" readonly="true"
-					style="width: 300px" />
+				<p:outputPanel>
+					<p:inputText id="codTipo" value="dados paciente" readonly="true"
+						style="width: 40px" />
+					<p:inputText id="tipoAt" value="dados tipoAt" readonly="true"
+						style="width: 300px" />
+				</p:outputPanel>
 				<p:commandButton value="Buscar" />
 			</p:panelGrid>
 
@@ -92,7 +109,7 @@
 					<p:column headerText="Obs.">
 					</p:column>
 				</p:dataTable>
-				
+
 				<h:outputLabel for="agendData" value="Agendados na Data" />
 				<p:dataTable value="#" resizableColumns="true">
 					<p:column headerText="Cod.">
@@ -120,7 +137,7 @@
 	</p:dialog>
 
 	<p:dialog header="Consulta Pacientes" widgetVar="dlgConsuPac"
-		modal="true" width="750px" >
+		modal="true" width="750px">
 		<h:form id="formConsuPac">
 			<center>
 				<p:panelGrid columns="2" styleClass="semBorda">
@@ -168,7 +185,7 @@
 	</p:dialog>
 
 	<p:dialog header="Consulta Programa" widgetVar="dlgConsuProg"
-		modal="true" width="500px" >
+		modal="true" width="500px">
 		<h:form id="formConsuProg">
 			<p:dataTable value="#" resizableColumns="true">
 				<p:column headerText="CÓD.">
@@ -177,26 +194,39 @@
 				</p:column>
 			</p:dataTable>
 			<center>
-				<p:commandButton value="Selecionar"/>
+				<p:commandButton value="Selecionar" />
 			</center>
 		</h:form>
 	</p:dialog>
-	
-	<p:dialog header="Consulta Grupo" widgetVar="dlgConsuGrop"
-		modal="true" width="500px" >
+
+	<p:dialog header="Consulta Grupo" widgetVar="dlgConsuGrop" modal="true"
+		width="550px">
 		<h:form id="formConsuGrop">
-			<p:dataTable value="#" resizableColumns="true">
+			<p:dataTable value="#{GrupoController.listaGrupos}"
+				resizableColumns="true" var="grupo"
+				emptyMessage="Não existe nenhum grupo cadastrado!">
 				<p:column headerText="CÓD.">
+					<p:outputLabel value="#{grupo.idGrupo}" />
 				</p:column>
 				<p:column headerText="GRUPO">
+					<p:outputLabel value="#{grupo.descGrupo}" />
 				</p:column>
 				<p:column headerText="QTD. FREQ>">
+					<p:outputLabel value="#{grupo.qtdFrequencia}" />
+				</p:column>
+
+				<p:column style="width:50px;text-align: center">
+					<p:commandButton update=":formAgendaMedica:outGrupo"
+						icon="ui-icon-check" title="Selecionar"
+						onclick="PF('dlgConsuGrop').hide();">
+						<f:setPropertyActionListener value="#{grupo}"
+							target="#{AgendaController.grupo}" />
+					</p:commandButton>
 				</p:column>
 			</p:dataTable>
-			<center>
-				<p:commandButton value="Selecionar"/>
-			</center>
 		</h:form>
-	</p:dialog>	
+	</p:dialog>
+
+
 </h:body>
 </html>
