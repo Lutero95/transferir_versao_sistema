@@ -44,6 +44,7 @@ public class PacienteDAO {
                 		+ "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                     try {
+                    	
                     	conexao = ConnectionFactory.getConnection();
                         PreparedStatement stmt = conexao.prepareStatement(sql);
                         stmt.setString(1, paciente.getNome().toUpperCase().trim());
