@@ -181,22 +181,23 @@
 
 	<p:dialog header="Cadastro de Grupos" closable="true" resizable="false"
 		styleClass="semBorda" widgetVar="dlgCadGrupo" modal="true">
-		<h:form>
+		<h:form id="formCadGrupo">
+			<p:growl id="msg"/>
 			<p:panelGrid columns="1">
 				<p:outputLabel for="grupo" value="Descrição do grupo" />
-				<p:inputText id="grupo" value="desc" style="width: 300px" />
+				<p:inputText id="grupo" value="#{GrupoController.grupo.descGrupo}" style="width: 300px" />
 
 				<p:outputLabel for="qtdGrupo" value="Quantidade de Frequência" />
-				<p:spinner id="qtdGrupo" min="0" max="100" />
+				<p:spinner id="qtdGrupo" min="0" max="20" value="#{GrupoController.grupo.qtdFrequencia}"/>
 			</p:panelGrid>
 
 			<p:separator />
 
 			<center>
 				<p:panelGrid columns="3">
-					<p:commandButton value="Incluir" icon="confirmar" />
-					<p:commandButton value="Limpar" icon="limpar" />
-					<p:commandButton value="Sair" icon="cancelar" onclick="PF('dlgCadGrupo').hide();"/>
+					<p:commandButton value="Incluir" action="#{GrupoController.gravarGrupo()}" icon="confirmar" update=":formCadGrupo:msg, :formCadGrupo" />
+					<p:commandButton value="Limpar" actionListener="#{GrupoController.limparDados()}" icon="limpar" update=":formCadGrupo"/>
+					<p:commandButton value="Sair" icon="cancelar" action="/pages/comum/selecaoSistema.faces?faces-redirect=true"  onclick="PF('dlgCadGrupo').hide();"/>
 				</p:panelGrid>
 			</center>
 		</h:form>
@@ -361,22 +362,23 @@
 	<p:dialog header="Cadastro de Programas" closable="true"
 		resizable="false" styleClass="semBorda" widgetVar="dlgCadPrograma"
 		modal="true">
-		<h:form>
+		<h:form id="formCadProg">
+		<p:growl id="msg"/>
 			<p:panelGrid columns="1">
 				<p:outputLabel for="programa" value="Descrição do programa" />
-				<p:inputText id="programa" value="desc" style="width: 300px" />
+				<p:inputText id="programa" value="#{ProgramaController.prog.descPrograma}" style="width: 300px" />
 
 				<p:outputLabel for="codProg" value="Código unificado" />
-				<p:inputText id="codProg" value="cd" style="width: 100px" />
+				<p:inputText id="codProg" value="#{ProgramaController.prog.codFederal}" style="width: 100px" />
 			</p:panelGrid>
 
 			<p:separator />
 
 			<center>
 				<p:panelGrid columns="3">
-					<p:commandButton value="Incluir" />
-					<p:commandButton value="Limpar" />
-					<p:commandButton value="Sair"  onclick="PF('dlgCadPrograma').hide();"/>
+					<p:commandButton value="Incluir" action="#{ProgramaController.gravarPrograma()}" icon="confirmar" update=":formCadProg:msg, :formCadProg" />
+					<p:commandButton value="Limpar" actionListener="#{ProgramaController.limparDados()}" icon="limpar" update=":formCadProg"/>
+					<p:commandButton value="Sair" icon="cancelar"  onclick="PF('dlgCadPrograma').hide();"/>
 				</p:panelGrid>
 			</center>
 		</h:form>

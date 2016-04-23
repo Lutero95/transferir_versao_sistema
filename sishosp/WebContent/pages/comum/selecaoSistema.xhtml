@@ -9,6 +9,7 @@
     <ui:composition template="../../template/templatepagsistemas.xhtml">
 
         <ui:define name="body">
+        <ui:include src="dlgsAgendaMedica.xhtml" />
                   <h:form id="form" styleClass="">
                     <p:commandButton value="CONSULTA" icon="Receber" 
                         styleClass=""  
@@ -18,7 +19,7 @@
                     <p:commandButton value="AGENDAR" icon="entrar" 
                         styleClass=""  
                         style="float:center; width:100px; margin-top:10px; margin-right:10px;"
-                        action="#{MBUsuarios.logout}" />
+                        onclick="PF('dlgAgendaMedica').show();"/>
           
                     <p:commandButton value="SOBRE" icon="anexo" 
                         styleClass=""  
