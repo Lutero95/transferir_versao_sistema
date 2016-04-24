@@ -774,13 +774,19 @@
                  
           </p:panel>
                  <!-- FIM DO FORMULARIO -->
-                         <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-12">
+               <p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
                     <h:commandButton action="#{PacienteController.gravarPaciente()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Cadastrar"
                         styleClass="btn btn-sm btn-success" />
-                </div>
-            </div>
+               
+               
+                    <h:commandButton action="#{PacienteController.gravarPaciente()}"   
+                    update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Alterar"
+                        styleClass="btn btn-info" />
+            </p:panelGrid>
+              
+            
+                
         </h:form>
     </div>
     <p:dialog style="font-size: 12px;" widgetVar="dlgbuscaescola" 

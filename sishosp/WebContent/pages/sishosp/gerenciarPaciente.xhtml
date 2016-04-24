@@ -102,6 +102,12 @@
                                     <p:menuitem value="Alterar" icon="alterar-dados"  
                                        action ="/pages/sishosp/cadastroPaciente.faces" >
                                         <f:setPropertyActionListener value="#{tab}" target="#{PacienteController.paciente}" />
+                                    
+                                        <f:setPropertyActionListener value="#{tab.escola}" target="#{PacienteController.escolaSuggestion}" />
+                                        <f:setPropertyActionListener value="#{tab.escolaridade.descescolaridade}" target="#{PacienteController.escolaridadeSuggestion}" />
+                                        <f:setPropertyActionListener value="#{tab.profissao}" target="#{PacienteController.profissaoSuggestion}" />
+                                        <f:setPropertyActionListener value="#{tab.encaminhado}" target="#{PacienteController.encaminhadoSuggestion}" />
+                                        <f:setPropertyActionListener value="#{tab.formatransporte}" target="#{PacienteController.transporteSuggestion}" />
                                         <!-- url="/pages/sishosp/cadastroPaciente.faces" -->
                                        
                                     </p:menuitem>
