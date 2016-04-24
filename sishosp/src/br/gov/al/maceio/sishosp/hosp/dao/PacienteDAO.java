@@ -455,20 +455,28 @@ public class PacienteDAO {
 			System.out.println("Vai buscar por pront velho");
 			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where protreab = ? ;";
 			ps = conexao.prepareStatement(sql);
-			Integer prontVelho = Integer.parseInt(conteudo);
+			Integer prontVelho = null;
+			try {
+				prontVelho = Integer.parseInt(conteudo);
+			} catch (Exception e) {
+				return paciente;
+			}
+
 			if (prontVelho != null)
 				ps.setInt(1, prontVelho);
-			else
-				return paciente;
 		}
 		if (tipo.equals("PRONTNOVO")) {
 			System.out.println("Vai buscar por pront novo");
 			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where id_paciente = ? ;";
-			Long prontNovo = Long.parseLong(conteudo);
+			ps = conexao.prepareStatement(sql);
+			Long prontNovo = null;
+			try {
+				prontNovo = Long.parseLong(conteudo);
+			} catch (Exception e) {
+				return paciente;
+			}
 			if (prontNovo != null)
 				ps.setLong(1, prontNovo);
-			else
-				return paciente;
 		}
 		try {
 			ResultSet rs = ps.executeQuery();

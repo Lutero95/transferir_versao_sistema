@@ -779,6 +779,10 @@ li.ui-selectonemenu-item {
     background-image: url("../imgs/fechar.png") !important;
 }
 
+.ui-icon.buscar {
+    background-image: url("../imgs/buscar.png") !important;
+}
+
 .ui-icon.novo {
     background-image: url("../imgs/novo.png") !important;
 }

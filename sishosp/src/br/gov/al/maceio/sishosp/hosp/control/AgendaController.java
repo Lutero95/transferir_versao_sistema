@@ -9,16 +9,20 @@ public class AgendaController {
 	private PacienteBean paciente;
 	private GrupoBean grupo;
 	private ProgramaBean programa;
+	private boolean prontoGravar;
 
 	public AgendaController() {
 		this.paciente = new PacienteBean();
 		this.grupo = new GrupoBean();
 		this.programa = new ProgramaBean();
+		this.prontoGravar = false;
 	}
 	
 	public void limparDados(){
 		grupo = new GrupoBean();
 		programa = new ProgramaBean();
+		paciente = new PacienteBean();
+		this.prontoGravar = false;
 	}
 
 	public GrupoBean getGrupo() {
@@ -43,6 +47,14 @@ public class AgendaController {
 
 	public void setPaciente(PacienteBean paciente) {
 		this.paciente = paciente;
+	}
+
+	public boolean isProntoGravar() {
+		return prontoGravar;
+	}
+
+	public void setProntoGravar(boolean prontoGravar) {
+		this.prontoGravar = prontoGravar;
 	}
 	
 }
