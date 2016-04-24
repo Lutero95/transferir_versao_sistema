@@ -484,68 +484,86 @@ public class PacienteDAO {
 
 		}
 	}
-	
-	public List<PacienteBean> listarPacientesAgenda(){
+
+	public List<PacienteBean> listarPacientesAgenda() {
 		Connection con = null;
 		List<PacienteBean> lista = new ArrayList<>();
 		String sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes";
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            ResultSet rs = stm.executeQuery();
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
 
-            while (rs.next()) {
-            	PacienteBean paci = new PacienteBean();
-            	paci.setId_paciente(rs.getLong("id_paciente"));
-            	paci.setProtant(rs.getInt("protreab"));
-            	paci.setNome(rs.getString("nome"));
-            	paci.setCpf(rs.getString("cpf"));
-                lista.add(paci);
-            }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
-        }
+			while (rs.next()) {
+				PacienteBean paci = new PacienteBean();
+				paci.setId_paciente(rs.getLong("id_paciente"));
+				paci.setProtant(rs.getInt("protreab"));
+				paci.setNome(rs.getString("nome"));
+				paci.setCpf(rs.getString("cpf"));
+				lista.add(paci);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
 		return lista;
 	}
-	
-	public PacienteBean buscarPacienteAgenda(String tipo, String conteudo) throws ProjetoException, SQLException {
-		
+
+	public PacienteBean buscarPacienteAgenda(String tipo, String conteudo)
+			throws ProjetoException, SQLException {
+
 		String sql = "";
 		conexao = ConnectionFactory.getConnection();
-		if(tipo.equals("CPF")){
+		PacienteBean paciente = new PacienteBean();
+
+		if (tipo.equals("CPF")) {
 			System.out.println("Vai buscar por cpf");
 			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where cpf = ? ;";
 			ps = conexao.prepareStatement(sql);
 			ps.setString(1, conteudo.toUpperCase());
 		}
-		if(tipo.equals("NOME")){
+		if (tipo.equals("NOME")) {
 			System.out.println("Vai buscar por NOME");
-			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where nome LIKE '%?%' ;";
+			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where nome LIKE ? ;";
 			ps = conexao.prepareStatement(sql);
-			ps.setString(1, conteudo.toUpperCase());
+			ps.setString(1, '%' + conteudo.toUpperCase() + '%');
 		}
-		if(tipo.equals("PRONTVELHO")){
+		if (tipo.equals("PRONTVELHO")) {
 			System.out.println("Vai buscar por pront velho");
 			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where protreab = ? ;";
 			ps = conexao.prepareStatement(sql);
-			ps.setInt(1, Integer.parseInt(conteudo));
+			Integer prontVelho = null;
+			try {
+				prontVelho = Integer.parseInt(conteudo);
+			} catch (Exception e) {
+				return paciente;
+			}
+
+			if (prontVelho != null)
+				ps.setInt(1, prontVelho);
 		}
-		if(tipo.equals("PRONTNOVO")){
+		if (tipo.equals("PRONTNOVO")) {
 			System.out.println("Vai buscar por pront novo");
 			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where id_paciente = ? ;";
 			ps = conexao.prepareStatement(sql);
-			ps.setLong(1, Long.parseLong(conteudo));
+			Long prontNovo = null;
+			try {
+				prontNovo = Long.parseLong(conteudo);
+			} catch (Exception e) {
+				return paciente;
+			}
+			if (prontNovo != null)
+				ps.setLong(1, prontNovo);
 		}
 		try {
 			ResultSet rs = ps.executeQuery();
-			PacienteBean paciente = new PacienteBean();
+
 			while (rs.next()) {
 				paciente.setId_paciente(rs.getLong("id_paciente"));
 				paciente.setProtant(rs.getInt("protreab"));
@@ -564,7 +582,5 @@ public class PacienteDAO {
 			}
 		}
 	}
-	
-
 
 }

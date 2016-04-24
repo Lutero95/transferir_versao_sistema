@@ -12,11 +12,12 @@
 		<h:form id="formAgendaMedica">
 			<p:panelGrid columns="3" styleClass="semBorda">
 				<h:outputLabel for="pac" value="Paciente" />
-				<p:outputPanel id = "outPacie">
-					<p:inputText id="codPac" value="#{AgendaController.paciente.id_paciente}" readonly="true"
+				<p:outputPanel id="outPacie">
+					<p:inputText id="codPac"
+						value="#{AgendaController.paciente.id_paciente}" readonly="true"
 						style="width: 40px" />
-					<p:inputText id="pac" value="#{AgendaController.paciente.nome}" readonly="true"
-						style="width: 300px" />
+					<p:inputText id="pac" value="#{AgendaController.paciente.nome}"
+						readonly="true" style="width: 300px" />
 				</p:outputPanel>
 				<p:commandButton value="Buscar" onclick="PF('dlgConsuPac').show();" />
 
@@ -136,6 +137,19 @@
 				</p:dataTable>
 			</p:panelGrid>
 
+			<center>
+				<p:panelGrid columns="4" styleClass="semBorda">
+					<p:commandButton value="Gravar" icon="confirmar"
+						disabled="#{!AgendaController.prontoGravar}" />
+					<p:commandButton value="Consultar" icon="buscar" />
+					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Sair" icon="btlogout"
+						update=":formAgendaMedica"
+						actionListener="#{AgendaController.limparDados()}"
+						onclick="PF('dlgAgendaMedica').hide();" />
+				</p:panelGrid>
+			</center>
+
 		</h:form>
 
 	</p:dialog>
@@ -143,14 +157,14 @@
 	<p:dialog header="Consulta Pacientes" widgetVar="dlgConsuPac"
 		modal="true" width="750px">
 		<h:form id="formConsuPac">
-			<p:growl id = "msgC"/>
+			<p:growl id="msgC" />
 			<center>
 				<p:panelGrid columns="2" styleClass="semBorda">
-					<p:outputPanel id = "outOp">
+					<p:outputPanel id="outOp">
 						<h:outputLabel for="op" value="Opção" />
 						<br />
 						<p:selectOneMenu id="op" value="#{PacienteController.tipoBuscar}">
-							<f:selectItem itemLabel="Escolha Opção" itemValue="-1" />
+							<f:selectItem itemLabel="Escolha Opção" itemValue="VAZIO" />
 							<f:selectItem itemLabel="CPF" itemValue="CPF" />
 							<f:selectItem itemLabel="Nome" itemValue="NOME" />
 							<f:selectItem itemLabel="Prontuário Velho" itemValue="PRONTVELHO" />
@@ -161,15 +175,21 @@
 					<p:outputPanel id="outDesP">
 						<h:outputLabel for="descPac" value="Descrição" />
 						<br />
-						<p:inputText id="descPac" value="#{PacienteController.descricaoParaBuscar}" style="width: 300px" />
+						<p:inputText id="descPac"
+							value="#{PacienteController.descricaoParaBuscar}"
+							style="width: 300px" />
 					</p:outputPanel>
 				</p:panelGrid>
 
 				<p:separator style="margin-top: 10px;" />
 
 				<p:panelGrid columns="3" styleClass="semBorda">
-					<p:commandButton value="OK" icon="ui-icon-check" action="#{PacienteController.buscarPaciente()}" update=":formConsuPac:msgC, :formConsuPac:dtPaci"/>
-					<p:commandButton value="Nova Consulta" icon="ui-icon-search" actionListener="#{PacienteController.limparDados()}" update=":formConsuPac:outOp, :formConsuPac:outDesP, :formConsuPac:dtPaci"/>
+					<p:commandButton value="OK" icon="ui-icon-check"
+						action="#{PacienteController.buscarPaciente()}"
+						update=":formConsuPac:msgC, :formConsuPac:dtPaci" />
+					<p:commandButton value="Nova Consulta" icon="ui-icon-search"
+						actionListener="#{PacienteController.limparDados()}"
+						update=":formConsuPac:outOp, :formConsuPac:outDesP, :formConsuPac:dtPaci" />
 					<p:commandButton value="Sair" icon="ui-icon-close" />
 				</p:panelGrid>
 			</center>
@@ -193,7 +213,7 @@
 				</p:column>
 				<p:column style="width:50px;text-align: center">
 					<p:commandButton update=":formAgendaMedica:outPacie"
-						icon="ui-icon-check" title="Selecionar" 
+						icon="ui-icon-check" title="Selecionar"
 						onclick="PF('dlgConsuPac').hide();">
 						<f:setPropertyActionListener value="#{pacie}"
 							target="#{AgendaController.paciente}" />

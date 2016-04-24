@@ -188,14 +188,21 @@ public class PacienteController {
 
 	public void buscarPaciente() throws ProjetoException, SQLException {
 		PacienteDAO udao = new PacienteDAO();
-		this.pacienteBuscado = udao.buscarPacienteAgenda(tipoBuscar, descricaoParaBuscar);
-		if (this.pacienteBuscado.getNome()==null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Não existe paciente com essa discrição!", "Paciente não encontrado");
+		if(tipoBuscar.isEmpty()||descricaoParaBuscar.isEmpty()){
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Escolha uma opção válida e insira uma descrição!", "Insira os dados");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}else{
-			this.listaPacientesParaAgenda = new ArrayList<PacienteBean>();
-			this.listaPacientesParaAgenda.add(this.pacienteBuscado);
+			this.pacienteBuscado = udao.buscarPacienteAgenda(tipoBuscar, descricaoParaBuscar);
+			
+			if (this.pacienteBuscado.getNome()==null) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Não existe paciente com essa descrição!", "Paciente não encontrado");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}else{
+				this.listaPacientesParaAgenda = new ArrayList<PacienteBean>();
+				this.listaPacientesParaAgenda.add(this.pacienteBuscado);
+			}
 		}
+		
 
 	}
 
