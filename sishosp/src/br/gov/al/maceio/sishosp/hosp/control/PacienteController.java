@@ -54,6 +54,12 @@ public class PacienteController {
 	private EncaminhadoBean encaminhado;
 	private FormaTransporteBean transporte;
 	private RacaBean raca;
+	
+	//BUSCAS
+	private String tipo;
+	private Integer tipoBuscaPaciente;
+	private String campoBuscaPaciente;
+	private String statusPaciente;
 
 	// AUTO COMPLETE
 	private EscolaBean escolageral;
@@ -146,6 +152,12 @@ public class PacienteController {
 		listaTransporte = null;
 		listaMunicipios = new ArrayList<>();
 		listaMunicipios = null;
+		
+        //BUSCA
+		tipo ="";
+		tipoBuscaPaciente = 1;
+		campoBuscaPaciente = "";
+		statusPaciente = "P";
 	}
 
 	public List<PacienteBean> getListaPacientesParaAgenda() {
@@ -206,7 +218,7 @@ public class PacienteController {
 
 	}
 
-	public void alterarPaciente() throws ProjetoException {
+	public String alterarPaciente() throws ProjetoException {
 		paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
 		paciente.getEscolaridade().setCodescolaridade(
 				escolaridadeSuggestion.getCodescolaridade());
@@ -221,17 +233,17 @@ public class PacienteController {
 		boolean alterou = mdao.alterar(paciente);
 
 		if (alterou == true) {
-
+          limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Paciente alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
+			return "/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
+			return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -612,6 +624,13 @@ public class PacienteController {
 		// FacesContext.getCurrentInstance().addMessage(null, new
 		// FacesMessage("Item Selected", prodsel.getDescricao()));
 	}
+	
+	public void limparBuscaDados() {
+		tipoBuscaPaciente = 1;
+		campoBuscaPaciente = "";
+		statusPaciente = "P";
+		listaPacientes = null;
+	}
 
 	public void limparDados() {
 		transporteSuggestion = new FormaTransporteBean();
@@ -636,6 +655,28 @@ public class PacienteController {
 		listaPacientesParaAgenda = new ArrayList<>();
 
 	}
+	
+	public void buscarPacientes() {
+
+		List<PacienteBean> listaAux = null;
+		listaPacientes = new ArrayList<>();
+
+		PacienteDAO adao = new PacienteDAO();
+
+		listaAux = adao.buscarTipoPaciente(campoBuscaPaciente,tipoBuscaPaciente);
+
+		if (listaAux != null && listaAux.size() > 0) {
+			// listaAss = null;
+			listaPacientes = listaAux;
+		} else {
+			// listaAss = null;
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Nenhum Paciente encontrado.", "Aviso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+	}
+
 
 	public void buscarescolaridade() {
 
@@ -1233,5 +1274,39 @@ public class PacienteController {
 	public void setTipoBuscar(String tipoBuscar) {
 		this.tipoBuscar = tipoBuscar;
 	}
+
+	public Integer getTipoBuscaPaciente() {
+		return tipoBuscaPaciente;
+	}
+
+	public void setTipoBuscaPaciente(Integer tipoBuscaPaciente) {
+		this.tipoBuscaPaciente = tipoBuscaPaciente;
+	}
+
+	public String getCampoBuscaPaciente() {
+		return campoBuscaPaciente;
+	}
+
+	public void setCampoBuscaPaciente(String campoBuscaPaciente) {
+		this.campoBuscaPaciente = campoBuscaPaciente;
+	}
+
+	public String getStatusPaciente() {
+		return statusPaciente;
+	}
+
+	public void setStatusPaciente(String statusPaciente) {
+		this.statusPaciente = statusPaciente;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+	
+	
 
 }

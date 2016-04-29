@@ -13,38 +13,61 @@
         <ui:define name="body">
                <!-- INICIO DO FORMULARIO -->
     <div class="col-md-8">
-        <h3>GERENCIAMENTO DE PACIENTES</h3>
+        <h3 >GERENCIAMENTO DE PACIENTES</h3>
         <br />
        </div>
-        <h:form id="frmmensagem">
+        <h:form id="frmmensagem" onkeypress="
+                if (event.keyCode == 13) {
+                    document.getElementById('form:botaoBusca').click();
+                    return false;
+                }">
         
-        
-        
-                <p:toolbar>
 
-                    <p:toolbarGroup>
-
-
-                        <h:panelGrid columns="7" style="font-size:12px !important;">
+                   <p:growl id="growl" showDetail="false" />
+                   <p:panel id="pnlprincipal" header="">
+                        <p:panelGrid columns="7" styleClass="semBorda" style="font-size:12px !important;">
                         <p:outputPanel autoUpdate="true">
-                        <p:outputLabel value="Pesquisa: "/>
-						<p:inputText value="#{PacienteController.paciente.nome}" id="campoBusca"/>
-						<p:commandButton value="Buscar" actionListener="#{PacienteController.limparDados()}"
-						icon="ui-icon-search"
-						action="#{PacienteController.buscarescolaridade()}" />
-						<p:commandButton value="Limpar Busca" actionListener="#{PacienteController.limparDados()}"
+                        <p:outputLabel value="Pesquisar por: " />
+                        <p:selectOneMenu value="#{PacienteController.tipoBuscaPaciente}" required="true"
+                            style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
+                            requiredMessage="Informe o diretório da página.">
+                               
+                            <f:selectItem itemLabel="Nome" itemValue="1" />
+                            <f:selectItem itemLabel="CPF" itemValue="2" />
+                            
+                            <p:ajax event="change" update=":frmmensagem:pnlprincipal" />
+                        </p:selectOneMenu>
+
+                        <p:inputText id="campoBuscanome"
+                            style="height:28px;margin-top:-6px;margin-left:16px;"
+                            value="#{PacienteController.campoBuscaPaciente}"
+                            rendered="#{PacienteController.tipoBuscaPaciente == 1}" />
+                            
+                                 <p:inputMask id="campoBuscaCPF"
+                            rendered="#{PacienteController.tipoBuscaPaciente == 2}" mask="999.999.999-99"
+                            size="14" maxlength="14"
+                            style="height:28px;margin-top:-6px;margin-left:16px;"
+                            value="#{PacienteController.campoBuscaPaciente}" validatorMessage="CPF Incorreto.">
+                            
+                            <stella:validateCPF formatted="true" />
+                        </p:inputMask>
+                            
+	<!-- actionListener="#{PacienteController.limparDados()}" -->
+						<p:commandButton value="Buscar" id="botaoBusca" 
+						icon="buscaLupa" styleClass="btn btn-info" style="height:30px; margin-left:10px;" 
+						action="#{PacienteController.buscarPacientes()}" update=":frmmensagem:tabela, :frmmensagem:growl" />
+						<p:commandButton value="Limpar Busca" icon="limpar"  update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"  actionListener="#{PacienteController.limparBuscaDados()}"
 						style="margin-left:20px"/>
 						<br/>
-
-                           <!--  <p:commandButton id="btninc" value="Novo"
-                                             action="#{clienteController.limpaobj()}" update=":frminc:pnlinc"
-                                             oncomplete="PF('dlginc').show()" icon="ui-icon-plus" disabled="#{MBUsuarios.verificarPermComp('FC-67', MBUsuarios.sistemaLogado.id) == false}">
-                                <f:setPropertyActionListener value="I"
-                                                             target="#{clienteController.tipo}" />
+                 
+                         <p:commandButton id="btninc" value="Novo"
+                                             actionListener="#{PacienteController.limparDados()}"
+                                             action ="/pages/sishosp/cadastroPaciente.faces" icon="add"  styleClass="btn btn-sm btn-success" style="margin-top: 15px;" >
+                                    <f:setPropertyActionListener value="I" target="#{PacienteController.tipo}" /> 
                                 <p:tooltip for="btninc" value="Incluir"></p:tooltip>
                             </p:commandButton>   
 
-                            <p:commandButton id="btnalt" value="Alterar"
+                              <!--  <p:commandButton id="btnalt" value="Alterar"
                                              style="margin-left:10px" update=":frminc:pnlinc"
                                              action="#{clienteController.alteraCliente()}"
                                              icon="ui-icon-wrench">
@@ -61,19 +84,14 @@
                             </p:commandButton>-->
 
 						</p:outputPanel>
-                        </h:panelGrid>
-
-                    </p:toolbarGroup>
-                    <p:toolbarGroup align="right">
-
-                    </p:toolbarGroup>
-
-                </p:toolbar>
+                        </p:panelGrid>
 
 
 
 
-                <p:dataTable emptyMessage="Sem Dados" id="tabela"
+
+
+                <p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover" id="tabela"
                              style="margin-top:20px;" value="#{PacienteController.listaPacientes}"
                              var="tab" paginator="true" paginatorPosition="bottom" rows="12"
                              selectionMode="single" selection="#{PacienteController.paciente}"
@@ -89,7 +107,7 @@
                     <p:column headerText="Nome" style="font-weight:bold;">
                         <h:outputText value="#{tab.nome}" />
                     </p:column>
-                      <p:column headerText="CPF/CNPJ" style="font-weight:bold;">
+                      <p:column headerText="CPF" style="font-weight:bold;">
                         <h:outputText value="#{tab.cpf}" />
                     </p:column>
                     <p:column headerText="RG" style="font-weight:bold;">
@@ -104,12 +122,12 @@
                                         <f:setPropertyActionListener value="#{tab}" target="#{PacienteController.paciente}" />
                                     
                                         <f:setPropertyActionListener value="#{tab.escola}" target="#{PacienteController.escolaSuggestion}" />
-                                        <f:setPropertyActionListener value="#{tab.escolaridade.descescolaridade}" target="#{PacienteController.escolaridadeSuggestion}" />
+                                        <f:setPropertyActionListener value="#{tab.escolaridade}" target="#{PacienteController.escolaridadeSuggestion}" />
                                         <f:setPropertyActionListener value="#{tab.profissao}" target="#{PacienteController.profissaoSuggestion}" />
                                         <f:setPropertyActionListener value="#{tab.encaminhado}" target="#{PacienteController.encaminhadoSuggestion}" />
                                         <f:setPropertyActionListener value="#{tab.formatransporte}" target="#{PacienteController.transporteSuggestion}" />
                                         <!-- url="/pages/sishosp/cadastroPaciente.faces" -->
-                                       
+                                       <f:setPropertyActionListener value="A" target="#{PacienteController.tipo}" /> 
                                     </p:menuitem>
                                     
                                     <p:menuitem value="Excluir" icon="trash" 
@@ -121,7 +139,7 @@
                             </center>
                         </p:column>
                 </p:dataTable>
-
+</p:panel>
             </h:form>
 
             <p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"

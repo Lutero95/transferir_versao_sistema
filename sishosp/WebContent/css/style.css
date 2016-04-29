@@ -845,6 +845,16 @@ li.ui-selectonemenu-item {
     background-image: url("../imgs/lupinha2.png") !important;
 }
 
+.ui-icon.buscaLupa {/*top: 0px; left: 0px;
+         margin:  5px 0px 0px 3px; */
+    margin: -12px 0px 0px -5px;
+    padding: 0px 0px 0px 0px;
+    background-position: 0 0 !important;
+    width: 24px;
+    height: 24px;
+    background-image: url("../imgs/lupinha2.png") !important;
+}
+
 .ui-icon.receber2 {/*top: 0px; left: 0px;
          margin:  5px 0px 0px 3px; */
     margin: -12px 0px 0px -12px;

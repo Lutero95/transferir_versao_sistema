@@ -12,8 +12,13 @@
         <ui:define name="body">
                <!-- INICIO DO FORMULARIO -->
     <div class="col-md-8">
-        <h1>CADASTRO DE PACIENTES</h1>
+        <p:outputLabel value="CADASTRO DE PACIENTE" rendered="#{PacienteController.tipo == 'I'}"></p:outputLabel>
+        <p:outputLabel value="ALTERAR PACIENTE" rendered="#{PacienteController.tipo == 'A'}"></p:outputLabel>
         <br />
+        <h:form> <p:commandButton value="Voltar"
+			style="position:relative; right:55%; width:100px; " icon="btvoltar"
+			action ="/pages/sishosp/gerenciarPaciente.faces"></p:commandButton>  </h:form>
+        
         <h:form class="form-horizontal" id="formCADU">
        
         <p:growl id="message"/>
@@ -336,10 +341,10 @@
                 <h:outputLabel for="oe" value="Órgão Expedidor"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <p:inputMask value="#{PacienteController.paciente.oe}" class="form-control" mask="a**-a*"
+                    <h:inputText value="#{PacienteController.paciente.oe}" class="form-control" 
                         id="oe"
                         pt:placeholder="EX: SSP-AL">
-                    </p:inputMask>
+                    </h:inputText>
                 </div>
             </div>
                         <div class="form-group">
@@ -351,24 +356,23 @@
 											locale="pt" required="false"
 											requiredMessage="Informe o nascimento do Responsavel" />
                   	
-			<!--  <p:inputMask id="dtaexpedicao" required="false" size="12" value="#{PacienteController.paciente.dataExpedicao1}" mask="99/99/9999" requiredMessage="Aba Competência: Informe a vigência inicial"/> -->    
+			<!-- mask="a**-a*"  <p:inputMask id="dtaexpedicao" required="false" size="12" value="#{PacienteController.paciente.dataExpedicao1}" mask="99/99/9999" requiredMessage="Aba Competência: Informe a vigência inicial"/> -->    
                         </div>
                         </div>
-            
+            <!--  mask="999.999.999-99" -->
              <div class="form-group">
                 <h:outputLabel for="cpf" value="CPF"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <p:inputMask value="#{PacienteController.paciente.cpf}" class="form-control"
+                    <p:inputText value="#{PacienteController.paciente.cpf}" class="form-control"
                         id="cpf"
-                        mask="999-999-999-99"
                         pt:placeholder="Digite aqui seu cpf entre 11 digitos"
                         required="false"
                         validatorMessage="Cpf deve conter entre 11 digitos."
                         requiredMessage="é necessário que você informe seu cpf.">
                         <!-- <f:validateLength minimum="11" maximum="11" /> -->
                         <!-- <f:ajax event="blur" render="m_cpf" />  -->
-                    </p:inputMask>
+                    </p:inputText>
                     <h:message id="m_cpf" for="cpf"
                         style="color:#D74937;" />
                 </div>
@@ -526,7 +530,7 @@
                         </div>
                         <!-- LISTA 1 -->
 					            <div class="form-group">	
-                                            <p:outputLabel value="Nome: " styleClass="col-sm-3 control-label" >
+                                            <p:outputLabel value="Escolaridade: " styleClass="col-sm-3 control-label" >
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>    <div class="col-sm-6">
                                             
@@ -548,7 +552,7 @@
                                                 value="#{PacienteController.escolaridade.descescolaridade}" />
                                         </p:outputPanel> -->                 
                                  			 </div>
-                                 			    <p:commandButton value="Escolaridade" onclick="PF('dlgbuscaescolaridade').show();" icon="buscaProcess"/> 
+                                 			    <p:commandButton style="position:absolute; top:100px; left:550px;" onclick="PF('dlgbuscaescolaridade').show();" icon="buscaProcess"/> 
                                 <!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
                         </div>
                                        
@@ -556,7 +560,7 @@
                                     				 
                              <div class="form-group">	
                    
-                                            <p:outputLabel value="Nome: " styleClass="col-sm-3 control-label" >
+                                            <p:outputLabel value="Escola: " styleClass="col-sm-3 control-label" >
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>     <div class="col-sm-6">   
                                             
@@ -572,14 +576,14 @@
                                     
                                     
                                             </div>
-                                               <p:commandButton value="Local onde Estuda" onclick="PF('dlgbuscaescola').show();" icon="buscaProcess"/> 
+                                               <p:commandButton style="position:absolute; top:150px; left:550px;" onclick="PF('dlgbuscaescola').show();" icon="buscaProcess"/> 
                                 <!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
                                             </div>
                                     <!-- 3 LISTA -->
                                     				
                               <div class="form-group">
                                  
-                                            <p:outputLabel value="Nome: " styleClass="col-sm-3 control-label"  >
+                                            <p:outputLabel value="Profissão: " styleClass="col-sm-3 control-label"  >
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>     <div class="col-sm-6"> 
                                             
@@ -595,7 +599,7 @@
                                       
                                       
                                          </div>
-                                            <p:commandButton value="Profissão" onclick="PF('dlgbuscaprofissao').show();" icon="buscaProcess"/> 
+                                            <p:commandButton style="position:absolute; top:200px; left:550px;" onclick="PF('dlgbuscaprofissao').show();" icon="buscaProcess"/> 
                                             <!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
                               </div>
                                          
@@ -694,7 +698,7 @@
                           <div class="form-group">
                                
                                     
-                                            <p:outputLabel value="Nome: " styleClass="col-sm-3 control-label" >
+                                            <p:outputLabel value="Encaminhado: " styleClass="col-sm-3 control-label" >
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>  	<div class="col-sm-6">                                            
                                         
@@ -711,12 +715,13 @@
                                         
                                      
                                         </div>
-                                         <p:commandButton value="Encaminhado" onclick="PF('dlgbuscaencaminhado').show();" icon="buscaProcess"/> 
+                                         <p:commandButton style="position:absolute; top:60px; left:550px;" onclick="PF('dlgbuscaencaminhado').show();" icon="buscaProcess"/> 
                                 <!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
+                             
                            </div>
                                           
                                      <div class="form-group">
-                                            <p:outputLabel value="Nome: " styleClass="col-sm-3 control-label" >
+                                            <p:outputLabel value="Transporte: " styleClass="col-sm-3 control-label" >
                                                 <font color="#FF0000">*</font>
                                             </p:outputLabel>              <div class="col-sm-6">
                                             
@@ -732,7 +737,7 @@
                                      
                                        
                                              </div>
-                                              <p:commandButton value="Como chegou a Adefal" onclick="PF('dlgbuscacomochegou').show();" icon="buscaProcess"/> 
+                                              <p:commandButton style="position:absolute; top:110px; left:550px;"  onclick="PF('dlgbuscacomochegou').show();" icon="buscaProcess"/> 
                                 <!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
                                         </div>
                                    
@@ -777,12 +782,12 @@
                <p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
                     <h:commandButton action="#{PacienteController.gravarPaciente()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Cadastrar"
-                        styleClass="btn btn-sm btn-success" />
+                        styleClass="btn btn-sm btn-success" rendered="#{PacienteController.tipo == 'I'}" />
                
                
-                    <h:commandButton action="#{PacienteController.gravarPaciente()}"   
+                    <h:commandButton action="#{PacienteController.alterarPaciente()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Alterar"
-                        styleClass="btn btn-info" />
+                        styleClass="btn btn-info" rendered="#{PacienteController.tipo == 'A'}" />
             </p:panelGrid>
               
             
@@ -798,17 +803,7 @@
                     </h:panelGroup>
                 </f:facet>
                     <h:form id="buscaescola">
-                    <h:panelGrid id="p1" columns="5" styleClass="semBorda">
-                        <h:outputText id="n28" styleClass="rotulosBold" value="Nome Escola" />
-                        <p:inputText size="30" id="buscanomeescola"
-                                     value="#{PacienteController.escola.descescola}" />
-                        <h:outputText id="n29" styleClass="rotulosBold" value="Codigo" />
-                        <p:inputText styleClass="legend" size="15" id="buscacodigoescola"
-                                     value="#{PacienteController.escola.codEscola}" />
-                        <p:commandButton id="n30" icon="btPesquisar" update="buscaescola:tableescola"
-                                         value="Pesquisa" action="#{MBUsuarioCadastro.buscarpessoa()}"/>
 
-                    </h:panelGrid>
 
                     <center>
                         <p:outputPanel id="outinter">
@@ -874,17 +869,6 @@
                     </h:panelGroup>
                 </f:facet>
                     <h:form id="buscaescolaridade">
-                    <h:panelGrid id="p2" columns="5" styleClass="semBorda">
-                        <h:outputText id="n3" styleClass="rotulosBold" value="Escolaridade" />
-                        <p:inputText size="30" id="buscanomeescolaridade"
-                                     value="#{PacienteController.escolaridade.descescolaridade}" />
-                        <h:outputText id="n4" styleClass="rotulosBold" value="Codigo" />
-                        <p:inputText styleClass="legend" size="15" id="buscacodigoescola"
-                                     value="#{PacienteController.escolaridade.codescolaridade}" />
-                        <p:commandButton id="n5" icon="btPesquisar" update="buscaescolaridade:tableescolaridade"
-                                         value="Pesquisa" action="#{PacienteController.buscarescolaridade()}"/>
-
-                    </h:panelGrid>
 
                     <center>
                         <p:outputPanel id="outinter2">
@@ -919,8 +903,7 @@
                                                      oncomplete="PF('dlgbuscaescolaridade').hide();" icon="podeGravar"
                                                      id="confirmar">
 
-                                        <f:setPropertyActionListener value="#{busca.codescolaridade}"
-                                                                     target="#{PacienteController.escolaridade.codescolaridade}" />
+                                       
                                         <f:setPropertyActionListener value="#{busca}"
                                                                      target="#{PacienteController.escolaridadeSuggestion}" />
                                         <p:tooltip for="confirmar" value="Selecionar Escolaridade"></p:tooltip>
@@ -942,17 +925,7 @@
                     </h:panelGroup>
                 </f:facet>
                     <h:form id="buscaprofissao">
-                    <h:panelGrid id="p3" columns="5" styleClass="semBorda">
-                        <h:outputText id="n18" styleClass="rotulosBold" value="Nome Profissão" />
-                        <p:inputText size="30" id="buscanomeprofissao"
-                                     value="#{PacienteController.profissao.descprofissao}" />
-                        <h:outputText id="n19" styleClass="rotulosBold" value="Codigo" />
-                        <p:inputText styleClass="legend" size="15" id="buscacodigoprofissao"
-                                     value="#{PacienteController.profissao.codprofissao}" />
-                        <p:commandButton id="n20" icon="btPesquisar" update="buscaprofissao:tableprofissao"
-                                         value="Pesquisa" action="#{MBUsuarioCadastro.buscarpessoa()}"/>
 
-                    </h:panelGrid>
 
                     <center>
                         <p:outputPanel id="outinter3">
@@ -1012,17 +985,7 @@
                     </h:panelGroup>
                 </f:facet>
                     <h:form id="buscaencaminhado">
-                    <h:panelGrid id="p4" columns="5" styleClass="semBorda">
-                        <h:outputText id="n47" styleClass="rotulosBold" value="Nome Encaminhado" />
-                        <p:inputText size="30" id="buscanomeencaminhado"
-                                     value="#{MBUsuarioCadastro.pessoaselecionada.nome}" />
-                        <h:outputText id="n48" styleClass="rotulosBold" value="Codigo" />
-                        <p:inputText styleClass="legend" size="15" id="buscacodigoescola"
-                                     value="#{MBUsuarioCadastro.pessoaselecionada.cpf}" />
-                        <p:commandButton id="n49" icon="btPesquisar" update="buscaencaminhado:tableencaminhado"
-                                         value="Pesquisa" action="#{MBUsuarioCadastro.buscarpessoa()}"/>
 
-                    </h:panelGrid>
 
                     <center>
                         <p:outputPanel id="outinter4">
@@ -1081,17 +1044,6 @@
                     </h:panelGroup>
                 </f:facet>
                     <h:form id="buscatransporte">
-                    <h:panelGrid id="p5" columns="5" styleClass="semBorda">
-                        <h:outputText id="n62" styleClass="rotulosBold" value="Nome Transporte" />
-                        <p:inputText size="30" id="buscanometransporte"
-                                     value="#{MBUsuarioCadastro.pessoaselecionada.nome}" />
-                        <h:outputText id="n100" styleClass="rotulosBold" value="Codigo" />
-                        <p:inputText styleClass="legend" size="15" id="buscacodigotransporte"
-                                     value="#{MBUsuarioCadastro.pessoaselecionada.cpf}" />
-                        <p:commandButton id="n63" icon="btPesquisar" update="buscatransporte:tabletransporte"
-                                         value="Pesquisa" action="#{MBUsuarioCadastro.buscarpessoa()}"/>
-
-                    </h:panelGrid>
 
                     <center>
                         <p:outputPanel id="outinter5">
@@ -1151,17 +1103,6 @@
                     </h:panelGroup>
                 </f:facet>
                     <h:form id="buscadeficiencia">
-                    <h:panelGrid id="p6" columns="5" styleClass="semBorda">
-                        <h:outputText id="n75" styleClass="rotulosBold" value="Nome Deficiência" />
-                        <p:inputText size="30" id="buscanomedeficiencia"
-                                     value="#{MBUsuarioCadastro.pessoaselecionada.nome}" />
-                        <h:outputText id="n76" styleClass="rotulosBold" value="Codigo" />
-                        <p:inputText styleClass="legend" size="15" id="buscacodigodeficiencia"
-                                     value="#{MBUsuarioCadastro.pessoaselecionada.cpf}" />
-                        <p:commandButton id="n77" icon="btPesquisar" update="buscadeficiencia:tabledeficiencia"
-                                         value="Pesquisa" action="#{MBUsuarioCadastro.buscarpessoa()}"/>
-
-                    </h:panelGrid>
 
                     <center>
                         <p:outputPanel id="outinter6">

@@ -21,6 +21,7 @@ public class PacienteBean {
     private String localtrabalha;
     private Integer codProfissao;
     private Integer codRaca;
+	private String descRaca;
     
     
     private String deficiencia;
@@ -503,6 +504,14 @@ public class PacienteBean {
 
 		public void setDeficiencia(String deficiencia) {
 			this.deficiencia = deficiencia;
+		}
+
+		public String getDescRaca() {
+			return descRaca;
+		}
+
+		public void setDescRaca(String descRaca) {
+			this.descRaca = descRaca;
 		}
 		
 		
