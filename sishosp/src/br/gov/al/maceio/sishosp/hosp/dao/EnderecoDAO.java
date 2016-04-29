@@ -17,6 +17,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 
 
 
@@ -64,6 +65,7 @@ public class EnderecoDAO {
                     stmt.setString(1, endereco.getMunicipio());
                     stmt.setInt(2, endereco.getCodfederal());
                     stmt.setInt(3, endereco.getCodmacregiao());
+                    stmt.setInt(4, endereco.getCodmunicipio());
                     stmt.executeUpdate();
 
                     conexao.commit();
@@ -88,7 +90,7 @@ public class EnderecoDAO {
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setLong(1, endereco.getId());
+                    stmt.setInt(1, endereco.getCodmunicipio());
                     stmt.execute();
 
                     
@@ -212,6 +214,8 @@ public class EnderecoDAO {
     	            
     	                p.setCodmunicipio(rs.getInt("id_municipio"));
     	                p.setMunicipio(rs.getString("descmunicipio").toLowerCase());
+    	                p.setCodfederal(rs.getInt("codfederal"));
+    	                p.setCodmacregiao(rs.getInt("codmacregiao"));
     	                
     	                
     	                lista.add(p);
@@ -262,5 +266,49 @@ public class EnderecoDAO {
                 }
                 return lista;
             }
+            
+            public List<EnderecoBean> buscarTipoMunicipio(String valor, Integer tipo) {
+        		
+            	
+       		 String sql = "select municipio.id_municipio, municipio.descmunicipio from hosp.municipio where";
+       		
+       		if (tipo == 1) {
+       			sql += " municipio.descmunicipio like ? order by municipio.descmunicipio ";
+       		}
+       		List<EnderecoBean> lista = new ArrayList<>();
+
+       		try {
+       			conexao = ConnectionFactory.getConnection();
+       			PreparedStatement stmt = conexao.prepareStatement(sql);
+       			if (tipo == 1) {
+       				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+       			}
+
+       			ResultSet rs = stmt.executeQuery();
+
+       			while (rs.next()) {
+       				EnderecoBean p = new EnderecoBean();
+       				
+       	
+       				p.setCodmunicipio(rs.getInt("id_municipio"));
+   	                p.setMunicipio(rs.getString("descmunicipio").toLowerCase());
+
+       				lista.add(p);
+
+       			}
+       		} catch (SQLException ex) {
+       			ex.printStackTrace();
+       			// throw new RuntimeException(ex); //
+       		} finally {
+       			try {
+       				conexao.close();
+       			} catch (Exception ex) {
+       				ex.printStackTrace();
+       				System.exit(1);
+       			}
+       		}
+       		return lista;
+       	}
+            
             
 }

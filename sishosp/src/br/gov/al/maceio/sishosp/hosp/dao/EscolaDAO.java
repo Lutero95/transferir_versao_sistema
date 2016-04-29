@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -18,6 +16,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -36,15 +35,15 @@ public class EscolaDAO {
                         .getCurrentInstance().getExternalContext().getSessionMap()
                         .get("obj_paciente");*/
 
-                String sql = "insert into hosp.escola (descescola, codtipoescola)"
-                		+ " values (?, ?)";
+                String sql = "insert into hosp.escola (descescola)"
+                		+ " values (?)";
                 //returning id_paciente
                     try {
                     	System.out.println("passou aqui 3");
                         conexao = ConnectionFactory.getConnection();
                         PreparedStatement stmt = conexao.prepareStatement(sql);
                         stmt.setString(1, escola.getDescescola().toUpperCase().trim());
-                        stmt.setInt(2, escola.getCodtipoescola());
+                        //stmt.setInt(2, escola.getCodtipoescola());
                         //stmt.setString(2, paciente.getCpf().replaceAll("[^0-9]", ""));  
                         //stmt.setBoolean(3, true);
                         //stmt.setInt(3, paciente.getIdpessoa());
@@ -75,6 +74,7 @@ public class EscolaDAO {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
                     stmt.setString(1, escola.getDescescola());
+                    stmt.setInt(2, escola.getCodEscola());
                     stmt.executeUpdate();
 
                     conexao.commit();
@@ -98,7 +98,7 @@ public class EscolaDAO {
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setLong(1, escola.getCodEscola());
+                    stmt.setInt(1, escola.getCodEscola());
                     stmt.execute();
 
                     
@@ -346,5 +346,48 @@ public class EscolaDAO {
                 }
                 return lista;
             }
+            
+            public List<EscolaBean> buscarTipoEscola(String valor, Integer tipo) {
+        		
+            	
+          		 String sql = "select escola.id_escola, escola.descescola from hosp.escola where";
+          		
+          		if (tipo == 1) {
+          			sql += " escola.descescola like ? order by escola.descescola ";
+          		}
+          		List<EscolaBean> lista = new ArrayList<>();
+
+          		try {
+          			conexao = ConnectionFactory.getConnection();
+          			PreparedStatement stmt = conexao.prepareStatement(sql);
+          			if (tipo == 1) {
+          				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+          			}
+
+          			ResultSet rs = stmt.executeQuery();
+
+          			while (rs.next()) {
+          				EscolaBean p = new EscolaBean();
+          				
+          	
+          				p.setCodEscola(rs.getInt("id_escola"));
+      	                p.setDescescola(rs.getString("descescola").toLowerCase());
+
+          				lista.add(p);
+
+          			}
+          		} catch (SQLException ex) {
+          			ex.printStackTrace();
+          			// throw new RuntimeException(ex); //
+          		} finally {
+          			try {
+          				conexao.close();
+          			} catch (Exception ex) {
+          				ex.printStackTrace();
+          				System.exit(1);
+          			}
+          		}
+          		return lista;
+          	}
             
 }

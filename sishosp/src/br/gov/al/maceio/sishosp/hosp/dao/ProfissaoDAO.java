@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -70,11 +68,12 @@ public class ProfissaoDAO {
             
             public Boolean alterar(ProfissaoBean profissao) throws ProjetoException {
                 boolean alterou = false;
-                String sql = "update hosp.escola set descprofissao = ? where id_profissao = ?";
+                String sql = "update hosp.profissao set descprofissao = ? where id_profissao = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
                     stmt.setString(1, profissao.getDescprofissao());
+                    stmt.setInt(2, profissao.getCodprofissao());
                     stmt.executeUpdate();
 
                     conexao.commit();
@@ -94,7 +93,7 @@ public class ProfissaoDAO {
             }
             public Boolean excluir(ProfissaoBean profissao) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.escola where id_profissao = ?";
+                String sql =  "delete from hosp.profissao where id_profissao = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -230,6 +229,50 @@ public class ProfissaoDAO {
 
             			}
             		}	
+            
+            
+            public List<ProfissaoBean> buscarTipoProfissao(String valor, Integer tipo) {
+        		
+        	
+        		 String sql = "select profissao.id_profissao, profissao.descprofissao from hosp.profissao where";
+        		
+        		if (tipo == 1) {
+        			sql += " profissao.descprofissao like ? order by profissao.descprofissao ";
+        		}
+        		List<ProfissaoBean> lista = new ArrayList<>();
+
+        		try {
+        			conexao = ConnectionFactory.getConnection();
+        			PreparedStatement stmt = conexao.prepareStatement(sql);
+        			if (tipo == 1) {
+        				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+        			}
+
+        			ResultSet rs = stmt.executeQuery();
+
+        			while (rs.next()) {
+        				ProfissaoBean p = new ProfissaoBean();
+        				
+        	
+        				p.setCodprofissao(rs.getInt("id_profissao"));
+    	                p.setDescprofissao(rs.getString("descprofissao").toLowerCase());
+
+        				lista.add(p);
+
+        			}
+        		} catch (SQLException ex) {
+        			ex.printStackTrace();
+        			// throw new RuntimeException(ex); //
+        		} finally {
+        			try {
+        				conexao.close();
+        			} catch (Exception ex) {
+        				ex.printStackTrace();
+        				System.exit(1);
+        			}
+        		}
+        		return lista;
+        	}
   
             
 }

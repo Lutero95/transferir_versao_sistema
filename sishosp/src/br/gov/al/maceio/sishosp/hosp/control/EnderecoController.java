@@ -10,12 +10,14 @@ import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProfissaoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 
 
 
 public class EnderecoController {
-
+	private Integer abaAtiva = 0;
 	//CLASSES HERDADAS
 	private EnderecoBean endereco;
 	
@@ -23,8 +25,20 @@ public class EnderecoController {
 	private List<EnderecoBean> listaMunicipios;
 	private List<EnderecoBean> listaBairros;
 	
+	//BUSCAS
+			private String tipo;
+			private Integer tipoBuscaMunicipio;
+			private String campoBuscaMunicipio;
+			private String statusMunicipio;
+	
 	public EnderecoController(){
 		endereco = new EnderecoBean();
+		
+		 //BUSCA
+			tipo ="";
+			tipoBuscaMunicipio = 1;
+			campoBuscaMunicipio = "";
+			statusMunicipio = "P";
 		
 		  //LISTAS
 		  listaMunicipios = new ArrayList<>();
@@ -60,7 +74,7 @@ public class EnderecoController {
         EnderecoDAO udao = new EnderecoDAO();
 
                 boolean cadastrou = udao.cadastrarMunicipio(endereco);
-
+                listaMunicipios = null;
                 if(cadastrou == true) {
                 	limparDados();
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -82,7 +96,7 @@ public class EnderecoController {
 		
 		EnderecoDAO udao = new EnderecoDAO();
          boolean alterou = udao.alterarMunicipio(endereco);
-
+         listaMunicipios = null;
          if(alterou == true) {
 
              FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -105,7 +119,7 @@ public class EnderecoController {
 		EnderecoDAO udao = new EnderecoDAO();
         System.out.println("excluio");
         boolean excluio = udao.excluirLogradouro(endereco);
-
+      
         if(excluio == true) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Logradouro excluido com sucesso!", "Sucesso");
@@ -126,7 +140,7 @@ public class EnderecoController {
 		EnderecoDAO udao = new EnderecoDAO();
         System.out.println("excluio");
         boolean excluio = udao.excluirMunicipio(endereco);
-
+        listaMunicipios = null;
         if(excluio == true) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Municipio excluido com sucesso!", "Sucesso");
@@ -142,6 +156,37 @@ public class EnderecoController {
         }
     
 }
+	
+	public void buscarMunicipios() {
+
+		List<EnderecoBean> listaAux = null;
+		listaMunicipios = new ArrayList<>();
+
+		EnderecoDAO adao = new EnderecoDAO();
+
+		listaAux = adao.buscarTipoMunicipio(campoBuscaMunicipio,tipoBuscaMunicipio);
+
+		if (listaAux != null && listaAux.size() > 0) {
+			// listaAss = null;
+			listaMunicipios = listaAux;
+		} else {
+			// listaAss = null;
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Nenhum Municipio encontrado.", "Aviso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+	}
+	
+	
+	
+	public void limparBuscaDados() {
+		tipoBuscaMunicipio = 1;
+		campoBuscaMunicipio = "";
+		statusMunicipio = "P";
+		listaMunicipios = null;
+	}
+	
 	
 	public void limparDados(){
 		endereco = new EnderecoBean();
@@ -185,6 +230,46 @@ public class EnderecoController {
 
 	public void setListaBairros(List<EnderecoBean> listaBairros) {
 		this.listaBairros = listaBairros;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	public Integer getTipoBuscaMunicipio() {
+		return tipoBuscaMunicipio;
+	}
+
+	public void setTipoBuscaMunicipio(Integer tipoBuscaMunicipio) {
+		this.tipoBuscaMunicipio = tipoBuscaMunicipio;
+	}
+
+	public String getCampoBuscaMunicipio() {
+		return campoBuscaMunicipio;
+	}
+
+	public void setCampoBuscaMunicipio(String campoBuscaMunicipio) {
+		this.campoBuscaMunicipio = campoBuscaMunicipio;
+	}
+
+	public String getStatusMunicipio() {
+		return statusMunicipio;
+	}
+
+	public void setStatusMunicipio(String statusMunicipio) {
+		this.statusMunicipio = statusMunicipio;
+	}
+
+	public Integer getAbaAtiva() {
+		return abaAtiva;
+	}
+
+	public void setAbaAtiva(Integer abaAtiva) {
+		this.abaAtiva = abaAtiva;
 	}
 	
 	

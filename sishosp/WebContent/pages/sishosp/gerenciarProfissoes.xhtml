@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:stella="http://stella.caelum.com.br/faces2"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:composition template="../../template/templatepagsistemas.xhtml">
+
+        <ui:define name="body">
+               <!-- INICIO DO FORMULARIO -->
+    <div class="col-md-8">
+        <h3 >GERENCIAMENTO DE PROFISSÕES</h3>
+        <br />
+       </div>
+        <h:form id="frmmensagem" onkeypress="
+                if (event.keyCode == 13) {
+                    document.getElementById('form:botaoBusca').click();
+                    return false;
+                }">
+        
+
+                   <p:growl id="growl" showDetail="false" />
+                   <p:panel id="pnlprincipal" header="">
+                        <p:panelGrid columns="7" styleClass="semBorda" style="font-size:12px !important;">
+                        <p:outputPanel autoUpdate="true">
+                        <p:outputLabel value="Pesquisar por: " />
+                        <p:selectOneMenu value="#{ProfissaoController.tipoBuscaProfissao}" required="true"
+                            style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
+                            requiredMessage="Informe o diretório da página.">
+                               
+                            <f:selectItem itemLabel="Nome" itemValue="1" />
+
+                            
+                            <p:ajax event="change" update=":frmmensagem:pnlprincipal" />
+                        </p:selectOneMenu>
+
+                        <p:inputText id="campoBuscanome"
+                            style="height:28px;margin-top:-6px;margin-left:16px;"
+                            value="#{ProfissaoController.campoBuscaProfissao}"
+                            rendered="#{ProfissaoController.tipoBuscaProfissao == 1}" />
+                            
+
+                            
+	<!-- actionListener="#{PacienteController.limparDados()}" -->
+						<p:commandButton value="Buscar" id="botaoBusca" 
+						icon="buscaLupa" styleClass="btn btn-info" style="height:30px; margin-left:10px;" 
+						action="#{ProfissaoController.buscarProfissoes()}" update=":frmmensagem:tabela, :frmmensagem:growl" />
+						<p:commandButton value="Limpar Busca" icon="limpar"  update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"  actionListener="#{ProfissaoController.limparBuscaDados()}"
+						style="margin-left:20px"/>
+						<br/>
+                 
+                         <p:commandButton id="btninc" value="Novo"
+                                             actionListener="#{ProfissaoController.limparDados()}"
+                                             action ="/pages/sishosp/cadastroProfissoes.faces" icon="add"  styleClass="btn btn-sm btn-success" style="margin-top: 15px;" >
+                                    <f:setPropertyActionListener value="I" target="#{ProfissaoController.tipo}" /> 
+                                <p:tooltip for="btninc" value="Incluir"></p:tooltip>
+                            </p:commandButton>   
+
+                              <!--  <p:commandButton id="btnalt" value="Alterar"
+                                             style="margin-left:10px" update=":frminc:pnlinc"
+                                             action="#{clienteController.alteraCliente()}"
+                                             icon="ui-icon-wrench">
+                                <f:setPropertyActionListener value="A"
+                                target="#{clienteController.tipo}" />
+                                <p:tooltip for="btnalt" value="Alterar"></p:tooltip>
+                            </p:commandButton>
+
+
+                            <p:commandButton icon="ui-icon-closethick" value="Excluir"
+                                             style="margin-left:10px" id="btnexc"
+                                             action="#{clienteController.acaoExcluir()}">
+                                <p:tooltip for="btnexc" value="Excluir"></p:tooltip>
+                            </p:commandButton>-->
+
+						</p:outputPanel>
+                        </p:panelGrid>
+
+
+
+
+
+
+                <p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover" id="tabela"
+                             style="margin-top:20px;" value="#{ProfissaoController.listaProfissoes}"
+                             var="tab" paginator="true" paginatorPosition="bottom" rows="12"
+                             selectionMode="single" selection="#{ProfissaoController.profissao}"
+                             rowKey="#{tab.codprofissao}">
+
+                    <!--  <p:ajax event="rowSelect" oncomplete="PF('dlgacoes').show();"
+                            listener="#{PacienteController.onRowSelect}" />-->
+
+                    <p:column headerText="Cód." style="font-weight:bold;width:5%;">
+                        <h:outputText value="#{tab.codprofissao}" />
+                    </p:column>
+
+                    <p:column headerText="Nome" style="font-weight:bold;">
+                        <h:outputText value="#{tab.descprofissao}" />
+                    </p:column>
+
+                    
+                    <p:column headerText="Ações" width="15%">
+                            <center>
+                                <p:splitButton icon="confirmar">
+                                    <p:menuitem value="Alterar" icon="alterar-dados"  
+                                       action ="/pages/sishosp/cadastroProfissoes.faces" >
+                                        <f:setPropertyActionListener value="#{tab}" target="#{ProfissaoController.profissao}" />
+  
+                                        <!-- url="/pages/sishosp/cadastroPaciente.faces" -->
+                                       <f:setPropertyActionListener value="A" target="#{ProfissaoController.tipo}" /> 
+                                    </p:menuitem>
+                                    
+                                    <p:menuitem value="Excluir" icon="trash" 
+                                        onclick="PF('dialogAtencao').show()">
+
+                                        <f:setPropertyActionListener value="#{tab.codprofissao}" target="#{ProfissaoController.profissao.codprofissao}" />
+                                    </p:menuitem>
+                                </p:splitButton>   
+                            </center>
+                        </p:column>
+                </p:dataTable>
+</p:panel>
+            </h:form>
+
+            <p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
+                      resizable="false">
+
+<h:form id="dlgexcluir">
+                <h:panelGrid columns="1">
+
+
+                    <div class="alert alert-warning" role="alert">Deseja excluir
+                        esta Profissão?</div>
+
+                </h:panelGrid>
+
+
+
+                <center>
+
+                    <p:commandButton value="Sim" 
+                                     action="#{ProfissaoController.excluirProfissao()}"
+                                     icon="ui-icon-check" style="font-size:14px;" update=":frmmensagem:tabela">
+                    </p:commandButton>
+
+                    <p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
+                                     icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+
+                </center>
+
+
+</h:form>
+            </p:dialog>
+        
+    
+        </ui:define>
+    </ui:composition>
+</html>

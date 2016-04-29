@@ -86,8 +86,14 @@
 		<p:menubar autoDisplay="true" >
 		<p:menuitem value="Home"  action="/pages/comum/selecaoSistema.faces?faces-redirect=true" ajax="false" icon="sair"  />
 			<p:submenu label="Gerenciar" icon="ui-icon-document">
+			<p:menuitem value="Gerenciar Escola"
+					url="/pages/sishosp/gerenciarEscola.faces" />
 				<p:menuitem value="Gerenciar Pacientes"
 					url="/pages/sishosp/gerenciarPaciente.faces" />
+					<p:menuitem value="Gerenciar Profissão"
+					url="/pages/sishosp/gerenciarProfissoes.faces" />
+					<p:menuitem value="Gerenciar Municipio"
+					url="/pages/sishosp/gerenciarMunicipio.faces" />
 			</p:submenu>
 			<p:submenu label="Cadastros" icon="ui-icon-document">
                 <p:submenu label="Agenda" icon="ui-icon-document">
