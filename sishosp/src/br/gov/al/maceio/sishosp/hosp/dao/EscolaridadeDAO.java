@@ -195,7 +195,7 @@ public class EscolaridadeDAO {
 
             			try {
             				List<EscolaridadeBean> listaescolaridades = new ArrayList<EscolaridadeBean>();  
-            				String sql = "select id_escolaridade, descescolaridade from hosp.escolaridade where upper(descescolaridade) like ? order by descescolaridade";
+            				String sql = "select id_escolaridade ||'-'|| descescolaridade from hosp.escolaridade where upper(id_escolaridade ||'-'||descescolaridade) like ? order by descescolaridade";
             				 
             				ps = conexao.prepareStatement(sql);
             				ps.setString(1, "%"+s.toUpperCase()+"%");
