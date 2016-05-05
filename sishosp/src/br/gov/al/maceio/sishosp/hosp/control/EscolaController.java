@@ -7,7 +7,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
@@ -48,13 +47,13 @@ public class EscolaController {
 	public void gravarEscola() throws ProjetoException {
 		EscolaDAO udao = new EscolaDAO();    
                 boolean cadastrou = udao.cadastrar(escola);
-                listaEscolas = null;
+               
                 if(cadastrou == true) {
                 	limparDados();
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Escola cadastrado com sucesso!", "Sucesso");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
-
+                    listaEscolas = null;
                     
 
                 } else {
@@ -67,23 +66,23 @@ public class EscolaController {
             
     }
 	
-	public void alterarEscola() throws ProjetoException {
+	public String alterarEscola() throws ProjetoException {
 
 		EscolaDAO rdao = new EscolaDAO();
          boolean alterou = rdao.alterar(escola);
          listaEscolas = null;
          if(alterou == true) {
-
+             limparDados();
              FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                  "Escola alterado com sucesso!", "Sucesso");
              FacesContext.getCurrentInstance().addMessage(null, msg);
-
+             return "/pages/sishosp/gerenciarEscola.faces?faces-redirect=true";
              //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
          } else {
              FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                  "Ocorreu um erro durante o cadastro!", "Erro");
              FacesContext.getCurrentInstance().addMessage(null, msg);
-
+             return "";
              //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
          }
 		
@@ -93,12 +92,13 @@ public class EscolaController {
 		EscolaDAO udao = new EscolaDAO();
 
         boolean excluio = udao.excluir(escola);
-        listaEscolas = null;
+        
         if(excluio == true) {
+        	
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Escola excluido com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-
+            listaEscolas = null;
             RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,

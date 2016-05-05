@@ -16,7 +16,7 @@
         <p:outputLabel value="ALTERAR PACIENTE" rendered="#{PacienteController.tipo == 'A'}"></p:outputLabel>
         <br />
         <h:form> <p:commandButton value="Voltar"
-			style="position:relative; right:55%; width:100px; " icon="btvoltar"
+			style="position:relative; right:15%; width:100px; " icon="btvoltar"
 			action ="/pages/sishosp/gerenciarPaciente.faces"></p:commandButton>  </h:form>
         
         <h:form class="form-horizontal" id="formCADU">
@@ -37,10 +37,9 @@
                         validatorMessage="Nome deve conter entre 2 e 30 caracteres."
                         requiredMessage="é necessário que você informe seu nome.">
                         <f:validateLength minimum="2" maximum="40" />
-                        <f:ajax event="blur" render="m_inputname" />
+                       
                     </h:inputText>
-                    <h:message id="m_inputname" for="inputname"
-                        style="color:#D74937;" />
+                    
                 </div>
             </div>
                 <div class="form-group">
@@ -115,51 +114,48 @@
                 <h:outputLabel for="pai" value="Pai"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <h:inputText disable="true"  value="#{PacienteController.paciente.nomePai}" class="form-control"
+                    <h:inputText value="#{PacienteController.paciente.nomePai}" class="form-control"
                         id="pai"
                         pt:placeholder="Digite aqui o nome do seu pai entre 2 e 30 caracteres"
                         required="false"
                         validatorMessage="Nome deve conter entre 2 e 30 caracteres."
                         requiredMessage="é necessário que você informe seu nome.">
                         <f:validateLength minimum="2" maximum="40" />
-                        <f:ajax event="blur" render="m_pai" />
+                       
                     </h:inputText>
-                    <h:message id="m_pai" for="pai"
-                        style="color:#D74937;" />
+                 
                 </div>
             </div>
                    <div class="form-group">
                 <h:outputLabel for="mae" value="Mãe"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <h:inputText  disable="true"  value="#{PacienteController.paciente.nomeMae}" class="form-control"
+                    <h:inputText value="#{PacienteController.paciente.nomeMae}" class="form-control"
                         id="mae"
                         pt:placeholder="Digite aqui o nome da sua mãe entre 2 e 30 caracteres"
                         required="false"
                         validatorMessage="Nome deve conter entre 2 e 30 caracteres."
                         requiredMessage="é necessário que você informe seu nome.">
                         <f:validateLength minimum="2" maximum="40" />
-                        <f:ajax event="blur" render="m_mae" />
+                        
                     </h:inputText>
-                    <h:message id="m_mae" for="mae"
-                        style="color:#D74937;" />
+                   
                 </div>
             </div>
             <div class="form-group">
                 <h:outputLabel for="conjuge" value="Conjuge"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <h:inputText  disable="true" value="#{PacienteController.paciente.conjuge}" class="form-control"
+                    <h:inputText value="#{PacienteController.paciente.conjuge}" class="form-control"
                         id="conjuge"
                         pt:placeholder="Digite aqui seu conjuge entre 2 e 30 caracteres"
                         required="false"
                         validatorMessage="Conjuge deve conter entre 2 e 30 caracteres."
                         requiredMessage="é necessário que você informe seu nome.">
                         <f:validateLength minimum="2" maximum="40" />
-                        <f:ajax event="blur" render="m_conjuge" />
+                       
                     </h:inputText>
-                    <h:message id="m_conjuge" for="conjuge"
-                        style="color:#D74937;" />
+                    
                 </div>
             </div>
                     <div class="form-group">
@@ -535,11 +531,12 @@
                                             </p:outputLabel>    <div class="col-sm-6">
                                             
                                         
+                                          
                                            <p:autoComplete styleClass="col-sm-3 control-label" label="Digite a escolaridade" emptyMessage="Digite a Escolaridade" 
                                             id="escolacomplete1" style="font-size:12px"  
                                             value="#{PacienteController.escolaridadeSuggestion}" size="45" 
                                             completeMethod="#{PacienteController.completeText2}" effect="fade" 
-                                            var="theme" forceSelection="true" minQueryLength="3" 
+                                            var="theme" forceSelection="true" minQueryLength="1" 
                                             itemValue="#{theme}" itemLabel="#{theme.descescolaridade}" 
                                             converter="conEscolaridade"  >
                                             <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect2}"/>
@@ -568,7 +565,7 @@
                                             id="escolacomplete2" style="font-size:12px"  
                                             value="#{PacienteController.escolaSuggestion}" size="45" 
                                             completeMethod="#{PacienteController.completeText}" effect="fade" 
-                                            var="theme" forceSelection="true" minQueryLength="3" 
+                                            var="theme" forceSelection="true" minQueryLength="1" 
                                             itemValue="#{theme}" itemLabel="#{theme.descescola}" 
                                             converter="conEscola"  >
                                             <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect}"/>
@@ -591,7 +588,7 @@
                                             id="escolacomplete3" style="font-size:12px"  
                                             value="#{PacienteController.profissaoSuggestion}" size="45" 
                                             completeMethod="#{PacienteController.completeText6}" effect="fade" 
-                                            var="theme" forceSelection="true" minQueryLength="3" 
+                                            var="theme" forceSelection="true" minQueryLength="1" 
                                             itemValue="#{theme}" itemLabel="#{theme.descprofissao}" 
                                             converter="conProfissao"  >
                                             <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect6}"/>
@@ -706,7 +703,7 @@
                                             id="escolacomplete4" style="font-size:12px"  
                                             value="#{PacienteController.encaminhadoSuggestion}" size="45" 
                                             completeMethod="#{PacienteController.completeText4}" effect="fade" 
-                                            var="theme" forceSelection="true" minQueryLength="3" 
+                                            var="theme" forceSelection="true" minQueryLength="1" 
                                             itemValue="#{theme}" itemLabel="#{theme.descencaminhado}" 
                                             converter="conEncaminhado"  >
                                             <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect4}"/>
@@ -729,7 +726,7 @@
                                             id="escolacomplete5" style="font-size:12px"  
                                             value="#{PacienteController.transporteSuggestion}" size="45" 
                                             completeMethod="#{PacienteController.completeText5}" effect="fade" 
-                                            var="theme" forceSelection="true" minQueryLength="3" 
+                                            var="theme" forceSelection="true" minQueryLength="1" 
                                             itemValue="#{theme}" itemLabel="#{theme.descformatransporte}" 
                                             converter="conFormaTransporte">
                                             <p:ajax event="itemSelect" listener="#{PacienteController.onItemSelect5}"/>
@@ -872,7 +869,7 @@
 
                     <center>
                         <p:outputPanel id="outinter2">
-                            <p:dataTable value="#{PacienteController.listaEscolararidade}"
+                            <p:dataTable value="#{PacienteController.listaEscolaridade}"
                                          var="busca" paginator="true" paginatorPosition="bottom"
                                          id="tableescolaridade" emptyMessage="Nenhum Interessado" sortMode="single"
                                          rows="11" styleClass="fonteForm" widgetVar="800" >
@@ -901,7 +898,7 @@
 
                                     <p:commandButton 
                                                      oncomplete="PF('dlgbuscaescolaridade').hide();" icon="podeGravar"
-                                                     id="confirmar">
+                                                     id="confirmar" update=":formCADU:pnlCadPaciente">
 
                                        
                                         <f:setPropertyActionListener value="#{busca}"

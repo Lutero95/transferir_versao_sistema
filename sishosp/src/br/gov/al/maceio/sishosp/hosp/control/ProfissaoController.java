@@ -52,7 +52,7 @@ public class ProfissaoController {
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Profissao cadastrado com sucesso!", "Sucesso");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
-
+                 listaProfissoes = null;
                     
 
                 } else {
@@ -65,23 +65,24 @@ public class ProfissaoController {
             
     }
 	
-	public void alterarProfissao() throws ProjetoException {
+	public String alterarProfissao() throws ProjetoException {
 
 		ProfissaoDAO rdao = new ProfissaoDAO();
          boolean alterou = rdao.alterar(profissao);
          listaProfissoes = null;
          if(alterou == true) {
-
+        	 limparDados();
              FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                  "Profissao alterado com sucesso!", "Sucesso");
              FacesContext.getCurrentInstance().addMessage(null, msg);
+             return "/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true";
 
              //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
          } else {
              FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                  "Ocorreu um erro durante o cadastro!", "Erro");
              FacesContext.getCurrentInstance().addMessage(null, msg);
-
+             return "";
              //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
          }
 		
@@ -91,12 +92,12 @@ public class ProfissaoController {
 		ProfissaoDAO udao = new ProfissaoDAO();
 
         boolean excluio = udao.excluir(profissao);
-        listaProfissoes = null;
+        
         if(excluio == true) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Profissao excluido com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-
+            listaProfissoes = null;
             RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,

@@ -13,7 +13,7 @@
         <ui:define name="body">
                <!-- INICIO DO FORMULARIO -->
     <div class="col-md-8">
-        <h3 >GERENCIAMENTO DE PROFISSÕES</h3>
+        <h3 >GERENCIAMENTO DE ESCOLARIDADE</h3>
         <br />
        </div>
         <h:form id="frmmensagem" onkeypress="
@@ -28,7 +28,7 @@
                         <p:panelGrid columns="7" styleClass="semBorda" style="font-size:12px !important;">
                         <p:outputPanel autoUpdate="true">
                         <p:outputLabel value="Pesquisar por: " />
-                        <p:selectOneMenu value="#{ProfissaoController.tipoBuscaProfissao}" required="true"
+                        <p:selectOneMenu value="#{EscolaridadeController.tipoBuscaEscolaridade}" required="true"
                             style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
                             requiredMessage="Informe o diretório da página.">
                                
@@ -40,23 +40,23 @@
 
                         <p:inputText id="campoBuscanome"
                             style="height:28px;margin-top:-6px;margin-left:16px;"
-                            value="#{ProfissaoController.campoBuscaProfissao}"
-                            rendered="#{ProfissaoController.tipoBuscaProfissao == 1}" />
+                            value="#{EscolaridadeController.campoBuscaEscolaridade}"
+                            rendered="#{EscolaridadeController.tipoBuscaEscolaridade == 1}" />
                             
 
                             
 	<!-- actionListener="#{PacienteController.limparDados()}" -->
 						<p:commandButton value="Buscar" id="botaoBusca" 
 						icon="buscaLupa" styleClass="btn btn-info" style="height:30px; margin-left:10px;" 
-						action="#{ProfissaoController.buscarProfissoes()}" update=":frmmensagem:tabela, :frmmensagem:growl" />
-						<p:commandButton value="Limpar Busca" icon="limpar"  update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"  actionListener="#{ProfissaoController.limparBuscaDados()}"
+						action="#{EscolaridadeController.buscarEscolaridades()}" update=":frmmensagem:tabela, :frmmensagem:growl" />
+						<p:commandButton value="Limpar Busca" icon="limpar"  update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"  actionListener="#{EscolaridadeController.limparBuscaDados()}"
 						style="margin-left:20px"/>
 						<br/>
                  
                          <p:commandButton id="btninc" value="Novo"
-                                             actionListener="#{ProfissaoController.limparDados()}"
-                                             action ="/pages/sishosp/cadastroProfissoes.faces" icon="add"  styleClass="btn btn-sm btn-success" style="margin-top: 15px;" >
-                                    <f:setPropertyActionListener value="I" target="#{ProfissaoController.tipo}" /> 
+                                             actionListener="#{EscolaridadeController.limparDados()}"
+                                             action ="/pages/sishosp/cadastroEscolaridade.faces" icon="add"  styleClass="btn btn-sm btn-success" style="margin-top: 15px;" >
+                                    <f:setPropertyActionListener value="I" target="#{EscolaridadeController.tipo}" /> 
                                 <p:tooltip for="btninc" value="Incluir"></p:tooltip>
                             </p:commandButton>   
 
@@ -85,16 +85,17 @@
 
 
                 <p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover" id="tabela"
-                             style="margin-top:20px;" value="#{ProfissaoController.listaProfissoes}"
+                             style="margin-top:20px;" value="#{EscolaridadeController.listaEscolaridade}"
                              var="tab" paginator="true" paginatorPosition="bottom" rows="12">
 
+                    
 
                     <p:column headerText="Cód." style="font-weight:bold;width:5%;">
-                        <h:outputText value="#{tab.codprofissao}" />
+                        <h:outputText value="#{tab.codescolaridade}" />
                     </p:column>
 
                     <p:column headerText="Nome" style="font-weight:bold;">
-                        <h:outputText value="#{tab.descprofissao}" />
+                        <h:outputText value="#{tab.descescolaridade}" />
                     </p:column>
 
                     
@@ -102,17 +103,17 @@
                             <center>
                                 <p:splitButton icon="confirmar">
                                     <p:menuitem value="Alterar" icon="alterar-dados"  
-                                       action ="/pages/sishosp/cadastroProfissoes.faces" >
-                                        <f:setPropertyActionListener value="#{tab}" target="#{ProfissaoController.profissao}" />
+                                       action ="/pages/sishosp/cadastroEscolaridade.faces" >
+                                        <f:setPropertyActionListener value="#{tab}" target="#{EscolaridadeController.escolaridade}" />
   
-                                        <!-- url="/pages/sishosp/cadastroPaciente.faces" -->
-                                       <f:setPropertyActionListener value="A" target="#{ProfissaoController.tipo}" /> 
+                                       
+                                       <f:setPropertyActionListener value="A" target="#{EscolaridadeController.tipo}" /> 
                                     </p:menuitem>
                                     
                                     <p:menuitem value="Excluir" icon="trash" 
                                         onclick="PF('dialogAtencao').show()">
 
-                                        <f:setPropertyActionListener value="#{tab.codprofissao}" target="#{ProfissaoController.profissao.codprofissao}" />
+                                        <f:setPropertyActionListener value="#{tab.codescolaridade}" target="#{EscolaridadeController.escolaridade.codescolaridade}" />
                                     </p:menuitem>
                                 </p:splitButton>   
                             </center>
@@ -129,7 +130,7 @@
 
 
                     <div class="alert alert-warning" role="alert">Deseja excluir
-                        esta Profissão?</div>
+                        esta Escolaridade?</div>
 
                 </h:panelGrid>
 
@@ -138,7 +139,7 @@
                 <center>
 
                     <p:commandButton value="Sim" 
-                                     action="#{ProfissaoController.excluirProfissao()}"
+                                     action="#{EscolaridadeController.excluirEscolaridade()}"
                                      icon="ui-icon-check" style="font-size:14px;" update=":frmmensagem:tabela">
                     </p:commandButton>
 

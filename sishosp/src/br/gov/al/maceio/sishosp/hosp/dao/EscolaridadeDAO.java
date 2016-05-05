@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -18,6 +16,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 
@@ -73,6 +72,7 @@ public class EscolaridadeDAO {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
                     stmt.setString(1, escolaridade.getDescescolaridade());
+                    stmt.setInt(2, escolaridade.getCodescolaridade());
                     stmt.executeUpdate();
 
                     conexao.commit();
@@ -92,12 +92,12 @@ public class EscolaridadeDAO {
             }
             public Boolean excluir(EscolaridadeBean escolaridade) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.escolaridade where id_escolaridade = ?";
+                String sql = "delete from hosp.escolaridade where id_escolaridade = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setLong(1, escolaridade.getCodescolaridade());
-                    stmt.execute();
+                    stmt.setInt(1, escolaridade.getCodescolaridade());
+                    stmt.executeUpdate();
 
                     
                     conexao.commit();
@@ -131,7 +131,7 @@ public class EscolaridadeDAO {
                     	EscolaridadeBean e = new EscolaridadeBean();
     	            	
     	                e.setCodescolaridade(rs.getInt("id_escolaridade"));
-    	                e.setDescescolaridade(rs.getString("descescolaridade").toLowerCase());
+    	                e.setDescescolaridade(rs.getString("descescolaridade").toUpperCase());
     	                
     	                
     	                lista.add(e);
@@ -195,7 +195,7 @@ public class EscolaridadeDAO {
 
             			try {
             				List<EscolaridadeBean> listaescolaridades = new ArrayList<EscolaridadeBean>();  
-            				String sql = "select id_escolaridade ||'-'|| descescolaridade from hosp.escolaridade where upper(id_escolaridade ||'-'||descescolaridade) like ? order by descescolaridade";
+            				String sql = "select id_escolaridade,id_escolaridade ||'-'|| descescolaridade descescolaridade from hosp.escolaridade where upper(id_escolaridade ||'-'|| descescolaridade) like ? order by descescolaridade";
             				 
             				ps = conexao.prepareStatement(sql);
             				ps.setString(1, "%"+s.toUpperCase()+"%");
@@ -206,8 +206,8 @@ public class EscolaridadeDAO {
             				while (rs.next()) {
             					
             					EscolaridadeBean escolaridade = new EscolaridadeBean();
-            					escolaridade.setCodescolaridade(rs.getInt(1));
-            					escolaridade.setDescescolaridade(rs.getString(2));
+            					escolaridade.setCodescolaridade(rs.getInt("id_escolaridade"));
+            					escolaridade.setDescescolaridade(rs.getString("descescolaridade"));
             					colecao.add(escolaridade);
             					
             	;
@@ -229,4 +229,47 @@ public class EscolaridadeDAO {
 
             			}
             		}	
+            
+            public List<EscolaridadeBean> buscarTipoEscolaridade(String valor, Integer tipo) {
+        		
+            	
+         		 String sql = "select escolaridade.id_escolaridade, escolaridade.descescolaridade from hosp.escolaridade where";
+         		
+         		if (tipo == 1) {
+         			sql += " escolaridade.descescolaridade like ? order by escolaridade.descescolaridade ";
+         		}
+         		List<EscolaridadeBean> lista = new ArrayList<>();
+
+         		try {
+         			conexao = ConnectionFactory.getConnection();
+         			PreparedStatement stmt = conexao.prepareStatement(sql);
+         			if (tipo == 1) {
+         				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+         			}
+
+         			ResultSet rs = stmt.executeQuery();
+
+         			while (rs.next()) {
+         				EscolaridadeBean p = new EscolaridadeBean();
+         				
+         	
+         				p.setCodescolaridade(rs.getInt("id_escolaridade"));
+     	                p.setDescescolaridade(rs.getString("descescolaridade").toUpperCase());
+
+         				lista.add(p);
+
+         			}
+         		} catch (SQLException ex) {
+         			ex.printStackTrace();
+         			// throw new RuntimeException(ex); //
+         		} finally {
+         			try {
+         				conexao.close();
+         			} catch (Exception ex) {
+         				ex.printStackTrace();
+         				System.exit(1);
+         			}
+         		}
+         		return lista;
+         	}
 }

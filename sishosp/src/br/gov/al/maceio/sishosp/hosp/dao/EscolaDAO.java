@@ -35,8 +35,8 @@ public class EscolaDAO {
                         .getCurrentInstance().getExternalContext().getSessionMap()
                         .get("obj_paciente");*/
 
-                String sql = "insert into hosp.escola (descescola)"
-                		+ " values (?)";
+                String sql = "insert into hosp.escola (descescola) values (?)";
+                //String sql = "insert into hosp.escola (descescola) values ((select max(cod) +1 from hosp.escola where codempresa=1), ?";
                 //returning id_paciente
                     try {
                     	System.out.println("passou aqui 3");
@@ -94,12 +94,12 @@ public class EscolaDAO {
             }
             public Boolean excluir(EscolaBean escola) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.escola where id_escola = ?";
+                String sql = "delete from hosp.escola where id_escola = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
                     stmt.setInt(1, escola.getCodEscola());
-                    stmt.execute();
+                    stmt.executeUpdate();
 
                     
                     conexao.commit();
@@ -215,7 +215,7 @@ public class EscolaDAO {
                     	EscolaBean p = new EscolaBean();
     	            
     	                p.setCodEscola(rs.getInt("id_escola"));
-    	                p.setDescescola(rs.getString("descescola").toLowerCase());
+    	                p.setDescescola(rs.getString("descescola").toUpperCase());
     	                p.setCodtipoescola(rs.getInt("codtipoescola"));
     	                
     	                lista.add(p);
@@ -279,7 +279,7 @@ public class EscolaDAO {
 
             			try {
             				List<EscolaBean> listaescolas = new ArrayList<EscolaBean>();  
-            				String sql = "select id_escola, descescola from hosp.escola where upper(descescola) like ? order by descescola";
+            				String sql = "select id_escola,id_escola ||'-'|| descescola descescola from hosp.escola where upper(id_escola ||'-'|| descescola) like ? order by descescola";
             				 
             				ps = conexao.prepareStatement(sql);
             				ps.setString(1, "%"+s.toUpperCase()+"%");
@@ -290,8 +290,8 @@ public class EscolaDAO {
             				while (rs.next()) {
             					
             					EscolaBean escola = new EscolaBean();
-            					escola.setCodEscola(rs.getInt(1));
-            					escola.setDescescola(rs.getString(2));
+            					escola.setCodEscola(rs.getInt("id_escola"));
+            					escola.setDescescola(rs.getString("descescola"));
             					colecao.add(escola);
             					
             	;
@@ -371,7 +371,7 @@ public class EscolaDAO {
           				
           	
           				p.setCodEscola(rs.getInt("id_escola"));
-      	                p.setDescescola(rs.getString("descescola").toLowerCase());
+      	                p.setDescescola(rs.getString("descescola").toUpperCase());
 
           				lista.add(p);
 

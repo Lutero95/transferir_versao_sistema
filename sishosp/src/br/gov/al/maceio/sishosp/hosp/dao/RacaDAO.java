@@ -17,6 +17,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
+import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
@@ -70,6 +71,7 @@ public class RacaDAO {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
                     stmt.setString(1, raca.getDescRaca());
+                    stmt.setInt(2, raca.getCodRaca());
                     stmt.executeUpdate();
 
                     conexao.commit();
@@ -90,12 +92,12 @@ public class RacaDAO {
             
             public Boolean excluir(RacaBean raca) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.raca where id_raca = ?";
+                String sql = "delete from hosp.raca where id_raca = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setLong(1, raca.getCodRaca());
-                    stmt.execute();
+                    stmt.setInt(1, raca.getCodRaca());
+                    stmt.executeUpdate();
 
                     
                     conexao.commit();
@@ -147,5 +149,46 @@ public class RacaDAO {
                 return lista;
             }
    
-            
+            public List<RacaBean> buscarTipoRaca(String valor, Integer tipo) {
+        		
+            	
+        		 String sql = "select raca.id_raca, raca.descraca from hosp.raca where";
+        		
+        		if (tipo == 1) {
+        			sql += " raca.descraca like ? order by raca.descraca ";
+        		}
+        		List<RacaBean> lista = new ArrayList<>();
+
+        		try {
+        			conexao = ConnectionFactory.getConnection();
+        			PreparedStatement stmt = conexao.prepareStatement(sql);
+        			if (tipo == 1) {
+        				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+        			}
+
+        			ResultSet rs = stmt.executeQuery();
+
+        			while (rs.next()) {
+        				RacaBean p = new RacaBean();
+        				
+        	
+        				p.setCodRaca(rs.getInt("id_raca"));
+    	                p.setDescRaca(rs.getString("descraca").toUpperCase());
+
+        				lista.add(p);
+
+        			}
+        		} catch (SQLException ex) {
+        			ex.printStackTrace();
+        			// throw new RuntimeException(ex); //
+        		} finally {
+        			try {
+        				conexao.close();
+        			} catch (Exception ex) {
+        				ex.printStackTrace();
+        				System.exit(1);
+        			}
+        		}
+        		return lista;
+        	}
 }

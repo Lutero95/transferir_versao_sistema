@@ -86,12 +86,12 @@ public class EnderecoDAO {
             
             public Boolean excluirMunicipio(EnderecoBean endereco) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.municipio where id_municipio = ?";
+                String sql = "delete from hosp.municipio where id_municipio = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
                     stmt.setInt(1, endereco.getCodmunicipio());
-                    stmt.execute();
+                    stmt.executeUpdate();
 
                     
                     conexao.commit();
@@ -213,7 +213,7 @@ public class EnderecoDAO {
                     	EnderecoBean p = new EnderecoBean();
     	            
     	                p.setCodmunicipio(rs.getInt("id_municipio"));
-    	                p.setMunicipio(rs.getString("descmunicipio").toLowerCase());
+    	                p.setMunicipio(rs.getString("descmunicipio").toUpperCase());
     	                p.setCodfederal(rs.getInt("codfederal"));
     	                p.setCodmacregiao(rs.getInt("codmacregiao"));
     	                

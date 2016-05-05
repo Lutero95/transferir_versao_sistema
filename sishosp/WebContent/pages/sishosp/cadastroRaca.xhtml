@@ -12,25 +12,25 @@
         <ui:define name="body">
                <!-- INICIO DO FORMULARIO -->
     <div class="col-md-8">
-        <p:outputLabel value="CADASTRO DE PROFISSÕES" rendered="#{PacienteController.tipo == 'I'}"></p:outputLabel>
-        <p:outputLabel value="ALTERAR PROFISSÕES" rendered="#{PacienteController.tipo == 'A'}"></p:outputLabel>
+        <p:outputLabel value="CADASTRO DE RAÇA" rendered="#{PacienteController.tipo == 'I'}"></p:outputLabel>
+        <p:outputLabel value="ALTERAR RAÇA" rendered="#{PacienteController.tipo == 'A'}"></p:outputLabel>
         <br />
         <h:form> <p:commandButton value="Voltar"
 			style="position:relative; right:18%; width:100px; " icon="btvoltar"
-			action ="/pages/sishosp/gerenciarProfissoes.faces"></p:commandButton>  </h:form>
+			action ="/pages/sishosp/gerenciarRaca.faces"></p:commandButton>  </h:form>
         
         <h:form class="form-horizontal" id="formCADU">
        
         <p:growl id="message"/>
         <p:panel id="pnlCadPaciente" style="height:auto; width:850px; background-color: #F5F5F5;" >  
           <!--  <p:growl id="growl" showDetail="false" /> -->
-         <p:tabView activeIndex="#{ProfissaoController.abaAtiva}" style="height:auto; width:800px">
-         <p:tab title="DADOS PROFISSÃO">
+         <p:tabView activeIndex="#{PacienteController.abaAtiva}" style="height:auto; width:800px">
+         <p:tab title="DADOS RAÇA">
          <div class="form-group">
-                <h:outputLabel for="inputname" value="Nome da Profissão"
+                <h:outputLabel for="inputname" value="Nome da Raça"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <h:inputText value="#{ProfissaoController.profissao.descprofissao}" class="form-control"
+                    <h:inputText value="#{PacienteController.raca.descRaca}" class="form-control"
                         id="inputname"
                         pt:placeholder="Digite aqui seu nome entre 2 e 30 caracteres"
                         required="false"
@@ -39,7 +39,7 @@
                         <f:validateLength minimum="2" maximum="40" />
                       
                     </h:inputText>
-             
+           
                 </div>
             </div>
                     
@@ -50,14 +50,14 @@
           </p:panel>
                  <!-- FIM DO FORMULARIO -->
                <p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-                    <h:commandButton action="#{ProfissaoController.gravarProfissao()}"   
+                    <h:commandButton action="#{PacienteController.gravarRaca()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Cadastrar"
-                        styleClass="btn btn-sm btn-success" rendered="#{ProfissaoController.tipo == 'I'}" />
+                        styleClass="btn btn-sm btn-success" rendered="#{PacienteController.tipo == 'I'}" />
                
                
-                    <h:commandButton action="#{ProfissaoController.alterarProfissao()}"   
+                    <h:commandButton action="#{PacienteController.alterarRaca()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Alterar"
-                        styleClass="btn btn-info" rendered="#{ProfissaoController.tipo == 'A'}" />
+                        styleClass="btn btn-info" rendered="#{PacienteController.tipo == 'A'}" />
             </p:panelGrid>
               
             

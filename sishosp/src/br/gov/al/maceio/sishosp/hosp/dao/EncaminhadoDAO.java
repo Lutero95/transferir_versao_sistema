@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -18,6 +16,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
+import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 
 
 
@@ -73,6 +72,7 @@ public class EncaminhadoDAO {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
                     stmt.setString(1, encaminhado.getDescencaminhado());
+                    stmt.setInt(2, encaminhado.getCodencaminhado());
                     stmt.executeUpdate();
 
                     conexao.commit();
@@ -92,12 +92,12 @@ public class EncaminhadoDAO {
             }
             public Boolean excluir(EncaminhadoBean encaminhado) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.encaminhado where id_encaminhado = ?";
+                String sql = "delete from hosp.encaminhado where id_encaminhado = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setLong(1, encaminhado.getCodencaminhado());
-                    stmt.execute();
+                    stmt.setInt(1, encaminhado.getCodencaminhado());
+                    stmt.executeUpdate();
 
                     
                     conexao.commit();
@@ -131,7 +131,7 @@ public class EncaminhadoDAO {
                     	EncaminhadoBean p = new EncaminhadoBean();
     	            	
     	                p.setCodencaminhado(rs.getInt("id_encaminhado"));
-    	                p.setDescencaminhado(rs.getString("descencaminhado").toLowerCase());
+    	                p.setDescencaminhado(rs.getString("descencaminhado").toUpperCase());
 	                
     	                lista.add(p);
                     }
@@ -194,7 +194,7 @@ public class EncaminhadoDAO {
 
             			try {
             				List<EncaminhadoBean> listaencaminhados = new ArrayList<EncaminhadoBean>();  
-            				String sql = "select id_encaminhado, descencaminhado from hosp.encaminhado where upper(descencaminhado) like ? order by descencaminhado";
+            				String sql = "select id_encaminhado,id_encaminhado ||'-'|| descencaminhado descencaminhado from hosp.encaminhado where upper(id_encaminhado ||'-'|| descencaminhado) like ? order by descencaminhado";
             				 
             				ps = conexao.prepareStatement(sql);
             				ps.setString(1, "%"+s.toUpperCase()+"%");
@@ -205,8 +205,8 @@ public class EncaminhadoDAO {
             				while (rs.next()) {
             					
             					EncaminhadoBean encaminhado = new EncaminhadoBean();
-            					encaminhado.setCodencaminhado(rs.getInt(1));
-            					encaminhado.setDescencaminhado(rs.getString(2));
+            					encaminhado.setCodencaminhado(rs.getInt("id_encaminhado"));
+            					encaminhado.setDescencaminhado(rs.getString("descencaminhado"));
             					colecao.add(encaminhado);
             					
             	
@@ -229,5 +229,48 @@ public class EncaminhadoDAO {
             			}
             		}	
   
+            
+            public List<EncaminhadoBean> buscarTipoEncaminhado(String valor, Integer tipo) {
+        		
+            	
+         		 String sql = "select encaminhado.id_encaminhado, encaminhado.descencaminhado from hosp.encaminhado where";
+         		
+         		if (tipo == 1) {
+         			sql += " encaminhado.descencaminhado like ? order by encaminhado.descencaminhado ";
+         		}
+         		List<EncaminhadoBean> lista = new ArrayList<>();
+
+         		try {
+         			conexao = ConnectionFactory.getConnection();
+         			PreparedStatement stmt = conexao.prepareStatement(sql);
+         			if (tipo == 1) {
+         				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+         			}
+
+         			ResultSet rs = stmt.executeQuery();
+
+         			while (rs.next()) {
+         				EncaminhadoBean p = new EncaminhadoBean();
+         				
+         	
+         				p.setCodencaminhado(rs.getInt("id_encaminhado"));
+     	                p.setDescencaminhado(rs.getString("descencaminhado").toUpperCase());
+
+         				lista.add(p);
+
+         			}
+         		} catch (SQLException ex) {
+         			ex.printStackTrace();
+         			// throw new RuntimeException(ex); //
+         		} finally {
+         			try {
+         				conexao.close();
+         			} catch (Exception ex) {
+         				ex.printStackTrace();
+         				System.exit(1);
+         			}
+         		}
+         		return lista;
+         	}
             
 }

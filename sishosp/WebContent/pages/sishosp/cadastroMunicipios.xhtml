@@ -27,7 +27,7 @@
          <p:tabView activeIndex="#{EnderecoController.abaAtiva}" style="height:auto; width:800px">
          <p:tab title="DADOS MUNICIPIOS">
          <div class="form-group">
-                <h:outputLabel for="inputname" value="Nome"
+                <h:outputLabel for="inputname" value="Nome do Município"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
                     <h:inputText value="#{EnderecoController.endereco.municipio}" class="form-control"
@@ -37,10 +37,9 @@
                         validatorMessage="Nome deve conter entre 2 e 30 caracteres."
                         requiredMessage="é necessário que você informe seu nome.">
                         <f:validateLength minimum="2" maximum="40" />
-                        <f:ajax event="blur" render="m_inputname" />
+                    
                     </h:inputText>
-                    <h:message id="m_inputname" for="inputname"
-                        style="color:#D74937;" />
+                  
                 </div>
             </div>
             <div class="form-group">

@@ -10,9 +10,8 @@ import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.ProfissaoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
+
 
 
 
@@ -74,14 +73,14 @@ public class EnderecoController {
         EnderecoDAO udao = new EnderecoDAO();
 
                 boolean cadastrou = udao.cadastrarMunicipio(endereco);
-                listaMunicipios = null;
+               
                 if(cadastrou == true) {
                 	limparDados();
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Municipio cadastrado com sucesso!", "Sucesso");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
 
-                    
+                    listaMunicipios = null;
 
                 } else {
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -92,23 +91,23 @@ public class EnderecoController {
                 }
             
     }
-	public void alterarMunicipios() throws ProjetoException {
+	public String alterarMunicipios() throws ProjetoException {
 		
 		EnderecoDAO udao = new EnderecoDAO();
          boolean alterou = udao.alterarMunicipio(endereco);
          listaMunicipios = null;
          if(alterou == true) {
-
+             limparDados();
              FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                  "Municipio alterado com sucesso!", "Sucesso");
              FacesContext.getCurrentInstance().addMessage(null, msg);
-
+             return "/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true";
              //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
          } else {
              FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                  "Ocorreu um erro durante o cadastro!", "Erro");
              FacesContext.getCurrentInstance().addMessage(null, msg);
-
+             return "";
              //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
          }
 		
@@ -138,14 +137,14 @@ public class EnderecoController {
 	
 	public void excluirMunicipios() throws ProjetoException {
 		EnderecoDAO udao = new EnderecoDAO();
-        System.out.println("excluio");
+       
         boolean excluio = udao.excluirMunicipio(endereco);
-        listaMunicipios = null;
+        
         if(excluio == true) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Municipio excluido com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-
+            listaMunicipios = null;
             RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,

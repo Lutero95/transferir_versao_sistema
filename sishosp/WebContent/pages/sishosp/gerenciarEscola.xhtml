@@ -86,12 +86,7 @@
 
                 <p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover" id="tabela"
                              style="margin-top:20px;" value="#{EscolaController.listaEscolas}"
-                             var="tab" paginator="true" paginatorPosition="bottom" rows="12"
-                             selectionMode="single" selection="#{EscolaController.escola}"
-                             rowKey="#{tab.codEscola}">
-
-                    <!--  <p:ajax event="rowSelect" oncomplete="PF('dlgacoes').show();"
-                            listener="#{PacienteController.onRowSelect}" />-->
+                             var="tab" paginator="true" paginatorPosition="bottom" rows="12">
 
                     <p:column headerText="Cód." style="font-weight:bold;width:5%;">
                         <h:outputText value="#{tab.codEscola}" />

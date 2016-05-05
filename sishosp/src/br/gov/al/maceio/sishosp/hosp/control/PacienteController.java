@@ -60,6 +60,10 @@ public class PacienteController {
 	private Integer tipoBuscaPaciente;
 	private String campoBuscaPaciente;
 	private String statusPaciente;
+	
+	private Integer tipoBuscaRaca;
+	private String campoBuscaRaca;
+	private String statusRaca;
 
 	// AUTO COMPLETE
 	private EscolaBean escolageral;
@@ -104,7 +108,7 @@ public class PacienteController {
 	private List<PacienteBean> listaPacientesParaAgenda;
 	private List<RacaBean> listaRaca;
 	private List<EscolaBean> listaEscolas;
-	private List<EscolaridadeBean> listaEscolararidade;
+	private List<EscolaridadeBean> listaEscolaridade;
 	private List<ProfissaoBean> listaProfissao;
 	private List<EncaminhadoBean> listaEncaminhado;
 	private List<FormaTransporteBean> listaTransporte;
@@ -142,8 +146,8 @@ public class PacienteController {
 		listaRaca = null;
 		listaEscolas = new ArrayList<>();
 		listaEscolas = null;
-		listaEscolararidade = new ArrayList<>();
-		listaEscolararidade = null;
+		listaEscolaridade = new ArrayList<>();
+		listaEscolaridade = null;
 		listaProfissao = new ArrayList<>();
 		listaProfissao = null;
 		listaEncaminhado = new ArrayList<>();
@@ -158,6 +162,10 @@ public class PacienteController {
 		tipoBuscaPaciente = 1;
 		campoBuscaPaciente = "";
 		statusPaciente = "P";
+		
+		tipoBuscaRaca = 1;
+		campoBuscaRaca = "";
+		statusRaca = "P";
 	}
 
 	public List<PacienteBean> getListaPacientesParaAgenda() {
@@ -188,6 +196,7 @@ public class PacienteController {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Paciente cadastrado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaPacientes = null;
 
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -251,15 +260,15 @@ public class PacienteController {
 
 	public void excluirPaciente() throws ProjetoException {
 		PacienteDAO udao = new PacienteDAO();
-		System.out.println("excluio");
+		
 
 		boolean excluio = udao.excluir(paciente);
-		listaPacientes = null;
+		
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Paciente excluido com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
+			listaPacientes = null;
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
 		} else {
@@ -282,6 +291,7 @@ public class PacienteController {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Cor/Raça cadastrado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaRaca = null;
 
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -292,23 +302,23 @@ public class PacienteController {
 
 	}
 
-	public void alterarRaca() throws ProjetoException {
+	public String alterarRaca() throws ProjetoException {
 
 		RacaDAO rdao = new RacaDAO();
 		boolean alterou = rdao.alterar(raca);
 
 		if (alterou == true) {
-
+            limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Cor/Raça alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
+			return "/pages/sishosp/gerenciarRaca.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
+            return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -323,14 +333,14 @@ public class PacienteController {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Cor/Raça excluido com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			// RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+            listaRaca = null;
+			RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusao!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			// RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+		    RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
 		}
 
 	}
@@ -631,6 +641,13 @@ public class PacienteController {
 		statusPaciente = "P";
 		listaPacientes = null;
 	}
+	
+	public void limparBuscaDadosRaca() {
+		tipoBuscaRaca = 1;
+		campoBuscaRaca = "";
+		statusRaca = "P";
+		listaRaca = null;
+	}
 
 	public void limparDados() {
 		transporteSuggestion = new FormaTransporteBean();
@@ -677,6 +694,27 @@ public class PacienteController {
 
 	}
 
+	public void buscarRacas() {
+
+		List<RacaBean> listaAux = null;
+		listaRaca = new ArrayList<>();
+
+		RacaDAO adao = new RacaDAO();
+
+		listaAux = adao.buscarTipoRaca(campoBuscaRaca,tipoBuscaRaca);
+
+		if (listaAux != null && listaAux.size() > 0) {
+			// listaAss = null;
+			listaRaca = listaAux;
+		} else {
+			// listaAss = null;
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Nenhuma Raça encontrada.", "Aviso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+	}
+	
 
 	public void buscarescolaridade() {
 
@@ -768,19 +806,19 @@ public class PacienteController {
 		this.listaEscolas = listaEscolas;
 	}
 
-	public List<EscolaridadeBean> getListaEscolararidade() {
-		if (listaEscolararidade == null) {
+	public List<EscolaridadeBean> getListaEscolaridade() {
+		if (listaEscolaridade == null) {
 
 			EscolaridadeDAO fdao = new EscolaridadeDAO();
-			listaEscolararidade = fdao.listaEscolaridade();
+			listaEscolaridade = fdao.listaEscolaridade();
 
 		}
-		return listaEscolararidade;
+		return listaEscolaridade;
 	}
 
-	public void setListaEscolararidade(
-			List<EscolaridadeBean> listaEscolararidade) {
-		this.listaEscolararidade = listaEscolararidade;
+	public void setListaEscolaridade(
+			List<EscolaridadeBean> listaEscolaridade) {
+		this.listaEscolaridade = listaEscolaridade;
 	}
 
 	public List<ProfissaoBean> getListaProfissao() {
@@ -1305,6 +1343,30 @@ public class PacienteController {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public Integer getTipoBuscaRaca() {
+		return tipoBuscaRaca;
+	}
+
+	public void setTipoBuscaRaca(Integer tipoBuscaRaca) {
+		this.tipoBuscaRaca = tipoBuscaRaca;
+	}
+
+	public String getCampoBuscaRaca() {
+		return campoBuscaRaca;
+	}
+
+	public void setCampoBuscaRaca(String campoBuscaRaca) {
+		this.campoBuscaRaca = campoBuscaRaca;
+	}
+
+	public String getStatusRaca() {
+		return statusRaca;
+	}
+
+	public void setStatusRaca(String statusRaca) {
+		this.statusRaca = statusRaca;
 	}
 	
 	

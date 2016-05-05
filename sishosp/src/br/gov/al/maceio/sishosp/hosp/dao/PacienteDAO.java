@@ -136,7 +136,7 @@ public class PacienteDAO {
 			} else {
 				stmt.setInt(48, paciente.getEncaminhado().getCodencaminhado());
 			}
-			if (paciente.getCodFormaTransporte() == null) {
+			if (paciente.getFormatransporte().getCodformatransporte() == null) {
 				stmt.setNull(49, Types.INTEGER);
 			} else {
 				stmt.setInt(49, paciente.getFormatransporte()
@@ -259,7 +259,7 @@ public class PacienteDAO {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setLong(1, paciente.getId_paciente());
-			stmt.execute();
+			stmt.executeUpdate();
 
 			conexao.commit();
 
@@ -307,7 +307,7 @@ public class PacienteDAO {
               	PacienteBean p = new PacienteBean();
               	
 	                p.setId_paciente(rs.getLong("id_paciente"));
-	                p.setNome(rs.getString("nome").toLowerCase());
+	                p.setNome(rs.getString("nome").toUpperCase());
 	                p.setDtanascimento(rs.getDate("dtanascimento"));
 	                p.setEstadoCivil(rs.getString("estcivil"));
 	                p.setSexo(rs.getString("sexo"));

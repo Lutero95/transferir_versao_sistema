@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -17,6 +15,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 
 
@@ -68,11 +67,12 @@ public class FormaTransporteDAO {
             
             public Boolean alterar(FormaTransporteBean transporte) throws ProjetoException {
                 boolean alterou = false;
-                String sql = "update hosp.formatransporte set desceformatransporte = ? where id_formatransporte = ?";
+                String sql = "update hosp.formatransporte set descformatransporte = ? where id_formatransporte = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
                     stmt.setString(1, transporte.getDescformatransporte());
+                    stmt.setInt(2, transporte.getCodformatransporte());
                     stmt.executeUpdate();
 
                     conexao.commit();
@@ -92,12 +92,12 @@ public class FormaTransporteDAO {
             }
             public Boolean excluir(FormaTransporteBean transporte) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.encaminhado where id_encaminhado = ?";
+                String sql = "delete from hosp.formatransporte where id_formatransporte = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setLong(1, transporte.getCodformatransporte());
-                    stmt.execute();
+                    stmt.setInt(1, transporte.getCodformatransporte());
+                    stmt.executeUpdate();
 
                     
                     conexao.commit();
@@ -131,7 +131,7 @@ public class FormaTransporteDAO {
                     	FormaTransporteBean p = new FormaTransporteBean();
     	            	
     	                p.setCodformatransporte(rs.getInt("id_formatransporte"));
-    	                p.setDescformatransporte(rs.getString("descformatransporte").toLowerCase());
+    	                p.setDescformatransporte(rs.getString("descformatransporte").toUpperCase());
 	                
     	                lista.add(p);
                     }
@@ -194,7 +194,7 @@ public class FormaTransporteDAO {
 
             			try {
             				List<FormaTransporteBean> listatransportes = new ArrayList<FormaTransporteBean>();  
-            				String sql = "select id_formatransporte, descformatransporte from hosp.formatransporte where upper(descformatransporte) like ? order by descformatransporte";
+            				String sql = "select id_formatransporte,id_formatransporte ||'-'|| descformatransporte descformatransporte from hosp.formatransporte where upper(id_formatransporte ||'-'|| descformatransporte) like ? order by descformatransporte";
             				 
             				ps = conexao.prepareStatement(sql);
             				ps.setString(1, "%"+s.toUpperCase()+"%");
@@ -205,11 +205,11 @@ public class FormaTransporteDAO {
             				while (rs.next()) {
             					
             					FormaTransporteBean transporte = new FormaTransporteBean();
-            					transporte.setCodformatransporte(rs.getInt(1));
-            					transporte.setDescformatransporte(rs.getString(2));
+            					transporte.setCodformatransporte(rs.getInt("id_formatransporte"));
+            					transporte.setDescformatransporte(rs.getString("descformatransporte"));
             					colecao.add(transporte);
             					
-            	;
+            	
             				
             				}
             				return colecao;
@@ -229,5 +229,47 @@ public class FormaTransporteDAO {
             			}
             		}	
   
+            public List<FormaTransporteBean> buscarTipoTransporte(String valor, Integer tipo) {
+        		
+            	
+         		 String sql = "select formatransporte.id_formatransporte, formatransporte.descformatransporte from hosp.formatransporte where";
+         		
+         		if (tipo == 1) {
+         			sql += " formatransporte.descformatransporte like ? order by formatransporte.descformatransporte ";
+         		}
+         		List<FormaTransporteBean> lista = new ArrayList<>();
+
+         		try {
+         			conexao = ConnectionFactory.getConnection();
+         			PreparedStatement stmt = conexao.prepareStatement(sql);
+         			if (tipo == 1) {
+         				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+         			}
+
+         			ResultSet rs = stmt.executeQuery();
+
+         			while (rs.next()) {
+         				FormaTransporteBean p = new FormaTransporteBean();
+         				
+         	
+         				p.setCodformatransporte(rs.getInt("id_formatransporte"));
+     	                p.setDescformatransporte(rs.getString("descformatransporte").toUpperCase());
+
+         				lista.add(p);
+
+         			}
+         		} catch (SQLException ex) {
+         			ex.printStackTrace();
+         			// throw new RuntimeException(ex); //
+         		} finally {
+         			try {
+         				conexao.close();
+         			} catch (Exception ex) {
+         				ex.printStackTrace();
+         				System.exit(1);
+         			}
+         		}
+         		return lista;
+         	}
             
 }

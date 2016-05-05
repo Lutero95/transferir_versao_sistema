@@ -86,12 +86,9 @@
 
                 <p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover" id="tabela"
                              style="margin-top:20px;" value="#{EnderecoController.listaMunicipios}"
-                             var="tab" paginator="true" paginatorPosition="bottom" rows="12"
-                             selectionMode="single" selection="#{EnderecoController.endereco}"
-                             rowKey="#{tab.codmunicipio}">
+                             var="tab" paginator="true" paginatorPosition="bottom" rows="12">
 
-                    <!--  <p:ajax event="rowSelect" oncomplete="PF('dlgacoes').show();"
-                            listener="#{PacienteController.onRowSelect}" />-->
+                    
 
                     <p:column headerText="Cód." style="font-weight:bold;width:5%;">
                         <h:outputText value="#{tab.codmunicipio}" />

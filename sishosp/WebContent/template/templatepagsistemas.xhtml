@@ -79,6 +79,13 @@
 </h:head>
 
 <h:body>
+        <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+        <p:dialog id="myDialogId" styleClass="process_msg" modal="true" showHeader="true"
+            header="Processando..." style="width:40px; height:20px; border:0;"
+            resizable="false" widgetVar="statusDialog" draggable="false" closable="false">          
+            <center><p:graphicImage value="../../imgs/ajax_loading_bar.gif" /></center>
+        </p:dialog>
+
 	<ui:include src="dlgsCadastro.xhtml" />
 	<h:form id="mainFormtempSist">
 
@@ -88,12 +95,20 @@
 			<p:submenu label="Gerenciar" icon="ui-icon-document">
 			<p:menuitem value="Gerenciar Escola"
 					url="/pages/sishosp/gerenciarEscola.faces" />
-				<p:menuitem value="Gerenciar Pacientes"
+						<p:menuitem value="Gerenciar Escolaridade"
+					url="/pages/sishosp/gerenciarEscolaridade.faces" />
+						<p:menuitem value="Gerenciar Forma Transporte"
+					url="/pages/sishosp/gerenciarFormaTransporte.faces" />
+					<p:menuitem value="Gerenciar Municipio"
+					url="/pages/sishosp/gerenciarMunicipio.faces" />
+				        <p:menuitem value="Gerenciar Pacientes"
 					url="/pages/sishosp/gerenciarPaciente.faces" />
 					<p:menuitem value="Gerenciar Profissão"
 					url="/pages/sishosp/gerenciarProfissoes.faces" />
-					<p:menuitem value="Gerenciar Municipio"
-					url="/pages/sishosp/gerenciarMunicipio.faces" />
+					<p:menuitem value="Gerenciar Raça"
+					url="/pages/sishosp/gerenciarRaca.faces" />
+					<p:menuitem value="Gerenciar Tipo De Encaminhamento"
+					url="/pages/sishosp/gerenciarTipoEncaminhamento.faces" />
 			</p:submenu>
 			<p:submenu label="Cadastros" icon="ui-icon-document">
                 <p:submenu label="Agenda" icon="ui-icon-document">

@@ -93,12 +93,12 @@ public class ProfissaoDAO {
             }
             public Boolean excluir(ProfissaoBean profissao) throws ProjetoException {
                 boolean excluir = false;
-                String sql =  "delete from hosp.profissao where id_profissao = ?";
+                String sql = "delete from hosp.profissao where id_profissao = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setLong(1, profissao.getCodprofissao());
-                    stmt.execute();
+                    stmt.setInt(1, profissao.getCodprofissao());
+                    stmt.executeUpdate();
 
                     
                     conexao.commit();
@@ -132,7 +132,7 @@ public class ProfissaoDAO {
                     	ProfissaoBean p = new ProfissaoBean();
     	            	
     	                p.setCodprofissao(rs.getInt("id_profissao"));
-    	                p.setDescprofissao(rs.getString("descprofissao").toLowerCase());
+    	                p.setDescprofissao(rs.getString("descprofissao").toUpperCase());
 	                
     	                lista.add(p);
                     }
@@ -195,7 +195,7 @@ public class ProfissaoDAO {
 
             			try {
             				List<ProfissaoBean> listaprofissoes = new ArrayList<ProfissaoBean>();  
-            				String sql = "select id_profissao, descprofissao from hosp.profissao where upper(descprofissao) like ? order by descprofissao";
+            				String sql = "select id_profissao,id_profissao ||'-'|| descprofissao descprofissao from hosp.profissao where upper(id_profissao ||'-'|| descprofissao) like ? order by descprofissao";
             				 
             				ps = conexao.prepareStatement(sql);
             				ps.setString(1, "%"+s.toUpperCase()+"%");
@@ -206,11 +206,11 @@ public class ProfissaoDAO {
             				while (rs.next()) {
             					
             					ProfissaoBean profissao = new ProfissaoBean();
-            					profissao.setCodprofissao(rs.getInt(1));
-            					profissao.setDescprofissao(rs.getString(2));
+            					profissao.setCodprofissao(rs.getInt("id_profissao"));
+            					profissao.setDescprofissao(rs.getString("descprofissao"));
             					colecao.add(profissao);
             					
-            	;
+            	
             				
             				}
             				return colecao;

@@ -93,12 +93,9 @@
 
                 <p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover" id="tabela"
                              style="margin-top:20px;" value="#{PacienteController.listaPacientes}"
-                             var="tab" paginator="true" paginatorPosition="bottom" rows="12"
-                             selectionMode="single" selection="#{PacienteController.paciente}"
-                             rowKey="#{tab.id_paciente}">
+                             var="tab" paginator="true" paginatorPosition="bottom" rows="12">
 
-                    <!--  <p:ajax event="rowSelect" oncomplete="PF('dlgacoes').show();"
-                            listener="#{PacienteController.onRowSelect}" />-->
+                    
 
                     <p:column headerText="Cód." style="font-weight:bold;width:5%;">
                         <h:outputText value="#{tab.id_paciente}" />

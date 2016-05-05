@@ -12,34 +12,33 @@
         <ui:define name="body">
                <!-- INICIO DO FORMULARIO -->
     <div class="col-md-8">
-        <p:outputLabel value="CADASTRO DE PROFISSÕES" rendered="#{PacienteController.tipo == 'I'}"></p:outputLabel>
-        <p:outputLabel value="ALTERAR PROFISSÕES" rendered="#{PacienteController.tipo == 'A'}"></p:outputLabel>
+        <p:outputLabel value="CADASTRO DE ENCAMINHADO" rendered="#{EncaminhadoController.tipo == 'I'}"></p:outputLabel>
+        <p:outputLabel value="ALTERAR ENCAMINHADO" rendered="#{EncaminhadoController.tipo == 'A'}"></p:outputLabel>
         <br />
         <h:form> <p:commandButton value="Voltar"
 			style="position:relative; right:18%; width:100px; " icon="btvoltar"
-			action ="/pages/sishosp/gerenciarProfissoes.faces"></p:commandButton>  </h:form>
+			action ="/pages/sishosp/gerenciarTipoEncaminhamento.faces"></p:commandButton>  </h:form>
         
         <h:form class="form-horizontal" id="formCADU">
        
         <p:growl id="message"/>
         <p:panel id="pnlCadPaciente" style="height:auto; width:850px; background-color: #F5F5F5;" >  
           <!--  <p:growl id="growl" showDetail="false" /> -->
-         <p:tabView activeIndex="#{ProfissaoController.abaAtiva}" style="height:auto; width:800px">
-         <p:tab title="DADOS PROFISSÃO">
+         <p:tabView activeIndex="#{EncaminhadoController.abaAtiva}" style="height:auto; width:800px">
+         <p:tab title="DADOS ENCAMINHAMENTO">
          <div class="form-group">
-                <h:outputLabel for="inputname" value="Nome da Profissão"
+                <h:outputLabel for="inputname" value="TIPO DE ENCAMINHADO"
                     styleClass="col-sm-3 control-label" />
                 <div class="col-sm-6">
-                    <h:inputText value="#{ProfissaoController.profissao.descprofissao}" class="form-control"
+                    <h:inputText value="#{EncaminhadoController.encaminhado.descencaminhado}" class="form-control"
                         id="inputname"
                         pt:placeholder="Digite aqui seu nome entre 2 e 30 caracteres"
                         required="false"
                         validatorMessage="Nome deve conter entre 2 e 30 caracteres."
                         requiredMessage="é necessário que você informe seu nome.">
                         <f:validateLength minimum="2" maximum="40" />
-                      
+                
                     </h:inputText>
-             
                 </div>
             </div>
                     
@@ -50,14 +49,14 @@
           </p:panel>
                  <!-- FIM DO FORMULARIO -->
                <p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-                    <h:commandButton action="#{ProfissaoController.gravarProfissao()}"   
+                    <h:commandButton action="#{EncaminhadoController.gravarEncaminhado()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Cadastrar"
-                        styleClass="btn btn-sm btn-success" rendered="#{ProfissaoController.tipo == 'I'}" />
+                        styleClass="btn btn-sm btn-success" rendered="#{EncaminhadoController.tipo == 'I'}" />
                
                
-                    <h:commandButton action="#{ProfissaoController.alterarProfissao()}"   
+                    <h:commandButton action="#{EncaminhadoController.alterarEncaminhado()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Alterar"
-                        styleClass="btn btn-info" rendered="#{ProfissaoController.tipo == 'A'}" />
+                        styleClass="btn btn-info" rendered="#{EncaminhadoController.tipo == 'A'}" />
             </p:panelGrid>
               
             
