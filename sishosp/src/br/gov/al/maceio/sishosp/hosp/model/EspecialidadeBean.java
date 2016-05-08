@@ -2,27 +2,38 @@ package br.gov.al.maceio.sishosp.hosp.model;
 
 public class EspecialidadeBean {
 
-	private Integer codespecialidade;
-	private String descespecialidade;
+	private Integer codEspecialidade;
+	private String descEspecialidade;
+	private Integer codEmpresa;
 	
 	public EspecialidadeBean(){
 		
 	}
 
-	public Integer getCodespecialidade() {
-		return codespecialidade;
+	public Integer getCodEspecialidade() {
+		return codEspecialidade;
 	}
 
-	public void setCodespecialidade(Integer codespecialidade) {
-		this.codespecialidade = codespecialidade;
+	public void setCodEspecialidade(Integer codEspecialidade) {
+		this.codEspecialidade = codEspecialidade;
 	}
 
-	public String getDescespecialidade() {
-		return descespecialidade;
+	public String getDescEspecialidade() {
+		return descEspecialidade;
 	}
 
-	public void setDescespecialidade(String descespecialidade) {
-		this.descespecialidade = descespecialidade;
+	public void setDescEspecialidade(String descEspecialidade) {
+		this.descEspecialidade = descEspecialidade;
 	}
+
+	public Integer getCodEmpresa() {
+		return codEmpresa;
+	}
+
+	public void setCodEmpresa(Integer codEmpresa) {
+		this.codEmpresa = codEmpresa;
+	}
+
+	
 	
 }

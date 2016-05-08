@@ -27,7 +27,8 @@
 						<p:inputText id="pac" value="#{AgendaController.paciente.nome}"
 							readonly="true" style="width: 300px" />
 					</p:outputPanel>
-					<p:commandButton id="btBusPa" value="Buscar" onclick="PF('dlgConsuPac').show();" />
+					<p:commandButton id="btBusPa" value="Buscar"
+						onclick="PF('dlgConsuPac').show();" />
 
 					<h:outputLabel for="prog" value="Programa" />
 					<p:outputPanel id="outProg">
@@ -38,7 +39,8 @@
 							value="#{AgendaController.programa.descPrograma}" readonly="true"
 							style="width: 300px" />
 					</p:outputPanel>
-					<p:commandButton id="btBusPr" value="Buscar" disabled="#{AgendaController.paciente==null}"
+					<p:commandButton id="btBusPr" value="Buscar"
+						disabled="#{AgendaController.paciente==null}"
 						onclick="PF('dlgConsuProg').show();" />
 
 					<h:outputLabel for="grupo" value="Grupo" />
@@ -50,7 +52,8 @@
 							value="#{AgendaController.grupo.descGrupo}" readonly="true"
 							style="width: 300px" />
 					</p:outputPanel>
-					<p:commandButton id="btBusGr" value="Buscar" disabled="#{AgendaController.programa==null}"
+					<p:commandButton id="btBusGr" value="Buscar"
+						disabled="#{AgendaController.programa==null}"
 						onclick="PF('dlgConsuGrop').show();" />
 
 					<h:outputLabel for="tipoAt" value="Tipo At." />
@@ -62,7 +65,8 @@
 							value="#{AgendaController.tipoAt.descTipoAt}" readonly="true"
 							style="width: 300px" />
 					</p:outputPanel>
-					<p:commandButton id="btBusTi" value="Buscar" disabled="#{AgendaController.grupo==null}"
+					<p:commandButton id="btBusTi" value="Buscar"
+						disabled="#{AgendaController.grupo==null}"
 						onclick="PF('dlgConsuTipoAt').show();" />
 				</p:panelGrid>
 
@@ -153,10 +157,16 @@
 
 				<center>
 					<p:panelGrid columns="4" styleClass="semBorda">
+						
 						<p:commandButton value="Gravar" icon="confirmar"
 							disabled="#{!AgendaController.prontoGravar}" />
+						
 						<p:commandButton value="Consultar" icon="buscar" />
-						<p:commandButton value="Limpar" icon="limpar" />
+						
+						<p:commandButton value="Limpar" icon="limpar"
+							actionListener="#{AgendaController.limparDados()}"
+							update=":formAgendaMedica" />
+						
 						<p:commandButton value="Sair" icon="btlogout"
 							update=":formAgendaMedica"
 							actionListener="#{AgendaController.limparDados()}"
@@ -226,7 +236,8 @@
 						<p:outputLabel value="#{pacie.cpf}" />
 					</p:column>
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":formAgendaMedica:outPacie, :formAgendaMedica:btBusPr"
+						<p:commandButton
+							update=":formAgendaMedica:outPacie, :formAgendaMedica:btBusPr"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuPac').hide();">
 							<f:setPropertyActionListener value="#{pacie}"
@@ -250,8 +261,10 @@
 						<p:outputLabel value="#{prog.descPrograma}" />
 					</p:column>
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, :formAgendaMedica:btBusGr"
-							icon="ui-icon-check" title="Selecionar" action="#{GrupoController.atualizaLista(AgendaController.programa)}"
+						<p:commandButton
+							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, :formAgendaMedica:btBusGr"
+							icon="ui-icon-check" title="Selecionar"
+							action="#{GrupoController.atualizaLista(AgendaController.programa)}"
 							onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
 								target="#{AgendaController.programa}" />
@@ -264,8 +277,8 @@
 		<p:dialog header="Consulta Grupo" widgetVar="dlgConsuGrop"
 			modal="true" width="550px">
 			<h:form id="formConsuGrop">
-				<p:dataTable value="#{GrupoController.listaGruposProgramas}" id="dtGrupo"
-					resizableColumns="true" var="grupo"
+				<p:dataTable value="#{GrupoController.listaGruposProgramas}"
+					id="dtGrupo" resizableColumns="true" var="grupo"
 					emptyMessage="Não existe nenhum grupo cadastrado!">
 					<p:column headerText="CÓD.">
 						<p:outputLabel value="#{grupo.idGrupo}" />
@@ -278,9 +291,11 @@
 					</p:column>
 
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt, :formAgendaMedica:btBusTi"
+						<p:commandButton
+							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt, :formAgendaMedica:btBusTi"
 							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsuGrop').hide();" action="#{TipoAtendimentoController.atualizaListaTipos(AgendaController.grupo)}">
+							onclick="PF('dlgConsuGrop').hide();"
+							action="#{TipoAtendimentoController.atualizaListaTipos(AgendaController.grupo)}">
 							<f:setPropertyActionListener value="#{grupo}"
 								target="#{AgendaController.grupo}" />
 						</p:commandButton>
@@ -288,12 +303,12 @@
 				</p:dataTable>
 			</h:form>
 		</p:dialog>
-		
-		<p:dialog header="Consulta Tipos de Atendimento" widgetVar="dlgConsuTipoAt"
-			modal="true" width="550px">
+
+		<p:dialog header="Consulta Tipos de Atendimento"
+			widgetVar="dlgConsuTipoAt" modal="true" width="550px">
 			<h:form id="formConsuTipoAt">
-				<p:dataTable value="#{TipoAtendimentoController.listaTipos}" id="dtTipoAt"
-					resizableColumns="true" var="tipo"
+				<p:dataTable value="#{TipoAtendimentoController.listaTipos}"
+					id="dtTipoAt" resizableColumns="true" var="tipo"
 					emptyMessage="Não existe nenhum tipo cadastrado!">
 					<p:column headerText="CÓD.">
 						<p:outputLabel value="#{tipo.idTipo}" />

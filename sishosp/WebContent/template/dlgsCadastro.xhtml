@@ -208,18 +208,23 @@
 	<p:dialog header="Cadastro de Especialidades" closable="true"
 		resizable="false" styleClass="semBorda"
 		widgetVar="dlgCadEspecialidade" modal="true">
-		<h:form>
+		<h:form id="frmCadEspeci">
+			<p:growl id="msg" />
 			<p:panelGrid columns="1">
 				<p:outputLabel for="espec" value="Descrição da especialidade" />
-				<p:inputText id="espec" value="desc" style="width: 300px" />
+				<p:inputText id="espec"
+					value="#{EspecialidadeController.espec.descEspecialidade}"
+					style="width: 300px" />
 			</p:panelGrid>
-
 			<p:separator />
-
 			<center>
 				<p:panelGrid columns="3">
-					<p:commandButton value="Incluir" icon="confirmar" />
-					<p:commandButton value="Limpar" icon="limpar" />
+					<p:commandButton value="Incluir" icon="confirmar"
+						update=":frmCadEspeci:msg, :frmCadEspeci"
+						action="#{EspecialidadeController.gravarEspecialidade()}" />
+					<p:commandButton value="Limpar" icon="limpar"
+						actionListener="#{EspecialidadeController.limparDados()}"
+						update=":frmCadEspeci" />
 					<p:commandButton value="Sair" icon="cancelar"
 						onclick="PF('dlgCadEspecialidade').hide();" />
 				</p:panelGrid>
@@ -393,36 +398,62 @@
 	<p:dialog header="Cadastro de Procedimentos" closable="true"
 		resizable="false" styleClass="semBorda" widgetVar="dlgCadProcedimento"
 		modal="true">
-		<h:form>
-			<p:panelGrid columns="1">
+		<h:form id="frmCadProced">
+			<p:panelGrid columns="2" styleClass="semBorda">
 
 				<p:outputLabel for="procedimento" value="Descrição do Procedimento" />
-				<p:inputText id="procedimento" value="aqui descproc"
+				<p:inputText id="procedimento"
+					value="#{ProcedimentoController.proc.nomeProc}"
 					style="width: 300px" />
 
 				<p:panelGrid columns="2" styleClass="semBorda">
 					<p:outputLabel for="codigo" value="Código" />
-					<p:inputText id="codigo" value="aqui codigo" style="width: 100px" />
+					<p:inputText id="codigo"
+						value="#{ProcedimentoController.proc.codProc}"
+						style="width: 100px" />
 				</p:panelGrid>
-				<p:selectManyCheckbox id="checkCodAPAC" columns="1"
-					style="position:absolute; top:80px; left:230px;">
-					<f:selectItem itemLabel="Apac" itemValue="APAC" />
-				</p:selectManyCheckbox>
 
-				<p:selectManyCheckbox id="checkCodBPI" columns="1"
-					style="position:absolute; top:100px; left:230px;">
-					<f:selectItem itemLabel="BPI" itemValue="BPI" />
-				</p:selectManyCheckbox>
+				<p:panelGrid columns="4">
+					<h:outputText value="Apac: " />
+					<p:selectBooleanCheckbox
+						value="#{ProcedimentoController.proc.apac}" />
 
-				<p:selectManyCheckbox id="checkA" columns="2"
-					style="position:absolute; top:140px; left:90px;">
-					<f:selectItem itemLabel="Auditivo" itemValue="AUDITIVO" />
-				</p:selectManyCheckbox>
-				<p:selectManyCheckbox id="checkU" columns="2"
-					style="position:absolute; top:140px; left:190px;">
-					<f:selectItem itemLabel="Utiliza Equipamento" itemValue="UTILIZA" />
-				</p:selectManyCheckbox>
+					<h:outputText value="BPI: " />
+					<p:selectBooleanCheckbox value="#{ProcedimentoController.proc.bpi}" />
+				</p:panelGrid>
 			</p:panelGrid>
+			<p:panelGrid columns="2">
+				<h:outputText value="Utiliza Equipamento: " />
+				<p:selectBooleanCheckbox
+					value="#{ProcedimentoController.proc.utilizaEquipamento}" />
+
+				<h:outputText value="Auditivo: " />
+				<p:selectBooleanCheckbox
+					value="#{ProcedimentoController.proc.auditivo}">
+					<p:ajax update="pnlModelo" />
+				</p:selectBooleanCheckbox>
+
+			</p:panelGrid>
+
+			<p:outputPanel id="pnlModelo">
+				<center>
+					<p:panel header="Modelo Auditivo" style="width:300px;"
+						rendered="#{ProcedimentoController.proc.auditivo==true}">
+						<p:selectOneRadio
+							value="#{ProcedimentoController.proc.tipoExameAuditivo}"
+							layout="grid" columns="2">
+							<f:selectItem itemLabel="Acompanhamentos"
+								itemValue="Acompanhamentos" />
+							<f:selectItem itemLabel="Consultas" itemValue="Consultas" />
+							<f:selectItem itemLabel="Aparelhos" itemValue="Aparelhos" />
+							<f:selectItem itemLabel="Teste" itemValue="Teste" />
+						</p:selectOneRadio>
+					</p:panel>
+				</center>
+			</p:outputPanel>
+
+
+
 
 			<p:separator />
 
