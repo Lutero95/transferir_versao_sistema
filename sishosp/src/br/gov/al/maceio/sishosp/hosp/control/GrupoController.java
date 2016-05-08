@@ -10,15 +10,18 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 public class GrupoController {
 
 	private GrupoBean grupo;
 	private List<GrupoBean> listaGrupos;
+	private List<GrupoBean> listaGruposProgramas;
 
 	public GrupoController() {
 		this.grupo = new GrupoBean();
 		this.listaGrupos = new ArrayList<>();
+		this.listaGruposProgramas = new ArrayList<>();
 
 	}
 
@@ -58,6 +61,19 @@ public class GrupoController {
 
 	public void setListaGrupos(List<GrupoBean> listaGrupos) {
 		this.listaGrupos = listaGrupos;
+	}
+	
+	public void atualizaLista(ProgramaBean p) {
+		GrupoDAO gDao = new GrupoDAO();
+		this.listaGruposProgramas = gDao.listarGruposPorPrograma(p.getIdPrograma());
+	}
+
+	public List<GrupoBean> getListaGruposProgramas() {
+		return listaGruposProgramas;
+	}
+
+	public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
+		this.listaGruposProgramas = listaGruposProgramas;
 	}
 
 }

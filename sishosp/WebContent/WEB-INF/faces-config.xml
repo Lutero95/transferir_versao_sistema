@@ -81,5 +81,19 @@
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.AgendaController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	
+	<managed-bean>
+		<description>O Bean Tipo de Atendimento Controller</description>
+		<managed-bean-name>TipoAtendimentoController</managed-bean-name>
+		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.TipoAtendimentoController</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	
+	<managed-bean>
+		<description>O Bean Cbo Controller</description>
+		<managed-bean-name>CboController</managed-bean-name>
+		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.CboController</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
 
 </faces-config>
