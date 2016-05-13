@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -12,11 +14,13 @@ import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 public class EspecialidadeController {
 
 	private EspecialidadeBean espec;
+	private List<EspecialidadeBean> listaEspecialidade;
 
 	EspecialidadeDAO eDao = new EspecialidadeDAO();
 
 	public EspecialidadeController() {
 		this.espec = new EspecialidadeBean();
+		this.listaEspecialidade = new ArrayList<EspecialidadeBean>();
 	}
 
 	public void limparDados() {
@@ -29,6 +33,11 @@ public class EspecialidadeController {
 
 	public void setEspec(EspecialidadeBean espec) {
 		this.espec = espec;
+	}
+	
+	public List<EspecialidadeBean> getListaEspecialidade() {
+		this.listaEspecialidade = eDao.listarEspecialidades();
+		return listaEspecialidade;
 	}
 
 	public void gravarEspecialidade() throws ProjetoException, SQLException {
@@ -46,4 +55,7 @@ public class EspecialidadeController {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
+	
+	
+	
 }

@@ -31,7 +31,7 @@ public class ProcedimentoController {
 		this.proc = proc;
 	}
 
-	public void gravarEspecialidade() throws ProjetoException, SQLException {
+	public void gravarProcedimento() throws ProjetoException, SQLException {
 
 		boolean cadastrou = pDao.gravarProcedimento(proc);
 

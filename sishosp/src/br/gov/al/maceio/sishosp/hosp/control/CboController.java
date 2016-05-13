@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -12,11 +14,13 @@ import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 public class CboController {
 	
 	private CboBean cbo;
+	private List<CboBean> listaCbo;
 	
 	CboDAO cDao = new CboDAO();
 	
 	public CboController() {
 		this.cbo = new CboBean();
+		this.listaCbo = new ArrayList<CboBean>();
 	}
 
 	public void limparDados() {
@@ -30,6 +34,12 @@ public class CboController {
 	public void setCbo(CboBean cbo) {
 		this.cbo = cbo;
 	}
+
+	public List<CboBean> getListaCbo() {
+		this.listaCbo = cDao.listarCbo();
+		return listaCbo;
+	}
+
 
 	public void gravarCBO() throws ProjetoException, SQLException {
 		

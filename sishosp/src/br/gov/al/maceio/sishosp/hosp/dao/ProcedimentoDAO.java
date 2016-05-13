@@ -22,11 +22,11 @@ public class ProcedimentoDAO {
 			ps = con.prepareStatement(sql);
 			
 			ps.setInt(1, proc.getCodProc());
-			ps.setString(2, proc.getNomeProc());
+			ps.setString(2, proc.getNomeProc().toUpperCase());
 			ps.setBoolean(3, proc.getApac());
 			ps.setBoolean(4, proc.getBpi());
 			ps.setBoolean(5, proc.getAuditivo());
-			ps.setString(6, proc.getTipoExameAuditivo());
+			ps.setString(6, proc.getTipoExameAuditivo().toUpperCase());
 			ps.setBoolean(7, proc.getUtilizaEquipamento());
 			
 			ps.execute();
