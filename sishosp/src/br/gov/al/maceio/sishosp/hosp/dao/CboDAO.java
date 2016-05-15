@@ -9,7 +9,6 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
-import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 
 public class CboDAO {
 	
@@ -28,12 +27,18 @@ public class CboDAO {
 			//ps.setInt(3,  cbo.getCodEmpresa());
 			ps.execute();
 			con.commit();
-			con.close();
 			System.out.println("CADASTROU CBO");
 			return true;
 		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		}
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
 	}
 	
 	public List<CboBean> listarCbo(){

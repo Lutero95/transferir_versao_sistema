@@ -10,17 +10,17 @@ public class ProfissionalBean {
 	private String descricaoProf;
 	private String cns;
 	private boolean ativo;
+	private Integer codEmpresa;
 
 	public ProfissionalBean() {
-		this.programa = null;//new ProgramaBean();
+		this.programa = new ProgramaBean();
 		this.especialidade = new EspecialidadeBean();
 		this.cbo = new CboBean();
 		this.proc1 = new ProcedimentoBean();
 		this.proc2 = new ProcedimentoBean();
-		this.descricaoProf = new String();
-		this.cns = new String();
+		this.descricaoProf = "";
+		this.cns = "";
 		this.ativo = true;
-	
 	}
 
 	public ProgramaBean getPrograma() {
@@ -85,6 +85,23 @@ public class ProfissionalBean {
 
 	public void setAtivo(boolean ativo) {
 		this.ativo = ativo;
+	}
+
+	public Integer getCodEmpresa() {
+		return codEmpresa;
+	}
+
+	public void setCodEmpresa(Integer codEmpresa) {
+		this.codEmpresa = codEmpresa;
+	}
+
+	@Override
+	public String toString() {
+		return "ProfissionalBean [programa=" + programa.getIdPrograma() + ", especialidade="
+				+ especialidade.getCodEspecialidade() + ", cbo=" + cbo.getCodCbo() + ", proc1=" + proc1.getCodProc()
+				+ ", proc2=" + proc2.getCodProc() + ", descricaoProf=" + descricaoProf
+				+ ", cns=" + cns + ", ativo=" + ativo + ", codEmpresa="
+				+ codEmpresa + "]";
 	}
 
 }

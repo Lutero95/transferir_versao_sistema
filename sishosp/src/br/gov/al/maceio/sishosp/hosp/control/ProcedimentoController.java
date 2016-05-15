@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -12,15 +14,18 @@ import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 public class ProcedimentoController {
 	
 	private ProcedimentoBean proc;
+	private List<ProcedimentoBean> listaProcedimentos;
 
 	ProcedimentoDAO pDao = new ProcedimentoDAO();
 
 	public ProcedimentoController() {
 		this.proc = new ProcedimentoBean();
+		this.listaProcedimentos = new ArrayList<ProcedimentoBean>();
 	}
 
 	public void limparDados() {
 		proc = new ProcedimentoBean();
+		listaProcedimentos = new ArrayList<ProcedimentoBean>();
 	}
 
 	public ProcedimentoBean getProc() {
@@ -29,6 +34,15 @@ public class ProcedimentoController {
 
 	public void setProc(ProcedimentoBean proc) {
 		this.proc = proc;
+	}
+	
+	public List<ProcedimentoBean> getListaProcedimentos() {
+		this.listaProcedimentos = pDao.listarProcedimento();
+		return listaProcedimentos;
+	}
+
+	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
+		this.listaProcedimentos = listaProcedimentos;
 	}
 
 	public void gravarProcedimento() throws ProjetoException, SQLException {

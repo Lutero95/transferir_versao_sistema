@@ -9,35 +9,54 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
-import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 public class ProfissionalDAO {
 	
 	Connection con = null;
 	PreparedStatement ps = null;
 	
-	/*public boolean gravarProfissional(ProfissionalBean prof) throws SQLException{
+	public boolean gravarProfissional(ProfissionalBean prof) throws SQLException{
 		
-		String sql = "insert into hosp.tipoatendimento (codgrupo, desctipoatendimento, "
-				+ "primeiroatendimento, equipe_programa) values (?, ?, ?, ?);";
-		try {
-			System.out.println("VAI CADASTRAR TIPO ATEN");
-			con = ConnectionFactory.getConnection();
-			ps = con.prepareStatement(sql);
-			ps.setInt(1, tipo.getIdGrupo());
-			ps.setString(2, tipo.getDescTipoAt().toUpperCase());
-			ps.setBoolean(3, tipo.isPrimeiroAt());
-			ps.setBoolean(4, tipo.isEquipe());
-			ps.execute();
-			con.commit();
-			con.close();
-			System.out.println("CADASTROU TIPO ATEN");
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
+		System.out.println(prof.toString());
+		return true;
+		/*String sql = "insert into hosp.medicos (descmedico, codprograma, "
+				+ "codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, "
+				+ "codprocedimentopadrao2, codempresa)"
+				+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		if(prof.getPrograma().getIdPrograma()!=null&& prof.getEspecialidade().getCodEmpresa()!=null
+		&& prof.getCbo().getCodCbo()!=null && prof.getProc1().getCodProc()!=null
+		|| prof.getProc2().getCodProc()!=null && !prof.getDescricaoProf().isEmpty() && !prof.getCns().isEmpty()){
+			try {
+				System.out.println("VAI CADASTRAR Profissional");
+				con = ConnectionFactory.getConnection();
+				ps = con.prepareStatement(sql);
+				ps.setString(1, prof.getDescricaoProf().toUpperCase());
+				ps.setInt(2, prof.getPrograma().getIdPrograma());
+				ps.setInt(3,  prof.getEspecialidade().getCodEspecialidade());
+				ps.setString(4, prof.getCns().toUpperCase());
+				ps.setBoolean(5,  prof.isAtivo());
+				ps.setInt(6, prof.getCbo().getCodCbo());
+				ps.setInt(7, prof.getProc1().getCodProc());
+				ps.setInt(8, prof.getProc2().getCodProc());
+				ps.setInt(9, 0);//COD EMPRESA ??
+				ps.execute();
+				con.commit();
+				System.out.println("CADASTROU Profissional");
+				return true;
+			} catch (SQLException ex) {
+	            throw new RuntimeException(ex);
+	        } finally {
+	            try {
+	                con.close();
+	            } catch (Exception ex) {
+	                ex.printStackTrace();
+	                System.exit(1);
+	            }
+	        }
 		}
+		return false;*/
 	}
-	
+	/*
 	public List<TipoAtendimentoBean> listarTipoAtPorGrupo(){
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
 		String sql = "select t.id, t.codgrupo, t.desctipoatendimento, t.primeiroatendimento, t.codempresa, t.equipe_programa"

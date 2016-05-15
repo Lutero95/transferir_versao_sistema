@@ -2,7 +2,10 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
@@ -37,5 +40,32 @@ public class ProcedimentoDAO {
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+	
+	public List<ProcedimentoBean> listarProcedimento(){
+		List<ProcedimentoBean> lista = new ArrayList<>();
+		String sql = "select codproc, nome from hosp.proc";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+            	ProcedimentoBean proc = new ProcedimentoBean();
+            	proc.setCodProc(rs.getInt("codproc"));
+            	proc.setNomeProc(rs.getString("nome"));    
+                lista.add(proc);
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+		return lista;
 	}
 }

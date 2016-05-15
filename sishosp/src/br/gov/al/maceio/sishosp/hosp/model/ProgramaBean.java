@@ -6,7 +6,9 @@ public class ProgramaBean {
 	private Double codFederal;
 	
 	public ProgramaBean(){
-		
+		this.idPrograma = null;
+		this.descPrograma = new String();
+		this.codFederal = null;
 	}
 	
 	public ProgramaBean(Integer idPrograma, String descPrograma, Double codFederal) {
