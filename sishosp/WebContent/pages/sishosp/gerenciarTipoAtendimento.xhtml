@@ -93,11 +93,7 @@
 					<p:column headerText="Nome" style="font-weight:bold;">
 						<h:outputText value="#{tab.descTipoAt}" />
 					</p:column>
-					
-					<p:column headerText="Grupo" style="font-weight:bold;">
-						<h:outputText value="#{tab.grupo.descGrupo}" />
-					</p:column>
-					
+										
 					<p:column headerText="Equipe" style="font-weight:bold;">
 						<h:outputText value="Não" rendered="#{tab.equipe==false}"/>
 						<h:outputText value="Sim" rendered="#{tab.equipe==true}"/>
@@ -113,19 +109,19 @@
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroGrupo.faces">
+									action="/pages/sishosp/cadastroTipoAtendimento.faces">
 									<f:setPropertyActionListener value="#{tab}"
-										target="#{GrupoController.grupo}" />
+										target="#{TipoAtendimentoController.tipo}" />
 
 									<f:setPropertyActionListener value="A"
-										target="#{GrupoController.tipo}" />
+										target="#{TipoAtendimentoController.tipoS}" />
 								</p:menuitem>
 
 								<p:menuitem value="Excluir" icon="trash"
 									onclick="PF('dialogAtencao').show()">
 
 									<f:setPropertyActionListener value="#{tab}"
-										target="#{GrupoController.grupo}" />
+										target="#{TipoAtendimentoController.tipo}" />
 								</p:menuitem>
 							</p:splitButton>
 						</center>
@@ -146,7 +142,7 @@
 				</h:panelGrid>
 				<center>
 					<p:commandButton value="Sim"
-						action="#{GrupoController.excluirGrupo()}"
+						action="#{TipoAtendimentoController.excluirTipo()}"
 						icon="ui-icon-check" style="font-size:14px;"
 						update=":frmmensagem:tabela, :frmmensagem:growl">
 					</p:commandButton>

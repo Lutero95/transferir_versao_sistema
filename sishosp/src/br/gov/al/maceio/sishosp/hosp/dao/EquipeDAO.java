@@ -8,47 +8,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 
-public class EspecialidadeDAO {
+public class EquipeDAO {
 
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarEspecialidade(EspecialidadeBean esp)
+	public boolean gravarEquipe(EquipeBean equipe)
 			throws SQLException {
 
-		String sql = "insert into hosp.especialidade (descespecialidade) values (?);";
+		String sql = "insert into hosp.equipe (descequipe) values (?);";
 		try {
-			System.out.println("VAI CADASTRAR Especialidade");
+			System.out.println("VAI CADASTRAR EQUPE");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			ps.setString(1, esp.getDescEspecialidade().toUpperCase());
+			ps.setString(1, equipe.getDescEquipe().toUpperCase());
 			ps.execute();
 			con.commit();
-			con.close();
-			System.out.println("CADASTROU Especialidade");
+			System.out.println("CADASTROU EQUIPE");
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
 		}
 	}
 
-	public List<EspecialidadeBean> listarEspecialidades() {
-		List<EspecialidadeBean> lista = new ArrayList<>();
-		String sql = "select id_especialidade, descespecialidade, codempresa from hosp.especialidade";
+	public List<EquipeBean> listarEquipe() {
+		List<EquipeBean> lista = new ArrayList<>();
+		String sql = "select id_equipe, descequipe, codempresa from hosp.equipe";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				EspecialidadeBean esp = new EspecialidadeBean();
-				esp.setCodEspecialidade(rs.getInt("id_especialidade"));
-				esp.setDescEspecialidade(rs.getString("descespecialidade"));
-				esp.setCodEmpresa(rs.getInt("codempresa"));
+				EquipeBean equipe = new EquipeBean();
+				equipe.setCodEquipe(rs.getInt("id_equipe"));
+				equipe.setDescEquipe(rs.getString("descequipe"));
+				equipe.setCodEmpresa(rs.getInt("codempresa"));
 
-				lista.add(esp);
+				lista.add(equipe);
 			}
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -63,13 +69,13 @@ public class EspecialidadeDAO {
 		return lista;
 	}
 
-	public List<EspecialidadeBean> listarEspecialidadesBusca(String descricao,
+	public List<EquipeBean> listarEquipeBusca(String descricao,
 			Integer tipo) {
-		List<EspecialidadeBean> lista = new ArrayList<>();
+		List<EquipeBean> lista = new ArrayList<>();
 		System.out.println("2");
-		String sql = "select id_especialidade, descespecialidade, codempresa from hosp.especialidade ";
+		String sql = "select id_equipe, descequipe, codempresa from hosp.equipe ";
 		if (tipo == 1) {
-			sql += " where descespecialidade LIKE ?";
+			sql += " where descequipe LIKE ?";
 		}
 		try {
 			con = ConnectionFactory.getConnection();
@@ -78,12 +84,12 @@ public class EspecialidadeDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				EspecialidadeBean esp = new EspecialidadeBean();
-				esp.setCodEspecialidade(rs.getInt("id_especialidade"));
-				esp.setDescEspecialidade(rs.getString("descespecialidade"));
-				esp.setCodEmpresa(rs.getInt("codempresa"));
+				EquipeBean equipe = new EquipeBean();
+				equipe.setCodEquipe(rs.getInt("id_equipe"));
+				equipe.setDescEquipe(rs.getString("descequipe"));
+				equipe.setCodEmpresa(rs.getInt("codempresa"));
 
-				lista.add(esp);
+				lista.add(equipe);
 			}
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -98,13 +104,13 @@ public class EspecialidadeDAO {
 		return lista;
 	}
 
-	public boolean alterarEspecialidade(EspecialidadeBean espec) {
-		String sql = "update hosp.especialidade set descespecialidade = ? where id_especialidade = ?";
+	public boolean alterarEquipe(EquipeBean equipe) {
+		String sql = "update hosp.equipe set descequipe = ? where id_equipe = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, espec.getDescEspecialidade().toUpperCase());
-			stmt.setInt(2, espec.getCodEspecialidade());
+			stmt.setString(1, equipe.getDescEquipe().toUpperCase());
+			stmt.setInt(2, equipe.getCodEquipe());
 			stmt.executeUpdate();
 			con.commit();
 			return true;
@@ -119,12 +125,12 @@ public class EspecialidadeDAO {
 		}
 	}
 
-	public boolean excluirEspecialidade(EspecialidadeBean espec) {
-		String sql = "delete from hosp.especialidade where id_especialidade = ?";
+	public boolean excluirEquipe(EquipeBean equipe) {
+		String sql = "delete from hosp.equipe where id_equipe = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, espec.getCodEspecialidade());
+			stmt.setLong(1, equipe.getCodEquipe());
 			stmt.execute();
 			con.commit();
 			return true;

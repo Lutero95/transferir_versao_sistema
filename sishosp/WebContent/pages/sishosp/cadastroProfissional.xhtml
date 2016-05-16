@@ -12,15 +12,15 @@
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
-			<p:outputLabel value="CADASTRO DE TIPO DE ATENDIMENTO"
+			<p:outputLabel value="CADASTRO DE PROFISSIONAL"
 				rendered="#{GrupoController.tipo == 'I'}"></p:outputLabel>
-			<p:outputLabel value="ALTERAR TIPO DE ATENDIMENTO"
+			<p:outputLabel value="ALTERAR PROFISSIONAL"
 				rendered="#{GrupoController.tipo == 'A'}"></p:outputLabel>
 			<br />
 			<h:form>
 				<p:commandButton value="Voltar"
 					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarTipoAtendimento.faces"></p:commandButton>
+					action="/pages/sishosp/gerenciarProfissional.faces"></p:commandButton>
 			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
@@ -30,7 +30,23 @@
 					style="height:auto; width:850px; background-color: #F5F5F5;">
 					<p:tabView activeIndex="#{TipoAtendimentoController.abaAtiva}"
 						style="height:auto; width:800px">
-						<p:tab title="DADOS TIPO DE ATENDIMENTO">
+						<p:tab title="DADOS PROFISSIONAL">
+
+
+							<div class="form-group">
+								<p:outputLabel value="Programa "
+									styleClass="col-sm-3 control-label">
+								</p:outputLabel>
+								<div class="col-sm-6">
+									<p:inputText id="descPrg"
+										value="#{ProfissionalController.profissional.programa.descPrograma}"
+										readonly="true" style="width: 350px" />
+								</div>
+								<p:commandButton
+									style="position:absolute; top:100px; left:550px;"
+									onclick="PF('dlgConsuPrograma').show();" icon="buscaProcess" />
+							</div>
+							
 							<div class="form-group">
 								<h:outputLabel for="inputdesc" value="Descrição: "
 									styleClass="col-sm-3 control-label" />
@@ -45,28 +61,12 @@
 								<h:outputLabel for="inputg" value="Grupo: "
 									styleClass="col-sm-3 control-label" />
 								<div class="col-sm-6">
-									<p:dataTable emptyMessage="Sem Dados"
-										styleClass="table table-hover" id="tabela"
-										style="margin-top:20px;" selectionMode="single"
-										selection="#{TipoAtendimentoController.tipo.grupo}"
-										rowKey="#{tab.idGrupo}" value="#{GrupoController.listaGrupos}"
-										var="tab" paginator="true" paginatorPosition="bottom"
-										rows="12" resizableColumns="true">
-
-										<p:column headerText="Cód." style="font-weight:bold;width:20%;">
-											<h:outputText value="#{tab.idGrupo}" />
-										</p:column>
-
-										<p:column headerText="Nome" style="font-weight:bold;">
-											<h:outputText value="#{tab.descGrupo}" />
-										</p:column>
-
-										<p:column headerText="Qtd. de Frequência: "
-											style="font-weight:bold;">
-											<h:outputText value="#{tab.qtdFrequencia}" />
-										</p:column>
-
-									</p:dataTable>
+									<p:selectOneMenu id="inputg"
+										value="#{TipoAtendimentoController.tipo.idGrupo}">
+										<f:selectItems value="#{GrupoController.listaGrupos}"
+											var="grupo" itemLabel="#{grupo.descGrupo}"
+											itemValue="#{grupo.idGrupo}" />
+									</p:selectOneMenu>
 								</div>
 							</div>
 							<div class="form-group">
@@ -100,8 +100,7 @@
 						rendered="#{TipoAtendimentoController.tipoS == 'I'}" />
 
 
-					<h:commandButton
-						action="#{TipoAtendimentoController.alterarTipo()}"
+					<h:commandButton action="#{GrupoController.alterarGrupo()}"
 						update=":formCADU:message,:formCADU:pnlCadTiAt,:formCadu"
 						value="Alterar" styleClass="btn btn-info"
 						rendered="#{TipoAtendimentoController.tipoS  == 'A'}" />

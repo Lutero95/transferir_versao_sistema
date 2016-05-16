@@ -116,4 +116,11 @@
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.ProfissionalController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	
+	<managed-bean>
+		<description>O Bean Equipe Controller</description>
+		<managed-bean-name>EquipeController</managed-bean-name>
+		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.EquipeController</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
 </faces-config>

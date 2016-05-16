@@ -1,11 +1,12 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+
+import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
@@ -19,7 +20,8 @@ public class TipoAtendimentoController {
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private String tipoS;
-
+	
+	
 	private Integer abaAtiva = 0;
 	
 	TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
@@ -35,7 +37,6 @@ public class TipoAtendimentoController {
 		this.tipo = new TipoAtendimentoBean();
 		this.listaTipos = null;
 		this.descricaoBusca = new String();
-		this.tipoS = new String();
 		this.listaTipos = tDao.listarTipoAt();
 	}
 
@@ -55,7 +56,7 @@ public class TipoAtendimentoController {
 	}
 	
 	public void atualizaListaTipos(GrupoBean g){
-		this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
+		//this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
 	}
 	
 	public void buscarTipoAt() {
@@ -67,7 +68,6 @@ public class TipoAtendimentoController {
 	}
 	
 	public void gravarTipo() throws ProjetoException, SQLException {
-		System.out.println("GR " + tipo.getGrupo().getIdGrupo());
 		boolean cadastrou = tDao.gravarTipoAt(tipo);
 
 		if (cadastrou == true) {
@@ -80,6 +80,39 @@ public class TipoAtendimentoController {
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+		listaTipos = tDao.listarTipoAt();
+	}
+	
+	public void alterarTipo() throws ProjetoException {
+        boolean alterou = tDao.alterarTipo(tipo);
+        if(alterou == true) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Tipo de atendimento alterado com sucesso!", "Sucesso");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Ocorreu um erro durante o cadastro!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+		listaTipos = tDao.listarTipoAt();
+		
+	}
+	
+	public void excluirTipo() throws ProjetoException {
+        boolean ok = tDao.excluirTipo(tipo);
+        if(ok == true) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Tipo de atendimento excluido com sucesso!", "Sucesso");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Ocorreu um erro durante a exclusao!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+
+            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+        }
+		listaTipos = tDao.listarTipoAt();
 	}
 
 	public Integer getTipoBuscar() {

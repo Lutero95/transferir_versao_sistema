@@ -1,7 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -10,44 +9,43 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
-import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 
-public class EspecialidadeController {
+public class EquipeController {
 
-	private EspecialidadeBean espec;
-	private List<EspecialidadeBean> listaEspecialidade;
+	private EquipeBean equipe;
+	private List<EquipeBean> listaEquipe;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private String tipo;
 	private Integer abaAtiva = 0;
 
-	EspecialidadeDAO eDao = new EspecialidadeDAO();
+	EquipeDAO eDao = new EquipeDAO();
 
-	public EspecialidadeController() {
-		this.espec = new EspecialidadeBean();
-		this.listaEspecialidade = null;
+	public EquipeController() {
+		this.equipe = new EquipeBean();
+		this.listaEquipe = null;
 		this.descricaoBusca = new String();
 		this.tipo = new String();
 		this.descricaoBusca = new String();
 	}
 
 	public void limparDados() {
-		espec = new EspecialidadeBean();
+		equipe = new EquipeBean();
 		this.descricaoBusca = new String();
-		this.tipo = new String();
 		this.tipoBuscar = 1;
-		this.listaEspecialidade = eDao.listarEspecialidades();
+		this.listaEquipe = eDao.listarEquipe();
 	}
 
-	public EspecialidadeBean getEspec() {
-		return espec;
+
+	public EquipeBean getEquipe() {
+		return equipe;
 	}
 
-	public void setEspec(EspecialidadeBean espec) {
-		this.espec = espec;
+	public void setEquipe(EquipeBean equipe) {
+		this.equipe = equipe;
 	}
-
 	public Integer getTipoBuscar() {
 		return tipoBuscar;
 	}
@@ -80,21 +78,21 @@ public class EspecialidadeController {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public List<EspecialidadeBean> getListaEspecialidade() {
-		if (listaEspecialidade == null) {
-			this.listaEspecialidade = eDao.listarEspecialidades();
+	public List<EquipeBean> getListaEquipe() {
+		if (listaEquipe == null) {
+			this.listaEquipe = eDao.listarEquipe();
 		}
-		return listaEspecialidade;
+		return listaEquipe;
 	}
 
-	public void gravarEspecialidade() throws ProjetoException, SQLException {
+	public void gravarEquipe() throws ProjetoException, SQLException {
 
-		boolean cadastrou = eDao.gravarEspecialidade(espec);
+		boolean cadastrou = eDao.gravarEquipe(equipe);
 
 		if (cadastrou == true) {
 			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Especialidade cadastrada com sucesso!", "Sucesso");
+					"Equipe cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -103,30 +101,30 @@ public class EspecialidadeController {
 		}
 	}
 
-	public void buscarEspecialidades() {
-		this.listaEspecialidade = eDao.listarEspecialidadesBusca(
+	public void buscarEquipes() {
+		this.listaEquipe = eDao.listarEquipeBusca(
 				descricaoBusca, tipoBuscar);
 	}
 
-	public void alterarEspecialidade() throws ProjetoException {
-		boolean alterou = eDao.alterarEspecialidade(espec);
+	public void alterarEquipe() throws ProjetoException {
+		boolean alterou = eDao.alterarEquipe(equipe);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Especialidade alterada com sucesso!", "Sucesso");
+					"Equipe alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
-		this.listaEspecialidade = eDao.listarEspecialidades();
+		this.listaEquipe = eDao.listarEquipe();
 	}
 	
-	public void excluirEspecialidade() throws ProjetoException {
-        boolean ok = eDao.excluirEspecialidade(espec);
+	public void excluirEquipe() throws ProjetoException {
+        boolean ok = eDao.excluirEquipe(equipe);
         if(ok == true) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Especialidade excluida com sucesso!", "Sucesso");
+                "Equipe excluida com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
         } else {
@@ -136,6 +134,6 @@ public class EspecialidadeController {
 
             RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
         }
-		this.listaEspecialidade = eDao.listarEspecialidades();
+		this.listaEquipe = eDao.listarEquipe();
 	}
 }

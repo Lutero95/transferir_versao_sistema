@@ -13,7 +13,7 @@
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
-			<h3>GERENCIAMENTO DE PROGRAMAS</h3>
+			<h3>GERENCIAMENTO DE EQUIPES</h3>
 			<br />
 		</div>
 		<h:form id="frmmensagem"
@@ -30,7 +30,7 @@
 					style="font-size:12px !important;">
 					<p:outputPanel autoUpdate="true">
 						<p:outputLabel value="Pesquisar por: " />
-						<p:selectOneMenu value="#{ProgramaController.tipoBuscar}"
+						<p:selectOneMenu value="#{EquipeController.tipoBuscar}"
 							required="true"
 							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
 							requiredMessage="Informe o diretório da página.">
@@ -40,25 +40,25 @@
 
 						<p:inputText id="campoBuscanome"
 							style="height:28px;margin-top:-6px;margin-left:16px;"
-							value="#{ProgramaController.descricaoBusca}" />
+							value="#{EquipeController.descricaoBusca}" />
 
 						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
 							styleClass="btn btn-info" style="height:30px; margin-left:10px;"
-							action="#{ProgramaController.buscarProgramas()}"
+							action="#{EquipeController.buscarEquipes()}"
 							update=":frmmensagem:tabela, :frmmensagem:growl" />
 						
 						<p:commandButton value="Limpar Busca" icon="limpar"
 							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
-							actionListener="#{ProgramaController.limparDados()}"
+							actionListener="#{EquipeController.limparDados()}"
 							style="margin-left:20px" />
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							actionListener="#{ProgramaController.limparDados()}"
-							action="/pages/sishosp/cadastroPrograma.faces" icon="add"
+							actionListener="#{EquipeController.limparDados()}"
+							action="/pages/sishosp/cadastroEquipe.faces" icon="add"
 							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
 							<f:setPropertyActionListener value="I"
-								target="#{ProgramaController.tipo}" />
+								target="#{EquipeController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>
 
@@ -83,39 +83,35 @@
 
 				<p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover"
 					id="tabela" style="margin-top:20px;"
-					value="#{ProgramaController.listaProgramas}" var="tab"
+					value="#{EquipeController.listaEquipe}" var="tab"
 					paginator="true" paginatorPosition="bottom" rows="12">
 
 					<p:column headerText="Cód." style="font-weight:bold;width:5%;">
-						<h:outputText value="#{tab.idPrograma}" />
+						<h:outputText value="#{tab.codEquipe}" />
 					</p:column>
 
 					<p:column headerText="Nome" style="font-weight:bold;">
-						<h:outputText value="#{tab.descPrograma}" />
+						<h:outputText value="#{tab.descEquipe}" />
 					</p:column>
 					
-					<p:column headerText="Código Federal" style="font-weight:bold;">
-						<h:outputText value="#{tab.codFederal}" />
-					</p:column>
-
 
 					<p:column headerText="Ações" width="15%">
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroPrograma.faces">
+									action="/pages/sishosp/cadastroEquipe.faces">
 									<f:setPropertyActionListener value="#{tab}"
-										target="#{ProgramaController.prog}" />
+										target="#{EquipeController.equipe}" />
 
 									<f:setPropertyActionListener value="A"
-										target="#{ProgramaController.tipo}" />
+										target="#{EquipeController.tipo}" />
 								</p:menuitem>
 
 								<p:menuitem value="Excluir" icon="trash"
 									onclick="PF('dialogAtencao').show()">
 
 									<f:setPropertyActionListener value="#{tab}"
-										target="#{ProgramaController.prog}" />
+										target="#{EquipeController.equipe}" />
 								</p:menuitem>
 							</p:splitButton>
 						</center>
@@ -131,12 +127,12 @@
 				<h:panelGrid columns="1">
 
 					<div class="alert alert-warning" role="alert">Deseja excluir
-						esse programa?</div>
+						essa equipe?</div>
 
 				</h:panelGrid>
 				<center>
 					<p:commandButton value="Sim"
-						action="#{ProgramaController.excluirPrograma()}"
+						action="#{EquipeController.excluirEquipe()}"
 						icon="ui-icon-check" style="font-size:14px;"
 						update=":frmmensagem:tabela">
 					</p:commandButton>

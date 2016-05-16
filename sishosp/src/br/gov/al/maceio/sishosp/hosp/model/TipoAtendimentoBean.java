@@ -4,24 +4,17 @@ public class TipoAtendimentoBean {
 	
 	private Integer idTipo;
 	private String descTipoAt;
-	private GrupoBean grupo;
 	private boolean equipe;
 	private boolean primeiroAt;
 	private Integer codEmpresa;
+	private GrupoBean grupo;
 	
 	public TipoAtendimentoBean(){
-		this.grupo = null;
+		this.grupo = new GrupoBean();
 		this.descTipoAt = new String();
 		this.equipe = false;
 		this.primeiroAt = false;
 		
-	}
-	
-	public String getDescTipoAt() {
-		return descTipoAt;
-	}
-	public void setDescTipoAt(String descTipoAt) {
-		this.descTipoAt = descTipoAt;
 	}
 	
 	public GrupoBean getGrupo() {
@@ -32,6 +25,13 @@ public class TipoAtendimentoBean {
 		this.grupo = grupo;
 	}
 
+	public String getDescTipoAt() {
+		return descTipoAt;
+	}
+	public void setDescTipoAt(String descTipoAt) {
+		this.descTipoAt = descTipoAt;
+	}
+	
 	public boolean isEquipe() {
 		return equipe;
 	}
