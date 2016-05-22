@@ -30,7 +30,7 @@
 					style="font-size:12px !important;">
 					<p:outputPanel autoUpdate="true">
 						<p:outputLabel value="Pesquisar por: " />
-						<p:selectOneMenu value="#{TipoAtendimentoController.tipoBuscar}"
+						<p:selectOneMenu value="#{ProfissionalController.tipoBuscar}"
 							required="true"
 							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
 							requiredMessage="Informe o diretório da página.">
@@ -40,25 +40,25 @@
 
 						<p:inputText id="campoBuscanome"
 							style="height:28px;margin-top:-6px;margin-left:16px;"
-							value="#{TipoAtendimentoController.descricaoBusca}" />
+							value="#{ProfissionalController.descricaoBusca}" />
 
 						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
 							styleClass="btn btn-info" style="height:30px; margin-left:10px;"
-							action="#{TipoAtendimentoController.buscarTipoAt()}"
+							action="#{ProfissionalController.buscarProfissional()}"
 							update=":frmmensagem:tabela, :frmmensagem:growl" />
 						
 						<p:commandButton value="Limpar Busca" icon="limpar"
 							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
-							actionListener="#{TipoAtendimentoController.limparDados()}"
+							actionListener="#{ProfissionalController.limparDados()}"
 							style="margin-left:20px" />
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							actionListener="#{GrupoController.limparDados()}"
+							actionListener="#{ProfissionalController.limparDados()}"
 							action="/pages/sishosp/cadastroProfissional.faces" icon="add"
 							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
 							<f:setPropertyActionListener value="I"
-								target="#{TipoAtendimentoController.tipoS}" />
+								target="#{ProfissionalController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>
 
@@ -83,49 +83,51 @@
 
 				<p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover"
 					id="tabela" style="margin-top:20px;"
-					value="#{TipoAtendimentoController.listaTipos}" var="tab"
+					value="#{ProfissionalController.listaProfissional}" var="tab"
 					paginator="true" paginatorPosition="bottom" rows="12">
 
 					<p:column headerText="Cód." style="font-weight:bold;width:5%;">
-						<h:outputText value="#{tab.idTipo}" />
+						<h:outputText value="#{tab.idProfissional}" />
 					</p:column>
 
-					<p:column headerText="Nome" style="font-weight:bold;">
-						<h:outputText value="#{tab.descTipoAt}" />
+					<p:column headerText="Profissional" style="font-weight:bold;">
+						<h:outputText value="#{tab.descricaoProf}" />
 					</p:column>
 					
-					<p:column headerText="Grupo" style="font-weight:bold;">
-						<h:outputText value="#{tab.descGrupo}" />
+					<p:column headerText="Programa" style="font-weight:bold;">
+						<h:outputText value="#{tab.programa.descPrograma}" />
 					</p:column>
 					
-					<p:column headerText="Equipe" style="font-weight:bold;">
-						<h:outputText value="Não" rendered="#{tab.equipe==false}"/>
-						<h:outputText value="Sim" rendered="#{tab.equipe==true}"/>
+					<p:column headerText="Especialidade" style="font-weight:bold;">
+						<h:outputText value="#{tab.especialidade.descEspecialidade}" />
 					</p:column>
 					
-					<p:column headerText="Primeiro Atendimento" style="font-weight:bold;">
-						<h:outputText value="Não" rendered="#{tab.primeiroAt==false}"/>
-						<h:outputText value="Sim" rendered="#{tab.primeiroAt==true}"/>
+					<p:column headerText="CNS" style="font-weight:bold;">
+						<h:outputText value="#{tab.cns}"/>
 					</p:column>
-
+					
+					<p:column headerText="Ativo" style="font-weight:bold;">
+						<h:outputText value="Sim" rendered="#{tab.ativo==true}"/>
+						<h:outputText value="Não" rendered="#{tab.ativo==false}"/>
+					</p:column>
 	
 					<p:column headerText="Ações" width="15%">
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroGrupo.faces">
+									action="/pages/sishosp/cadastroProfissional.faces">
 									<f:setPropertyActionListener value="#{tab}"
-										target="#{GrupoController.grupo}" />
+										target="#{ProfissionalController.profissional}" />
 
 									<f:setPropertyActionListener value="A"
-										target="#{GrupoController.tipo}" />
+										target="#{ProfissionalController.tipo}" />
 								</p:menuitem>
 
 								<p:menuitem value="Excluir" icon="trash"
 									onclick="PF('dialogAtencao').show()">
 
 									<f:setPropertyActionListener value="#{tab}"
-										target="#{GrupoController.grupo}" />
+										target="#{ProfissionalController.profissional}" />
 								</p:menuitem>
 							</p:splitButton>
 						</center>
@@ -141,12 +143,12 @@
 				<h:panelGrid columns="1">
 
 					<div class="alert alert-warning" role="alert">Deseja excluir
-						esse tipo de atendimento?</div>
+						esse profissional?</div>
 
 				</h:panelGrid>
 				<center>
 					<p:commandButton value="Sim"
-						action="#{GrupoController.excluirGrupo()}"
+						action="#{ProfissionalController.excluirProfissional()}"
 						icon="ui-icon-check" style="font-size:14px;"
 						update=":frmmensagem:tabela, :frmmensagem:growl">
 					</p:commandButton>

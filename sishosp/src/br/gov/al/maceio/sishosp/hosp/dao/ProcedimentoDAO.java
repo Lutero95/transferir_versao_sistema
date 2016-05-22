@@ -23,7 +23,7 @@ public class ProcedimentoDAO {
 			System.out.println("VAI CADASTRAR Procedimento");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			
+
 			ps.setInt(1, proc.getCodProc());
 			ps.setString(2, proc.getNomeProc().toUpperCase());
 			ps.setBoolean(3, proc.getApac());
@@ -31,7 +31,7 @@ public class ProcedimentoDAO {
 			ps.setBoolean(5, proc.getAuditivo());
 			ps.setString(6, proc.getTipoExameAuditivo().toUpperCase());
 			ps.setBoolean(7, proc.getUtilizaEquipamento());
-			
+
 			ps.execute();
 			con.commit();
 			con.close();
@@ -41,31 +41,59 @@ public class ProcedimentoDAO {
 			throw new RuntimeException(ex);
 		}
 	}
-	
-	public List<ProcedimentoBean> listarProcedimento(){
+
+	public List<ProcedimentoBean> listarProcedimento() {
 		List<ProcedimentoBean> lista = new ArrayList<>();
 		String sql = "select codproc, nome from hosp.proc";
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            ResultSet rs = stm.executeQuery();
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
 
-            while (rs.next()) {
-            	ProcedimentoBean proc = new ProcedimentoBean();
-            	proc.setCodProc(rs.getInt("codproc"));
-            	proc.setNomeProc(rs.getString("nome"));    
-                lista.add(proc);
-            }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
-        }
+			while (rs.next()) {
+				ProcedimentoBean proc = new ProcedimentoBean();
+				proc.setCodProc(rs.getInt("codproc"));
+				proc.setNomeProc(rs.getString("nome"));
+				lista.add(proc);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
 		return lista;
+	}
+
+	public ProcedimentoBean listarProcedimentoPorId(int id) {
+
+		ProcedimentoBean proc = new ProcedimentoBean();
+		String sql = "select codproc, nome from hosp.proc where codproc = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				proc = new ProcedimentoBean();
+				proc.setCodProc(rs.getInt("codproc"));
+				proc.setNomeProc(rs.getString("nome"));
+
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return proc;
 	}
 }

@@ -1,7 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
 public class ProfissionalBean {
-
+	private Integer idProfissional;
 	private ProgramaBean programa;
 	private EspecialidadeBean especialidade;
 	private CboBean cbo;
@@ -93,6 +93,14 @@ public class ProfissionalBean {
 
 	public void setCodEmpresa(Integer codEmpresa) {
 		this.codEmpresa = codEmpresa;
+	}
+	
+	public Integer getIdProfissional() {
+		return idProfissional;
+	}
+
+	public void setIdProfissional(Integer idProfissional) {
+		this.idProfissional = idProfissional;
 	}
 
 	@Override

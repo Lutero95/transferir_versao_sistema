@@ -69,4 +69,33 @@ public class CboDAO {
         }
 		return lista;
 	}
+	
+	public CboBean listarCboPorId(int id) {
+
+		CboBean cbo = new CboBean();
+		String sql = "select id , descricao, codempresa from hosp.cbo where id = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			while(rs.next()){
+				cbo = new CboBean();
+				cbo.setCodCbo(rs.getInt("id"));
+	        	cbo.setDescCbo(rs.getString("descricao"));    
+	        	cbo.setCodEmpresa(rs.getInt("codempresa"));
+			}
+
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return cbo;
+	}
 }

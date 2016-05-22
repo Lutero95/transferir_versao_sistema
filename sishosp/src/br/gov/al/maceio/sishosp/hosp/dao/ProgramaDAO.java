@@ -27,11 +27,17 @@ public class ProgramaDAO {
 			ps.setDouble(2, prog.getCodFederal());
 			ps.execute();
 			con.commit();
-			con.close();
 			System.out.println("CADASTROU PROG");
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
 		}
 	}
 
@@ -143,5 +149,34 @@ public class ProgramaDAO {
 				e2.printStackTrace();
 			}
 		}
+	}
+
+	public ProgramaBean listarProgramaPorId(int id) {
+
+		ProgramaBean programa = new ProgramaBean();
+		String sql = "select id_programa, descprograma, codfederal from hosp.programa where id_programa = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			while(rs.next()){
+				programa = new ProgramaBean();
+				programa.setIdPrograma(rs.getInt("id_programa"));
+				programa.setDescPrograma(rs.getString("descprograma"));
+				//programa.setCodFederal(rs.getDouble("codfederal"));
+			}
+
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return programa;
 	}
 }

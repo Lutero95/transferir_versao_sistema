@@ -138,5 +138,34 @@ public class EspecialidadeDAO {
 			}
 		}
 	}
+	
+	public EspecialidadeBean listarEspecialidadePorId(int id) {
+		
+		EspecialidadeBean esp = new EspecialidadeBean();
+		String sql = "select id_especialidade, descespecialidade, codempresa from hosp.especialidade where id_especialidade = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			while(rs.next()){
+				esp = new EspecialidadeBean();
+				esp.setCodEspecialidade(rs.getInt("id_especialidade"));
+				esp.setDescEspecialidade(rs.getString("descespecialidade"));
+				//esp.setCodEmpresa(rs.getInt("codempresa"));// COD EMPRESA ??
+			}
+
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return esp;
+	}
 
 }

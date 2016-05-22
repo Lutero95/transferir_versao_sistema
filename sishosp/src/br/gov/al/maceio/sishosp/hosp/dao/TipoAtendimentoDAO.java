@@ -30,9 +30,9 @@ public class TipoAtendimentoDAO {
 			ps.setBoolean(3, tipo.isEquipe());
 			ps.setInt(4, 0);//cod empresa ?
 			ps.execute();
-			con.commit();
 			
 			ResultSet rs = ps.executeQuery();
+			con.commit();
 			int idTipo = 0;
 			if(rs.next()) {
 				idTipo = rs.getInt("id");
