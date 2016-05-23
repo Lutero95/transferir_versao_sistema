@@ -56,7 +56,7 @@ public class TipoAtendimentoController {
 	}
 	
 	public void atualizaListaTipos(GrupoBean g){
-		//this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
+		this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
 	}
 	
 	public void buscarTipoAt() {

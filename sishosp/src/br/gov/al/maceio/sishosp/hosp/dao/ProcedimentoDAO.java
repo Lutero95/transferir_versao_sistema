@@ -44,7 +44,8 @@ public class ProcedimentoDAO {
 
 	public List<ProcedimentoBean> listarProcedimento() {
 		List<ProcedimentoBean> lista = new ArrayList<>();
-		String sql = "select codproc, nome from hosp.proc";
+		String sql = "select codproc, nome, apac, bpi, auditivo,"
+				+ " tipo_exame_auditivo, utiliza_equipamento from hosp.proc order by codproc";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -54,6 +55,11 @@ public class ProcedimentoDAO {
 				ProcedimentoBean proc = new ProcedimentoBean();
 				proc.setCodProc(rs.getInt("codproc"));
 				proc.setNomeProc(rs.getString("nome"));
+				proc.setApac(rs.getBoolean("apac"));
+				proc.setBpi(rs.getBoolean("bpi"));
+				proc.setAuditivo(rs.getBoolean("auditivo"));
+				proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
+				proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
 				lista.add(proc);
 			}
 		} catch (SQLException ex) {
@@ -95,5 +101,93 @@ public class ProcedimentoDAO {
 			}
 		}
 		return proc;
+	}
+
+	public boolean alterarProcedimento(ProcedimentoBean proc) {
+		String sql = "update hosp.proc set nome = ?, apac = ?, bpi = ?, auditivo = ?, "
+				+ " tipo_exame_auditivo = ?, utiliza_equipamento = ?"
+				+ " where codproc = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, proc.getNomeProc().toUpperCase());
+			stmt.setBoolean(2, proc.getApac());
+			stmt.setBoolean(3, proc.getBpi());
+			stmt.setBoolean(4, proc.getAuditivo());
+			stmt.setString(5, proc.getTipoExameAuditivo().toUpperCase());
+			stmt.setBoolean(6, proc.getUtilizaEquipamento());
+			stmt.setInt(7, proc.getCodProc());
+			stmt.executeUpdate();
+			con.commit();
+			return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	public boolean excluirProcedimento(ProcedimentoBean proc) {
+		String sql = "delete from hosp.proc where codproc = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, proc.getCodProc());
+			stmt.execute();
+			con.commit();
+			return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	public List<ProcedimentoBean> listarProcedimentoBusca(String descricaoBusca,
+			Integer tipoBuscar) {
+
+		List<ProcedimentoBean> lista = new ArrayList<>();
+		String sql = "select codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento"
+				+ " from hosp.proc ";
+		if (tipoBuscar == 1) {
+			sql += " where nome LIKE ?  order by codproc";
+		}
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ProcedimentoBean proc = new ProcedimentoBean();
+				proc.setCodProc(rs.getInt("codproc"));
+				proc.setNomeProc(rs.getString("nome"));
+				proc.setApac(rs.getBoolean("apac"));
+				proc.setBpi(rs.getBoolean("bpi"));
+				proc.setAuditivo(rs.getBoolean("auditivo"));
+				proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
+				proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+				lista.add(proc);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
 	}
 }

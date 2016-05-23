@@ -36,7 +36,6 @@ public class ProgramaController {
 	public void limparDados(){
 		prog = new ProgramaBean();
 		descricaoBusca = new String();
-		tipo = new String();
 		tipoBuscar = 1;
         listaProgramas = pDao.listarProgramas();
 	}

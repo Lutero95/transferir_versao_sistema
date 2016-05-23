@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 
@@ -43,7 +44,7 @@ public class CboDAO {
 	
 	public List<CboBean> listarCbo(){
 		List<CboBean> lista = new ArrayList<>();
-		String sql = "select id , descricao, codempresa from hosp.cbo";
+		String sql = "select id , descricao, codempresa from hosp.cbo order by id ";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -97,5 +98,82 @@ public class CboDAO {
 			}
 		}
 		return cbo;
+	}
+	
+	public List<CboBean> listarCboBusca(String descricao,
+			Integer tipo) {
+		List<CboBean> lista = new ArrayList<>();
+		String sql = "select id , descricao, codempresa from hosp.cbo";
+		if (tipo == 1) {
+			sql += " where descricao LIKE ? order by id";
+		}
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				CboBean cbo = new CboBean();
+				cbo.setCodCbo(rs.getInt("id"));
+				cbo.setDescCbo(rs.getString("descricao"));
+				//cbo.setCodEmpresa(rs.getInt("codempresa")); COD EMPRESA ?
+
+				lista.add(cbo);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+		return lista;
+	}
+	
+	public Boolean alterarCbo(CboBean cbo) throws ProjetoException {
+		String sql = "update hosp.cbo set descricao = ?, codempresa = ? where id = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, cbo.getDescCbo().toUpperCase());
+			stmt.setInt(2, 0);//COD EMPRESA ?
+			stmt.setInt(3, cbo.getCodCbo());
+			stmt.executeUpdate();
+			con.commit();
+			return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+	
+	public Boolean excluirCbo(CboBean cbo) throws ProjetoException {
+		String sql = "delete from hosp.cbo where id = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, cbo.getCodCbo());
+			stmt.execute();
+			con.commit();
+			return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
 	}
 }

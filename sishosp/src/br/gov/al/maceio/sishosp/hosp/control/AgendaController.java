@@ -1,7 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
@@ -11,6 +13,8 @@ public class AgendaController {
 	private GrupoBean grupo;
 	private ProgramaBean programa;
 	private TipoAtendimentoBean tipoAt;
+	private ProfissionalBean profissional;
+	private EquipeBean equipe;
 	private boolean prontoGravar;
 	
 
@@ -19,6 +23,8 @@ public class AgendaController {
 		this.grupo = null;//new GrupoBean();
 		this.programa = null;//new ProgramaBean();
 		this.tipoAt = null;//new TipoAtendimentoBean();
+		this.profissional = null;
+		this.equipe = null;
 		this.prontoGravar = false;
 	}
 	
@@ -27,7 +33,25 @@ public class AgendaController {
 		programa = new ProgramaBean();
 		paciente = new PacienteBean();
 		tipoAt = new TipoAtendimentoBean();
+		this.profissional = new ProfissionalBean();
+		this.equipe = new EquipeBean();
 		this.prontoGravar = false;
+	}
+
+	public ProfissionalBean getProfissional() {
+		return profissional;
+	}
+
+	public void setProfissional(ProfissionalBean profissional) {
+		this.profissional = profissional;
+	}
+
+	public EquipeBean getEquipe() {
+		return equipe;
+	}
+
+	public void setEquipe(EquipeBean equipe) {
+		this.equipe = equipe;
 	}
 
 	public GrupoBean getGrupo() {

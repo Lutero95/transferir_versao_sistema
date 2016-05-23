@@ -40,7 +40,6 @@ public class GrupoController {
 		this.listaGrupos = new ArrayList<>();
 		this.listaGruposProgramas = new ArrayList<>();
 		this.descricaoBusca = new String();
-		this.tipo = new String();
 		listaGrupos = gDao.listarGrupos();
 	}
 

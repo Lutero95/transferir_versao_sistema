@@ -13,7 +13,7 @@
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
-			<h3>GERENCIAMENTO DE PROFISSIONAL</h3>
+			<h3>GERENCIAMENTO DE CBO</h3>
 			<br />
 		</div>
 		<h:form id="frmmensagem"
@@ -30,7 +30,7 @@
 					style="font-size:12px !important;">
 					<p:outputPanel autoUpdate="true">
 						<p:outputLabel value="Pesquisar por: " />
-						<p:selectOneMenu value="#{ProfissionalController.tipoBuscar}"
+						<p:selectOneMenu value="#{CboController.tipoBuscar}"
 							required="true"
 							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
 							requiredMessage="Informe o diretório da página.">
@@ -40,25 +40,25 @@
 
 						<p:inputText id="campoBuscanome"
 							style="height:28px;margin-top:-6px;margin-left:16px;"
-							value="#{ProfissionalController.descricaoBusca}" />
+							value="#{CboController.descricaoBusca}" />
 
 						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
 							styleClass="btn btn-info" style="height:30px; margin-left:10px;"
-							action="#{ProfissionalController.buscarProfissional()}"
+							action="#{CboController.buscarCbo()}"
 							update=":frmmensagem:tabela, :frmmensagem:growl" />
 						
 						<p:commandButton value="Limpar Busca" icon="limpar"
 							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
-							actionListener="#{ProfissionalController.limparDados()}"
+							actionListener="#{CboController.limparDados()}"
 							style="margin-left:20px" />
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							actionListener="#{ProfissionalController.limparDados()}"
-							action="/pages/sishosp/cadastroProfissional.faces" icon="add"
+							actionListener="#{CboController.limparDados()}"
+							action="/pages/sishosp/cadastroCbo.faces" icon="add"
 							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
 							<f:setPropertyActionListener value="I"
-								target="#{ProfissionalController.tipo}" />
+								target="#{CboController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>
 
@@ -82,52 +82,35 @@
 				</p:panelGrid>
 
 				<p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover"
-					id="tabela" style="margin-top:20px;" resizableColumns="true"
-					value="#{ProfissionalController.listaProfissional}" var="tab"
+					id="tabela" style="margin-top:20px;"
+					value="#{CboController.listaCbo}" var="tab"
 					paginator="true" paginatorPosition="bottom" rows="12">
 
 					<p:column headerText="Cód." style="font-weight:bold;width:5%;">
-						<h:outputText value="#{tab.idProfissional}" />
+						<h:outputText value="#{tab.codCbo}" />
 					</p:column>
 
-					<p:column headerText="Profissional" style="font-weight:bold;">
-						<h:outputText value="#{tab.descricaoProf}" />
+					<p:column headerText="Descrição" style="font-weight:bold;">
+						<h:outputText value="#{tab.descCbo}" />
 					</p:column>
 					
-					<p:column headerText="Programa" style="font-weight:bold;">
-						<h:outputText value="#{tab.programa.descPrograma}" />
-					</p:column>
-					
-					<p:column headerText="Especialidade" style="font-weight:bold;">
-						<h:outputText value="#{tab.especialidade.descEspecialidade}" />
-					</p:column>
-					
-					<p:column headerText="CNS" style="font-weight:bold;">
-						<h:outputText value="#{tab.cns}"/>
-					</p:column>
-					
-					<p:column headerText="Ativo" style="font-weight:bold;">
-						<h:outputText value="Sim" rendered="#{tab.ativo==true}"/>
-						<h:outputText value="Não" rendered="#{tab.ativo==false}"/>
-					</p:column>
-	
 					<p:column headerText="Ações" width="15%">
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroProfissional.faces">
+									action="/pages/sishosp/cadastroCbo.faces">
 									<f:setPropertyActionListener value="#{tab}"
-										target="#{ProfissionalController.profissional}" />
+										target="#{CboController.cbo}" />
 
 									<f:setPropertyActionListener value="A"
-										target="#{ProfissionalController.tipo}" />
+										target="#{CboController.tipo}" />
 								</p:menuitem>
 
 								<p:menuitem value="Excluir" icon="trash"
 									onclick="PF('dialogAtencao').show()">
 
 									<f:setPropertyActionListener value="#{tab}"
-										target="#{ProfissionalController.profissional}" />
+										target="#{CboController.cbo}" />
 								</p:menuitem>
 							</p:splitButton>
 						</center>
@@ -143,12 +126,12 @@
 				<h:panelGrid columns="1">
 
 					<div class="alert alert-warning" role="alert">Deseja excluir
-						esse profissional?</div>
+						esse cbo?</div>
 
 				</h:panelGrid>
 				<center>
 					<p:commandButton value="Sim"
-						action="#{ProfissionalController.excluirProfissional()}"
+						action="#{CboController.excluirCbo()}"
 						icon="ui-icon-check" style="font-size:14px;"
 						update=":frmmensagem:tabela, :frmmensagem:growl">
 					</p:commandButton>

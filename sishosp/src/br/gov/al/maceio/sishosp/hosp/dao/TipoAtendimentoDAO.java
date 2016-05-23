@@ -28,19 +28,19 @@ public class TipoAtendimentoDAO {
 			ps.setString(1, tipo.getDescTipoAt().toUpperCase());
 			ps.setBoolean(2, tipo.isPrimeiroAt());
 			ps.setBoolean(3, tipo.isEquipe());
-			ps.setInt(4, 0);//cod empresa ?
-			ps.execute();
-			
+			ps.setInt(4, 0);// cod empresa ?
+			//ps.execute();
+
 			ResultSet rs = ps.executeQuery();
 			con.commit();
 			int idTipo = 0;
-			if(rs.next()) {
+			if (rs.next()) {
 				idTipo = rs.getInt("id");
-				System.out.println("retorno "+ idTipo);
-				insereTipoAtendimentoGrupo(idTipo, tipo.getGrupo().getIdGrupo());
+				System.out.println("retorno " + idTipo);
+				insereTipoAtendimentoGrupo(idTipo, tipo.getGrupo());
 
 			}
-			
+
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -53,18 +53,20 @@ public class TipoAtendimentoDAO {
 			}
 		}
 	}
-	
-	public void insereTipoAtendimentoGrupo (int idTipo, int idGrupo){
+
+	public void insereTipoAtendimentoGrupo(int idTipo,
+			List<GrupoBean> listaGrupo) {
 		String sql = "insert into hosp.tipoatendimento_grupo (codgrupo, codtipoatendimento) values(?,?);";
 		try {
-			System.out.println("VAI CADASTRAR TIPO ATEN");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			ps.setInt(1, idGrupo);
-			ps.setInt(2, idTipo);
-			
-			ps.execute();
-			con.commit();
+			for (GrupoBean grupoBean : listaGrupo) {
+				ps.setInt(1, grupoBean.getIdGrupo());
+				ps.setInt(2, idTipo);
+
+				ps.execute();
+				con.commit();
+			}
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		} finally {
@@ -77,11 +79,11 @@ public class TipoAtendimentoDAO {
 		}
 	}
 
-	/*public List<TipoAtendimentoBean> listarTipoAtPorGrupo(int codGrupo) {
+	public List<TipoAtendimentoBean> listarTipoAtPorGrupo(int codGrupo) {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
-		String sql = "select t.id, t.codgrupo, t.desctipoatendimento, t.primeiroatendimento, t.codempresa, t.equipe_programa"
-				+ " from hosp.grupo g, hosp.tipoatendimento t"
-				+ " where g.id_grupo = ? and g.id_grupo = t.codgrupo";
+		String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa"
+				+ " from hosp.grupo g, hosp.tipoatendimento t, hosp.tipoatendimento_grupo tg"
+				+ " where ? = tg.codgrupo and t.id = tg.codtipoatendimento group by 1, 2, 3, 4, 5;";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -90,11 +92,11 @@ public class TipoAtendimentoDAO {
 
 			while (rs.next()) {
 				TipoAtendimentoBean tipo = new TipoAtendimentoBean();
-
-				tipo.setDescTipoAt(rs.getString(3));
-				tipo.setPrimeiroAt(rs.getBoolean(4));
-				tipo.setCodEmpresa(rs.getInt(5));
-				tipo.setEquipe(rs.getBoolean(6));
+				tipo.setIdTipo(rs.getInt("id"));
+				tipo.setDescTipoAt(rs.getString("desctipoatendimento"));
+				tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
+				// tipo.setCodEmpresa(rs.getInt("codempresa"));//COD EMPRESA ?
+				tipo.setEquipe(rs.getBoolean("equipe_programa"));
 
 				lista.add(tipo);
 			}
@@ -109,7 +111,7 @@ public class TipoAtendimentoDAO {
 			}
 		}
 		return lista;
-	}*/
+	}
 
 	public List<TipoAtendimentoBean> listarTipoAt() {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
@@ -229,16 +231,18 @@ public class TipoAtendimentoDAO {
 			}
 		}
 	}
-	
+
 	public boolean alterarTipoGrupo(TipoAtendimentoBean tipo) {
 		String sql = "update hosp.tipoatendimento set codgrupo = ? where codtipoatendimento = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			ps.setInt(1, tipo.getGrupo().getIdGrupo());
-			ps.setInt(2, tipo.getIdTipo());
-			stmt.executeUpdate();
-			con.commit();
+			for (GrupoBean grupo : tipo.getGrupo()) {
+				ps.setInt(1, grupo.getIdGrupo());
+				ps.setInt(2, tipo.getIdTipo());
+				stmt.executeUpdate();
+				con.commit();
+			}
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -250,8 +254,9 @@ public class TipoAtendimentoDAO {
 			}
 		}
 	}
-	
-	public Boolean excluirTipo(TipoAtendimentoBean tipo) throws ProjetoException {
+
+	public Boolean excluirTipo(TipoAtendimentoBean tipo)
+			throws ProjetoException {
 		String sql = "delete from hosp.tipoatendimento where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -271,7 +276,7 @@ public class TipoAtendimentoDAO {
 			}
 		}
 	}
-	
+
 	public void excluirTipoGrupo(int idTipo) throws ProjetoException {
 		String sql = "delete from hosp.tipoatendimento_grupo where codtipoatendimento = ?";
 		try {
@@ -290,5 +295,5 @@ public class TipoAtendimentoDAO {
 			}
 		}
 	}
-	
+
 }

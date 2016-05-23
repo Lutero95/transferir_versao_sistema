@@ -97,6 +97,15 @@ public class ProcedimentoBean {
 	public void setCodEmpresa(Integer codEmpresa) {
 		this.codEmpresa = codEmpresa;
 	}
+
+	@Override
+	public String toString() {
+		return "ProcedimentoBean [idProc=" + idProc + ", codProc=" + codProc
+				+ ", nomeProc=" + nomeProc + ", apac=" + apac + ", bpi=" + bpi
+				+ ", auditivo=" + auditivo + ", tipoExameAuditivo="
+				+ tipoExameAuditivo + ", utilizaEquipamento="
+				+ utilizaEquipamento + ", codEmpresa=" + codEmpresa + "]";
+	}
 	
 }
 

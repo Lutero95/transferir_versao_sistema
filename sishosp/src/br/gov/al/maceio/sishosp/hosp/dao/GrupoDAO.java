@@ -71,6 +71,9 @@ public class GrupoDAO {
                 System.exit(1);
             }
         }
+        for (GrupoBean grupoBean : lista) {
+			System.out.println(grupoBean.getDescGrupo());
+		}
 		return lista;
 	}
 	

@@ -134,7 +134,7 @@ public class ProgramaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, prog.getDescPrograma());
+			stmt.setString(1, prog.getDescPrograma().toUpperCase());
 			stmt.setDouble(2, prog.getCodFederal());
 			stmt.setInt(3, prog.getIdPrograma());
 			stmt.executeUpdate();

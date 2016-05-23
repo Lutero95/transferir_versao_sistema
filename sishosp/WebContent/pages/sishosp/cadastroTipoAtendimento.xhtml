@@ -42,28 +42,27 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<h:outputLabel for="inputg" value="Grupo: "
+								<h:outputLabel for="inputg" value="Grupos: "
 									styleClass="col-sm-3 control-label" />
+									<p:commandButton
+										style="position:absolute; top:130px; left:163px;"
+										onclick="PF('dlgConsuGrupo').show();"
+										icon="ui-icon-plus" />
 								<div class="col-sm-6">
+
 									<p:dataTable emptyMessage="Sem Dados"
 										styleClass="table table-hover" id="tabela"
-										style="margin-top:20px;" selectionMode="single"
-										selection="#{TipoAtendimentoController.tipo.grupo}"
-										rowKey="#{tab.idGrupo}" value="#{GrupoController.listaGrupos}"
+										style="margin-top:20px;" value="#{TipoAtendimentoController.tipo.grupo}"
 										var="tab" paginator="true" paginatorPosition="bottom"
 										rows="12" resizableColumns="true">
 
-										<p:column headerText="Cód." style="font-weight:bold;width:20%;">
+										<p:column headerText="Cód."
+											style="font-weight:bold;width:20%;">
 											<h:outputText value="#{tab.idGrupo}" />
 										</p:column>
 
 										<p:column headerText="Nome" style="font-weight:bold;">
 											<h:outputText value="#{tab.descGrupo}" />
-										</p:column>
-
-										<p:column headerText="Qtd. de Frequência: "
-											style="font-weight:bold;">
-											<h:outputText value="#{tab.qtdFrequencia}" />
 										</p:column>
 
 									</p:dataTable>
@@ -106,11 +105,41 @@
 						value="Alterar" styleClass="btn btn-info"
 						rendered="#{TipoAtendimentoController.tipoS  == 'A'}" />
 				</p:panelGrid>
+				
+				<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"
+			modal="true" width="550px">
+			<h:form id="formConsuGrop">
+				<p:dataTable value="#{GrupoController.listaGrupos}"
+					id="dtGrupo" resizableColumns="true" var="grupo"
+					emptyMessage="Não existe nenhum grupo cadastrado!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{grupo.idGrupo}" />
+					</p:column>
+					<p:column headerText="GRUPO">
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</p:column>
+					<p:column headerText="QTD. FREQ>">
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</p:column>
 
-
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton
+							update=":formCADU:pnlCadTiAt"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuGrupo').hide();"
+							action="#{TipoAtendimentoController.tipo.addGrupoLista()}">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{TipoAtendimentoController.tipo.grupoParaAdd}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
 
 			</h:form>
 		</div>
+		
+		
 
 	</ui:define>
 </ui:composition>
