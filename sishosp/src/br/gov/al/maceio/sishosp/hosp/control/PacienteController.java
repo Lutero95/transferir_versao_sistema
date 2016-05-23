@@ -209,7 +209,7 @@ public class PacienteController {
 
 	public void buscarPaciente() throws ProjetoException, SQLException {
 		PacienteDAO udao = new PacienteDAO();
-		if(tipoBuscar.isEmpty()||descricaoParaBuscar.isEmpty()){
+		if(tipoBuscar.equals("VAZIO")||descricaoParaBuscar.isEmpty()){
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Escolha uma opção válida e insira uma descrição!", "Insira os dados");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}else{

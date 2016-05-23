@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="../../template/templatepagsistemas.xhtml">
+
+	<ui:define name="body">
+		<!-- INICIO DO FORMULARIO -->
+		<div class="col-md-8">
+			<p:outputLabel value="CADASTRO DE EQUIPE"
+				rendered="#{EquipeController.tipo == 'I'}"></p:outputLabel>
+			<p:outputLabel value="ALTERAR EQUIPE"
+				rendered="#{EscolaController.tipo == 'A'}"></p:outputLabel>
+			<br />
+			<h:form>
+				<p:commandButton value="Voltar"
+					style="position:relative; right:18%; width:100px; " icon="btvoltar"
+					action="/pages/sishosp/gerenciarEquipe.faces"></p:commandButton>
+			</h:form>
+
+			<h:form class="form-horizontal" id="formCADU">
+
+				<p:growl id="message" />
+				<p:panel id="pnlCadEquipe"
+					style="height:auto; width:850px; background-color: #F5F5F5;">
+					<!--  <p:growl id="growl" showDetail="false" /> -->
+					<p:tabView activeIndex="#{EquipeController.abaAtiva}"
+						style="height:auto; width:800px">
+						<p:tab title="DADOS EQUIPE">
+							
+							<div class="form-group">
+								<h:outputLabel for="inputname" value="Descrição da Equipe: "
+									styleClass="col-sm-3 control-label" />
+								<div class="col-sm-6">
+									<h:inputText value="#{EquipeController.equipe.descEquipe}"
+										class="form-control" id="inputname" />
+								</div>
+							</div>
+						</p:tab>
+
+					</p:tabView>
+
+				</p:panel>
+				<!-- FIM DO FORMULARIO -->
+				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+					<h:commandButton action="#{EquipeController.gravarEquipe()}"
+						update=":formCADU:message,:formCADU:pnlCadEquipe,:formCadu"
+						value="Cadastrar" styleClass="btn btn-sm btn-success"
+						rendered="#{EquipeController.tipo == 'I'}" />
+
+
+					<h:commandButton action="#{EquipeController.alterarEquipe()}"
+						update=":formCADU:message,:formCADU:pnlCadEquipe,:formCadu"
+						value="Alterar" styleClass="btn btn-info"
+						rendered="#{EquipeController.tipo  == 'A'}" />
+				</p:panelGrid>
+
+
+
+			</h:form>
+		</div>
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,27 +1,36 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TipoAtendimentoBean {
 	
 	private Integer idTipo;
 	private String descTipoAt;
-	private Integer idGrupo;
 	private boolean equipe;
 	private boolean primeiroAt;
 	private Integer codEmpresa;
+	private GrupoBean grupoParaAdd;
+	
+	private List<GrupoBean> grupo;
 	
 	public TipoAtendimentoBean(){
+		this.grupo = new ArrayList<GrupoBean>();
+		this.descTipoAt = new String();
+		this.equipe = false;
+		this.primeiroAt = false;
+		this.grupoParaAdd = new GrupoBean();
 		
 	}
 	
-	public TipoAtendimentoBean(Integer idTipo, String descTipoAt, Integer idGrupo,
-			boolean equipe, boolean primeiroAt, Integer codEmpresa) {
-		this.idTipo = idTipo;
-		this.descTipoAt = descTipoAt;
-		this.idGrupo = idGrupo;
-		this.equipe = equipe;
-		this.primeiroAt = primeiroAt;
-		this.codEmpresa = codEmpresa;
+	public List<GrupoBean> getGrupo() {
+		return grupo;
 	}
+
+	public void setGrupo(List<GrupoBean> grupo) {
+		this.grupo = grupo;
+	}
+
 	public String getDescTipoAt() {
 		return descTipoAt;
 	}
@@ -29,14 +38,6 @@ public class TipoAtendimentoBean {
 		this.descTipoAt = descTipoAt;
 	}
 	
-	public Integer getIdGrupo() {
-		return idGrupo;
-	}
-
-	public void setIdGrupo(Integer idGrupo) {
-		this.idGrupo = idGrupo;
-	}
-
 	public boolean isEquipe() {
 		return equipe;
 	}
@@ -64,6 +65,18 @@ public class TipoAtendimentoBean {
 
 	public void setCodEmpresa(Integer codEmpresa) {
 		this.codEmpresa = codEmpresa;
+	}
+	
+	public GrupoBean getGrupoParaAdd() {
+		return grupoParaAdd;
+	}
+
+	public void setGrupoParaAdd(GrupoBean grupoParaAdd) {
+		this.grupoParaAdd = grupoParaAdd;
+	}
+
+	public void addGrupoLista(){
+		this.grupo.add(grupoParaAdd);
 	}
 
 }

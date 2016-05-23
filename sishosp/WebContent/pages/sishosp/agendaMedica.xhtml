@@ -68,7 +68,43 @@
 					<p:commandButton id="btBusTi" value="Buscar"
 						disabled="#{AgendaController.grupo==null}"
 						onclick="PF('dlgConsuTipoAt').show();" />
+
+					<h:outputLabel for="prof" value="Profissional:"
+						rendered="#{AgendaController.tipoAt.equipe==false}" />
+					<p:outputPanel id="outProf"
+						rendered="#{AgendaController.tipoAt.equipe==false}">
+						<p:inputText id="codProf"
+							value="#{AgendaController.profissional.idProfissional}"
+							readonly="true" style="width: 40px" />
+						<p:inputText id="descProf"
+							value="#{AgendaController.profissional.descricaoProf}"
+							readonly="true" style="width: 300px" />
+					</p:outputPanel>
+					<p:commandButton id="btBusProf" value="Buscar"
+						disabled="#{AgendaController.tipoAt==null}"
+						onclick="PF('dlgConsuProf').show();"
+						rendered="#{AgendaController.tipoAt.equipe==false}" />
+
+					<h:outputLabel for="equipe" value="Equipe:"
+						rendered="#{AgendaController.tipoAt.equipe==true}" />
+					<p:outputPanel id="outEquipe"
+						rendered="#{AgendaController.tipoAt.equipe==true}">
+						<p:inputText id="codEquipe"
+							value="#{AgendaController.equipe.codEquipe}" readonly="true"
+							style="width: 40px" />
+						<p:inputText id="descEquipe"
+							value="#{AgendaController.equipe.descEquipe}" readonly="true"
+							style="width: 300px" />
+					</p:outputPanel>
+					<p:commandButton id="btBusEqui" value="Buscar"
+						disabled="#{AgendaController.tipoAt==null}"
+						onclick="PF('dlgConsuEquipe').show();"
+						rendered="#{AgendaController.tipoAt.equipe==true}" />
 				</p:panelGrid>
+
+
+
+
 
 				<p:panelGrid columns="2" styleClass="semBorda">
 					<h:outputLabel for="obs" value="Obs.:" />
@@ -157,16 +193,16 @@
 
 				<center>
 					<p:panelGrid columns="4" styleClass="semBorda">
-						
+
 						<p:commandButton value="Gravar" icon="confirmar"
 							disabled="#{!AgendaController.prontoGravar}" />
-						
+
 						<p:commandButton value="Consultar" icon="buscar" />
-						
+
 						<p:commandButton value="Limpar" icon="limpar"
 							actionListener="#{AgendaController.limparDados()}"
 							update=":formAgendaMedica" />
-						
+
 						<p:commandButton value="Sair" icon="btlogout"
 							update=":formAgendaMedica"
 							actionListener="#{AgendaController.limparDados()}"
@@ -248,7 +284,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Programa" widgetVar="dlgConsuProg"
+		<p:dialog header="Consulta Programas" widgetVar="dlgConsuProg"
 			modal="true" width="500px">
 			<h:form id="formConsuProg">
 				<p:dataTable value="#{ProgramaController.listaProgramas}" var="prog"
@@ -274,7 +310,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Grupo" widgetVar="dlgConsuGrop"
+		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrop"
 			modal="true" width="550px">
 			<h:form id="formConsuGrop">
 				<p:dataTable value="#{GrupoController.listaGruposProgramas}"
@@ -318,11 +354,65 @@
 					</p:column>
 
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":formAgendaMedica:outTipoAt"
+						<p:commandButton
+							update=":formAgendaMedica:outTipoAt, :formAgendaMedica"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuTipoAt').hide();">
 							<f:setPropertyActionListener value="#{tipo}"
 								target="#{AgendaController.tipoAt}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consulta Equipes" widgetVar="dlgConsuEquipe"
+			modal="true" width="550px">
+			<h:form id="formConsuEquipe">
+				<p:dataTable value="#{EquipeController.listaEquipe}" id="dtEquipe"
+					resizableColumns="true" var="equipe"
+					emptyMessage="Não existe nenhuma equipe cadastrada!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{equipe.codEquipe}" />
+					</p:column>
+					<p:column headerText="Descrição">
+						<p:outputLabel value="#{equipe.descEquipe}" />
+					</p:column>
+
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton update=":formAgendaMedica:outEquipe"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuEquipe').hide();">
+							<f:setPropertyActionListener value="#{equipe}"
+								target="#{AgendaController.equipe}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProf"
+			modal="true" width="550px">
+			<h:form id="formConsuProf">
+				<p:dataTable value="#{ProfissionalController.listaProfissional}"
+					id="dtTipoAt" resizableColumns="true" var="profi"
+					emptyMessage="Não existe nenhum tipo cadastrado!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{profi.idProfissional}" />
+					</p:column>
+					<p:column headerText="Profissional">
+						<p:outputLabel value="#{profi.descricaoProf}" />
+					</p:column>
+					<p:column headerText="Especialidade">
+						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+					</p:column>
+
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton update=":formAgendaMedica:outProf"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuProf').hide();">
+							<f:setPropertyActionListener value="#{profi}"
+								target="#{AgendaController.profissional}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>

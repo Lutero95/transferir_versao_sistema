@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="../../template/templatepagsistemas.xhtml">
+
+	<ui:define name="body">
+		<!-- INICIO DO FORMULARIO -->
+		<div class="col-md-8">
+			<p:outputLabel value="CADASTRO DE TIPO DE ATENDIMENTO"
+				rendered="#{GrupoController.tipo == 'I'}"></p:outputLabel>
+			<p:outputLabel value="ALTERAR TIPO DE ATENDIMENTO"
+				rendered="#{GrupoController.tipo == 'A'}"></p:outputLabel>
+			<br />
+			<h:form>
+				<p:commandButton value="Voltar"
+					style="position:relative; right:18%; width:100px; " icon="btvoltar"
+					action="/pages/sishosp/gerenciarTipoAtendimento.faces"></p:commandButton>
+			</h:form>
+
+			<h:form class="form-horizontal" id="formCADU">
+
+				<p:growl id="message" />
+				<p:panel id="pnlCadTiAt"
+					style="height:auto; width:850px; background-color: #F5F5F5;">
+					<p:tabView activeIndex="#{TipoAtendimentoController.abaAtiva}"
+						style="height:auto; width:800px">
+						<p:tab title="DADOS TIPO DE ATENDIMENTO">
+							<div class="form-group">
+								<h:outputLabel for="inputdesc" value="Descrição: "
+									styleClass="col-sm-3 control-label" />
+								<div class="col-sm-6">
+									<h:inputText
+										value="#{TipoAtendimentoController.tipo.descTipoAt}"
+										class="form-control" id="inputdesc" />
+
+								</div>
+							</div>
+							<div class="form-group">
+								<h:outputLabel for="inputg" value="Grupos: "
+									styleClass="col-sm-3 control-label" />
+									<p:commandButton
+										style="position:absolute; top:130px; left:163px;"
+										onclick="PF('dlgConsuGrupo').show();"
+										icon="ui-icon-plus" />
+								<div class="col-sm-6">
+
+									<p:dataTable emptyMessage="Sem Dados"
+										styleClass="table table-hover" id="tabela"
+										style="margin-top:20px;" value="#{TipoAtendimentoController.tipo.grupo}"
+										var="tab" paginator="true" paginatorPosition="bottom"
+										rows="12" resizableColumns="true">
+
+										<p:column headerText="Cód."
+											style="font-weight:bold;width:20%;">
+											<h:outputText value="#{tab.idGrupo}" />
+										</p:column>
+
+										<p:column headerText="Nome" style="font-weight:bold;">
+											<h:outputText value="#{tab.descGrupo}" />
+										</p:column>
+
+									</p:dataTable>
+								</div>
+							</div>
+							<div class="form-group">
+								<h:outputLabel for="inputg" value="Primeiro Atendimento: "
+									styleClass="col-sm-3 control-label" />
+								<div class="col-sm-6">
+									<p:selectBooleanCheckbox
+										value="#{TipoAtendimentoController.tipo.primeiroAt}">
+									</p:selectBooleanCheckbox>
+								</div>
+							</div>
+							<div class="form-group">
+								<h:outputLabel for="inputg" value="Equipe: "
+									styleClass="col-sm-3 control-label" />
+								<div class="col-sm-6">
+									<p:selectBooleanCheckbox
+										value="#{TipoAtendimentoController.tipo.equipe}">
+									</p:selectBooleanCheckbox>
+								</div>
+							</div>
+						</p:tab>
+
+					</p:tabView>
+
+				</p:panel>
+				<!-- FIM DO FORMULARIO -->
+				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+					<h:commandButton action="#{TipoAtendimentoController.gravarTipo()}"
+						update=":formCADU:message,:formCADU:pnlCadTiAt,:formCadu"
+						value="Cadastrar" styleClass="btn btn-sm btn-success"
+						rendered="#{TipoAtendimentoController.tipoS == 'I'}" />
+
+
+					<h:commandButton
+						action="#{TipoAtendimentoController.alterarTipo()}"
+						update=":formCADU:message,:formCADU:pnlCadTiAt,:formCadu"
+						value="Alterar" styleClass="btn btn-info"
+						rendered="#{TipoAtendimentoController.tipoS  == 'A'}" />
+				</p:panelGrid>
+				
+				<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"
+			modal="true" width="550px">
+			<h:form id="formConsuGrop">
+				<p:dataTable value="#{GrupoController.listaGrupos}"
+					id="dtGrupo" resizableColumns="true" var="grupo"
+					emptyMessage="Não existe nenhum grupo cadastrado!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{grupo.idGrupo}" />
+					</p:column>
+					<p:column headerText="GRUPO">
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</p:column>
+					<p:column headerText="QTD. FREQ>">
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</p:column>
+
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton
+							update=":formCADU:pnlCadTiAt"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuGrupo').hide();"
+							action="#{TipoAtendimentoController.tipo.addGrupoLista()}">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{TipoAtendimentoController.tipo.grupoParaAdd}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+			</h:form>
+		</div>
+		
+		
+
+	</ui:define>
+</ui:composition>
+</html>
