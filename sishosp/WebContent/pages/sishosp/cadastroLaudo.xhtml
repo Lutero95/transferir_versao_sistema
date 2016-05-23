@@ -1,0 +1,452 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:composition template="../../template/templatepagsistemas.xhtml">
+
+        <ui:define name="body">
+               <!-- INICIO DO FORMULARIO -->
+    <div class="col-md-8">
+        <p:outputLabel value="CADASTRO DE LAUDO" rendered="#{LaudoController.tipo == 'I'}"></p:outputLabel>
+        <p:outputLabel value="ALTERAR Laudo" rendered="#{LaudoController.tipo == 'A'}"></p:outputLabel>
+        <br />
+        <h:form> <p:commandButton value="Voltar"
+			style="position:relative; right:18%; width:100px; " icon="btvoltar"
+			action ="/pages/sishosp/gerenciarRaca.faces"></p:commandButton>  </h:form>
+        
+ <h:form id="formLaudo">
+			<p:panel>
+			    <p:tabView activeIndex="#{LaudoController.abaAtiva}">
+                <p:tab title="LAUDO">
+				<p:panelGrid columns="3" styleClass="semBorda">
+					<h:outputLabel for="pac" value="Paciente:" />
+					<p:outputPanel id="outPacie">
+						<p:inputText id="codPac"
+							value="#{AgendaController.paciente.id_paciente}" readonly="true"
+							style="width: 40px" />
+						<p:inputText id="pac" value="#{AgendaController.paciente.nome}"
+							readonly="true" style="width: 300px" />
+					</p:outputPanel>
+					<p:commandButton id="btBusPa" value="Buscar"
+						onclick="PF('dlgConsuPac').show();" />
+
+					<h:outputLabel for="prog" value="Programa:" />
+					<p:outputPanel id="outProg">
+						<p:inputText id="codProg"
+							value="#{AgendaController.programa.idPrograma}" readonly="true"
+							style="width: 40px" />
+						<p:inputText id="prog"
+							value="#{AgendaController.programa.descPrograma}" readonly="true"
+							style="width: 300px" />
+					</p:outputPanel>
+					<p:commandButton id="btBusPr" value="Buscar"
+						disabled="#{AgendaController.paciente==null}"
+						onclick="PF('dlgConsuProg').show();" />
+
+					<h:outputLabel for="grupo" value="Grupo:" />
+					<p:outputPanel id="outGrupo">
+						<p:inputText id="codGrupo"
+							value="#{AgendaController.grupo.idGrupo}" readonly="true"
+							style="width: 40px" />
+						<p:inputText id="grupo"
+							value="#{AgendaController.grupo.descGrupo}" readonly="true"
+							style="width: 300px" />
+					</p:outputPanel>
+					<p:commandButton id="btBusGr" value="Buscar"
+						disabled="#{AgendaController.programa==null}"
+						onclick="PF('dlgConsuGrop').show();" />
+
+					<h:outputLabel for="tipoAt" value="Profissional:" />
+					<p:outputPanel id="outProfissonal">
+						<p:inputText id="codProfissional"
+							value="#{AgendaController.tipoAt.idTipo}" readonly="true"
+							style="width: 40px" />
+						<p:inputText id="Profissonal"
+							value="#{AgendaController.tipoAt.descTipoAt}" readonly="true"
+							style="width: 300px" />
+					</p:outputPanel>
+					<p:commandButton id="btBusPro" value="Buscar"
+						disabled="#{AgendaController.grupo==null}"
+						onclick="PF('dlgConsuTipoAt').show();" />
+						
+				    <h:outputLabel for="tipoAt" value="Procedimento:" />
+					<p:outputPanel id="outProcedimento">
+						<p:inputText id="codProcedimento"
+							value="#{AgendaController.tipoAt.idTipo}" readonly="true"
+							style="width: 40px" />
+						<p:inputText id="Procedimento"
+							value="#{AgendaController.tipoAt.descTipoAt}" readonly="true"
+							style="width: 300px" />
+					</p:outputPanel>
+					<p:commandButton id="btBusProce" value="Buscar"
+						disabled="#{AgendaController.grupo==null}"
+						onclick="PF('dlgConsuTipoAt').show();" />
+				</p:panelGrid>
+
+				<p:panelGrid columns="4" styleClass="semBorda">
+				
+						<p:outputPanel>
+						<h:outputLabel for="cnsPac" value="CNS" />
+						<br />
+					   	<p:inputText id="codCns"
+							value="CNS" readonly="false"/>
+					    </p:outputPanel>
+					
+							<p:outputPanel>
+						<h:outputLabel for="cpfPac" value="CPF" />
+						<br />
+					   	<p:inputText id="codCpf"
+							value="HAHA" readonly="false"/>
+					</p:outputPanel>
+				
+					<p:outputPanel>
+						<h:outputLabel for="dataAte" value="Data para Solicitação" />
+						<br />
+						<p:calendar id="data" locale="pt" navigator="true" mask="true"
+							pattern="dd/MM/yyyy" />
+					</p:outputPanel>
+					
+					<p:outputPanel>
+					<p:outputLabel value="Recurso:"/>
+                 	<p:selectOneRadio id="recursos" style="border: double;"  required="false" layout="pageDirection" 
+													requiredMessage="Recursos	"
+													value="#{PacienteController.paciente.associado}">
+												
+													<f:selectItem itemLabel="Faec" itemValue="F" />
+													<f:selectItem itemLabel="Mac" itemValue="M" />
+													<!--  <p:ajax update="pgSetor2"></p:ajax>-->
+												
+												</p:selectOneRadio>
+                  </p:outputPanel>
+	
+				</p:panelGrid>
+				
+				<p:panelGrid columns="3" styleClass="semBorda">
+				
+				<p:outputPanel>
+						<h:outputLabel for="apac" value="APAC" />
+						<br />
+					   	<p:inputText id="codApac"
+							value="APAC" readonly="false"/>
+					    </p:outputPanel>
+					    
+					   <p:outputPanel>
+						<h:outputLabel for="bpi" value="BPI" />
+						<br />
+					   	<p:inputText id="codBpi"
+							value="BPI" readonly="false"/>
+					    </p:outputPanel>
+					    
+					    
+					    <p:outputPanel style="margin-top: 27px;">
+					          <h:outputLabel for="unidade"  value="Unidade:" />
+         
+                     <p:selectOneMenu style="margin-left: 20px;" value="#{PacienteController.paciente.estadoCivil}" disable="true" id="unidade">
+                     
+                       <f:selectItem itemLabel="Selecione" itemValue="" />
+                       <f:selectItem itemLabel="UL" itemValue="S" />
+                       <f:selectItem itemLabel="AL" itemValue="C" />
+                                            
+                     </p:selectOneMenu>
+                         </p:outputPanel>	
+                         			
+				</p:panelGrid>
+				
+				
+				<p:panelGrid columns="3" styleClass="semBorda">
+				
+						<p:outputPanel>
+					
+					<p:outputLabel value="Situação:"/>
+         
+                 	<p:selectOneRadio id="situacao" style="border: double;"  required="false" layout="pageDirection" 
+													requiredMessage="Situação"
+													value="#{PacienteController.paciente.cartorio}">
+												
+													<f:selectItem itemLabel="Pendente" itemValue="P" />
+													<f:selectItem itemLabel="Autorizado" itemValue="A" />
+													<!--  <p:ajax update="pgSetor2"></p:ajax>-->
+												
+												</p:selectOneRadio>
+                  </p:outputPanel>
+                  
+                  		<p:outputPanel>
+						<h:outputLabel for="dataAtou" value="Data para Autorização" />
+						<br />
+						<p:calendar id="dataAt" locale="pt" navigator="true" mask="true"
+							pattern="dd/MM/yyyy" />
+					</p:outputPanel>
+					
+							<p:outputPanel>
+						<h:outputLabel for="dataVen" value="Data para Vencimento" />
+						<br />
+						<p:calendar id="dataVenci" locale="pt" navigator="true" mask="true"
+							pattern="dd/MM/yyyy" readonly="true" />
+					</p:outputPanel>
+				</p:panelGrid>
+				
+				<p:panelGrid columns="3" styleClass="semBorda">
+				<h:outputLabel for="cid" value="CID:" />
+					<p:outputPanel id="outCid">
+						<p:inputText id="codCid"
+							value="#{AgendaController.paciente.conjuge}" readonly="true"
+							style="width: 40px" />
+						<p:inputText id="cid" value="#{AgendaController.paciente.nome}"
+							readonly="true" style="width: 300px" />
+					</p:outputPanel>
+					<p:commandButton id="btBusCid" value="Buscar"
+						onclick="PF('dlgConsuPac').show();" />
+						
+					<h:outputLabel for="cid2" value="CID 2:" />
+					<p:outputPanel id="outCid2">
+						<p:inputText id="codCid2"
+							value="#{AgendaController.paciente.codRaca}" readonly="true"
+							style="width: 40px" />
+						<p:inputText id="cid2" value="#{AgendaController.paciente.nome}"
+							readonly="true" style="width: 300px" />
+					</p:outputPanel>
+					<p:commandButton id="btBusCid2" value="Buscar"
+						onclick="PF('dlgConsuPac').show();" />
+				</p:panelGrid>
+				
+<p:panel header="DADOS FORNECEDOR">  
+	    	<p:panelGrid columns="3" styleClass="semBorda">
+	    	
+				    <h:outputLabel for="fornecedor" value="Fornecedor:" />
+					<p:outputPanel id="outFornecedor">
+						<p:inputText id="codFornecedor"
+							value="#{AgendaController.paciente.codProfissao}" readonly="true"
+							style="width: 40px" />
+						<p:inputText id="Fornecedor" value="#{AgendaController.paciente.nome}"
+							readonly="true" style="width: 300px" />
+					</p:outputPanel>
+					<p:commandButton id="btBusFornecedor" value="Buscar"
+						onclick="PF('dlgConsuPac').show();" />
+	
+			</p:panelGrid>
+			<p:panelGrid columns="6" styleClass="semBorda">
+				<p:outputPanel>
+					<h:outputLabel for="valor" value="Valor" />
+						<br />
+					   	<p:inputText id="codValor"
+							value="R$0,00" readonly="false"/>
+					    </p:outputPanel>
+					    
+					<p:outputPanel>
+					<h:outputLabel for="nota" value="No.Nota" />
+						<br />
+					   	<p:inputText id="codNota"
+							value="" readonly="false"/>
+					    </p:outputPanel>
+					    
+				    <p:outputPanel>
+						<h:outputLabel for="qtd" value="Qtd." />
+						<br />
+						<p:spinner id="qtd"  size="1" value="0" />
+					</p:outputPanel>
+					    
+					    
+					<h:outputLabel for="equipamento" value="Equipamento:" />
+					<p:outputPanel id="outequipamento">
+						<p:inputText id="Equipamento" value="#{AgendaController.paciente.cpfresp}"
+							readonly="true" style="width: 50px" />
+					</p:outputPanel>
+					<p:commandButton id="btBusEquipamento" value="Buscar"
+						onclick="PF('dlgConsuPac').show();" />
+			
+			</p:panelGrid>
+			</p:panel>
+
+					<p:panelGrid columns="2" styleClass="semBorda">
+					<h:outputLabel for="obs" value="Obs.:" />
+					<p:inputTextarea id="obs" value="" style="width: 328px"
+						autoResize="false" />
+				    </p:panelGrid>
+				    
+			
+				    	
+				    	
+                                  <p:separator></p:separator>
+				<center>
+					<p:panelGrid columns="3" styleClass="semBorda">
+						
+						<p:commandButton value="Gravar" icon="confirmar"
+							disabled="#{!AgendaController.prontoGravar}" />
+						
+						<p:commandButton value="Consultar" icon="buscar" />
+						
+						<p:commandButton value="Limpar" icon="limpar"
+							actionListener="#{AgendaController.limparDados()}"
+							update=":formLaudo" />
+						
+					</p:panelGrid>
+				</center>
+				
+				  </p:tab>
+                 
+            </p:tabView>
+			</p:panel>
+		</h:form>
+
+
+		<p:dialog header="Consulta Pacientes" widgetVar="dlgConsuPac"
+			modal="true" width="750px">
+			<h:form id="formConsuPac">
+				<p:growl id="msgC" />
+				<center>
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<p:outputPanel id="outOp">
+							<h:outputLabel for="op" value="Opção" />
+							<br />
+							<p:selectOneMenu id="op" value="#{PacienteController.tipoBuscar}">
+								<f:selectItem itemLabel="Escolha Opção" itemValue="VAZIO" />
+								<f:selectItem itemLabel="CPF" itemValue="CPF" />
+								<f:selectItem itemLabel="Nome" itemValue="NOME" />
+								<f:selectItem itemLabel="Prontuário Velho"
+									itemValue="PRONTVELHO" />
+								<f:selectItem itemLabel="Prontuário Novo" itemValue="PRONTNOVO" />
+							</p:selectOneMenu>
+						</p:outputPanel>
+
+						<p:outputPanel id="outDesP">
+							<h:outputLabel for="descPac" value="Descrição" />
+							<br />
+							<p:inputText id="descPac"
+								value="#{PacienteController.descricaoParaBuscar}"
+								style="width: 300px" />
+						</p:outputPanel>
+					</p:panelGrid>
+
+					<p:separator style="margin-top: 10px;" />
+
+					<p:panelGrid columns="3" styleClass="semBorda">
+						<p:commandButton value="OK" icon="ui-icon-check"
+							action="#{PacienteController.buscarPaciente()}"
+							update=":formConsuPac:msgC, :formConsuPac:dtPaci" />
+						<p:commandButton value="Nova Consulta" icon="ui-icon-search"
+							actionListener="#{PacienteController.limparDados()}"
+							update=":formConsuPac:outOp, :formConsuPac:outDesP, :formConsuPac:dtPaci" />
+						<p:commandButton value="Sair" icon="ui-icon-close" />
+					</p:panelGrid>
+				</center>
+				<p:dataTable resizableColumns="true" id="dtPaci"
+					value="#{PacienteController.listaPacientesParaAgenda}" var="pacie"
+					emptyMessage="Faça uma busca de paciente!">
+					<p:column headerText="PRONTUÁRIO">
+						<p:outputLabel value="#{pacie.id_paciente}" />
+					</p:column>
+
+					<p:column headerText="PRONT ANT.">
+						<p:outputLabel value="#{pacie.protant}" />
+					</p:column>
+
+					<p:column headerText="NOME">
+						<p:outputLabel value="#{pacie.nome}" />
+					</p:column>
+
+					<p:column headerText="CPF">
+						<p:outputLabel value="#{pacie.cpf}" />
+					</p:column>
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton
+							update=":formLaudo:outPacie, :formLaudo:btBusPr"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuPac').hide();">
+							<f:setPropertyActionListener value="#{pacie}"
+								target="#{AgendaController.paciente}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consulta Programa" widgetVar="dlgConsuProg"
+			modal="true" width="500px">
+			<h:form id="formConsuProg">
+				<p:dataTable value="#{ProgramaController.listaProgramas}" var="prog"
+					resizableColumns="true"
+					emptyMessage="Não existe nenhum programa cadastrado!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{prog.idPrograma}" />
+					</p:column>
+					<p:column headerText="PROGRAMA">
+						<p:outputLabel value="#{prog.descPrograma}" />
+					</p:column>
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton
+							update=":formLaudo:outProg, :formConsuGrop:dtGrupo, :formLaudo:btBusGr"
+							icon="ui-icon-check" title="Selecionar"
+							action="#{GrupoController.atualizaLista(AgendaController.programa)}"
+							onclick="PF('dlgConsuProg').hide();">
+							<f:setPropertyActionListener value="#{prog}"
+								target="#{AgendaController.programa}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consulta Grupo" widgetVar="dlgConsuGrop"
+			modal="true" width="550px">
+			<h:form id="formConsuGrop">
+				<p:dataTable value="#{GrupoController.listaGruposProgramas}"
+					id="dtGrupo" resizableColumns="true" var="grupo"
+					emptyMessage="Não existe nenhum grupo cadastrado!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{grupo.idGrupo}" />
+					</p:column>
+					<p:column headerText="GRUPO">
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</p:column>
+					<p:column headerText="QTD. FREQ>">
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</p:column>
+
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton
+							update=":formLaudo:outGrupo, :formConsuTipoAt:dtTipoAt, :formLaudo:btBusTi"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuGrop').hide();"
+							action="#{TipoAtendimentoController.atualizaListaTipos(AgendaController.grupo)}">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{AgendaController.grupo}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consulta Tipos de Atendimento"
+			widgetVar="dlgConsuTipoAt" modal="true" width="550px">
+			<h:form id="formConsuTipoAt">
+				<p:dataTable value="#{TipoAtendimentoController.listaTipos}"
+					id="dtTipoAt" resizableColumns="true" var="tipo"
+					emptyMessage="Não existe nenhum tipo cadastrado!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{tipo.idTipo}" />
+					</p:column>
+					<p:column headerText="Tipo de Atendimento">
+						<p:outputLabel value="#{tipo.descTipoAt}" />
+					</p:column>
+
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton update=":formLaudo:outTipoAt"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuTipoAt').hide();">
+							<f:setPropertyActionListener value="#{tipo}"
+								target="#{AgendaController.tipoAt}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+    </div>
+
+        </ui:define>
+    </ui:composition>
+</html>
