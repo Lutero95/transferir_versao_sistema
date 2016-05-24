@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -27,6 +28,70 @@ import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 public class LaudoDAO {
 	private Connection conexao = null;
 	// COMEÇO DO CODIGO
+	
+	public Boolean cadastrarLaudo(LaudoBean laudo) throws ProjetoException {
+        boolean cadastrou = false;
+        System.out.println("passou aqui 2");
+
+        /*PacienteBean user_session = (PacienteBean) FacesContext
+                .getCurrentInstance().getExternalContext().getSessionMap()
+                .get("obj_paciente");*/
+
+        String sql = "insert into hosp.apac (codpaciente, codprograma, codgrupo, codmedico, codproc, "
+        		+ "dtasolicitacao, recurso, apac, unidade, situacao, dtautorizacao, cid10_1, cid10_2, "
+        		+ "codfornecedor, valor, nota, qtd, codequipamento, obs) values (?, ? , ? , ?, ? , ?, ? , ?, ?, ?, "
+        		+ "?, ?, ?, ?, ?, ?, ? , ? , ?)";
+        
+            try {
+            	System.out.println("passou aqui 3");
+                conexao = ConnectionFactory.getConnection();
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                stmt.setInt(1, laudo.getCodpaciente());
+                stmt.setInt(2, laudo.getCodprograma());
+                stmt.setInt(3, laudo.getCodgrupo());
+                stmt.setInt(4, laudo.getCodmedico());
+                stmt.setInt(5, laudo.getCodproc());
+                //stmt.setString(6, laudo.getPaciente().getCns().toUpperCase().trim());
+                //stmt.setString(7, laudo.getPaciente().getCpf().toUpperCase().trim());
+                stmt.setDate(6, new java.sql.Date(laudo.getDtasolicitacao().getTime()));
+                stmt.setString(7, laudo.getRecurso());
+                stmt.setString(8, laudo.getApac().toUpperCase().trim());
+                stmt.setString(9, laudo.getUnidade().toUpperCase().trim());
+                stmt.setString(10, laudo.getSituacao().toUpperCase().trim());
+                stmt.setDate(11, new java.sql.Date(laudo.getDtautorizacao().getTime()));
+                //stmt.setDate(12, new java.sql.Date(laudo.getDtachegada().getTime()));
+                if (laudo.getCid10_1() == null) {
+    				stmt.setNull(12, Types.CHAR);
+    			} else {
+    				stmt.setString(12, laudo.getCid10_1().toUpperCase().trim());
+    			}
+                if (laudo.getCid10_2() == null) {
+    				stmt.setNull(13, Types.CHAR);
+    			} else {
+    				stmt.setString(13, laudo.getCid10_2().toUpperCase().trim());
+    			}
+                stmt.setInt(14, laudo.getCodfornecedor());
+                stmt.setDouble(15, laudo.getValor());
+                stmt.setString(16, laudo.getNota().toUpperCase().trim());
+                stmt.setInt(17, laudo.getQtd());
+                stmt.setInt(18, laudo.getCodequipamento());
+                if (laudo.getObs() == null) {
+    				stmt.setNull(19, Types.CHAR);
+    			} else {
+    				stmt.setString(19, laudo.getObs().toUpperCase().trim());
+    			}
+                
+            stmt.execute();   
+            System.out.println("passou aqui 4");
+            conexao.commit();
+            cadastrou = true;
+            conexao.close();
+
+            return cadastrou;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 	
             public Boolean cadastrarLaudoApac(LaudoBean laudo) throws ProjetoException {
                 boolean cadastrou = false;

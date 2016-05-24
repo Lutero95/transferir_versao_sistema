@@ -147,7 +147,7 @@ public class UsuarioController {
         if(user == null) {
             FacesContext fct = FacesContext.getCurrentInstance();
             fct.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Usuário ou senha inválidos!", "Erro"));
+                "Usuario ou senha invalidos!", "Erro"));
 
             return "";
         } else {

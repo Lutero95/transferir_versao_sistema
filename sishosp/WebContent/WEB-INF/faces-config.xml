@@ -74,53 +74,67 @@
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.ProgramaController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
+
 	<managed-bean>
 		<description>O Bean Agenda Controller</description>
 		<managed-bean-name>AgendaController</managed-bean-name>
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.AgendaController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
+
 	<managed-bean>
 		<description>O Bean Tipo de Atendimento Controller</description>
 		<managed-bean-name>TipoAtendimentoController</managed-bean-name>
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.TipoAtendimentoController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
+
 	<managed-bean>
 		<description>O Bean Cbo Controller</description>
 		<managed-bean-name>CboController</managed-bean-name>
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.CboController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
+
 	<managed-bean>
 		<description>O Bean Especialidade Controller</description>
 		<managed-bean-name>EspecialidadeController</managed-bean-name>
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.EspecialidadeController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
+
 	<managed-bean>
 		<description>O Bean Procedimento Controller</description>
 		<managed-bean-name>ProcedimentoController</managed-bean-name>
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.ProcedimentoController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
-		<managed-bean>
+
+	<managed-bean>
 		<description>O Bean Laudo Controller</description>
 		<managed-bean-name>LaudoController</managed-bean-name>
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.LaudoController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
+
 	<managed-bean>
 		<description>O Bean Equipe Controller</description>
 		<managed-bean-name>EquipeController</managed-bean-name>
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.EquipeController</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<description>O Bean Profissional Controller</description>
+		<managed-bean-name>ProfissionalController</managed-bean-name>
+		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.ProfissionalController</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<description>O Bean ConfigAgenda Controller </description>
+		<managed-bean-name>ConfigAgendaController</managed-bean-name>
+		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.ConfigAgendaController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 </faces-config>

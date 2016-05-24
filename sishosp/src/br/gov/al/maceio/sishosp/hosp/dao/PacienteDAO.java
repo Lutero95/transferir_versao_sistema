@@ -632,32 +632,49 @@ public class PacienteDAO {
 
 	public PacienteBean buscarPacienteAgenda(String tipo, String conteudo)
 			throws ProjetoException, SQLException {
-
-		String sql = "";
+		
+		 String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
+	          		+ "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, pacientes.cidade, pacientes.bairro, "
+	          		+ "pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, pacientes.telres, pacientes.telcel,"
+	          		+ " pacientes.teltrab, pacientes.telorelhao, pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
+	          		+ "pacientes.protreab, "
+	          		+ "pacientes.reservista, pacientes.ctps, pacientes.serie, pacientes.pis, pacientes.cartorio, pacientes.regnascimento, pacientes.livro, "
+	          		+ "pacientes.folha, pacientes.dtaregistro, pacientes.contribuinte, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
+	          		+ "pacientes.trabalha, pacientes.localtrabalha, pacientes.codparentesco, "
+	          		+ "pacientes.nomeresp, pacientes.rgresp, pacientes.cpfresp, pacientes.dtanascimentoresp, pacientes.id_encaminhado, "
+	          		+ "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.tipodeficiencia, escolaridade.descescolaridade, escola.descescola, profissao.descprofissao,"
+	          		+ " encaminhado.descencaminhado, formatransporte.descformatransporte "
+	          		+ "from hosp.pacientes left join hosp.escolaridade on pacientes.id_escolaridade=escolaridade.id_escolaridade "
+	          		+ " left join hosp.escola on pacientes.id_escola=escola.id_escola "
+	          		+ "left join hosp.profissao on pacientes.id_profissao=profissao.id_profissao "
+	          		+ "left join hosp.encaminhado on pacientes.id_encaminhado=encaminhado.id_encaminhado "
+	          		+ "left join hosp.formatransporte on pacientes.id_formatransporte=formatransporte.id_formatransporte where";
+		
 		conexao = ConnectionFactory.getConnection();
-		PacienteBean paciente = new PacienteBean();
+		
+		PacienteBean p = new PacienteBean();
 
 		if (tipo.equals("CPF")) {
 			System.out.println("Vai buscar por cpf");
-			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where cpf = ? ;";
+			sql += " cpf = ? ;";
 			ps = conexao.prepareStatement(sql);
 			ps.setString(1, conteudo.toUpperCase());
 		}
 		if (tipo.equals("NOME")) {
 			System.out.println("Vai buscar por NOME");
-			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where nome LIKE ? ;";
+			sql += " nome LIKE ? ;";
 			ps = conexao.prepareStatement(sql);
 			ps.setString(1, '%' + conteudo.toUpperCase() + '%');
 		}
 		if (tipo.equals("PRONTVELHO")) {
 			System.out.println("Vai buscar por pront velho");
-			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where protreab = ? ;";
+			sql += " protreab = ? ;";
 			ps = conexao.prepareStatement(sql);
 			Integer prontVelho = null;
 			try {
 				prontVelho = Integer.parseInt(conteudo);
 			} catch (Exception e) {
-				return paciente;
+				return p;
 			}
 
 			if (prontVelho != null)
@@ -665,13 +682,13 @@ public class PacienteDAO {
 		}
 		if (tipo.equals("PRONTNOVO")) {
 			System.out.println("Vai buscar por pront novo");
-			sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes where id_paciente = ? ;";
+			sql += " id_paciente = ? ;";
 			ps = conexao.prepareStatement(sql);
 			Long prontNovo = null;
 			try {
 				prontNovo = Long.parseLong(conteudo);
 			} catch (Exception e) {
-				return paciente;
+				return p;
 			}
 			if (prontNovo != null)
 				ps.setLong(1, prontNovo);
@@ -680,12 +697,67 @@ public class PacienteDAO {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				paciente.setId_paciente(rs.getLong("id_paciente"));
-				paciente.setProtant(rs.getInt("protreab"));
-				paciente.setNome(rs.getString("nome"));
-				paciente.setCpf(rs.getString("cpf"));
+              	
+                p.setId_paciente(rs.getLong("id_paciente"));
+                p.setNome(rs.getString("nome").toUpperCase());
+                p.setDtanascimento(rs.getDate("dtanascimento"));
+                p.setEstadoCivil(rs.getString("estcivil"));
+                p.setSexo(rs.getString("sexo"));
+                p.setSangue(rs.getString("sangue"));
+                p.setNomePai(rs.getString("pai"));
+                p.setNomeMae(rs.getString("mae"));
+                p.setConjuge(rs.getString("conjuge"));
+                p.setCodRaca(rs.getInt("codraca"));
+                p.getEndereco().setCep(rs.getInt("cep"));
+                p.getEndereco().setUf(rs.getString("uf"));
+                p.getEndereco().setMunicipio(rs.getString("cidade"));
+                p.getEndereco().setBairro(rs.getString("bairro"));
+                p.getEndereco().setLogradouro(rs.getString("logradouro"));
+                p.getEndereco().setNumero(rs.getString("numero"));
+                p.getEndereco().setComplemento(rs.getString("complemento"));
+                p.getEndereco().setReferencia(rs.getString("referencia"));
+                p.getEndereco().setTelefoneres(rs.getString("telres"));
+                p.getEndereco().setTelefonecel(rs.getString("telcel"));
+                p.getEndereco().setTelefonetrab(rs.getString("teltrab"));
+                p.getEndereco().setTelefoneorelhao(rs.getString("telorelhao"));             
+                p.setRg(rs.getString("rg").toLowerCase());
+                p.setOe(rs.getString("oe").toLowerCase());
+                p.setDataExpedicao1(rs.getDate("dtaexpedicaorg"));
+                p.setCpf(rs.getString("cpf"));
+                p.setCns(rs.getString("cns"));
+                p.setProtant(rs.getInt("protreab"));
+                p.setReservista(rs.getString("reservista"));
+                p.setCtps(rs.getInt("ctps"));
+                p.setSerie(rs.getInt("serie"));
+                p.setPis(rs.getString("pis"));
+                p.setCartorio(rs.getString("cartorio"));
+                p.setNumeroCartorio(rs.getString("regnascimento"));
+                p.setLivro(rs.getString("livro"));
+                p.setFolha(rs.getInt("folha"));
+                p.setDataExpedicao2(rs.getDate("dtaregistro"));
+                p.setAssociado(rs.getString("contribuinte"));
+                p.getEscolaridade().setCodescolaridade(rs.getInt("id_escolaridade"));
+                p.getEscolaridade().setDescescolaridade(rs.getString("descescolaridade"));
+                p.getEscola().setCodEscola(rs.getInt("id_escola"));
+                p.getProfissao().setCodprofissao(rs.getInt("id_profissao"));
+                p.setTrabalha(rs.getString("trabalha"));
+                p.setLocaltrabalha(rs.getString("localtrabalha"));
+                p.setCodparentesco(rs.getInt("codparentesco"));
+                p.setNomeresp(rs.getString("nomeresp"));
+                p.setRgresp(rs.getString("rgresp"));
+                p.setCpfresp(rs.getString("cpfresp"));
+                p.setDataNascimentoresp(rs.getDate("dtanascimentoresp"));
+                p.getEncaminhado().setCodencaminhado(rs.getInt("id_encaminhado"));
+                p.getFormatransporte().setCodformatransporte(rs.getInt("id_formatransporte"));
+                p.setDeficiencia(rs.getString("deficiencia"));
+                p.setTipoDeficiencia(rs.getString("tipodeficiencia"));
+                p.getEscola().setDescescola(rs.getString("descescola"));
+                p.getProfissao().setDescprofissao(rs.getString("descprofissao"));
+                p.getEncaminhado().setDescencaminhado(rs.getString("descencaminhado"));
+                p.getFormatransporte().setDescformatransporte(rs.getString("descformatransporte"));
+                 
 			}
-			return paciente;
+			return p;
 		} catch (Exception sqle) {
 			throw new ProjetoException(sqle);
 		} finally {

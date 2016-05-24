@@ -20,8 +20,6 @@ public class UsuarioDAO{
 
     public UsuarioBean autenticarUsuario(UsuarioBean usuario) throws ProjetoException {
 
-        Connection con = null;
-
         String sql = "select us.id_usuario, us.descusuario, us.login, us.senha, us.email, "
         		+ "pf.descricao as descperfil, case when us.ativo = 'S' "
         		+ "then true else false end as usuarioativo, "
@@ -34,8 +32,8 @@ public class UsuarioDAO{
         String setoresUsuario = "";
 
         try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement pstmt = con.prepareStatement(sql);
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement pstmt = conexao.prepareStatement(sql);
             pstmt.setString(1, usuario.getLogin().toUpperCase());
             pstmt.setString(2, usuario.getSenha().toUpperCase());
             pstmt.setString(3, "S");
@@ -70,11 +68,13 @@ public class UsuarioDAO{
 
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("setores_usuario", setoresUsuario);
             return ub;
+      
+         
         } catch (SQLException ex) {
             throw new ProjetoException(ex);
         } finally {
-            try {
-                con.close();
+            try {  
+            	   conexao.close();
             } catch (Exception ex) {
                 // TODO: handle exception
                 ex.printStackTrace();

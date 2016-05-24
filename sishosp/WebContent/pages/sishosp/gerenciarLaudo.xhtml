@@ -54,12 +54,12 @@
 						<br/>
                  
                          <p:commandButton id="btninc" value="Novo"
-                                             actionListener="#{EscolaController.limparDados()}"
-                                             action ="/pages/sishosp/cadastroEscola.faces" icon="add"  styleClass="btn btn-sm btn-success" style="margin-top: 15px;" >
-                                    <f:setPropertyActionListener value="I" target="#{EscolaController.tipo}" /> 
+                                          
+                                             action ="/pages/sishosp/cadastroLaudo.faces" icon="add"  styleClass="btn btn-sm btn-success" style="margin-top: 15px;" >
+                                    <f:setPropertyActionListener value="I" target="#{LaudoController.tipo}" /> 
                                 <p:tooltip for="btninc" value="Incluir"></p:tooltip>
                             </p:commandButton>   
-
+<!--    actionListener="#{LaudoController.limparDados()}" -->
                               <!--  <p:commandButton id="btnalt" value="Alterar"
                                              style="margin-left:10px" update=":frminc:pnlinc"
                                              action="#{clienteController.alteraCliente()}"

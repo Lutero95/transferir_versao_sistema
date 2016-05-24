@@ -10,12 +10,26 @@ import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 
 public class LaudoController {
 	private Integer abaAtiva = 0;
 	private LaudoBean laudo;
+	private PacienteBean paciente;
+	private GrupoBean grupo;
+	private ProgramaBean programa;
+	private TipoAtendimentoBean tipoAt;
+	private ProfissionalBean profissional;
+	private EquipeBean equipe;
+	private ProcedimentoBean procedimento;
 	
 	
 	
@@ -29,9 +43,14 @@ public class LaudoController {
 	private String statusLaudo;
 	
 	public LaudoController(){
-		
-		laudo = new LaudoBean();
-		
+		//CLASSES
+		this.paciente = null;//new PacienteBean();
+		this.procedimento = null;
+		this.grupo = null;//new GrupoBean();
+		this.programa = null;//new ProgramaBean();
+		this.tipoAt = null;//new TipoAtendimentoBean();
+		this.profissional = null;
+		this.equipe = null;
 		 //BUSCA
 		tipo ="";
 		tipoBuscaLaudo = 1;
@@ -42,6 +61,28 @@ public class LaudoController {
 		 listaLaudos = null;
 
 	}
+	
+	public void gravarLaudo() throws ProjetoException {
+		LaudoDAO udao = new LaudoDAO();    
+                boolean cadastrou = udao.cadastrarLaudo(laudo);
+               
+                if(cadastrou == true) {
+                	limparDados();
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Laudo cadastrado com sucesso!", "Sucesso");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+                    listaLaudos = null;
+                    
+
+                } else {
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Ocorreu um erro durante o cadastro!", "Erro");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+
+ 
+                }
+            
+    }
 	
 	public void gravarLaudoApac() throws ProjetoException {
 		LaudoDAO udao = new LaudoDAO();    
@@ -203,11 +244,15 @@ public class LaudoController {
 	
 	public void limparDados(){
 		laudo = new LaudoBean();
+		paciente = new PacienteBean();
+		grupo = new GrupoBean();
+		programa = new ProgramaBean();
+		profissional = new ProfissionalBean();
+		equipe = new EquipeBean();
+		procedimento = new ProcedimentoBean();
+		
 	
 	}
-	
-
-
 
 	public Integer getAbaAtiva() {
 		return abaAtiva;
@@ -269,6 +314,62 @@ public class LaudoController {
 
 	public void setListaLaudos(List<LaudoBean> listaLaudos) {
 		this.listaLaudos = listaLaudos;
+	}
+
+	public PacienteBean getPaciente() {
+		return paciente;
+	}
+
+	public void setPaciente(PacienteBean paciente) {
+		this.paciente = paciente;
+	}
+
+	public GrupoBean getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(GrupoBean grupo) {
+		this.grupo = grupo;
+	}
+
+	public ProgramaBean getPrograma() {
+		return programa;
+	}
+
+	public void setPrograma(ProgramaBean programa) {
+		this.programa = programa;
+	}
+
+	public TipoAtendimentoBean getTipoAt() {
+		return tipoAt;
+	}
+
+	public void setTipoAt(TipoAtendimentoBean tipoAt) {
+		this.tipoAt = tipoAt;
+	}
+
+	public ProfissionalBean getProfissional() {
+		return profissional;
+	}
+
+	public void setProfissional(ProfissionalBean profissional) {
+		this.profissional = profissional;
+	}
+
+	public EquipeBean getEquipe() {
+		return equipe;
+	}
+
+	public void setEquipe(EquipeBean equipe) {
+		this.equipe = equipe;
+	}
+
+	public ProcedimentoBean getProcedimento() {
+		return procedimento;
+	}
+
+	public void setProcedimento(ProcedimentoBean procedimento) {
+		this.procedimento = procedimento;
 	}
 
 	    

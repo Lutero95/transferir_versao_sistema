@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
@@ -10,6 +11,7 @@ import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 public class AgendaController {
 	
 	private PacienteBean paciente;
+	private ProcedimentoBean procedimento;
 	private GrupoBean grupo;
 	private ProgramaBean programa;
 	private TipoAtendimentoBean tipoAt;
@@ -20,6 +22,7 @@ public class AgendaController {
 
 	public AgendaController() {
 		this.paciente = null;//new PacienteBean();
+		this.procedimento = null;
 		this.grupo = null;//new GrupoBean();
 		this.programa = null;//new ProgramaBean();
 		this.tipoAt = null;//new TipoAtendimentoBean();
@@ -30,6 +33,7 @@ public class AgendaController {
 	
 	public void limparDados(){
 		grupo = new GrupoBean();
+		procedimento = new ProcedimentoBean();
 		programa = new ProgramaBean();
 		paciente = new PacienteBean();
 		tipoAt = new TipoAtendimentoBean();
@@ -92,6 +96,14 @@ public class AgendaController {
 
 	public void setTipoAt(TipoAtendimentoBean tipoAt) {
 		this.tipoAt = tipoAt;
+	}
+
+	public ProcedimentoBean getProcedimento() {
+		return procedimento;
+	}
+
+	public void setProcedimento(ProcedimentoBean procedimento) {
+		this.procedimento = procedimento;
 	}
 	
 }
