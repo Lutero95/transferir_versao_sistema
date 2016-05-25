@@ -132,9 +132,10 @@
 	</managed-bean>
 
 	<managed-bean>
-		<description>O Bean ConfigAgenda Controller </description>
+		<description>O Bean ConfigAgenda1 Controller </description>
 		<managed-bean-name>ConfigAgendaController</managed-bean-name>
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.ConfigAgendaController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+
 </faces-config>

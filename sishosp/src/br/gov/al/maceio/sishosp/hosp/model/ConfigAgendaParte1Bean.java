@@ -14,7 +14,7 @@ public class ConfigAgendaParte1Bean {
 	private Integer qtdMax;
 	
 	public ConfigAgendaParte1Bean(){
-		
+		this.profissional = new ProfissionalBean();
 	}
 	
 	public ConfigAgendaParte1Bean(Integer mes, Integer ano,

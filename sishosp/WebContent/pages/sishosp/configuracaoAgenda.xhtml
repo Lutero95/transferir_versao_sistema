@@ -106,7 +106,7 @@
 							<p:outputPanel>
 								<p:inputText
 									value="#{ConfigAgendaController.confParte2.grupo.idGrupo}"
-									readonly="true" style="width: 40px" />
+									readonly="true" style="width: 60px" />
 								<p:inputText
 									value="#{ConfigAgendaController.confParte2.grupo.descGrupo}"
 									readonly="true" style="width: 350px" />
@@ -116,7 +116,7 @@
 
 						<p:panelGrid columns="6" styleClass="semBorda">
 							<h:outputLabel value="Tipo At.:" />
-							<p:outputPanel>
+							<p:outputPanel style="margin-left:15px;">
 								<p:inputText
 									value="#{ConfigAgendaController.confParte2.tipoAt.idTipo}"
 									style="width: 60px" />
@@ -136,7 +136,7 @@
 						<p:panel>
 							<h:outputLabel value="Configuração dos Tipos de Atendimento" />
 							<p:dataTable value="#{ConfigAgendaController.listaTipos}"
-								resizableColumns="true" var="tipo">
+								resizableColumns="true" var="tipo" emptyMessage="Sem dados...">
 								<p:column headerText="Programa">
 									<p:outputLabel value="#{tipo.programa.descPrograma}" />
 								</p:column>

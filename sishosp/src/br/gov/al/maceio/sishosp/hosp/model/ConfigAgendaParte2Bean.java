@@ -8,7 +8,9 @@ public class ConfigAgendaParte2Bean {
 	private Integer qtd;
 
 	public ConfigAgendaParte2Bean() {
-
+		this.programa = new ProgramaBean();
+		this.grupo = new GrupoBean();
+		this.tipoAt = new TipoAtendimentoBean();
 	}
 
 	public ConfigAgendaParte2Bean(ProgramaBean programa, GrupoBean grupo,
