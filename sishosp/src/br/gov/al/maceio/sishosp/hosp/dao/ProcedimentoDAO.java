@@ -44,7 +44,7 @@ public class ProcedimentoDAO {
 
 	public List<ProcedimentoBean> listarProcedimento() {
 		List<ProcedimentoBean> lista = new ArrayList<>();
-		String sql = "select codproc, nome, apac, bpi, auditivo,"
+		String sql = "select id, codproc, nome, apac, bpi, auditivo,"
 				+ " tipo_exame_auditivo, utiliza_equipamento from hosp.proc order by codproc";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -53,6 +53,7 @@ public class ProcedimentoDAO {
 
 			while (rs.next()) {
 				ProcedimentoBean proc = new ProcedimentoBean();
+				proc.setIdProc(rs.getInt("id"));
 				proc.setCodProc(rs.getInt("codproc"));
 				proc.setNomeProc(rs.getString("nome"));
 				proc.setApac(rs.getBoolean("apac"));

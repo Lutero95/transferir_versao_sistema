@@ -72,7 +72,7 @@
 				    <h:outputLabel for="procedimento" value="Procedimento:" />
 					<p:outputPanel id="outProce">
 						<p:inputText id="codProcedimento"
-							value="#{LaudoController.laudo.procedimento.codProc}" readonly="true"
+							value="#{LaudoController.laudo.procedimento.idProc}" readonly="true"
 							style="width: 40px" />
 						<p:inputText id="Procedimento"
 							value="#{LaudoController.laudo.procedimento.nomeProc}" readonly="true"
@@ -89,13 +89,13 @@
 						<h:outputLabel for="cnsPac" value="CNS" />
 						<br />
 					   	<p:inputText id="codCns"
-							value="#{LaudoController.paciente.cns}" readonly="true"/>
+							value="#{LaudoController.laudo.paciente.cns}" readonly="true"/>
 						</p:outputPanel>
 					 <p:outputPanel id="outPacie2">
 						<h:outputLabel for="cpfPac" value="CPF" />
 						<br />
 					   	<p:inputText id="codCpf"
-							value="#{LaudoController.paciente.cpf}" readonly="true"/>
+							value="#{LaudoController.laudo.paciente.cpf}" readonly="true"/>
 					</p:outputPanel>
 				
 					<p:outputPanel>
@@ -188,7 +188,7 @@
 				<h:outputLabel for="cid" value="CID:" />
 					<p:outputPanel id="outCid">
 						<p:inputText id="cid" value="#{LaudoController.laudo.cid10_1}"
-							readonly="true" style="width: 300px" />
+							readonly="false" style="width: 300px" />
 					</p:outputPanel>
 					<p:commandButton id="btBusCid" value="Buscar"
 						onclick="PF('dlgConsuPac').show();" />
@@ -196,7 +196,7 @@
 					<h:outputLabel for="cid2" value="CID 2:" />
 					<p:outputPanel id="outCid2">
 						<p:inputText id="cid2" value="#{LaudoController.laudo.cid10_2}"
-							readonly="true" style="width: 300px" />
+							readonly="false" style="width: 300px" />
 					</p:outputPanel>
 					<p:commandButton id="btBusCid2" value="Buscar"
 						onclick="PF('dlgConsuPac').show();" />
@@ -441,6 +441,9 @@
 				<p:dataTable value="#{ProcedimentoController.listaProcedimentos}"
 					id="dtProce" resizableColumns="true" var="procedimento"
 					emptyMessage="Não existe nenhum procedimento cadastrado!">
+					<p:column headerText="ID">
+						<p:outputLabel value="#{procedimento.idProc}" />
+					</p:column>
 					<p:column headerText="CÓD.">
 						<p:outputLabel value="#{procedimento.codProc}" />
 					</p:column>

@@ -37,8 +37,7 @@ public class LaudoDAO {
                 .getCurrentInstance().getExternalContext().getSessionMap()
                 .get("obj_paciente");*/
 
-        String sql = "insert into hosp.apac (codpaciente, codprograma, codgrupo, codmedico, codproc, "
-        		+ "dtasolicitacao, recurso, apac, unidade, situacao, dtautorizacao, cid10_1, cid10_2, "
+        String sql = "insert into hosp.apac (codpaciente, codprograma, codgrupo, codmedico, codproc, dtasolicitacao, recurso, apac, unidade, situacao, dtautorizacao, cid10_1, cid10_2, "
         		+ "codfornecedor, valor, nota, qtd, codequipamento, obs) values (?, ? , ? , ?, ? , ?, ? , ?, ?, ?, "
         		+ "?, ?, ?, ?, ?, ?, ? , ? , ?)";
         
