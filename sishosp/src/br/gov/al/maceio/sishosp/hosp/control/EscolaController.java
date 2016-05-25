@@ -25,6 +25,7 @@ public class EscolaController {
 	private Integer tipoBuscaEscola;
 	private String campoBuscaEscola;
 	private String statusEscola;
+	private String cabecalho;
 
 	public EscolaController() {
 
@@ -275,6 +276,19 @@ public class EscolaController {
 
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
+	}
+	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE ESCOLA";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR ESCOLA";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
 	}
 
 }

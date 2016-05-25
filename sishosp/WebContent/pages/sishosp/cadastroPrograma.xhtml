@@ -12,11 +12,7 @@
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
-			<p:outputLabel value="CADASTRO DE PROGRAMA"
-				rendered="#{ProgramaController.tipo == 'I'}"></p:outputLabel>
-			<p:outputLabel value="ALTERAR PROGRAMA"
-				rendered="#{ProgramaController.tipo == 'A'}"></p:outputLabel>
-			<br />
+
 			<h:form>
 				<p:commandButton value="Voltar"
 					style="position:relative; right:18%; width:100px; " icon="btvoltar"
@@ -27,6 +23,7 @@
 
 				<p:growl id="message" />
 				<p:panel id="pnlCadPrograma"
+					header="#{ProgramaController.cabecalho}"
 					style="height:auto; width:850px; background-color: #F5F5F5;">
 					<!--  <p:growl id="growl" showDetail="false" /> -->
 					<p:tabView activeIndex="#{ProgramaController.abaAtiva}"
@@ -49,6 +46,34 @@
 										class="form-control" id="inputname" />
 								</div>
 							</div>
+
+							<div class="form-group">
+								<h:outputLabel for="inputg" value="Grupos: "
+									styleClass="col-sm-3 control-label" />
+								<p:commandButton
+									style="position:absolute; top:180px; left:163px;"
+									onclick="PF('dlgConsuGrupo').show();" icon="ui-icon-plus" />
+								<div class="col-sm-6">
+
+									<p:dataTable emptyMessage="Sem Dados"
+										styleClass="table table-hover" id="tabela"
+										style="margin-top:20px;"
+										value="#{ProgramaController.prog.grupo}" var="tab"
+										paginator="true" paginatorPosition="bottom" rows="12"
+										resizableColumns="true">
+
+										<p:column headerText="Cód."
+											style="font-weight:bold;width:20%;">
+											<h:outputText value="#{tab.idGrupo}" />
+										</p:column>
+
+										<p:column headerText="Nome" style="font-weight:bold;">
+											<h:outputText value="#{tab.descGrupo}" />
+										</p:column>
+
+									</p:dataTable>
+								</div>
+							</div>
 						</p:tab>
 
 					</p:tabView>
@@ -68,7 +93,34 @@
 						rendered="#{ProgramaController.tipo  == 'A'}" />
 				</p:panelGrid>
 
+				<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"
+					modal="true" width="550px">
+					<h:form id="formConsuGrop">
+						<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
+							resizableColumns="true" var="grupo"
+							emptyMessage="Não existe nenhum grupo cadastrado!">
+							<p:column headerText="CÓD.">
+								<p:outputLabel value="#{grupo.idGrupo}" />
+							</p:column>
+							<p:column headerText="GRUPO">
+								<p:outputLabel value="#{grupo.descGrupo}" />
+							</p:column>
+							<p:column headerText="QTD. FREQ>">
+								<p:outputLabel value="#{grupo.qtdFrequencia}" />
+							</p:column>
 
+							<p:column style="width:50px;text-align: center">
+								<p:commandButton update=":formCADU:pnlCadPrograma"
+									icon="ui-icon-check" title="Selecionar"
+									onclick="PF('dlgConsuGrupo').hide();"
+									action="#{ProgramaController.prog.addGrupoLista()}">
+									<f:setPropertyActionListener value="#{grupo}"
+										target="#{ProgramaController.prog.grupoParaAdd}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</h:form>
+				</p:dialog>
 
 			</h:form>
 		</div>

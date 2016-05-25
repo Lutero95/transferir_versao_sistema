@@ -21,6 +21,7 @@ public class ProfissionalController {
 	private ProfissionalDAO pDao = new ProfissionalDAO();
 	private Integer tipoBuscar;
 	private String descricaoBusca;
+	private String cabecalho;
 	private String tipo;
 	private Integer abaAtiva = 0;
 
@@ -137,5 +138,18 @@ public class ProfissionalController {
 	
 	public void buscarProfissional() {
 		this.listaProfissional = pDao.listarProfissionalBusca(descricaoBusca, tipoBuscar);
+	}
+	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE PROFISSIONAL";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR PROFISSIONAL";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
 	}
 }

@@ -4,9 +4,7 @@ import java.util.Date;
 
 public class LaudoBean {
 	private Integer id_apac;
-	private Integer codpaciente;
 	private String apac;
-	private Integer codprograma;
 	private Integer codmedico;
 	private String unidade;
 	private String cid10_1;
@@ -39,9 +37,28 @@ public class LaudoBean {
 	
 	//CLASSES HERDADAS
 	private PacienteBean paciente;
+	private ProgramaBean programa;
+	private ProfissaoBean profissao;
+	private ProfissionalBean profissional;
+	private GrupoBean grupo;
+	private ProcedimentoBean procedimento;
+	private FornecedorBean fornecedor;
 	
 	public LaudoBean(){
-		paciente = new PacienteBean();
+		this.paciente = null;//new PacienteBean();
+		this.procedimento = null;
+		this.grupo = null;//new GrupoBean();
+		this.programa = null;//new ProgramaBean();
+		this.profissional = null;
+		fornecedor = new FornecedorBean();
+		
+		//paciente = new PacienteBean();
+		//programa = new ProgramaBean();
+		//profissao = new ProfissaoBean();
+		//profissional = new ProfissionalBean();
+		//grupo = new GrupoBean();
+		//procedimento = new ProcedimentoBean();
+		//fornecedor = new FornecedorBean();
 	}
 
 	public Integer getCodLaudoApac() {
@@ -84,28 +101,12 @@ public class LaudoBean {
 		this.id_apac = id_apac;
 	}
 
-	public Integer getCodpaciente() {
-		return codpaciente;
-	}
-
-	public void setCodpaciente(Integer codpaciente) {
-		this.codpaciente = codpaciente;
-	}
-
 	public String getApac() {
 		return apac;
 	}
 
 	public void setApac(String apac) {
 		this.apac = apac;
-	}
-
-	public Integer getCodprograma() {
-		return codprograma;
-	}
-
-	public void setCodprograma(Integer codprograma) {
-		this.codprograma = codprograma;
 	}
 
 	public String getUnidade() {
@@ -314,6 +315,54 @@ public class LaudoBean {
 
 	public void setDtautorizacao(Date dtautorizacao) {
 		this.dtautorizacao = dtautorizacao;
+	}
+
+	public ProgramaBean getPrograma() {
+		return programa;
+	}
+
+	public void setPrograma(ProgramaBean programa) {
+		this.programa = programa;
+	}
+
+	public ProfissaoBean getProfissao() {
+		return profissao;
+	}
+
+	public void setProfissao(ProfissaoBean profissao) {
+		this.profissao = profissao;
+	}
+
+	public ProfissionalBean getProfissional() {
+		return profissional;
+	}
+
+	public void setProfissional(ProfissionalBean profissional) {
+		this.profissional = profissional;
+	}
+
+	public GrupoBean getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(GrupoBean grupo) {
+		this.grupo = grupo;
+	}
+
+	public ProcedimentoBean getProcedimento() {
+		return procedimento;
+	}
+
+	public void setProcedimento(ProcedimentoBean procedimento) {
+		this.procedimento = procedimento;
+	}
+
+	public FornecedorBean getFornecedor() {
+		return fornecedor;
+	}
+
+	public void setFornecedor(FornecedorBean fornecedor) {
+		this.fornecedor = fornecedor;
 	}
 	
 	

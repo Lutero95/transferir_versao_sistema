@@ -29,6 +29,7 @@ public class EnderecoController {
 			private Integer tipoBuscaMunicipio;
 			private String campoBuscaMunicipio;
 			private String statusMunicipio;
+			private String cabecalho;
 	
 	public EnderecoController(){
 		endereco = new EnderecoBean();
@@ -271,6 +272,18 @@ public class EnderecoController {
 		this.abaAtiva = abaAtiva;
 	}
 	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE ENDEREÇO";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR ENDEREÇO";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
+	}
 	
 	
 }

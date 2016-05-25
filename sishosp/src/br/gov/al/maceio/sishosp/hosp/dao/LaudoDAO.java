@@ -46,11 +46,11 @@ public class LaudoDAO {
             	System.out.println("passou aqui 3");
                 conexao = ConnectionFactory.getConnection();
                 PreparedStatement stmt = conexao.prepareStatement(sql);
-                stmt.setInt(1, laudo.getCodpaciente());
-                stmt.setInt(2, laudo.getCodprograma());
-                stmt.setInt(3, laudo.getCodgrupo());
-                stmt.setInt(4, laudo.getCodmedico());
-                stmt.setInt(5, laudo.getCodproc());
+                stmt.setLong(1, laudo.getPaciente().getId_paciente());
+                stmt.setInt(2, laudo.getPrograma().getIdPrograma());
+                stmt.setInt(3, laudo.getGrupo().getIdGrupo());
+                stmt.setInt(4, laudo.getProfissional().getIdProfissional());
+                stmt.setInt(5, laudo.getProcedimento().getIdProc());
                 //stmt.setString(6, laudo.getPaciente().getCns().toUpperCase().trim());
                 //stmt.setString(7, laudo.getPaciente().getCpf().toUpperCase().trim());
                 stmt.setDate(6, new java.sql.Date(laudo.getDtasolicitacao().getTime()));
@@ -70,8 +70,8 @@ public class LaudoDAO {
     			} else {
     				stmt.setString(13, laudo.getCid10_2().toUpperCase().trim());
     			}
-                stmt.setInt(14, laudo.getCodfornecedor());
-                stmt.setDouble(15, laudo.getValor());
+                stmt.setInt(14, laudo.getFornecedor().getIdFornecedor());
+                stmt.setDouble(15, laudo.getFornecedor().getValor());
                 stmt.setString(16, laudo.getNota().toUpperCase().trim());
                 stmt.setInt(17, laudo.getQtd());
                 stmt.setInt(18, laudo.getCodequipamento());

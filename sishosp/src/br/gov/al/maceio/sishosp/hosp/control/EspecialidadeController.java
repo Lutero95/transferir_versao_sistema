@@ -21,6 +21,7 @@ public class EspecialidadeController {
 	private String descricaoBusca;
 	private String tipo;
 	private Integer abaAtiva = 0;
+	private String cabecalho;
 
 	EspecialidadeDAO eDao = new EspecialidadeDAO();
 
@@ -137,5 +138,18 @@ public class EspecialidadeController {
             RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
         }
 		this.listaEspecialidade = eDao.listarEspecialidades();
+	}
+	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE ESPECIALIDADE";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR ESPECIALIDADE";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
 	}
 }

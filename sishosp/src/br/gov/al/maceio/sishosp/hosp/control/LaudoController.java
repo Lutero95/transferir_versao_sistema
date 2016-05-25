@@ -11,6 +11,7 @@ import org.primefaces.context.RequestContext;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
@@ -30,8 +31,9 @@ public class LaudoController {
 	private ProfissionalBean profissional;
 	private EquipeBean equipe;
 	private ProcedimentoBean procedimento;
+	private FornecedorBean fornecedor;
 	
-	
+	private String cabecalho;
 	
 	//LISTAS
 	private List<LaudoBean> listaLaudos;
@@ -44,18 +46,15 @@ public class LaudoController {
 	
 	public LaudoController(){
 		//CLASSES
-		this.paciente = null;//new PacienteBean();
-		this.procedimento = null;
-		this.grupo = null;//new GrupoBean();
-		this.programa = null;//new ProgramaBean();
+		laudo = new LaudoBean();
 		this.tipoAt = null;//new TipoAtendimentoBean();
-		this.profissional = null;
 		this.equipe = null;
 		 //BUSCA
 		tipo ="";
 		tipoBuscaLaudo = 1;
 		campoBuscaLaudo = "";
 		statusLaudo = "P";
+		this.cabecalho = "";
 		
 		 listaLaudos = new ArrayList<>();
 		 listaLaudos = null;
@@ -370,6 +369,27 @@ public class LaudoController {
 
 	public void setProcedimento(ProcedimentoBean procedimento) {
 		this.procedimento = procedimento;
+	}
+
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE LAUDO";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR LAUDO";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
+	}
+
+	public FornecedorBean getFornecedor() {
+		return fornecedor;
+	}
+
+	public void setFornecedor(FornecedorBean fornecedor) {
+		this.fornecedor = fornecedor;
 	}
 
 	    

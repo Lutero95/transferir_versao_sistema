@@ -20,7 +20,7 @@ public class ProcedimentoController {
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private String tipo;
-
+    private String cabecalho;
 	ProcedimentoDAO pDao = new ProcedimentoDAO();
 
 	public ProcedimentoController() {
@@ -130,5 +130,18 @@ public class ProcedimentoController {
             RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
         }
 		listaProcedimentos = pDao.listarProcedimento();
+	}
+	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE PROCEDIMENTO";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR PROCEDIMENTO";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
 	}
 }

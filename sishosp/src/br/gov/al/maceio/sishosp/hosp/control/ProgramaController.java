@@ -1,7 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -10,9 +9,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 public class ProgramaController {
@@ -22,11 +19,13 @@ public class ProgramaController {
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private String tipo;
+	private String cabecalho;
 	private Integer abaAtiva = 0;
 	
 	ProgramaDAO pDao = new ProgramaDAO();
 	
 	public ProgramaController() {
+	
 		this.prog = new ProgramaBean();
 		this.listaProgramas = null;
 		this.descricaoBusca = new String();
@@ -144,6 +143,19 @@ public class ProgramaController {
 
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
+	}
+	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE PROGRAMA";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR PROGRAMA";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
 	}
 	
 }

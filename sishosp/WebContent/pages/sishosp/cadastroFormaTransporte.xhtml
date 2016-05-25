@@ -12,9 +12,7 @@
         <ui:define name="body">
                <!-- INICIO DO FORMULARIO -->
     <div class="col-md-8">
-        <p:outputLabel value="CADASTRO DE TRANSPORTE" rendered="#{FormaTransporteController.tipo == 'I'}"></p:outputLabel>
-        <p:outputLabel value="ALTERAR TRANSPORTE" rendered="#{FormaTransporteController.tipo == 'A'}"></p:outputLabel>
-        <br />
+
         <h:form> <p:commandButton value="Voltar"
 			style="position:relative; right:18%; width:100px; " icon="btvoltar"
 			action ="/pages/sishosp/gerenciarFormaTransporte.faces"></p:commandButton>  </h:form>
@@ -22,7 +20,7 @@
         <h:form class="form-horizontal" id="formCADU">
        
         <p:growl id="message"/>
-        <p:panel id="pnlCadPaciente" style="height:auto; width:850px; background-color: #F5F5F5;" >  
+        <p:panel id="pnlCadPaciente" header="#{FormaTransporteController.cabecalho}" style="height:auto; width:850px; background-color: #F5F5F5;" >  
           <!--  <p:growl id="growl" showDetail="false" /> -->
          <p:tabView activeIndex="#{FormaTransporteController.abaAtiva}" style="height:auto; width:800px">
          <p:tab title="DADOS TRANSPORTE">

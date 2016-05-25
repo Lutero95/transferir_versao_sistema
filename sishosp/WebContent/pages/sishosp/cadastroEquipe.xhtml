@@ -12,11 +12,7 @@
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
-			<p:outputLabel value="CADASTRO DE EQUIPE"
-				rendered="#{EquipeController.tipo == 'I'}"></p:outputLabel>
-			<p:outputLabel value="ALTERAR EQUIPE"
-				rendered="#{EscolaController.tipo == 'A'}"></p:outputLabel>
-			<br />
+
 			<h:form>
 				<p:commandButton value="Voltar"
 					style="position:relative; right:18%; width:100px; " icon="btvoltar"
@@ -26,7 +22,7 @@
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
-				<p:panel id="pnlCadEquipe"
+				<p:panel id="pnlCadEquipe" header="#{EquipeController.cabecalho}"
 					style="height:auto; width:850px; background-color: #F5F5F5;">
 					<!--  <p:growl id="growl" showDetail="false" /> -->
 					<p:tabView activeIndex="#{EquipeController.abaAtiva}"

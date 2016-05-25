@@ -7,6 +7,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
+
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.FormaTransporteDAO;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
@@ -19,6 +20,7 @@ public class FormaTransporteController {
 	
 	private Integer abaAtiva = 0;
 	private FormaTransporteBean transporte;
+	private String cabecalho;
 	
 	//BUSCAS
 	private String tipo;
@@ -201,6 +203,19 @@ public class FormaTransporteController {
 
 	public void setListaTransporte(List<FormaTransporteBean> listaTransporte) {
 		this.listaTransporte = listaTransporte;
+	}
+	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE TRANSPORTE";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR TRANSPORTE";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
 	}
 
     

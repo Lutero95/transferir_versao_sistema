@@ -15,19 +15,10 @@
 				style="position:relative; right:18%; width:100px; " icon="btvoltar"
 				action="/pages/sishosp/gerenciarProfissional.faces"></p:commandButton>
 		</h:form>
-		<div class="col-md-8">
-			<p:outputPanel rendered="#{ProfissionalController.tipo == 'I'}">
-				<h3>CADASTRO DE PROFISSIONAL</h3>
-				<br />
-			</p:outputPanel>
-			<p:outputPanel rendered="#{ProfissionalController.tipo == 'A'}">
-				<h3>ALTERAR PROFISSIONAL</h3>
-				<br />
-			</p:outputPanel>
-		</div>
+
 
 		<h:form id="frmCadProfi">
-			<p:panel id="pnlCadProf">
+			<p:panel id="pnlCadProf" header="#{ProfissionalController.cabecalho}">
 				<p:growl id="msg" />
 				<p:panelGrid columns="3" styleClass="semBorda">
 					<h:outputLabel for="programa" value="Programa" />

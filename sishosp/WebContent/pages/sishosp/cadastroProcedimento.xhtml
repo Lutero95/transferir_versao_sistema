@@ -15,19 +15,9 @@
 				style="position:relative; right:18%; width:100px; " icon="btvoltar"
 				action="/pages/sishosp/gerenciarProcedimento.faces"></p:commandButton>
 		</h:form>
-		<div class="col-md-8">
-			<p:outputPanel rendered="#{ProcedimentoController.tipo == 'I'}">
-				<h3>CADASTRO DE PROCEDIMENTO</h3>
-				<br />
-			</p:outputPanel>
-			<p:outputPanel rendered="#{ProcedimentoController.tipo == 'A'}">
-				<h3>ALTERAR PROCEDIMENTO</h3>
-				<br />
-			</p:outputPanel>
-		</div>
 
 		<h:form id="frmCadProc">
-			<p:panel id="pnlCadProc">
+			<p:panel id="pnlCadProc" header="#{ProcedimentoController.cabecalho}">
 				<p:growl id="msg" />
 				<p:panelGrid columns="2" styleClass="semBorda">
 

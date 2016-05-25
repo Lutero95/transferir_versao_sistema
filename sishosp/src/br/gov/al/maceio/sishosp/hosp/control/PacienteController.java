@@ -40,6 +40,7 @@ public class PacienteController {
 	private Integer SelecionadoRaca;
 	private String tipoBuscar;
 	private String descricaoParaBuscar;
+	private String cabecalho;
 
 	// CLASSES HERDADAS
 	private PacienteBean paciente;
@@ -1368,6 +1369,20 @@ public class PacienteController {
 	public void setStatusRaca(String statusRaca) {
 		this.statusRaca = statusRaca;
 	}
+
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE PACIENTE";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR PACIENTE";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
+	}
+
 	
 	
 

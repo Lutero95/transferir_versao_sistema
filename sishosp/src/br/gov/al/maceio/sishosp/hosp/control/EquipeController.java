@@ -20,6 +20,7 @@ public class EquipeController {
 	private String descricaoBusca;
 	private String tipo;
 	private Integer abaAtiva = 0;
+	private String cabecalho;
 
 	EquipeDAO eDao = new EquipeDAO();
 
@@ -135,5 +136,18 @@ public class EquipeController {
             RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
         }
 		this.listaEquipe = eDao.listarEquipe();
+	}
+	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE EQUIPE";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR EQUIPE";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
 	}
 }

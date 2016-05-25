@@ -7,6 +7,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
+
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaridadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
@@ -17,6 +18,8 @@ public class EscolaridadeController {
 	
 	private Integer abaAtiva = 0;
 	private EscolaridadeBean escolaridade;
+	
+	private String cabecalho;
 	
 	
 	
@@ -200,6 +203,19 @@ public class EscolaridadeController {
 		this.listaEscolaridade = listaEscolaridade;
 	}
 
+	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE ESCOLARIDADE";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR ESCOLARIDADE";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
+	}
 	    
 	    
 }

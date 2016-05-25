@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import org.primefaces.context.RequestContext;
 
+import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EncaminhadoDAO;
@@ -23,6 +23,8 @@ public class EncaminhadoController {
 	private Integer tipoBuscaEncaminhado;
 	private String campoBuscaEncaminhado;
 	private String statusEncaminhado;
+	private String cabecalho;
+	
 	
 	private List<EncaminhadoBean> listaEncaminhado;
 	
@@ -212,7 +214,18 @@ public class EncaminhadoController {
 		this.listaEncaminhado = listaEncaminhado;
 	}
 
-	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE ENCAMINHADO";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR ENCAMINHADO";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
+	}
 	
 }
 

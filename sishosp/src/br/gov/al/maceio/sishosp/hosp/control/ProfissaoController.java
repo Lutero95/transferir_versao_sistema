@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
@@ -22,6 +23,7 @@ public class ProfissaoController {
 	private ProfissaoBean profissao;
 	private Integer abaAtiva = 0;
 	//BUSCAS
+	private String cabecalho;
 		private String tipo;
 		private Integer tipoBuscaProfissao;
 		private String campoBuscaProfissao;
@@ -205,6 +207,17 @@ public class ProfissaoController {
 	}
 	
 	
-	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE PROFISSÃO";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR PROFISSÃO";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
+	}
 	    
 }

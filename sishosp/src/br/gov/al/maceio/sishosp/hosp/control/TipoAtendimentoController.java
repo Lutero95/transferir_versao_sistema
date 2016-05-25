@@ -21,6 +21,8 @@ public class TipoAtendimentoController {
 	private String descricaoBusca;
 	private String tipoS;
 	
+	private String cabecalho;
+	
 	
 	private Integer abaAtiva = 0;
 	
@@ -147,4 +149,16 @@ public class TipoAtendimentoController {
 		this.abaAtiva = abaAtiva;
 	}
 	
+	public String getCabecalho() {
+		if(this.tipoS.equals("I")){
+			cabecalho = "CADASTRO DE TIPO ATENDIMENTO";
+		}else if(this.tipoS.equals("A")){
+			cabecalho = "ALTERAR TIPO ATENDIMENTO";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
+	}
 }

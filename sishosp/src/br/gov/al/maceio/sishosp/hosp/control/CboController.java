@@ -20,6 +20,7 @@ public class CboController {
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private String tipo;
+	private String cabecalho;
 
 	private Integer abaAtiva = 0;
 
@@ -143,6 +144,19 @@ public class CboController {
 
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
+	}
+	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE CBO";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR CBO";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
 	}
 
 }

@@ -22,6 +22,7 @@ public class GrupoController {
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private String tipo;
+	private String cabecalho;
 
 	private Integer abaAtiva = 0;
 
@@ -33,6 +34,7 @@ public class GrupoController {
 		this.listaGruposProgramas = new ArrayList<>();
 		this.descricaoBusca = new String();
 		this.tipo = new String();
+		this.cabecalho = "";
 	}
 
 	public void limparDados() {
@@ -158,6 +160,15 @@ public class GrupoController {
 
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
+	}
+	
+	public String getCabecalho() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE GRUPO";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR GRUPO";
+		}
+		return cabecalho;
 	}
 	
 }
