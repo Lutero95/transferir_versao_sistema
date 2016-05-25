@@ -18,6 +18,13 @@ public class ConfigAgendaController {
 		this.confParte2 = new ConfigAgendaParte2Bean();
 		this.listaTipos = new ArrayList<>();
 	}
+	
+	public void limparDados(){
+		System.out.println("LIMPAR");
+		this.confParte1 = new ConfigAgendaParte1Bean();
+		this.confParte2 = new ConfigAgendaParte2Bean();
+		this.listaTipos = new ArrayList<>();
+	}
 
 	public ConfigAgendaParte1Bean getConfParte1() {
 		return confParte1;
@@ -41,6 +48,11 @@ public class ConfigAgendaController {
 
 	public void setListaTipos(List<ConfigAgendaParte2Bean> listaTipos) {
 		this.listaTipos = listaTipos;
+	}
+	
+	public void addNaLista(){
+		this.listaTipos.add(confParte2);
+		this.confParte2 = new ConfigAgendaParte2Bean();
 	}
 
 	

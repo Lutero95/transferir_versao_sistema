@@ -105,36 +105,35 @@
 						value="Alterar" styleClass="btn btn-info"
 						rendered="#{TipoAtendimentoController.tipoS  == 'A'}" />
 				</p:panelGrid>
-				
-				<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"
-			modal="true" width="550px">
-			<h:form id="formConsuGrop">
-				<p:dataTable value="#{GrupoController.listaGrupos}"
-					id="dtGrupo" resizableColumns="true" var="grupo"
-					emptyMessage="Não existe nenhum grupo cadastrado!">
-					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{grupo.idGrupo}" />
-					</p:column>
-					<p:column headerText="GRUPO">
-						<p:outputLabel value="#{grupo.descGrupo}" />
-					</p:column>
-					<p:column headerText="QTD. FREQ>">
-						<p:outputLabel value="#{grupo.qtdFrequencia}" />
-					</p:column>
 
-					<p:column style="width:50px;text-align: center">
-						<p:commandButton
-							update=":formCADU:pnlCadTiAt"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsuGrupo').hide();"
-							action="#{TipoAtendimentoController.tipo.addGrupoLista()}">
-							<f:setPropertyActionListener value="#{grupo}"
-								target="#{TipoAtendimentoController.tipo.grupoParaAdd}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
+				<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"
+					modal="true" width="550px">
+					<h:form id="formConsuGrop">
+						<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
+							resizableColumns="true" var="grupo"
+							emptyMessage="Não existe nenhum grupo cadastrado!">
+							<p:column headerText="CÓD.">
+								<p:outputLabel value="#{grupo.idGrupo}" />
+							</p:column>
+							<p:column headerText="GRUPO">
+								<p:outputLabel value="#{grupo.descGrupo}" />
+							</p:column>
+							<p:column headerText="QTD. FREQ>">
+								<p:outputLabel value="#{grupo.qtdFrequencia}" />
+							</p:column>
+
+							<p:column style="width:50px;text-align: center">
+								<p:commandButton update=":formCADU:pnlCadTiAt"
+									icon="ui-icon-check" title="Selecionar"
+									onclick="PF('dlgConsuGrupo').hide();"
+									action="#{TipoAtendimentoController.tipo.addGrupoLista()}">
+									<f:setPropertyActionListener value="#{grupo}"
+										target="#{TipoAtendimentoController.tipo.grupoParaAdd}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</h:form>
+				</p:dialog>
 
 			</h:form>
 		</div>
