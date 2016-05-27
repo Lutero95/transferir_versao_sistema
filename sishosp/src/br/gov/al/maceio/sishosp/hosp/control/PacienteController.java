@@ -347,7 +347,7 @@ public class PacienteController {
 	}
 
 	public void onRowSelect(SelectEvent event) {
-		Long codpaciente;
+		Integer codpaciente;
 		codpaciente = ((PacienteBean) event.getObject()).getId_paciente();
 
 	}

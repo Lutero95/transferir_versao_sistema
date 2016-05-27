@@ -5,7 +5,7 @@ import java.util.List;
 
 public class PacienteBean {
     //ATRIBUTOS
-	private Long id_paciente;
+	private Integer id_paciente;
     private String nome;
     private String estadoCivil;
     private Date dtanascimento;
@@ -89,11 +89,11 @@ public class PacienteBean {
         
     }
 
-	public Long getId_paciente() {
+	public Integer getId_paciente() {
 	return id_paciente;
     }
 
-    public void setId_paciente(Long id_paciente) {
+    public void setId_paciente(Integer id_paciente) {
 	this.id_paciente = id_paciente;
     }
 

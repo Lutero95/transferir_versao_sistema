@@ -17,6 +17,7 @@
 			action ="/pages/sishosp/gerenciarLaudo.faces"></p:commandButton>  </h:form>
         
  <h:form id="formLaudo">
+ <p:growl id="message"/>
 			<p:panel header="#{LaudoController.cabecalho}">
 				<p:panelGrid columns="3" styleClass="semBorda">
 					<h:outputLabel for="pac" value="Paciente:" />
@@ -264,7 +265,11 @@
 					<p:panelGrid columns="3" styleClass="semBorda">
 						
 						<p:commandButton value="Gravar" icon="confirmar"
-							action="#{LaudoController.gravarLaudo()}"/>
+							action="#{LaudoController.gravarLaudo()}" rendered="#{LaudoController.tipo == 'I'}"/>
+							
+							 <p:commandButton action="#{LaudoController.alterarLaudo()}" icon="alterar-dados"  
+                             update=":formLaudo:message,:formLaudo" value="Alterar"
+                             rendered="#{LaudoController.tipo == 'A'}" />
 						
 						<p:commandButton value="Consultar" icon="buscar" />
 						

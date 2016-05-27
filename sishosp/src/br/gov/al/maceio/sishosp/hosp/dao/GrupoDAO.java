@@ -11,6 +11,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 public class GrupoDAO {
 	
@@ -214,5 +215,35 @@ public class GrupoDAO {
 
 		}
 	}	
+	
+	public GrupoBean listarGrupoPorId(int id) {
+
+		GrupoBean grupo = new GrupoBean();
+		String sql = "select id_grupo, descgrupo, qtdfrequencia from hosp.grupo where id_grupo = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			while(rs.next()){
+				
+                grupo.setIdGrupo(rs.getInt("id_grupo"));
+                grupo.setDescGrupo(rs.getString("descgrupo"));    
+                grupo.setQtdFrequencia(rs.getInt("qtdfrequencia")); 
+				//programa.setCodFederal(rs.getDouble("codfederal"));
+			}
+
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return grupo;
+	}
 
 }

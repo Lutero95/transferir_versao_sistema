@@ -79,7 +79,7 @@ public class ProcedimentoDAO {
 	public ProcedimentoBean listarProcedimentoPorId(int id) {
 
 		ProcedimentoBean proc = new ProcedimentoBean();
-		String sql = "select codproc, nome from hosp.proc where codproc = ?";
+		String sql = "select id, codproc, nome from hosp.proc where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -87,6 +87,7 @@ public class ProcedimentoDAO {
 			ResultSet rs = stm.executeQuery();
 			while (rs.next()) {
 				proc = new ProcedimentoBean();
+				proc.setIdProc(rs.getInt("id"));
 				proc.setCodProc(rs.getInt("codproc"));
 				proc.setNomeProc(rs.getString("nome"));
 
