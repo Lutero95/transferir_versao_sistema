@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
 public class ProfissionalDAO {
@@ -230,6 +231,43 @@ public class ProfissionalDAO {
 			}
 		}
 		
+	}
+	
+	public ProfissionalBean listarProfissionalPorId(int id) {
+
+		ProfissionalBean prof = new ProfissionalBean();
+		String sql = "select id_medico, descmedico, codprograma, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, "
+				+ "codprocedimentopadrao2, codempresa from hosp.medicos where id_medico = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			while(rs.next()){
+				
+				prof.setIdProfissional(rs.getInt("id_medico"));
+				prof.setDescricaoProf(rs.getString("descmedico"));
+				prof.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
+				prof.setCns(rs.getString("cns"));
+				prof.setAtivo(rs.getBoolean("ativo"));
+				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+				prof.setProc1(procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
+				prof.setProc2(procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao2")));
+				//programa.setCodFederal(rs.getDouble("codfederal"));
+			}
+
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return prof;
 	}
 
 }

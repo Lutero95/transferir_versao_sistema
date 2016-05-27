@@ -13,7 +13,7 @@
         <ui:define name="body">
                <!-- INICIO DO FORMULARIO -->
     <div class="col-md-8">
-        <h3 >GERENCIAMENTO DE LAUDOS BPI E APAC</h3>
+        <h3 >GERENCIAMENTO DE LAUDOS</h3>
         <br />
        </div>
         <h:form id="frmmensagem" onkeypress="
@@ -85,15 +85,27 @@
 
 
                 <p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover" id="tabela"
-                             style="margin-top:20px;" value="#{EscolaController.listaEscolas}"
+                             style="margin-top:20px;" value="#{LaudoController.listaLaudo}"
                              var="tab" paginator="true" paginatorPosition="bottom" rows="12">
 
                     <p:column headerText="Cód." style="font-weight:bold;width:5%;">
-                        <h:outputText value="#{tab.codEscola}" />
+                        <h:outputText value="#{tab.id_apac}" />
                     </p:column>
 
                     <p:column headerText="Nome" style="font-weight:bold;">
-                        <h:outputText value="#{tab.descescola}" />
+                        <h:outputText value="#{tab.apac}" />
+                    </p:column>
+                    
+                    <p:column headerText="Data Solicitada" style="font-weight:bold;">
+                        <h:outputText value="#{tab.dtasolicitacao}" />
+                    </p:column>
+                    
+                      <p:column headerText="Data Autorizada" style="font-weight:bold;">
+                        <h:outputText value="#{tab.dtautorizacao}" />
+                    </p:column>
+                    
+                      <p:column headerText="Unidade" style="font-weight:bold;">
+                        <h:outputText value="#{tab.unidade}" />
                     </p:column>
 
                     
@@ -101,17 +113,17 @@
                             <center>
                                 <p:splitButton icon="confirmar">
                                     <p:menuitem value="Alterar" icon="alterar-dados"  
-                                       action ="/pages/sishosp/cadastroEscola.faces" >
-                                        <f:setPropertyActionListener value="#{tab}" target="#{EscolaController.escola}" />
+                                       action ="/pages/sishosp/cadastroLaudo.faces" >
+                                        <f:setPropertyActionListener value="#{tab}" target="#{LaudoController.laudo}" />
   
                                        
-                                       <f:setPropertyActionListener value="A" target="#{EscolaController.tipo}" /> 
+                                       <f:setPropertyActionListener value="A" target="#{LaudoController.tipo}" /> 
                                     </p:menuitem>
                                     
                                     <p:menuitem value="Excluir" icon="trash" 
                                         onclick="PF('dialogAtencao').show()">
 
-                                        <f:setPropertyActionListener value="#{tab.codEscola}" target="#{EscolaController.escola.codEscola}" />
+                                        <f:setPropertyActionListener value="#{tab.id_apac}" target="#{LaudoController.laudo.id_apac}" />
                                     </p:menuitem>
                                 </p:splitButton>   
                             </center>
@@ -128,7 +140,7 @@
 
 
                     <div class="alert alert-warning" role="alert">Deseja excluir
-                        esta Escola?</div>
+                        este Laudo?</div>
 
                 </h:panelGrid>
 
@@ -137,7 +149,7 @@
                 <center>
 
                     <p:commandButton value="Sim" 
-                                     action="#{EscolaController.excluirEscola()}"
+                                     action="#{LaudoController.excluirLaudo()}"
                                      icon="ui-icon-check" style="font-size:14px;" update=":frmmensagem:tabela">
                     </p:commandButton>
 
