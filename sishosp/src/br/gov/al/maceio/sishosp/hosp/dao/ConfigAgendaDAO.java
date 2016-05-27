@@ -28,17 +28,16 @@ public class ConfigAgendaDAO {
 		}
 
 		String sql = "INSERT INTO hosp.config_agenda(codmedico, diasemana, "
-				+ "  qtdmax, dataagenda, turno, mes, ano, codempresa)"
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+				+ "  qtdmax, dataagenda, turno, mes, ano, codempresa, id_configagenda) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, DEFAULT) RETURNING id_configagenda;";
 		try {
 			System.out.println("VAI CADASTRAR CONFIG AGENDA");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-
+			System.out.println("AQUI> "+ confParte1.getTurno());
 			if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU OS DIAS DA
 														// SEMANA
 				for (String dia : confParte1.getDiasSemana()) {
-					System.out.println("DIA > " + dia);
 					gravaTurno(confParte1, dia);
 				}
 			} else {// ESCOLHEU DATA ESPECIFICA
@@ -61,52 +60,68 @@ public class ConfigAgendaDAO {
 
 	public void gravaTurno(ConfigAgendaParte1Bean confParte1, String dia)
 			throws SQLException {
-		if (dia != null) {
-			if (confParte1.getTurno().equals("A")) {
-				// TURNO MANHA
-				ps.setInt(1, confParte1.getProfissional().getIdProfissional());
+		ResultSet rs = null;
+		
+		if (confParte1.getTurno().equals("A")) {
+			if(dia!=null){
 				ps.setInt(2, Integer.parseInt(dia));
-				ps.setInt(3, confParte1.getQtdMax());
 				ps.setDate(4, null);
-				ps.setString(5, "M");
-				ps.setInt(6, confParte1.getMes());
-				ps.setInt(7, confParte1.getAno());
-				ps.setInt(8, 0);// COD EMPRESA ?
-				ps.execute();
-				con.commit();
-				// TURNO TARDE
-				ps.setInt(1, confParte1.getProfissional().getIdProfissional());
-				ps.setInt(2, Integer.parseInt(dia));
-				ps.setInt(3, confParte1.getQtdMax());
-				ps.setDate(4, null);
-				ps.setString(5, "T");
-				ps.setInt(6, confParte1.getMes());
-				ps.setInt(7, confParte1.getAno());
-				ps.setInt(8, 0);// COD EMPRESA ?
-				ps.execute();
-				con.commit();
-			} else {
-				ps.setInt(1, confParte1.getProfissional().getIdProfissional());
-				ps.setInt(2, Integer.parseInt(dia));
-				ps.setInt(3, confParte1.getQtdMax());
-				ps.setDate(4, null);
-				ps.setString(5, confParte1.getTurno());
-				ps.setInt(6, confParte1.getMes());
-				ps.setInt(7, confParte1.getAno());
-				ps.setInt(8, 0);// COD EMPRESA ?
-				ps.execute();
-				con.commit();
+			}else{
+				ps.setInt(2, 0);
+				ps.setDate(4, new Date(confParte1.getDataEspecifica().getTime()));
 			}
-		} else {
 			ps.setInt(1, confParte1.getProfissional().getIdProfissional());
-			ps.setInt(2, 0);
 			ps.setInt(3, confParte1.getQtdMax());
-			ps.setDate(4, new Date(confParte1.getDataEspecifica().getTime()));
+			ps.setString(5, "M");
+			ps.setInt(6, confParte1.getMes());
+			ps.setInt(7, confParte1.getAno());
+			ps.setInt(8, 0);// COD EMPRESA ?
+			rs = ps.executeQuery();
+			int idTipo1 = 0;
+			if (rs.next()) {
+				idTipo1 = rs.getInt("id_configagenda");
+				System.out.println("retorno1 " + idTipo1);
+
+			}
+			con.commit();
+			
+			rs = null;
+			ps.setInt(1, confParte1.getProfissional().getIdProfissional());
+			ps.setInt(3, confParte1.getQtdMax());
+			ps.setString(5, "T");
+			ps.setInt(6, confParte1.getMes());
+			ps.setInt(7, confParte1.getAno());
+			ps.setInt(8, 0);// COD EMPRESA ?
+			rs = ps.executeQuery();
+			int idTipo2 = 0;
+			if (rs.next()) {
+				idTipo2 = rs.getInt("id_configagenda");
+				System.out.println("retorno2 " + idTipo2);
+
+			}
+			con.commit();
+		} else {
+			if(dia!=null){
+				ps.setInt(2, Integer.parseInt(dia));
+				ps.setDate(4, null);
+			}else{
+				ps.setInt(2, 0);
+				ps.setDate(4, new Date(confParte1.getDataEspecifica().getTime()));
+			}
+			System.out.println("GRAVA TURNO NORMAL");
+			ps.setInt(1, confParte1.getProfissional().getIdProfissional());
+			ps.setInt(3, confParte1.getQtdMax());
 			ps.setString(5, confParte1.getTurno());
 			ps.setInt(6, confParte1.getMes());
 			ps.setInt(7, confParte1.getAno());
 			ps.setInt(8, 0);// COD EMPRESA ?
-			ps.execute();
+			rs = ps.executeQuery();
+			int idTipo3 = 0;
+			if (rs.next()) {
+				idTipo3 = rs.getInt("id_configagenda");
+				System.out.println("retorno3 " + idTipo3);
+
+			}
 			con.commit();
 		}
 	}

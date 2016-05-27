@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -38,8 +39,8 @@ public class ConfigAgendaController implements Serializable{
 	public ConfigAgendaController() {
 		this.confParte1 = new ConfigAgendaParte1Bean();
 		this.confParte2 = new ConfigAgendaParte2Bean();
-		this.listaTipos = null;
-		this.listaHorarios = null;
+		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
+		this.listaHorarios = new ArrayList<ConfigAgendaParte1Bean>();
 		this.listaProfissionais = null;
 		
 	}
@@ -48,8 +49,8 @@ public class ConfigAgendaController implements Serializable{
 		System.out.println("LIMPAR");
 		this.confParte1 = new ConfigAgendaParte1Bean();
 		this.confParte2 = new ConfigAgendaParte2Bean();
-		this.listaTipos = null;
-		this.listaHorarios = null;
+		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
+		this.listaHorarios = new ArrayList<ConfigAgendaParte1Bean>();
 		this.listaProfissionais = null;
 		this.nomeBusca= new String();
 	}
@@ -147,7 +148,7 @@ public class ConfigAgendaController implements Serializable{
 	}
 
 	public void gravarConfigAgenda() throws SQLException {
-		boolean ok = cDao.gravarConfigAgenda(confParte1, confParte2);
+		boolean ok = false;
 		int somatorio = 0;
 
 		for (ConfigAgendaParte2Bean conf : listaTipos) {
@@ -160,8 +161,11 @@ public class ConfigAgendaController implements Serializable{
 						"Quantidade máxima está divergente!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				ok = false;
+				return;
 			}
 		}
+		
+		ok = cDao.gravarConfigAgenda(confParte1, confParte2);
 		
 		if (ok) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
