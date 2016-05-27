@@ -90,7 +90,6 @@
 
 				<p:separator />
 
-
 				<p:panelGrid columns="4" styleClass="semBorda">
 					<h:outputLabel value="Mês: " />
 					<p:selectOneMenu style="width:120px"
@@ -149,13 +148,13 @@
 					<h:outputLabel value="Turno: " />
 					<p:selectOneMenu style="width:100px"
 						value="#{ConfigAgendaController.confParte1.turno}">
-						<f:selectItem itemLabel="MANHÃ" itemValue="1" />
-						<f:selectItem itemLabel="TARDE" itemValue="2" />
-						<f:selectItem itemLabel="AMBOS" itemValue="3" />
+						<f:selectItem itemLabel="MANHÃ" itemValue="M" />
+						<f:selectItem itemLabel="TARDE" itemValue="T" />
+						<f:selectItem itemLabel="AMBOS" itemValue="A" />
 					</p:selectOneMenu>
 
 					<h:outputLabel value="Qtd. Máx: " />
-					<p:inputText style="width: 40px"
+					<p:inputText style="width: 40px" 
 						value="#{ConfigAgendaController.confParte1.qtdMax}" />
 
 				</p:panelGrid>
@@ -165,9 +164,12 @@
 				<center>
 					<p:panelGrid columns="4" styleClass="semBorda">
 
-						<p:commandButton value="Gravar" icon="confirmar" />
+						<p:commandButton value="Gravar" icon="confirmar" 
+						update=":formConfiAgenda:msg, :formConfiAgenda"
+						action="#{ConfigAgendaController.gravarConfigAgenda()}"/>
 
-						<p:commandButton value="Consultar" icon="buscar" />
+						<p:commandButton value="Consultar" icon="buscar" 
+						action = "/pages/agenda/consConfAgenda.xhtml?faces-redirect=true"/>
 
 						<p:commandButton value="Limpar" icon="limpar"
 							actionListener="#{ConfigAgendaController.limparDados()}"

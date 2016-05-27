@@ -15,9 +15,9 @@ import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 public class ProfissionalController {
 
 	private ProfissionalBean profissional;
-	
-	private List<ProfissionalBean> listaProfissional; 
-	
+
+	private List<ProfissionalBean> listaProfissional;
+
 	private ProfissionalDAO pDao = new ProfissionalDAO();
 	private Integer tipoBuscar;
 	private String descricaoBusca;
@@ -44,7 +44,7 @@ public class ProfissionalController {
 	public void setProfissional(ProfissionalBean profissional) {
 		this.profissional = profissional;
 	}
-	
+
 	public Integer getTipoBuscar() {
 		return tipoBuscar;
 	}
@@ -76,7 +76,7 @@ public class ProfissionalController {
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
 	}
-	
+
 	public List<ProfissionalBean> getListaProfissional() {
 		if (listaProfissional == null) {
 			listaProfissional = pDao.listarProfissional();
@@ -103,47 +103,55 @@ public class ProfissionalController {
 		}
 		this.listaProfissional = pDao.listarProfissional();
 	}
-	
-	public void excluirProfissional() throws ProjetoException {
-        boolean ok = pDao.excluirProfissional(profissional);
-        if(ok == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Profissional excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
-        this.listaProfissional = pDao.listarProfissional();
+	public void excluirProfissional() throws ProjetoException {
+		boolean ok = pDao.excluirProfissional(profissional);
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Profissional excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
+		this.listaProfissional = pDao.listarProfissional();
 	}
-	
+
 	public void alterarProfissional() throws ProjetoException {
-        boolean alterou = pDao.alterarProfissional(profissional);
-        if(alterou == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Profissional alterado com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }
-        this.listaProfissional = pDao.listarProfissional();
-		
+		boolean alterou = pDao.alterarProfissional(profissional);
+		if (alterou == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Profissional alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+		this.listaProfissional = pDao.listarProfissional();
+
 	}
-	
+
 	public void buscarProfissional() {
-		this.listaProfissional = pDao.listarProfissionalBusca(descricaoBusca, tipoBuscar);
+		if(this.tipoBuscar==0){
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+	                "Escolha uma opção de busca válida!", "Erro");
+	            FacesContext.getCurrentInstance().addMessage(null, msg);
+		}else{
+			this.listaProfissional = pDao.listarProfissionalBusca(descricaoBusca, tipoBuscar);
+		}
 	}
-	
+
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE PROFISSIONAL";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR PROFISSIONAL";
 		}
 		return cabecalho;
