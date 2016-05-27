@@ -74,7 +74,7 @@
 				<h:outputLabel value="Horários" />
 				<p:dataTable id="dtHorarios"
 					value="#{ConfigAgendaController.listaHorarios}" var="config"
-					resizableColumns="true"
+					resizableColumns="true" paginator="true" rows="10"
 					emptyMessage="Não existe nenhum profissional cadastrado!">
 					<p:column headerText="DIA SEMANA" style="width: 100px;">
 						<p:outputLabel value="DOMINGO"

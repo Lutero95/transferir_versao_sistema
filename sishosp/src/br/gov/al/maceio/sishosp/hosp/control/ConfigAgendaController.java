@@ -40,7 +40,7 @@ public class ConfigAgendaController implements Serializable{
 		this.confParte1 = new ConfigAgendaParte1Bean();
 		this.confParte2 = new ConfigAgendaParte2Bean();
 		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
-		this.listaHorarios = new ArrayList<ConfigAgendaParte1Bean>();
+		this.listaHorarios = null;
 		this.listaProfissionais = null;
 		
 	}
@@ -50,7 +50,7 @@ public class ConfigAgendaController implements Serializable{
 		this.confParte1 = new ConfigAgendaParte1Bean();
 		this.confParte2 = new ConfigAgendaParte2Bean();
 		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
-		this.listaHorarios = new ArrayList<ConfigAgendaParte1Bean>();
+		this.listaHorarios = null;
 		this.listaProfissionais = null;
 		this.nomeBusca= new String();
 	}
