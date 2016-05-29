@@ -11,10 +11,10 @@
 
 	<ui:define name="body">
 
-		<h:form id="formConsConfAgenda">
+		<h:form id="formEditConfAgenda">
 			<p:growl id="msg" />
-			<p:panel header="CONSULTAR CONFIGURAÇÃO DA AGENDA"
-				id="pnlConsConfAgenda" style="width:800px; margin: auto;">
+			<p:panel header="EDITAR CONFIGURAÇÃO DA AGENDA"
+				id="pnlEditConfAgenda" style="width:800px; margin: auto;">
 
 				<center>
 					<p:panelGrid columns="2" styleClass="semBorda">
@@ -39,13 +39,13 @@
 					<p:panelGrid columns="3" styleClass="semBorda">
 						<p:commandButton value="OK" icon="ui-icon-check"
 							action="#{ConfigAgendaController.buscarProfissional()}"
-							update=":formConsConfAgenda:dtProf, :formConsConfAgenda:msg" />
+							update=":formEditConfAgenda:dtProf, :formEditConfAgenda:msg" />
 						<p:commandButton value="Nova Consulta" icon="ui-icon-search"
 							actionListener="#{ConfigAgendaController.limparDados()}"
-							upadte=":formConsConfAgenda:dtProf, :formConsConfAgenda:outDesP" />
-						<p:commandButton value="Sair" icon="ui-icon-close"
-							actionListener="#{ConfigAgendaController.limparDados()}"
-							action="/pages/agenda/configuracaoAgenda.xhtml?faces-redirect=true" />
+							upadte=":formEditConfAgenda:dtProf, :formEditConfAgenda:outDesP" />
+						<p:commandButton value="Sair" icon="ui-icon-close" 
+						actionListener="#{ConfigAgendaController.limparDados()}"
+						action="/pages/agenda/configuracaoAgenda.xhtml?faces-redirect=true"/>
 					</p:panelGrid>
 				</center>
 				<p:separator />
@@ -60,7 +60,7 @@
 					emptyMessage="Não existe nenhum profissional cadastrado!">
 					<p:ajax event="rowSelect"
 						listener="#{ConfigAgendaController.onRowSelect}"
-						update=":formConsConfAgenda:dtHorarios" />
+						update=":formEditConfAgenda:dtHorarios" />
 					<p:column headerText="CÓD." style="width: 100px;">
 						<p:outputLabel value="#{prof.idProfissional}" />
 					</p:column>
@@ -119,7 +119,7 @@
 					<p:column headerText="ANO">
 						<p:outputLabel value="#{config.ano}" />
 					</p:column>
-
+					
 					<p:column headerText="Ações" width="15%">
 						<center>
 							<p:splitButton icon="confirmar">
@@ -129,43 +129,25 @@
 										target="#{ConfigAgendaController.confParte1}" />
 
 									<f:setPropertyActionListener value="A"
-										target="#{ConfigAgendaController.tipo}" />
+										target="#{CboController.tipo}" />
 								</p:menuitem>
 
 								<p:menuitem value="Excluir" icon="trash"
 									onclick="PF('dialogAtencao').show()">
 
-									<f:setPropertyActionListener value="#{config}"
-										target="#{ConfigAgendaController.confParte1}" />
+									<f:setPropertyActionListener value="#{tab}"
+										target="#{CboController.cbo}" />
 								</p:menuitem>
 							</p:splitButton>
 						</center>
 					</p:column>
 
 				</p:dataTable>
+
+
+
 			</p:panel>
 		</h:form>
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
-			resizable="false">
-			<h:form id="dlgexcluir">
-				<h:panelGrid columns="1">
-
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						essa configuração?</div>
-
-				</h:panelGrid>
-				<center>
-					<p:commandButton value="Sim"
-						action="#{ConfigAgendaController.excluirConfig()}"
-						icon="ui-icon-check" style="font-size:14px;"
-						update=":formConsConfAgenda:msg">
-					</p:commandButton>
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
-
-				</center>
-			</h:form>
-		</p:dialog>
 
 	</ui:define>
 </ui:composition>

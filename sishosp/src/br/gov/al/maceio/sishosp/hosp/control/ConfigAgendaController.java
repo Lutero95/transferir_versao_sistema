@@ -8,8 +8,10 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ConfigAgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
@@ -35,6 +37,8 @@ public class ConfigAgendaController implements Serializable{
 	
 	private String nomeBusca;
 	private Integer tipoBusca;
+	
+	private String tipo;
 
 	public ConfigAgendaController() {
 		this.confParte1 = new ConfigAgendaParte1Bean();
@@ -42,6 +46,7 @@ public class ConfigAgendaController implements Serializable{
 		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
 		this.listaHorarios = null;
 		this.listaProfissionais = null;
+		this.tipo = new String();
 		
 	}
 
@@ -53,6 +58,7 @@ public class ConfigAgendaController implements Serializable{
 		this.listaHorarios = null;
 		this.listaProfissionais = null;
 		this.nomeBusca= new String();
+		this.tipo = new String();
 	}
 
 	public ConfigAgendaParte1Bean getConfParte1() {
@@ -118,6 +124,14 @@ public class ConfigAgendaController implements Serializable{
 		this.tipoBusca = tipoBusca;
 	}
 	
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
 	public void buscarProfissional() {
 		if(this.tipoBusca==0){
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -165,7 +179,7 @@ public class ConfigAgendaController implements Serializable{
 			}
 		}
 		
-		ok = cDao.gravarConfigAgenda(confParte1, confParte2);
+		ok = cDao.gravarConfigAgenda(confParte1, confParte2, listaTipos);
 		
 		if (ok) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -178,6 +192,26 @@ public class ConfigAgendaController implements Serializable{
 		}
 
 		limparDados();
+	}
+	
+	public void excluirConfig() throws ProjetoException {
+		boolean ok = cDao.excluirConfig(confParte1);
+		
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Configuração excluida com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
+		this.listaHorarios = cDao.listarHorarios();
 	}
 	
 	public void onRowSelect(SelectEvent event) {
