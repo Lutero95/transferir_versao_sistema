@@ -209,13 +209,13 @@
 				    <h:outputLabel for="fornecedor" value="Fornecedor:" />
 					<p:outputPanel id="outFornecedor">
 						<p:inputText id="codFornecedor"
-							value="#{LaudoController.laudo.fornecedor.idFornecedor}" readonly="false"
+							value="#{LaudoController.laudo.fornecedor.idFornecedor}" readonly="true"
 							style="width: 40px" />
 						<p:inputText id="Fornecedor" value="#{LaudoController.laudo.fornecedor.descFornecedor}"
 							readonly="true" style="width: 300px" />
 					</p:outputPanel>
 					<p:commandButton id="btBusFornecedor" value="Buscar"
-						onclick="PF('dlgConsuPac').show();" />
+						onclick="PF('dlgConsuForne').show();" />
 	
 			</p:panelGrid>
 			<p:panelGrid columns="6" styleClass="semBorda">
@@ -264,7 +264,7 @@
 				<center>
 					<p:panelGrid columns="3" styleClass="semBorda">
 						
-						<p:commandButton value="Gravar" icon="confirmar"
+						<p:commandButton value="Gravar" icon="confirmar"  update=":formLaudo:message,:formLaudo"
 							action="#{LaudoController.gravarLaudo()}" rendered="#{LaudoController.tipo == 'I'}"/>
 							
 							 <p:commandButton action="#{LaudoController.alterarLaudo()}" icon="alterar-dados"  
@@ -421,7 +421,7 @@
 						<p:outputLabel value="#{profissional.descricaoProf}" />
 					</p:column>
 					<p:column headerText="Especialidade">
-						<p:outputLabel value="#{profissional.especialidade}" />
+						<p:outputLabel value="#{profissional.especialidade.descEspecialidade}" />
 					</p:column>
 					<p:column headerText="Max Atendimento">
 						<p:outputLabel value="#{profissional.cns}" />
@@ -463,6 +463,32 @@
 							onclick="PF('dlgConsuProce').hide();">
 							<f:setPropertyActionListener value="#{procedimento}"
 								target="#{LaudoController.laudo.procedimento}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Consulta Fornecedor" widgetVar="dlgConsuForne"
+			modal="true" width="550px">
+			<h:form id="formConsuForne">
+				<p:dataTable value="#{FornecedorController.listaFornecedor}"
+					id="dtForne" resizableColumns="true" var="fornecedor"
+					emptyMessage="Não existe nenhum fornecedor cadastrado!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{fornecedor.idFornecedor}" />
+					</p:column>
+					<p:column headerText="FORNECEDOR">
+						<p:outputLabel value="#{fornecedor.descFornecedor}" />
+					</p:column>
+					
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton
+							update=":formLaudo:outFornecedor, :formConsuForne:dtForne"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuForne').hide();">
+							<f:setPropertyActionListener value="#{fornecedor}"
+								target="#{LaudoController.laudo.fornecedor}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>

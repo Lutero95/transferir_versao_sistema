@@ -102,8 +102,8 @@ public class LaudoDAO {
     public Boolean alterarLaudo(LaudoBean laudo) throws ProjetoException {
         boolean alterou = false;
         String sql = "update hosp.apac set codpaciente = ?, codprograma = ?, codgrupo = ?, codmedico = ?, "
-        		+ "codproc = ?, dtasolicitacao = ?, recurso = ?, apac = ?, unidade = ? situacao = ? dtautorizacao = ?, "
-        		+ "cid10_1 = ?, cid10_2 = ?, codfornecedor = ?, valor = ?, nota = ?, qtf = ?, codequipamento = ?, obs = ? where id_apac = ?";
+        		+ "codproc = ?, dtasolicitacao = ?, recurso = ?, apac = ?, unidade = ?, situacao = ?, dtautorizacao = ?, "
+        		+ "cid10_1 = ?, cid10_2 = ?, codfornecedor = ?, valor = ?, nota = ?, qtd = ?, codequipamento = ?, obs = ? where id_apac = ?";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -140,8 +140,10 @@ public class LaudoDAO {
 				stmt.setNull(19, Types.CHAR);
 			} else {
 				stmt.setString(19, laudo.getObs().toUpperCase().trim());
-			}            stmt.executeUpdate();
+			}           
             stmt.setInt(20, laudo.getId_apac());
+            
+            stmt.executeUpdate();
             conexao.commit();
             
             alterou = true;
@@ -360,7 +362,7 @@ public class LaudoDAO {
             public ArrayList<LaudoBean> listaLaudos() {
 
     
-                String sql ="select apac.id_apac, apac.codpaciente, apac.codprograma, apac.codgrupo, "
+                /*String sql ="select apac.id_apac, apac.codpaciente, apac.codprograma, apac.codgrupo, "
                 		+ "apac.codmedico, apac.codproc, apac.dtasolicitacao, apac.recurso, apac.apac, "
                 		+ "apac.unidade, apac.situacao, apac.dtautorizacao, apac.cid10_1, apac.cid10_2, apac.codfornecedor, apac.valor, "
                 		+ "apac.nota, apac.qtd, apac.codequipamento, "
@@ -368,8 +370,12 @@ public class LaudoDAO {
                 		+ "left join hosp.programa on apac.codprograma=programa.id_programa "
                 		+ "left join hosp.grupo on apac.codgrupo=grupo.id_grupo "
                 		+ "left join hosp.medicos on apac.codmedico=medicos.id_medico "
-                		+ "left join hosp.proc on apac.codproc=proc.id order by apac";
+                		+ "left join hosp.proc on apac.codproc=proc.id order by apac";*/
                 
+                String sql = "select id_apac, codpaciente, codprograma,codgrupo,codmedico, "
+                		+ "codproc,dtasolicitacao, recurso,apac, unidade, situacao, dtautorizacao, "
+                		+ "cid10_1, cid10_2,codfornecedor,valor, nota, qtd, codequipamento, "
+                		+ "obs from hosp.apac order by apac";
 
                 ArrayList<LaudoBean> lista = new ArrayList();
 
@@ -389,7 +395,6 @@ public class LaudoDAO {
     	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
     	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
     	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codproc")));
-    	                System.out.println(l.getProcedimento().getNomeProc());
     	                l.setDtasolicitacao(rs.getDate("dtasolicitacao"));
     	                l.setRecurso(rs.getString("recurso"));
     	                l.setApac(rs.getString("apac"));
@@ -399,7 +404,7 @@ public class LaudoDAO {
     	                l.setCid10_1(rs.getString("cid10_1"));
     	                l.setCid10_2(rs.getString("cid10_2"));
     	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("codfornecedor")));
-    	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("valor")));
+    	                l.setValor(rs.getDouble("valor"));
     	                l.setNota(rs.getString("nota"));
     	                l.setQtd(rs.getInt("qtd"));
     	                l.setCodequipamento(rs.getInt("codequipamento"));

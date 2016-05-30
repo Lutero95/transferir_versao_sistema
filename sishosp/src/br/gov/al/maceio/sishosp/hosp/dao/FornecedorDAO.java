@@ -153,7 +153,7 @@ public class FornecedorDAO {
 	public FornecedorBean listarFornecedorPorId(int id) {
 
 		FornecedorBean fornecedor = new FornecedorBean();
-		String sql = "select id_fornecedor, descfornecedor from hosp.fornecedor where id_fornecedor = ?";
+		String sql = "select id_fornecedor, descfornecedor, valor from hosp.fornecedor where id_fornecedor = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -162,7 +162,8 @@ public class FornecedorDAO {
 			while(rs.next()){
 				
 				fornecedor.setIdFornecedor(rs.getInt("id_fornecedor"));
-                fornecedor.setDescFornecedor(rs.getString("descfornecedor"));    
+                fornecedor.setDescFornecedor(rs.getString("descfornecedor"));  
+                fornecedor.setValor(rs.getDouble("valor"));
                 //programa.setCodFederal(rs.getDouble("codfederal"));
 			}
 

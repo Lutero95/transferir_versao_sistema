@@ -50,7 +50,10 @@ public class LaudoBean {
 		this.grupo = null;//new GrupoBean();
 		this.programa = null;//new ProgramaBean();
 		this.profissional = null;
-		fornecedor = new FornecedorBean();
+		situacao = "P";
+		this.fornecedor = null; 
+		
+		
 		
 		//paciente = new PacienteBean();
 		//programa = new ProgramaBean();

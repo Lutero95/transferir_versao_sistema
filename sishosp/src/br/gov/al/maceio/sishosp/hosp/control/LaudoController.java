@@ -43,10 +43,14 @@ public class LaudoController {
 	private Integer tipoBuscaLaudo;
 	private String campoBuscaLaudo;
 	private String statusLaudo;
+	private String situacao;
 	
 	public LaudoController(){
 		//CLASSES
 		laudo = new LaudoBean();
+		
+	
+		
 		this.tipoAt = null;//new TipoAtendimentoBean();
 		this.equipe = null;
 		 //BUSCA
@@ -286,6 +290,7 @@ public class LaudoController {
 	
 	public void limparDados(){
 		laudo = new LaudoBean();
+		fornecedor = new FornecedorBean();
 		paciente = new PacienteBean();
 		grupo = new GrupoBean();
 		programa = new ProgramaBean();
@@ -432,6 +437,14 @@ public class LaudoController {
 
 	public void setListaLaudo(List<LaudoBean> listaLaudo) {
 		this.listaLaudo = listaLaudo;
+	}
+
+	public String getSituacao() {
+		return situacao;
+	}
+
+	public void setSituacao(String situacao) {
+		this.situacao = situacao;
 	}
 
 	    
