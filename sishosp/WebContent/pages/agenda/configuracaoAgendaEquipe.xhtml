@@ -12,9 +12,30 @@
 	<ui:define name="body">
 
 
-		<h:form id="formConfiAgenda">
-			<p:growl id="msg"/>
-			<p:panel header="CONFIGURAÇÃO DA AGENDA" id="pnlConfAgenda">
+		<h:form id="formConfiAgendaEquipe">
+			<p:growl id="msg" />
+			<p:panel header="CONFIGURAÇÃO DA AGENDA POR EQUIPE" id="pnlConfAgendaEquipeEquipe">
+
+				<p:panelGrid columns="4" styleClass="semBorda">
+					<h:outputLabel value="Mês: " />
+					<p:selectOneMenu style="width:120px"
+						value="#{ConfigAgendaController.confParte1.mes}">
+						<f:selectItem itemLabel="JANEIRO" itemValue="1" />
+						<f:selectItem itemLabel="FEVEREIRO" itemValue="2" />
+						<f:selectItem itemLabel="MARÇO" itemValue="3" />
+						<f:selectItem itemLabel="ABRIL" itemValue="4" />
+						<f:selectItem itemLabel="MAIO" itemValue="5" />
+						<f:selectItem itemLabel="JUNHO" itemValue="6" />
+						<f:selectItem itemLabel="JULHO" itemValue="7" />
+						<f:selectItem itemLabel="AGOSTO" itemValue="8" />
+						<f:selectItem itemLabel="SETEMBRO" itemValue="9" />
+						<f:selectItem itemLabel="OUTUBRO" itemValue="10" />
+						<f:selectItem itemLabel="NOVEMBRO" itemValue="11" />
+						<f:selectItem itemLabel="DEZEMBRO" itemValue="12" />
+					</p:selectOneMenu>
+					<h:outputLabel value="Ano: " />
+					<p:inputText value="#{ConfigAgendaController.confParte1.ano}" />
+				</p:panelGrid>
 
 				<p:panelGrid columns="3" styleClass="semBorda">
 
@@ -43,77 +64,8 @@
 						disabled="#{ConfigAgendaController.confParte2.programa==null}"
 						onclick="PF('dlgConsultGrop').show();" />
 
-				</p:panelGrid>
-
-				<p:panelGrid columns="6" styleClass="semBorda">
-					<h:outputLabel value="Tipo At.:" />
-					<p:outputPanel style="margin-left:15px;" id="outTipoAt">
-						<p:inputText id="idTipo"
-							value="#{ConfigAgendaController.confParte2.tipoAt.idTipo}"
-							style="width: 60px" />
-						<p:inputText id="descTipo"
-							value="#{ConfigAgendaController.confParte2.tipoAt.descTipoAt}"
-							readonly="true" style="width: 350px" />
-					</p:outputPanel>
-					<p:commandButton value="Buscar" id="btBusTi"
-						disabled="#{ConfigAgendaController.confParte2.grupo==null}"
-						onclick="PF('dlgConsultTipoAt').show();" />
-
-					<h:outputLabel value="Qtd.:" />
-					<p:inputText value="#{ConfigAgendaController.confParte2.qtd}"
-						style="width: 40px"/>
-
-					<p:commandButton value="Incluir"
-						action="#{ConfigAgendaController.addNaLista()}"
-						update=":formConfiAgenda:dtConfi, :formConfiAgenda:msg, :formConfiAgenda" />
-				</p:panelGrid>
-				<br />
-				<p:panel>
-					<h:outputLabel value="Configuração dos Tipos de Atendimento" />
-					<p:dataTable value="#{ConfigAgendaController.listaTipos}"
-						id="dtConfi" resizableColumns="true" var="tipo"
-						emptyMessage="Sem dados...">
-						<p:column headerText="Programa">
-							<p:outputLabel value="#{tipo.programa.descPrograma}" />
-						</p:column>
-
-						<p:column headerText="Tipo de Atendimento">
-							<p:outputLabel value="#{tipo.tipoAt.descTipoAt}" />
-						</p:column>
-
-						<p:column headerText="Quantidade">
-							<p:outputLabel value="#{tipo.qtd}" />
-						</p:column>
-
-					</p:dataTable>
-				</p:panel>
-
-				<p:separator />
-
-				<p:panelGrid columns="4" styleClass="semBorda">
-					<h:outputLabel value="Mês: " />
-					<p:selectOneMenu style="width:120px"
-						value="#{ConfigAgendaController.confParte1.mes}">
-						<f:selectItem itemLabel="JANEIRO" itemValue="1" />
-						<f:selectItem itemLabel="FEVEREIRO" itemValue="2" />
-						<f:selectItem itemLabel="MARÇO" itemValue="3" />
-						<f:selectItem itemLabel="ABRIL" itemValue="4" />
-						<f:selectItem itemLabel="MAIO" itemValue="5" />
-						<f:selectItem itemLabel="JUNHO" itemValue="6" />
-						<f:selectItem itemLabel="JULHO" itemValue="7" />
-						<f:selectItem itemLabel="AGOSTO" itemValue="8" />
-						<f:selectItem itemLabel="SETEMBRO" itemValue="9" />
-						<f:selectItem itemLabel="OUTUBRO" itemValue="10" />
-						<f:selectItem itemLabel="NOVEMBRO" itemValue="11" />
-						<f:selectItem itemLabel="DEZEMBRO" itemValue="12" />
-					</p:selectOneMenu>
-					<h:outputLabel value="Ano: " />
-					<p:inputText value="#{ConfigAgendaController.confParte1.ano}" />
-				</p:panelGrid>
-
-				<p:panelGrid columns="3" styleClass="semBorda">
-					<h:outputLabel value="Profissional: " />
-					<p:outputPanel id="outProfi">
+					<h:outputLabel value="Equipe: " />
+					<p:outputPanel id="outEquipe">
 						<p:inputText
 							value="#{ConfigAgendaController.confParte1.profissional.idProfissional}"
 							readonly="true" style="width: 60px" />
@@ -123,6 +75,7 @@
 					</p:outputPanel>
 					<p:commandButton value="Buscar"
 						onclick="PF('dlgConsultProf').show();" />
+
 				</p:panelGrid>
 
 				<p:panelGrid columns="2" styleClass="semBorda">
@@ -139,7 +92,7 @@
 					</p:selectManyCheckbox>
 				</p:panelGrid>
 
-				<p:panelGrid columns="6" styleClass="semBorda">
+				<p:panelGrid columns="9" styleClass="semBorda">
 					<h:outputLabel value="Data Específica: " />
 					<p:calendar locale="pt" navigator="true" mask="true"
 						pattern="dd/MM/yyyy"
@@ -154,8 +107,16 @@
 					</p:selectOneMenu>
 
 					<h:outputLabel value="Qtd. Máx: " />
-					<p:inputText style="width: 40px" 
+					<p:inputText style="width: 40px"
 						value="#{ConfigAgendaController.confParte1.qtdMax}" />
+
+					<h:outputLabel value="Qtd.:" />
+					<p:inputText value="#{ConfigAgendaController.confParte2.qtd}"
+						style="width: 40px" />
+
+					<p:commandButton value="Incluir"
+						action="#{ConfigAgendaController.addNaLista()}"
+						update=":formConfiAgendaEquipe:msg, :formConfiAgendaEquipe" />
 
 				</p:panelGrid>
 
@@ -164,19 +125,19 @@
 				<center>
 					<p:panelGrid columns="4" styleClass="semBorda">
 
-						<p:commandButton value="Gravar" icon="confirmar" 
-						update=":formConfiAgenda:msg, :formConfiAgenda"
-						action="#{ConfigAgendaController.gravarConfigAgenda()}"/>
+						<p:commandButton value="Gravar" icon="confirmar"
+							update=":formConfiAgendaEquipe:msg, :formConfiAgendaEquipe"
+							action="#{ConfigAgendaController.gravarConfigAgenda()}" />
 
-						<p:commandButton value="Consultar" icon="buscar" 
-						action = "/pages/agenda/consConfAgenda.xhtml?faces-redirect=true"/>
+						<p:commandButton value="Consultar" icon="buscar"
+							action="/pages/agenda/consConfAgenda.xhtml?faces-redirect=true" />
 
 						<p:commandButton value="Limpar" icon="limpar"
 							actionListener="#{ConfigAgendaController.limparDados()}"
-							update=":formConfiAgenda" />
+							update=":formConfiAgendaEquipe" />
 
 						<p:commandButton value="Sair" icon="btlogout"
-							update=":formConfiAgenda"
+							update=":formConfiAgendaEquipe"
 							actionListener="#{ConfigAgendaController.limparDados()}"
 							action="/pages/comum/selecaoSistema.faces" />
 					</p:panelGrid>
@@ -199,7 +160,7 @@
 					</p:column>
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton
-							update=":formConfiAgenda:outProg, :formConsuGrop:dtGrupo, :formConfiAgenda:btBusGr"
+							update=":formConfiAgendaEquipe:outProg, :formConsuGrop:dtGrupo, :formConfiAgendaEquipe:btBusGr"
 							icon="ui-icon-check" title="Selecionar"
 							action="#{GrupoController.atualizaLista(ConfigAgendaController.confParte2.programa)}"
 							onclick="PF('dlgConsultProg').hide();">
@@ -229,7 +190,7 @@
 
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton
-							update=":formConfiAgenda:outGrupo, :formConsuTipoAt:dtTipoAt, :formConfiAgenda:btBusTi"
+							update=":formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:btBusTi"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsultGrop').hide();"
 							action="#{TipoAtendimentoController.atualizaListaTipos(ConfigAgendaController.confParte2.grupo)}">
@@ -241,60 +202,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Tipos de Atendimento"
-			widgetVar="dlgConsultTipoAt" modal="true" width="550px">
-			<h:form id="formConsuTipoAt">
-				<p:dataTable value="#{TipoAtendimentoController.listaTipos}"
-					id="dtTipoAt" resizableColumns="true" var="tipo"
-					emptyMessage="Não existe nenhum tipo cadastrado!">
-					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{tipo.idTipo}" />
-					</p:column>
-					<p:column headerText="Tipo de Atendimento">
-						<p:outputLabel value="#{tipo.descTipoAt}" />
-					</p:column>
-
-					<p:column style="width:50px;text-align: center">
-						<p:commandButton
-							update=":formConfiAgenda:outTipoAt, :formConfiAgenda"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsultTipoAt').hide();">
-							<f:setPropertyActionListener value="#{tipo}"
-								target="#{ConfigAgendaController.confParte2.tipoAt}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsultProf"
-			modal="true" width="550px">
-			<h:form id="formConsultProf">
-				<p:dataTable value="#{ProfissionalController.listaProfissional}"
-					id="dtTipoAt" resizableColumns="true" var="profi"
-					emptyMessage="Não existe nenhum tipo cadastrado!">
-					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{profi.idProfissional}" />
-					</p:column>
-					<p:column headerText="Profissional">
-						<p:outputLabel value="#{profi.descricaoProf}" />
-					</p:column>
-					<p:column headerText="Especialidade">
-						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
-					</p:column>
-
-					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":formConfiAgenda:outProfi"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsultProf').hide();">
-							<f:setPropertyActionListener value="#{profi}"
-								target="#{ConfigAgendaController.confParte1.profissional}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-
+		
 	</ui:define>
 </ui:composition>
 </html>

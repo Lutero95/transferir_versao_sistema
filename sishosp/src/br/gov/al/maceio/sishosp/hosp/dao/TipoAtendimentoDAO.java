@@ -296,4 +296,34 @@ public class TipoAtendimentoDAO {
 		}
 	}
 
+	public TipoAtendimentoBean listarTipoPorId(int id) {
+		String sql = "select id, desctipoatendimento, primeiroatendimento, codempresa, equipe_programa"
+				+ " from hosp.tipoatendimento WHERE id = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			TipoAtendimentoBean tipo = null;
+			while (rs.next()) {
+				tipo = new TipoAtendimentoBean();
+				tipo.setIdTipo(rs.getInt("id"));
+				tipo.setDescTipoAt(rs.getString("desctipoatendimento"));
+				tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
+				tipo.setCodEmpresa(rs.getInt("codempresa"));
+				tipo.setEquipe(rs.getBoolean("equipe_programa"));
+			}
+			return tipo;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+
 }

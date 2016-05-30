@@ -61,6 +61,10 @@
 					<p:ajax event="rowSelect"
 						listener="#{ConfigAgendaController.onRowSelect}"
 						update=":formConsConfAgenda:dtHorarios" />
+
+					<p:ajax event="rowUnselect"
+						listener="#{ConfigAgendaController.onRowUnselect}"
+						update=":formConsConfAgenda:dtHorarios" />
 					<p:column headerText="CÓD." style="width: 100px;">
 						<p:outputLabel value="#{prof.idProfissional}" />
 					</p:column>
@@ -75,7 +79,7 @@
 				<p:dataTable id="dtHorarios"
 					value="#{ConfigAgendaController.listaHorarios}" var="config"
 					resizableColumns="true" paginator="true" rows="10"
-					emptyMessage="Não existe nenhum profissional cadastrado!">
+					emptyMessage="Não existe nenhum horário cadastrado!">
 					<p:column headerText="DIA SEMANA" style="width: 100px;">
 						<p:outputLabel value="DOMINGO"
 							rendered="#{config.diaDaSemana == 1}" />

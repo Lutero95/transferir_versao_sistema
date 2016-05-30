@@ -8,11 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
-import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 public class ConfigAgendaDAO {
 
@@ -20,6 +18,7 @@ public class ConfigAgendaDAO {
 	// PreparedStatement ps = null;
 	ProfissionalDAO pDao = new ProfissionalDAO();
 
+	// ------------------------------------------------------------------GRAVAÇÕES--------------------------------------------------------
 	public boolean gravarConfigAgenda(ConfigAgendaParte1Bean confParte1,
 			ConfigAgendaParte2Bean confParte2,
 			List<ConfigAgendaParte2Bean> listaTipos) throws SQLException {
@@ -86,7 +85,6 @@ public class ConfigAgendaDAO {
 			}
 		}
 	}
-	
 
 	public void gravaTurno(ConfigAgendaParte1Bean confParte1,
 			List<ConfigAgendaParte2Bean> listaTipos, String dia)
@@ -188,6 +186,8 @@ public class ConfigAgendaDAO {
 		}
 	}
 
+	// -----------------------------------------------------------------------LISTAGENS----------------------------------------------------------
+
 	public List<ConfigAgendaParte1Bean> listarHorarios() {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 		String sql = "SELECT id_configagenda, codmedico, diasemana, horainicio, horafim, qtdmax, dataagenda,"
@@ -266,8 +266,44 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
+	public List<ConfigAgendaParte2Bean> listarTiposAgendPorId(int id) {
+		List<ConfigAgendaParte2Bean> lista = new ArrayList<ConfigAgendaParte2Bean>();
+		String sql = "SELECT codconfigagenda, codprograma, codtipoatendimento, qtd"
+				+ " FROM  hosp.tipo_atend_agenda WHERE codconfigagenda = ?;";
+		ProgramaDAO pDao = new ProgramaDAO();
+		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ConfigAgendaParte2Bean conf = new ConfigAgendaParte2Bean();
+				conf.setPrograma(pDao.listarProgramaPorId(rs
+						.getInt("codprograma")));
+				conf.setTipoAt(tDao.listarTipoPorId(rs
+						.getInt("codtipoatendimento")));
+				conf.setQtd(rs.getInt("qtd"));
+				lista.add(conf);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
+	}
+
+	// -----------------------------------------------------------------------EXCLUSÕES----------------------------------------------------------
+
 	public boolean excluirConfig(ConfigAgendaParte1Bean confParte1) {
-		System.out.println("ID "+confParte1.getIdConfiAgenda());
+		System.out.println("ID " + confParte1.getIdConfiAgenda());
 		String sql = "delete from hosp.config_agenda where id_configagenda = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -287,8 +323,9 @@ public class ConfigAgendaDAO {
 			}
 		}
 	}
+
 	public void excluirTabelaTipoAgenda(int id) {
-		
+
 		String sql = "delete from hosp.tipo_atend_agenda where codconfigagenda = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -303,6 +340,158 @@ public class ConfigAgendaDAO {
 				con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
+			}
+		}
+	}
+
+	// ---------------------------------------------ALTERAÇÕES------------------------------------------------------------
+
+	public boolean alterarConfigAgenda(ConfigAgendaParte1Bean confParte1,
+			ConfigAgendaParte2Bean confParte2,
+			List<ConfigAgendaParte2Bean> listaTiposEditar) {
+
+		if (confParte1.getProfissional().getIdProfissional() == null
+				|| confParte1.getQtdMax() == null
+				|| confParte1.getAno() == null) {
+			return false;
+		}
+
+		try {
+			System.out.println("VAI ALTERAR CONFIG AGENDA");
+			if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
+				for (String dia : confParte1.getDiasSemana()) {
+					alterarTurno(confParte1, listaTiposEditar, dia);
+				}
+			} else {// ESCOLHEU DATA ESPECIFICA
+				alterarTurno(confParte1, listaTiposEditar, null);
+			}
+
+			System.out.println("ALTEROU CONFIG AGENDA");
+			return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+
+	public void alterarTurno(ConfigAgendaParte1Bean confParte1,
+			List<ConfigAgendaParte2Bean> listaTipos, String dia)
+			throws SQLException {
+
+		String sql = "UPDATE hosp.config_agenda SET codmedico = ?,"
+				+ " diasemana = ?, qtdmax = ?, dataagenda = ?,"
+				+ " turno = ?, mes = ?, ano = ?, codempresa = ? WHERE id_configagenda = ?;";
+		con = ConnectionFactory.getConnection();
+		PreparedStatement ps2 = con.prepareStatement(sql);
+
+		if (confParte1.getTurno().equals("A")) {
+			System.out.println("VAI GRAVAR  A");
+			if (dia != null) {
+				ps2.setInt(2, Integer.parseInt(dia));
+				ps2.setDate(4, null);
+			} else {
+				ps2.setInt(2, 0);
+				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+						.getTime()));
+			}
+			System.out.println("1");
+			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+			ps2.setInt(3, confParte1.getQtdMax());
+			ps2.setString(5, "M");
+			ps2.setInt(6, confParte1.getMes());
+			ps2.setInt(7, confParte1.getAno());
+			ps2.setInt(8, 0);// COD EMPRESA ?
+			ps2.setInt(9, confParte1.getIdConfiAgenda());
+			ps2.executeUpdate();
+			con.commit();
+			alteraTipoAtendAgenda(confParte1, listaTipos);
+			con.commit();
+
+			ps2 = con.prepareStatement(sql);
+			if (dia != null) {
+				System.out.println("eh dia a da semana > " + dia);
+				ps2.setInt(2, Integer.parseInt(dia));
+				ps2.setDate(4, null);
+			} else {
+				System.out.println("eh data especifica > "
+						+ confParte1.getDataEspecifica());
+				ps2.setInt(2, 0);
+				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+						.getTime()));
+			}
+			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+			ps2.setInt(3, confParte1.getQtdMax());
+			ps2.setString(5, "T");
+			System.out.println("32");
+			ps2.setInt(6, confParte1.getMes());
+			ps2.setInt(7, confParte1.getAno());
+			ps2.setInt(8, 0);// COD EMPRESA ?
+			ps2.setInt(9, confParte1.getIdConfiAgenda());
+			System.out.println("33");
+			ps2.executeUpdate();
+			con.commit();
+			System.out.println("3");
+			alteraTipoAtendAgenda(confParte1, listaTipos);
+			con.commit();
+			System.out.println("4");
+
+		} else {
+			if (dia != null) {
+				ps2.setInt(2, Integer.parseInt(dia));
+				ps2.setDate(4, null);
+			} else {
+				ps2.setInt(2, 0);
+				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+						.getTime()));
+			}
+			System.out.println("GRAVA TURNO NORMAL");
+			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+			ps2.setInt(3, confParte1.getQtdMax());
+			ps2.setString(5, confParte1.getTurno());
+			ps2.setInt(6, confParte1.getMes());
+			ps2.setInt(7, confParte1.getAno());
+			ps2.setInt(8, 0);// COD EMPRESA ?
+			ps2.setInt(9, confParte1.getIdConfiAgenda());
+			ps2.executeUpdate();
+			con.commit();
+			alteraTipoAtendAgenda(confParte1, listaTipos);
+		}
+	}
+
+	public void alteraTipoAtendAgenda(ConfigAgendaParte1Bean conf1,
+			List<ConfigAgendaParte2Bean> listaTipos) {
+		PreparedStatement ps1 = null;
+
+		String sql = "UPDATE hosp.tipo_atend_agenda SET"
+				+ " codprograma = ?, codtipoatendimento = ?,  qtd = ? WHERE codconfigagenda = ?;";
+		try {
+			con = ConnectionFactory.getConnection();
+			ps1 = con.prepareStatement(sql);
+			System.out.println("VAI ALTERAR NA TAB ASDASD");
+			for (ConfigAgendaParte2Bean conf : listaTipos) {
+				ps1.setInt(1, conf.getPrograma().getIdPrograma());
+				ps1.setInt(2, conf.getTipoAt().getIdTipo());
+				ps1.setInt(3, conf.getQtd());
+				ps1.setInt(4, conf1.getIdConfiAgenda());
+				ps1.executeUpdate();
+				con.commit();
+			}
+
+			System.out.println("ALTEROU NA TAB ASDASD");
+
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
 			}
 		}
 	}

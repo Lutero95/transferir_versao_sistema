@@ -9,6 +9,7 @@ public class ConfigAgendaParte1Bean {
 	private Integer mes;
 	private Integer ano;
 	private ProfissionalBean profissional;
+	private EquipeBean equipe;
 	private List<String> diasSemana;
 	private Date dataEspecifica;
 	private String turno;
@@ -17,6 +18,7 @@ public class ConfigAgendaParte1Bean {
 
 	public ConfigAgendaParte1Bean() {
 		this.profissional = new ProfissionalBean();
+		this.equipe = new EquipeBean();
 	}
 
 	public ConfigAgendaParte1Bean(Integer mes, Integer ano,
@@ -106,4 +108,12 @@ public class ConfigAgendaParte1Bean {
 		this.diaDaSemana = diaDaSemana;
 	}
 
+	public EquipeBean getEquipe() {
+		return equipe;
+	}
+
+	public void setEquipe(EquipeBean equipe) {
+		this.equipe = equipe;
+	}
+	
 }
