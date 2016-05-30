@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
 public class ProfissionalDAO {

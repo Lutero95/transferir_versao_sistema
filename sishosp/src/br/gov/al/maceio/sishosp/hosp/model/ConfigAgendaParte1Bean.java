@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class ConfigAgendaParte1Bean {
 	public ConfigAgendaParte1Bean() {
 		this.profissional = new ProfissionalBean();
 		this.equipe = new EquipeBean();
+		this.diasSemana = new ArrayList<String>();
 	}
 
 	public ConfigAgendaParte1Bean(Integer mes, Integer ano,

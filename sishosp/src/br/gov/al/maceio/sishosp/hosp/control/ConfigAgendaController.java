@@ -14,9 +14,11 @@ import org.primefaces.event.UnselectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ConfigAgendaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
 public class ConfigAgendaController implements Serializable {
@@ -32,10 +34,13 @@ public class ConfigAgendaController implements Serializable {
 	private List<ConfigAgendaParte2Bean> listaTipos;
 	private List<ConfigAgendaParte2Bean> listaTiposEditar;
 	private List<ConfigAgendaParte1Bean> listaHorarios;
+	private List<ConfigAgendaParte1Bean> listaHorariosEquipe;
 	private List<ProfissionalBean> listaProfissionais;
+	private List<EquipeBean> listaEquipes;
 
 	private ConfigAgendaDAO cDao = new ConfigAgendaDAO();
 	private ProfissionalDAO pDao = new ProfissionalDAO();
+	private EquipeDAO eDao = new EquipeDAO();
 
 	private String nomeBusca;
 	private Integer tipoBusca;
@@ -49,24 +54,28 @@ public class ConfigAgendaController implements Serializable {
 		this.confParte2 = new ConfigAgendaParte2Bean();
 		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
 		this.listaTiposEditar = new ArrayList<ConfigAgendaParte2Bean>();
-		this.listaHorarios = new ArrayList<ConfigAgendaParte1Bean>();
+		this.listaHorarios = null;
+		this.listaHorariosEquipe = null;
 		this.listaProfissionais = null;
+		this.listaEquipes = null;
 		this.tipo = new String();
-		this.opcao = new String();
+		this.opcao = new String("1");
+		this.nomeBusca = "";
 
 	}
 
 	public void limparDados() {
-		System.out.println("LIMPAR");
 		this.confParte1 = new ConfigAgendaParte1Bean();
 		this.confParte2 = new ConfigAgendaParte2Bean();
 		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
 		this.listaTiposEditar = new ArrayList<ConfigAgendaParte2Bean>();
-		this.listaHorarios = new ArrayList<ConfigAgendaParte1Bean>();
+		this.listaHorarios = null;
+		this.listaHorariosEquipe = null;
 		this.listaProfissionais = null;
-		this.nomeBusca = new String();
-		this.tipo = new String();
-		this.opcao = new String();
+		this.listaEquipes = null;
+		this.nomeBusca = "";
+		this.tipo = "";
+		this.opcao = new String("1");
 	}
 
 	public ConfigAgendaParte1Bean getConfParte1() {
@@ -97,6 +106,9 @@ public class ConfigAgendaController implements Serializable {
 		if(listaHorarios==null){
 			return listaHorarios;
 		}else{
+			if(this.confParte1.getProfissional() == null){
+				System.out.println("AHSUDHASDUHASIUHDUAISUHDIUAS");
+			}
 			if (this.confParte1.getProfissional().getIdProfissional() != null) {
 				this.listaHorarios = cDao.listarHorariosPorIDProfissional(this.confParte1
 								.getProfissional().getIdProfissional());
@@ -108,6 +120,23 @@ public class ConfigAgendaController implements Serializable {
 	public void setListaHorarios(List<ConfigAgendaParte1Bean> listaHorarios) {
 		this.listaHorarios = listaHorarios;
 	}
+	
+	public List<ConfigAgendaParte1Bean> getListaHorariosEquipe() {
+		if(listaHorariosEquipe==null){
+			return listaHorariosEquipe;
+		}else{
+			if (this.confParte1.getEquipe().getCodEquipe() != null) {
+				this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(this.confParte1
+								.getEquipe().getCodEquipe());
+			}
+		}
+		return listaHorariosEquipe;
+	}
+
+	public void setListaHorariosEquipe(
+			List<ConfigAgendaParte1Bean> listaHorariosEquipe) {
+		this.listaHorariosEquipe = listaHorariosEquipe;
+	}
 
 	public List<ProfissionalBean> getListaProfissionais() {
 		if (this.listaProfissionais == null) {
@@ -118,6 +147,17 @@ public class ConfigAgendaController implements Serializable {
 
 	public void setListaProfissionais(List<ProfissionalBean> listaProfissionais) {
 		this.listaProfissionais = listaProfissionais;
+	}
+
+	public List<EquipeBean> getListaEquipes() {
+		if(this.listaEquipes == null){
+			this.listaEquipes = eDao.listarEquipe();
+		}
+		return listaEquipes;
+	}
+
+	public void setListaEquipes(List<EquipeBean> listaEquipes) {
+		this.listaEquipes = listaEquipes;
 	}
 
 	public String getNomeBusca() {
@@ -173,6 +213,18 @@ public class ConfigAgendaController implements Serializable {
 		} else {
 			this.listaProfissionais = pDao.listarProfissionalBusca(nomeBusca,
 					tipoBusca);
+			this.listaHorarios = null;
+		}
+	}
+	
+	public void buscarEquipe() {
+		if (this.tipoBusca == 0) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Escolha uma opção de busca válida!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			this.listaEquipes = eDao.listarEquipeBusca(nomeBusca, tipoBusca);
+			this.listaHorariosEquipe = null;
 		}
 	}
 
@@ -229,6 +281,24 @@ public class ConfigAgendaController implements Serializable {
 		limparDados();
 	}
 	
+	public void gravarConfigAgendaEquipe() throws SQLException {
+		boolean ok = false;
+
+		ok = cDao.gravarConfigAgendaEquipe(confParte1, confParte2, listaTipos);
+
+		if (ok) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Configuração gravada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Insira os dados corretamente!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+		limparDados();
+	}
+	
 	public void alterarConfigAgenda() throws SQLException {
 		boolean ok = false;
 		int somatorio = 0;
@@ -262,6 +332,24 @@ public class ConfigAgendaController implements Serializable {
 
 		limparDados();
 	}
+	
+	public void alterarConfigAgendaEquipe() throws SQLException {
+		boolean ok = false;
+
+		ok = cDao.alterarConfigAgendaEquipe(confParte1, confParte2, listaTiposEditar);
+
+		if (ok) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Configuração alterada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Insira os dados corretamente!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+		limparDados();
+	}
 
 	public void excluirConfig() throws ProjetoException {
 		boolean ok = cDao.excluirConfig(confParte1);
@@ -282,6 +370,26 @@ public class ConfigAgendaController implements Serializable {
 		}
 		this.listaHorarios = cDao.listarHorarios();
 	}
+	
+	public void excluirConfigEquipe() throws ProjetoException {
+		boolean ok = cDao.excluirConfigEquipe(confParte1);
+
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Configuração excluida com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
+		this.listaHorariosEquipe = cDao.listarHorariosEquipe();
+	}
 
 	public void onRowSelect(SelectEvent event) {
 		ProfissionalBean prof = (ProfissionalBean) event.getObject();
@@ -291,6 +399,15 @@ public class ConfigAgendaController implements Serializable {
 
 	public void onRowUnselect(UnselectEvent event) {
 		this.listaHorarios = null;
+	}
+	
+	public void onRowSelectEquipe(SelectEvent event) {
+		EquipeBean equipe = (EquipeBean) event.getObject();
+		this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe.getCodEquipe());
+	}
+
+	public void onRowUnselectEquipe(UnselectEvent event) {
+		this.listaHorariosEquipe = null;
 	}
 
 }
