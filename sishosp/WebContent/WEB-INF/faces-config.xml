@@ -137,5 +137,12 @@
 		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.ConfigAgendaController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	
+	<managed-bean>
+		<description>O Bean Feriado Controller </description>
+		<managed-bean-name>FeriadoController</managed-bean-name>
+		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.FeriadoController</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
 
 </faces-config>
