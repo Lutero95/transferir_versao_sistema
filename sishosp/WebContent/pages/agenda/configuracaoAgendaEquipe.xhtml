@@ -68,14 +68,14 @@
 					<h:outputLabel value="Equipe: " />
 					<p:outputPanel id="outEquipe">
 						<p:inputText
-							value="#{ConfigAgendaController.confParte1.profissional.idProfissional}"
+							value="#{ConfigAgendaController.confParte1.equipe.codEquipe}"
 							readonly="true" style="width: 60px" />
 						<p:inputText id="descProf"
-							value="#{ConfigAgendaController.confParte1.profissional.descricaoProf}"
+							value="#{ConfigAgendaController.confParte1.equipe.descEquipe}"
 							readonly="true" style="width: 300px" />
 					</p:outputPanel>
 					<p:commandButton value="Buscar"
-						onclick="PF('dlgConsultProf').show();" />
+						onclick="PF('dlgConsultEquipe').show();" />
 
 				</p:panelGrid>
 
@@ -122,20 +122,17 @@
 					<h:outputLabel value="Qtd. Máx: " />
 					<p:inputText style="width: 40px"
 						value="#{ConfigAgendaController.confParte1.qtdMax}" />
-
 				</p:panelGrid>
-
 				<p:separator />
-
 				<center>
 					<p:panelGrid columns="4" styleClass="semBorda">
 
 						<p:commandButton value="Gravar" icon="confirmar"
 							update=":formConfiAgendaEquipe:msg, :formConfiAgendaEquipe"
-							action="#{ConfigAgendaController.gravarConfigAgenda()}" />
+							action="#{ConfigAgendaController.gravarConfigAgendaEquipe()}" />
 
 						<p:commandButton value="Consultar" icon="buscar"
-							action="/pages/agenda/consConfAgenda.xhtml?faces-redirect=true" />
+							action="/pages/agenda/consConfAgendaEquipe.xhtml?faces-redirect=true" />
 
 						<p:commandButton value="Limpar" icon="limpar"
 							actionListener="#{ConfigAgendaController.limparDados()}"
@@ -194,13 +191,36 @@
 					</p:column>
 
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton
-							update=":formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:btBusTi"
+						<p:commandButton update=":formConfiAgendaEquipe:outGrupo"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsultGrop').hide();"
 							action="#{TipoAtendimentoController.atualizaListaTipos(ConfigAgendaController.confParte2.grupo)}">
 							<f:setPropertyActionListener value="#{grupo}"
 								target="#{ConfigAgendaController.confParte2.grupo}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consulta Equipes" widgetVar="dlgConsultEquipe"
+			modal="true" width="550px">
+			<h:form id="formConsuEquipe">
+				<p:dataTable value="#{EquipeController.listaEquipe}" id="dtEquipe"
+					resizableColumns="true" var="equipe"
+					emptyMessage="Não existe nenhuma equipe cadastrada!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{equipe.codEquipe}" />
+					</p:column>
+					<p:column headerText="EQUIPE">
+						<p:outputLabel value="#{equipe.descEquipe}" />
+					</p:column>
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton update=":formConfiAgendaEquipe:outEquipe"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsultEquipe').hide();">
+							<f:setPropertyActionListener value="#{equipe}"
+								target="#{ConfigAgendaController.confParte1.equipe}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>

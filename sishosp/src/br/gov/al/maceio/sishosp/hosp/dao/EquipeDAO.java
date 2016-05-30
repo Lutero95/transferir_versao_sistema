@@ -144,5 +144,37 @@ public class EquipeDAO {
 			}
 		}
 	}
+	
+	public EquipeBean buscarEquipePorID(Integer id) throws SQLException {
+		EquipeBean equipe = null;
+		
+		String sql = "select id_equipe, descequipe, codempresa"
+				+ " from hosp.equipe where id_equipe = ?";
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
 
+			while (rs.next()) {
+				equipe = new EquipeBean();
+				equipe.setCodEquipe(rs.getInt("id_equipe"));
+				equipe.setDescEquipe(rs.getString("descequipe"));
+				equipe.setCodEmpresa(0);//COD EMPRESA ?
+			}
+			
+			return equipe;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+	}
 }

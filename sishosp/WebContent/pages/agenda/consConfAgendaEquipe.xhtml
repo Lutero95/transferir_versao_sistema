@@ -13,12 +13,12 @@
 
 		<h:form id="formConsConfAgenda">
 			<p:growl id="msg" />
-			<p:panel header="CONSULTAR CONFIGURAÇÃO DA AGENDA"
+			<p:panel header="CONSULTAR CONFIGURAÇÃO DA AGENDA POR EQUIPE"
 				id="pnlConsConfAgenda" style="width:800px; margin: auto;">
 
 				<center>
-					<p:outputPanel id="pnlOpcao" autoUpdate="true">
-						<p:panelGrid columns="4" styleClass="semBorda">
+					<p:outputPanel id="outDesc" autoUpdate="true">
+						<p:panelGrid columns="4" styleClass="semBorda" id="pnlOpc">
 							<h:outputLabel for="op" value="Opção" />
 							<p:selectOneMenu id="op"
 								value="#{ConfigAgendaController.tipoBusca}">
@@ -31,42 +31,43 @@
 								value="#{ConfigAgendaController.nomeBusca}" />
 						</p:panelGrid>
 					</p:outputPanel>
+
 					<p:panelGrid columns="3" styleClass="semBorda">
 						<p:commandButton value="OK" icon="ui-icon-check"
-							action="#{ConfigAgendaController.buscarProfissional()}"
+							action="#{ConfigAgendaController.buscarEquipe()}"
 							update=":formConsConfAgenda:dtProf, :formConsConfAgenda:msg" />
 						<p:commandButton value="Nova Consulta" icon="ui-icon-search"
 							actionListener="#{ConfigAgendaController.limparDados()}"
-							upadte=":formConsConfAgenda:outGeral, 
-							:formConsConfAgenda:pnlOpcao" />
+							upadte=":formConsConfAgenda:outDesc, :formConsConfAgenda:outGeral" />
 						<p:commandButton value="Sair" icon="ui-icon-close"
 							actionListener="#{ConfigAgendaController.limparDados()}"
-							action="/pages/agenda/configuracaoAgenda.xhtml?faces-redirect=true" />
+							action="/pages/agenda/configuracaoAgendaEquipe.xhtml?faces-redirect=true" />
 					</p:panelGrid>
 				</center>
 				<p:separator />
 
 				<br />
+				
 				<p:outputPanel id="outGeral" autoUpdate="true">
-					<h:outputLabel value="Profissionais" />
+					<h:outputLabel value="Equipes" />
 					<p:dataTable id="dtProf"
-						value="#{ConfigAgendaController.listaProfissionais}"
-						selection="#{ConfigAgendaController.confParte1.profissional}"
-						var="prof" resizableColumns="true" selectionMode="single"
-						rowKey="#{prof.idProfissional}"
-						emptyMessage="Não existe nenhum profissional cadastrado!">
+						value="#{ConfigAgendaController.listaEquipes}"
+						selection="#{ConfigAgendaController.confParte1.equipe}"
+						var="equipe" resizableColumns="true" selectionMode="single"
+						rowKey="#{equipe.codEquipe}"
+						emptyMessage="Não existe nenhuma equipe cadastrada!">
 						<p:ajax event="rowSelect"
-							listener="#{ConfigAgendaController.onRowSelect}"
+							listener="#{ConfigAgendaController.onRowSelectEquipe}"
 							update=":formConsConfAgenda:dtHorarios" />
 
 						<p:ajax event="rowUnselect"
-							listener="#{ConfigAgendaController.onRowUnselect}"
+							listener="#{ConfigAgendaController.onRowUnselectEquipe}"
 							update=":formConsConfAgenda:dtHorarios" />
 						<p:column headerText="CÓD." style="width: 100px;">
-							<p:outputLabel value="#{prof.idProfissional}" />
+							<p:outputLabel value="#{equipe.codEquipe}" />
 						</p:column>
-						<p:column headerText="PROFISSIONAL">
-							<p:outputLabel value="#{prof.descricaoProf}" />
+						<p:column headerText="EQUIPE">
+							<p:outputLabel value="#{equipe.descEquipe}" />
 						</p:column>
 
 					</p:dataTable>
@@ -74,7 +75,7 @@
 					<br />
 					<h:outputLabel value="Horários" />
 					<p:dataTable id="dtHorarios"
-						value="#{ConfigAgendaController.listaHorarios}" var="config"
+						value="#{ConfigAgendaController.listaHorariosEquipe}" var="config"
 						resizableColumns="true" paginator="true" rows="10"
 						emptyMessage="Não existe nenhum horário cadastrado!">
 						<p:column headerText="DIA SEMANA" style="width: 100px;">
@@ -127,7 +128,7 @@
 							<center>
 								<p:splitButton icon="confirmar">
 									<p:menuitem value="Alterar" icon="alterar-dados"
-										action="/pages/agenda/editarConfAgenda.xhtml?faces-redirect=true">
+										action="/pages/agenda/editarConfAgendaEquipe.xhtml?faces-redirect=true">
 										<f:setPropertyActionListener value="#{config}"
 											target="#{ConfigAgendaController.confParte1}" />
 
@@ -144,7 +145,6 @@
 								</p:splitButton>
 							</center>
 						</p:column>
-
 					</p:dataTable>
 				</p:outputPanel>
 			</p:panel>
@@ -160,9 +160,9 @@
 				</h:panelGrid>
 				<center>
 					<p:commandButton value="Sim"
-						action="#{ConfigAgendaController.excluirConfig()}"
+						action="#{ConfigAgendaController.excluirConfigEquipe()}"
 						icon="ui-icon-check" style="font-size:14px;"
-						update=":formConsConfAgenda:msg">
+						update=":formConsConfAgenda:msg:, :formConsConfAgenda:dtHorarios">
 					</p:commandButton>
 					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
 						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
