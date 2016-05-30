@@ -41,6 +41,8 @@ public class ConfigAgendaController implements Serializable {
 	private Integer tipoBusca;
 
 	private String tipo;
+	
+	private String opcao;
 
 	public ConfigAgendaController() {
 		this.confParte1 = new ConfigAgendaParte1Bean();
@@ -50,6 +52,7 @@ public class ConfigAgendaController implements Serializable {
 		this.listaHorarios = new ArrayList<ConfigAgendaParte1Bean>();
 		this.listaProfissionais = null;
 		this.tipo = new String();
+		this.opcao = new String();
 
 	}
 
@@ -63,6 +66,7 @@ public class ConfigAgendaController implements Serializable {
 		this.listaProfissionais = null;
 		this.nomeBusca = new String();
 		this.tipo = new String();
+		this.opcao = new String();
 	}
 
 	public ConfigAgendaParte1Bean getConfParte1() {
@@ -138,6 +142,14 @@ public class ConfigAgendaController implements Serializable {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+	
+	public String getOpcao() {
+		return opcao;
+	}
+
+	public void setOpcao(String opcao) {
+		this.opcao = opcao;
 	}
 
 	public List<ConfigAgendaParte2Bean> getListaTiposEditar() {

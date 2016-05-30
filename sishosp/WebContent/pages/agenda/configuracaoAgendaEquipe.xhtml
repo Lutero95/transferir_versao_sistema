@@ -14,7 +14,8 @@
 
 		<h:form id="formConfiAgendaEquipe">
 			<p:growl id="msg" />
-			<p:panel header="CONFIGURAÇÃO DA AGENDA POR EQUIPE" id="pnlConfAgendaEquipeEquipe">
+			<p:panel header="CONFIGURAÇÃO DA AGENDA POR EQUIPE"
+				id="pnlConfAgendaEquipeEquipe">
 
 				<p:panelGrid columns="4" styleClass="semBorda">
 					<h:outputLabel value="Mês: " />
@@ -79,8 +80,19 @@
 				</p:panelGrid>
 
 				<p:panelGrid columns="2" styleClass="semBorda">
-					<h:outputLabel value="Dia: " />
+					<h:outputLabel value="Opção: " />
+					<p:selectOneRadio value="#{ConfigAgendaController.opcao}">
+						<f:selectItem itemLabel="Data Específica" itemValue="1" />
+						<f:selectItem itemLabel="Dias Semana" itemValue="2" />
+						<p:ajax update="panelDias" event="change" />
+					</p:selectOneRadio>
+				</p:panelGrid>
+
+				<p:panelGrid columns="4" styleClass="semBorda" id="panelDias">
+					<h:outputLabel value="Dia: "
+						rendered="#{ConfigAgendaController.opcao==2}" />
 					<p:selectManyCheckbox layout="grid" columns="7"
+						rendered="#{ConfigAgendaController.opcao==2}"
 						value="#{ConfigAgendaController.confParte1.diasSemana}">
 						<f:selectItem itemLabel="DOMINGO" itemValue="1" />
 						<f:selectItem itemLabel="SEGUNDA" itemValue="2" />
@@ -90,14 +102,15 @@
 						<f:selectItem itemLabel="SEXTA" itemValue="6" />
 						<f:selectItem itemLabel="SÁBADO" itemValue="7" />
 					</p:selectManyCheckbox>
+
+					<h:outputLabel value="Data Específica: "
+						rendered="#{ConfigAgendaController.opcao==1}" />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						pattern="dd/MM/yyyy" rendered="#{ConfigAgendaController.opcao==1}"
+						value="#{ConfigAgendaController.confParte1.dataEspecifica}" />
 				</p:panelGrid>
 
-				<p:panelGrid columns="9" styleClass="semBorda">
-					<h:outputLabel value="Data Específica: " />
-					<p:calendar locale="pt" navigator="true" mask="true"
-						pattern="dd/MM/yyyy"
-						value="#{ConfigAgendaController.confParte1.dataEspecifica}" />
-
+				<p:panelGrid columns="4" styleClass="semBorda">
 					<h:outputLabel value="Turno: " />
 					<p:selectOneMenu style="width:100px"
 						value="#{ConfigAgendaController.confParte1.turno}">
@@ -109,14 +122,6 @@
 					<h:outputLabel value="Qtd. Máx: " />
 					<p:inputText style="width: 40px"
 						value="#{ConfigAgendaController.confParte1.qtdMax}" />
-
-					<h:outputLabel value="Qtd.:" />
-					<p:inputText value="#{ConfigAgendaController.confParte2.qtd}"
-						style="width: 40px" />
-
-					<p:commandButton value="Incluir"
-						action="#{ConfigAgendaController.addNaLista()}"
-						update=":formConfiAgendaEquipe:msg, :formConfiAgendaEquipe" />
 
 				</p:panelGrid>
 
@@ -202,7 +207,7 @@
 			</h:form>
 		</p:dialog>
 
-		
+
 	</ui:define>
 </ui:composition>
 </html>
