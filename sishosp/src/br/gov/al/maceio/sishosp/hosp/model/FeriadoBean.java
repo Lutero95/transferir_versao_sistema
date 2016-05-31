@@ -1,9 +1,12 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.util.Date;
+
 public class FeriadoBean {
 	
 	private Integer codFeriado;
 	private String descFeriado;
+	private Date dataFeriado;
 	
 	public FeriadoBean(){
 		
@@ -23,6 +26,14 @@ public class FeriadoBean {
 
 	public void setDescFeriado(String descFeriado) {
 		this.descFeriado = descFeriado;
+	}
+
+	public Date getDataFeriado() {
+		return dataFeriado;
+	}
+
+	public void setDataFeriado(Date dataFeriado) {
+		this.dataFeriado = dataFeriado;
 	}
 	
 }

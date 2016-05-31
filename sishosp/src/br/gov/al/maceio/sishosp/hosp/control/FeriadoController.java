@@ -1,29 +1,40 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.context.RequestContext;
+
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.FeriadoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
 
 public class FeriadoController {
-	
+
 	private FeriadoBean feriado;
 	private List<FeriadoBean> listaFeriados;
 	private String tipo;
 	private String descricaoBusca;
 	private Integer tipoBuscar;
+	private String cabecalho;
 	
-	public FeriadoController(){
+	private Integer abaAtiva = 0;
+
+	private FeriadoDAO fDao = new FeriadoDAO();
+
+	public FeriadoController() {
 		this.feriado = new FeriadoBean();
-		this.listaFeriados = new ArrayList<FeriadoBean>();
+		this.listaFeriados = null;
 		this.tipo = new String();
 		this.descricaoBusca = new String();
 	}
-	
-	public void limparDados(){
+
+	public void limparDados() {
 		this.feriado = new FeriadoBean();
-		this.listaFeriados = new ArrayList<FeriadoBean>();
-		this.tipo = new String();
+		this.listaFeriados = null;
 		this.descricaoBusca = new String();
 	}
 
@@ -36,6 +47,9 @@ public class FeriadoController {
 	}
 
 	public List<FeriadoBean> getListaFeriados() {
+		if (this.listaFeriados == null) {
+			this.listaFeriados = fDao.listarFeriado();
+		}
 		return listaFeriados;
 	}
 
@@ -50,7 +64,7 @@ public class FeriadoController {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-	
+
 	public String getDescricaoBusca() {
 		return descricaoBusca;
 	}
@@ -58,7 +72,7 @@ public class FeriadoController {
 	public void setDescricaoBusca(String descricaoBusca) {
 		this.descricaoBusca = descricaoBusca;
 	}
-	
+
 	public Integer getTipoBuscar() {
 		return tipoBuscar;
 	}
@@ -67,11 +81,79 @@ public class FeriadoController {
 		this.tipoBuscar = tipoBuscar;
 	}
 
-	public void excluirFeriado(){
-		
+	public Integer getAbaAtiva() {
+		return abaAtiva;
 	}
-	
-	public void buscarFeriado(){
-		
+
+	public void setAbaAtiva(Integer abaAtiva) {
+		this.abaAtiva = abaAtiva;
+	}
+
+	public String getCabecalho() {
+		if (this.tipo.equals("I")) {
+			cabecalho = "CADASTRO DE FERIADO";
+		} else if (this.tipo.equals("A")) {
+			cabecalho = "ALTERAR FERIADO";
+		}
+
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
+	}
+
+	public void buscarFeriado() {
+		this.listaFeriados = fDao
+				.listarFeriadoBusca(descricaoBusca, tipoBuscar);
+	}
+
+	public void gravarFeriado() throws ProjetoException, SQLException {
+		boolean cadastrou = fDao.gravarFeriado(feriado);
+
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Feriado cadastrado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}
+
+	public void alterarFeriado() throws ProjetoException {
+		boolean alterou = fDao.alterarFeriado(feriado);
+		if (alterou == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Feriado alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+		this.listaFeriados = fDao.listarFeriado();
+
+	}
+
+	public void excluirFeriado() throws ProjetoException {
+		boolean ok = fDao.excluirFeriado(feriado);
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Cbo excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
+		this.listaFeriados = fDao.listarFeriado();
 	}
 }

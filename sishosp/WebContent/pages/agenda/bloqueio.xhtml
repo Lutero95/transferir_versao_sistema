@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="../../template/templatepagsistemas.xhtml">
+
+	<ui:define name="body">
+
+
+		<h:form id="formBloqueio">
+			<p:growl id="msg" />
+			<p:panel header="CADASTRO DE BLOQUEIO" id="pnlBloqueio">
+
+				<p:panelGrid columns="3" styleClass="semBorda">
+					<h:outputLabel value="Profissional: " />
+					<p:outputPanel id="outProfi">
+						<p:inputText
+							value="#{BloqueioController.bloqueio.prof.idProfissional}"
+							readonly="true" style="width: 60px" />
+						<p:inputText
+							value="#{BloqueioController.bloqueio.prof.descricaoProf}"
+							readonly="true" style="width: 300px" />
+					</p:outputPanel>
+					<p:commandButton value="Buscar"
+						onclick="PF('dlgConsultProfi').show();" />
+				</p:panelGrid>
+
+				<p:panelGrid columns="6" styleClass="semBorda">
+					<h:outputLabel value="Período: " />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						pattern="dd/MM/yyyy"
+						value="#{BloqueioController.bloqueio.dataInicio}" />
+					<h:outputLabel value=" a " />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						pattern="dd/MM/yyyy"
+						value="#{BloqueioController.bloqueio.dataFim}" />
+
+					<h:outputLabel value="Turno: " />
+					<p:selectOneMenu value="#{BloqueioController.bloqueio.turno}">
+						<f:selectItem itemLabel="MANHÃ" itemValue="M" />
+						<f:selectItem itemLabel="TARDE" itemValue="T" />
+						<f:selectItem itemLabel="AMBOS" itemValue="A" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<h:outputLabel value="Observação do bloqueio: " />
+					<p:inputTextarea rows="2" cols="50" 
+						maxlength="100" value="#{BloqueioController.bloqueio.descBloqueio}"
+						autoResize="false" />
+				</p:panelGrid>
+
+				<p:separator />
+				<center>
+					<p:panelGrid columns="4" styleClass="semBorda">
+
+						<p:commandButton value="Gravar" icon="confirmar"
+							update=":formBloqueio:msg, :formBloqueio"
+							action="#{BloqueioController.gravarBloqueio()}" />
+
+						<p:commandButton value="Consultar" icon="buscar"
+							action="/pages/agenda/consBloqueios.xhtml?faces-redirect=true" />
+
+						<p:commandButton value="Limpar" icon="limpar"
+							actionListener="#{BloqueioController.limparDados()}" />
+
+						<p:commandButton value="Sair" icon="btlogout"
+							actionListener="#{BloqueioController.limparDados()}"
+							action="/pages/comum/selecaoSistema.xhtml?faces-redirect=true" />
+					</p:panelGrid>
+				</center>
+
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsultProfi"
+			modal="true" width="550px">
+			<h:form id="formConsultProf">
+				<p:dataTable value="#{ProfissionalController.listaProfissional}"
+					id="dtTipoAt" resizableColumns="true" var="profi"
+					emptyMessage="Não existe nenhum tipo cadastrado!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{profi.idProfissional}" />
+					</p:column>
+					<p:column headerText="Profissional">
+						<p:outputLabel value="#{profi.descricaoProf}" />
+					</p:column>
+					<p:column headerText="Especialidade">
+						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+					</p:column>
+
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsultProfi').hide();"
+							update=":formBloqueio:outProfi">
+							<f:setPropertyActionListener value="#{profi}"
+								target="#{BloqueioController.bloqueio.prof}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

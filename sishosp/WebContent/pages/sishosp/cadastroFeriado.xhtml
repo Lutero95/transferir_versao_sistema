@@ -16,23 +16,34 @@
 			<h:form>
 				<p:commandButton value="Voltar"
 					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarCbo.faces"></p:commandButton>
+					action="/pages/sishosp/gerenciarFeriados.xhtml?faces-redirect=true"></p:commandButton>
 			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
-				<p:panel id="pnlCadCbo" header="#{CboController.cabecalho}"
+				<p:panel id="pnlCadFeriado" header="#{FeriadoController.cabecalho}"
 					style="height:auto; width:850px; background-color: #F5F5F5;">
-					<p:tabView activeIndex="#{CboController.abaAtiva}"
+					<p:tabView activeIndex="#{FeriadoController.abaAtiva}"
 						style="height:auto; width:800px">
-						<p:tab title="DADOS GRUPO">
+						<p:tab title="DADOS FERIADO">
 							<div class="form-group">
-								<h:outputLabel for="inputdesc" value="Descrição do Cbo: "
+								<h:outputLabel for="inputdesc" value="Descrição do Feriado: "
 									styleClass="col-sm-3 control-label" />
 								<div class="col-sm-6">
-									<h:inputText value="#{CboController.cbo.descCbo}"
+									<h:inputText value="#{FeriadoController.feriado.descFeriado}"
 										class="form-control" id="inputdesc" />
+
+								</div>
+							</div>
+
+							<div class="form-group">
+								<h:outputLabel for="dataF" value="Data: "
+									styleClass="col-sm-3 control-label" />
+								<div class="col-sm-6">
+									<p:calendar value="#{FeriadoController.feriado.dataFeriado}"
+										id="dataF" locale="pt" navigator="true" mask="true"
+										pattern="dd/MM/yyyy" />
 
 								</div>
 							</div>
@@ -43,16 +54,16 @@
 				</p:panel>
 				<!-- FIM DO FORMULARIO -->
 				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-					<h:commandButton action="#{CboController.gravaCbo()}"
-						update=":formCADU:message,:formCADU:pnlCadCbo,:formCadu"
+					<h:commandButton action="#{FeriadoController.gravarFeriado()}"
+						update=":formCADU:message,:formCADU:pnlCadFeriado,:formCadu"
 						value="Cadastrar" styleClass="btn btn-sm btn-success"
-						rendered="#{CboController.tipo == 'I'}" />
+						rendered="#{FeriadoController.tipo == 'I'}" />
 
 
-					<h:commandButton action="#{CboController.alterarCbo()}"
-						update=":formCADU:message,:formCADU:pnlCadCbo,:formCadu"
+					<h:commandButton action="#{FeriadoController.alterarFeriado()}"
+						update=":formCADU:message,:formCADU:pnlCadFeriado,:formCadu"
 						value="Alterar" styleClass="btn btn-info"
-						rendered="#{CboController.tipo  == 'A'}" />
+						rendered="#{FeriadoController.tipo  == 'A'}" />
 				</p:panelGrid>
 
 

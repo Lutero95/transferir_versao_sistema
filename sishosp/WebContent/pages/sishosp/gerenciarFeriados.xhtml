@@ -55,7 +55,7 @@
 
 						<p:commandButton id="btninc" value="Novo"
 							actionListener="#{FeriadoController.limparDados()}"
-							action="/pages/sishosp/cadastroFeriado.faces" icon="add"
+							action="/pages/sishosp/cadastroFeriado.xhtml?faces-redirect=true" icon="add"
 							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
 							<f:setPropertyActionListener value="I"
 								target="#{FeriadoController.tipo}" />

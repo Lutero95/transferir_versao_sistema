@@ -295,7 +295,7 @@ public class ConfigAgendaDAO {
 
 	public List<ConfigAgendaParte1Bean> listarHorarios() {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
-		String sql = "SELECT id_configagenda, codmedico, diasemana, horainicio, horafim, qtdmax, dataagenda,"
+		String sql = "SELECT id_configagenda, codmedico, diasemana, qtdmax, dataagenda,"
 				+ " turno, mes, ano, codempresa FROM hosp.config_agenda order by id_configagenda ";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -308,8 +308,6 @@ public class ConfigAgendaDAO {
 				conf.setProfissional(pDao.buscarProfissionalPorID(rs
 						.getInt("codmedico")));
 				conf.setDiaDaSemana(rs.getInt("diasemana"));
-				// horainicio
-				// horafim
 				conf.setDataEspecifica(rs.getDate("dataagenda"));
 				conf.setQtdMax(rs.getInt("qtdmax"));
 				conf.setTurno(rs.getString("turno"));
@@ -334,7 +332,7 @@ public class ConfigAgendaDAO {
 	
 	public List<ConfigAgendaParte1Bean> listarHorariosEquipe() {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
-		String sql = "SELECT id_configagenda, codequipe, diasemana, horainicio, horafim, qtdmax, dataagenda,"
+		String sql = "SELECT id_configagenda, codequipe, diasemana, qtdmax, dataagenda,"
 				+ " turno, mes, ano, codempresa FROM hosp.config_agenda_equipe order by id_configagenda ";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -372,7 +370,7 @@ public class ConfigAgendaDAO {
 
 	public List<ConfigAgendaParte1Bean> listarHorariosPorIDProfissional(int id) {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
-		String sql = "SELECT id_configagenda, codmedico, diasemana, horainicio, horafim, qtdmax, dataagenda,"
+		String sql = "SELECT id_configagenda, codmedico, diasemana, qtdmax, dataagenda,"
 				+ " turno, mes, ano, codempresa FROM hosp.config_agenda where codmedico = ? order by id_configagenda ";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -386,8 +384,6 @@ public class ConfigAgendaDAO {
 				conf.setProfissional(pDao.buscarProfissionalPorID(rs
 						.getInt("codmedico")));
 				conf.setDiaDaSemana(rs.getInt("diasemana"));
-				// horainicio
-				// horafim
 				conf.setDataEspecifica(rs.getDate("dataagenda"));
 				conf.setQtdMax(rs.getInt("qtdmax"));
 				conf.setTurno(rs.getString("turno"));
