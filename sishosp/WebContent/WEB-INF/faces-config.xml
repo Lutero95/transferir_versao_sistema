@@ -155,7 +155,7 @@
 	<managed-bean>
 		<description>O Bean Bloqueio Controller </description>
 		<managed-bean-name>BloqueioController</managed-bean-name>
-		<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.BloqueioController</managed-bean-class>
+			<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.BloqueioController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 

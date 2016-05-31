@@ -11,135 +11,64 @@
 
 	<ui:define name="body">
 
-		<h:form id="formConsConfAgenda">
+
+		<h:form id="formConsulBloqueio">
 			<p:growl id="msg" />
-			<p:panel header="CONSULTAR BLOQUEIOS"
-				id="pnlConsConfAgenda" style="width:800px; margin: auto;">
+			<p:panel header="CONSULTA DE BLOQUEIO" id="pnlConsuBloqueio">
 
-				<center>
-					<p:outputPanel id="pnlOpcao" autoUpdate="true">
-						<p:panelGrid columns="4" styleClass="semBorda">
-							<h:outputLabel for="op" value="Opção" />
-							<p:selectOneMenu id="op"
-								value="#{ConfigAgendaController.tipoBusca}">
-								<f:selectItem itemLabel="Escolha Opção" itemValue="0" />
-								<f:selectItem itemLabel="Nome" itemValue="1" />
-							</p:selectOneMenu>
-
-							<h:outputLabel value="Descrição" />
-							<p:inputText style="width: 300px"
-								value="#{ConfigAgendaController.nomeBusca}" />
-						</p:panelGrid>
+				<p:panelGrid columns="3" styleClass="semBorda">
+					<h:outputLabel value="Profissional: " />
+					<p:outputPanel id="outProfi">
+						<p:inputText
+							value="#{BloqueioController.bloqueio.prof.idProfissional}"
+							readonly="true" style="width: 60px" />
+						<p:inputText
+							value="#{BloqueioController.bloqueio.prof.descricaoProf}"
+							readonly="true" style="width: 300px" />
 					</p:outputPanel>
-					<p:panelGrid columns="3" styleClass="semBorda">
-						<p:commandButton value="OK" icon="ui-icon-check"
-							action="#{ConfigAgendaController.buscarProfissional()}"
-							update=":formConsConfAgenda:dtProf, :formConsConfAgenda:msg" />
-						<p:commandButton value="Nova Consulta" icon="ui-icon-search"
-							actionListener="#{ConfigAgendaController.limparDados()}"
-							upadte=":formConsConfAgenda:outGeral, 
-							:formConsConfAgenda:pnlOpcao" />
-						<p:commandButton value="Sair" icon="ui-icon-close"
-							actionListener="#{ConfigAgendaController.limparDados()}"
-							action="/pages/agenda/configuracaoAgenda.xhtml?faces-redirect=true" />
-					</p:panelGrid>
-				</center>
-				<p:separator />
+					<p:commandButton value="Buscar"
+						onclick="PF('dlgConsultProfi').show();" />
+				</p:panelGrid>
 
-				<br />
-				<p:outputPanel id="outGeral" autoUpdate="true">
-					<h:outputLabel value="Profissionais" />
-					<p:dataTable id="dtProf"
-						value="#{ConfigAgendaController.listaProfissionais}"
-						selection="#{ConfigAgendaController.confParte1.profissional}"
-						var="prof" resizableColumns="true" selectionMode="single"
-						rowKey="#{prof.idProfissional}"
-						emptyMessage="Não existe nenhum profissional cadastrado!">
-						<p:ajax event="rowSelect"
-							listener="#{ConfigAgendaController.onRowSelect}"
-							update=":formConsConfAgenda:dtHorarios" />
+				<p:separator/>
 
-						<p:ajax event="rowUnselect"
-							listener="#{ConfigAgendaController.onRowUnselect}"
-							update=":formConsConfAgenda:dtHorarios" />
-						<p:column headerText="CÓD." style="width: 100px;">
-							<p:outputLabel value="#{prof.idProfissional}" />
-						</p:column>
-						<p:column headerText="PROFISSIONAL">
-							<p:outputLabel value="#{prof.descricaoProf}" />
-						</p:column>
-
-					</p:dataTable>
-
-					<br />
-					<h:outputLabel value="Horários" />
-					<p:dataTable id="dtHorarios"
-						value="#{ConfigAgendaController.listaHorarios}" var="config"
+				<h:outputLabel value="Bloqueios" />
+				<p:outputPanel id="outBloq">
+					<p:dataTable id="dtBloqueios"
+						value="#{BloqueioController.listaBloqueios}" var="bloqueio"
 						resizableColumns="true" paginator="true" rows="10"
-						emptyMessage="Não existe nenhum horário cadastrado!">
-						<p:column headerText="DIA SEMANA" style="width: 100px;">
-							<p:outputLabel value="DOMINGO"
-								rendered="#{config.diaDaSemana == 1}" />
-							<p:outputLabel value="SEGUNDA"
-								rendered="#{config.diaDaSemana == 2}" />
-							<p:outputLabel value="TERÇA"
-								rendered="#{config.diaDaSemana == 3}" />
-							<p:outputLabel value="QUARTA"
-								rendered="#{config.diaDaSemana == 4}" />
-							<p:outputLabel value="QUINTA"
-								rendered="#{config.diaDaSemana == 5}" />
-							<p:outputLabel value="SEXTA"
-								rendered="#{config.diaDaSemana == 6}" />
-							<p:outputLabel value="SABADO"
-								rendered="#{config.diaDaSemana == 7}" />
+						emptyMessage="Não existe nenhum bloqueio cadastrado!">
+						<p:column headerText="MÉDICO" style="width: 450px;">
+							<p:outputLabel value="#{bloqueio.prof.descricaoProf}" />
 						</p:column>
-						<p:column headerText="DATA ESPECÍFICA">
-							<p:outputLabel value="#{config.dataEspecifica}">
+						<p:column headerText="DATA">
+							<p:outputLabel value="#{bloqueio.dataInicio}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</p:outputLabel>
 						</p:column>
-						<p:column headerText="QTD. MÁXIMA">
-							<p:outputLabel value="#{config.qtdMax}" />
-						</p:column>
 						<p:column headerText="TURNO">
-							<p:outputLabel value="MANHÃ" rendered="#{config.turno == 'M'}" />
-							<p:outputLabel value="TARDE" rendered="#{config.turno == 'T'}" />
+							<p:outputLabel value="MANHÃ" rendered="#{bloqueio.turno == 'M'}" />
+							<p:outputLabel value="TARDE" rendered="#{bloqueio.turno == 'T'}" />
 						</p:column>
-						<p:column headerText="MÊS">
-							<p:outputLabel value="JANEIRO" rendered="#{config.mes == 1}" />
-							<p:outputLabel value="FEVEREIRO" rendered="#{config.mes == 2}" />
-							<p:outputLabel value="MARÇO" rendered="#{config.mes == 3}" />
-							<p:outputLabel value="ABRIL" rendered="#{config.mes == 4}" />
-							<p:outputLabel value="MAIO" rendered="#{config.mes == 5}" />
-							<p:outputLabel value="JUNHO" rendered="#{config.mes == 6}" />
-							<p:outputLabel value="JULHO" rendered="#{config.mes == 7}" />
-							<p:outputLabel value="AGOSTO" rendered="#{config.mes == 8}" />
-							<p:outputLabel value="SETEMBRO" rendered="#{config.mes == 9}" />
-							<p:outputLabel value="OUTUBRO" rendered="#{config.mes == 10}" />
-							<p:outputLabel value="NOVEMBRO" rendered="#{config.mes == 11}" />
-							<p:outputLabel value="DEZEMBRO" rendered="#{config.mes == 12}" />
-						</p:column>
-						<p:column headerText="ANO">
-							<p:outputLabel value="#{config.ano}" />
-						</p:column>
+
 
 						<p:column headerText="Ações" width="15%">
 							<center>
 								<p:splitButton icon="confirmar">
 									<p:menuitem value="Alterar" icon="alterar-dados"
-										action="/pages/agenda/editarConfAgenda.xhtml?faces-redirect=true">
-										<f:setPropertyActionListener value="#{config}"
-											target="#{ConfigAgendaController.confParte1}" />
+										action="/pages/agenda/editarBloqueio.xhtml?faces-redirect=true">
+										<f:setPropertyActionListener value="#{bloqueio}"
+											target="#{BloqueioController.bloqueio}" />
 
 										<f:setPropertyActionListener value="A"
-											target="#{ConfigAgendaController.tipo}" />
+											target="#{BloqueioController.tipo}" />
 									</p:menuitem>
 
 									<p:menuitem value="Excluir" icon="trash"
 										onclick="PF('dialogAtencao').show()">
 
-										<f:setPropertyActionListener value="#{config}"
-											target="#{ConfigAgendaController.confParte1}" />
+										<f:setPropertyActionListener value="#{bloqueio}"
+											target="#{BloqueioController.bloqueio}" />
 									</p:menuitem>
 								</p:splitButton>
 							</center>
@@ -147,8 +76,39 @@
 
 					</p:dataTable>
 				</p:outputPanel>
+
 			</p:panel>
 		</h:form>
+
+		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsultProfi"
+			modal="true" width="550px">
+			<h:form id="formConsultProf">
+				<p:dataTable value="#{ProfissionalController.listaProfissional}"
+					id="dtTipoAt" resizableColumns="true" var="profi"
+					emptyMessage="Não existe nenhum tipo cadastrado!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{profi.idProfissional}" />
+					</p:column>
+					<p:column headerText="Profissional">
+						<p:outputLabel value="#{profi.descricaoProf}" />
+					</p:column>
+					<p:column headerText="Especialidade">
+						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+					</p:column>
+
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsultProfi').hide();"
+							action="#{BloqueioController.atualizarListaBloqueio()}"
+							update=":formConsulBloqueio:outProfi, :formConsulBloqueio:outBloq">
+							<f:setPropertyActionListener value="#{profi}"
+								target="#{BloqueioController.bloqueio.prof}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+		
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 			<h:form id="dlgexcluir">
@@ -160,9 +120,9 @@
 				</h:panelGrid>
 				<center>
 					<p:commandButton value="Sim"
-						action="#{ConfigAgendaController.excluirConfig()}"
+						action="#{BloqueioController.excluirBloqueio()}"
 						icon="ui-icon-check" style="font-size:14px;"
-						update=":formConsConfAgenda:msg">
+						update=":formConsulBloqueio:msg, :formConsulBloqueio:outBloq">
 					</p:commandButton>
 					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
 						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>

@@ -19,14 +19,17 @@ public class BloqueioController {
 	private List<BloqueioBean> listaBloqueios;
 	private BloqueioDAO bDao = new BloqueioDAO();
 	
+	private String tipo;
+	
 	public BloqueioController() {
 		this.bloqueio = new BloqueioBean();
-		this.listaBloqueios = new ArrayList<BloqueioBean>();
+		this.listaBloqueios = null;
+		this.tipo = new String();
 	}
 	
 	public void limparDados(){
 		this.bloqueio = new BloqueioBean();
-		this.listaBloqueios = new ArrayList<BloqueioBean>();
+		this.listaBloqueios = null;
 	}
 
 	public BloqueioBean getBloqueio() {
@@ -38,12 +41,22 @@ public class BloqueioController {
 	}
 	
 	public List<BloqueioBean> getListaBloqueios() {
+		if(this.listaBloqueios == null){
+			this.listaBloqueios = bDao.listarBloqueio();
+		}
 		return listaBloqueios;
 	}
 
 	public void setListaBloqueios(List<BloqueioBean> listaBloqueios) {
-		this.listaBloqueios = bDao.listarBloqueio();
 		this.listaBloqueios = listaBloqueios;
+	}
+	
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 	public void gravarBloqueio() throws ProjetoException, SQLException {
@@ -80,7 +93,7 @@ public class BloqueioController {
 		boolean ok = bDao.excluirBloqueio(bloqueio);
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cbo excluido com sucesso!", "Sucesso");
+					"Bloqueio excluido com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
@@ -93,6 +106,10 @@ public class BloqueioController {
 					"PF('dialogAtencao').hide();");
 		}
 		this.listaBloqueios = bDao.listarBloqueio();
+	}
+	
+	public void atualizarListaBloqueio(){
+		this.listaBloqueios = bDao.listarBloqueioPorProfissional(bloqueio.getProf());
 	}
 	
 
