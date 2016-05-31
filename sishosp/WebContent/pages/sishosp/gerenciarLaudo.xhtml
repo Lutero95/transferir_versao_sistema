@@ -28,7 +28,7 @@
                         <p:panelGrid columns="7" styleClass="semBorda" style="font-size:12px !important;">
                         <p:outputPanel autoUpdate="true">
                         <p:outputLabel value="Pesquisar por: " />
-                        <p:selectOneMenu value="#{EscolaController.tipoBuscaEscola}" required="true"
+                        <p:selectOneMenu value="#{LaudoController.tipoBuscaLaudo}" required="true"
                             style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
                             requiredMessage="Informe o diretório da página.">
                                
@@ -40,16 +40,16 @@
 
                         <p:inputText id="campoBuscanome"
                             style="height:28px;margin-top:-6px;margin-left:16px;"
-                            value="#{EscolaController.campoBuscaEscola}"
-                            rendered="#{EscolaController.tipoBuscaEscola == 1}" />
+                            value="#{LaudoController.campoBuscaLaudo}"
+                            rendered="#{LaudoController.tipoBuscaLaudo == 1}" />
                             
 
                             
 	<!-- actionListener="#{PacienteController.limparDados()}" -->
 						<p:commandButton value="Buscar" id="botaoBusca" 
 						icon="buscaLupa" styleClass="btn btn-info" style="height:30px; margin-left:10px;" 
-						action="#{EscolaController.buscarEscolas()}" update=":frmmensagem:tabela, :frmmensagem:growl" />
-						<p:commandButton value="Limpar Busca" icon="limpar"  update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"  actionListener="#{EscolaController.limparBuscaDados()}"
+						action="#{LaudoController.buscarLaudo()}" update=":frmmensagem:tabela, :frmmensagem:growl" />
+						<p:commandButton value="Limpar Busca" icon="limpar"  update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"  actionListener="#{LaudoController.limparBuscaDados()}"
 						style="margin-left:20px"/>
 						<br/>
                  
@@ -102,6 +102,14 @@
                     
                       <p:column headerText="Data Autorizada" style="font-weight:bold;">
                         <h:outputText value="#{tab.dtautorizacao}" />
+                    </p:column>
+                    
+                     <p:column headerText="Situação" style="font-weight:bold;">
+                        <h:outputText value="#{tab.situacao}" />
+                    </p:column>
+                    
+                    <p:column headerText="Recurso" style="font-weight:bold;">
+                        <h:outputText value="#{tab.recurso}" />
                     </p:column>
                     
                       <p:column headerText="Unidade" style="font-weight:bold;">

@@ -429,7 +429,7 @@ public class LaudoDAO {
             public List<LaudoBean> buscarTipoLaudo(String valor, Integer tipo) {
         		
             	
-          		 String sql = "select apac.id_apac, apac.apac from hosp.apac where";
+          		 String sql = "select * from hosp.apac where";
           		
           		if (tipo == 1) {
           			sql += " apac.apac like ? order by apac.apac ";
@@ -451,7 +451,26 @@ public class LaudoDAO {
           	
           				l.setId_apac(rs.getInt("id_apac"));
      	                l.setApac(rs.getString("apac").toUpperCase());
-     	               
+    	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("codpaciente")));
+    	                l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+    	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
+    	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+    	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codproc")));
+    	                l.setDtasolicitacao(rs.getDate("dtasolicitacao"));
+    	                l.setRecurso(rs.getString("recurso"));
+    	                l.setUnidade(rs.getString("unidade"));
+    	                l.setSituacao(rs.getString("situacao"));
+    	                l.setDtautorizacao(rs.getDate("dtautorizacao"));
+    	                l.setCid10_1(rs.getString("cid10_1"));
+    	                l.setCid10_2(rs.getString("cid10_2"));
+    	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("codfornecedor")));
+    	                l.setValor(rs.getDouble("valor"));
+    	                l.setNota(rs.getString("nota"));
+    	                l.setQtd(rs.getInt("qtd"));
+    	                l.setCodequipamento(rs.getInt("codequipamento"));
+    	                l.setObs(rs.getString("obs"));
+    	              
+    	   
 
           				lista.add(l);
 
