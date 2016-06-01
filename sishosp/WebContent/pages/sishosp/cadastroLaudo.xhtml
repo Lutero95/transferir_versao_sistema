@@ -102,7 +102,7 @@
 					<p:outputPanel>
 						<h:outputLabel for="dataAte" value="Data para Solicitação" />
 						<br />
-						<p:calendar id="data" locale="pt" value="#{LaudoController.laudo.dtasolicitacao}" navigator="true" mask="true"
+						<p:calendar id="data" locale="pt" showOn="button" value="#{LaudoController.laudo.dtasolicitacao}" navigator="true" mask="true"
 							pattern="dd/MM/yyyy" />
 					</p:outputPanel>
 					
@@ -173,14 +173,14 @@
                   		<p:outputPanel>
 						<h:outputLabel for="dataAtou" value="Data para Autorização" />
 						<br />
-						<p:calendar id="dataAt" locale="pt" value="#{LaudoController.laudo.dtautorizacao}" navigator="true" mask="true"
+						<p:calendar id="dataAt" showOn="button" locale="pt" value="#{LaudoController.laudo.dtautorizacao}" navigator="true" mask="true"
 							pattern="dd/MM/yyyy" />
 					</p:outputPanel>
 					
 							<p:outputPanel>
 						<h:outputLabel for="dataVen" value="Data para Vencimento" />
 						<br />
-						<p:calendar id="dataVenci" locale="pt" navigator="true" mask="true"
+						<p:calendar id="dataVenci" showOn="button" locale="pt" navigator="true" mask="true"
 							pattern="dd/MM/yyyy" readonly="true" />
 					</p:outputPanel>
 				</p:panelGrid>

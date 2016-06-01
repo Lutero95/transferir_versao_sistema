@@ -65,7 +65,8 @@ public class LaudoDAO {
                 stmt.setString(9, laudo.getUnidade().toUpperCase().trim());
                 stmt.setString(10, laudo.getSituacao().toUpperCase().trim());
                 stmt.setDate(11, new java.sql.Date(laudo.getDtautorizacao().getTime()));
-                //stmt.setDate(12, new java.sql.Date(laudo.getDtachegada().getTime()));
+                // stmt.setDate(12, new java.sql.Date(laudo.getDtavencimento().getTime()));
+              
                 if (laudo.getCid10_1() == null) {
     				stmt.setNull(12, Types.CHAR);
     			} else {

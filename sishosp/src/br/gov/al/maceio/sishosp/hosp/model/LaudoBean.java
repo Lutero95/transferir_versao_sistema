@@ -24,6 +24,7 @@ public class LaudoBean {
 	private Integer qtd;
 	private String nota;
 	private Date dtautorizacao;
+	private Date dtavencimento;
 	private String sta;
 	private Integer codequipamento;
 	private String categoria;
@@ -366,6 +367,14 @@ public class LaudoBean {
 
 	public void setFornecedor(FornecedorBean fornecedor) {
 		this.fornecedor = fornecedor;
+	}
+
+	public Date getDtavencimento() {
+		return dtavencimento;
+	}
+
+	public void setDtavencimento(Date dtavencimento) {
+		this.dtavencimento = dtavencimento;
 	}
 	
 	
