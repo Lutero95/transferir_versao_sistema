@@ -150,18 +150,23 @@ public class BloqueioDAO {
 			throws ProjetoException {
 		String sql = "update hosp.bloqueio_agenda set codmedico = ?,"
 				+ " dataagenda = ?,turno = ?, descricao = ?"
-				+ " from hosp.bloqueio_agenda "
 				+ " where id_bloqueioagenda = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
+			
+			System.out.println(bloqueio.getProf().getIdProfissional());
+			System.out.println(bloqueio.getDataInicio());
+			System.out.println(bloqueio.getTurno().toUpperCase());
+			System.out.println(bloqueio.getDescBloqueio().toUpperCase());
+			System.out.println(bloqueio.getIdBloqueio());
+			
 			stmt.setInt(1, bloqueio.getProf().getIdProfissional());
 			stmt.setDate(2, new java.sql.Date(bloqueio.getDataInicio()
 					.getTime()));
-			stmt.setDate(3, new java.sql.Date(bloqueio.getDataFim().getTime()));
-			stmt.setString(4, bloqueio.getTurno().toUpperCase());
-			stmt.setString(5, bloqueio.getDescBloqueio().toUpperCase());
-			stmt.setInt(6, bloqueio.getIdBloqueio()); // COD EMPRESA ?
+			stmt.setString(3, bloqueio.getTurno().toUpperCase());
+			stmt.setString(4, bloqueio.getDescBloqueio().toUpperCase());
+			stmt.setInt(5, bloqueio.getIdBloqueio());
 			stmt.executeUpdate();
 			con.commit();
 			return true;
