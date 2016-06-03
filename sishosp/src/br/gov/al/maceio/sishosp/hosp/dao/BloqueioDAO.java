@@ -201,4 +201,45 @@ public class BloqueioDAO {
 			}
 		}
 	}
+	
+	public List<BloqueioBean> verificarBloqueioProfissional(ProfissionalBean prof, Date dataAtendimento, String turno) {
+		List<BloqueioBean> lista = new ArrayList<>();
+		String sql = "select id_bloqueioagenda, codmedico,"
+				+ " dataagenda, turno, descricao, codempresa "
+				+ " from hosp.bloqueio_agenda "
+				+ " where codmedico = ? and  dataagenda = ? and turno = ?"
+				+ " order by id_bloqueioagenda";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, prof.getIdProfissional());
+			stm.setDate(2, new java.sql.Date(dataAtendimento.getTime()));
+			stm.setString(3, turno.toUpperCase());
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				BloqueioBean bloqueio = new BloqueioBean();
+				bloqueio.setIdBloqueio(rs.getInt("id_bloqueioagenda"));
+				bloqueio.setProf(pDao.buscarProfissionalPorID(rs
+						.getInt("codmedico")));
+				bloqueio.setDataInicio(rs.getDate("dataagenda"));
+				bloqueio.setTurno(rs.getString("turno"));
+				bloqueio.setDescBloqueio(rs.getString("descricao"));
+				bloqueio.setCodEmpresa(rs.getInt("codempresa"));
+
+				lista.add(bloqueio);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
 }

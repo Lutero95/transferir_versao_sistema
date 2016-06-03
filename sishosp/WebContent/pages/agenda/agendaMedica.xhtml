@@ -17,6 +17,7 @@
 		</div>
 
 		<h:form id="formAgendaMedica">
+			<p:growl id="msgFeriado"/>
 			<p:panel>
 				<p:panelGrid columns="3" styleClass="semBorda">
 					<h:outputLabel for="pac" value="Paciente" />
@@ -100,28 +101,29 @@
 						disabled="#{AgendaController.tipoAt==null}"
 						onclick="PF('dlgConsuEquipe').show();"
 						rendered="#{AgendaController.tipoAt.equipe==true}" />
-				</p:panelGrid>
 
-				<p:panelGrid columns="2" styleClass="semBorda">
 					<h:outputLabel for="obs" value="Obs.:" />
-					<p:inputTextarea id="obs" value="obs" style="width: 328px"
+					<p:inputTextarea id="obs" value="#{AgendaController.observacao}" style="width: 328px"
 						autoResize="false" />
 				</p:panelGrid>
 
 				<p:panelGrid columns="7" styleClass="semBorda">
 					<p:outputPanel>
-						<h:outputLabel for="dataAte" value="Data para Atendimento" />
+						<h:outputLabel value="Data para Atendimento" />
 						<br />
-						<p:calendar id="data" locale="pt" navigator="true" mask="true"
+						<p:calendar value="#{AgendaController.dataAtendimento}" id="dtagen"
+							locale="pt" navigator="true" mask="true" showOn="button"
 							pattern="dd/MM/yyyy" />
 					</p:outputPanel>
 
 					<p:outputPanel>
 						<h:outputLabel for="turno" value="Turno" />
 						<br />
-						<p:selectOneMenu value="#">
-							<f:selectItem itemLabel="Manhã" itemValue="MANHÃ" />
-							<f:selectItem itemLabel="Tarde" itemValue="TARDE" />
+						<p:selectOneMenu value="#{AgendaController.turno}">
+							<f:selectItem itemLabel="Manhã" itemValue="M" />
+							<f:selectItem itemLabel="Tarde" itemValue="T" />
+							<p:ajax event="change" process="@this dtagen" update=":formAgendaMedica:msgFeriado"
+								listener="#{AgendaController.verificaDisponibilidadeData()}" />
 						</p:selectOneMenu>
 					</p:outputPanel>
 
