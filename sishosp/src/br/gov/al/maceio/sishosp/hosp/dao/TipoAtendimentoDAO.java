@@ -214,10 +214,10 @@ public class TipoAtendimentoDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			ps.setString(1, tipo.getDescTipoAt().toUpperCase());
-			ps.setBoolean(2, tipo.isPrimeiroAt());
-			ps.setBoolean(3, tipo.isEquipe());
-			ps.setInt(4, tipo.getIdTipo());
+			stmt.setString(1, tipo.getDescTipoAt().toUpperCase());
+			stmt.setBoolean(2, tipo.isPrimeiroAt());
+			stmt.setBoolean(3, tipo.isEquipe());
+			stmt.setInt(4, tipo.getIdTipo());
 			stmt.executeUpdate();
 			con.commit();
 			return true;
@@ -238,8 +238,8 @@ public class TipoAtendimentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
 			for (GrupoBean grupo : tipo.getGrupo()) {
-				ps.setInt(1, grupo.getIdGrupo());
-				ps.setInt(2, tipo.getIdTipo());
+				stmt.setInt(1, grupo.getIdGrupo());
+				stmt.setInt(2, tipo.getIdTipo());
 				stmt.executeUpdate();
 				con.commit();
 			}

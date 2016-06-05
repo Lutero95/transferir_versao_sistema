@@ -7,7 +7,9 @@ public class GrupoBean {
 	private Integer qtdFrequencia;
 	
 	public GrupoBean(){
-		
+		this.idGrupo = null;
+		this.descGrupo = new String();
+		this.qtdFrequencia = null;
 	}
 	
 	public GrupoBean(Integer idGrupo, String descGrupo, Integer qtdFrequencia) {

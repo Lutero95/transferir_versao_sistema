@@ -20,6 +20,7 @@ public class TipoAtendimentoBean {
 		this.equipe = false;
 		this.primeiroAt = false;
 		this.grupoParaAdd = new GrupoBean();
+		this.idTipo = null;
 		
 	}
 	
@@ -78,5 +79,13 @@ public class TipoAtendimentoBean {
 	public void addGrupoLista(){
 		this.grupo.add(grupoParaAdd);
 	}
+
+	@Override
+	public String toString() {
+		return "TipoAtendimentoBean [idTipo=" + idTipo + ", descTipoAt="
+				+ descTipoAt + ", equipe=" + equipe + "]";
+	}
+	
+	
 
 }

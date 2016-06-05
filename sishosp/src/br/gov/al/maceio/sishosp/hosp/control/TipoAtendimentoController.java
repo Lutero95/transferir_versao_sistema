@@ -86,7 +86,7 @@ public class TipoAtendimentoController {
 	}
 	
 	public void alterarTipo() throws ProjetoException {
-        boolean alterou = tDao.alterarTipo(tipo);
+        boolean alterou = tDao.alterarTipo(this.tipo);
         if(alterou == true) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Tipo de atendimento alterado com sucesso!", "Sucesso");
@@ -101,7 +101,7 @@ public class TipoAtendimentoController {
 	}
 	
 	public void excluirTipo() throws ProjetoException {
-        boolean ok = tDao.excluirTipo(tipo);
+        boolean ok = tDao.excluirTipo(this.tipo);
         if(ok == true) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Tipo de atendimento excluido com sucesso!", "Sucesso");

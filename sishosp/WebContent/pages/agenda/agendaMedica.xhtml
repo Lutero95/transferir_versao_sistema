@@ -17,93 +17,95 @@
 		</div>
 
 		<h:form id="formAgendaMedica">
-			<p:growl id="msgFeriado"/>
+			<p:growl id="msgFeriado" />
 			<p:panel>
 				<p:panelGrid columns="3" styleClass="semBorda">
-					<h:outputLabel for="pac" value="Paciente" />
+					<h:outputLabel for="pac" value="Paciente:" />
 					<p:outputPanel id="outPacie">
 						<p:inputText id="codPac"
-							value="#{AgendaController.paciente.id_paciente}" readonly="true"
-							style="width: 40px" />
-						<p:inputText id="pac" value="#{AgendaController.paciente.nome}"
-							readonly="true" style="width: 300px" />
+							value="#{AgendaController.agenda.paciente.id_paciente}"
+							readonly="true" style="width: 40px" />
+						<p:inputText id="pac"
+							value="#{AgendaController.agenda.paciente.nome}" readonly="true"
+							style="width: 300px" />
 					</p:outputPanel>
 					<p:commandButton id="btBusPa" value="Buscar"
 						onclick="PF('dlgConsuPac').show();" />
 
-					<h:outputLabel for="prog" value="Programa" />
+					<h:outputLabel for="prog" value="Programa:" />
 					<p:outputPanel id="outProg">
 						<p:inputText id="codProg"
-							value="#{AgendaController.programa.idPrograma}" readonly="true"
-							style="width: 40px" />
+							value="#{AgendaController.agenda.programa.idPrograma}"
+							readonly="true" style="width: 40px" />
 						<p:inputText id="prog"
-							value="#{AgendaController.programa.descPrograma}" readonly="true"
-							style="width: 300px" />
+							value="#{AgendaController.agenda.programa.descPrograma}"
+							readonly="true" style="width: 300px" />
 					</p:outputPanel>
 					<p:commandButton id="btBusPr" value="Buscar"
-						disabled="#{AgendaController.paciente==null}"
+						disabled="#{AgendaController.agenda.paciente==null}"
 						onclick="PF('dlgConsuProg').show();" />
 
-					<h:outputLabel for="grupo" value="Grupo" />
+					<h:outputLabel for="grupo" value="Grupo:" />
 					<p:outputPanel id="outGrupo">
 						<p:inputText id="codGrupo"
-							value="#{AgendaController.grupo.idGrupo}" readonly="true"
+							value="#{AgendaController.agenda.grupo.idGrupo}" readonly="true"
 							style="width: 40px" />
 						<p:inputText id="grupo"
-							value="#{AgendaController.grupo.descGrupo}" readonly="true"
-							style="width: 300px" />
+							value="#{AgendaController.agenda.grupo.descGrupo}"
+							readonly="true" style="width: 300px" />
 					</p:outputPanel>
 					<p:commandButton id="btBusGr" value="Buscar"
-						disabled="#{AgendaController.programa==null}"
+						disabled="#{AgendaController.agenda.programa==null}"
 						onclick="PF('dlgConsuGrop').show();" />
 
-					<h:outputLabel for="tipoAt" value="Tipo At." />
+					<h:outputLabel for="tipoAt" value="Tipo At.:" />
 					<p:outputPanel id="outTipoAt">
 						<p:inputText id="codTipo"
-							value="#{AgendaController.tipoAt.idTipo}" readonly="true"
+							value="#{AgendaController.agenda.tipoAt.idTipo}" readonly="true"
 							style="width: 40px" />
 						<p:inputText id="tipoAt"
-							value="#{AgendaController.tipoAt.descTipoAt}" readonly="true"
-							style="width: 300px" />
+							value="#{AgendaController.agenda.tipoAt.descTipoAt}"
+							readonly="true" style="width: 300px" />
 					</p:outputPanel>
 					<p:commandButton id="btBusTi" value="Buscar"
-						disabled="#{AgendaController.grupo==null}"
+						disabled="#{AgendaController.agenda.grupo==null}"
 						onclick="PF('dlgConsuTipoAt').show();" />
 
 					<h:outputLabel for="prof" value="Profissional:"
-						rendered="#{AgendaController.tipoAt.equipe==false}" />
+						rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
 					<p:outputPanel id="outProf"
-						rendered="#{AgendaController.tipoAt.equipe==false}">
+						rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
 						<p:inputText id="codProf"
-							value="#{AgendaController.profissional.idProfissional}"
+							value="#{AgendaController.agenda.profissional.idProfissional}"
 							readonly="true" style="width: 40px" />
 						<p:inputText id="descProf"
-							value="#{AgendaController.profissional.descricaoProf}"
+							value="#{AgendaController.agenda.profissional.descricaoProf}"
 							readonly="true" style="width: 300px" />
 					</p:outputPanel>
 					<p:commandButton id="btBusProf" value="Buscar"
-						disabled="#{AgendaController.tipoAt==null}"
+						disabled="#{AgendaController.agenda.tipoAt==null}"
 						onclick="PF('dlgConsuProf').show();"
-						rendered="#{AgendaController.tipoAt.equipe==false}" />
+						rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
 
 					<h:outputLabel for="equipe" value="Equipe:"
-						rendered="#{AgendaController.tipoAt.equipe==true}" />
+						rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
 					<p:outputPanel id="outEquipe"
-						rendered="#{AgendaController.tipoAt.equipe==true}">
+						rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
 						<p:inputText id="codEquipe"
-							value="#{AgendaController.equipe.codEquipe}" readonly="true"
-							style="width: 40px" />
+							value="#{AgendaController.agenda.equipe.codEquipe}"
+							readonly="true" style="width: 40px" />
 						<p:inputText id="descEquipe"
-							value="#{AgendaController.equipe.descEquipe}" readonly="true"
-							style="width: 300px" />
+							value="#{AgendaController.agenda.equipe.descEquipe}"
+							readonly="true" style="width: 300px" />
 					</p:outputPanel>
 					<p:commandButton id="btBusEqui" value="Buscar"
-						disabled="#{AgendaController.tipoAt==null}"
+						disabled="#{AgendaController.agenda.tipoAt==null}"
 						onclick="PF('dlgConsuEquipe').show();"
-						rendered="#{AgendaController.tipoAt.equipe==true}" />
+						rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
 
 					<h:outputLabel for="obs" value="Obs.:" />
-					<p:inputTextarea id="obs" value="#{AgendaController.observacao}" style="width: 328px"
+					<p:inputTextarea id="obs"
+						value="#{AgendaController.agenda.observacao}" style="width: 328px"
 						autoResize="false" />
 				</p:panelGrid>
 
@@ -111,37 +113,45 @@
 					<p:outputPanel>
 						<h:outputLabel value="Data para Atendimento" />
 						<br />
-						<p:calendar value="#{AgendaController.dataAtendimento}" id="dtagen"
-							locale="pt" navigator="true" mask="true" showOn="button"
-							pattern="dd/MM/yyyy" />
+						<p:calendar value="#{AgendaController.agenda.dataAtendimento}"
+							id="dtagen" locale="pt" navigator="true" mask="true"
+							showOn="button" pattern="dd/MM/yyyy" />
 					</p:outputPanel>
 
 					<p:outputPanel>
 						<h:outputLabel for="turno" value="Turno" />
 						<br />
-						<p:selectOneMenu value="#{AgendaController.turno}">
+						<p:selectOneMenu value="#{AgendaController.agenda.turno}">
 							<f:selectItem itemLabel="Manhã" itemValue="M" />
 							<f:selectItem itemLabel="Tarde" itemValue="T" />
-							<p:ajax event="change" process="@this dtagen" update=":formAgendaMedica:msgFeriado"
+							<p:ajax event="change" process="@this dtagen"
+								update=":formAgendaMedica:msgFeriado"
 								listener="#{AgendaController.verificaDisponibilidadeData()}" />
 						</p:selectOneMenu>
 					</p:outputPanel>
 
-					<p:commandButton value="Ver agenda" style="margin-top: 25px;" />
+					<p:commandButton value="Ver agenda" style="margin-top: 25px;"
+						action="#{AgendaController.verAgenda()}"
+						update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd,
+						 :formAgendaMedica:outlAgendados, :formAgendaMedica:dtAgData" />
 
-					<p:outputPanel>
+					<p:outputPanel id="outQtd">
 						<h:outputLabel for="qtd" value="Qtd." />
 						<br />
-						<p:inputText id="qtd" value="qtd" style="width: 40px" />
+						<p:inputText id="qtd" value="#{AgendaController.agenda.qtd}"
+							style="width: 40px" readonly="true" />
 					</p:outputPanel>
 
-					<p:outputPanel>
+					<p:outputPanel id="outMax">
 						<h:outputLabel for="max" value="Máx." />
 						<br />
-						<p:inputText id="max" value="max" style="width: 40px" />
+						<p:inputText id="max" value="#{AgendaController.agenda.max}"
+							style="width: 40px" readonly="true" />
 					</p:outputPanel>
 
-					<p:commandButton value="Confirmar" style="margin-top: 25px;" />
+					<p:commandButton value="Confirmar" style="margin-top: 25px;"
+						update=":formAgendaMedica:dtNovosAg"
+						action="#{AgendaController.addListaNovosAgendamentos()}" />
 
 					<p:commandButton value="Limpar Busca" style="margin-top: 25px;"
 						actionListener="#{AgendaController.limparDados()}"
@@ -149,42 +159,68 @@
 				</p:panelGrid>
 
 				<p:panelGrid columns="1" styleClass="semBorda">
-					<h:outputLabel for="novoAg" value="Novo(s) Agendamento(s)" />
-					<p:dataTable value="#" resizableColumns="true">
+					<h:outputLabel value="Novo(s) Agendamento(s)" />
+					<p:dataTable id="dtNovosAg" resizableColumns="true"
+						value="#{AgendaController.listaNovosAgendamentos}" var="agend"
+						emptyMessage="Sem registros.">
 						<p:column headerText="Data">
+							<h:outputLabel value="#{agend.dataAtendimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputLabel>
 						</p:column>
 
 						<p:column headerText="Turno">
+							<h:outputLabel value="MANHÃ" rendered="#{agend.turno == 'M'}" />
+							<h:outputLabel value="TARDE" rendered="#{agend.turno == 'T'}" />
 						</p:column>
 
 						<p:column headerText="Cód. Tipo Atend.">
+							<h:outputLabel value="#{agend.tipoAt.idTipo}" />
 						</p:column>
 
 						<p:column headerText="Tipo de Atendimento">
+							<h:outputLabel value="#{agend.tipoAt.descTipoAt}" />
 						</p:column>
 
 						<p:column headerText="Obs.">
+
+							<h:outputLabel value="#{agend.observacao}" />
 						</p:column>
 					</p:dataTable>
 
-					<h:outputLabel for="agendData" value="Agendados na Data" />
-					<p:dataTable value="#" resizableColumns="true">
+					<p:panelGrid columns="2">
+						<h:outputLabel value="Agendados na Data" />
+						<h:outputLabel id="outlAgendados"
+							value="#{AgendaController.agenda.dataAtendimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputLabel>
+					</p:panelGrid>
+					<p:dataTable id="dtAgData" var="agendaD"
+						value="#{AgendaController.listaAgendamentosData}"
+						resizableColumns="true" emptyMessage="Sem registros.">
 						<p:column headerText="Cod.">
+							<h:outputLabel value="#{agendaD.idAgenda}" />
 						</p:column>
 
 						<p:column headerText="Data">
+							<h:outputLabel value="#{agendaD.dataAtendimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputLabel>
 						</p:column>
 
 						<p:column headerText="Horário">
 						</p:column>
 
 						<p:column headerText="Pront.">
+							<h:outputLabel value="#{agendaD.paciente.id_paciente}" />
 						</p:column>
 
 						<p:column headerText="Paciente">
+							<h:outputLabel value="#{agendaD.paciente.nome}" />
 						</p:column>
 
-						<p:column headerText="TIPO">
+						<p:column headerText="Tipo">
+							<h:outputLabel value="#{agendaD.tipoAt.descTipoAt}" />
 						</p:column>
 					</p:dataTable>
 				</p:panelGrid>
@@ -193,7 +229,8 @@
 					<p:panelGrid columns="4" styleClass="semBorda">
 
 						<p:commandButton value="Gravar" icon="confirmar"
-							disabled="#{!AgendaController.prontoGravar}" />
+							action="#{AgendaController.gravarAgenda()}"
+							update=":formAgendaMedica" />
 
 						<p:commandButton value="Consultar" icon="buscar" />
 
@@ -248,7 +285,11 @@
 						<p:commandButton value="Nova Consulta" icon="ui-icon-search"
 							actionListener="#{PacienteController.limparDados()}"
 							update=":formConsuPac:outOp, :formConsuPac:outDesP, :formConsuPac:dtPaci" />
-						<p:commandButton value="Sair" icon="ui-icon-close" />
+						<p:commandButton
+							actionListener="#{PacienteController.limparDados()}"
+							onclick="PF('dlgConsuPac').hide();"
+							update=":formConsuPac:outOp, :formConsuPac:outDesP, :formConsuPac:dtPaci"
+							value="Sair" icon="ui-icon-close" />
 					</p:panelGrid>
 				</center>
 				<p:dataTable resizableColumns="true" id="dtPaci"
@@ -275,7 +316,7 @@
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuPac').hide();">
 							<f:setPropertyActionListener value="#{pacie}"
-								target="#{AgendaController.paciente}" />
+								target="#{AgendaController.agenda.paciente}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
@@ -298,10 +339,10 @@
 						<p:commandButton
 							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, :formAgendaMedica:btBusGr"
 							icon="ui-icon-check" title="Selecionar"
-							action="#{GrupoController.atualizaLista(AgendaController.programa)}"
+							action="#{GrupoController.atualizaLista(AgendaController.agenda.programa)}"
 							onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
-								target="#{AgendaController.programa}" />
+								target="#{AgendaController.agenda.programa}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
@@ -329,9 +370,9 @@
 							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt, :formAgendaMedica:btBusTi"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuGrop').hide();"
-							action="#{TipoAtendimentoController.atualizaListaTipos(AgendaController.grupo)}">
+							action="#{TipoAtendimentoController.atualizaListaTipos(AgendaController.agenda.grupo)}">
 							<f:setPropertyActionListener value="#{grupo}"
-								target="#{AgendaController.grupo}" />
+								target="#{AgendaController.agenda.grupo}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
@@ -357,7 +398,7 @@
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuTipoAt').hide();">
 							<f:setPropertyActionListener value="#{tipo}"
-								target="#{AgendaController.tipoAt}" />
+								target="#{AgendaController.agenda.tipoAt}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
@@ -382,7 +423,7 @@
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuEquipe').hide();">
 							<f:setPropertyActionListener value="#{equipe}"
-								target="#{AgendaController.equipe}" />
+								target="#{AgendaController.agenda.equipe}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
@@ -410,7 +451,7 @@
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuProf').hide();">
 							<f:setPropertyActionListener value="#{profi}"
-								target="#{AgendaController.profissional}" />
+								target="#{AgendaController.agenda.profissional}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>

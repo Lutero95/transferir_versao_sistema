@@ -9,6 +9,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 public class ProgramaDAO {
@@ -18,17 +19,48 @@ public class ProgramaDAO {
 
 	public boolean gravarPrograma(ProgramaBean prog) throws SQLException {
 
-		String sql = "insert into hosp.programa (descprograma, codfederal) values (?, ?);";
+		String sql = "insert into hosp.programa (descprograma, codfederal) values (?, ?) RETURNING id_programa;";
 		try {
 			System.out.println("VAI CADASTRAR PROG");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, prog.getDescPrograma().toUpperCase());
 			ps.setDouble(2, prog.getCodFederal());
-			ps.execute();
+			ResultSet rs = ps.executeQuery();
 			con.commit();
+			int idProg = 0;
+			if (rs.next()) {
+				idProg = rs.getInt("id_programa");
+				System.out.println("retorno " + idProg);
+				insereProgramaGrupo(idProg, prog);
+
+			}
 			System.out.println("CADASTROU PROG");
 			return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+
+	public void insereProgramaGrupo(int idProg, ProgramaBean programa) {
+		String sql = "insert into hosp.grupo_programa (codprograma, codgrupo) values(?,?);";
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			for (GrupoBean grupoBean : programa.getGrupo()) {
+				ps.setInt(1, idProg);
+				ps.setInt(2, grupoBean.getIdGrupo());
+
+				ps.execute();
+				con.commit();
+			}
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		} finally {
@@ -160,11 +192,11 @@ public class ProgramaDAO {
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, id);
 			ResultSet rs = stm.executeQuery();
-			while(rs.next()){
+			while (rs.next()) {
 				programa = new ProgramaBean();
 				programa.setIdPrograma(rs.getInt("id_programa"));
 				programa.setDescPrograma(rs.getString("descprograma"));
-				//programa.setCodFederal(rs.getDouble("codfederal"));
+				// programa.setCodFederal(rs.getDouble("codfederal"));
 			}
 
 		} catch (SQLException ex) {
