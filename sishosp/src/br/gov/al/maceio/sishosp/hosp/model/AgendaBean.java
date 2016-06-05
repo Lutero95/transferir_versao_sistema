@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class AgendaBean {
 	
+	private Integer idAgenda;
 	private PacienteBean paciente;
 	private ProcedimentoBean procedimento;
 	private GrupoBean grupo;
@@ -17,6 +18,9 @@ public class AgendaBean {
 	private String observacao;
 	private Integer qtd;
 	private Integer max;
+	private Date dataMarcacao;
+	private String situacao;
+	private String ativo;
 	
 	public AgendaBean() {
 		this.paciente = null;// new PacienteBean();
@@ -28,10 +32,22 @@ public class AgendaBean {
 		this.equipe = new EquipeBean();;
 		this.prontoGravar = false;
 		this.turno = new String();
+		this.ativo = new String();
+		this.situacao = new String();
 		this.observacao = new String();
 		this.dataAtendimento = null;
+		this.dataMarcacao = null;
 		this.qtd = null;
 		this.max = null;
+		this.idAgenda = null;
+	}
+	
+	public Integer getIdAgenda() {
+		return idAgenda;
+	}
+
+	public void setIdAgenda(Integer idAgenda) {
+		this.idAgenda = idAgenda;
 	}
 
 	public PacienteBean getPaciente() {
@@ -136,6 +152,30 @@ public class AgendaBean {
 
 	public void setMax(Integer max) {
 		this.max = max;
+	}
+
+	public Date getDataMarcacao() {
+		return dataMarcacao;
+	}
+
+	public void setDataMarcacao(Date dataMarcacao) {
+		this.dataMarcacao = dataMarcacao;
+	}
+
+	public String getSituacao() {
+		return situacao;
+	}
+
+	public void setSituacao(String situacao) {
+		this.situacao = situacao;
+	}
+
+	public String getAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(String ativo) {
+		this.ativo = ativo;
 	}
 	
 }

@@ -20,7 +20,7 @@
 			<p:growl id="msgFeriado" />
 			<p:panel>
 				<p:panelGrid columns="3" styleClass="semBorda">
-					<h:outputLabel for="pac" value="Paciente" />
+					<h:outputLabel for="pac" value="Paciente:" />
 					<p:outputPanel id="outPacie">
 						<p:inputText id="codPac"
 							value="#{AgendaController.agenda.paciente.id_paciente}"
@@ -32,7 +32,7 @@
 					<p:commandButton id="btBusPa" value="Buscar"
 						onclick="PF('dlgConsuPac').show();" />
 
-					<h:outputLabel for="prog" value="Programa" />
+					<h:outputLabel for="prog" value="Programa:" />
 					<p:outputPanel id="outProg">
 						<p:inputText id="codProg"
 							value="#{AgendaController.agenda.programa.idPrograma}"
@@ -45,7 +45,7 @@
 						disabled="#{AgendaController.agenda.paciente==null}"
 						onclick="PF('dlgConsuProg').show();" />
 
-					<h:outputLabel for="grupo" value="Grupo" />
+					<h:outputLabel for="grupo" value="Grupo:" />
 					<p:outputPanel id="outGrupo">
 						<p:inputText id="codGrupo"
 							value="#{AgendaController.agenda.grupo.idGrupo}" readonly="true"
@@ -58,7 +58,7 @@
 						disabled="#{AgendaController.agenda.programa==null}"
 						onclick="PF('dlgConsuGrop').show();" />
 
-					<h:outputLabel for="tipoAt" value="Tipo At." />
+					<h:outputLabel for="tipoAt" value="Tipo At.:" />
 					<p:outputPanel id="outTipoAt">
 						<p:inputText id="codTipo"
 							value="#{AgendaController.agenda.tipoAt.idTipo}" readonly="true"
@@ -132,7 +132,8 @@
 
 					<p:commandButton value="Ver agenda" style="margin-top: 25px;"
 						action="#{AgendaController.verAgenda()}"
-						update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd, :formAgendaMedica:outlAgendados" />
+						update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd,
+						 :formAgendaMedica:outlAgendados, :formAgendaMedica:dtAgData" />
 
 					<p:outputPanel id="outQtd">
 						<h:outputLabel for="qtd" value="Qtd." />
@@ -194,23 +195,32 @@
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputLabel>
 					</p:panelGrid>
-					<p:dataTable value="#" resizableColumns="true">
+					<p:dataTable id="dtAgData" var="agendaD"
+						value="#{AgendaController.listaAgendamentosData}"
+						resizableColumns="true" emptyMessage="Sem registros.">
 						<p:column headerText="Cod.">
+							<h:outputLabel value="#{agendaD.idAgenda}" />
 						</p:column>
 
 						<p:column headerText="Data">
+							<h:outputLabel value="#{agendaD.dataAtendimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputLabel>
 						</p:column>
 
 						<p:column headerText="Horário">
 						</p:column>
 
 						<p:column headerText="Pront.">
+							<h:outputLabel value="#{agendaD.paciente.id_paciente}" />
 						</p:column>
 
 						<p:column headerText="Paciente">
+							<h:outputLabel value="#{agendaD.paciente.nome}" />
 						</p:column>
 
-						<p:column headerText="TIPO">
+						<p:column headerText="Tipo">
+							<h:outputLabel value="#{agendaD.tipoAt.descTipoAt}" />
 						</p:column>
 					</p:dataTable>
 				</p:panelGrid>
@@ -219,8 +229,8 @@
 					<p:panelGrid columns="4" styleClass="semBorda">
 
 						<p:commandButton value="Gravar" icon="confirmar"
-						action="#{AgendaController.gravarAgenda()}"
-						update=":formAgendaMedica" />
+							action="#{AgendaController.gravarAgenda()}"
+							update=":formAgendaMedica" />
 
 						<p:commandButton value="Consultar" icon="buscar" />
 

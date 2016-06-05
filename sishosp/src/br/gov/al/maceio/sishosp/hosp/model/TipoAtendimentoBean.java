@@ -20,6 +20,7 @@ public class TipoAtendimentoBean {
 		this.equipe = false;
 		this.primeiroAt = false;
 		this.grupoParaAdd = new GrupoBean();
+		this.idTipo = null;
 		
 	}
 	
