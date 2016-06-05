@@ -79,4 +79,12 @@ public class TipoAtendimentoBean {
 		this.grupo.add(grupoParaAdd);
 	}
 
+	@Override
+	public String toString() {
+		return "TipoAtendimentoBean [idTipo=" + idTipo + ", descTipoAt="
+				+ descTipoAt + ", equipe=" + equipe + "]";
+	}
+	
+	
+
 }

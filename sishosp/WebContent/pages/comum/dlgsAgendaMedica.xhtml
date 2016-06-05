@@ -14,9 +14,9 @@
 				<h:outputLabel for="pac" value="Paciente" />
 				<p:outputPanel id="outPacie">
 					<p:inputText id="codPac"
-						value="#{AgendaController.paciente.id_paciente}" readonly="true"
+						value="#{AgendaController.agenda.paciente.id_paciente}" readonly="true"
 						style="width: 40px" />
-					<p:inputText id="pac" value="#{AgendaController.paciente.nome}"
+					<p:inputText id="pac" value="#{AgendaController.agenda.paciente.nome}"
 						readonly="true" style="width: 300px" />
 				</p:outputPanel>
 				<p:commandButton value="Buscar" onclick="PF('dlgConsuPac').show();" />
@@ -24,10 +24,10 @@
 				<h:outputLabel for="prog" value="Programa" />
 				<p:outputPanel id="outProg">
 					<p:inputText id="codProg"
-						value="#{AgendaController.programa.idPrograma}" readonly="true"
+						value="#{AgendaController.agenda.programa.idPrograma}" readonly="true"
 						style="width: 40px" />
 					<p:inputText id="prog"
-						value="#{AgendaController.programa.descPrograma}" readonly="true"
+						value="#{AgendaController.agenda.programa.descPrograma}" readonly="true"
 						style="width: 300px" />
 				</p:outputPanel>
 				<p:commandButton value="Buscar" onclick="PF('dlgConsuProg').show();" />
@@ -35,9 +35,9 @@
 				<h:outputLabel for="grupo" value="Grupo" />
 				<p:outputPanel id="outGrupo">
 					<p:inputText id="codGrupo"
-						value="#{AgendaController.grupo.idGrupo}" readonly="true"
+						value="#{AgendaController.agenda.grupo.idGrupo}" readonly="true"
 						style="width: 40px" />
-					<p:inputText id="grupo" value="#{AgendaController.grupo.descGrupo}"
+					<p:inputText id="grupo" value="#{AgendaController.agenda.grupo.descGrupo}"
 						readonly="true" style="width: 300px" />
 				</p:outputPanel>
 				<p:commandButton value="Buscar" onclick="PF('dlgConsuGrop').show();" />
@@ -140,7 +140,7 @@
 			<center>
 				<p:panelGrid columns="4" styleClass="semBorda">
 					<p:commandButton value="Gravar" icon="confirmar"
-						disabled="#{!AgendaController.prontoGravar}" />
+						disabled="#{!AgendaController.agenda.prontoGravar}" />
 					<p:commandButton value="Consultar" icon="buscar" />
 					<p:commandButton value="Limpar" icon="limpar" />
 					<p:commandButton value="Sair" icon="btlogout"
@@ -190,7 +190,10 @@
 					<p:commandButton value="Nova Consulta" icon="ui-icon-search"
 						actionListener="#{PacienteController.limparDados()}"
 						update=":formConsuPac:outOp, :formConsuPac:outDesP, :formConsuPac:dtPaci" />
-					<p:commandButton value="Sair" icon="ui-icon-close" />
+					<p:commandButton actionListener="#{PacienteController.limparDados()}"
+						update=":formConsuPac:outOp, :formConsuPac:outDesP, :formConsuPac:dtPaci" 
+						onclick="PF('dlgConsuPac').hide();"
+					 value="Sair" icon="ui-icon-close" />
 				</p:panelGrid>
 			</center>
 			<p:dataTable resizableColumns="true" id="dtPaci"
@@ -216,7 +219,7 @@
 						icon="ui-icon-check" title="Selecionar"
 						onclick="PF('dlgConsuPac').hide();">
 						<f:setPropertyActionListener value="#{pacie}"
-							target="#{AgendaController.paciente}" />
+							target="#{AgendaController.agenda.paciente}" />
 					</p:commandButton>
 				</p:column>
 			</p:dataTable>
@@ -240,7 +243,7 @@
 						icon="ui-icon-check" title="Selecionar"
 						onclick="PF('dlgConsuProg').hide();">
 						<f:setPropertyActionListener value="#{prog}"
-							target="#{AgendaController.programa}" />
+							target="#{AgendaController.agenda.programa}" />
 					</p:commandButton>
 				</p:column>
 			</p:dataTable>
@@ -268,7 +271,7 @@
 						icon="ui-icon-check" title="Selecionar"
 						onclick="PF('dlgConsuGrop').hide();">
 						<f:setPropertyActionListener value="#{grupo}"
-							target="#{AgendaController.grupo}" />
+							target="#{AgendaController.agenda.grupo}" />
 					</p:commandButton>
 				</p:column>
 			</p:dataTable>
