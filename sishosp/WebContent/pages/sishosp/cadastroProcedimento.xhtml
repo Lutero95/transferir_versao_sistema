@@ -17,23 +17,23 @@
 		</h:form>
 
 		<h:form id="frmCadProc">
-			<p:panel id="pnlCadProc" header="#{ProcedimentoController.cabecalho}">
+			<p:panel id="pnlCadProc" header="#{ProcedimentoController.cabecalho}" style="height:auto; width:600px; background-color: #F5F5F5;">
 				<p:growl id="msg" />
-				<p:panelGrid columns="2" styleClass="semBorda">
+				<h:panelGrid columns="2" styleClass="semBorda">
 
 					<p:outputLabel for="procedimento" value="Descrição do Procedimento" />
 					<p:inputText id="procedimento"
 						value="#{ProcedimentoController.proc.nomeProc}"
 						style="width: 300px" />
 
-					<p:panelGrid columns="2" styleClass="semBorda">
+					<h:panelGrid columns="2" styleClass="semBorda">
 						<p:outputLabel for="codigo" value="Código" />
 						<p:inputText id="codigo"
 							value="#{ProcedimentoController.proc.codProc}"
 							style="width: 100px" />
-					</p:panelGrid>
+					</h:panelGrid>
 
-					<p:panelGrid columns="4">
+					<h:panelGrid columns="4">
 						<h:outputText value="Apac: " />
 						<p:selectBooleanCheckbox
 							value="#{ProcedimentoController.proc.apac}" />
@@ -41,9 +41,9 @@
 						<h:outputText value="BPI: " />
 						<p:selectBooleanCheckbox
 							value="#{ProcedimentoController.proc.bpi}" />
-					</p:panelGrid>
-				</p:panelGrid>
-				<p:panelGrid columns="2" styleClass="semBorda">
+					</h:panelGrid>
+				</h:panelGrid>
+				<h:panelGrid columns="2" styleClass="semBorda">
 					<h:outputText value="Utiliza Equipamento: " />
 					<p:selectBooleanCheckbox
 						value="#{ProcedimentoController.proc.utilizaEquipamento}" />
@@ -54,7 +54,7 @@
 						<p:ajax update="pnlModelo" />
 					</p:selectBooleanCheckbox>
 
-				</p:panelGrid>
+				</h:panelGrid>
 
 				<p:outputPanel id="pnlModelo">
 					<p:panel header="Modelo Auditivo" style="width:300px;"
@@ -71,8 +71,8 @@
 					</p:panel>
 				</p:outputPanel>
 
-			</p:panel>
-			<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+            <p:separator></p:separator>
+			<h:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
 				<h:commandButton
 					action="#{ProcedimentoController.gravarProcedimento()}"
 					update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
@@ -85,7 +85,9 @@
 					update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
 					value="Alterar" styleClass="btn btn-info"
 					rendered="#{ProcedimentoController.tipo  == 'A'}" />
-			</p:panelGrid>
+			</h:panelGrid>
+			</p:panel>
+
 
 		</h:form>
 

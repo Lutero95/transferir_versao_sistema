@@ -19,10 +19,8 @@
         <h:form class="form-horizontal" id="formCADU">
        
         <p:growl id="message"/>
-        <p:panel id="pnlCadPaciente" header="#{EscolaController.cabecalho}" style="height:auto; width:850px; background-color: #F5F5F5;" >  
-          <!--  <p:growl id="growl" showDetail="false" /> -->
-         <p:tabView activeIndex="#{EscolaController.abaAtiva}" style="height:auto; width:800px">
-         <p:tab title="DADOS ESCOLA">
+        <p:panel id="pnlCadPaciente" header="#{EscolaController.cabecalho}" style="height:auto; width:auto; background-color: #F5F5F5;" >  
+
          <div class="form-group">
                 <h:outputLabel for="inputname" value="Nome Escola"
                     styleClass="col-sm-3 control-label" />
@@ -40,13 +38,11 @@
                 </div>
             </div>
                     
-                 </p:tab>
-                 
-            </p:tabView>
-                 
-          </p:panel>
-                 <!-- FIM DO FORMULARIO -->
-               <p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+           
+                  <p:separator></p:separator>
+                  
+                      <!-- FIM DO FORMULARIO -->
+               <h:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
                     <h:commandButton action="#{EscolaController.gravarEscola()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Cadastrar"
                         styleClass="btn btn-sm btn-success" rendered="#{EscolaController.tipo == 'I'}" />
@@ -55,7 +51,9 @@
                     <h:commandButton action="#{EscolaController.alterarEscola()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Alterar"
                         styleClass="btn btn-info" rendered="#{EscolaController.tipo == 'A'}" />
-            </p:panelGrid>
+                 </h:panelGrid>
+          </p:panel>
+             
               
             
                 

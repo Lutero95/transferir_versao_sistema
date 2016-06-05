@@ -35,6 +35,7 @@ public class LaudoBean {
 	private String desceApac;
 	private Integer codLaudoBpi;	
 	private String descBpi;
+	private String numeroAutorizacao;
 	
 	//CLASSES HERDADAS
 	private PacienteBean paciente;
@@ -44,6 +45,8 @@ public class LaudoBean {
 	private GrupoBean grupo;
 	private ProcedimentoBean procedimento;
 	private FornecedorBean fornecedor;
+	private CidBean cid;
+	private EquipamentoBean equipamento;
 	
 	public LaudoBean(){
 		this.paciente = null;//new PacienteBean();
@@ -52,7 +55,10 @@ public class LaudoBean {
 		this.programa = null;//new ProgramaBean();
 		this.profissional = null;
 		situacao = "P";
-		this.fornecedor = null; 
+		this.fornecedor = null;
+		this.cid = null;
+		this.equipamento = null;
+		
 		
 		
 		
@@ -375,6 +381,30 @@ public class LaudoBean {
 
 	public void setDtavencimento(Date dtavencimento) {
 		this.dtavencimento = dtavencimento;
+	}
+
+	public CidBean getCid() {
+		return cid;
+	}
+
+	public void setCid(CidBean cid) {
+		this.cid = cid;
+	}
+
+	public EquipamentoBean getEquipamento() {
+		return equipamento;
+	}
+
+	public void setEquipamento(EquipamentoBean equipamento) {
+		this.equipamento = equipamento;
+	}
+
+	public String getNumeroAutorizacao() {
+		return numeroAutorizacao;
+	}
+
+	public void setNumeroAutorizacao(String numeroAutorizacao) {
+		this.numeroAutorizacao = numeroAutorizacao;
 	}
 	
 	

@@ -21,9 +21,7 @@
        
         <p:growl id="message"/>
         <p:panel id="pnlCadPaciente" header="#{ProfissaoController.cabecalho}" style="height:auto; width:850px; background-color: #F5F5F5;" >  
-          <!--  <p:growl id="growl" showDetail="false" /> -->
-         <p:tabView activeIndex="#{ProfissaoController.abaAtiva}" style="height:auto; width:800px">
-         <p:tab title="DADOS PROFISSÃO">
+ 
          <div class="form-group">
                 <h:outputLabel for="inputname" value="Nome da Profissão"
                     styleClass="col-sm-3 control-label" />
@@ -40,13 +38,8 @@
              
                 </div>
             </div>
-                    
-                 </p:tab>
-                 
-            </p:tabView>
-                 
-          </p:panel>
-                 <!-- FIM DO FORMULARIO -->
+            <p:separator></p:separator>
+                        <!-- FIM DO FORMULARIO -->
                <p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
                     <h:commandButton action="#{ProfissaoController.gravarProfissao()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Cadastrar"
@@ -58,6 +51,9 @@
                         styleClass="btn btn-info" rendered="#{ProfissaoController.tipo == 'A'}" />
             </p:panelGrid>
               
+                 
+          </p:panel>
+       
             
                 
         </h:form>

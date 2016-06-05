@@ -10,38 +10,29 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<ui:insert name="title">
-		<title>SISHOSP</title>
+		<title>EHOSP</title>
 	</ui:insert>
 	
 	<!-- ESTILOS DA PAGINAS VARIOS LINKS -->
-	<link type="text/css" rel="stylesheet" href="../../css/bootstrap-responsive.min.css" />
+	<link media="all" rel="stylesheet" type="text/css" href="../../css/all.css" />
+	<link media="all" rel="stylesheet" type="text/css" href="../../css/tooltipster.css" />
+	<link media="all" rel="stylesheet" type="text/css" href="../../css/themes/tooltipster-light.css" />
+	
 	<link rel="StyleSheet" type="text/css" href="../../css/style.css" />
-	<link type="text/css" rel="stylesheet" href="../../css/estilo2.css" />
 	<link rel="stylesheet" type="text/css" href="../../css/styleThulio.css"></link>
-	<link rel="stylesheet" type="text/css" href="../../css/default.css"></link>
-	<link rel="stylesheet" type="text/css" href="../../css/component.css"></link>
+	<!-- <link rel="stylesheet" type="text/css" href="../../css/components.css"></link>
+	<link rel="stylesheet" type="text/css" href="../../css/layout.css"></link>
+	<link rel="stylesheet" type="text/css" href="../../css/custom.css"></link> -->
 	<link type="text/css" rel="stylesheet" href="../../css/bootstrap.min.css" />
-
-	<!-- JavaScript FIGURAS E EFEITOS 
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-        <script src="../../js/modernizr.custom.js"></script>
-        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-        <script type="text/javascript" src="../../js/navbar.js"></script>
-        <script src="../../js/toucheffects.js"></script>-->
-
-	<style>
-.row {
-	padding: 3px !important;
-}
-
-* {
-	font-size: 12px;
-}
-</style>
-
+	<link type="text/css" rel="stylesheet" href="../../css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="../../resources/css/bootstrapValidator.min.css" />
+    
+    <!-- JAVASCRIPT  -->
+     <!--<h:outputScript library="jquery" name="jquery-1.11.3.min.js" />
+    <h:outputScript library="bootstrap/js" name="bootstrap.min.js" /> -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
     <script type="text/javascript" src="../../resources/js/bootstrapValidator.js"></script>
-    <link rel="stylesheet" href="../../resources/css/bootstrapValidator.min.css" />
+    
     
 	<script type="text/javascript">
             PrimeFaces.locales['pt'] = {
@@ -269,26 +260,26 @@
 					url="/pages/sishosp/agendaPaciente.faces" />
 				
 			</p:submenu>
+			
+			<p:menuitem value="Sair" style="margin-left:700px;"  action="#{MBUsuarios.logout}" ajax="false" icon="btlogout"  />
+
 
 		</p:menubar>
-		<p:commandButton value="Sair"
-			style="position:relative; left:91%; width:100px; " icon="btlogout"
-			action="#{MBUsuarios.logout}"></p:commandButton>
+		 
 	</h:form>
-	<div class="container">
-
-
-
-		<ui:insert name="body" />
-
-
-
-	</div>
-	<br />
-	<br />
-	<br />
-
-	<footer id="footer" class="footer-page">
+	
+       <div class="container" id="CORPO" >
+        <ui:insert name="body" />
+       </div> 
+        
+        <div id="footer" style="padding-top:10px; margin-top:50px; width:100%;background-color: #EEEEEE;" role="footer">
+        <ui:insert name="nav_footer">
+            <ui:include src="footer.xhtml" />
+        </ui:insert>
+        </div>
+        
+        <!-- 
+        <footer id="footer" class="footer-page">
 	<div class="container">
 
 		<div class="connect">
@@ -298,10 +289,10 @@
 
 		<div class="copyright">© EHOSP - 2016. Todos os direitos
 			reservados.</div>
-		<!--  <a href="#"><img alt="envato" class="logo-image" src="../../imgs/LOGOOO.png"></img></a>-->
+		 <a href="#"><img alt="envato" class="logo-image" src="../../imgs/LOGOOO.png"></img></a>
 	</div>
-	</footer>
-
+	</footer> 
+        -->
 	<script type="text/javascript">
 		setTimeout(function() {
 			$('.msg').fadeOut('fast');

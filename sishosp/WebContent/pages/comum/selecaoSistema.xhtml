@@ -10,73 +10,38 @@
 
         <ui:define name="body">
         <ui:include src="dlgsAgendaMedica.xhtml" />
-                  <h:form id="form" styleClass="">
+
+		<div id="main">
+		
+		 	<h:form id="form" >
+		 	
                     <p:commandButton value="CONSULTA" icon="Receber" 
-                        styleClass=""  
-                        style="float:; width:100px; margin-top:10px; margin-right:10px;"
+                        class="btn btn-success"  
+                        style="float:; width:100px; margin-top:10px; font-size: 10px !important; margin-right:10px;"
                         action="#{MBUsuarios.logout}" />
              
-                    <p:commandButton value="AGENDAR" icon="entrar" 
-                        styleClass="" style="float:center; width:100px; margin-top:10px; margin-right:10px;"
+                    <p:commandButton value="AGENDAR" icon="entrar" class="btn btn-warning"  
+                         style="float:center; width:100px; margin-top:10px; font-size: 10px !important; margin-right:10px;"
                         action = "/pages/agenda/agendaMedica.xhtml?faces-redirect=true" />
           
-                    <p:commandButton value="SOBRE" icon="anexo" 
-                        styleClass=""  
-                        style="float:center; width:100px; margin-top:1px; margin-right:-100px;"
+                    <p:commandButton value="SOBRE" icon="anexo" class="btn btn-danger"  
+                          
+                        style="float:center; width:100px; margin-top:10px; font-size: 10px !important; margin-right:-100px;"
                         action="#{MBUsuarios.logout}" />
                         
+              
+                        
                 </h:form>
-                
-                
-                <div class="categories">
-                    <!-- <div class="title">
-                        <h1>MENUS</h1>
-                    </div> -->
-                    <ul class="grid cs-style-5">
-                        <li>
-                            <figure>
-                                <img src="../../imgs/sistemasimgs/aclSistema.jpg" alt="img01"></img>
-                                    <figcaption>
-                                            <h3>ACL</h3>
-                                            <span>Thulio Buarque</span>
-                                            <a href="#">Veja mais</a>
-                                    </figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure>
-                                <img src="../../imgs/sistemasimgs/calendario-icone.jpg" alt="img03"></img>
-                                    <figcaption>
-                                            <h3>Agendamento de Consultas</h3>
-                                            <span>Thulio Buarque</span>
-                                            <a href="/">Veja mais</a>
-                                    </figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure>
-                                <img src="../../imgs/sistemasimgs/cadastros.jpg" alt="img04"></img>
-                                    <figcaption>
-                                            <h3>Cadastros</h3>
-                                            <span>Thulio Buarque</span>
-                                            <a href="/">Veja mais</a>
-                                    </figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure>
-                                <img src="../../imgs/testeimgs/categoria-back-end-new.png" alt="img02"></img>
-                                    <figcaption>
-                                            <h3>A desenvolver</h3>
-                                            <span>Thulio Buarque</span>
-                                            <a href="/">Veja mais</a>
-                                    </figcaption>
-                            </figure>
-                        </li>
-                </ul>
-                </div>
-            
-            
+			
+                    <div id="prime-ui-indent">
+                       
+                        <h:graphicImage library="imgs" name="layou1.jpg" style="margin-right: 5px;" class="img-circle"/>
+                            
+                     
+                    </div>
+                    
+            </div>
+          
         </ui:define>
     </ui:composition>
 </html>

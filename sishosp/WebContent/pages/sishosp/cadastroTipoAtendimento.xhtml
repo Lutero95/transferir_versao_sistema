@@ -12,11 +12,7 @@
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
-			<p:outputLabel value="CADASTRO DE TIPO DE ATENDIMENTO"
-				rendered="#{GrupoController.tipo == 'I'}"></p:outputLabel>
-			<p:outputLabel value="ALTERAR TIPO DE ATENDIMENTO"
-				rendered="#{GrupoController.tipo == 'A'}"></p:outputLabel>
-			<br />
+			
 			<h:form>
 				<p:commandButton value="Voltar"
 					style="position:relative; right:18%; width:100px; " icon="btvoltar"
@@ -27,10 +23,8 @@
 
 				<p:growl id="message" />
 				<p:panel id="pnlCadTiAt" header="#{TipoAtendimentoController.cabecalho}"
-					style="height:auto; width:850px; background-color: #F5F5F5;">
-					<p:tabView activeIndex="#{TipoAtendimentoController.abaAtiva}"
-						style="height:auto; width:800px">
-						<p:tab title="DADOS TIPO DE ATENDIMENTO">
+					style="height:auto; width:auto; background-color: #F5F5F5;">
+		
 							<div class="form-group">
 								<h:outputLabel for="inputdesc" value="Descrição: "
 									styleClass="col-sm-3 control-label" />
@@ -86,12 +80,8 @@
 									</p:selectBooleanCheckbox>
 								</div>
 							</div>
-						</p:tab>
-
-					</p:tabView>
-
-				</p:panel>
-				<!-- FIM DO FORMULARIO -->
+							<p:separator></p:separator>
+							<!-- FIM DO FORMULARIO -->
 				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
 					<h:commandButton action="#{TipoAtendimentoController.gravarTipo()}"
 						update=":formCADU:message,:formCADU:pnlCadTiAt,:formCadu"
@@ -105,6 +95,8 @@
 						value="Alterar" styleClass="btn btn-info"
 						rendered="#{TipoAtendimentoController.tipoS  == 'A'}" />
 				</p:panelGrid>
+				</p:panel>
+		
 
 				<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"
 					modal="true" width="550px">

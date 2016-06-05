@@ -23,10 +23,8 @@
 
 				<p:growl id="message" />
 				<p:panel id="pnlCadFeriado" header="#{FeriadoController.cabecalho}"
-					style="height:auto; width:850px; background-color: #F5F5F5;">
-					<p:tabView activeIndex="#{FeriadoController.abaAtiva}"
-						style="height:auto; width:800px">
-						<p:tab title="DADOS FERIADO">
+					style="height:auto; width:auto; background-color: #F5F5F5;">
+					
 							<div class="form-group">
 								<h:outputLabel for="inputdesc" value="Descrição do Feriado: "
 									styleClass="col-sm-3 control-label" />
@@ -47,12 +45,9 @@
 
 								</div>
 							</div>
-						</p:tab>
-
-					</p:tabView>
-
-				</p:panel>
-				<!-- FIM DO FORMULARIO -->
+					
+					<p:separator></p:separator>
+							<!-- FIM DO FORMULARIO -->
 				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
 					<h:commandButton action="#{FeriadoController.gravarFeriado()}"
 						update=":formCADU:message,:formCADU:pnlCadFeriado,:formCadu"
@@ -65,7 +60,9 @@
 						value="Alterar" styleClass="btn btn-info"
 						rendered="#{FeriadoController.tipo  == 'A'}" />
 				</p:panelGrid>
-
+					
+				</p:panel>
+		
 
 
 			</h:form>

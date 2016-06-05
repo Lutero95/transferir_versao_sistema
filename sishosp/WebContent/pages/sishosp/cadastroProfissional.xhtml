@@ -18,9 +18,9 @@
 
 
 		<h:form id="frmCadProfi">
-			<p:panel id="pnlCadProf" header="#{ProfissionalController.cabecalho}">
+			<p:panel id="pnlCadProf" header="#{ProfissionalController.cabecalho}" style="height:auto; width:700px; background-color: #F5F5F5;">
 				<p:growl id="msg" />
-				<p:panelGrid columns="3" styleClass="semBorda">
+				<h:panelGrid columns="3" styleClass="semBorda">
 					<h:outputLabel for="programa" value="Programa" />
 					<p:outputPanel id="outProga">
 						<p:inputText id="codPrg"
@@ -81,17 +81,17 @@
 					<p:commandButton id="btBusProc2" value="Buscar"
 						onclick="PF('dlgConsulProc2').show();" />
 
-				</p:panelGrid>
+				</h:panelGrid>
 
-				<p:panelGrid columns="2" styleClass="semBorda">
+				<h:panelGrid columns="2" styleClass="semBorda">
 					<p:outputLabel for="descProf" value="Descrição do Profissional" />
 					<p:inputText id="descProf"
 						value="#{ProfissionalController.profissional.descricaoProf}"
 						style="width: 450px" />
 
-				</p:panelGrid>
+				</h:panelGrid>
 
-				<p:panelGrid columns="4" styleClass="semBorda">
+				<h:panelGrid columns="4" styleClass="semBorda">
 					<p:outputLabel for="cns" value="CNS" />
 					<p:inputText id="cns"
 						value="#{ProfissionalController.profissional.cns}"
@@ -103,13 +103,13 @@
 						<f:selectItem itemLabel="SIM" itemValue="true" />
 						<f:selectItem itemLabel="NÃO" itemValue="false" />
 					</p:selectOneMenu>
-				</p:panelGrid>
+				</h:panelGrid>
 
 				<p:separator />
 
 				<center></center>
-			</p:panel>
-			<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+				
+				<h:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
 				<h:commandButton
 					action="#{ProfissionalController.gravarProfissional()}"
 					update=":frmCadProfi:message,:frmCadProfi:pnlCadProf,:frmCadProfi"
@@ -121,7 +121,9 @@
 					update=":frmCadProfi:message,:frmCadProfi:pnlCadProf,:frmCadProfi"
 					value="Alterar" styleClass="btn btn-info"
 					rendered="#{ProfissionalController.tipo  == 'A'}" />
-			</p:panelGrid>
+			</h:panelGrid>
+			</p:panel>
+			
 
 		</h:form>
 

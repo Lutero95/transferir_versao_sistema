@@ -158,5 +158,19 @@
 			<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.BloqueioController</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	
+		<managed-bean>
+		<description>O Bean Equipamento Controller </description>
+		<managed-bean-name>EquipamentoController</managed-bean-name>
+			<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.EquipamentoController</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	
+		<managed-bean>
+		<description>O Bean Cid Controller </description>
+		<managed-bean-name>CidController</managed-bean-name>
+			<managed-bean-class>br.gov.al.maceio.sishosp.hosp.control.CidController</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
 
 </faces-config>

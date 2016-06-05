@@ -10,6 +10,8 @@ import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -23,6 +25,7 @@ import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 public class LaudoController {
 	private Integer abaAtiva = 0;
+	
 	private LaudoBean laudo;
 	private PacienteBean paciente;
 	private GrupoBean grupo;
@@ -32,6 +35,8 @@ public class LaudoController {
 	private EquipeBean equipe;
 	private ProcedimentoBean procedimento;
 	private FornecedorBean fornecedor;
+	private CidBean cid;
+	private EquipamentoBean equipamento;
 	
 	private String cabecalho;
 	
@@ -445,6 +450,22 @@ public class LaudoController {
 
 	public void setSituacao(String situacao) {
 		this.situacao = situacao;
+	}
+
+	public CidBean getCid() {
+		return cid;
+	}
+
+	public void setCid(CidBean cid) {
+		this.cid = cid;
+	}
+
+	public EquipamentoBean getEquipamento() {
+		return equipamento;
+	}
+
+	public void setEquipamento(EquipamentoBean equipamento) {
+		this.equipamento = equipamento;
 	}
 
 	    

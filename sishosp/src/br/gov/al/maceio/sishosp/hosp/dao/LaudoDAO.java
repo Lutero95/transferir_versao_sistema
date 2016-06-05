@@ -33,6 +33,8 @@ public class LaudoDAO {
 	private PacienteDAO pacieDao = new PacienteDAO();
 	private GrupoDAO grupoDao = new GrupoDAO();
 	private FornecedorDAO forneDao = new FornecedorDAO();
+	private CidDAO cidDao = new CidDAO();
+	private EquipamentoDAO equipamentoDao = new EquipamentoDAO();
 	
 	// COMEÇO DO CODIGO
 	
@@ -81,7 +83,7 @@ public class LaudoDAO {
                 stmt.setDouble(15, laudo.getFornecedor().getValor());
                 stmt.setString(16, laudo.getNota().toUpperCase().trim());
                 stmt.setInt(17, laudo.getQtd());
-                stmt.setInt(18, laudo.getCodequipamento());
+                stmt.setInt(18, laudo.getEquipamento().getIdEquipamento());
                 if (laudo.getObs() == null) {
     				stmt.setNull(19, Types.CHAR);
     			} else {

@@ -12,9 +12,7 @@
         <ui:define name="body">
                <!-- INICIO DO FORMULARIO -->
     <div class="col-md-8">
-        <p:outputLabel value="CADASTRO DE ENCAMINHADO" rendered="#{EncaminhadoController.tipo == 'I'}"></p:outputLabel>
-        <p:outputLabel value="ALTERAR ENCAMINHADO" rendered="#{EncaminhadoController.tipo == 'A'}"></p:outputLabel>
-        <br />
+    
         <h:form> <p:commandButton value="Voltar"
 			style="position:relative; right:18%; width:100px; " icon="btvoltar"
 			action ="/pages/sishosp/gerenciarTipoEncaminhamento.faces"></p:commandButton>  </h:form>
@@ -22,10 +20,8 @@
         <h:form class="form-horizontal" id="formCADU">
        
         <p:growl id="message"/>
-        <p:panel id="pnlCadPaciente" style="height:auto; width:850px; background-color: #F5F5F5;" >  
-          <!--  <p:growl id="growl" showDetail="false" /> -->
-         <p:tabView activeIndex="#{EncaminhadoController.abaAtiva}" style="height:auto; width:800px">
-         <p:tab title="DADOS ENCAMINHAMENTO">
+        <p:panel id="pnlCadPaciente" header="#{EncaminhadoController.cabecalho}"  style="height:auto; width:auto; background-color: #F5F5F5;" >  
+
          <div class="form-group">
                 <h:outputLabel for="inputname" value="TIPO DE ENCAMINHADO"
                     styleClass="col-sm-3 control-label" />
@@ -41,13 +37,8 @@
                     </h:inputText>
                 </div>
             </div>
-                    
-                 </p:tab>
-                 
-            </p:tabView>
-                 
-          </p:panel>
-                 <!-- FIM DO FORMULARIO -->
+                    <p:separator></p:separator>
+                      <!-- FIM DO FORMULARIO -->
                <p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
                     <h:commandButton action="#{EncaminhadoController.gravarEncaminhado()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Cadastrar"
@@ -59,6 +50,9 @@
                         styleClass="btn btn-info" rendered="#{EncaminhadoController.tipo == 'A'}" />
             </p:panelGrid>
               
+                 
+          </p:panel>
+        
             
                 
         </h:form>

@@ -23,11 +23,8 @@
 
 				<p:growl id="message" />
 				<p:panel id="pnlCadEspec" header="#{EspecialidadeController.cabecalho}"
-					style="height:auto; width:850px; background-color: #F5F5F5;">
-					<!--  <p:growl id="growl" showDetail="false" /> -->
-					<p:tabView activeIndex="#{EspecialidadeController.abaAtiva}"
-						style="height:auto; width:800px">
-						<p:tab title="DADOS ESPECIALIDADE">
+					style="height:auto; width:auto; background-color: #F5F5F5;">
+
 							
 							<div class="form-group">
 								<h:outputLabel for="inputname" value="Descrição da Especialidade: "
@@ -37,12 +34,8 @@
 										class="form-control" id="inputname" />
 								</div>
 							</div>
-						</p:tab>
-
-					</p:tabView>
-
-				</p:panel>
-				<!-- FIM DO FORMULARIO -->
+						<p:separator></p:separator>
+								<!-- FIM DO FORMULARIO -->
 				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
 					<h:commandButton action="#{EspecialidadeController.gravarEspecialidade()}"
 						update=":formCADU:message,:formCADU:pnlCadEspec,:formCadu"
@@ -55,9 +48,10 @@
 						value="Alterar" styleClass="btn btn-info"
 						rendered="#{EspecialidadeController.tipo  == 'A'}" />
 				</p:panelGrid>
+						
 
-
-
+				</p:panel>
+		
 			</h:form>
 		</div>
 
