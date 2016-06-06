@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="../../template/templatepagsistemas.xhtml">
+
+	<ui:define name="body">
+
+		<h:form id="formConsAge">
+			<p:growl id="msg" />
+			<p:panel header="CONSULTAR AGENDAMENTOS" id="pnlConsAge">
+
+				<p:panelGrid columns="5" styleClass="semBorda">
+					<p:outputPanel>
+						<h:outputLabel value="Data para atendimento: " />
+						<br />
+						<p:calendar locale="pt" showOn="button" navigator="true"
+							mask="true" pattern="dd/MM/yyyy"
+							value="#{AgendaController.dataAtendimentoC}" />
+					</p:outputPanel>
+
+					<p:outputPanel>
+						<h:outputLabel value="Prontuário: " />
+						<br />
+						<p:inputText value="#{AgendaController.protuarioC}" />
+					</p:outputPanel>
+
+					<p:outputPanel>
+						<h:outputLabel value="CNS: " />
+						<br />
+						<p:inputText value="#{AgendaController.cnsC}" />
+					</p:outputPanel>
+
+					<p:outputPanel id="outTipoAt">
+						<h:outputLabel for="tipoAt" value="Tipo At.:" />
+						<br />
+						<p:outputPanel>
+							<p:inputText id="codTipo"
+								value="#{AgendaController.tipoC.idTipo}" readonly="true"
+								style="width: 40px" />
+							<p:inputText id="tipoAt"
+								value="#{AgendaController.tipoC.descTipoAt}" readonly="true"
+								style="width: 300px" />
+							<p:commandButton id="btBusTi" value="Buscar"
+								action="#{TipoAtendimentoController.listarTodosTipos()}"
+								onclick="PF('dlgConsuTipoAtend').show();" />
+						</p:outputPanel>
+					</p:outputPanel>
+
+					<p:commandButton value="Ver Agenda" style="margin-top: 20px;"
+						action="#{AgendaController.consultarAgenda()}"
+						update=":formConsAge:dtConsultas" />
+
+				</p:panelGrid>
+				<br />
+				<p:dataTable resizableColumns="true" id="dtConsultas"
+					emptyMessage="Sem registros." scrollable="true" paginator="true"
+					rows="15" var="agenda" value="#{AgendaController.listaConsulta}">
+
+					<p:column headerText="Ação" width="60px;">
+						<center>
+							<p:commandButton icon="trash"
+								onclick="PF('dialogAtencao').show()" title="Excluir">
+								<f:setPropertyActionListener value="#{agenda}"
+									target="#{AgendaController.agenda}" />
+							</p:commandButton>
+						</center>
+					</p:column>
+					<p:column headerText="Data" width="100px;">
+						<h:outputLabel value="#{agenda.dataAtendimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputLabel>
+					</p:column>
+					<p:column headerText="Prontuário" width="100px;">
+						<h:outputLabel value="#{agenda.paciente.id_paciente}" />
+					</p:column>
+					<p:column headerText="Paciente" width="300px;">
+						<h:outputLabel value="#{agenda.paciente.nome}" />
+					</p:column>
+					<p:column headerText="Tipo Atendimento" width="200px;">
+						<h:outputLabel value="#{agenda.tipoAt.descTipoAt}" />
+					</p:column>
+					<p:column headerText="Turno" width="60px;">
+						<h:outputLabel value="MANHÃ" rendered="#{agenda.turno == 'M'}" />
+						<h:outputLabel value="TARDE" rendered="#{agenda.turno == 'T'}" />
+					</p:column>
+					<p:column headerText="Status" width="60px;">
+						<h:outputLabel value="?" />
+					</p:column>
+					<p:column headerText="Profissional" width="300px;">
+						<h:outputLabel value="#{agenda.profissional.descricaoProf}" />
+					</p:column>
+					<p:column headerText="Programa" width="200px;">
+						<h:outputLabel value="?" />
+					</p:column>
+					<p:column headerText="Equipe" width="200px;">
+						<h:outputLabel value="#{agenda.equipe.descEquipe}" />
+					</p:column>
+					<p:column headerText="Observação" width="300px;">
+						<h:outputLabel value="#{agenda.observacao}" />
+					</p:column>
+				</p:dataTable>
+
+			</p:panel>
+
+			<p:dialog header="Consulta Tipos de Atendimento"
+				widgetVar="dlgConsuTipoAtend" modal="true" width="550px">
+				<h:form id="formConsuTipoAt">
+					<p:dataTable value="#{TipoAtendimentoController.listaTipos}"
+						id="dtTipoAt" resizableColumns="true" var="tipo"
+						emptyMessage="Não existe nenhum tipo cadastrado!">
+						<p:column headerText="CÓD.">
+							<p:outputLabel value="#{tipo.idTipo}" />
+						</p:column>
+						<p:column headerText="Tipo de Atendimento">
+							<p:outputLabel value="#{tipo.descTipoAt}" />
+						</p:column>
+
+						<p:column style="width:50px;text-align: center">
+							<p:commandButton update=":formConsAge:outTipoAt, :formConsAge"
+								icon="ui-icon-check" title="Selecionar"
+								onclick="PF('dlgConsuTipoAtend').hide();">
+								<f:setPropertyActionListener value="#{tipo}"
+									target="#{AgendaController.tipoC}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:dialog>
+
+		</h:form>
+		
+		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
+			resizable="false">
+			<h:form id="dlgexcluir">
+				<h:panelGrid columns="1">
+
+					<div class="alert alert-warning" role="alert">Deseja excluir
+						esse agendamento?</div>
+
+				</h:panelGrid>
+				<center>
+					<p:commandButton value="Sim" icon="ui-icon-check"
+						action="#{AgendaController.excluirAgendamento()}"
+						update=":formConsAge:dtConsultas, :formConsAge:msg"
+						style="font-size:14px;" onclick="PF('dialogAtencao').hide();">
+					</p:commandButton>
+					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
+						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+
+				</center>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

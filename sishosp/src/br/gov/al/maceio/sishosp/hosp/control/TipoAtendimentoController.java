@@ -64,6 +64,10 @@ public class TipoAtendimentoController {
 	public void buscarTipoAt() {
 		this.listaTipos = tDao.listarTipoAtBusca(descricaoBusca, tipoBuscar);
 	}
+	
+	public void listarTodosTipos() {
+		this.listaTipos = tDao.listarTipoAt();
+	}
 
 	public void setListaTipos(List<TipoAtendimentoBean> listaTipos) {
 		this.listaTipos = listaTipos;

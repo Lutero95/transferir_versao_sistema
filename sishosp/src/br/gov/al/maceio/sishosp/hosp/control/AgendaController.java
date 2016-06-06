@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,13 +12,21 @@ import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
+import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 public class AgendaController {
 
 	private AgendaBean agenda;
+	
+	//consultas
+	private Date dataAtendimentoC;
+	private String cnsC;
+	private Integer protuarioC;
+	private TipoAtendimentoBean tipoC;
 
 	private List<AgendaBean> listaNovosAgendamentos;
 	private List<AgendaBean> listaAgendamentosData;
+	private List<AgendaBean> listaConsulta;
 
 	private AgendaDAO aDao = new AgendaDAO();
 
@@ -25,12 +34,22 @@ public class AgendaController {
 		this.agenda = new AgendaBean();
 		this.listaNovosAgendamentos = new ArrayList<AgendaBean>();
 		this.listaAgendamentosData = new ArrayList<AgendaBean>();
+		this.listaConsulta = new ArrayList<AgendaBean>();
+		this.dataAtendimentoC = null;
+		this.cnsC = new String();
+		this.protuarioC = null;
+		this.tipoC = new TipoAtendimentoBean();
 	}
 
 	public void limparDados() {
 		this.agenda = new AgendaBean();
 		this.listaNovosAgendamentos = new ArrayList<AgendaBean>();
 		this.listaAgendamentosData = new ArrayList<AgendaBean>();
+		this.listaConsulta = new ArrayList<AgendaBean>();
+		this.dataAtendimentoC = null;
+		this.cnsC = new String();
+		this.protuarioC = null;
+		this.tipoC = new TipoAtendimentoBean();
 	}
 
 	public List<AgendaBean> getListaNovosAgendamentos() {
@@ -56,6 +75,46 @@ public class AgendaController {
 
 	public void setListaAgendamentosData(List<AgendaBean> listaAgendamentosData) {
 		this.listaAgendamentosData = listaAgendamentosData;
+	}
+
+	public Date getDataAtendimentoC() {
+		return dataAtendimentoC;
+	}
+
+	public void setDataAtendimentoC(Date dataAtendimentoC) {
+		this.dataAtendimentoC = dataAtendimentoC;
+	}
+
+	public String getCnsC() {
+		return cnsC;
+	}
+
+	public void setCnsC(String cnsC) {
+		this.cnsC = cnsC;
+	}
+
+	public Integer getProtuarioC() {
+		return protuarioC;
+	}
+
+	public void setProtuarioC(Integer protuarioC) {
+		this.protuarioC = protuarioC;
+	}
+
+	public TipoAtendimentoBean getTipoC() {
+		return tipoC;
+	}
+
+	public void setTipoC(TipoAtendimentoBean tipoC) {
+		this.tipoC = tipoC;
+	}
+	
+	public List<AgendaBean> getListaConsulta() {
+		return listaConsulta;
+	}
+
+	public void setListaConsulta(List<AgendaBean> listaConsulta) {
+		this.listaConsulta = listaConsulta;
 	}
 
 	public void verificaDisponibilidadeData() {
@@ -130,6 +189,24 @@ public class AgendaController {
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}
+	
+	public void consultarAgenda(){
+		this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC, this.protuarioC, this.cnsC, this.tipoC);
+	}
+	
+	public void excluirAgendamento(){
+		boolean ok = aDao.excluirAgendamento(this.agenda);
+		if (ok) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Agendamento excluído com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusão!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}

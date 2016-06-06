@@ -232,7 +232,8 @@
 							action="#{AgendaController.gravarAgenda()}"
 							update=":formAgendaMedica" />
 
-						<p:commandButton value="Consultar" icon="buscar" />
+						<p:commandButton value="Consultar" icon="buscar" 
+						action="/pages/agenda/consAgendamentos.xhtml?faces-redirect=true"/>
 
 						<p:commandButton value="Limpar" icon="limpar"
 							actionListener="#{AgendaController.limparDados()}"
@@ -241,7 +242,7 @@
 						<p:commandButton value="Sair" icon="btlogout"
 							update=":formAgendaMedica"
 							actionListener="#{AgendaController.limparDados()}"
-							action="/pages/comum/selecaoSistema.faces" />
+							action="/pages/comum/selecaoSistema.xhtml?faces-redirect=true" />
 					</p:panelGrid>
 				</center>
 			</p:panel>
