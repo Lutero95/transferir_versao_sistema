@@ -90,27 +90,6 @@
 
 				<p:separator />
 
-				<p:panelGrid columns="4" styleClass="semBorda">
-					<h:outputLabel value="Mês: " />
-					<p:selectOneMenu style="width:120px"
-						value="#{ConfigAgendaController.confParte1.mes}">
-						<f:selectItem itemLabel="JANEIRO" itemValue="1" />
-						<f:selectItem itemLabel="FEVEREIRO" itemValue="2" />
-						<f:selectItem itemLabel="MARÇO" itemValue="3" />
-						<f:selectItem itemLabel="ABRIL" itemValue="4" />
-						<f:selectItem itemLabel="MAIO" itemValue="5" />
-						<f:selectItem itemLabel="JUNHO" itemValue="6" />
-						<f:selectItem itemLabel="JULHO" itemValue="7" />
-						<f:selectItem itemLabel="AGOSTO" itemValue="8" />
-						<f:selectItem itemLabel="SETEMBRO" itemValue="9" />
-						<f:selectItem itemLabel="OUTUBRO" itemValue="10" />
-						<f:selectItem itemLabel="NOVEMBRO" itemValue="11" />
-						<f:selectItem itemLabel="DEZEMBRO" itemValue="12" />
-					</p:selectOneMenu>
-					<h:outputLabel value="Ano: " />
-					<p:inputText value="#{ConfigAgendaController.confParte1.ano}" />
-				</p:panelGrid>
-
 				<p:panelGrid columns="3" styleClass="semBorda">
 					<h:outputLabel value="Profissional: " />
 					<p:outputPanel id="outProfi">
@@ -130,7 +109,7 @@
 					<p:selectOneRadio value="#{ConfigAgendaController.opcao}">
 						<f:selectItem itemLabel="Data Específica" itemValue="1" />
 						<f:selectItem itemLabel="Dias Semana" itemValue="2" />
-						<p:ajax update="panelDias" event="change" />
+						<p:ajax update="panelDias, panelMesAno" event="change" />
 					</p:selectOneRadio>
 				</p:panelGrid>
 
@@ -154,6 +133,31 @@
 					<p:calendar locale="pt" navigator="true" mask="true"
 						pattern="dd/MM/yyyy" rendered="#{ConfigAgendaController.opcao==1}"
 						value="#{ConfigAgendaController.confParte1.dataEspecifica}" />
+				</p:panelGrid>
+
+				<p:panelGrid columns="4" styleClass="semBorda" id="panelMesAno">
+					<h:outputLabel value="Mês: "
+						rendered="#{ConfigAgendaController.opcao==2}" />
+					<p:selectOneMenu style="width:120px"
+						rendered="#{ConfigAgendaController.opcao==2}"
+						value="#{ConfigAgendaController.confParte1.mes}">
+						<f:selectItem itemLabel="JANEIRO" itemValue="1" />
+						<f:selectItem itemLabel="FEVEREIRO" itemValue="2" />
+						<f:selectItem itemLabel="MARÇO" itemValue="3" />
+						<f:selectItem itemLabel="ABRIL" itemValue="4" />
+						<f:selectItem itemLabel="MAIO" itemValue="5" />
+						<f:selectItem itemLabel="JUNHO" itemValue="6" />
+						<f:selectItem itemLabel="JULHO" itemValue="7" />
+						<f:selectItem itemLabel="AGOSTO" itemValue="8" />
+						<f:selectItem itemLabel="SETEMBRO" itemValue="9" />
+						<f:selectItem itemLabel="OUTUBRO" itemValue="10" />
+						<f:selectItem itemLabel="NOVEMBRO" itemValue="11" />
+						<f:selectItem itemLabel="DEZEMBRO" itemValue="12" />
+					</p:selectOneMenu>
+					<h:outputLabel value="Ano: "
+						rendered="#{ConfigAgendaController.opcao==2}" />
+					<p:inputText value="#{ConfigAgendaController.confParte1.ano}"
+						rendered="#{ConfigAgendaController.opcao==2}" />
 				</p:panelGrid>
 
 				<p:panelGrid columns="4" styleClass="semBorda">

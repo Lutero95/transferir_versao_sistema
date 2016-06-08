@@ -25,8 +25,7 @@ public class ConfigAgendaDAO {
 			List<ConfigAgendaParte2Bean> listaTipos) throws SQLException {
 
 		if (confParte1.getProfissional().getIdProfissional() == null
-				|| confParte1.getQtdMax() == null
-				|| confParte1.getAno() == null) {
+				|| confParte1.getQtdMax() == null) {
 			return false;
 		}
 

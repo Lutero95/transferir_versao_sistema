@@ -265,6 +265,11 @@ public class ConfigAgendaController implements Serializable {
 				return;
 			}
 		}
+		
+		if(this.opcao.equals("1")){
+			this.confParte1.setAno(0);
+			this.confParte1.setMes(0);
+		}
 
 		ok = cDao.gravarConfigAgenda(confParte1, confParte2, listaTipos);
 
