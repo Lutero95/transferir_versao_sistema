@@ -11,13 +11,14 @@ import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipamentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 
 
 public class EquipamentoController {
 
 	private EquipamentoBean equipamento;
-	private List<EquipamentoBean> listaEquipamento;
+	private List<EquipamentoBean> listaEquipamentos;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private String tipo;
@@ -25,26 +26,28 @@ public class EquipamentoController {
 
 	private Integer abaAtiva = 0;
 
-	EquipamentoDAO gDao = new EquipamentoDAO();
+	
 
 	public EquipamentoController() {
-		this.equipamento = new EquipamentoBean();
-		this.listaEquipamento = null;
-		this.listaEquipamento = new ArrayList<>();
+		equipamento = new EquipamentoBean();
+		listaEquipamentos = null;
+		listaEquipamentos = new ArrayList<>();
 		this.descricaoBusca = new String();
 		this.tipo = new String();
 		this.cabecalho = "";
+		
+
 	}
 
 	public void limparDados() {
-		this.equipamento = new EquipamentoBean();
-		this.listaEquipamento = new ArrayList<>();
+		equipamento = new EquipamentoBean();
+		listaEquipamentos = new ArrayList<>();
 		this.descricaoBusca = new String();
-		listaEquipamento = gDao.listarEquipamento();
+	
 	}
 
 	public void gravarEquipamento() throws ProjetoException, SQLException {
-
+		EquipamentoDAO gDao = new EquipamentoDAO();
 		boolean cadastrou = gDao.gravarEquipamento(equipamento);
 
 		if (cadastrou == true) {
@@ -59,7 +62,8 @@ public class EquipamentoController {
 		}
 	}
 	
-	public void alterarEquipamento() throws ProjetoException {
+	public void alterarEquipamento() throws ProjetoException, SQLException {
+		EquipamentoDAO gDao = new EquipamentoDAO();
         boolean alterou = gDao.alterarEquipamento(equipamento);
         if(alterou == true) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -70,11 +74,12 @@ public class EquipamentoController {
                 "Ocorreu um erro durante o cadastro!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
-		listaEquipamento = gDao.listarEquipamento();
+		listaEquipamentos = gDao.listarEquipamentos();
 		
 	}
 	
-	public void excluirEquipamento() throws ProjetoException {
+	public void excluirEquipamento() throws ProjetoException, SQLException {
+		EquipamentoDAO gDao = new EquipamentoDAO();
         boolean ok = gDao.excluirEquipamento(equipamento);
         if(ok == true) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -88,7 +93,7 @@ public class EquipamentoController {
 
             RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
         }
-		listaEquipamento = gDao.listarEquipamento();
+		listaEquipamentos = gDao.listarEquipamentos();
 	}
 
 	
@@ -101,16 +106,7 @@ public class EquipamentoController {
 		this.equipamento = equipamento;
 	}
 
-	public List<EquipamentoBean> getListaEquipamento() {
-		if (listaEquipamento == null) {
-			listaEquipamento = gDao.listarEquipamento();
-		}
-		return listaEquipamento;
-	}
 
-	public void setListaEquipamento(List<EquipamentoBean> listaEquipamento) {
-		this.listaEquipamento = listaEquipamento;
-	}
 
 	public Integer getTipoBuscar() {
 		return tipoBuscar;
@@ -144,14 +140,6 @@ public class EquipamentoController {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public EquipamentoDAO getgDao() {
-		return gDao;
-	}
-
-	public void setgDao(EquipamentoDAO gDao) {
-		this.gDao = gDao;
-	}
-
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
@@ -163,6 +151,19 @@ public class EquipamentoController {
 			cabecalho = "ALTERAR EQUIPAMENTO";
 		}
 		return cabecalho;
+	}
+
+	public List<EquipamentoBean> getListaEquipamentos() throws SQLException {
+		if (listaEquipamentos == null) {
+System.out.println("emtrouuuu aqui merda");
+			EquipamentoDAO fdao = new EquipamentoDAO();
+			listaEquipamentos = fdao.listarEquipamentos();
+		}
+		return listaEquipamentos;
+	}
+
+	public void setListaEquipamentos(List<EquipamentoBean> listaEquipamentos) {
+		this.listaEquipamentos = listaEquipamentos;
 	}
 	
 }

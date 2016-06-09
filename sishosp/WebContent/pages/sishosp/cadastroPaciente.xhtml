@@ -774,16 +774,16 @@
                  
                  <p:separator></p:separator>
                       <!-- FIM DO FORMULARIO -->
-               <p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+               <h:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
                     <h:commandButton action="#{PacienteController.gravarPaciente()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Cadastrar"
-                        styleClass="btn btn-sm btn-success" rendered="#{PacienteController.tipo == 'I'}" />
+                    image="../imgs/confirmar.JPG"  styleClass="btn btn-sm btn-success" rendered="#{PacienteController.tipo == 'I'}" />
                
                
                     <h:commandButton action="#{PacienteController.alterarPaciente()}"   
                     update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Alterar"
                         styleClass="btn btn-info" rendered="#{PacienteController.tipo == 'A'}" />
-            </p:panelGrid>
+            </h:panelGrid>
           </p:panel>
             
               

@@ -2,27 +2,24 @@ package br.gov.al.maceio.sishosp.hosp.model;
 
 public class EquipamentoBean {
 	
-	private Integer idEquipamento;
+	private Integer id_equipamento;
 	private String descEquipamento;
 	
 	
 	public EquipamentoBean(){
 		
 	}
-	
-	public EquipamentoBean(Integer idEquipamento, String descEquipamento) {
-		this.idEquipamento = idEquipamento;
-		this.descEquipamento = descEquipamento;
-		
+
+
+	public Integer getId_equipamento() {
+		return id_equipamento;
 	}
 
-	public Integer getIdEquipamento() {
-		return idEquipamento;
+
+	public void setId_equipamento(Integer id_equipamento) {
+		this.id_equipamento = id_equipamento;
 	}
 
-	public void setIdEquipamento(Integer idEquipamento) {
-		this.idEquipamento = idEquipamento;
-	}
 
 	public String getDescEquipamento() {
 		return descEquipamento;

@@ -154,6 +154,10 @@
 			<p:submenu label="Movimento" icon="ui-icon-document">
 			<p:menuitem value="Gerenciar Laudo"
 					url="/pages/sishosp/gerenciarLaudo.faces" />
+					<p:menuitem value="Digitar Laudo"
+					url="/pages/sishosp/cadastroLaudoDigita.faces" />
+					<p:menuitem value="Controle Apac"
+					url="/pages/sishosp/ControleApac.faces" />
 				<p:menuitem value="Agenda Médica"
 					url="/pages/sishosp/agendaPaciente.faces" />
 				<p:menuitem value="Atendimento"
@@ -261,7 +265,7 @@
 				
 			</p:submenu>
 			
-			<p:menuitem value="Sair" style="margin-left:700px;"  action="#{MBUsuarios.logout}" ajax="false" icon="btlogout"  />
+			<p:menuitem value="Sair" style="float:center;"  action="#{MBUsuarios.logout}" ajax="false" icon="btlogout"  />
 
 
 		</p:menubar>
@@ -272,7 +276,7 @@
         <ui:insert name="body" />
        </div> 
         
-        <div id="footer" style="padding-top:10px; margin-top:50px; width:100%;background-color: #EEEEEE;" role="footer">
+        <div id="footer" style="margin-top:50px; width:100%;background-color: #EEEEEE;" role="footer">
         <ui:insert name="nav_footer">
             <ui:include src="footer.xhtml" />
         </ui:insert>

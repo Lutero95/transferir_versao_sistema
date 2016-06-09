@@ -31,11 +31,17 @@ public class LaudoBean {
 	private String recurso;
 	private Integer codgrupo;
 	private Integer codempresa;
-	private Integer codLaudoApac;
+	
 	private String desceApac;
 	private Integer codLaudoBpi;	
 	private String descBpi;
 	private String numeroAutorizacao;
+	
+	// LAUDO DIGITA
+	private Integer codLaudoDigita;
+	private Date dtainicio;
+	private Date dtafim;
+	private Integer Prorrogar;
 	
 	//CLASSES HERDADAS
 	private PacienteBean paciente;
@@ -47,21 +53,20 @@ public class LaudoBean {
 	private FornecedorBean fornecedor;
 	private CidBean cid;
 	private EquipamentoBean equipamento;
+	private EquipeBean equipe;
 	
 	public LaudoBean(){
-		this.paciente = null;//new PacienteBean();
+		this.paciente = null;
 		this.procedimento = null;
-		this.grupo = null;//new GrupoBean();
-		this.programa = null;//new ProgramaBean();
+		this.grupo = null;
+		this.programa = null;
 		this.profissional = null;
 		situacao = "P";
 		this.fornecedor = null;
 		this.cid = null;
-		this.equipamento = null;
-		
-		
-		
-		
+		fornecedor = new FornecedorBean();
+		equipamento = new EquipamentoBean();
+		this.equipe = null;
 		//paciente = new PacienteBean();
 		//programa = new ProgramaBean();
 		//profissao = new ProfissaoBean();
@@ -71,13 +76,7 @@ public class LaudoBean {
 		//fornecedor = new FornecedorBean();
 	}
 
-	public Integer getCodLaudoApac() {
-		return codLaudoApac;
-	}
 
-	public void setCodLaudoApac(Integer codLaudoApac) {
-		this.codLaudoApac = codLaudoApac;
-	}
 
 	public String getDesceApac() {
 		return desceApac;
@@ -405,6 +404,50 @@ public class LaudoBean {
 
 	public void setNumeroAutorizacao(String numeroAutorizacao) {
 		this.numeroAutorizacao = numeroAutorizacao;
+	}
+
+	public EquipeBean getEquipe() {
+		return equipe;
+	}
+
+	public void setEquipe(EquipeBean equipe) {
+		this.equipe = equipe;
+	}
+
+	public Integer getProrrogar() {
+		return Prorrogar;
+	}
+
+	public void setProrrogar(Integer prorrogar) {
+		Prorrogar = prorrogar;
+	}
+
+	public Date getDtainicio() {
+		return dtainicio;
+	}
+
+	public void setDtainicio(Date dtainicio) {
+		this.dtainicio = dtainicio;
+	}
+
+	public Date getDtafim() {
+		return dtafim;
+	}
+
+	public void setDtafim(Date dtafim) {
+		this.dtafim = dtafim;
+	}
+
+
+
+	public Integer getCodLaudoDigita() {
+		return codLaudoDigita;
+	}
+
+
+
+	public void setCodLaudoDigita(Integer codLaudoDigita) {
+		this.codLaudoDigita = codLaudoDigita;
 	}
 	
 	

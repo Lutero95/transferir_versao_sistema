@@ -79,16 +79,36 @@ public class LaudoDAO {
     			} else {
     				stmt.setString(13, laudo.getCid10_2().toUpperCase().trim());
     			}
-                stmt.setInt(14, laudo.getFornecedor().getIdFornecedor());
-                stmt.setDouble(15, laudo.getFornecedor().getValor());
-                stmt.setString(16, laudo.getNota().toUpperCase().trim());
-                stmt.setInt(17, laudo.getQtd());
-                stmt.setInt(18, laudo.getEquipamento().getIdEquipamento());
+                if (laudo.getFornecedor().getIdFornecedor() == null) {
+    				stmt.setNull(14, Types.INTEGER);
+    			} else {
+    				stmt.setInt(14, laudo.getFornecedor().getIdFornecedor());
+    			}
+                if (laudo.getFornecedor().getValor() == null) {
+    				stmt.setNull(15, Types.DOUBLE);
+    			} else {
+    				stmt.setDouble(15, laudo.getFornecedor().getValor());
+    			}
+                if (laudo.getNota() == null) {
+    				stmt.setNull(16, Types.CHAR);
+    			} else {
+    				stmt.setString(16, laudo.getNota().toUpperCase().trim());
+    			}
+                if (laudo.getQtd() == null) {
+    				stmt.setNull(17, Types.INTEGER);
+    			} else {
+    				stmt.setInt(17, laudo.getQtd());
+    			}
+                if (laudo.getEquipamento().getId_equipamento() == null) {
+    				stmt.setNull(18, Types.INTEGER);
+    			} else {
+    				stmt.setInt(18, laudo.getEquipamento().getId_equipamento());
+    			}
                 if (laudo.getObs() == null) {
     				stmt.setNull(19, Types.CHAR);
     			} else {
     				stmt.setString(19, laudo.getObs().toUpperCase().trim());
-    			}
+    			}    
                 
             stmt.execute();   
             System.out.println("passou aqui 4");
@@ -134,11 +154,31 @@ public class LaudoDAO {
 			} else {
 				stmt.setString(13, laudo.getCid10_2().toUpperCase().trim());
 			}
-            stmt.setInt(14, laudo.getFornecedor().getIdFornecedor());
-            stmt.setDouble(15, laudo.getFornecedor().getValor());
-            stmt.setString(16, laudo.getNota().toUpperCase().trim());
-            stmt.setInt(17, laudo.getQtd());
-            stmt.setInt(18, laudo.getCodequipamento());
+            if (laudo.getFornecedor().getIdFornecedor() == null) {
+				stmt.setNull(14, Types.INTEGER);
+			} else {
+				stmt.setInt(14, laudo.getFornecedor().getIdFornecedor());
+			}
+            if (laudo.getFornecedor().getValor() == null) {
+				stmt.setNull(15, Types.DOUBLE);
+			} else {
+				stmt.setDouble(15, laudo.getFornecedor().getValor());
+			}
+            if (laudo.getNota() == null) {
+				stmt.setNull(16, Types.CHAR);
+			} else {
+				stmt.setString(16, laudo.getNota().toUpperCase().trim());
+			}
+            if (laudo.getQtd() == null) {
+				stmt.setNull(17, Types.INTEGER);
+			} else {
+				stmt.setInt(17, laudo.getQtd());
+			}
+            if (laudo.getEquipamento().getId_equipamento() == null) {
+				stmt.setNull(18, Types.INTEGER);
+			} else {
+				stmt.setInt(18, laudo.getEquipamento().getId_equipamento());
+			}
             if (laudo.getObs() == null) {
 				stmt.setNull(19, Types.CHAR);
 			} else {
@@ -188,7 +228,7 @@ public class LaudoDAO {
         }
     }
 	
-            public Boolean cadastrarLaudoApac(LaudoBean laudo) throws ProjetoException {
+            public Boolean cadastrarLaudoDigita(LaudoBean laudo) throws ProjetoException {
                 boolean cadastrou = false;
                 System.out.println("passou aqui 2");
 
@@ -196,26 +236,26 @@ public class LaudoDAO {
                         .getCurrentInstance().getExternalContext().getSessionMap()
                         .get("obj_paciente");*/
 
-                String sql = "insert into hosp.escola (descescola) values (?)";
+                String sql = "insert into hosp.laudo (codpaciente, codequipe, codgrupo, codmedico, codproc, "
+                		+ "dtasolicitacao, prorrogar, dtainicio, dtafim) values (?, ?, ?, ?, ?, ? , ?, ?, ?)";
                 //String sql = "insert into hosp.escola (descescola) values ((select max(cod) +1 from hosp.escola where codempresa=1), ?";
-                //returning id_paciente
+              
                     try {
                     	System.out.println("passou aqui 3");
                         conexao = ConnectionFactory.getConnection();
                         PreparedStatement stmt = conexao.prepareStatement(sql);
-                        stmt.setString(1, laudo.getDesceApac().toUpperCase().trim());
-                        //stmt.setInt(2, escola.getCodtipoescola());
-                        //stmt.setString(2, paciente.getCpf().replaceAll("[^0-9]", ""));  
-                        //stmt.setBoolean(3, true);
-                        //stmt.setInt(3, paciente.getIdpessoa());
-                        /*ResultSet rs = stmt.executeQuery();  
-                        if(rs.next()) { 
-                    PacienteBean p = paciente;
-                    String idRetorno = null;
-                    idRetorno = String.valueOf(rs.getLong("id_usuario"));
-                    p.setId_paciente(Long.parseLong(idRetorno));
-
-                    }*/
+                        stmt.setLong(1, laudo.getPaciente().getId_paciente());
+                        stmt.setInt(2, laudo.getEquipe().getCodEquipe());
+                        stmt.setInt(3, laudo.getGrupo().getIdGrupo());
+                        stmt.setInt(4, laudo.getProfissional().getIdProfissional());
+                        stmt.setInt(5, laudo.getProcedimento().getIdProc());
+                        //stmt.setString(6, laudo.getPaciente().getCns().toUpperCase().trim());
+                        //stmt.setString(7, laudo.getPaciente().getCpf().toUpperCase().trim());
+                        stmt.setDate(6, new java.sql.Date(laudo.getDtasolicitacao().getTime()));
+                        stmt.setInt(7, laudo.getProrrogar());
+                        stmt.setDate(8, new java.sql.Date(laudo.getDtainicio().getTime()));
+                        stmt.setDate(9, new java.sql.Date(laudo.getDtafim().getTime()));
+                    
                     stmt.execute();   
                     System.out.println("passou aqui 4");
                     conexao.commit();
@@ -228,14 +268,25 @@ public class LaudoDAO {
                 }
             }
             
-            public Boolean alterarLaudoApac(LaudoBean laudo) throws ProjetoException {
+            public Boolean alterarLaudoDigita(LaudoBean laudo) throws ProjetoException {
                 boolean alterou = false;
-                String sql = "update hosp.escola set descescola = ? where id_escola = ?";
+                String sql = "update hosp.laudo set codpaciente = ?, codequipe = ?, codgrupo = ?, codmedico = ?, "
+        		+ "codproc = ?, dtasolicitacao = ?, prorrogar = ?, dtainicio = ?, dtafim = ? where id = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setString(1, laudo.getDesceApac());
-                    stmt.setInt(2, laudo.getCodLaudoApac());
+                    stmt.setLong(1, laudo.getPaciente().getId_paciente());
+                    stmt.setInt(2, laudo.getEquipe().getCodEquipe());
+                    stmt.setInt(3, laudo.getGrupo().getIdGrupo());
+                    stmt.setInt(4, laudo.getProfissional().getIdProfissional());
+                    stmt.setInt(5, laudo.getProcedimento().getIdProc());
+                    //stmt.setString(6, laudo.getPaciente().getCns().toUpperCase().trim());
+                    //stmt.setString(7, laudo.getPaciente().getCpf().toUpperCase().trim());
+                    stmt.setDate(6, new java.sql.Date(laudo.getDtasolicitacao().getTime()));
+                    stmt.setInt(7, laudo.getProrrogar());
+                    stmt.setDate(8, new java.sql.Date(laudo.getDtasolicitacao().getTime()));
+                    stmt.setDate(9, new java.sql.Date(laudo.getDtasolicitacao().getTime()));
+                    stmt.setInt(10, laudo.getCodLaudoDigita());
                     stmt.executeUpdate();
 
                     conexao.commit();
@@ -253,13 +304,13 @@ public class LaudoDAO {
                     }
                 }
             }
-            public Boolean excluirLaudoApac(LaudoBean laudo) throws ProjetoException {
+            public Boolean excluirLaudoDigita(LaudoBean laudo) throws ProjetoException {
                 boolean excluir = false;
-                String sql = "delete from hosp.escola where id_escola = ?";
+                String sql = "delete from hosp.laudo where id_laudo = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setInt(1, laudo.getCodLaudoApac());
+                    stmt.setInt(1, laudo.getCodLaudoDigita());
                     stmt.executeUpdate();
 
                     

@@ -38,6 +38,7 @@ public class LaudoController {
 	private CidBean cid;
 	private EquipamentoBean equipamento;
 	
+	
 	private String cabecalho;
 	
 	//LISTAS
@@ -53,11 +54,11 @@ public class LaudoController {
 	public LaudoController(){
 		//CLASSES
 		laudo = new LaudoBean();
-		
+	
 	
 		
 		this.tipoAt = null;//new TipoAtendimentoBean();
-		this.equipe = null;
+		
 		 //BUSCA
 		tipo ="";
 		tipoBuscaLaudo = 1;
@@ -135,14 +136,14 @@ public class LaudoController {
         }
 	}
 	
-	public void gravarLaudoApac() throws ProjetoException {
+	public void gravarLaudoDigita() throws ProjetoException {
 		LaudoDAO udao = new LaudoDAO();    
-                boolean cadastrou = udao.cadastrarLaudoApac(laudo);
+                boolean cadastrou = udao.cadastrarLaudoDigita(laudo);
                
                 if(cadastrou == true) {
                 	limparDados();
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Laudo Apac cadastrado com sucesso!", "Sucesso");
+                        "Laudo cadastrado com sucesso!", "Sucesso");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
                     listaLaudo = null;
                     
@@ -157,15 +158,15 @@ public class LaudoController {
             
     }
 	
-	public String alterarLaudoApac() throws ProjetoException {
+	public String alterarLaudoDigita() throws ProjetoException {
 
 		LaudoDAO rdao = new LaudoDAO();
-         boolean alterou = rdao.alterarLaudoApac(laudo);
+         boolean alterou = rdao.alterarLaudoDigita(laudo);
          listaLaudo = null;
          if(alterou == true) {
              limparDados();
              FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                 "Laudo Apac alterado com sucesso!", "Sucesso");
+                 "Laudo alterado com sucesso!", "Sucesso");
              FacesContext.getCurrentInstance().addMessage(null, msg);
              return "/pages/sishosp/gerenciarEscola.faces?faces-redirect=true";
              //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
@@ -179,15 +180,15 @@ public class LaudoController {
 		
 	}
 	
-	public void excluirLaudoApac() throws ProjetoException {
+	public void excluirLaudoDigita() throws ProjetoException {
 		LaudoDAO udao = new LaudoDAO();
 
-        boolean excluio = udao.excluirLaudoApac(laudo);
+        boolean excluio = udao.excluirLaudoDigita(laudo);
         
         if(excluio == true) {
         	
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Laudo Apac excluido com sucesso!", "Sucesso");
+                "Laudo excluido com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             listaLaudo = null;
             RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");

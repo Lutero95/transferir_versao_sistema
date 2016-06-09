@@ -13,8 +13,9 @@ import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 
 
 
+
 public class EquipamentoDAO {
-	
+	private Connection conexao = null;
 	Connection con = null;
 	PreparedStatement ps = null;
 	
@@ -41,37 +42,40 @@ public class EquipamentoDAO {
             }
         }
 	}
-
 	
-	public List<EquipamentoBean> listarEquipamento(){
-		List<EquipamentoBean> lista = new ArrayList<>();
+	public ArrayList<EquipamentoBean> listarEquipamentos() throws SQLException {
+        System.out.println("passou aqui porraaaaaa tnc");
 		String sql = "select id, desctipoaparelho from hosp.tipoaparelho order by id";
+
+        ArrayList<EquipamentoBean> lista = new ArrayList();
+
         try {
-        	System.out.println("CHEGOU AQUI");
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-            	EquipamentoBean equip = new EquipamentoBean();
-            	equip.setIdEquipamento(rs.getInt("id"));
-            	equip.setDescEquipamento(rs.getString("desctipoaparelho"));    
+            	EquipamentoBean e = new EquipamentoBean();
+            	e.setId_equipamento(rs.getInt("id"));
+            	e.setDescEquipamento(rs.getString("desctipoaparelho")); 
+              
                 
-                
-                lista.add(equip);
+                lista.add(e);
             }
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
-                con.close();
+                conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.exit(1);
             }
         }
-		return lista;
-	}
+        return lista;
+    } 
+	
+	
 	
 	public List<EquipamentoBean> listarEquipamentoBusca(String descricao,
 			Integer tipo) {
@@ -88,7 +92,7 @@ public class EquipamentoDAO {
 
 			while (rs.next()) {
 				EquipamentoBean equip = new EquipamentoBean();
-				equip.setIdEquipamento(rs.getInt("id"));
+				equip.setId_equipamento(rs.getInt("id"));
 				equip.setDescEquipamento(rs.getString("desctipoaparelho"));
 				
 
@@ -114,7 +118,7 @@ public class EquipamentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, equip.getDescEquipamento().toUpperCase());
-			stmt.setInt(2, equip.getIdEquipamento());
+			stmt.setInt(2, equip.getId_equipamento());
 			stmt.executeUpdate();
 			con.commit();
 			return true;
@@ -134,7 +138,7 @@ public class EquipamentoDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, equip.getIdEquipamento());
+			stmt.setLong(1, equip.getId_equipamento());
 			stmt.execute();
 			con.commit();
 			return true;
@@ -158,7 +162,7 @@ public class EquipamentoDAO {
 			ResultSet rs = ps.executeQuery();
 			EquipamentoBean g = new EquipamentoBean();
 			while (rs.next()) {
-				g.setIdEquipamento(rs.getInt("id"));
+				g.setId_equipamento(rs.getInt("id"));
 				g.setDescEquipamento(rs.getString("desctipoaparelho"));
 			
 			}
