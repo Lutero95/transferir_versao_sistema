@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -94,7 +95,7 @@ public class AgendaDAO {
 		return lista;
 	}
 
-	public int verQtdMaxAgenda(AgendaBean agenda) {
+	public int verQtdMaxAgendaData(AgendaBean agenda) {
 		int qtdMax = 0;
 		String sqlPro = "select qtdmax from hosp.config_agenda where codmedico = ? and dataagenda = ? and turno = ?";
 		String sqlEqui = "select qtdmax from hosp.config_agenda_equipe where codequipe = ? and dataagenda = ? and turno = ?";
@@ -129,7 +130,7 @@ public class AgendaDAO {
 		}
 	}
 
-	public int verQtdAgendados(AgendaBean agenda) {
+	public int verQtdAgendadosData(AgendaBean agenda) {
 		int qtd = 0;
 		String sqlPro = "select count(*) as qtd from hosp.atendimentos where codmedico = ? and dtaatende = ? and turno = ?;";
 		String sqlEqui = "select count(*) as qtd from hosp.atendimentos where codequipe = ? and dtaatende = ? and turno = ?;";
@@ -164,6 +165,85 @@ public class AgendaDAO {
 			}
 		}
 	}
+	
+	public boolean buscarDataEspecifica(AgendaBean agenda){
+		int id = 0;
+		String sqlPro = "select id_configagenda from hosp.config_agenda where codmedico = ? and dataagenda = ? and turno = ?";
+		String sqlEqui = "select id_configagenda from hosp.config_agenda_equipe where codequipe = ? and dataagenda = ? and turno = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = null;
+			if (agenda.getProfissional().getIdProfissional() != null) {
+				stm = con.prepareStatement(sqlPro);
+				stm.setInt(1, agenda.getProfissional().getIdProfissional());
+			} else if (agenda.getEquipe().getCodEquipe() != null) {
+				stm = con.prepareStatement(sqlEqui);
+				stm.setInt(1, agenda.getEquipe().getCodEquipe());
+			}
+			stm.setDate(2, new java.sql.Date(agenda.getDataAtendimento()
+					.getTime()));
+			stm.setString(3, agenda.getTurno().toUpperCase());
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				id = rs.getInt("id_configagenda");
+			}
+			if(id==0){
+				return false;
+			}else
+				return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+	
+	public boolean buscarDiaSemana(AgendaBean agenda){
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(agenda.getDataAtendimento()); 
+		int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
+		int id = 0;
+		String sqlPro = "select id_configagenda from hosp.config_agenda where codmedico = ? and diasemana = ? and turno = ?";
+		String sqlEqui = "select id_configagenda from hosp.config_agenda_equipe where codequipe = ? and diasemana = ? and turno = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = null;
+			if (agenda.getProfissional().getIdProfissional() != null) {
+				stm = con.prepareStatement(sqlPro);
+				stm.setInt(1, agenda.getProfissional().getIdProfissional());
+			} else if (agenda.getEquipe().getCodEquipe() != null) {
+				stm = con.prepareStatement(sqlEqui);
+				stm.setInt(1, agenda.getEquipe().getCodEquipe());
+			}
+			stm.setInt(2, diaSemana);
+			stm.setString(3, agenda.getTurno().toUpperCase());
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				id = rs.getInt("id_configagenda");
+			}
+			if(id==0){
+				return false;
+			}else
+				return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
 
 	public boolean gravarAgenda(AgendaBean agenda) {
 
@@ -183,12 +263,12 @@ public class AgendaDAO {
 			} else {
 				ps.setInt(2, 0);
 			}
-			ps.setInt(3, 0);// codredeatende
+			ps.setInt(3, agenda.getPrograma().getIdPrograma());// codredeatende
 			ps.setInt(4, 0);// codconvenio
 			ps.setDate(5, new java.sql.Date(agenda.getDataAtendimento()
 					.getTime()));
 			ps.setString(6, "");// horaatende
-			ps.setString(7, "X");// situacao
+			ps.setString(7, "A");// situacao
 			ps.setInt(8, 0);// codatendente
 			ps.setDate(9, new java.sql.Date(new Date().getTime()));
 			ps.setInt(10, agenda.getTipoAt().getIdTipo());
@@ -291,6 +371,7 @@ public class AgendaDAO {
 		ProfissionalDAO mDao = new ProfissionalDAO();
 		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 		EquipeDAO eDao = new EquipeDAO();
+		ProgramaDAO prDao = new ProgramaDAO(); 
 
 		String sql = "SELECT id_atendimento, codpaciente, codmedico, codredeatende,"
 				+ " codconvenio, dtaatende, horaatende, situacao, codatendente,"
@@ -310,6 +391,7 @@ public class AgendaDAO {
 						.getInt("codpaciente")));
 				agenda.setProfissional(mDao.buscarProfissionalPorID(rs
 						.getInt("codmedico")));
+				agenda.setPrograma(prDao.listarProgramaPorId(rs.getInt("codredeatende")));
 				agenda.setDataAtendimento(rs.getDate("dtaatende"));
 				agenda.setSituacao(rs.getString("situacao"));
 				agenda.setDataMarcacao(rs.getDate("dtamarcacao"));
@@ -350,6 +432,81 @@ public class AgendaDAO {
 				con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
+			}
+		}
+	}
+
+	
+	
+	public int verQtdMaxAgendaEspec(AgendaBean agenda) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(agenda.getDataAtendimento()); 
+		int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
+		int qtdMax = 0;
+		String sqlPro = "select qtdmax from hosp.config_agenda where codmedico = ? and diasemana = ? and turno = ?";
+		String sqlEqui = "select qtdmax from hosp.config_agenda_equipe where codequipe = ? and diasemana = ? and turno = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = null;
+			if (agenda.getProfissional().getIdProfissional() != null) {
+				stm = con.prepareStatement(sqlPro);
+				stm.setInt(1, agenda.getProfissional().getIdProfissional());
+			} else if (agenda.getEquipe().getCodEquipe() != null) {
+				stm = con.prepareStatement(sqlEqui);
+				stm.setInt(1, agenda.getEquipe().getCodEquipe());
+			}
+			stm.setInt(2, diaSemana);
+			stm.setString(3, agenda.getTurno().toUpperCase());
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				qtdMax = rs.getInt("qtdmax");
+			}
+			return qtdMax;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+
+	public int verQtdAgendadosEspec(AgendaBean agenda) {
+		int qtd = 0;
+		String sqlPro = "select count(*) as qtd from hosp.atendimentos where codmedico = ? and dtaatende = ? and turno = ?;";
+		String sqlEqui = "select count(*) as qtd from hosp.atendimentos where codequipe = ? and dtaatende = ? and turno = ?;";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = null;
+			if (agenda.getProfissional().getIdProfissional() != null) {
+				stm = con.prepareStatement(sqlPro);
+				stm.setInt(1, agenda.getProfissional().getIdProfissional());
+			} else if (agenda.getEquipe().getCodEquipe() != null) {
+				stm = con.prepareStatement(sqlEqui);
+				stm.setInt(1, agenda.getEquipe().getCodEquipe());
+			}
+			stm.setDate(2, new java.sql.Date(agenda.getDataAtendimento()
+					.getTime()));
+			stm.setString(3, agenda.getTurno().toUpperCase());
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				qtd = rs.getInt("qtd");
+			}
+			System.out.println("QTD " + qtd);
+			return qtd;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
 			}
 		}
 	}
