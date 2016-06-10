@@ -38,6 +38,7 @@ public class LaudoBean {
 	private String numeroAutorizacao;
 	
 	// LAUDO DIGITA
+	private Integer diasConceder;
 	private Integer codLaudoDigita;
 	private Date dtainicio;
 	private Date dtafim;
@@ -448,6 +449,18 @@ public class LaudoBean {
 
 	public void setCodLaudoDigita(Integer codLaudoDigita) {
 		this.codLaudoDigita = codLaudoDigita;
+	}
+
+
+
+	public Integer getDiasConceder() {
+		return diasConceder;
+	}
+
+
+
+	public void setDiasConceder(Integer diasConceder) {
+		this.diasConceder = diasConceder;
 	}
 	
 	

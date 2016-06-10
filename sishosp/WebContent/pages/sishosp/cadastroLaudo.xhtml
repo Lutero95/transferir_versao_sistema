@@ -18,7 +18,7 @@
         
  <h:form id="formLaudo" >
  <p:growl id="message"/>
-			<p:panel header="#{LaudoController.cabecalho}" style="position: relative; height:auto; width:660px; background-color: #F5F5F5; left:30%;">
+			<p:panel header="#{LaudoController.cabecalho}" style="position: relative; height:auto; width:700px; background-color: #F5F5F5; left:30%;">
 			<h:panelGrid columns="3">
 				
 					<h:outputLabel for="pac" value="Paciente:" />
@@ -182,14 +182,38 @@
 						<h:outputLabel for="dataAtou" value="Data para Autorização" />
 						<br />
 						<p:calendar id="dataAt" showOn="button" locale="pt" value="#{LaudoController.laudo.dtautorizacao}" navigator="true" mask="true"
-							pattern="dd/MM/yyyy" />
+							pattern="dd/MM/yyyy"> 
+							
+							<p:ajax event="dateSelect" update="dtFim" 
+                                                        process="@this,dataAt" 
+                                                        listener="#{LaudoController.calcularDiasCalendario}" />
+						
+							 </p:calendar>
+							                            
+                                                       
 					</p:outputPanel>
 					
 							<p:outputPanel style="margin-left:16px;" >
 						<h:outputLabel for="dataVen" value="Data para Vencimento" />
 						<br />
-						<p:calendar id="dataVenci" showOn="button" locale="pt" navigator="true" mask="true"
-							pattern="dd/MM/yyyy" readonly="true" />
+						<!-- <p:calendar id="dataVenci" showOn="button" locale="pt" navigator="true" mask="true"
+							pattern="dd/MM/yyyy" readonly="true" /> -->
+					    <p:outputLabel id="dtFim" value="#{LaudoController.laudo.dtavencimento}">
+                                                <f:convertDateTime locale="pt" timeZone="-3GTM" pattern="MM/yyyy" />
+                                            </p:outputLabel>
+                                            
+                                            <!-- <p:inputText value="#{LaudoController.laudo.diasConceder}" required="true" 
+                                                    requiredMessage="Informe a quantidade de dias a conceder." 
+                                                    size="4" maxlength="3" id="diasConceder">
+                                                    
+                                                    	<p:ajax event="blur" update="dtFim" 
+                                                        process="@this,dataAt" 
+                                                        listener="#{LaudoController.calcularDias}" />
+                                                    
+                                                    </p:inputText> -->
+                                                
+                                              
+                                             
 					</p:outputPanel>
 				</h:panelGrid>
 				
@@ -211,7 +235,7 @@
 						onclick="PF('dlgConsuCid2').show();" />
 				</h:panelGrid>
 				
-            <p:panel header="DADOS FORNECEDOR" style="width:640px; margin-top:30px; background-color: #F5F5F5;">  
+            <p:panel header="DADOS FORNECEDOR" style="width:680px; margin-top:30px; background-color: #F5F5F5;">  
 	    	<h:panelGrid columns="3" styleClass="semBorda">
 	    	
 				    <h:outputLabel for="fornecedor" value="Fornecedor:" />
@@ -249,11 +273,11 @@
 					    
 					    
 					<h:outputLabel  value="Equipamento:" style="margin-left:16px;"/>
-					<p:outputPanel id="outequipamento">
+					<p:outputPanel id="outEquipamento">
 						<p:inputText value="#{LaudoController.laudo.equipamento.id_equipamento}"
 							readonly="false" style="width: 50px; margin-left:16px;" />
 					</p:outputPanel>
-					<p:commandButton id="btBusEquipamento" value="Buscar" process="@this" immediate="true"
+					<p:commandButton id="btBusEquipamento" value="Buscar" 
 						onclick="PF('dlgConsuEquipamento').show();" />
 			
 			</h:panelGrid>

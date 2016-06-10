@@ -14,11 +14,11 @@
     <div class="col-md-8">
         <h:form> <p:commandButton value="Voltar"
 			style="position:relative; right:18%; width:100px; " icon="btvoltar"
-			action ="/pages/sishosp/gerenciarLaudo.faces"></p:commandButton>  </h:form>
-        <h1>DIGITA LAUDO</h1>
+			action ="/pages/sishosp/gerenciarLaudoDigita.faces"></p:commandButton>  </h:form>
+   
  <h:form id="formLaudo" >
  <p:growl id="message"/>
-			<p:panel style="position: relative; height:auto; width:660px; background-color: #F5F5F5; left:30%;">
+			<p:panel header="#{LaudoController.cabecalho2}"  style="position: relative; height:auto; width:660px; background-color: #F5F5F5; left:30%;">
 			<h:panelGrid columns="3">
 				
 					<h:outputLabel for="pac" value="Paciente:" />
@@ -85,9 +85,9 @@
 						onclick="PF('dlgConsuProce').show();" />
 				</h:panelGrid>
 
-				<h:panelGrid columns="4" styleClass="semBorda">
+				<h:panelGrid columns="4" styleClass="semBorda" style="margin-top:20px;">
 		
-						<p:outputPanel id="outPacie3" style="margin-left:16px;"> 
+						<p:outputPanel id="outPacie3"> 
 						<h:outputLabel for="cnsPac" value="CNS" />
 						<br />
 					   	<p:inputText id="codCns"
@@ -114,7 +114,7 @@
 				
 				<h:panelGrid columns="3" styleClass="semBorda">
 				
-						<p:outputPanel >
+						<p:outputPanel style="margin-top:10px;" >
 					
 					<p:outputLabel value="Prorrogar:"/>
          
@@ -124,7 +124,9 @@
 												
 													<f:selectItem itemLabel="30 dias" itemValue="30" />
 													<f:selectItem itemLabel="90 dias" itemValue="90" />
-													<!--  <p:ajax update="pgSetor2"></p:ajax>-->
+													<p:ajax event="change" update="dtFim" 
+                                                        process="@this,dataAt" 
+                                                        listener="#{LaudoController.calcularDias}" />
 												
 												</p:selectOneRadio>
                   </p:outputPanel>
@@ -133,14 +135,20 @@
 						<h:outputLabel for="dataAtou" value="Mês/Ano inicio" />
 						<br />
 						<p:calendar id="dataAt" showOn="button" locale="pt" value="#{LaudoController.laudo.dtainicio}" navigator="true" mask="true"
-							pattern="dd/MM/yyyy" />
+							pattern="MM/yyyy" />
+							
+							
 					</p:outputPanel>
 					
 							<p:outputPanel style="margin-left:16px;" >
 						<h:outputLabel for="dataVen" value="Mês/Ano fim" />
 						<br />
-						<p:calendar id="dataVenci" showOn="button" value="#{LaudoController.laudo.dtafim}" locale="pt" navigator="true" mask="true"
-							pattern="dd/MM/yyyy" readonly="true" />
+						<!--  <p:calendar id="dataVenci" showOn="button" value="#{LaudoController.laudo.dtafim}" locale="pt" navigator="true" mask="true"
+							pattern="dd/MM/yyyy" readonly="true" />-->
+							
+							  <p:outputLabel id="dtFim" value="#{LaudoController.laudo.dtafim}">
+                                                <f:convertDateTime locale="pt" timeZone="-3GTM" pattern="MM/yyyy" />
+                                            </p:outputLabel>
 					</p:outputPanel>
 				</h:panelGrid>
 			    	

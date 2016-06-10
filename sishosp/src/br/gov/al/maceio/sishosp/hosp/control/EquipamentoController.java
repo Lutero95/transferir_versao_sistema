@@ -30,8 +30,9 @@ public class EquipamentoController {
 
 	public EquipamentoController() {
 		equipamento = new EquipamentoBean();
-		listaEquipamentos = null;
+		
 		listaEquipamentos = new ArrayList<>();
+		listaEquipamentos = null;
 		this.descricaoBusca = new String();
 		this.tipo = new String();
 		this.cabecalho = "";
@@ -155,7 +156,7 @@ public class EquipamentoController {
 
 	public List<EquipamentoBean> getListaEquipamentos() throws SQLException {
 		if (listaEquipamentos == null) {
-System.out.println("emtrouuuu aqui merda");
+
 			EquipamentoDAO fdao = new EquipamentoDAO();
 			listaEquipamentos = fdao.listarEquipamentos();
 		}

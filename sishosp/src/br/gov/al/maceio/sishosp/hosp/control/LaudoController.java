@@ -1,7 +1,10 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Calendar;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -43,6 +46,7 @@ public class LaudoController {
 	
 	//LISTAS
 	private List<LaudoBean> listaLaudo;
+	private List<LaudoBean> listaLaudoDigita;
 	
 	//BUSCAS
 	private String tipo;
@@ -68,6 +72,9 @@ public class LaudoController {
 		
 		 listaLaudo = new ArrayList<>();
 		 listaLaudo = null;
+		 
+		 listaLaudoDigita = new ArrayList<>();
+		 listaLaudoDigita = null;
 
 	}
 	
@@ -145,7 +152,7 @@ public class LaudoController {
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Laudo cadastrado com sucesso!", "Sucesso");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
-                    listaLaudo = null;
+                    listaLaudoDigita = null;
                     
 
                 } else {
@@ -162,7 +169,7 @@ public class LaudoController {
 
 		LaudoDAO rdao = new LaudoDAO();
          boolean alterou = rdao.alterarLaudoDigita(laudo);
-         listaLaudo = null;
+         listaLaudoDigita = null;
          if(alterou == true) {
              limparDados();
              FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -190,7 +197,7 @@ public class LaudoController {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Laudo excluido com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaLaudo = null;
+            listaLaudoDigita = null;
             RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -292,6 +299,7 @@ public class LaudoController {
 		campoBuscaLaudo = "";
 		statusLaudo = "P";
 		listaLaudo = null;
+		listaLaudoDigita = null;
 	}
 	
 	public void limparDados(){
@@ -304,8 +312,53 @@ public class LaudoController {
 		equipe = new EquipeBean();
 		procedimento = new ProcedimentoBean();
 		
+		
 	
 	}
+	
+
+	public void calcularDias() {
+		if (laudo.getProrrogar() != null) {
+			Integer dias = this.laudo.getProrrogar();
+			Date dataFim = this.laudo.getDtainicio();
+
+			 System.out.println("chupaa thiago");
+
+			// System.out.println("DIAS: " + (dias - 1));
+
+			Calendar cl = Calendar.getInstance();
+			cl.setTime(dataFim);
+			cl.add(Calendar.DATE, (dias - 1));
+
+			Date dataFinal = cl.getTime();
+
+			// System.out.println("DATA FINAL: " + dataFinal);
+		    
+			this.laudo.setDtafim(dataFinal);
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void calcularDiasCalendario() {
+		if (laudo.getDtautorizacao() != null) {
+			//System.out.println("Entrou aqui"+ laudo.getDtavencimento() +"---"+ laudo.getDtautorizacao());
+			// Usuário informa uma data
+			Date dataDoUsuario = this.laudo.getDtautorizacao();
+
+			// Através do Calendar, trabalhamos a data informada e adicionamos 1 dia nela
+			Calendar c = Calendar.getInstance();
+			c.setTime(dataDoUsuario);
+			c.add(Calendar.DATE, 30);
+
+			// Obtemos a data alterada
+			dataDoUsuario = c.getTime();
+
+			this.laudo.setDtavencimento(dataDoUsuario);
+		}
+	}
+	
+	
+	
 
 	public Integer getAbaAtiva() {
 		return abaAtiva;
@@ -469,6 +522,28 @@ public class LaudoController {
 		this.equipamento = equipamento;
 	}
 
+	public List<LaudoBean> getListaLaudoDigita() {
+		if (listaLaudoDigita == null) {
+
+			LaudoDAO fdao = new LaudoDAO();
+			listaLaudoDigita = fdao.listaLaudosDigita();
+		}
+		return listaLaudoDigita;
+	}
+
+	public void setListaLaudoDigita(List<LaudoBean> listaLaudoDigita) {
+		this.listaLaudoDigita = listaLaudoDigita;
+	}
+
+	
+	public String getCabecalho2() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CADASTRO DE LAUDO DIGITA";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR LAUDO DIGITA";
+		}
+		return cabecalho;
+	}
 	    
 	    
 

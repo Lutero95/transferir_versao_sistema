@@ -33,6 +33,7 @@ public class LaudoDAO {
 	private PacienteDAO pacieDao = new PacienteDAO();
 	private GrupoDAO grupoDao = new GrupoDAO();
 	private FornecedorDAO forneDao = new FornecedorDAO();
+	private EquipeDAO equipeDao = new EquipeDAO();
 	private CidDAO cidDao = new CidDAO();
 	private EquipamentoDAO equipamentoDao = new EquipamentoDAO();
 	
@@ -236,8 +237,8 @@ public class LaudoDAO {
                         .getCurrentInstance().getExternalContext().getSessionMap()
                         .get("obj_paciente");*/
 
-                String sql = "insert into hosp.laudo (codpaciente, codequipe, codgrupo, codmedico, codproc, "
-                		+ "dtasolicitacao, prorrogar, dtainicio, dtafim) values (?, ?, ?, ?, ?, ? , ?, ?, ?)";
+                String sql = "insert into hosp.pacienteslaudo (id_paciente, codequipe, codgrupo, codmedico, codprocedimento, "
+                		+ "datasolicitacao, periodoinicio, periodofim) values (?, ?, ?, ?, ?, ? , ?, ?)";
                 //String sql = "insert into hosp.escola (descescola) values ((select max(cod) +1 from hosp.escola where codempresa=1), ?";
               
                     try {
@@ -252,9 +253,9 @@ public class LaudoDAO {
                         //stmt.setString(6, laudo.getPaciente().getCns().toUpperCase().trim());
                         //stmt.setString(7, laudo.getPaciente().getCpf().toUpperCase().trim());
                         stmt.setDate(6, new java.sql.Date(laudo.getDtasolicitacao().getTime()));
-                        stmt.setInt(7, laudo.getProrrogar());
-                        stmt.setDate(8, new java.sql.Date(laudo.getDtainicio().getTime()));
-                        stmt.setDate(9, new java.sql.Date(laudo.getDtafim().getTime()));
+                        //stmt.setInt(7, laudo.getProrrogar());
+                        stmt.setDate(7, new java.sql.Date(laudo.getDtainicio().getTime()));
+                        stmt.setDate(8, new java.sql.Date(laudo.getDtafim().getTime()));
                     
                     stmt.execute();   
                     System.out.println("passou aqui 4");
@@ -270,8 +271,8 @@ public class LaudoDAO {
             
             public Boolean alterarLaudoDigita(LaudoBean laudo) throws ProjetoException {
                 boolean alterou = false;
-                String sql = "update hosp.laudo set codpaciente = ?, codequipe = ?, codgrupo = ?, codmedico = ?, "
-        		+ "codproc = ?, dtasolicitacao = ?, prorrogar = ?, dtainicio = ?, dtafim = ? where id = ?";
+                String sql = "update hosp.pacienteslaudo set id_paciente = ?, codequipe = ?, codgrupo = ?, codmedico = ?, "
+        		+ "codprocedimento = ?, datasolicitacao = ?, periodoinicio = ?, periodofim = ? where id = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -283,10 +284,10 @@ public class LaudoDAO {
                     //stmt.setString(6, laudo.getPaciente().getCns().toUpperCase().trim());
                     //stmt.setString(7, laudo.getPaciente().getCpf().toUpperCase().trim());
                     stmt.setDate(6, new java.sql.Date(laudo.getDtasolicitacao().getTime()));
-                    stmt.setInt(7, laudo.getProrrogar());
+                    //stmt.setInt(7, laudo.getProrrogar());
+                    stmt.setDate(7, new java.sql.Date(laudo.getDtasolicitacao().getTime()));
                     stmt.setDate(8, new java.sql.Date(laudo.getDtasolicitacao().getTime()));
-                    stmt.setDate(9, new java.sql.Date(laudo.getDtasolicitacao().getTime()));
-                    stmt.setInt(10, laudo.getCodLaudoDigita());
+                    stmt.setInt(9, laudo.getCodLaudoDigita());
                     stmt.executeUpdate();
 
                     conexao.commit();
@@ -306,7 +307,7 @@ public class LaudoDAO {
             }
             public Boolean excluirLaudoDigita(LaudoBean laudo) throws ProjetoException {
                 boolean excluir = false;
-                String sql = "delete from hosp.laudo where id_laudo = ?";
+                String sql = "delete from hosp.pacienteslaudo where id = ?";
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -542,5 +543,51 @@ public class LaudoDAO {
           		}
           		return lista;
           	}
+            
+            
+            
+            public ArrayList<LaudoBean> listaLaudosDigita() {
+
+  
+                String sql = "select id, id_paciente, codequipe, codgrupo,codmedico, "
+                		+ "codprocedimento,datasolicitacao, periodoinicio, periodofim from hosp.pacienteslaudo order by id_paciente";
+                
+                ArrayList<LaudoBean> lista = new ArrayList();
+
+                try {
+                    conexao = ConnectionFactory.getConnection();
+                    PreparedStatement stm = conexao.prepareStatement(sql);
+                    ResultSet rs = stm.executeQuery();
+
+                    while (rs.next()) {
+                    	LaudoBean l = new LaudoBean();
+    	            
+    	                //p.setDesceApac(rs.getString("descescola").toUpperCase());
+    	                l.setCodLaudoDigita(rs.getInt("id"));
+    	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("id_paciente")));
+    	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
+    	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
+    	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+    	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codprocedimento")));
+    	                l.setDtasolicitacao(rs.getDate("datasolicitacao"));
+    	                l.setDtainicio(rs.getDate("periodoinicio"));
+    	                l.setDtafim(rs.getDate("periodofim"));
+    	              
+    	              
+    	                
+    	                lista.add(l);
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                } finally {
+                    try {
+                        conexao.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        System.exit(1);
+                    }
+                }
+                return lista;
+            } 
             
 }
