@@ -90,13 +90,13 @@
 						<h:outputLabel value="TARDE" rendered="#{agenda.turno == 'T'}" />
 					</p:column>
 					<p:column headerText="Status" width="60px;">
-						<h:outputLabel value="?" />
+						<h:outputLabel value="#{agenda.situacao}" />
 					</p:column>
 					<p:column headerText="Profissional" width="300px;">
 						<h:outputLabel value="#{agenda.profissional.descricaoProf}" />
 					</p:column>
 					<p:column headerText="Programa" width="200px;">
-						<h:outputLabel value="?" />
+						<h:outputLabel value="#{agenda.programa.descPrograma}" />
 					</p:column>
 					<p:column headerText="Equipe" width="200px;">
 						<h:outputLabel value="#{agenda.equipe.descEquipe}" />
