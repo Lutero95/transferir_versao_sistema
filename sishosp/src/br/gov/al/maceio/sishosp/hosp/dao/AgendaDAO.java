@@ -204,8 +204,36 @@ public class AgendaDAO {
 		}
 	}
 	
+	public boolean buscarTabTipoAtendAgenda(AgendaBean agenda){
+		int achou = 0;
+		String sql = "select codtipoatendimento from hosp.tipo_atend_agenda where codtipoatendimento = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm  = con.prepareStatement(sql);
+			stm.setInt(1, agenda.getTipoAt().getIdTipo());
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				achou = rs.getInt("codtipoatendimento");
+				System.out.println("ACHOU " + achou);
+			}
+			if(achou==0){
+				return false;
+			}else
+				return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+	
 	public boolean buscarDiaSemana(AgendaBean agenda){
-		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(agenda.getDataAtendimento()); 
 		int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
@@ -245,7 +273,7 @@ public class AgendaDAO {
 		}
 	}
 
-	public boolean gravarAgenda(AgendaBean agenda) {
+	public boolean gravarAgenda(AgendaBean agenda, List<AgendaBean> listaNovosAgendamentos) {
 
 		String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codredeatende,"
 				+ " codconvenio, dtaatende, horaatende, situacao, codatendente, dtamarcacao, codtipoatendimento,"
@@ -320,11 +348,9 @@ public class AgendaDAO {
 			PreparedStatement stm = null;
 
 			if (ag.getProfissional().getIdProfissional() != null) {
-				System.out.println("COM PROF");
 				stm = con.prepareStatement(sqlProf);
 				stm.setInt(2, ag.getProfissional().getIdProfissional());
 			} else if (ag.getEquipe().getCodEquipe() != null) {
-				System.out.println("COM EQUIPE");
 				stm = con.prepareStatement(sqlEqui);
 				stm.setInt(2, ag.getEquipe().getCodEquipe());
 			}

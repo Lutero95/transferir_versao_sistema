@@ -21,7 +21,6 @@ public class ProgramaDAO {
 
 		String sql = "insert into hosp.programa (descprograma, codfederal) values (?, ?) RETURNING id_programa;";
 		try {
-			System.out.println("VAI CADASTRAR PROG");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, prog.getDescPrograma().toUpperCase());
@@ -31,11 +30,9 @@ public class ProgramaDAO {
 			int idProg = 0;
 			if (rs.next()) {
 				idProg = rs.getInt("id_programa");
-				System.out.println("retorno " + idProg);
 				insereProgramaGrupo(idProg, prog);
 
 			}
-			System.out.println("CADASTROU PROG");
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -105,7 +102,6 @@ public class ProgramaDAO {
 	public List<ProgramaBean> listarProgramasBusca(String descricao,
 			Integer tipo) {
 		List<ProgramaBean> lista = new ArrayList<>();
-		System.out.println("2");
 		String sql = "select id_programa, descprograma, codfederal from hosp.programa ";
 		if (tipo == 1) {
 			sql += " where descprograma LIKE ?";
@@ -134,7 +130,6 @@ public class ProgramaDAO {
 				System.exit(1);
 			}
 		}
-		System.out.println("3");
 		for (ProgramaBean programaBean : lista) {
 			System.out.println(programaBean.getDescPrograma());
 		}
@@ -149,7 +144,27 @@ public class ProgramaDAO {
 			stmt.setLong(1, prog.getIdPrograma());
 			stmt.execute();
 			con.commit();
+			excluirNaTabProgramaGrupo(prog.getIdPrograma());
 			return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+	
+	public void excluirNaTabProgramaGrupo(int cod) throws ProjetoException {
+		String sql = "delete from hosp.grupo_programa where codprograma = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, cod);
+			stmt.execute();
+			con.commit();
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		} finally {
