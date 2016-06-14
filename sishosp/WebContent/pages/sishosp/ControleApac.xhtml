@@ -18,7 +18,7 @@
         
  <h:form id="formLaudo" >
  <p:growl id="message"/>
-			<p:panel header="#{LaudoController.cabecalho}" style="position: relative; height:auto; width:auto; background-color: #F5F5F5; left:30%;">
+			<p:panel header="#{LaudoController.cabecalho3}" style="position: relative; height:auto; width:900px; background-color: #F5F5F5; left:10%;">
 			<h:panelGrid columns="3">
 			
 
@@ -31,7 +31,7 @@
 							value="#{LaudoController.laudo.programa.descPrograma}" readonly="true"
 							style="width: 300px" />
 					</p:outputPanel>
-					<p:commandButton id="btBusPr" value="Buscar"
+					<p:commandButton id="btBusPr" value="Buscar" icon="buscar"
 						onclick="PF('dlgConsuProg').show();" />
 
 					
@@ -104,86 +104,62 @@
                              style="margin-top:20px;" value="#{LaudoController.listaLaudo}"
                              var="tab" paginator="true" paginatorPosition="bottom" rows="12">
 
-                    <p:column headerText="PT-Novo" style="font-weight:bold;width:5%;">
+                    <p:column headerText="PT-Novo" style="font-weight:bold;width:20%;">
                         <h:outputText value="#{tab.id_apac}" />
                     </p:column>
 
-                    <p:column headerText="CPF" style="font-weight:bold;">
-                        <h:outputText value="#{tab.apac}" />
+                    <p:column headerText="CPF" style="font-weight:bold;width:30%;">
+                        <h:outputText value="#{tab.paciente.cpf}" />
                     </p:column>
                     
-                    <p:column headerText="PACIENTE" style="font-weight:bold;">
-                        <h:outputText value="#{tab.dtasolicitacao}" />
+                    <p:column headerText="PACIENTE" style="font-weight:bold;width:30%;">
+                        <h:outputText value="#{tab.paciente.nome}" />
                     </p:column>
                     
-                      <p:column headerText="CARTÃO SUS" style="font-weight:bold;">
-                        <h:outputText value="#{tab.dtautorizacao}" />
+                      <p:column headerText="CARTÃO SUS" style="font-weight:bold;width:20%;">
+                        <h:outputText value="#{tab.paciente.cns}" />
                     </p:column>
                     
-                     <p:column headerText="CHEGADA" style="font-weight:bold;">
+                     <p:column headerText="CHEGADA" style="font-weight:bold;width:20%;">
                         <h:outputText value="#{tab.situacao}" />
                     </p:column>
                     
-                    <p:column headerText="AUTORIZÃO" style="font-weight:bold;">
+                    <p:column headerText="AUTORIZAÇÃO" style="font-weight:bold;width:30%;">
                         <h:outputText value="#{tab.recurso}" />
                     </p:column>
                     
-                      <p:column headerText="STA" style="font-weight:bold;">
+                      <p:column headerText="STA" style="font-weight:bold;width:20%;">
                         <h:outputText value="#{tab.unidade}" />
                     </p:column>
                     
-                        <p:column headerText="PROCEDIMENTO" style="font-weight:bold;">
+                        <p:column headerText="PROCEDIMENTO" style="font-weight:bold;width:35%;">
+                        <h:outputText value="#{tab.procedimento.idProc}" />
+                    </p:column>
+     
+                        <p:column headerText="CID" style="font-weight:bold;width:20%;">
                         <h:outputText value="#{tab.cid10_1}" />
                     </p:column>
                     
-                        <p:column headerText="CODEQUIPE" style="font-weight:bold;">
+                    <p:column headerText="CID 2" style="font-weight:bold;width:20%;">
                         <h:outputText value="#{tab.cid10_2}" />
                     </p:column>
                     
-                        <p:column headerText="CID" style="font-weight:bold;">
-                        <h:outputText value="#{tab.codfornecedor}" />
+                    <p:column headerText="CID 3" style="font-weight:bold;width:20%;">
+                        <h:outputText value="#{tab.cid10_3}" />
                     </p:column>
                     
-                     <p:column headerText="MEDICO" style="font-weight:bold;">
-                        <h:outputText value="#{tab.codmedico}" />
+                     <p:column headerText="MÉDICO" style="font-weight:bold;width:20%;">
+                        <h:outputText value="#{tab.profissional.idProfissional}" />
                     </p:column>
 
-                    
-                    <p:column headerText="Ações" width="15%">
-                            <center>
-                                <p:splitButton icon="confirmar">
-                                    <p:menuitem value="Alterar" icon="alterar-dados"  
-                                       action ="/pages/sishosp/cadastroLaudo.faces" >
-                                        <f:setPropertyActionListener value="#{tab}" target="#{LaudoController.laudo}" />
-                                        
-  
-                                       
-                                       <f:setPropertyActionListener value="A" target="#{LaudoController.tipo}" /> 
-                                    </p:menuitem>
-                                    
-                                    <p:menuitem value="Excluir" icon="trash" 
-                                        onclick="PF('dialogAtencao').show()">
-
-                                        <f:setPropertyActionListener value="#{tab.id_apac}" target="#{LaudoController.laudo.id_apac}" />
-                                    </p:menuitem>
-                                </p:splitButton>   
-                            </center>
-                        </p:column>
                 </p:dataTable>
 				    	
 				    	
                                   <p:separator></p:separator>
 				<center>
 					<h:panelGrid columns="3" styleClass="semBorda">
-						
-						<p:commandButton value="Gravar" icon="confirmar"  update=":formLaudo:message,:formLaudo"
-							action="#{LaudoController.gravarLaudo()}" rendered="#{LaudoController.tipo == 'I'}"/>
-							
-							 <p:commandButton action="#{LaudoController.alterarLaudo()}" icon="alterar-dados"  
-                             update=":formLaudo:message,:formLaudo" value="Alterar"
-                             rendered="#{LaudoController.tipo == 'A'}" />
-						
-						<p:commandButton value="Consultar" icon="buscar" />
+
+						<p:commandButton value="Consultar" icon="buscar" style="margin-left:20px;" />
 						
 						<p:commandButton value="Limpar" icon="limpar"
 							actionListener="#{LaudoController.limparDados()}"
@@ -209,10 +185,10 @@
 					<p:column headerText="PROGRAMA">
 						<p:outputLabel value="#{prog.descPrograma}" />
 					</p:column>
-					<p:column style="width:50px;text-align: center">
+					<p:column headerText="Confirmar" style="width:20%;text-align: center">
 						<p:commandButton
 						    update=":formLaudo:outProg"
-							icon="ui-icon-check" title="Selecionar"
+							icon="confirmar" title="Selecionar"
 							action="#{GrupoController.atualizaLista(LaudoController.laudo.programa)}"
 							onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"

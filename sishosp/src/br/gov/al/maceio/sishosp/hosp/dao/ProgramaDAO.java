@@ -130,9 +130,7 @@ public class ProgramaDAO {
 				System.exit(1);
 			}
 		}
-		for (ProgramaBean programaBean : lista) {
-			System.out.println(programaBean.getDescPrograma());
-		}
+		
 		return lista;
 	}
 

@@ -34,7 +34,6 @@ import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
-
 public class PacienteController {
 	private Integer abaAtiva = 0;
 	private Integer SelecionadoRaca;
@@ -55,13 +54,13 @@ public class PacienteController {
 	private EncaminhadoBean encaminhado;
 	private FormaTransporteBean transporte;
 	private RacaBean raca;
-	
-	//BUSCAS
+
+	// BUSCAS
 	private String tipo;
 	private Integer tipoBuscaPaciente;
 	private String campoBuscaPaciente;
 	private String statusPaciente;
-	
+
 	private Integer tipoBuscaRaca;
 	private String campoBuscaRaca;
 	private String statusRaca;
@@ -136,7 +135,7 @@ public class PacienteController {
 		escolaSelecionadoExclusao = new EscolaBean();
 		escolaSuggestion = new EscolaBean();
 
-		transporteSuggestion = new FormaTransporteBean();
+		transporteSuggestion = null;
 
 		// LISTAS
 		listaPacientes = new ArrayList<>();
@@ -157,20 +156,20 @@ public class PacienteController {
 		listaTransporte = null;
 		listaMunicipios = new ArrayList<>();
 		listaMunicipios = null;
-		
-        //BUSCA
-		tipo ="";
+
+		// BUSCA
+		tipo = "";
 		tipoBuscaPaciente = 1;
 		campoBuscaPaciente = "";
 		statusPaciente = "P";
-		
+
 		tipoBuscaRaca = 1;
 		campoBuscaRaca = "";
 		statusRaca = "P";
 	}
 
 	public List<PacienteBean> getListaPacientesParaAgenda() {
-		
+
 		return listaPacientesParaAgenda;
 	}
 
@@ -210,21 +209,23 @@ public class PacienteController {
 
 	public void buscarPaciente() throws ProjetoException, SQLException {
 		PacienteDAO udao = new PacienteDAO();
-		if(tipoBuscar.equals("VAZIO")||descricaoParaBuscar.isEmpty()){
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Escolha uma opção válida e insira uma descrição!", "Insira os dados");
+		if (tipoBuscar.equals("VAZIO") || descricaoParaBuscar.isEmpty()) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Escolha uma opção válida e insira uma descrição!",
+					"Insira os dados");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}else{
-			this.pacienteBuscado = udao.buscarPacienteAgenda(tipoBuscar, descricaoParaBuscar);
-			
-			if (this.pacienteBuscado.getNome()==null) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Não existe paciente com essa descrição!", "Paciente não encontrado");
+		} else {
+			this.listaPacientesParaAgenda = new ArrayList<PacienteBean>();
+			this.listaPacientesParaAgenda = udao.buscarPacienteAgenda(
+					tipoBuscar, descricaoParaBuscar);
+
+			if (this.listaPacientesParaAgenda.isEmpty()) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Não existe paciente com essa descrição!",
+						"Paciente não encontrado");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-			}else{
-				this.listaPacientesParaAgenda = new ArrayList<PacienteBean>();
-				this.listaPacientesParaAgenda.add(this.pacienteBuscado);
 			}
 		}
-		
 
 	}
 
@@ -243,7 +244,7 @@ public class PacienteController {
 		boolean alterou = mdao.alterar(paciente);
 
 		if (alterou == true) {
-          limparDados();
+			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Paciente alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -261,10 +262,9 @@ public class PacienteController {
 
 	public void excluirPaciente() throws ProjetoException {
 		PacienteDAO udao = new PacienteDAO();
-		
 
 		boolean excluio = udao.excluir(paciente);
-		
+
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Paciente excluido com sucesso!", "Sucesso");
@@ -309,7 +309,7 @@ public class PacienteController {
 		boolean alterou = rdao.alterar(raca);
 
 		if (alterou == true) {
-            limparDados();
+			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Cor/Raça alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -319,7 +319,7 @@ public class PacienteController {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-            return "";
+			return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -334,14 +334,16 @@ public class PacienteController {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Cor/Raça excluido com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaRaca = null;
-			RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+			listaRaca = null;
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusao!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-		    RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
 		}
 
 	}
@@ -574,6 +576,13 @@ public class PacienteController {
 		result = icdao.buscaescolaridade(query);
 		return result;
 	}
+	
+	public List<PacienteBean> listaPacienteAutoComplete(String query)
+			throws ProjetoException {
+		PacienteDAO pDao = new PacienteDAO();
+		List<PacienteBean> result = pDao.buscaPacienteAutoComplete(query);
+		return result;
+	}
 
 	public void onItemSelect2(SelectEvent event) throws Exception {
 
@@ -582,6 +591,19 @@ public class PacienteController {
 
 		EscolaridadeDAO dao = new EscolaridadeDAO();
 		buscaEscolaridadeCod(prodsel.getCodescolaridade());
+		escolaridadeSuggestion = new EscolaridadeBean();
+		escolaridadeSuggestion = null;
+		// FacesContext.getCurrentInstance().addMessage(null, new
+		// FacesMessage("Item Selected", prodsel.getDescricao()));
+	}
+	
+	public void onItemSelectPaciente(SelectEvent event) throws Exception {
+
+		PacienteBean prodsel = new PacienteBean();
+		prodsel = (PacienteBean) event.getObject();
+
+		EscolaridadeDAO dao = new EscolaridadeDAO();
+		//buscaEscolaridadeCod(prodsel.getCodescolaridade());
 		escolaridadeSuggestion = new EscolaridadeBean();
 		escolaridadeSuggestion = null;
 		// FacesContext.getCurrentInstance().addMessage(null, new
@@ -635,14 +657,14 @@ public class PacienteController {
 		// FacesContext.getCurrentInstance().addMessage(null, new
 		// FacesMessage("Item Selected", prodsel.getDescricao()));
 	}
-	
+
 	public void limparBuscaDados() {
 		tipoBuscaPaciente = 1;
 		campoBuscaPaciente = "";
 		statusPaciente = "P";
 		listaPacientes = null;
 	}
-	
+
 	public void limparBuscaDadosRaca() {
 		tipoBuscaRaca = 1;
 		campoBuscaRaca = "";
@@ -667,13 +689,13 @@ public class PacienteController {
 		profissao = new ProfissaoBean();
 		transporte = new FormaTransporteBean();
 		raca = new RacaBean();
-		
+
 		tipoBuscar = "";
 		descricaoParaBuscar = "";
 		listaPacientesParaAgenda = new ArrayList<>();
 
 	}
-	
+
 	public void buscarPacientes() {
 
 		List<PacienteBean> listaAux = null;
@@ -681,7 +703,8 @@ public class PacienteController {
 
 		PacienteDAO adao = new PacienteDAO();
 
-		listaAux = adao.buscarTipoPaciente(campoBuscaPaciente,tipoBuscaPaciente);
+		listaAux = adao.buscarTipoPaciente(campoBuscaPaciente,
+				tipoBuscaPaciente);
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -702,7 +725,7 @@ public class PacienteController {
 
 		RacaDAO adao = new RacaDAO();
 
-		listaAux = adao.buscarTipoRaca(campoBuscaRaca,tipoBuscaRaca);
+		listaAux = adao.buscarTipoRaca(campoBuscaRaca, tipoBuscaRaca);
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -715,7 +738,6 @@ public class PacienteController {
 		}
 
 	}
-	
 
 	public void buscarescolaridade() {
 
@@ -817,8 +839,7 @@ public class PacienteController {
 		return listaEscolaridade;
 	}
 
-	public void setListaEscolaridade(
-			List<EscolaridadeBean> listaEscolaridade) {
+	public void setListaEscolaridade(List<EscolaridadeBean> listaEscolaridade) {
 		this.listaEscolaridade = listaEscolaridade;
 	}
 
@@ -1371,9 +1392,9 @@ public class PacienteController {
 	}
 
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE PACIENTE";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR PACIENTE";
 		}
 		return cabecalho;
@@ -1383,7 +1404,13 @@ public class PacienteController {
 		this.cabecalho = cabecalho;
 	}
 
-	
+	public PacienteBean getPacienteBuscado() {
+		return pacienteBuscado;
+	}
+
+	public void setPacienteBuscado(PacienteBean pacienteBuscado) {
+		this.pacienteBuscado = pacienteBuscado;
+	}
 	
 
 }

@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
@@ -294,6 +295,27 @@ public class LaudoController {
 
 	}
 	
+	public void buscarLaudoDigita() {
+
+		List<LaudoBean> listaAux = null;
+		listaLaudoDigita = new ArrayList<>();
+
+		LaudoDAO adao = new LaudoDAO();
+
+		listaAux = adao.buscarTipoLaudoDigita(campoBuscaLaudo,tipoBuscaLaudo);
+
+		if (listaAux != null && listaAux.size() > 0) {
+			// listaAss = null;
+			listaLaudoDigita = listaAux;
+		} else {
+			// listaAss = null;
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Nenhum Laudo encontrada.", "Aviso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+	}
+	
 	public void limparBuscaDados() {
 		tipoBuscaLaudo = 1;
 		campoBuscaLaudo = "";
@@ -318,11 +340,12 @@ public class LaudoController {
 	
 
 	public void calcularDias() {
+		try{
 		if (laudo.getProrrogar() != null) {
 			Integer dias = this.laudo.getProrrogar();
 			Date dataFim = this.laudo.getDtainicio();
 
-			 System.out.println("chupaa thiago");
+			 System.out.println("DATA:"+laudo.getProrrogar()+"||"+laudo.getDtainicio()+"||"+laudo.getDtavencimento());
 
 			// System.out.println("DIAS: " + (dias - 1));
 
@@ -335,7 +358,13 @@ public class LaudoController {
 			// System.out.println("DATA FINAL: " + dataFinal);
 		    
 			this.laudo.setDtafim(dataFinal);
-		}
+		}}catch (Exception ex) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Informe Mês/Ano inicio.", "Aviso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			this.laudo.setProrrogar(null);
+        }
+		
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -539,6 +568,15 @@ public class LaudoController {
 	public String getCabecalho2() {
 		if(this.tipo.equals("I")){
 			cabecalho = "CADASTRO DE LAUDO DIGITA";
+		}else if(this.tipo.equals("A")){
+			cabecalho = "ALTERAR LAUDO DIGITA";
+		}
+		return cabecalho;
+	}
+	
+	public String getCabecalho3() {
+		if(this.tipo.equals("I")){
+			cabecalho = "CONTROLE LAUDO";
 		}else if(this.tipo.equals("A")){
 			cabecalho = "ALTERAR LAUDO DIGITA";
 		}

@@ -7,13 +7,12 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
-import br.gov.al.maceio.sishosp.hosp.dao.ProfissaoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
-import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
-
-@FacesConverter(value = "conProfissao")
-public class ProfissaoConverter implements Converter {
-	ProfissaoDAO profissaoDAO = new ProfissaoDAO();
+@FacesConverter(value = "conPrograma")
+public class ProgramaConverter implements Converter {
+	ProgramaDAO pDAO = new ProgramaDAO();
 
 	public Object getAsObject(FacesContext contet, UIComponent component,
 			String value) {
@@ -21,11 +20,11 @@ public class ProfissaoConverter implements Converter {
 			return null;
 		try {
 			int id = Integer.parseInt(value);
-			return profissaoDAO.buscaprofissaocodigo(id);
+			return pDAO.listarProgramaPorId(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Escola não válido", ""));
+					FacesMessage.SEVERITY_ERROR, "Paciente não válido", ""));
 		}
 	}
 
@@ -33,6 +32,6 @@ public class ProfissaoConverter implements Converter {
 			Object value) {
 		if (value == null || value.equals(""))
 			return null;
-		return String.valueOf(((ProfissaoBean) value).getCodprofissao());
+		return String.valueOf(((ProgramaBean) value).getIdPrograma());
 	}
 }

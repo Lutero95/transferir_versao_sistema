@@ -60,36 +60,38 @@ public class GrupoController {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
-	
-	public void alterarGrupo() throws ProjetoException {
-        boolean alterou = gDao.alterarGrupo(grupo);
-        if(alterou == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Grupo alterado com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }
-		listaGrupos = gDao.listarGrupos();
-		
-	}
-	
-	public void excluirGrupo() throws ProjetoException {
-        boolean ok = gDao.excluirGrupo(grupo);
-        if(ok == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Grupo excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
+	public void alterarGrupo() throws ProjetoException {
+		boolean alterou = gDao.alterarGrupo(grupo);
+		if (alterou == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Grupo alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+		listaGrupos = gDao.listarGrupos();
+
+	}
+
+	public void excluirGrupo() throws ProjetoException {
+		boolean ok = gDao.excluirGrupo(grupo);
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Grupo excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
 		listaGrupos = gDao.listarGrupos();
 	}
 
@@ -161,14 +163,20 @@ public class GrupoController {
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
 	}
-	
+
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE GRUPO";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR GRUPO";
 		}
 		return cabecalho;
 	}
-	
+
+	public List<GrupoBean> listaGrupoAutoComplete(String query)
+			throws ProjetoException {
+		GrupoDAO gDao = new GrupoDAO();
+		List<GrupoBean> result = gDao.listarGruposBusca(query, 1);
+		return result;
+	}
 }

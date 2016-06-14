@@ -47,9 +47,9 @@ public class LaudoDAO {
                 .getCurrentInstance().getExternalContext().getSessionMap()
                 .get("obj_paciente");*/
 
-        String sql = "insert into hosp.apac (codpaciente, codprograma, codgrupo, codmedico, codproc, dtasolicitacao, recurso, apac, unidade, situacao, dtautorizacao, cid10_1, cid10_2, "
+        String sql = "insert into hosp.apac (codpaciente, codprograma, codgrupo, codmedico, codproc, dtasolicitacao, recurso, apac, unidade, situacao, dtautorizacao, cid10_1, cid10_2,cid10_3, "
         		+ "codfornecedor, valor, nota, qtd, codequipamento, obs) values (?, ? , ? , ?, ? , ?, ? , ?, ?, ?, "
-        		+ "?, ?, ?, ?, ?, ?, ? , ? , ?)";
+        		+ "?, ?, ?, ?, ?, ?, ? , ? , ?, ?)";
         
             try {
             	System.out.println("passou aqui 3");
@@ -80,35 +80,40 @@ public class LaudoDAO {
     			} else {
     				stmt.setString(13, laudo.getCid10_2().toUpperCase().trim());
     			}
-                if (laudo.getFornecedor().getIdFornecedor() == null) {
-    				stmt.setNull(14, Types.INTEGER);
+                if (laudo.getCid10_3() == null) {
+    				stmt.setNull(14, Types.CHAR);
     			} else {
-    				stmt.setInt(14, laudo.getFornecedor().getIdFornecedor());
+    				stmt.setString(14, laudo.getCid10_3().toUpperCase().trim());
+    			}
+                if (laudo.getFornecedor().getIdFornecedor() == null) {
+    				stmt.setNull(15, Types.INTEGER);
+    			} else {
+    				stmt.setInt(15, laudo.getFornecedor().getIdFornecedor());
     			}
                 if (laudo.getFornecedor().getValor() == null) {
-    				stmt.setNull(15, Types.DOUBLE);
+    				stmt.setNull(16, Types.DOUBLE);
     			} else {
-    				stmt.setDouble(15, laudo.getFornecedor().getValor());
+    				stmt.setDouble(16, laudo.getFornecedor().getValor());
     			}
                 if (laudo.getNota() == null) {
-    				stmt.setNull(16, Types.CHAR);
+    				stmt.setNull(17, Types.CHAR);
     			} else {
-    				stmt.setString(16, laudo.getNota().toUpperCase().trim());
+    				stmt.setString(17, laudo.getNota().toUpperCase().trim());
     			}
                 if (laudo.getQtd() == null) {
-    				stmt.setNull(17, Types.INTEGER);
-    			} else {
-    				stmt.setInt(17, laudo.getQtd());
-    			}
-                if (laudo.getEquipamento().getId_equipamento() == null) {
     				stmt.setNull(18, Types.INTEGER);
     			} else {
-    				stmt.setInt(18, laudo.getEquipamento().getId_equipamento());
+    				stmt.setInt(18, laudo.getQtd());
+    			}
+                if (laudo.getEquipamento().getId_equipamento() == null) {
+    				stmt.setNull(19, Types.INTEGER);
+    			} else {
+    				stmt.setInt(19, laudo.getEquipamento().getId_equipamento());
     			}
                 if (laudo.getObs() == null) {
-    				stmt.setNull(19, Types.CHAR);
+    				stmt.setNull(20, Types.CHAR);
     			} else {
-    				stmt.setString(19, laudo.getObs().toUpperCase().trim());
+    				stmt.setString(20, laudo.getObs().toUpperCase().trim());
     			}    
                 
             stmt.execute();   
@@ -127,7 +132,7 @@ public class LaudoDAO {
         boolean alterou = false;
         String sql = "update hosp.apac set codpaciente = ?, codprograma = ?, codgrupo = ?, codmedico = ?, "
         		+ "codproc = ?, dtasolicitacao = ?, recurso = ?, apac = ?, unidade = ?, situacao = ?, dtautorizacao = ?, "
-        		+ "cid10_1 = ?, cid10_2 = ?, codfornecedor = ?, valor = ?, nota = ?, qtd = ?, codequipamento = ?, obs = ? where id_apac = ?";
+        		+ "cid10_1 = ?, cid10_2 = ?, cid10_3 = ?, codfornecedor = ?, valor = ?, nota = ?, qtd = ?, codequipamento = ?, obs = ? where id_apac = ?";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -155,37 +160,42 @@ public class LaudoDAO {
 			} else {
 				stmt.setString(13, laudo.getCid10_2().toUpperCase().trim());
 			}
-            if (laudo.getFornecedor().getIdFornecedor() == null) {
-				stmt.setNull(14, Types.INTEGER);
+            if (laudo.getCid10_3() == null) {
+				stmt.setNull(14, Types.CHAR);
 			} else {
-				stmt.setInt(14, laudo.getFornecedor().getIdFornecedor());
+				stmt.setString(14, laudo.getCid10_3().toUpperCase().trim());
+			}
+            if (laudo.getFornecedor().getIdFornecedor() == null) {
+				stmt.setNull(15, Types.INTEGER);
+			} else {
+				stmt.setInt(15, laudo.getFornecedor().getIdFornecedor());
 			}
             if (laudo.getFornecedor().getValor() == null) {
-				stmt.setNull(15, Types.DOUBLE);
+				stmt.setNull(16, Types.DOUBLE);
 			} else {
-				stmt.setDouble(15, laudo.getFornecedor().getValor());
+				stmt.setDouble(16, laudo.getFornecedor().getValor());
 			}
             if (laudo.getNota() == null) {
-				stmt.setNull(16, Types.CHAR);
+				stmt.setNull(17, Types.CHAR);
 			} else {
-				stmt.setString(16, laudo.getNota().toUpperCase().trim());
+				stmt.setString(17, laudo.getNota().toUpperCase().trim());
 			}
             if (laudo.getQtd() == null) {
-				stmt.setNull(17, Types.INTEGER);
-			} else {
-				stmt.setInt(17, laudo.getQtd());
-			}
-            if (laudo.getEquipamento().getId_equipamento() == null) {
 				stmt.setNull(18, Types.INTEGER);
 			} else {
-				stmt.setInt(18, laudo.getEquipamento().getId_equipamento());
+				stmt.setInt(18, laudo.getQtd());
+			}
+            if (laudo.getEquipamento().getId_equipamento() == null) {
+				stmt.setNull(19, Types.INTEGER);
+			} else {
+				stmt.setInt(19, laudo.getEquipamento().getId_equipamento());
 			}
             if (laudo.getObs() == null) {
-				stmt.setNull(19, Types.CHAR);
+				stmt.setNull(20, Types.CHAR);
 			} else {
-				stmt.setString(19, laudo.getObs().toUpperCase().trim());
+				stmt.setString(20, laudo.getObs().toUpperCase().trim());
 			}           
-            stmt.setInt(20, laudo.getId_apac());
+            stmt.setInt(21, laudo.getId_apac());
             
             stmt.executeUpdate();
             conexao.commit();
@@ -429,7 +439,7 @@ public class LaudoDAO {
                 
                 String sql = "select id_apac, codpaciente, codprograma,codgrupo,codmedico, "
                 		+ "codproc,dtasolicitacao, recurso,apac, unidade, situacao, dtautorizacao, "
-                		+ "cid10_1, cid10_2,codfornecedor,valor, nota, qtd, codequipamento, "
+                		+ "cid10_1, cid10_2, cid10_3,codfornecedor,valor, nota, qtd, codequipamento, "
                 		+ "obs from hosp.apac order by apac";
 
                 ArrayList<LaudoBean> lista = new ArrayList();
@@ -458,6 +468,7 @@ public class LaudoDAO {
     	                l.setDtautorizacao(rs.getDate("dtautorizacao"));
     	                l.setCid10_1(rs.getString("cid10_1"));
     	                l.setCid10_2(rs.getString("cid10_2"));
+    	                l.setCid10_3(rs.getString("cid10_3"));
     	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("codfornecedor")));
     	                l.setValor(rs.getDouble("valor"));
     	                l.setNota(rs.getString("nota"));
@@ -484,10 +495,10 @@ public class LaudoDAO {
             public List<LaudoBean> buscarTipoLaudo(String valor, Integer tipo) {
         		
             	
-          		 String sql = "select * from hosp.apac where";
+          		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente where";
           		
           		if (tipo == 1) {
-          			sql += " apac.apac like ? order by apac.apac ";
+          			sql += " pacientes.nome like ? order by pacientes.nome";
           		}
           		List<LaudoBean> lista = new ArrayList<>();
 
@@ -518,6 +529,7 @@ public class LaudoDAO {
     	                l.setDtautorizacao(rs.getDate("dtautorizacao"));
     	                l.setCid10_1(rs.getString("cid10_1"));
     	                l.setCid10_2(rs.getString("cid10_2"));
+    	                l.setCid10_2(rs.getString("cid10_3"));
     	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("codfornecedor")));
     	                l.setValor(rs.getDouble("valor"));
     	                l.setNota(rs.getString("nota"));
@@ -589,5 +601,58 @@ public class LaudoDAO {
                 }
                 return lista;
             } 
+            
+            
+            public List<LaudoBean> buscarTipoLaudoDigita(String valor, Integer tipo) {
+        		
+            	
+         		 String sql = "select * from hosp.pacienteslaudo left join hosp.pacientes on pacienteslaudo.id_paciente=pacientes.id_paciente where";
+         		
+         		if (tipo == 1) {
+         			sql += " pacientes.nome like ? order by pacientes.nome";
+         		}
+         		List<LaudoBean> lista = new ArrayList<>();
+
+         		try {
+         			conexao = ConnectionFactory.getConnection();
+         			PreparedStatement stmt = conexao.prepareStatement(sql);
+         			if (tipo == 1) {
+         				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+         			}
+
+         			ResultSet rs = stmt.executeQuery();
+
+         			while (rs.next()) {
+         				LaudoBean l = new LaudoBean();
+         				
+         	
+         	        l.setCodLaudoDigita(rs.getInt("id"));
+   	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("id_paciente")));
+   	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
+   	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
+   	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+   	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codprocedimento")));
+   	                l.setDtasolicitacao(rs.getDate("datasolicitacao"));
+   	                l.setDtainicio(rs.getDate("periodoinicio"));
+   	                l.setDtafim(rs.getDate("periodofim"));
+   	              
+   	   
+
+         				lista.add(l);
+
+         			}
+         		} catch (SQLException ex) {
+         			ex.printStackTrace();
+         			// throw new RuntimeException(ex); //
+         		} finally {
+         			try {
+         				conexao.close();
+         			} catch (Exception ex) {
+         				ex.printStackTrace();
+         				System.exit(1);
+         			}
+         		}
+         		return lista;
+         	}
             
 }

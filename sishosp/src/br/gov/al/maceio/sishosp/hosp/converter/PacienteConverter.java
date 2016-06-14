@@ -11,26 +11,28 @@ import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 
-
-
 @FacesConverter(value = "conPaciente")
 public class PacienteConverter implements Converter {
-	   PacienteDAO pacienteDAO = new PacienteDAO();
-	    public Object getAsObject(FacesContext contet, UIComponent component, String value) {
-	        if(value==null || value.equals(""))
-	            return null;
-	        try{
-	            int id = Integer.parseInt(value);
-	            return pacienteDAO.buscapacientecodigo(id);
-	        }catch (Exception e) {
-	            e.printStackTrace();
-	            throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Paciente não válido", ""));
-	        }
-	    }
+	PacienteDAO pDAO = new PacienteDAO();
 
-	    public String getAsString(FacesContext contet, UIComponent component, Object value) {
-	        if(value==null || value.equals(""))
-	            return null;
-	        return String.valueOf(((PacienteBean)value).getCodProfissao());
-	    }
+	public Object getAsObject(FacesContext contet, UIComponent component,
+			String value) {
+		if (value.equals("null") || value.equals("") || value == null)
+			return null;
+		try {
+			int id = Integer.parseInt(value);
+			return pDAO.listarPacientePorID(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ConverterException(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Paciente não válido", ""));
+		}
 	}
+
+	public String getAsString(FacesContext contet, UIComponent component,
+			Object value) {
+		if (value == null || value.equals(""))
+			return null;
+		return String.valueOf(((PacienteBean) value).getId_paciente());
+	}
+}
