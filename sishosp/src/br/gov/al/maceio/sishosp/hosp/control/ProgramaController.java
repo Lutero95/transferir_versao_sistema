@@ -158,4 +158,11 @@ public class ProgramaController {
 		this.cabecalho = cabecalho;
 	}
 	
+	public List<ProgramaBean> listaProgramaAutoComplete(String query)
+			throws ProjetoException {
+		ProgramaDAO pDao = new ProgramaDAO();
+		List<ProgramaBean> result = pDao.listarProgramasBusca(query, 1);
+		return result;
+	}
+	
 }

@@ -135,7 +135,7 @@ public class PacienteController {
 		escolaSelecionadoExclusao = new EscolaBean();
 		escolaSuggestion = new EscolaBean();
 
-		transporteSuggestion = new FormaTransporteBean();
+		transporteSuggestion = null;
 
 		// LISTAS
 		listaPacientes = new ArrayList<>();
@@ -576,6 +576,13 @@ public class PacienteController {
 		result = icdao.buscaescolaridade(query);
 		return result;
 	}
+	
+	public List<PacienteBean> listaPacienteAutoComplete(String query)
+			throws ProjetoException {
+		PacienteDAO pDao = new PacienteDAO();
+		List<PacienteBean> result = pDao.buscaPacienteAutoComplete(query);
+		return result;
+	}
 
 	public void onItemSelect2(SelectEvent event) throws Exception {
 
@@ -584,6 +591,19 @@ public class PacienteController {
 
 		EscolaridadeDAO dao = new EscolaridadeDAO();
 		buscaEscolaridadeCod(prodsel.getCodescolaridade());
+		escolaridadeSuggestion = new EscolaridadeBean();
+		escolaridadeSuggestion = null;
+		// FacesContext.getCurrentInstance().addMessage(null, new
+		// FacesMessage("Item Selected", prodsel.getDescricao()));
+	}
+	
+	public void onItemSelectPaciente(SelectEvent event) throws Exception {
+
+		PacienteBean prodsel = new PacienteBean();
+		prodsel = (PacienteBean) event.getObject();
+
+		EscolaridadeDAO dao = new EscolaridadeDAO();
+		//buscaEscolaridadeCod(prodsel.getCodescolaridade());
 		escolaridadeSuggestion = new EscolaridadeBean();
 		escolaridadeSuggestion = null;
 		// FacesContext.getCurrentInstance().addMessage(null, new
@@ -1383,5 +1403,14 @@ public class PacienteController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
+
+	public PacienteBean getPacienteBuscado() {
+		return pacienteBuscado;
+	}
+
+	public void setPacienteBuscado(PacienteBean pacienteBuscado) {
+		this.pacienteBuscado = pacienteBuscado;
+	}
+	
 
 }

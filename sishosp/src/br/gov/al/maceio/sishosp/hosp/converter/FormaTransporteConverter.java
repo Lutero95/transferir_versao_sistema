@@ -17,7 +17,7 @@ import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 public class FormaTransporteConverter implements Converter {
 	   FormaTransporteDAO transporteDAO = new FormaTransporteDAO();
 	    public Object getAsObject(FacesContext contet, UIComponent component, String value) {
-	        if(value==null || value.equals(""))
+	        if(value.equals("null") || value.equals("") || value == null)
 	            return null;
 	        try{
 	            int id = Integer.parseInt(value);

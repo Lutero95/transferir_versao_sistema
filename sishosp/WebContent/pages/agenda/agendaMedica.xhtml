@@ -20,27 +20,31 @@
 			<p:growl id="msgFeriado" />
 			<p:panel>
 				<p:panelGrid columns="3" styleClass="semBorda">
+
 					<h:outputLabel for="pac" value="Paciente: *" />
-					<p:outputPanel id="outPacie">
-						<p:inputText id="codPac"
-							value="#{AgendaController.agenda.paciente.id_paciente}"
-							readonly="true" style="width: 40px" />
-						<p:inputText id="pac"
-							value="#{AgendaController.agenda.paciente.nome}" readonly="true"
-							style="width: 300px" />
+					<p:outputPanel id="outPa">
+						<p:autoComplete value="#{AgendaController.agenda.paciente}"
+							size="45" converter="conPaciente"
+							completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
+							
+						</p:autoComplete>
 					</p:outputPanel>
-					<p:commandButton id="btBusPa" value="Buscar"
+					<p:commandButton id="btBPa" value="Buscar"
 						action="#{AgendaController.limparNaBuscaPaciente()}"
 						update=":formAgendaMedica" onclick="PF('dlgConsuPac').show();" />
 
+
 					<h:outputLabel for="prog" value="Programa: *" />
 					<p:outputPanel id="outProg">
-						<p:inputText id="codProg"
-							value="#{AgendaController.agenda.programa.idPrograma}"
-							readonly="true" style="width: 40px" />
-						<p:inputText id="prog"
-							value="#{AgendaController.agenda.programa.descPrograma}"
-							readonly="true" style="width: 300px" />
+						<p:autoComplete value="#{AgendaController.agenda.programa}"
+							size="45" converter="conPrograma"
+							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.descPrograma}">
+							
+						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusPr" value="Buscar"
 						disabled="#{AgendaController.agenda.paciente==null}"
@@ -323,7 +327,7 @@
 					</p:column>
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton
-							update=":formAgendaMedica:outPacie, :formAgendaMedica:btBusPr"
+							update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuPac').hide();">
 							<f:setPropertyActionListener value="#{pacie}"

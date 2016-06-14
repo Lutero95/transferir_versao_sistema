@@ -17,7 +17,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 public class EscolaridadeConverter implements Converter {
 	   EscolaridadeDAO escolaridadeDAO = new EscolaridadeDAO();
 	    public Object getAsObject(FacesContext contet, UIComponent component, String value) {
-	        if(value==null || value.equals(""))
+	        if(value.equals("null") || value.equals("") || value == null)
 	            return null;
 	        try{
 	            int id = Integer.parseInt(value);
