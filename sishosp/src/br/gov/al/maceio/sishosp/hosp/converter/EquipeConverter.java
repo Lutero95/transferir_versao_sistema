@@ -7,12 +7,12 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
-import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 
-@FacesConverter(value = "conPrograma")
-public class ProgramaConverter implements Converter {
-	ProgramaDAO pDAO = new ProgramaDAO();
+@FacesConverter(value = "conEquipe")
+public class EquipeConverter implements Converter {
+	EquipeDAO eDao = new EquipeDAO();
 
 	public Object getAsObject(FacesContext contet, UIComponent component,
 			String value) {
@@ -20,11 +20,11 @@ public class ProgramaConverter implements Converter {
 			return null;
 		try {
 			int id = Integer.parseInt(value);
-			return pDAO.listarProgramaPorId(id);
+			return eDao.buscarEquipePorID(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Paciente não válido", ""));
+					FacesMessage.SEVERITY_ERROR, "Equipe inválida!", ""));
 		}
 	}
 
@@ -32,6 +32,6 @@ public class ProgramaConverter implements Converter {
 			Object value) {
 		if (value == null || value.equals(""))
 			return null;
-		return String.valueOf(((ProgramaBean) value).getIdPrograma());
+		return String.valueOf(((EquipeBean) value).getCodEquipe());
 	}
 }

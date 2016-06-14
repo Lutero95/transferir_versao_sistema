@@ -9,9 +9,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 public class GrupoDAO {
 	
@@ -188,17 +186,16 @@ public class GrupoDAO {
 	public GrupoBean buscaGrupoPorId (Integer i) throws ProjetoException {
 		String sql = "select id_grupo, descgrupo, qtdfrequencia from hosp.grupo where id_grupo=? order by id_grupo";
 		try {
-			
+			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, i);
 			ResultSet rs = ps.executeQuery();
 			GrupoBean g = new GrupoBean();
-			while (rs.next()) {
+			if (rs.next()) {
 				g.setIdGrupo(rs.getInt("id_grupo"));
 				g.setDescGrupo(rs.getString("descgrupo"));
 				g.setQtdFrequencia(rs.getInt("qtdfrequencia"));
 			}
-			System.out.println(g.getIdGrupo() + " " +g.getDescGrupo()+ " "+ g.getQtdFrequencia());
 			return g;
 		} catch (Exception sqle) {
 

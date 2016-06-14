@@ -24,73 +24,79 @@
 					<h:outputLabel for="pac" value="Paciente: *" />
 					<p:outputPanel id="outPa">
 						<p:autoComplete value="#{AgendaController.agenda.paciente}"
-							size="45" converter="conPaciente"
+							size="60" converter="conPaciente"
 							completeMethod="#{PacienteController.listaPacienteAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
-							
+							<p:ajax event="itemSelect" update=":formAgendaMedica:outProg" />
 						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBPa" value="Buscar"
 						action="#{AgendaController.limparNaBuscaPaciente()}"
 						update=":formAgendaMedica" onclick="PF('dlgConsuPac').show();" />
 
-
 					<h:outputLabel for="prog" value="Programa: *" />
 					<p:outputPanel id="outProg">
 						<p:autoComplete value="#{AgendaController.agenda.programa}"
-							size="45" converter="conPrograma"
+							size="60" converter="conPrograma"
+							disabled="#{AgendaController.agenda.paciente==null}"
 							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.descPrograma}">
-							
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descPrograma}">
+							<p:ajax event="itemSelect"
+								update=":formAgendaMedica:outGrupo" />
 						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusPr" value="Buscar"
-						disabled="#{AgendaController.agenda.paciente==null}"
 						action="#{AgendaController.limparNaBuscaPrograma()}"
 						update=":formAgendaMedica" onclick="PF('dlgConsuProg').show();" />
 
 					<h:outputLabel for="grupo" value="Grupo: *" />
 					<p:outputPanel id="outGrupo">
-						<p:inputText id="codGrupo"
-							value="#{AgendaController.agenda.grupo.idGrupo}" readonly="true"
-							style="width: 40px" />
-						<p:inputText id="grupo"
-							value="#{AgendaController.agenda.grupo.descGrupo}"
-							readonly="true" style="width: 300px" />
+						<p:autoComplete value="#{AgendaController.agenda.grupo}" size="60"
+							converter="conGrupo"
+							disabled="#{AgendaController.agenda.programa==null}"
+							completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descGrupo}">
+							<p:ajax event="itemSelect"
+								update=":formAgendaMedica:outTipoAt" />
+						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusGr" value="Buscar"
 						action="#{AgendaController.limparNaBuscaGrupo()}"
-						update=":formAgendaMedica"
-						disabled="#{AgendaController.agenda.programa==null}"
-						onclick="PF('dlgConsuGrop').show();" />
+						update=":formAgendaMedica" onclick="PF('dlgConsuGrop').show();" />
 
 					<h:outputLabel for="tipoAt" value="Tipo At.: *" />
 					<p:outputPanel id="outTipoAt">
-						<p:inputText id="codTipo"
-							value="#{AgendaController.agenda.tipoAt.idTipo}" readonly="true"
-							style="width: 40px" />
-						<p:inputText id="tipoAt"
-							value="#{AgendaController.agenda.tipoAt.descTipoAt}"
-							readonly="true" style="width: 300px" />
+						<p:autoComplete value="#{AgendaController.agenda.tipoAt}"
+							size="60" converter="conTipoAtendimento"
+							disabled="#{AgendaController.agenda.grupo==null}"
+							completeMethod="#{TipoAtendimentoController.listaTipoAtAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descTipoAt}">
+							<p:ajax event="itemSelect" update=":formAgendaMedica" />
+						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusTi" value="Buscar"
 						action="#{AgendaController.limparNaBuscaTipo()}"
-						update=":formAgendaMedica"
-						disabled="#{AgendaController.agenda.grupo==null}"
-						onclick="PF('dlgConsuTipoAt').show();" />
+						update=":formAgendaMedica" onclick="PF('dlgConsuTipoAt').show();" />
 
 					<h:outputLabel for="prof" value="Profissional: *"
 						rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
 					<p:outputPanel id="outProf"
 						rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
-						<p:inputText id="codProf"
-							value="#{AgendaController.agenda.profissional.idProfissional}"
-							readonly="true" style="width: 40px" />
-						<p:inputText id="descProf"
-							value="#{AgendaController.agenda.profissional.descricaoProf}"
-							readonly="true" style="width: 300px" />
+						<p:autoComplete value="#{AgendaController.agenda.profissional}"
+							size="60" converter="conProfissional"
+							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descricaoProf}">
+							<p:ajax event="itemSelect" update=":formAgendaMedica" />
+						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusProf" value="Buscar"
 						disabled="#{AgendaController.agenda.tipoAt==null}"
@@ -102,12 +108,14 @@
 						rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
 					<p:outputPanel id="outEquipe"
 						rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
-						<p:inputText id="codEquipe"
-							value="#{AgendaController.agenda.equipe.codEquipe}"
-							readonly="true" style="width: 40px" />
-						<p:inputText id="descEquipe"
-							value="#{AgendaController.agenda.equipe.descEquipe}"
-							readonly="true" style="width: 300px" />
+						<p:autoComplete value="#{AgendaController.agenda.equipe}"
+							size="60" converter="conProfissional"
+							completeMethod="#{EquipeController.listaEquipeAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descEquipe}">
+							<p:ajax event="itemSelect" update=":formAgendaMedica" />
+						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusEqui" value="Buscar"
 						disabled="#{AgendaController.agenda.tipoAt==null}"
@@ -327,7 +335,7 @@
 					</p:column>
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton
-							update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr"
+							update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuPac').hide();">
 							<f:setPropertyActionListener value="#{pacie}"
@@ -352,7 +360,8 @@
 					</p:column>
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton
-							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, :formAgendaMedica:btBusGr"
+							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, 
+							:formAgendaMedica:btBusGr, :formAgendaMedica:outGrupo"
 							icon="ui-icon-check" title="Selecionar"
 							action="#{GrupoController.atualizaLista(AgendaController.agenda.programa)}"
 							onclick="PF('dlgConsuProg').hide();">
@@ -382,7 +391,8 @@
 
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton
-							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt, :formAgendaMedica:btBusTi"
+							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt,
+							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuGrop').hide();"
 							action="#{TipoAtendimentoController.atualizaListaTipos(AgendaController.agenda.grupo)}">

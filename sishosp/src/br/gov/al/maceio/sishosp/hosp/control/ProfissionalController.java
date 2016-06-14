@@ -160,4 +160,10 @@ public class ProfissionalController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
+	
+	public List<ProfissionalBean> listaProfissionalAutoComplete(String query)
+			throws ProjetoException {
+		List<ProfissionalBean> result = pDao.listarProfissionalBusca(query, 1);
+		return result;
+	}
 }

@@ -165,4 +165,10 @@ public class TipoAtendimentoController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
+	
+	public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
+			throws ProjetoException {
+		List<TipoAtendimentoBean> result = tDao.listarTipoAtBusca(query, 1);
+		return result;
+	}
 }

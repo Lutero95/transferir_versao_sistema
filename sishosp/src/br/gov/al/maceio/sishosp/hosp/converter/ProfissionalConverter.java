@@ -7,12 +7,12 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
-import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
+import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
-@FacesConverter(value = "conPrograma")
-public class ProgramaConverter implements Converter {
-	ProgramaDAO pDAO = new ProgramaDAO();
+@FacesConverter(value = "conProfissional")
+public class ProfissionalConverter implements Converter {
+	ProfissionalDAO pDAO = new ProfissionalDAO();
 
 	public Object getAsObject(FacesContext contet, UIComponent component,
 			String value) {
@@ -20,7 +20,7 @@ public class ProgramaConverter implements Converter {
 			return null;
 		try {
 			int id = Integer.parseInt(value);
-			return pDAO.listarProgramaPorId(id);
+			return pDAO.listarProfissionalPorId(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
@@ -32,6 +32,6 @@ public class ProgramaConverter implements Converter {
 			Object value) {
 		if (value == null || value.equals(""))
 			return null;
-		return String.valueOf(((ProgramaBean) value).getIdPrograma());
+		return String.valueOf(((ProfissionalBean) value).getIdProfissional());
 	}
 }

@@ -150,4 +150,10 @@ public class EquipeController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
+	
+	public List<EquipeBean> listaEquipeAutoComplete(String query)
+			throws ProjetoException {
+		List<EquipeBean> result = eDao.listarEquipeBusca(query, 1);
+		return result;
+	}
 }
