@@ -634,7 +634,7 @@ public class PacienteDAO {
 		return lista;
 	}
 
-	public PacienteBean buscarPacienteAgenda(String tipo, String conteudo)
+	public List<PacienteBean> buscarPacienteAgenda(String tipo, String conteudo)
 			throws ProjetoException, SQLException {
 		
 		 String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
@@ -655,8 +655,8 @@ public class PacienteDAO {
 	          		+ "left join hosp.formatransporte on pacientes.id_formatransporte=formatransporte.id_formatransporte where";
 		
 		conexao = ConnectionFactory.getConnection();
-		
-		PacienteBean p = new PacienteBean();
+		List<PacienteBean> listaP = new ArrayList<PacienteBean>();
+		PacienteBean p = null;
 
 		if (tipo.equals("CPF")) {
 			System.out.println("Vai buscar por cpf");
@@ -678,7 +678,7 @@ public class PacienteDAO {
 			try {
 				prontVelho = Integer.parseInt(conteudo);
 			} catch (Exception e) {
-				return p;
+				return listaP;
 			}
 
 			if (prontVelho != null)
@@ -692,7 +692,7 @@ public class PacienteDAO {
 			try {
 				prontNovo = Long.parseLong(conteudo);
 			} catch (Exception e) {
-				return p;
+				return listaP;
 			}
 			if (prontNovo != null)
 				ps.setLong(1, prontNovo);
@@ -701,7 +701,7 @@ public class PacienteDAO {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-              	
+				p = new PacienteBean();
                 p.setId_paciente(rs.getInt("id_paciente"));
                 p.setNome(rs.getString("nome").toUpperCase());
                 p.setDtanascimento(rs.getDate("dtanascimento"));
@@ -759,9 +759,9 @@ public class PacienteDAO {
                 p.getProfissao().setDescprofissao(rs.getString("descprofissao"));
                 p.getEncaminhado().setDescencaminhado(rs.getString("descencaminhado"));
                 p.getFormatransporte().setDescformatransporte(rs.getString("descformatransporte"));
-                 
+                listaP.add(p);
 			}
-			return p;
+			return listaP;
 		} catch (Exception sqle) {
 			throw new ProjetoException(sqle);
 		} finally {
