@@ -1,366 +1,388 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-    <ui:composition template="../../template/templatepagsistemas.xhtml">
+<ui:composition template="../../template/templatepagsistemas.xhtml">
 
-        <ui:define name="body">
-               <!-- INICIO DO FORMULARIO -->
-    <div class="col-md-8">
-        <h:form> <p:commandButton value="Voltar"
-			style="position:relative; right:18%; width:100px; " icon="btvoltar"
-			action ="/pages/sishosp/gerenciarLaudoDigita.faces"></p:commandButton>  </h:form>
-   
- <h:form id="formLaudo" >
- <p:growl id="message"/>
-			<p:panel header="#{LaudoController.cabecalho2}"  style="position: relative; height:auto; width:660px; background-color: #F5F5F5; left:30%;">
-			<h:panelGrid columns="3">
-				
-					<h:outputLabel for="pac" value="Paciente:" />
-					<p:outputPanel id="outPacie">
-						<p:inputText id="codPac"
-							value="#{LaudoController.laudo.paciente.id_paciente}" readonly="true"
-							style="width: 40px; margin-left:20px;" />
-						<p:inputText id="pac" value="#{LaudoController.laudo.paciente.nome}"
-							readonly="true" style="width: 300px" />
-					</p:outputPanel>
-					<p:commandButton id="btBusPa" value="Buscar"  icon="buscar"
-						onclick="PF('dlgConsuPac').show();" />
+	<ui:define name="body">
+		<!-- INICIO DO FORMULARIO -->
+		<div class="col-md-8">
+			<h:form>
+				<p:commandButton value="Voltar"
+					style="position:relative; right:18%; width:100px; " icon="btvoltar"
+					action="/pages/sishosp/gerenciarLaudoDigita.faces"></p:commandButton>
+			</h:form>
 
-					<h:outputLabel for="equi" value="Equipe:" />
-					<p:outputPanel id="outEquipe">
-						<p:inputText id="codEquipue"
-							value="#{LaudoController.laudo.equipe.codEquipe}" readonly="true"
-							style="width: 40px; margin-left:20px;" />
-						<p:inputText id="prog"
-							value="#{LaudoController.laudo.equipe.descEquipe}" readonly="true"
-							style="width: 300px" />
-					</p:outputPanel>
-					<p:commandButton id="btBusEquipe" value="Buscar" icon="buscar"
-						disabled="#{LaudoController.laudo.paciente==null}"
-						onclick="PF('dlgConsuEquipe').show();" />
+			<h:form id="formLaudo">
+				<p:growl id="message" />
+				<p:panel header="#{LaudoController.cabecalho2}"
+					style="position: relative; height:auto; width:660px; background-color: #F5F5F5; left:30%;">
+					<h:panelGrid columns="3">
 
-					<h:outputLabel for="grupo" value="Grupo:" />
-					<p:outputPanel id="outGrupo">
-						<p:inputText id="codGrupo"
-							value="#{LaudoController.laudo.grupo.idGrupo}" readonly="true"
-							style="width: 40px; margin-left:20px;" />
-						<p:inputText id="grupo"
-							value="#{LaudoController.laudo.grupo.descGrupo}" readonly="true"
-							style="width: 300px" />
-					</p:outputPanel>
-					<p:commandButton id="btBusGr" value="Buscar" icon="buscar"
-						disabled="#{LaudoController.laudo.equipe==null}"
-						onclick="PF('dlgConsuGrop').show();" />
-
-					<h:outputLabel for="profissional" value="Profissional:" />
-					<p:outputPanel id="outProfissional">
-						<p:inputText id="codProfissional"
-							value="#{LaudoController.laudo.profissional.idProfissional}" readonly="true"
-							style="width: 40px; margin-left:20px;" />
-						<p:inputText id="Profissonal"
-							value="#{LaudoController.laudo.profissional.descricaoProf}" readonly="true"
-							style="width: 300px" />
-					</p:outputPanel>
-					<p:commandButton id="btBusPro" value="Buscar" icon="buscar"
-						disabled="#{LaudoController.laudo.grupo==null}"
-						onclick="PF('dlgConsuProf').show();" />
-						
-				    <h:outputLabel for="procedimento" value="Procedimento:" />
-					<p:outputPanel id="outProce">
-						<p:inputText id="codProcedimento"
-							value="#{LaudoController.laudo.procedimento.idProc}" readonly="true"
-							style="width: 40px; margin-left:20px;" />
-						<p:inputText id="Procedimento"
-							value="#{LaudoController.laudo.procedimento.nomeProc}" readonly="true"
-							style="width: 300px" />
-					</p:outputPanel>
-					<p:commandButton id="btBusProce" value="Buscar" icon="buscar"
-						disabled="#{LaudoController.laudo.profissional==null}"
-						onclick="PF('dlgConsuProce').show();" />
-				</h:panelGrid>
-
-				<h:panelGrid columns="4" styleClass="semBorda" style="margin-top:20px;">
-		
-						<p:outputPanel id="outPacie3"> 
-						<h:outputLabel for="cnsPac" value="CNS" />
-						<br />
-					   	<p:inputText id="codCns"
-							value="#{LaudoController.laudo.paciente.cns}" readonly="true"/>
-						</p:outputPanel>
-					 <p:outputPanel id="outPacie2" style="margin-left:16px;">
-						<h:outputLabel for="cpfPac" value="CPF" />
-						<br />
-					   	<p:inputText id="codCpf"
-							value="#{LaudoController.laudo.paciente.cpf}" readonly="true"/>
-					</p:outputPanel>
-				
-					<p:outputPanel style="margin-left:16px;">
-						<h:outputLabel for="dataAte" value="Data para Solicitação" />
-						<br />
-						<p:calendar id="data" locale="pt" showOn="button" value="#{LaudoController.laudo.dtasolicitacao}" navigator="true" mask="true"
-							pattern="dd/MM/yyyy" />
-					</p:outputPanel>
-					
-					
-	
-				</h:panelGrid>
-
-				
-				<h:panelGrid columns="3" styleClass="semBorda">
-				
-						<p:outputPanel style="margin-top:10px;" >
-					
-					<p:outputLabel value="Prorrogar:"/>
-         
-                 	<p:selectOneRadio id="prorrogar" style="border: double;"  required="false" layout="pageDirection" 
-													requiredMessage="Prorrogar e necessario" 
-													value="#{LaudoController.laudo.prorrogar}">
-												
-													<f:selectItem itemLabel="30 dias" itemValue="30" />
-													<f:selectItem itemLabel="90 dias" itemValue="90" />
-													<p:ajax event="change" update="dtFim, :formLaudo:message, prorrogar" 
-                                                        process="@this,dataAt" 
-                                                        listener="#{LaudoController.calcularDias}" />
-												
-												</p:selectOneRadio>
-                  </p:outputPanel>
-                  
-                  		<p:outputPanel style="margin-left:16px;">
-						<h:outputLabel for="dataAtou" value="Mês/Ano inicio" />
-						<br />
-						<p:calendar id="dataAt" showOn="button" locale="pt" value="#{LaudoController.laudo.dtainicio}" navigator="true" mask="true"
-							pattern="MM/yyyy" />
-							
-							
-					</p:outputPanel>
-					
-							<p:outputPanel style="margin-left:16px;" >
-						<h:outputLabel for="dataVen" value="Mês/Ano fim" />
-						<br />
-						<!--  <p:calendar id="dataVenci" showOn="button" value="#{LaudoController.laudo.dtafim}" locale="pt" navigator="true" mask="true"
-							pattern="dd/MM/yyyy" readonly="true" />-->
-							
-							  <p:outputLabel id="dtFim" value="#{LaudoController.laudo.dtafim}">
-                                                <f:convertDateTime locale="pt" timeZone="-3GTM" pattern="MM/yyyy" />
-                                            </p:outputLabel>
-					</p:outputPanel>
-				</h:panelGrid>
-			    	
-                                  <p:separator></p:separator>
-				<center>
-					<h:panelGrid columns="3" styleClass="semBorda">
-						
-						<p:commandButton value="Gravar" icon="confirmar"  update=":formLaudo:message,:formLaudo" style="margin-left:15px;"
-							action="#{LaudoController.gravarLaudoDigita()}" rendered="#{LaudoController.tipo == 'I'}"/>
-							
-							 <p:commandButton action="#{LaudoController.alterarLaudoDigita()}" icon="alterar-dados" style="margin-left:15px;"  
-                             update=":formLaudo:message,:formLaudo" value="Alterar"
-                             rendered="#{LaudoController.tipo == 'A'}" />
-						
-						<p:commandButton value="Limpar" icon="limpar" style="margin-left:15px;"
-							actionListener="#{LaudoController.limparDados()}"
-							update=":formLaudo" />
-						
-					</h:panelGrid>
-				</center>
-			</p:panel>
-		</h:form>
-
-
-		<p:dialog header="Consulta Pacientes" widgetVar="dlgConsuPac"
-			modal="true" width="750px">
-			<h:form id="formConsuPac">
-				<p:growl id="msgC" />
-				<center>
-					<p:panelGrid columns="2" styleClass="semBorda">
-						<p:outputPanel id="outOp">
-							<h:outputLabel for="op" value="Opção" />
-							<br />
-							<p:selectOneMenu id="op" value="#{PacienteController.tipoBuscar}">
-								<f:selectItem itemLabel="Escolha Opção" itemValue="VAZIO" />
-								<f:selectItem itemLabel="CPF" itemValue="CPF" />
-								<f:selectItem itemLabel="Nome" itemValue="NOME" />
-								<f:selectItem itemLabel="Prontuário Velho" itemValue="PRONTVELHO" />
-								<f:selectItem itemLabel="Prontuário Novo" itemValue="PRONTNOVO" />
-							</p:selectOneMenu>
-						</p:outputPanel>
-
-						<p:outputPanel id="outDesP">
-							<h:outputLabel for="descPac" value="Descrição" />
-							<br />
-							<p:inputText id="descPac"
-								value="#{PacienteController.descricaoParaBuscar}"
+						<h:outputLabel for="pac" value="Paciente:" />
+						<p:outputPanel id="outPacie">
+							<p:inputText id="codPac"
+								value="#{LaudoController.laudo.paciente.id_paciente}"
+								readonly="true" style="width: 40px; margin-left:20px;" />
+							<p:inputText id="pac"
+								value="#{LaudoController.laudo.paciente.nome}" readonly="true"
 								style="width: 300px" />
 						</p:outputPanel>
-					</p:panelGrid>
+						<p:commandButton id="btBusPa" value="Buscar" icon="buscar"
+							onclick="PF('dlgConsuPac').show();" />
 
-					<p:separator style="margin-top: 10px;" />
+						<h:outputLabel for="equi" value="Equipe:" />
+						<p:outputPanel id="outEquipe">
+							<p:inputText id="codEquipue"
+								value="#{LaudoController.laudo.equipe.codEquipe}"
+								readonly="true" style="width: 40px; margin-left:20px;" />
+							<p:inputText id="prog"
+								value="#{LaudoController.laudo.equipe.descEquipe}"
+								readonly="true" style="width: 300px" />
+						</p:outputPanel>
+						<p:commandButton id="btBusEquipe" value="Buscar" icon="buscar"
+							disabled="#{LaudoController.laudo.paciente==null}"
+							onclick="PF('dlgConsuEquipe').show();" />
 
-					<p:panelGrid columns="3" styleClass="semBorda">
-						<p:commandButton value="OK" icon="ui-icon-check"
-							action="#{PacienteController.buscarPaciente()}"
-							update=":formConsuPac:msgC, :formConsuPac:dtPaci" />
-						<p:commandButton value="Nova Consulta" icon="ui-icon-search"
-							actionListener="#{PacienteController.limparDados()}"
-							update=":formConsuPac:outOp, :formConsuPac:outDesP, :formConsuPac:dtPaci, :formLaudo:btBusEquipe" />
-						<p:commandButton value="Sair" icon="ui-icon-close" />
-					</p:panelGrid>
-				</center>
-				<p:dataTable resizableColumns="true" id="dtPaci"
-					value="#{PacienteController.listaPacientesParaAgenda}" var="pacie"
-					emptyMessage="Faça uma busca de paciente!">
-					<p:column headerText="PRONTUÁRIO">
-						<p:outputLabel value="#{pacie.id_paciente}" />
-					</p:column>
+						<h:outputLabel for="grupo" value="Grupo:" />
+						<p:outputPanel id="outGrupo">
+							<p:inputText id="codGrupo"
+								value="#{LaudoController.laudo.grupo.idGrupo}" readonly="true"
+								style="width: 40px; margin-left:20px;" />
+							<p:inputText id="grupo"
+								value="#{LaudoController.laudo.grupo.descGrupo}" readonly="true"
+								style="width: 300px" />
+						</p:outputPanel>
+						<p:commandButton id="btBusGr" value="Buscar" icon="buscar"
+							disabled="#{LaudoController.laudo.equipe==null}"
+							onclick="PF('dlgConsuGrop').show();" />
 
-					<p:column headerText="PRONT ANT.">
-						<p:outputLabel value="#{pacie.protant}" />
-					</p:column>
+						<h:outputLabel for="profissional" value="Profissional:" />
+						<p:outputPanel id="outProfissional">
+							<p:inputText id="codProfissional"
+								value="#{LaudoController.laudo.profissional.idProfissional}"
+								readonly="true" style="width: 40px; margin-left:20px;" />
+							<p:inputText id="Profissonal"
+								value="#{LaudoController.laudo.profissional.descricaoProf}"
+								readonly="true" style="width: 300px" />
+						</p:outputPanel>
+						<p:commandButton id="btBusPro" value="Buscar" icon="buscar"
+							disabled="#{LaudoController.laudo.grupo==null}"
+							onclick="PF('dlgConsuProf').show();" />
 
-					<p:column headerText="NOME">
-						<p:outputLabel value="#{pacie.nome}" />
-					</p:column>
+						<h:outputLabel for="procedimento" value="Procedimento:" />
+						<p:outputPanel id="outProce">
+							<p:inputText id="codProcedimento"
+								value="#{LaudoController.laudo.procedimento.idProc}"
+								readonly="true" style="width: 40px; margin-left:20px;" />
+							<p:inputText id="Procedimento"
+								value="#{LaudoController.laudo.procedimento.nomeProc}"
+								readonly="true" style="width: 300px" />
+						</p:outputPanel>
+						<p:commandButton id="btBusProce" value="Buscar" icon="buscar"
+							disabled="#{LaudoController.laudo.profissional==null}"
+							onclick="PF('dlgConsuProce').show();" />
+					</h:panelGrid>
 
-					<p:column headerText="CPF">
-						<p:outputLabel value="#{pacie.cpf}" />
-					</p:column>
-					<p:column headerText="Confirmar" style="width:20%;text-align: center">
-						<p:commandButton
-							update=":formLaudo:outPacie, :formLaudo:outPacie2, :formLaudo:outPacie3, :formLaudo:btBusEquipe"
-							icon="confirmar" title="Selecionar"
-							onclick="PF('dlgConsuPac').hide();">
-							<f:setPropertyActionListener value="#{pacie}"
-								target="#{LaudoController.laudo.paciente}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					<h:panelGrid columns="4" styleClass="semBorda"
+						style="margin-top:20px;">
+
+						<p:outputPanel id="outPacie3">
+							<h:outputLabel for="cnsPac" value="CNS" />
+							<br />
+							<p:inputText id="codCns"
+								value="#{LaudoController.laudo.paciente.cns}" readonly="true" />
+						</p:outputPanel>
+						<p:outputPanel id="outPacie2" style="margin-left:16px;">
+							<h:outputLabel for="cpfPac" value="CPF" />
+							<br />
+							<p:inputText id="codCpf"
+								value="#{LaudoController.laudo.paciente.cpf}" readonly="true" />
+						</p:outputPanel>
+
+						<p:outputPanel style="margin-left:16px;">
+							<h:outputLabel for="dataAte" value="Data para Solicitação" />
+							<br />
+							<p:calendar id="data" locale="pt" showOn="button"
+								value="#{LaudoController.laudo.dtasolicitacao}" navigator="true"
+								mask="true" pattern="dd/MM/yyyy" />
+						</p:outputPanel>
+
+
+
+					</h:panelGrid>
+
+
+					<h:panelGrid columns="3" styleClass="semBorda">
+
+						<p:outputPanel style="margin-top:10px;">
+
+							<p:outputLabel value="Prorrogar:" />
+
+							<p:selectOneRadio id="prorrogar" style="border: double;"
+								required="false" layout="pageDirection"
+								requiredMessage="Prorrogar e necessario"
+								value="#{LaudoController.laudo.prorrogar}">
+
+								<f:selectItem itemLabel="30 dias" itemValue="30" />
+								<f:selectItem itemLabel="90 dias" itemValue="90" />
+								<p:ajax event="change"
+									update="dtFim, :formLaudo:message, prorrogar"
+									process="@this,dataAt"
+									listener="#{LaudoController.calcularDias}" />
+
+							</p:selectOneRadio>
+						</p:outputPanel>
+
+						<p:outputPanel style="margin-left:16px;">
+							<h:outputLabel for="dataAtou" value="Mês/Ano inicio" />
+							<br />
+							<p:calendar id="dataAt" showOn="button" locale="pt"
+								value="#{LaudoController.laudo.dtainicio}" navigator="true"
+								mask="true" pattern="MM/yyyy" />
+
+
+						</p:outputPanel>
+
+						<p:outputPanel style="margin-left:16px;">
+							<h:outputLabel for="dataVen" value="Mês/Ano fim" />
+							<br />
+							<!--  <p:calendar id="dataVenci" showOn="button" value="#{LaudoController.laudo.dtafim}" locale="pt" navigator="true" mask="true"
+							pattern="dd/MM/yyyy" readonly="true" />-->
+
+							<p:outputLabel id="dtFim" value="#{LaudoController.laudo.dtafim}">
+								<f:convertDateTime locale="pt" timeZone="-3GTM"
+									pattern="MM/yyyy" />
+							</p:outputLabel>
+						</p:outputPanel>
+					</h:panelGrid>
+
+					<p:separator></p:separator>
+					<center>
+						<h:panelGrid columns="3" styleClass="semBorda">
+
+							<p:commandButton value="Gravar" icon="confirmar"
+								update=":formLaudo:message,:formLaudo" style="margin-left:15px;"
+								action="#{LaudoController.gravarLaudoDigita()}"
+								rendered="#{LaudoController.tipo == 'I'}" />
+
+							<p:commandButton action="#{LaudoController.alterarLaudoDigita()}"
+								icon="alterar-dados" style="margin-left:15px;"
+								update=":formLaudo:message,:formLaudo" value="Alterar"
+								rendered="#{LaudoController.tipo == 'A'}" />
+
+							<p:commandButton value="Limpar" icon="limpar"
+								style="margin-left:15px;"
+								actionListener="#{LaudoController.limparDados()}"
+								update=":formLaudo" />
+
+						</h:panelGrid>
+					</center>
+				</p:panel>
 			</h:form>
-		</p:dialog>
 
-		<p:dialog header="Consulta Equipe" widgetVar="dlgConsuEquipe"
-			modal="true" width="500px">
-			<h:form id="formConsuEquipe">
-				<p:dataTable value="#{EquipeController.listaEquipe}" var="equipe" id="dtEquipe" 
-					resizableColumns="true"
-					emptyMessage="Não existe nenhum programa cadastrado!">
-					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{equipe.codEquipe}" />
-					</p:column>
-					<p:column headerText="EQUIPE">
-						<p:outputLabel value="#{equipe.descEquipe}" />
-					</p:column>
-					<p:column headerText="Confirmar" style="width:20%;text-align: center">
-						<p:commandButton
-						    update=":formLaudo:outEquipe, :formConsuEquipe:dtEquipe, :formLaudo:btBusEquipe, :formLaudo:btBusGr"
-							icon="confirmar" title="Selecionar"
-							onclick="PF('dlgConsuEquipe').hide();">
-							<f:setPropertyActionListener value="#{equipe}"
-								target="#{LaudoController.laudo.equipe}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
 
-		<p:dialog header="Consulta Grupo" widgetVar="dlgConsuGrop"
-			modal="true" width="550px">
-			<h:form id="formConsuGrop">
-				<p:dataTable value="#{GrupoController.listaGrupos}"
-					id="dtGrupo" resizableColumns="true" var="grupo"
-					emptyMessage="Não existe nenhum grupo cadastrado!">
-					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{grupo.idGrupo}" />
-					</p:column>
-					<p:column headerText="GRUPO">
-						<p:outputLabel value="#{grupo.descGrupo}" />
-					</p:column>
-					<p:column headerText="QTD. FREQ>">
-						<p:outputLabel value="#{grupo.qtdFrequencia}" />
-					</p:column>
+			<p:dialog header="Consulta Pacientes" widgetVar="dlgConsuPac"
+				modal="true" width="750px">
+				<h:form id="formConsuPac">
+					<p:growl id="msgC" />
+					<center>
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:outputPanel id="outOp">
+								<h:outputLabel for="op" value="Opção" />
+								<br />
+								<p:selectOneMenu id="op"
+									value="#{PacienteController.tipoBuscar}">
+									<f:selectItem itemLabel="Escolha Opção" itemValue="VAZIO" />
+									<f:selectItem itemLabel="CPF" itemValue="CPF" />
+									<f:selectItem itemLabel="Nome" itemValue="NOME" />
+									<f:selectItem itemLabel="Prontuário Velho"
+										itemValue="PRONTVELHO" />
+									<f:selectItem itemLabel="Prontuário Novo" itemValue="PRONTNOVO" />
+								</p:selectOneMenu>
+							</p:outputPanel>
 
-					<p:column headerText="Confirmar" style="width:20%;text-align: center">
-						<p:commandButton
-							update=":formLaudo:outGrupo,:formLaudo:btBusGr, :formLaudo:btBusPro"
-							icon="confirmar" title="Selecionar"
-							onclick="PF('dlgConsuGrop').hide();">
-							<f:setPropertyActionListener value="#{grupo}"
-								target="#{LaudoController.laudo.grupo}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-		
-		<p:dialog header="Consulta Profissional" widgetVar="dlgConsuProf"
-			modal="true" width="550px">
-			<h:form id="formConsuProf">
-				<p:dataTable value="#{ProfissionalController.listaProfissional}"
-					id="dtProfissional" resizableColumns="true" var="profissional"
-					emptyMessage="Não existe nenhum profissional cadastrado!">
-					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{profissional.idProfissional}" />
-					</p:column>
-					<p:column headerText="Profissional">
-						<p:outputLabel value="#{profissional.descricaoProf}" />
-					</p:column>
-					<p:column headerText="Especialidade">
-						<p:outputLabel value="#{profissional.especialidade.descEspecialidade}" />
-					</p:column>
-					<p:column headerText="Max Atendimento">
-						<p:outputLabel value="#{profissional.cns}" />
-					</p:column>
+							<p:outputPanel id="outDesP">
+								<h:outputLabel for="descPac" value="Descrição" />
+								<br />
+								<p:inputText id="descPac"
+									value="#{PacienteController.descricaoParaBuscar}"
+									style="width: 300px" />
+							</p:outputPanel>
+						</p:panelGrid>
 
-					<p:column headerText="Confirmar" style="width:20%;text-align: center">
-						<p:commandButton
-							update=":formLaudo:outProfissional, :formConsuProf:dtProfissional, :formLaudo:btBusProce"
-							icon="confirmar" title="Selecionar"
-							onclick="PF('dlgConsuProf').hide();">
-							<f:setPropertyActionListener value="#{profissional}"
-								target="#{LaudoController.laudo.profissional}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-		
-		<p:dialog header="Consulta Procedimento" widgetVar="dlgConsuProce"
-			modal="true" width="550px">
-			<h:form id="formConsuProce">
-				<p:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-					id="dtProce" resizableColumns="true" var="procedimento"
-					emptyMessage="Não existe nenhum procedimento cadastrado!">
-					<p:column headerText="ID">
-						<p:outputLabel value="#{procedimento.idProc}" />
-					</p:column>
-					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{procedimento.codProc}" />
-					</p:column>
-					<p:column headerText="PROCEDIMENTO">
-						<p:outputLabel value="#{procedimento.nomeProc}" />
-					</p:column>
-					
-					<p:column headerText="Confirmar" style="width:20%;text-align: center">
-						<p:commandButton
-							update=":formLaudo:outProce, :formConsuProce:dtProce"
-							icon="confirmar" title="Selecionar"
-							onclick="PF('dlgConsuProce').hide();">
-							<f:setPropertyActionListener value="#{procedimento}"
-								target="#{LaudoController.laudo.procedimento}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-		
-		
-    </div>
+						<p:separator style="margin-top: 10px;" />
 
-        </ui:define>
-    </ui:composition>
+						<p:panelGrid columns="3" styleClass="semBorda">
+							<p:commandButton value="OK" icon="ui-icon-check"
+								action="#{PacienteController.buscarPaciente()}"
+								update=":formConsuPac:msgC, :formConsuPac:dtPaci" />
+							<p:commandButton value="Nova Consulta" icon="ui-icon-search"
+								actionListener="#{PacienteController.limparDados()}"
+								update=":formConsuPac:outOp, :formConsuPac:outDesP, :formConsuPac:dtPaci, :formLaudo:btBusEquipe" />
+							<p:commandButton value="Sair" icon="ui-icon-close" />
+						</p:panelGrid>
+					</center>
+					<p:dataTable resizableColumns="true" id="dtPaci"
+						value="#{PacienteController.listaPacientesParaAgenda}" var="pacie"
+						emptyMessage="Faça uma busca de paciente!">
+						<p:column headerText="PRONTUÁRIO">
+							<p:outputLabel value="#{pacie.id_paciente}" />
+						</p:column>
+
+						<p:column headerText="PRONT ANT.">
+							<p:outputLabel value="#{pacie.protant}" />
+						</p:column>
+
+						<p:column headerText="NOME">
+							<p:outputLabel value="#{pacie.nome}" />
+						</p:column>
+
+						<p:column headerText="CPF">
+							<p:outputLabel value="#{pacie.cpf}" />
+						</p:column>
+						<p:column headerText="Confirmar"
+							style="width:20%;text-align: center">
+							<p:commandButton
+								update=":formLaudo:outPacie, :formLaudo:outPacie2, :formLaudo:outPacie3, :formLaudo:btBusEquipe"
+								icon="confirmar" title="Selecionar"
+								onclick="PF('dlgConsuPac').hide();">
+								<f:setPropertyActionListener value="#{pacie}"
+									target="#{LaudoController.laudo.paciente}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog header="Consulta Equipe" widgetVar="dlgConsuEquipe"
+				modal="true" width="500px">
+				<h:form id="formConsuEquipe">
+					<p:dataTable value="#{EquipeController.listaEquipe}" var="equipe"
+						id="dtEquipe" resizableColumns="true"
+						emptyMessage="Não existe nenhum programa cadastrado!">
+						<p:column headerText="CÓD.">
+							<p:outputLabel value="#{equipe.codEquipe}" />
+						</p:column>
+						<p:column headerText="EQUIPE">
+							<p:outputLabel value="#{equipe.descEquipe}" />
+						</p:column>
+						<p:column headerText="Confirmar"
+							style="width:20%;text-align: center">
+							<p:commandButton
+								update=":formLaudo:outEquipe, :formConsuEquipe:dtEquipe, :formLaudo:btBusEquipe, :formLaudo:btBusGr"
+								icon="confirmar" title="Selecionar"
+								onclick="PF('dlgConsuEquipe').hide();">
+								<f:setPropertyActionListener value="#{equipe}"
+									target="#{LaudoController.laudo.equipe}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog header="Consulta Grupo" widgetVar="dlgConsuGrop"
+				modal="true" width="550px">
+				<h:form id="formConsuGrop">
+					<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
+						resizableColumns="true" var="grupo"
+						emptyMessage="Não existe nenhum grupo cadastrado!">
+						<p:column headerText="CÓD.">
+							<p:outputLabel value="#{grupo.idGrupo}" />
+						</p:column>
+						<p:column headerText="GRUPO">
+							<p:outputLabel value="#{grupo.descGrupo}" />
+						</p:column>
+						<p:column headerText="QTD. FREQ>">
+							<p:outputLabel value="#{grupo.qtdFrequencia}" />
+						</p:column>
+
+						<p:column headerText="Confirmar"
+							style="width:20%;text-align: center">
+							<p:commandButton
+								update=":formLaudo:outGrupo,:formLaudo:btBusGr, :formLaudo:btBusPro"
+								icon="confirmar" title="Selecionar"
+								onclick="PF('dlgConsuGrop').hide();">
+								<f:setPropertyActionListener value="#{grupo}"
+									target="#{LaudoController.laudo.grupo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog header="Consulta Profissional" widgetVar="dlgConsuProf"
+				modal="true" width="550px">
+				<h:form id="formConsuProf">
+					<p:dataTable value="#{ProfissionalController.listaProfissional}"
+						id="dtProfissional" resizableColumns="true" var="profissional"
+						emptyMessage="Não existe nenhum profissional cadastrado!">
+						<p:column headerText="CÓD.">
+							<p:outputLabel value="#{profissional.idProfissional}" />
+						</p:column>
+						<p:column headerText="Profissional">
+							<p:outputLabel value="#{profissional.descricaoProf}" />
+						</p:column>
+						<p:column headerText="Especialidade">
+							<p:outputLabel
+								value="#{profissional.especialidade.descEspecialidade}" />
+						</p:column>
+						<p:column headerText="Max Atendimento">
+							<p:outputLabel value="#{profissional.cns}" />
+						</p:column>
+
+						<p:column headerText="Confirmar"
+							style="width:20%;text-align: center">
+							<p:commandButton
+								update=":formLaudo:outProfissional, :formConsuProf:dtProfissional, :formLaudo:btBusProce"
+								icon="confirmar" title="Selecionar"
+								onclick="PF('dlgConsuProf').hide();">
+								<f:setPropertyActionListener value="#{profissional}"
+									target="#{LaudoController.laudo.profissional}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog header="Consulta Procedimento" widgetVar="dlgConsuProce"
+				modal="true" width="550px">
+				<h:form id="formConsuProce">
+					<p:dataTable value="#{ProcedimentoController.listaProcedimentos}"
+						id="dtProce" resizableColumns="true" var="procedimento"
+						emptyMessage="Não existe nenhum procedimento cadastrado!">
+						<p:column headerText="ID">
+							<p:outputLabel value="#{procedimento.idProc}" />
+						</p:column>
+						<p:column headerText="CÓD.">
+							<p:outputLabel value="#{procedimento.codProc}" />
+						</p:column>
+						<p:column headerText="PROCEDIMENTO">
+							<p:outputLabel value="#{procedimento.nomeProc}" />
+						</p:column>
+
+						<p:column headerText="Confirmar"
+							style="width:20%;text-align: center">
+							<p:commandButton
+								update=":formLaudo:outProce, :formConsuProce:dtProce"
+								icon="confirmar" title="Selecionar"
+								onclick="PF('dlgConsuProce').hide();">
+								<f:setPropertyActionListener value="#{procedimento}"
+									target="#{LaudoController.laudo.procedimento}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:dialog>
+
+
+		</div>
+
+	</ui:define>
+</ui:composition>
 </html>

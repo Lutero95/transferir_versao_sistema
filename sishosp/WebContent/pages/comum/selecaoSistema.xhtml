@@ -1,66 +1,53 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:b="http://bootsfaces.net/ui"
-    xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
 
-    <ui:composition template="../../template/templatepagsistemas.xhtml">
+<ui:composition template="../../template/templatepagsistemas.xhtml">
 
-        <ui:define name="body">
-        <ui:include src="dlgsAgendaMedica.xhtml" />
+	<ui:define name="body">
+		<ui:include src="dlgsAgendaMedica.xhtml" />
 
-		<div id="main">
-		
-		 	<h:form id="form" >
-		 	
-                  <!--   <p:commandButton value="CONSULTA" icon="Receber" 
-                        class="btn btn-success"  
-                        style="float:; width:100px; margin-top:10px; font-size: 10px !important; margin-right:10px;"
-                        action="#{MBUsuarios.logout}" />
-             
-                    <p:commandButton value="AGENDAR" icon="entrar" class="btn btn-warning"  
-                         style="float:center; width:100px; margin-top:10px; font-size: 10px !important; margin-right:10px;"
-                        action = "/pages/agenda/agendaMedica.xhtml?faces-redirect=true" />
-          
-                    <p:commandButton value="SOBRE" icon="talk" class="btn btn-danger"  
-                          
-                        style="float:center; width:100px; margin-top:10px; font-size: 10px !important; margin-right:-100px;"
-                        action="#{MBUsuarios.logout}" />-->
-                        
-              
-              <div class="col-md-3 text-center">
-					<img class="img-circle"
-						style="border-bottom-style: solid; border-bottom-width: 5px; border-left-width: 5px; border-left-style: solid; border-right-width: 5px; border-right-style: solid; border-top-width: 5px; border-top-style: solid; border-color: #5bc0de"
-						src="../../imgs/acl.png" alt="Dados Cadastrais" />
-					<h3>Dados Cadastrais</h3>
-					<p>Ver meus dados cadastrais.</p>
-					<center>
-						<p>
-							<p:button value="Acessar"
-								style="font-size: 14px !important; width: 200px; "
-								styleClass="btn btn-info btn-lg btn-block" />
-						</p>
-					</center>
+		<div id="conteudo">
+			<h:form id="form">
+
+
+				<div class="panel-body">
+					<p:outputPanel>
+						<br style="margin-bottom: 10px;" />
+						<div class="col-md-3 text-center">
+							<img class="img-circle"
+								style="border-bottom-style: solid; border-bottom-width: 5px; border-left-width: 5px; border-left-style: solid; border-right-width: 5px; border-right-style: solid; border-top-width: 5px; border-top-style: solid; border-color: #5bc0de"
+								src="../../imgs/agendaicon.png" alt="Dados Cadastrais" />
+							<p:outputPanel>
+								<br style="margin-left: 20px;" />
+								<h3>Agenda</h3>
+							</p:outputPanel>
+
+							<center>
+								<p>
+									<p:commandButton value="Acessar"
+										style="font-size: 15px !important; width: 200px; margin-left:30px; "
+										action="/pages/agenda/agendaMedica.xhtml?faces-redirect=true"
+										styleClass="btn btn-info btn-lg btn-block" />
+								</p>
+							</center>
+						</div>
+					</p:outputPanel>
+
+
 				</div>
-                        
-                </h:form>
-			<!-- outcome="dadoscadastrais.faces?faces-redirect=true" -->
-                   <!--  <div id="prime-ui-indent">
-                       
-                        <h:graphicImage library="imgs" name="layou1.jpg" style="margin-right: 5px;" class="img-circle"/>
-                            
-                     
-                    </div>
-                     <span><h2>PrimeUI 3.0 Now Available</h2>
-                            PrimeUI is a pure CSS-JS library designed to work with any server side and client side technology featuring 50+ jQuery Widgets, Web Components, Premium Layouts-Themes and more. PrimeUI is an offspring project of the mighty PrimeFaces.
-                            <br/><br/>
-                            <a href="http://www.primefaces.org/primeui" target="_blank" class="tooltiplink tooltiplinkturquoise">Get PrimeUI</a>
-                        </span> -->
-                    
-            </div>
-          
-        </ui:define>
-    </ui:composition>
+
+
+
+
+			</h:form>
+		</div>
+		<!-- Fim div#conteudo -->
+
+	</ui:define>
+</ui:composition>
 </html>
