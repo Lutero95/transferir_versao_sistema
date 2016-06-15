@@ -171,7 +171,7 @@
 					<center>
 						<h:panelGrid columns="3" styleClass="semBorda">
 
-							<p:commandButton value="Consultar" icon="buscar"
+							<p:commandButton value="Consultar" action="#{LaudoController.buscaPersonalizada()}" icon="buscar" update=":formLaudo:tabela, :formLaudo:message"
 								style="margin-left:20px;" />
 
 							<p:commandButton value="Limpar" icon="limpar"

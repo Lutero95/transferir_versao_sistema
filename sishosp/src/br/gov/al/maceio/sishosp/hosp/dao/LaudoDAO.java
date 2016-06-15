@@ -584,6 +584,7 @@ public class LaudoDAO {
     	                l.setDtasolicitacao(rs.getDate("datasolicitacao"));
     	                l.setDtainicio(rs.getDate("periodoinicio"));
     	                l.setDtafim(rs.getDate("periodofim"));
+    	                
     	              
     	              
     	                
@@ -632,6 +633,7 @@ public class LaudoDAO {
    	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
    	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
    	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codprocedimento")));
+   	                //l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
    	                l.setDtasolicitacao(rs.getDate("datasolicitacao"));
    	                l.setDtainicio(rs.getDate("periodoinicio"));
    	                l.setDtafim(rs.getDate("periodofim"));
@@ -654,5 +656,59 @@ public class LaudoDAO {
          		}
          		return lista;
          	}
+            
+            
+            public List<LaudoBean> buscarLaudoPersonalizado() {
+            	LaudoBean l = new LaudoBean();
+            	
+        		 String sql = "select * from hosp.pacienteslaudo left join hosp.pacientes on pacienteslaudo.id_paciente=pacientes.id_paciente"
+        		 		+ " left join hosp.programa on pacienteslaudo.codprograma=programa.id_programa where";
+        		
+        		if (l.getPrograma().getIdPrograma()!= null && l.getDtainicio()!= null) {
+        			sql += " programa.codprograma like ? and pacientelaudo.periodoinicio like ? order by pacientes.nome";
+        		}
+        		List<LaudoBean> lista = new ArrayList<>();
+
+        		try {
+        			conexao = ConnectionFactory.getConnection();
+        			PreparedStatement stmt = conexao.prepareStatement(sql);
+        			if (l.getPrograma().getIdPrograma()!= null && l.getDtainicio()!= null) {
+        				stmt.setInt(1, l.getPrograma().getIdPrograma());
+        				stmt.setDate(2, new java.sql.Date(l.getDtainicio().getTime()));
+        			}
+
+        			ResultSet rs = stmt.executeQuery();
+
+        			while (rs.next()) {    				
+        		    l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+        	        l.setCodLaudoDigita(rs.getInt("id"));
+  	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("id_paciente")));
+  	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
+  	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
+  	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+  	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codprocedimento")));
+  	                l.setDtasolicitacao(rs.getDate("datasolicitacao"));
+  	                l.setDtainicio(rs.getDate("periodoinicio"));
+  	                l.setDtafim(rs.getDate("periodofim"));
+  	              
+  	   
+
+        				lista.add(l);
+
+        			}
+        		} catch (SQLException ex) {
+        			ex.printStackTrace();
+        			// throw new RuntimeException(ex); //
+        		} finally {
+        			try {
+        				conexao.close();
+        			} catch (Exception ex) {
+        				ex.printStackTrace();
+        				System.exit(1);
+        			}
+        		}
+        		return lista;
+        	}
+            
             
 }

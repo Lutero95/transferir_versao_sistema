@@ -316,6 +316,27 @@ public class LaudoController {
 
 	}
 	
+	public void buscaPersonalizada() {
+
+		List<LaudoBean> listaAux = null;
+		listaLaudoDigita = new ArrayList<>();
+
+		LaudoDAO adao = new LaudoDAO();
+
+		listaAux = adao.buscarLaudoPersonalizado();
+
+		if (listaAux != null && listaAux.size() > 0) {
+			// listaAss = null;
+			listaLaudoDigita = listaAux;
+		} else {
+			// listaAss = null;
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Nenhum Laudo encontrada.", "Aviso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+	}
+	
 	public void limparBuscaDados() {
 		tipoBuscaLaudo = 1;
 		campoBuscaLaudo = "";
