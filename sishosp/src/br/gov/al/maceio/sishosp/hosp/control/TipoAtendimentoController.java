@@ -7,6 +7,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
@@ -20,9 +21,8 @@ public class TipoAtendimentoController {
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private String tipoS;
-	
+	private GrupoBean grupoSelecionado;
 	private String cabecalho;
-	
 	
 	private Integer abaAtiva = 0;
 	
@@ -33,6 +33,7 @@ public class TipoAtendimentoController {
 		this.listaTipos = null;
 		this.descricaoBusca = new String();
 		this.tipoS = new String();
+		this.grupoSelecionado = new GrupoBean();
 	}
 
 	public void limparDados() {
@@ -40,6 +41,7 @@ public class TipoAtendimentoController {
 		this.listaTipos = null;
 		this.descricaoBusca = new String();
 		this.listaTipos = tDao.listarTipoAt();
+		this.grupoSelecionado = new GrupoBean();
 	}
 
 	public TipoAtendimentoBean getTipo() {
@@ -168,7 +170,16 @@ public class TipoAtendimentoController {
 	
 	public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
 			throws ProjetoException {
-		List<TipoAtendimentoBean> result = tDao.listarTipoAtBusca(query, 1);
-		return result;
+		return tDao.listarTipoAtAutoComplete(query,this.grupoSelecionado);
+	}
+	
+	public void selectGrupo(SelectEvent event) {
+		this.grupoSelecionado = (GrupoBean) event.getObject();
+	}
+	
+	public List<TipoAtendimentoBean> listaTipoAtAutoCompleteTodos(String query)
+			throws ProjetoException {
+		return tDao.listarTipoAtBusca(query, 1);
 	}
 }
+;

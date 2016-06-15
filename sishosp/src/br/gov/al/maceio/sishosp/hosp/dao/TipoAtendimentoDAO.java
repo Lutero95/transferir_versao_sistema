@@ -157,7 +157,6 @@ public class TipoAtendimentoDAO {
 				grupo.setDescGrupo(rs.getString(1));
 				grupo.setQtdFrequencia(rs.getInt(2));
 			}
-			System.out.println("AQUI " + grupo.getDescGrupo());
 			return grupo;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -192,6 +191,45 @@ public class TipoAtendimentoDAO {
 				tipo1.setPrimeiroAt(rs.getBoolean(3));
 				tipo1.setCodEmpresa(rs.getInt(4));
 				tipo1.setEquipe(rs.getBoolean(5));
+
+				lista.add(tipo1);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+	
+	public List<TipoAtendimentoBean> listarTipoAtAutoComplete(String descricao, GrupoBean grupo) {
+		List<TipoAtendimentoBean> lista = new ArrayList<>();
+		String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa "
+				+ " from hosp.grupo g, hosp.tipoatendimento t, hosp.tipoatendimento_grupo tg "
+				+ " where ? = tg.codgrupo and t.id = tg.codtipoatendimento "
+				+ " and t.desctipoatendimento LIKE ? "
+				+ " group by 1, 2, 3, 4, 5;";
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, grupo.getIdGrupo());
+			stm.setString(2, "%" + descricao.toUpperCase() + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				TipoAtendimentoBean tipo1 = new TipoAtendimentoBean();
+				tipo1.setIdTipo(rs.getInt(1));
+				tipo1.setDescTipoAt(rs.getString(2));
+				tipo1.setPrimeiroAt(rs.getBoolean(3));
+				tipo1.setEquipe(rs.getBoolean(4));
+				tipo1.setCodEmpresa(rs.getInt(5));
 
 				lista.add(tipo1);
 			}
