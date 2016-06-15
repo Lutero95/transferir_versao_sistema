@@ -45,6 +45,7 @@
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descPrograma}">
 							<p:ajax event="itemSelect"
+								listener="#{GrupoController.selectPrograma}"
 								update=":formAgendaMedica:outGrupo" />
 						</p:autoComplete>
 					</p:outputPanel>
@@ -61,8 +62,9 @@
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descGrupo}">
-							<p:ajax event="itemSelect"
-								update=":formAgendaMedica:outTipoAt" />
+							<p:ajax event="itemSelect" 
+							listener="#{TipoAtendimentoController.selectGrupo}"
+							update=":formAgendaMedica:outTipoAt" />
 						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusGr" value="Buscar"

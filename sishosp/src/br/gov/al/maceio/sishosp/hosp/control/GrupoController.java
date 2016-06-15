@@ -8,6 +8,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
@@ -23,6 +24,7 @@ public class GrupoController {
 	private String descricaoBusca;
 	private String tipo;
 	private String cabecalho;
+	private ProgramaBean programaSelecionado;
 
 	private Integer abaAtiva = 0;
 
@@ -35,6 +37,7 @@ public class GrupoController {
 		this.descricaoBusca = new String();
 		this.tipo = new String();
 		this.cabecalho = "";
+		this.programaSelecionado = new ProgramaBean();
 	}
 
 	public void limparDados() {
@@ -43,6 +46,7 @@ public class GrupoController {
 		this.listaGruposProgramas = new ArrayList<>();
 		this.descricaoBusca = new String();
 		listaGrupos = gDao.listarGrupos();
+		this.programaSelecionado = new ProgramaBean();
 	}
 
 	public void gravarGrupo() throws ProjetoException, SQLException {
@@ -175,8 +179,10 @@ public class GrupoController {
 
 	public List<GrupoBean> listaGrupoAutoComplete(String query)
 			throws ProjetoException {
-		GrupoDAO gDao = new GrupoDAO();
-		List<GrupoBean> result = gDao.listarGruposBusca(query, 1);
-		return result;
+		return gDao.listarGruposAutoComplete(query, this.programaSelecionado);
+	}
+
+	public void selectPrograma(SelectEvent event) {
+		this.programaSelecionado = (ProgramaBean) event.getObject();
 	}
 }

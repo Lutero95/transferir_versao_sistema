@@ -10,14 +10,15 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 public class GrupoDAO {
-	
+
 	Connection con = null;
 	PreparedStatement ps = null;
-	
-	public boolean gravarGrupo(GrupoBean grupo) throws SQLException{
-		
+
+	public boolean gravarGrupo(GrupoBean grupo) throws SQLException {
+
 		String sql = "insert into hosp.grupo (descgrupo, qtdfrequencia) values (?, ?);";
 		try {
 			System.out.println("VAI CADASTRAR Grupo");
@@ -30,84 +31,83 @@ public class GrupoDAO {
 			System.out.println("CADASTROU grupo");
 			return true;
 		} catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
-        }
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
 	}
-	
-	public List<GrupoBean> listarGruposPorPrograma(int codPrograma){
+
+	public List<GrupoBean> listarGruposPorPrograma(int codPrograma) {
 		List<GrupoBean> lista = new ArrayList<>();
 		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
-				+" where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma";
-        try {
-        	System.out.println("CHEGOU AQUI");
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1,  codPrograma);
-            ResultSet rs = stm.executeQuery();
+				+ " where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma";
+		try {
+			System.out.println("CHEGOU AQUI");
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, codPrograma);
+			ResultSet rs = stm.executeQuery();
 
-            while (rs.next()) {
-            	GrupoBean grupo = new GrupoBean();
-                grupo.setIdGrupo(rs.getInt("id_grupo"));
-                grupo.setDescGrupo(rs.getString("descgrupo"));    
-                grupo.setQtdFrequencia(rs.getInt("qtdfrequencia")); 
-                
-                lista.add(grupo);
-            }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
-        }
-        for (GrupoBean grupoBean : lista) {
+			while (rs.next()) {
+				GrupoBean grupo = new GrupoBean();
+				grupo.setIdGrupo(rs.getInt("id_grupo"));
+				grupo.setDescGrupo(rs.getString("descgrupo"));
+				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+
+				lista.add(grupo);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		for (GrupoBean grupoBean : lista) {
 			System.out.println(grupoBean.getDescGrupo());
 		}
 		return lista;
 	}
-	
-	public List<GrupoBean> listarGrupos(){
+
+	public List<GrupoBean> listarGrupos() {
 		List<GrupoBean> lista = new ArrayList<>();
 		String sql = "select id_grupo, descgrupo, qtdfrequencia from hosp.grupo order by id_grupo";
-        try {
-        	System.out.println("CHEGOU AQUI");
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            ResultSet rs = stm.executeQuery();
+		try {
+			System.out.println("CHEGOU AQUI");
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
 
-            while (rs.next()) {
-            	GrupoBean grupo = new GrupoBean();
-                grupo.setIdGrupo(rs.getInt("id_grupo"));
-                grupo.setDescGrupo(rs.getString("descgrupo"));    
-                grupo.setQtdFrequencia(rs.getInt("qtdfrequencia")); 
-                
-                lista.add(grupo);
-            }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
-        }
+			while (rs.next()) {
+				GrupoBean grupo = new GrupoBean();
+				grupo.setIdGrupo(rs.getInt("id_grupo"));
+				grupo.setDescGrupo(rs.getString("descgrupo"));
+				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+
+				lista.add(grupo);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
 		return lista;
 	}
-	
-	public List<GrupoBean> listarGruposBusca(String descricao,
-			Integer tipo) {
+
+	public List<GrupoBean> listarGruposBusca(String descricao, Integer tipo) {
 		List<GrupoBean> lista = new ArrayList<>();
 		String sql = "select id_grupo, descgrupo, qtdfrequencia from hosp.grupo ";
 		if (tipo == 1) {
@@ -137,10 +137,48 @@ public class GrupoDAO {
 				System.exit(1);
 			}
 		}
-		
+
 		return lista;
 	}
-	
+
+	public List<GrupoBean> listarGruposAutoComplete(String descricao,
+			ProgramaBean prog) {
+		List<GrupoBean> lista = new ArrayList<>();
+		System.out.println("De " + descricao);
+		System.out.println("Pr " + prog.getDescPrograma());
+		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
+				+ " where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma"
+				+ " and g.descgrupo LIKE ?  order by id_grupo";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, prog.getIdPrograma());
+			stm.setString(2, "%" + descricao.toUpperCase() + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				GrupoBean grupo = new GrupoBean();
+				grupo.setIdGrupo(rs.getInt("id_grupo"));
+				grupo.setDescGrupo(rs.getString("descgrupo"));
+				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+
+				lista.add(grupo);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+
 	public Boolean alterarGrupo(GrupoBean grupo) throws ProjetoException {
 		String sql = "update hosp.grupo set descgrupo = ?, qtdfrequencia = ? where id_grupo = ?";
 		try {
@@ -162,7 +200,7 @@ public class GrupoDAO {
 			}
 		}
 	}
-	
+
 	public Boolean excluirGrupo(GrupoBean grupo) throws ProjetoException {
 		String sql = "delete from hosp.grupo where id_grupo = ?";
 		try {
@@ -182,8 +220,8 @@ public class GrupoDAO {
 			}
 		}
 	}
-	
-	public GrupoBean buscaGrupoPorId (Integer i) throws ProjetoException {
+
+	public GrupoBean buscaGrupoPorId(Integer i) throws ProjetoException {
 		String sql = "select id_grupo, descgrupo, qtdfrequencia from hosp.grupo where id_grupo=? order by id_grupo";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -211,8 +249,8 @@ public class GrupoDAO {
 			}
 
 		}
-	}	
-	
+	}
+
 	public GrupoBean listarGrupoPorId(int id) {
 
 		GrupoBean grupo = new GrupoBean();
@@ -222,12 +260,12 @@ public class GrupoDAO {
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, id);
 			ResultSet rs = stm.executeQuery();
-			while(rs.next()){
-				
-                grupo.setIdGrupo(rs.getInt("id_grupo"));
-                grupo.setDescGrupo(rs.getString("descgrupo"));    
-                grupo.setQtdFrequencia(rs.getInt("qtdfrequencia")); 
-				//programa.setCodFederal(rs.getDouble("codfederal"));
+			while (rs.next()) {
+
+				grupo.setIdGrupo(rs.getInt("id_grupo"));
+				grupo.setDescGrupo(rs.getString("descgrupo"));
+				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+				// programa.setCodFederal(rs.getDouble("codfederal"));
 			}
 
 		} catch (SQLException ex) {

@@ -7,18 +7,13 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.event.SelectEvent;
-
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 public class AgendaController {
@@ -239,6 +234,12 @@ public class AgendaController {
 	}
 
 	public void consultarAgenda() {
+		if(this.dataAtendimentoC == null){
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Selecione uma data de atendimento!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
 		this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC,
 				this.protuarioC, this.cnsC, this.tipoC);
 	}
@@ -306,23 +307,4 @@ public class AgendaController {
 		this.agenda.setMax(null);
 	}
 
-	public void selectPaciente(SelectEvent event) {
-		PacienteBean paci = (PacienteBean) event.getObject();
-		System.out.println("ASDUOASD " + paci.getNome());
-	}
-
-	public void selectPrograma(SelectEvent event) {
-		ProgramaBean prog = (ProgramaBean) event.getObject();
-		System.out.println("ASDUOASD " + prog.getDescPrograma());
-	}
-
-	public void selectGrupo(SelectEvent event) {
-		GrupoBean gru = (GrupoBean) event.getObject();
-		System.out.println("ASDUOASD " + gru.getDescGrupo());
-	}
-
-	public void selectTipoAt(SelectEvent event) {
-		TipoAtendimentoBean tipoAt = (TipoAtendimentoBean) event.getObject();
-		System.out.println("ASDUOASD " + tipoAt.getDescTipoAt());
-	}
 }

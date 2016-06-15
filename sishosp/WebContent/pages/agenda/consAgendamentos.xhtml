@@ -40,12 +40,13 @@
 						<h:outputLabel for="tipoAt" value="Tipo At.:" />
 						<br />
 						<p:outputPanel>
-							<p:inputText id="codTipo"
-								value="#{AgendaController.tipoC.idTipo}" readonly="true"
-								style="width: 40px" />
-							<p:inputText id="tipoAt"
-								value="#{AgendaController.tipoC.descTipoAt}" readonly="true"
-								style="width: 300px" />
+							<p:autoComplete value="#{AgendaController.tipoC}" size="60"
+								converter="conTipoAtendimento"
+								completeMethod="#{TipoAtendimentoController.listaTipoAtAutoCompleteTodos}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descTipoAt}">
+							</p:autoComplete>
 							<p:commandButton id="btBusTi" value="Buscar"
 								action="#{TipoAtendimentoController.listarTodosTipos()}"
 								onclick="PF('dlgConsuTipoAtend').show();" />
@@ -54,7 +55,7 @@
 
 					<p:commandButton value="Ver Agenda" style="margin-top: 20px;"
 						action="#{AgendaController.consultarAgenda()}"
-						update=":formConsAge:dtConsultas" />
+						update=":formConsAge:dtConsultas, :formConsAge:msg" />
 
 				</p:panelGrid>
 				<br />
@@ -106,6 +107,13 @@
 					</p:column>
 				</p:dataTable>
 
+				<p:separator />
+				<center>
+					<p:commandButton value="Sair" icon="btlogout" update=":formConsAge"
+						actionListener="#{AgendaController.limparDados()}"
+						action="/pages/agenda/agendaMedica.xhtml?faces-redirect=true" />
+				</center>
+
 			</p:panel>
 
 			<p:dialog header="Consulta Tipos de Atendimento"
@@ -134,7 +142,7 @@
 			</p:dialog>
 
 		</h:form>
-		
+
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 			<h:form id="dlgexcluir">
