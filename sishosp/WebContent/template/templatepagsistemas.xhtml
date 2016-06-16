@@ -14,8 +14,8 @@
 	</ui:insert>
 
 	<!-- ESTILOS DA PAGINAS VARIOS LINKS -->
-	<link media="all" rel="stylesheet" type="text/css"
-		href="../../css/all.css" />
+	<link type="text/css" rel="StyleSheet"  href="../../css/all.css" />
+	<link type="text/css" rel="StyleSheet"  href="../../css/thulio.css" />
 	<link media="all" rel="stylesheet" type="text/css"
 		href="../../css/tooltipster.css" />
 	<link media="all" rel="stylesheet" type="text/css"
@@ -36,11 +36,6 @@
 	<!-- JAVASCRIPT  -->
 	<!--<h:outputScript library="jquery" name="jquery-1.11.3.min.js" />
     <h:outputScript library="bootstrap/js" name="bootstrap.min.js" /> -->
-	<script type="text/javascript"
-		src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
-	<script type="text/javascript"
-		src="../../resources/js/bootstrapValidator.js"></script>
-
 
 	<script type="text/javascript">
             PrimeFaces.locales['pt'] = {
@@ -78,6 +73,10 @@
 </h:head>
 
 <h:body>
+
+<div id="tudo">
+<div id="cabecalho">
+
 	<p:ajaxStatus onstart="PF('statusDialog').show();"
 		onsuccess="PF('statusDialog').hide();" />
 	<p:dialog id="myDialogId" styleClass="process_msg" modal="true"
@@ -295,21 +294,13 @@
 		</p:menubar>
 
 	</h:form>
+</div>
 
-	<div class="container" id="CORPO">
+	<div id="conteudo" class="container" >
 		<ui:insert name="body" />
 	</div>
-
-	<div id="footer"
-		style="margin-top: 50px; width: 100%; background-color: #EEEEEE;"
-		role="footer">
-		<ui:insert name="nav_footer">
-			<ui:include src="footer.xhtml" />
-		</ui:insert>
-	</div>
-
-	<!-- 
-        <footer id="footer" class="footer-page">
+	
+        <footer id="rodape" class="footer-page">
 	<div class="container">
 
 		<div class="connect">
@@ -319,17 +310,17 @@
 
 		<div class="copyright">© EHOSP - 2016. Todos os direitos
 			reservados.</div>
-		 <a href="#"><img alt="envato" class="logo-image" src="../../imgs/LOGOOO.png"></img></a>
+		 <a href="#"><img alt="envato" class="logo-image" src="../../imgs/imagem.png"></img></a>
 	</div>
 	</footer> 
-        -->
+       
 	<script type="text/javascript">
 		setTimeout(function() {
 			$('.msg').fadeOut('fast');
 		}, 3000);
 	</script>
 
-
+</div>
 </h:body>
 
 

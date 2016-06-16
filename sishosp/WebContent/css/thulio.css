@@ -1,0 +1,48 @@
+*{
+margin: 0;
+padding: 0;
+}
+
+html, body {
+height: 100%;
+}
+
+* html #tudo {height: 100%;}
+
+body {
+background-color: #CCC;
+}
+
+#tudo {
+width: 1950px;
+
+margin: 0 auto;
+
+text-align: left;
+
+position: relative;
+
+min-height: 100%;
+
+}
+
+#conteudo {
+padding-bottom: 50px;
+}
+
+#rodape {
+position: absolute;
+bottom: 0;
+height: 35px;
+line-height: 35px;
+text-align: center;
+width: 100%;
+overflow:hidden;
+background:#37474F;
+padding:60px 0px;
+margin: 0px 0px;
+}
+
+#cabecalho {
+
+}
