@@ -27,12 +27,18 @@
 
 						<h:outputLabel for="prog" value="Programa:" />
 						<p:outputPanel id="outProg">
-							<p:inputText id="codProg"
+							<!-- <p:inputText id="codProg"
 								value="#{LaudoController.laudo.programa.idPrograma}"
-								readonly="true" style="width: 40px; margin-left:20px;" />
-							<p:inputText id="prog"
-								value="#{LaudoController.laudo.programa.descPrograma}"
-								readonly="true" style="width: 300px" />
+								readonly="true" style="width: 40px; margin-left:20px;" /> -->
+							<p:autoComplete value="#{LaudoController.laudo.programa}"
+							size="60" converter="conPrograma"
+							disabled="#{LaudoController.laudo.programa==null}"
+							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descPrograma}">
+							<p:ajax event="itemSelect" update=":formLaudo" />
+						</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusPr" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuProg').show();" />

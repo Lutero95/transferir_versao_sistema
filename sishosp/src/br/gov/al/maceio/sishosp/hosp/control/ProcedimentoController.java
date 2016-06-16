@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
+
 public class ProcedimentoController {
 	
 	private ProcedimentoBean proc;
@@ -143,5 +144,12 @@ public class ProcedimentoController {
 
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
+	}
+	
+	public List<ProcedimentoBean> listaProcedimentoAutoComplete(String query)
+			throws ProjetoException {
+		ProcedimentoDAO pDao = new ProcedimentoDAO();
+		List<ProcedimentoBean> result = pDao.listarProcedimentoBusca(query, 1);
+		return result;
 	}
 }

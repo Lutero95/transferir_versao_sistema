@@ -181,6 +181,12 @@ public class GrupoController {
 			throws ProjetoException {
 		return gDao.listarGruposAutoComplete(query, this.programaSelecionado);
 	}
+	
+	public List<GrupoBean> listaGrupoAutoComplete2(String query)
+			throws ProjetoException {
+		return gDao.listarGruposAutoComplete2(query);
+	}
+
 
 	public void selectPrograma(SelectEvent event) {
 		this.programaSelecionado = (ProgramaBean) event.getObject();

@@ -280,5 +280,40 @@ public class GrupoDAO {
 		}
 		return grupo;
 	}
+	
+	public List<GrupoBean> listarGruposAutoComplete2(String descricao) {
+		List<GrupoBean> lista = new ArrayList<>();
+		
+		
+		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia from hosp.grupo g "
+				+ "where g.descgrupo LIKE ?  order by id_grupo";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				GrupoBean grupo = new GrupoBean();
+				grupo.setIdGrupo(rs.getInt("id_grupo"));
+				grupo.setDescGrupo(rs.getString("descgrupo"));
+				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+
+				lista.add(grupo);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
 
 }

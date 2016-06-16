@@ -160,7 +160,7 @@ public class ProcedimentoDAO {
 		String sql = "select codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento"
 				+ " from hosp.proc ";
 		if (tipoBuscar == 1) {
-			sql += " where nome LIKE ?  order by codproc";
+			sql += " where nome LIKE ?";
 		}
 		try {
 			con = ConnectionFactory.getConnection();
