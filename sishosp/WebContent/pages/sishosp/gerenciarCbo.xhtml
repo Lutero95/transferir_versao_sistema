@@ -55,7 +55,7 @@
 
 						<p:commandButton id="btninc" value="Novo"
 							actionListener="#{CboController.limparDados()}"
-							action="/pages/sishosp/cadastroCbo.faces" icon="add"
+							action="/pages/sishosp/cadastroCbo.faces?faces-redirect=true" icon="add"
 							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
 							<f:setPropertyActionListener value="I"
 								target="#{CboController.tipo}" />
@@ -98,7 +98,7 @@
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroCbo.faces">
+									action="/pages/sishosp/cadastroCbo.faces?faces-redirect=true">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{CboController.cbo}" />
 

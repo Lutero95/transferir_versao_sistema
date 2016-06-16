@@ -61,7 +61,7 @@
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							action="/pages/sishosp/cadastroLaudoDigita.faces" icon="add"
+							action="/pages/sishosp/cadastroLaudoDigita.faces?faces-redirect=true" icon="add"
 							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
 							<f:setPropertyActionListener value="I"
 								target="#{LaudoController.tipo}" />
@@ -116,7 +116,7 @@
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroLaudoDigita.faces">
+									action="/pages/sishosp/cadastroLaudoDigita.faces?faces-redirect=true">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{LaudoController.laudo}" />
 

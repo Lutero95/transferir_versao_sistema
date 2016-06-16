@@ -63,28 +63,12 @@
 
 						<p:commandButton id="btninc" value="Novo"
 							actionListener="#{EscolaridadeController.limparDados()}"
-							action="/pages/sishosp/cadastroEscolaridade.faces" icon="add"
+							action="/pages/sishosp/cadastroEscolaridade.faces?faces-redirect=true" icon="add"
 							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
 							<f:setPropertyActionListener value="I"
 								target="#{EscolaridadeController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>
-
-						<!--  <p:commandButton id="btnalt" value="Alterar"
-                                             style="margin-left:10px" update=":frminc:pnlinc"
-                                             action="#{clienteController.alteraCliente()}"
-                                             icon="ui-icon-wrench">
-                                <f:setPropertyActionListener value="A"
-                                target="#{clienteController.tipo}" />
-                                <p:tooltip for="btnalt" value="Alterar"></p:tooltip>
-                            </p:commandButton>
-
-
-                            <p:commandButton icon="ui-icon-closethick" value="Excluir"
-                                             style="margin-left:10px" id="btnexc"
-                                             action="#{clienteController.acaoExcluir()}">
-                                <p:tooltip for="btnexc" value="Excluir"></p:tooltip>
-                            </p:commandButton>-->
 
 					</p:outputPanel>
 				</p:panelGrid>
@@ -114,7 +98,7 @@
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroEscolaridade.faces">
+									action="/pages/sishosp/cadastroEscolaridade.faces?faces-redirect=true">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{EscolaridadeController.escolaridade}" />
 
