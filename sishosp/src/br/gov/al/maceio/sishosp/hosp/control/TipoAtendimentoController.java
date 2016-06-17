@@ -60,6 +60,7 @@ public class TipoAtendimentoController {
 	}
 	
 	public void atualizaListaTipos(GrupoBean g){
+		this.grupoSelecionado = g;
 		this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
 	}
 	
@@ -175,6 +176,7 @@ public class TipoAtendimentoController {
 	
 	public void selectGrupo(SelectEvent event) {
 		this.grupoSelecionado = (GrupoBean) event.getObject();
+		atualizaListaTipos(grupoSelecionado);
 	}
 	
 	public List<TipoAtendimentoBean> listaTipoAtAutoCompleteTodos(String query)

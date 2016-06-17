@@ -25,7 +25,6 @@ public class GrupoController {
 	private String tipo;
 	private String cabecalho;
 	private ProgramaBean programaSelecionado;
-
 	private Integer abaAtiva = 0;
 
 	GrupoDAO gDao = new GrupoDAO();
@@ -120,6 +119,7 @@ public class GrupoController {
 
 	public void atualizaLista(ProgramaBean p) {
 		GrupoDAO gDao = new GrupoDAO();
+		this.programaSelecionado = p;
 		this.listaGruposProgramas = gDao.listarGruposPorPrograma(p
 				.getIdPrograma());
 	}
@@ -187,8 +187,8 @@ public class GrupoController {
 		return gDao.listarGruposAutoComplete2(query);
 	}
 
-
 	public void selectPrograma(SelectEvent event) {
 		this.programaSelecionado = (ProgramaBean) event.getObject();
+		atualizaLista(programaSelecionado);
 	}
 }

@@ -46,7 +46,7 @@
 							itemLabel="#{theme.descPrograma}">
 							<p:ajax event="itemSelect"
 								listener="#{GrupoController.selectPrograma}"
-								update=":formAgendaMedica:outGrupo" />
+								update=":formAgendaMedica:outGrupo, :formConsuGrop:dtGrupo" />
 						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusPr" value="Buscar"
@@ -64,7 +64,7 @@
 							itemLabel="#{theme.descGrupo}">
 							<p:ajax event="itemSelect" 
 							listener="#{TipoAtendimentoController.selectGrupo}"
-							update=":formAgendaMedica:outTipoAt" />
+							update=":formAgendaMedica:outTipoAt, :formConsuTipoAt:dtTipoAt" />
 						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusGr" value="Buscar"
