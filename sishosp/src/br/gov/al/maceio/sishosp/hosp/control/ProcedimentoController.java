@@ -148,7 +148,6 @@ public class ProcedimentoController {
 	
 	public List<ProcedimentoBean> listaProcedimentoAutoComplete(String query)
 			throws ProjetoException {
-		ProcedimentoDAO pDao = new ProcedimentoDAO();
 		List<ProcedimentoBean> result = pDao.listarProcedimentoBusca(query, 1);
 		return result;
 	}

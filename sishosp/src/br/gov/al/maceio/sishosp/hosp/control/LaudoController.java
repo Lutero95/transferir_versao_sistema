@@ -53,6 +53,8 @@ public class LaudoController {
 	private String tipo;
 	private Integer tipoBuscaLaudo;
 	private String campoBuscaLaudo;
+	private Integer campoBuscaNumero;
+	private Date campoBuscaData;
 	private String statusLaudo;
 	private String situacao;
 	
@@ -69,7 +71,10 @@ public class LaudoController {
 		tipoBuscaLaudo = 1;
 		campoBuscaLaudo = "";
 		statusLaudo = "P";
+		campoBuscaNumero = 1;
+		campoBuscaData = null;
 		this.cabecalho = "";
+		
 		
 		 listaLaudo = new ArrayList<>();
 		 listaLaudo = null;
@@ -281,7 +286,7 @@ public class LaudoController {
 
 		LaudoDAO adao = new LaudoDAO();
 
-		listaAux = adao.buscarTipoLaudo(campoBuscaLaudo,tipoBuscaLaudo);
+		listaAux = adao.buscarTipoLaudo(campoBuscaLaudo,tipoBuscaLaudo, campoBuscaNumero, campoBuscaData);
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -317,9 +322,9 @@ public class LaudoController {
 	}
 	
 	public void buscaPersonalizada() {
-
+System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().getIdPrograma());
 		List<LaudoBean> listaAux = null;
-		listaLaudoDigita = new ArrayList<>();
+		listaLaudo = new ArrayList<>();
 
 		LaudoDAO adao = new LaudoDAO();
 
@@ -327,7 +332,7 @@ public class LaudoController {
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
-			listaLaudoDigita = listaAux;
+			listaLaudo = listaAux;
 		} else {
 			// listaAss = null;
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
@@ -603,7 +608,22 @@ public class LaudoController {
 		}
 		return cabecalho;
 	}
-	    
-	    
+
+	public Integer getCampoBuscaNumero() {
+		return campoBuscaNumero;
+	}
+
+	public void setCampoBuscaNumero(Integer campoBuscaNumero) {
+		this.campoBuscaNumero = campoBuscaNumero;
+	}
+
+	public Date getCampoBuscaData() {
+		return campoBuscaData;
+	}
+
+	public void setCampoBuscaData(Date campoBuscaData) {
+		this.campoBuscaData = campoBuscaData;
+	}
+   
 
 }

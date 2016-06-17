@@ -31,7 +31,7 @@
 							completeMethod="#{PacienteController.listaPacienteAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
-							<p:ajax event="itemSelect" update=":formLaudo:outProg, :formLaudo:btBusPr" />
+							<p:ajax event="itemSelect" update=":formLaudo:outProg, :formLaudo:outPacie3, :formLaudo:outPacie2, :formLaudo:btBusPr" />
 						</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusPa" value="Buscar" icon="buscar"
@@ -423,7 +423,7 @@
 						<p:column headerText="Confirmar"
 							style="width:20%;text-align: center">
 							<p:commandButton
-								update=":formLaudo:outPacie,:formLaudo:outProg, :formLaudo:btBusPr"
+								update=":formLaudo:outPacie, :formLaudo:outPacie3, :formLaudo:outPacie2, :formLaudo:outProg, :formLaudo:btBusPr"
 								icon="confirmar" title="Selecionar"
 								onclick="PF('dlgConsuPac').hide();">
 								<f:setPropertyActionListener value="#{pacie}"
@@ -464,7 +464,7 @@
 			<p:dialog header="Consulta Grupo" widgetVar="dlgConsuGrop"
 				modal="true" width="550px">
 				<h:form id="formConsuGrop">
-					<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
+					<p:dataTable value="#{GrupoController.listaGruposProgramas}" id="dtGrupo"
 						resizableColumns="true" var="grupo"
 						emptyMessage="Não existe nenhum grupo cadastrado!">
 						<p:column headerText="CÓD.">

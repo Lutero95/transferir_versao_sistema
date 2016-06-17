@@ -65,6 +65,7 @@ public class LaudoBean {
 		situacao = "P";
 		this.fornecedor = null;
 		this.cid = null;
+		this.dtautorizacao = null;
 		fornecedor = new FornecedorBean();
 		equipamento = new EquipamentoBean();
 		this.equipe = null;

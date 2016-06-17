@@ -36,6 +36,10 @@
 							requiredMessage="Informe o diretório da página.">
 
 							<f:selectItem itemLabel="Nome" itemValue="1" />
+							<f:selectItem itemLabel="Situação" itemValue="2" />
+							<f:selectItem itemLabel="Recurso" itemValue="3" />
+							<f:selectItem itemLabel="Prontuario" itemValue="4" />
+							<f:selectItem itemLabel="Data Autorização" itemValue="5" />
 
 
 							<p:ajax event="change" update=":frmmensagem:pnlprincipal" />
@@ -45,24 +49,62 @@
 							style="height:28px;margin-top:-6px;margin-left:16px;"
 							value="#{LaudoController.campoBuscaLaudo}"
 							rendered="#{LaudoController.tipoBuscaLaudo == 1}" />
+							
+								<p:selectOneRadio id="campoBuscaSituacao" style="position:absolute; margin-left:250px; top:140px;"
+								required="false" 
+								value="#{LaudoController.campoBuscaLaudo}"
+							    rendered="#{LaudoController.tipoBuscaLaudo == 2}">
+
+								<f:selectItem itemLabel="Pendente" itemValue="P" />
+								<f:selectItem itemLabel="Autorizado" itemValue="A" />
+						
+
+							    </p:selectOneRadio>
+							    
+							    <p:selectOneRadio id="campoBuscaRecurso" style="position:absolute; margin-left:250px; top:140px;"
+								required="false" 
+								value="#{LaudoController.campoBuscaLaudo}"
+							    rendered="#{LaudoController.tipoBuscaLaudo == 3}">
+
+								<f:selectItem itemLabel="Faec" itemValue="F" />
+								<f:selectItem itemLabel="Mac" itemValue="M" />
+								
+
+							    </p:selectOneRadio>
+
+                            <p:inputText id="campoBuscaProntuario"
+							style="height:28px;margin-top:-6px;margin-left:16px;"
+							value="#{LaudoController.campoBuscaNumero}"
+							rendered="#{LaudoController.tipoBuscaLaudo == 4}" />
+							
+								<p:calendar id="campoBuscaDataInicio" locale="pt" converter="conLaudo"
+								style="height:28px;margin-top:-6px;margin-left:16px;"
+								value="#{LaudoController.campoBuscaData}"
+							    rendered="#{LaudoController.tipoBuscaLaudo == 5}" navigator="true"
+								mask="true" pattern="MM/yyyy" />
 
 
+                                <p:calendar id="campoBuscaDataFim" locale="pt" converter="conLaudo"
+								style="height:28px;margin-top:-6px;margin-left:36px;"
+								value="#{LaudoController.campoBuscaData}"
+							    rendered="#{LaudoController.tipoBuscaLaudo == 5}" navigator="true"
+								mask="true" pattern="MM/yyyy" /> 
 
 
 						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
 							styleClass="btn btn-info"
-							style="height:30px; margin-left:2px; margin-top:10px;"
+							style="position:absolute; height:30px; margin-left:300px; margin-top:10px;"
 							action="#{LaudoController.buscarLaudo()}"
 							update=":frmmensagem:tabela, :frmmensagem:growl" />
 						<p:commandButton value="Limpar Busca" icon="limpar"
 							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
 							actionListener="#{LaudoController.limparBuscaDados()}"
-							style="margin-left:20px" />
+							style="position:absolute;margin-left:430px; margin-top:13px" />
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
 							action="/pages/sishosp/cadastroLaudo.faces?faces-redirect=true" icon="add"
-							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
+							styleClass="btn btn-sm btn-success" style="position:absolute;margin-top: 15px;">
 							<f:setPropertyActionListener value="I"
 								target="#{LaudoController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
@@ -78,7 +120,7 @@
 
 
 				<p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover"
-					id="tabela" style="margin-top:20px;"
+					id="tabela" style="margin-top:50px;"
 					value="#{LaudoController.listaLaudo}" var="tab" paginator="true"
 					paginatorPosition="bottom" rows="12">
 

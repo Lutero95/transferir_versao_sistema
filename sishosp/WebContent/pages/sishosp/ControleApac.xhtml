@@ -32,7 +32,6 @@
 								readonly="true" style="width: 40px; margin-left:20px;" /> -->
 							<p:autoComplete value="#{LaudoController.laudo.programa}"
 							size="60" converter="conPrograma"
-							disabled="#{LaudoController.laudo.programa==null}"
 							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
@@ -101,14 +100,14 @@
 							<br />
 							<p:calendar id="dataAt" showOn="button" locale="pt"
 								value="#{LaudoController.laudo.dtautorizacao}" navigator="true"
-								mask="true" pattern="dd/MM/yyyy" />
+								mask="true" pattern="MM/yyyy" />
 						</p:outputPanel>
 
 						<p:outputPanel style="margin-left:16px;">
-							<h:outputLabel for="dataVen" value="Data para Vencimento" />
+							<h:outputLabel for="dataVen" value="Data Solicitação" />
 							<br />
-							<p:calendar id="dataVenci" showOn="button" locale="pt"
-								navigator="true" mask="true" pattern="dd/MM/yyyy"
+							<p:calendar id="dataSolic" showOn="button" locale="pt"
+								navigator="true" mask="true" pattern="MM/yyyy"
 								readonly="true" />
 						</p:outputPanel>
 					</h:panelGrid>
@@ -123,7 +122,7 @@
 						</p:column>
 
 						<p:column headerText="CPF" style="font-weight:bold;width:30%;">
-							<h:outputText value="#{tab.paciente.cpf}" />
+							<h:outputText value="#{tab.programa.idPrograma}" />
 						</p:column>
 
 						<p:column headerText="PACIENTE"
@@ -177,7 +176,8 @@
 					<center>
 						<h:panelGrid columns="3" styleClass="semBorda">
 
-							<p:commandButton value="Consultar" action="#{LaudoController.buscaPersonalizada()}" icon="buscar" update=":formLaudo:tabela, :formLaudo:message"
+							<p:commandButton value="Consultar" action="#{LaudoController.buscaPersonalizada()}" icon="buscar" 
+							update=":formLaudo:tabela, :formLaudo:message"
 								style="margin-left:20px;" />
 
 							<p:commandButton value="Limpar" icon="limpar"

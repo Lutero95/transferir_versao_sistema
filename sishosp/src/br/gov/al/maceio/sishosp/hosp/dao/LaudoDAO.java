@@ -7,12 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
+import java.util.Date;
 
 import javax.faces.context.FacesContext;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+
 
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -20,12 +21,16 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 
 
 
 public class LaudoDAO {
+	
+	Connection con = null;
+	PreparedStatement ps = null;
 	private Connection conexao = null;
 	private ProfissionalDAO profDao = new ProfissionalDAO();
 	private ProgramaDAO progDao = new ProgramaDAO();
@@ -492,7 +497,7 @@ public class LaudoDAO {
                 return lista;
             } 
             
-            public List<LaudoBean> buscarTipoLaudo(String valor, Integer tipo) {
+            public List<LaudoBean> buscarTipoLaudo(String valor, Integer tipo, Integer numero, Date data) {
         		
             	
           		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente where";
@@ -500,13 +505,39 @@ public class LaudoDAO {
           		if (tipo == 1) {
           			sql += " pacientes.nome like ? order by pacientes.nome";
           		}
+          		if (tipo == 2) {
+          			sql += " apac.situacao like ? order by pacientes.nome";
+          		}
+          		if (tipo == 3) {
+          			sql += " apac.recurso like ? order by pacientes.nome";
+          		}
+          		if (tipo == 4) {
+          			sql += " CAST(apac.id_apac AS INT) = ? order by pacientes.nome";
+          		}
+          		if (tipo == 5) {
+          			sql += " BETWEEN = ? AND = ? order by pacientes.nome";
+          		}
+          
           		List<LaudoBean> lista = new ArrayList<>();
-
+     
           		try {
           			conexao = ConnectionFactory.getConnection();
           			PreparedStatement stmt = conexao.prepareStatement(sql);
           			if (tipo == 1) {
           				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+          			}
+          			if (tipo == 2) {
+          				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+          			}
+          			if (tipo == 3) {
+          				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+          			}
+          			if (tipo == 4) {
+          				stmt.setInt(1,numero);
+          			}
+          			if (tipo == 5) {
+          				stmt.setDate(1, new java.sql.Date(data.getTime()));
+          				stmt.setDate(2, new java.sql.Date(data.getTime()));
           			}
 
           			ResultSet rs = stmt.executeQuery();
@@ -661,35 +692,59 @@ public class LaudoDAO {
             public List<LaudoBean> buscarLaudoPersonalizado() {
             	LaudoBean l = new LaudoBean();
             	
-        		 String sql = "select * from hosp.pacienteslaudo left join hosp.pacientes on pacienteslaudo.id_paciente=pacientes.id_paciente"
-        		 		+ " left join hosp.programa on pacienteslaudo.codprograma=programa.id_programa where";
+        		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente "
+        		 		+ "left join hosp.programa on apac.codprograma=programa.id_programa where";
         		
-        		if (l.getPrograma().getIdPrograma()!= null && l.getDtainicio()!= null) {
-        			sql += " programa.codprograma like ? and pacientelaudo.periodoinicio like ? order by pacientes.nome";
+        		if (l.getPrograma().getIdPrograma()!= null && l.getDtautorizacao()!= null) {
+        			sql += " CAST(programa.id_programa AS TEXT) = ? and apac.dtautorizacao BETWEEN ? order by pacientes.nome";
         		}
         		List<LaudoBean> lista = new ArrayList<>();
 
         		try {
         			conexao = ConnectionFactory.getConnection();
         			PreparedStatement stmt = conexao.prepareStatement(sql);
-        			if (l.getPrograma().getIdPrograma()!= null && l.getDtainicio()!= null) {
+        			if (l.getPrograma().getIdPrograma()!= null && l.getDtautorizacao()!= null) {
         				stmt.setInt(1, l.getPrograma().getIdPrograma());
-        				stmt.setDate(2, new java.sql.Date(l.getDtainicio().getTime()));
+        				stmt.setDate(2, new java.sql.Date(l.getDtautorizacao().getTime()));
+        			}
+        			
+        			else{
+        				System.out.println("porra nenhuma que entrou");
+        				
         			}
 
         			ResultSet rs = stmt.executeQuery();
 
         			while (rs.next()) {    				
-        		    l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
-        	        l.setCodLaudoDigita(rs.getInt("id"));
-  	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("id_paciente")));
+        		
+  	                
+  	            
+  	          
+  	                l.setCodLaudoDigita(rs.getInt("id"));
+  	                l.setId_apac(rs.getInt("id_apac"));
+	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("codpaciente")));
+	                l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
   	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
-  	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
-  	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
-  	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codprocedimento")));
-  	                l.setDtasolicitacao(rs.getDate("datasolicitacao"));
-  	                l.setDtainicio(rs.getDate("periodoinicio"));
+	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codproc")));
+	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("codfornecedor")));
+	                l.setRecurso(rs.getString("recurso"));
+	                l.setApac(rs.getString("apac"));
+	                l.setUnidade(rs.getString("unidade"));
+	                l.setSituacao(rs.getString("situacao"));
+	                l.setDtainicio(rs.getDate("periodoinicio"));
   	                l.setDtafim(rs.getDate("periodofim"));
+	                l.setDtautorizacao(rs.getDate("dtautorizacao"));
+	                l.setDtasolicitacao(rs.getDate("dtasolicitacao"));
+	                l.setCid10_1(rs.getString("cid10_1"));
+	                l.setCid10_2(rs.getString("cid10_2"));
+	                l.setCid10_3(rs.getString("cid10_3"));
+	                l.setValor(rs.getDouble("valor"));
+	                l.setNota(rs.getString("nota"));
+	                l.setQtd(rs.getInt("qtd"));
+	                l.setCodequipamento(rs.getInt("codequipamento"));
+	                l.setObs(rs.getString("obs"));
   	              
   	   
 
@@ -708,6 +763,56 @@ public class LaudoDAO {
         			}
         		}
         		return lista;
+        	}
+            
+            
+            public LaudoBean buscaLaudoPorId(Integer i) throws ProjetoException {
+        		String sql = "select * from hosp.apac where id_apac =? order by id_grupo";
+        		try {
+        			conexao = ConnectionFactory.getConnection();
+        			ps = conexao.prepareStatement(sql);
+        			ps.setInt(1, i);
+        			ResultSet rs = ps.executeQuery();
+        			LaudoBean l = new LaudoBean();
+        			if (rs.next()) {
+
+          				l.setId_apac(rs.getInt("id_apac"));
+     	                l.setApac(rs.getString("apac").toUpperCase());
+    	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("codpaciente")));
+    	                l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+    	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
+    	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+    	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codproc")));
+    	                l.setDtasolicitacao(rs.getDate("dtasolicitacao"));
+    	                l.setRecurso(rs.getString("recurso"));
+    	                l.setUnidade(rs.getString("unidade"));
+    	                l.setSituacao(rs.getString("situacao"));
+    	                l.setDtautorizacao(rs.getDate("dtautorizacao"));
+    	                l.setCid10_1(rs.getString("cid10_1"));
+    	                l.setCid10_2(rs.getString("cid10_2"));
+    	                l.setCid10_2(rs.getString("cid10_3"));
+    	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("codfornecedor")));
+    	                l.setValor(rs.getDouble("valor"));
+    	                l.setNota(rs.getString("nota"));
+    	                l.setQtd(rs.getInt("qtd"));
+    	                l.setCodequipamento(rs.getInt("codequipamento"));
+    	                l.setObs(rs.getString("obs"));
+        			}
+        			return l;
+        		} catch (Exception sqle) {
+
+        			throw new ProjetoException(sqle);
+
+        		} finally {
+        			try {
+        				con.close();
+        			} catch (Exception sqlc) {
+        				sqlc.printStackTrace();
+        				System.exit(1);
+        				// TODO: handle exception
+        			}
+
+        		}
         	}
             
             
