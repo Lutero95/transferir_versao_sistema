@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:body>
+	<p:dialog header="Mapa de Laudo - Órtese e Prótese"
+		widgetVar="dlgOrteseProtese" resizable="false">
+		<h:form id="frmOP">
+			<p:growl id="msg" />
+			<p:panelGrid columns="2" styleClass="semBorda">
+				<h:outputLabel value="Data Inicial:" />
+				<p:calendar id="dtIn" locale="pt" navigator="true" mask="true"
+					showOn="button" pattern="dd/MM/yyyy"
+					value="#{RelatoriosController.dataInicial}" />
+
+				<h:outputLabel value="Data Final:" />
+				<p:calendar id="dtFn" locale="pt" navigator="true" mask="true"
+					showOn="button" pattern="dd/MM/yyyy"
+					value="#{RelatoriosController.dataFinal}" />
+
+				<h:outputLabel for="prog" value="Programa: " />
+				<p:outputPanel id="outProgOP">
+					<p:autoComplete size="60" converter="conPrograma"
+						value="#{RelatoriosController.programa}"
+						completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+						effect="fade" var="theme" forceSelection="true" minQueryLength="1"
+						itemValue="#{theme}" itemLabel="#{theme.descPrograma}">
+						<p:ajax event="itemSelect"
+							listener="#{GrupoController.selectPrograma}" />
+					</p:autoComplete>
+					<p:commandButton id="btBusPr" value="Buscar"
+						onclick="PF('dlgConsuProgOP').show();" />
+				</p:outputPanel>
+
+				<h:outputLabel for="grupo" value="Grupo: " />
+				<p:outputPanel id="outGrupoOP">
+					<p:autoComplete size="60" converter="conGrupo"
+						value="#{RelatoriosController.grupo}"
+						completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+						effect="fade" var="theme" forceSelection="true" minQueryLength="1"
+						itemValue="#{theme}" itemLabel="#{theme.descGrupo}">
+						<p:ajax event="itemSelect"
+							listener="#{TipoAtendimentoController.selectGrupo}" />
+					</p:autoComplete>
+
+					<p:commandButton id="btBusGr" value="Buscar"
+						onclick="PF('dlgConsuGropOP').show();" />
+				</p:outputPanel>
+
+				<h:outputLabel value="Recurso: " />
+				<p:selectOneMenu style="width: 100px;"
+					value="#{RelatoriosController.recurso}">
+					<f:selectItem itemLabel="FAEC" itemValue="F" />
+					<f:selectItem itemLabel="MAC" itemValue="M" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Tipo Exame Auditivo: " />
+				<p:selectOneRadio>
+					<f:selectItem itemLabel="Acompanhamentos"
+						itemValue="ACOMPANHAMENTOS" />
+					<f:selectItem itemLabel="Consultas" itemValue="CONSULTAS" />
+					<f:selectItem itemLabel="Aparelhos" itemValue="APARELHOS" />
+					<f:selectItem itemLabel="Teste" itemValue="TESTE" />
+				</p:selectOneRadio>
+			</p:panelGrid>
+
+			<p:separator />
+
+			<center>
+				<p:panelGrid columns="3" styleClass="semBorda">
+					<p:commandButton value="Gerar" update=":frmOP:msg"
+						action="#{RelatoriosController.gerarMapaLaudoOrteseProtese}"
+						target="_blank" ajax="false" />
+					<p:commandButton value="Limpar"
+						actionListener="#{RelatoriosController.limparDados()}"
+						update=":frmOP" />
+					<p:commandButton value="Sair"
+						actionListener="#{RelatoriosController.limparDados()}"
+						onclick="PF('dlgOrteseProtese').hide();" update=":frmOP" />
+				</p:panelGrid>
+			</center>
+
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Consulta Programas" widgetVar="dlgConsuProgOP"
+		modal="true" width="500px">
+		<h:form id="formConsuProgOP">
+			<p:dataTable value="#{ProgramaController.listaProgramas}" var="prog"
+				resizableColumns="true"
+				emptyMessage="Não existe nenhum programa cadastrado!">
+				<p:column headerText="CÓD.">
+					<p:outputLabel value="#{prog.idPrograma}" />
+				</p:column>
+				<p:column headerText="PROGRAMA">
+					<p:outputLabel value="#{prog.descPrograma}" />
+				</p:column>
+				<p:column style="width:50px;text-align: center">
+					<p:commandButton
+						update=":frmOP:outProgOP, :formConsuGropOP:dtGrupoOP"
+						icon="ui-icon-check" title="Selecionar"
+						action="#{GrupoController.atualizaLista(RelatoriosController.programa)}"
+						onclick="PF('dlgConsuProgOP').hide();">
+						<f:setPropertyActionListener value="#{prog}"
+							target="#{RelatoriosController.programa}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGropOP"
+		modal="true" width="550px">
+		<h:form id="formConsuGropOP">
+			<p:dataTable value="#{GrupoController.listaGruposProgramas}"
+				id="dtGrupoOP" resizableColumns="true" var="grupo"
+				emptyMessage="Não existe nenhum grupo cadastrado!">
+				<p:column headerText="CÓD.">
+					<p:outputLabel value="#{grupo.idGrupo}" />
+				</p:column>
+				<p:column headerText="GRUPO">
+					<p:outputLabel value="#{grupo.descGrupo}" />
+				</p:column>
+				<p:column headerText="QTD. FREQ>">
+					<p:outputLabel value="#{grupo.qtdFrequencia}" />
+				</p:column>
+
+				<p:column style="width:50px;text-align: center">
+					<p:commandButton update=":frmOP:outGrupoOP" icon="ui-icon-check"
+						title="Selecionar" onclick="PF('dlgConsuGropOP').hide();">
+						<f:setPropertyActionListener value="#{grupo}"
+							target="#{RelatoriosController.grupo}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</p:dialog>
+
+</h:body>
+</html>
