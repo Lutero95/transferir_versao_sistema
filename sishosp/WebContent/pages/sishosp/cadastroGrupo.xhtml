@@ -49,30 +49,9 @@
 						<div class="col-sm-6">
 							<p:selectBooleanCheckbox
 								value="#{GrupoController.grupo.auditivo}">
-								<p:ajax update="pnlModelo" />
 							</p:selectBooleanCheckbox>
 						</div>
 					</div>
-
-					<div class="form-group">
-						<div class="col-sm-6">
-							<p:outputPanel id="pnlModelo">
-								<p:panel header="Modelo Auditivo" style="width:300px;"
-									rendered="#{GrupoController.grupo.auditivo==true}">
-									<p:selectOneRadio
-										value="#{GrupoController.grupo.tipoExameAuditivo}"
-										layout="grid" columns="2">
-										<f:selectItem itemLabel="Acompanhamentos"
-											itemValue="ACOMPANHAMENTOS" />
-										<f:selectItem itemLabel="Consultas" itemValue="CONSULTAS" />
-										<f:selectItem itemLabel="Aparelhos" itemValue="APARELHOS" />
-										<f:selectItem itemLabel="Teste" itemValue="TESTE" />
-									</p:selectOneRadio>
-								</p:panel>
-							</p:outputPanel>
-						</div>
-					</div>
-
 
 					<p:separator></p:separator>
 					<!-- FIM DO FORMULARIO -->
