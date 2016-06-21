@@ -111,7 +111,7 @@
 					<p:outputPanel id="outEquipe"
 						rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
 						<p:autoComplete value="#{AgendaController.agenda.equipe}"
-							size="60" converter="conProfissional"
+							size="60" converter="conEquipe"
 							completeMethod="#{EquipeController.listaEquipeAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
@@ -263,7 +263,7 @@
 							actionListener="#{AgendaController.limparDados()}"
 							update=":formAgendaMedica" />
 
-						<p:commandButton value="Sair" icon="btlogout"
+						<p:commandButton value="Voltar" icon="btvoltar" style="width:80px;"
 							update=":formAgendaMedica"
 							actionListener="#{AgendaController.limparDados()}"
 							action="/pages/comum/selecaoSistema.xhtml?faces-redirect=true" />

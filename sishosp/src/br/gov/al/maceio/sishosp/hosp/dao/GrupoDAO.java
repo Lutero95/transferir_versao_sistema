@@ -223,7 +223,7 @@ public class GrupoDAO {
 	}
 
 	public GrupoBean buscaGrupoPorId(Integer i) throws ProjetoException {
-		String sql = "select id_grupo, descgrupo, qtdfrequencia from hosp.grupo where id_grupo=? order by id_grupo";
+		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo from hosp.grupo where id_grupo=? order by id_grupo";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -234,6 +234,7 @@ public class GrupoDAO {
 				g.setIdGrupo(rs.getInt("id_grupo"));
 				g.setDescGrupo(rs.getString("descgrupo"));
 				g.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+				g.setAuditivo(rs.getBoolean("auditivo"));
 			}
 			return g;
 		} catch (Exception sqle) {

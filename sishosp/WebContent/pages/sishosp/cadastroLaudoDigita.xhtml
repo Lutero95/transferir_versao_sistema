@@ -27,7 +27,6 @@
 						<h:outputLabel for="pac" value="Paciente:" />
 						<p:outputPanel id="outPacie">
 							<p:autoComplete value="#{LaudoController.laudo.paciente}"
-							required="true" requiredMessage="Digite ou procure o paciente"
 							size="60" converter="conPaciente"
 							completeMethod="#{PacienteController.listaPacienteAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
@@ -41,8 +40,7 @@
 						<h:outputLabel for="profissional" value="Profissional:" />
 						<p:outputPanel id="outProfissional">
 							  <p:autoComplete value="#{LaudoController.laudo.profissional}" size="60"
-							  required="true" requiredMessage="Digite ou procure o profissional"
-							converter="conProfissional"
+							  converter="conProfissional"
 							disabled="#{LaudoController.laudo.paciente==null}"
 							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
@@ -58,7 +56,6 @@
 						<h:outputLabel for="procedimento" value="Procedimento:" />
 						<p:outputPanel id="outProce">
 							<p:autoComplete value="#{LaudoController.laudo.procedimento}" size="60"
-							required="true" requiredMessage="Digite ou procure o procedimento"
 							converter="conProcedimento"
 							disabled="#{LaudoController.laudo.profissional==null}"
 							completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"

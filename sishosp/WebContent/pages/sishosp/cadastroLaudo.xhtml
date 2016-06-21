@@ -28,7 +28,6 @@
 						<p:outputPanel id="outPacie">
 							<p:autoComplete value="#{LaudoController.laudo.paciente}"
 								size="60" converter="conPaciente"
-								required="true" requiredMessage="Digite ou procure o paciente"
 								completeMethod="#{PacienteController.listaPacienteAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
 								minQueryLength="1" itemValue="#{theme}"
@@ -44,7 +43,6 @@
 						<p:outputPanel id="outProg">
 							<p:autoComplete value="#{LaudoController.laudo.programa}"
 								size="60" converter="conPrograma"
-								required="true" requiredMessage="Digite ou procure o programa"
 								disabled="#{LaudoController.laudo.paciente==null}"
 								completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
@@ -64,7 +62,6 @@
 						<p:outputPanel id="outGrupo">
 							<p:autoComplete value="#{LaudoController.laudo.grupo}" size="60"
 								converter="conGrupo"
-								required="true" requiredMessage="Digite ou procure o grupo"
 								disabled="#{LaudoController.laudo.programa==null}"
 								completeMethod="#{GrupoController.listaGrupoAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
@@ -82,7 +79,6 @@
 						<p:outputPanel id="outEquipe">
 							<p:autoComplete value="#{LaudoController.laudo.equipe}"
 							size="60" converter="conEquipe"
-							required="true" requiredMessage="Digite ou procure a equipe"
 							disabled="#{LaudoController.laudo.grupo==null}"
 							completeMethod="#{EquipeController.listaEquipeAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
@@ -98,7 +94,6 @@
 						<p:outputPanel id="outProfissional">
 							<p:autoComplete value="#{LaudoController.laudo.profissional}"
 								size="60" converter="conProfissional"
-								required="true" requiredMessage="Digite ou procure o profissional"
 								disabled="#{LaudoController.laudo.equipe==null}"
 								completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
@@ -116,7 +111,6 @@
 						<p:outputPanel id="outProce">
 							<p:autoComplete value="#{LaudoController.laudo.procedimento}"
 								size="60" converter="conProcedimento"
-								required="true" requiredMessage="Digite ou procure o procedimento"
 								disabled="#{LaudoController.laudo.profissional==null}"
 								completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
@@ -158,7 +152,6 @@
 						<p:outputPanel style="margin-left:16px;">
 							<p:outputLabel value="Recurso:" />
 							<p:selectOneRadio id="recursos" style="border: double;"
-							    required="true" requiredMessage="Escolha um recurso"
 								layout="pageDirection"
 								value="#{LaudoController.laudo.recurso}">
 
@@ -456,7 +449,8 @@
 						<p:column headerText="Confirmar"
 							style="width:20%;text-align: center">
 							<p:commandButton
-								update=":formLaudo:outPacie, :formLaudo:outPacie3, :formLaudo:outPacie2, :formLaudo:outProg, :formLaudo:btBusPr"
+								update=":formLaudo:outPacie, :formLaudo:outPacie3, :formLaudo:outPacie2, 
+								:formLaudo:outProg, :formLaudo:btBusPr"
 								icon="confirmar" title="Selecionar"
 								onclick="PF('dlgConsuPac').hide();">
 								<f:setPropertyActionListener value="#{pacie}"
