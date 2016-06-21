@@ -6,21 +6,14 @@ public class GrupoBean {
 	private String descGrupo;
 	private Integer qtdFrequencia;
 	private boolean auditivo;
-	private String tipoExameAuditivo;
 
 	public GrupoBean() {
 		this.idGrupo = null;
 		this.descGrupo = new String();
 		this.qtdFrequencia = null;
-		this.tipoExameAuditivo = new String();
 	}
 
-	public GrupoBean(Integer idGrupo, String descGrupo, Integer qtdFrequencia) {
-		this.idGrupo = idGrupo;
-		this.descGrupo = descGrupo;
-		this.qtdFrequencia = qtdFrequencia;
-	}
-
+	
 	public Integer getIdGrupo() {
 		return idGrupo;
 	}
@@ -43,14 +36,6 @@ public class GrupoBean {
 
 	public void setQtdFrequencia(Integer qtdFrequencia) {
 		this.qtdFrequencia = qtdFrequencia;
-	}
-
-	public String getTipoExameAuditivo() {
-		return tipoExameAuditivo;
-	}
-
-	public void setTipoExameAuditivo(String tipoExameAuditivo) {
-		this.tipoExameAuditivo = tipoExameAuditivo;
 	}
 
 	public boolean isAuditivo() {

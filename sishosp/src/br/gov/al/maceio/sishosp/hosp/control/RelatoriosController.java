@@ -30,12 +30,14 @@ public class RelatoriosController {
 	private Date dataInicial;
 	private Date dataFinal;
 	private String recurso;
+	private String tipoExameAuditivo;
 
 	public RelatoriosController() {
 		this.programa = new ProgramaBean();
 		this.grupo = new GrupoBean();
 		this.dataInicial = null;
 		this.dataFinal = null;
+		this.tipoExameAuditivo = new String("TODOS");
 	}
 
 	public void limparDados() {
@@ -43,6 +45,7 @@ public class RelatoriosController {
 		this.grupo = new GrupoBean();
 		this.dataInicial = null;
 		this.dataFinal = null;
+		this.tipoExameAuditivo = new String("TODOS");
 	}
 
 	public ProgramaBean getPrograma() {
@@ -85,7 +88,16 @@ public class RelatoriosController {
 		this.recurso = recurso;
 	}
 
+	public String getTipoExameAuditivo() {
+		return tipoExameAuditivo;
+	}
+
+	public void setTipoExameAuditivo(String tipoExameAuditivo) {
+		this.tipoExameAuditivo = tipoExameAuditivo;
+	}
+
 	public boolean verificarMesesIguais(Date dataInicial, Date dataFinal) {
+		System.out.println("1 "+this.grupo.getDescGrupo()+" "+this.grupo.isAuditivo() + " "+ this.grupo.getQtdFrequencia());
 		Calendar c1 = Calendar.getInstance();
 		Calendar c2 = Calendar.getInstance();
 		c1.setTime(dataInicial);
@@ -100,7 +112,7 @@ public class RelatoriosController {
 
 	public void gerarMapaLaudoOrteseProtese() throws IOException,
 			ParseException {
-
+		
 		if (this.dataFinal == null || this.dataInicial == null
 				|| this.programa == null || this.grupo == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -116,20 +128,34 @@ public class RelatoriosController {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
-
+		
 		String caminho = "/WEB-INF/relatorios/";
-		String relatorio = caminho + "mapaLaudoOrteseProtese.jasper";
+		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("dt_inicial", this.dataInicial);
-		map.put("dt_final", this.dataFinal);
-		map.put("cod_programa", this.programa.getIdPrograma());
-		map.put("cod_grupo", this.grupo.getIdGrupo());
-		map.put("recurso", this.recurso);
+		System.out.println(this.grupo.getDescGrupo()+" "+this.grupo.isAuditivo());
+		if(this.grupo.isAuditivo()){
+			System.out.println("EH AUDITIVO");
+			relatorio = caminho + "mapaLaudoOrteseProteseAuditivo.jasper";
+			map.put("dt_inicial", this.dataInicial);
+			map.put("dt_final", this.dataFinal);
+			map.put("cod_programa", this.programa.getIdPrograma());
+			map.put("cod_grupo", this.grupo.getIdGrupo());
+			map.put("recurso", this.recurso);
+			map.put("tipo_exame_auditivo", this.tipoExameAuditivo);
+		}else{
+			System.out.println("NAO EH AUDITIVO");
+			relatorio = caminho + "mapaLaudoOrteseProteseNormal.jasper";
+			map.put("dt_inicial", this.dataInicial);
+			map.put("dt_final", this.dataFinal);
+			map.put("cod_programa", this.programa.getIdPrograma());
+			map.put("cod_grupo", this.grupo.getIdGrupo());
+			map.put("recurso", this.recurso);
+		}
 
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
 		this.executeReport(relatorio, map, "relatorio.pdf");
-		limparDados();
+		//limparDados();
 	}
 
 	private void executeReport(String relatorio, Map<String, Object> map,

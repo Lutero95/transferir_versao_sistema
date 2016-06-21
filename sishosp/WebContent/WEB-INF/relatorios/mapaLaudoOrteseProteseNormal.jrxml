@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mapaLaudo" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="df63ce84-ed11-47dc-97d0-cee12a2424aa">
-	<property name="ireport.zoom" value="2.1435888100000087"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="table">
@@ -79,8 +79,11 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select rank() over (order by p.nome asc) as seq, p.cns as cns, p.nome as nome, p.dtanascimento as dtnascimento, p.sexo as sexo,
-p.codraca as codraca, a.codproc as codproc, a.cid10_1 as cid10, EXTRACT(year from a.dtautorizacao) as ano,
+		<![CDATA[select rank() over (order by p.nome asc) as seq, p.cns as cns, p.nome as nome,
+p.dtanascimento as dtnascimento, p.sexo as sexo, p.codraca as codraca,
+a.codproc as codproc, pr.nome as nome_proc,
+pr.auditivo as eh_auditivo, pr.tipo_exame_auditivo,
+a.cid10_1 as cid10, EXTRACT(year from a.dtautorizacao) as ano,
 case when extract(month from a.dtautorizacao) = 1 then 'JANEIRO'
 	when extract(month from a.dtautorizacao) = 2 then 'FEVEREIRO'
 	when extract(month from a.dtautorizacao) = 3 then 'MARÇO'
@@ -94,10 +97,12 @@ case when extract(month from a.dtautorizacao) = 1 then 'JANEIRO'
 	when extract(month from a.dtautorizacao) = 11 then 'NOVEMBRO'
 	when extract(month from a.dtautorizacao) = 12 then 'DEZEMBRO'
 	end as mes
-from hosp.apac as a inner join hosp.pacientes as p on a.codpaciente = p.id_paciente
+from hosp.apac as a
+inner join hosp.pacientes as p on (a.codpaciente = p.id_paciente)
+inner join hosp.proc as pr on (pr.id = a.codproc)
 where a.dtautorizacao between $P{dt_inicial} and $P{dt_final}
 and a.codprograma = $P{cod_programa} and a.codgrupo = $P{cod_grupo} and a.recurso = $P{recurso}
-and a.situacao = 'A';]]>
+and a.situacao = 'A' and  pr.auditivo = false;]]>
 	</queryString>
 	<field name="seq" class="java.lang.Long"/>
 	<field name="cns" class="java.lang.String"/>
@@ -106,6 +111,9 @@ and a.situacao = 'A';]]>
 	<field name="sexo" class="java.lang.String"/>
 	<field name="codraca" class="java.lang.Integer"/>
 	<field name="codproc" class="java.lang.Integer"/>
+	<field name="nome_proc" class="java.lang.String"/>
+	<field name="eh_auditivo" class="java.lang.Boolean"/>
+	<field name="tipo_exame_auditivo" class="java.lang.String"/>
 	<field name="cid10" class="java.lang.String"/>
 	<field name="ano" class="java.lang.Double"/>
 	<field name="mes" class="java.lang.String"/>
