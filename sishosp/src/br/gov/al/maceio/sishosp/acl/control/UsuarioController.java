@@ -140,17 +140,20 @@ public class UsuarioController {
 				.put("expired", "N");
 		permissaoProcessos = "false";
 
-		UsuarioBean user = null;
+		
 		UsuarioDAO udao = new UsuarioDAO();
-		user = udao.autenticarUsuario(usuario);
+		System.out.println("NOME USER: " + usuario.getLogin());
+		usuarioLogado = udao.autenticarUsuario(usuario);
 
-		if (user == null) {
+		if (usuarioLogado == null) {
 			FacesContext fct = FacesContext.getCurrentInstance();
 			fct.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Usuario ou senha invalidos!", "Erro"));
-			usuario = new UsuarioBean();
+
 			return "";
 		} else {
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+            .put("obj_usuario", usuarioLogado);	
 			return "/pages/comum/selecaoSistema.faces?faces-redirect=true";
 
 		}
@@ -613,4 +616,5 @@ public class UsuarioController {
 	public void setRendDlgSetores(Boolean rendDlgSetores) {
 		this.rendDlgSetores = rendDlgSetores;
 	}
+	
 }

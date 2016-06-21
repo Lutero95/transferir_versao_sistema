@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 public class UsuarioBean {
 
     private Integer codigo;
@@ -29,6 +31,7 @@ public class UsuarioBean {
     private ArrayList<Integer> codSetor;
     private PermissoesBean permissao;
     private Integer idpessoa;
+    private Boolean autorizado;
 
     //ACL
     private Long id; //id usuário para o acl.
@@ -54,7 +57,7 @@ public class UsuarioBean {
 
     public UsuarioBean(Integer codigo, String nome, Integer user_secretaria,
         Integer user_setor, Integer nivel, String senha, Date datacriacao,
-        String login, String ativo, boolean administrador, String email,
+        String login, String ativo, boolean administrador, String email, Boolean autorizado,
         String cpf, boolean primeiroAcesso, String descSecretaria,
         String descSetor, Integer idpessoa, Integer operador, boolean permissaoJunta) {
 
@@ -69,6 +72,7 @@ public class UsuarioBean {
         setAtivo(ativo);
         setAdministrador(administrador);
         setEmail(email);
+        setAutorizado(autorizado);
         setCpf(cpf);
         setPrimeiroAcesso(primeiroAcesso);
         setDescSecretaria(descSecretaria);
@@ -341,4 +345,14 @@ public class UsuarioBean {
     public void setPermissaoJunta(boolean permissaoJunta) {
         this.permissaoJunta = permissaoJunta;
     }
+
+	public Boolean getAutorizado() {
+		return autorizado;
+	}
+
+	public void setAutorizado(Boolean autorizado) {
+		this.autorizado = autorizado;
+	}
+    
+    
 }

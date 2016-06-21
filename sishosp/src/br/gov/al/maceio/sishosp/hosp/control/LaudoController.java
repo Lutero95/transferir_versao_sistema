@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
 
+import br.gov.al.maceio.sishosp.acl.model.UsuarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
@@ -29,7 +30,7 @@ import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 public class LaudoController {
 	private Integer abaAtiva = 0;
-	
+	private UsuarioBean usuario;
 	private LaudoBean laudo;
 	private PacienteBean paciente;
 	private GrupoBean grupo;
@@ -214,71 +215,6 @@ public class LaudoController {
         }
 	}
 	
-	public void gravarLaudoBpi() throws ProjetoException {
-		LaudoDAO udao = new LaudoDAO();  
-		
-                boolean cadastrou = udao.cadastrarLaudoBpi(laudo);
-                
-                if(cadastrou == true) {
-                	limparDados();
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Laudo Bpi cadastrado com sucesso!", "Sucesso");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
-
-                    
-
-                } else {
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Ocorreu um erro durante o cadastro!", "Erro");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
-
- 
-                }
-            
-    }
-	
-	public void alterarLaudoBpi() throws ProjetoException {
-
-		LaudoDAO rdao = new LaudoDAO();
-         boolean alterou = rdao.alterarLaudoBpi(laudo);
-
-         if(alterou == true) {
-
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                 "Laudo Bpi alterado com sucesso!", "Sucesso");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         } else {
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                 "Ocorreu um erro durante o cadastro!", "Erro");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         }
-		
-	}
-	
-	public void excluirLaudoBpi() throws ProjetoException {
-		LaudoDAO udao = new LaudoDAO();
-
-        boolean excluio = udao.excluirLaudoBpi(laudo);
-
-        if(excluio == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Laudo Bpi excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-
-            //RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-
-            //RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
-	}
-	
 	public void buscarLaudo() {
 
 		List<LaudoBean> listaAux = null;
@@ -369,9 +305,9 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 		try{
 		if (laudo.getProrrogar() != null) {
 			Integer dias = this.laudo.getProrrogar();
-			Date dataFim = this.laudo.getDtainicio();
+			Date dataFim = this.laudo.getDtasolicitacao();
 
-			 System.out.println("DATA:"+laudo.getProrrogar()+"||"+laudo.getDtainicio()+"||"+laudo.getDtavencimento());
+			 //System.out.println("DATA:"+laudo.getProrrogar()+"||"+laudo.getDtainicio()+"||"+laudo.getDtavencimento());
 
 			// System.out.println("DIAS: " + (dias - 1));
 
@@ -386,7 +322,7 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 			this.laudo.setDtafim(dataFinal);
 		}}catch (Exception ex) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-					"Informe Mês/Ano inicio.", "Aviso");
+					"Informe a Data de autorização.", "Aviso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			this.laudo.setProrrogar(null);
         }
@@ -521,9 +457,9 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 
 	public String getCabecalho() {
 		if(this.tipo.equals("I")){
-			cabecalho = "CADASTRO DE LAUDO";
+			cabecalho = "CADASTRO DE APAC/BPI";
 		}else if(this.tipo.equals("A")){
-			cabecalho = "ALTERAR LAUDO";
+			cabecalho = "ALTERAR APAC/BPI";
 		}
 		return cabecalho;
 	}
@@ -623,6 +559,14 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 
 	public void setCampoBuscaData(Date campoBuscaData) {
 		this.campoBuscaData = campoBuscaData;
+	}
+
+	public UsuarioBean getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(UsuarioBean usuario) {
+		this.usuario = usuario;
 	}
    
 
