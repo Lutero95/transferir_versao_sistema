@@ -89,6 +89,7 @@
 	</p:dialog>
 
 	<ui:include src="dlgsCadastro.xhtml" />
+	<ui:include src="/pages/dlgRelatorios/dlgsAdministrativos.xhtml" />
 	<h:form id="mainFormtempSist">
 
 
@@ -252,7 +253,7 @@
 						<p:menuitem value="Financeiro"
 							url="/pages/sishosp/agendaPaciente.faces" />
 						<p:menuitem value="Mapas laudos"
-							url="/pages/sishosp/agendaPaciente.faces" />
+							onclick="PF('dlgOrteseProtese').show();" />
 					</p:submenu>
 
 				</p:submenu>
