@@ -123,7 +123,7 @@
 								minQueryLength="1" itemValue="#{theme}"
 								itemLabel="#{theme.nomeProc}">
 								<p:ajax event="itemSelect"
-									update=":formLaudo:btBusProce, :formLaudo:outDadosForne" />
+									update=":formLaudo:outDadosForne" />
 							</p:autoComplete>
 
 						</p:outputPanel>
@@ -599,14 +599,11 @@
 						<p:column headerText="PROCEDIMENTO" style="width:55%;">
 							<p:outputLabel value="#{procedimento.nomeProc}" />
 						</p:column>
-						<p:column headerText="Equipamento" style="width:55%;">
-							<p:outputLabel value="#{procedimento.utilizaEquipamento}" />
-						</p:column>
 
 						<p:column headerText="Confirmar"
 							style="width:20%;text-align: center">
 							<p:commandButton
-								update=":formLaudo:outProce, :formConsuProce:dtProce, :formLaudo:outDadosForne"
+								update=":formConsuProce:dtProce, :formLaudo:outProce, :formLaudo:outDadosForne"
 								icon="confirmar" title="Selecionar"
 								onclick="PF('dlgConsuProce').hide();">
 								<f:setPropertyActionListener value="#{procedimento}"

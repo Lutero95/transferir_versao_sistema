@@ -79,7 +79,7 @@ public class ProcedimentoDAO {
 	public ProcedimentoBean listarProcedimentoPorId(int id) {
 
 		ProcedimentoBean proc = new ProcedimentoBean();
-		String sql = "select id, codproc, nome from hosp.proc where id = ?";
+		String sql = "select id, codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento from hosp.proc where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -90,6 +90,11 @@ public class ProcedimentoDAO {
 				proc.setIdProc(rs.getInt("id"));
 				proc.setCodProc(rs.getInt("codproc"));
 				proc.setNomeProc(rs.getString("nome"));
+				proc.setApac(rs.getBoolean("apac"));
+				proc.setBpi(rs.getBoolean("bpi"));
+				proc.setAuditivo(rs.getBoolean("auditivo"));
+				proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
+				proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
 
 			}
 		} catch (SQLException ex) {
