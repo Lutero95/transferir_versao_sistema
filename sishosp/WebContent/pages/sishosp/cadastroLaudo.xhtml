@@ -15,7 +15,7 @@
 			<h:form>
 				<p:commandButton value="Voltar"
 					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarLaudo.faces"></p:commandButton>
+					action="/pages/sishosp/gerenciarLaudo.faces?faces-redirect=true"></p:commandButton>
 			</h:form>
 
 			<h:form id="formLaudo">
@@ -26,31 +26,35 @@
 
 						<h:outputLabel for="pac" value="Paciente:" />
 						<p:outputPanel id="outPacie">
-								<p:autoComplete value="#{LaudoController.laudo.paciente}"
-							size="60" converter="conPaciente"
-							completeMethod="#{PacienteController.listaPacienteAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
-							<p:ajax event="itemSelect" update=":formLaudo:outProg, :formLaudo:outPacie3, :formLaudo:outPacie2, :formLaudo:btBusPr" />
-						</p:autoComplete>
+							<p:autoComplete value="#{LaudoController.laudo.paciente}"
+								size="60" converter="conPaciente"
+								required="true" requiredMessage="Digite ou procure o paciente"
+								completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nome}">
+								<p:ajax event="itemSelect"
+									update=":formLaudo:outProg, :formLaudo:outPacie3, :formLaudo:outPacie2, :formLaudo:btBusPr" />
+							</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusPa" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuPac').show();" />
 
 						<h:outputLabel for="prog" value="Programa:" />
 						<p:outputPanel id="outProg">
-									<p:autoComplete value="#{LaudoController.laudo.programa}"
-							size="60" converter="conPrograma"
-							disabled="#{LaudoController.laudo.paciente==null}"
-							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descPrograma}">
-							<p:ajax event="itemSelect"
-								listener="#{GrupoController.selectPrograma}"
-								update=":formLaudo:outGrupo, :formLaudo:btBusGr" />
-						</p:autoComplete>
-								
+							<p:autoComplete value="#{LaudoController.laudo.programa}"
+								size="60" converter="conPrograma"
+								required="true" requiredMessage="Digite ou procure o programa"
+								disabled="#{LaudoController.laudo.paciente==null}"
+								completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descPrograma}">
+								<p:ajax event="itemSelect"
+									listener="#{GrupoController.selectPrograma}"
+									update=":formLaudo:outGrupo, :formLaudo:btBusGr" />
+							</p:autoComplete>
+
 						</p:outputPanel>
 						<p:commandButton id="btBusPr" value="Buscar" icon="buscar"
 							disabled="#{LaudoController.laudo.paciente==null}"
@@ -58,48 +62,70 @@
 
 						<h:outputLabel for="grupo" value="Grupo:" />
 						<p:outputPanel id="outGrupo">
-								<p:autoComplete value="#{LaudoController.laudo.grupo}" size="60"
-							converter="conGrupo"
-							disabled="#{LaudoController.laudo.programa==null}"
-							completeMethod="#{GrupoController.listaGrupoAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descGrupo}">
-							<p:ajax event="itemSelect" update=":formLaudo:outProfissional,:formLaudo:btBusPro" />
-						</p:autoComplete>
+							<p:autoComplete value="#{LaudoController.laudo.grupo}" size="60"
+								converter="conGrupo"
+								required="true" requiredMessage="Digite ou procure o grupo"
+								disabled="#{LaudoController.laudo.programa==null}"
+								completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descGrupo}">
+								<p:ajax event="itemSelect"
+									update=":formLaudo:outEquipe,:formLaudo:btBusEquipe" />
+							</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusGr" value="Buscar" icon="buscar"
 							disabled="#{LaudoController.laudo.programa==null}"
 							onclick="PF('dlgConsuGrop').show();" />
+							
+							<h:outputLabel for="equi" value="Equipe:" />
+						<p:outputPanel id="outEquipe">
+							<p:autoComplete value="#{LaudoController.laudo.equipe}"
+							size="60" converter="conEquipe"
+							required="true" requiredMessage="Digite ou procure a equipe"
+							disabled="#{LaudoController.laudo.grupo==null}"
+							completeMethod="#{EquipeController.listaEquipeAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.descEquipe}">
+							<p:ajax event="itemSelect" update=":formLaudo:outProfissional,:formLaudo:btBusPro" />
+						</p:autoComplete>
+						</p:outputPanel>
+						<p:commandButton id="btBusEquipe" value="Buscar" icon="buscar"
+							disabled="#{LaudoController.laudo.grupo==null}"
+							onclick="PF('dlgConsuEquipe').show();" />
 
 						<h:outputLabel for="profissional" value="Profissional:" />
 						<p:outputPanel id="outProfissional">
-				       <p:autoComplete value="#{LaudoController.laudo.profissional}" size="60"
-							converter="conProfissional"
-							disabled="#{LaudoController.laudo.grupo==null}"
-							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descricaoProf}">
-							<p:ajax event="itemSelect" update=":formLaudo:outProce, :formLaudo:btBusProce" />
-						</p:autoComplete>
+							<p:autoComplete value="#{LaudoController.laudo.profissional}"
+								size="60" converter="conProfissional"
+								required="true" requiredMessage="Digite ou procure o profissional"
+								disabled="#{LaudoController.laudo.equipe==null}"
+								completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descricaoProf}">
+								<p:ajax event="itemSelect"
+									update=":formLaudo:outProce, :formLaudo:btBusProce" />
+							</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusPro" value="Buscar" icon="buscar"
-							disabled="#{LaudoController.laudo.grupo==null}"
+							disabled="#{LaudoController.laudo.equipe==null}"
 							onclick="PF('dlgConsuProf').show();" />
 
 						<h:outputLabel for="procedimento" value="Procedimento:" />
 						<p:outputPanel id="outProce">
-								<p:autoComplete value="#{LaudoController.laudo.procedimento}" size="60"
-							converter="conProcedimento"
-							disabled="#{LaudoController.laudo.profissional==null}"
-							completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.nomeProc}">
-							<p:ajax event="itemSelect" update=":formLaudo:btBusProce" />
-						</p:autoComplete>
-								
+							<p:autoComplete value="#{LaudoController.laudo.procedimento}"
+								size="60" converter="conProcedimento"
+								required="true" requiredMessage="Digite ou procure o procedimento"
+								disabled="#{LaudoController.laudo.profissional==null}"
+								completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nomeProc}">
+								<p:ajax event="itemSelect"
+									update=":formLaudo:btBusProce, :formLaudo:outDadosForne" />
+							</p:autoComplete>
+
 						</p:outputPanel>
 						<p:commandButton id="btBusProce" value="Buscar" icon="buscar"
 							disabled="#{LaudoController.laudo.profissional==null}"
@@ -132,8 +158,8 @@
 						<p:outputPanel style="margin-left:16px;">
 							<p:outputLabel value="Recurso:" />
 							<p:selectOneRadio id="recursos" style="border: double;"
-								required="false" layout="pageDirection"
-								requiredMessage="Recursos	"
+							    required="true" requiredMessage="Escolha um recurso"
+								layout="pageDirection"
 								value="#{LaudoController.laudo.recurso}">
 
 								<f:selectItem itemLabel="Faec" itemValue="F" />
@@ -194,6 +220,7 @@
 
 							<p:selectOneRadio id="situacao" style="border: double;"
 								required="false" layout="pageDirection"
+								disabled="#{MBUsuarios.usuarioLogado.autorizado == false}"
 								requiredMessage="Situação"
 								value="#{LaudoController.laudo.situacao}">
 
@@ -271,8 +298,12 @@
 						<p:commandButton id="btBusCid3" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuCid3').show();" />
 					</h:panelGrid>
-
-					<p:panel header="DADOS FORNECEDOR"
+					
+					<p:outputPanel id="outDadosForne">
+					
+					
+					<p:panel header="DADOS FORNECEDOR" 
+						rendered="#{LaudoController.laudo.procedimento.utilizaEquipamento == true}"
 						style="width:680px; margin-top:30px; background-color: #F5F5F5;">
 						<h:panelGrid columns="3" styleClass="semBorda">
 
@@ -325,7 +356,9 @@
 
 						</h:panelGrid>
 					</p:panel>
-
+					
+					
+					</p:outputPanel>
 					<h:panelGrid columns="2" styleClass="semBorda"
 						style="margin-top:30px;">
 						<h:outputLabel for="obs" value="Obs.:" />
@@ -464,8 +497,8 @@
 			<p:dialog header="Consulta Grupo" widgetVar="dlgConsuGrop"
 				modal="true" width="550px">
 				<h:form id="formConsuGrop">
-					<p:dataTable value="#{GrupoController.listaGruposProgramas}" id="dtGrupo"
-						resizableColumns="true" var="grupo"
+					<p:dataTable value="#{GrupoController.listaGruposProgramas}"
+						id="dtGrupo" resizableColumns="true" var="grupo"
 						emptyMessage="Não existe nenhum grupo cadastrado!">
 						<p:column headerText="CÓD.">
 							<p:outputLabel value="#{grupo.idGrupo}" />
@@ -479,11 +512,38 @@
 
 						<p:column headerText="Confirmar"
 							style="width:20%;text-align: center">
-							<p:commandButton update=":formLaudo:outGrupo,:formLaudo:outProfissional,:formLaudo:btBusPro"
+							<p:commandButton
+								update=":formLaudo:outGrupo,:formLaudo:outEquipe, :formLaudo:btBusEquipe"
 								icon="confirmar" title="Selecionar"
 								onclick="PF('dlgConsuGrop').hide();">
 								<f:setPropertyActionListener value="#{grupo}"
 									target="#{LaudoController.laudo.grupo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:dialog>
+			
+			<p:dialog header="Consulta Equipe" widgetVar="dlgConsuEquipe"
+				modal="true" width="500px">
+				<h:form id="formConsuEquipe">
+					<p:dataTable value="#{EquipeController.listaEquipe}" var="equipe"
+						id="dtEquipe" resizableColumns="true"
+						emptyMessage="Não existe nenhum equipe cadastrada!">
+						<p:column headerText="CÓD.">
+							<p:outputLabel value="#{equipe.codEquipe}" />
+						</p:column>
+						<p:column headerText="EQUIPE">
+							<p:outputLabel value="#{equipe.descEquipe}" />
+						</p:column>
+						<p:column headerText="Confirmar"
+							style="width:20%;text-align: center">
+							<p:commandButton
+								update=":formLaudo:outEquipe, :formConsuEquipe:dtEquipe, :formLaudo:outProfissional,:formLaudo:btBusPro"
+								icon="confirmar" title="Selecionar"
+								onclick="PF('dlgConsuEquipe').hide();">
+								<f:setPropertyActionListener value="#{equipe}"
+									target="#{LaudoController.laudo.equipe}" />
 							</p:commandButton>
 						</p:column>
 					</p:dataTable>
@@ -539,11 +599,14 @@
 						<p:column headerText="PROCEDIMENTO" style="width:55%;">
 							<p:outputLabel value="#{procedimento.nomeProc}" />
 						</p:column>
+						<p:column headerText="Equipamento" style="width:55%;">
+							<p:outputLabel value="#{procedimento.utilizaEquipamento}" />
+						</p:column>
 
 						<p:column headerText="Confirmar"
 							style="width:20%;text-align: center">
 							<p:commandButton
-								update=":formLaudo:outProce, :formConsuProce:dtProce"
+								update=":formLaudo:outProce, :formConsuProce:dtProce, :formLaudo:outDadosForne"
 								icon="confirmar" title="Selecionar"
 								onclick="PF('dlgConsuProce').hide();">
 								<f:setPropertyActionListener value="#{procedimento}"
@@ -570,7 +633,7 @@
 						<p:column headerText="Confirmar"
 							style="width:20%;text-align: center">
 							<p:commandButton
-								update=":formLaudo:outFornecedor, :formConsuForne:dtForne"
+								update=":formLaudo:outFornecedor, :formConsuForne:dtForne, :formLaudo:outDadosForne"
 								icon="confirmar" title="Selecionar"
 								onclick="PF('dlgConsuForne').hide();">
 								<f:setPropertyActionListener value="#{fornecedor}"

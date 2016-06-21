@@ -20,7 +20,7 @@ public class UsuarioDAO{
 
     public UsuarioBean autenticarUsuario(UsuarioBean usuario) throws ProjetoException {
 
-        String sql = "select us.id_usuario, us.descusuario, us.login, us.senha, us.email, "
+        String sql = "select us.id_usuario, us.descusuario, us.login, us.senha, us.email, us.autorizado, "
         		+ "pf.descricao as descperfil, case when us.ativo = 'S' "
         		+ "then true else false end as usuarioativo, "
         		+ "pf.id as idperfil, us.junta_medica from acl.usuarios us "
@@ -37,7 +37,7 @@ public class UsuarioDAO{
             pstmt.setString(1, usuario.getLogin().toUpperCase());
             pstmt.setString(2, usuario.getSenha().toUpperCase());
             pstmt.setString(3, "S");
-
+            //pstmt.setBoolean(4, usuario.getAutorizado());
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 ub = new UsuarioBean();
@@ -46,6 +46,7 @@ public class UsuarioDAO{
                 ub.setLogin(rs.getString("login"));
                 ub.setSenha(rs.getString("senha"));
                 ub.setEmail(rs.getString("email"));
+                ub.setAutorizado(rs.getBoolean("autorizado"));
   
                 // ACL
                 ub.setId(rs.getLong("id_usuario"));
