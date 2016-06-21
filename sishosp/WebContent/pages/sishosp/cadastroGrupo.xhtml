@@ -23,42 +23,74 @@
 				<p:growl id="message" />
 				<p:panel id="pnlCadGrupo" header="#{GrupoController.cabecalho}"
 					style="height:auto; width:auto; background-color: #F5F5F5;">
-				
-							<div class="form-group">
-								<h:outputLabel for="inputdesc" value="Descrição do Grupo: "
-									styleClass="col-sm-3 control-label" />
-								<div class="col-sm-6">
-									<h:inputText value="#{GrupoController.grupo.descGrupo}"
-										class="form-control" id="inputdesc" />
 
-								</div>
-							</div>
-							<div class="form-group">
-								<h:outputLabel for="inputqtd" value="Quantidade de Frequência: "
-									styleClass="col-sm-3 control-label" />
-								<div class="col-sm-6">
-									<h:inputText value="#{GrupoController.grupo.qtdFrequencia}"
-										class="form-control" id="inputqtd" />
-								</div>
-							</div>
-							
-							<p:separator></p:separator>
+					<div class="form-group">
+						<h:outputLabel for="inputdesc" value="Descrição do Grupo: "
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<h:inputText value="#{GrupoController.grupo.descGrupo}"
+								class="form-control" id="inputdesc" />
+
+						</div>
+					</div>
+					<div class="form-group">
+						<h:outputLabel for="inputqtd" value="Quantidade de Frequência: "
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<h:inputText value="#{GrupoController.grupo.qtdFrequencia}"
+								class="form-control" id="inputqtd" />
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<h:outputLabel value="Auditivo: "
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<p:selectBooleanCheckbox
+								value="#{GrupoController.grupo.auditivo}">
+								<p:ajax update="pnlModelo" />
+							</p:selectBooleanCheckbox>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-6">
+							<p:outputPanel id="pnlModelo">
+								<p:panel header="Modelo Auditivo" style="width:300px;"
+									rendered="#{GrupoController.grupo.auditivo==true}">
+									<p:selectOneRadio
+										value="#{GrupoController.grupo.tipoExameAuditivo}"
+										layout="grid" columns="2">
+										<f:selectItem itemLabel="Acompanhamentos"
+											itemValue="ACOMPANHAMENTOS" />
+										<f:selectItem itemLabel="Consultas" itemValue="CONSULTAS" />
+										<f:selectItem itemLabel="Aparelhos" itemValue="APARELHOS" />
+										<f:selectItem itemLabel="Teste" itemValue="TESTE" />
+									</p:selectOneRadio>
+								</p:panel>
+							</p:outputPanel>
+						</div>
+					</div>
+
+
+					<p:separator></p:separator>
 					<!-- FIM DO FORMULARIO -->
-				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-					<h:commandButton action="#{GrupoController.gravarGrupo()}"
-						update=":formCADU:message,:formCADU:pnlCadGrupo,:formCadu"
-						value="Cadastrar" styleClass="btn btn-sm btn-success"
-						rendered="#{GrupoController.tipo == 'I'}" />
+					<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+						<h:commandButton action="#{GrupoController.gravarGrupo()}"
+							update=":formCADU:message,:formCADU:pnlCadGrupo,:formCadu"
+							value="Cadastrar" styleClass="btn btn-sm btn-success"
+							rendered="#{GrupoController.tipo == 'I'}" />
 
 
-					<h:commandButton action="#{GrupoController.alterarGrupo()}"
-						update=":formCADU:message,:formCADU:pnlCadGrupo,:formCadu"
-						value="Alterar" styleClass="btn btn-info"
-						rendered="#{GrupoController.tipo  == 'A'}" />
-				</p:panelGrid>
+						<h:commandButton action="#{GrupoController.alterarGrupo()}"
+							update=":formCADU:message,:formCADU:pnlCadGrupo,:formCadu"
+							value="Alterar" styleClass="btn btn-info"
+							rendered="#{GrupoController.tipo  == 'A'}" />
+					</p:panelGrid>
 
 				</p:panel>
-				
+
 
 
 			</h:form>

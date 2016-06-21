@@ -1,17 +1,20 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
 public class GrupoBean {
-	
+
 	private Integer idGrupo;
 	private String descGrupo;
 	private Integer qtdFrequencia;
-	
-	public GrupoBean(){
+	private boolean auditivo;
+	private String tipoExameAuditivo;
+
+	public GrupoBean() {
 		this.idGrupo = null;
 		this.descGrupo = new String();
 		this.qtdFrequencia = null;
+		this.tipoExameAuditivo = new String();
 	}
-	
+
 	public GrupoBean(Integer idGrupo, String descGrupo, Integer qtdFrequencia) {
 		this.idGrupo = idGrupo;
 		this.descGrupo = descGrupo;
@@ -41,8 +44,21 @@ public class GrupoBean {
 	public void setQtdFrequencia(Integer qtdFrequencia) {
 		this.qtdFrequencia = qtdFrequencia;
 	}
-	
-	
-	
+
+	public String getTipoExameAuditivo() {
+		return tipoExameAuditivo;
+	}
+
+	public void setTipoExameAuditivo(String tipoExameAuditivo) {
+		this.tipoExameAuditivo = tipoExameAuditivo;
+	}
+
+	public boolean isAuditivo() {
+		return auditivo;
+	}
+
+	public void setAuditivo(boolean auditivo) {
+		this.auditivo = auditivo;
+	}
 
 }

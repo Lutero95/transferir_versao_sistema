@@ -35,7 +35,8 @@
 		style="position:absolute; top:1%; right:44%;" />
 	<div class="row" style="padding-top: 130px;">
 		<div class="form-signin">
-			<h:form>
+			<h:form id="fmrLogin">
+				<p:growl id="msg" />
 				<h2 class="form-signin-heading">Acesse sua conta</h2>
 				<h:panelGroup rendered="#{param['erro'] != null}">
 					<div id="msg" class="alert alert-danger" role="alert">login
@@ -60,7 +61,8 @@
 					<a href="#">Esqueceu sua senha?</a>
 				</p>
 				<h:commandButton value="Entrar" style="width: 100px; height: 40px;"
-					styleClass="btn btn-sm btn-success" action="#{MBUsuarios.login}"></h:commandButton>
+					styleClass="btn btn-sm btn-success" action="#{MBUsuarios.login}"
+					update=":fmrLogin:msg, :frmLogin"></h:commandButton>
 				<br />
 			</h:form>
 		</div>
