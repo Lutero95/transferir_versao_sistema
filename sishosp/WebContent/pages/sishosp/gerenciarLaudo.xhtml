@@ -26,50 +26,63 @@
 
 			<p:growl id="growl" showDetail="false" />
 			<p:panel id="pnlprincipal" header="">
-				<p:panelGrid columns="7" styleClass="semBorda"
+				<p:panelGrid columns="9" styleClass="semBorda"
 					style="font-size:12px !important;">
-					<p:outputPanel autoUpdate="true">
+					
+
 						<p:outputLabel value="Pesquisar por: " />
-                        <p:outputLabel style="margin-left:10px;" value="Nome: " />
+						<p:outputLabel  value="Nome: " />
 						<p:inputText id="campoBuscanome"
-							style="height:28px;margin-top:-6px;margin-left:16px;"
-							value="#{LaudoController.campoBuscaLaudo}"/>
-							<p:outputLabel style="position:absolute;top:170px;" value="Situação: " />
-								<p:selectOneRadio id="campoBuscaSituacao" style="position:absolute; margin-left:480px; top:165px;"
-								required="false" 
-								value="#{LaudoController.campoBuscaLaudo}">
+							value="#{LaudoController.campoBuscaLaudo}" />
+						<p:outputLabel
+							value="Situação: " />
+						<p:selectOneRadio id="campoBuscaSituacao"
+							required="false" value="#{LaudoController.campoBuscaLaudo}">
 
-								<f:selectItem itemLabel="Pendente" itemValue="P" />
-								<f:selectItem itemLabel="Autorizado" itemValue="A" />
-						
+							<f:selectItem itemLabel="Pendente" itemValue="P" />
+							<f:selectItem itemLabel="Autorizado" itemValue="A" />
 
-							    </p:selectOneRadio>
-							   <p:outputLabel style="position:absolute;margin-left:-210px; top:170px;" value="Recurso: " />
-							    <p:selectOneRadio id="campoBuscaRecurso" style="position:absolute; margin-left:250px; top:165px;"
-								required="false" 
-								value="#{LaudoController.campoBuscaLaudo}">
 
-								<f:selectItem itemLabel="Faec" itemValue="F" />
-								<f:selectItem itemLabel="Mac" itemValue="M" />
-								
+						</p:selectOneRadio>
+						<p:outputLabel
+							value="Recurso: " />
+						<p:selectOneRadio id="campoBuscaRecurso"
+							required="false" value="#{LaudoController.campoBuscaLaudo}">
 
-							    </p:selectOneRadio>
-                            <p:outputLabel style="margin-left:10px;" value="Prontuario: " />
-                            <p:inputText id="campoBuscaProntuario"
-							style="height:28px;margin-top:-6px;margin-left:16px;"
-							value="#{LaudoController.campoBuscaNumero}"/>
-							
-							<p:outputLabel style="margin-left:10px;" value="DataInicio: " />
-								<p:calendar id="campoBuscaDataInicio" locale="pt" converter="conLaudo"
-								style="height:28px;margin-top:-3px;margin-left:16px;"
-								value="#{LaudoController.campoBuscaData}" navigator="true"
-								mask="true" pattern="MM/yyyy" />
+							<f:selectItem itemLabel="Faec" itemValue="F" />
+							<f:selectItem itemLabel="Mac" itemValue="M" />
 
-                                <p:outputLabel style="margin-left:10px;" value="DataFim: " />
-                                <p:calendar id="campoBuscaDataFim" locale="pt" converter="conLaudo"
-								style="height:28px;margin-left:16px;"
-								value="#{LaudoController.campoBuscaData}" navigator="true"
-								mask="true" pattern="MM/yyyy" /> 
+
+						</p:selectOneRadio>
+						<p:outputLabel value="Prontuario: " />
+						<p:inputText id="campoBuscaProntuario"
+							value="#{LaudoController.campoBuscaNumero}" />
+</p:panelGrid>
+   <p:panelGrid columns="9" styleClass="semBorda"
+					style="font-size:12px !important;">
+						<p:outputLabel value="DataInicio: " />
+						<p:calendar id="campoBuscaDataInicio" locale="pt"
+							converter="conLaudo"
+							value="#{LaudoController.campoBuscaData}" navigator="true"
+							mask="true" pattern="MM/yyyy" />
+
+						<p:outputLabel value="DataFim: " />
+						<p:calendar id="campoBuscaDataFim" locale="pt"
+							converter="conLaudo" 
+							value="#{LaudoController.campoBuscaData}" navigator="true"
+							mask="true" pattern="MM/yyyy" />
+
+						<h:outputLabel for="prog" value="Programa:" />
+						<p:outputPanel id="outProg">
+							<p:autoComplete value="#{LaudoController.laudo.programa}"
+								size="30" converter="conPrograma"
+								completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descPrograma}">
+								<p:ajax event="itemSelect" />
+							</p:autoComplete>
+						</p:outputPanel>
 
 
 						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
@@ -78,20 +91,19 @@
 							update=":frmmensagem:tabela, :frmmensagem:growl" />
 						<p:commandButton value="Limpar Busca" icon="limpar"
 							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
-							actionListener="#{LaudoController.limparBuscaDados()}"
-							style="margin-left:1000px; margin-top:20px" />
+							actionListener="#{LaudoController.limparBuscaDados()}" />
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							action="/pages/sishosp/cadastroLaudo.faces?faces-redirect=true" icon="add"
-							styleClass="btn btn-sm btn-success" style="position:absolute;margin-top: 15px;">
+							action="/pages/sishosp/cadastroLaudo.faces?faces-redirect=true"
+							icon="add" styleClass="btn btn-sm btn-success"
+							actionListener="#{LaudoController.limparBuscaDados()}">
+							
 							<f:setPropertyActionListener value="I"
 								target="#{LaudoController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>
 
-
-					</p:outputPanel>
 				</p:panelGrid>
 
 
