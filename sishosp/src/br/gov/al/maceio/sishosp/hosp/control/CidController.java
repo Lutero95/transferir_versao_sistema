@@ -11,7 +11,9 @@ import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 
 public class CidController {
@@ -163,6 +165,13 @@ public class CidController {
 			cabecalho = "ALTERAR CID";
 		}
 		return cabecalho;
+	}
+	
+	public List<CidBean> listaCidAutoComplete(String query)
+			throws ProjetoException {
+		CidDAO cDao = new CidDAO();
+		List<CidBean> result = cDao.listarCidsBusca(query, 1);
+		return result;
 	}
 	
 }

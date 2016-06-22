@@ -10,6 +10,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 
 public class CidDAO {
@@ -149,7 +150,7 @@ public class CidDAO {
 	}
 	
 	public CidBean buscaCidPorId (Integer i) throws ProjetoException {
-		String sql = "select cod, desccid from hosp.cid where cod =? order by cod";
+		String sql = "select cod, desccid from hosp.cid where cod = ?";
 		try {
 			
 			ps = con.prepareStatement(sql);
@@ -178,6 +179,40 @@ public class CidDAO {
 
 		}
 	}	
+	
+	public List<CidBean> listarCidsBusca(String descricao,
+			Integer tipo) {
+		List<CidBean> lista = new ArrayList<>();
+		String sql = "select cod, desccid from hosp.cid ";
+		if (tipo == 1) {
+			sql += " where desccid LIKE ?";
+		}
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				CidBean c = new CidBean();
+				c.setIdCid(rs.getInt("cod"));
+				c.setDescCid(rs.getString("desccid"));
+
+				lista.add(c);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+		return lista;
+	}
 	
 	
 
