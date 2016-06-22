@@ -24,7 +24,7 @@
 	<queryString>
 		<![CDATA[select p.id_paciente as pront, p.nome as nome,
 a.codproc || ' - ' || pr.nome as proc,
-a.qtd as qtd, a.valor as valor, a.nota as nota,
+a.qtd as qtd, a.valor as valor, a.nota as nota,f.id_fornecedor,
 f.descfornecedor as nome_fornecedor,
 (select sum(a.valor) from hosp.apac as a
 where a.dtautorizacao between $P{dt_inicial} and $P{dt_final}
@@ -37,8 +37,12 @@ left join hosp.fornecedor as f on (a.codfornecedor = f.id_fornecedor)
 where a.dtautorizacao between $P{dt_inicial} and $P{dt_final}
 and a.codprograma = $P{cod_programa} and a.codgrupo = $P{cod_grupo} and a.recurso = $P{recurso}
 and a.situacao = 'A'
-group by 1, 2, 3, 4, 5, 6, 7
-order by nome]]>
+
+group by  p.id_paciente , p.nome ,
+a.codproc || ' - ' || pr.nome ,
+a.qtd, a.valor, a.nota,f.id_fornecedor,
+f.descfornecedor
+order by id_fornecedor,nome]]>
 	</queryString>
 	<field name="pront" class="java.lang.Integer"/>
 	<field name="nome" class="java.lang.String"/>
@@ -46,11 +50,97 @@ order by nome]]>
 	<field name="qtd" class="java.lang.Integer"/>
 	<field name="valor" class="java.math.BigDecimal"/>
 	<field name="nota" class="java.lang.String"/>
+	<field name="id_fornecedor" class="java.lang.Integer"/>
 	<field name="nome_fornecedor" class="java.lang.String"/>
 	<field name="valor_total" class="java.math.BigDecimal"/>
 	<variable name="valor_total_1" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
 		<variableExpression><![CDATA[$F{valor_total}]]></variableExpression>
 	</variable>
+	<variable name="valor_1" class="java.math.BigDecimal" resetType="Group" resetGroup="grpforn" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<variable name="valor_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<group name="grpforn" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{id_fornecedor}]]></groupExpression>
+		<groupHeader>
+			<band height="55">
+				<textField>
+					<reportElement x="75" y="11" width="137" height="20" uuid="88e8a55b-885e-49b6-9af1-07a4997412ac"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nome_fornecedor}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="12" width="75" height="20" uuid="864449b9-be51-4aff-ba03-33749606addc"/>
+					<textElement verticalAlignment="Top">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fornecedor:]]></text>
+				</staticText>
+				<line>
+					<reportElement mode="Transparent" x="0" y="54" width="802" height="1" uuid="6c8172a0-fb27-470d-8da5-43cff87fc799"/>
+				</line>
+				<line>
+					<reportElement x="0" y="31" width="802" height="1" uuid="91518e8f-66e1-4d5f-a27f-db5230f11d5b"/>
+				</line>
+				<staticText>
+					<reportElement x="0" y="31" width="50" height="23" uuid="3d5b0abf-e128-4d3b-b35c-dd87d6e60e43"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Pront.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="60" y="31" width="100" height="23" uuid="c2b18c4b-5f95-415f-9566-8d5675c79ff3"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Paciente]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="228" y="31" width="100" height="23" uuid="30b1c790-0935-4dd8-bd6a-03f5bf4eed79"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Procedimento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="512" y="31" width="36" height="23" uuid="e883c0f3-0df6-4e9a-b66e-16f97a7b87cc"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Qtd.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="566" y="31" width="39" height="23" uuid="d9914a54-a002-4803-a9ef-b1c2f27efb6c"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="624" y="31" width="40" height="23" uuid="19d20367-30e7-4e8d-b511-29cdbad6821f"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nota]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="688" y="31" width="69" height="23" uuid="89be4383-bfed-44ef-9809-1bda79a9d140"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fornecedor]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -114,79 +204,6 @@ order by nome]]>
 			</image>
 		</band>
 	</pageHeader>
-	<columnHeader>
-		<band height="63" splitType="Stretch">
-			<line>
-				<reportElement mode="Transparent" x="0" y="62" width="802" height="1" uuid="6c8172a0-fb27-470d-8da5-43cff87fc799"/>
-			</line>
-			<line>
-				<reportElement x="0" y="39" width="802" height="1" uuid="91518e8f-66e1-4d5f-a27f-db5230f11d5b"/>
-			</line>
-			<staticText>
-				<reportElement x="0" y="19" width="75" height="20" uuid="864449b9-be51-4aff-ba03-33749606addc"/>
-				<textElement verticalAlignment="Top">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Fornecedor:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="39" width="50" height="23" uuid="3d5b0abf-e128-4d3b-b35c-dd87d6e60e43"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Pront.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="60" y="39" width="100" height="23" uuid="c2b18c4b-5f95-415f-9566-8d5675c79ff3"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Paciente]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="228" y="39" width="100" height="23" uuid="30b1c790-0935-4dd8-bd6a-03f5bf4eed79"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Procedimento]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="512" y="39" width="36" height="23" uuid="e883c0f3-0df6-4e9a-b66e-16f97a7b87cc"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Qtd.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="566" y="39" width="39" height="23" uuid="d9914a54-a002-4803-a9ef-b1c2f27efb6c"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Valor]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="624" y="39" width="40" height="23" uuid="19d20367-30e7-4e8d-b511-29cdbad6821f"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Nota]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="688" y="39" width="69" height="23" uuid="89be4383-bfed-44ef-9809-1bda79a9d140"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Fornecedor]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="75" y="19" width="137" height="20" uuid="88e8a55b-885e-49b6-9af1-07a4997412ac"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nome_fornecedor}]]></textFieldExpression>
-			</textField>
-		</band>
-	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField>
@@ -221,30 +238,15 @@ order by nome]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome_fornecedor}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="¤ #,##0.00">
 				<reportElement x="566" y="0" width="45" height="20" uuid="48ab1b0e-4782-4cc3-832c-8a152ec640e5"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA["R$ "+$F{valor}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="21" splitType="Stretch">
-			<staticText>
-				<reportElement x="534" y="0" width="142" height="20" uuid="ec2ccd84-dab4-402d-9180-803181ba1448"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Valor total fornecedor: ]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="675" y="0" width="100" height="20" uuid="3fd4a054-deb8-41d8-a1ed-7e342e144291"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["R$ "+$F{valor_total}]]></textFieldExpression>
-			</textField>
-		</band>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
@@ -264,6 +266,19 @@ order by nome]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band splitType="Stretch"/>
+		<band height="77" splitType="Stretch">
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="701" y="57" width="101" height="20" uuid="23a3d559-011c-4067-a184-e7586cd5f137"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{valor_2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="559" y="57" width="142" height="20" uuid="ec2ccd84-dab4-402d-9180-803181ba1448"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor total fornecedor: ]]></text>
+			</staticText>
+		</band>
 	</summary>
 </jasperReport>
