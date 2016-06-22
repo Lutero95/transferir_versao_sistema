@@ -95,6 +95,95 @@
 
 		</h:form>
 	</p:dialog>
+	
+	<p:dialog header="Financeiro - Órtese e Prótese"
+		widgetVar="dlgOrteseProteseFin" resizable="false">
+		<h:form id="frmOPFin">
+			<p:outputPanel id="outOPFin">
+				<p:growl id="msgFin" />
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<h:outputLabel value="Data Inicial:" />
+					<p:calendar id="dtInFin" locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy"
+						value="#{RelatoriosController.dataInicial}" />
+
+					<h:outputLabel value="Data Final:" />
+					<p:calendar id="dtFnFin" locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy"
+						value="#{RelatoriosController.dataFinal}" />
+
+					<h:outputLabel for="progFin" value="Programa: " />
+					<p:outputPanel id="outProgOPFin">
+						<p:autoComplete size="60" converter="conPrograma"
+							value="#{RelatoriosController.programa}"
+							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descPrograma}">
+							<p:ajax event="itemSelect"
+								listener="#{GrupoController.selectPrograma}" />
+						</p:autoComplete>
+						<p:commandButton id="btBusPrFin" value="Buscar"
+							onclick="PF('dlgConsuProgOP').show();" />
+					</p:outputPanel>
+
+					<h:outputLabel for="grupoFin" value="Grupo: " />
+					<p:outputPanel id="outGrupoOPFin">
+						<p:autoComplete size="60" converter="conGrupo"
+							value="#{RelatoriosController.grupo}"
+							completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descGrupo}">
+							<p:ajax event="itemSelect"
+								listener="#{TipoAtendimentoController.selectGrupo}" />
+						</p:autoComplete>
+
+						<p:commandButton id="btBusGrFin" value="Buscar"
+							onclick="PF('dlgConsuGropOP').show();" />
+					</p:outputPanel>
+
+					<h:outputLabel value="Recurso: " />
+					<p:selectOneMenu style="width: 100px;"
+						value="#{RelatoriosController.recurso}">
+						<f:selectItem itemLabel="FAEC" itemValue="F" />
+						<f:selectItem itemLabel="MAC" itemValue="M" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Tipo Exame Auditivo: " id="lblTEAFin"
+						rendered="#{RelatoriosController.grupo.auditivo==true}" />
+					<p:selectOneRadio id="oneTEAFin"
+						value="#{RelatoriosController.tipoExameAuditivo}"
+						rendered="#{RelatoriosController.grupo.auditivo==true}">
+						<f:selectItem itemLabel="Todos" itemValue="TODOS" />
+						<f:selectItem itemLabel="Acompanhamentos"
+							itemValue="ACOMPANHAMENTOS" />
+						<f:selectItem itemLabel="Consultas" itemValue="CONSULTAS" />
+						<f:selectItem itemLabel="Aparelhos" itemValue="APARELHOS" />
+						<f:selectItem itemLabel="Teste" itemValue="TESTE" />
+
+					</p:selectOneRadio>
+				</p:panelGrid>
+
+				<p:separator />
+
+				<center>
+					<p:panelGrid columns="3" styleClass="semBorda">
+						<p:commandButton value="Gerar" update=":frmOPFin:msgFin"
+							action="#{RelatoriosController.gerarFinanceiroOrteseProtese}"
+							target="_blank" ajax="false" />
+						<p:commandButton value="Limpar"
+							actionListener="#{RelatoriosController.limparDados()}"
+							update=":frmOPFin" />
+						<p:commandButton value="Sair"
+							actionListener="#{RelatoriosController.limparDados()}"
+							onclick="PF('dlgOrteseProteseFin').hide();" update=":frmOPFin" />
+					</p:panelGrid>
+				</center>
+			</p:outputPanel>
+
+		</h:form>
+	</p:dialog>
 
 	<p:dialog header="Consulta Programas" widgetVar="dlgConsuProgOP"
 		modal="true" width="500px">
@@ -110,7 +199,7 @@
 				</p:column>
 				<p:column style="width:50px;text-align: center">
 					<p:commandButton
-						update=":frmOP:outProgOP, :formConsuGropOP:dtGrupoOP"
+						update=":frmOP:outProgOP, :frmOPFin:outProgOPFin, :formConsuGropOP:dtGrupoOP"
 						icon="ui-icon-check" title="Selecionar"
 						action="#{GrupoController.atualizaLista(RelatoriosController.programa)}"
 						onclick="PF('dlgConsuProgOP').hide();">
@@ -142,7 +231,7 @@
 				</p:column>
 
 				<p:column style="width:50px;text-align: center">
-					<p:commandButton update=":frmOP:outGrupoOP, :frmOP:outOP"
+					<p:commandButton update=":frmOP:outGrupoOP, :frmOP:outOP, :frmOPFin:outGrupoOPFin, :frmOPFin:outOPFin"
 						icon="ui-icon-check" title="Selecionar"
 						onclick="PF('dlgConsuGropOP').hide();">
 						<f:setPropertyActionListener value="#{grupo}"

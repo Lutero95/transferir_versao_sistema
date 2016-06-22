@@ -97,7 +97,6 @@ public class RelatoriosController {
 	}
 
 	public boolean verificarMesesIguais(Date dataInicial, Date dataFinal) {
-		System.out.println("1 "+this.grupo.getDescGrupo()+" "+this.grupo.isAuditivo() + " "+ this.grupo.getQtdFrequencia());
 		Calendar c1 = Calendar.getInstance();
 		Calendar c2 = Calendar.getInstance();
 		c1.setTime(dataInicial);
@@ -112,7 +111,7 @@ public class RelatoriosController {
 
 	public void gerarMapaLaudoOrteseProtese() throws IOException,
 			ParseException {
-		
+
 		if (this.dataFinal == null || this.dataInicial == null
 				|| this.programa == null || this.grupo == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -128,12 +127,13 @@ public class RelatoriosController {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
-		
+
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
-		System.out.println(this.grupo.getDescGrupo()+" "+this.grupo.isAuditivo());
-		if(this.grupo.isAuditivo()){
+		System.out.println(this.grupo.getDescGrupo() + " "
+				+ this.grupo.isAuditivo());
+		if (this.grupo.isAuditivo()) {
 			System.out.println("EH AUDITIVO");
 			relatorio = caminho + "mapaLaudoOrteseProteseAuditivo.jasper";
 			map.put("dt_inicial", this.dataInicial);
@@ -142,7 +142,7 @@ public class RelatoriosController {
 			map.put("cod_grupo", this.grupo.getIdGrupo());
 			map.put("recurso", this.recurso);
 			map.put("tipo_exame_auditivo", this.tipoExameAuditivo);
-		}else{
+		} else {
 			System.out.println("NAO EH AUDITIVO");
 			relatorio = caminho + "mapaLaudoOrteseProteseNormal.jasper";
 			map.put("dt_inicial", this.dataInicial);
@@ -155,7 +155,59 @@ public class RelatoriosController {
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
 		this.executeReport(relatorio, map, "relatorio.pdf");
-		//limparDados();
+		limparDados();
+	}
+
+	public void gerarFinanceiroOrteseProtese() throws IOException,
+			ParseException {
+
+		if (this.dataFinal == null || this.dataInicial == null
+				|| this.programa == null || this.grupo == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Todos os campos devem ser preenchidos.",
+					"Campos inválidos!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		if (!verificarMesesIguais(this.dataInicial, this.dataFinal)) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"As datas devem possuir o mesmo mês.", "Datas Inválidas!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = "";
+		Map<String, Object> map = new HashMap<String, Object>();
+		System.out.println(this.grupo.getDescGrupo() + " "
+				+ this.grupo.isAuditivo());
+		if (this.grupo.isAuditivo()) {
+			System.out.println("EH AUDITIVO");
+			relatorio = caminho + "mapaFinanceiroOrteseProtese.jasper";
+			map.put("img_adefal",this.getServleContext().getRealPath("/WEB-INF/relatorios/adefal.png"));
+			map.put("dt_inicial", this.dataInicial);
+			map.put("dt_final", this.dataFinal);
+			map.put("cod_programa", this.programa.getIdPrograma());
+			map.put("cod_grupo", this.grupo.getIdGrupo());
+			map.put("recurso", this.recurso);
+			map.put("tipo_exame_auditivo", this.tipoExameAuditivo);
+
+		} else {
+			System.out.println("NAO EH AUDITIVO");
+			relatorio = caminho + "mapaFinanceiroOrteseProtese.jasper";
+			map.put("img_adefal",this.getServleContext().getRealPath("/WEB-INF/relatorios/adefal.png"));
+			map.put("dt_inicial", this.dataInicial);
+			map.put("dt_final", this.dataFinal);
+			map.put("cod_programa", this.programa.getIdPrograma());
+			map.put("cod_grupo", this.grupo.getIdGrupo());
+			map.put("recurso", this.recurso);
+		}
+
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
+				+ File.separator);
+		this.executeReport(relatorio, map, "relatorio.pdf");
+		limparDados();
 	}
 
 	private void executeReport(String relatorio, Map<String, Object> map,
