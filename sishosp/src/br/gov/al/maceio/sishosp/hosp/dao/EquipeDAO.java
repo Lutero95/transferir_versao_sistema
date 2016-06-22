@@ -73,9 +73,9 @@ public class EquipeDAO {
 			Integer tipo) {
 		List<EquipeBean> lista = new ArrayList<>();
 		System.out.println("2");
-		String sql = "select id_equipe, descequipe, codempresa from hosp.equipe ";
+		String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, codempresa from hosp.equipe ";
 		if (tipo == 1) {
-			sql += " where descequipe LIKE ?";
+			sql += " where upper(id_equipe ||'-'|| descequipe) LIKE ?";
 		}
 		try {
 			con = ConnectionFactory.getConnection();

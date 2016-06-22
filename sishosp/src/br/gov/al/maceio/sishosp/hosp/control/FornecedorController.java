@@ -10,7 +10,9 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FornecedorDAO;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 
 
@@ -218,5 +220,10 @@ public class FornecedorController {
 		this.cabecalho = cabecalho;
 	}
 	    
-	    
+	public List<FornecedorBean> listaFornecedorAutoComplete(String query)
+			throws ProjetoException {
+		FornecedorDAO cDao = new FornecedorDAO();
+		List<FornecedorBean> result = cDao.listarFornecedoresBusca(query, 1);
+		return result;
+	}
 }

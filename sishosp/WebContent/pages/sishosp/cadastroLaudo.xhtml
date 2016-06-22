@@ -21,7 +21,7 @@
 			<h:form id="formLaudo">
 				<p:growl id="message" />
 				<p:panel header="#{LaudoController.cabecalho}"
-					style="position: relative; height:auto; width:700px; background-color: #F5F5F5; left:30%;">
+					style="position: relative; height:auto; width:717px; background-color: #F5F5F5; margin-left:50%;border: 3px solid gray;">
 					<h:panelGrid columns="3">
 
 						<h:outputLabel for="pac" value="Paciente:" />
@@ -269,8 +269,18 @@
 						style="margin-top:30px;">
 						<h:outputLabel for="cid" value="CID:" />
 						<p:outputPanel id="outCid">
-							<p:inputText id="cid" value="#{LaudoController.laudo.cid10_1}"
-								readonly="false" style="width: 300px; margin-left:16px;" />
+							 <p:inputText id="cid" value="#{LaudoController.laudo.cid10_1}"
+								readonly="false" style="width: 300px; margin-left:16px;" /> 
+								
+								<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
+								size="60" converter="conCid"
+								completeMethod="#{CidController.listaCidAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descCid}">
+								 <p:ajax event="itemSelect"
+									update=":formLaudo:outCid2, :formLaudo:btBusCid2" /> 
+							    </p:autoComplete>-->
 						</p:outputPanel>
 						<p:commandButton id="btBusCid" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuCid').show();" />
@@ -279,6 +289,16 @@
 						<p:outputPanel id="outCid2">
 							<p:inputText id="cid2" value="#{LaudoController.laudo.cid10_2}"
 								readonly="false" style="width: 300px; margin-left:16px;" />
+								<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
+								disabled="#{LaudoController.laudo.cid==null}"
+								size="60" converter="conCid"
+								completeMethod="#{CidController.listaCidAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descCid}">
+								<p:ajax event="itemSelect"
+									update=":formLaudo:outCid3, :formLaudo:btBusCid3" />
+							    </p:autoComplete>-->
 						</p:outputPanel>
 						<p:commandButton id="btBusCid2" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuCid2').show();" />
@@ -287,6 +307,14 @@
 						<p:outputPanel id="outCid3">
 							<p:inputText id="cid3" value="#{LaudoController.laudo.cid10_3}"
 								readonly="false" style="width: 300px; margin-left:16px;" />
+								<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
+								disabled="#{LaudoController.laudo.cid==null}"
+								size="60" converter="conCid"
+								completeMethod="#{CidController.listaCidAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descCid}">
+							    </p:autoComplete>-->
 						</p:outputPanel>
 						<p:commandButton id="btBusCid3" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuCid3').show();" />
@@ -302,12 +330,20 @@
 
 							<h:outputLabel for="fornecedor" value="Fornecedor:" />
 							<p:outputPanel id="outFornecedor">
-								<p:inputText id="codFornecedor"
+								<!--<p:inputText id="codFornecedor"
 									value="#{LaudoController.laudo.fornecedor.idFornecedor}"
-									readonly="true" style="width: 40px; margin-left:16px;" />
-								<p:inputText id="Fornecedor"
+									readonly="true" style="width: 40px; margin-left:16px;" />-->
+							<!-- 	<p:inputText id="Fornecedor"
 									value="#{LaudoController.laudo.fornecedor.descFornecedor}"
-									readonly="true" style="width: 300px" />
+									readonly="true" style="width: 300px" /> -->
+									
+										<p:autoComplete value="#{LaudoController.laudo.fornecedor}"
+								size="60" converter="conFornecedor"
+								completeMethod="#{FornecedorController.listaFornecedorAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descFornecedor}">
+							    </p:autoComplete>
 							</p:outputPanel>
 							<p:commandButton id="btBusFornecedor" value="Buscar"
 								icon="buscar" onclick="PF('dlgConsuForne').show();" />

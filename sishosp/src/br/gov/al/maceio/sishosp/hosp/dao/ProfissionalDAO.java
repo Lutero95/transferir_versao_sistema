@@ -58,10 +58,10 @@ public class ProfissionalDAO {
 	public List<ProfissionalBean> listarProfissionalBusca(
 			String descricaoBusca, Integer tipoBuscar) {
 		List<ProfissionalBean> lista = new ArrayList<>();
-		String sql = "select id_medico, descmedico, codprograma, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, codprocedimentopadrao2, codempresa"
+		String sql = "select id_medico,id_medico ||'-'|| descmedico as descmedico , codprograma, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, codprocedimentopadrao2, codempresa"
 				+ " from hosp.medicos ";
 		if (tipoBuscar == 1) {
-			sql += " where descmedico LIKE ?  order by id_medico";
+			sql += " where upper(id_medico ||'-'|| descmedico) LIKE ?  order by id_medico";
 		}
 		try {
 			con = ConnectionFactory.getConnection();

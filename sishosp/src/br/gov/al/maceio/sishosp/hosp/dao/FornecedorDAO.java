@@ -9,6 +9,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -178,6 +179,41 @@ public class FornecedorDAO {
 			}
 		}
 		return fornecedor;
+	}
+	
+	public List<FornecedorBean> listarFornecedoresBusca(String descricao,
+			Integer tipo) {
+		List<FornecedorBean> lista = new ArrayList<>();
+		String sql = "select id_fornecedor,id_fornecedor ||'-'|| descfornecedor as descfornecedor, valor from hosp.fornecedor ";
+		if (tipo == 1) {
+			sql += " where upper(id_fornecedor ||'-'|| descfornecedor) LIKE ?";
+		}
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				FornecedorBean f = new FornecedorBean();
+				f.setIdFornecedor(rs.getInt("id_fornecedor"));
+                f.setDescFornecedor(rs.getString("descfornecedor"));  
+                f.setValor(rs.getDouble("valor"));
+
+				lista.add(f);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+		return lista;
 	}
 
 }
