@@ -145,9 +145,9 @@ public class GrupoDAO {
 		List<GrupoBean> lista = new ArrayList<>();
 		System.out.println("De " + descricao);
 		System.out.println("Pr " + prog.getDescPrograma());
-		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
+		String sql = "select g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
 				+ " where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma"
-				+ " and g.descgrupo LIKE ?  order by id_grupo";
+				+ " and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ?  order by id_grupo";
 
 		try {
 			con = ConnectionFactory.getConnection();

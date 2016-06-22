@@ -184,9 +184,9 @@ public class FornecedorDAO {
 	public List<FornecedorBean> listarFornecedoresBusca(String descricao,
 			Integer tipo) {
 		List<FornecedorBean> lista = new ArrayList<>();
-		String sql = "select id_fornecedor, descfornecedor, valor from hosp.fornecedor ";
+		String sql = "select id_fornecedor,id_fornecedor ||'-'|| descfornecedor as descfornecedor, valor from hosp.fornecedor ";
 		if (tipo == 1) {
-			sql += " where descfornecedor LIKE ?";
+			sql += " where upper(id_fornecedor ||'-'|| descfornecedor) LIKE ?";
 		}
 		try {
 			con = ConnectionFactory.getConnection();

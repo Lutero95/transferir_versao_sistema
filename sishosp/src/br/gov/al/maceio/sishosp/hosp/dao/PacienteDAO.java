@@ -875,7 +875,7 @@ public class PacienteDAO {
 		PreparedStatement ps = null;
 		conexao = ConnectionFactory.getConnection();
 		try {
-			String sql = " select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
+			String sql = " select pacientes.id_paciente, pacientes.id_paciente ||'-'|| pacientes.nome as nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
 					+ " pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, pacientes.cidade, pacientes.bairro, "
 					+ " pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, pacientes.telres, pacientes.telcel,"
 					+ "  pacientes.teltrab, pacientes.telorelhao, pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
@@ -891,7 +891,7 @@ public class PacienteDAO {
 					+ " left join hosp.profissao on pacientes.id_profissao=profissao.id_profissao "
 					+ " left join hosp.encaminhado on pacientes.id_encaminhado=encaminhado.id_encaminhado "
 					+ " left join hosp.formatransporte on pacientes.id_formatransporte=formatransporte.id_formatransporte "
-					+ " where pacientes.nome "
+					+ " where upper(pacientes.id_paciente ||'-'|| pacientes.nome) "
 					+ " like ? order by pacientes.nome";
 
 			ps = conexao.prepareStatement(sql);

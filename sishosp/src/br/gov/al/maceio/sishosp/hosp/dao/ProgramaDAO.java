@@ -102,9 +102,9 @@ public class ProgramaDAO {
 	public List<ProgramaBean> listarProgramasBusca(String descricao,
 			Integer tipo) {
 		List<ProgramaBean> lista = new ArrayList<>();
-		String sql = "select id_programa, descprograma, codfederal from hosp.programa ";
+		String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma , codfederal from hosp.programa ";
 		if (tipo == 1) {
-			sql += " where descprograma LIKE ?";
+			sql += " where upper(id_programa ||'-'|| descprograma) LIKE ?";
 		}
 		try {
 			con = ConnectionFactory.getConnection();

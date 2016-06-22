@@ -269,10 +269,10 @@
 						style="margin-top:30px;">
 						<h:outputLabel for="cid" value="CID:" />
 						<p:outputPanel id="outCid">
-							<!-- <p:inputText id="cid" value="#{LaudoController.laudo.cid10_1}"
-								readonly="false" style="width: 300px; margin-left:16px;" /> -->
+							 <p:inputText id="cid" value="#{LaudoController.laudo.cid10_1}"
+								readonly="false" style="width: 300px; margin-left:16px;" /> 
 								
-								<p:autoComplete value="#{LaudoController.laudo.cid}"
+								<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
 								size="60" converter="conCid"
 								completeMethod="#{CidController.listaCidAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
@@ -280,16 +280,16 @@
 								itemLabel="#{theme.descCid}">
 								 <p:ajax event="itemSelect"
 									update=":formLaudo:outCid2, :formLaudo:btBusCid2" /> 
-							    </p:autoComplete>
+							    </p:autoComplete>-->
 						</p:outputPanel>
 						<p:commandButton id="btBusCid" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuCid').show();" />
 
 						<h:outputLabel for="cid2" value="CID 2:" />
 						<p:outputPanel id="outCid2">
-							<!--<p:inputText id="cid2" value="#{LaudoController.laudo.cid10_2}"
-								readonly="false" style="width: 300px; margin-left:16px;" />-->
-								<p:autoComplete value="#{LaudoController.laudo.cid}"
+							<p:inputText id="cid2" value="#{LaudoController.laudo.cid10_2}"
+								readonly="false" style="width: 300px; margin-left:16px;" />
+								<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
 								disabled="#{LaudoController.laudo.cid==null}"
 								size="60" converter="conCid"
 								completeMethod="#{CidController.listaCidAutoComplete}"
@@ -298,7 +298,7 @@
 								itemLabel="#{theme.descCid}">
 								<p:ajax event="itemSelect"
 									update=":formLaudo:outCid3, :formLaudo:btBusCid3" />
-							    </p:autoComplete>
+							    </p:autoComplete>-->
 						</p:outputPanel>
 						<p:commandButton id="btBusCid2" value="Buscar" icon="buscar"
 						disabled="#{LaudoController.laudo.cid==null}"
@@ -306,16 +306,16 @@
 
 						<h:outputLabel for="cid3" value="CID 3:" />
 						<p:outputPanel id="outCid3">
-							<!--<p:inputText id="cid3" value="#{LaudoController.laudo.cid10_3}"
-								readonly="false" style="width: 300px; margin-left:16px;" />-->
-								<p:autoComplete value="#{LaudoController.laudo.cid}"
+							<p:inputText id="cid3" value="#{LaudoController.laudo.cid10_3}"
+								readonly="false" style="width: 300px; margin-left:16px;" />
+								<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
 								disabled="#{LaudoController.laudo.cid==null}"
 								size="60" converter="conCid"
 								completeMethod="#{CidController.listaCidAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
 								minQueryLength="1" itemValue="#{theme}"
 								itemLabel="#{theme.descCid}">
-							    </p:autoComplete>
+							    </p:autoComplete>-->
 						</p:outputPanel>
 						<p:commandButton id="btBusCid3" value="Buscar" icon="buscar"
 						disabled="#{LaudoController.laudo.cid==null}"
