@@ -21,12 +21,16 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 public class RelatoriosController {
 
 	private ProgramaBean programa;
 	private GrupoBean grupo;
+	private TipoAtendimentoBean tipo;
+	private ProfissionalBean prof;
 	private Date dataInicial;
 	private Date dataFinal;
 	private String recurso;
@@ -35,6 +39,8 @@ public class RelatoriosController {
 	public RelatoriosController() {
 		this.programa = new ProgramaBean();
 		this.grupo = new GrupoBean();
+		this.tipo = new TipoAtendimentoBean();
+		this.prof = new ProfissionalBean();
 		this.dataInicial = null;
 		this.dataFinal = null;
 		this.tipoExameAuditivo = new String("TODOS");
@@ -43,6 +49,8 @@ public class RelatoriosController {
 	public void limparDados() {
 		this.programa = new ProgramaBean();
 		this.grupo = new GrupoBean();
+		this.tipo = new TipoAtendimentoBean();
+		this.prof = new ProfissionalBean();
 		this.dataInicial = null;
 		this.dataFinal = null;
 		this.tipoExameAuditivo = new String("TODOS");
@@ -96,6 +104,22 @@ public class RelatoriosController {
 		this.tipoExameAuditivo = tipoExameAuditivo;
 	}
 
+	public TipoAtendimentoBean getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoAtendimentoBean tipo) {
+		this.tipo = tipo;
+	}
+
+	public ProfissionalBean getProf() {
+		return prof;
+	}
+
+	public void setProf(ProfissionalBean prof) {
+		this.prof = prof;
+	}
+
 	public boolean verificarMesesIguais(Date dataInicial, Date dataFinal) {
 		Calendar c1 = Calendar.getInstance();
 		Calendar c2 = Calendar.getInstance();
@@ -131,10 +155,7 @@ public class RelatoriosController {
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
-		System.out.println(this.grupo.getDescGrupo() + " "
-				+ this.grupo.isAuditivo());
 		if (this.grupo.isAuditivo()) {
-			System.out.println("EH AUDITIVO");
 			relatorio = caminho + "mapaLaudoOrteseProteseAuditivo.jasper";
 			map.put("dt_inicial", this.dataInicial);
 			map.put("dt_final", this.dataFinal);
@@ -143,7 +164,6 @@ public class RelatoriosController {
 			map.put("recurso", this.recurso);
 			map.put("tipo_exame_auditivo", this.tipoExameAuditivo);
 		} else {
-			System.out.println("NAO EH AUDITIVO");
 			relatorio = caminho + "mapaLaudoOrteseProteseNormal.jasper";
 			map.put("dt_inicial", this.dataInicial);
 			map.put("dt_final", this.dataFinal);
@@ -180,12 +200,11 @@ public class RelatoriosController {
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
 		Map<String, Object> map = new HashMap<String, Object>();
-		System.out.println(this.grupo.getDescGrupo() + " "
-				+ this.grupo.isAuditivo());
 		if (this.grupo.isAuditivo()) {
-			System.out.println("EH AUDITIVO");
 			relatorio = caminho + "mapaFinanceiroOrteseProtese.jasper";
-			map.put("img_adefal",this.getServleContext().getRealPath("/WEB-INF/relatorios/adefal.png"));
+			map.put("img_adefal",
+					this.getServleContext().getRealPath(
+							"/WEB-INF/relatorios/adefal.png"));
 			map.put("dt_inicial", this.dataInicial);
 			map.put("dt_final", this.dataFinal);
 			map.put("cod_programa", this.programa.getIdPrograma());
@@ -194,9 +213,10 @@ public class RelatoriosController {
 			map.put("tipo_exame_auditivo", this.tipoExameAuditivo);
 
 		} else {
-			System.out.println("NAO EH AUDITIVO");
 			relatorio = caminho + "mapaFinanceiroOrteseProtese.jasper";
-			map.put("img_adefal",this.getServleContext().getRealPath("/WEB-INF/relatorios/adefal.png"));
+			map.put("img_adefal",
+					this.getServleContext().getRealPath(
+							"/WEB-INF/relatorios/adefal.png"));
 			map.put("dt_inicial", this.dataInicial);
 			map.put("dt_final", this.dataFinal);
 			map.put("cod_programa", this.programa.getIdPrograma());
@@ -206,6 +226,48 @@ public class RelatoriosController {
 
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
+		this.executeReport(relatorio, map, "relatorio.pdf");
+		limparDados();
+	}
+
+	public void gerarAgendamentosPorProfissional() throws IOException,
+			ParseException {
+
+		if (this.dataFinal == null || this.dataInicial == null
+				|| this.programa == null || this.grupo == null
+				|| this.tipo == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Todos os campos devem ser preenchidos.",
+					"Campos inválidos!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		if (!verificarMesesIguais(this.dataInicial, this.dataFinal)) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"As datas devem possuir o mesmo mês.", "Datas Inválidas!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = caminho + "agendamentosProfissional.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("img_adefal",
+				this.getServleContext().getRealPath(
+						"/WEB-INF/relatorios/adefal.png"));
+		map.put("dt_inicial", this.dataInicial);
+		map.put("dt_final", this.dataFinal);
+		map.put("cod_tipo_atend", this.tipo.getIdTipo());
+		map.put("cod_medico", this.prof.getIdProfissional());
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
+				+ File.separator);
+		
+		System.out.println(this.dataInicial);
+		System.out.println(this.dataFinal);
+		System.out.println(this.tipo.getIdTipo());
+		System.out.println(this.prof.getIdProfissional());
+		
 		this.executeReport(relatorio, map, "relatorio.pdf");
 		limparDados();
 	}

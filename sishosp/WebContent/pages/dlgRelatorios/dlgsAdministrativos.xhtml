@@ -8,7 +8,7 @@
 
 <h:body>
 	<p:dialog header="Mapa de Laudo - Órtese e Prótese"
-		widgetVar="dlgOrteseProtese" resizable="false">
+		widgetVar="dlgOrteseProtese" resizable="false" modal="true">
 		<h:form id="frmOP">
 			<p:outputPanel id="outOP">
 				<p:growl id="msg" />
@@ -85,19 +85,20 @@
 							target="_blank" ajax="false" />
 						<p:commandButton value="Limpar"
 							actionListener="#{RelatoriosController.limparDados()}"
-							update=":frmOP" />
+							update=":frmOP, :frmAP, :frmOPFin" />
 						<p:commandButton value="Sair"
 							actionListener="#{RelatoriosController.limparDados()}"
-							onclick="PF('dlgOrteseProtese').hide();" update=":frmOP" />
+							onclick="PF('dlgOrteseProtese').hide();"
+							update=":frmOP, :frmAP, :frmOPFin" />
 					</p:panelGrid>
 				</center>
 			</p:outputPanel>
 
 		</h:form>
 	</p:dialog>
-	
+
 	<p:dialog header="Financeiro - Órtese e Prótese"
-		widgetVar="dlgOrteseProteseFin" resizable="false">
+		widgetVar="dlgOrteseProteseFin" resizable="false" modal="true">
 		<h:form id="frmOPFin">
 			<p:outputPanel id="outOPFin">
 				<p:growl id="msgFin" />
@@ -174,10 +175,109 @@
 							target="_blank" ajax="false" />
 						<p:commandButton value="Limpar"
 							actionListener="#{RelatoriosController.limparDados()}"
-							update=":frmOPFin" />
+							update=":frmOP, :frmAP, :frmOPFin" />
 						<p:commandButton value="Sair"
 							actionListener="#{RelatoriosController.limparDados()}"
-							onclick="PF('dlgOrteseProteseFin').hide();" update=":frmOPFin" />
+							onclick="PF('dlgOrteseProteseFin').hide();"
+							update=":frmOP, :frmAP, :frmOPFin" />
+					</p:panelGrid>
+				</center>
+			</p:outputPanel>
+
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Agendamentos por Profissional"
+		widgetVar="dlgAgendProf" resizable="false" modal="true">
+		<h:form id="frmAP">
+			<p:outputPanel id="outAgendProf">
+				<p:growl id="msg" />
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<h:outputLabel value="Data Inicial:" />
+					<p:calendar id="dtIn" locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy"
+						value="#{RelatoriosController.dataInicial}" />
+
+					<h:outputLabel value="Data Final:" />
+					<p:calendar id="dtFn" locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy"
+						value="#{RelatoriosController.dataFinal}" />
+
+					<h:outputLabel value="Programa:" />
+					<p:outputPanel id="outProgAP">
+						<p:autoComplete size="60" converter="conPrograma"
+							value="#{RelatoriosController.programa}"
+							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descPrograma}">
+							<p:ajax event="itemSelect"
+								listener="#{GrupoController.selectPrograma}" />
+						</p:autoComplete>
+						<p:commandButton id="btBusPrAP" value="Buscar"
+							onclick="PF('dlgConsuProgOP').show();" />
+					</p:outputPanel>
+
+					<h:outputLabel value="Grupo:" />
+					<p:outputPanel id="outGrupoAP">
+						<p:autoComplete size="60" converter="conGrupo"
+							value="#{RelatoriosController.grupo}"
+							completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descGrupo}">
+							<p:ajax event="itemSelect"
+								listener="#{TipoAtendimentoController.selectGrupo}" />
+						</p:autoComplete>
+
+						<p:commandButton id="btBusGrAP" value="Buscar"
+							onclick="PF('dlgConsuGropOP').show();" />
+					</p:outputPanel>
+
+					<h:outputLabel value="Tipo At.:" />
+					<p:outputPanel id="outTipoAtAP">
+						<p:autoComplete value="#{RelatoriosController.tipo}" size="60"
+							converter="conTipoAtendimento"
+							completeMethod="#{TipoAtendimentoController.listaTipoAtAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descTipoAt}">
+						</p:autoComplete>
+						<p:commandButton id="btBusTiAP" value="Buscar"
+							onclick="PF('dlgConsuTipoAtOP').show();" />
+					</p:outputPanel>
+
+
+					<h:outputLabel value="Profissional:" />
+					<p:outputPanel id="outProfAP">
+						<p:autoComplete value="#{RelatoriosController.prof}" size="60"
+							converter="conProfissional"
+							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descricaoProf}">
+						</p:autoComplete>
+						<p:commandButton id="btBusProfAP" value="Buscar"
+							onclick="PF('dlgConsuProfOP').show();" />
+
+					</p:outputPanel>
+
+				</p:panelGrid>
+
+				<p:separator />
+
+				<center>
+					<p:panelGrid columns="3" styleClass="semBorda">
+						<p:commandButton value="Gerar" update=":frmOP:msg"
+							action="#{RelatoriosController.gerarAgendamentosPorProfissional}"
+							target="_blank" ajax="false" />
+						<p:commandButton value="Limpar"
+							actionListener="#{RelatoriosController.limparDados()}"
+							update=":frmOP, :frmAP, :frmOPFin" />
+						<p:commandButton value="Sair"
+							actionListener="#{RelatoriosController.limparDados()}"
+							onclick="PF('dlgAgendProf').hide();"
+							update=":frmOP, :frmAP, :frmOPFin" />
 					</p:panelGrid>
 				</center>
 			</p:outputPanel>
@@ -199,7 +299,7 @@
 				</p:column>
 				<p:column style="width:50px;text-align: center">
 					<p:commandButton
-						update=":frmOP:outProgOP, :frmOPFin:outProgOPFin, :formConsuGropOP:dtGrupoOP"
+						update=":frmOP:outProgOP, :frmOPFin:outProgOPFin, :formConsuGropOP:dtGrupoOP, :frmAP:outProgAP"
 						icon="ui-icon-check" title="Selecionar"
 						action="#{GrupoController.atualizaLista(RelatoriosController.programa)}"
 						onclick="PF('dlgConsuProgOP').hide();">
@@ -226,16 +326,66 @@
 				<p:column headerText="QTD. FREQ.">
 					<p:outputLabel value="#{grupo.qtdFrequencia}" />
 				</p:column>
-				<p:column headerText="AUDITIVO">
-					<p:outputLabel value="#{grupo.auditivo}" />
-				</p:column>
 
 				<p:column style="width:50px;text-align: center">
-					<p:commandButton update=":frmOP:outGrupoOP, :frmOP:outOP, :frmOPFin:outGrupoOPFin, :frmOPFin:outOPFin"
+					<p:commandButton
+						update=":frmOP:outGrupoOP, :frmOP:outOP, :frmOPFin:outGrupoOPFin, :frmOPFin:outOPFin, :frmAP:outGrupoAP"
 						icon="ui-icon-check" title="Selecionar"
 						onclick="PF('dlgConsuGropOP').hide();">
 						<f:setPropertyActionListener value="#{grupo}"
 							target="#{RelatoriosController.grupo}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Consulta Tipos de Atendimento"
+		widgetVar="dlgConsuTipoAtOP" modal="true" width="550px">
+		<h:form id="formConsuTipoAtOP">
+			<p:dataTable value="#{TipoAtendimentoController.listaTipos}"
+				id="dtTipoAtOP" resizableColumns="true" var="tipo"
+				emptyMessage="Não existe nenhum tipo cadastrado!">
+				<p:column headerText="CÓD.">
+					<p:outputLabel value="#{tipo.idTipo}" />
+				</p:column>
+				<p:column headerText="Tipo de Atendimento">
+					<p:outputLabel value="#{tipo.descTipoAt}" />
+				</p:column>
+
+				<p:column style="width:50px;text-align: center">
+					<p:commandButton icon="ui-icon-check" title="Selecionar"
+						onclick="PF('dlgConsuTipoAtOP').hide();"
+						update=":frmAP:outTipoAtAP">
+						<f:setPropertyActionListener value="#{tipo}"
+							target="#{RelatoriosController.tipo}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProfOP"
+		modal="true" width="550px">
+		<h:form id="formConsuProfOP">
+			<p:dataTable value="#{ProfissionalController.listaProfissional}"
+				id="dtTipoAt" resizableColumns="true" var="profi"
+				emptyMessage="Não existe nenhum tipo cadastrado!">
+				<p:column headerText="CÓD.">
+					<p:outputLabel value="#{profi.idProfissional}" />
+				</p:column>
+				<p:column headerText="Profissional">
+					<p:outputLabel value="#{profi.descricaoProf}" />
+				</p:column>
+				<p:column headerText="Especialidade">
+					<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+				</p:column>
+
+				<p:column style="width:50px;text-align: center">
+					<p:commandButton icon="ui-icon-check" title="Selecionar"
+						update=":frmAP:outProfAP" onclick="PF('dlgConsuProfOP').hide();">
+						<f:setPropertyActionListener value="#{profi}"
+							target="#{RelatoriosController.prof}" />
 					</p:commandButton>
 				</p:column>
 			</p:dataTable>
