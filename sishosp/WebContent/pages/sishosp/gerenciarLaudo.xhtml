@@ -28,81 +28,76 @@
 			<p:panel id="pnlprincipal" header="">
 				<p:panelGrid columns="9" styleClass="semBorda"
 					style="font-size:12px !important;">
-					
-
-						<p:outputLabel value="Pesquisar por: " />
-						<p:outputLabel  value="Nome: " />
-						<p:inputText id="campoBuscanome"
-							value="#{LaudoController.campoBuscaLaudo}" />
-						<p:outputLabel
-							value="Situação: " />
-						<p:selectOneRadio id="campoBuscaSituacao"
-							required="false" value="#{LaudoController.campoBuscaLaudo}">
-
-							<f:selectItem itemLabel="Pendente" itemValue="P" />
-							<f:selectItem itemLabel="Autorizado" itemValue="A" />
 
 
-						</p:selectOneRadio>
-						<p:outputLabel
-							value="Recurso: " />
-						<p:selectOneRadio id="campoBuscaRecurso"
-							required="false" value="#{LaudoController.campoBuscaLaudo}">
+					<p:outputLabel value="Pesquisar por: " />
+					<p:outputLabel value="Nome: " />
+					<p:inputText id="campoBuscanome" value="#{LaudoController.nome}" />
+					<p:outputLabel value="Situação: " />
+					<p:selectOneRadio id="campoBuscaSituacao" required="false"
+						value="#{LaudoController.situacao}">
 
-							<f:selectItem itemLabel="Faec" itemValue="F" />
-							<f:selectItem itemLabel="Mac" itemValue="M" />
+						<f:selectItem itemLabel="Pendente" itemValue="P" />
+						<f:selectItem itemLabel="Autorizado" itemValue="A" />
 
 
-						</p:selectOneRadio>
-						<p:outputLabel value="Prontuario: " />
-						<p:inputText id="campoBuscaProntuario"
-							value="#{LaudoController.campoBuscaNumero}" />
-</p:panelGrid>
-   <p:panelGrid columns="9" styleClass="semBorda"
+					</p:selectOneRadio>
+					<p:outputLabel value="Recurso: " />
+					<p:selectOneRadio id="campoBuscaRecurso" required="false"
+						value="#{LaudoController.prontuario}">
+
+						<f:selectItem itemLabel="Faec" itemValue="F" />
+						<f:selectItem itemLabel="Mac" itemValue="M" />
+
+
+					</p:selectOneRadio>
+					<p:outputLabel value="Prontuario: " />
+					<p:inputText id="campoBuscaProntuario"
+						value="#{LaudoController.prontuario}" />
+				</p:panelGrid>
+				<p:panelGrid columns="9" styleClass="semBorda"
 					style="font-size:12px !important;">
-						<p:outputLabel value="DataInicio: " />
-						<p:calendar id="campoBuscaDataInicio" locale="pt"
-							converter="conLaudo"
-							value="#{LaudoController.campoBuscaData}" navigator="true"
-							mask="true" pattern="MM/yyyy" />
+					<p:outputLabel value="Data Autorizada: " />
+					<p:calendar id="campoBuscaDataInicio" locale="pt"
+						value="#{LaudoController.dataAtorizacao}" navigator="true"
+						mask="true" pattern="dd/MM/yyyy" />
 
-						<p:outputLabel value="DataFim: " />
-						<p:calendar id="campoBuscaDataFim" locale="pt"
-							converter="conLaudo" 
-							value="#{LaudoController.campoBuscaData}" navigator="true"
-							mask="true" pattern="MM/yyyy" />
+					<p:outputLabel value="Data Solicitada: " />
+					<p:calendar id="campoBuscaDataFim" locale="pt"
+						value="#{LaudoController.dataSolicitacao}" navigator="true"
+						mask="true" pattern="MM/yyyy" />
 
-						<h:outputLabel for="prog" value="Programa:" />
-						<p:outputPanel id="outProg">
-							<p:autoComplete value="#{LaudoController.laudo.programa}"
-								size="30" converter="conPrograma"
-								completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
-								effect="fade" var="theme" forceSelection="true"
-								minQueryLength="1" itemValue="#{theme}"
-								itemLabel="#{theme.descPrograma}">
-								<p:ajax event="itemSelect" />
-							</p:autoComplete>
-						</p:outputPanel>
+					<h:outputLabel for="prog" value="Programa:" />
+					<p:outputPanel id="outProg">
+						<p:autoComplete value="#{LaudoController.laudo.programa}"
+							size="30" converter="conPrograma"
+							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descPrograma}">
+							<p:ajax event="itemSelect" />
+						</p:autoComplete>
+					</p:outputPanel>
 
 
-						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							styleClass="btn btn-info"
-							action="#{LaudoController.buscarLaudo()}"
-							update=":frmmensagem:tabela, :frmmensagem:growl" />
-						<p:commandButton value="Limpar Busca" icon="limpar"
-							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
-							actionListener="#{LaudoController.limparBuscaDados()}" />
-						<br />
+					<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
+						styleClass="btn btn-info"
+						action="#{LaudoController.buscarLaudo()}"
+						update=":frmmensagem:tabela, :frmmensagem:growl" />
+					<p:commandButton value="Limpar Busca" icon="limpar"
+						update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
+						actionListener="#{LaudoController.limparBuscaDados()}" />
+					<br />
 
-						<p:commandButton id="btninc" value="Novo"
-							action="/pages/sishosp/cadastroLaudo.faces?faces-redirect=true"
-							icon="add" styleClass="btn btn-sm btn-success"
-							actionListener="#{LaudoController.limparBuscaDados()}">
-							
-							<f:setPropertyActionListener value="I"
-								target="#{LaudoController.tipo}" />
-							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-						</p:commandButton>
+					<p:commandButton id="btninc" value="Novo"
+						action="/pages/sishosp/cadastroLaudo.faces?faces-redirect=true"
+						icon="add" styleClass="btn btn-sm btn-success"
+						actionListener="#{LaudoController.limparBuscaDados()}">
+
+						<f:setPropertyActionListener value="I"
+							target="#{LaudoController.tipo}" />
+						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+					</p:commandButton>
 
 				</p:panelGrid>
 
@@ -124,12 +119,20 @@
 						<h:outputText value="#{tab.paciente.nome}" />
 					</p:column>
 
+					<p:column headerText="Programa" style="font-weight:bold;">
+						<h:outputText value="#{tab.programa.descPrograma}" />
+					</p:column>
+
 					<p:column headerText="Data Solicitada" style="font-weight:bold;">
-						<h:outputText value="#{tab.dtasolicitacao}" />
+						<h:outputText value="#{tab.dtasolicitacao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Data Autorizada" style="font-weight:bold;">
-						<h:outputText value="#{tab.dtautorizacao}" />
+						<h:outputText value="#{tab.dtautorizacao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Situação" style="font-weight:bold;">

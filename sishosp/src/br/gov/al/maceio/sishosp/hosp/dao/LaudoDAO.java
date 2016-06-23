@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 
+
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -24,6 +25,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 
 
@@ -413,15 +415,17 @@ public class LaudoDAO {
                 return lista;
             } 
             
-            public List<LaudoBean> buscarTipoLaudo(String valor, Integer tipo, Integer numero, Date data) {
+            public List<LaudoBean> buscarTipoLaudo(String nome, String situacao, String recurso, Integer prontuario, Date dataAutorizacao, Date dataSolicitacao, ProgramaBean programa) {
         		
             	
           		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente where";
-          		
-          		if (tipo == 1) {
-          			sql += " pacientes.nome like ? order by pacientes.nome";
+          		if(programa==null)
+          			System.out.println("programa null");
+          			
+          		if (programa!=null && dataAutorizacao!=null) {
+          			sql += " CAST(apac.codprograma AS INT) = ? and apac.dtautorizacao = ? order by pacientes.nome";
           		}
-          		if (tipo == 2) {
+          		/*if (tipo == 2) {
           			sql += " apac.situacao like ? order by pacientes.nome";
           		}
           		if (tipo == 3) {
@@ -432,17 +436,19 @@ public class LaudoDAO {
           		}
           		if (tipo == 5) {
           			sql += " BETWEEN = ? AND = ? order by pacientes.nome";
-          		}
+          		}*/
           
           		List<LaudoBean> lista = new ArrayList<>();
      
           		try {
           			conexao = ConnectionFactory.getConnection();
           			PreparedStatement stmt = conexao.prepareStatement(sql);
-          			if (tipo == 1) {
-          				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+          			if (programa!=null && dataAutorizacao!=null) {
+          				System.out.println("Programa:"+programa.getIdPrograma()+"| DATA:|"+dataAutorizacao);
+          				stmt.setInt(1,programa.getIdPrograma());
+          				stmt.setDate(2, new java.sql.Date(dataAutorizacao.getTime()));
           			}
-          			if (tipo == 2) {
+          			/*if (tipo == 2) {
           				stmt.setString(1, "%" + valor.toUpperCase() + "%");
           			}
           			if (tipo == 3) {
@@ -454,7 +460,7 @@ public class LaudoDAO {
           			if (tipo == 5) {
           				stmt.setDate(1, new java.sql.Date(data.getTime()));
           				stmt.setDate(2, new java.sql.Date(data.getTime()));
-          			}
+          			}*/
 
           			ResultSet rs = stmt.executeQuery();
 

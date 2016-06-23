@@ -57,7 +57,16 @@ public class LaudoController {
 	private Integer campoBuscaNumero;
 	private Date campoBuscaData;
 	private String statusLaudo;
+	
+	
+	//BUSCA PERSONALIZADA
 	private String situacao;
+	private String nome;
+	private String recurso;
+	private Date dataAtorizacao;
+	private Date dataSolicitacao;
+	private Integer prontuario;
+	private String programa2;
 	
 	public LaudoController(){
 		//CLASSES
@@ -222,7 +231,7 @@ public class LaudoController {
 
 		LaudoDAO adao = new LaudoDAO();
 
-		listaAux = adao.buscarTipoLaudo(campoBuscaLaudo,tipoBuscaLaudo, campoBuscaNumero, campoBuscaData);
+		listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso, this.prontuario, this.dataAtorizacao, this.dataSolicitacao, this.laudo.getPrograma());
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -284,6 +293,14 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 		statusLaudo = "P";
 		listaLaudo = null;
 		listaLaudoDigita = null;
+		this.laudo = null;
+		this.dataAtorizacao = null;
+		this.dataSolicitacao = null;
+		this.situacao = null;
+		this.recurso = null;
+		this.nome = null;
+		this.prontuario = null;
+		
 	}
 	
 	public void limparDados(){
@@ -567,6 +584,54 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 
 	public void setUsuario(UsuarioBean usuario) {
 		this.usuario = usuario;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getRecurso() {
+		return recurso;
+	}
+
+	public void setRecurso(String recurso) {
+		this.recurso = recurso;
+	}
+
+	public Date getDataAtorizacao() {
+		return dataAtorizacao;
+	}
+
+	public void setDataAtorizacao(Date dataAtorizacao) {
+		this.dataAtorizacao = dataAtorizacao;
+	}
+
+	public Date getDataSolicitacao() {
+		return dataSolicitacao;
+	}
+
+	public void setDataSolicitacao(Date dataSolicitacao) {
+		this.dataSolicitacao = dataSolicitacao;
+	}
+
+	public Integer getProntuario() {
+		return prontuario;
+	}
+
+	public void setProntuario(Integer prontuario) {
+		this.prontuario = prontuario;
+	}
+
+	public String getPrograma2() {
+		return programa2;
+	}
+
+	public void setPrograma2(String programa2) {
+		this.programa2 = programa2;
 	}
    
 

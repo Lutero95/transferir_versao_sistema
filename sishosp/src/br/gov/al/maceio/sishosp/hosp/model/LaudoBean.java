@@ -31,20 +31,20 @@ public class LaudoBean {
 	private String recurso;
 	private Integer codgrupo;
 	private Integer codempresa;
-	
+
 	private String desceApac;
-	private Integer codLaudoBpi;	
+	private Integer codLaudoBpi;
 	private String descBpi;
 	private String numeroAutorizacao;
-	
+
 	// LAUDO DIGITA
 	private Integer diasConceder;
 	private Integer codLaudoDigita;
 	private Date dtainicio;
 	private Date dtafim;
 	private Integer Prorrogar;
-	
-	//CLASSES HERDADAS
+
+	// CLASSES HERDADAS
 	private PacienteBean paciente;
 	private ProgramaBean programa;
 	private ProfissaoBean profissao;
@@ -55,8 +55,9 @@ public class LaudoBean {
 	private CidBean cid;
 	private EquipamentoBean equipamento;
 	private EquipeBean equipe;
-	
-	public LaudoBean(){
+	private ProgramaBean programaBuscar;
+
+	public LaudoBean() {
 		this.paciente = null;
 		this.procedimento = null;
 		this.grupo = null;
@@ -69,16 +70,15 @@ public class LaudoBean {
 		fornecedor = new FornecedorBean();
 		equipamento = new EquipamentoBean();
 		this.equipe = null;
-		//paciente = new PacienteBean();
-		//programa = new ProgramaBean();
-		//profissao = new ProfissaoBean();
-		//profissional = new ProfissionalBean();
-		//grupo = new GrupoBean();
-		//procedimento = new ProcedimentoBean();
-		//fornecedor = new FornecedorBean();
+		this.programaBuscar = new ProgramaBean();
+		// paciente = new PacienteBean();
+		// programa = new ProgramaBean();
+		// profissao = new ProfissaoBean();
+		// profissional = new ProfissionalBean();
+		// grupo = new GrupoBean();
+		// procedimento = new ProcedimentoBean();
+		// fornecedor = new FornecedorBean();
 	}
-
-
 
 	public String getDesceApac() {
 		return desceApac;
@@ -440,30 +440,28 @@ public class LaudoBean {
 		this.dtafim = dtafim;
 	}
 
-
-
 	public Integer getCodLaudoDigita() {
 		return codLaudoDigita;
 	}
-
-
 
 	public void setCodLaudoDigita(Integer codLaudoDigita) {
 		this.codLaudoDigita = codLaudoDigita;
 	}
 
-
-
 	public Integer getDiasConceder() {
 		return diasConceder;
 	}
 
-
-
 	public void setDiasConceder(Integer diasConceder) {
 		this.diasConceder = diasConceder;
 	}
-	
-	
-	
+
+	public ProgramaBean getProgramaBuscar() {
+		return programaBuscar;
+	}
+
+	public void setProgramaBuscar(ProgramaBean programaBuscar) {
+		this.programaBuscar = programaBuscar;
+	}
+
 }
