@@ -184,6 +184,7 @@ public class ProgramaDAO {
 			stmt.setInt(3, prog.getIdPrograma());
 			stmt.executeUpdate();
 			con.commit();
+			alterarProgramaGrupo(prog);
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -192,6 +193,30 @@ public class ProgramaDAO {
 				con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
+			}
+		}
+	}
+	
+	public void alterarProgramaGrupo(ProgramaBean prog) throws ProjetoException {
+		String sql = "update hosp.grupo_programa set codgrupo = ? where codprograma = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			for (GrupoBean grupoBean : prog.getGrupo()) {
+				ps.setInt(1, prog.getIdPrograma());
+				ps.setInt(2, grupoBean.getIdGrupo());
+
+				ps.execute();
+				con.commit();
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				//con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
 			}
 		}
 	}

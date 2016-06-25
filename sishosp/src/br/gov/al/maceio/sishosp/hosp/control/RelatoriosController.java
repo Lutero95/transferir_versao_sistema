@@ -35,6 +35,7 @@ public class RelatoriosController {
 	private Date dataFinal;
 	private String recurso;
 	private String tipoExameAuditivo;
+	private String situacao;
 
 	public RelatoriosController() {
 		this.programa = new ProgramaBean();
@@ -118,6 +119,14 @@ public class RelatoriosController {
 
 	public void setProf(ProfissionalBean prof) {
 		this.prof = prof;
+	}
+	
+	public String getSituacao() {
+		return situacao;
+	}
+
+	public void setSituacao(String situacao) {
+		this.situacao = situacao;
 	}
 
 	public boolean verificarMesesIguais(Date dataInicial, Date dataFinal) {
@@ -259,15 +268,49 @@ public class RelatoriosController {
 		map.put("dt_inicial", this.dataInicial);
 		map.put("dt_final", this.dataFinal);
 		map.put("cod_tipo_atend", this.tipo.getIdTipo());
-		map.put("cod_medico", this.prof.getIdProfissional());
+		if (this.prof == null) {
+			map.put("cod_medico", null);
+		} else {
+			map.put("cod_medico", this.prof.getIdProfissional());
+		}
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
-		
-		System.out.println(this.dataInicial);
-		System.out.println(this.dataFinal);
-		System.out.println(this.tipo.getIdTipo());
-		System.out.println(this.prof.getIdProfissional());
-		
+
+		this.executeReport(relatorio, map, "relatorio.pdf");
+		limparDados();
+	}
+
+	public void gerarAtendimentosPorPrograma() throws IOException,
+			ParseException {
+
+		if (this.dataFinal == null || this.dataInicial == null
+				|| this.programa == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Datas e programa devem ser preenchidos.",
+					"Campos inválidos!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = caminho + "atendimentosPorPrograma.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("dt_inicial", this.dataInicial);
+		map.put("dt_final", this.dataFinal);
+		map.put("cod_programa", this.programa.getIdPrograma());
+		if(this.grupo == null){
+			map.put("cod_grupo", null);
+		}else{
+			map.put("cod_grupo", this.grupo.getIdGrupo());
+		}
+		if(this.situacao.equals("T")){
+			map.put("situacao", null);
+		}else{
+			map.put("situacao", this.situacao);
+		}
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
+				+ File.separator);
+
 		this.executeReport(relatorio, map, "relatorio.pdf");
 		limparDados();
 	}

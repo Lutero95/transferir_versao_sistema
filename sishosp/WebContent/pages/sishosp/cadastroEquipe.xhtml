@@ -28,7 +28,7 @@
 					<p:tabView activeIndex="#{EquipeController.abaAtiva}"
 						style="height:auto; width:800px">
 						<p:tab title="DADOS EQUIPE">
-							
+
 							<div class="form-group">
 								<h:outputLabel for="inputname" value="Descrição da Equipe: "
 									styleClass="col-sm-3 control-label" />
@@ -37,6 +37,35 @@
 										class="form-control" id="inputname" />
 								</div>
 							</div>
+
+							<div class="form-group">
+									<h:outputLabel value="Profissional: "
+										styleClass="col-sm-3 control-label" />
+									<p:commandButton
+										style="position:absolute; top:130px; left:162px;"
+										icon="ui-icon-plus" onclick="PF('dlgConsuProfE').show();" />
+									<div class="col-sm-6">
+
+										<p:dataTable emptyMessage="Sem Dados"
+											styleClass="table table-hover" id="tabela"
+											style="margin-top:20px;"
+											value="#{EquipeController.equipe.profissionais}" var="tab"
+											paginator="true" paginatorPosition="bottom" rows="12"
+											resizableColumns="true">
+
+											<p:column headerText="Cód."
+												style="font-weight:bold;width:20%;">
+												<h:outputText value="#{tab.idProfissional}" />
+											</p:column>
+
+											<p:column headerText="Nome" style="font-weight:bold;">
+												<h:outputText value="#{tab.descricaoProf}" />
+											</p:column>
+
+										</p:dataTable>
+									</div>
+							</div>
+
 						</p:tab>
 
 					</p:tabView>
@@ -56,7 +85,34 @@
 						rendered="#{EquipeController.tipo  == 'A'}" />
 				</p:panelGrid>
 
+				<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProfE"
+					modal="true" width="550px">
+					<h:form id="formConsuProfE">
+						<p:dataTable value="#{ProfissionalController.listaProfissional}"
+							id="dtTipoAt" resizableColumns="true" var="profi"
+							emptyMessage="Não existe nenhum tipo cadastrado!">
+							<p:column headerText="CÓD.">
+								<p:outputLabel value="#{profi.idProfissional}" />
+							</p:column>
+							<p:column headerText="Profissional">
+								<p:outputLabel value="#{profi.descricaoProf}" />
+							</p:column>
+							<p:column headerText="Especialidade">
+								<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+							</p:column>
 
+							<p:column style="width:50px;text-align: center">
+								<p:commandButton update=":formCADU:pnlCadEquipe"
+									icon="ui-icon-check" title="Selecionar"
+									action="#{EquipeController.equipe.addProfList()}"
+									onclick="PF('dlgConsuProfE').hide();">
+									<f:setPropertyActionListener value="#{profi}"
+										target="#{EquipeController.equipe.prof}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</h:form>
+				</p:dialog>
 
 			</h:form>
 		</div>

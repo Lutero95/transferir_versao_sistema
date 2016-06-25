@@ -282,7 +282,7 @@ public class AgendaDAO {
 				+ " VALUES "
 				+ "(?, ?, ?, ?, ?,"
 				+ " ?, ?, ?, ?, ?,"
-				+ " ?, ?, ?, ?, ?);";
+				+ " ?, ?, ?, ?, ?) RETURNING id_atendimento;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -311,14 +311,58 @@ public class AgendaDAO {
 			ps.setString(14, "S");// ativo
 			ps.setInt(15, 0);// COD EMPRESA ?
 
-			ps.execute();
+			ResultSet rs = ps.executeQuery();
 			con.commit();
+			int idAgend = 0;
+			if (rs.next()) {
+				idAgend = rs.getInt("id_atendimento");
+				gravarAgendaAtendimento1(agenda, idAgend);
+			}
+
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+
+	public void gravarAgendaAtendimento1(AgendaBean agenda, int idAgendamento) {
+
+		String sql = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
+				+ " cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			if (agenda.getProfissional().getIdProfissional() != null) {
+				System.out.println("EH PRO");
+				ps.setInt(1, agenda.getProfissional().getIdProfissional());
+				ps.setInt(2, idAgendamento);
+				ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
+				ps.setInt(4, agenda.getProfissional().getProc1().getIdProc());
+			} else if (agenda.getEquipe().getCodEquipe() != null) {
+				System.out.println("EH EQUIPE");
+				for (ProfissionalBean prof : agenda.getEquipe()
+						.getProfissionais()) {
+					ps.setInt(1, prof.getIdProfissional());
+					ps.setInt(2, idAgendamento);
+					ps.setInt(3, prof.getCbo().getCodCbo());
+					ps.setInt(4, prof.getProc1().getIdProc());
+				}
+			}
+
+			ps.execute();
+			con.commit();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				// con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				System.exit(1);
@@ -426,7 +470,7 @@ public class AgendaDAO {
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
 				stm.setInt(2, tipo.getIdTipo());
-			}else if(pront != null && tipo != null){
+			} else if (pront != null && tipo != null) {
 				System.out.println("DT CODTI");
 				sql += "dtaatende = ? and codtipoatendimento = ? and codpaciente = ?";
 				stm = con.prepareStatement(sql);
@@ -477,12 +521,32 @@ public class AgendaDAO {
 			stmt.setLong(1, agenda.getIdAgenda());
 			stmt.execute();
 			con.commit();
+			excluirTabelaAgendamentos1(agenda);
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	public void excluirTabelaAgendamentos1(AgendaBean agenda) {
+		String sql = "delete from hosp.atendimentos1 where id_atendimento = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, agenda.getIdAgenda());
+			stmt.execute();
+			con.commit();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				// con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
@@ -561,5 +625,35 @@ public class AgendaDAO {
 			}
 		}
 	}
+
+	public boolean confirmarAtendimento(AgendaBean agenda, String situacaoConf) {
+		String sql = "update hosp.atendimentos1 set codprofissionalatendimento = ?, cbo = ?,"
+				+ " codprocedimento = ?,  situacao = ?, dtaatendido = ?"
+				+ " where id_atendimento = ?";
+		try {
+			System.out.println("s "+ situacaoConf);
+			System.out.println("id "+ agenda.getIdAgenda());
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, agenda.getProfissional().getIdProfissional());
+			stmt.setInt(2, agenda.getProfissional().getCbo().getCodCbo());
+			stmt.setInt(3, agenda.getProfissional().getProc1().getCodProc());
+			stmt.setString(4, situacaoConf.toUpperCase());
+			stmt.setDate(5, new java.sql.Date(new Date().getTime()));
+			stmt.setInt(6, agenda.getIdAgenda());
+			stmt.executeUpdate();
+			con.commit();
+			return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+	
 
 }

@@ -65,8 +65,9 @@
 
 					<p:column headerText="Ação" width="60px;">
 						<center>
-							<p:commandButton icon="trash"
-								onclick="PF('dialogAtencao').show()" title="Excluir">
+							<p:commandButton icon="novoProcesso"
+								action="#{AgendaController.habilitarDetalhes()}"
+								update=":formConsAge:pnlConsAge" title="Detalhes">
 								<f:setPropertyActionListener value="#{agenda}"
 									target="#{AgendaController.agenda}" />
 							</p:commandButton>
@@ -107,11 +108,86 @@
 					</p:column>
 				</p:dataTable>
 
+				<br />
+				<center>
+					<p:outputPanel id="outDetalhes"
+						rendered="#{AgendaController.habilitarDetalhes == true}">
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:panel header="Confirma Atendimento">
+								<p:panelGrid columns="2" styleClass="semBorda">
+									<h:outputLabel value="Paciente: " />
+									<p:outputPanel>
+										<p:inputText
+											value="#{AgendaController.agenda.paciente.id_paciente}"
+											readonly="true" size="5" />
+										<p:inputText value="#{AgendaController.agenda.paciente.nome}"
+											readonly="true" size="50" />
+									</p:outputPanel>
+
+									<h:outputLabel value="Médico: " />
+									<p:outputPanel>
+										<p:inputText
+											value="#{AgendaController.agenda.profissional.idProfissional}"
+											readonly="true" size="5" />
+										<p:inputText
+											value="#{AgendaController.agenda.profissional.descricaoProf}"
+											readonly="true" size="50" />
+									</p:outputPanel>
+								</p:panelGrid>
+							</p:panel>
+							<p:panelGrid columns="3" styleClass="semBorda">
+								<h:outputLabel value="Profissional Atendimento: " />
+								<p:autoComplete value="#{AgendaController.agenda.profissional}"
+									size="60" converter="conProfissional"
+									completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descricaoProf}">
+								</p:autoComplete>
+								<p:commandButton value="Buscar"
+									onclick="PF('dlgConsuProf').show();" />
+
+								<h:outputLabel value="Procedimento: " />
+								<p:autoComplete value="#{AgendaController.agenda.profissional}"
+									size="60" converter="conProfissional"
+									completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descricaoProf}">
+								</p:autoComplete>
+								<p:commandButton value="Buscar"
+									onclick="PF('dlgConsuProf').show();" />
+
+								<h:outputLabel value="Situação: " />
+								<p:selectOneMenu value="#{AgendaController.situacao}" style="width:125px">
+									<f:selectItem itemLabel="ATENDIDO" itemValue="A" />
+									<f:selectItem itemLabel="PROF. FALTOU" itemValue="MF" />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+						</p:panelGrid>
+						<center>
+							<p:panelGrid columns="3" styleClass="semBorda">
+
+								<p:commandButton value="Confirmar" icon="confirmar" 
+								action="#{AgendaController.confirmarAtendimento()}"
+								update=":formConsAge"/>
+
+								<p:commandButton value="Excluir Agendamento" icon="trash"
+									onclick="PF('dialogAtencao').show()" update=":formConsAge"/>
+
+								<p:commandButton value="Limpar" icon="limpar" />
+
+							</p:panelGrid>
+						</center>
+					</p:outputPanel>
+				</center>
 				<p:separator />
 				<center>
-					<p:commandButton value="Sair" icon="btlogout" update=":formConsAge"
+					<p:commandButton value="Voltar" icon="btvoltar" style="width:80px;"
+						update=":formConsAge"
 						actionListener="#{AgendaController.limparDados()}"
-						action="/pages/agenda/agendaMedica.xhtml?faces-redirect=true" />
+						action="/pages/comum/selecaoSistema.faces?faces-redirect=true" />
 				</center>
 
 			</p:panel>
@@ -155,7 +231,7 @@
 				<center>
 					<p:commandButton value="Sim" icon="ui-icon-check"
 						action="#{AgendaController.excluirAgendamento()}"
-						update=":formConsAge:dtConsultas, :formConsAge:msg"
+						update=":formConsAge:msg, :formConsAge"
 						style="font-size:14px;" onclick="PF('dialogAtencao').hide();">
 					</p:commandButton>
 					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"

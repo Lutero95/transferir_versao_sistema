@@ -184,9 +184,9 @@
 				<p:menuitem value="Controle Apac"
 					url="/pages/sishosp/ControleApac.faces" />
 				<p:menuitem value="Agenda Médica"
-					url="/pages/sishosp/agendaPaciente.faces" />
+					url="/pages/agenda/agendaMedica.faces" />
 				<p:menuitem value="Atendimento"
-					url="/pages/sishosp/agendaPaciente.faces" />
+					url="/pages/agenda/consAgendamentos.faces" />
 				<p:menuitem value="Consulta Agendamento"
 					url="/pages/sishosp/agendaPaciente.faces" />
 				<p:submenu label="Serviço Social" icon="ui-icon-contact">
@@ -231,7 +231,7 @@
 					<p:menuitem value="Atendimentos p/ Profissional"
 						url="/pages/sishosp/agendaPaciente.faces" />
 					<p:menuitem value="Atendimentos p/ Programa"
-						url="/pages/sishosp/agendaPaciente.faces" />
+						onclick="PF('dlgAtenProg').show();" />
 					<p:menuitem value="Atendimentos p/ Procedimentos"
 						url="/pages/sishosp/agendaPaciente.faces" />
 					<p:menuitem value="Faltas por programa"

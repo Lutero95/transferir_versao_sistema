@@ -9,6 +9,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
 public class EquipeDAO {
 
@@ -18,16 +19,43 @@ public class EquipeDAO {
 	public boolean gravarEquipe(EquipeBean equipe)
 			throws SQLException {
 
-		String sql = "insert into hosp.equipe (descequipe) values (?);";
+		String sql = "insert into hosp.equipe (descequipe) values (?) RETURNING id_equipe;";
 		try {
-			System.out.println("VAI CADASTRAR EQUPE");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, equipe.getDescEquipe().toUpperCase());
-			ps.execute();
+			ResultSet rs = ps.executeQuery();
 			con.commit();
-			System.out.println("CADASTROU EQUIPE");
+			int idEquipe = 0;
+			if (rs.next()) {
+				idEquipe = rs.getInt("id_equipe");
+				insereEquipeProfissional(idEquipe, equipe);
+
+			}
 			return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+	
+	public void insereEquipeProfissional(int idEquipe, EquipeBean equipe) {
+		String sql = "insert into hosp.equipe_medico (equipe, medico) values(?,?);";
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			for (ProfissionalBean prof : equipe.getProfissionais()) {
+				ps.setInt(1, idEquipe);
+				ps.setInt(2, prof.getIdProfissional());
+				ps.execute();
+				con.commit();
+			}
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		} finally {

@@ -285,6 +285,83 @@
 		</h:form>
 	</p:dialog>
 
+	<p:dialog header="Atendimentos por Programa" widgetVar="dlgAtenProg"
+		resizable="false" modal="true">
+		<h:form id="frmAPR">
+			<p:outputPanel id="outAtenProg">
+				<p:growl id="msg" />
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<h:outputLabel value="Data Inicial:" />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy"
+						value="#{RelatoriosController.dataInicial}" />
+
+					<h:outputLabel value="Data Final:" />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy"
+						value="#{RelatoriosController.dataFinal}" />
+
+					<h:outputLabel value="Programa:" />
+					<p:outputPanel id="outProgAPR">
+						<p:autoComplete size="60" converter="conPrograma"
+							value="#{RelatoriosController.programa}"
+							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descPrograma}">
+							<p:ajax event="itemSelect"
+								listener="#{GrupoController.selectPrograma}" />
+						</p:autoComplete>
+						<p:commandButton id="btBusPrAPR" value="Buscar"
+							onclick="PF('dlgConsuProgOP').show();" />
+					</p:outputPanel>
+
+					<h:outputLabel value="Grupo:" />
+					<p:outputPanel id="outGrupoAPR">
+						<p:autoComplete size="60" converter="conGrupo"
+							value="#{RelatoriosController.grupo}"
+							completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descGrupo}">
+							<p:ajax event="itemSelect"
+								listener="#{TipoAtendimentoController.selectGrupo}" />
+						</p:autoComplete>
+
+						<p:commandButton id="btBusGrAPR" value="Buscar"
+							onclick="PF('dlgConsuGropOP').show();" />
+					</p:outputPanel>
+
+					<h:outputLabel value="Situação:" />
+					<p:selectOneMenu value="#{RelatoriosController.situacao}"
+						style="width:125px">
+						<f:selectItem itemLabel="TODOS" itemValue="T" />
+						<f:selectItem itemLabel="ATENDIDO" itemValue="A" />
+						<f:selectItem itemLabel="PROF. FALTOU" itemValue="MF" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+
+				<p:separator />
+
+				<center>
+					<p:panelGrid columns="3" styleClass="semBorda">
+						<p:commandButton value="Gerar" update=":frmAPR:outAtenProg"
+							action="#{RelatoriosController.gerarAtendimentosPorPrograma}"
+							target="_blank" ajax="false" />
+						<p:commandButton value="Limpar"
+							actionListener="#{RelatoriosController.limparDados()}"
+							update="@form" />
+						<p:commandButton value="Sair"
+							actionListener="#{RelatoriosController.limparDados()}"
+							onclick="PF('dlgAtenProg').hide();" update="@all" />
+					</p:panelGrid>
+				</center>
+			</p:outputPanel>
+
+		</h:form>
+	</p:dialog>
+
 	<p:dialog header="Consulta Programas" widgetVar="dlgConsuProgOP"
 		modal="true" width="500px">
 		<h:form id="formConsuProgOP">
@@ -299,7 +376,7 @@
 				</p:column>
 				<p:column style="width:50px;text-align: center">
 					<p:commandButton
-						update=":frmOP:outProgOP, :frmOPFin:outProgOPFin, :formConsuGropOP:dtGrupoOP, :frmAP:outProgAP"
+						update=":frmOP:outProgOP, :frmOPFin:outProgOPFin, :formConsuGropOP:dtGrupoOP, :frmAP:outProgAP, :frmAPR:outProgAPR"
 						icon="ui-icon-check" title="Selecionar"
 						action="#{GrupoController.atualizaLista(RelatoriosController.programa)}"
 						onclick="PF('dlgConsuProgOP').hide();">
@@ -329,7 +406,7 @@
 
 				<p:column style="width:50px;text-align: center">
 					<p:commandButton
-						update=":frmOP:outGrupoOP, :frmOP:outOP, :frmOPFin:outGrupoOPFin, :frmOPFin:outOPFin, :frmAP:outGrupoAP"
+						update=":frmOP:outGrupoOP, :frmOP:outOP, :frmOPFin:outGrupoOPFin, :frmOPFin:outOPFin, :frmAP:outGrupoAP, :frmAPR:outGrupoAPR"
 						icon="ui-icon-check" title="Selecionar"
 						onclick="PF('dlgConsuGropOP').hide();">
 						<f:setPropertyActionListener value="#{grupo}"

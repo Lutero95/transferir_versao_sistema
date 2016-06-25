@@ -20,7 +20,6 @@ public class AgendaController {
 
 	private AgendaBean agenda;
 
-	// consultas
 	private Date dataAtendimentoC;
 	private String cnsC;
 	private Integer protuarioC;
@@ -29,6 +28,10 @@ public class AgendaController {
 	private List<AgendaBean> listaNovosAgendamentos;
 	private List<AgendaBean> listaAgendamentosData;
 	private List<AgendaBean> listaConsulta;
+	
+	private boolean habilitarDetalhes;
+	
+	private String situacao;
 
 	private AgendaDAO aDao = new AgendaDAO();
 
@@ -41,6 +44,7 @@ public class AgendaController {
 		this.cnsC = new String();
 		this.protuarioC = null;
 		this.tipoC = new TipoAtendimentoBean();
+		this.situacao = new String();
 	}
 
 	public void limparDados() {
@@ -52,6 +56,16 @@ public class AgendaController {
 		this.cnsC = new String();
 		this.protuarioC = null;
 		this.tipoC = new TipoAtendimentoBean();
+		this.habilitarDetalhes = false;
+		this.situacao = new String();
+	}
+	
+	public String getSituacao() {
+		return situacao;
+	}
+
+	public void setSituacao(String situacao) {
+		this.situacao = situacao;
 	}
 
 	public List<AgendaBean> getListaNovosAgendamentos() {
@@ -117,6 +131,14 @@ public class AgendaController {
 
 	public void setListaConsulta(List<AgendaBean> listaConsulta) {
 		this.listaConsulta = listaConsulta;
+	}
+	
+	public boolean isHabilitarDetalhes() {
+		return habilitarDetalhes;
+	}
+
+	public void setHabilitarDetalhes(boolean habilitarDetalhes) {
+		this.habilitarDetalhes = habilitarDetalhes;
 	}
 
 	public void verificaDisponibilidadeData() {
@@ -231,6 +253,7 @@ public class AgendaController {
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+		limparDados();
 	}
 
 	public void consultarAgenda() {
@@ -256,6 +279,7 @@ public class AgendaController {
 					"Ocorreu um erro durante a exclusão!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+		limparDados();
 	}
 
 	public void limparNaBuscaPaciente() {
@@ -305,6 +329,25 @@ public class AgendaController {
 		this.agenda.setDataAtendimento(null);
 		this.agenda.setQtd(null);
 		this.agenda.setMax(null);
+	}
+	
+	public void habilitarDetalhes(){
+		if(this.habilitarDetalhes == false){
+			this.habilitarDetalhes = true;
+		}
+	}
+	
+	public void confirmarAtendimento() {
+		boolean ok = aDao.confirmarAtendimento(this.agenda, situacao);
+		if (ok) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Atendimento Confirmado", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro ao confirmar este atendimento!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
 	}
 
 }

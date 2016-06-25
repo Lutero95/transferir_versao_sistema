@@ -11,16 +11,11 @@
 
 	<ui:define name="body">
 
-		<div class="col-md-8">
-			<h3>Agenda Médica</h3>
-			<br />
-		</div>
-
+		<h3>Agenda Médica</h3>
 		<h:form id="formAgendaMedica">
 			<p:growl id="msgFeriado" />
 			<p:panel>
 				<p:panelGrid columns="3" styleClass="semBorda">
-
 					<h:outputLabel for="pac" value="Paciente: *" />
 					<p:outputPanel id="outPa">
 						<p:autoComplete value="#{AgendaController.agenda.paciente}"
@@ -230,9 +225,6 @@
 							<h:outputLabel value="#{agendaD.dataAtendimento}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputLabel>
-						</p:column>
-
-						<p:column headerText="Horário">
 						</p:column>
 
 						<p:column headerText="Pront.">
