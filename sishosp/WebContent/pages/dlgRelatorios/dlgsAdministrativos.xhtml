@@ -362,6 +362,117 @@
 		</h:form>
 	</p:dialog>
 
+	<p:dialog header="Atendimentos por Procedimentos"
+		widgetVar="dlgAtenProc" resizable="false" modal="true">
+		<h:form id="frmAPc">
+			<p:outputPanel id="outAtenProc">
+				<p:growl id="msg" />
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<h:outputLabel value="Data Inicial:" />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy"
+						value="#{RelatoriosController.dataInicial}" />
+
+					<h:outputLabel value="Data Final:" />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy"
+						value="#{RelatoriosController.dataFinal}" />
+
+					<h:outputLabel value="Tipo de Relatório:" />
+					<p:selectOneRadio value="#{RelatoriosController.tipoAnalSint}">
+						<f:selectItem itemLabel="Analítico" itemValue="A" />
+						<f:selectItem itemLabel="Sintético" itemValue="S" />
+					</p:selectOneRadio>
+				</p:panelGrid>
+
+				<p:separator />
+
+				<center>
+					<p:panelGrid columns="3" styleClass="semBorda">
+						<p:commandButton value="Gerar" update=":frmAPc:outAtenProc"
+							action="#{RelatoriosController.gerarAtendimentosPorProcedimento}"
+							target="_blank" ajax="false" />
+						<p:commandButton value="Limpar"
+							actionListener="#{RelatoriosController.limparDados()}"
+							update="@form" />
+						<p:commandButton value="Sair"
+							actionListener="#{RelatoriosController.limparDados()}"
+							onclick="PF('dlgAtenProc').hide();" update="@all" />
+					</p:panelGrid>
+				</center>
+			</p:outputPanel>
+
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Faltas por Programa" widgetVar="dlgFaltaProg"
+		resizable="false" modal="true">
+		<h:form id="frmFaltaProg">
+			<p:outputPanel id="outFaltaProg">
+				<p:growl id="msg" />
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<h:outputLabel value="Data Inicial:" />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy"
+						value="#{RelatoriosController.dataInicial}" />
+
+					<h:outputLabel value="Data Final:" />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy"
+						value="#{RelatoriosController.dataFinal}" />
+
+					<h:outputLabel for="progFin" value="Programa: " />
+					<p:outputPanel id="outProgOPFin">
+						<p:autoComplete size="60" converter="conPrograma"
+							value="#{RelatoriosController.programa}"
+							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descPrograma}">
+							<p:ajax event="itemSelect"
+								listener="#{GrupoController.selectPrograma}" />
+						</p:autoComplete>
+						<p:commandButton id="btBusPrFin" value="Buscar"
+							onclick="PF('dlgConsuProgOP').show();" />
+					</p:outputPanel>
+
+					<h:outputLabel value="Grupo:" />
+					<p:outputPanel id="outGrupoAP">
+						<p:autoComplete size="60" converter="conGrupo"
+							value="#{RelatoriosController.grupo}"
+							completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descGrupo}">
+							<p:ajax event="itemSelect"
+								listener="#{TipoAtendimentoController.selectGrupo}" />
+						</p:autoComplete>
+
+						<p:commandButton id="btBusGrAP" value="Buscar"
+							onclick="PF('dlgConsuGropOP').show();" />
+					</p:outputPanel>
+				</p:panelGrid>
+
+				<p:separator />
+
+				<center>
+					<p:panelGrid columns="3" styleClass="semBorda">
+						<p:commandButton value="Gerar" update=":frmFaltaProg:outFaltaProg"
+							action="#{RelatoriosController.gerarAtendimentosPorProcedimento}"
+							target="_blank" ajax="false" />
+						<p:commandButton value="Limpar"
+							actionListener="#{RelatoriosController.limparDados()}"
+							update="@form" />
+						<p:commandButton value="Sair"
+							actionListener="#{RelatoriosController.limparDados()}"
+							onclick="PF('dlgFaltaProg').hide();" update="@all" />
+					</p:panelGrid>
+				</center>
+			</p:outputPanel>
+
+		</h:form>
+	</p:dialog>
+
 	<p:dialog header="Consulta Programas" widgetVar="dlgConsuProgOP"
 		modal="true" width="500px">
 		<h:form id="formConsuProgOP">

@@ -36,6 +36,7 @@ public class RelatoriosController {
 	private String recurso;
 	private String tipoExameAuditivo;
 	private String situacao;
+	private String tipoAnalSint;
 
 	public RelatoriosController() {
 		this.programa = new ProgramaBean();
@@ -45,6 +46,7 @@ public class RelatoriosController {
 		this.dataInicial = null;
 		this.dataFinal = null;
 		this.tipoExameAuditivo = new String("TODOS");
+		this.tipoAnalSint = new String("A");
 	}
 
 	public void limparDados() {
@@ -55,6 +57,7 @@ public class RelatoriosController {
 		this.dataInicial = null;
 		this.dataFinal = null;
 		this.tipoExameAuditivo = new String("TODOS");
+		this.tipoAnalSint = new String("A");
 	}
 
 	public ProgramaBean getPrograma() {
@@ -120,13 +123,21 @@ public class RelatoriosController {
 	public void setProf(ProfissionalBean prof) {
 		this.prof = prof;
 	}
-	
+
 	public String getSituacao() {
 		return situacao;
 	}
 
 	public void setSituacao(String situacao) {
 		this.situacao = situacao;
+	}
+	
+	public String getTipoAnalSint() {
+		return tipoAnalSint;
+	}
+
+	public void setTipoAnalSint(String tipoAnalSint) {
+		this.tipoAnalSint = tipoAnalSint;
 	}
 
 	public boolean verificarMesesIguais(Date dataInicial, Date dataFinal) {
@@ -298,16 +309,44 @@ public class RelatoriosController {
 		map.put("dt_inicial", this.dataInicial);
 		map.put("dt_final", this.dataFinal);
 		map.put("cod_programa", this.programa.getIdPrograma());
-		if(this.grupo == null){
+		if (this.grupo == null) {
 			map.put("cod_grupo", null);
-		}else{
+		} else {
 			map.put("cod_grupo", this.grupo.getIdGrupo());
 		}
-		if(this.situacao.equals("T")){
+		if (this.situacao.equals("T")) {
 			map.put("situacao", null);
-		}else{
+		} else {
 			map.put("situacao", this.situacao);
 		}
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
+				+ File.separator);
+
+		this.executeReport(relatorio, map, "relatorio.pdf");
+		limparDados();
+	}
+
+	public void gerarAtendimentosPorProcedimento() throws IOException,
+			ParseException {
+
+		if (this.dataFinal == null || this.dataInicial == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Datas devem ser preenchidas.",
+					"Campos inválidos!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = "";
+		if(this.tipoAnalSint.equals("A")){
+			relatorio = caminho + "atendPorProcedimentosAnalitico.jasper";
+		}else if(this.tipoAnalSint.equals("S")){
+			relatorio = caminho + "atendPorProcedimentosSintetico.jasper";
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("dt_inicial", this.dataInicial);
+		map.put("dt_final", this.dataFinal);
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
 

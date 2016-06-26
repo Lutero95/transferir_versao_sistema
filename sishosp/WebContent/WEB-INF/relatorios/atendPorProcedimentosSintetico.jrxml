@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="atendPorProcedimentos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ddfc469a-6d94-4493-be7a-cb1ade27210f">
+	<property name="ireport.zoom" value="1.4641000000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="dt_inicial" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dt_final" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[--QUERY Atendimentos por procedimento sintetico
+
+  select p.nome nome_proc, count(a1.codprocedimento) as qtd_proc
+  from hosp.atendimentos1 a1
+  inner join hosp.proc p on (a1.codprocedimento = p.codproc)
+  inner join hosp.atendimentos a on (a.id_atendimento = a1.id_atendimento)
+
+  where a.dtaatende between $P{dt_inicial} and $P{dt_final}
+  and a1.situacao = 'A'
+  group by p.nome
+  order by p.nome asc]]>
+	</queryString>
+	<field name="nome_proc" class="java.lang.String"/>
+	<field name="qtd_proc" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="80" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="34" width="555" height="20" uuid="fe257b4f-fde8-4569-b67f-a3b811f9702e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ATENDIMENTOS POR PROCEDIMENTO - Sintético]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="14" width="555" height="20" uuid="13a9239f-d6bb-45e9-a590-feaeade67f95"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASSOCIAÇÃO DE AMIGOS E PAIS DE PESSOAS ESPECIAIS]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="79" width="555" height="1" uuid="66867087-bb00-43f0-8d49-86e6c8ae1012"/>
+			</line>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="301" y="54" width="66" height="20" uuid="b29541ff-efdd-412c-8710-57c86f0b957e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dt_final}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="230" y="54" width="66" height="20" uuid="6d5a8e9d-5146-434c-8b9a-3b9a8252971e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dt_inicial}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="186" y="54" width="45" height="20" uuid="70b20537-c1c2-4eab-8e2d-7f4ad7e1f35a"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Período:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="295" y="54" width="7" height="20" uuid="284122a6-64e8-45cd-83e5-412c3ae210df"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[a]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="455" y="0" width="100" height="20" uuid="6efec8e4-bc3a-421d-839b-bfe4c3c02b09"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtd. Atend.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="31aeed96-ae02-4ef4-a18f-ae00d920a768"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Procedimento]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="19" width="555" height="1" uuid="407bae33-8688-4e5c-96a5-13d268591fed"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="455" y="0" width="100" height="20" uuid="c8b047f2-bd84-445b-bcce-94e4f6b57779"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{qtd_proc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="405" height="20" uuid="d7baf559-c393-4dbf-b752-15f9d2ce9dc1"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nome_proc}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="346" y="34" width="169" height="20" uuid="8b5f6cda-6406-43f3-8c42-149a29260e33"/>
+				<textElement textAlignment="Right" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="34" width="40" height="20" uuid="808e96c9-d5ac-49bb-95d0-cfa35c83e547"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="34" width="100" height="20" uuid="da39a282-669f-477e-ab74-4b36d9d9fd14"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
