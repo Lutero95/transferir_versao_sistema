@@ -137,29 +137,34 @@
 							</p:panel>
 							<p:panelGrid columns="3" styleClass="semBorda">
 								<h:outputLabel value="Profissional Atendimento: " />
-								<p:autoComplete value="#{AgendaController.agenda.profissional}"
-									size="60" converter="conProfissional"
-									completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descricaoProf}">
-								</p:autoComplete>
+								<p:outputPanel>
+									<p:autoComplete value="#{AgendaController.agenda.profissional}"
+										size="60" converter="conProfissional"
+										completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.descricaoProf}">
+									</p:autoComplete>
+								</p:outputPanel>
 								<p:commandButton value="Buscar"
 									onclick="PF('dlgConsuProf').show();" />
 
 								<h:outputLabel value="Procedimento: " />
-								<p:autoComplete value="#{AgendaController.agenda.profissional}"
-									size="60" converter="conProfissional"
-									completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descricaoProf}">
-								</p:autoComplete>
+								<p:outputPanel>
+									<p:autoComplete value="#{AgendaController.agenda.procedimento}"
+										size="60" converter="conProcedimento"
+										completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.nomeProc}">
+									</p:autoComplete>
+								</p:outputPanel>
 								<p:commandButton value="Buscar"
 									onclick="PF('dlgConsuProf').show();" />
 
 								<h:outputLabel value="Situação: " />
-								<p:selectOneMenu value="#{AgendaController.situacao}" style="width:125px">
+								<p:selectOneMenu value="#{AgendaController.situacao}"
+									style="width:125px">
 									<f:selectItem itemLabel="ATENDIDO" itemValue="A" />
 									<f:selectItem itemLabel="PROF. FALTOU" itemValue="MF" />
 								</p:selectOneMenu>
@@ -169,12 +174,12 @@
 						<center>
 							<p:panelGrid columns="3" styleClass="semBorda">
 
-								<p:commandButton value="Confirmar" icon="confirmar" 
-								action="#{AgendaController.confirmarAtendimento()}"
-								update=":formConsAge"/>
+								<p:commandButton value="Confirmar" icon="confirmar"
+									action="#{AgendaController.confirmarAtendimento()}"
+									update=":formConsAge" />
 
 								<p:commandButton value="Excluir Agendamento" icon="trash"
-									onclick="PF('dialogAtencao').show()" update=":formConsAge"/>
+									onclick="PF('dialogAtencao').show()" update=":formConsAge" />
 
 								<p:commandButton value="Limpar" icon="limpar" />
 
@@ -231,8 +236,8 @@
 				<center>
 					<p:commandButton value="Sim" icon="ui-icon-check"
 						action="#{AgendaController.excluirAgendamento()}"
-						update=":formConsAge:msg, :formConsAge"
-						style="font-size:14px;" onclick="PF('dialogAtencao').hide();">
+						update=":formConsAge:msg, :formConsAge" style="font-size:14px;"
+						onclick="PF('dialogAtencao').hide();">
 					</p:commandButton>
 					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
 						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>

@@ -443,36 +443,37 @@ public class AgendaDAO {
 		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 		EquipeDAO eDao = new EquipeDAO();
 		ProgramaDAO prDao = new ProgramaDAO();
+		ProcedimentoDAO proDao = new ProcedimentoDAO();
 
-		String sql = "SELECT id_atendimento, codpaciente, codmedico, codredeatende,"
-				+ " codconvenio, dtaatende, horaatende, situacao, codatendente,"
-				+ " dtamarcacao, codtipoatendimento, turno, codequipe, observacao, ativo, codempresa"
-				+ " FROM  hosp.atendimentos WHERE ";
+		String sql = "SELECT a.id_atendimento, a.codpaciente, a.codmedico, a.codredeatende,"
+				+ " a.codconvenio, a.dtaatende, a.horaatende, a.situacao, a.codatendente,"
+				+ " a.dtamarcacao, a.codtipoatendimento, a.turno, a.codequipe, a.observacao, a.ativo, a.codempresa, a1.codprocedimento"
+				+ " FROM  hosp.atendimentos a inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) WHERE ";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
 			stm = con.prepareStatement(sql);
 			if (pront == null && tipo == null) {
 				System.out.println("DT ATENDE");
-				sql += " dtaatende = ? ";
+				sql += " a.dtaatende = ? ";
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
 			} else if (pront != null && tipo == null) {
 				System.out.println("DT CODPAC");
-				sql += " dtaatende = ? and codpaciente = ?";
+				sql += " a.dtaatende = ? and a.codpaciente = ?";
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
 				stm.setInt(2, pront);
 
 			} else if (pront == null && tipo != null) {
 				System.out.println("DT CODTI");
-				sql += "dtaatende = ? and codtipoatendimento = ?";
+				sql += "a.dtaatende = ? and a.codtipoatendimento = ?";
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
 				stm.setInt(2, tipo.getIdTipo());
 			} else if (pront != null && tipo != null) {
 				System.out.println("DT CODTI");
-				sql += "dtaatende = ? and codtipoatendimento = ? and codpaciente = ?";
+				sql += "a.dtaatende = ? and a.codtipoatendimento = ? and a.codpaciente = ?";
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
 				stm.setInt(2, tipo.getIdTipo());
@@ -498,6 +499,7 @@ public class AgendaDAO {
 				agenda.setEquipe(eDao.buscarEquipePorID(rs.getInt("codequipe")));
 				agenda.setObservacao(rs.getString("observacao"));
 				agenda.setAtivo(rs.getString("ativo"));
+				agenda.setProcedimento(proDao.listarProcedimentoPorId(rs.getInt("codprocedimento")));
 				lista.add(agenda);
 			}
 		} catch (SQLException ex) {

@@ -162,10 +162,10 @@ public class ProcedimentoDAO {
 			Integer tipoBuscar) {
 
 		List<ProcedimentoBean> lista = new ArrayList<>();
-		String sql = "select id,id  ||'-'|| nome as nome ,codproc, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento"
+		String sql = "select id,codproc  ||' - '|| nome as nome ,codproc, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento"
 				+ " from hosp.proc ";
 		if (tipoBuscar == 1) {
-			sql += " where upper(id ||'-'|| nome) LIKE ?";
+			sql += " where upper(codproc ||' - '|| nome) LIKE ?";
 		}
 		try {
 			con = ConnectionFactory.getConnection();

@@ -440,12 +440,10 @@
 					<p:outputPanel id="outGrupoAP">
 						<p:autoComplete size="60" converter="conGrupo"
 							value="#{RelatoriosController.grupo}"
-							completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+							completeMethod="#{GrupoController.listaGrupoAutoComplete2}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descGrupo}">
-							<p:ajax event="itemSelect"
-								listener="#{TipoAtendimentoController.selectGrupo}" />
 						</p:autoComplete>
 
 						<p:commandButton id="btBusGrAP" value="Buscar"
