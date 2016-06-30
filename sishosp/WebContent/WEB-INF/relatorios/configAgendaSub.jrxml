@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="teste1_subreport1" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e12e3504-86aa-47df-8499-acd39d6b0df7">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="codconfigagenda" class="java.lang.Integer"/>
+	<parameter name="cod_tipo_atend" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+t.codtipoatendimento as cod_tipo, ta.desctipoatendimento as desc_tipo, t.qtd as qtd_cada
+from hosp.config_agenda c
+inner join hosp.tipo_atend_agenda t on (t.codconfigagenda = c.id_configagenda)
+inner join hosp.tipoatendimento ta on (ta.id = t.codtipoatendimento)
+
+where t.codconfigagenda=$P{codconfigagenda} and
+(($P{cod_tipo_atend} is not null and ta.id = $P{cod_tipo_atend}) or ($P{cod_tipo_atend} is null and ta.id > 0))]]>
+	</queryString>
+	<field name="cod_tipo" class="java.lang.Integer"/>
+	<field name="desc_tipo" class="java.lang.String"/>
+	<field name="qtd_cada" class="java.lang.Integer"/>
+	<columnHeader>
+		<band height="21">
+			<staticText>
+				<reportElement x="40" y="1" width="133" height="20" uuid="adb8a4eb-c142-4fa7-829e-6480ca6b2bb3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Atendimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="375" y="1" width="100" height="20" uuid="891683bf-8ccf-4c9f-b6dd-c68e31ce488f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtd.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="40" y="0" width="288" height="20" uuid="2438b445-a3b6-42b4-be4c-abf5f3b20696"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{desc_tipo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="375" y="0" width="100" height="20" uuid="752a52a0-bc37-4383-a424-c8c22fc7ebb5"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{qtd_cada}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="2">
+			<line>
+				<reportElement x="70" y="0" width="400" height="1" uuid="74070e88-52ca-40a7-8a7f-20be321812d7"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+</jasperReport>

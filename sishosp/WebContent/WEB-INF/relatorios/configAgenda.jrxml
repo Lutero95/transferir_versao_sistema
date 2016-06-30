@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="teste1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9748bd6c-2bdc-430d-84b2-11bb131ba37b">
+	<property name="ireport.zoom" value="1.7715610000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\Thiago Oliveira\\Documents\\Relatorios\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select c.id_configagenda, c.codmedico as cod_medico,m.descmedico as nome_medico,
+case when c.diasemana = 1 then 'DOMINGO'
+	when c.diasemana = 2 then 'SEGUNDA'
+    when c.diasemana = 3 then 'TERÇA'
+    when c.diasemana = 4 then 'QUARTA'
+    when c.diasemana = 5 then 'QUINTA'
+    when c.diasemana = 6 then 'SEXTA'
+    when c.diasemana = 7 then 'SABADO'
+    when c.diasemana = 0 then ''
+	end as diasemana,
+c.dataagenda as data_espec,
+case when c.turno = 'M' then 'MANHA'
+	when c.turno = 'T' then 'TARDE'
+    end as turno,
+c.qtdmax as qtd_max, c.ano as ano,
+case when c.mes = 1 then 'JANEIRO'
+	when c.mes = 2 then 'FEVEREIRO'
+	when c.mes = 3 then 'MARÇO'
+	when c.mes = 4 then 'ABRIL'
+	when c.mes = 5 then 'MAIO'
+	when c.mes = 6 then 'JUNHO'
+	when c.mes = 7 then 'JULHO'
+	when c.mes = 8 then 'AGOSTO'
+	when c.mes = 9 then 'SETEMBRO'
+	when c.mes = 10 then 'OUTUBRO'
+	when c.mes = 11 then 'NOVEMBRO'
+	when c.mes = 12 then 'DEZEMBRO'
+	end as mes,
+t.codtipoatendimento as cod_tipo, ta.desctipoatendimento as desc_tipo, t.qtd as qtd_cada
+
+from hosp.config_agenda c
+inner join hosp.medicos m on (c.codmedico = m.id_medico)
+inner join hosp.tipo_atend_agenda t on (t.codconfigagenda = c.id_configagenda)
+inner join hosp.tipoatendimento ta on (ta.id = t.codtipoatendimento)
+order by c.codmedico]]>
+	</queryString>
+	<field name="id_configagenda" class="java.lang.Integer"/>
+	<field name="cod_medico" class="java.lang.Integer"/>
+	<field name="nome_medico" class="java.lang.String"/>
+	<field name="diasemana" class="java.lang.String"/>
+	<field name="data_espec" class="java.sql.Date"/>
+	<field name="turno" class="java.lang.String"/>
+	<field name="qtd_max" class="java.lang.Integer"/>
+	<field name="ano" class="java.lang.Integer"/>
+	<field name="mes" class="java.lang.String"/>
+	<field name="cod_tipo" class="java.lang.Integer"/>
+	<field name="desc_tipo" class="java.lang.String"/>
+	<field name="qtd_cada" class="java.lang.Integer"/>
+	<group name="groupProfi" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{cod_medico}]]></groupExpression>
+		<groupHeader>
+			<band height="46">
+				<line>
+					<reportElement x="0" y="22" width="555" height="1" uuid="76f5743d-f02c-4189-97f9-ebee0c77004f"/>
+				</line>
+				<line>
+					<reportElement x="0" y="1" width="555" height="1" uuid="e8529ba3-1b00-4186-b22b-21c31f0884ab"/>
+				</line>
+				<staticText>
+					<reportElement x="0" y="2" width="69" height="21" uuid="f113ad8a-01ab-465d-a420-12d0044b830b"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[Profissional:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="68" y="2" width="364" height="20" uuid="ee4ec7b4-12f2-47d6-bdb4-afc0b9953349"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nome_medico}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="10" y="23" width="57" height="22" uuid="58e34398-2894-488a-a9d0-f99dc1c3cc44"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom"/>
+					<text><![CDATA[Dia Semana]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="45" width="555" height="1" uuid="0f4f0960-1c68-43ff-90ac-51ea8f316d95"/>
+				</line>
+				<staticText>
+					<reportElement x="86" y="23" width="74" height="22" uuid="00e5e487-7d92-4fa9-936d-917666dfb520"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom"/>
+					<text><![CDATA[Data Específica]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="186" y="23" width="31" height="22" uuid="8479191a-1f88-4e8a-a735-a794668c8481"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom"/>
+					<text><![CDATA[Turno]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="243" y="23" width="52" height="22" uuid="7c2eb5a7-37e2-44e8-9577-fad5028fd3cb"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom"/>
+					<text><![CDATA[Qtd. Máx.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="321" y="23" width="52" height="22" uuid="79064679-4f9a-4807-8241-5c5b1cd22dd1"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom"/>
+					<text><![CDATA[Mês]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="401" y="23" width="52" height="22" uuid="15b8ea1e-10de-4123-bd59-d3bd49442cdd"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom"/>
+					<text><![CDATA[Ano]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="87" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="11" width="555" height="20" uuid="7cb234d7-3a64-4206-975b-382ca914a805"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASSOCIAÇÃO DE AMIGOS E PAIS DE PESSOAS ESPECIAIS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="30" width="555" height="20" uuid="2a8efa58-d303-4f5d-a916-7bd56fc20a1d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONFIGURAÇÃO DA AGENDA POR PROFISSIONAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="49" width="555" height="20" uuid="3b9e7e6b-1404-47fb-938f-372e3990408b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Período: ]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="27" splitType="Stretch">
+			<textField>
+				<reportElement x="243" y="0" width="52" height="20" uuid="66518c58-681e-46e5-a0c3-a284ad4a3493"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{qtd_max}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="174" y="0" width="56" height="20" uuid="fab447aa-3415-49ce-8026-eb6e29e4a033"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{turno}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="86" y="0" width="74" height="20" uuid="6c3a99ff-a225-4b93-af23-379b419e4099"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{data_espec}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="69" height="20" uuid="5073058d-7215-45c5-98fd-f909388ef69f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{diasemana}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="311" y="0" width="75" height="20" uuid="ae2ed3d8-87d1-46ca-87fa-cb5e79be46c2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{mes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="401" y="0" width="52" height="20" uuid="f18aae72-0e24-49bf-8161-b3371df3d0f5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ano}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="55">
+			<subreport>
+				<reportElement x="0" y="0" width="555" height="45" uuid="d1e83015-5b47-4a4e-8aa1-b458ec0e34bb"/>
+				<subreportParameter name="codconfigagenda">
+					<subreportParameterExpression><![CDATA[$F{id_configagenda}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="C:\Users\Thiago\Desktop\asdasd\">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "configAgendaSub.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="34" width="100" height="20" uuid="e6cc4222-a355-4405-97b5-7d8500c9f7ef"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="289" y="34" width="226" height="20" uuid="667bbc72-bb95-4296-8df1-a77a86a9bfca"/>
+				<textElement textAlignment="Right" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="34" width="40" height="20" uuid="effdfd92-792b-496a-ba60-a68f3c00671f"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
