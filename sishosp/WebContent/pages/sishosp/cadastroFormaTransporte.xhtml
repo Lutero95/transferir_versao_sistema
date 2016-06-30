@@ -12,19 +12,18 @@
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
-
 			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true"></p:commandButton>
+				<h:commandButton value="Voltar"
+					style="position:absolute; left:71%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true"></h:commandButton>
 			</h:form>
-
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
 				<p:panel id="pnlCadPaciente"
 					header="#{FormaTransporteController.cabecalho}"
-					style="height:auto; width:auto; background-color: #F5F5F5;">
+					style="height:400px; width:600px; margin-left:50%; margin-top:10%; background-color: #F5F5F5;">
 
 					<div class="form-group">
 						<h:outputLabel for="inputname" value="Nome Transporte"
@@ -33,10 +32,8 @@
 							<h:inputText
 								value="#{FormaTransporteController.transporte.descformatransporte}"
 								class="form-control" id="inputname"
-								pt:placeholder="Digite aqui seu nome entre 2 e 30 caracteres"
-								required="false"
-								validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-								requiredMessage="é necessário que você informe seu nome.">
+								pt:placeholder="Digite aqui nome do transporte" required="true"
+								requiredMessage="é necessário que você informe o nome do transporte.">
 								<f:validateLength minimum="2" maximum="40" />
 
 							</h:inputText>
@@ -45,21 +42,26 @@
 					</div>
 					<p:separator></p:separator>
 					<!-- FIM DO FORMULARIO -->
-					<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-						<h:commandButton
-							action="#{FormaTransporteController.gravarTransporte()}"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
-							value="Cadastrar" styleClass="btn btn-sm btn-success"
-							rendered="#{FormaTransporteController.tipo == 'I'}" />
+					<center>
+						<h:panelGrid columns="2" styleClass="semBorda">
+							<h:commandButton
+								action="#{FormaTransporteController.gravarTransporte()}"
+								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
+								value="Cadastrar" styleClass="btn btn-sm btn-success"
+								rendered="#{FormaTransporteController.tipo == 'I'}" />
 
 
-						<h:commandButton
-							action="#{FormaTransporteController.alterarTransporte()}"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
-							value="Alterar" styleClass="btn btn-info"
-							rendered="#{FormaTransporteController.tipo == 'A'}" />
-					</p:panelGrid>
+							<h:commandButton
+								action="#{FormaTransporteController.alterarTransporte()}"
+								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
+								value="Alterar" styleClass="btn btn-danger"
+								rendered="#{FormaTransporteController.tipo == 'A'}" />
 
+
+
+
+						</h:panelGrid>
+					</center>
 				</p:panel>
 
 

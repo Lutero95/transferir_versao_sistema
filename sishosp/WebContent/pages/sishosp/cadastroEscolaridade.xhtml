@@ -12,19 +12,18 @@
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
-
 			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true"></p:commandButton>
+				<h:commandButton value="Voltar"
+					style="position:absolute; left:71%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true"></h:commandButton>
 			</h:form>
-
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
 				<p:panel id="pnlCadPaciente"
 					header="#{EscolaridadeController.cabecalho}"
-					style="height:auto; width:auto; background-color: #F5F5F5;">
+					style="height:400px; width:600px; margin-left:50%; margin-top:10%; background-color: #F5F5F5;">
 
 					<div class="form-group">
 						<h:outputLabel for="inputname" value="Nome Escolaridade"
@@ -33,10 +32,10 @@
 							<h:inputText
 								value="#{EscolaridadeController.escolaridade.descescolaridade}"
 								class="form-control" id="inputname"
-								pt:placeholder="Digite aqui seu nome entre 2 e 30 caracteres"
-								required="false"
-								validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-								requiredMessage="é necessário que você informe seu nome.">
+								pt:placeholder="Digite aqui a escolaridade" required="true"
+								size="10"
+								validatorMessage="Escolaridade deve conter entre 2 e 30 caracteres."
+								requiredMessage="é necessário que você informe sua escolaridade.">
 								<f:validateLength minimum="2" maximum="40" />
 
 							</h:inputText>
@@ -45,24 +44,26 @@
 
 					<p:separator></p:separator>
 					<!-- FIM DO FORMULARIO -->
-					<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-						<h:commandButton
-							action="#{EscolaridadeController.gravarEscolaridade()}"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
-							value="Cadastrar" styleClass="btn btn-sm btn-success"
-							rendered="#{EscolaridadeController.tipo == 'I'}" />
+					<center>
+						<h:panelGrid columns="2">
+
+							<h:commandButton
+								action="#{EscolaridadeController.gravarEscolaridade()}"
+								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
+								value="Cadastrar" styleClass="btn btn-sm btn-success"
+								rendered="#{EscolaridadeController.tipo == 'I'}" />
 
 
-						<h:commandButton
-							action="#{EscolaridadeController.alterarEscolaridade()}"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
-							value="Alterar" styleClass="btn btn-info"
-							rendered="#{EscolaridadeController.tipo == 'A'}" />
-					</p:panelGrid>
+							<h:commandButton
+								action="#{EscolaridadeController.alterarEscolaridade()}"
+								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
+								value="Alterar" styleClass="btn btn-danger"
+								rendered="#{EscolaridadeController.tipo == 'A'}" />
 
+						</h:panelGrid>
+					</center>
 
 				</p:panel>
-
 
 
 			</h:form>

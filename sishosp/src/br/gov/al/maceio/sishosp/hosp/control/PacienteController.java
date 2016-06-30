@@ -40,6 +40,7 @@ public class PacienteController {
 	private String tipoBuscar;
 	private String descricaoParaBuscar;
 	private String cabecalho;
+	private String cabecalho2;
 
 	// CLASSES HERDADAS
 	private PacienteBean paciente;
@@ -1410,6 +1411,19 @@ public class PacienteController {
 
 	public void setPacienteBuscado(PacienteBean pacienteBuscado) {
 		this.pacienteBuscado = pacienteBuscado;
+	}
+
+	public String getCabecalho2() {
+		if (this.tipo.equals("I")) {
+			cabecalho2 = "CADASTRO DE RAÇA";
+		} else if (this.tipo.equals("A")) {
+			cabecalho2 = "ALTERAR RAÇA";
+		}
+		return cabecalho2;
+	}
+
+	public void setCabecalho2(String cabecalho2) {
+		this.cabecalho2 = cabecalho2;
 	}
 	
 

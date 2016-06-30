@@ -1,63 +1,71 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-    <ui:composition template="../../template/templatepagsistemas.xhtml">
+<ui:composition template="../../template/templatepagsistemas.xhtml">
 
-        <ui:define name="body">
-               <!-- INICIO DO FORMULARIO -->
-    <div class="col-md-8">
-    
-        <h:form> <p:commandButton value="Voltar"
-			style="position:relative; right:18%; width:100px; " icon="btvoltar"
-			action ="/pages/sishosp/gerenciarTipoEncaminhamento.faces?faces-redirect=true"></p:commandButton>  </h:form>
-        
-        <h:form class="form-horizontal" id="formCADU">
-       
-        <p:growl id="message"/>
-        <p:panel id="pnlCadPaciente" header="#{EncaminhadoController.cabecalho}"  style="height:auto; width:auto; background-color: #F5F5F5;" >  
+	<ui:define name="body">
+		<!-- INICIO DO FORMULARIO -->
+		<div class="col-md-8">
 
-         <div class="form-group">
-                <h:outputLabel for="inputname" value="TIPO DE ENCAMINHADO"
-                    styleClass="col-sm-3 control-label" />
-                <div class="col-sm-6">
-                    <h:inputText value="#{EncaminhadoController.encaminhado.descencaminhado}" class="form-control"
-                        id="inputname"
-                        pt:placeholder="Digite aqui seu nome entre 2 e 30 caracteres"
-                        required="false"
-                        validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-                        requiredMessage="é necessário que você informe seu nome.">
-                        <f:validateLength minimum="2" maximum="40" />
-                
-                    </h:inputText>
-                </div>
-            </div>
-                    <p:separator></p:separator>
-                      <!-- FIM DO FORMULARIO -->
-               <p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-                    <h:commandButton action="#{EncaminhadoController.gravarEncaminhado()}"   
-                    update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Cadastrar"
-                        styleClass="btn btn-sm btn-success" rendered="#{EncaminhadoController.tipo == 'I'}" />
-               
-               
-                    <h:commandButton action="#{EncaminhadoController.alterarEncaminhado()}"   
-                    update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu" value="Alterar"
-                        styleClass="btn btn-info" rendered="#{EncaminhadoController.tipo == 'A'}" />
-            </p:panelGrid>
-              
-                 
-          </p:panel>
-        
-            
-                
-        </h:form>
-    </div>
+			<h:form>
+				<h:commandButton value="Voltar"
+					style="position:absolute; left:71%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarTipoEncaminhamento.faces?faces-redirect=true"></h:commandButton>
+			</h:form>
 
-        </ui:define>
-    </ui:composition>
+			<h:form class="form-horizontal" id="formCADU">
+
+				<p:growl id="message" />
+				<p:panel id="pnlCadPaciente"
+					header="#{EncaminhadoController.cabecalho}"
+					style="height:400px; width:600px; margin-left:50%; margin-top:10%; background-color: #F5F5F5;">
+
+					<div class="form-group">
+						<h:outputLabel for="inputname" value="TIPO DE ENCAMINHADO"
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<h:inputText
+								value="#{EncaminhadoController.encaminhado.descencaminhado}"
+								class="form-control" id="inputname"
+								pt:placeholder="Digite aqui seu encaminhamento" required="true"
+								requiredMessage="é necessário que você informe seu encaminhamento.">
+								<f:validateLength minimum="2" maximum="40" />
+
+							</h:inputText>
+						</div>
+					</div>
+					<p:separator></p:separator>
+					<!-- FIM DO FORMULARIO -->
+					<center>
+						<h:panelGrid columns="2" styleClass="semBorda">
+							<h:commandButton
+								action="#{EncaminhadoController.gravarEncaminhado()}"
+								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
+								value="Cadastrar" styleClass="btn btn-sm btn-success"
+								rendered="#{EncaminhadoController.tipo == 'I'}" />
+
+
+							<h:commandButton
+								action="#{EncaminhadoController.alterarEncaminhado()}"
+								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
+								value="Alterar" styleClass="btn btn-danger"
+								rendered="#{EncaminhadoController.tipo == 'A'}" />
+						</h:panelGrid>
+					</center>
+				</p:panel>
+
+
+
+			</h:form>
+		</div>
+
+	</ui:define>
+</ui:composition>
 </html>
