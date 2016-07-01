@@ -31,12 +31,20 @@ public class RelatoriosController {
 	private GrupoBean grupo;
 	private TipoAtendimentoBean tipo;
 	private ProfissionalBean prof;
+
 	private Date dataInicial;
 	private Date dataFinal;
+
 	private String recurso;
 	private String tipoExameAuditivo;
 	private String situacao;
 	private String tipoAnalSint;
+	private String dataDia;
+
+	private Date dataEspec;
+	private Integer diaSemana;
+	private Integer mes;
+	private Integer ano;
 
 	public RelatoriosController() {
 		this.programa = new ProgramaBean();
@@ -47,6 +55,10 @@ public class RelatoriosController {
 		this.dataFinal = null;
 		this.tipoExameAuditivo = new String("TODOS");
 		this.tipoAnalSint = new String("A");
+		this.dataDia = new String("DE");
+
+		this.dataEspec = null;
+
 	}
 
 	public void limparDados() {
@@ -58,6 +70,10 @@ public class RelatoriosController {
 		this.dataFinal = null;
 		this.tipoExameAuditivo = new String("TODOS");
 		this.tipoAnalSint = new String("A");
+		this.dataDia = new String("DE");
+		this.ano = null;
+		this.mes = null;
+		this.dataEspec = null;
 	}
 
 	public ProgramaBean getPrograma() {
@@ -131,13 +147,53 @@ public class RelatoriosController {
 	public void setSituacao(String situacao) {
 		this.situacao = situacao;
 	}
-	
+
 	public String getTipoAnalSint() {
 		return tipoAnalSint;
 	}
 
 	public void setTipoAnalSint(String tipoAnalSint) {
 		this.tipoAnalSint = tipoAnalSint;
+	}
+
+	public String getDataDia() {
+		return dataDia;
+	}
+
+	public void setDataDia(String dataDia) {
+		this.dataDia = dataDia;
+	}
+
+	public Date getDataEspec() {
+		return dataEspec;
+	}
+
+	public Integer getDiaSemana() {
+		return diaSemana;
+	}
+
+	public Integer getMes() {
+		return mes;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setDataEspec(Date dataEspec) {
+		this.dataEspec = dataEspec;
+	}
+
+	public void setDiaSemana(Integer diaSemana) {
+		this.diaSemana = diaSemana;
+	}
+
+	public void setMes(Integer mes) {
+		this.mes = mes;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
 	}
 
 	public boolean verificarMesesIguais(Date dataInicial, Date dataFinal) {
@@ -331,17 +387,16 @@ public class RelatoriosController {
 
 		if (this.dataFinal == null || this.dataInicial == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Datas devem ser preenchidas.",
-					"Campos inválidos!");
+					"Datas devem ser preenchidas.", "Campos inválidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
 
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
-		if(this.tipoAnalSint.equals("A")){
+		if (this.tipoAnalSint.equals("A")) {
 			relatorio = caminho + "atendPorProcedimentosAnalitico.jasper";
-		}else if(this.tipoAnalSint.equals("S")){
+		} else if (this.tipoAnalSint.equals("S")) {
 			relatorio = caminho + "atendPorProcedimentosSintetico.jasper";
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -350,6 +405,43 @@ public class RelatoriosController {
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
 
+		this.executeReport(relatorio, map, "relatorio.pdf");
+		limparDados();
+	}
+
+	public void gerarConfigAgendaProfissional() throws IOException,
+			ParseException {
+
+		if (this.mes == null || this.ano == null || this.grupo == null
+				|| this.programa == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Mês, Ano, Programa e Grupo devem ser preenchidos.",
+					"Campos inválidos!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = caminho + "configAgenda.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("mes", this.mes);
+		map.put("ano", this.ano);
+		map.put("cod_programa", this.programa.getIdPrograma());
+		map.put("cod_grupo", this.grupo.getIdGrupo());
+
+		if (this.prof == null) {
+			map.put("cod_medico", null);
+		} else {
+			map.put("cod_medico", this.prof.getIdProfissional());
+		}
+		if (this.diaSemana == 0) {
+			map.put("dia_semana", null);
+		} else {
+			map.put("dia_semana", this.diaSemana);
+		}
+
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
+				+ File.separator);
 		this.executeReport(relatorio, map, "relatorio.pdf");
 		limparDados();
 	}

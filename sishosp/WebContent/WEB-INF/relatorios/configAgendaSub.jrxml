@@ -4,9 +4,6 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="codconfigagenda" class="java.lang.Integer"/>
-	<parameter name="cod_tipo_atend" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
-	</parameter>
 	<queryString>
 		<![CDATA[select
 t.codtipoatendimento as cod_tipo, ta.desctipoatendimento as desc_tipo, t.qtd as qtd_cada

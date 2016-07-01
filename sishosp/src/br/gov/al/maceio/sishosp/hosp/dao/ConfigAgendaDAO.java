@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -132,26 +133,26 @@ public class ConfigAgendaDAO {
 		PreparedStatement ps2 = con.prepareStatement(sql);
 
 		ResultSet rs2 = null;
-
 		if (confParte1.getTurno().equals("A")) {
-			System.out.println("VAI GRAVAR  A");
 			if (dia != null) {
-				System.out.println("eh dia a da semana > " + dia);
 				ps2.setInt(2, Integer.parseInt(dia));
 				ps2.setDate(4, null);
+				ps2.setInt(6, confParte1.getMes());
+				ps2.setInt(7, confParte1.getAno());
 			} else {
-				System.out.println("eh data especifica > "
-						+ confParte1.getDataEspecifica());
 				ps2.setInt(2, 0);
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
+				Calendar c1 = Calendar.getInstance();
+				c1.setTime(confParte1.getDataEspecifica());
+				ps2.setInt(6, c1.get(Calendar.MONTH)+1);
+				ps2.setInt(7, c1.get(Calendar.YEAR));
+				
 			}
-			System.out.println("1");
 			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, "M");
-			ps2.setInt(6, confParte1.getMes());
-			ps2.setInt(7, confParte1.getAno());
+			
 			ps2.setInt(8, 0);// COD EMPRESA ?
 			rs2 = ps2.executeQuery();
 			con.commit();

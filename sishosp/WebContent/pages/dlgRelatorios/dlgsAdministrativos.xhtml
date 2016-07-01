@@ -405,9 +405,113 @@
 		</h:form>
 	</p:dialog>
 
+	<p:dialog header="Configuração Agenda Profissional"
+		widgetVar="dlgConAgPr" resizable="false" modal="true">
+		<h:form id="frmConAgPr">
+			<p:outputPanel id="outConAgPr">
+				<p:growl id="msg" />
+				<p:panelGrid columns="4" styleClass="semBorda">
+					<h:outputLabel value="Mês: *" />
+					<p:selectOneMenu style="width:120px"
+						value="#{RelatoriosController.mes}">
+						<f:selectItem itemLabel="JANEIRO" itemValue="1" />
+						<f:selectItem itemLabel="FEVEREIRO" itemValue="2" />
+						<f:selectItem itemLabel="MARÇO" itemValue="3" />
+						<f:selectItem itemLabel="ABRIL" itemValue="4" />
+						<f:selectItem itemLabel="MAIO" itemValue="5" />
+						<f:selectItem itemLabel="JUNHO" itemValue="6" />
+						<f:selectItem itemLabel="JULHO" itemValue="7" />
+						<f:selectItem itemLabel="AGOSTO" itemValue="8" />
+						<f:selectItem itemLabel="SETEMBRO" itemValue="9" />
+						<f:selectItem itemLabel="OUTUBRO" itemValue="10" />
+						<f:selectItem itemLabel="NOVEMBRO" itemValue="11" />
+						<f:selectItem itemLabel="DEZEMBRO" itemValue="12" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Ano: *" />
+					<p:inputText value="#{RelatoriosController.ano}" />
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" styleClass="semBorda">
+					
+					<h:outputLabel value="Dia: " />
+					<p:selectOneMenu style="width:120px"
+						value="#{RelatoriosController.diaSemana}">
+						<f:selectItem itemLabel="TODOS" itemValue="0" />
+						<f:selectItem itemLabel="DOMINGO" itemValue="1" />
+						<f:selectItem itemLabel="SEGUNDA" itemValue="2" />
+						<f:selectItem itemLabel="TERÇA" itemValue="3" />
+						<f:selectItem itemLabel="QUARTA" itemValue="4" />
+						<f:selectItem itemLabel="QUINTA" itemValue="5" />
+						<f:selectItem itemLabel="SEXTA" itemValue="6" />
+						<f:selectItem itemLabel="SÁBADO" itemValue="7" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Programa: *" />
+					<p:outputPanel id="outPrConAgPr">
+						<p:autoComplete size="60" converter="conPrograma"
+							value="#{RelatoriosController.programa}"
+							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descPrograma}">
+							<p:ajax event="itemSelect"
+								listener="#{GrupoController.selectPrograma}" />
+						</p:autoComplete>
+						<p:commandButton value="Buscar"
+							onclick="PF('dlgConsuProgOP').show();" />
+					</p:outputPanel>
+
+					<h:outputLabel value="Grupo: *" />
+					<p:outputPanel id="outGrupoConAgPr">
+						<p:autoComplete size="60" converter="conGrupo"
+							value="#{RelatoriosController.grupo}"
+							completeMethod="#{GrupoController.listaGrupoAutoComplete2}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descGrupo}">
+						</p:autoComplete>
+						<p:commandButton value="Buscar"
+							onclick="PF('dlgConsuGropOP').show();" />
+					</p:outputPanel>
+
+					<h:outputLabel value="Profissional:" />
+					<p:outputPanel id="outProfAP">
+						<p:autoComplete value="#{RelatoriosController.prof}" size="60"
+							converter="conProfissional"
+							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descricaoProf}">
+						</p:autoComplete>
+						<p:commandButton id="btBusProfAP" value="Buscar"
+							onclick="PF('dlgConsuProfOP').show();" />
+					</p:outputPanel>
+				</p:panelGrid>
+
+				<p:separator />
+
+				<center>
+					<p:panelGrid columns="3" styleClass="semBorda">
+						<p:commandButton value="Gerar" update=":frmConAgPr:outConAgPr"
+							action="#{RelatoriosController.gerarConfigAgendaProfissional}"
+							target="_blank" ajax="false" />
+						<p:commandButton value="Limpar"
+							actionListener="#{RelatoriosController.limparDados()}"
+							update="@form" />
+						<p:commandButton value="Sair"
+							actionListener="#{RelatoriosController.limparDados()}"
+							onclick="PF('dlgConAgPr').hide();" update="@form" />
+					</p:panelGrid>
+				</center>
+			</p:outputPanel>
+
+		</h:form>
+	</p:dialog>
+
 	<p:dialog header="Faltas por Programa" widgetVar="dlgFaltaProg"
 		resizable="false" modal="true">
-		<h:form id="frmFaltaProg">
+		<h:form id="outConAgPr">
 			<p:outputPanel id="outFaltaProg">
 				<p:growl id="msg" />
 				<p:panelGrid columns="2" styleClass="semBorda">
@@ -485,7 +589,9 @@
 				</p:column>
 				<p:column style="width:50px;text-align: center">
 					<p:commandButton
-						update=":frmOP:outProgOP, :frmOPFin:outProgOPFin, :formConsuGropOP:dtGrupoOP, :frmAP:outProgAP, :frmAPR:outProgAPR"
+						update=":frmOP:outProgOP, :frmOPFin:outProgOPFin, 
+						:formConsuGropOP:dtGrupoOP, :frmAP:outProgAP, 
+						:frmAPR:outProgAPR, :frmConAgPr:outPrConAgPr"
 						icon="ui-icon-check" title="Selecionar"
 						action="#{GrupoController.atualizaLista(RelatoriosController.programa)}"
 						onclick="PF('dlgConsuProgOP').hide();">
@@ -515,7 +621,9 @@
 
 				<p:column style="width:50px;text-align: center">
 					<p:commandButton
-						update=":frmOP:outGrupoOP, :frmOP:outOP, :frmOPFin:outGrupoOPFin, :frmOPFin:outOPFin, :frmAP:outGrupoAP, :frmAPR:outGrupoAPR"
+						update=":frmOP:outGrupoOP, :frmOP:outOP, :frmOPFin:outGrupoOPFin,
+						 :frmOPFin:outOPFin, :frmAP:outGrupoAP, :frmAPR:outGrupoAPR,
+						 :frmConAgPr:outGrupoConAgPr"
 						icon="ui-icon-check" title="Selecionar"
 						onclick="PF('dlgConsuGropOP').hide();">
 						<f:setPropertyActionListener value="#{grupo}"
@@ -569,7 +677,7 @@
 
 				<p:column style="width:50px;text-align: center">
 					<p:commandButton icon="ui-icon-check" title="Selecionar"
-						update=":frmAP:outProfAP" onclick="PF('dlgConsuProfOP').hide();">
+						update=":frmAP:outProfAP, :frmConAgPr:outProfAP" onclick="PF('dlgConsuProfOP').hide();">
 						<f:setPropertyActionListener value="#{profi}"
 							target="#{RelatoriosController.prof}" />
 					</p:commandButton>

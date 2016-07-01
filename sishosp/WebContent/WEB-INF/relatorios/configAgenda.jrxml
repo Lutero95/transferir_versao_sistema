@@ -2,45 +2,73 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="teste1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9748bd6c-2bdc-430d-84b2-11bb131ba37b">
 	<property name="ireport.zoom" value="1.7715610000000017"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="192"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\Users\\Thiago Oliveira\\Documents\\Relatorios\\"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["E:\\sis\\sishosp\\WebContent\\WEB-INF\\relatorios\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cod_medico" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dia_semana" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cod_programa" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cod_grupo" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="mes" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ano" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select c.id_configagenda, c.codmedico as cod_medico,m.descmedico as nome_medico,
+		<![CDATA[select distinct c.id_configagenda, c.codmedico as cod_medico,m.descmedico as nome_medico,
 case when c.diasemana = 1 then 'DOMINGO'
-	when c.diasemana = 2 then 'SEGUNDA'
+    when c.diasemana = 2 then 'SEGUNDA'
     when c.diasemana = 3 then 'TERÇA'
     when c.diasemana = 4 then 'QUARTA'
     when c.diasemana = 5 then 'QUINTA'
     when c.diasemana = 6 then 'SEXTA'
     when c.diasemana = 7 then 'SABADO'
     when c.diasemana = 0 then ''
-	end as diasemana,
+    end as diasemana,
 c.dataagenda as data_espec,
 case when c.turno = 'M' then 'MANHA'
-	when c.turno = 'T' then 'TARDE'
+    when c.turno = 'T' then 'TARDE'
     end as turno,
 c.qtdmax as qtd_max, c.ano as ano,
 case when c.mes = 1 then 'JANEIRO'
-	when c.mes = 2 then 'FEVEREIRO'
-	when c.mes = 3 then 'MARÇO'
-	when c.mes = 4 then 'ABRIL'
-	when c.mes = 5 then 'MAIO'
-	when c.mes = 6 then 'JUNHO'
-	when c.mes = 7 then 'JULHO'
-	when c.mes = 8 then 'AGOSTO'
-	when c.mes = 9 then 'SETEMBRO'
-	when c.mes = 10 then 'OUTUBRO'
-	when c.mes = 11 then 'NOVEMBRO'
-	when c.mes = 12 then 'DEZEMBRO'
-	end as mes,
-t.codtipoatendimento as cod_tipo, ta.desctipoatendimento as desc_tipo, t.qtd as qtd_cada
+    when c.mes = 2 then 'FEVEREIRO'
+    when c.mes = 3 then 'MARÇO'
+    when c.mes = 4 then 'ABRIL'
+    when c.mes = 5 then 'MAIO'
+    when c.mes = 6 then 'JUNHO'
+    when c.mes = 7 then 'JULHO'
+    when c.mes = 8 then 'AGOSTO'
+    when c.mes = 9 then 'SETEMBRO'
+    when c.mes = 10 then 'OUTUBRO'
+    when c.mes = 11 then 'NOVEMBRO'
+    when c.mes = 12 then 'DEZEMBRO'
+    end as mes,
+t.qtd as qtd_cada
 
 from hosp.config_agenda c
 inner join hosp.medicos m on (c.codmedico = m.id_medico)
 inner join hosp.tipo_atend_agenda t on (t.codconfigagenda = c.id_configagenda)
 inner join hosp.tipoatendimento ta on (ta.id = t.codtipoatendimento)
+inner join hosp.grupo g on (g.id_grupo = t.codgrupo)
+inner join hosp.programa p on (p.id_programa = t.codprograma)
+
+where
+t.codprograma = $P{cod_programa} and t.codgrupo = $P{cod_grupo}
+and c.mes = $P{mes} and c.ano = $P{ano}
+and (($P{cod_medico} is not null and c.codmedico = $P{cod_medico}) or ($P{cod_medico} is null and c.codmedico > 0))
+and (($P{dia_semana} is not null and c.diasemana = $P{dia_semana}) or ($P{dia_semana} is null and c.diasemana > 0))
+
+
 order by c.codmedico]]>
 	</queryString>
 	<field name="id_configagenda" class="java.lang.Integer"/>
@@ -52,8 +80,6 @@ order by c.codmedico]]>
 	<field name="qtd_max" class="java.lang.Integer"/>
 	<field name="ano" class="java.lang.Integer"/>
 	<field name="mes" class="java.lang.String"/>
-	<field name="cod_tipo" class="java.lang.Integer"/>
-	<field name="desc_tipo" class="java.lang.String"/>
 	<field name="qtd_cada" class="java.lang.Integer"/>
 	<group name="groupProfi" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{cod_medico}]]></groupExpression>
