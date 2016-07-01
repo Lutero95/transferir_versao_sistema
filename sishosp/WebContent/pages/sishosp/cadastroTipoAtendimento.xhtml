@@ -12,91 +12,93 @@
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
-			
+
+
 			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true"></p:commandButton>
+				<h:commandButton value="Voltar"
+					style="position:absolute; left:71%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true">
+				</h:commandButton>
 			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
-				<p:panel id="pnlCadTiAt" header="#{TipoAtendimentoController.cabecalho}"
+				<p:panel id="pnlCadTiAt"
+					header="#{TipoAtendimentoController.cabecalho}"
 					style="height:auto; width:auto; background-color: #F5F5F5;">
-		
-							<div class="form-group">
-								<h:outputLabel for="inputdesc" value="Descrição: "
-									styleClass="col-sm-3 control-label" />
-								<div class="col-sm-6">
-									<h:inputText
-										value="#{TipoAtendimentoController.tipo.descTipoAt}"
-										class="form-control" id="inputdesc" />
 
-								</div>
-							</div>
-							<div class="form-group">
-								<h:outputLabel for="inputg" value="Grupos: "
-									styleClass="col-sm-3 control-label" />
-									<p:commandButton
-										style="position:absolute; top:130px; left:163px;"
-										onclick="PF('dlgConsuGrupo').show();"
-										icon="ui-icon-plus" />
-								<div class="col-sm-6">
+					<div class="form-group">
+						<h:outputLabel for="inputdesc" value="Descrição: "
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<h:inputText value="#{TipoAtendimentoController.tipo.descTipoAt}"
+								class="form-control" id="inputdesc" required="true" requiredMessage="Descrição obrigatória!"/>
 
-									<p:dataTable emptyMessage="Sem Dados"
-										styleClass="table table-hover" id="tabela"
-										style="margin-top:20px;" value="#{TipoAtendimentoController.tipo.grupo}"
-										var="tab" paginator="true" paginatorPosition="bottom"
-										rows="12" resizableColumns="true">
+						</div>
+					</div>
+					<div class="form-group">
+						<h:outputLabel for="inputg" value="Grupos: "
+							styleClass="col-sm-3 control-label" />
+						<p:commandButton style="position:absolute; top:130px; left:163px;"
+							onclick="PF('dlgConsuGrupo').show();" icon="ui-icon-plus" />
+						<div class="col-sm-6">
 
-										<p:column headerText="Cód."
-											style="font-weight:bold;width:20%;">
-											<h:outputText value="#{tab.idGrupo}" />
-										</p:column>
+							<p:dataTable emptyMessage="Sem Dados"
+								styleClass="table table-hover" id="tabela"
+								style="margin-top:20px;"
+								value="#{TipoAtendimentoController.tipo.grupo}" var="tab"
+								paginator="true" paginatorPosition="bottom" rows="12"
+								resizableColumns="true">
 
-										<p:column headerText="Nome" style="font-weight:bold;">
-											<h:outputText value="#{tab.descGrupo}" />
-										</p:column>
+								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
+									<h:outputText value="#{tab.idGrupo}" />
+								</p:column>
 
-									</p:dataTable>
-								</div>
-							</div>
-							<div class="form-group">
-								<h:outputLabel for="inputg" value="Primeiro Atendimento: "
-									styleClass="col-sm-3 control-label" />
-								<div class="col-sm-6">
-									<p:selectBooleanCheckbox
-										value="#{TipoAtendimentoController.tipo.primeiroAt}">
-									</p:selectBooleanCheckbox>
-								</div>
-							</div>
-							<div class="form-group">
-								<h:outputLabel for="inputg" value="Equipe: "
-									styleClass="col-sm-3 control-label" />
-								<div class="col-sm-6">
-									<p:selectBooleanCheckbox
-										value="#{TipoAtendimentoController.tipo.equipe}">
-									</p:selectBooleanCheckbox>
-								</div>
-							</div>
-							<p:separator></p:separator>
-							<!-- FIM DO FORMULARIO -->
-				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-					<h:commandButton action="#{TipoAtendimentoController.gravarTipo()}"
-						update=":formCADU:message,:formCADU:pnlCadTiAt,:formCadu"
-						value="Cadastrar" styleClass="btn btn-sm btn-success"
-						rendered="#{TipoAtendimentoController.tipoS == 'I'}" />
+								<p:column headerText="Nome" style="font-weight:bold;">
+									<h:outputText value="#{tab.descGrupo}" />
+								</p:column>
+
+							</p:dataTable>
+						</div>
+					</div>
+					<div class="form-group">
+						<h:outputLabel for="inputg" value="Primeiro Atendimento: "
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<p:selectBooleanCheckbox
+								value="#{TipoAtendimentoController.tipo.primeiroAt}">
+							</p:selectBooleanCheckbox>
+						</div>
+					</div>
+					<div class="form-group">
+						<h:outputLabel for="inputg" value="Equipe: "
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<p:selectBooleanCheckbox
+								value="#{TipoAtendimentoController.tipo.equipe}">
+							</p:selectBooleanCheckbox>
+						</div>
+					</div>
+					<p:separator></p:separator>
+					<!-- FIM DO FORMULARIO -->
+					<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+						<h:commandButton
+							action="#{TipoAtendimentoController.gravarTipo()}"
+							update=":formCADU:message,:formCADU:pnlCadTiAt,:formCadu"
+							value="Cadastrar" styleClass="btn btn-sm btn-success"
+							rendered="#{TipoAtendimentoController.tipoS == 'I'}" />
 
 
-					<h:commandButton
-						action="#{TipoAtendimentoController.alterarTipo()}"
-						update=":formCADU:message,:formCADU:pnlCadTiAt,:formCadu"
-						value="Alterar" styleClass="btn btn-info"
-						rendered="#{TipoAtendimentoController.tipoS  == 'A'}" />
-				</p:panelGrid>
+						<h:commandButton
+							action="#{TipoAtendimentoController.alterarTipo()}"
+							update=":formCADU:message,:formCADU:pnlCadTiAt,:formCadu"
+							value="Alterar" styleClass="btn btn-info"
+							rendered="#{TipoAtendimentoController.tipoS  == 'A'}" />
+					</p:panelGrid>
 				</p:panel>
-		
+
 
 				<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"
 					modal="true" width="550px">
@@ -129,8 +131,8 @@
 
 			</h:form>
 		</div>
-		
-		
+
+
 
 	</ui:define>
 </ui:composition>

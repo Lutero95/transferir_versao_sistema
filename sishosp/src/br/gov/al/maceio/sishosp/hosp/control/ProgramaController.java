@@ -73,18 +73,21 @@ public class ProgramaController {
         listaProgramas = pDao.listarProgramas();
 	}
 	
-	public void alterarPrograma() throws ProjetoException {
+	public String alterarPrograma() throws ProjetoException {
          boolean alterou = pDao.alterarPrograma(prog);
          if(alterou == true) {
              FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                  "Programa alterado com sucesso!", "Sucesso");
              FacesContext.getCurrentInstance().addMessage(null, msg);
+             listaProgramas = pDao.listarProgramas();
+             return "/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true";
          } else {
              FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                  "Ocorreu um erro durante o cadastro!", "Erro");
              FacesContext.getCurrentInstance().addMessage(null, msg);
+             return "";
          }
-         listaProgramas = pDao.listarProgramas();
+         
 		
 	}
 

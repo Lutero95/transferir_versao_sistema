@@ -29,7 +29,7 @@ public class TipoAtendimentoDAO {
 			ps.setBoolean(2, tipo.isPrimeiroAt());
 			ps.setBoolean(3, tipo.isEquipe());
 			ps.setInt(4, 0);// cod empresa ?
-			//ps.execute();
+			// ps.execute();
 
 			ResultSet rs = ps.executeQuery();
 			con.commit();
@@ -67,11 +67,12 @@ public class TipoAtendimentoDAO {
 				ps.execute();
 				con.commit();
 			}
+
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
-				con.close();
+				//con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				System.exit(1);
@@ -117,6 +118,7 @@ public class TipoAtendimentoDAO {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
 		String sql = "select id, desctipoatendimento, primeiroatendimento, codempresa, equipe_programa"
 				+ " from hosp.tipoatendimento order by id";
+		GrupoDAO gDao = new GrupoDAO();
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -129,6 +131,7 @@ public class TipoAtendimentoDAO {
 				tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
 				tipo.setCodEmpresa(rs.getInt("codempresa"));
 				tipo.setEquipe(rs.getBoolean("equipe_programa"));
+				tipo.setGrupo(gDao.listarGruposPorTipoAtend(rs.getInt("id")));
 
 				lista.add(tipo);
 			}
@@ -207,15 +210,16 @@ public class TipoAtendimentoDAO {
 
 		return lista;
 	}
-	
-	public List<TipoAtendimentoBean> listarTipoAtAutoComplete(String descricao, GrupoBean grupo) {
+
+	public List<TipoAtendimentoBean> listarTipoAtAutoComplete(String descricao,
+			GrupoBean grupo) {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
 		String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa "
 				+ " from hosp.grupo g, hosp.tipoatendimento t, hosp.tipoatendimento_grupo tg "
 				+ " where ? = tg.codgrupo and t.id = tg.codtipoatendimento "
 				+ " and t.desctipoatendimento LIKE ? "
 				+ " group by 1, 2, 3, 4, 5;";
-		
+
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -247,7 +251,7 @@ public class TipoAtendimentoDAO {
 		return lista;
 	}
 
-	public boolean alterarTipo(TipoAtendimentoBean tipo) {
+	public boolean alterarTipo(TipoAtendimentoBean tipo) throws ProjetoException {
 		String sql = "update hosp.tipoatendimento set desctipoatendimento = ?, primeiroatendimento = ?, equipe_programa = ? where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -257,30 +261,9 @@ public class TipoAtendimentoDAO {
 			stmt.setBoolean(3, tipo.isEquipe());
 			stmt.setInt(4, tipo.getIdTipo());
 			stmt.executeUpdate();
+			excluirTipoGrupo(tipo.getIdTipo());
+			insereTipoAtendimentoGrupo(tipo.getIdTipo(), tipo.getGrupoNovo());
 			con.commit();
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
-
-	public boolean alterarTipoGrupo(TipoAtendimentoBean tipo) {
-		String sql = "update hosp.tipoatendimento set codgrupo = ? where codtipoatendimento = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);
-			for (GrupoBean grupo : tipo.getGrupo()) {
-				stmt.setInt(1, grupo.getIdGrupo());
-				stmt.setInt(2, tipo.getIdTipo());
-				stmt.executeUpdate();
-				con.commit();
-			}
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -327,7 +310,7 @@ public class TipoAtendimentoDAO {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
-				con.close();
+				//con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}

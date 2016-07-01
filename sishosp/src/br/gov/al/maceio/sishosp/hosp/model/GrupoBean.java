@@ -10,7 +10,7 @@ public class GrupoBean {
 	public GrupoBean() {
 		this.idGrupo = null;
 		this.descGrupo = new String();
-		this.qtdFrequencia = null;
+		this.qtdFrequencia = 1;
 	}
 
 	

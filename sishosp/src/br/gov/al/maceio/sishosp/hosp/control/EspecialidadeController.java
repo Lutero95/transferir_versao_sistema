@@ -109,18 +109,21 @@ public class EspecialidadeController {
 				descricaoBusca, tipoBuscar);
 	}
 
-	public void alterarEspecialidade() throws ProjetoException {
+	public String alterarEspecialidade() throws ProjetoException {
 		boolean alterou = eDao.alterarEspecialidade(espec);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Especialidade alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			this.listaEspecialidade = eDao.listarEspecialidades();
+			return "/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			this.listaEspecialidade = eDao.listarEspecialidades();
+			return "";
 		}
-		this.listaEspecialidade = eDao.listarEspecialidades();
 	}
 	
 	public void excluirEspecialidade() throws ProjetoException {

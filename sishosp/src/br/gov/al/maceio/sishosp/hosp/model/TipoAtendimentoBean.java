@@ -13,9 +13,11 @@ public class TipoAtendimentoBean {
 	private GrupoBean grupoParaAdd;
 	
 	private List<GrupoBean> grupo;
+	private List<GrupoBean> grupoNovo;
 	
 	public TipoAtendimentoBean(){
 		this.grupo = new ArrayList<GrupoBean>();
+		this.grupoNovo = new ArrayList<GrupoBean>();
 		this.descTipoAt = new String();
 		this.equipe = false;
 		this.primeiroAt = false;
@@ -80,12 +82,13 @@ public class TipoAtendimentoBean {
 		this.grupo.add(grupoParaAdd);
 	}
 
-	@Override
-	public String toString() {
-		return "TipoAtendimentoBean [idTipo=" + idTipo + ", descTipoAt="
-				+ descTipoAt + ", equipe=" + equipe + "]";
+	public List<GrupoBean> getGrupoNovo() {
+		this.grupoNovo = this.grupo;
+		return grupoNovo;
+	}
+
+	public void setGrupoNovo(List<GrupoBean> grupoNovo) {
+		this.grupoNovo = grupoNovo;
 	}
 	
-	
-
 }

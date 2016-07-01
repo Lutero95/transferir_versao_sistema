@@ -44,11 +44,47 @@ public class GrupoDAO {
 	public List<GrupoBean> listarGruposPorPrograma(int codPrograma) {
 		List<GrupoBean> lista = new ArrayList<>();
 		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
-				+ " where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma";
+				+ " where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma order by g.id_grupo";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, codPrograma);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				GrupoBean grupo = new GrupoBean();
+				grupo.setIdGrupo(rs.getInt("id_grupo"));
+				grupo.setDescGrupo(rs.getString("descgrupo"));
+				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+				grupo.setAuditivo(rs.getBoolean("auditivo"));
+
+				lista.add(grupo);
+			}
+			
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+		return lista;
+	}
+	
+	public List<GrupoBean> listarGruposPorTipoAtend(int idTipo) {
+		List<GrupoBean> lista = new ArrayList<>();
+		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo from hosp.grupo g, "
+				+ " hosp.tipoatendimento_grupo tg, hosp.tipoatendimento t"
+				+ " where t.id = ? and g.id_grupo = tg.codgrupo "
+				+ " and t.id = tg.codtipoatendimento order by g.id_grupo";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idTipo);
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -180,7 +216,7 @@ public class GrupoDAO {
 	}
 
 	public Boolean alterarGrupo(GrupoBean grupo) throws ProjetoException {
-		String sql = "update hosp.grupo set descgrupo = ?, qtdfrequencia = ?, auditivo = ? = ? where id_grupo = ?";
+		String sql = "update hosp.grupo set descgrupo = ?, qtdfrequencia = ?, auditivo = ? where id_grupo = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
@@ -314,8 +350,7 @@ public class GrupoDAO {
 				System.exit(1);
 			}
 		}
-
 		return lista;
 	}
-
+	
 }

@@ -30,7 +30,7 @@ public class ProgramaDAO {
 			int idProg = 0;
 			if (rs.next()) {
 				idProg = rs.getInt("id_programa");
-				insereProgramaGrupo(idProg, prog);
+				insereProgramaGrupo(idProg, prog, 0);
 
 			}
 			return true;
@@ -46,17 +46,27 @@ public class ProgramaDAO {
 		}
 	}
 
-	public void insereProgramaGrupo(int idProg, ProgramaBean programa) {
+	public void insereProgramaGrupo(int idProg, ProgramaBean programa, int gamb) {
 		String sql = "insert into hosp.grupo_programa (codprograma, codgrupo) values(?,?);";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			for (GrupoBean grupoBean : programa.getGrupo()) {
-				ps.setInt(1, idProg);
-				ps.setInt(2, grupoBean.getIdGrupo());
+			if(gamb == 0){
+				for (GrupoBean grupoBean : programa.getGrupo()) {
+					ps.setInt(1, idProg);
+					ps.setInt(2, grupoBean.getIdGrupo());
 
-				ps.execute();
-				con.commit();
+					ps.execute();
+					con.commit();
+				}
+			}else if(gamb == 1){
+				for (GrupoBean grupoBean : programa.getGrupoNovo()) {
+					ps.setInt(1, idProg);
+					ps.setInt(2, grupoBean.getIdGrupo());
+
+					ps.execute();
+					con.commit();
+				}
 			}
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -72,7 +82,8 @@ public class ProgramaDAO {
 
 	public List<ProgramaBean> listarProgramas() {
 		List<ProgramaBean> lista = new ArrayList<>();
-		String sql = "select id_programa, descprograma, codfederal from hosp.programa";
+		String sql = "select id_programa, descprograma, codfederal from hosp.programa order by id_programa";
+		GrupoDAO gDao = new GrupoDAO();
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -83,7 +94,7 @@ public class ProgramaDAO {
 				programa.setIdPrograma(rs.getInt("id_programa"));
 				programa.setDescPrograma(rs.getString("descprograma"));
 				programa.setCodFederal(rs.getDouble("codfederal"));
-
+				programa.setGrupo(gDao.listarGruposPorPrograma(rs.getInt("id_programa")));
 				lista.add(programa);
 			}
 		} catch (SQLException ex) {
@@ -184,7 +195,8 @@ public class ProgramaDAO {
 			stmt.setInt(3, prog.getIdPrograma());
 			stmt.executeUpdate();
 			con.commit();
-			alterarProgramaGrupo(prog);
+			excluirNaTabProgramaGrupo(prog.getIdPrograma());
+			insereProgramaGrupo(prog.getIdPrograma(), prog, 1);
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -197,30 +209,6 @@ public class ProgramaDAO {
 		}
 	}
 	
-	public void alterarProgramaGrupo(ProgramaBean prog) throws ProjetoException {
-		String sql = "update hosp.grupo_programa set codgrupo = ? where codprograma = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			ps = con.prepareStatement(sql);
-			for (GrupoBean grupoBean : prog.getGrupo()) {
-				ps.setInt(1, prog.getIdPrograma());
-				ps.setInt(2, grupoBean.getIdGrupo());
-
-				ps.execute();
-				con.commit();
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				//con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-	}
-
 	public ProgramaBean listarProgramaPorId(int id) {
 
 		ProgramaBean programa = new ProgramaBean();

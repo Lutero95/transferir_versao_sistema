@@ -10,9 +10,11 @@ public class ProgramaBean {
 	
 	private GrupoBean grupoParaAdd;
 	private List<GrupoBean> grupo;
+	private List<GrupoBean> grupoNovo;
 	
 	public ProgramaBean(){
 		this.grupo = new ArrayList<GrupoBean>();
+		this.grupoNovo = new ArrayList<GrupoBean>();
 		this.idPrograma = null;
 		this.descPrograma = new String();
 		this.codFederal = null;
@@ -58,6 +60,15 @@ public class ProgramaBean {
 
 	public GrupoBean getGrupoParaAdd() {
 		return grupoParaAdd;
+	}
+
+	public List<GrupoBean> getGrupoNovo() {
+		this.grupoNovo = this.grupo;
+		return grupoNovo;
+	}
+
+	public void setGrupoNovo(List<GrupoBean> grupoNovo) {
+		this.grupoNovo = grupoNovo;
 	}
 
 	public void setGrupoParaAdd(GrupoBean grupoParaAdd) {

@@ -14,9 +14,10 @@
 		<div class="col-md-8">
 
 			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true"></p:commandButton>
+				<h:commandButton value="Voltar"
+					style="position:absolute; left:71%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true"></h:commandButton>
 			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
@@ -31,7 +32,7 @@
 									styleClass="col-sm-3 control-label" />
 								<div class="col-sm-6">
 									<h:inputText value="#{EspecialidadeController.espec.descEspecialidade}"
-										class="form-control" id="inputname" />
+										class="form-control" id="inputname" required="true" requiredMessage="Descrição obrigatória!"/>
 								</div>
 							</div>
 						<p:separator></p:separator>

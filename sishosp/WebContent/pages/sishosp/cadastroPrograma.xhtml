@@ -14,9 +14,11 @@
 		<div class="col-md-8">
 
 			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true"></p:commandButton>
+				<h:commandButton value="Voltar"
+					style="position:absolute; left:71%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
+				</h:commandButton>
 			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
@@ -25,69 +27,69 @@
 				<p:panel id="pnlCadPrograma"
 					header="#{ProgramaController.cabecalho}"
 					style="height:auto; width:auto; background-color: #F5F5F5;">
-				
-							<div class="form-group">
-								<h:outputLabel for="inputcd" value="Código Federal: "
-									styleClass="col-sm-3 control-label" />
-								<div class="col-sm-6">
-									<h:inputText value="#{ProgramaController.prog.codFederal}"
-										class="form-control" id="inputcd" />
 
-								</div>
-							</div>
-							<div class="form-group">
-								<h:outputLabel for="inputname" value="Descrição do Programa: "
-									styleClass="col-sm-3 control-label" />
-								<div class="col-sm-6">
-									<h:inputText value="#{ProgramaController.prog.descPrograma}"
-										class="form-control" id="inputname" />
-								</div>
-							</div>
+					<div class="form-group">
+						<h:outputLabel for="inputcd" value="Código Federal: "
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<h:inputText value="#{ProgramaController.prog.codFederal}"
+								class="form-control" id="inputcd"
+								requiredMessage="Código Federal obrigatório!" required="true" />
 
-							<div class="form-group">
-								<h:outputLabel for="inputg" value="Grupos: "
-									styleClass="col-sm-3 control-label" />
-								<p:commandButton
-									style="position:absolute; top:180px; left:163px;"
-									onclick="PF('dlgConsuGrupo').show();" icon="ui-icon-plus" />
-								<div class="col-sm-6">
+						</div>
+					</div>
+					<div class="form-group">
+						<h:outputLabel for="inputname" value="Descrição do Programa: "
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<h:inputText value="#{ProgramaController.prog.descPrograma}"
+								class="form-control" id="inputname" required="true"
+								requiredMessage="Descrição obrigatória!" />
+						</div>
+					</div>
 
-									<p:dataTable emptyMessage="Sem Dados"
-										styleClass="table table-hover" id="tabela"
-										style="margin-top:20px;"
-										value="#{ProgramaController.prog.grupo}" var="tab"
-										paginator="true" paginatorPosition="bottom" rows="12"
-										resizableColumns="true">
+					<div class="form-group">
+						<h:outputLabel for="inputg" value="Grupos: "
+							styleClass="col-sm-3 control-label" />
+						<p:commandButton style="position:absolute; top:165px; left:282px;"
+							onclick="PF('dlgConsuGrupo').show();" icon="ui-icon-plus" />
+						<div class="col-sm-6">
 
-										<p:column headerText="Cód."
-											style="font-weight:bold;width:20%;">
-											<h:outputText value="#{tab.idGrupo}" />
-										</p:column>
+							<p:dataTable emptyMessage="Sem Dados"
+								styleClass="table table-hover" id="tabela"
+								style="margin-top:20px;"
+								value="#{ProgramaController.prog.grupo}" var="tab"
+								paginator="true" paginatorPosition="bottom" rows="12"
+								resizableColumns="true">
 
-										<p:column headerText="Nome" style="font-weight:bold;">
-											<h:outputText value="#{tab.descGrupo}" />
-										</p:column>
+								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
+									<h:outputText value="#{tab.idGrupo}" />
+								</p:column>
 
-									</p:dataTable>
-								</div>
-							</div>
-							<p:separator></p:separator>
-						<!-- FIM DO FORMULARIO -->
-				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-					<h:commandButton action="#{ProgramaController.gravarPrograma()}"
-						update=":formCADU:message,:formCADU:pnlCadPrograma,:formCadu"
-						value="Cadastrar" styleClass="btn btn-sm btn-success"
-						rendered="#{ProgramaController.tipo == 'I'}" />
+								<p:column headerText="Nome" style="font-weight:bold;">
+									<h:outputText value="#{tab.descGrupo}" />
+								</p:column>
+
+							</p:dataTable>
+						</div>
+					</div>
+					<p:separator></p:separator>
+					<!-- FIM DO FORMULARIO -->
+					<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+						<h:commandButton action="#{ProgramaController.gravarPrograma()}"
+							update=":formCADU:message,:formCADU:pnlCadPrograma,:formCadu"
+							value="Cadastrar" styleClass="btn btn-sm btn-success"
+							rendered="#{ProgramaController.tipo == 'I'}" />
 
 
-					<h:commandButton action="#{ProgramaController.alterarPrograma()}"
-						update=":formCADU:message,:formCADU:pnlCadPrograma,:formCadu"
-						value="Alterar" styleClass="btn btn-info"
-						rendered="#{ProgramaController.tipo  == 'A'}" />
-				</p:panelGrid>
+						<h:commandButton action="#{ProgramaController.alterarPrograma()}"
+							update=":formCADU:message,:formCADU:pnlCadPrograma,:formCadu"
+							value="Alterar" styleClass="btn btn-info"
+							rendered="#{ProgramaController.tipo  == 'A'}" />
+					</p:panelGrid>
 
 				</p:panel>
-			
+
 
 				<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"
 					modal="true" width="550px">

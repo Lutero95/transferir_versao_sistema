@@ -92,18 +92,20 @@ public class TipoAtendimentoController {
 		listaTipos = tDao.listarTipoAt();
 	}
 	
-	public void alterarTipo() throws ProjetoException {
+	public String alterarTipo() throws ProjetoException {
         boolean alterou = tDao.alterarTipo(this.tipo);
         if(alterou == true) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Tipo de atendimento alterado com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
+            listaTipos = tDao.listarTipoAt();
+            return "/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true";
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Ocorreu um erro durante o cadastro!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
+            return "";
         }
-		listaTipos = tDao.listarTipoAt();
 		
 	}
 	
