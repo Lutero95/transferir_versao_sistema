@@ -192,7 +192,7 @@ public class ConfigAgendaController implements Serializable {
 		this.opcao = opcao;
 	}
 
-	public List<ConfigAgendaParte2Bean> getListaTiposEditar() {
+	public List<ConfigAgendaParte2Bean> getListaTiposEditar() throws ProjetoException {
 		if (this.confParte1.getIdConfiAgenda() != null) {
 			this.listaTiposEditar = cDao.listarTiposAgendPorId(this.confParte1
 					.getIdConfiAgenda());

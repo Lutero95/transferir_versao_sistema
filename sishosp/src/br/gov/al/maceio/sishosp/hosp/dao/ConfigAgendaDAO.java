@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
@@ -90,8 +91,8 @@ public class ConfigAgendaDAO {
 			ConfigAgendaParte1Bean conf1,
 			List<ConfigAgendaParte2Bean> listaTipos) {
 		PreparedStatement ps1 = null;
-		String sql = "insert into hosp.tipo_atend_agenda (codconfigagenda, codprograma, codtipoatendimento, qtd, codempresa) "
-				+ " values(?, ?, ?, ?, ?);";
+		String sql = "insert into hosp.tipo_atend_agenda (codconfigagenda, codprograma, codtipoatendimento, qtd, codempresa, codgrupo) "
+				+ " values(?, ?, ?, ?, ?, ?);";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps1 = con.prepareStatement(sql);
@@ -102,6 +103,7 @@ public class ConfigAgendaDAO {
 				ps1.setInt(3, conf.getTipoAt().getIdTipo());
 				ps1.setInt(4, conf.getQtd());
 				ps1.setInt(5, 0);// COD EMPRESA ?
+				ps1.setInt(6,  conf.getGrupo().getIdGrupo());
 				ps1.execute();
 				con.commit();
 			}
@@ -442,12 +444,13 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
-	public List<ConfigAgendaParte2Bean> listarTiposAgendPorId(int id) {
+	public List<ConfigAgendaParte2Bean> listarTiposAgendPorId(int id) throws ProjetoException {
 		List<ConfigAgendaParte2Bean> lista = new ArrayList<ConfigAgendaParte2Bean>();
-		String sql = "SELECT codconfigagenda, codprograma, codtipoatendimento, qtd"
+		String sql = "SELECT codconfigagenda, codprograma, codtipoatendimento, qtd, codgrupo "
 				+ " FROM  hosp.tipo_atend_agenda WHERE codconfigagenda = ?;";
 		ProgramaDAO pDao = new ProgramaDAO();
 		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+		GrupoDAO gDao = new GrupoDAO();
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -461,6 +464,7 @@ public class ConfigAgendaDAO {
 				conf.setTipoAt(tDao.listarTipoPorId(rs
 						.getInt("codtipoatendimento")));
 				conf.setQtd(rs.getInt("qtd"));
+				conf.setGrupo(gDao.buscaGrupoPorId(rs.getInt("codGrupo")));
 				lista.add(conf);
 			}
 		} catch (SQLException ex) {
@@ -777,7 +781,7 @@ public class ConfigAgendaDAO {
 		PreparedStatement ps1 = null;
 
 		String sql = "UPDATE hosp.tipo_atend_agenda SET"
-				+ " codprograma = ?, codtipoatendimento = ?,  qtd = ? WHERE codconfigagenda = ?;";
+				+ " codprograma = ?, codtipoatendimento = ?,  qtd = ?, codgrupo = ? WHERE codconfigagenda = ?;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps1 = con.prepareStatement(sql);
@@ -786,7 +790,8 @@ public class ConfigAgendaDAO {
 				ps1.setInt(1, conf.getPrograma().getIdPrograma());
 				ps1.setInt(2, conf.getTipoAt().getIdTipo());
 				ps1.setInt(3, conf.getQtd());
-				ps1.setInt(4, conf1.getIdConfiAgenda());
+				ps1.setInt(4, conf.getGrupo().getIdGrupo());
+				ps1.setInt(5, conf1.getIdConfiAgenda());
 				ps1.executeUpdate();
 				con.commit();
 			}

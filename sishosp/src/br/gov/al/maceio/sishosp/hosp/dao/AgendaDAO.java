@@ -206,11 +206,14 @@ public class AgendaDAO {
 
 	public boolean buscarTabTipoAtendAgenda(AgendaBean agenda) {
 		int achou = 0;
-		String sql = "select codtipoatendimento from hosp.tipo_atend_agenda where codtipoatendimento = ?";
+		String sql = "select codtipoatendimento from hosp.tipo_atend_agenda "
+				+ " where codtipoatendimento = ? and codprograma = ? and codgrupo = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, agenda.getTipoAt().getIdTipo());
+			stm.setInt(2, agenda.getPrograma().getIdPrograma());
+			stm.setInt(3, agenda.getGrupo().getIdGrupo());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -237,9 +240,10 @@ public class AgendaDAO {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(agenda.getDataAtendimento());
 		int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
+		int mes = cal.get(Calendar.MONTH);
 		int id = 0;
-		String sqlPro = "select id_configagenda from hosp.config_agenda where codmedico = ? and diasemana = ? and turno = ?";
-		String sqlEqui = "select id_configagenda from hosp.config_agenda_equipe where codequipe = ? and diasemana = ? and turno = ?";
+		String sqlPro = "select id_configagenda from hosp.config_agenda where codmedico = ? and diasemana = ? and turno = ? and mes = ?";
+		String sqlEqui = "select id_configagenda from hosp.config_agenda_equipe where codequipe = ? and diasemana = ? and turno = ? and mes = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
@@ -252,6 +256,7 @@ public class AgendaDAO {
 			}
 			stm.setInt(2, diaSemana);
 			stm.setString(3, agenda.getTurno().toUpperCase());
+			stm.setInt(4, mes+1);
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
