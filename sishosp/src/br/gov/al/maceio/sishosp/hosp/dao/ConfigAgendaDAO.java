@@ -32,7 +32,6 @@ public class ConfigAgendaDAO {
 		}
 
 		try {
-			System.out.println("VAI CADASTRAR CONFIG AGENDA");
 			if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
 				for (String dia : confParte1.getDiasSemana()) {
 					gravaTurno(confParte1, listaTipos, dia);
@@ -41,7 +40,6 @@ public class ConfigAgendaDAO {
 				gravaTurno(confParte1, listaTipos, null);
 			}
 
-			System.out.println("CADASTROU CONFIG AGENDA");
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -64,7 +62,6 @@ public class ConfigAgendaDAO {
 				|| confParte1.getAno() == null) {
 			return false;
 		}
-		System.out.println("AQUI");
 		try {
 			if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
 				for (String dia : confParte1.getDiasSemana()) {
@@ -74,7 +71,6 @@ public class ConfigAgendaDAO {
 				gravaTurnoEquipe(confParte1, listaTipos, null);
 			}
 
-			System.out.println("CADASTROU CONFIG AGENDA EQUIPE");
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -97,7 +93,6 @@ public class ConfigAgendaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			ps1 = con.prepareStatement(sql);
-			System.out.println("VAI GRAVAR NA TAB ASDASD");
 			for (ConfigAgendaParte2Bean conf : listaTipos) {
 				ps1.setInt(1, codConf);
 				ps1.setInt(2, conf.getPrograma().getIdPrograma());
@@ -109,7 +104,6 @@ public class ConfigAgendaDAO {
 				con.commit();
 			}
 
-			System.out.println("GRAVOU NA TAB ASDASD");
 
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -137,22 +131,22 @@ public class ConfigAgendaDAO {
 			if (dia != null) {
 				ps2.setInt(2, Integer.parseInt(dia));
 				ps2.setDate(4, null);
-				ps2.setInt(6, confParte1.getMes());
-				ps2.setInt(7, confParte1.getAno());
 			} else {
-				ps2.setInt(2, 0);
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
 				Calendar c1 = Calendar.getInstance();
 				c1.setTime(confParte1.getDataEspecifica());
-				ps2.setInt(6, c1.get(Calendar.MONTH)+1);
-				ps2.setInt(7, c1.get(Calendar.YEAR));
+				ps2.setInt(2, 0);
+				confParte1.setMes(c1.get(Calendar.MONTH)+1);
+				confParte1.setAno(c1.get(Calendar.YEAR));
 				
 			}
 			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, "M");
-			
+            ps2.setInt(6, confParte1.getMes());
+            ps2.setInt(7, confParte1.getAno());
+
 			ps2.setInt(8, 0);// COD EMPRESA ?
 			rs2 = ps2.executeQuery();
 			con.commit();
@@ -165,27 +159,25 @@ public class ConfigAgendaDAO {
 
 			ps2 = con.prepareStatement(sql);
 			if (dia != null) {
-				System.out.println("eh dia a da semana > " + dia);
 				ps2.setInt(2, Integer.parseInt(dia));
 				ps2.setDate(4, null);
 			} else {
-				System.out.println("eh data especifica > "
-						+ confParte1.getDataEspecifica());
 				ps2.setInt(2, 0);
+				Calendar c1 = Calendar.getInstance();
+				c1.setTime(confParte1.getDataEspecifica());
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
+				confParte1.setMes(c1.get(Calendar.MONTH)+1);
+				confParte1.setAno(c1.get(Calendar.YEAR));
 			}
 			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, "T");
-			System.out.println("32");
 			ps2.setInt(6, confParte1.getMes());
 			ps2.setInt(7, confParte1.getAno());
 			ps2.setInt(8, 0);// COD EMPRESA ?
-			System.out.println("33");
 			rs2 = ps2.executeQuery();
 			con.commit();
-			System.out.println("3");
 			int idTipo2 = 0;
 			if (rs2.next()) {
 				idTipo2 = rs2.getInt("id_configagenda");
@@ -193,23 +185,26 @@ public class ConfigAgendaDAO {
 
 			}
 			con.commit();
-			System.out.println("4");
 
 		} else {
 			if (dia != null) {
 				ps2.setInt(2, Integer.parseInt(dia));
 				ps2.setDate(4, null);
 			} else {
-				ps2.setInt(2, 0);
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
+				Calendar c1 = Calendar.getInstance();
+				c1.setTime(confParte1.getDataEspecifica());
+				ps2.setInt(2, 0);
+				confParte1.setMes(c1.get(Calendar.MONTH)+1);
+				confParte1.setAno(c1.get(Calendar.YEAR));
+				
 			}
-			System.out.println("GRAVA TURNO NORMAL");
 			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, confParte1.getTurno());
 			ps2.setInt(6, confParte1.getMes());
-			ps2.setInt(7, confParte1.getAno());
+            ps2.setInt(7, confParte1.getAno());
 			ps2.setInt(8, 0);// COD EMPRESA ?
 			rs2 = ps2.executeQuery();
 			con.commit();
@@ -233,7 +228,6 @@ public class ConfigAgendaDAO {
 		PreparedStatement ps2 = con.prepareStatement(sql);
 
 		ResultSet rs2 = null;
-		System.out.println("1");
 		if (confParte1.getTurno().equals("A")) {
 			if (dia != null) {
 				ps2.setInt(2, Integer.parseInt(dia));
@@ -243,7 +237,6 @@ public class ConfigAgendaDAO {
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
 			}
-			System.out.println("1");
 			ps2.setInt(1, confParte1.getEquipe().getCodEquipe());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, "M");
@@ -272,7 +265,6 @@ public class ConfigAgendaDAO {
 			con.commit();
 
 		} else {
-			System.out.println("2");
 			if (dia != null) {
 				ps2.setInt(2, Integer.parseInt(dia));
 				ps2.setDate(4, null);
@@ -281,7 +273,6 @@ public class ConfigAgendaDAO {
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
 			}
-			System.out.println("GRAVA TURNO NORMAL");
 			ps2.setInt(1, confParte1.getEquipe().getCodEquipe());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, confParte1.getTurno());
@@ -484,7 +475,6 @@ public class ConfigAgendaDAO {
 	// -----------------------------------------------------------------------EXCLUSÕES----------------------------------------------------------
 
 	public boolean excluirConfig(ConfigAgendaParte1Bean confParte1) {
-		System.out.println("ID " + confParte1.getIdConfiAgenda());
 		String sql = "delete from hosp.config_agenda where id_configagenda = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -559,7 +549,6 @@ public class ConfigAgendaDAO {
 		}
 
 		try {
-			System.out.println("VAI ALTERAR CONFIG AGENDA");
 			if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
 				for (String dia : confParte1.getDiasSemana()) {
 					alterarTurno(confParte1, listaTiposEditar, dia);
@@ -568,7 +557,6 @@ public class ConfigAgendaDAO {
 				alterarTurno(confParte1, listaTiposEditar, null);
 			}
 
-			System.out.println("ALTEROU CONFIG AGENDA");
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -593,7 +581,6 @@ public class ConfigAgendaDAO {
 		}
 
 		try {
-			System.out.println("VAI ALTERAR CONFIG AGENDA EQUIPE");
 			if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
 				for (String dia : confParte1.getDiasSemana()) {
 					alterarTurnoEquipe(confParte1, listaTiposEditar, dia);
@@ -602,7 +589,6 @@ public class ConfigAgendaDAO {
 				alterarTurnoEquipe(confParte1, listaTiposEditar, null);
 			}
 
-			System.out.println("ALTEROU CONFIG AGENDA EQUIPE");
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -627,7 +613,6 @@ public class ConfigAgendaDAO {
 		PreparedStatement ps2 = con.prepareStatement(sql);
 
 		if (confParte1.getTurno().equals("A")) {
-			System.out.println("VAI GRAVAR  A");
 			if (dia != null) {
 				ps2.setInt(2, Integer.parseInt(dia));
 				ps2.setDate(4, null);
@@ -636,7 +621,6 @@ public class ConfigAgendaDAO {
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
 			}
-			System.out.println("1");
 			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, "M");
@@ -651,12 +635,9 @@ public class ConfigAgendaDAO {
 
 			ps2 = con.prepareStatement(sql);
 			if (dia != null) {
-				System.out.println("eh dia a da semana > " + dia);
 				ps2.setInt(2, Integer.parseInt(dia));
 				ps2.setDate(4, null);
 			} else {
-				System.out.println("eh data especifica > "
-						+ confParte1.getDataEspecifica());
 				ps2.setInt(2, 0);
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
@@ -664,18 +645,14 @@ public class ConfigAgendaDAO {
 			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, "T");
-			System.out.println("32");
 			ps2.setInt(6, confParte1.getMes());
 			ps2.setInt(7, confParte1.getAno());
 			ps2.setInt(8, 0);// COD EMPRESA ?
 			ps2.setInt(9, confParte1.getIdConfiAgenda());
-			System.out.println("33");
 			ps2.executeUpdate();
 			con.commit();
-			System.out.println("3");
 			alteraTipoAtendAgenda(confParte1, listaTipos);
 			con.commit();
-			System.out.println("4");
 
 		} else {
 			if (dia != null) {
@@ -686,7 +663,6 @@ public class ConfigAgendaDAO {
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
 			}
-			System.out.println("GRAVA TURNO NORMAL");
 			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, confParte1.getTurno());
@@ -711,7 +687,6 @@ public class ConfigAgendaDAO {
 		PreparedStatement ps2 = con.prepareStatement(sql);
 
 		if (confParte1.getTurno().equals("A")) {
-			System.out.println("VAI GRAVAR  A");
 			if (dia != null) {
 				ps2.setInt(2, Integer.parseInt(dia));
 				ps2.setDate(4, null);
@@ -720,7 +695,6 @@ public class ConfigAgendaDAO {
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
 			}
-			System.out.println("1");
 			ps2.setInt(1, confParte1.getEquipe().getCodEquipe());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, "M");
@@ -733,12 +707,9 @@ public class ConfigAgendaDAO {
 
 			ps2 = con.prepareStatement(sql);
 			if (dia != null) {
-				System.out.println("eh dia a da semana > " + dia);
 				ps2.setInt(2, Integer.parseInt(dia));
 				ps2.setDate(4, null);
 			} else {
-				System.out.println("eh data especifica > "
-						+ confParte1.getDataEspecifica());
 				ps2.setInt(2, 0);
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
@@ -746,12 +717,10 @@ public class ConfigAgendaDAO {
 			ps2.setInt(1, confParte1.getEquipe().getCodEquipe());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, "T");
-			System.out.println("32");
 			ps2.setInt(6, confParte1.getMes());
 			ps2.setInt(7, confParte1.getAno());
 			ps2.setInt(8, 0);// COD EMPRESA ?
 			ps2.setInt(9, confParte1.getIdConfiAgenda());
-			System.out.println("33");
 			ps2.executeUpdate();
 			con.commit();
 
@@ -764,7 +733,6 @@ public class ConfigAgendaDAO {
 				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 						.getTime()));
 			}
-			System.out.println("GRAVA TURNO NORMAL");
 			ps2.setInt(1, confParte1.getEquipe().getCodEquipe());
 			ps2.setInt(3, confParte1.getQtdMax());
 			ps2.setString(5, confParte1.getTurno());
@@ -786,7 +754,6 @@ public class ConfigAgendaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			ps1 = con.prepareStatement(sql);
-			System.out.println("VAI ALTERAR NA TAB ASDASD");
 			for (ConfigAgendaParte2Bean conf : listaTipos) {
 				ps1.setInt(1, conf.getPrograma().getIdPrograma());
 				ps1.setInt(2, conf.getTipoAt().getIdTipo());
@@ -797,7 +764,6 @@ public class ConfigAgendaDAO {
 				con.commit();
 			}
 
-			System.out.println("ALTEROU NA TAB ASDASD");
 
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);

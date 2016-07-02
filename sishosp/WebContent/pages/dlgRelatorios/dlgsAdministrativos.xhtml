@@ -411,6 +411,14 @@
 			<p:outputPanel id="outConAgPr">
 				<p:growl id="msg" />
 				<p:panelGrid columns="4" styleClass="semBorda">
+				
+					<h:outputLabel value="Opção: " />
+					<p:selectOneRadio value="#{RelatoriosController.dataDia}">
+						<f:selectItem itemLabel="Dia Semana" itemValue="DS"/>
+						<f:selectItem itemLabel="Data Específica" itemValue="DE"/>
+						<f:ajax event="change" update=""/>
+					</p:selectOneRadio>
+					
 					<h:outputLabel value="Mês: *" />
 					<p:selectOneMenu style="width:120px"
 						value="#{RelatoriosController.mes}">
