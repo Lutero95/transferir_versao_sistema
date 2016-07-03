@@ -55,7 +55,7 @@ public class RelatoriosController {
 		this.dataFinal = null;
 		this.tipoExameAuditivo = new String("TODOS");
 		this.tipoAnalSint = new String("A");
-		this.dataDia = new String("DE");
+		this.dataDia = new String("DS");
 
 		this.dataEspec = null;
 
@@ -70,7 +70,7 @@ public class RelatoriosController {
 		this.dataFinal = null;
 		this.tipoExameAuditivo = new String("TODOS");
 		this.tipoAnalSint = new String("A");
-		this.dataDia = new String("DE");
+		this.dataDia = new String("DS");
 		this.ano = null;
 		this.mes = null;
 		this.dataEspec = null;
@@ -412,34 +412,51 @@ public class RelatoriosController {
 	public void gerarConfigAgendaProfissional() throws IOException,
 			ParseException {
 
-		if (this.mes == null || this.ano == null || this.grupo == null
-				|| this.programa == null) {
+		if (this.grupo == null || this.programa == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Mês, Ano, Programa e Grupo devem ser preenchidos.",
+					"Programa e Grupo devem ser preenchidos.",
 					"Campos inválidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
 
-		String caminho = "/WEB-INF/relatorios/";
-		String relatorio = caminho + "configAgenda.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("mes", this.mes);
-		map.put("ano", this.ano);
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = "";
+		if (this.dataDia.equals("DS")) {
+			if(this.mes == null || this.ano == null){
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Mês e Ano devem ser preenchidos.",
+						"Campos inválidos!");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				return;
+			}
+			relatorio = caminho + "configAgenda-DS.jasper";
+			if (this.diaSemana == 0)
+				map.put("dia_semana", null);
+			else
+				map.put("dia_semana", this.diaSemana);
+			map.put("mes", this.mes);
+			map.put("ano", this.ano);
+		} else {
+			if(this.dataEspec == null){
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Data específica deve ser preenchida.",
+						"Campo inválido!");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				return;
+			}
+			relatorio = caminho + "configAgenda-DE.jasper";
+			map.put("dt_espec", this.dataEspec);
+		}
 		map.put("cod_programa", this.programa.getIdPrograma());
 		map.put("cod_grupo", this.grupo.getIdGrupo());
-
-		if (this.prof == null) {
+		
+		if (this.prof == null)
 			map.put("cod_medico", null);
-		} else {
+		else
 			map.put("cod_medico", this.prof.getIdProfissional());
-		}
-		if (this.diaSemana == 0) {
-			map.put("dia_semana", null);
-		} else {
-			map.put("dia_semana", this.diaSemana);
-		}
-
+		
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
 		this.executeReport(relatorio, map, "relatorio.pdf");

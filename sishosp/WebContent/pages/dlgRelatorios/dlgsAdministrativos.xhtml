@@ -410,17 +410,30 @@
 		<h:form id="frmConAgPr">
 			<p:outputPanel id="outConAgPr">
 				<p:growl id="msg" />
-				<p:panelGrid columns="4" styleClass="semBorda">
-				
+
+				<p:panelGrid columns="2" styleClass="semBorda">
 					<h:outputLabel value="Opção: " />
 					<p:selectOneRadio value="#{RelatoriosController.dataDia}">
-						<f:selectItem itemLabel="Dia Semana" itemValue="DS"/>
-						<f:selectItem itemLabel="Data Específica" itemValue="DE"/>
-						<f:ajax event="change" update=""/>
+						<f:selectItem itemLabel="Dia Semana" itemValue="DS" />
+						<f:selectItem itemLabel="Data Específica" itemValue="DE" />
+						<p:ajax update="pnlDE, pnlDS" event="change" />
 					</p:selectOneRadio>
-					
-					<h:outputLabel value="Mês: *" />
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" styleClass="semBorda" id="pnlDE">
+					<h:outputLabel value="Data Específica: *"
+						rendered="#{RelatoriosController.dataDia == 'DE'}" />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy"
+						rendered="#{RelatoriosController.dataDia == 'DE'}"
+						value="#{RelatoriosController.dataEspec}" />
+				</p:panelGrid>
+
+				<p:panelGrid columns="6" styleClass="semBorda" id="pnlDS">
+					<h:outputLabel value="Mês: *"
+						rendered="#{RelatoriosController.dataDia == 'DS'}" />
 					<p:selectOneMenu style="width:120px"
+						rendered="#{RelatoriosController.dataDia == 'DS'}"
 						value="#{RelatoriosController.mes}">
 						<f:selectItem itemLabel="JANEIRO" itemValue="1" />
 						<f:selectItem itemLabel="FEVEREIRO" itemValue="2" />
@@ -436,14 +449,15 @@
 						<f:selectItem itemLabel="DEZEMBRO" itemValue="12" />
 					</p:selectOneMenu>
 
-					<h:outputLabel value="Ano: *" />
-					<p:inputText value="#{RelatoriosController.ano}" />
-				</p:panelGrid>
+					<h:outputLabel value="Ano: *"
+						rendered="#{RelatoriosController.dataDia == 'DS'}" />
+					<p:inputText value="#{RelatoriosController.ano}"
+						rendered="#{RelatoriosController.dataDia == 'DS'}" />
 
-				<p:panelGrid columns="2" styleClass="semBorda">
-					
-					<h:outputLabel value="Dia: " />
+					<h:outputLabel value="Dia: "
+						rendered="#{RelatoriosController.dataDia == 'DS'}" />
 					<p:selectOneMenu style="width:120px"
+						rendered="#{RelatoriosController.dataDia == 'DS'}"
 						value="#{RelatoriosController.diaSemana}">
 						<f:selectItem itemLabel="TODOS" itemValue="0" />
 						<f:selectItem itemLabel="DOMINGO" itemValue="1" />
@@ -454,6 +468,9 @@
 						<f:selectItem itemLabel="SEXTA" itemValue="6" />
 						<f:selectItem itemLabel="SÁBADO" itemValue="7" />
 					</p:selectOneMenu>
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" styleClass="semBorda">
 
 					<h:outputLabel value="Programa: *" />
 					<p:outputPanel id="outPrConAgPr">
@@ -685,7 +702,8 @@
 
 				<p:column style="width:50px;text-align: center">
 					<p:commandButton icon="ui-icon-check" title="Selecionar"
-						update=":frmAP:outProfAP, :frmConAgPr:outProfAP" onclick="PF('dlgConsuProfOP').hide();">
+						update=":frmAP:outProfAP, :frmConAgPr:outProfAP"
+						onclick="PF('dlgConsuProfOP').hide();">
 						<f:setPropertyActionListener value="#{profi}"
 							target="#{RelatoriosController.prof}" />
 					</p:commandButton>

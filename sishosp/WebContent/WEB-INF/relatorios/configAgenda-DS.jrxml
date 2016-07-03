@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="teste1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9748bd6c-2bdc-430d-84b2-11bb131ba37b">
-	<property name="ireport.zoom" value="1.6105100000000014"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="15"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["E:\\sis\\sishosp\\WebContent\\WEB-INF\\relatorios\\"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["C:\\Users\\Thiago Oliveira\\Documents\\Relatorios\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="cod_medico" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -62,8 +62,11 @@ inner join hosp.tipoatendimento ta on (ta.id = t.codtipoatendimento)
 inner join hosp.grupo g on (g.id_grupo = t.codgrupo)
 inner join hosp.programa p on (p.id_programa = t.codprograma)
 
+where t.codprograma = $P{cod_programa} and t.codgrupo = $P{cod_grupo}
+and c.mes = $P{mes} and c.ano = $P{ano}
+and(($P{cod_medico} is not null and c.codmedico = $P{cod_medico})or($P{cod_medico} is null and c.codmedico > 0))
 
-
+and (($P{dia_semana} is not null and c.diasemana = $P{dia_semana})or($P{dia_semana} is null and c.diasemana > 0))
 
 order by c.codmedico]]>
 	</queryString>
@@ -147,7 +150,7 @@ order by c.codmedico]]>
 		<band splitType="Stretch"/>
 	</title>
 	<pageHeader>
-		<band height="87" splitType="Stretch">
+		<band height="70" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="11" width="555" height="20" uuid="7cb234d7-3a64-4206-975b-382ca914a805"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -162,20 +165,13 @@ order by c.codmedico]]>
 				</textElement>
 				<text><![CDATA[CONFIGURAÇÃO DA AGENDA POR PROFISSIONAL]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="49" width="555" height="20" uuid="3b9e7e6b-1404-47fb-938f-372e3990408b"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Período: ]]></text>
-			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="27" splitType="Stretch">
+		<band height="23" splitType="Stretch">
 			<textField>
 				<reportElement x="243" y="0" width="52" height="20" uuid="66518c58-681e-46e5-a0c3-a284ad4a3493"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
@@ -207,7 +203,7 @@ order by c.codmedico]]>
 				<textFieldExpression><![CDATA[$F{ano}]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="55">
+		<band height="51">
 			<subreport>
 				<reportElement x="0" y="0" width="555" height="45" uuid="d1e83015-5b47-4a4e-8aa1-b458ec0e34bb"/>
 				<subreportParameter name="codconfigagenda">
@@ -217,7 +213,7 @@ order by c.codmedico]]>
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "configAgendaSub.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "configAgendaSub-DS.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
