@@ -32,6 +32,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
 public class PacienteController {
@@ -67,6 +68,7 @@ public class PacienteController {
 	private String statusRaca;
 
 	// AUTO COMPLETE
+	private PacienteBean pacienteSelecionado;
 	private EscolaBean escolageral;
 	private EscolaBean escolaselecionado, escolaselecionadoaux,
 			escolabuscarapida, escolaselecionadocomposicao,
@@ -128,6 +130,7 @@ public class PacienteController {
 		transporte = new FormaTransporteBean();
 		raca = new RacaBean();
 
+		this.pacienteSelecionado = new PacienteBean();
 		escolageral = new EscolaBean();
 		escolaselecionado = new EscolaBean();
 		escolaselecionadoaux = new EscolaBean();
@@ -690,6 +693,7 @@ public class PacienteController {
 		profissao = new ProfissaoBean();
 		transporte = new FormaTransporteBean();
 		raca = new RacaBean();
+		this.pacienteSelecionado = new PacienteBean();
 
 		tipoBuscar = "";
 		descricaoParaBuscar = "";
@@ -1425,6 +1429,20 @@ public class PacienteController {
 	public void setCabecalho2(String cabecalho2) {
 		this.cabecalho2 = cabecalho2;
 	}
+	
+	
+	public void selectPaciente(SelectEvent event) {
+		this.pacienteSelecionado = (PacienteBean) event.getObject();
+	}
+
+	public PacienteBean getPacienteSelecionado() {
+		return pacienteSelecionado;
+	}
+
+	public void setPacienteSelecionado(PacienteBean pacienteSelecionado) {
+		this.pacienteSelecionado = pacienteSelecionado;
+	}
+	
 	
 
 }

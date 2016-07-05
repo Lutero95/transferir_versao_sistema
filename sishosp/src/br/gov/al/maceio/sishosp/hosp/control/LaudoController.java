@@ -293,7 +293,6 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 		statusLaudo = "P";
 		listaLaudo = null;
 		listaLaudoDigita = null;
-		this.laudo = null;
 		this.dataAtorizacao = null;
 		this.dataSolicitacao = null;
 		this.situacao = null;

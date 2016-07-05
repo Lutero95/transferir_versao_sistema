@@ -58,7 +58,7 @@ public class LaudoBean {
 	private ProgramaBean programaBuscar;
 
 	public LaudoBean() {
-		this.paciente = null;
+
 		this.procedimento = null;
 		this.grupo = null;
 		this.programa = null;
@@ -66,6 +66,7 @@ public class LaudoBean {
 		situacao = "P";
 		this.fornecedor = null;
 		this.cid = null;
+		this.paciente = null;
 		this.dtautorizacao = null;
 		fornecedor = new FornecedorBean();
 		equipamento = new EquipamentoBean();

@@ -14,9 +14,10 @@
 		<div class="col-md-8">
 
 			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:15%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true"></p:commandButton>
+				<h:commandButton value="Voltar"
+					style="position:absolute; left:71%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true"></h:commandButton>
 			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
@@ -24,7 +25,7 @@
 				<p:growl id="message" />
 				<p:panel id="pnlCadPaciente"
 					header="#{PacienteController.cabecalho}"
-					style="height:auto; width:850px; background-color: #F5F5F5;">
+					style="height:auto; width:850px; margin-left:40%; background-color: #F5F5F5;">
 
 					<p:tabView activeIndex="#{PacienteController.abaAtiva}"
 						style="height:auto; width:800px">
@@ -863,7 +864,8 @@
 
 					<p:separator></p:separator>
 					<!-- FIM DO FORMULARIO -->
-					<h:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+					<center>
+					<h:panelGrid columns="2" styleClass="semBorda">
 						<h:commandButton action="#{PacienteController.gravarPaciente()}"
 							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
 							value="Cadastrar" 
@@ -876,6 +878,7 @@
 							value="Alterar" styleClass="btn btn-info"
 							rendered="#{PacienteController.tipo == 'A'}" />
 					</h:panelGrid>
+					</center>
 				</p:panel>
 
 
