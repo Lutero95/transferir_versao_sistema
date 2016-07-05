@@ -10,51 +10,46 @@
 <ui:composition template="../../template/templatepagsistemas.xhtml">
 
 	<ui:define name="body">
-		<h:form>
-			<p:commandButton value="Voltar"
-				style="position:relative; right:18%; width:100px; " icon="btvoltar"
-				action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true"></p:commandButton>
-		</h:form>
 
 		<h:form id="frmCadProc">
-			<p:panel id="pnlCadProc" header="#{ProcedimentoController.cabecalho}" style="height:auto; width:600px; background-color: #F5F5F5;">
+			<p:panel id="pnlCadProc" header="#{ProcedimentoController.cabecalho}"
+				style="height:auto; width:600px; background-color: #F5F5F5;">
 				<p:growl id="msg" />
-				<h:panelGrid columns="2" styleClass="semBorda">
+				<p:panelGrid columns="2" styleClass="semBorda">
 
-					<p:outputLabel for="procedimento" value="Descrição do Procedimento" />
-					<p:inputText id="procedimento"
-						value="#{ProcedimentoController.proc.nomeProc}"
+					<h:outputLabel value="Descrição do Procedimento: *" />
+					<p:inputText value="#{ProcedimentoController.proc.nomeProc}"
 						style="width: 300px" />
 
-					<h:panelGrid columns="2" styleClass="semBorda">
-						<p:outputLabel for="codigo" value="Código" />
-						<p:inputText id="codigo"
-							value="#{ProcedimentoController.proc.codProc}"
-							style="width: 100px" />
-					</h:panelGrid>
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<h:outputLabel value="Código: *" />
+						<p:inputText value="#{ProcedimentoController.proc.codProc}"
+							style="width: 100px"  />
+					</p:panelGrid>
 
-					<h:panelGrid columns="4">
-						<h:outputText value="Apac: " />
+					<p:panelGrid columns="4" styleClass="semBorda">
+						<h:outputLabel value="Apac: " />
 						<p:selectBooleanCheckbox
 							value="#{ProcedimentoController.proc.apac}" />
 
-						<h:outputText value="BPI: " />
+						<h:outputLabel value="BPI: " />
 						<p:selectBooleanCheckbox
 							value="#{ProcedimentoController.proc.bpi}" />
-					</h:panelGrid>
-				</h:panelGrid>
-				<h:panelGrid columns="2" styleClass="semBorda">
-					<h:outputText value="Utiliza Equipamento: " />
+					</p:panelGrid>
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<h:outputLabel value="Utiliza Equipamento: " />
 					<p:selectBooleanCheckbox
 						value="#{ProcedimentoController.proc.utilizaEquipamento}" />
 
-					<h:outputText value="Auditivo: " />
+					<h:outputLabel value="Auditivo: " />
 					<p:selectBooleanCheckbox
 						value="#{ProcedimentoController.proc.auditivo}">
 						<p:ajax update="pnlModelo" />
 					</p:selectBooleanCheckbox>
 
-				</h:panelGrid>
+				</p:panelGrid>
 
 				<p:outputPanel id="pnlModelo">
 					<p:panel header="Modelo Auditivo" style="width:300px;"
@@ -71,26 +66,30 @@
 					</p:panel>
 				</p:outputPanel>
 
-            <p:separator></p:separator>
-			<h:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-				<h:commandButton
-					action="#{ProcedimentoController.gravarProcedimento()}"
-					update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
-					value="Cadastrar" styleClass="btn btn-sm btn-success"
-					rendered="#{ProcedimentoController.tipo == 'I'}" />
+				<p:separator></p:separator>
+				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+					<h:commandButton
+						action="#{ProcedimentoController.gravarProcedimento()}"
+						update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
+						value="Cadastrar" styleClass="btn btn-sm btn-success"
+						rendered="#{ProcedimentoController.tipo == 'I'}" />
 
 
-				<h:commandButton
-					action="#{ProcedimentoController.alterarProcedimento()}"
-					update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
-					value="Alterar" styleClass="btn btn-info"
-					rendered="#{ProcedimentoController.tipo  == 'A'}" />
-			</h:panelGrid>
+					<h:commandButton
+						action="#{ProcedimentoController.alterarProcedimento()}"
+						update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
+						value="Alterar" styleClass="btn btn-info"
+						rendered="#{ProcedimentoController.tipo  == 'A'}" />
+
+				</p:panelGrid>
 			</p:panel>
 
-
 		</h:form>
-
+		<h:form>
+			<h:commandButton value="Voltar" styleClass="btn btn-info"
+				action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true">
+			</h:commandButton>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </html>

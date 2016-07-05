@@ -13,15 +13,14 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
-
 public class ProcedimentoController {
-	
+
 	private ProcedimentoBean proc;
 	private List<ProcedimentoBean> listaProcedimentos;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private String tipo;
-    private String cabecalho;
+	private String cabecalho;
 	ProcedimentoDAO pDao = new ProcedimentoDAO();
 
 	public ProcedimentoController() {
@@ -45,9 +44,9 @@ public class ProcedimentoController {
 	public void setProc(ProcedimentoBean proc) {
 		this.proc = proc;
 	}
-	
+
 	public List<ProcedimentoBean> getListaProcedimentos() {
-		if(listaProcedimentos == null){
+		if (listaProcedimentos == null) {
 			this.listaProcedimentos = pDao.listarProcedimento();
 		}
 		return listaProcedimentos;
@@ -80,12 +79,20 @@ public class ProcedimentoController {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-	
+
 	public void buscarProcedimento() {
-		this.listaProcedimentos = pDao.listarProcedimentoBusca(descricaoBusca, tipoBuscar);
+		this.listaProcedimentos = pDao.listarProcedimentoBusca(descricaoBusca,
+				tipoBuscar);
 	}
 
 	public void gravarProcedimento() throws ProjetoException, SQLException {
+
+		if (this.proc.getCodProc() == null || this.proc.getNomeProc() == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Código e descrição obrigatórios!", "Campos Obrigatórios.");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
 
 		boolean cadastrou = pDao.gravarProcedimento(proc);
 
@@ -100,43 +107,54 @@ public class ProcedimentoController {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
-	
-	public void alterarProcedimento() throws ProjetoException {
-        boolean alterou = pDao.alterarProcedimento(proc);
-        if(alterou == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Procedimento alterado com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }
-		listaProcedimentos = pDao.listarProcedimento();
-		
-	}
-	
-	public void excluirProcedimento() throws ProjetoException {
-        boolean ok = pDao.excluirProcedimento(proc);
-        if(ok == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Procedimento excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
+	public String alterarProcedimento() throws ProjetoException {
+		if (this.proc.getCodProc() == null || this.proc.getNomeProc() == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Código e descrição obrigatórios!", "Campos Obrigatórios.");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
+		
+		boolean alterou = pDao.alterarProcedimento(proc);
+		if (alterou == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Procedimento alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaProcedimentos = pDao.listarProcedimento();
+			return "/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true";
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
+
+	}
+
+	public void excluirProcedimento() throws ProjetoException {
+		boolean ok = pDao.excluirProcedimento(proc);
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Procedimento excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
 		listaProcedimentos = pDao.listarProcedimento();
 	}
-	
+
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE PROCEDIMENTO";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR PROCEDIMENTO";
 		}
 		return cabecalho;
@@ -145,7 +163,7 @@ public class ProcedimentoController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
-	
+
 	public List<ProcedimentoBean> listaProcedimentoAutoComplete(String query)
 			throws ProjetoException {
 		List<ProcedimentoBean> result = pDao.listarProcedimentoBusca(query, 1);

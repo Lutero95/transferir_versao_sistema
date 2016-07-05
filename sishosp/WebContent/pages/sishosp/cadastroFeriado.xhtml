@@ -14,9 +14,11 @@
 		<div class="col-md-8">
 
 			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarFeriados.xhtml?faces-redirect=true"></p:commandButton>
+				<h:commandButton value="Voltar"
+					style="position:absolute; left:71%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarFeriados.xhtml?faces-redirect=true">
+				</h:commandButton>
 			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
@@ -24,45 +26,45 @@
 				<p:growl id="message" />
 				<p:panel id="pnlCadFeriado" header="#{FeriadoController.cabecalho}"
 					style="height:auto; width:auto; background-color: #F5F5F5;">
-					
-							<div class="form-group">
-								<h:outputLabel for="inputdesc" value="Descrição do Feriado: "
-									styleClass="col-sm-3 control-label" />
-								<div class="col-sm-6">
-									<h:inputText value="#{FeriadoController.feriado.descFeriado}"
-										class="form-control" id="inputdesc" />
 
-								</div>
-							</div>
+					<div class="form-group">
+						<h:outputLabel value="Descrição do Feriado: "
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<h:inputText value="#{FeriadoController.feriado.descFeriado}"
+								class="form-control" required="true" requiredMessage="Descrição obrigatória!" />
 
-							<div class="form-group">
-								<h:outputLabel for="dataF" value="Data: "
-									styleClass="col-sm-3 control-label" />
-								<div class="col-sm-6">
-									<p:calendar value="#{FeriadoController.feriado.dataFeriado}"
-										id="dataF" locale="pt" navigator="true" mask="true"
-										pattern="dd/MM/yyyy" />
+						</div>
+					</div>
 
-								</div>
-							</div>
-					
+					<div class="form-group">
+						<h:outputLabel for="dataF" value="Data: "
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<p:calendar value="#{FeriadoController.feriado.dataFeriado}"
+								id="dataF" locale="pt" navigator="true" mask="true"
+								pattern="dd/MM/yyyy" showOn="button" required="true" requiredMessage="Data obrigatória!"/>
+
+						</div>
+					</div>
+
 					<p:separator></p:separator>
-							<!-- FIM DO FORMULARIO -->
-				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-					<h:commandButton action="#{FeriadoController.gravarFeriado()}"
-						update=":formCADU:message,:formCADU:pnlCadFeriado,:formCadu"
-						value="Cadastrar" styleClass="btn btn-sm btn-success"
-						rendered="#{FeriadoController.tipo == 'I'}" />
+					<!-- FIM DO FORMULARIO -->
+					<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+						<h:commandButton action="#{FeriadoController.gravarFeriado()}"
+							update=":formCADU:message,:formCADU:pnlCadFeriado,:formCadu"
+							value="Cadastrar" styleClass="btn btn-sm btn-success"
+							rendered="#{FeriadoController.tipo == 'I'}" />
 
 
-					<h:commandButton action="#{FeriadoController.alterarFeriado()}"
-						update=":formCADU:message,:formCADU:pnlCadFeriado,:formCadu"
-						value="Alterar" styleClass="btn btn-info"
-						rendered="#{FeriadoController.tipo  == 'A'}" />
-				</p:panelGrid>
-					
+						<h:commandButton action="#{FeriadoController.alterarFeriado()}"
+							update=":formCADU:message,:formCADU:pnlCadFeriado,:formCadu"
+							value="Alterar" styleClass="btn btn-info"
+							rendered="#{FeriadoController.tipo  == 'A'}" />
+					</p:panelGrid>
+
 				</p:panel>
-		
+
 
 
 			</h:form>

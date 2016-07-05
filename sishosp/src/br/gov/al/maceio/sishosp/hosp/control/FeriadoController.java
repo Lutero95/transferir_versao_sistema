@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -19,8 +20,9 @@ public class FeriadoController {
 	private String tipo;
 	private String descricaoBusca;
 	private Integer tipoBuscar;
+	private Date dataBuscar;
 	private String cabecalho;
-	
+
 	private Integer abaAtiva = 0;
 
 	private FeriadoDAO fDao = new FeriadoDAO();
@@ -30,12 +32,16 @@ public class FeriadoController {
 		this.listaFeriados = null;
 		this.tipo = new String();
 		this.descricaoBusca = new String();
+		this.dataBuscar = null;
+		this.tipoBuscar = 1;
 	}
 
 	public void limparDados() {
 		this.feriado = new FeriadoBean();
 		this.listaFeriados = null;
 		this.descricaoBusca = new String();
+		this.dataBuscar = null;
+		this.tipoBuscar = 1;
 	}
 
 	public FeriadoBean getFeriado() {
@@ -105,7 +111,15 @@ public class FeriadoController {
 
 	public void buscarFeriado() {
 		this.listaFeriados = fDao
-				.listarFeriadoBusca(descricaoBusca, tipoBuscar);
+				.listarFeriadoBusca(descricaoBusca, tipoBuscar, dataBuscar);
+	}
+
+	public Date getDataBuscar() {
+		return dataBuscar;
+	}
+
+	public void setDataBuscar(Date dataBuscar) {
+		this.dataBuscar = dataBuscar;
 	}
 
 	public void gravarFeriado() throws ProjetoException, SQLException {
@@ -123,18 +137,20 @@ public class FeriadoController {
 		}
 	}
 
-	public void alterarFeriado() throws ProjetoException {
+	public String alterarFeriado() throws ProjetoException {
 		boolean alterou = fDao.alterarFeriado(feriado);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Feriado alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			this.listaFeriados = fDao.listarFeriado();
+			return "/pages/sishosp/gerenciarFeriados.xhtml?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
 		}
-		this.listaFeriados = fDao.listarFeriado();
 
 	}
 

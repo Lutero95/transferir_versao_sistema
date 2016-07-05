@@ -79,7 +79,7 @@ public class ProcedimentoDAO {
 	public ProcedimentoBean listarProcedimentoPorId(int id) {
 
 		ProcedimentoBean proc = new ProcedimentoBean();
-		String sql = "select id, codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento from hosp.proc where codproc = ?";
+		String sql = "select id, codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento from hosp.proc where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -112,8 +112,8 @@ public class ProcedimentoDAO {
 
 	public boolean alterarProcedimento(ProcedimentoBean proc) {
 		String sql = "update hosp.proc set nome = ?, apac = ?, bpi = ?, auditivo = ?, "
-				+ " tipo_exame_auditivo = ?, utiliza_equipamento = ?"
-				+ " where codproc = ?";
+				+ " tipo_exame_auditivo = ?, utiliza_equipamento = ?, codproc = ? "
+				+ " where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
@@ -124,6 +124,7 @@ public class ProcedimentoDAO {
 			stmt.setString(5, proc.getTipoExameAuditivo().toUpperCase());
 			stmt.setBoolean(6, proc.getUtilizaEquipamento());
 			stmt.setInt(7, proc.getCodProc());
+			stmt.setInt(8, proc.getIdProc());
 			stmt.executeUpdate();
 			con.commit();
 			return true;
@@ -139,7 +140,7 @@ public class ProcedimentoDAO {
 	}
 
 	public boolean excluirProcedimento(ProcedimentoBean proc) {
-		String sql = "delete from hosp.proc where codproc = ?";
+		String sql = "delete from hosp.proc where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);

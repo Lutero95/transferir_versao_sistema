@@ -10,17 +10,13 @@
 <ui:composition template="../../template/templatepagsistemas.xhtml">
 
 	<ui:define name="body">
-		<h:form>
-			<p:commandButton value="Voltar"
-				style="position:relative; right:18%; width:100px; " icon="btvoltar"
-				action="/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true"></p:commandButton>
-		</h:form>
 
 
 		<h:form id="frmCadProfi">
-			<p:panel id="pnlCadProf" header="#{ProfissionalController.cabecalho}" style="height:auto; width:700px; background-color: #F5F5F5;">
+			<p:panel id="pnlCadProf" header="#{ProfissionalController.cabecalho}"
+				style="height:auto; width:700px; background-color: #F5F5F5;">
 				<p:growl id="msg" />
-				<h:panelGrid columns="3" styleClass="semBorda">
+				<p:panelGrid columns="3" styleClass="semBorda">
 					<h:outputLabel for="programa" value="Programa" />
 					<p:outputPanel id="outProga">
 						<p:inputText id="codPrg"
@@ -81,49 +77,52 @@
 					<p:commandButton id="btBusProc2" value="Buscar"
 						onclick="PF('dlgConsulProc2').show();" />
 
-				</h:panelGrid>
+				</p:panelGrid>
 
-				<h:panelGrid columns="2" styleClass="semBorda">
-					<p:outputLabel for="descProf" value="Descrição do Profissional" />
-					<p:inputText id="descProf"
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<h:outputLabel value="Descrição do Profissional" />
+					<p:inputText 
 						value="#{ProfissionalController.profissional.descricaoProf}"
-						style="width: 450px" />
+						style="width: 440px" />
 
-				</h:panelGrid>
+				</p:panelGrid>
 
-				<h:panelGrid columns="4" styleClass="semBorda">
-					<p:outputLabel for="cns" value="CNS" />
-					<p:inputText id="cns"
+				<p:panelGrid columns="4" styleClass="semBorda">
+					<h:outputLabel value="CNS" />
+					<p:inputText 
 						value="#{ProfissionalController.profissional.cns}"
 						style="width: 250px" />
 
-					<p:outputLabel for="ativo" value="Ativo" />
-					<p:selectOneMenu id="ativo" style="width:75px"
+					<h:outputLabel value="Ativo" />
+					<p:selectOneMenu style="width:75px"
 						value="#{ProfissionalController.profissional.ativo}">
 						<f:selectItem itemLabel="SIM" itemValue="true" />
 						<f:selectItem itemLabel="NÃO" itemValue="false" />
 					</p:selectOneMenu>
-				</h:panelGrid>
+				</p:panelGrid>
 
 				<p:separator />
 
-				<center></center>
-				
-				<h:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-				<h:commandButton
-					action="#{ProfissionalController.gravarProfissional()}"
-					update=":frmCadProfi:message,:frmCadProfi:pnlCadProf,:frmCadProfi"
-					value="Cadastrar" styleClass="btn btn-sm btn-success"
-					rendered="#{ProfissionalController.tipo == 'I'}" />
+				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+					<h:commandButton
+						action="#{ProfissionalController.gravarProfissional()}"
+						update=":frmCadProfi:message,:frmCadProfi:pnlCadProf,:frmCadProfi"
+						value="Cadastrar" styleClass="btn btn-sm btn-success"
+						rendered="#{ProfissionalController.tipo == 'I'}" />
 
-
-				<h:commandButton action="#{ProfissionalController.alterarProfissional()}"
-					update=":frmCadProfi:message,:frmCadProfi:pnlCadProf,:frmCadProfi"
-					value="Alterar" styleClass="btn btn-info"
-					rendered="#{ProfissionalController.tipo  == 'A'}" />
-			</h:panelGrid>
+					<h:commandButton
+						action="#{ProfissionalController.alterarProfissional()}"
+						update=":frmCadProfi:message,:frmCadProfi:pnlCadProf,:frmCadProfi"
+						value="Alterar" styleClass="btn btn-info"
+						rendered="#{ProfissionalController.tipo  == 'A'}" />
+						
+					<h:commandButton value="Voltar"
+						styleClass="btn btn-info"
+						action="/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true">
+					</h:commandButton>
+				</p:panelGrid>
 			</p:panel>
-			
+
 
 		</h:form>
 

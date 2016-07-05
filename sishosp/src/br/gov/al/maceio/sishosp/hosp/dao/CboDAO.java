@@ -18,14 +18,12 @@ public class CboDAO {
 	
 	public boolean gravarCBO(CboBean cbo) throws SQLException{
 		
-		String sql = "insert into hosp.cbo (id, descricao) values (?, ?);";
+		String sql = "insert into hosp.cbo (descricao) values (?);";
 		try {
 			System.out.println("VAI CADASTRAR CBO");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			ps.setInt(1, cbo.getCodCbo());
-			ps.setString(2, cbo.getDescCbo().toUpperCase());
-			//ps.setInt(3,  cbo.getCodEmpresa());
+			ps.setString(1, cbo.getDescCbo().toUpperCase());
 			ps.execute();
 			con.commit();
 			System.out.println("CADASTROU CBO");

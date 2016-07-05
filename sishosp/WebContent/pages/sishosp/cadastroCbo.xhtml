@@ -14,9 +14,11 @@
 		<div class="col-md-8">
 
 			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarCbo.faces?faces-redirect=true"></p:commandButton>
+				<h:commandButton value="Voltar"
+					style="position:absolute; left:71%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarCbo.faces?faces-redirect=true">
+				</h:commandButton>
 			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
@@ -28,11 +30,12 @@
 						style="height:auto; width:800px">
 						<p:tab title="DADOS CBO">
 							<div class="form-group">
-								<h:outputLabel for="inputdesc" value="Descrição do Cbo: "
+								<h:outputLabel value="Descrição do Cbo: "
 									styleClass="col-sm-3 control-label" />
 								<div class="col-sm-6">
 									<h:inputText value="#{CboController.cbo.descCbo}"
-										class="form-control" id="inputdesc" />
+										class="form-control" required="true"
+										requiredMessage="Descrição obrigatória!" />
 
 								</div>
 							</div>
@@ -43,7 +46,7 @@
 				</p:panel>
 				<!-- FIM DO FORMULARIO -->
 				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-					<h:commandButton action="#{CboController.gravaCbo()}"
+					<h:commandButton action="#{CboController.gravarCbo()}"
 						update=":formCADU:message,:formCADU:pnlCadCbo,:formCadu"
 						value="Cadastrar" styleClass="btn btn-sm btn-success"
 						rendered="#{CboController.tipo == 'I'}" />

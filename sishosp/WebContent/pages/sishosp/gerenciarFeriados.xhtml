@@ -32,21 +32,29 @@
 						<p:outputLabel value="Pesquisar por: " />
 						<p:selectOneMenu value="#{FeriadoController.tipoBuscar}"
 							required="true"
-							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
+							style="height:28px; top:9px;margin-top:6px;margin-left:16px; width: 100px;"
 							requiredMessage="Informe o diretório da página.">
 							<f:selectItem itemLabel="Nome" itemValue="1" />
+							<f:selectItem itemLabel="Mês/Ano" itemValue="2" />
 							<p:ajax event="change" update=":frmmensagem:pnlprincipal" />
 						</p:selectOneMenu>
 
-						<p:inputText id="campoBuscanome"
+						<p:inputText rendered="#{FeriadoController.tipoBuscar == 1}"
 							style="height:28px;margin-top:-6px;margin-left:16px;"
 							value="#{FeriadoController.descricaoBusca}" />
 
+						<p:calendar value="#{FeriadoController.dataBuscar}" id="dataF"
+							locale="pt" navigator="true" mask="true" pattern="MM/yyyy"
+							showOn="button"
+							style="height:28px;margin-top:-6px;margin-left:16px;"
+							rendered="#{FeriadoController.tipoBuscar == 2}" />
+
 						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							styleClass="btn btn-info" style="height:30px; margin-left:2px; margin-top:10px;"
+							styleClass="btn btn-info"
+							style="height:30px; margin-left:2px; margin-top:10px;"
 							action="#{FeriadoController.buscarFeriado()}"
 							update=":frmmensagem:tabela, :frmmensagem:growl" />
-						
+
 						<p:commandButton value="Limpar Busca" icon="limpar"
 							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
 							actionListener="#{FeriadoController.limparDados()}"
@@ -55,8 +63,9 @@
 
 						<p:commandButton id="btninc" value="Novo"
 							actionListener="#{FeriadoController.limparDados()}"
-							action="/pages/sishosp/cadastroFeriado.xhtml?faces-redirect=true" icon="add"
-							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
+							action="/pages/sishosp/cadastroFeriado.xhtml?faces-redirect=true"
+							icon="add" styleClass="btn btn-sm btn-success"
+							style="margin-top: 15px;">
 							<f:setPropertyActionListener value="I"
 								target="#{FeriadoController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
@@ -77,7 +86,13 @@
 					<p:column headerText="Descrição" style="font-weight:bold;">
 						<h:outputText value="#{tab.descFeriado}" />
 					</p:column>
-					
+
+					<p:column headerText="Data" style="font-weight:bold;">
+						<h:outputText value="#{tab.dataFeriado}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
 					<p:column headerText="Ações" width="15%">
 						<center>
 							<p:splitButton icon="confirmar">

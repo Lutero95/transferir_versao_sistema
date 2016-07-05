@@ -37,13 +37,12 @@ public class CboController {
 		this.cbo = new CboBean();
 		this.listaCbo = new ArrayList<>();
 		this.descricaoBusca = new String();
-		this.tipo = new String();
+		//this.tipo = new String();
 		listaCbo = cDao.listarCbo();
 	}
 
 	public void gravarCbo() throws ProjetoException, SQLException {
-
-		boolean cadastrou = cDao.gravarCBO(cbo);
+		boolean cadastrou = cDao.gravarCBO(this.cbo);
 
 		if (cadastrou == true) {
 			limparDados();
