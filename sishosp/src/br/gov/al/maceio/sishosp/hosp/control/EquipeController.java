@@ -87,8 +87,13 @@ public class EquipeController {
 	}
 
 	public void gravarEquipe() throws ProjetoException, SQLException {
-
-		boolean cadastrou = eDao.gravarEquipe(equipe);
+		if(this.equipe.getProfissionais().isEmpty()){
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"É necessário no mínimo um profissional na equipe!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+		boolean cadastrou = eDao.gravarEquipe(this.equipe);
 
 		if (cadastrou == true) {
 			limparDados();
@@ -107,18 +112,20 @@ public class EquipeController {
 				descricaoBusca, tipoBuscar);
 	}
 
-	public void alterarEquipe() throws ProjetoException {
+	public String alterarEquipe() throws ProjetoException {
 		boolean alterou = eDao.alterarEquipe(equipe);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Equipe alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			this.listaEquipe = eDao.listarEquipe();
+			return "/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
 		}
-		this.listaEquipe = eDao.listarEquipe();
 	}
 	
 	public void excluirEquipe() throws ProjetoException {

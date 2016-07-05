@@ -268,5 +268,35 @@ public class ProfissionalDAO {
 		}
 		return prof;
 	}
+	
+	public List<ProfissionalBean> listarProfissionaisPorEquipe (int id){
+		
+		List<ProfissionalBean> lista = new ArrayList<ProfissionalBean>();
+		String sql = "select medico from hosp.equipe_medico where equipe = ? order by medico";
+		ProfissionalDAO pDao = new ProfissionalDAO();
+		try {
+			System.out.println("1");
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			while(rs.next()){
+				lista.add(pDao.listarProfissionalPorId(rs.getInt("medico")));
+				System.out.println("aqui x");
+			}
+			System.out.println("foi");
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+		return lista;
+	}
 
 }

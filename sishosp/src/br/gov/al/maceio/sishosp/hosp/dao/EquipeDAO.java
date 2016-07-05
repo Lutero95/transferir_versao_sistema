@@ -15,7 +15,7 @@ public class EquipeDAO {
 
 	Connection con = null;
 	PreparedStatement ps = null;
-
+	ProfissionalDAO pDao = new ProfissionalDAO();
 	public boolean gravarEquipe(EquipeBean equipe)
 			throws SQLException {
 
@@ -71,6 +71,7 @@ public class EquipeDAO {
 	public List<EquipeBean> listarEquipe() {
 		List<EquipeBean> lista = new ArrayList<>();
 		String sql = "select id_equipe, descequipe, codempresa from hosp.equipe";
+		
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -81,7 +82,7 @@ public class EquipeDAO {
 				equipe.setCodEquipe(rs.getInt("id_equipe"));
 				equipe.setDescEquipe(rs.getString("descequipe"));
 				equipe.setCodEmpresa(rs.getInt("codempresa"));
-
+				equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs.getInt("id_equipe")));
 				lista.add(equipe);
 			}
 		} catch (SQLException ex) {
@@ -116,7 +117,7 @@ public class EquipeDAO {
 				equipe.setCodEquipe(rs.getInt("id_equipe"));
 				equipe.setDescEquipe(rs.getString("descequipe"));
 				equipe.setCodEmpresa(rs.getInt("codempresa"));
-
+				equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs.getInt("id_equipe")));
 				lista.add(equipe);
 			}
 		} catch (SQLException ex) {
@@ -161,12 +162,32 @@ public class EquipeDAO {
 			stmt.setLong(1, equipe.getCodEquipe());
 			stmt.execute();
 			con.commit();
+			excluirTabEquipeProf(equipe.getCodEquipe());
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+	
+	public void excluirTabEquipeProf(int id){
+		String sql = "delete from hosp.equipe_medico where equipe = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, id);
+			stmt.execute();
+			con.commit();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				//con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
