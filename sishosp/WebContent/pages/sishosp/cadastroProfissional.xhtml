@@ -14,21 +14,9 @@
 
 		<h:form id="frmCadProfi">
 			<p:panel id="pnlCadProf" header="#{ProfissionalController.cabecalho}"
-				style="height:auto; width:700px; background-color: #F5F5F5;">
+				style="height:auto; width:1050px; background-color: #F5F5F5;">
 				<p:growl id="msg" />
 				<p:panelGrid columns="3" styleClass="semBorda">
-					<h:outputLabel for="programa" value="Programa" />
-					<p:outputPanel id="outProga">
-						<p:inputText id="codPrg"
-							value="#{ProfissionalController.profissional.programa.idPrograma}"
-							readonly="true" style="width: 60px" />
-						<p:inputText id="descPrg"
-							value="#{ProfissionalController.profissional.programa.descPrograma}"
-							readonly="true" style="width: 350px" />
-					</p:outputPanel>
-					<p:commandButton id="btBusProg" value="Buscar"
-						onclick="PF('dlgConsulPrograma').show();" />
-
 					<h:outputLabel for="espP" value="Especialidade" />
 					<p:outputPanel id="outEspeci">
 						<p:inputText id="codEsp"
@@ -41,7 +29,7 @@
 					<p:commandButton id="btBusEsp" value="Buscar"
 						onclick="PF('dlgConsulEspecialidade').show();" />
 
-					<h:outputLabel for="cboP" value="CBO" />
+					<h:outputLabel for="cboP" value="CBO:" />
 					<p:outputPanel id="outCboP">
 						<p:inputText id="codCob"
 							value="#{ProfissionalController.profissional.cbo.codCbo}"
@@ -77,20 +65,17 @@
 					<p:commandButton id="btBusProc2" value="Buscar"
 						onclick="PF('dlgConsulProc2').show();" />
 
-				</p:panelGrid>
 
-				<p:panelGrid columns="2" styleClass="semBorda">
-					<h:outputLabel value="Descrição do Profissional" />
-					<p:inputText 
+					<h:outputLabel value="Descrição do Profissional:" />
+					<p:inputText
 						value="#{ProfissionalController.profissional.descricaoProf}"
 						style="width: 440px" />
 
 				</p:panelGrid>
 
 				<p:panelGrid columns="4" styleClass="semBorda">
-					<h:outputLabel value="CNS" />
-					<p:inputText 
-						value="#{ProfissionalController.profissional.cns}"
+					<h:outputLabel value="CNS:" />
+					<p:inputText value="#{ProfissionalController.profissional.cns}"
 						style="width: 250px" />
 
 					<h:outputLabel value="Ativo" />
@@ -101,9 +86,59 @@
 					</p:selectOneMenu>
 				</p:panelGrid>
 
+				<p:panelGrid columns="3" styleClass="semBorda">
+					<h:outputLabel value="Programa:" />
+					<p:commandButton onclick="PF('dlgConsulProgramas').show();"
+						icon="ui-icon-plus" />
+					<p:dataTable style="width: 480px" emptyMessage="Sem registros."
+						value="#{ProfissionalController.profissional.programa}" var="prog"
+						paginator="true" paginatorPosition="bottom" rows="5"
+						resizableColumns="true">
+						<p:column headerText="Cód." style="width: 80px">
+							<p:outputLabel value="#{prog.idPrograma}" />
+						</p:column>
+						<p:column headerText="Programa">
+							<p:outputLabel value="#{prog.descPrograma}" />
+						</p:column>
+						<p:column headerText="Ação">
+							<p:commandButton
+								action="#{ProfissionalController.profissional.removeProgLista()}"
+								icon="ui-icon-trash" update=":frmCadProfi:pnlCadProf">
+								<f:setPropertyActionListener value="#{prog}"
+									target="#{ProfissionalController.profissional.progRmv}" />
+							</p:commandButton>
+
+						</p:column>
+					</p:dataTable>
+
+					<h:outputLabel value="Grupo:" />
+					<p:commandButton onclick="PF('dlgConsuGrupos').show();"
+						icon="ui-icon-plus" />
+					<p:dataTable style="width: 480px" emptyMessage="Sem registros."
+						value="#{ProfissionalController.profissional.grupo}" var="grupo"
+						paginator="true" paginatorPosition="bottom" rows="5"
+						resizableColumns="true">
+						<p:column headerText="Cód." style="width: 80px">
+							<p:outputLabel value="#{grupo.idGrupo}" />
+						</p:column>
+						<p:column headerText="Grupo">
+							<p:outputLabel value="#{grupo.descGrupo}" />
+						</p:column>
+						<p:column headerText="Ação">
+							<p:commandButton
+								action="#{ProfissionalController.profissional.removeGrupoLista()}"
+								icon="ui-icon-trash" update=":frmCadProfi:pnlCadProf">
+								<f:setPropertyActionListener value="#{grupo}"
+									target="#{ProfissionalController.profissional.grupoRmv}" />
+							</p:commandButton>
+
+						</p:column>
+					</p:dataTable>
+				</p:panelGrid>
+
 				<p:separator />
 
-				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
+				<p:panelGrid columns="3" styleClass="semBorda" style="width: 500px">
 					<h:commandButton
 						action="#{ProfissionalController.gravarProfissional()}"
 						update=":frmCadProfi:message,:frmCadProfi:pnlCadProf,:frmCadProfi"
@@ -115,10 +150,14 @@
 						update=":frmCadProfi:message,:frmCadProfi:pnlCadProf,:frmCadProfi"
 						value="Alterar" styleClass="btn btn-info"
 						rendered="#{ProfissionalController.tipo  == 'A'}" />
-						
-					<h:commandButton value="Voltar"
-						styleClass="btn btn-info"
+
+					<h:commandButton value="Voltar" styleClass="btn btn-info"
 						action="/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true">
+					</h:commandButton>
+					
+					<h:commandButton value="Limpar" styleClass="btn btn-info"
+						actionListener="#{ProfissionalController.limparDados()}"
+						update=":frmCadProfi">
 					</h:commandButton>
 				</p:panelGrid>
 			</p:panel>
@@ -126,7 +165,7 @@
 
 		</h:form>
 
-		<p:dialog header="Consulta Programa" widgetVar="dlgConsulPrograma"
+		<p:dialog header="Consulta Programa" widgetVar="dlgConsulProgramas"
 			modal="true" width="500px">
 			<h:form id="formConsulProgP">
 				<p:dataTable value="#{ProgramaController.listaProgramas}" var="prog"
@@ -139,11 +178,13 @@
 						<p:outputLabel value="#{prog.descPrograma}" />
 					</p:column>
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":frmCadProfi:pnlCadProf"
+						<p:commandButton
+							update=":frmCadProfi:pnlCadProf, :formConsuGrops:dtGrupos"
 							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsulPrograma').hide();">
+							onclick="PF('dlgConsulProgramas').hide();"
+							action="#{ProfissionalController.profissional.addProgLista()}">
 							<f:setPropertyActionListener value="#{prog}"
-								target="#{ProfissionalController.profissional.programa}" />
+								target="#{ProfissionalController.profissional.progAdd}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
@@ -240,6 +281,35 @@
 							onclick="PF('dlgConsulProc2').hide();">
 							<f:setPropertyActionListener value="#{proc}"
 								target="#{ProfissionalController.profissional.proc2}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupos"
+			modal="true" width="550px">
+			<h:form id="formConsuGrops">
+				<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupos"
+					resizableColumns="true" var="grupo"
+					emptyMessage="Não existe nenhum grupo cadastrado!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{grupo.idGrupo}" />
+					</p:column>
+					<p:column headerText="GRUPO">
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</p:column>
+					<p:column headerText="QTD. FREQ>">
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</p:column>
+
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton update=":frmCadProfi:pnlCadProf"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuGrupos').hide();"
+							action="#{ProfissionalController.profissional.addGrupoLista()}">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{ProfissionalController.profissional.grupoAdd}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>

@@ -1,8 +1,12 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProfissionalBean {
 	private Integer idProfissional;
-	private ProgramaBean programa;
+	private List<ProgramaBean> programa;
+	private List<GrupoBean> grupo;
 	private EspecialidadeBean especialidade;
 	private CboBean cbo;
 	private ProcedimentoBean proc1;
@@ -11,9 +15,14 @@ public class ProfissionalBean {
 	private String cns;
 	private boolean ativo;
 	private Integer codEmpresa;
+	private ProgramaBean progAdd;
+	private GrupoBean grupoAdd;
+	private ProgramaBean progRmv;
+	private GrupoBean grupoRmv;
 
 	public ProfissionalBean() {
-		this.programa = new ProgramaBean();
+		this.programa = new ArrayList<ProgramaBean>();
+		this.grupo = new ArrayList<GrupoBean>();
 		this.especialidade = new EspecialidadeBean();
 		this.cbo = new CboBean();
 		this.proc1 = new ProcedimentoBean();
@@ -21,13 +30,25 @@ public class ProfissionalBean {
 		this.descricaoProf = "";
 		this.cns = "";
 		this.ativo = true;
+		this.progAdd = new ProgramaBean();
+		this.grupoAdd = new GrupoBean();
+		this.progRmv = new ProgramaBean();
+		this.grupoRmv = new GrupoBean();
 	}
 
-	public ProgramaBean getPrograma() {
+	public List<GrupoBean> getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(List<GrupoBean> grupo) {
+		this.grupo = grupo;
+	}
+
+	public List<ProgramaBean> getPrograma() {
 		return programa;
 	}
 
-	public void setPrograma(ProgramaBean programa) {
+	public void setPrograma(List<ProgramaBean> programa) {
 		this.programa = programa;
 	}
 
@@ -94,7 +115,7 @@ public class ProfissionalBean {
 	public void setCodEmpresa(Integer codEmpresa) {
 		this.codEmpresa = codEmpresa;
 	}
-	
+
 	public Integer getIdProfissional() {
 		return idProfissional;
 	}
@@ -103,13 +124,51 @@ public class ProfissionalBean {
 		this.idProfissional = idProfissional;
 	}
 
-	@Override
-	public String toString() {
-		return "ProfissionalBean [programa=" + programa.getIdPrograma() + ", especialidade="
-				+ especialidade.getCodEspecialidade() + ", cbo=" + cbo.getCodCbo() + ", proc1=" + proc1.getCodProc()
-				+ ", proc2=" + proc2.getCodProc() + ", descricaoProf=" + descricaoProf
-				+ ", cns=" + cns + ", ativo=" + ativo + ", codEmpresa="
-				+ codEmpresa + "]";
+	public ProgramaBean getProgAdd() {
+		return progAdd;
 	}
 
+	public void setProgAdd(ProgramaBean progAdd) {
+		this.progAdd = progAdd;
+	}
+
+	public GrupoBean getGrupoAdd() {
+		return grupoAdd;
+	}
+
+	public void setGrupoAdd(GrupoBean grupoAdd) {
+		this.grupoAdd = grupoAdd;
+	}
+
+	public ProgramaBean getProgRmv() {
+		return progRmv;
+	}
+
+	public void setProgRmv(ProgramaBean progRmv) {
+		this.progRmv = progRmv;
+	}
+
+	public GrupoBean getGrupoRmv() {
+		return grupoRmv;
+	}
+
+	public void setGrupoRmv(GrupoBean grupoRmv) {
+		this.grupoRmv = grupoRmv;
+	}
+
+	public void addGrupoLista() {
+		this.grupo.add(grupoAdd);
+	}
+
+	public void addProgLista() {
+		this.programa.add(progAdd);
+	}
+	
+	public void removeProgLista(){
+		this.programa.remove(this.progRmv);
+	}
+	
+	public void removeGrupoLista(){
+		this.grupo.remove(this.grupoRmv);
+	}
 }

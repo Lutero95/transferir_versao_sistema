@@ -22,7 +22,7 @@ public class ProfissionalDAO {
 	public boolean gravarProfissional(ProfissionalBean prof)
 			throws SQLException {
 		
-;
+
 		String sql = "insert into hosp.medicos (descmedico, codprograma, codespecialidade, cns, ativo, codcbo,"
 				+ " codprocedimentopadrao, codprocedimentopadrao2, codempresa) values (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		try {
@@ -30,7 +30,7 @@ public class ProfissionalDAO {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, prof.getDescricaoProf().toUpperCase());
-			ps.setInt(2, prof.getPrograma().getIdPrograma());
+			//ps.setInt(2, prof.getPrograma().getIdPrograma());
 			ps.setInt(3, prof.getEspecialidade().getCodEspecialidade());
 			ps.setString(4, prof.getCns().toUpperCase());
 			ps.setBoolean(5, prof.isAtivo());
@@ -73,7 +73,7 @@ public class ProfissionalDAO {
 				ProfissionalBean prof = new ProfissionalBean();
 				prof.setIdProfissional(rs.getInt("id_medico"));
 				prof.setDescricaoProf(rs.getString("descmedico"));
-				prof.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+				//prof.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
 				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
 				prof.setCns(rs.getString("cns"));
 				prof.setAtivo(rs.getBoolean("ativo"));
@@ -111,7 +111,7 @@ public class ProfissionalDAO {
 				ProfissionalBean prof = new ProfissionalBean();
 				prof.setIdProfissional(rs.getInt("id_medico"));
 				prof.setDescricaoProf(rs.getString("descmedico"));
-				prof.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+				//prof.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
 				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
 				prof.setCns(rs.getString("cns"));
 				prof.setAtivo(rs.getBoolean("ativo"));
@@ -168,7 +168,7 @@ public class ProfissionalDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, profissional.getDescricaoProf().toUpperCase());
-			stmt.setInt(2, profissional.getPrograma().getIdPrograma());
+		//	stmt.setInt(2, profissional.getPrograma().getIdPrograma());
 			stmt.setInt(3, profissional.getEspecialidade().getCodEspecialidade());
 			stmt.setString(4, profissional.getCns().toUpperCase());
 			stmt.setBoolean(5, profissional.isAtivo());
@@ -208,7 +208,7 @@ public class ProfissionalDAO {
 				prof = new ProfissionalBean();
 				prof.setIdProfissional(rs.getInt("id_medico"));
 				prof.setDescricaoProf(rs.getString("descmedico"));
-				prof.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+				//prof.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
 				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
 				prof.setCns(rs.getString("cns"));
 				prof.setAtivo(rs.getBoolean("ativo"));
@@ -246,7 +246,7 @@ public class ProfissionalDAO {
 				
 				prof.setIdProfissional(rs.getInt("id_medico"));
 				prof.setDescricaoProf(rs.getString("descmedico"));
-				prof.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+			//	prof.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
 				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
 				prof.setCns(rs.getString("cns"));
 				prof.setAtivo(rs.getBoolean("ativo"));

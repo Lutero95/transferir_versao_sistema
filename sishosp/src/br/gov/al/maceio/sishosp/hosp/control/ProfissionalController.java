@@ -89,6 +89,24 @@ public class ProfissionalController {
 	}
 
 	public void gravarProfissional() throws SQLException {
+		if (this.profissional.getCbo().getCodCbo() == null
+				|| this.profissional.getCns().isEmpty()
+				|| this.profissional.getDescricaoProf().isEmpty()
+				|| this.profissional.getEspecialidade().getCodEspecialidade() == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"CBO, CNS, especialidade e descrição obrigatórios!",
+					"Campos obrigatórios!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		if (this.profissional.getPrograma().isEmpty()
+				|| this.profissional.getGrupo().isEmpty()) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Programa e Grupo obrigatórios!", "Campos obrigatórios!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
 		boolean cadastrou = pDao.gravarProfissional(profissional);
 
 		if (cadastrou == true) {
@@ -123,28 +141,51 @@ public class ProfissionalController {
 		this.listaProfissional = pDao.listarProfissional();
 	}
 
-	public void alterarProfissional() throws ProjetoException {
+	public String alterarProfissional() throws ProjetoException {
+		if (this.profissional.getCbo().getCodCbo() == null
+				|| this.profissional.getCns().isEmpty()
+				|| this.profissional.getDescricaoProf().isEmpty()
+				|| this.profissional.getEspecialidade().getCodEspecialidade() == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"CBO, CNS, especialidade e descrição obrigatórios!",
+					"Campos obrigatórios!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
+
+		if (this.profissional.getPrograma().isEmpty()
+				|| this.profissional.getGrupo().isEmpty()) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Programa e Grupo obrigatórios!", "Campos obrigatórios!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
+		
 		boolean alterou = pDao.alterarProfissional(profissional);
+		
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Profissional alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			this.listaProfissional = pDao.listarProfissional();
+			return "/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
 		}
-		this.listaProfissional = pDao.listarProfissional();
 
 	}
 
 	public void buscarProfissional() {
-		if(this.tipoBuscar==0){
+		if (this.tipoBuscar == 0) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-	                "Escolha uma opção de busca válida!", "Erro");
-	            FacesContext.getCurrentInstance().addMessage(null, msg);
-		}else{
-			this.listaProfissional = pDao.listarProfissionalBusca(descricaoBusca, tipoBuscar);
+					"Escolha uma opção de busca válida!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			this.listaProfissional = pDao.listarProfissionalBusca(
+					descricaoBusca, tipoBuscar);
 		}
 	}
 
@@ -160,7 +201,7 @@ public class ProfissionalController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
-	
+
 	public List<ProfissionalBean> listaProfissionalAutoComplete(String query)
 			throws ProjetoException {
 		List<ProfissionalBean> result = pDao.listarProfissionalBusca(query, 1);
