@@ -311,8 +311,6 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 		profissional = new ProfissionalBean();
 		equipe = new EquipeBean();
 		procedimento = new ProcedimentoBean();
-		
-		
 	
 	}
 	

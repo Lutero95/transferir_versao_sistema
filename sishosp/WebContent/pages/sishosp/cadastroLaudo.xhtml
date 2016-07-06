@@ -319,8 +319,6 @@
 					</h:panelGrid>
 					
 					<p:outputPanel id="outDadosForne">
-					
-					
 					<p:panel header="DADOS FORNECEDOR" 
 						rendered="#{LaudoController.laudo.procedimento.utilizaEquipamento == true}"
 						style="width:680px; margin-top:30px; background-color: #F5F5F5;">
@@ -328,13 +326,6 @@
 
 							<h:outputLabel value="Fornecedor:" />
 							<p:outputPanel id="outFornecedor">
-								<!--<p:inputText id="codFornecedor"
-									value="#{LaudoController.laudo.fornecedor.idFornecedor}"
-									readonly="true" style="width: 40px; margin-left:16px;" />-->
-							<!-- 	<p:inputText id="Fornecedor"
-									value="#{LaudoController.laudo.fornecedor.descFornecedor}"
-									readonly="true" style="width: 300px" /> -->
-									
 										<p:autoComplete value="#{LaudoController.laudo.fornecedor}"
 								size="60" converter="conFornecedor"
 								completeMethod="#{FornecedorController.listaFornecedorAutoComplete}"

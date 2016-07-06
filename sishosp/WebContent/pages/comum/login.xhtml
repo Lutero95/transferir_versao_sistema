@@ -38,10 +38,6 @@
 			<h:form id="fmrLogin">
 				<p:growl id="msg" />
 				<h2 class="form-signin-heading">Acesse sua conta</h2>
-				<h:panelGroup rendered="#{param['erro'] != null}">
-					<div id="msg" class="alert alert-danger" role="alert">login
-						ou senha incorretos!</div>
-				</h:panelGroup>
 				<!-- <p:inputMask style="padding:10px;" placeholder="CPF" mask="999-999-999-99" value="#{usuarioController.usuario.cpf}"></p:inputMask> -->
 				<p:inputText id="usuario" size="20"
 					style="padding:10px; margin-bottom:20px;" placeholder="Usuario"

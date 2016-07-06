@@ -64,7 +64,7 @@ public class LaudoBean {
 		this.programa = null;
 		this.profissional = null;
 		situacao = "P";
-		this.fornecedor = null;
+		//this.fornecedor = null;
 		this.cid = null;
 		this.paciente = null;
 		this.dtautorizacao = null;

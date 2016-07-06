@@ -62,8 +62,8 @@
 
 						<p:commandButton id="btninc" value="Novo"
 							action="/pages/sishosp/cadastroLaudoDigita.faces?faces-redirect=true" icon="add"
-							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
-							<f:setPropertyActionListener value="I"
+							styleClass="btn btn-sm btn-success" style="margin-top: 15px;" actionListener="#{LaudoController.limparDados()}">
+							<f:setPropertyActionListener value="I" 
 								target="#{LaudoController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>

@@ -21,10 +21,10 @@
 			<h:form id="formLaudo">
 				<p:growl id="message" />
 				<p:panel header="#{LaudoController.cabecalho2}"
-					style="position: relative; height:auto; width:660px; background-color: #F5F5F5; left:30%;">
+					style="position: relative; height:auto; width:660px; background-color: #F5F5F5; margin-left:50%;border: 3px solid gray;">
 					<h:panelGrid columns="3">
 
-						<h:outputLabel for="pac" value="Paciente:" />
+						<h:outputLabel value="Paciente:" />
 						<p:outputPanel id="outPacie">
 							<p:autoComplete value="#{LaudoController.laudo.paciente}"
 							size="60" converter="conPaciente"
@@ -37,7 +37,7 @@
 						<p:commandButton id="btBusPa" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuPac').show();" />
 
-						<h:outputLabel for="profissional" value="Profissional:" />
+						<h:outputLabel value="Profissional:" />
 						<p:outputPanel id="outProfissional">
 							  <p:autoComplete value="#{LaudoController.laudo.profissional}" size="60"
 							  converter="conProfissional"
@@ -53,7 +53,7 @@
 							disabled="#{LaudoController.laudo.paciente==null}"
 							onclick="PF('dlgConsuProf').show();" />
 
-						<h:outputLabel for="procedimento" value="Procedimento:" />
+						<h:outputLabel value="Procedimento:" />
 						<p:outputPanel id="outProce">
 							<p:autoComplete value="#{LaudoController.laudo.procedimento}" size="60"
 							converter="conProcedimento"
@@ -74,13 +74,13 @@
 						style="margin-top:20px;">
 
 						<p:outputPanel id="outPacie3">
-							<h:outputLabel for="cnsPac" value="CNS" />
+							<h:outputLabel value="CNS" />
 							<br />
 							<p:inputText id="codCns"
 								value="#{LaudoController.laudo.paciente.cns}" readonly="true" />
 						</p:outputPanel>
 						<p:outputPanel id="outPacie2" style="margin-left:16px;">
-							<h:outputLabel for="cpfPac" value="CPF" />
+							<h:outputLabel value="CPF" />
 							<br />
 							<p:inputText id="codCpf"
 								value="#{LaudoController.laudo.paciente.cpf}" readonly="true" />
@@ -122,7 +122,7 @@
 						</p:outputPanel>
 
 						<p:outputPanel style="margin-left:16px;">
-							<h:outputLabel for="dataAtou" value="Data para Solicitação" />
+							<h:outputLabel value="Data para Solicitação" />
 							<br />
 							<p:calendar id="dataAte" showOn="button" locale="pt"
 								value="#{LaudoController.laudo.dtasolicitacao}" navigator="true"
@@ -132,7 +132,7 @@
 						</p:outputPanel>
 
 						<p:outputPanel style="margin-left:16px;">
-							<h:outputLabel for="dataVen" value="Mês/Ano fim" />
+							<h:outputLabel value="Mês/Ano fim" />
 							<br />	
 
 							<p:outputLabel id="dtFim" value="#{LaudoController.laudo.dtafim}">
@@ -188,7 +188,7 @@
 							</p:outputPanel>
 
 							<p:outputPanel id="outDesP">
-								<h:outputLabel for="descPac" value="Descrição" />
+								<h:outputLabel value="Descrição" />
 								<br />
 								<p:inputText id="descPac"
 									value="#{PacienteController.descricaoParaBuscar}"

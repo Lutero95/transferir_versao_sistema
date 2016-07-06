@@ -18,7 +18,8 @@ public class FornecedorBean {
 	private Integer codempresa;
 	
 	public FornecedorBean(){
-		
+		idFornecedor = null;
+		descFornecedor = null;
 	}
 
 	public Integer getIdFornecedor() {
