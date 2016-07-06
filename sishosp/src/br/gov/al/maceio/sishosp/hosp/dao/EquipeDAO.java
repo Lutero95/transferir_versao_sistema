@@ -29,7 +29,7 @@ public class EquipeDAO {
 			int idEquipe = 0;
 			if (rs.next()) {
 				idEquipe = rs.getInt("id_equipe");
-				insereEquipeProfissional(idEquipe, equipe);
+				insereEquipeProfissional(idEquipe, equipe, 0);
 
 			}
 			return true;
@@ -45,16 +45,25 @@ public class EquipeDAO {
 		}
 	}
 	
-	public void insereEquipeProfissional(int idEquipe, EquipeBean equipe) {
+	public void insereEquipeProfissional(int idEquipe, EquipeBean equipe, int gamb) {
 		String sql = "insert into hosp.equipe_medico (equipe, medico) values(?,?);";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			for (ProfissionalBean prof : equipe.getProfissionais()) {
-				ps.setInt(1, idEquipe);
-				ps.setInt(2, prof.getIdProfissional());
-				ps.execute();
-				con.commit();
+			if(gamb == 0){
+				for (ProfissionalBean prof : equipe.getProfissionais()) {
+					ps.setInt(1, idEquipe);
+					ps.setInt(2, prof.getIdProfissional());
+					ps.execute();
+					con.commit();
+				}
+			}else if(gamb == 1){
+				for (ProfissionalBean prof : equipe.getProfissionaisNovo()) {
+					ps.setInt(1, idEquipe);
+					ps.setInt(2, prof.getIdProfissional());
+					ps.execute();
+					con.commit();
+				}
 			}
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -70,7 +79,7 @@ public class EquipeDAO {
 
 	public List<EquipeBean> listarEquipe() {
 		List<EquipeBean> lista = new ArrayList<>();
-		String sql = "select id_equipe, descequipe, codempresa from hosp.equipe";
+		String sql = "select id_equipe, descequipe, codempresa from hosp.equipe order by id_equipe";
 		
 		try {
 			con = ConnectionFactory.getConnection();
@@ -101,10 +110,9 @@ public class EquipeDAO {
 	public List<EquipeBean> listarEquipeBusca(String descricao,
 			Integer tipo) {
 		List<EquipeBean> lista = new ArrayList<>();
-		System.out.println("2");
 		String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, codempresa from hosp.equipe ";
 		if (tipo == 1) {
-			sql += " where upper(id_equipe ||'-'|| descequipe) LIKE ?";
+			sql += " where upper(id_equipe ||'-'|| descequipe) LIKE ? order by id_equipe";
 		}
 		try {
 			con = ConnectionFactory.getConnection();
@@ -142,6 +150,8 @@ public class EquipeDAO {
 			stmt.setInt(2, equipe.getCodEquipe());
 			stmt.executeUpdate();
 			con.commit();
+			excluirTabEquipeProf(equipe.getCodEquipe());
+			insereEquipeProfissional(equipe.getCodEquipe(), equipe, 1);
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);

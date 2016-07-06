@@ -9,11 +9,16 @@ public class EquipeBean {
 	private String descEquipe;
 	private Integer codEmpresa;
 	private List<ProfissionalBean> profissionais;
-	private ProfissionalBean prof;
+	private List<ProfissionalBean> profissionaisNovo;
+	private ProfissionalBean profAdd;
+	private ProfissionalBean profRmv;
 
 	public EquipeBean() {
 		this.profissionais = new ArrayList<ProfissionalBean>();
-		this.prof = new ProfissionalBean();
+		this.profissionaisNovo = new ArrayList<ProfissionalBean>();
+		this.profAdd = new ProfissionalBean();
+		this.profRmv = new ProfissionalBean();
+
 	}
 
 	public Integer getCodEquipe() {
@@ -48,21 +53,36 @@ public class EquipeBean {
 		this.profissionais = profissionais;
 	}
 
-	public ProfissionalBean getProf() {
-		return prof;
-	}
-	
-	public void setProf(ProfissionalBean prof) {
-		this.prof = prof;
+	public List<ProfissionalBean> getProfissionaisNovo() {
+		this.profissionaisNovo = this.profissionais;
+		return profissionaisNovo;
 	}
 
-	public void addProfList(){
-		this.profissionais.add(prof);
-		this.prof = new ProfissionalBean();
+	public void setProfissionaisNovo(List<ProfissionalBean> profissionaisNovo) {
+		this.profissionaisNovo = profissionaisNovo;
 	}
-	public void removeProfList(){
-		System.out.println("asda " + this.prof.getDescricaoProf());
-		this.profissionais.remove(this.prof);
-		this.prof = new ProfissionalBean();
+
+	public ProfissionalBean getProfAdd() {
+		return profAdd;
+	}
+
+	public ProfissionalBean getProfRmv() {
+		return profRmv;
+	}
+
+	public void setProfAdd(ProfissionalBean profAdd) {
+		this.profAdd = profAdd;
+	}
+
+	public void setProfRmv(ProfissionalBean profRmv) {
+		this.profRmv = profRmv;
+	}
+
+	public void addProfList() {
+		this.profissionais.add(this.profAdd);
+	}
+
+	public void removeProfList() {
+		this.profissionais.remove(this.profRmv);
 	}
 }

@@ -70,6 +70,17 @@
 									<h:outputText value="#{tab.descGrupo}" />
 								</p:column>
 
+								<p:column headerText="Ação">
+									<center>
+										<p:commandButton
+											action="#{ProgramaController.prog.removeGrupoLista()}"
+											icon="ui-icon-trash" update=":formCADU:pnlCadPrograma">
+											<f:setPropertyActionListener value="#{tab}"
+												target="#{ProgramaController.prog.grupoRmv}" />
+										</p:commandButton>
+									</center>
+								</p:column>
+
 							</p:dataTable>
 						</div>
 					</div>

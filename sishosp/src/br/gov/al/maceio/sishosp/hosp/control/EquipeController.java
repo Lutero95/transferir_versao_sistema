@@ -39,7 +39,6 @@ public class EquipeController {
 		this.listaEquipe = eDao.listarEquipe();
 	}
 
-
 	public EquipeBean getEquipe() {
 		return equipe;
 	}
@@ -47,6 +46,7 @@ public class EquipeController {
 	public void setEquipe(EquipeBean equipe) {
 		this.equipe = equipe;
 	}
+
 	public Integer getTipoBuscar() {
 		return tipoBuscar;
 	}
@@ -87,9 +87,15 @@ public class EquipeController {
 	}
 
 	public void gravarEquipe() throws ProjetoException, SQLException {
-		if(this.equipe.getProfissionais().isEmpty()){
+		if (this.equipe.getProfissionais().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"É necessário no mínimo um profissional na equipe!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+		if (this.equipe.getDescEquipe().isEmpty()) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Descrição obrigatória!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -108,12 +114,25 @@ public class EquipeController {
 	}
 
 	public void buscarEquipes() {
-		this.listaEquipe = eDao.listarEquipeBusca(
-				descricaoBusca, tipoBuscar);
+		this.listaEquipe = eDao.listarEquipeBusca(descricaoBusca, tipoBuscar);
 	}
 
 	public String alterarEquipe() throws ProjetoException {
+		if (this.equipe.getProfissionais().isEmpty()) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"É necessário no mínimo um profissional na equipe!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return"";
+		}
+		if (this.equipe.getDescEquipe().isEmpty()) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Descrição obrigatória!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return"";
+		}
+		
 		boolean alterou = eDao.alterarEquipe(equipe);
+		
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Equipe alterada com sucesso!", "Sucesso");
@@ -127,28 +146,30 @@ public class EquipeController {
 			return "";
 		}
 	}
-	
-	public void excluirEquipe() throws ProjetoException {
-        boolean ok = eDao.excluirEquipe(equipe);
-        if(ok == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Equipe excluida com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
+	public void excluirEquipe() throws ProjetoException {
+		boolean ok = eDao.excluirEquipe(equipe);
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Equipe excluida com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
 		this.listaEquipe = eDao.listarEquipe();
 	}
-	
+
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE EQUIPE";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR EQUIPE";
 		}
 		return cabecalho;
@@ -157,7 +178,7 @@ public class EquipeController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
-	
+
 	public List<EquipeBean> listaEquipeAutoComplete(String query)
 			throws ProjetoException {
 		List<EquipeBean> result = eDao.listarEquipeBusca(query, 1);

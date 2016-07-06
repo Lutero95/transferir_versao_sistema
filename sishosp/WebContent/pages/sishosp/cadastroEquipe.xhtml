@@ -37,36 +37,47 @@
 								<div class="col-sm-6">
 									<h:inputText value="#{EquipeController.equipe.descEquipe}"
 										class="form-control" id="inputname" required="true"
-										requiredMessage="Descrição obrigatória!"/>
+										requiredMessage="Descrição obrigatória!" />
 								</div>
 							</div>
 
 							<div class="form-group">
-									<h:outputLabel value="Profissional: "
-										styleClass="col-sm-3 control-label" />
-									<p:commandButton
-										style="position:absolute; top:130px; left:162px;"
-										icon="ui-icon-plus" onclick="PF('dlgConsuProfE').show();" />
-									<div class="col-sm-6">
+								<h:outputLabel value="Profissional: "
+									styleClass="col-sm-3 control-label" />
+								<p:commandButton
+									style="position:absolute; top:130px; left:162px;"
+									icon="ui-icon-plus" onclick="PF('dlgConsuProfE').show();" />
+								<div class="col-sm-6">
 
-										<p:dataTable emptyMessage="Sem Dados"
-											styleClass="table table-hover" id="tabela"
-											style="margin-top:20px;"
-											value="#{EquipeController.equipe.profissionais}" var="tab"
-											paginator="true" paginatorPosition="bottom" rows="12"
-											resizableColumns="true">
+									<p:dataTable emptyMessage="Sem Dados"
+										styleClass="table table-hover" id="tabela"
+										style="margin-top:20px;"
+										value="#{EquipeController.equipe.profissionais}" var="tab"
+										paginator="true" paginatorPosition="bottom" rows="12"
+										resizableColumns="true">
 
-											<p:column headerText="Cód."
-												style="font-weight:bold;width:20%;">
-												<h:outputText value="#{tab.idProfissional}" />
-											</p:column>
+										<p:column headerText="Cód."
+											style="font-weight:bold;width:20%;">
+											<h:outputText value="#{tab.idProfissional}" />
+										</p:column>
 
-											<p:column headerText="Nome" style="font-weight:bold;">
-												<h:outputText value="#{tab.descricaoProf}" />
-											</p:column>
+										<p:column headerText="Nome" style="font-weight:bold;">
+											<h:outputText value="#{tab.descricaoProf}" />
+										</p:column>
+										
+										<p:column headerText="Ação">
+											<center>
+												<p:commandButton
+													action="#{EquipeController.equipe.removeProfList()}"
+													icon="ui-icon-trash" update=":formCADU:pnlCadEquipe">
+													<f:setPropertyActionListener value="#{tab}"
+														target="#{EquipeController.equipe.profRmv}" />
+												</p:commandButton>
+											</center>
+										</p:column>
 
-										</p:dataTable>
-									</div>
+									</p:dataTable>
+								</div>
 							</div>
 
 						</p:tab>
@@ -110,7 +121,7 @@
 									action="#{EquipeController.equipe.addProfList()}"
 									onclick="PF('dlgConsuProfE').hide();">
 									<f:setPropertyActionListener value="#{profi}"
-										target="#{EquipeController.equipe.prof}" />
+										target="#{EquipeController.equipe.profAdd}" />
 								</p:commandButton>
 							</p:column>
 						</p:dataTable>

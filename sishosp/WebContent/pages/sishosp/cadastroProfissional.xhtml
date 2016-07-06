@@ -126,13 +126,14 @@
 							<p:outputLabel value="#{grupo.descGrupo}" />
 						</p:column>
 						<p:column headerText="Ação">
-							<p:commandButton
-								action="#{ProfissionalController.profissional.removeGrupoLista()}"
-								icon="ui-icon-trash" update=":frmCadProfi:pnlCadProf">
-								<f:setPropertyActionListener value="#{grupo}"
-									target="#{ProfissionalController.profissional.grupoRmv}" />
-							</p:commandButton>
-
+							<center>
+								<p:commandButton
+									action="#{ProfissionalController.profissional.removeGrupoLista()}"
+									icon="ui-icon-trash" update=":frmCadProfi:pnlCadProf">
+									<f:setPropertyActionListener value="#{grupo}"
+										target="#{ProfissionalController.profissional.grupoRmv}" />
+								</p:commandButton>
+							</center>
 						</p:column>
 					</p:dataTable>
 				</p:panelGrid>

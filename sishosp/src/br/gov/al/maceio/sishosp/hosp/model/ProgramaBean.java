@@ -9,11 +9,13 @@ public class ProgramaBean {
 	private Double codFederal;
 	
 	private GrupoBean grupoParaAdd;
+	private GrupoBean grupoRmv;
 	private List<GrupoBean> grupo;
 	private List<GrupoBean> grupoNovo;
 	
 	public ProgramaBean(){
 		this.grupo = new ArrayList<GrupoBean>();
+		this.grupoRmv = new GrupoBean();
 		this.grupoNovo = new ArrayList<GrupoBean>();
 		this.idPrograma = null;
 		this.descPrograma = new String();
@@ -75,8 +77,19 @@ public class ProgramaBean {
 		this.grupoParaAdd = grupoParaAdd;
 	}
 	
+	public GrupoBean getGrupoRmv() {
+		return grupoRmv;
+	}
+
+	public void setGrupoRmv(GrupoBean grupoRmv) {
+		this.grupoRmv = grupoRmv;
+	}
+
 	public void addGrupoLista(){
 		this.grupo.add(grupoParaAdd);
 	}
 	
+	public void removeGrupoLista(){
+		this.grupo.remove(this.grupoRmv);
+	}
 }
