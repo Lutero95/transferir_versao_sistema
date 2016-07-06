@@ -20,7 +20,7 @@ public class GrupoConverter implements Converter {
 			return null;
 		try {
 			int id = Integer.parseInt(value);
-			return g.buscaGrupoPorId(id);
+			return g.listarGrupoPorId(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(

@@ -381,7 +381,7 @@ public class LaudoDAO {
     	                l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
     	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
     	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
-    	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+    	                l.setProfissional(profDao.buscarProfissionalPorId(rs.getInt("codmedico")));
     	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codproc")));
     	                l.setDtasolicitacao(rs.getDate("dtasolicitacao"));
     	                l.setRecurso(rs.getString("recurso"));
@@ -474,7 +474,7 @@ public class LaudoDAO {
     	                l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
     	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
     	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
-    	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+    	                l.setProfissional(profDao.buscarProfissionalPorId(rs.getInt("codmedico")));
     	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codproc")));
     	                l.setDtasolicitacao(rs.getDate("dtasolicitacao"));
     	                l.setRecurso(rs.getString("recurso"));
@@ -533,7 +533,7 @@ public class LaudoDAO {
     	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("id_paciente")));
     	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
     	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
-    	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+    	                l.setProfissional(profDao.buscarProfissionalPorId(rs.getInt("codmedico")));
     	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codprocedimento")));
     	                l.setDtasolicitacao(rs.getDate("datasolicitacao"));
     	                l.setDtainicio(rs.getDate("periodoinicio"));
@@ -585,7 +585,7 @@ public class LaudoDAO {
    	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("id_paciente")));
    	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
    	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
-   	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+   	                l.setProfissional(profDao.buscarProfissionalPorId(rs.getInt("codmedico")));
    	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codprocedimento")));
    	                //l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
    	                l.setDtasolicitacao(rs.getDate("datasolicitacao"));
@@ -649,7 +649,7 @@ public class LaudoDAO {
 	                l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
 	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
   	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
-	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+	                l.setProfissional(profDao.buscarProfissionalPorId(rs.getInt("codmedico")));
 	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codproc")));
 	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("codfornecedor")));
 	                l.setRecurso(rs.getString("recurso"));
@@ -704,7 +704,7 @@ public class LaudoDAO {
     	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("codpaciente")));
     	                l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
     	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
-    	                l.setProfissional(profDao.listarProfissionalPorId(rs.getInt("codmedico")));
+    	                l.setProfissional(profDao.buscarProfissionalPorId(rs.getInt("codmedico")));
     	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codproc")));
     	                l.setDtasolicitacao(rs.getDate("dtasolicitacao"));
     	                l.setRecurso(rs.getString("recurso"));

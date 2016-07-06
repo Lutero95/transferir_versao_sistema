@@ -298,7 +298,7 @@ public class ConfigAgendaDAO {
 			while (rs.next()) {
 				ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
 				conf.setIdConfiAgenda(rs.getInt("id_configagenda"));
-				conf.setProfissional(pDao.buscarProfissionalPorID(rs
+				conf.setProfissional(pDao.buscarProfissionalPorId(rs
 						.getInt("codmedico")));
 				conf.setDiaDaSemana(rs.getInt("diasemana"));
 				conf.setDataEspecifica(rs.getDate("dataagenda"));
@@ -374,7 +374,7 @@ public class ConfigAgendaDAO {
 			while (rs.next()) {
 				ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
 				conf.setIdConfiAgenda(rs.getInt("id_configagenda"));
-				conf.setProfissional(pDao.buscarProfissionalPorID(rs
+				conf.setProfissional(pDao.buscarProfissionalPorId(rs
 						.getInt("codmedico")));
 				conf.setDiaDaSemana(rs.getInt("diasemana"));
 				conf.setDataEspecifica(rs.getDate("dataagenda"));
@@ -456,7 +456,7 @@ public class ConfigAgendaDAO {
 				conf.setTipoAt(tDao.listarTipoPorId(rs
 						.getInt("codtipoatendimento")));
 				conf.setQtd(rs.getInt("qtd"));
-				conf.setGrupo(gDao.buscaGrupoPorId(rs.getInt("codGrupo")));
+				conf.setGrupo(gDao.listarGrupoPorId(rs.getInt("codGrupo")));
 				lista.add(conf);
 			}
 		} catch (SQLException ex) {

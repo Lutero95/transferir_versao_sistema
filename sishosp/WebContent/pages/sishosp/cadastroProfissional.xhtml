@@ -92,7 +92,7 @@
 						icon="ui-icon-plus" />
 					<p:dataTable style="width: 480px" emptyMessage="Sem registros."
 						value="#{ProfissionalController.profissional.programa}" var="prog"
-						paginator="true" paginatorPosition="bottom" rows="5"
+						paginator="true" paginatorPosition="bottom" rows="3"
 						resizableColumns="true">
 						<p:column headerText="Cód." style="width: 80px">
 							<p:outputLabel value="#{prog.idPrograma}" />
@@ -101,13 +101,14 @@
 							<p:outputLabel value="#{prog.descPrograma}" />
 						</p:column>
 						<p:column headerText="Ação">
-							<p:commandButton
-								action="#{ProfissionalController.profissional.removeProgLista()}"
-								icon="ui-icon-trash" update=":frmCadProfi:pnlCadProf">
-								<f:setPropertyActionListener value="#{prog}"
-									target="#{ProfissionalController.profissional.progRmv}" />
-							</p:commandButton>
-
+							<center>
+								<p:commandButton
+									action="#{ProfissionalController.profissional.removeProgLista()}"
+									icon="ui-icon-trash" update=":frmCadProfi:pnlCadProf">
+									<f:setPropertyActionListener value="#{prog}"
+										target="#{ProfissionalController.profissional.progRmv}" />
+								</p:commandButton>
+							</center>
 						</p:column>
 					</p:dataTable>
 
@@ -116,7 +117,7 @@
 						icon="ui-icon-plus" />
 					<p:dataTable style="width: 480px" emptyMessage="Sem registros."
 						value="#{ProfissionalController.profissional.grupo}" var="grupo"
-						paginator="true" paginatorPosition="bottom" rows="5"
+						paginator="true" paginatorPosition="bottom" rows="3"
 						resizableColumns="true">
 						<p:column headerText="Cód." style="width: 80px">
 							<p:outputLabel value="#{grupo.idGrupo}" />
@@ -154,7 +155,7 @@
 					<h:commandButton value="Voltar" styleClass="btn btn-info"
 						action="/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true">
 					</h:commandButton>
-					
+
 					<h:commandButton value="Limpar" styleClass="btn btn-info"
 						actionListener="#{ProfissionalController.limparDados()}"
 						update=":frmCadProfi">

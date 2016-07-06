@@ -258,36 +258,7 @@ public class GrupoDAO {
 		}
 	}
 
-	public GrupoBean buscaGrupoPorId(Integer i) throws ProjetoException {
-		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo from hosp.grupo where id_grupo=? order by id_grupo";
-		try {
-			con = ConnectionFactory.getConnection();
-			ps = con.prepareStatement(sql);
-			ps.setInt(1, i);
-			ResultSet rs = ps.executeQuery();
-			GrupoBean g = new GrupoBean();
-			if (rs.next()) {
-				g.setIdGrupo(rs.getInt("id_grupo"));
-				g.setDescGrupo(rs.getString("descgrupo"));
-				g.setQtdFrequencia(rs.getInt("qtdfrequencia"));
-				g.setAuditivo(rs.getBoolean("auditivo"));
-			}
-			return g;
-		} catch (Exception sqle) {
-
-			throw new ProjetoException(sqle);
-
-		} finally {
-			try {
-				con.close();
-			} catch (Exception sqlc) {
-				sqlc.printStackTrace();
-				System.exit(1);
-				// TODO: handle exception
-			}
-
-		}
-	}
+	
 
 	public GrupoBean listarGrupoPorId(int id) {
 

@@ -72,7 +72,7 @@ public class AgendaDAO {
 			while (rs.next()) {
 				BloqueioBean bloqueio = new BloqueioBean();
 				bloqueio.setIdBloqueio(rs.getInt("id_bloqueioagenda"));
-				bloqueio.setProf(pDao.buscarProfissionalPorID(rs
+				bloqueio.setProf(pDao.buscarProfissionalPorId(rs
 						.getInt("codmedico")));
 				bloqueio.setDataInicio(rs.getDate("dataagenda"));
 				bloqueio.setTurno(rs.getString("turno"));
@@ -414,7 +414,7 @@ public class AgendaDAO {
 				agenda.setIdAgenda(rs.getInt("id_atendimento"));
 				agenda.setPaciente(pDao.listarPacientePorID(rs
 						.getInt("codpaciente")));
-				agenda.setProfissional(mDao.buscarProfissionalPorID(rs
+				agenda.setProfissional(mDao.buscarProfissionalPorId(rs
 						.getInt("codmedico")));
 				agenda.setDataAtendimento(rs.getDate("dtaatende"));
 				agenda.setSituacao(rs.getString("situacao"));
@@ -491,7 +491,7 @@ public class AgendaDAO {
 				agenda.setIdAgenda(rs.getInt("id_atendimento"));
 				agenda.setPaciente(pDao.listarPacientePorID(rs
 						.getInt("codpaciente")));
-				agenda.setProfissional(mDao.buscarProfissionalPorID(rs
+				agenda.setProfissional(mDao.buscarProfissionalPorId(rs
 						.getInt("codmedico")));
 				agenda.setPrograma(prDao.listarProgramaPorId(rs
 						.getInt("codredeatende")));

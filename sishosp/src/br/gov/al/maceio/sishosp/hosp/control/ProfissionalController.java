@@ -107,6 +107,7 @@ public class ProfissionalController {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
+		
 		boolean cadastrou = pDao.gravarProfissional(profissional);
 
 		if (cadastrou == true) {

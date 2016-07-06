@@ -6,7 +6,9 @@ import java.util.List;
 public class ProfissionalBean {
 	private Integer idProfissional;
 	private List<ProgramaBean> programa;
+	private List<ProgramaBean> programaNovo;
 	private List<GrupoBean> grupo;
+	private List<GrupoBean> grupoNovo;
 	private EspecialidadeBean especialidade;
 	private CboBean cbo;
 	private ProcedimentoBean proc1;
@@ -22,7 +24,9 @@ public class ProfissionalBean {
 
 	public ProfissionalBean() {
 		this.programa = new ArrayList<ProgramaBean>();
+		this.programaNovo = new ArrayList<ProgramaBean>();
 		this.grupo = new ArrayList<GrupoBean>();
+		this.grupoNovo = new ArrayList<GrupoBean>();
 		this.especialidade = new EspecialidadeBean();
 		this.cbo = new CboBean();
 		this.proc1 = new ProcedimentoBean();
@@ -34,6 +38,24 @@ public class ProfissionalBean {
 		this.grupoAdd = new GrupoBean();
 		this.progRmv = new ProgramaBean();
 		this.grupoRmv = new GrupoBean();
+	}
+
+	public List<ProgramaBean> getProgramaNovo() {
+		this.programaNovo = this.programa;
+		return programaNovo;
+	}
+
+	public void setProgramaNovo(List<ProgramaBean> programaNovo) {
+		this.programaNovo = programaNovo;
+	}
+
+	public List<GrupoBean> getGrupoNovo() {
+		this.grupoNovo = this.grupo;
+		return grupoNovo;
+	}
+
+	public void setGrupoNovo(List<GrupoBean> grupoNovo) {
+		this.grupoNovo = grupoNovo;
 	}
 
 	public List<GrupoBean> getGrupo() {

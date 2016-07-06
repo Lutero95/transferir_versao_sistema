@@ -20,7 +20,7 @@ public class ProfissionalConverter implements Converter {
 			return null;
 		try {
 			int id = Integer.parseInt(value);
-			return pDAO.listarProfissionalPorId(id);
+			return pDAO.buscarProfissionalPorId(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
