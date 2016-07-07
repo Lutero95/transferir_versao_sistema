@@ -3,15 +3,20 @@ package br.gov.al.maceio.sishosp.acl.model;
 import br.gov.al.maceio.sishosp.acl.model.PermissoesBean;
 import br.gov.al.maceio.sishosp.acl.model.SecretariaBean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.swing.text.StyledEditorKit.BoldAction;
 
-public class UsuarioBean {
+public class UsuarioBean implements Serializable{
 
-    private Integer codigo;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Integer codigo;
     private String nome;
     private Integer user_secretaria;
     private Integer user_setor;

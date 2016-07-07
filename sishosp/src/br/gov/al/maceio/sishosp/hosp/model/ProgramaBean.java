@@ -83,6 +83,7 @@ public class ProgramaBean {
 	}
 
 	public void addGrupoLista(){
+		
 		this.grupo.add(grupoParaAdd);
 	}
 	
