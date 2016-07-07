@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,151 +13,153 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 
-
-
-
-public class EnderecoController {
-	private Integer abaAtiva = 0;
-	//CLASSES HERDADAS
-	private EnderecoBean endereco;
+public class EnderecoController implements Serializable{
 	
-	//LISTAS
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Integer abaAtiva = 0;
+	// CLASSES HERDADAS
+	private EnderecoBean endereco;
+
+	// LISTAS
 	private List<EnderecoBean> listaMunicipios;
 	private List<EnderecoBean> listaBairros;
-	
-	//BUSCAS
-			private String tipo;
-			private Integer tipoBuscaMunicipio;
-			private String campoBuscaMunicipio;
-			private String statusMunicipio;
-			private String cabecalho;
-	
-	public EnderecoController(){
+
+	// BUSCAS
+	private String tipo;
+	private Integer tipoBuscaMunicipio;
+	private String campoBuscaMunicipio;
+	private String statusMunicipio;
+	private String cabecalho;
+
+	public EnderecoController() {
 		endereco = new EnderecoBean();
-		
-		 //BUSCA
-			tipo ="";
-			tipoBuscaMunicipio = 1;
-			campoBuscaMunicipio = "";
-			statusMunicipio = "P";
-		
-		  //LISTAS
-		  listaMunicipios = new ArrayList<>();
-	      listaMunicipios = null;
-	      listaBairros = new ArrayList<>();
-	      listaBairros = null;
+
+		// BUSCA
+		tipo = "";
+		tipoBuscaMunicipio = 1;
+		campoBuscaMunicipio = "";
+		statusMunicipio = "P";
+
+		// LISTAS
+		listaMunicipios = new ArrayList<>();
+		listaMunicipios = null;
+		listaBairros = new ArrayList<>();
+		listaBairros = null;
 	}
-	
+
 	public void gravarLogradouro() throws ProjetoException {
-        EnderecoDAO udao = new EnderecoDAO();
-
-                boolean cadastrou = udao.cadastrarLogradouro(endereco);
-
-                if(cadastrou == true) {
-                	limparDados();
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Logradouro cadastrado com sucesso!", "Sucesso");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
-
-                    
-
-                } else {
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Ocorreu um erro durante o cadastro!", "Erro");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
-
- 
-                }
-            
-    }
-	
-	public void gravarMunicipios() throws ProjetoException {
-        EnderecoDAO udao = new EnderecoDAO();
-
-                boolean cadastrou = udao.cadastrarMunicipio(endereco);
-               
-                if(cadastrou == true) {
-                	limparDados();
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Municipio cadastrado com sucesso!", "Sucesso");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
-
-                    listaMunicipios = null;
-
-                } else {
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Ocorreu um erro durante o cadastro!", "Erro");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
-
- 
-                }
-            
-    }
-	public String alterarMunicipios() throws ProjetoException {
-		
 		EnderecoDAO udao = new EnderecoDAO();
-         boolean alterou = udao.alterarMunicipio(endereco);
-         listaMunicipios = null;
-         if(alterou == true) {
-             limparDados();
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                 "Municipio alterado com sucesso!", "Sucesso");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         } else {
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                 "Ocorreu um erro durante o cadastro!", "Erro");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         }
-		
+
+		boolean cadastrou = udao.cadastrarLogradouro(endereco);
+
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Logradouro cadastrado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		}
+
 	}
-	
-	
+
+	public void gravarMunicipios() throws ProjetoException {
+		EnderecoDAO udao = new EnderecoDAO();
+
+		boolean cadastrou = udao.cadastrarMunicipio(endereco);
+
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Municipio cadastrado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			listaMunicipios = null;
+
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		}
+
+	}
+
+	public String alterarMunicipios() throws ProjetoException {
+
+		EnderecoDAO udao = new EnderecoDAO();
+		boolean alterou = udao.alterarMunicipio(endereco);
+		listaMunicipios = null;
+		if (alterou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Municipio alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		}
+
+	}
+
 	public void excluirLogradourou() throws ProjetoException {
 		EnderecoDAO udao = new EnderecoDAO();
-        System.out.println("excluio");
-        boolean excluio = udao.excluirLogradouro(endereco);
-      
-        if(excluio == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Logradouro excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+		System.out.println("excluio");
+		boolean excluio = udao.excluirLogradouro(endereco);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+		if (excluio == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Logradouro excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
-    
-}
-	
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
+
+	}
+
 	public void excluirMunicipios() throws ProjetoException {
 		EnderecoDAO udao = new EnderecoDAO();
-       
-        boolean excluio = udao.excluirMunicipio(endereco);
-        
-        if(excluio == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Municipio excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaMunicipios = null;
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
-    
-}
-	
+		boolean excluio = udao.excluirMunicipio(endereco);
+
+		if (excluio == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Municipio excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaMunicipios = null;
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
+
+	}
+
 	public void buscarMunicipios() {
 
 		List<EnderecoBean> listaAux = null;
@@ -164,7 +167,8 @@ public class EnderecoController {
 
 		EnderecoDAO adao = new EnderecoDAO();
 
-		listaAux = adao.buscarTipoMunicipio(campoBuscaMunicipio,tipoBuscaMunicipio);
+		listaAux = adao.buscarTipoMunicipio(campoBuscaMunicipio,
+				tipoBuscaMunicipio);
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -177,23 +181,19 @@ public class EnderecoController {
 		}
 
 	}
-	
-	
-	
+
 	public void limparBuscaDados() {
 		tipoBuscaMunicipio = 1;
 		campoBuscaMunicipio = "";
 		statusMunicipio = "P";
 		listaMunicipios = null;
 	}
-	
-	
-	public void limparDados(){
+
+	public void limparDados() {
 		endereco = new EnderecoBean();
-		
-		
+
 	}
-	
+
 	public EnderecoBean getEndereco() {
 		return endereco;
 	}
@@ -203,28 +203,26 @@ public class EnderecoController {
 	}
 
 	public List<EnderecoBean> getListaMunicipios() {
-		 if(listaMunicipios == null) {
-				
-	            EnderecoDAO fdao = new EnderecoDAO();
-	            listaMunicipios = fdao.listaMunicipios();
-	      
-	        }
+		if (listaMunicipios == null) {
+
+			EnderecoDAO fdao = new EnderecoDAO();
+			listaMunicipios = fdao.listaMunicipios();
+
+		}
 		return listaMunicipios;
 	}
-
-
 
 	public void setListaMunicipios(List<EnderecoBean> listaMunicipios) {
 		this.listaMunicipios = listaMunicipios;
 	}
 
 	public List<EnderecoBean> getListaBairros() {
-		 if(listaBairros == null) {
-				
-	            EnderecoDAO fdao = new EnderecoDAO();
-	            listaBairros= fdao.listaBairros();
-	      
-	        }
+		if (listaBairros == null) {
+
+			EnderecoDAO fdao = new EnderecoDAO();
+			listaBairros = fdao.listaBairros();
+
+		}
 		return listaBairros;
 	}
 
@@ -271,11 +269,11 @@ public class EnderecoController {
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
 	}
-	
+
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE ENDEREÇO";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR ENDEREÇO";
 		}
 		return cabecalho;
@@ -284,6 +282,5 @@ public class EnderecoController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
-	
-	
+
 }

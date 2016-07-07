@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,12 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 
-public class EspecialidadeController {
+public class EspecialidadeController implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private EspecialidadeBean espec;
 	private List<EspecialidadeBean> listaEspecialidade;
 	private Integer tipoBuscar;

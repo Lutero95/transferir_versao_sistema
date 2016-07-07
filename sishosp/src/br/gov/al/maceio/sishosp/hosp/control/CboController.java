@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,12 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 
-public class CboController {
+public class CboController implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private CboBean cbo;
 	private List<CboBean> listaCbo;
 	private Integer tipoBuscar;

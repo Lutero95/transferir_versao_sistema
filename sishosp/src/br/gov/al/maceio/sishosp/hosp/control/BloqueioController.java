@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -12,8 +13,12 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 
-public class BloqueioController {
+public class BloqueioController implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private BloqueioBean bloqueio;
 	private List<BloqueioBean> listaBloqueios;
 	private BloqueioDAO bDao = new BloqueioDAO();

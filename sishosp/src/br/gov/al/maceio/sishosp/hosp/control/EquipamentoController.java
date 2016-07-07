@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,12 @@ import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 
 
-public class EquipamentoController {
+public class EquipamentoController implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private EquipamentoBean equipamento;
 	private List<EquipamentoBean> listaEquipamentos;
 	private Integer tipoBuscar;

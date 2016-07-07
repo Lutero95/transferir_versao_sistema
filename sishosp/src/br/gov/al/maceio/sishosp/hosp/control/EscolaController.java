@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,11 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 
-public class EscolaController {
+public class EscolaController implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer abaAtiva = 0;
 	private EscolaBean escola;
 
@@ -277,11 +282,11 @@ public class EscolaController {
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
 	}
-	
+
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE ESCOLA";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR ESCOLA";
 		}
 		return cabecalho;

@@ -49,10 +49,10 @@
 					</div>
 
 					<div class="form-group">
-						<h:outputLabel for="inputg" value="Grupos: "
+						<h:outputLabel value="Grupos: "
 							styleClass="col-sm-3 control-label" />
 						<p:commandButton style="position:absolute; top:165px; left:282px;"
-							onclick="PF('dlgConsuGrupo').show();" icon="ui-icon-plus" />
+							onclick="PF('dlgConsuGrupos').show();" icon="ui-icon-plus" />
 						<div class="col-sm-6">
 
 							<p:dataTable emptyMessage="Sem Dados"
@@ -101,37 +101,36 @@
 
 				</p:panel>
 
-
-				<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"
-					modal="true" width="550px">
-					<h:form id="formConsuGrop">
-						<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
-							resizableColumns="true" var="grupo"
-							emptyMessage="Não existe nenhum grupo cadastrado!">
-							<p:column headerText="CÓD.">
-								<p:outputLabel value="#{grupo.idGrupo}" />
-							</p:column>
-							<p:column headerText="GRUPO">
-								<p:outputLabel value="#{grupo.descGrupo}" />
-							</p:column>
-							<p:column headerText="QTD. FREQ>">
-								<p:outputLabel value="#{grupo.qtdFrequencia}" />
-							</p:column>
-
-							<p:column style="width:50px;text-align: center">
-								<p:commandButton update=":formCADU:pnlCadPrograma"
-									icon="ui-icon-check" title="Selecionar"
-									onclick="PF('dlgConsuGrupo').hide();"
-									action="#{ProgramaController.prog.addGrupoLista()}">
-									<f:setPropertyActionListener value="#{grupo}"
-										target="#{ProgramaController.prog.grupoParaAdd}" />
-								</p:commandButton>
-							</p:column>
-						</p:dataTable>
-					</h:form>
-				</p:dialog>
-
 			</h:form>
+			
+			<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupos"
+				modal="true" width="550px">
+				<h:form id="formConsuGrop">
+					<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
+						resizableColumns="true" var="grupo"
+						emptyMessage="Não existe nenhum grupo cadastrado!">
+						<p:column headerText="CÓD.">
+							<p:outputLabel value="#{grupo.idGrupo}" />
+						</p:column>
+						<p:column headerText="GRUPO">
+							<p:outputLabel value="#{grupo.descGrupo}" />
+						</p:column>
+						<p:column headerText="QTD. FREQ>">
+							<p:outputLabel value="#{grupo.qtdFrequencia}" />
+						</p:column>
+
+						<p:column style="width:50px;text-align: center">
+							<p:commandButton update=":formCADU:pnlCadPrograma"
+								icon="ui-icon-check" title="Selecionar"
+								onclick="PF('dlgConsuGrupos').hide();"
+								action="#{ProgramaController.prog.addGrupoLista()}">
+								<f:setPropertyActionListener value="#{grupo}"
+									target="#{ProgramaController.prog.grupoParaAdd}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:dialog>
 		</div>
 
 	</ui:define>

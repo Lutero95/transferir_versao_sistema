@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,11 @@ import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
-public class PacienteController {
+public class PacienteController implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer abaAtiva = 0;
 	private Integer SelecionadoRaca;
 	private String tipoBuscar;

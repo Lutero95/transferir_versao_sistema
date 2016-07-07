@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,12 @@ import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
-public class AgendaController {
+public class AgendaController implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private AgendaBean agenda;
 

@@ -14,19 +14,16 @@ public class ProgramaBean {
 	private List<GrupoBean> grupoNovo;
 	
 	public ProgramaBean(){
+		System.out.println("CONTR");
 		this.grupo = new ArrayList<GrupoBean>();
-		this.grupoRmv = new GrupoBean();
+		this.grupoRmv = null;
+		this.grupoParaAdd = null;
 		this.grupoNovo = new ArrayList<GrupoBean>();
 		this.idPrograma = null;
 		this.descPrograma = new String();
 		this.codFederal = null;
 	}
 	
-	public ProgramaBean(Integer idPrograma, String descPrograma, Double codFederal) {
-		this.idPrograma = idPrograma;
-		this.descPrograma = descPrograma;
-		this.codFederal = codFederal;
-	}
 
 	public Integer getIdPrograma() {
 		return idPrograma;
@@ -90,6 +87,7 @@ public class ProgramaBean {
 	}
 	
 	public void removeGrupoLista(){
+		System.out.println("RMV");
 		this.grupo.remove(this.grupoRmv);
 	}
 }

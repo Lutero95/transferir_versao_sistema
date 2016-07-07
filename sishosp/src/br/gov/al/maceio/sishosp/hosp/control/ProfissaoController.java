@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,100 +17,102 @@ import br.gov.al.maceio.sishosp.hosp.dao.ProfissaoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 
+public class ProfissaoController implements Serializable {
 
-
-public class ProfissaoController {
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ProfissaoBean profissao;
 	private Integer abaAtiva = 0;
-	//BUSCAS
+	// BUSCAS
 	private String cabecalho;
-		private String tipo;
-		private Integer tipoBuscaProfissao;
-		private String campoBuscaProfissao;
-		private String statusProfissao;
-	
+	private String tipo;
+	private Integer tipoBuscaProfissao;
+	private String campoBuscaProfissao;
+	private String statusProfissao;
+
 	private List<ProfissaoBean> listaProfissoes;
-	
-	public ProfissaoController(){
-		
+
+	public ProfissaoController() {
+
 		profissao = new ProfissaoBean();
-		
+
 		listaProfissoes = new ArrayList<>();
 		listaProfissoes = null;
-		
-		 //BUSCA
-		tipo ="";
+
+		// BUSCA
+		tipo = "";
 		tipoBuscaProfissao = 1;
 		campoBuscaProfissao = "";
 		statusProfissao = "P";
 	}
-	    
+
 	public void gravarProfissao() throws ProjetoException {
-		ProfissaoDAO udao = new ProfissaoDAO();    
-                boolean cadastrou = udao.cadastrar(profissao);
-                listaProfissoes = null;
-                if(cadastrou == true) {
-                	limparDados();
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Profissao cadastrado com sucesso!", "Sucesso");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
-                 listaProfissoes = null;
-                    
+		ProfissaoDAO udao = new ProfissaoDAO();
+		boolean cadastrou = udao.cadastrar(profissao);
+		listaProfissoes = null;
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Profissao cadastrado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaProfissoes = null;
 
-                } else {
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Ocorreu um erro durante o cadastro!", "Erro");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
- 
-                }
-            
-    }
-	
+		}
+
+	}
+
 	public String alterarProfissao() throws ProjetoException {
 
 		ProfissaoDAO rdao = new ProfissaoDAO();
-         boolean alterou = rdao.alterar(profissao);
-         listaProfissoes = null;
-         if(alterou == true) {
-        	 limparDados();
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                 "Profissao alterado com sucesso!", "Sucesso");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true";
+		boolean alterou = rdao.alterar(profissao);
+		listaProfissoes = null;
+		if (alterou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Profissao alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true";
 
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         } else {
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                 "Ocorreu um erro durante o cadastro!", "Erro");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         }
-		
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		}
+
 	}
-	
+
 	public void excluirProfissao() throws ProjetoException {
 		ProfissaoDAO udao = new ProfissaoDAO();
 
-        boolean excluio = udao.excluir(profissao);
-        
-        if(excluio == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Profissao excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaProfissoes = null;
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+		boolean excluio = udao.excluir(profissao);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
+		if (excluio == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Profissao excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaProfissoes = null;
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
 	}
-	
+
 	public void buscarProfissoes() {
 
 		List<ProfissaoBean> listaAux = null;
@@ -117,7 +120,8 @@ public class ProfissaoController {
 
 		ProfissaoDAO adao = new ProfissaoDAO();
 
-		listaAux = adao.buscarTipoProfissao(campoBuscaProfissao,tipoBuscaProfissao);
+		listaAux = adao.buscarTipoProfissao(campoBuscaProfissao,
+				tipoBuscaProfissao);
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -130,18 +134,17 @@ public class ProfissaoController {
 		}
 
 	}
-	
-	
+
 	public void limparBuscaDados() {
 		tipoBuscaProfissao = 1;
 		campoBuscaProfissao = "";
 		statusProfissao = "P";
 		listaProfissoes = null;
 	}
-	
-	public void limparDados(){
+
+	public void limparDados() {
 		profissao = new ProfissaoBean();
-		
+
 	}
 
 	public ProfissaoBean getProfissao() {
@@ -205,12 +208,11 @@ public class ProfissaoController {
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
 	}
-	
-	
+
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE PROFISSÃO";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR PROFISSÃO";
 		}
 		return cabecalho;
@@ -219,5 +221,5 @@ public class ProfissaoController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
-	    
+
 }

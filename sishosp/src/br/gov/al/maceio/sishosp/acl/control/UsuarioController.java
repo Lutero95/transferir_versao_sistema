@@ -5,6 +5,7 @@ import br.gov.al.maceio.sishosp.acl.model.Permissoes;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -41,8 +42,9 @@ import org.primefaces.model.menu.MenuModel;
  * @author Thulio e Thiago
  * @since 06/04/2016
  */
-public class UsuarioController {
+public class UsuarioController implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private UsuarioBean usuario;
 	private UsuarioBean novousuario, editausuario;
 	private UIData id_tupla;
@@ -140,7 +142,6 @@ public class UsuarioController {
 				.put("expired", "N");
 		permissaoProcessos = "false";
 
-		
 		UsuarioDAO udao = new UsuarioDAO();
 		System.out.println("NOME USER: " + usuario.getLogin());
 		usuarioLogado = udao.autenticarUsuario(usuario);
@@ -152,8 +153,8 @@ public class UsuarioController {
 
 			return "";
 		} else {
-			FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-            .put("obj_usuario", usuarioLogado);	
+			FacesContext.getCurrentInstance().getExternalContext()
+					.getSessionMap().put("obj_usuario", usuarioLogado);
 			return "/pages/comum/selecaoSistema.faces?faces-redirect=true";
 
 		}
@@ -616,5 +617,5 @@ public class UsuarioController {
 	public void setRendDlgSetores(Boolean rendDlgSetores) {
 		this.rendDlgSetores = rendDlgSetores;
 	}
-	
+
 }

@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -14,8 +15,12 @@ import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
-public class TipoAtendimentoController {
+public class TipoAtendimentoController implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private TipoAtendimentoBean tipo;
 	private List<TipoAtendimentoBean> listaTipos;
 	private Integer tipoBuscar;

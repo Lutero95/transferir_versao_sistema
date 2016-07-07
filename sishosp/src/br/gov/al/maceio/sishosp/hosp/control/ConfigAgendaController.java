@@ -46,7 +46,7 @@ public class ConfigAgendaController implements Serializable {
 	private Integer tipoBusca;
 
 	private String tipo;
-	
+
 	private String opcao;
 
 	public ConfigAgendaController() {
@@ -103,14 +103,15 @@ public class ConfigAgendaController implements Serializable {
 	}
 
 	public List<ConfigAgendaParte1Bean> getListaHorarios() {
-		if(listaHorarios==null){
+		if (listaHorarios == null) {
 			return listaHorarios;
-		}else{
-			if(this.confParte1.getProfissional() == null){
+		} else {
+			if (this.confParte1.getProfissional() == null) {
 				System.out.println("AHSUDHASDUHASIUHDUAISUHDIUAS");
 			}
 			if (this.confParte1.getProfissional().getIdProfissional() != null) {
-				this.listaHorarios = cDao.listarHorariosPorIDProfissional(this.confParte1
+				this.listaHorarios = cDao
+						.listarHorariosPorIDProfissional(this.confParte1
 								.getProfissional().getIdProfissional());
 			}
 		}
@@ -120,14 +121,15 @@ public class ConfigAgendaController implements Serializable {
 	public void setListaHorarios(List<ConfigAgendaParte1Bean> listaHorarios) {
 		this.listaHorarios = listaHorarios;
 	}
-	
+
 	public List<ConfigAgendaParte1Bean> getListaHorariosEquipe() {
-		if(listaHorariosEquipe==null){
+		if (listaHorariosEquipe == null) {
 			return listaHorariosEquipe;
-		}else{
+		} else {
 			if (this.confParte1.getEquipe().getCodEquipe() != null) {
-				this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(this.confParte1
-								.getEquipe().getCodEquipe());
+				this.listaHorariosEquipe = cDao
+						.listarHorariosPorIDEquipe(this.confParte1.getEquipe()
+								.getCodEquipe());
 			}
 		}
 		return listaHorariosEquipe;
@@ -150,7 +152,7 @@ public class ConfigAgendaController implements Serializable {
 	}
 
 	public List<EquipeBean> getListaEquipes() {
-		if(this.listaEquipes == null){
+		if (this.listaEquipes == null) {
 			this.listaEquipes = eDao.listarEquipe();
 		}
 		return listaEquipes;
@@ -183,7 +185,7 @@ public class ConfigAgendaController implements Serializable {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-	
+
 	public String getOpcao() {
 		return opcao;
 	}
@@ -192,7 +194,8 @@ public class ConfigAgendaController implements Serializable {
 		this.opcao = opcao;
 	}
 
-	public List<ConfigAgendaParte2Bean> getListaTiposEditar() throws ProjetoException {
+	public List<ConfigAgendaParte2Bean> getListaTiposEditar()
+			throws ProjetoException {
 		if (this.confParte1.getIdConfiAgenda() != null) {
 			this.listaTiposEditar = cDao.listarTiposAgendPorId(this.confParte1
 					.getIdConfiAgenda());
@@ -216,7 +219,7 @@ public class ConfigAgendaController implements Serializable {
 			this.listaHorarios = null;
 		}
 	}
-	
+
 	public void buscarEquipe() {
 		if (this.tipoBusca == 0) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -265,8 +268,8 @@ public class ConfigAgendaController implements Serializable {
 				return;
 			}
 		}
-		
-		if(this.opcao.equals("1")){
+
+		if (this.opcao.equals("1")) {
 			this.confParte1.setAno(0);
 			this.confParte1.setMes(0);
 		}
@@ -285,15 +288,15 @@ public class ConfigAgendaController implements Serializable {
 
 		limparDados();
 	}
-	
+
 	public void gravarConfigAgendaEquipe() throws SQLException {
 		boolean ok = false;
-		
-		if(this.opcao.equals("1")){
+
+		if (this.opcao.equals("1")) {
 			this.confParte1.setAno(0);
 			this.confParte1.setMes(0);
 		}
-		
+
 		ok = cDao.gravarConfigAgendaEquipe(confParte1, confParte2, listaTipos);
 
 		if (ok) {
@@ -308,7 +311,7 @@ public class ConfigAgendaController implements Serializable {
 
 		limparDados();
 	}
-	
+
 	public void alterarConfigAgenda() throws SQLException {
 		boolean ok = false;
 		int somatorio = 0;
@@ -342,11 +345,12 @@ public class ConfigAgendaController implements Serializable {
 
 		limparDados();
 	}
-	
+
 	public void alterarConfigAgendaEquipe() throws SQLException {
 		boolean ok = false;
 
-		ok = cDao.alterarConfigAgendaEquipe(confParte1, confParte2, listaTiposEditar);
+		ok = cDao.alterarConfigAgendaEquipe(confParte1, confParte2,
+				listaTiposEditar);
 
 		if (ok) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -380,7 +384,7 @@ public class ConfigAgendaController implements Serializable {
 		}
 		this.listaHorarios = cDao.listarHorarios();
 	}
-	
+
 	public void excluirConfigEquipe() throws ProjetoException {
 		boolean ok = cDao.excluirConfigEquipe(confParte1);
 
@@ -410,14 +414,15 @@ public class ConfigAgendaController implements Serializable {
 	public void onRowUnselect(UnselectEvent event) {
 		this.listaHorarios = null;
 	}
-	
+
 	public void onRowSelectEquipe(SelectEvent event) {
 		EquipeBean equipe = (EquipeBean) event.getObject();
-		this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe.getCodEquipe());
+		this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe
+				.getCodEquipe());
 	}
 
 	public void onRowUnselectEquipe(UnselectEvent event) {
 		this.listaHorariosEquipe = null;
 	}
-	
+
 }

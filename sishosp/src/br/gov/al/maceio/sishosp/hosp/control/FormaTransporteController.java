@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,104 +13,104 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.FormaTransporteDAO;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 
+public class FormaTransporteController implements Serializable{
 
-
-
-
-public class FormaTransporteController {
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer abaAtiva = 0;
 	private FormaTransporteBean transporte;
 	private String cabecalho;
-	
-	//BUSCAS
+
+	// BUSCAS
 	private String tipo;
 	private Integer tipoBuscaTransporte;
 	private String campoBuscaTransporte;
 	private String statusTransporte;
-	
+
 	private List<FormaTransporteBean> listaTransporte;
-	
-	public FormaTransporteController(){
+
+	public FormaTransporteController() {
 		transporte = new FormaTransporteBean();
-		
-		 //BUSCA
-		tipo ="";
+
+		// BUSCA
+		tipo = "";
 		tipoBuscaTransporte = 1;
 		campoBuscaTransporte = "";
 		statusTransporte = "P";
-		
+
 		listaTransporte = new ArrayList<>();
 		listaTransporte = null;
-		
-		
+
 	}
-	
+
 	public void gravarTransporte() throws ProjetoException {
-		FormaTransporteDAO udao = new FormaTransporteDAO();    
-                boolean cadastrou = udao.cadastrar(transporte);
+		FormaTransporteDAO udao = new FormaTransporteDAO();
+		boolean cadastrou = udao.cadastrar(transporte);
 
-                if(cadastrou == true) {
-                	limparDados();
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Transporte cadastrado com sucesso!", "Sucesso");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Transporte cadastrado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-                    listaTransporte = null;
+			listaTransporte = null;
 
-                } else {
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Ocorreu um erro durante o cadastro!", "Erro");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
- 
-                }
-            
-    }
-	
+		}
+
+	}
+
 	public String alterarTransporte() throws ProjetoException {
 
 		FormaTransporteDAO rdao = new FormaTransporteDAO();
-         boolean alterou = rdao.alterar(transporte);
+		boolean alterou = rdao.alterar(transporte);
 
-         if(alterou == true) {
-        	 limparDados();
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                 "Transporte alterado com sucesso!", "Sucesso");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true";
+		if (alterou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Transporte alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true";
 
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         } else {
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                 "Ocorreu um erro durante o cadastro!", "Erro");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         }
-		
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		}
+
 	}
-	
+
 	public void excluirTransporte() throws ProjetoException {
 		FormaTransporteDAO udao = new FormaTransporteDAO();
 
-        boolean excluio = udao.excluir(transporte);
+		boolean excluio = udao.excluir(transporte);
 
-        if(excluio == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Transporte excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaTransporte = null;
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+		if (excluio == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Transporte excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaTransporte = null;
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
 	}
-	
+
 	public void buscarTransportes() {
 
 		List<FormaTransporteBean> listaAux = null;
@@ -117,7 +118,8 @@ public class FormaTransporteController {
 
 		FormaTransporteDAO adao = new FormaTransporteDAO();
 
-		listaAux = adao.buscarTipoTransporte(campoBuscaTransporte,tipoBuscaTransporte);
+		listaAux = adao.buscarTipoTransporte(campoBuscaTransporte,
+				tipoBuscaTransporte);
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -130,17 +132,17 @@ public class FormaTransporteController {
 		}
 
 	}
-	
+
 	public void limparBuscaDados() {
 		tipoBuscaTransporte = 1;
 		campoBuscaTransporte = "";
 		statusTransporte = "P";
 		listaTransporte = null;
 	}
-	
-	public void limparDados(){
+
+	public void limparDados() {
 		transporte = new FormaTransporteBean();
-		
+
 	}
 
 	public FormaTransporteBean getTransporte() {
@@ -204,11 +206,11 @@ public class FormaTransporteController {
 	public void setListaTransporte(List<FormaTransporteBean> listaTransporte) {
 		this.listaTransporte = listaTransporte;
 	}
-	
+
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE TRANSPORTE";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR TRANSPORTE";
 		}
 		return cabecalho;
@@ -218,6 +220,4 @@ public class FormaTransporteController {
 		this.cabecalho = cabecalho;
 	}
 
-    
-	    
 }

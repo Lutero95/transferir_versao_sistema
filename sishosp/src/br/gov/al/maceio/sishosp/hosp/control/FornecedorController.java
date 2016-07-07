@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,101 +16,102 @@ import br.gov.al.maceio.sishosp.hosp.dao.FornecedorDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 
+public class FornecedorController implements Serializable {
 
-
-
-public class FornecedorController {
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer abaAtiva = 0;
 	private FornecedorBean fornecedor;
 	private String cabecalho;
-	
-	
-	
-	//BUSCAS
+
+	// BUSCAS
 	private String tipo;
 	private Integer tipoBuscaFornecedor;
 	private String campoBuscaFornecedor;
 	private String statusFornecedor;
 	private List<FornecedorBean> listaFornecedor;
-	public FornecedorController(){
-		
+
+	public FornecedorController() {
+
 		fornecedor = new FornecedorBean();
-		
-		 //BUSCA
-		tipo ="";
+
+		// BUSCA
+		tipo = "";
 		tipoBuscaFornecedor = 1;
 		campoBuscaFornecedor = "";
 		statusFornecedor = "P";
-		
-		 listaFornecedor = new ArrayList<>();
-		 listaFornecedor = null;
+
+		listaFornecedor = new ArrayList<>();
+		listaFornecedor = null;
 	}
-	
+
 	public void gravarFornecedor() throws ProjetoException, SQLException {
-		FornecedorDAO udao = new FornecedorDAO();    
-                boolean cadastrou = udao.gravarFornecedor(fornecedor);
+		FornecedorDAO udao = new FornecedorDAO();
+		boolean cadastrou = udao.gravarFornecedor(fornecedor);
 
-                if(cadastrou == true) {
-                	limparDados();
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Fornecedor cadastrado com sucesso!", "Sucesso");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Fornecedor cadastrado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-                    listaFornecedor = null;
+			listaFornecedor = null;
 
-                } else {
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Ocorreu um erro durante o cadastro!", "Erro");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
- 
-                }
-            
-    }
-	
+		}
+
+	}
+
 	public String alterarFornecedor() throws ProjetoException {
 
 		FornecedorDAO rdao = new FornecedorDAO();
-         boolean alterou = rdao.alterarFornecedor(fornecedor);
+		boolean alterou = rdao.alterarFornecedor(fornecedor);
 
-         if(alterou == true) {
-             limparDados();
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                 "Fornecedor alterado com sucesso!", "Sucesso");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "/pages/sishosp/gerenciarFornecedor.faces?faces-redirect=true";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         } else {
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                 "Ocorreu um erro durante o cadastro!", "Erro");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         }
-		
+		if (alterou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Fornecedor alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "/pages/sishosp/gerenciarFornecedor.faces?faces-redirect=true";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		}
+
 	}
-	
+
 	public void excluirFornecedor() throws ProjetoException {
 		FornecedorDAO udao = new FornecedorDAO();
 
-        boolean excluio = udao.excluirFornecedor(fornecedor);
+		boolean excluio = udao.excluirFornecedor(fornecedor);
 
-        if(excluio == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Fornecedor excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaFornecedor = null;
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+		if (excluio == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Fornecedor excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaFornecedor = null;
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
 	}
-	
+
 	public void buscarFornecedores() {
 
 		List<FornecedorBean> listaAux = null;
@@ -117,7 +119,8 @@ public class FornecedorController {
 
 		FornecedorDAO adao = new FornecedorDAO();
 
-		listaAux = adao.listarFornecedorBusca(campoBuscaFornecedor,tipoBuscaFornecedor);
+		listaAux = adao.listarFornecedorBusca(campoBuscaFornecedor,
+				tipoBuscaFornecedor);
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -130,7 +133,7 @@ public class FornecedorController {
 		}
 
 	}
-	
+
 	public void limparBuscaDados() {
 		tipoBuscaFornecedor = 1;
 		campoBuscaFornecedor = "";
@@ -138,11 +141,10 @@ public class FornecedorController {
 		listaFornecedor = null;
 	}
 
-	public void limparDados(){
+	public void limparDados() {
 		fornecedor = new FornecedorBean();
-		
+
 	}
-	
 
 	public Integer getAbaAtiva() {
 		return abaAtiva;
@@ -206,11 +208,10 @@ public class FornecedorController {
 		this.listaFornecedor = listaFornecedor;
 	}
 
-	
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE FORNECEDOR";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR FORNECEDOR";
 		}
 		return cabecalho;
@@ -219,7 +220,7 @@ public class FornecedorController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
-	    
+
 	public List<FornecedorBean> listaFornecedorAutoComplete(String query)
 			throws ProjetoException {
 		FornecedorDAO cDao = new FornecedorDAO();

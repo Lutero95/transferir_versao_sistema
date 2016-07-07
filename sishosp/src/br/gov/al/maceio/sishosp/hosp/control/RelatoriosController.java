@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -25,8 +26,12 @@ import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
-public class RelatoriosController {
+public class RelatoriosController implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ProgramaBean programa;
 	private GrupoBean grupo;
 	private TipoAtendimentoBean tipo;

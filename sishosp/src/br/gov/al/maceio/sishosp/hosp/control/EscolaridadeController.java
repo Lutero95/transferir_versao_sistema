@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,101 +13,103 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaridadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 
+public class EscolaridadeController implements Serializable {
 
-
-public class EscolaridadeController {
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer abaAtiva = 0;
 	private EscolaridadeBean escolaridade;
-	
+
 	private String cabecalho;
-	
-	
-	
-	//BUSCAS
+
+	// BUSCAS
 	private String tipo;
 	private Integer tipoBuscaEscolaridade;
 	private String campoBuscaEscolaridade;
 	private String statusEscolaridade;
 	private List<EscolaridadeBean> listaEscolaridade;
-	public EscolaridadeController(){
-		
+
+	public EscolaridadeController() {
+
 		escolaridade = new EscolaridadeBean();
-		
-		 //BUSCA
-		tipo ="";
+
+		// BUSCA
+		tipo = "";
 		tipoBuscaEscolaridade = 1;
 		campoBuscaEscolaridade = "";
 		statusEscolaridade = "P";
-		
-		 listaEscolaridade = new ArrayList<>();
-		 listaEscolaridade = null;
+
+		listaEscolaridade = new ArrayList<>();
+		listaEscolaridade = null;
 	}
-	
+
 	public void gravarEscolaridade() throws ProjetoException {
-		EscolaridadeDAO udao = new EscolaridadeDAO();    
-                boolean cadastrou = udao.cadastrar(escolaridade);
+		EscolaridadeDAO udao = new EscolaridadeDAO();
+		boolean cadastrou = udao.cadastrar(escolaridade);
 
-                if(cadastrou == true) {
-                	limparDados();
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Escolaridade cadastrado com sucesso!", "Sucesso");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Escolaridade cadastrado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-                    listaEscolaridade = null;
+			listaEscolaridade = null;
 
-                } else {
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Ocorreu um erro durante o cadastro!", "Erro");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
- 
-                }
-            
-    }
-	
+		}
+
+	}
+
 	public String alterarEscolaridade() throws ProjetoException {
 
 		EscolaridadeDAO rdao = new EscolaridadeDAO();
-         boolean alterou = rdao.alterar(escolaridade);
+		boolean alterou = rdao.alterar(escolaridade);
 
-         if(alterou == true) {
-             limparDados();
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                 "Escolaridade alterado com sucesso!", "Sucesso");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         } else {
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                 "Ocorreu um erro durante o cadastro!", "Erro");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         }
-		
+		if (alterou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Escolaridade alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		}
+
 	}
-	
+
 	public void excluirEscolaridade() throws ProjetoException {
 		EscolaridadeDAO udao = new EscolaridadeDAO();
 
-        boolean excluio = udao.excluir(escolaridade);
+		boolean excluio = udao.excluir(escolaridade);
 
-        if(excluio == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Encaminhado excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaEscolaridade = null;
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+		if (excluio == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Encaminhado excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaEscolaridade = null;
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
 	}
-	
+
 	public void buscarEscolaridades() {
 
 		List<EscolaridadeBean> listaAux = null;
@@ -114,7 +117,8 @@ public class EscolaridadeController {
 
 		EscolaridadeDAO adao = new EscolaridadeDAO();
 
-		listaAux = adao.buscarTipoEscolaridade(campoBuscaEscolaridade,tipoBuscaEscolaridade);
+		listaAux = adao.buscarTipoEscolaridade(campoBuscaEscolaridade,
+				tipoBuscaEscolaridade);
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -127,7 +131,7 @@ public class EscolaridadeController {
 		}
 
 	}
-	
+
 	public void limparBuscaDados() {
 		tipoBuscaEscolaridade = 1;
 		campoBuscaEscolaridade = "";
@@ -135,10 +139,11 @@ public class EscolaridadeController {
 		listaEscolaridade = null;
 	}
 
-	public void limparDados(){
+	public void limparDados() {
 		escolaridade = new EscolaridadeBean();
-		
+
 	}
+
 	public EscolaridadeBean getEscolaridade() {
 		return escolaridade;
 	}
@@ -154,8 +159,6 @@ public class EscolaridadeController {
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
 	}
-
-
 
 	public String getTipo() {
 		return tipo;
@@ -203,11 +206,10 @@ public class EscolaridadeController {
 		this.listaEscolaridade = listaEscolaridade;
 	}
 
-	
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE ESCOLARIDADE";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR ESCOLARIDADE";
 		}
 		return cabecalho;
@@ -216,6 +218,5 @@ public class EscolaridadeController {
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
-	    
-	    
+
 }

@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -12,7 +13,12 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
-public class ProfissionalController {
+public class ProfissionalController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private ProfissionalBean profissional;
 
@@ -107,7 +113,7 @@ public class ProfissionalController {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
-		
+
 		boolean cadastrou = pDao.gravarProfissional(profissional);
 
 		if (cadastrou == true) {
@@ -161,9 +167,9 @@ public class ProfissionalController {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
-		
+
 		boolean alterou = pDao.alterarProfissional(profissional);
-		
+
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Profissional alterado com sucesso!", "Sucesso");

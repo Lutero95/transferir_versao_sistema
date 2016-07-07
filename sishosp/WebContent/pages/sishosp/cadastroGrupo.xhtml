@@ -57,6 +57,43 @@
 						</div>
 					</div>
 
+					<div class="form-group">
+						<h:outputLabel for="inputg" value="Equipe: "
+							styleClass="col-sm-3 control-label" />
+						<p:commandButton style="position:absolute; top:195px; left:282px;"
+							onclick="PF('dlgConsultEquipes').show();" icon="ui-icon-plus" />
+						<div class="col-sm-6">
+
+							<p:dataTable emptyMessage="Sem Dados"
+								styleClass="table table-hover" id="tabela"
+								style="margin-top:10px;"
+								value="#{GrupoController.grupo.equipes}" var="tab"
+								paginator="true" paginatorPosition="bottom" rows="12"
+								resizableColumns="true">
+
+								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
+									<h:outputText value="#{tab.codEquipe}" />
+								</p:column>
+
+								<p:column headerText="Equipe" style="font-weight:bold;">
+									<h:outputText value="#{tab.descEquipe}" />
+								</p:column>
+
+								<p:column headerText="Ação">
+									<center>
+										<p:commandButton
+											action="#{GrupoController.grupo.rmvEquipe()}"
+											icon="ui-icon-trash" update=":formCADU:pnlCadGrupo">
+											<f:setPropertyActionListener value="#{tab}"
+												target="#{GrupoController.grupo.equipeRmv}" />
+										</p:commandButton>
+									</center>
+								</p:column>
+
+							</p:dataTable>
+						</div>
+					</div>
+
 					<p:separator></p:separator>
 					<!-- FIM DO FORMULARIO -->
 					<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
@@ -74,9 +111,31 @@
 
 				</p:panel>
 
-
-
 			</h:form>
+			<p:dialog header="Consulta Equipes" widgetVar="dlgConsultEquipes"
+				modal="true" width="550px">
+				<h:form id="formConsuEquipe">
+					<p:dataTable value="#{EquipeController.listaEquipe}" id="dtEquipe"
+						resizableColumns="true" var="equipe"
+						emptyMessage="Não existe nenhuma equipe cadastrada!">
+						<p:column headerText="CÓD.">
+							<p:outputLabel value="#{equipe.codEquipe}" />
+						</p:column>
+						<p:column headerText="EQUIPE">
+							<p:outputLabel value="#{equipe.descEquipe}" />
+						</p:column>
+						<p:column style="width:50px;text-align: center">
+							<p:commandButton update=":formCADU:pnlCadGrupo"
+								icon="ui-icon-check" title="Selecionar"
+								onclick="PF('dlgConsultEquipes').hide();"
+								action="#{GrupoController.grupo.addEquipe()}">
+									<f:setPropertyActionListener value="#{equipe}"
+										target="#{GrupoController.grupo.equipeAdd}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:dialog>
 		</div>
 
 	</ui:define>
