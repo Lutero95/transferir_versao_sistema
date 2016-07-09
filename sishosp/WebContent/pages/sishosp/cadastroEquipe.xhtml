@@ -67,11 +67,11 @@
 										
 										<p:column headerText="Ação">
 											<center>
-												<p:commandButton
+												<p:commandButton process="@this"
 													action="#{EquipeController.equipe.removeProfList()}"
 													icon="ui-icon-trash" update=":formCADU:pnlCadEquipe">
 													<f:setPropertyActionListener value="#{tab}"
-														target="#{EquipeController.equipe.profRmv}" />
+														target="#{EquipeController.equipe.profAdd}" />
 												</p:commandButton>
 											</center>
 										</p:column>
@@ -116,7 +116,7 @@
 							</p:column>
 
 							<p:column style="width:50px;text-align: center">
-								<p:commandButton update=":formCADU:pnlCadEquipe"
+								<p:commandButton process="@this" update=":formCADU:pnlCadEquipe"
 									icon="ui-icon-check" title="Selecionar"
 									action="#{EquipeController.equipe.addProfList()}"
 									onclick="PF('dlgConsuProfE').hide();">

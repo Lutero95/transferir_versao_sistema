@@ -81,6 +81,10 @@ public class TipoAtendimentoBean {
 	public void addGrupoLista(){
 		this.grupo.add(grupoParaAdd);
 	}
+	
+	public void rmvGrupoLista(){
+		this.grupo.remove(grupoParaAdd);
+	}
 
 	public List<GrupoBean> getGrupoNovo() {
 		this.grupoNovo = this.grupo;

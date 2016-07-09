@@ -11,13 +11,11 @@ public class EquipeBean {
 	private List<ProfissionalBean> profissionais;
 	private List<ProfissionalBean> profissionaisNovo;
 	private ProfissionalBean profAdd;
-	private ProfissionalBean profRmv;
 
 	public EquipeBean() {
 		this.profissionais = new ArrayList<ProfissionalBean>();
 		this.profissionaisNovo = new ArrayList<ProfissionalBean>();
 		this.profAdd = new ProfissionalBean();
-		this.profRmv = new ProfissionalBean();
 
 	}
 
@@ -66,16 +64,8 @@ public class EquipeBean {
 		return profAdd;
 	}
 
-	public ProfissionalBean getProfRmv() {
-		return profRmv;
-	}
-
 	public void setProfAdd(ProfissionalBean profAdd) {
 		this.profAdd = profAdd;
-	}
-
-	public void setProfRmv(ProfissionalBean profRmv) {
-		this.profRmv = profRmv;
 	}
 
 	public void addProfList() {
@@ -83,6 +73,6 @@ public class EquipeBean {
 	}
 
 	public void removeProfList() {
-		this.profissionais.remove(this.profRmv);
+		this.profissionais.remove(this.profAdd);
 	}
 }

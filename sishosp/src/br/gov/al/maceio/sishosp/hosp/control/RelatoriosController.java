@@ -26,7 +26,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
-public class RelatoriosController implements Serializable{
+public class RelatoriosController implements Serializable {
 
 	/**
 	 * 
@@ -324,13 +324,6 @@ public class RelatoriosController implements Serializable{
 			return;
 		}
 
-		if (!verificarMesesIguais(this.dataInicial, this.dataFinal)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"As datas devem possuir o mesmo mês.", "Datas Inválidas!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = caminho + "agendamentosProfissional.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -340,6 +333,39 @@ public class RelatoriosController implements Serializable{
 		map.put("dt_inicial", this.dataInicial);
 		map.put("dt_final", this.dataFinal);
 		map.put("cod_tipo_atend", this.tipo.getIdTipo());
+		if (this.prof == null) {
+			map.put("cod_medico", null);
+		} else {
+			map.put("cod_medico", this.prof.getIdProfissional());
+		}
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
+				+ File.separator);
+
+		this.executeReport(relatorio, map, "relatorio.pdf");
+		limparDados();
+	}
+
+	public void gerarAtendimentosPorProfissional() throws IOException,
+			ParseException {
+
+		if (this.dataFinal == null || this.dataInicial == null
+				|| this.programa == null ) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Datas e programa devem ser preenchidos.",
+					"Campos inválidos!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = caminho + "atendPorProfissional.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("img_adefal",
+				this.getServleContext().getRealPath(
+						"/WEB-INF/relatorios/adefal.png"));
+		map.put("dt_inicial", this.dataInicial);
+		map.put("dt_final", this.dataFinal);
+		map.put("cod_programa", this.programa.getIdPrograma());
 		if (this.prof == null) {
 			map.put("cod_medico", null);
 		} else {
@@ -429,10 +455,10 @@ public class RelatoriosController implements Serializable{
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
 		if (this.dataDia.equals("DS")) {
-			if(this.mes == null || this.ano == null){
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"Mês e Ano devem ser preenchidos.",
-						"Campos inválidos!");
+			if (this.mes == null || this.ano == null) {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Mês e Ano devem ser preenchidos.", "Campos inválidos!");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				return;
 			}
@@ -444,8 +470,9 @@ public class RelatoriosController implements Serializable{
 			map.put("mes", this.mes);
 			map.put("ano", this.ano);
 		} else {
-			if(this.dataEspec == null){
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+			if (this.dataEspec == null) {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
 						"Data específica deve ser preenchida.",
 						"Campo inválido!");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -456,12 +483,12 @@ public class RelatoriosController implements Serializable{
 		}
 		map.put("cod_programa", this.programa.getIdPrograma());
 		map.put("cod_grupo", this.grupo.getIdGrupo());
-		
+
 		if (this.prof == null)
 			map.put("cod_medico", null);
 		else
 			map.put("cod_medico", this.prof.getIdProfissional());
-		
+
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
 		this.executeReport(relatorio, map, "relatorio.pdf");

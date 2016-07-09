@@ -15,7 +15,6 @@ public class GrupoBean {
 
 	public GrupoBean() {
 		this.idGrupo = null;
-		this.descGrupo = new String();
 		this.qtdFrequencia = 1;
 		this.equipes = new ArrayList<EquipeBean>();
 		this.equipesNovo = new ArrayList<EquipeBean>();
@@ -72,9 +71,6 @@ public class GrupoBean {
 	}
 
 	public EquipeBean getEquipeAdd() {
-		if(this.equipeAdd == null){
-			this.equipeAdd = new EquipeBean();
-		}
 		return equipeAdd;
 	}
 
@@ -87,7 +83,6 @@ public class GrupoBean {
 	}
 
 	public void rmvEquipe() {
-		System.out.println("VAI REMOVER");
 		this.equipes.remove(this.equipeAdd);
 	}
 }

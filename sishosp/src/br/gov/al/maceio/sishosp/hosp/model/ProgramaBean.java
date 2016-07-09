@@ -14,7 +14,6 @@ public class ProgramaBean {
 	private List<GrupoBean> grupoNovo;
 	
 	public ProgramaBean(){
-		System.out.println("CONTR");
 		this.grupo = new ArrayList<GrupoBean>();
 		this.grupoRmv = null;
 		this.grupoParaAdd = null;
@@ -83,8 +82,8 @@ public class ProgramaBean {
 	}
 
 	public void addGrupoLista(){
-		
-		this.grupo.add(grupoParaAdd);
+		System.out.println("ADD");
+		this.grupo.add(this.grupoParaAdd);
 	}
 	
 	public void removeGrupoLista(){

@@ -34,20 +34,21 @@
 							styleClass="col-sm-3 control-label" />
 						<div class="col-sm-6">
 							<h:inputText value="#{TipoAtendimentoController.tipo.descTipoAt}"
-								class="form-control" id="inputdesc" required="true" requiredMessage="Descrição obrigatória!"/>
+								class="form-control" id="inputdesc" required="true"
+								requiredMessage="Descrição obrigatória!" />
 
 						</div>
 					</div>
 					<div class="form-group">
 						<h:outputLabel for="inputg" value="Grupos: "
 							styleClass="col-sm-3 control-label" />
-						<p:commandButton style="position:absolute; top:130px; left:163px;"
+						<p:commandButton style="position:absolute; top:110px; left:280px;"
 							onclick="PF('dlgConsuGrupo').show();" icon="ui-icon-plus" />
 						<div class="col-sm-6">
 
 							<p:dataTable emptyMessage="Sem Dados"
 								styleClass="table table-hover" id="tabela"
-								style="margin-top:20px;"
+								style="margin-top:1px;"
 								value="#{TipoAtendimentoController.tipo.grupo}" var="tab"
 								paginator="true" paginatorPosition="bottom" rows="12"
 								resizableColumns="true">
@@ -58,6 +59,17 @@
 
 								<p:column headerText="Nome" style="font-weight:bold;">
 									<h:outputText value="#{tab.descGrupo}" />
+								</p:column>
+
+								<p:column headerText="Ação">
+									<center>
+										<p:commandButton process="@this"
+											action="#{TipoAtendimentoController.tipo.rmvGrupoLista()}"
+											icon="ui-icon-trash" update=":formCADU:pnlCadTiAt">
+											<f:setPropertyActionListener value="#{tab}"
+												target="#{TipoAtendimentoController.tipo.grupoParaAdd}" />
+										</p:commandButton>
+									</center>
 								</p:column>
 
 							</p:dataTable>
@@ -117,7 +129,7 @@
 							</p:column>
 
 							<p:column style="width:50px;text-align: center">
-								<p:commandButton update=":formCADU:pnlCadTiAt"
+								<p:commandButton process="@this" update=":formCADU:pnlCadTiAt"
 									icon="ui-icon-check" title="Selecionar"
 									onclick="PF('dlgConsuGrupo').hide();"
 									action="#{TipoAtendimentoController.tipo.addGrupoLista()}">

@@ -81,11 +81,12 @@
 
 								<p:column headerText="Ação">
 									<center>
-										<p:commandButton
+										<p:commandButton process="@this"
 											action="#{GrupoController.grupo.rmvEquipe()}"
-											icon="ui-icon-trash" update=":formCADU:pnlCadGrupo">
+											icon="ui-icon-trash" update=":formCADU:pnlCadGrupo"
+											>
 											<f:setPropertyActionListener value="#{tab}"
-												target="#{GrupoController.grupo.equipeRmv}" />
+												target="#{GrupoController.grupo.equipeAdd}" />
 										</p:commandButton>
 									</center>
 								</p:column>
