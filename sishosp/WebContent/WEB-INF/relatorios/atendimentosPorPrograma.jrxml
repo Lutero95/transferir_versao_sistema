@@ -22,7 +22,7 @@
 		<![CDATA[--QUERY ATENDIMENTOS POR PROGRAMA
 
 select
-a.codredeatende as cod_programa, p.descprograma as nome_programa,
+a.codprograma as cod_programa, p.descprograma as nome_programa,
 a.id_atendimento as cod_atendimento, pa.nome as nome_paciente,
 a.dtaatende as data_agend, m.descmedico as nome_medico,
 pr.nome as nome_proc, gp.codgrupo as codgrupo,
@@ -31,18 +31,18 @@ case when a1.situacao = 'A' then 'ATENDIDO'
     end as status
 from hosp.atendimentos a
 inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
-inner join hosp.programa p on (a.codredeatende = p.id_programa)
+inner join hosp.programa p on (a.codprograma = p.id_programa)
 inner join hosp.pacientes pa on (a.codpaciente = pa.id_paciente)
 inner join hosp.medicos m on (a.codmedico = m.id_medico)
 inner join hosp.proc pr on (a1.codprocedimento = pr.codproc)
-inner join hosp.grupo_programa gp on(a.codredeatende = gp.codprograma)
+inner join hosp.grupo_programa gp on(a.codprograma = gp.codprograma)
 where a.dtaatende between $P{dt_inicial} and $P{dt_final}
-and a.codredeatende = $P{cod_programa}
+and a.codprograma = $P{cod_programa}
 and(($P{cod_grupo} is not null and gp.codgrupo = $P{cod_grupo}) or ($P{cod_grupo} is null and gp.codgrupo > 0))
 and(($P{situacao} is not null and a1.situacao = $P{situacao}) or ($P{situacao} is null and a1.situacao <> ''))
-group by a.codredeatende, p.descprograma, a.id_atendimento, pa.nome,
+group by a.codprograma, p.descprograma, a.id_atendimento, pa.nome,
 a.dtaatende, m.descmedico,pr.nome, a1.situacao, gp.codgrupo
-order by a.codredeatende, a.dtaatende]]>
+order by a.codprograma, a.dtaatende]]>
 	</queryString>
 	<field name="cod_programa" class="java.lang.Integer"/>
 	<field name="nome_programa" class="java.lang.String"/>

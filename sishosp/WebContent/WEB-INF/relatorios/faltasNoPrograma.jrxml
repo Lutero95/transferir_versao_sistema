@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="faltasNoPrograma" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="29763565-9909-466f-9b91-3927dfe15c90">
+	<property name="ireport.zoom" value="1.2100000000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="dt_inicial" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dt_final" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cod_programa" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.codprograma codprograma, pr.descprograma nomeprograma, a.codpaciente codpaciente, p.nome nomepaciente, ta.desctipoatendimento nometipoat, count(*) qtd
+
+from hosp.atendimentos a
+join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento
+join hosp.pacientes p on a.codpaciente = p.id_paciente
+join hosp.programa pr on pr.id_programa = a.codprograma
+join hosp.tipoatendimento ta on ta.id = a.codtipoatendimento
+
+where a.dtaatende between $P{dt_inicial} and $P{dt_final} and a1.situacao is null
+and a.codprograma = $P{cod_programa}
+
+group by a.codprograma, a.codpaciente, p.nome, pr.descprograma, ta.desctipoatendimento
+
+order by a.codprograma, p.nome]]>
+	</queryString>
+	<field name="codprograma" class="java.lang.Integer"/>
+	<field name="nomeprograma" class="java.lang.String"/>
+	<field name="codpaciente" class="java.lang.Integer"/>
+	<field name="nomepaciente" class="java.lang.String"/>
+	<field name="nometipoat" class="java.lang.String"/>
+	<field name="qtd" class="java.lang.Long"/>
+	<group name="groupPrograma" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{codprograma}]]></groupExpression>
+		<groupHeader>
+			<band height="82">
+				<line>
+					<reportElement x="0" y="5" width="555" height="1" uuid="a1343748-9b4e-425d-9812-623dfee2db94"/>
+				</line>
+				<line>
+					<reportElement x="0" y="47" width="555" height="1" uuid="8e99caf7-ecf6-4f4e-a346-46b1d06723f3"/>
+				</line>
+				<staticText>
+					<reportElement x="0" y="6" width="100" height="20" uuid="048e1736-6f81-4537-9696-9d9c02ecb712"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cód.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="6" width="100" height="20" uuid="85befcca-dc11-4b61-894b-abaddd9cc601"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Programa]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="26" width="100" height="21" uuid="81b502b9-3e14-4f7f-81ce-c695263cf189"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{codprograma}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="100" y="26" width="455" height="22" uuid="80c85ead-3d60-4b0a-b1aa-94642a1468a3"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nomeprograma}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement x="0" y="61" width="555" height="20" uuid="bd938e4c-9708-4502-9c3d-65b0a0585053"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="2" y="61" width="69" height="20" uuid="56842e18-49dd-4eba-ad75-def9595426bc"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Pront.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="72" y="61" width="195" height="20" uuid="3d427ca8-f3b0-4657-85d2-d904432ea547"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Paciente]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="267" y="61" width="188" height="20" uuid="94a9d3d5-0e54-4a74-bef0-6f35075efc08"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tipo Atendimento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="455" y="61" width="100" height="20" uuid="2b19b094-5440-4de4-ad9f-b561e9389999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Qtd. Faltas]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="88" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="12" width="555" height="20" uuid="00e84338-fe4d-4195-b4b7-a0239219116f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASSOCIAÇÃO DE AMIGOS E PAIS DE PESSOAS ESPECIAIS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="555" height="20" uuid="027c6b22-ecd2-4d7a-8c1d-46ce2793e46d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[FALTAS NO PROGRAMA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="164" y="62" width="54" height="20" uuid="6c849f1a-9328-4f2f-8468-323526bdc331"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Período:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="218" y="62" width="72" height="20" uuid="7b17095c-ef8f-4a90-81bd-460419a764c9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dt_inicial}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="310" y="62" width="100" height="20" uuid="60b8e1b3-3367-40c7-bd49-5fba938a8801"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dt_final}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="290" y="62" width="11" height="20" uuid="b65f4574-4c35-4933-a622-d7a72d27e2ad"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[a]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="455" y="0" width="100" height="20" uuid="c9958f57-627f-4b66-ae10-d33c39129215"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{qtd}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="0" width="69" height="20" uuid="115422c3-0f0b-4fc7-878e-3134b7da3393"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{codpaciente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="72" y="0" width="195" height="20" uuid="fd80eabc-fa4c-44a0-ae21-0cdbee1bd34f"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nomepaciente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="267" y="0" width="188" height="20" uuid="b722bde2-8992-44c9-9938-25fcccbb9f5f"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nometipoat}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="34" width="100" height="20" uuid="d12272bb-880a-4fcd-9ca6-1860a4621a6b"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="435" y="34" width="80" height="20" uuid="0d4ed282-e2a5-4572-a332-88894f2baba7"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="34" width="40" height="20" uuid="879fca77-14c2-415b-90c6-e8cfbefd73ad"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

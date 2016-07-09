@@ -349,7 +349,7 @@ public class RelatoriosController implements Serializable {
 			ParseException {
 
 		if (this.dataFinal == null || this.dataInicial == null
-				|| this.programa == null ) {
+				|| this.programa == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Datas e programa devem ser preenchidos.",
 					"Campos inválidos!");
@@ -491,6 +491,30 @@ public class RelatoriosController implements Serializable {
 
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
+		this.executeReport(relatorio, map, "relatorio.pdf");
+		limparDados();
+	}
+
+	public void gerarFaltasPorPrograma() throws IOException,
+			ParseException {
+
+		if (this.dataFinal == null || this.dataInicial == null || this.programa == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Datas e programa devem ser preenchidas.", "Campos inválidos!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = caminho + "faltasNoPrograma.jasper";
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("dt_inicial", this.dataInicial);
+		map.put("dt_final", this.dataFinal);
+		map.put("cod_programa", this.programa.getIdPrograma());
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
+				+ File.separator);
+
 		this.executeReport(relatorio, map, "relatorio.pdf");
 		limparDados();
 	}

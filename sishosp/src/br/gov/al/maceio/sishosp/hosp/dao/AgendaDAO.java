@@ -281,7 +281,7 @@ public class AgendaDAO {
 	public boolean gravarAgenda(AgendaBean agenda,
 			List<AgendaBean> listaNovosAgendamentos) {
 
-		String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codredeatende,"
+		String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
 				+ " codconvenio, dtaatende, horaatende, situacao, codatendente, dtamarcacao, codtipoatendimento,"
 				+ " turno, codequipe, observacao, ativo, codempresa)"
 				+ " VALUES "
@@ -297,7 +297,7 @@ public class AgendaDAO {
 			} else {
 				ps.setInt(2, 0);
 			}
-			ps.setInt(3, agenda.getPrograma().getIdPrograma());// codredeatende
+			ps.setInt(3, agenda.getPrograma().getIdPrograma());// codprograma
 			ps.setInt(4, 0);// codconvenio
 			ps.setDate(5, new java.sql.Date(agenda.getDataAtendimento()
 					.getTime()));
@@ -383,12 +383,12 @@ public class AgendaDAO {
 		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 		EquipeDAO eDao = new EquipeDAO();
 
-		String sqlProf = "SELECT id_atendimento, codpaciente, codmedico, codredeatende,"
+		String sqlProf = "SELECT id_atendimento, codpaciente, codmedico, codprograma,"
 				+ " codconvenio, dtaatende, horaatende, situacao, codatendente,"
 				+ " dtamarcacao, codtipoatendimento, turno, codequipe, observacao, ativo, codempresa"
 				+ " FROM  hosp.atendimentos "
 				+ " WHERE dtaatende = ? and codmedico = ? and turno = ?;";
-		String sqlEqui = "SELECT id_atendimento, codpaciente, codmedico, codredeatende,"
+		String sqlEqui = "SELECT id_atendimento, codpaciente, codmedico, codprograma,"
 				+ " codconvenio, dtaatende, horaatende, situacao, codatendente,"
 				+ " dtamarcacao, codtipoatendimento, turno, codequipe, observacao, ativo, codempresa"
 				+ " FROM  hosp.atendimentos "
@@ -450,7 +450,7 @@ public class AgendaDAO {
 		ProgramaDAO prDao = new ProgramaDAO();
 		ProcedimentoDAO proDao = new ProcedimentoDAO();
 
-		String sql = "SELECT a.id_atendimento, a.codpaciente, a.codmedico, a.codredeatende,"
+		String sql = "SELECT a.id_atendimento, a.codpaciente, a.codmedico, a.codprograma,"
 				+ " a.codconvenio, a.dtaatende, a.horaatende, a.situacao, a.codatendente,"
 				+ " a.dtamarcacao, a.codtipoatendimento, a.turno, a.codequipe, a.observacao, a.ativo, a.codempresa, a1.codprocedimento"
 				+ " FROM  hosp.atendimentos a inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) WHERE ";
@@ -494,7 +494,7 @@ public class AgendaDAO {
 				agenda.setProfissional(mDao.buscarProfissionalPorId(rs
 						.getInt("codmedico")));
 				agenda.setPrograma(prDao.listarProgramaPorId(rs
-						.getInt("codredeatende")));
+						.getInt("codprograma")));
 				agenda.setDataAtendimento(rs.getDate("dtaatende"));
 				agenda.setSituacao(rs.getString("situacao"));
 				agenda.setDataMarcacao(rs.getDate("dtamarcacao"));

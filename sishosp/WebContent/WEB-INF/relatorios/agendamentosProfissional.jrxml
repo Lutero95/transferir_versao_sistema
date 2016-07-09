@@ -35,7 +35,7 @@ inner join hosp.pacientes p on (at.codpaciente = p.id_paciente)
 inner join hosp.tipoatendimento t on (at.codtipoatendimento = t.id)
 
 where at.dtaatende between $P{dt_inicial} and $P{dt_final}
-and t.id = 38
+and t.id = $P{cod_tipo_atend}
 and at.codequipe = 0
 and(  ($P{cod_medico} is not null and at.codmedico = $P{cod_medico})
 or   ($P{cod_medico} is null and at.codmedico > 0))

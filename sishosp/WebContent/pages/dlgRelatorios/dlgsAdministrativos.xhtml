@@ -7,6 +7,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:body>
+	
 	<p:dialog header="Mapa de Laudo - Órtese e Prótese"
 		widgetVar="dlgOrteseProtese" resizable="false" modal="true">
 		<h:form id="frmOP">
@@ -536,7 +537,7 @@
 
 	<p:dialog header="Faltas por Programa" widgetVar="dlgFaltaProg"
 		resizable="false" modal="true">
-		<h:form id="outConAgPr">
+		<h:form id="frmFaltaProg">
 			<p:outputPanel id="outFaltaProg">
 				<p:growl id="msg" />
 				<p:panelGrid columns="2" styleClass="semBorda">
@@ -551,7 +552,7 @@
 						value="#{RelatoriosController.dataFinal}" />
 
 					<h:outputLabel value="Programa: " />
-					<p:outputPanel id="outProgOPFin">
+					<p:outputPanel id="outPrFPr">
 						<p:autoComplete size="60" converter="conPrograma"
 							value="#{RelatoriosController.programa}"
 							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
@@ -561,12 +562,12 @@
 							<p:ajax event="itemSelect"
 								listener="#{GrupoController.selectPrograma}" />
 						</p:autoComplete>
-						<p:commandButton id="btBusPrFin" value="Buscar"
+						<p:commandButton value="Buscar"
 							onclick="PF('dlgConsuProgOP').show();" />
 					</p:outputPanel>
 
 					<h:outputLabel value="Grupo:" />
-					<p:outputPanel id="outGrupoAP">
+					<p:outputPanel id="outGrFPr">
 						<p:autoComplete size="60" converter="conGrupo"
 							value="#{RelatoriosController.grupo}"
 							completeMethod="#{GrupoController.listaGrupoAutoComplete2}"
@@ -575,7 +576,7 @@
 							itemLabel="#{theme.descGrupo}">
 						</p:autoComplete>
 
-						<p:commandButton id="btBusGrAP" value="Buscar"
+						<p:commandButton value="Buscar"
 							onclick="PF('dlgConsuGropOP').show();" />
 					</p:outputPanel>
 				</p:panelGrid>
@@ -585,7 +586,7 @@
 				<center>
 					<p:panelGrid columns="3" styleClass="semBorda">
 						<p:commandButton value="Gerar" update=":frmFaltaProg:outFaltaProg"
-							action="#{RelatoriosController.gerarAtendimentosPorProcedimento}"
+							action="#{RelatoriosController.gerarFaltasPorPrograma}"
 							target="_blank" ajax="false" />
 						<p:commandButton value="Limpar"
 							actionListener="#{RelatoriosController.limparDados()}"
@@ -700,7 +701,8 @@
 					<p:commandButton
 						update=":frmOP:outProgOP, :frmOPFin:outProgOPFin, 
 						:formConsuGropOP:dtGrupoOP, :frmAP:outProgAP, 
-						:frmAPR:outProgAPR, :frmConAgPr:outPrConAgPr, :frmAtP:outProgAtP"
+						:frmAPR:outProgAPR, :frmConAgPr:outPrConAgPr, :frmAtP:outProgAtP,
+						:frmFaltaProg:outPrFPr"
 						icon="ui-icon-check" title="Selecionar"
 						action="#{GrupoController.atualizaLista(RelatoriosController.programa)}"
 						onclick="PF('dlgConsuProgOP').hide();">
@@ -732,7 +734,7 @@
 					<p:commandButton
 						update=":frmOP:outGrupoOP, :frmOP:outOP, :frmOPFin:outGrupoOPFin,
 						 :frmOPFin:outOPFin, :frmAP:outGrupoAP, :frmAPR:outGrupoAPR,
-						 :frmConAgPr:outGrupoConAgPr, :frmAtP:outGrupoAtP"
+						 :frmConAgPr:outGrupoConAgPr, :frmAtP:outGrupoAtP, :frmFaltaProg:outGrFPr"
 						icon="ui-icon-check" title="Selecionar"
 						onclick="PF('dlgConsuGropOP').hide();">
 						<f:setPropertyActionListener value="#{grupo}"

@@ -34,7 +34,7 @@ join hosp.medicos m on m.id_medico = a.codmedico
 join hosp.especialidade e on m.id_medico = e.id_especialidade
 
 where a.dtaatende between $P{dt_inicial} and $P{dt_final}
-and a.codredeatende = $P{cod_programa}
+and a.codprograma = $P{cod_programa}
 and a.codequipe = 0
 and(  ($P{cod_medico} is not null and  m.id_medico = $P{cod_medico})
 or   ($P{cod_medico} is null and  m.id_medico > 0))
