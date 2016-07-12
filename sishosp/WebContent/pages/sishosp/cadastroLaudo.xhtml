@@ -13,9 +13,10 @@
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
 			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarLaudo.faces?faces-redirect=true"></p:commandButton>
+				<h:commandButton value="Voltar"
+					style="position:absolute; left:76%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarLaudo.faces?faces-redirect=true"></h:commandButton>
 			</h:form>
 
 			<h:form id="formLaudo">
@@ -23,16 +24,18 @@
 				<p:panel header="#{LaudoController.cabecalho}"
 					style="position: relative; height:auto; width:717px; background-color: #F5F5F5; margin-left:50%;border: 3px solid gray;">
 					<h:panelGrid columns="3">
-					
+
 						<h:outputLabel value="Paciente:" />
 						<p:outputPanel id="outPacie">
 							<p:autoComplete value="#{LaudoController.laudo.paciente}"
-							size="60" converter="conPaciente"
-							completeMethod="#{PacienteController.listaPacienteAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
-							<p:ajax event="itemSelect" update=":formLaudo:outProg, :formLaudo:outPacie3, :formLaudo:outPacie2, :formLaudo:btBusPr" />
-						</p:autoComplete>
+								size="60" converter="conPaciente"
+								completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nome}">
+								<p:ajax event="itemSelect"
+									update=":formLaudo:outProg, :formLaudo:outPacie3, :formLaudo:outPacie2, :formLaudo:btBusPr" />
+							</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusPa" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuPac').show();" />
@@ -66,23 +69,27 @@
 								minQueryLength="1" itemValue="#{theme}"
 								itemLabel="#{theme.descGrupo}">
 								<p:ajax event="itemSelect"
+								
 									update=":formLaudo:outEquipe,:formLaudo:btBusEquipe" />
+									<!-- listener="#{GrupoController.selectEqupProf}" -->
 							</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusGr" value="Buscar" icon="buscar"
 							disabled="#{LaudoController.laudo.programa==null}"
 							onclick="PF('dlgConsuGrop').show();" />
-							
-							<h:outputLabel value="Equipe:" />
+
+						<h:outputLabel value="Equipe:" />
 						<p:outputPanel id="outEquipe">
-							<p:autoComplete value="#{LaudoController.laudo.equipe}"
-							size="60" converter="conEquipe"
-							disabled="#{LaudoController.laudo.grupo==null}"
-							completeMethod="#{EquipeController.listaEquipeAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.descEquipe}">
-							<p:ajax event="itemSelect" update=":formLaudo:outProfissional,:formLaudo:btBusPro" />
-						</p:autoComplete>
+							<p:autoComplete value="#{LaudoController.laudo.equipe}" size="60"
+								converter="conEquipe"
+								disabled="#{LaudoController.laudo.grupo==null}"
+								completeMethod="#{EquipeController.listaEquipeAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descEquipe}">
+								<p:ajax event="itemSelect"
+									update=":formLaudo:outProfissional,:formLaudo:btBusPro" />
+							</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusEquipe" value="Buscar" icon="buscar"
 							disabled="#{LaudoController.laudo.grupo==null}"
@@ -114,8 +121,7 @@
 								effect="fade" var="theme" forceSelection="true"
 								minQueryLength="1" itemValue="#{theme}"
 								itemLabel="#{theme.nomeProc}">
-								<p:ajax event="itemSelect"
-									update=":formLaudo:outDadosForne" />
+								<p:ajax event="itemSelect" update=":formLaudo:outDadosForne" />
 							</p:autoComplete>
 
 						</p:outputPanel>
@@ -150,8 +156,7 @@
 						<p:outputPanel style="margin-left:16px;">
 							<p:outputLabel value="Recurso:" />
 							<p:selectOneRadio id="recursos" style="border: double;"
-								layout="pageDirection"
-								value="#{LaudoController.laudo.recurso}">
+								layout="pageDirection" value="#{LaudoController.laudo.recurso}">
 
 								<f:selectItem itemLabel="Faec" itemValue="F" />
 								<f:selectItem itemLabel="Mac" itemValue="M" />
@@ -162,7 +167,7 @@
 
 					</h:panelGrid>
 
-					<h:panelGrid columns="2" styleClass="semBorda">
+					<h:panelGrid columns="4" styleClass="semBorda">
 
 						<!--<p:outputPanel style="margin-left:16px;">
 						<h:outputLabel for="apac" value="APAC" />
@@ -186,12 +191,11 @@
 						</p:outputPanel>
 
 
-						<p:outputPanel style="margin-top: 27px;">
+						<p:outputPanel style="margin-left: 20px;">
 							<h:outputLabel for="unidade" value="Unidade:" />
-
-							<p:selectOneMenu style="margin-left: 20px;"
-								value="#{LaudoController.laudo.unidade}" disable="true"
-								id="unidade">
+							<br />
+							<p:selectOneMenu value="#{LaudoController.laudo.unidade}"
+								disable="true" id="unidade">
 
 								<f:selectItem itemLabel="AL" itemValue="AL" />
 								<f:selectItem itemLabel="UL" itemValue="UL" />
@@ -203,74 +207,67 @@
 					</h:panelGrid>
 
 
-					<h:panelGrid columns="3" styleClass="semBorda">
 
-						<p:outputPanel>
 
-							<p:outputLabel value="Situação:" />
+					<p:outputPanel id="outSituacao" style="margin-top:15px;">
+						<h:panelGrid columns="6" styleClass="semBorda">
+							<p:outputLabel value="Situação:" style="margin-left:16px;" />
 
-							<p:selectOneRadio id="situacao" style="border: double;"
-								required="false" layout="pageDirection"
+							<p:selectOneRadio id="situacao"
+								style="border: double; margin-left:16px" required="false"
+								layout="pageDirection"
 								disabled="#{MBUsuarios.usuarioLogado.autorizado == false}"
 								requiredMessage="Situação"
 								value="#{LaudoController.laudo.situacao}">
 
 								<f:selectItem itemLabel="Pendente" itemValue="P" />
 								<f:selectItem itemLabel="Autorizado" itemValue="A" />
-								<!--  <p:ajax update="pgSetor2"></p:ajax>-->
+								<p:ajax update="outSituacao"></p:ajax>
 
 							</p:selectOneRadio>
-						</p:outputPanel>
 
-						<p:outputPanel style="margin-left:16px;">
-							<h:outputLabel value="Data para Autorização" />
-							<br />
-							<p:calendar id="dataAt" showOn="button" locale="pt"
-								value="#{LaudoController.laudo.dtautorizacao}" navigator="true"
-								mask="true" pattern="dd/MM/yyyy">
+							<p:panel style="background-color:#F5F5F5; border:none;"
+								rendered="#{LaudoController.laudo.situacao == 'A'}">
+								<h:outputLabel value="Data para Autorização:" />
+								<br />
+								<p:calendar id="dataAt" showOn="button" locale="pt"
+									required="true" requiredMessage="Data Autorização e necessaria"
+									value="#{LaudoController.laudo.dtautorizacao}" navigator="true"
+									mask="true" pattern="dd/MM/yyyy">
 
-								<p:ajax event="dateSelect" update="dtFim" process="@this,dataAt"
-									listener="#{LaudoController.calcularDiasCalendario}" />
+									<p:ajax event="dateSelect" update="dtFim"
+										process="@this,dataAt"
+										listener="#{LaudoController.calcularDiasCalendario}" />
 
-							</p:calendar>
-
-
-						</p:outputPanel>
-
-						<p:outputPanel style="margin-left:16px;">
-							<h:outputLabel value="Data para Vencimento" />
-							<br />
-							<!-- <p:calendar id="dataVenci" showOn="button" locale="pt" navigator="true" mask="true"
-							pattern="dd/MM/yyyy" readonly="true" /> -->
-							<p:outputLabel id="dtFim"
-								value="#{LaudoController.laudo.dtavencimento}">
-								<f:convertDateTime locale="pt" timeZone="-3GTM"
-									pattern="MM/yyyy" />
-							</p:outputLabel>
-
-							<!-- <p:inputText value="#{LaudoController.laudo.diasConceder}" required="true" 
-                                                    requiredMessage="Informe a quantidade de dias a conceder." 
-                                                    size="4" maxlength="3" id="diasConceder">
-                                                    
-                                                    	<p:ajax event="blur" update="dtFim" 
-                                                        process="@this,dataAt" 
-                                                        listener="#{LaudoController.calcularDias}" />
-                                                    
-                                                    </p:inputText> -->
+								</p:calendar>
 
 
+							</p:panel>
 
-						</p:outputPanel>
-					</h:panelGrid>
+							<p:panel style="background-color: #F5F5F5; border:none;"
+								rendered="#{LaudoController.laudo.situacao == 'A'}">
+								<h:outputLabel value="Data para Vencimento:" />
+								<br />
+								<p:outputLabel id="dtFim"
+									value="#{LaudoController.laudo.dtavencimento}">
+									<f:convertDateTime locale="pt" timeZone="-3GTM"
+										pattern="MM/yyyy" />
+								</p:outputLabel>
+
+							</p:panel>
+						</h:panelGrid>
+					</p:outputPanel>
+
+
 
 					<h:panelGrid columns="3" styleClass="semBorda"
 						style="margin-top:30px;">
 						<h:outputLabel value="CID:" />
 						<p:outputPanel id="outCid">
-							 <p:inputText id="cid" value="#{LaudoController.laudo.cid10_1}"
-								readonly="false" style="width: 300px; margin-left:16px;" /> 
-								
-								<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
+							<p:inputText id="cid" value="#{LaudoController.laudo.cid10_1}"
+								readonly="false" style="width: 300px; margin-left:16px;" />
+
+							<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
 								size="60" converter="conCid"
 								completeMethod="#{CidController.listaCidAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
@@ -287,7 +284,7 @@
 						<p:outputPanel id="outCid2">
 							<p:inputText id="cid2" value="#{LaudoController.laudo.cid10_2}"
 								readonly="false" style="width: 300px; margin-left:16px;" />
-								<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
+							<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
 								disabled="#{LaudoController.laudo.cid==null}"
 								size="60" converter="conCid"
 								completeMethod="#{CidController.listaCidAutoComplete}"
@@ -305,7 +302,7 @@
 						<p:outputPanel id="outCid3">
 							<p:inputText id="cid3" value="#{LaudoController.laudo.cid10_3}"
 								readonly="false" style="width: 300px; margin-left:16px;" />
-								<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
+							<!--<p:autoComplete value="#{LaudoController.laudo.cid}"
 								disabled="#{LaudoController.laudo.cid==null}"
 								size="60" converter="conCid"
 								completeMethod="#{CidController.listaCidAutoComplete}"
@@ -317,65 +314,80 @@
 						<p:commandButton id="btBusCid3" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuCid3').show();" />
 					</h:panelGrid>
-					
+
 					<p:outputPanel id="outDadosForne">
-					<p:panel header="DADOS FORNECEDOR" 
-						rendered="#{LaudoController.laudo.procedimento.utilizaEquipamento == true}"
-						style="width:680px; margin-top:30px; background-color: #F5F5F5;">
-						<h:panelGrid columns="3" styleClass="semBorda">
+						<p:panel header="DADOS FORNECEDOR"
+							rendered="#{LaudoController.laudo.procedimento.utilizaEquipamento == true}"
+							style="width:680px; margin-top:30px; background-color: #F5F5F5;">
+							<h:panelGrid columns="3" styleClass="semBorda">
 
-							<h:outputLabel value="Fornecedor:" />
-							<p:outputPanel id="outFornecedor">
-										<p:autoComplete value="#{LaudoController.laudo.fornecedor}"
-								size="60" converter="conFornecedor"
-								completeMethod="#{FornecedorController.listaFornecedorAutoComplete}"
-								effect="fade" var="theme" forceSelection="true"
-								minQueryLength="1" itemValue="#{theme}"
-								itemLabel="#{theme.descFornecedor}">
-							    </p:autoComplete>
-							</p:outputPanel>
-							<p:commandButton id="btBusFornecedor" value="Buscar"
-								icon="buscar" onclick="PF('dlgConsuForne').show();" />
+								<h:outputLabel value="Fornecedor:" />
+								<p:outputPanel id="outFornecedor">
+									<p:autoComplete value="#{LaudoController.laudo.fornecedor}"
+										size="60" converter="conFornecedor"
+										completeMethod="#{FornecedorController.listaFornecedorAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.descFornecedor}">
+									</p:autoComplete>
+								</p:outputPanel>
+								<p:commandButton id="btBusFornecedor" value="Buscar"
+									icon="buscar" onclick="PF('dlgConsuForne').show();" />
 
-						</h:panelGrid>
-						<h:panelGrid columns="6" styleClass="semBorda"
-							style="margin-top:10px;">
-							<p:outputPanel style="margin-left:16px; ">
-								<h:outputLabel value="Valor" />
-								<br />
-								<p:inputText id="codValor"
-									value="#{LaudoController.laudo.fornecedor.valor}"
-									readonly="false" />
-							</p:outputPanel>
+							</h:panelGrid>
+							<h:panelGrid columns="6" styleClass="semBorda"
+								style="margin-top:10px;">
+								<p:outputPanel style="margin-left:16px; ">
+									<h:outputLabel value="Valor" />
+									<br />
+									<p:inputText id="codValor"
+										required="#{LaudoController.laudo.situacao == 'A'}"
+										requiredMessage="Valor e necessario informar"
+										value="#{LaudoController.laudo.fornecedor.valor}"
+										readonly="false" />
+								</p:outputPanel>
 
-							<p:outputPanel style="margin-left:16px;">
-								<h:outputLabel value="No.Nota" />
-								<br />
-								<p:inputText id="codNota" value="#{LaudoController.laudo.nota}"
-									readonly="false" />
-							</p:outputPanel>
+								<p:outputPanel style="margin-left:16px;">
+									<h:outputLabel value="No.Nota" />
+									<br />
+									<p:inputText id="codNota" value="#{LaudoController.laudo.nota}"
+										required="#{LaudoController.laudo.situacao == 'A'}"
+										requiredMessage="Nota e necessario informar" readonly="false" />
+								</p:outputPanel>
 
-							<p:outputPanel style="margin-left:16px;">
-								<h:outputLabel value="Qtd." />
-								<br />
-								<p:spinner id="qtd" size="1"
-									value="#{LaudoController.laudo.qtd}" />
-							</p:outputPanel>
+								<p:outputPanel style="margin-left:16px;">
+									<h:outputLabel value="Qtd." />
+									<br />
+									<p:spinner id="qtd" size="1"
+										required="#{LaudoController.laudo.situacao == 'A'}"
+										requiredMessage="Qtd e necessario informar"
+										value="#{LaudoController.laudo.qtd}" />
+								</p:outputPanel>
+							</h:panelGrid>
+							<h:panelGrid columns="3" styleClass="semBorda">
+								<h:outputLabel value="Equipamento:"
+									style="margin-left:16px; margin-top:20px;" />
+								<p:outputPanel id="outEquipamento">
+
+									<p:inputText
+										required="#{LaudoController.laudo.situacao == 'A'}"
+										requiredMessage="Equipamento e necessario informar"
+										value="#{LaudoController.laudo.equipamento.id_equipamento}"
+										readonly="true" style="width: 50px; margin-left:16px;" />
+
+									<p:inputText
+										required="#{LaudoController.laudo.situacao == 'A'}"
+										requiredMessage="Equipamento e necessario informar"
+										value="#{LaudoController.laudo.equipamento.descEquipamento}"
+										readonly="true" style="width: 200px;" />
+								</p:outputPanel>
+								<p:commandButton id="btBusEquipamento" value="Buscar"
+									icon="buscar" onclick="PF('dlgConsuEquipamento').show();" />
+							</h:panelGrid>
+
+						</p:panel>
 
 
-							<h:outputLabel value="Equipamento:" style="margin-left:16px;" />
-							<p:outputPanel id="outEquipamento">
-								<p:inputText
-									value="#{LaudoController.laudo.equipamento.id_equipamento}"
-									readonly="false" style="width: 50px; margin-left:16px;" />
-							</p:outputPanel>
-							<p:commandButton id="btBusEquipamento" value="Buscar"
-								icon="buscar" onclick="PF('dlgConsuEquipamento').show();" />
-
-						</h:panelGrid>
-					</p:panel>
-					
-					
 					</p:outputPanel>
 					<h:panelGrid columns="2" styleClass="semBorda"
 						style="margin-top:30px;">
@@ -403,7 +415,7 @@
 
 							<p:commandButton value="Limpar" icon="limpar"
 								style="margin-left:15px;"
-								actionListener="#{LaudoController.limparDados()}"
+								action="#{LaudoController.limparDados()}"
 								update=":formLaudo" />
 
 						</h:panelGrid>
@@ -542,7 +554,7 @@
 					</p:dataTable>
 				</h:form>
 			</p:dialog>
-			
+
 			<p:dialog header="Consulta Equipe" widgetVar="dlgConsuEquipe"
 				modal="true" width="500px">
 				<h:form id="formConsuEquipe">

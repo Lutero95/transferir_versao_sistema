@@ -13,16 +13,17 @@
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
 			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarEscola.faces?faces-redirect=true"></p:commandButton>
+				<h:commandButton value="Voltar"
+					style="position:absolute; left:71%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarEscola.faces?faces-redirect=true"></h:commandButton>
 			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
 				<p:panel id="pnlCadPaciente" header="#{EscolaController.cabecalho}"
-					style="height:auto; width:auto; background-color: #F5F5F5;">
+					style="height:400px; width:600px; margin-left:50%; margin-top:10%; background-color: #F5F5F5;">
 
 					<div class="form-group">
 						<h:outputLabel for="inputname" value="Nome Escola"
@@ -43,20 +44,21 @@
 
 
 					<p:separator></p:separator>
+					<center>
+						<!-- FIM DO FORMULARIO -->
+						<h:panelGrid columns="2" styleClass="semBorda">
+							<h:commandButton action="#{EscolaController.gravarEscola()}"
+								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
+								value="Cadastrar" styleClass="btn btn-sm btn-success"
+								rendered="#{EscolaController.tipo == 'I'}" />
 
-					<!-- FIM DO FORMULARIO -->
-					<h:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-						<h:commandButton action="#{EscolaController.gravarEscola()}"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
-							value="Cadastrar" styleClass="btn btn-sm btn-success"
-							rendered="#{EscolaController.tipo == 'I'}" />
 
-
-						<h:commandButton action="#{EscolaController.alterarEscola()}"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
-							value="Alterar" styleClass="btn btn-info"
-							rendered="#{EscolaController.tipo == 'A'}" />
-					</h:panelGrid>
+							<h:commandButton action="#{EscolaController.alterarEscola()}"
+								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
+								value="Alterar" styleClass="btn btn-danger"
+								rendered="#{EscolaController.tipo == 'A'}" />
+						</h:panelGrid>
+					</center>
 				</p:panel>
 
 

@@ -13,7 +13,9 @@ import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 public class GrupoController implements Serializable{
@@ -30,6 +32,8 @@ public class GrupoController implements Serializable{
 	private String tipo;
 	private String cabecalho;
 	private ProgramaBean programaSelecionado;
+	private EquipeBean equipeSelecionado;
+	private ProfissionalBean profissionalSelecionado;
 	private Integer abaAtiva = 0;
 
 	GrupoDAO gDao = new GrupoDAO();
@@ -42,6 +46,8 @@ public class GrupoController implements Serializable{
 		this.tipo = new String();
 		this.cabecalho = "";
 		this.programaSelecionado = new ProgramaBean();
+		this.equipeSelecionado = new EquipeBean();
+		this.profissionalSelecionado = new ProfissionalBean();
 	}
 
 	public void limparDados() {
@@ -127,8 +133,7 @@ public class GrupoController implements Serializable{
 	public void atualizaLista(ProgramaBean p) {
 		GrupoDAO gDao = new GrupoDAO();
 		this.programaSelecionado = p;
-		this.listaGruposProgramas = gDao.listarGruposPorPrograma(p
-				.getIdPrograma());
+		this.listaGruposProgramas = gDao.listarGruposPorPrograma(p.getIdPrograma());
 	}
 
 	public List<GrupoBean> getListaGruposProgramas() {
@@ -197,5 +202,15 @@ public class GrupoController implements Serializable{
 	public void selectPrograma(SelectEvent event) {
 		this.programaSelecionado = (ProgramaBean) event.getObject();
 		atualizaLista(programaSelecionado);
+	}
+	
+	public void selectEqupProf(SelectEvent event) {
+		//if(equipe ID == TRUE){}
+		this.equipeSelecionado = (EquipeBean) event.getObject();
+		//atualizaLista2(equipeSelecionado);
+
+		//if(profissional ID == TRUE){}
+		this.profissionalSelecionado = (ProfissionalBean) event.getObject();
+		//atualizaLista3(profissionalSelecionado);
 	}
 }
