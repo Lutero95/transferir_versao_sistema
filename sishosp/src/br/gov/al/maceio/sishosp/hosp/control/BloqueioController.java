@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
@@ -13,8 +15,10 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 
-public class BloqueioController implements Serializable{
-	
+@ManagedBean(name = "BloqueioController")
+@ViewScoped
+public class BloqueioController implements Serializable {
+
 	/**
 	 * 
 	 */
@@ -22,16 +26,16 @@ public class BloqueioController implements Serializable{
 	private BloqueioBean bloqueio;
 	private List<BloqueioBean> listaBloqueios;
 	private BloqueioDAO bDao = new BloqueioDAO();
-	
+
 	private String tipo;
-	
+
 	public BloqueioController() {
 		this.bloqueio = new BloqueioBean();
 		this.listaBloqueios = null;
 		this.tipo = new String();
 	}
-	
-	public void limparDados(){
+
+	public void limparDados() {
 		this.bloqueio = new BloqueioBean();
 		this.listaBloqueios = null;
 	}
@@ -43,9 +47,9 @@ public class BloqueioController implements Serializable{
 	public void setBloqueio(BloqueioBean bloqueio) {
 		this.bloqueio = bloqueio;
 	}
-	
+
 	public List<BloqueioBean> getListaBloqueios() {
-		if(this.listaBloqueios == null){
+		if (this.listaBloqueios == null) {
 			this.listaBloqueios = bDao.listarBloqueio();
 		}
 		return listaBloqueios;
@@ -54,7 +58,7 @@ public class BloqueioController implements Serializable{
 	public void setListaBloqueios(List<BloqueioBean> listaBloqueios) {
 		this.listaBloqueios = listaBloqueios;
 	}
-	
+
 	public String getTipo() {
 		return tipo;
 	}
@@ -111,10 +115,10 @@ public class BloqueioController implements Serializable{
 		}
 		this.listaBloqueios = bDao.listarBloqueio();
 	}
-	
-	public void atualizarListaBloqueio(){
-		this.listaBloqueios = bDao.listarBloqueioPorProfissional(bloqueio.getProf());
+
+	public void atualizarListaBloqueio() {
+		this.listaBloqueios = bDao.listarBloqueioPorProfissional(bloqueio
+				.getProf());
 	}
-	
 
 }

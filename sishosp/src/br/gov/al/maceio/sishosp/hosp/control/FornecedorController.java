@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
@@ -16,6 +18,8 @@ import br.gov.al.maceio.sishosp.hosp.dao.FornecedorDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 
+@ManagedBean(name = "FornecedorController")
+@ViewScoped
 public class FornecedorController implements Serializable {
 
 	/**

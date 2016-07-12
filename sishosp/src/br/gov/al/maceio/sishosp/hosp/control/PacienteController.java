@@ -36,6 +36,8 @@ import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
+@ManagedBean(name="PacienteController")
+@ViewScoped
 public class PacienteController implements Serializable{
 	/**
 	 * 
