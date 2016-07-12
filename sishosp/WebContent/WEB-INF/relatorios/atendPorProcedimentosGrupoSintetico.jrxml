@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="atendPorProcedimentosGrupo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1df6acb-af54-499e-bd0b-fac0f3c1a662">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="2"/>
+	<parameter name="dt_inicial" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dt_final" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cod_programa" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cod_grupo" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.codgrupo, g.descgrupo, pa.id_paciente, pa.nome nomepaciente, p.nome nomeproced,
+COALESCE(atend.qtd,0) atend, coalesce(proffalta.qtd,0) proffalta,coalesce(pacfalta.qtd,0) pacfalta
+
+from hosp.atendimentos a
+left join (select aa.codgrupo, aa.codpaciente, count(*) qtd from hosp.atendimentos aa
+            join hosp.atendimentos1 a11 on a11.id_atendimento = aa.id_atendimento
+            join hosp.pacientes p11 on aa.codpaciente = p11.id_paciente
+            where aa.dtaatende between $P{dt_inicial} and $P{dt_final} and a11.situacao = 'A'
+            group by aa.codgrupo, aa.codpaciente) atend
+    on (atend.codgrupo = a.codgrupo and atend.codpaciente = a.codpaciente)
+left join (select aa.codgrupo, aa.codpaciente, count(*) qtd from hosp.atendimentos aa
+			join hosp.atendimentos1 a11 on a11.id_atendimento = aa.id_atendimento
+    		join hosp.pacientes p11 on aa.codpaciente = p11.id_paciente
+			where aa.dtaatende between $P{dt_inicial} and $P{dt_final} and a11.situacao = 'MF'
+            group by aa.codgrupo, aa.codpaciente) proffalta
+    on (proffalta.codgrupo = a.codgrupo  and proffalta.codpaciente = a.codpaciente)
+left join (select aa.codgrupo, aa.codpaciente, count(*) qtd from hosp.atendimentos aa
+            join hosp.atendimentos1 a11 on a11.id_atendimento = aa.id_atendimento
+            join hosp.pacientes p11 on aa.codpaciente = p11.id_paciente
+            where aa.dtaatende between $P{dt_inicial} and $P{dt_final} and a11.situacao is null
+            group by aa.codgrupo, aa.codpaciente) pacfalta
+    on (pacfalta.codgrupo = a.codgrupo  and pacfalta.codpaciente = a.codpaciente)
+join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)
+join hosp.grupo g on (a.codgrupo = g.id_grupo)
+join hosp.proc p on (p.id = a1.codprocedimento)
+join hosp.pacientes pa on (pa.id_paciente = a.codpaciente)
+
+where a.dtaatende between $P{dt_inicial} and $P{dt_final}
+and a.codprograma = $P{cod_programa}
+and(($P{cod_grupo} is not null and a.codgrupo in ($P!{cod_grupo})) or($P{cod_grupo} is null and true))
+group by a.codgrupo, a.codpaciente,g.descgrupo, pa.nome, p.nome, pa.id_paciente,COALESCE(atend.qtd,0), coalesce(proffalta.qtd,0) ,coalesce(pacfalta.qtd,0)
+order by a.codgrupo, a.codpaciente]]>
+	</queryString>
+	<field name="codgrupo" class="java.lang.Integer"/>
+	<field name="descgrupo" class="java.lang.String"/>
+	<field name="id_paciente" class="java.lang.Integer"/>
+	<field name="nomepaciente" class="java.lang.String"/>
+	<field name="nomeproced" class="java.lang.String"/>
+	<field name="atend" class="java.lang.Long"/>
+	<field name="proffalta" class="java.lang.Long"/>
+	<field name="pacfalta" class="java.lang.Long"/>
+	<variable name="atend_1" class="java.lang.Long" resetType="Group" resetGroup="groupGrupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{atend}]]></variableExpression>
+	</variable>
+	<variable name="proffalta_1" class="java.lang.Long" resetType="Group" resetGroup="groupGrupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{proffalta}]]></variableExpression>
+	</variable>
+	<variable name="pacfalta_1" class="java.lang.Long" resetType="Group" resetGroup="groupGrupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{pacfalta}]]></variableExpression>
+	</variable>
+	<group name="groupGrupo" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{codgrupo}]]></groupExpression>
+		<groupHeader>
+			<band height="62">
+				<staticText>
+					<reportElement x="0" y="10" width="53" height="20" uuid="fac55bfe-1673-4d44-bc49-563e01caec63"/>
+					<textElement textAlignment="Center">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Grupo:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="53" y="10" width="502" height="20" uuid="b5a9962c-6ce7-4160-ab18-4620e09741f1"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{descgrupo}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="0" y="32" width="555" height="1" uuid="bb310838-e1ee-4dda-8864-79c06245f056"/>
+				</line>
+				<staticText>
+					<reportElement x="-1" y="42" width="100" height="20" uuid="8cb44c89-a23a-42af-baf2-b838213686b7"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Procedimento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="361" y="42" width="65" height="20" uuid="4089ca90-3164-4263-b697-3ab1d3101592"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Atendimentos]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="435" y="42" width="53" height="20" uuid="ba3ece58-cf62-40ea-8f41-24405270ca5b"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Faltas Pac.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="498" y="42" width="57" height="20" uuid="bdbd0763-ad0f-4798-833b-01256412ed72"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Faltas Prof.]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50">
+				<staticText>
+					<reportElement x="247" y="0" width="100" height="20" uuid="82c4d91d-3d79-4239-9c0a-642b7e9678ad"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="361" y="0" width="65" height="20" uuid="b2b92a3b-b30d-40af-af10-ab6bcdca1a7f"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{atend_1}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="498" y="0" width="57" height="20" uuid="13163174-385b-41ba-9c6c-3c50ca1d9e96"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{proffalta_1}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="435" y="0" width="53" height="20" uuid="4eb9544c-8b8c-4281-beae-b6edb19118c8"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{pacfalta_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="groupPaciente">
+		<groupExpression><![CDATA[$F{id_paciente}]]></groupExpression>
+		<groupHeader>
+			<band height="32">
+				<textField>
+					<reportElement x="0" y="1" width="296" height="20" uuid="1fbb1b45-955c-484a-ac42-1a1437d38fed"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{nomeproced}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="361" y="1" width="65" height="20" uuid="dbf06114-b19c-4906-ab2b-5ef44429f8e2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{atend}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="498" y="1" width="57" height="20" uuid="f558cef6-9527-4ad1-8d16-fe339bf6dcea"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{proffalta}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="435" y="1" width="53" height="20" uuid="aeb8557a-78e9-46a6-a4b4-eb9a7ee3de66"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{pacfalta}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="88" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="12" width="555" height="20" uuid="571387ac-ab59-41c2-9174-8eb645fa62a1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASSOCIAÇÃO DE AMIGOS E PAIS DE PESSOAS ESPECIAIS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="33" width="555" height="20" uuid="c5ae87f5-9a86-4f57-ba40-269f7a4a6391"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ATENDIMENTOS POR PROCEDIMENTO - SINTÉTICO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="147" y="60" width="60" height="20" uuid="5aa802d3-a5d5-4ae3-8d50-c70541d55394"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Período:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="208" y="60" width="100" height="20" uuid="63c4bb50-f641-4a82-92a2-7015674b7d1c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dt_inicial}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="317" y="60" width="100" height="20" uuid="3d12e5a1-b928-4c64-9dcf-2af50dd256b1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dt_final}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="308" y="60" width="9" height="20" uuid="192b0be2-a214-4411-8c56-0207519bf5e2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[a]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="41" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="0" width="100" height="20" uuid="fac5d7fc-4282-4bd7-bc43-8d962fca1f91"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="435" y="0" width="80" height="20" uuid="2df4a595-7a9b-44ec-8ad9-0946989b32bd"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="20" uuid="79c6ec63-2891-4551-b0a4-1067d37987a5"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

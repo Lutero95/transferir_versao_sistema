@@ -22,7 +22,6 @@ public class TipoAtendimentoDAO {
 		String sql = "insert into hosp.tipoatendimento (desctipoatendimento, "
 				+ " primeiroatendimento, equipe_programa, codempresa, id) values (?, ?, ?, ?, DEFAULT) RETURNING id;";
 		try {
-			System.out.println("VAI CADASTRAR TIPO ATEN");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, tipo.getDescTipoAt().toUpperCase());
@@ -36,7 +35,6 @@ public class TipoAtendimentoDAO {
 			int idTipo = 0;
 			if (rs.next()) {
 				idTipo = rs.getInt("id");
-				System.out.println("retorno " + idTipo);
 				insereTipoAtendimentoGrupo(idTipo, tipo.getGrupo());
 
 			}
@@ -84,7 +82,8 @@ public class TipoAtendimentoDAO {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
 		String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa"
 				+ " from hosp.grupo g, hosp.tipoatendimento t, hosp.tipoatendimento_grupo tg"
-				+ " where ? = tg.codgrupo and t.id = tg.codtipoatendimento group by 1, 2, 3, 4, 5;";
+				+ " where ? = tg.codgrupo and t.id = tg.codtipoatendimento"
+				+ " group by t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);

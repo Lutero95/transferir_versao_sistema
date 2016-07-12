@@ -166,7 +166,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, 
 }
 
 .ui-menu .ui-menu-parent .ui-menu-child { 
-    width: 230px;
+    width: auto !important;
+    min-width: 250px;
 }
 
 .semBorda tr,semBorda row,.semBorda td {

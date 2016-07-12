@@ -7,9 +7,11 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.faces.application.FacesMessage;
@@ -36,6 +38,8 @@ public class RelatoriosController implements Serializable {
 	private GrupoBean grupo;
 	private TipoAtendimentoBean tipo;
 	private ProfissionalBean prof;
+	private List<GrupoBean> listaGrupos;
+	private List<TipoAtendimentoBean> listaTipos;
 
 	private Date dataInicial;
 	private Date dataFinal;
@@ -56,6 +60,8 @@ public class RelatoriosController implements Serializable {
 		this.grupo = new GrupoBean();
 		this.tipo = new TipoAtendimentoBean();
 		this.prof = new ProfissionalBean();
+		this.listaGrupos = new ArrayList<GrupoBean>();
+		this.listaTipos = new ArrayList<TipoAtendimentoBean>();
 		this.dataInicial = null;
 		this.dataFinal = null;
 		this.tipoExameAuditivo = new String("TODOS");
@@ -67,6 +73,8 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void limparDados() {
+		this.listaGrupos = new ArrayList<GrupoBean>();
+		this.listaTipos = new ArrayList<TipoAtendimentoBean>();
 		this.programa = new ProgramaBean();
 		this.grupo = new GrupoBean();
 		this.tipo = new TipoAtendimentoBean();
@@ -201,6 +209,22 @@ public class RelatoriosController implements Serializable {
 		this.ano = ano;
 	}
 
+	public List<GrupoBean> getListaGrupos() {
+		return listaGrupos;
+	}
+
+	public void setListaGrupos(List<GrupoBean> listaGrupos) {
+		this.listaGrupos = listaGrupos;
+	}
+
+	public List<TipoAtendimentoBean> getListaTipos() {
+		return listaTipos;
+	}
+
+	public void setListaTipos(List<TipoAtendimentoBean> listaTipos) {
+		this.listaTipos = listaTipos;
+	}
+
 	public boolean verificarMesesIguais(Date dataInicial, Date dataFinal) {
 		Calendar c1 = Calendar.getInstance();
 		Calendar c2 = Calendar.getInstance();
@@ -256,7 +280,7 @@ public class RelatoriosController implements Serializable {
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
 		this.executeReport(relatorio, map, "relatorio.pdf");
-		limparDados();
+	//	limparDados();
 	}
 
 	public void gerarFinanceiroOrteseProtese() throws IOException,
@@ -308,7 +332,7 @@ public class RelatoriosController implements Serializable {
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
 		this.executeReport(relatorio, map, "relatorio.pdf");
-		limparDados();
+		//limparDados();
 	}
 
 	public void gerarAgendamentosPorProfissional() throws IOException,
@@ -342,7 +366,7 @@ public class RelatoriosController implements Serializable {
 				+ File.separator);
 
 		this.executeReport(relatorio, map, "relatorio.pdf");
-		limparDados();
+		//limparDados();
 	}
 
 	public void gerarAtendimentosPorProfissional() throws IOException,
@@ -375,7 +399,7 @@ public class RelatoriosController implements Serializable {
 				+ File.separator);
 
 		this.executeReport(relatorio, map, "relatorio.pdf");
-		limparDados();
+		//limparDados();
 	}
 
 	public void gerarAtendimentosPorPrograma() throws IOException,
@@ -410,7 +434,7 @@ public class RelatoriosController implements Serializable {
 				+ File.separator);
 
 		this.executeReport(relatorio, map, "relatorio.pdf");
-		limparDados();
+	//	limparDados();
 	}
 
 	public void gerarAtendimentosPorProcedimento() throws IOException,
@@ -418,7 +442,8 @@ public class RelatoriosController implements Serializable {
 
 		if (this.dataFinal == null || this.dataInicial == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Datas devem ser preenchidas.", "Campos inválidos!");
+					"Datas e programa devem ser preenchidos.",
+					"Campos inválidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -437,7 +462,86 @@ public class RelatoriosController implements Serializable {
 				+ File.separator);
 
 		this.executeReport(relatorio, map, "relatorio.pdf");
-		limparDados();
+		//limparDados();
+	}
+
+	public void gerarAtendimentosPorProcedimentoGrupo() throws IOException,
+			ParseException {
+		if (this.dataInicial == null || this.dataFinal == null
+				|| this.programa == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Datas e programa devem ser preenchidos.",
+					"Campos inválidos!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+
+			String caminho = "/WEB-INF/relatorios/";
+			String relatorio = "";
+			if (this.tipoAnalSint.equals("A")) {
+				relatorio = caminho
+						+ "atendPorProcedimentosGrupoAnalitico.jasper";
+			} else if (this.tipoAnalSint.equals("S")) {
+				relatorio = caminho
+						+ "atendPorProcedimentosGrupoSintetico.jasper";
+			}
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("dt_inicial", this.dataInicial);
+			map.put("dt_final", this.dataFinal);
+			map.put("cod_programa", this.programa.getIdPrograma());
+
+			if (this.listaGrupos.isEmpty()) {
+				map.put("cod_grupo", null);
+			} else {
+				map.put("cod_grupo", strIdGrupos());
+			}
+
+			map.put("SUBREPORT_DIR",
+					this.getServleContext().getRealPath(caminho)
+							+ File.separator);
+
+			this.executeReport(relatorio, map, "relatorio.pdf");
+			//limparDados();
+		}
+	}
+
+	public void gerarAtendimentosPorProcedimentoTipoAt() throws IOException,
+			ParseException {
+		if (this.dataInicial == null || this.dataFinal == null
+				|| this.programa == null || this.grupo == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Datas, programa e grupo devem ser preenchidos.",
+					"Campos inválidos!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+
+			String caminho = "/WEB-INF/relatorios/";
+			String relatorio = "";
+			if (this.tipoAnalSint.equals("A")) {
+				relatorio = caminho
+						+ "atendPorProcedimentosTipoAtAnalitico.jasper";
+			} else if (this.tipoAnalSint.equals("S")) {
+				relatorio = caminho
+						+ "atendPorProcedimentosTipoAtSintetico.jasper";
+			}
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("dt_inicial", this.dataInicial);
+			map.put("dt_final", this.dataFinal);
+			map.put("cod_programa", this.programa.getIdPrograma());
+			map.put("cod_grupo", this.grupo.getIdGrupo());
+
+			if (this.listaTipos.isEmpty()) {
+				map.put("cod_tipoatendimento", null);
+			} else {
+				map.put("cod_tipoatendimento", strIdTipos());
+			}
+
+			map.put("SUBREPORT_DIR",
+					this.getServleContext().getRealPath(caminho)
+							+ File.separator);
+			
+			this.executeReport(relatorio, map, "relatorio.pdf");
+			//limparDados();
+		}
 	}
 
 	public void gerarConfigAgendaProfissional() throws IOException,
@@ -495,12 +599,13 @@ public class RelatoriosController implements Serializable {
 		limparDados();
 	}
 
-	public void gerarFaltasPorPrograma() throws IOException,
-			ParseException {
+	public void gerarFaltasPorPrograma() throws IOException, ParseException {
 
-		if (this.dataFinal == null || this.dataInicial == null || this.programa == null) {
+		if (this.dataFinal == null || this.dataInicial == null
+				|| this.programa == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Datas e programa devem ser preenchidas.", "Campos inválidos!");
+					"Datas e programa devem ser preenchidas.",
+					"Campos inválidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -519,6 +624,54 @@ public class RelatoriosController implements Serializable {
 		limparDados();
 	}
 
+	public void addGrupoLst() {
+		this.listaGrupos.add(this.grupo);
+	}
+
+	public void rmvGrupoLst() {
+		this.listaGrupos.remove(this.grupo);
+	}
+
+	public void addTipoLst() {
+		this.listaTipos.add(this.tipo);
+	}
+
+	public void rmvTipoLst() {
+		this.listaTipos.remove(this.tipo);
+	}
+
+	public String strIdGrupos() {
+		int si = this.listaGrupos.size();
+		int i = 1;
+		String str = new String();
+		for (GrupoBean grupo : listaGrupos) {
+
+			if (i < si) {
+				str += String.valueOf(grupo.getIdGrupo()) + ", ";
+			} else {
+				str += String.valueOf(grupo.getIdGrupo());
+			}
+			i++;
+		}
+		return str;
+	}
+
+	public String strIdTipos() {
+		int si = this.listaTipos.size();
+		int i = 1;
+		String str = new String();
+		for (TipoAtendimentoBean tipos : listaTipos) {
+
+			if (i < si) {
+				str += String.valueOf(tipos.getIdTipo()) + ", ";
+			} else {
+				str += String.valueOf(tipos.getIdTipo());
+			}
+			i++;
+		}
+		return str;
+	}
+	
 	private void executeReport(String relatorio, Map<String, Object> map,
 			String filename) throws IOException, ParseException {
 		FacesContext context = FacesContext.getCurrentInstance();
