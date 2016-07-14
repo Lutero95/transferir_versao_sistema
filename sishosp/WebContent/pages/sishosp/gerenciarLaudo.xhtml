@@ -26,7 +26,8 @@
 
 			<p:growl id="growl" showDetail="false" />
 			<p:panel id="pnlprincipal" header="">
-				<p:panelGrid columns="9" styleClass="semBorda"
+			<p:outputPanel autoUpdate="true">
+				<p:panelGrid columns="11" styleClass="semBorda"
 					style="font-size:12px !important;">
 
 
@@ -34,7 +35,7 @@
 					<p:outputLabel value="Nome: " />
 					<p:inputText id="campoBuscanome" value="#{LaudoController.nome}" />
 					<p:outputLabel value="Situação: " />
-					<p:selectOneRadio id="campoBuscaSituacao" required="false"
+					<p:selectOneRadio id="campoBuscaSituacao" required="true"
 						value="#{LaudoController.situacao}">
 
 						<f:selectItem itemLabel="Pendente" itemValue="P" />
@@ -43,9 +44,9 @@
 
 					</p:selectOneRadio>
 					<p:outputLabel value="Recurso: " />
-					<p:selectOneRadio id="campoBuscaRecurso" required="false"
+					<p:selectOneRadio id="campoBuscaRecurso" required="true"
 						value="#{LaudoController.prontuario}">
-
+                       <f:selectItem itemLabel="Todos" itemValue="T" />
 						<f:selectItem itemLabel="Faec" itemValue="F" />
 						<f:selectItem itemLabel="Mac" itemValue="M" />
 
@@ -57,17 +58,17 @@
 				</p:panelGrid>
 				<p:panelGrid columns="9" styleClass="semBorda"
 					style="font-size:12px !important;">
-					<p:outputLabel value="Data Autorizada: " />
+					<p:outputLabel value="Período Inicial: " />
 					<p:calendar id="campoBuscaDataInicio" locale="pt"
 						value="#{LaudoController.dataAtorizacao}" navigator="true"
 						mask="true" pattern="dd/MM/yyyy" />
 
-					<p:outputLabel value="Data Solicitada: " />
+					<p:outputLabel value="Período Final: " />
 					<p:calendar id="campoBuscaDataFim" locale="pt"
 						value="#{LaudoController.dataSolicitacao}" navigator="true"
 						mask="true" pattern="MM/yyyy" />
 
-					<h:outputLabel for="prog" value="Programa:" />
+					<h:outputLabel value="Programa:" />
 					<p:outputPanel id="outProg">
 						<p:autoComplete value="#{LaudoController.laudo.programa}"
 							size="30" converter="conPrograma"
@@ -75,9 +76,21 @@
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descPrograma}">
-							<p:ajax event="itemSelect" />
+							<p:ajax event="itemSelect" listener="#{GrupoController.selectPrograma}" />
 						</p:autoComplete>
 					</p:outputPanel>
+					
+					<h:outputLabel value="Grupo:" />
+					<p:outputPanel id="outGrupo">
+							<p:autoComplete value="#{LaudoController.laudo.grupo}" size="30"
+								converter="conGrupo"
+								completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descGrupo}">
+								<p:ajax event="itemSelect"/>
+							</p:autoComplete>
+						</p:outputPanel>
 
 
 					<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
@@ -100,7 +113,7 @@
 					</p:commandButton>
 
 				</p:panelGrid>
-
+	</p:outputPanel>
 
 
 
@@ -123,13 +136,13 @@
 						<h:outputText value="#{tab.programa.descPrograma}" />
 					</p:column>
 
-					<p:column headerText="Data Solicitada" style="font-weight:bold;">
+					<p:column headerText="Período Inicial" style="font-weight:bold;">
 						<h:outputText value="#{tab.dtasolicitacao}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Data Autorizada" style="font-weight:bold;">
+					<p:column headerText="Período Final" style="font-weight:bold;">
 						<h:outputText value="#{tab.dtautorizacao}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>

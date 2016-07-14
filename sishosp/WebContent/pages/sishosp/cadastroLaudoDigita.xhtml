@@ -13,9 +13,10 @@
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
 			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarLaudoDigita.faces?faces-redirect=true"></p:commandButton>
+			<h:commandButton value="Voltar"
+					style="position:absolute; left:74%; top:100%;"
+					styleClass="btn btn-info"
+					action="/pages/sishosp/gerenciarLaudoDigita.faces?faces-redirect=true"></h:commandButton>
 			</h:form>
 
 			<h:form id="formLaudo">
@@ -41,7 +42,6 @@
 						<p:outputPanel id="outProfissional">
 							  <p:autoComplete value="#{LaudoController.laudo.profissional}" size="60"
 							  converter="conProfissional"
-							disabled="#{LaudoController.laudo.paciente==null}"
 							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
@@ -50,14 +50,12 @@
 						</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusPro" value="Buscar" icon="buscar"
-							disabled="#{LaudoController.laudo.paciente==null}"
 							onclick="PF('dlgConsuProf').show();" />
 
 						<h:outputLabel value="Procedimento:" />
 						<p:outputPanel id="outProce">
 							<p:autoComplete value="#{LaudoController.laudo.procedimento}" size="60"
 							converter="conProcedimento"
-							disabled="#{LaudoController.laudo.profissional==null}"
 							completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
@@ -66,7 +64,6 @@
 						</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusProce" value="Buscar" icon="buscar"
-							disabled="#{LaudoController.laudo.profissional==null}"
 							onclick="PF('dlgConsuProce').show();" />
 					</h:panelGrid>
 
@@ -107,7 +104,7 @@
 							<p:outputLabel value="Prorrogar:" />
 
 							<p:selectOneRadio id="prorrogar" style="border: double;"
-								required="false" layout="pageDirection"
+								required="true" layout="pageDirection"
 								requiredMessage="Prorrogar e necessario"
 								value="#{LaudoController.laudo.prorrogar}">
 
@@ -124,9 +121,11 @@
 						<p:outputPanel style="margin-left:16px;">
 							<h:outputLabel value="Data para Solicitação" />
 							<br />
-							<p:calendar id="dataAte" showOn="button" locale="pt"
-								value="#{LaudoController.laudo.dtasolicitacao}" navigator="true"
-								mask="true" pattern="MM/yyyy" />
+							<p:calendar id="dataAte" locale="pt"
+							required="true"
+							requiredMessage="E necessario informar a data de solitação"
+								value="#{LaudoController.laudo.dtasolicitacao}" 
+								mask="true" pattern="dd/MM/yyyy" />
 
 
 						</p:outputPanel>
@@ -137,7 +136,7 @@
 
 							<p:outputLabel id="dtFim" value="#{LaudoController.laudo.dtafim}">
 								<f:convertDateTime locale="pt" timeZone="-3GTM"
-									pattern="MM/yyyy" />
+									pattern="dd/MM/yyyy" />
 							</p:outputLabel>
 						</p:outputPanel>
 					</h:panelGrid>

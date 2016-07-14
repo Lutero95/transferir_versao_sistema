@@ -10,6 +10,7 @@ import java.util.Calendar;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
@@ -31,7 +32,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 @ManagedBean(name = "LaudoController")
-@ViewScoped
+@SessionScoped
 public class LaudoController implements Serializable {
 	/**
 	 * 
@@ -88,7 +89,6 @@ public class LaudoController implements Serializable {
 		campoBuscaNumero = 1;
 		campoBuscaData = null;
 		this.cabecalho = "";
-
 		listaLaudo = new ArrayList<>();
 		listaLaudo = null;
 
@@ -192,11 +192,11 @@ public class LaudoController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Laudo alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "/pages/sishosp/gerenciarEscola.faces?faces-redirect=true";
+			return "/pages/sishosp/gerenciarLaudoDigita.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
+					"Ocorreu um erro durante a alteração!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
@@ -305,7 +305,6 @@ public class LaudoController implements Serializable {
 		this.recurso = null;
 		this.nome = null;
 		this.prontuario = null;
-
 	}
 
 	public void limparDados() {

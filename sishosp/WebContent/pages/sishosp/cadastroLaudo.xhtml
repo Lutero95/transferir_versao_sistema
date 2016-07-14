@@ -77,9 +77,9 @@
 						<p:commandButton id="btBusGr" value="Buscar" icon="buscar"
 							disabled="#{LaudoController.laudo.programa==null}"
 							onclick="PF('dlgConsuGrop').show();" />
-
-						<h:outputLabel value="Equipe:" />
-						<p:outputPanel id="outEquipe">
+							
+                        <h:outputLabel value="Equipe:" />
+						<p:outputPanel id="outEquipe" >
 							<p:autoComplete value="#{LaudoController.laudo.equipe}" size="60"
 								converter="conEquipe"
 								disabled="#{LaudoController.laudo.grupo==null}"
@@ -94,7 +94,7 @@
 						<p:commandButton id="btBusEquipe" value="Buscar" icon="buscar"
 							disabled="#{LaudoController.laudo.grupo==null}"
 							onclick="PF('dlgConsuEquipe').show();" />
-
+                     
 						<h:outputLabel value="Profissional:" />
 						<p:outputPanel id="outProfissional">
 							<p:autoComplete value="#{LaudoController.laudo.profissional}"
@@ -554,7 +554,7 @@
 					</p:dataTable>
 				</h:form>
 			</p:dialog>
-
+			
 			<p:dialog header="Consulta Equipe" widgetVar="dlgConsuEquipe"
 				modal="true" width="500px">
 				<h:form id="formConsuEquipe">
