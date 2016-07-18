@@ -17,7 +17,7 @@ public class ConnectionFactory {
     // Banco Teste  \/
     private static final String URL = "jdbc:postgresql://localhost:5432/sishosp";
     private static final String USER = "postgres";
-    private static final String PASS = "123456";
+    private static final String PASS = "post";
     public static Connection getConnection() {
         
         Connection conexao = null;
