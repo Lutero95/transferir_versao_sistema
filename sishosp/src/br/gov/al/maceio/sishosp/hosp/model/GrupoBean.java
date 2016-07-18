@@ -21,6 +21,7 @@ public class GrupoBean {
 		this.equipes = new ArrayList<EquipeBean>();
 		this.equipesNovo = new ArrayList<EquipeBean>();
 		this.equipeAdd = null;
+		equipeThulio = false;
 	}
 
 	public Integer getIdGrupo() {

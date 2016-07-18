@@ -51,7 +51,8 @@
 								itemLabel="#{theme.descPrograma}">
 								<p:ajax event="itemSelect"
 									listener="#{GrupoController.selectPrograma}"
-									update=":formLaudo:outGrupo, :formLaudo:btBusGr" />
+									update=":formLaudo:outGrupo, :formLaudo:btBusGr,
+									:formConsuGrop:dtGrupo" />
 							</p:autoComplete>
 
 						</p:outputPanel>
@@ -70,7 +71,8 @@
 								itemLabel="#{theme.descGrupo}">
 								<p:ajax event="itemSelect"
 								
-									update=":formLaudo:outEquipe,:formLaudo:btBusEquipe" />
+									update=":formLaudo:outEquipe,:formLaudo:btBusEquipe, 
+									:formLaudo:outEquipe" />
 									<!-- listener="#{GrupoController.selectEqupProf}" -->
 							</p:autoComplete>
 						</p:outputPanel>
@@ -78,8 +80,9 @@
 							disabled="#{LaudoController.laudo.programa==null}"
 							onclick="PF('dlgConsuGrop').show();" />
 							
+						<p:column id="outEquipe" rendered="#{LaudoController.laudo.grupo.equipeThulio == true}">	
                         <h:outputLabel value="Equipe:" />
-						<p:outputPanel id="outEquipe" >
+						<p:outputPanel  >
 							<p:autoComplete value="#{LaudoController.laudo.equipe}" size="60"
 								converter="conEquipe"
 								disabled="#{LaudoController.laudo.grupo==null}"
@@ -94,7 +97,7 @@
 						<p:commandButton id="btBusEquipe" value="Buscar" icon="buscar"
 							disabled="#{LaudoController.laudo.grupo==null}"
 							onclick="PF('dlgConsuEquipe').show();" />
-                     
+                     </p:column>
 						<h:outputLabel value="Profissional:" />
 						<p:outputPanel id="outProfissional">
 							<p:autoComplete value="#{LaudoController.laudo.profissional}"

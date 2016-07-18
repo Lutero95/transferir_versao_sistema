@@ -200,7 +200,7 @@ public class GrupoDAO {
 				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
 				grupo.setAuditivo(rs.getBoolean("auditivo"));
 				grupo.setEquipeThulio(rs.getBoolean("equipe"));
-				System.out.println("THULIO:"+grupo.isEquipeThulio());
+				System.out.println("THULIO:"+grupo.isEquipeThulio() + " - " + grupo.getDescGrupo());
 				lista.add(grupo);
 			}
 		} catch (SQLException ex) {
