@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
@@ -13,6 +15,8 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
+@ManagedBean(name = "ProfissionalController")
+@ViewScoped
 public class ProfissionalController implements Serializable {
 
 	/**

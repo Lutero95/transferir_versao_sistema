@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
@@ -15,6 +17,8 @@ import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
+@ManagedBean(name="TipoAtendimentoController")
+@ViewScoped
 public class TipoAtendimentoController implements Serializable {
 
 	/**

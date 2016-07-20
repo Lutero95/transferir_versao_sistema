@@ -37,7 +37,7 @@
 									<h:inputText value="#{PacienteController.paciente.nome}"
 										class="form-control" id="inputname"
 										pt:placeholder="Digite aqui seu nome entre 2 e 30 caracteres"
-										required="false"
+										required="true"
 										validatorMessage="Nome deve conter entre 2 e 30 caracteres."
 										requiredMessage="é necessário que você informe seu nome.">
 										<f:validateLength minimum="2" maximum="40" />
@@ -54,8 +54,8 @@
 										yearRange="-111:+39" navigator="true" pages="1"
 										showOn="button" size="12"
 										value="#{PacienteController.paciente.dtanascimento}"
-										locale="pt" required="false"
-										requiredMessage="Informe o nascimento do Responsavel" />
+										locale="pt" required="true"
+										requiredMessage="Informe sua data de nascimento " />
 									<!-- <p:inputMask id="nascimento" required="false" size="12" value="#{PacienteController.paciente.dtanascimento}" mask="99/99/9999" requiredMessage="Informe o nascimento"/>   -->
 								</div>
 							</div>
@@ -125,9 +125,9 @@
 									<h:inputText value="#{PacienteController.paciente.nomePai}"
 										class="form-control" id="pai"
 										pt:placeholder="Digite aqui o nome do seu pai entre 2 e 30 caracteres"
-										required="false"
+										required="true"
 										validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-										requiredMessage="é necessário que você informe seu nome.">
+										requiredMessage="é necessário que você informe o nome do seu pai.">
 										<f:validateLength minimum="2" maximum="40" />
 
 									</h:inputText>
@@ -141,9 +141,9 @@
 									<h:inputText value="#{PacienteController.paciente.nomeMae}"
 										class="form-control" id="mae"
 										pt:placeholder="Digite aqui o nome da sua mãe entre 2 e 30 caracteres"
-										required="false"
+										required="true"
 										validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-										requiredMessage="é necessário que você informe seu nome.">
+										requiredMessage="é necessário que você informe o nome da sua mãe.">
 										<f:validateLength minimum="2" maximum="40" />
 
 									</h:inputText>
@@ -266,6 +266,8 @@
 									<div class="col-sm-6">
 										<h:inputText
 											value="#{PacienteController.paciente.endereco.bairro}"
+											required="true"
+											requiredMessage="é necessario que você informe seu bairro"
 											class="form-control" id="inputbairro"
 											pt:placeholder="Digite aqui seu bairro">
 										</h:inputText>
@@ -277,6 +279,8 @@
 									<div class="col-sm-6">
 										<h:inputText
 											value="#{PacienteController.paciente.endereco.logradouro}"
+											required="true"
+											requiredMessage="é necessario que você informe seu logradouro"
 											class="form-control" id="inputrua"
 											pt:placeholder="Digite aqui seu Logradouro entre 50 digitos">
 											<f:validateLength minimum="2" maximum="50" />
@@ -290,6 +294,8 @@
 										<h:inputText
 											value="#{PacienteController.paciente.endereco.numero}"
 											class="form-control" id="numero"
+											required="true"
+											requiredMessage="é necessario que você informe seu numero"
 											pt:placeholder="Digite aqui seu numero">
 											<f:validateLength minimum="2" maximum="50" />
 										</h:inputText>
@@ -407,7 +413,7 @@
 								<div class="col-sm-6">
 									<h:inputText value="#{PacienteController.paciente.cns}"
 										class="form-control" id="cns"
-										pt:placeholder="Digite aqui seu cns" required="false"
+										pt:placeholder="Digite aqui seu cns" required="true"
 										validatorMessage="CNS deve conter entre 15 digitos."
 										requiredMessage="é necessário que você informe seu cns.">
 										<!--  <f:validateLength minimum="15" maximum="15" /> -->

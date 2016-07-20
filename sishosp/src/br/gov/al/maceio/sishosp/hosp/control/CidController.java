@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
@@ -16,8 +18,9 @@ import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
-
-public class CidController implements Serializable{
+@ManagedBean(name = "CidController")
+@ViewScoped
+public class CidController implements Serializable {
 
 	/**
 	 * 
@@ -37,7 +40,7 @@ public class CidController implements Serializable{
 	public CidController() {
 		this.cid = new CidBean();
 		this.listaCids = new ArrayList<>();
-		this.listaCids = null;	
+		this.listaCids = null;
 		this.descricaoBusca = new String();
 		this.tipo = new String();
 		this.cabecalho = "";
@@ -65,41 +68,41 @@ public class CidController implements Serializable{
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
-	
+
 	public void alterarCid() throws ProjetoException {
-        boolean alterou = gDao.alterarCid(cid);
-        if(alterou == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Grupo alterado com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }
+		boolean alterou = gDao.alterarCid(cid);
+		if (alterou == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Grupo alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
 		listaCids = gDao.listarCid();
-		
+
 	}
-	
+
 	public void excluirCid() throws ProjetoException {
-        boolean ok = gDao.excluirCid(cid);
-        if(ok == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Grupo excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+		boolean ok = gDao.excluirCid(cid);
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Grupo excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
 		listaCids = gDao.listarCid();
 	}
 
-	
-	
 	public CidBean getCid() {
 		return cid;
 	}
@@ -164,19 +167,19 @@ public class CidController implements Serializable{
 	}
 
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE CID";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR CID";
 		}
 		return cabecalho;
 	}
-	
+
 	public List<CidBean> listaCidAutoComplete(String query)
 			throws ProjetoException {
 		CidDAO cDao = new CidDAO();
 		List<CidBean> result = cDao.listarCidsBusca(query, 1);
 		return result;
 	}
-	
+
 }

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
@@ -12,6 +14,9 @@ import org.primefaces.context.RequestContext;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EncaminhadoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
+
+@ManagedBean(name = "EncaminhadoController")
+@ViewScoped
 
 public class EncaminhadoController implements Serializable {
 	/**

@@ -12,6 +12,8 @@ public class GrupoBean {
 	private List<EquipeBean> equipes;
 	private List<EquipeBean> equipesNovo;
 	private EquipeBean equipeAdd;
+	
+	private boolean equipeThulio;
 
 	public GrupoBean() {
 		this.idGrupo = null;
@@ -19,6 +21,7 @@ public class GrupoBean {
 		this.equipes = new ArrayList<EquipeBean>();
 		this.equipesNovo = new ArrayList<EquipeBean>();
 		this.equipeAdd = null;
+		equipeThulio = false;
 	}
 
 	public Integer getIdGrupo() {
@@ -85,4 +88,14 @@ public class GrupoBean {
 	public void rmvEquipe() {
 		this.equipes.remove(this.equipeAdd);
 	}
+
+	public boolean isEquipeThulio() {
+		return equipeThulio;
+	}
+
+	public void setEquipeThulio(boolean equipeThulio) {
+		this.equipeThulio = equipeThulio;
+	}
+
+	
 }

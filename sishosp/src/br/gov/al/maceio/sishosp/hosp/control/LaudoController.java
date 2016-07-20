@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Calendar;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
@@ -28,7 +31,8 @@ import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
-
+@ManagedBean(name = "LaudoController")
+@SessionScoped
 public class LaudoController implements Serializable {
 	/**
 	 * 
@@ -47,24 +51,22 @@ public class LaudoController implements Serializable {
 	private FornecedorBean fornecedor;
 	private CidBean cid;
 	private EquipamentoBean equipamento;
-	
-	
+
 	private String cabecalho;
-	
-	//LISTAS
+
+	// LISTAS
 	private List<LaudoBean> listaLaudo;
 	private List<LaudoBean> listaLaudoDigita;
-	
-	//BUSCAS
+
+	// BUSCAS
 	private String tipo;
 	private Integer tipoBuscaLaudo;
 	private String campoBuscaLaudo;
 	private Integer campoBuscaNumero;
 	private Date campoBuscaData;
 	private String statusLaudo;
-	
-	
-	//BUSCA PERSONALIZADA
+
+	// BUSCA PERSONALIZADA
 	private String situacao;
 	private String nome;
 	private String recurso;
@@ -72,163 +74,159 @@ public class LaudoController implements Serializable {
 	private Date dataSolicitacao;
 	private Integer prontuario;
 	private String programa2;
-	
-	public LaudoController(){
-		//CLASSES
+
+	public LaudoController() {
+		// CLASSES
 		laudo = new LaudoBean();
-	
-	
-		
-		this.tipoAt = null;//new TipoAtendimentoBean();
-		
-		 //BUSCA
-		tipo ="";
+
+		this.tipoAt = null;// new TipoAtendimentoBean();
+
+		// BUSCA
+		tipo = "";
 		tipoBuscaLaudo = 1;
 		campoBuscaLaudo = "";
 		statusLaudo = "P";
 		campoBuscaNumero = 1;
 		campoBuscaData = null;
 		this.cabecalho = "";
-		
-		
-		 listaLaudo = new ArrayList<>();
-		 listaLaudo = null;
-		 
-		 listaLaudoDigita = new ArrayList<>();
-		 listaLaudoDigita = null;
+		listaLaudo = new ArrayList<>();
+		listaLaudo = null;
+
+		listaLaudoDigita = new ArrayList<>();
+		listaLaudoDigita = null;
 
 	}
-	
+
 	public void gravarLaudo() throws ProjetoException {
-		LaudoDAO udao = new LaudoDAO();    
-                boolean cadastrou = udao.cadastrarLaudo(laudo);
-               
-                if(cadastrou == true) {
-                	limparDados();
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Laudo cadastrado com sucesso!", "Sucesso");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
-                    listaLaudo = null;
-                    
+		LaudoDAO udao = new LaudoDAO();
+		boolean cadastrou = udao.cadastrarLaudo(laudo);
 
-                } else {
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Ocorreu um erro durante o cadastro!", "Erro");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Laudo cadastrado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaLaudo = null;
 
- 
-                }
-            
-    }
-	
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		}
+
+	}
+
 	public String alterarLaudo() throws ProjetoException {
 
 		LaudoDAO rdao = new LaudoDAO();
-         boolean alterou = rdao.alterarLaudo(laudo);
-         listaLaudo = null;
-         if(alterou == true) {
-             limparDados();
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                 "Laudo alterado com sucesso!", "Sucesso");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "/pages/sishosp/gerenciarLaudo.faces?faces-redirect=true";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         } else {
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                 "Ocorreu um erro durante o cadastro!", "Erro");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         }
-		
+		boolean alterou = rdao.alterarLaudo(laudo);
+		listaLaudo = null;
+		if (alterou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Laudo alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "/pages/sishosp/gerenciarLaudo.faces?faces-redirect=true";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		}
+
 	}
-	
+
 	public void excluirLaudo() throws ProjetoException {
 		LaudoDAO udao = new LaudoDAO();
 
-        boolean excluio = udao.excluirLaudo(laudo);
-        
-        if(excluio == true) {
-        	
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Laudo excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaLaudo = null;
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+		boolean excluio = udao.excluirLaudo(laudo);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
+		if (excluio == true) {
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Laudo excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaLaudo = null;
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
 	}
-	
+
 	public void gravarLaudoDigita() throws ProjetoException {
-		LaudoDAO udao = new LaudoDAO();    
-                boolean cadastrou = udao.cadastrarLaudoDigita(laudo);
-               
-                if(cadastrou == true) {
-                	limparDados();
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Laudo cadastrado com sucesso!", "Sucesso");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
-                    listaLaudoDigita = null;
-                    
+		LaudoDAO udao = new LaudoDAO();
+		boolean cadastrou = udao.cadastrarLaudoDigita(laudo);
 
-                } else {
-                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Ocorreu um erro durante o cadastro!", "Erro");
-                    FacesContext.getCurrentInstance().addMessage(null, msg);
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Laudo cadastrado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaLaudoDigita = null;
 
- 
-                }
-            
-    }
-	
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		}
+
+	}
+
 	public String alterarLaudoDigita() throws ProjetoException {
 
 		LaudoDAO rdao = new LaudoDAO();
-         boolean alterou = rdao.alterarLaudoDigita(laudo);
-         listaLaudoDigita = null;
-         if(alterou == true) {
-             limparDados();
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                 "Laudo alterado com sucesso!", "Sucesso");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "/pages/sishosp/gerenciarEscola.faces?faces-redirect=true";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         } else {
-             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                 "Ocorreu um erro durante o cadastro!", "Erro");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-             return "";
-             //RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-         }
-		
+		boolean alterou = rdao.alterarLaudoDigita(laudo);
+		listaLaudoDigita = null;
+		if (alterou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Laudo alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "/pages/sishosp/gerenciarLaudoDigita.faces?faces-redirect=true";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a alteração!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+		}
+
 	}
-	
+
 	public void excluirLaudoDigita() throws ProjetoException {
 		LaudoDAO udao = new LaudoDAO();
 
-        boolean excluio = udao.excluirLaudoDigita(laudo);
-        
-        if(excluio == true) {
-        	
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Laudo excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaLaudoDigita = null;
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+		boolean excluio = udao.excluirLaudoDigita(laudo);
 
-            RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
-        }
+		if (excluio == true) {
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Laudo excluido com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			listaLaudoDigita = null;
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
 	}
-	
+
 	public void buscarLaudo() {
 
 		List<LaudoBean> listaAux = null;
@@ -236,7 +234,9 @@ public class LaudoController implements Serializable {
 
 		LaudoDAO adao = new LaudoDAO();
 
-		listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso, this.prontuario, this.dataAtorizacao, this.dataSolicitacao, this.laudo.getPrograma());
+		listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso,
+				this.prontuario, this.dataAtorizacao, this.dataSolicitacao,
+				this.laudo.getPrograma());
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -249,7 +249,7 @@ public class LaudoController implements Serializable {
 		}
 
 	}
-	
+
 	public void buscarLaudoDigita() {
 
 		List<LaudoBean> listaAux = null;
@@ -257,7 +257,7 @@ public class LaudoController implements Serializable {
 
 		LaudoDAO adao = new LaudoDAO();
 
-		listaAux = adao.buscarTipoLaudoDigita(campoBuscaLaudo,tipoBuscaLaudo);
+		listaAux = adao.buscarTipoLaudoDigita(campoBuscaLaudo, tipoBuscaLaudo);
 
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -270,9 +270,10 @@ public class LaudoController implements Serializable {
 		}
 
 	}
-	
+
 	public void buscaPersonalizada() {
-System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().getIdPrograma());
+		System.out.println("TESTE:" + laudo.getDtautorizacao() + "||"
+				+ laudo.getPrograma().getIdPrograma());
 		List<LaudoBean> listaAux = null;
 		listaLaudo = new ArrayList<>();
 
@@ -291,7 +292,7 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 		}
 
 	}
-	
+
 	public void limparBuscaDados() {
 		tipoBuscaLaudo = 1;
 		campoBuscaLaudo = "";
@@ -304,10 +305,9 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 		this.recurso = null;
 		this.nome = null;
 		this.prontuario = null;
-		
 	}
-	
-	public void limparDados(){
+
+	public void limparDados() {
 		laudo = new LaudoBean();
 		fornecedor = new FornecedorBean();
 		paciente = new PacienteBean();
@@ -316,46 +316,48 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 		profissional = new ProfissionalBean();
 		equipe = new EquipeBean();
 		procedimento = new ProcedimentoBean();
-	
+
 	}
-	
 
 	public void calcularDias() {
-		try{
-		if (laudo.getProrrogar() != null) {
-			Integer dias = this.laudo.getProrrogar();
-			Date dataFim = this.laudo.getDtasolicitacao();
+		try {
+			if (laudo.getProrrogar() != null) {
+				Integer dias = this.laudo.getProrrogar();
+				Date dataFim = this.laudo.getDtasolicitacao();
 
-			 //System.out.println("DATA:"+laudo.getProrrogar()+"||"+laudo.getDtainicio()+"||"+laudo.getDtavencimento());
+				// System.out.println("DATA:"+laudo.getProrrogar()+"||"+laudo.getDtainicio()+"||"+laudo.getDtavencimento());
 
-			// System.out.println("DIAS: " + (dias - 1));
+				// System.out.println("DIAS: " + (dias - 1));
 
-			Calendar cl = Calendar.getInstance();
-			cl.setTime(dataFim);
-			cl.add(Calendar.DATE, (dias - 1));
+				Calendar cl = Calendar.getInstance();
+				cl.setTime(dataFim);
+				cl.add(Calendar.DATE, (dias - 1));
 
-			Date dataFinal = cl.getTime();
+				Date dataFinal = cl.getTime();
 
-			// System.out.println("DATA FINAL: " + dataFinal);
-		    
-			this.laudo.setDtafim(dataFinal);
-		}}catch (Exception ex) {
+				// System.out.println("DATA FINAL: " + dataFinal);
+
+				this.laudo.setDtafim(dataFinal);
+			}
+		} catch (Exception ex) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 					"Informe a Data de autorização.", "Aviso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			this.laudo.setProrrogar(null);
-        }
-		
+		}
+
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public void calcularDiasCalendario() {
 		if (laudo.getDtautorizacao() != null) {
-			//System.out.println("Entrou aqui"+ laudo.getDtavencimento() +"---"+ laudo.getDtautorizacao());
+			// System.out.println("Entrou aqui"+ laudo.getDtavencimento()
+			// +"---"+ laudo.getDtautorizacao());
 			// Usuário informa uma data
 			Date dataDoUsuario = this.laudo.getDtautorizacao();
 
-			// Através do Calendar, trabalhamos a data informada e adicionamos 1 dia nela
+			// Através do Calendar, trabalhamos a data informada e adicionamos 1
+			// dia nela
 			Calendar c = Calendar.getInstance();
 			c.setTime(dataDoUsuario);
 			c.add(Calendar.DATE, 30);
@@ -366,9 +368,6 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 			this.laudo.setDtavencimento(dataDoUsuario);
 		}
 	}
-	
-	
-	
 
 	public Integer getAbaAtiva() {
 		return abaAtiva;
@@ -417,7 +416,7 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 	public void setStatusLaudo(String statusLaudo) {
 		this.statusLaudo = statusLaudo;
 	}
-	
+
 	public PacienteBean getPaciente() {
 		return paciente;
 	}
@@ -475,9 +474,9 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 	}
 
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE APAC/BPI";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR APAC/BPI";
 		}
 		return cabecalho;
@@ -545,20 +544,19 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 		this.listaLaudoDigita = listaLaudoDigita;
 	}
 
-	
 	public String getCabecalho2() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CADASTRO DE LAUDO DIGITA";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR LAUDO DIGITA";
 		}
 		return cabecalho;
 	}
-	
+
 	public String getCabecalho3() {
-		if(this.tipo.equals("I")){
+		if (this.tipo.equals("I")) {
 			cabecalho = "CONTROLE LAUDO";
-		}else if(this.tipo.equals("A")){
+		} else if (this.tipo.equals("A")) {
 			cabecalho = "ALTERAR LAUDO DIGITA";
 		}
 		return cabecalho;
@@ -635,6 +633,5 @@ System.out.println("TESTE:"+laudo.getDtautorizacao()+"||"+laudo.getPrograma().ge
 	public void setPrograma2(String programa2) {
 		this.programa2 = programa2;
 	}
-   
 
 }

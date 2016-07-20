@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
@@ -13,7 +15,9 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 
-public class EquipeController implements Serializable{
+@ManagedBean(name = "EquipeController")
+@ViewScoped
+public class EquipeController implements Serializable {
 
 	/**
 	 * 
@@ -127,17 +131,17 @@ public class EquipeController implements Serializable{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"É necessário no mínimo um profissional na equipe!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return"";
+			return "";
 		}
 		if (this.equipe.getDescEquipe().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Descrição obrigatória!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return"";
+			return "";
 		}
-		
+
 		boolean alterou = eDao.alterarEquipe(equipe);
-		
+
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Equipe alterada com sucesso!", "Sucesso");

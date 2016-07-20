@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
@@ -21,6 +23,8 @@ import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
+@ManagedBean(name = "ConfigAgendaController")
+@ViewScoped
 public class ConfigAgendaController implements Serializable {
 
 	/**

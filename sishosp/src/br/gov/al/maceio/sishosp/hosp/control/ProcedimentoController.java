@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
@@ -14,7 +16,9 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
-public class ProcedimentoController implements Serializable{
+@ManagedBean(name = "ProcedimentoController")
+@ViewScoped
+public class ProcedimentoController implements Serializable {
 
 	/**
 	 * 
@@ -120,7 +124,7 @@ public class ProcedimentoController implements Serializable{
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
-		
+
 		boolean alterou = pDao.alterarProcedimento(proc);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
