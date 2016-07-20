@@ -109,16 +109,18 @@
 
 				<p:panelGrid columns="3" styleClass="semBorda">
 					<h:outputLabel value="Profissional: " />
-					<p:outputPanel id="outProfi">
-						<p:inputText
-							value="#{ConfigAgendaController.confParte1.profissional.idProfissional}"
-							readonly="true" style="width: 60px" />
-						<p:inputText id="descProf"
-							value="#{ConfigAgendaController.confParte1.profissional.descricaoProf}"
-							readonly="true" style="width: 300px" />
+					<p:outputPanel id="outProf">
+						<p:autoComplete value="#{ConfigAgendaController.confParte1.profissional}"
+							size="60" converter="conProfissional"
+							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descricaoProf}">
+							<p:ajax event="itemSelect" update=":formConfiAgenda" />
+						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton value="Buscar"
-						onclick="PF('dlgConsultProf').show();" />
+						update=":formConfiAgenda" onclick="PF('dlgConsultaProf').show();" />
 				</p:panelGrid>
 
 				<p:panelGrid columns="2" styleClass="semBorda">
@@ -303,7 +305,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsultProf"
+		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsultaProf"
 			modal="true" width="550px">
 			<h:form id="formConsultProf">
 				<p:dataTable value="#{ProfissionalController.listaProfissional}"
@@ -320,7 +322,7 @@
 					</p:column>
 
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":formConfiAgenda:outProfi"
+						<p:commandButton update=":formConfiAgenda:outProf"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsultProf').hide();">
 							<f:setPropertyActionListener value="#{profi}"
