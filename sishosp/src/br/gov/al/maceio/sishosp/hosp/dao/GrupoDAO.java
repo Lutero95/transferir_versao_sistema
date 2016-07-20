@@ -43,7 +43,7 @@ public class GrupoDAO {
 
 	public List<GrupoBean> listarGruposPorPrograma(int codPrograma) {
 		List<GrupoBean> lista = new ArrayList<>();
-		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
+		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
 				+ " where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma order by g.id_grupo";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -57,7 +57,7 @@ public class GrupoDAO {
 				grupo.setDescGrupo(rs.getString("descgrupo"));
 				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
 				grupo.setAuditivo(rs.getBoolean("auditivo"));
-
+                grupo.setEquipeThulio(rs.getBoolean("equipe"));
 				lista.add(grupo);
 			}
 			
@@ -179,7 +179,13 @@ public class GrupoDAO {
 	public List<GrupoBean> listarGruposAutoComplete(String descricao,
 			ProgramaBean prog) {
 		List<GrupoBean> lista = new ArrayList<>();
+<<<<<<< HEAD
 		String sql = "select g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
+=======
+		System.out.println("De " + descricao);
+		System.out.println("Pr " + prog.getDescPrograma());
+		String sql = "select g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
+>>>>>>> 5fba252056e73857aa5481379f2f22b5dfad1f85
 				+ " where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma"
 				+ " and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ?  order by id_grupo";
 
@@ -189,6 +195,7 @@ public class GrupoDAO {
 			stm.setInt(1, prog.getIdPrograma());
 			stm.setString(2, "%" + descricao.toUpperCase() + "%");
 			ResultSet rs = stm.executeQuery();
+		
 
 			while (rs.next()) {
 				GrupoBean grupo = new GrupoBean();
@@ -196,7 +203,8 @@ public class GrupoDAO {
 				grupo.setDescGrupo(rs.getString("descgrupo"));
 				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
 				grupo.setAuditivo(rs.getBoolean("auditivo"));
-
+				grupo.setEquipeThulio(rs.getBoolean("equipe"));
+				System.out.println("THULIO:"+grupo.isEquipeThulio() + " - " + grupo.getDescGrupo());
 				lista.add(grupo);
 			}
 		} catch (SQLException ex) {
