@@ -8,18 +8,9 @@ public class ConfigAgendaParte2Bean {
 	private Integer qtd;
 
 	public ConfigAgendaParte2Bean() {
-		this.programa = new ProgramaBean();
-		this.grupo = new GrupoBean();
-		this.tipoAt = new TipoAtendimentoBean();
-	}
-
-	public ConfigAgendaParte2Bean(ProgramaBean programa, GrupoBean grupo,
-			TipoAtendimentoBean tipoAt, Integer qtd) {
-		super();
-		this.programa = programa;
-		this.grupo = grupo;
-		this.tipoAt = tipoAt;
-		this.qtd = qtd;
+		this.programa = null;
+		this.grupo = null;
+		this.tipoAt = null;
 	}
 
 	public ProgramaBean getPrograma() {

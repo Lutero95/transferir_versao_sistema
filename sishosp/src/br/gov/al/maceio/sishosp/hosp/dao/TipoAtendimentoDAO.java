@@ -213,11 +213,12 @@ public class TipoAtendimentoDAO {
 	public List<TipoAtendimentoBean> listarTipoAtAutoComplete(String descricao,
 			GrupoBean grupo) {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
-		String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa "
+		String sql = "select t.id, t.id ||' - '|| t.desctipoatendimento as desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa "
 				+ " from hosp.grupo g, hosp.tipoatendimento t, hosp.tipoatendimento_grupo tg "
 				+ " where ? = tg.codgrupo and t.id = tg.codtipoatendimento "
-				+ " and t.desctipoatendimento LIKE ? "
-				+ " group by 1, 2, 3, 4, 5;";
+				+ " and upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? "
+				+ " group by t.id, t.id ||' - '|| t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa "
+				+ " order by t.id ";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -228,11 +229,11 @@ public class TipoAtendimentoDAO {
 
 			while (rs.next()) {
 				TipoAtendimentoBean tipo1 = new TipoAtendimentoBean();
-				tipo1.setIdTipo(rs.getInt(1));
-				tipo1.setDescTipoAt(rs.getString(2));
-				tipo1.setPrimeiroAt(rs.getBoolean(3));
-				tipo1.setEquipe(rs.getBoolean(4));
-				tipo1.setCodEmpresa(rs.getInt(5));
+				tipo1.setIdTipo(rs.getInt("id"));
+				tipo1.setDescTipoAt(rs.getString("desctipoatendimento"));
+				tipo1.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
+				tipo1.setEquipe(rs.getBoolean("primeiroatendimento"));
+				tipo1.setCodEmpresa(rs.getInt("codempresa"));
 
 				lista.add(tipo1);
 			}

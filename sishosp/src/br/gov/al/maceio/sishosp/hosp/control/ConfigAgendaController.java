@@ -424,5 +424,16 @@ public class ConfigAgendaController implements Serializable {
 	public void onRowUnselectEquipe(UnselectEvent event) {
 		this.listaHorariosEquipe = null;
 	}
+	
+	public void limparBuscaPrograma(){
+		this.confParte2.setPrograma(null);
+		this.confParte2.setGrupo(null);
+		this.confParte2.setTipoAt(null);
+	}
+	
+	public void limparBuscaGrupo(){
+		this.confParte2.setGrupo(null);
+		this.confParte2.setTipoAt(null);
+	}
 
 }

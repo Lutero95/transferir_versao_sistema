@@ -11,7 +11,6 @@
 
 	<ui:define name="body">
 
-
 		<h:form id="formConfiAgenda">
 			<p:growl id="msg" />
 			<p:panel header="CONFIGURAÇÃO DA AGENDA" id="pnlConfAgenda">
@@ -20,44 +19,62 @@
 
 					<h:outputLabel for="prog" value="Programa: " />
 					<p:outputPanel id="outProg">
-						<p:inputText id="codProg"
-							value="#{ConfigAgendaController.confParte2.programa.idPrograma}"
-							readonly="true" style="width: 40px" />
-						<p:inputText id="prog"
-							value="#{ConfigAgendaController.confParte2.programa.descPrograma}"
-							readonly="true" style="width: 300px" />
+						<p:autoComplete
+							value="#{ConfigAgendaController.confParte2.programa}" size="60"
+							converter="conPrograma"
+							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descPrograma}">
+							<p:ajax event="itemSelect"
+								listener="#{GrupoController.selectPrograma}"
+								update=":formConfiAgenda:outGrupo, :formConsuGrop:dtGrupo, :formConfiAgenda:btBusGr" />
+						</p:autoComplete>
 					</p:outputPanel>
-					<p:commandButton id="btBusPr" value="Buscar"
-						onclick="PF('dlgConsultProg').show();" />
+					<p:commandButton value="Buscar"
+						action="#{ConfigAgendaController.limparBuscaPrograma()}"
+						update=":formConfiAgenda:outGrupo, :formConfiAgenda:outTipoAt"
+						onclick="PF('dlgConsuProg').show();" />
 
 					<h:outputLabel for="grupo" value="Grupo: " />
 					<p:outputPanel id="outGrupo">
-						<p:inputText id="codGrupo"
-							value="#{ConfigAgendaController.confParte2.grupo.idGrupo}"
-							readonly="true" style="width: 40px" />
-						<p:inputText id="grupo"
-							value="#{ConfigAgendaController.confParte2.grupo.descGrupo}"
-							readonly="true" style="width: 300px" />
+						<p:autoComplete value="#{ConfigAgendaController.confParte2.grupo}"
+							size="60" converter="conGrupo"
+							disabled="#{ConfigAgendaController.confParte2.programa==null}"
+							completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descGrupo}">
+							<p:ajax event="itemSelect"
+								listener="#{TipoAtendimentoController.selectGrupo}"
+								update=":formConfiAgenda:outTipoAt, :formConsuTipoAt:dtTipoAt, :formConfiAgenda:btBusTi" />
+						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusGr" value="Buscar"
 						disabled="#{ConfigAgendaController.confParte2.programa==null}"
-						onclick="PF('dlgConsultGrop').show();" />
+						action="#{ConfigAgendaController.limparBuscaGrupo()}"
+						update=":formConfiAgenda:outTipoAt"
+						onclick="PF('dlgConsuGrop').show();" />
 
 				</p:panelGrid>
 
 				<p:panelGrid columns="6" styleClass="semBorda">
 					<h:outputLabel value="Tipo At.:" />
-					<p:outputPanel style="margin-left:15px;" id="outTipoAt">
-						<p:inputText id="idTipo"
-							value="#{ConfigAgendaController.confParte2.tipoAt.idTipo}"
-							style="width: 60px" />
-						<p:inputText id="descTipo"
-							value="#{ConfigAgendaController.confParte2.tipoAt.descTipoAt}"
-							readonly="true" style="width: 350px" />
+					<p:outputPanel id="outTipoAt">
+						<p:autoComplete
+							value="#{ConfigAgendaController.confParte2.tipoAt}" size="60"
+							converter="conTipoAtendimento"
+							disabled="#{ConfigAgendaController.confParte2.grupo==null}"
+							completeMethod="#{TipoAtendimentoController.listaTipoAtAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descTipoAt}">
+							<p:ajax event="itemSelect" update=":formConfiAgenda" />
+						</p:autoComplete>
 					</p:outputPanel>
-					<p:commandButton value="Buscar" id="btBusTi"
+					<p:commandButton id="btBusTi" value="Buscar"
 						disabled="#{ConfigAgendaController.confParte2.grupo==null}"
-						onclick="PF('dlgConsultTipoAt').show();" />
+						update=":formConfiAgenda" onclick="PF('dlgConsuTipoAt').show();" />
 
 					<h:outputLabel value="Qtd.:" />
 					<p:inputText value="#{ConfigAgendaController.confParte2.qtd}"
@@ -202,7 +219,7 @@
 			</p:panel>
 		</h:form>
 
-		<p:dialog header="Consulta Programas" widgetVar="dlgConsultProg"
+		<p:dialog header="Consulta Programas" widgetVar="dlgConsuProg"
 			modal="true" width="500px">
 			<h:form id="formConsuProg">
 				<p:dataTable value="#{ProgramaController.listaProgramas}" var="prog"
@@ -216,10 +233,11 @@
 					</p:column>
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton
-							update=":formConfiAgenda:outProg, :formConsuGrop:dtGrupo, :formConfiAgenda:btBusGr"
+							update=":formConfiAgenda:outProg, :formConsuGrop:dtGrupo, 
+							:formConfiAgenda:btBusGr, :formConfiAgenda:outGrupo"
 							icon="ui-icon-check" title="Selecionar"
 							action="#{GrupoController.atualizaLista(ConfigAgendaController.confParte2.programa)}"
-							onclick="PF('dlgConsultProg').hide();">
+							onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
 								target="#{ConfigAgendaController.confParte2.programa}" />
 						</p:commandButton>
@@ -228,7 +246,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Grupos" widgetVar="dlgConsultGrop"
+		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrop"
 			modal="true" width="550px">
 			<h:form id="formConsuGrop">
 				<p:dataTable value="#{GrupoController.listaGruposProgramas}"
@@ -246,9 +264,10 @@
 
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton
-							update=":formConfiAgenda:outGrupo, :formConsuTipoAt:dtTipoAt, :formConfiAgenda:btBusTi"
+							update=":formConfiAgenda:outGrupo, :formConsuTipoAt:dtTipoAt,
+							 :formConfiAgenda:btBusTi, :formConfiAgenda:outTipoAt"
 							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsultGrop').hide();"
+							onclick="PF('dlgConsuGrop').hide();"
 							action="#{TipoAtendimentoController.atualizaListaTipos(ConfigAgendaController.confParte2.grupo)}">
 							<f:setPropertyActionListener value="#{grupo}"
 								target="#{ConfigAgendaController.confParte2.grupo}" />
@@ -259,7 +278,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consulta Tipos de Atendimento"
-			widgetVar="dlgConsultTipoAt" modal="true" width="550px">
+			widgetVar="dlgConsuTipoAt" modal="true" width="550px">
 			<h:form id="formConsuTipoAt">
 				<p:dataTable value="#{TipoAtendimentoController.listaTipos}"
 					id="dtTipoAt" resizableColumns="true" var="tipo"
@@ -275,7 +294,7 @@
 						<p:commandButton
 							update=":formConfiAgenda:outTipoAt, :formConfiAgenda"
 							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsultTipoAt').hide();">
+							onclick="PF('dlgConsuTipoAt').hide();">
 							<f:setPropertyActionListener value="#{tipo}"
 								target="#{ConfigAgendaController.confParte2.tipoAt}" />
 						</p:commandButton>
