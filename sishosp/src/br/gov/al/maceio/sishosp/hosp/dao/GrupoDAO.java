@@ -179,13 +179,7 @@ public class GrupoDAO {
 	public List<GrupoBean> listarGruposAutoComplete(String descricao,
 			ProgramaBean prog) {
 		List<GrupoBean> lista = new ArrayList<>();
-<<<<<<< HEAD
-		String sql = "select g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
-=======
-		System.out.println("De " + descricao);
-		System.out.println("Pr " + prog.getDescPrograma());
 		String sql = "select g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
->>>>>>> 5fba252056e73857aa5481379f2f22b5dfad1f85
 				+ " where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma"
 				+ " and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ?  order by id_grupo";
 

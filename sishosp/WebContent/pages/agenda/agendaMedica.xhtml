@@ -24,6 +24,9 @@
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
 							<p:ajax event="itemSelect" update=":formAgendaMedica:outProg" />
+							<p:ajax event="change" update=":formAgendaMedica"
+								listener="#{AgendaController.limparNaBuscaPaciente()}" />
+
 						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBPa" value="Buscar"
@@ -42,6 +45,8 @@
 							<p:ajax event="itemSelect"
 								listener="#{GrupoController.selectPrograma}"
 								update=":formAgendaMedica:outGrupo, :formConsuGrop:dtGrupo" />
+							<p:ajax event="change" update=":formAgendaMedica"
+								listener="#{AgendaController.limparNaBuscaPrograma()}" />
 						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusPr" value="Buscar"
@@ -57,9 +62,11 @@
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descGrupo}">
-							<p:ajax event="itemSelect" 
-							listener="#{TipoAtendimentoController.selectGrupo}"
-							update=":formAgendaMedica:outTipoAt, :formConsuTipoAt:dtTipoAt" />
+							<p:ajax event="itemSelect"
+								listener="#{TipoAtendimentoController.selectGrupo}"
+								update=":formAgendaMedica:outTipoAt, :formConsuTipoAt:dtTipoAt" />
+							<p:ajax event="change" update=":formAgendaMedica"
+								listener="#{AgendaController.limparNaBuscaGrupo()}" />
 						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusGr" value="Buscar"
@@ -76,6 +83,8 @@
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descTipoAt}">
 							<p:ajax event="itemSelect" update=":formAgendaMedica" />
+							<p:ajax event="change" update=":formAgendaMedica"
+								listener="#{AgendaController.limparNaBuscaTipo()}" />
 						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton id="btBusTi" value="Buscar"
@@ -255,8 +264,8 @@
 							actionListener="#{AgendaController.limparDados()}"
 							update=":formAgendaMedica" />
 
-						<p:commandButton value="Voltar" icon="btvoltar" style="width:80px;"
-							update=":formAgendaMedica"
+						<p:commandButton value="Voltar" icon="btvoltar"
+							style="width:80px;" update=":formAgendaMedica"
 							actionListener="#{AgendaController.limparDados()}"
 							action="/pages/comum/selecaoSistema.xhtml?faces-redirect=true" />
 					</p:panelGrid>

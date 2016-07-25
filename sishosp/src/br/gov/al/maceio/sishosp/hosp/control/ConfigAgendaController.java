@@ -271,11 +271,37 @@ public class ConfigAgendaController implements Serializable {
 				ok = false;
 				return;
 			}
+		}else{
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Quantidade máxima obrigatória!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
 		}
+		
 
-		if (this.opcao.equals("1")) {
-			this.confParte1.setAno(0);
-			this.confParte1.setMes(0);
+		if (this.opcao.equals("1") && this.confParte1.getDataEspecifica() == null) {
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Escolha uma data específica!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+		
+		if(this.opcao.equals("2") && this.confParte1.getDiasSemana().isEmpty()){
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Escolha no mínimo um dia da semana!", "Erro");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				return;
+		}
+		
+		if(this.opcao.equals("2") && this.confParte1.getAno() == null){
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Ano é ebrigatório!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
 		}
 
 		ok = cDao.gravarConfigAgenda(confParte1, confParte2, listaTipos);
@@ -428,14 +454,14 @@ public class ConfigAgendaController implements Serializable {
 	public void onRowUnselectEquipe(UnselectEvent event) {
 		this.listaHorariosEquipe = null;
 	}
-	
-	public void limparBuscaPrograma(){
+
+	public void limparBuscaPrograma() {
 		this.confParte2.setPrograma(null);
 		this.confParte2.setGrupo(null);
 		this.confParte2.setTipoAt(null);
 	}
-	
-	public void limparBuscaGrupo(){
+
+	public void limparBuscaGrupo() {
 		this.confParte2.setGrupo(null);
 		this.confParte2.setTipoAt(null);
 	}
