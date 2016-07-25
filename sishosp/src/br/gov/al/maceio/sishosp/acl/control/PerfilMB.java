@@ -10,6 +10,7 @@ import br.gov.al.maceio.sishosp.acl.dao.PerfilDAO;
 import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
 import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ import org.primefaces.model.menu.MenuModel;
  */
 @ManagedBean
 @ViewScoped
-public class PerfilMB {
+public class PerfilMB implements Serializable {
 
     private Perfil perfil;
     private List<Perfil> listaPerfil;
@@ -122,14 +123,14 @@ public class PerfilMB {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Perfil cadastrado com sucesso!", "Sucesso");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
-
-                RequestContext.getCurrentInstance().execute("dlgCadPerfil.hide();");
+                
+                RequestContext.getCurrentInstance().execute("PF('dlgCadPerfil').hide();");
             } else {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Ocorreu um erro durante o cadastro!", "Erro");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
 
-                RequestContext.getCurrentInstance().execute("dlgCadPerfil.hide();");
+                RequestContext.getCurrentInstance().execute("PF('dlgCadPerfil').hide();");
             }
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
@@ -169,14 +170,14 @@ public class PerfilMB {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Perfil alterado com sucesso!", "Sucesso");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
-
-                RequestContext.getCurrentInstance().execute("dlgAltPerfil.hide();");
+                
+                RequestContext.getCurrentInstance().execute("PF('dlgAltPerfil').hide();");
             } else {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Ocorreu um erro durante a alteração!", "Erro");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
 
-                RequestContext.getCurrentInstance().execute("dlgAltPerfil.hide();");
+                RequestContext.getCurrentInstance().execute("PF('dlgAltPerfil').hide();");
             }
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
@@ -198,13 +199,13 @@ public class PerfilMB {
                 "Perfil excluido com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgExcPerfil.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgExcPerfil').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Ocorreu um erro durante a exclusão!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgExcPerfil.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgExcPerfil').hide();");
         }
     }
     

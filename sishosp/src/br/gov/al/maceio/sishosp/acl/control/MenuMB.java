@@ -5,6 +5,7 @@ import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import org.primefaces.model.menu.MenuModel;
  */
 @ManagedBean
 @ViewScoped
-public class MenuMB {
+public class MenuMB implements Serializable {
 
     private Menu menu;
     private List<Menu> listaMenusGeral;
@@ -36,7 +37,6 @@ public class MenuMB {
     private List<Sistema> listaDiretorios;
     
     private Integer abaAtiva;    
-    private String rotinaSelecionada = "0";
     
     private String idMenuAss;
     private List<Menu> listaMenus;
@@ -60,7 +60,7 @@ public class MenuMB {
     public MenuMB() {
         menu = new Menu();
         menu.setTipo("menuPai");
-        menu.getRotina().setExtensao(".faces");
+        menu.setExtensao(".faces");
 
         listaMenus = new ArrayList<>();
         listaMenus = null;
@@ -98,40 +98,40 @@ public class MenuMB {
             for (Sistema s : listaSistemasDual.getTarget()) {
                 listaSis.add(s.getId());
             }
-            
+            System.out.println("diretorio foi "+menu.getDiretorio() );
             if(menu.getTipo().equals("menuPai")) {
-                menu.getRotina().setDescPagina(null);
-                menu.getRotina().setDiretorio(null);
-                menu.getRotina().setExtensao(null);
+                menu.setDescPagina(null);
+                menu.setDiretorio(null);
+                menu.setExtensao(null);
                 menu.setIndice(null);
             }
             
             if(menu.getTipo().equals("submenu")) {
-                menu.getRotina().setDescPagina(null);
-                menu.getRotina().setDiretorio(null);
-                menu.getRotina().setExtensao(null);
+                menu.setDescPagina(null);
+                menu.setDiretorio(null);
+                menu.setExtensao(null);
             }
             
             if(menu.getTipo().equals("menuItemRel")) {
                 if(tipoMenuRel.equals("A")) {
-                    menu.getRotina().setDescPagina(null);
-                    menu.getRotina().setDiretorio(null);
-                    menu.getRotina().setExtensao(null);
+                    menu.setDescPagina(null);
+                    menu.setDiretorio(null);
+                    menu.setExtensao(null);
                     menu.setAction("#{" + menu.getAction() + "}");
                     menu.setOnclick(null);
-                } else {
-                    menu.getRotina().setDescPagina(null);
-                    menu.getRotina().setDiretorio(null);
-                    menu.getRotina().setExtensao(null);
+                }/* else {
+                    menu.setDescPagina(null);
+                    menu.setDiretorio(null);
+                    menu.setExtensao(null);
                     menu.setAction(null);
                     menu.setOnclick(menu.getOnclick() + ".show();");
-                }
+                }*/
             }            
             menu.setAtivo(statusMenu);
             menu.setListaSistemas(listaSis);
-            menu.setIdRotina(Integer.parseInt(rotinaSelecionada));
 
             MenuDAO mdao = new MenuDAO();
+            System.out.println("diretorio foi mudou "+menu.getDiretorio() );
             boolean cadastrou = mdao.cadastrar(menu);
 
             if(cadastrou == true) {
@@ -141,14 +141,14 @@ public class MenuMB {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Menu cadastrado com sucesso!", "Sucesso");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
-
-                RequestContext.getCurrentInstance().execute("dlgCadMenu.hide();");
+                
+                RequestContext.getCurrentInstance().execute("PF('dlgCadMenu').hide();");
             } else {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Ocorreu um erro durante o cadastro!", "Erro");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
 
-                RequestContext.getCurrentInstance().execute("dlgCadMenu.hide();");
+                RequestContext.getCurrentInstance().execute("PF('dlgCadMenu').hide();");
             }
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -167,7 +167,6 @@ public class MenuMB {
             }
             menu.setAtivo(statusMenu);
             menu.setListaSistemas(listaSis);
-            menu.setIdRotina(Integer.parseInt(rotinaSelecionada));
             menu.setIndiceAux(indiceAux);
 
             MenuDAO mdao = new MenuDAO();
@@ -180,14 +179,14 @@ public class MenuMB {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Menu alterado com sucesso!", "Sucesso");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
-
-                RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+                
+                RequestContext.getCurrentInstance().execute("PF('dlgAltMenu').hide();");
             } else {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Ocorreu um erro durante o cadastro!", "Erro");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
 
-                RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+                RequestContext.getCurrentInstance().execute("PF('dlgAltMenu').hide();");
             }
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -209,13 +208,13 @@ public class MenuMB {
                 "Menu excluido com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgExcMenu.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgExcMenu').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Ocorreu um erro durante a exclusão!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgExcMenu.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgExcMenu').hide();");
         }        
     }
     
@@ -506,13 +505,13 @@ public class MenuMB {
         abaAtiva = 0;
         menu = new Menu();
         menu.setTipo("menuPai");
-        menu.getRotina().setExtensao(".faces");
+        menu.setExtensao(".faces");
         tipoMenuRel = "A";
         
         listaMenus = null;
         listaDiretorios = null;
         
-        rotinaSelecionada = "0";
+        
         statusMenu = true;
     }
     
@@ -646,14 +645,7 @@ public class MenuMB {
         this.abaAtiva = abaAtiva;
     }
 
-    public String getRotinaSelecionada() {
-        return rotinaSelecionada;
-    }
-
-    public void setRotinaSelecionada(String rotinaSelecionada) {
-        this.rotinaSelecionada = rotinaSelecionada;
-    }
-
+    
     public DualListModel<Sistema> getListaSistemasDualAlt() {       
         if(listaSistemasDualAlt == null) {
             listaSistemasSoucerAlt = null;

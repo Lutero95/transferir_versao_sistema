@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import javax.servlet.ServletContext;
 
 @ManagedBean(name = "MBPessoa")
 @ViewScoped
-public class PessoaController {
+public class PessoaController implements Serializable{
 
 	private PessoaBean pessoa;
 	private List<UsuarioPosseBean> listaUsuario;

@@ -1,9 +1,10 @@
 package br.gov.al.maceio.sishosp.acl.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
-public class PessoaBean {
+public class PessoaBean implements Serializable {
 
 	private Integer id_pessoa;	
 	private String nome;

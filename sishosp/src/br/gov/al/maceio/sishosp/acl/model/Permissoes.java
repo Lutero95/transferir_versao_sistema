@@ -1,11 +1,13 @@
 package br.gov.al.maceio.sishosp.acl.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
  * @since 17/03/2015
  */
-public class Permissoes {  
+public class Permissoes implements Serializable{  
     
     private Integer idSistema;
     private String descSistema;

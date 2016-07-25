@@ -6,7 +6,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:ui="http://java.sun.com/jsf/facelets">
 
-    <ui:composition template="../../template/templategeralmd.xhtml">
+    <ui:composition template="../../template/templategeral.xhtml">
         
         <ui:define name="head">
             
@@ -69,9 +69,7 @@
                             <p:outputLabel value="#{tab.indice}" />
                         </p:column>
                         
-                        <p:column headerText="Rotina Associada" width="10%">
-                            <p:outputLabel value="#{tab.descRotina}" />
-                        </p:column>
+                        
                         
                         <p:column headerText="Ativo" width="5%">
                             <center>
@@ -89,8 +87,7 @@
 
                                     <f:setPropertyActionListener value="#{tab}" 
                                         target="#{menuMB.menu}" />
-                                    <f:setPropertyActionListener value="#{tab.idRotina}" 
-                                        target="#{menuMB.rotinaSelecionada}" />
+                                    
                                     <f:setPropertyActionListener value="#{tab.ativo}" 
                                         target="#{menuMB.statusMenu}" />
                                     <f:setPropertyActionListener value="#{tab.indiceAux}" 
@@ -261,24 +258,6 @@
                                                 <f:selectItem itemLabel="Selecione" itemValue="" />
                                                 <f:selectItems value="#{menuMB.listaMenus}" var="menu" 
                                                     itemLabel="#{menu.descricao}" itemValue="#{menu.codigo}" />
-                                            </p:selectOneMenu> 
-                                        </p:column>
-                                    </p:row>
-                                    
-                                    <p:row>
-                                        <p:column>
-                                            <p:outputLabel value="Rotina associada: ">
-                                                <font color="#FF0000">*</font>
-                                            </p:outputLabel>
-                                        </p:column>
-
-                                        <p:column>
-                                            <p:selectOneMenu value="#{menuMB.rotinaSelecionada}"
-                                                required="true" requiredMessage="Informe a rotina associada.">
-
-                                                <f:selectItem itemLabel="Selecione" itemValue="" />
-                                                <f:selectItems value="#{rotinaMB.listaRotinas}" var="rot" 
-                                                    itemLabel="#{rot.descricao}" itemValue="#{rot.id}" />
                                             </p:selectOneMenu> 
                                         </p:column>
                                     </p:row>
@@ -502,23 +481,6 @@
                                         </p:column>
                                     </p:row>
                                     
-                                    <p:row>
-                                        <p:column>
-                                            <p:outputLabel value="Rotina associada: ">
-                                                <font color="#FF0000">*</font>
-                                            </p:outputLabel>
-                                        </p:column>
-
-                                        <p:column>
-                                            <p:selectOneMenu value="#{menuMB.rotinaSelecionada}"
-                                                required="true" requiredMessage="Informe a rotina associada.">
-
-                                                <f:selectItem itemLabel="Selecione" itemValue="" />
-                                                <f:selectItems value="#{rotinaMB.listaRotinas}" var="rot" 
-                                                    itemLabel="#{rot.descricao}" itemValue="#{rot.id}" />
-                                            </p:selectOneMenu> 
-                                        </p:column>
-                                    </p:row>
                                     
                                     <p:row>
                                         <p:column>

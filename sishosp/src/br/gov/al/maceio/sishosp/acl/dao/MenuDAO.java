@@ -29,16 +29,18 @@ public class MenuDAO {
         
         try {
             conexao = ConnectionFactory.getConnection();
-            CallableStatement cs = conexao.prepareCall("{ ? = call acl.gravarmenu2(?, ?, ?, ?, ?, ?, ?, ?) }");
+            CallableStatement cs = conexao.prepareCall("{ ? = call acl.gravarmenu2(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }");
             cs.registerOutParameter(1, Types.INTEGER);            
             cs.setString(2, menu.getDescricao());
             cs.setString(3, menu.getCodigo());
             cs.setString(4, menu.getIndice());
             cs.setString(5, menu.getTipo());
-            cs.setInt(6, menu.getIdRotina());
-            cs.setBoolean(7, menu.isAtivo()); 
-            cs.setString(8, menu.getAction());
-            cs.setString(9, menu.getOnclick());
+            cs.setBoolean(6, menu.isAtivo()); 
+            cs.setString(7, menu.getAction());
+            cs.setString(8, menu.getOnclick());
+            cs.setString(9, menu.getDiretorio());
+            cs.setString(10, menu.getDescPagina());
+            cs.setString(11, menu.getExtensao());
             cs.execute();
             
             Integer idRetornoMenu = cs.getInt(1);
@@ -94,7 +96,7 @@ public class MenuDAO {
     public Boolean alterar(Menu menu) {       
         
         String sql = "update acl.menu set descricao = ?, desc_pagina = ?, diretorio = ?, "
-            + "extensao = ?, codigo = ?, indice = ?, tipo = ?, id_rotina = ?, ativo = ?, "
+            + "extensao = ?, codigo = ?, indice = ?, tipo = ?,  ativo = ?, "
             + "action_rel = ?, onclick_rel = ? where id = ?";
         
         boolean alterou = false;
@@ -105,17 +107,16 @@ public class MenuDAO {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);           
             stmt.setString(1, menu.getDescricao());
-            stmt.setString(2, menu.getRotina().getDescPagina());
-            stmt.setString(3, menu.getRotina().getDiretorio());
-            stmt.setString(4, menu.getRotina().getExtensao());
+            stmt.setString(2, menu.getDescPagina());
+            stmt.setString(3, menu.getDiretorio());
+            stmt.setString(4, menu.getExtensao());
             stmt.setString(5, menu.getCodigo());
             stmt.setString(6, menu.getIndice());
             stmt.setString(7, menu.getTipo());
-            stmt.setInt(8, menu.getIdRotina());
-            stmt.setBoolean(9, menu.isAtivo());
-            stmt.setString(10, menu.getAction());
-            stmt.setString(11, menu.getOnclick());
-            stmt.setLong(12, menu.getId());
+            stmt.setBoolean(8, menu.isAtivo());
+            stmt.setString(9, menu.getAction());
+            stmt.setString(10, menu.getOnclick());
+            stmt.setLong(11, menu.getId());
             stmt.executeUpdate();
             
             if(!menu.getListaSistemas().isEmpty()) {
@@ -181,8 +182,8 @@ public class MenuDAO {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
             + "me.ativo, me.diretorio, me.desc_pagina, me.extensao, me.id_rotina, "
-            + "me.action_rel, me.onclick_rel, ro.diretorio, ro.desc_pagina, ro.extensao, ro.descricao as rot_desc from "
-            + "acl.menu me join acl.rotina ro on ro.id = me.id_rotina where "
+            + "me.action_rel, me.onclick_rel, diretorio, desc_pagina, extensao, ro.descricao as rot_desc from "
+            + "acl.menu me  where "
             + "upper(me.descricao) like ? order by me.ativo desc, me.descricao, me.tipo";
              
         List<Menu> lista = new ArrayList();
@@ -202,15 +203,14 @@ public class MenuDAO {
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
                                 
-                m.getRotina().setDiretorio(rs.getString("diretorio"));
-                m.getRotina().setDescPagina(rs.getString("desc_pagina"));
-                m.getRotina().setExtensao(rs.getString("extensao"));
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
                 
                 if(rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl("/pages/" + m.getRotina().getDiretorio() + "/" + m.getRotina().getDescPagina() + m.getRotina().getExtensao());
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                     
                 }
-                m.setIdRotina(rs.getInt("id_rotina"));               
                 m.setIndiceAux(rs.getString("descricao"));
                 
                 if(rs.getString("action_rel") != null) {
@@ -225,7 +225,7 @@ public class MenuDAO {
                     m.setOnclick(null);
                 }
                 
-                m.setDescRotina(rs.getString("rot_desc"));
+
                 
                 lista.add(m);
             }
@@ -245,9 +245,9 @@ public class MenuDAO {
     public List<Menu> listarMenuGeral() {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
-            + "me.ativo, ro.diretorio, ro.desc_pagina, ro.extensao, me.id_rotina, "
-            + "me.action_rel, me.onclick_rel, ro.descricao as rot_desc from "
-            + "acl.menu me join acl.rotina ro on ro.id = me.id_rotina order by "
+            + "me.ativo, diretorio, desc_pagina, extensao,  "
+            + "me.action_rel, me.onclick_rel from "
+            + "acl.menu me   order by "
             + "me.ativo desc, me.descricao, me.tipo";
              
         List<Menu> lista = new ArrayList();
@@ -266,15 +266,15 @@ public class MenuDAO {
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
                                 
-                m.getRotina().setDiretorio(rs.getString("diretorio"));
-                m.getRotina().setDescPagina(rs.getString("desc_pagina"));
-                m.getRotina().setExtensao(rs.getString("extensao"));
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
                 
                 if(rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl("/pages/" + m.getRotina().getDiretorio() + "/" + m.getRotina().getDescPagina() + m.getRotina().getExtensao());
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                     
                 }
-                m.setIdRotina(rs.getInt("id_rotina"));               
+              
                 m.setIndiceAux(rs.getString("descricao"));
                 
                 if(rs.getString("action_rel") != null) {
@@ -289,7 +289,7 @@ public class MenuDAO {
                     m.setOnclick(null);
                 }
                 
-                m.setDescRotina(rs.getString("rot_desc"));
+
                 
                 lista.add(m);
             }
@@ -361,15 +361,14 @@ public class MenuDAO {
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
                                 
-                m.getRotina().setDiretorio(rs.getString("diretorio"));
-                m.getRotina().setDescPagina(rs.getString("desc_pagina"));
-                m.getRotina().setExtensao(rs.getString("extensao"));
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
                 
                 if(rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl("/pages/" + m.getRotina().getDiretorio() + "/" + m.getRotina().getDescPagina() + m.getRotina().getExtensao());
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                     
                 }
-                m.setIdRotina(rs.getInt("id_rotina"));               
                 m.setIndiceAux(rs.getString("descricao"));
                 lista.add(m);
             }
@@ -425,13 +424,13 @@ public class MenuDAO {
     public ArrayList<Menu> listarMenuItemComSis() {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
-            + "me.ativo, ro.diretorio, ro.desc_pagina, ro.extensao, si.id as id_sis, "
+            + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
             + "si.descricao as desc_sis, si.sigla as sigla_sis from acl.permissao pm "
             + "join acl.perm_geral pg on pg.id_permissao = pm.id "
             + "join acl.menu me on me.id = pg.id_menu "
             + "join acl.menu_sistema ms on ms.id_menu = me.id "
             + "join acl.sistema si on si.id = ms.id_sistema "
-            + "join acl.rotina ro on ro.id = me.id_rotina "
+            
             + "where me.tipo = 'menuItem' or me.tipo = 'menuItemRel'";
              
         ArrayList<Menu> lista = new ArrayList();
@@ -449,12 +448,12 @@ public class MenuDAO {
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
                                 
-                m.getRotina().setDiretorio(rs.getString("diretorio"));
-                m.getRotina().setDescPagina(rs.getString("desc_pagina"));
-                m.getRotina().setExtensao(rs.getString("extensao"));
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
                 
                 if(rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl("/pages/" + m.getRotina().getDiretorio() + "/" + m.getRotina().getDescPagina() + m.getRotina().getExtensao());
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                     
                 }              
                 m.setIndiceAux(rs.getString("codigo"));
@@ -480,12 +479,11 @@ public class MenuDAO {
     public ArrayList<Menu> listarMenuItemSourcerEdit(Integer idPerfil) {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
-            + "me.ativo, ro.diretorio, ro.desc_pagina, ro.extensao, si.id as id_sis, "
+            + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
             + "si.descricao as desc_sis, si.sigla as sigla_sis from acl.menu me "
             + "join acl.perm_geral pg on pg.id_menu = me.id "
             + "join acl.permissao pm on pm.id = pg.id_permissao "
             + "join acl.menu_sistema ms on ms.id_menu = me.id "
-            + "join acl.rotina ro on ro.id = me.id_rotina "
             + "join acl.sistema si on si.id = ms.id_sistema where me.id not in("
             + "select me.id from acl.perm_perfil pp "
             + "join acl.perfil pf on pf.id = pp.id_perfil "
@@ -513,12 +511,12 @@ public class MenuDAO {
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
                                 
-                m.getRotina().setDiretorio(rs.getString("diretorio"));
-                m.getRotina().setDescPagina(rs.getString("desc_pagina"));
-                m.getRotina().setExtensao(rs.getString("extensao"));
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
                 
                 if(rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl("/pages/" + m.getRotina().getDiretorio() + "/" + m.getRotina().getDescPagina() + m.getRotina().getExtensao());
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                     
                 }              
                 m.setIndiceAux(rs.getString("codigo"));
@@ -544,12 +542,11 @@ public class MenuDAO {
     public ArrayList<Menu> listarMenuItemTargetEdit(Integer idPerfil) {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
-            + "me.ativo, ro.diretorio, ro.desc_pagina, ro.extensao, si.id as id_sis, "
+            + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
             + "si.descricao as desc_sis, si.sigla as sigla_sis from acl.menu me "
             + "join acl.perm_geral pg on pg.id_menu = me.id "
             + "join acl.permissao pm on pm.id = pg.id_permissao "
             + "join acl.menu_sistema ms on ms.id_menu = me.id "
-            + "join acl.rotina ro on ro.id = me.id_rotina "
             + "join acl.sistema si on si.id = ms.id_sistema "
             + "join acl.perm_perfil pp on pp.id_permissao = pg.id_permissao "
             + "join acl.perfil pf on pf.id = pp.id_perfil "
@@ -572,12 +569,12 @@ public class MenuDAO {
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
                                 
-                m.getRotina().setDiretorio(rs.getString("diretorio"));
-                m.getRotina().setDescPagina(rs.getString("desc_pagina"));
-                m.getRotina().setExtensao(rs.getString("extensao"));
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
                 
                 if(rs.getString("tipo").equals("menuItem")) {
-                  m.setUrl("/pages/" + m.getRotina().getDiretorio() + "/" + m.getRotina().getDescPagina() + m.getRotina().getExtensao());
+                  m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                   
                 }              
                 m.setIndiceAux(rs.getString("codigo"));
@@ -603,12 +600,11 @@ public class MenuDAO {
     public ArrayList<Menu> listarMenuPaiSubmenuComSis() {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, me.ativo, "
-            + "ro.diretorio, ro.desc_pagina, ro.extensao, si.id as id_sis, "
+            + "diretorio, desc_pagina, extensao, si.id as id_sis, "
             + "si.descricao as desc_sis, si.sigla as sigla_sis from acl.permissao pm "
             + "join acl.perm_geral pg on pg.id_permissao = pm.id "
             + "join acl.menu me on me.id = pg.id_menu "
             + "join acl.menu_sistema ms on ms.id_menu = me.id "
-            + "join acl.rotina ro on ro.id = me.id_rotina "
             + "join acl.sistema si on si.id = ms.id_sistema "
             + "where me.tipo = 'menuPai' or me.tipo = 'submenu'";
              
@@ -627,12 +623,12 @@ public class MenuDAO {
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
                                 
-                m.getRotina().setDiretorio(rs.getString("diretorio"));
-                m.getRotina().setDescPagina(rs.getString("desc_pagina"));
-                m.getRotina().setExtensao(rs.getString("extensao"));
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
                 
                 if(rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl("/pages/" + m.getRotina().getDiretorio() + "/" + m.getRotina().getDescPagina() + m.getRotina().getExtensao());
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                     
                 }              
                 m.setIndiceAux(rs.getString("codigo"));
@@ -767,12 +763,11 @@ public class MenuDAO {
     public ArrayList<Menu> listarMenuItemSourcerUser(Integer idPerfil) {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
-            + "me.ativo, ro.diretorio, ro.desc_pagina, ro.extensao, si.id as id_sis, "
+            + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
             + "si.descricao as desc_sis, si.sigla as sigla_sis from acl.menu me "
             + "join acl.perm_geral pg on pg.id_menu = me.id "
             + "join acl.permissao pm on pm.id = pg.id_permissao "
             + "join acl.menu_sistema ms on ms.id_menu = me.id "
-            + "join acl.rotina ro on ro.id = me.id_rotina "
             + "join acl.sistema si on si.id = ms.id_sistema "
             + "where me.id not in("
             + "	select me.id from acl.perm_perfil pp "
@@ -805,12 +800,12 @@ public class MenuDAO {
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
                                 
-                m.getRotina().setDiretorio(rs.getString("diretorio"));
-                m.getRotina().setDescPagina(rs.getString("desc_pagina"));
-                m.getRotina().setExtensao(rs.getString("extensao"));
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
                 
                 if(rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl("/pages/" + m.getRotina().getDiretorio() + "/" + m.getRotina().getDescPagina() + m.getRotina().getExtensao());
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                     
                 }              
                 m.setIndiceAux(rs.getString("codigo"));
@@ -840,11 +835,10 @@ public class MenuDAO {
         System.out.println("ID USUÃ?RIO: " + idUsuario + "\n");
         
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
-            + "me.ativo, ro.diretorio, ro.desc_pagina, ro.extensao, si.id as id_sis, "
+            + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
             + "si.descricao as desc_sis, si.sigla as sigla_sis from acl.menu me "
             + "join acl.perm_geral pg on pg.id_menu = me.id "
             + "join acl.permissao pm on pm.id = pg.id_permissao "
-            + "join acl.rotina ro on ro.id = me.id_rotina "
             + "join acl.menu_sistema ms on ms.id_menu = me.id "
             + "join acl.sistema si on si.id = ms.id_sistema "
             + "where me.id not in("
@@ -887,12 +881,12 @@ public class MenuDAO {
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
                                 
-                m.getRotina().setDiretorio(rs.getString("diretorio"));
-                m.getRotina().setDescPagina(rs.getString("desc_pagina"));
-                m.getRotina().setExtensao(rs.getString("extensao"));
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
                 
                 if(rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl("/pages/" + m.getRotina().getDiretorio() + "/" + m.getRotina().getDescPagina() + m.getRotina().getExtensao());
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                     
                 }              
                 m.setIndiceAux(rs.getString("codigo"));
@@ -921,13 +915,12 @@ public class MenuDAO {
         System.out.println("ID USUÃ?RIO: " + idUsuario + "\n");
         
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
-            + "me.ativo, ro.diretorio, ro.desc_pagina, ro.extensao, si.id as id_sis, "
+            + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
             + "si.descricao as desc_sis, si.sigla as sigla_sis from acl.perm_usuario pu "
             + "join acl.permissao pm on pm.id = pu.id_permissao "
             + "join acl.perm_geral pg on pg.id_permissao = pm.id "
             + "join acl.menu me on me.id = pg.id_menu "
             + "join acl.menu_sistema ms on ms.id_menu = me.id "
-            + "join acl.rotina ro on ro.id = me.id_rotina "
             + "join acl.sistema si on si.id = ms.id_sistema "
             + "where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pu.id_usuario = ?";
              
@@ -947,12 +940,12 @@ public class MenuDAO {
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
                                 
-                m.getRotina().setDiretorio(rs.getString("diretorio"));
-                m.getRotina().setDescPagina(rs.getString("desc_pagina"));
-                m.getRotina().setExtensao(rs.getString("extensao"));
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
                 
                 if(rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl("/pages/" + m.getRotina().getDiretorio() + "/" + m.getRotina().getDescPagina() + m.getRotina().getExtensao());
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                    
                 }              
                 m.setIndiceAux(rs.getString("codigo"));
@@ -975,15 +968,15 @@ public class MenuDAO {
         return lista;
     }
     
+    
     public ArrayList<Menu> listarMenusPerfil(Integer idPerfil) {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
-            + "me.ativo, ro.diretorio, ro.desc_pagina, ro.extensao, si.id as id_sis, "
+            + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
             + "si.descricao as desc_sis, si.sigla as sigla_sis from acl.perm_perfil pp "
             + "join acl.permissao pm on pm.id = pp.id_permissao "
             + "join acl.perm_geral pg on pg.id_permissao = pm.id "
             + "join acl.menu me on me.id = pg.id_menu "
-            + "join acl.rotina ro on ro.id = me.id_rotina "
             + "join acl.menu_sistema ms on ms.id_menu = me.id "
             + "join acl.sistema si on si.id = ms.id_sistema "
             + "where pp.id_perfil = ? order by me.descricao";
@@ -1004,12 +997,12 @@ public class MenuDAO {
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
                                 
-                m.getRotina().setDiretorio(rs.getString("diretorio"));
-                m.getRotina().setDescPagina(rs.getString("desc_pagina"));
-                m.getRotina().setExtensao(rs.getString("extensao"));
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
                 
                 if(rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl("/pages/" + m.getRotina().getDiretorio() + "/" + m.getRotina().getDescPagina() + m.getRotina().getExtensao());
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                    
                 }              
                 m.setIndiceAux(rs.getString("codigo"));

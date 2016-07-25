@@ -1,0 +1,430 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <body>
+    <h:form> <p:menubar model="#{MBUsuarios.menuModel}" styleClass="menu-sistema"/>
+    </h:form>
+    
+        <h:form>
+
+            <p:menubar
+                style="font-size:14px !important;width:80%;float:right;height:50px;"
+                styleClass="menu-sistema">
+
+                <p:menuitem value="Início" icon="ui-icon-home"
+                            action="main2.faces?faces-redirect=true" />
+                
+                <p:submenu label="Cadastro" icon="ui-icon-plus">
+
+                    <p:menuitem value="Cliente" icon="ui-icon-person"
+                                action="cadcliente.faces?faces-redirect=true" />
+                    
+                    <p:menuitem value="Banco" icon="ui-icon-person"
+                                action="gerenciarBanco.faces?faces-redirect=true" />
+                    
+                    <p:menuitem value="Despesa" icon="ui-icon-person"
+                                action="gerenciarDespesa.faces?faces-redirect=true" />
+
+                    <p:menuitem value="Fornecedor" icon="ui-icon-person"
+                                action="cadfornecedor.faces?faces-redirect=true" />
+                    
+                    <p:menuitem value="Fonte de Receita" icon="ui-icon-person"
+                                action="gerenciarFonteReceita.faces?faces-redirect=true" />
+
+                    <p:submenu label="Pagamento" icon="ui-icon-suitcase ">
+
+                        <p:menuitem value="Tipo Pagamento"
+                                    action="cadastrotipopag.faces?faces-redirect=truee" />
+
+                        <p:menuitem value="Tipo Documento"
+                                    action="cadtipodoc.faces?faces-redirect=truee" />
+
+                        <p:menuitem value="Tabela de Preço"
+                                    action="tabelapreco.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Portador"
+                                    action="cadport.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Categoria"
+                                    action="cadcategoria.faces?faces-redirect=true" />
+
+                    </p:submenu>
+                    <p:submenu label="Procedimentos" icon="ui-icon-clipboard">
+
+                        <p:menuitem value="Procedimento"
+                                    action="cadprocedimento.faces?faces-redirect=true" />
+                        <p:menuitem value="Grupo"
+                                    action="cadgrupo.faces?faces-redirect=true" />
+                        <p:menuitem value="Subgrupo"
+                                    action="cadsubgrupo.faces?faces-redirect=true" />
+                        <p:menuitem value="Classe"
+                                    action="cadclasse.faces?faces-redirect=true" />
+                        <p:menuitem value="Divisão"
+                                    action="caddivisao.faces?faces-redirect=true" />
+                        <p:menuitem value="Seção"
+                                    action="cadsecao.faces?faces-redirect=true" />
+
+                    </p:submenu>
+
+                    <p:submenu label="Endereço" icon="ui-icon-home">
+
+                        <p:menuitem value="Cidade"
+                                    action="cadcidade.faces?faces-redirect=true" />
+                        <p:menuitem value="Estado"
+                                    action="cadestado.faces?faces-redirect=true" />
+                        <p:menuitem value="Bairro"
+                                    action="cadbairro.faces?faces-redirect=true" />
+
+
+                    </p:submenu>
+                    <p:submenu label="Outros Cadastros"
+                               icon="ui-icon-arrowreturnthick-1-e">
+
+						<p:menuitem value="Estado Civil"
+                                    action="gerenciarEstadosCivis.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Profissão"
+                                    action="cadprofis.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Kit Procedimento"
+                                    action="cadkit.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Sala" action="cadsala.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Configuração de horário - Agenda" action="cadconfigagenda.faces?faces-redirect=true" />
+
+                        <p:menuitem value="Centro de Custo"
+                                    action="cadccusto.faces?faces-redirect=true" />
+
+                    </p:submenu>
+
+
+
+                </p:submenu>
+
+                <p:submenu label="Movimentação" icon="ui-icon-arrowreturnthick-1-e">
+
+                    <p:menuitem value="Avaliação" icon="ui-icon-zoomout" disabled="true"
+                                action="avaliacao.faces?faces-redirect=true" />
+                    <p:menuitem value="Orçamento" icon="ui-icon-contact"
+                                action="orcamento.faces?faces-redirect=true" />
+                    <p:menuitem value="Venda" action="venda.faces?faces-redirect=true"
+                                icon="ui-icon-cart" />
+                    <p:menuitem value="Cortesia" icon="ui-icon-star" disabled="true"
+                                action="cortesia.faces?faces-redirect=true" />
+                    <p:menuitem value="Agenda" icon="ui-icon-calendar"
+                                action="agenda2.faces?faces-redirect=true" />
+                    <p:menuitem value="Recibo" action="recibo.faces?faces-redirect=true"
+                                icon="ui-icon-print" />
+
+                </p:submenu>
+
+                <p:submenu label="Caixa" icon="ui-icon-cart">
+
+                    <p:menuitem value="Gerenciamento Caixa" icon="ui-icon-gear"
+                                action="gerenciamentoCaixa.faces?faces-redirect=true" />
+                    <p:menuitem value="Consultar Caixa" icon="ui-icon-search"
+                                action="consultaCaixa.faces?faces-redirect=true" />
+
+                </p:submenu>
+
+                <p:submenu label="Financeiro" icon="ui-icon-bookmark">
+
+                    <p:menuitem value="Documentos a Receber"
+                                action="gerenciamentoFinanceiro.faces?faces-redirect=true" />
+
+                    <p:menuitem value="Documentos a Pagar"
+                                action="gerenciamentoFinanceiro2.faces?faces-redirect=true" />
+                   
+                    <p:menuitem value="Tesouraria"
+                   				action="tesouraria.faces?faces-redirect=true" />
+
+                    <p:submenu label="Relatórios">
+
+                        <p:menuitem value="A pagar" onclick="PF('dlgPagar').show();" />
+
+                        <p:menuitem value="A receber" onclick="PF('dlgReceber').show();" />
+
+
+                    </p:submenu>
+
+
+                </p:submenu>
+
+                <p:submenu label="Relatórios" icon="ui-icon-print">
+                    <p:submenu label="Vendas" icon="ui-icon-plus">
+                        <p:menuitem value="Vendas no Período" icon="ui-icon-home"
+                                    action="reportVendasPeriodo.faces?faces-redirect=true" />
+                        <p:menuitem value="Vendas por Produto" icon="ui-icon-home"
+                                    action="reportVendasProduto.faces?faces-redirect=true" />
+                        <p:menuitem value="Recebimentos por Venda" icon="ui-icon-home"
+                                    action="reportRecebimentosVendas.faces?faces-redirect=true" />
+                        <p:menuitem value="Planejamento de Vendas" icon="ui-icon-home"
+                                    action="reportPlanejamentoVenda.faces?faces-redirect=true" />
+                        <p:menuitem value="Servços X Execuções" icon="ui-icon-home"
+                                    action="reportServicosExecucao.faces?faces-redirect=true" />
+                    </p:submenu>
+                    <p:submenu label="Orçamentos" icon="ui-icon-plus">
+                        <p:menuitem value="Orçamentos no Período" icon="ui-icon-home"
+                                    action="reportOrcamentoPeriodo.faces?faces-redirect=true" />
+                        <p:menuitem value="Orçamentos por Produto" icon="ui-icon-home"
+                                    action="reportOrcamentoProduto.faces?faces-redirect=true" />
+                    </p:submenu>
+                    <p:submenu label="Agenda" icon="ui-icon-plus">
+                        <p:menuitem value="Agendamentos no Período" icon="ui-icon-home"
+                                    action="reportAgendamentoPeriodo.faces?faces-redirect=true" />
+                    </p:submenu>
+                    <p:submenu label="Cortesias" icon="ui-icon-plus">
+                        <p:menuitem value="Cortesia no Período" icon="ui-icon-home"
+                                    action="reportCortesiaPeriodo.faces?faces-redirect=true" />
+                    </p:submenu>
+                    <p:submenu label="Produção" icon="ui-icon-plus">
+                        <p:menuitem value="Execuções no Período" icon="ui-icon-home"
+                                    action="reportExecucoesPeriodo.faces?faces-redirect=true" />
+                    </p:submenu>
+
+                </p:submenu>
+
+
+                <p:submenu label="Administração" icon="ui-icon-wrench">
+
+                    <p:menuitem value="Cadastro de Funcionários" icon="ui-icon-home"
+                                action="cadastroUsuario.faces?faces-redirect=true" />
+
+                </p:submenu>
+                <p:submenu label="Extras" icon="ui-icon-plus">
+
+                    <p:menuitem value="Campanha" icon="ui-icon-tag"
+                                action="campanha.faces?faces-redirect=true" />
+
+                    <p:menuitem value="Planejamento de Vendas" icon="ui-icon-calendar"
+                                action="planejamentovenda.faces?faces-redirect=true" />
+
+                </p:submenu>
+
+
+                <p:menuitem value="Fale Conosco" icon="ui-icon-comment" action="#" />
+
+                <p:menuitem value="Sair" icon="ui-icon-power"
+                    action="#{MBUsuarios.logout()}" />
+
+            </p:menubar>
+
+
+
+<!-- 
+				<p:menubar autoDisplay="true">
+					<p:menuitem value="Home"
+						action="/pages/comum/selecaoSistema.faces?faces-redirect=true"
+						ajax="false" icon="sair" />
+					<p:submenu label="Gerenciar" icon="ui-icon-document">
+						<p:menuitem value="Gerenciar Escola"
+							url="/pages/sishosp/gerenciarEscola.faces" />
+						<p:menuitem value="Gerenciar Escolaridade"
+							url="/pages/sishosp/gerenciarEscolaridade.faces" />
+						<p:menuitem value="Gerenciar Forma Transporte"
+							url="/pages/sishosp/gerenciarFormaTransporte.faces" />
+						<p:menuitem value="Gerenciar Municipio"
+							url="/pages/sishosp/gerenciarMunicipio.faces" />
+						<p:menuitem value="Gerenciar Pacientes"
+							url="/pages/sishosp/gerenciarPaciente.faces" />
+						<p:menuitem value="Gerenciar Profissão"
+							url="/pages/sishosp/gerenciarProfissoes.faces" />
+						<p:menuitem value="Gerenciar Raça"
+							url="/pages/sishosp/gerenciarRaca.faces" />
+						<p:menuitem value="Gerenciar Tipo De Encaminhamento"
+							url="/pages/sishosp/gerenciarTipoEncaminhamento.faces" />
+						<p:menuitem value="Gerenciar Programa"
+							url="/pages/sishosp/gerenciarPrograma.faces" />
+						<p:menuitem value="Gerenciar Grupo"
+							url="/pages/sishosp/gerenciarGrupo.faces" />
+						<p:menuitem value="Gerenciar Tipo de Atendimento"
+							url="/pages/sishosp/gerenciarTipoAtendimento.faces" />
+						<p:menuitem value="Gerenciar Especialidade"
+							url="/pages/sishosp/gerenciarEspecialidade.faces" />
+						<p:menuitem value="Gerenciar Equipe"
+							url="/pages/sishosp/gerenciarEquipe.faces" />
+						<p:menuitem value="Gerenciar Profissional"
+							url="/pages/sishosp/gerenciarProfissional.faces" />
+						<p:menuitem value="Gerenciar CBO"
+							url="/pages/sishosp/gerenciarCbo.faces" />
+						<p:menuitem value="Gerenciar Procedimento"
+							url="/pages/sishosp/gerenciarProcedimento.faces" />
+						<p:menuitem value="Gerenciar Feriado"
+							url="/pages/sishosp/gerenciarFeriados.faces" />
+					</p:submenu>
+					<p:submenu label="Cadastros" icon="ui-icon-document">
+						<p:submenu label="Agenda" icon="ui-icon-document">
+							<p:menuitem value="Configuração da Agenda"
+								url="/pages/agenda/configuracaoAgenda.faces" />
+							<p:menuitem value="Configuração da Agenda por equipe"
+								url="/pages/agenda/configuracaoAgendaEquipe.faces" />
+							<p:menuitem value="Bloqueio" url="/pages/agenda/bloqueio.faces" />
+						</p:submenu>
+						<!-- <p:menuitem value="Bairros" onclick="PF('dlgCadBairro').show();" /> -->
+						<p:menuitem value="Convênios"
+							onclick="PF('dlgCadConvenio').show();" />
+						<p:menuitem value="CBO" onclick="PF('dlgCadCBO').show();" />
+						<p:menuitem value="Escolaridades"
+							onclick="PF('dlgCadEscolaridade').show();" />
+						<p:menuitem value="Escolas" onclick="PF('dlgCadEscola').show();" />
+						<p:menuitem value="Equipes" onclick="PF('dlgCadEquipe').show();" />
+						<p:menuitem value="Feriados" onclick="PF('dlgCadFeriado').show();" />
+						<p:menuitem value="Forma Transporte"
+							onclick="PF('dlgCadTransporte').show();" />
+						<p:menuitem value="Especialidades"
+							onclick="PF('dlgCadEspecialidade').show();" />
+						<p:menuitem value="Grupos" onclick="PF('dlgCadGrupo').show();" />
+						<!--<p:menuitem value="Logradouros" onclick="PF('dlgCadLogradouro').show();" actionListener="#{PacienteController.limparDados()}" />-->
+						<p:menuitem value="Laudos" onclick="PF('dlgCadLaudo').show();" />
+						<p:menuitem value="Municipios"
+							onclick="PF('dlgCadMunicipio').show();"
+							actionListener="#{PacienteController.limparDados()}"
+							update=":formMuni" process="@this,:formMuni" />
+						<p:menuitem value="Profissionais"
+							onclick="PF('dlgCadProfissional').show();" />
+						<p:menuitem value="Profissões"
+							onclick="PF('dlgCadProfissoes').show();" />
+						<p:menuitem value="Procedimentos"
+							onclick="PF('dlgCadProcedimento').show();" />
+						<p:menuitem value="Programas"
+							onclick="PF('dlgCadPrograma').show();" />
+						<p:menuitem value="Raça" onclick="PF('dlgCadRaca').show();" />
+						<p:menuitem value="Tipos de escolas"
+							onclick="PF('dlgCadTipoEscola').show();" />
+						<p:menuitem value="Tipos de encaminhamento"
+							onclick="PF('dlgCadEncaminhado').show();" />
+						<p:menuitem value="Tipos de atendimento"
+							onclick="PF('dlgCadTipoAtendimento').show();" />
+
+					</p:submenu>
+					<p:submenu label="Movimento" icon="ui-icon-document">
+						<p:menuitem value="Gerenciar Apac/Bpi"
+							url="/pages/sishosp/gerenciarLaudo.faces" />
+						<p:menuitem value="Gerenciar Laudo Digita"
+							url="/pages/sishosp/gerenciarLaudoDigita.faces" />
+						<p:menuitem value="Controle Apac"
+							url="/pages/sishosp/ControleApac.faces" />
+						<p:menuitem value="Agenda Médica"
+							url="/pages/agenda/agendaMedica.faces" />
+						<p:menuitem value="Atendimento"
+							url="/pages/agenda/consAgendamentos.faces" />
+						<p:menuitem value="Consulta Agendamento"
+							url="/pages/sishosp/agendaPaciente.faces" />
+						<p:submenu label="Serviço Social" icon="ui-icon-contact">
+							<p:menuitem value="Primeiro Atendimento"
+								url="/pages/sishosp/agendaPaciente.faces" />
+						</p:submenu>
+
+
+						<p:submenu label="APACs" icon="ui-icon-contact">
+							<p:menuitem value="Digita"
+								url="/pages/sishosp/cadastroLaudo.faces" />
+							<p:menuitem value="Controle"
+								url="/pages/sishosp/agendaPaciente.faces" />
+
+						</p:submenu>
+
+						<p:submenu label="BPis" icon="ui-icon-contact">
+							<p:submenu label="Encaminhamentos" icon="ui-icon-contact">
+								<p:menuitem value="Digita"
+									url="/pages/sishosp/agendaPaciente.faces" />
+							</p:submenu>
+							<p:menuitem value="Digita"
+								url="/pages/sishosp/agendaPaciente.faces" />
+							<p:menuitem value="Controle"
+								url="/pages/sishosp/agendaPaciente.faces" />
+						</p:submenu>
+
+						<p:submenu label="Laudo" icon="ui-icon-contact">
+							<p:menuitem value="Digita"
+								url="/pages/sishosp/agendaPaciente.faces" />
+							<p:menuitem value="Controle"
+								url="/pages/sishosp/agendaPaciente.faces" />
+						</p:submenu>
+					</p:submenu>
+					<p:submenu label="Relatórios" icon="ui-icon-document">
+						<p:submenu label="Administrativos" icon="ui-icon-contact">
+							<p:submenu label="Agenda" icon="ui-icon-contact">
+								<p:menuitem value="Configuração por Profissional"
+									onclick="PF('dlgConAgPr').show();" />
+							</p:submenu>
+							<p:menuitem value="Agendamentos por Profissional"
+								onclick="PF('dlgAgendProf').show();" />
+							<p:menuitem value="Atendimentos por Profissional"
+								onclick="PF('dlgAtendProf').show();" />
+							<p:menuitem value="Atendimentos por Programa"
+								onclick="PF('dlgAtenProg').show();" />
+							<p:menuitem value="Atendimentos por Procedimentos"
+								onclick="PF('dlgAtenProc').show();" />
+							<p:menuitem value="Atendimentos por Procedimentos por Grupos"
+								onclick="PF('dlgAtenProcGrupo').show();" />
+								<p:menuitem value="Atendimentos por Procedimentos por Tipo Atendimento"
+								onclick="PF('dlgAtenProcTiAt').show();" />
+							<p:menuitem value="Faltas por programa"
+								onclick="PF('dlgFaltaProg').show();" />
+							<p:submenu label="Pacientes" icon="ui-icon-contact">
+								<p:menuitem value="Geral Analitico"
+									url="/pages/sishosp/agendaPaciente.faces" />
+								<p:menuitem value="Geral Sintetico"
+									url="/pages/sishosp/agendaPaciente.faces" />
+							</p:submenu>
+							<p:separator></p:separator>
+							<p:submenu label="Auditivo" icon="ui-icon-contact">
+								<p:menuitem value="Financeiro"
+									url="/pages/sishosp/agendaPaciente.faces" />
+								<p:menuitem value="Mapas laudos"
+									url="/pages/sishosp/agendaPaciente.faces" />
+							</p:submenu>
+							<p:submenu label="Órteses e Prótese" icon="ui-icon-contact">
+								<p:menuitem value="Financeiro"
+									onclick="PF('dlgOrteseProteseFin').show();" />
+								<p:menuitem value="Mapas laudos"
+									onclick="PF('dlgOrteseProtese').show();" />
+							</p:submenu>
+
+						</p:submenu>
+
+						<p:submenu label="Pacientes" icon="ui-icon-contact">
+							<p:submenu label="Cadastros" icon="ui-icon-contact">
+								<p:menuitem value="Antigos"
+									url="/pages/sishosp/agendaPaciente.faces" />
+								<p:menuitem value="Novos"
+									url="/pages/sishosp/agendaPaciente.faces" />
+								<p:separator></p:separator>
+								<p:menuitem value="Geral"
+									url="/pages/sishosp/agendaPaciente.faces" />
+							</p:submenu>
+							<p:submenu label="Dependetes" icon="ui-icon-contact">
+								<p:menuitem value="Alfabetica"
+									url="/pages/sishosp/agendaPaciente.faces" />
+								<p:menuitem value="Data Nasc."
+									url="/pages/sishosp/agendaPaciente.faces" />
+							</p:submenu>
+							<p:menuitem value="Por Bairro"
+								url="/pages/sishosp/agendaPaciente.faces" />
+							<p:menuitem value="Histórico"
+								url="/pages/sishosp/agendaPaciente.faces" />
+						</p:submenu>
+						<p:menuitem value="Prontuário"
+							url="/pages/sishosp/agendaPaciente.faces" />
+
+					</p:submenu>
+					<p:submenu label="Suporte" icon="ui-icon-document">
+						<p:menuitem value="Cadastros de Usuários"
+							url="/pages/sishosp/agendaPaciente.faces" />
+
+					</p:submenu>
+
+					<p:menuitem value="Sair" style="float:center;"
+						action="#{MBUsuarios.logout}" ajax="false" icon="btlogout" />
+
+				</p:menubar>
+ 
+        </h:form>
+
+    </body>
+</html>

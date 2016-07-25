@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.acl.model;
 
-public class SecretariaBean {
+import java.io.Serializable;
+
+public class SecretariaBean implements Serializable {
 	private String Codigo;
 	private Integer empfil;
 	private String descricao;

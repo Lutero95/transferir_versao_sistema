@@ -1,11 +1,13 @@
 package br.gov.al.maceio.sishosp.acl.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
  * @since 17/03/2015
  */
-public class Pagina {
+public class Pagina implements Serializable{
     
     private Long id;
     private String descricao;

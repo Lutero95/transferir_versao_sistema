@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.acl.model;
 
-public class PermissoesBean {
+import java.io.Serializable;
+
+public class PermissoesBean implements Serializable{
 
     private Boolean protocolar;
     private Boolean tramitar;

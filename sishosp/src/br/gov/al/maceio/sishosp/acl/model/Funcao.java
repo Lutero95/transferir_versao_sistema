@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.acl.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
  * @since 17/03/2015
  */
-public class Funcao {
+public class Funcao implements Serializable{
     
     private Long id;
     private String descricao;

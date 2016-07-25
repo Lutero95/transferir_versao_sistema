@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.acl.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
  * @since 17/03/2015
  */
-public class Menu {
+public class Menu implements Serializable{
 
     private Long id;
     private String descricao;
@@ -23,25 +24,26 @@ public class Menu {
     private boolean ativo;
     
 	private Integer idPermissao;
-	private Integer idRotina;
-    private String descRotina;
-    private Integer idSistema;
+        private Integer idSistema;
     private String descSistema;
     private String siglaSistema;
     
     private Integer idRecSistema;
+    private String descPagina;
+	private String diretorio;
+    private String extensao;    
 
     private List<Integer> listaSistemas;
 
     private String indiceAux;  
 
-    private Rotina rotina;
+    
     
     // ALTERADO AS 3 VARIAVEIS DESC_PAGINA , EXTENSAO E DIRETORIO PARA ROTINA!
     // ADICIONADO ROTINA rotina como objeto !
  
 	public Menu() {
-		rotina = new Rotina();
+		
 
     }
 
@@ -49,7 +51,7 @@ public class Menu {
         String onclick, String codigo, String indice, String tipo, boolean ativo, 
         Integer idPermissao, Integer idRotina, String desRotina, Integer idSistema, 
         String descSistema, String siglaSistema, Integer idRecSistema, List<Integer> listaSistemas, 
-        String indiceAux, Rotina rotina) {
+        String indiceAux) {
         this.id = id;
         this.descricao = descricao;
         this.icone = icone;
@@ -61,16 +63,13 @@ public class Menu {
         this.tipo = tipo;
         this.ativo = ativo;
         this.idPermissao = idPermissao;
-        this.idRotina = idRotina;
-        
-        this.descRotina = desRotina;
         this.idSistema = idSistema;
         this.descSistema = descSistema;
         this.siglaSistema = siglaSistema;
         this.idRecSistema = idRecSistema;
         this.listaSistemas = listaSistemas;
         this.indiceAux = indiceAux;
-        this.rotina = rotina;
+
         
     }
 
@@ -162,13 +161,7 @@ public class Menu {
         this.idPermissao = idPermissao;
     }
     
-    public String getDescRotina() {
-        return descRotina;
-    }
 
-    public void setDescRotina(String descRotina) {
-        this.descRotina = descRotina;
-    }
     
     public Integer getIdSistema() {
         return idSistema;
@@ -218,19 +211,29 @@ public class Menu {
         this.indiceAux = indiceAux;
     }
 
-	   public Rotina getRotina() {
-			return rotina;
+	
+		public String getDescPagina() {
+			return descPagina;
 		}
 
-		public void setRotina(Rotina rotina) {
-			this.rotina = rotina;
-		}
-		public Integer getIdRotina() {
-			return idRotina;
+		public void setDescPagina(String descPagina) {
+			this.descPagina = descPagina;
 		}
 
-		public void setIdRotina(Integer idRotina) {
-			this.idRotina = idRotina;
+		public String getDiretorio() {
+			return diretorio;
+		}
+
+		public void setDiretorio(String diretorio) {
+			this.diretorio = diretorio;
+		}
+
+		public String getExtensao() {
+			return extensao;
+		}
+
+		public void setExtensao(String extensao) {
+			this.extensao = extensao;
 		}
 
 

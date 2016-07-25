@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.acl.control;
 import br.gov.al.maceio.sishosp.acl.model.Funcao;
 import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import org.primefaces.context.RequestContext;
  */
 @ManagedBean
 @ViewScoped
-public class FuncaoMB {
+public class FuncaoMB  implements Serializable{
 
     private Funcao funcao;
     private List<Funcao> listaFuncoes;
@@ -50,14 +51,14 @@ public class FuncaoMB {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Função cadastrada com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-
-            RequestContext.getCurrentInstance().execute("dlgCadFuncao.hide();");
+            
+            RequestContext.getCurrentInstance().execute("PF('dlgCadFuncao').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Ocorreu um erro durante o cadastro!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("dlgCadFuncao.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgCadFuncao').hide();");
         }
     }
 
@@ -73,14 +74,14 @@ public class FuncaoMB {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Função alterada com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-
-            RequestContext.getCurrentInstance().execute("dlgAltFuncao.hide();");
+            
+            RequestContext.getCurrentInstance().execute("PF('dlgAltFuncao').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Ocorreu um erro durante a alteração!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("dlgAltFuncao.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgAltFuncao').hide();");
         }
     }
 
@@ -97,13 +98,13 @@ public class FuncaoMB {
                 "Função excluida com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgExcFuncao.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgExcFuncao').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Ocorreu um erro durante a exclusão!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgExcFuncao.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgExcFuncao').hide();");
         }       
     }
     

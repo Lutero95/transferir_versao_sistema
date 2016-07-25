@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.acl.control;
 import br.gov.al.maceio.sishosp.acl.model.Permissao;
 import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import org.primefaces.context.RequestContext;
  */
 @ManagedBean
 @ViewScoped
-public class PermissaoMB {
+public class PermissaoMB implements Serializable{
 
     private Permissao permissao;
     private List<Permissao> listaPermissoes;
@@ -49,14 +50,14 @@ public class PermissaoMB {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Permissão cadastrada com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-
-            RequestContext.getCurrentInstance().execute("dlgCadPermissao.hide();");
+            
+            RequestContext.getCurrentInstance().execute("PF('dlgCadPermissao').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Ocorreu um erro durante o cadastro!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("dlgCadPermissao.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgCadPermissao').hide();");
         }
     }
     public void alterarPermissao() {
@@ -73,14 +74,14 @@ public class PermissaoMB {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Permissão alterada com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-
-            RequestContext.getCurrentInstance().execute("dlgAltPermissao.hide();");
+            
+            RequestContext.getCurrentInstance().execute("PF('dlgAltPermissao').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Ocorreu um erro durante a alteração!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgAltPermissao.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgAltPermissao').hide();");
         }
     }
 
@@ -99,13 +100,13 @@ public class PermissaoMB {
                 "Permissão excluida com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgExcPermissao.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgExcPermissao').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Ocorreu um erro durante a exclusão!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgExcPermissao.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgExcPermissao').hide();");
         }
     }
     

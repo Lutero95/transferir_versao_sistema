@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.acl.control;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import org.primefaces.context.RequestContext;
  */
 @ManagedBean
 @ViewScoped
-public class SistemaMB {
+public class SistemaMB implements Serializable {
 
     private Sistema sistema;
     private List<Sistema> listaSistemas;
@@ -72,14 +73,14 @@ public class SistemaMB {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Sistema cadastrado com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-
-            RequestContext.getCurrentInstance().execute("dlgCadSistema.hide();");
+            
+            RequestContext.getCurrentInstance().execute("PF('dlgCadSistema').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Ocorreu um erro durante o cadastro!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute("dlgCadSistema.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgCadSistema').hide();");
         }
     }
 
@@ -99,14 +100,14 @@ public class SistemaMB {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Sistema alterado com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-
-            RequestContext.getCurrentInstance().execute("dlgAltSistema.hide();");
+            
+            RequestContext.getCurrentInstance().execute("PF('dlgAltSistema').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Ocorreu um erro durante a alteração!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgAltSistema.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgAltSistema').hide();");
         }
     }
 
@@ -123,13 +124,13 @@ public class SistemaMB {
                 "Sistema excluido com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgExcSistema.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgExcSistema').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Ocorreu um erro durante a exclusão!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             
-            RequestContext.getCurrentInstance().execute("dlgExcSistema.hide();");
+            RequestContext.getCurrentInstance().execute("PF('dlgExcSistema').hide();");
         }
     }
     
