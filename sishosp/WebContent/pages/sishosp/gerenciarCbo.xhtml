@@ -16,19 +16,16 @@
 			<h3>GERENCIAMENTO DE CBO</h3>
 			<br />
 		</div>
-		<h:form id="frmmensagem"
-			onkeypress="
-                if (event.keyCode == 13) {
-                    document.getElementById('form:botaoBusca').click();
-                    return false;
-                }">
+		<h:form id="frmmensagem">
 
-
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{CboController.getListarCbo}" />
+			</f:metadata>
 			<p:growl id="growl" showDetail="false" />
 			<p:panel id="pnlprincipal" header="">
 				<p:panelGrid columns="7" styleClass="semBorda"
 					style="font-size:12px !important;">
-					<p:outputPanel autoUpdate="true">
+					<p:outputPanel>
 						<p:outputLabel value="Pesquisar por: " />
 						<p:selectOneMenu value="#{CboController.tipoBuscar}"
 							required="true"
@@ -43,7 +40,7 @@
 							value="#{CboController.descricaoBusca}" />
 
 						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							styleClass="btn btn-info" style="height:30px; margin-left:2px; margin-top:10px;"
+							style="height:30px; margin-left:2px; margin-top:10px;"
 							action="#{CboController.buscarCbo()}"
 							update=":frmmensagem:tabela, :frmmensagem:growl" />
 						
@@ -54,29 +51,15 @@
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							actionListener="#{CboController.limparDados()}"
-							action="/pages/sishosp/cadastroCbo.faces?faces-redirect=true" icon="add"
-							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
-							<f:setPropertyActionListener value="I"
+							action="#{CboController.redirectInsert()}"
+							 icon="add"
+							style="margin-top: 15px;">
+							<f:setPropertyActionListener value="1"
 								target="#{CboController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>
 
-						<!--  <p:commandButton id="btnalt" value="Alterar"
-                                             style="margin-left:10px" update=":frminc:pnlinc"
-                                             action="#{clienteController.alteraCliente()}"
-                                             icon="ui-icon-wrench">
-                                <f:setPropertyActionListener value="A"
-                                target="#{clienteController.tipo}" />
-                                <p:tooltip for="btnalt" value="Alterar"></p:tooltip>
-                            </p:commandButton>
-
-
-                            <p:commandButton icon="ui-icon-closethick" value="Excluir"
-                                             style="margin-left:10px" id="btnexc"
-                                             action="#{clienteController.acaoExcluir()}">
-                                <p:tooltip for="btnexc" value="Excluir"></p:tooltip>
-                            </p:commandButton>-->
+						
 
 					</p:outputPanel>
 				</p:panelGrid>
@@ -98,11 +81,11 @@
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroCbo.faces?faces-redirect=true">
+									action="#{CboController.redirectEdit()}">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{CboController.cbo}" />
 
-									<f:setPropertyActionListener value="A"
+									<f:setPropertyActionListener value="2"
 										target="#{CboController.tipo}" />
 								</p:menuitem>
 

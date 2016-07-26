@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -28,7 +29,7 @@ public class CboController implements Serializable{
 	private List<CboBean> listaCbo;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
-	private String tipo;
+	private int tipo;
 	private String cabecalho;
 
 	private Integer abaAtiva = 0;
@@ -39,44 +40,71 @@ public class CboController implements Serializable{
 		this.cbo = new CboBean();
 		this.listaCbo = null;
 		this.descricaoBusca = new String();
-		this.tipo = new String();
+		
+	}
+	
+	public String redirectEdit() {
+		return "cadastroCbo?faces-redirect=true&amp;id=" + this.cbo.getCodCbo()+"&amp;tipo="+tipo;
+	}	
+	
+	
+	public String redirectInsert() {
+		return "cadastroCbo?faces-redirect=true&amp;tipo="+tipo;
+	}		
+	
+	public String getEditCbo() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo =Integer.parseInt(params.get("tipo"));			
+			System.out.println("tipo do walter"+tipo);
+			this.cbo = cDao.listarCboPorId(id);
+		}
+		else
+			tipo =Integer.parseInt(params.get("tipo"));
+		return "cadastroCbo";
 	}
 
 	public void limparDados() {
-		this.cbo = new CboBean();
-		this.listaCbo = new ArrayList<>();
 		this.descricaoBusca = new String();
-		//this.tipo = new String();
-		listaCbo = cDao.listarCbo();
+		
 	}
+	
 
-	public void gravarCbo() throws ProjetoException, SQLException {
+	public String gravarCbo() throws ProjetoException, SQLException {
 		boolean cadastrou = cDao.gravarCBO(this.cbo);
 
 		if (cadastrou == true) {
-			limparDados();
+			//limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"CBO cadastrado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";	
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
 		}
 	}
 
-	public void alterarCbo() throws ProjetoException {
+	public String alterarCbo() throws ProjetoException {
 		boolean alterou = cDao.alterarCbo(cbo);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Cbo alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";	
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
 		}
-		listaCbo = cDao.listarCbo();
+		
 
 	}
 
@@ -107,10 +135,10 @@ public class CboController implements Serializable{
 		this.cbo = cbo;
 	}
 
-	public List<CboBean> getListaCbo() {
-		if (listaCbo == null) {
+	public List<CboBean> getListarCbo() {
+		
 			listaCbo = cDao.listarCbo();
-		}
+	
 		return listaCbo;
 	}
 
@@ -138,13 +166,7 @@ public class CboController implements Serializable{
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
+	
 
 	public Integer getAbaAtiva() {
 		return abaAtiva;
@@ -155,9 +177,9 @@ public class CboController implements Serializable{
 	}
 	
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
+		if(this.tipo==1){
 			cabecalho = "CADASTRO DE CBO";
-		}else if(this.tipo.equals("A")){
+		}else if(this.tipo==2){
 			cabecalho = "ALTERAR CBO";
 		}
 		return cabecalho;
@@ -165,6 +187,18 @@ public class CboController implements Serializable{
 
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
+	}
+
+	public List<CboBean> getListaCbo() {
+		return listaCbo;
 	}
 
 }
