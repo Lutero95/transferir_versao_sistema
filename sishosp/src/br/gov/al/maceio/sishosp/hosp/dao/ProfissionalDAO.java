@@ -458,4 +458,29 @@ public class ProfissionalDAO {
 
 		return lista;
 	}
+	
+	public List<ProfissionalBean> listarProfissionalPorGrupo(int idGrupo) {
+		List<ProfissionalBean> lista = new ArrayList<ProfissionalBean>();
+		String sql = "select codprofissional from hosp.profissional_grupo where codgrupo = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idGrupo);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				lista.add(buscarProfissionalPorId(rs.getInt("codprofissional")));
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
 }
