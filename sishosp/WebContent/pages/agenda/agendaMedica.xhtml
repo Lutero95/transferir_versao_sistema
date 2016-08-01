@@ -65,6 +65,9 @@
 							<p:ajax event="itemSelect"
 								listener="#{TipoAtendimentoController.selectGrupo}"
 								update=":formAgendaMedica:outTipoAt, :formConsuTipoAt:dtTipoAt" />
+							<p:ajax event="itemSelect"
+								listener="#{ProfissionalController.atualizaListaProfPorGrupo}"
+								update=":formAgendaMedica:outProf, :formConsuProf:dtProf" />
 							<p:ajax event="change" update=":formAgendaMedica"
 								listener="#{AgendaController.limparNaBuscaGrupo()}" />
 						</p:autoComplete>
@@ -91,7 +94,7 @@
 						action="#{AgendaController.limparNaBuscaTipo()}"
 						update=":formAgendaMedica" onclick="PF('dlgConsuTipoAt').show();" />
 
-					<h:outputLabel for="prof" value="Profissional: *"
+					<h:outputLabel value="Profissional: *"
 						rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
 					<p:outputPanel id="outProf"
 						rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
@@ -462,7 +465,7 @@
 			modal="true" width="550px">
 			<h:form id="formConsuProf">
 				<p:dataTable value="#{ProfissionalController.listaProfissional}"
-					id="dtTipoAt" resizableColumns="true" var="profi"
+					id="dtProf" resizableColumns="true" var="profi"
 					emptyMessage="Não existe nenhum tipo cadastrado!">
 					<p:column headerText="CÓD.">
 						<p:outputLabel value="#{profi.idProfissional}" />

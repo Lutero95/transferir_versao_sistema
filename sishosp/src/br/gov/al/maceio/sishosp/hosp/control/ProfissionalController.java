@@ -10,9 +10,11 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
 @ManagedBean(name = "ProfissionalController")
@@ -34,6 +36,8 @@ public class ProfissionalController implements Serializable {
 	private String cabecalho;
 	private String tipo;
 	private Integer abaAtiva = 0;
+
+	private GrupoBean grupoSelecionado;
 
 	public ProfissionalController() {
 		this.profissional = new ProfissionalBean();
@@ -217,5 +221,12 @@ public class ProfissionalController implements Serializable {
 			throws ProjetoException {
 		List<ProfissionalBean> result = pDao.listarProfissionalBusca(query, 1);
 		return result;
+	}
+	
+	
+	public void atualizaListaProfPorGrupo(SelectEvent event){
+		System.out.println("VAI ATualahsdas");
+		this.grupoSelecionado = (GrupoBean) event.getObject();
+		this.listaProfissional = pDao.listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
 	}
 }
