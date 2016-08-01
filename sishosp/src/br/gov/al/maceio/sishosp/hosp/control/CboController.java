@@ -2,7 +2,6 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,8 +62,11 @@ public class CboController implements Serializable{
 			System.out.println("tipo do walter"+tipo);
 			this.cbo = cDao.listarCboPorId(id);
 		}
-		else
+		else{
+			System.out.println("tipo sera"+tipo);
 			tipo =Integer.parseInt(params.get("tipo"));
+			
+		}
 		return "cadastroCbo";
 	}
 
