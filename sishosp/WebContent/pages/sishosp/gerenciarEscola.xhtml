@@ -93,7 +93,7 @@
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroEscola.faces?faces-redirect=true">
+									action="#{EscolaController.redirectEdit()}">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{EscolaController.escola}" />
 

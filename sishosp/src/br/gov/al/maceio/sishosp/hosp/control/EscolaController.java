@@ -74,30 +74,28 @@ public class EscolaController implements Serializable{
 		return "cadastroEscola?faces-redirect=true";
 	}	
 	
-	@PostConstruct
-	public String getEditEscola() throws ProjetoException {
-		
-		tipoesc=  (int) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("tipo");
-		
-		System.out.println("vai ve se entrar no editar"+tipoesc);
-		if(tipoesc ==2) {
+	
+	public void getEditEscola() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
 			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipoesc =Integer.parseInt(params.get("tipo"));			
 			
-			tipoesc=  (int) FacesContext
-					.getCurrentInstance().getExternalContext().getSessionMap()
-					.get("tipo");
-			System.out.println("tipo do walter"+tipoesc);
 			EscolaDAO udao = new EscolaDAO();
-			Integer id=  (int) FacesContext
-					.getCurrentInstance().getExternalContext().getSessionMap()
-					.get("id");
 			this.escola = udao.buscaescolacodigo(id);
 		}
+		else{
+			
+			tipoesc =Integer.parseInt(params.get("tipo"));
+			
+		}
 		
-		return "cadastroEscola";
 	}
+
+	
 	
 	
 	

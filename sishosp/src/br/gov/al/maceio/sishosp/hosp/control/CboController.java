@@ -51,7 +51,7 @@ public class CboController implements Serializable{
 		return "cadastroCbo?faces-redirect=true&amp;tipo="+tipo;
 	}		
 	
-	public String getEditCbo() throws ProjetoException {
+	public void getEditCbo() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
 		System.out.println("vai ve se entrar no editar");
@@ -67,7 +67,7 @@ public class CboController implements Serializable{
 			tipo =Integer.parseInt(params.get("tipo"));
 			
 		}
-		return "cadastroCbo";
+		
 	}
 
 	public void limparDados() {

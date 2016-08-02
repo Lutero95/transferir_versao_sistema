@@ -24,9 +24,10 @@
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
+				
 				<p:panel id="pnlCadPaciente" header="#{EscolaController.cabecalho}"
 					style="height:400px; width:600px; margin-left:50%; margin-top:10%; background-color: #F5F5F5;">
-
+<p:outputPanel>
 					<div class="form-group">
 						<h:outputLabel for="inputname" value="Nome Escola"
 							styleClass="col-sm-3 control-label" />
@@ -43,12 +44,12 @@
 						</div>
 					</div>
 
-
+</p:outputPanel>
 					<p:separator></p:separator>
 					<center>
-					<p:outputPanel autoUpdate="true">
-					<h:outputText value="#{EscolaController.tipoesc}" />
-					</p:outputPanel>
+					
+					
+					
 						<!-- FIM DO FORMULARIO -->
 						<h:panelGrid columns="2" styleClass="semBorda">
 							<p:commandButton action="#{EscolaController.gravarEscola()}"
