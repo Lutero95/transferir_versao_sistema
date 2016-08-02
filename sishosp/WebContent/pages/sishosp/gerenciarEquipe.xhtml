@@ -16,19 +16,16 @@
 			<h3>GERENCIAMENTO DE EQUIPES</h3>
 			<br />
 		</div>
-		<h:form id="frmmensagem"
-			onkeypress="
-                if (event.keyCode == 13) {
-                    document.getElementById('form:botaoBusca').click();
-                    return false;
-                }">
+		<h:form id="frmmensagem">
 
-
+<f:metadata>	
+				<f:event type="preRenderView" listener="#{EquipeController.getListarEquipe}" />
+			</f:metadata>
 			<p:growl id="growl" showDetail="false" />
 			<p:panel id="pnlprincipal" header="">
 				<p:panelGrid columns="7" styleClass="semBorda"
 					style="font-size:12px !important;">
-					<p:outputPanel autoUpdate="true">
+					<p:outputPanel>
 						<p:outputLabel value="Pesquisar por: " />
 						<p:selectOneMenu value="#{EquipeController.tipoBuscar}"
 							required="true"
@@ -54,10 +51,10 @@
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							actionListener="#{EquipeController.limparDados()}"
-							action="/pages/sishosp/cadastroEquipe.faces?faces-redirect=true" icon="add"
-							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
-							<f:setPropertyActionListener value="I"
+							action="#{EquipeController.redirectInsert()}"
+							 icon="add"
+							 style="margin-top: 15px;">
+							<f:setPropertyActionListener value="1"
 								target="#{EquipeController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>
@@ -83,12 +80,12 @@
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroEquipe.faces?faces-redirect=true">
+									action="#{EquipeController.redirectEdit()}">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{EquipeController.equipe}" />
 
-									<f:setPropertyActionListener value="A"
-										target="#{EquipeController.tipo}" />
+									<f:setPropertyActionListener value="2"
+								target="#{EquipeController.tipo}" />
 								</p:menuitem>
 
 								<p:menuitem value="Excluir" icon="trash"

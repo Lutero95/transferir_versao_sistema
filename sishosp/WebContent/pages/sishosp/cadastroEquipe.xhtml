@@ -3,9 +3,9 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	>
 
 <ui:composition template="../../template/templategeral.xhtml">
 
@@ -14,11 +14,14 @@
 		<div class="col-md-8">
 
 			<h:form>
-				<h:commandButton value="Voltar"
+<f:metadata>
+				<f:event type="preRenderView" listener="#{EquipeController.getEditEquipe()}" />
+			</f:metadata>			
+				<p:commandButton value="Voltar"
 					style="position:absolute; left:71%; top:100%;"
-					styleClass="btn btn-info"
+					
 					action="/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true">
-				</h:commandButton>
+				</p:commandButton>
 			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
@@ -26,7 +29,7 @@
 				<p:growl id="message" />
 				<p:panel id="pnlCadEquipe" header="#{EquipeController.cabecalho}"
 					style="height:auto; width:850px; background-color: #F5F5F5;">
-					<!--  <p:growl id="growl" showDetail="false" /> -->
+					
 					<p:tabView activeIndex="#{EquipeController.abaAtiva}"
 						style="height:auto; width:800px">
 						<p:tab title="DADOS EQUIPE">
@@ -41,45 +44,7 @@
 								</div>
 							</div>
 
-							<div class="form-group">
-								<h:outputLabel value="Profissional: "
-									styleClass="col-sm-3 control-label" />
-								<p:commandButton
-									style="position:absolute; top:130px; left:162px;"
-									icon="ui-icon-plus" onclick="PF('dlgConsuProfE').show();" />
-								<div class="col-sm-6">
-
-									<p:dataTable emptyMessage="Sem Dados"
-										styleClass="table table-hover" id="tabela"
-										style="margin-top:20px;"
-										value="#{EquipeController.equipe.profissionais}" var="tab"
-										paginator="true" paginatorPosition="bottom" rows="12"
-										resizableColumns="true">
-
-										<p:column headerText="Cód."
-											style="font-weight:bold;width:20%;">
-											<h:outputText value="#{tab.idProfissional}" />
-										</p:column>
-
-										<p:column headerText="Nome" style="font-weight:bold;">
-											<h:outputText value="#{tab.descricaoProf}" />
-										</p:column>
-										
-										<p:column headerText="Ação">
-											<center>
-												<p:commandButton process="@this"
-													action="#{EquipeController.equipe.removeProfList()}"
-													icon="ui-icon-trash" update=":formCADU:pnlCadEquipe">
-													<f:setPropertyActionListener value="#{tab}"
-														target="#{EquipeController.equipe.profAdd}" />
-												</p:commandButton>
-											</center>
-										</p:column>
-
-									</p:dataTable>
-								</div>
-							</div>
-
+							
 						</p:tab>
 
 					</p:tabView>
@@ -87,48 +52,22 @@
 				</p:panel>
 				<!-- FIM DO FORMULARIO -->
 				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-					<h:commandButton action="#{EquipeController.gravarEquipe()}"
-						update=":formCADU:message,:formCADU:pnlCadEquipe,:formCadu"
-						value="Cadastrar" styleClass="btn btn-sm btn-success"
-						rendered="#{EquipeController.tipo == 'I'}" />
+					<p:commandButton action="#{EquipeController.gravarEquipe()}"
+						update=":formCADU:message,:formCADU:pnlCadEquipe"
+						value="Cadastrar"
+						rendered="#{EquipeController.tipo == 1}" />
 
 
-					<h:commandButton action="#{EquipeController.alterarEquipe()}"
-						update=":formCADU:message,:formCADU:pnlCadEquipe,:formCadu"
-						value="Alterar" styleClass="btn btn-info"
-						rendered="#{EquipeController.tipo  == 'A'}" />
+					<p:commandButton action="#{EquipeController.alterarEquipe()}"
+						update=":formCADU:message,:formCADU:pnlCadEquipe"
+						value="Alterar"
+						rendered="#{EquipeController.tipo  == 2}" />
 				</p:panelGrid>
 
-				<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProfE"
-					modal="true" width="550px">
-					<h:form id="formConsuProfE">
-						<p:dataTable value="#{ProfissionalController.listaProfissional}"
-							id="dtTipoAt" resizableColumns="true" var="profi"
-							emptyMessage="Não existe nenhum tipo cadastrado!">
-							<p:column headerText="CÓD.">
-								<p:outputLabel value="#{profi.idProfissional}" />
-							</p:column>
-							<p:column headerText="Profissional">
-								<p:outputLabel value="#{profi.descricaoProf}" />
-							</p:column>
-							<p:column headerText="Especialidade">
-								<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
-							</p:column>
-
-							<p:column style="width:50px;text-align: center">
-								<p:commandButton process="@this" update=":formCADU:pnlCadEquipe"
-									icon="ui-icon-check" title="Selecionar"
-									action="#{EquipeController.equipe.addProfList()}"
-									onclick="PF('dlgConsuProfE').hide();">
-									<f:setPropertyActionListener value="#{profi}"
-										target="#{EquipeController.equipe.profAdd}" />
-								</p:commandButton>
-							</p:column>
-						</p:dataTable>
-					</h:form>
-				</p:dialog>
+				
 
 			</h:form>
+			
 		</div>
 
 	</ui:define>

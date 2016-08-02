@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -27,9 +28,9 @@ public class EquipeController implements Serializable {
 	private List<EquipeBean> listaEquipe;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
-	private String tipo;
 	private Integer abaAtiva = 0;
 	private String cabecalho;
+	private int tipo;
 
 	EquipeDAO eDao = new EquipeDAO();
 
@@ -37,12 +38,11 @@ public class EquipeController implements Serializable {
 		this.equipe = new EquipeBean();
 		this.listaEquipe = null;
 		this.descricaoBusca = new String();
-		this.tipo = new String();
 		this.descricaoBusca = new String();
 	}
 
 	public void limparDados() {
-		equipe = new EquipeBean();
+		
 		this.descricaoBusca = new String();
 		this.tipoBuscar = 1;
 		this.listaEquipe = eDao.listarEquipe();
@@ -72,14 +72,7 @@ public class EquipeController implements Serializable {
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
+	
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
@@ -88,45 +81,44 @@ public class EquipeController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public List<EquipeBean> getListaEquipe() {
-		if (listaEquipe == null) {
+	public List<EquipeBean> getListarEquipe() {
+		
 			this.listaEquipe = eDao.listarEquipe();
-		}
+		
 		return listaEquipe;
 	}
-
-	public void gravarEquipe() throws ProjetoException, SQLException {
-		if (this.equipe.getProfissionais().isEmpty()) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário no mínimo um profissional na equipe!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
+	
+	public String redirectEdit() {
+		return "cadastroEquipe?faces-redirect=true&amp;id=" + this.equipe.getCodEquipe()+"&amp;tipo="+tipo;
+	}	
+	
+	
+	public String redirectInsert() {
+		return "cadastroEquipe?faces-redirect=true&amp;tipo="+tipo;
+	}		
+	
+	public String getEditEquipe() throws ProjetoException, SQLException {
+		System.out.println("getEditEquipe");
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		
+		if(params.get("id") != null) {
+		
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo =Integer.parseInt(params.get("tipo"));			
+			System.out.println("tipo do walter"+tipo);
+			this.equipe = eDao.buscarEquipePorID(id);
 		}
-		if (this.equipe.getDescEquipe().isEmpty()) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Descrição obrigatória!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
+		else
+		{
+			System.out.println("entrou no wlesee");
+			tipo =Integer.parseInt(params.get("tipo"));
+			
 		}
-		boolean cadastrou = eDao.gravarEquipe(this.equipe);
-
-		if (cadastrou == true) {
-			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Equipe cadastrada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
+		return "cadastroEquipe";
 	}
 
-	public void buscarEquipes() {
-		this.listaEquipe = eDao.listarEquipeBusca(descricaoBusca, tipoBuscar);
-	}
-
-	public String alterarEquipe() throws ProjetoException {
+	public String gravarEquipe() throws ProjetoException, SQLException {
 		if (this.equipe.getProfissionais().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"É necessário no mínimo um profissional na equipe!", "Erro");
@@ -137,6 +129,43 @@ public class EquipeController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Descrição obrigatória!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
+		boolean cadastrou = eDao.gravarEquipe(this.equipe);
+
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Equipe cadastrada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "gerenciarEquipe?faces-redirect=true&amp;sucesso=Equipe cadastrada com sucesso!";				
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
+	}
+
+	public void buscarEquipes() {
+		this.listaEquipe = eDao.listarEquipeBusca(descricaoBusca, tipoBuscar);
+	}
+
+	public String alterarEquipe() throws ProjetoException {
+		System.out.println("alterarEquipe");
+		if (this.equipe.getProfissionais().isEmpty()) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"É necessário no mínimo um profissional na equipe!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			System.out.println("aaaa");
+			return "";
+			
+		}
+		if (this.equipe.getDescEquipe().isEmpty()) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Descrição obrigatória!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			System.out.println("bbbb");
 			return "";
 		}
 
@@ -147,11 +176,14 @@ public class EquipeController implements Serializable {
 					"Equipe alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			this.listaEquipe = eDao.listarEquipe();
+			System.out.println("cccc");
 			return "/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			System.out.println("dddd");
 			return "";
 		}
 	}
@@ -176,9 +208,9 @@ public class EquipeController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
+		if (this.tipo==1) {
 			cabecalho = "CADASTRO DE EQUIPE";
-		} else if (this.tipo.equals("A")) {
+		} else if (this.tipo==2) {
 			cabecalho = "ALTERAR EQUIPE";
 		}
 		return cabecalho;
@@ -192,5 +224,21 @@ public class EquipeController implements Serializable {
 			throws ProjetoException {
 		List<EquipeBean> result = eDao.listarEquipeBusca(query, 1);
 		return result;
+	}
+
+	public void setListaEquipe(List<EquipeBean> listaEquipe) {
+		this.listaEquipe = listaEquipe;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
+	}
+
+	public List<EquipeBean> getListaEquipe() {
+		return listaEquipe;
+	}
+
+	public int getTipo() {
+		return tipo;
 	}
 }
