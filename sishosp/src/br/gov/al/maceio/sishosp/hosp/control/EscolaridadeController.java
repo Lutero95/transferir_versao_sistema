@@ -168,14 +168,14 @@ public class EscolaridadeController implements Serializable {
 		if(params.get("id") != null) {
 			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
-			tipoesc =Integer.parseInt(params.get("tipo"));			
+			tipo =Integer.parseInt(params.get("tipo"));			
 			
-			EscolaDAO udao = new EscolaDAO();
-			this.escola = udao.buscaescolacodigo(id);
+			EscolaridadeDAO udao = new EscolaridadeDAO();
+			this.escolaridade = udao.buscaescolaridadecodigo(id);
 		}
 		else{
 			
-			tipoesc =Integer.parseInt(params.get("tipo"));
+			tipo =Integer.parseInt(params.get("tipo"));
 			
 		}
 		
@@ -257,6 +257,13 @@ public class EscolaridadeController implements Serializable {
 
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
+	}
+
+	/**
+	 * @return the listaEscolaridade
+	 */
+	public List<EscolaridadeBean> getListaEscolaridade() {
+		return listaEscolaridade;
 	}
 
 }

@@ -10,7 +10,7 @@
 
 <ui:composition template="../../template/templategeral.xhtml">
 <f:metadata>
-				 <f:viewAction action="#{EscolaridadeController.listaEscolaridade()}" />
+				 <f:viewAction action="#{EscolaridadeController.listarEscolaridade()}" />
 				
 			</f:metadata>
 	<ui:define name="body">
@@ -101,12 +101,12 @@
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroEscolaridade.faces?faces-redirect=true">
+									action="#{EscolaridadeController.redirectEdit()}">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{EscolaridadeController.escolaridade}" />
 
 
-									<f:setPropertyActionListener value="A"
+									<f:setPropertyActionListener value="2"
 										target="#{EscolaridadeController.tipo}" />
 								</p:menuitem>
 
