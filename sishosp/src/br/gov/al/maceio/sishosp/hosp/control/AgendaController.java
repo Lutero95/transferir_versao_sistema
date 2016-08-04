@@ -151,7 +151,7 @@ public class AgendaController implements Serializable{
 		this.habilitarDetalhes = habilitarDetalhes;
 	}
 
-	public void verificaDisponibilidadeData() {
+	public void verificaDisponibilidadeData() throws ProjetoException {
 		FeriadoBean feriado = aDao.verificarFeriado(this.agenda
 				.getDataAtendimento());
 		List<BloqueioBean> bloqueio = new ArrayList<BloqueioBean>();
@@ -216,7 +216,7 @@ public class AgendaController implements Serializable{
 		this.listaAgendamentosData = aDao.listarAgendamentosData(this.agenda);
 	}
 
-	public void gravarAgenda() {
+	public void gravarAgenda() throws ProjetoException {
 		// verificar se existe algum campo nao preenchido
 		if (this.agenda.getPaciente() == null
 				|| this.agenda.getPrograma() == null
@@ -266,7 +266,7 @@ public class AgendaController implements Serializable{
 		limparDados();
 	}
 
-	public void consultarAgenda() {
+	public void consultarAgenda() throws ProjetoException {
 		if(this.dataAtendimentoC == null){
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Selecione uma data de atendimento!", "Erro");
@@ -277,7 +277,7 @@ public class AgendaController implements Serializable{
 				this.protuarioC, this.cnsC, this.tipoC);
 	}
 
-	public void excluirAgendamento() {
+	public void excluirAgendamento() throws ProjetoException {
 		boolean ok = aDao.excluirAgendamento(this.agenda);
 		if (ok) {
 			limparDados();
@@ -347,7 +347,7 @@ public class AgendaController implements Serializable{
 		}
 	}
 	
-	public void confirmarAtendimento() {
+	public void confirmarAtendimento() throws ProjetoException {
 		boolean ok = aDao.confirmarAtendimento(this.agenda, situacao);
 		if (ok) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,

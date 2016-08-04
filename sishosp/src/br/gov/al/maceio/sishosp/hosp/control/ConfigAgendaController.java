@@ -106,7 +106,7 @@ public class ConfigAgendaController implements Serializable {
 		this.listaTipos = listaTipos;
 	}
 
-	public List<ConfigAgendaParte1Bean> getListaHorarios() {
+	public List<ConfigAgendaParte1Bean> getListaHorarios() throws ProjetoException {
 		if (listaHorarios == null) {
 			return listaHorarios;
 		} else {
@@ -126,7 +126,7 @@ public class ConfigAgendaController implements Serializable {
 		this.listaHorarios = listaHorarios;
 	}
 
-	public List<ConfigAgendaParte1Bean> getListaHorariosEquipe() {
+	public List<ConfigAgendaParte1Bean> getListaHorariosEquipe() throws ProjetoException {
 		if (listaHorariosEquipe == null) {
 			return listaHorariosEquipe;
 		} else {
@@ -144,7 +144,7 @@ public class ConfigAgendaController implements Serializable {
 		this.listaHorariosEquipe = listaHorariosEquipe;
 	}
 
-	public List<ProfissionalBean> getListaProfissionais() {
+	public List<ProfissionalBean> getListaProfissionais() throws ProjetoException {
 		if (this.listaProfissionais == null) {
 			this.listaProfissionais = pDao.listarProfissional();
 		}
@@ -155,7 +155,7 @@ public class ConfigAgendaController implements Serializable {
 		this.listaProfissionais = listaProfissionais;
 	}
 
-	public List<EquipeBean> getListaEquipes() {
+	public List<EquipeBean> getListaEquipes() throws ProjetoException {
 		if (this.listaEquipes == null) {
 			this.listaEquipes = eDao.listarEquipe();
 		}
@@ -212,7 +212,7 @@ public class ConfigAgendaController implements Serializable {
 		this.listaTiposEditar = listaTiposEditar;
 	}
 
-	public void buscarProfissional() {
+	public void buscarProfissional() throws ProjetoException {
 		if (this.tipoBusca == 0) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Escolha uma opção de busca válida!", "Erro");
@@ -224,7 +224,7 @@ public class ConfigAgendaController implements Serializable {
 		}
 	}
 
-	public void buscarEquipe() {
+	public void buscarEquipe() throws ProjetoException {
 		if (this.tipoBusca == 0) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Escolha uma opção de busca válida!", "Erro");
@@ -254,7 +254,7 @@ public class ConfigAgendaController implements Serializable {
 
 	}
 
-	public void gravarConfigAgenda() throws SQLException {
+	public void gravarConfigAgenda() throws SQLException, ProjetoException {
 		boolean ok = false;
 		int somatorio = 0;
 
@@ -319,7 +319,7 @@ public class ConfigAgendaController implements Serializable {
 		limparDados();
 	}
 
-	public void gravarConfigAgendaEquipe() throws SQLException {
+	public void gravarConfigAgendaEquipe() throws SQLException, ProjetoException {
 		boolean ok = false;
 
 		if (this.opcao.equals("1")) {
@@ -342,7 +342,7 @@ public class ConfigAgendaController implements Serializable {
 		limparDados();
 	}
 
-	public void alterarConfigAgenda() throws SQLException {
+	public void alterarConfigAgenda() throws SQLException, ProjetoException {
 		boolean ok = false;
 		int somatorio = 0;
 
@@ -376,7 +376,7 @@ public class ConfigAgendaController implements Serializable {
 		limparDados();
 	}
 
-	public void alterarConfigAgendaEquipe() throws SQLException {
+	public void alterarConfigAgendaEquipe() throws SQLException, ProjetoException {
 		boolean ok = false;
 
 		ok = cDao.alterarConfigAgendaEquipe(confParte1, confParte2,
@@ -435,7 +435,7 @@ public class ConfigAgendaController implements Serializable {
 		this.listaHorariosEquipe = cDao.listarHorariosEquipe();
 	}
 
-	public void onRowSelect(SelectEvent event) {
+	public void onRowSelect(SelectEvent event) throws ProjetoException {
 		ProfissionalBean prof = (ProfissionalBean) event.getObject();
 		this.listaHorarios = cDao.listarHorariosPorIDProfissional(prof
 				.getIdProfissional());
@@ -445,7 +445,7 @@ public class ConfigAgendaController implements Serializable {
 		this.listaHorarios = null;
 	}
 
-	public void onRowSelectEquipe(SelectEvent event) {
+	public void onRowSelectEquipe(SelectEvent event) throws ProjetoException {
 		EquipeBean equipe = (EquipeBean) event.getObject();
 		this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe
 				.getCodEquipe());

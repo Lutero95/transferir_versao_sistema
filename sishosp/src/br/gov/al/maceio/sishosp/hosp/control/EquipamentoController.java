@@ -14,7 +14,6 @@ import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipamentoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 
 @ManagedBean(name = "EquipamentoController")
@@ -157,7 +156,7 @@ public class EquipamentoController implements Serializable {
 		return cabecalho;
 	}
 
-	public List<EquipamentoBean> getListaEquipamentos() throws SQLException {
+	public List<EquipamentoBean> getListaEquipamentos() throws SQLException, ProjetoException {
 		if (listaEquipamentos == null) {
 
 			EquipamentoDAO fdao = new EquipamentoDAO();

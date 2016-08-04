@@ -2,7 +2,6 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -43,7 +42,7 @@ public class EspecialidadeController implements Serializable {
 		this.descricaoBusca = new String();
 	}
 
-	public void limparDados() {
+	public void limparDados() throws ProjetoException {
 		espec = new EspecialidadeBean();
 		this.descricaoBusca = new String();
 		this.tipo = new String();
@@ -91,7 +90,7 @@ public class EspecialidadeController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public List<EspecialidadeBean> getListaEspecialidade() {
+	public List<EspecialidadeBean> getListaEspecialidade() throws ProjetoException {
 		if (listaEspecialidade == null) {
 			this.listaEspecialidade = eDao.listarEspecialidades();
 		}
@@ -114,7 +113,7 @@ public class EspecialidadeController implements Serializable {
 		}
 	}
 
-	public void buscarEspecialidades() {
+	public void buscarEspecialidades() throws ProjetoException {
 		this.listaEspecialidade = eDao.listarEspecialidadesBusca(
 				descricaoBusca, tipoBuscar);
 	}

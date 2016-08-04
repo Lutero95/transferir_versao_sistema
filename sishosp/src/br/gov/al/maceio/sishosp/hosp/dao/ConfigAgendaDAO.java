@@ -24,7 +24,7 @@ public class ConfigAgendaDAO {
 	// ------------------------------------------------------------------GRAVAÇÕES--------------------------------------------------------
 	public boolean gravarConfigAgenda(ConfigAgendaParte1Bean confParte1,
 			ConfigAgendaParte2Bean confParte2,
-			List<ConfigAgendaParte2Bean> listaTipos) throws SQLException {
+			List<ConfigAgendaParte2Bean> listaTipos) throws SQLException, ProjetoException {
 
 		if (confParte1.getProfissional().getIdProfissional() == null
 				|| confParte1.getQtdMax() == null) {
@@ -55,7 +55,7 @@ public class ConfigAgendaDAO {
 
 	public boolean gravarConfigAgendaEquipe(ConfigAgendaParte1Bean confParte1,
 			ConfigAgendaParte2Bean confParte2,
-			List<ConfigAgendaParte2Bean> listaTipos) throws SQLException {
+			List<ConfigAgendaParte2Bean> listaTipos) throws SQLException, ProjetoException {
 
 		if (confParte1.getEquipe().getCodEquipe() == null
 				|| confParte1.getQtdMax() == null
@@ -86,7 +86,7 @@ public class ConfigAgendaDAO {
 
 	public void insereTipoAtendAgenda(int codConf,
 			ConfigAgendaParte1Bean conf1,
-			List<ConfigAgendaParte2Bean> listaTipos) {
+			List<ConfigAgendaParte2Bean> listaTipos) throws ProjetoException {
 		PreparedStatement ps1 = null;
 		String sql = "insert into hosp.tipo_atend_agenda (codconfigagenda, codprograma, codtipoatendimento, qtd, codempresa, codgrupo) "
 				+ " values(?, ?, ?, ?, ?, ?);";
@@ -118,7 +118,7 @@ public class ConfigAgendaDAO {
 
 	public void gravaTurno(ConfigAgendaParte1Bean confParte1,
 			List<ConfigAgendaParte2Bean> listaTipos, String dia)
-			throws SQLException {
+			throws SQLException, ProjetoException {
 
 		String sql = "INSERT INTO hosp.config_agenda(codmedico, diasemana, "
 				+ "  qtdmax, dataagenda, turno, mes, ano, codempresa, id_configagenda) "
@@ -219,7 +219,7 @@ public class ConfigAgendaDAO {
 
 	public void gravaTurnoEquipe(ConfigAgendaParte1Bean confParte1,
 			List<ConfigAgendaParte2Bean> listaTipos, String dia)
-			throws SQLException {
+			throws SQLException, ProjetoException {
 
 		String sql = "INSERT INTO hosp.config_agenda_equipe(codequipe, diasemana, "
 				+ "  qtdmax, dataagenda, turno, mes, ano, codempresa, id_configagenda) "
@@ -286,7 +286,7 @@ public class ConfigAgendaDAO {
 
 	// -----------------------------------------------------------------------LISTAGENS----------------------------------------------------------
 
-	public List<ConfigAgendaParte1Bean> listarHorarios() {
+	public List<ConfigAgendaParte1Bean> listarHorarios() throws ProjetoException {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 		String sql = "SELECT id_configagenda, codmedico, diasemana, qtdmax, dataagenda,"
 				+ " turno, mes, ano, codempresa FROM hosp.config_agenda order by id_configagenda ";
@@ -323,7 +323,7 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 	
-	public List<ConfigAgendaParte1Bean> listarHorariosEquipe() {
+	public List<ConfigAgendaParte1Bean> listarHorariosEquipe() throws ProjetoException {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 		String sql = "SELECT id_configagenda, codequipe, diasemana, qtdmax, dataagenda,"
 				+ " turno, mes, ano, codempresa FROM hosp.config_agenda_equipe order by id_configagenda ";
@@ -361,7 +361,7 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
-	public List<ConfigAgendaParte1Bean> listarHorariosPorIDProfissional(int id) {
+	public List<ConfigAgendaParte1Bean> listarHorariosPorIDProfissional(int id) throws ProjetoException {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 		String sql = "SELECT id_configagenda, codmedico, diasemana, qtdmax, dataagenda,"
 				+ " turno, mes, ano, codempresa FROM hosp.config_agenda where codmedico = ? order by id_configagenda ";
@@ -398,7 +398,7 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 	
-	public List<ConfigAgendaParte1Bean> listarHorariosPorIDEquipe(int id) {
+	public List<ConfigAgendaParte1Bean> listarHorariosPorIDEquipe(int id) throws ProjetoException {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 		String sql = "SELECT id_configagenda, codequipe, diasemana,qtdmax, dataagenda,"
 				+ " turno, mes, ano, codempresa FROM hosp.config_agenda_equipe where codequipe = ? order by id_configagenda ";
@@ -474,7 +474,7 @@ public class ConfigAgendaDAO {
 
 	// -----------------------------------------------------------------------EXCLUSÕES----------------------------------------------------------
 
-	public boolean excluirConfig(ConfigAgendaParte1Bean confParte1) {
+	public boolean excluirConfig(ConfigAgendaParte1Bean confParte1) throws ProjetoException {
 		String sql = "delete from hosp.config_agenda where id_configagenda = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -495,7 +495,7 @@ public class ConfigAgendaDAO {
 		}
 	}
 	
-	public boolean excluirConfigEquipe(ConfigAgendaParte1Bean confParte1) {
+	public boolean excluirConfigEquipe(ConfigAgendaParte1Bean confParte1) throws ProjetoException {
 		String sql = "delete from hosp.config_agenda_equipe where id_configagenda = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -516,7 +516,7 @@ public class ConfigAgendaDAO {
 		}
 	}
 
-	public void excluirTabelaTipoAgenda(int id) {
+	public void excluirTabelaTipoAgenda(int id) throws ProjetoException {
 
 		String sql = "delete from hosp.tipo_atend_agenda where codconfigagenda = ?";
 		try {
@@ -540,7 +540,7 @@ public class ConfigAgendaDAO {
 
 	public boolean alterarConfigAgenda(ConfigAgendaParte1Bean confParte1,
 			ConfigAgendaParte2Bean confParte2,
-			List<ConfigAgendaParte2Bean> listaTiposEditar) {
+			List<ConfigAgendaParte2Bean> listaTiposEditar) throws ProjetoException {
 
 		if (confParte1.getProfissional().getIdProfissional() == null
 				|| confParte1.getQtdMax() == null
@@ -572,7 +572,7 @@ public class ConfigAgendaDAO {
 	
 	public boolean alterarConfigAgendaEquipe(ConfigAgendaParte1Bean confParte1,
 			ConfigAgendaParte2Bean confParte2,
-			List<ConfigAgendaParte2Bean> listaTiposEditar) {
+			List<ConfigAgendaParte2Bean> listaTiposEditar) throws ProjetoException {
 
 		if (confParte1.getProfissional().getIdProfissional() == null
 				|| confParte1.getQtdMax() == null
@@ -604,7 +604,7 @@ public class ConfigAgendaDAO {
 
 	public void alterarTurno(ConfigAgendaParte1Bean confParte1,
 			List<ConfigAgendaParte2Bean> listaTipos, String dia)
-			throws SQLException {
+			throws SQLException, ProjetoException {
 
 		String sql = "UPDATE hosp.config_agenda SET codmedico = ?,"
 				+ " diasemana = ?, qtdmax = ?, dataagenda = ?,"
@@ -678,7 +678,7 @@ public class ConfigAgendaDAO {
 	
 	public void alterarTurnoEquipe(ConfigAgendaParte1Bean confParte1,
 			List<ConfigAgendaParte2Bean> listaTipos, String dia)
-			throws SQLException {
+			throws SQLException, ProjetoException {
 
 		String sql = "UPDATE hosp.config_agenda_equipe SET codequipe = ?,"
 				+ " diasemana = ?, qtdmax = ?, dataagenda = ?,"
@@ -746,7 +746,7 @@ public class ConfigAgendaDAO {
 	}
 	
 	public void alteraTipoAtendAgenda(ConfigAgendaParte1Bean conf1,
-			List<ConfigAgendaParte2Bean> listaTipos) {
+			List<ConfigAgendaParte2Bean> listaTipos) throws ProjetoException {
 		PreparedStatement ps1 = null;
 
 		String sql = "UPDATE hosp.tipo_atend_agenda SET"

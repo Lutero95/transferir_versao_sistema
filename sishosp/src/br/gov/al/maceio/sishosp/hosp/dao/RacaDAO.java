@@ -5,20 +5,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.Date;
-
-import javax.faces.context.FacesContext;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
 
@@ -116,7 +107,7 @@ public class RacaDAO {
                 }
             }
             
-            public ArrayList<RacaBean> listaCor() {
+            public ArrayList<RacaBean> listaCor() throws ProjetoException {
 
                 String sql = "select  id_raca, descraca from hosp.raca order by descraca";
 
@@ -149,7 +140,7 @@ public class RacaDAO {
                 return lista;
             }
    
-            public List<RacaBean> buscarTipoRaca(String valor, Integer tipo) {
+            public List<RacaBean> buscarTipoRaca(String valor, Integer tipo) throws ProjetoException {
         		
             	
         		 String sql = "select raca.id_raca, raca.descraca from hosp.raca where";

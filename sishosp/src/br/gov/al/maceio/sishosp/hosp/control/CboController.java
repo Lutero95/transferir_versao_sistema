@@ -137,7 +137,7 @@ public class CboController implements Serializable{
 		this.cbo = cbo;
 	}
 
-	public List<CboBean> getListarCbo() {
+	public List<CboBean> getListarCbo() throws ProjetoException {
 		
 			listaCbo = cDao.listarCbo();
 	
@@ -148,7 +148,7 @@ public class CboController implements Serializable{
 		this.listaCbo = listaCbo;
 	}
 
-	public void buscarCbo() {
+	public void buscarCbo() throws ProjetoException {
 		this.listaCbo = cDao.listarCboBusca(descricaoBusca, tipoBuscar);
 	}
 

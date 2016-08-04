@@ -9,18 +9,14 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.CidBean;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 public class FornecedorDAO {
 	
 	Connection con = null;
 	PreparedStatement ps = null;
 	
-	public boolean gravarFornecedor(FornecedorBean fornecedor) throws SQLException{
+	public boolean gravarFornecedor(FornecedorBean fornecedor) throws SQLException, ProjetoException{
 		
 		String sql = "insert into hosp.fornecedor (descfornecedor) values (?);";
 		try {
@@ -46,7 +42,7 @@ public class FornecedorDAO {
 	}
 	
 		
-	public List<FornecedorBean> listarFornecedores(){
+	public List<FornecedorBean> listarFornecedores() throws ProjetoException{
 		List<FornecedorBean> lista = new ArrayList<>();
 		String sql = "select id_fornecedor, descfornecedor from hosp.fornecedor order by descfornecedor";
         try {
@@ -77,7 +73,7 @@ public class FornecedorDAO {
 	}
 	
 	public List<FornecedorBean> listarFornecedorBusca(String descricao,
-			Integer tipo) {
+			Integer tipo) throws ProjetoException {
 		List<FornecedorBean> lista = new ArrayList<>();
 		String sql = "select id_fornecedor, descfornecedor from hosp.fornecedor ";
 		if (tipo == 1) {
@@ -151,7 +147,7 @@ public class FornecedorDAO {
 		}
 	}
 		
-	public FornecedorBean listarFornecedorPorId(int id) {
+	public FornecedorBean listarFornecedorPorId(int id) throws ProjetoException {
 
 		FornecedorBean fornecedor = new FornecedorBean();
 		String sql = "select id_fornecedor, descfornecedor, valor from hosp.fornecedor where id_fornecedor = ?";
@@ -182,7 +178,7 @@ public class FornecedorDAO {
 	}
 	
 	public List<FornecedorBean> listarFornecedoresBusca(String descricao,
-			Integer tipo) {
+			Integer tipo) throws ProjetoException {
 		List<FornecedorBean> lista = new ArrayList<>();
 		String sql = "select id_fornecedor,id_fornecedor ||'-'|| descfornecedor as descfornecedor, valor from hosp.fornecedor ";
 		if (tipo == 1) {

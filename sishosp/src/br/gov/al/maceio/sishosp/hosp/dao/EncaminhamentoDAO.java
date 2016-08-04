@@ -5,12 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-
-import javax.faces.context.FacesContext;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -114,7 +109,7 @@ public class EncaminhamentoDAO {
                 }
             }
             
-            public ArrayList<EncaminhamentoBean> listaEncaminhados() {
+            public ArrayList<EncaminhamentoBean> listaEncaminhados() throws ProjetoException {
 
                 String sql = "select * from hosp.encaminhado order by id_encaminhado,descencaminhado";
 

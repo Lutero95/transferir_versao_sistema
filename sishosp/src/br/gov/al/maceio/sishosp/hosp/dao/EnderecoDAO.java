@@ -5,19 +5,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-
-import javax.faces.context.FacesContext;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 
 
 
@@ -198,7 +191,7 @@ public class EnderecoDAO {
                 }
             }
             
-            public ArrayList<EnderecoBean> listaMunicipios() {
+            public ArrayList<EnderecoBean> listaMunicipios() throws ProjetoException {
 
                 String sql = "select * from hosp.municipio order by descmunicipio";
 
@@ -234,7 +227,7 @@ public class EnderecoDAO {
             }
             
             
-            public ArrayList<EnderecoBean> listaBairros() {
+            public ArrayList<EnderecoBean> listaBairros() throws ProjetoException {
 
                 String sql = "select * from hosp.bairros order by descbairro";
 
@@ -267,7 +260,7 @@ public class EnderecoDAO {
                 return lista;
             }
             
-            public List<EnderecoBean> buscarTipoMunicipio(String valor, Integer tipo) {
+            public List<EnderecoBean> buscarTipoMunicipio(String valor, Integer tipo) throws ProjetoException {
         		
             	
        		 String sql = "select municipio.id_municipio, municipio.descmunicipio from hosp.municipio where";

@@ -14,9 +14,7 @@ import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 @ManagedBean(name = "CidController")
 @ViewScoped
@@ -46,7 +44,7 @@ public class CidController implements Serializable {
 		this.cabecalho = "";
 	}
 
-	public void limparDados() {
+	public void limparDados() throws ProjetoException {
 		this.cid = new CidBean();
 		this.listaCids = new ArrayList<>();
 		this.descricaoBusca = new String();
@@ -111,7 +109,7 @@ public class CidController implements Serializable {
 		this.cid = cid;
 	}
 
-	public List<CidBean> getListaCids() {
+	public List<CidBean> getListaCids() throws ProjetoException {
 		if (listaCids == null) {
 			listaCids = gDao.listarCid();
 		}

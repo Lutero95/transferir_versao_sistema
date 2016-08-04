@@ -13,7 +13,6 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaridadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 
@@ -115,7 +114,7 @@ public class EscolaridadeController implements Serializable {
 		}
 	}
 
-	public void buscarEscolaridades() {
+	public void buscarEscolaridades() throws ProjetoException {
 
 		List<EscolaridadeBean> listaAux = null;
 		listaEscolaridade = new ArrayList<>();
@@ -229,7 +228,7 @@ public class EscolaridadeController implements Serializable {
 		this.statusEscolaridade = statusEscolaridade;
 	}
 
-	public void listarEscolaridade() {
+	public void listarEscolaridade() throws ProjetoException {
 			EscolaridadeDAO fdao = new EscolaridadeDAO();
 			listaEscolaridade = fdao.listaEscolaridade();
 	}

@@ -21,7 +21,7 @@ public class AgendaDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public FeriadoBean verificarFeriado(Date dataAtendimento) {
+	public FeriadoBean verificarFeriado(Date dataAtendimento) throws ProjetoException {
 
 		String sql = "select codferiado, descferiado, dataferiado"
 				+ " from hosp.feriado where dataferiado = ?";
@@ -52,7 +52,7 @@ public class AgendaDAO {
 	}
 
 	public List<BloqueioBean> verificarBloqueioProfissional(
-			ProfissionalBean prof, Date dataAtendimento, String turno) {
+			ProfissionalBean prof, Date dataAtendimento, String turno) throws ProjetoException {
 
 		List<BloqueioBean> lista = new ArrayList<>();
 		ProfissionalDAO pDao = new ProfissionalDAO();
@@ -95,7 +95,7 @@ public class AgendaDAO {
 		return lista;
 	}
 
-	public int verQtdMaxAgendaData(AgendaBean agenda) {
+	public int verQtdMaxAgendaData(AgendaBean agenda) throws ProjetoException {
 		int qtdMax = 0;
 		String sqlPro = "select qtdmax from hosp.config_agenda where codmedico = ? and dataagenda = ? and turno = ?";
 		String sqlEqui = "select qtdmax from hosp.config_agenda_equipe where codequipe = ? and dataagenda = ? and turno = ?";
@@ -130,7 +130,7 @@ public class AgendaDAO {
 		}
 	}
 
-	public int verQtdAgendadosData(AgendaBean agenda) {
+	public int verQtdAgendadosData(AgendaBean agenda) throws ProjetoException {
 		int qtd = 0;
 		String sqlPro = "select count(*) as qtd from hosp.atendimentos where codmedico = ? and dtaatende = ? and turno = ?;";
 		String sqlEqui = "select count(*) as qtd from hosp.atendimentos where codequipe = ? and dtaatende = ? and turno = ?;";
@@ -166,7 +166,7 @@ public class AgendaDAO {
 		}
 	}
 
-	public boolean buscarDataEspecifica(AgendaBean agenda) {
+	public boolean buscarDataEspecifica(AgendaBean agenda) throws ProjetoException {
 		int id = 0;
 		String sqlPro = "select id_configagenda from hosp.config_agenda where codmedico = ? and dataagenda = ? and turno = ?";
 		String sqlEqui = "select id_configagenda from hosp.config_agenda_equipe where codequipe = ? and dataagenda = ? and turno = ?";
@@ -204,7 +204,7 @@ public class AgendaDAO {
 		}
 	}
 
-	public boolean buscarTabTipoAtendAgenda(AgendaBean agenda) {
+	public boolean buscarTabTipoAtendAgenda(AgendaBean agenda) throws ProjetoException {
 		int achou = 0;
 		String sql = "select codtipoatendimento from hosp.tipo_atend_agenda "
 				+ " where codtipoatendimento = ? and codprograma = ? and codgrupo = ?";
@@ -236,7 +236,7 @@ public class AgendaDAO {
 		}
 	}
 
-	public boolean buscarDiaSemana(AgendaBean agenda) {
+	public boolean buscarDiaSemana(AgendaBean agenda) throws ProjetoException {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(agenda.getDataAtendimento());
 		int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
@@ -279,7 +279,7 @@ public class AgendaDAO {
 	}
 
 	public boolean gravarAgenda(AgendaBean agenda,
-			List<AgendaBean> listaNovosAgendamentos) {
+			List<AgendaBean> listaNovosAgendamentos) throws ProjetoException {
 
 		String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
 				+ " codconvenio, dtaatende, horaatende, situacao, codatendente, dtamarcacao, codtipoatendimento,"
@@ -337,7 +337,7 @@ public class AgendaDAO {
 		}
 	}
 
-	public void gravarAgendaAtendimento1(AgendaBean agenda, int idAgendamento) {
+	public void gravarAgendaAtendimento1(AgendaBean agenda, int idAgendamento) throws ProjetoException {
 
 		String sql = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
 				+ " cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
@@ -441,7 +441,7 @@ public class AgendaDAO {
 	}
 
 	public List<AgendaBean> consultarAgenda(Date dataAgenda, Integer pront,
-			String cns, TipoAtendimentoBean tipo) {
+			String cns, TipoAtendimentoBean tipo) throws ProjetoException {
 		List<AgendaBean> lista = new ArrayList<AgendaBean>();
 		PacienteDAO pDao = new PacienteDAO();
 		ProfissionalDAO mDao = new ProfissionalDAO();
@@ -520,7 +520,7 @@ public class AgendaDAO {
 		return lista;
 	}
 
-	public boolean excluirAgendamento(AgendaBean agenda) {
+	public boolean excluirAgendamento(AgendaBean agenda) throws ProjetoException {
 		String sql = "delete from hosp.atendimentos where id_atendimento = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -541,7 +541,7 @@ public class AgendaDAO {
 		}
 	}
 
-	public void excluirTabelaAgendamentos1(AgendaBean agenda) {
+	public void excluirTabelaAgendamentos1(AgendaBean agenda) throws ProjetoException {
 		String sql = "delete from hosp.atendimentos1 where id_atendimento = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -560,7 +560,7 @@ public class AgendaDAO {
 		}
 	}
 
-	public int verQtdMaxAgendaEspec(AgendaBean agenda) {
+	public int verQtdMaxAgendaEspec(AgendaBean agenda) throws ProjetoException {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(agenda.getDataAtendimento());
 		int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
@@ -597,7 +597,7 @@ public class AgendaDAO {
 		}
 	}
 
-	public int verQtdAgendadosEspec(AgendaBean agenda) {
+	public int verQtdAgendadosEspec(AgendaBean agenda) throws ProjetoException {
 		int qtd = 0;
 		String sqlPro = "select count(*) as qtd from hosp.atendimentos where codmedico = ? and dtaatende = ? and turno = ?;";
 		String sqlEqui = "select count(*) as qtd from hosp.atendimentos where codequipe = ? and dtaatende = ? and turno = ?;";
@@ -633,7 +633,7 @@ public class AgendaDAO {
 		}
 	}
 
-	public boolean confirmarAtendimento(AgendaBean agenda, String situacaoConf) {
+	public boolean confirmarAtendimento(AgendaBean agenda, String situacaoConf) throws ProjetoException {
 		String sql = "update hosp.atendimentos1 set codprofissionalatendimento = ?, cbo = ?,"
 				+ " codprocedimento = ?,  situacao = ?, dtaatendido = ?"
 				+ " where id_atendimento = ?";

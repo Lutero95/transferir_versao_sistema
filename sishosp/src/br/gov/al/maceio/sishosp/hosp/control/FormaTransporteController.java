@@ -115,7 +115,7 @@ public class FormaTransporteController implements Serializable{
 		}
 	}
 
-	public void buscarTransportes() {
+	public void buscarTransportes() throws ProjetoException {
 
 		List<FormaTransporteBean> listaAux = null;
 		listaTransporte = new ArrayList<>();
@@ -197,7 +197,7 @@ public class FormaTransporteController implements Serializable{
 		this.statusTransporte = statusTransporte;
 	}
 
-	public List<FormaTransporteBean> getListaTransporte() {
+	public List<FormaTransporteBean> getListaTransporte() throws ProjetoException {
 		if (listaTransporte == null) {
 
 			FormaTransporteDAO fdao = new FormaTransporteDAO();

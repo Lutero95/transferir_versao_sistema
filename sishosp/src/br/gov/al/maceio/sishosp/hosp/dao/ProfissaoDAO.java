@@ -5,20 +5,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-
-import javax.faces.context.FacesContext;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 
 
@@ -117,7 +108,7 @@ public class ProfissaoDAO {
                 }
             }
             
-            public ArrayList<ProfissaoBean> listaProfissoes() {
+            public ArrayList<ProfissaoBean> listaProfissoes() throws ProjetoException {
 
                 String sql = "select * from hosp.profissao order by id_profissao,descprofissao";
 
@@ -231,7 +222,7 @@ public class ProfissaoDAO {
             		}	
             
             
-            public List<ProfissaoBean> buscarTipoProfissao(String valor, Integer tipo) {
+            public List<ProfissaoBean> buscarTipoProfissao(String valor, Integer tipo) throws ProjetoException {
         		
         	
         		 String sql = "select profissao.id_profissao, profissao.descprofissao from hosp.profissao where";

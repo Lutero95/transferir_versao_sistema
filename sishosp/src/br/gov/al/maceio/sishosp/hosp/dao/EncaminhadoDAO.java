@@ -5,18 +5,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-
-import javax.faces.context.FacesContext;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 
 
 
@@ -116,7 +110,7 @@ public class EncaminhadoDAO {
                 }
             }
             
-            public ArrayList<EncaminhadoBean> listaEncaminhados() {
+            public ArrayList<EncaminhadoBean> listaEncaminhados() throws ProjetoException {
 
                 String sql = "select * from hosp.encaminhado order by id_encaminhado,descencaminhado";
 
@@ -230,7 +224,7 @@ public class EncaminhadoDAO {
             		}	
   
             
-            public List<EncaminhadoBean> buscarTipoEncaminhado(String valor, Integer tipo) {
+            public List<EncaminhadoBean> buscarTipoEncaminhado(String valor, Integer tipo) throws ProjetoException {
         		
             	
          		 String sql = "select encaminhado.id_encaminhado, encaminhado.descencaminhado from hosp.encaminhado where";

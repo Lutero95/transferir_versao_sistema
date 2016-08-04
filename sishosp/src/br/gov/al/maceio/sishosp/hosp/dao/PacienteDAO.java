@@ -10,14 +10,8 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
 public class PacienteDAO {
@@ -286,7 +280,7 @@ public class PacienteDAO {
 		}
 	}
 
-	public ArrayList<PacienteBean> listaPacientes() {
+	public ArrayList<PacienteBean> listaPacientes() throws ProjetoException {
 
 		String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
 				+ "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, pacientes.cidade, pacientes.bairro, "
@@ -395,7 +389,7 @@ public class PacienteDAO {
 		return lista;
 	}
 
-	public ArrayList<RacaBean> listaCor() {
+	public ArrayList<RacaBean> listaCor() throws ProjetoException {
 
 		String sql = "select  id_raca, descraca from hosp.raca order by descraca";
 
@@ -427,7 +421,7 @@ public class PacienteDAO {
 		return lista;
 	}
 
-	public ArrayList<EscolaBean> listaEscolas() {
+	public ArrayList<EscolaBean> listaEscolas() throws ProjetoException {
 
 		String sql = "select * from hosp.escola order by descescola";
 
@@ -460,7 +454,7 @@ public class PacienteDAO {
 		return lista;
 	}
 
-	public List<PacienteBean> buscarTipoPaciente(String valor, Integer tipo) {
+	public List<PacienteBean> buscarTipoPaciente(String valor, Integer tipo) throws ProjetoException {
 		System.out.println("Entrou Ass");
 		// lpad(trim(to_char(pa.cpf,'99999999999')),11,'0') cpf
 		String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
@@ -586,7 +580,7 @@ public class PacienteDAO {
 	}
 
 
-	public List<PacienteBean> listarPacientesAgenda() {
+	public List<PacienteBean> listarPacientesAgenda() throws ProjetoException {
 		Connection con = null;
 		List<PacienteBean> lista = new ArrayList<>();
 		String sql = "select id_paciente, protreab, nome, cpf from hosp.pacientes";
@@ -763,7 +757,7 @@ public class PacienteDAO {
 		}
 	}
 
-	public PacienteBean listarPacientePorID(int id) throws SQLException {
+	public PacienteBean listarPacientePorID(int id) throws SQLException, ProjetoException {
 		PacienteBean p = new PacienteBean();
 
 		String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "

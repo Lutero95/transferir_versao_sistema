@@ -19,7 +19,7 @@ public class BloqueioDAO {
 	PreparedStatement ps = null;
 	ProfissionalDAO pDao = new ProfissionalDAO();
 
-	public boolean gravarBloqueio(BloqueioBean bloqueio) throws SQLException {
+	public boolean gravarBloqueio(BloqueioBean bloqueio) throws SQLException, ProjetoException {
 
 		Calendar calendarData = Calendar.getInstance();
 		boolean condicao = true;
@@ -61,7 +61,7 @@ public class BloqueioDAO {
 		}
 	}
 
-	public List<BloqueioBean> listarBloqueio() {
+	public List<BloqueioBean> listarBloqueio() throws ProjetoException {
 		List<BloqueioBean> lista = new ArrayList<>();
 		String sql = "select id_bloqueioagenda, codmedico,"
 				+ " dataagenda, turno, descricao, codempresa from hosp.bloqueio_agenda order by id_bloqueioagenda ";
@@ -110,7 +110,7 @@ public class BloqueioDAO {
 	 * try { con.close(); } catch (Exception ex) { ex.printStackTrace();
 	 * System.exit(1); } } return bloqueio; }
 	 */
-	public List<BloqueioBean> listarBloqueioPorProfissional(ProfissionalBean prof) {
+	public List<BloqueioBean> listarBloqueioPorProfissional(ProfissionalBean prof) throws ProjetoException {
 		List<BloqueioBean> lista = new ArrayList<>();
 		String sql = "select id_bloqueioagenda, codmedico,"
 				+ " dataagenda, turno, descricao, codempresa from hosp.bloqueio_agenda where codmedico = ? order by id_bloqueioagenda";
@@ -202,7 +202,7 @@ public class BloqueioDAO {
 		}
 	}
 	
-	public List<BloqueioBean> verificarBloqueioProfissional(ProfissionalBean prof, Date dataAtendimento, String turno) {
+	public List<BloqueioBean> verificarBloqueioProfissional(ProfissionalBean prof, Date dataAtendimento, String turno) throws ProjetoException {
 		List<BloqueioBean> lista = new ArrayList<>();
 		String sql = "select id_bloqueioagenda, codmedico,"
 				+ " dataagenda, turno, descricao, codempresa "

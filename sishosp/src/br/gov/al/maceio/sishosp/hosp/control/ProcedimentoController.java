@@ -39,7 +39,7 @@ public class ProcedimentoController implements Serializable {
 		this.tipo = new String();
 	}
 
-	public void limparDados() {
+	public void limparDados() throws ProjetoException {
 		proc = new ProcedimentoBean();
 		listaProcedimentos = new ArrayList<ProcedimentoBean>();
 		this.descricaoBusca = new String();
@@ -54,7 +54,7 @@ public class ProcedimentoController implements Serializable {
 		this.proc = proc;
 	}
 
-	public List<ProcedimentoBean> getListaProcedimentos() {
+	public List<ProcedimentoBean> getListaProcedimentos() throws ProjetoException {
 		if (listaProcedimentos == null) {
 			this.listaProcedimentos = pDao.listarProcedimento();
 		}
@@ -89,7 +89,7 @@ public class ProcedimentoController implements Serializable {
 		this.tipo = tipo;
 	}
 
-	public void buscarProcedimento() {
+	public void buscarProcedimento() throws ProjetoException {
 		this.listaProcedimentos = pDao.listarProcedimentoBusca(descricaoBusca,
 				tipoBuscar);
 	}

@@ -117,7 +117,7 @@ public class ProfissaoController implements Serializable {
 		}
 	}
 
-	public void buscarProfissoes() {
+	public void buscarProfissoes() throws ProjetoException {
 
 		List<ProfissaoBean> listaAux = null;
 		listaProfissoes = new ArrayList<>();
@@ -159,7 +159,7 @@ public class ProfissaoController implements Serializable {
 		this.profissao = profissao;
 	}
 
-	public List<ProfissaoBean> getListaProfissoes() {
+	public List<ProfissaoBean> getListaProfissoes() throws ProjetoException {
 		if (listaProfissoes == null) {
 
 			ProfissaoDAO fdao = new ProfissaoDAO();

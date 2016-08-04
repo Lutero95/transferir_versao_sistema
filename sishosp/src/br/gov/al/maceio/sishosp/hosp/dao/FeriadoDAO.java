@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -19,7 +18,7 @@ public class FeriadoDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarFeriado(FeriadoBean feriado) throws SQLException {
+	public boolean gravarFeriado(FeriadoBean feriado) throws SQLException, ProjetoException {
 
 		String sql = "insert into hosp.feriado (descferiado, dataferiado) values (?, ?);";
 		try {
@@ -42,7 +41,7 @@ public class FeriadoDAO {
 		}
 	}
 
-	public List<FeriadoBean> listarFeriado() {
+	public List<FeriadoBean> listarFeriado() throws ProjetoException {
 		List<FeriadoBean> lista = new ArrayList<>();
 		String sql = "select codferiado, descferiado, dataferiado from hosp.feriado order by codferiado ";
 		try {
@@ -71,7 +70,7 @@ public class FeriadoDAO {
 		return lista;
 	}
 
-	public FeriadoBean listarFeriadoPorId(int id) {
+	public FeriadoBean listarFeriadoPorId(int id) throws ProjetoException {
 
 		FeriadoBean feriado = new FeriadoBean();
 		String sql = "select codferiado, descferiado, dataferiado from hosp.feriado where codferiado = ?";
@@ -101,7 +100,7 @@ public class FeriadoDAO {
 	}
 
 	public List<FeriadoBean> listarFeriadoBusca(String descricao, Integer tipo,
-			Date data) {
+			Date data) throws ProjetoException {
 		List<FeriadoBean> lista = new ArrayList<>();
 
 		try {

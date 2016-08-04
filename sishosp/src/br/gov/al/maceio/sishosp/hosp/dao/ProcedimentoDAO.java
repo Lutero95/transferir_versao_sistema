@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
@@ -15,7 +16,7 @@ public class ProcedimentoDAO {
 	PreparedStatement ps = null;
 
 	public boolean gravarProcedimento(ProcedimentoBean proc)
-			throws SQLException {
+			throws SQLException, ProjetoException {
 
 		String sql = "INSERT INTO hosp.proc (codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento)"
 				+ " VALUES (?, ?, ?, ?, ?, ?, ?);";
@@ -42,7 +43,7 @@ public class ProcedimentoDAO {
 		}
 	}
 
-	public List<ProcedimentoBean> listarProcedimento() {
+	public List<ProcedimentoBean> listarProcedimento() throws ProjetoException {
 		List<ProcedimentoBean> lista = new ArrayList<>();
 		String sql = "select id, codproc, nome, apac, bpi, auditivo,"
 				+ " tipo_exame_auditivo, utiliza_equipamento from hosp.proc order by codproc";
@@ -76,8 +77,8 @@ public class ProcedimentoDAO {
 		return lista;
 	}
 
-	public ProcedimentoBean listarProcedimentoPorId(int id) {
-
+	public ProcedimentoBean listarProcedimentoPorId(int id) throws ProjetoException {
+System.out.println("listarProcedimentoPorId");
 		ProcedimentoBean proc = new ProcedimentoBean();
 		String sql = "select id, codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento from hosp.proc where id = ?";
 		try {
@@ -110,7 +111,7 @@ public class ProcedimentoDAO {
 		return proc;
 	}
 
-	public boolean alterarProcedimento(ProcedimentoBean proc) {
+	public boolean alterarProcedimento(ProcedimentoBean proc) throws ProjetoException {
 		String sql = "update hosp.proc set nome = ?, apac = ?, bpi = ?, auditivo = ?, "
 				+ " tipo_exame_auditivo = ?, utiliza_equipamento = ?, codproc = ? "
 				+ " where id = ?";
@@ -139,7 +140,7 @@ public class ProcedimentoDAO {
 		}
 	}
 
-	public boolean excluirProcedimento(ProcedimentoBean proc) {
+	public boolean excluirProcedimento(ProcedimentoBean proc) throws ProjetoException {
 		String sql = "delete from hosp.proc where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -160,7 +161,7 @@ public class ProcedimentoDAO {
 	}
 
 	public List<ProcedimentoBean> listarProcedimentoBusca(String descricaoBusca,
-			Integer tipoBuscar) {
+			Integer tipoBuscar) throws ProjetoException {
 
 		List<ProcedimentoBean> lista = new ArrayList<>();
 		String sql = "select id,codproc  ||' - '|| nome as nome ,codproc, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento"

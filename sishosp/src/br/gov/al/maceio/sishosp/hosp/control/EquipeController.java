@@ -41,7 +41,7 @@ public class EquipeController implements Serializable {
 		this.descricaoBusca = new String();
 	}
 
-	public void limparDados() {
+	public void limparDados() throws ProjetoException {
 		
 		this.descricaoBusca = new String();
 		this.tipoBuscar = 1;
@@ -81,7 +81,7 @@ public class EquipeController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public List<EquipeBean> getListarEquipe() {
+	public List<EquipeBean> getListarEquipe() throws ProjetoException {
 		
 			this.listaEquipe = eDao.listarEquipe();
 		
@@ -147,7 +147,7 @@ public class EquipeController implements Serializable {
 		}
 	}
 
-	public void buscarEquipes() {
+	public void buscarEquipes() throws ProjetoException {
 		this.listaEquipe = eDao.listarEquipeBusca(descricaoBusca, tipoBuscar);
 	}
 

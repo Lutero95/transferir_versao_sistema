@@ -19,7 +19,7 @@ public class EquipamentoDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 	
-	public boolean gravarEquipamento(EquipamentoBean equip) throws SQLException{
+	public boolean gravarEquipamento(EquipamentoBean equip) throws SQLException, ProjetoException{
 		
 		String sql = "insert into hosp.tipoaparelho (desctipoaparelho) values (?);";
 		try {
@@ -43,7 +43,7 @@ public class EquipamentoDAO {
         }
 	}
 	
-	public ArrayList<EquipamentoBean> listarEquipamentos() throws SQLException {
+	public ArrayList<EquipamentoBean> listarEquipamentos() throws SQLException, ProjetoException {
         System.out.println("passou aqui porraaaaaa tnc");
 		String sql = "select id, desctipoaparelho from hosp.tipoaparelho order by id";
 
@@ -78,7 +78,7 @@ public class EquipamentoDAO {
 	
 	
 	public List<EquipamentoBean> listarEquipamentoBusca(String descricao,
-			Integer tipo) {
+			Integer tipo) throws ProjetoException {
 		List<EquipamentoBean> lista = new ArrayList<>();
 		String sql = "select id, desctipoaparelho from hosp.tipoaparelho ";
 		if (tipo == 1) {

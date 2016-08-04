@@ -1,16 +1,13 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
@@ -32,7 +29,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 @ManagedBean(name = "LaudoController")
-@SessionScoped
+@ViewScoped
 public class LaudoController implements Serializable {
 	/**
 	 * 
@@ -227,7 +224,7 @@ public class LaudoController implements Serializable {
 		}
 	}
 
-	public void buscarLaudo() {
+	public void buscarLaudo() throws ProjetoException {
 
 		List<LaudoBean> listaAux = null;
 		listaLaudo = new ArrayList<>();
@@ -250,7 +247,7 @@ public class LaudoController implements Serializable {
 
 	}
 
-	public void buscarLaudoDigita() {
+	public void buscarLaudoDigita() throws ProjetoException {
 
 		List<LaudoBean> listaAux = null;
 		listaLaudoDigita = new ArrayList<>();
@@ -271,7 +268,7 @@ public class LaudoController implements Serializable {
 
 	}
 
-	public void buscaPersonalizada() {
+	public void buscaPersonalizada() throws ProjetoException {
 		System.out.println("TESTE:" + laudo.getDtautorizacao() + "||"
 				+ laudo.getPrograma().getIdPrograma());
 		List<LaudoBean> listaAux = null;
@@ -494,7 +491,7 @@ public class LaudoController implements Serializable {
 		this.fornecedor = fornecedor;
 	}
 
-	public List<LaudoBean> getListaLaudo() {
+	public List<LaudoBean> getListaLaudo() throws ProjetoException {
 		if (listaLaudo == null) {
 
 			LaudoDAO fdao = new LaudoDAO();
@@ -531,7 +528,7 @@ public class LaudoController implements Serializable {
 		this.equipamento = equipamento;
 	}
 
-	public List<LaudoBean> getListaLaudoDigita() {
+	public List<LaudoBean> getListaLaudoDigita() throws ProjetoException {
 		if (listaLaudoDigita == null) {
 
 			LaudoDAO fdao = new LaudoDAO();

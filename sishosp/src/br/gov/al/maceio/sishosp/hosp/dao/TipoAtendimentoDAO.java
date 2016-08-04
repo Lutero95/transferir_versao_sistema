@@ -17,7 +17,7 @@ public class TipoAtendimentoDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarTipoAt(TipoAtendimentoBean tipo) throws SQLException {
+	public boolean gravarTipoAt(TipoAtendimentoBean tipo) throws SQLException, ProjetoException {
 
 		String sql = "insert into hosp.tipoatendimento (desctipoatendimento, "
 				+ " primeiroatendimento, equipe_programa, codempresa, id) values (?, ?, ?, ?, DEFAULT) RETURNING id;";
@@ -53,7 +53,7 @@ public class TipoAtendimentoDAO {
 	}
 
 	public void insereTipoAtendimentoGrupo(int idTipo,
-			List<GrupoBean> listaGrupo) {
+			List<GrupoBean> listaGrupo) throws ProjetoException {
 		String sql = "insert into hosp.tipoatendimento_grupo (codgrupo, codtipoatendimento) values(?,?);";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -78,7 +78,7 @@ public class TipoAtendimentoDAO {
 		}
 	}
 
-	public List<TipoAtendimentoBean> listarTipoAtPorGrupo(int codGrupo) {
+	public List<TipoAtendimentoBean> listarTipoAtPorGrupo(int codGrupo) throws ProjetoException {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
 		String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa"
 				+ " from hosp.grupo g, hosp.tipoatendimento t, hosp.tipoatendimento_grupo tg"
@@ -113,7 +113,7 @@ public class TipoAtendimentoDAO {
 		return lista;
 	}
 
-	public List<TipoAtendimentoBean> listarTipoAt() {
+	public List<TipoAtendimentoBean> listarTipoAt() throws ProjetoException {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
 		String sql = "select id, desctipoatendimento, primeiroatendimento, codempresa, equipe_programa"
 				+ " from hosp.tipoatendimento order by id";
@@ -147,7 +147,7 @@ public class TipoAtendimentoDAO {
 		return lista;
 	}
 
-	public GrupoBean buscarGrupo(int codGrupo) {
+	public GrupoBean buscarGrupo(int codGrupo) throws ProjetoException {
 		String sql = "select descgrupo, qtdfrequencia, codempresa from hosp.grupo where id_grupo = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -173,7 +173,7 @@ public class TipoAtendimentoDAO {
 	}
 
 	public List<TipoAtendimentoBean> listarTipoAtBusca(String descricao,
-			Integer tipo) {
+			Integer tipo) throws ProjetoException {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
 		String sql = "select id, desctipoatendimento, primeiroatendimento, codempresa, equipe_programa"
 				+ " from hosp.tipoatendimento";
@@ -211,7 +211,7 @@ public class TipoAtendimentoDAO {
 	}
 
 	public List<TipoAtendimentoBean> listarTipoAtAutoComplete(String descricao,
-			GrupoBean grupo) {
+			GrupoBean grupo) throws ProjetoException {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
 		String sql = "select t.id, t.id ||' - '|| t.desctipoatendimento as desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa "
 				+ " from hosp.grupo g, hosp.tipoatendimento t, hosp.tipoatendimento_grupo tg "
@@ -317,7 +317,7 @@ public class TipoAtendimentoDAO {
 		}
 	}
 
-	public TipoAtendimentoBean listarTipoPorId(int id) {
+	public TipoAtendimentoBean listarTipoPorId(int id) throws ProjetoException {
 		String sql = "select id, desctipoatendimento, primeiroatendimento, codempresa, equipe_programa"
 				+ " from hosp.tipoatendimento WHERE id = ?";
 		try {

@@ -61,7 +61,7 @@ public class FeriadoController implements Serializable{
 		this.feriado = feriado;
 	}
 
-	public List<FeriadoBean> getListaFeriados() {
+	public List<FeriadoBean> getListaFeriados() throws ProjetoException {
 		if (this.listaFeriados == null) {
 			this.listaFeriados = fDao.listarFeriado();
 		}
@@ -118,7 +118,7 @@ public class FeriadoController implements Serializable{
 		this.cabecalho = cabecalho;
 	}
 
-	public void buscarFeriado() {
+	public void buscarFeriado() throws ProjetoException {
 		this.listaFeriados = fDao
 				.listarFeriadoBusca(descricaoBusca, tipoBuscar, dataBuscar);
 	}

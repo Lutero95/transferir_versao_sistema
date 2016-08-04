@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 
@@ -16,7 +17,7 @@ public class EspecialidadeDAO {
 	PreparedStatement ps = null;
 
 	public boolean gravarEspecialidade(EspecialidadeBean esp)
-			throws SQLException {
+			throws SQLException, ProjetoException {
 
 		String sql = "insert into hosp.especialidade (descespecialidade) values (?);";
 		try {
@@ -34,7 +35,7 @@ public class EspecialidadeDAO {
 		}
 	}
 
-	public List<EspecialidadeBean> listarEspecialidades() {
+	public List<EspecialidadeBean> listarEspecialidades() throws ProjetoException {
 		List<EspecialidadeBean> lista = new ArrayList<>();
 		String sql = "select id_especialidade, descespecialidade, codempresa from hosp.especialidade order by id_especialidade";
 		try {
@@ -64,7 +65,7 @@ public class EspecialidadeDAO {
 	}
 
 	public List<EspecialidadeBean> listarEspecialidadesBusca(String descricao,
-			Integer tipo) {
+			Integer tipo) throws ProjetoException {
 		List<EspecialidadeBean> lista = new ArrayList<>();
 		System.out.println("2");
 		String sql = "select id_especialidade, descespecialidade, codempresa from hosp.especialidade ";
@@ -98,7 +99,7 @@ public class EspecialidadeDAO {
 		return lista;
 	}
 
-	public boolean alterarEspecialidade(EspecialidadeBean espec) {
+	public boolean alterarEspecialidade(EspecialidadeBean espec) throws ProjetoException {
 		String sql = "update hosp.especialidade set descespecialidade = ? where id_especialidade = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -119,7 +120,7 @@ public class EspecialidadeDAO {
 		}
 	}
 
-	public boolean excluirEspecialidade(EspecialidadeBean espec) {
+	public boolean excluirEspecialidade(EspecialidadeBean espec) throws ProjetoException {
 		String sql = "delete from hosp.especialidade where id_especialidade = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -139,7 +140,7 @@ public class EspecialidadeDAO {
 		}
 	}
 	
-	public EspecialidadeBean listarEspecialidadePorId(int id) {
+	public EspecialidadeBean listarEspecialidadePorId(int id) throws ProjetoException {
 		
 		EspecialidadeBean esp = new EspecialidadeBean();
 		String sql = "select id_especialidade, descespecialidade, codempresa from hosp.especialidade where id_especialidade = ?";

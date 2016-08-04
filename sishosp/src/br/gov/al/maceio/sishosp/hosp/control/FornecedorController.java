@@ -13,9 +13,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FornecedorDAO;
-import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 
 @ManagedBean(name = "FornecedorController")
@@ -116,7 +114,7 @@ public class FornecedorController implements Serializable {
 		}
 	}
 
-	public void buscarFornecedores() {
+	public void buscarFornecedores() throws ProjetoException {
 
 		List<FornecedorBean> listaAux = null;
 		listaFornecedor = new ArrayList<>();
@@ -198,7 +196,7 @@ public class FornecedorController implements Serializable {
 		this.statusFornecedor = statusFornecedor;
 	}
 
-	public List<FornecedorBean> getListaFornecedor() {
+	public List<FornecedorBean> getListaFornecedor() throws ProjetoException {
 		if (listaFornecedor == null) {
 
 			FornecedorDAO fdao = new FornecedorDAO();

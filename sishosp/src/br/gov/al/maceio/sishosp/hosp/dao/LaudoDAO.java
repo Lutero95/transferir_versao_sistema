@@ -6,25 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
-import java.util.Date;
-
-import javax.faces.context.FacesContext;
-
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
-
-
-import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
-import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 
@@ -351,7 +339,7 @@ public class LaudoDAO {
                 }
             }
             
-            public ArrayList<LaudoBean> listaLaudos() {
+            public ArrayList<LaudoBean> listaLaudos() throws ProjetoException {
 
     
                 /*String sql ="select apac.id_apac, apac.codpaciente, apac.codprograma, apac.codgrupo, "
@@ -420,7 +408,7 @@ public class LaudoDAO {
                 return lista;
             } 
             
-            public List<LaudoBean> buscarTipoLaudo(String nome, String situacao, String recurso, Integer prontuario, Date dataAutorizacao, Date dataSolicitacao, ProgramaBean programa) {
+            public List<LaudoBean> buscarTipoLaudo(String nome, String situacao, String recurso, Integer prontuario, Date dataAutorizacao, Date dataSolicitacao, ProgramaBean programa) throws ProjetoException {
         		
             	
           		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente where";
@@ -517,7 +505,7 @@ public class LaudoDAO {
             
             
             
-            public ArrayList<LaudoBean> listaLaudosDigita() {
+            public ArrayList<LaudoBean> listaLaudosDigita() throws ProjetoException {
 
   
                 String sql = "select id, id_paciente, codequipe, codgrupo,codmedico, "
@@ -563,7 +551,7 @@ public class LaudoDAO {
             } 
             
             
-            public List<LaudoBean> buscarTipoLaudoDigita(String valor, Integer tipo) {
+            public List<LaudoBean> buscarTipoLaudoDigita(String valor, Integer tipo) throws ProjetoException {
         		
             	
          		 String sql = "select * from hosp.pacienteslaudo left join hosp.pacientes on pacienteslaudo.id_paciente=pacientes.id_paciente where";
@@ -617,7 +605,7 @@ public class LaudoDAO {
          	}
             
             
-            public List<LaudoBean> buscarLaudoPersonalizado() {
+            public List<LaudoBean> buscarLaudoPersonalizado() throws ProjetoException {
             	LaudoBean l = new LaudoBean();
             	
         		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente "

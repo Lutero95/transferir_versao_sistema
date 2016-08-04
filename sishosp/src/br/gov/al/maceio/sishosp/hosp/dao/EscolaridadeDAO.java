@@ -4,20 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-
-import javax.faces.context.FacesContext;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 
 public class EscolaridadeDAO {
 	private Connection conexao = null;
@@ -120,7 +112,7 @@ public class EscolaridadeDAO {
 		}
 	}
 
-	public ArrayList<EscolaridadeBean> listaEscolaridade() {
+	public ArrayList<EscolaridadeBean> listaEscolaridade() throws ProjetoException {
 
 		String sql = "select * from hosp.escolaridade order by id_escolaridade,descescolaridade";
 
@@ -234,7 +226,7 @@ public class EscolaridadeDAO {
 	}
 
 	public List<EscolaridadeBean> buscarTipoEscolaridade(String valor,
-			Integer tipo) {
+			Integer tipo) throws ProjetoException {
 
 		String sql = "select escolaridade.id_escolaridade, escolaridade.descescolaridade from hosp.escolaridade where";
 

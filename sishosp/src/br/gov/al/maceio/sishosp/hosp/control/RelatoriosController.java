@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
@@ -243,7 +244,7 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void gerarMapaLaudoOrteseProtese() throws IOException,
-			ParseException {
+			ParseException, ProjetoException {
 
 		if (this.dataFinal == null || this.dataInicial == null
 				|| this.programa == null || this.grupo == null) {
@@ -288,7 +289,7 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void gerarFinanceiroOrteseProtese() throws IOException,
-			ParseException {
+			ParseException, ProjetoException {
 
 		if (this.dataFinal == null || this.dataInicial == null
 				|| this.programa == null || this.grupo == null) {
@@ -340,7 +341,7 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void gerarAgendamentosPorProfissional() throws IOException,
-			ParseException {
+			ParseException, ProjetoException {
 
 		if (this.dataFinal == null || this.dataInicial == null
 				|| this.programa == null || this.grupo == null
@@ -374,7 +375,7 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void gerarAtendimentosPorProfissional() throws IOException,
-			ParseException {
+			ParseException, ProjetoException {
 
 		if (this.dataFinal == null || this.dataInicial == null
 				|| this.programa == null) {
@@ -407,7 +408,7 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void gerarAtendimentosPorPrograma() throws IOException,
-			ParseException {
+			ParseException, ProjetoException {
 
 		if (this.dataFinal == null || this.dataInicial == null
 				|| this.programa == null) {
@@ -442,7 +443,7 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void gerarAtendimentosPorProcedimento() throws IOException,
-			ParseException {
+			ParseException, ProjetoException {
 
 		if (this.dataFinal == null || this.dataInicial == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -470,7 +471,7 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void gerarAtendimentosPorProcedimentoGrupo() throws IOException,
-			ParseException {
+			ParseException, ProjetoException {
 		if (this.dataInicial == null || this.dataFinal == null
 				|| this.programa == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -509,7 +510,7 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void gerarAtendimentosPorProcedimentoTipoAt() throws IOException,
-			ParseException {
+			ParseException, ProjetoException {
 		if (this.dataInicial == null || this.dataFinal == null
 				|| this.programa == null || this.grupo == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -549,7 +550,7 @@ public class RelatoriosController implements Serializable {
 	}
 
 	public void gerarConfigAgendaProfissional() throws IOException,
-			ParseException {
+			ParseException, ProjetoException {
 
 		if (this.grupo == null || this.programa == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -603,7 +604,7 @@ public class RelatoriosController implements Serializable {
 		limparDados();
 	}
 
-	public void gerarFaltasPorPrograma() throws IOException, ParseException {
+	public void gerarFaltasPorPrograma() throws IOException, ParseException, ProjetoException {
 
 		if (this.dataFinal == null || this.dataInicial == null
 				|| this.programa == null) {
@@ -677,7 +678,7 @@ public class RelatoriosController implements Serializable {
 	}
 	
 	private void executeReport(String relatorio, Map<String, Object> map,
-			String filename) throws IOException, ParseException {
+			String filename) throws IOException, ParseException, ProjetoException {
 		FacesContext context = FacesContext.getCurrentInstance();
 		HttpServletResponse response = (HttpServletResponse) context
 				.getExternalContext().getResponse();

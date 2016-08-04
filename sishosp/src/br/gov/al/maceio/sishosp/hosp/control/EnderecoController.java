@@ -164,7 +164,7 @@ public class EnderecoController implements Serializable{
 
 	}
 
-	public void buscarMunicipios() {
+	public void buscarMunicipios() throws ProjetoException {
 
 		List<EnderecoBean> listaAux = null;
 		listaMunicipios = new ArrayList<>();
@@ -206,7 +206,7 @@ public class EnderecoController implements Serializable{
 		this.endereco = endereco;
 	}
 
-	public List<EnderecoBean> getListaMunicipios() {
+	public List<EnderecoBean> getListaMunicipios() throws ProjetoException {
 		if (listaMunicipios == null) {
 
 			EnderecoDAO fdao = new EnderecoDAO();
@@ -220,7 +220,7 @@ public class EnderecoController implements Serializable{
 		this.listaMunicipios = listaMunicipios;
 	}
 
-	public List<EnderecoBean> getListaBairros() {
+	public List<EnderecoBean> getListaBairros() throws ProjetoException {
 		if (listaBairros == null) {
 
 			EnderecoDAO fdao = new EnderecoDAO();

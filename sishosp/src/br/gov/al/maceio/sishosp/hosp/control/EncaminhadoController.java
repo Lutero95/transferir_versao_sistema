@@ -110,7 +110,7 @@ public class EncaminhadoController implements Serializable {
 		}
 	}
 
-	public void buscarEncaminhados() {
+	public void buscarEncaminhados() throws ProjetoException {
 
 		List<EncaminhadoBean> listaAux = null;
 		listaEncaminhado = new ArrayList<>();
@@ -192,7 +192,7 @@ public class EncaminhadoController implements Serializable {
 		this.statusEncaminhado = statusEncaminhado;
 	}
 
-	public List<EncaminhadoBean> getListaEncaminhado() {
+	public List<EncaminhadoBean> getListaEncaminhado() throws ProjetoException {
 		if (listaEncaminhado == null) {
 
 			EncaminhadoDAO fdao = new EncaminhadoDAO();

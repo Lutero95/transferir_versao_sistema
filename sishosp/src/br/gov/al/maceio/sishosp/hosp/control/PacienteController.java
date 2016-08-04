@@ -33,7 +33,6 @@ import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
 @ManagedBean(name="PacienteController")
@@ -708,7 +707,7 @@ public class PacienteController implements Serializable{
 
 	}
 
-	public void buscarPacientes() {
+	public void buscarPacientes() throws ProjetoException {
 
 		List<PacienteBean> listaAux = null;
 		listaPacientes = new ArrayList<>();
@@ -730,7 +729,7 @@ public class PacienteController implements Serializable{
 
 	}
 
-	public void buscarRacas() {
+	public void buscarRacas() throws ProjetoException {
 
 		List<RacaBean> listaAux = null;
 		listaRaca = new ArrayList<>();
@@ -827,7 +826,7 @@ public class PacienteController implements Serializable{
 		this.profissao = profissao;
 	}
 
-	public List<EscolaBean> getListaEscolas() {
+	public List<EscolaBean> getListaEscolas() throws ProjetoException {
 		if (listaEscolas == null) {
 
 			EscolaDAO fdao = new EscolaDAO();
@@ -841,7 +840,7 @@ public class PacienteController implements Serializable{
 		this.listaEscolas = listaEscolas;
 	}
 
-	public List<EscolaridadeBean> getListaEscolaridade() {
+	public List<EscolaridadeBean> getListaEscolaridade() throws ProjetoException {
 		if (listaEscolaridade == null) {
 
 			EscolaridadeDAO fdao = new EscolaridadeDAO();
@@ -855,7 +854,7 @@ public class PacienteController implements Serializable{
 		this.listaEscolaridade = listaEscolaridade;
 	}
 
-	public List<ProfissaoBean> getListaProfissao() {
+	public List<ProfissaoBean> getListaProfissao() throws ProjetoException {
 		if (listaProfissao == null) {
 
 			ProfissaoDAO fdao = new ProfissaoDAO();
@@ -877,7 +876,7 @@ public class PacienteController implements Serializable{
 		this.encaminhado = encaminhado;
 	}
 
-	public List<PacienteBean> getListaPacientes() {
+	public List<PacienteBean> getListaPacientes() throws ProjetoException {
 		if (listaPacientes == null) {
 
 			PacienteDAO fdao = new PacienteDAO();
@@ -891,7 +890,7 @@ public class PacienteController implements Serializable{
 		this.listaPacientes = listaPacientes;
 	}
 
-	public List<EncaminhadoBean> getListaEncaminhado() {
+	public List<EncaminhadoBean> getListaEncaminhado() throws ProjetoException {
 		if (listaEncaminhado == null) {
 
 			EncaminhadoDAO fdao = new EncaminhadoDAO();
@@ -913,7 +912,7 @@ public class PacienteController implements Serializable{
 		this.transporte = transporte;
 	}
 
-	public List<FormaTransporteBean> getListaTransporte() {
+	public List<FormaTransporteBean> getListaTransporte() throws ProjetoException {
 		if (listaTransporte == null) {
 
 			FormaTransporteDAO fdao = new FormaTransporteDAO();
@@ -927,7 +926,7 @@ public class PacienteController implements Serializable{
 		this.listaTransporte = listaTransporte;
 	}
 
-	public List<RacaBean> getListaRaca() {
+	public List<RacaBean> getListaRaca() throws ProjetoException {
 		if (listaRaca == null) {
 
 			PacienteDAO fdao = new PacienteDAO();
@@ -1309,7 +1308,7 @@ public class PacienteController implements Serializable{
 		this.profissaoSuggestion = profissaoSuggestion;
 	}
 
-	public List<EnderecoBean> getListaMunicipios() {
+	public List<EnderecoBean> getListaMunicipios() throws ProjetoException {
 		if (listaMunicipios == null) {
 
 			EnderecoDAO fdao = new EnderecoDAO();

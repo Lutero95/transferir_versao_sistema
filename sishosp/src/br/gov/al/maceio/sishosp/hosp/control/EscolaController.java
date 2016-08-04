@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -14,7 +13,6 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
 
-import br.gov.al.maceio.sishosp.acl.model.UsuarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
@@ -226,7 +224,7 @@ public class EscolaController implements Serializable{
 		}
 	}
 
-	public void buscarEscolas() {
+	public void buscarEscolas() throws ProjetoException {
 
 		List<EscolaBean> listaAux = null;
 		listaEscolas = new ArrayList<>();
@@ -267,7 +265,7 @@ public class EscolaController implements Serializable{
 		this.escola = escola;
 	}
 
-	public List<EscolaBean> getListaTipoEscola() {
+	public List<EscolaBean> getListaTipoEscola() throws ProjetoException {
 		if (listaTipoEscola == null) {
 
 			EscolaDAO fdao = new EscolaDAO();
@@ -308,7 +306,7 @@ public class EscolaController implements Serializable{
 
 	
 	
-	public void buscarEscola() {
+	public void buscarEscola() throws ProjetoException {
 		EscolaDAO fdao = new EscolaDAO();
 		listaEscolas = fdao.listaEscolas();
 	}

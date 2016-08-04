@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
@@ -17,7 +18,7 @@ public class EquipeDAO {
 	PreparedStatement ps = null;
 	ProfissionalDAO pDao = new ProfissionalDAO();
 	public boolean gravarEquipe(EquipeBean equipe)
-			throws SQLException {
+			throws SQLException, ProjetoException {
 
 		String sql = "insert into hosp.equipe (descequipe) values (?) RETURNING id_equipe;";
 		try {
@@ -45,7 +46,7 @@ public class EquipeDAO {
 		}
 	}
 	
-	public void insereEquipeProfissional(int idEquipe, EquipeBean equipe, int gamb) {
+	public void insereEquipeProfissional(int idEquipe, EquipeBean equipe, int gamb) throws ProjetoException {
 		String sql = "insert into hosp.equipe_medico (equipe, medico) values(?,?);";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -77,7 +78,7 @@ public class EquipeDAO {
 		}
 	}
 
-	public List<EquipeBean> listarEquipe() {
+	public List<EquipeBean> listarEquipe() throws ProjetoException {
 		List<EquipeBean> lista = new ArrayList<>();
 		String sql = "select id_equipe, descequipe, codempresa from hosp.equipe order by id_equipe";
 		
@@ -108,7 +109,7 @@ public class EquipeDAO {
 	}
 
 	public List<EquipeBean> listarEquipeBusca(String descricao,
-			Integer tipo) {
+			Integer tipo) throws ProjetoException {
 		List<EquipeBean> lista = new ArrayList<>();
 		String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, codempresa from hosp.equipe ";
 		if (tipo == 1) {
@@ -141,7 +142,7 @@ public class EquipeDAO {
 		return lista;
 	}
 
-	public boolean alterarEquipe(EquipeBean equipe) {
+	public boolean alterarEquipe(EquipeBean equipe) throws ProjetoException {
 		String sql = "update hosp.equipe set descequipe = ? where id_equipe = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -164,7 +165,7 @@ public class EquipeDAO {
 		}
 	}
 
-	public boolean excluirEquipe(EquipeBean equipe) {
+	public boolean excluirEquipe(EquipeBean equipe) throws ProjetoException {
 		String sql = "delete from hosp.equipe where id_equipe = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -185,7 +186,7 @@ public class EquipeDAO {
 		}
 	}
 	
-	public void excluirTabEquipeProf(int id){
+	public void excluirTabEquipeProf(int id) throws ProjetoException{
 		String sql = "delete from hosp.equipe_medico where equipe = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -204,7 +205,7 @@ public class EquipeDAO {
 		}
 	}
 	
-	public EquipeBean buscarEquipePorID(Integer id) throws SQLException {
+	public EquipeBean buscarEquipePorID(Integer id) throws SQLException, ProjetoException {
 		EquipeBean equipe = null;
 		
 		String sql = "select id_equipe, descequipe, codempresa"

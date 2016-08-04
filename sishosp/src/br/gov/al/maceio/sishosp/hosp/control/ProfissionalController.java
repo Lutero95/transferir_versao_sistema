@@ -45,7 +45,7 @@ public class ProfissionalController implements Serializable {
 		this.tipo = new String();
 	}
 
-	public void limparDados() {
+	public void limparDados() throws ProjetoException {
 		this.profissional = new ProfissionalBean();
 		this.descricaoBusca = new String();
 		this.listaProfissional = pDao.listarProfissional();
@@ -91,7 +91,7 @@ public class ProfissionalController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public List<ProfissionalBean> getListaProfissional() {
+	public List<ProfissionalBean> getListaProfissional() throws ProjetoException {
 		if (listaProfissional == null) {
 			listaProfissional = pDao.listarProfissional();
 		}
@@ -102,7 +102,7 @@ public class ProfissionalController implements Serializable {
 		this.listaProfissional = listaProfissional;
 	}
 
-	public void gravarProfissional() throws SQLException {
+	public void gravarProfissional() throws SQLException, ProjetoException {
 		if (this.profissional.getCbo().getCodCbo() == null
 				|| this.profissional.getCns().isEmpty()
 				|| this.profissional.getDescricaoProf().isEmpty()
@@ -193,7 +193,7 @@ public class ProfissionalController implements Serializable {
 
 	}
 
-	public void buscarProfissional() {
+	public void buscarProfissional() throws ProjetoException {
 		if (this.tipoBuscar == 0) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Escolha uma opção de busca válida!", "Erro");
@@ -224,7 +224,7 @@ public class ProfissionalController implements Serializable {
 	}
 	
 	
-	public void atualizaListaProfPorGrupo(SelectEvent event){
+	public void atualizaListaProfPorGrupo(SelectEvent event) throws ProjetoException{
 		System.out.println("VAI ATualahsdas");
 		this.grupoSelecionado = (GrupoBean) event.getObject();
 		this.listaProfissional = pDao.listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());

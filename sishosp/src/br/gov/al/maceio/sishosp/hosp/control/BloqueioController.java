@@ -48,7 +48,7 @@ public class BloqueioController implements Serializable {
 		this.bloqueio = bloqueio;
 	}
 
-	public List<BloqueioBean> getListaBloqueios() {
+	public List<BloqueioBean> getListaBloqueios() throws ProjetoException {
 		if (this.listaBloqueios == null) {
 			this.listaBloqueios = bDao.listarBloqueio();
 		}
@@ -116,7 +116,7 @@ public class BloqueioController implements Serializable {
 		this.listaBloqueios = bDao.listarBloqueio();
 	}
 
-	public void atualizarListaBloqueio() {
+	public void atualizarListaBloqueio() throws ProjetoException {
 		this.listaBloqueios = bDao.listarBloqueioPorProfissional(bloqueio
 				.getProf());
 	}

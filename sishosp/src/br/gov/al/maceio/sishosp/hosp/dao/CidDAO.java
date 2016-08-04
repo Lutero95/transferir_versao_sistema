@@ -10,7 +10,6 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 
 public class CidDAO {
@@ -18,7 +17,7 @@ public class CidDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 	
-	public boolean gravarCid(CidBean cid) throws SQLException{
+	public boolean gravarCid(CidBean cid) throws SQLException, ProjetoException{
 		
 		String sql = "insert into hosp.cid (desccid) values (?);";
 		try {
@@ -43,7 +42,7 @@ public class CidDAO {
 	}
 
 	
-	public List<CidBean> listarCid(){
+	public List<CidBean> listarCid() throws ProjetoException{
 		List<CidBean> lista = new ArrayList<>();
 		String sql = "select cod, desccid from hosp.cid order by cod";
         try {
@@ -74,7 +73,7 @@ public class CidDAO {
 	}
 	
 	public List<CidBean> listarCidBusca(String descricao,
-			Integer tipo) {
+			Integer tipo) throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
 		String sql = "select cod, desccid from hosp.cid ";
 		if (tipo == 1) {
@@ -181,7 +180,7 @@ public class CidDAO {
 	}	
 	
 	public List<CidBean> listarCidsBusca(String descricao,
-			Integer tipo) {
+			Integer tipo) throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
 		String sql = "select cod, desccid from hosp.cid ";
 		if (tipo == 1) {

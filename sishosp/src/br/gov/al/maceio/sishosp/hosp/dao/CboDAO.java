@@ -16,7 +16,7 @@ public class CboDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 	
-	public boolean gravarCBO(CboBean cbo) throws SQLException{
+	public boolean gravarCBO(CboBean cbo) throws SQLException, ProjetoException{
 		
 		String sql = "insert into hosp.cbo (descricao) values (?);";
 		try {
@@ -40,7 +40,7 @@ public class CboDAO {
         }
 	}
 	
-	public List<CboBean> listarCbo(){
+	public List<CboBean> listarCbo() throws ProjetoException{
 		List<CboBean> lista = new ArrayList<>();
 		String sql = "select id , descricao, codempresa from hosp.cbo order by id ";
         try {
@@ -69,7 +69,7 @@ public class CboDAO {
 		return lista;
 	}
 	
-	public CboBean listarCboPorId(int id) {
+	public CboBean listarCboPorId(int id) throws ProjetoException {
 
 		CboBean cbo = new CboBean();
 		String sql = "select id , descricao, codempresa from hosp.cbo where id = ?";
@@ -99,7 +99,7 @@ public class CboDAO {
 	}
 	
 	public List<CboBean> listarCboBusca(String descricao,
-			Integer tipo) {
+			Integer tipo) throws ProjetoException {
 		List<CboBean> lista = new ArrayList<>();
 		String sql = "select id , descricao, codempresa from hosp.cbo";
 		if (tipo == 1) {

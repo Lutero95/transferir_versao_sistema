@@ -41,7 +41,7 @@ public class ProgramaController implements Serializable{
 		this.tipo = new String();
 	}
 	
-	public void limparDados(){
+	public void limparDados() throws ProjetoException{
 		prog = new ProgramaBean();
 		descricaoBusca = new String();
 		tipoBuscar = 1;
@@ -108,7 +108,7 @@ public class ProgramaController implements Serializable{
 		this.prog = prog;
 	}
 
-	public List<ProgramaBean> getListaProgramas() {
+	public List<ProgramaBean> getListaProgramas() throws ProjetoException {
 		if (listaProgramas == null) {
 			listaProgramas = pDao.listarProgramas();
 		}
@@ -127,7 +127,7 @@ public class ProgramaController implements Serializable{
 		this.tipoBuscar = tipoBuscar;
 	}
 
-	public void buscarProgramas() {
+	public void buscarProgramas() throws ProjetoException {
 		this.listaProgramas = pDao.listarProgramasBusca(descricaoBusca,
 				tipoBuscar);
 	}

@@ -55,7 +55,7 @@ public class GrupoController implements Serializable{
 		this.profissionalSelecionado = new ProfissionalBean();
 	}
 
-	public void limparDados() {
+	public void limparDados() throws ProjetoException {
 		this.grupo = new GrupoBean();
 		this.listaGrupos = new ArrayList<>();
 		this.listaGruposProgramas = new ArrayList<>();
@@ -124,7 +124,7 @@ public class GrupoController implements Serializable{
 		this.grupo = grupo;
 	}
 
-	public List<GrupoBean> getListaGrupos() {
+	public List<GrupoBean> getListaGrupos() throws ProjetoException {
 		if (listaGrupos == null) {
 			listaGrupos = gDao.listarGrupos();
 		}
@@ -135,7 +135,7 @@ public class GrupoController implements Serializable{
 		this.listaGrupos = listaGrupos;
 	}
 
-	public void atualizaLista(ProgramaBean p) {
+	public void atualizaLista(ProgramaBean p) throws ProjetoException {
 		GrupoDAO gDao = new GrupoDAO();
 		this.programaSelecionado = p;
 		this.listaGruposProgramas = gDao.listarGruposPorPrograma(p.getIdPrograma());
@@ -149,7 +149,7 @@ public class GrupoController implements Serializable{
 		this.listaGruposProgramas = listaGruposProgramas;
 	}
 
-	public void buscarGrupo() {
+	public void buscarGrupo() throws ProjetoException {
 		this.listaGrupos = gDao.listarGruposBusca(descricaoBusca, tipoBuscar);
 	}
 
@@ -204,7 +204,7 @@ public class GrupoController implements Serializable{
 		return gDao.listarGruposAutoComplete2(query);
 	}
 
-	public void selectPrograma(SelectEvent event) {
+	public void selectPrograma(SelectEvent event) throws ProjetoException {
 		this.programaSelecionado = (ProgramaBean) event.getObject();
 		atualizaLista(programaSelecionado);
 	}

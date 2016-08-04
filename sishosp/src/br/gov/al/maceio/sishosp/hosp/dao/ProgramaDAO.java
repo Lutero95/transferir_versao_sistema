@@ -17,7 +17,7 @@ public class ProgramaDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarPrograma(ProgramaBean prog) throws SQLException {
+	public boolean gravarPrograma(ProgramaBean prog) throws SQLException, ProjetoException {
 
 		String sql = "insert into hosp.programa (descprograma, codfederal) values (?, ?) RETURNING id_programa;";
 		try {
@@ -46,7 +46,7 @@ public class ProgramaDAO {
 		}
 	}
 
-	public void insereProgramaGrupo(int idProg, ProgramaBean programa, int gamb) {
+	public void insereProgramaGrupo(int idProg, ProgramaBean programa, int gamb) throws ProjetoException {
 		String sql = "insert into hosp.grupo_programa (codprograma, codgrupo) values(?,?);";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -80,7 +80,7 @@ public class ProgramaDAO {
 		}
 	}
 
-	public List<ProgramaBean> listarProgramas() {
+	public List<ProgramaBean> listarProgramas() throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<>();
 		String sql = "select id_programa, descprograma, codfederal from hosp.programa order by id_programa";
 		GrupoDAO gDao = new GrupoDAO();
@@ -111,7 +111,7 @@ public class ProgramaDAO {
 	}
 
 	public List<ProgramaBean> listarProgramasBusca(String descricao,
-			Integer tipo) {
+			Integer tipo) throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<>();
 		String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma , codfederal from hosp.programa ";
 		if (tipo == 1) {
@@ -209,7 +209,7 @@ public class ProgramaDAO {
 		}
 	}
 	
-	public ProgramaBean listarProgramaPorId(int id) {
+	public ProgramaBean listarProgramaPorId(int id) throws ProjetoException {
 
 		ProgramaBean programa = new ProgramaBean();
 		String sql = "select id_programa, descprograma, codfederal from hosp.programa where id_programa = ?";
