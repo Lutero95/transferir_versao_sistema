@@ -9,7 +9,10 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:composition template="../../template/templategeral.xhtml">
-
+<f:metadata>
+				 <f:viewAction action="#{EscolaridadeController.listaEscolaridade()}" />
+				
+			</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
@@ -62,10 +65,10 @@
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							actionListener="#{EscolaridadeController.limparDados()}"
-							action="/pages/sishosp/cadastroEscolaridade.faces?faces-redirect=true" icon="add"
+							
+							action="#{EscolaController.redirectInsert()}" icon="add"
 							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
-							<f:setPropertyActionListener value="I"
+							<f:setPropertyActionListener value="1"
 								target="#{EscolaridadeController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>

@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -12,6 +13,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaridadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 
@@ -29,7 +31,7 @@ public class EscolaridadeController implements Serializable {
 	private String cabecalho;
 
 	// BUSCAS
-	private String tipo;
+	private int tipo;
 	private Integer tipoBuscaEscolaridade;
 	private String campoBuscaEscolaridade;
 	private String statusEscolaridade;
@@ -40,13 +42,12 @@ public class EscolaridadeController implements Serializable {
 		escolaridade = new EscolaridadeBean();
 
 		// BUSCA
-		tipo = "";
 		tipoBuscaEscolaridade = 1;
 		campoBuscaEscolaridade = "";
 		statusEscolaridade = "P";
 
 		listaEscolaridade = new ArrayList<>();
-		listaEscolaridade = null;
+		
 	}
 
 	public void gravarEscolaridade() throws ProjetoException {
@@ -143,6 +144,44 @@ public class EscolaridadeController implements Serializable {
 		listaEscolaridade = null;
 	}
 
+	public String redirectEdit() {
+		return "cadastroEscolaridade?faces-redirect=true&amp;id=" + this.escolaridade.getCodescolaridade()+"&amp;tipo="+tipo;
+	}	
+	
+	
+	public String redirectInsert() {
+		//System.out.println("tipo do redir "+tipoesc);
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+		.put("tipo", tipo);
+		int tipoesc2=  (int) FacesContext
+				.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("tipo");
+		
+		return "cadastroCbo?faces-redirect=true&amp;tipo="+tipo;
+	}	
+	
+	
+	public void getEditEscola() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipoesc =Integer.parseInt(params.get("tipo"));			
+			
+			EscolaDAO udao = new EscolaDAO();
+			this.escola = udao.buscaescolacodigo(id);
+		}
+		else{
+			
+			tipoesc =Integer.parseInt(params.get("tipo"));
+			
+		}
+		
+	}
+	
+	
 	public void limparDados() {
 		escolaridade = new EscolaridadeBean();
 
@@ -164,13 +203,7 @@ public class EscolaridadeController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
+	
 
 	public Integer getTipoBuscaEscolaridade() {
 		return tipoBuscaEscolaridade;
@@ -196,14 +229,9 @@ public class EscolaridadeController implements Serializable {
 		this.statusEscolaridade = statusEscolaridade;
 	}
 
-	public List<EscolaridadeBean> getListaEscolaridade() {
-		if (listaEscolaridade == null) {
-
+	public void listarEscolaridade() {
 			EscolaridadeDAO fdao = new EscolaridadeDAO();
 			listaEscolaridade = fdao.listaEscolaridade();
-
-		}
-		return listaEscolaridade;
 	}
 
 	public void setListaEscolaridade(List<EscolaridadeBean> listaEscolaridade) {
@@ -211,9 +239,9 @@ public class EscolaridadeController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
+		if (this.tipo==1) {
 			cabecalho = "CADASTRO DE ESCOLARIDADE";
-		} else if (this.tipo.equals("A")) {
+		} else if (this.tipo==2) {
 			cabecalho = "ALTERAR ESCOLARIDADE";
 		}
 		return cabecalho;
@@ -221,6 +249,14 @@ public class EscolaridadeController implements Serializable {
 
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 
 }
