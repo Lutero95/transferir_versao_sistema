@@ -9,8 +9,8 @@
 
 <ui:composition template="../../template/templategeral.xhtml">
 <f:metadata>
-				<f:event type="preRenderView" listener="#{EspecialidadeController.getEditEspecialidade()}" />
-			</f:metadata>
+		<f:viewAction action="#{EspecialidadeController.getEditEspecialidade()}"/>
+		</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
