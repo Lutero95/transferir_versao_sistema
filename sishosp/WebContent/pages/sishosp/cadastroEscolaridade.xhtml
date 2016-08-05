@@ -8,7 +8,9 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:composition template="../../template/templategeral.xhtml">
-
+<f:metadata>
+				<f:event type="preRenderView" listener="#{EscolaridadeController.getEditEscolaridade()}" />
+			</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
@@ -51,14 +53,14 @@
 								action="#{EscolaridadeController.gravarEscolaridade()}"
 								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
 								value="Cadastrar" styleClass="btn btn-sm btn-success"
-								rendered="#{EscolaridadeController.tipo == 'I'}" />
+								rendered="#{EscolaridadeController.tipo == 1}" />
 
 
 							<h:commandButton
 								action="#{EscolaridadeController.alterarEscolaridade()}"
 								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
 								value="Alterar" styleClass="btn btn-danger"
-								rendered="#{EscolaridadeController.tipo == 'A'}" />
+								rendered="#{EscolaridadeController.tipo == 2}" />
 
 						</h:panelGrid>
 					</center>

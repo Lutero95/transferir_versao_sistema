@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -12,6 +13,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.EscolaridadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 
@@ -28,7 +30,7 @@ public class EspecialidadeController implements Serializable {
 	private List<EspecialidadeBean> listaEspecialidade;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
-	private String tipo;
+	private int tipo;
 	private Integer abaAtiva = 0;
 	private String cabecalho;
 
@@ -38,17 +40,53 @@ public class EspecialidadeController implements Serializable {
 		this.espec = new EspecialidadeBean();
 		this.listaEspecialidade = null;
 		this.descricaoBusca = new String();
-		this.tipo = new String();
 		this.descricaoBusca = new String();
 	}
 
 	public void limparDados() throws ProjetoException {
 		espec = new EspecialidadeBean();
 		this.descricaoBusca = new String();
-		this.tipo = new String();
 		this.tipoBuscar = 1;
 		this.listaEspecialidade = eDao.listarEspecialidades();
 	}
+	
+	public String redirectEdit() {
+		return "cadastroEspecialidade?faces-redirect=true&amp;id=" + this.espec.getCodEspecialidade()+"&amp;tipo="+tipo;
+	}	
+	
+	
+	public String redirectInsert() {
+		//System.out.println("tipo do redir "+tipoesc);
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+		.put("tipo", tipo);
+		int tipoesc2=  (int) FacesContext
+				.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("tipo");
+		
+		return "cadastroEspecialidade?faces-redirect=true&amp;tipo="+tipo;
+	}	
+	
+	
+	public void getEditEspecialidade() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo =Integer.parseInt(params.get("tipo"));			
+			
+			EspecialidadeDAO udao = new EspecialidadeDAO();
+			this.espec = udao.listarEspecialidadePorId((id));
+		}
+		else{
+			
+			tipo =Integer.parseInt(params.get("tipo"));
+			
+		}
+		
+	}
+		
 
 	public EspecialidadeBean getEspec() {
 		return espec;
@@ -74,14 +112,7 @@ public class EspecialidadeController implements Serializable {
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
+	
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
@@ -97,7 +128,7 @@ public class EspecialidadeController implements Serializable {
 		return listaEspecialidade;
 	}
 
-	public void gravarEspecialidade() throws ProjetoException, SQLException {
+	public String gravarEspecialidade() throws ProjetoException, SQLException {
 
 		boolean cadastrou = eDao.gravarEspecialidade(espec);
 
@@ -106,10 +137,12 @@ public class EspecialidadeController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Especialidade cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "gerenciarEspecialidade?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
 		}
 	}
 
@@ -155,9 +188,9 @@ public class EspecialidadeController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
+		if (this.tipo==1) {
 			cabecalho = "CADASTRO DE ESPECIALIDADE";
-		} else if (this.tipo.equals("A")) {
+		} else if (this.tipo==2) {
 			cabecalho = "ALTERAR ESPECIALIDADE";
 		}
 		return cabecalho;
@@ -165,5 +198,19 @@ public class EspecialidadeController implements Serializable {
 
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
+	}
+
+	/**
+	 * @return the tipo
+	 */
+	public int getTipo() {
+		return tipo;
+	}
+
+	/**
+	 * @param tipo the tipo to set
+	 */
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 }

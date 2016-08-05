@@ -97,7 +97,7 @@ public class EquipeController implements Serializable {
 		return "cadastroEquipe?faces-redirect=true&amp;tipo="+tipo;
 	}		
 	
-	public String getEditEquipe() throws ProjetoException, SQLException {
+	public void getEditEquipe() throws ProjetoException, SQLException {
 		System.out.println("getEditEquipe");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
@@ -115,7 +115,7 @@ public class EquipeController implements Serializable {
 			tipo =Integer.parseInt(params.get("tipo"));
 			
 		}
-		return "cadastroEquipe";
+		
 	}
 
 	public String gravarEquipe() throws ProjetoException, SQLException {

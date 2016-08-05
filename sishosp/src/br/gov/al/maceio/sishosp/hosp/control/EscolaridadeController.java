@@ -160,7 +160,7 @@ public class EscolaridadeController implements Serializable {
 	}	
 	
 	
-	public void getEditEscola() throws ProjetoException {
+	public void getEditEscolaridade() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
 		System.out.println("vai ve se entrar no editar");
