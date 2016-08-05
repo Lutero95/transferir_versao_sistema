@@ -91,7 +91,7 @@ public class ProfissionalController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public List<ProfissionalBean> getListaProfissional() throws ProjetoException {
+	public List<ProfissionalBean> getListarProfissional() throws ProjetoException {
 		if (listaProfissional == null) {
 			listaProfissional = pDao.listarProfissional();
 		}
@@ -228,5 +228,9 @@ public class ProfissionalController implements Serializable {
 		System.out.println("VAI ATualahsdas");
 		this.grupoSelecionado = (GrupoBean) event.getObject();
 		this.listaProfissional = pDao.listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
+	}
+
+	public List<ProfissionalBean> getListaProfissional() {
+		return listaProfissional;
 	}
 }

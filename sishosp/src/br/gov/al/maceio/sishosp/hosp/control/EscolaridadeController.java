@@ -49,7 +49,7 @@ public class EscolaridadeController implements Serializable {
 		
 	}
 
-	public void gravarEscolaridade() throws ProjetoException {
+	public String gravarEscolaridade() throws ProjetoException {
 		EscolaridadeDAO udao = new EscolaridadeDAO();
 		boolean cadastrou = udao.cadastrar(escolaridade);
 
@@ -59,13 +59,13 @@ public class EscolaridadeController implements Serializable {
 					"Escolaridade cadastrado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			listaEscolaridade = null;
+			return "gerenciarEscolaridade?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";	
 
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
+			return "";
 		}
 
 	}
@@ -156,7 +156,7 @@ public class EscolaridadeController implements Serializable {
 				.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("tipo");
 		
-		return "cadastroCbo?faces-redirect=true&amp;tipo="+tipo;
+		return "cadastroEscolaridade?faces-redirect=true&amp;tipo="+tipo;
 	}	
 	
 	

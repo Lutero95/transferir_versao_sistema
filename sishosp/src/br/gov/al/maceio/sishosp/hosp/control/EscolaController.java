@@ -62,14 +62,7 @@ public class EscolaController implements Serializable{
 	
 	
 	public String redirectInsert() {
-		//System.out.println("tipo do redir "+tipoesc);
-		FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-		.put("tipo", tipoesc);
-		int tipoesc2=  (int) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("tipo");
-		System.out.println("tipoesc2 "+tipoesc2);
-		return "cadastroEscola?faces-redirect=true";
+		return "cadastroEscola?faces-redirect=true&amp;tipo="+tipoesc;
 	}	
 	
 	

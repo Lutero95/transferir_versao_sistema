@@ -28,9 +28,9 @@ public class EquipeController implements Serializable {
 	private List<EquipeBean> listaEquipe;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
+	private int tipo;
 	private Integer abaAtiva = 0;
 	private String cabecalho;
-	private int tipo;
 
 	EquipeDAO eDao = new EquipeDAO();
 
@@ -38,11 +38,12 @@ public class EquipeController implements Serializable {
 		this.equipe = new EquipeBean();
 		this.listaEquipe = null;
 		this.descricaoBusca = new String();
+		
 		this.descricaoBusca = new String();
 	}
 
 	public void limparDados() throws ProjetoException {
-		
+		equipe = new EquipeBean();
 		this.descricaoBusca = new String();
 		this.tipoBuscar = 1;
 		this.listaEquipe = eDao.listarEquipe();
@@ -73,19 +74,13 @@ public class EquipeController implements Serializable {
 	}
 
 	
+
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
 
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
-	}
-
-	public List<EquipeBean> getListarEquipe() throws ProjetoException {
-		
-			this.listaEquipe = eDao.listarEquipe();
-		
-		return listaEquipe;
 	}
 	
 	public String redirectEdit() {
@@ -98,23 +93,29 @@ public class EquipeController implements Serializable {
 	}		
 	
 	public void getEditEquipe() throws ProjetoException, SQLException {
-		System.out.println("getEditEquipe");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
-		
+		System.out.println("vai ve se entrar no editar");
 		if(params.get("id") != null) {
-		
+			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo =Integer.parseInt(params.get("tipo"));			
 			System.out.println("tipo do walter"+tipo);
-			this.equipe = eDao.buscarEquipePorID(id);
+			EquipeDAO cDao = new EquipeDAO();
+			this.equipe = cDao.buscarEquipePorID(id);
 		}
-		else
-		{
-			System.out.println("entrou no wlesee");
+		else{
+			System.out.println("tipo sera"+tipo);
 			tipo =Integer.parseInt(params.get("tipo"));
 			
 		}
+		
+	}
+
+	public void ListarTodasEquipes() throws ProjetoException {
+		
+			this.listaEquipe = eDao.listarEquipe();
+		
 		
 	}
 
@@ -138,7 +139,7 @@ public class EquipeController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Equipe cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "gerenciarEquipe?faces-redirect=true&amp;sucesso=Equipe cadastrada com sucesso!";				
+			return "gerenciarEquipe?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";	
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
@@ -152,20 +153,16 @@ public class EquipeController implements Serializable {
 	}
 
 	public String alterarEquipe() throws ProjetoException {
-		System.out.println("alterarEquipe");
 		if (this.equipe.getProfissionais().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"É necessário no mínimo um profissional na equipe!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			System.out.println("aaaa");
 			return "";
-			
 		}
 		if (this.equipe.getDescEquipe().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Descrição obrigatória!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			System.out.println("bbbb");
 			return "";
 		}
 
@@ -176,14 +173,11 @@ public class EquipeController implements Serializable {
 					"Equipe alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			this.listaEquipe = eDao.listarEquipe();
-			System.out.println("cccc");
 			return "/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			
-			System.out.println("dddd");
 			return "";
 		}
 	}
@@ -230,15 +224,15 @@ public class EquipeController implements Serializable {
 		this.listaEquipe = listaEquipe;
 	}
 
+	public int getTipo() {
+		return tipo;
+	}
+
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
 	}
 
 	public List<EquipeBean> getListaEquipe() {
 		return listaEquipe;
-	}
-
-	public int getTipo() {
-		return tipo;
 	}
 }

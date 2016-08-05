@@ -3,22 +3,25 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	>
 
-<ui:composition template="../../template/templatepagsistemas.xhtml">
-
+<ui:composition template="../../template/templategeral.xhtml">
+<f:metadata>
+		<f:viewAction action="#{EquipeController.getEditEquipe()}"/>
+		</f:metadata>
+	
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
 
 			<h:form>
-				<h:commandButton value="Voltar"
+				<p:commandButton value="Voltar"
 					style="position:absolute; left:71%; top:100%;"
 					styleClass="btn btn-info"
 					action="/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true">
-				</h:commandButton>
+				</p:commandButton>
 			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
@@ -90,16 +93,20 @@
 					<p:commandButton action="#{EquipeController.gravarEquipe()}"
 						update=":formCADU:message,:formCADU:pnlCadEquipe"
 						value="Cadastrar" 
-						rendered="#{EquipeController.tipo == 1}" />
+						 />
 
 
 					<p:commandButton action="#{EquipeController.alterarEquipe()}"
 						update=":formCADU:message,:formCADU:pnlCadEquipe"
-						value="Alterar" styleClass="btn btn-info"
+						value="Alterar" 
 						rendered="#{EquipeController.tipo  == 2}" />
 				</p:panelGrid>
 
-				<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProfE"
+				
+
+			</h:form>
+		</div>
+<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProfE"
 					modal="true" width="550px">
 					<h:form id="formConsuProfE">
 						<p:dataTable value="#{ProfissionalController.listaProfissional}"
@@ -127,10 +134,6 @@
 						</p:dataTable>
 					</h:form>
 				</p:dialog>
-
-			</h:form>
-		</div>
-
 	</ui:define>
 </ui:composition>
 </html>

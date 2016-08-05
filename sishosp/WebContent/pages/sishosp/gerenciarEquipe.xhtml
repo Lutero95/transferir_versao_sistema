@@ -3,33 +3,39 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
+	xmlns:stella="http://stella.caelum.com.br/faces2"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
->
-
-<ui:composition template="../../template/templategeral.xhtml">
-
+<ui:composition template="../../template/templatepagsistemas.xhtml">
+	<f:metadata>
+				<f:event type="preRenderView" listener="#{EquipeController.ListarTodasEquipes}" />
+			</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
 			<h3>GERENCIAMENTO DE EQUIPES</h3>
 			<br />
 		</div>
-		<h:form id="frmmensagem">
+		<h:form id="frmmensagem"
+			onkeypress="
+                if (event.keyCode == 13) {
+                    document.getElementById('form:botaoBusca').click();
+                    return false;
+                }">
 
-<f:metadata>	
-				<f:event type="preRenderView" listener="#{EquipeController.getListarEquipe}" />
-			</f:metadata>
+
 			<p:growl id="growl" showDetail="false" />
 			<p:panel id="pnlprincipal" header="">
 				<p:panelGrid columns="7" styleClass="semBorda"
 					style="font-size:12px !important;">
-					<p:outputPanel>
+					<p:outputPanel autoUpdate="true">
 						<p:outputLabel value="Pesquisar por: " />
 						<p:selectOneMenu value="#{EquipeController.tipoBuscar}"
 							required="true"
 							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
-							requiredMessage="Informe o diretório da página.">
+							requiredMessage="Informe o diretÃ³rio da pÃ¡gina.">
 							<f:selectItem itemLabel="Nome" itemValue="1" />
 							<p:ajax event="change" update=":frmmensagem:pnlprincipal" />
 						</p:selectOneMenu>
@@ -50,8 +56,7 @@
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							action="#{EquipeController.redirectInsert()}"
-							 icon="add"
+							action="#{EquipeController.redirectInsert()}" icon="add"
 							 style="margin-top: 15px;">
 							<f:setPropertyActionListener value="1"
 								target="#{EquipeController.tipo}" />
@@ -66,7 +71,7 @@
 					value="#{EquipeController.listaEquipe}" var="tab"
 					paginator="true" paginatorPosition="bottom" rows="12">
 
-					<p:column headerText="Cód." style="font-weight:bold;width:5%;">
+					<p:column headerText="CÃ³d." style="font-weight:bold;width:5%;">
 						<h:outputText value="#{tab.codEquipe}" />
 					</p:column>
 
@@ -75,16 +80,16 @@
 					</p:column>
 					
 
-					<p:column headerText="Ações" width="15%">
+					<p:column headerText="AÃ§Ãµes" width="15%">
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="#{EquipeController.redirectEdit()}">
+									action="/pages/sishosp/cadastroEquipe.faces?faces-redirect=true">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{EquipeController.equipe}" />
 
-									<f:setPropertyActionListener value="2"
-								target="#{EquipeController.tipo}" />
+									<f:setPropertyActionListener value="A"
+										target="#{EquipeController.tipo}" />
 								</p:menuitem>
 
 								<p:menuitem value="Excluir" icon="trash"
@@ -100,7 +105,7 @@
 			</p:panel>
 		</h:form>
 
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
+		<p:dialog widgetVar="dialogAtencao" modal="true" header="AtenÃ§Ã£o"
 			resizable="false">
 
 			<h:form id="dlgexcluir">
@@ -116,7 +121,7 @@
 						icon="ui-icon-check" style="font-size:14px;"
 						update=":frmmensagem:tabela">
 					</p:commandButton>
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
+					<p:commandButton value="NÃ£o" onclick="PF('dialogAtencao').hide();"
 						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
 
 				</center>
