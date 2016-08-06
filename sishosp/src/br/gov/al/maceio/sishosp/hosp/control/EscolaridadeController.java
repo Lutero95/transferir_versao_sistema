@@ -56,10 +56,10 @@ public class EscolaridadeController implements Serializable {
 		if (cadastrou == true) {
 			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Escolaridade cadastrado com sucesso!", "Sucesso");
+					"Escolaridade cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			return "gerenciarEscolaridade?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";	
+			return "cadastroEscolaridade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Escolaridade cadastrada com sucesso!";	
 
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,

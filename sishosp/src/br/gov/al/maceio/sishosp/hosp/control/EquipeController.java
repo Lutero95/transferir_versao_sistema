@@ -139,7 +139,7 @@ public class EquipeController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Equipe cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "gerenciarEquipe?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";	
+			return "cadastroEquipe?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=CBO cadastrado com sucesso!";	
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");

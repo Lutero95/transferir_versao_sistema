@@ -12,48 +12,54 @@
 
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
-			<h3>GERENCIAMENTO DE CBO</h3>
-			<br />
-		</div>
+<div class="sub-header">
+						<h4>Gerenciamento de CBO</h4>
+						
+						<p:separator/>
+					</div>
 		<h:form id="frmmensagem">
-
+<p:growl id="growl" showDetail="false" />
 			<f:metadata>
 				<f:event type="preRenderView" listener="#{CboController.getListarCbo}" />
 			</f:metadata>
-			<p:growl id="growl" showDetail="false" />
-			<p:panel id="pnlprincipal" header="">
-				<p:panelGrid columns="7" styleClass="semBorda"
+			
+		
+			
+				<p:panelGrid columns="7" styleClass="semBorda" 
 					style="font-size:12px !important;">
-					<p:outputPanel>
+					<p:outputPanel id="pnlprincipal">
 						<p:outputLabel value="Pesquisar por: " />
 						<p:selectOneMenu value="#{CboController.tipoBuscar}"
 							required="true"
 							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
 							requiredMessage="Informe o diretório da página.">
-							<f:selectItem itemLabel="Nome" itemValue="1" />
+							<f:selectItem itemLabel="Descrição" itemValue="1" />
 							<p:ajax event="change" update=":frmmensagem:pnlprincipal" />
 						</p:selectOneMenu>
 
 						<p:inputText id="campoBuscanome"
-							style="height:28px;margin-top:-6px;margin-left:16px;"
+							style="margin-left:10px;" size="35"
 							value="#{CboController.descricaoBusca}" />
 
-						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							style="height:30px; margin-left:2px; margin-top:10px;"
+						<p:commandButton  id="botaoBusca" icon="buscaLupa"
+							style="height:30px;width:40px;margin-left:10px"
 							action="#{CboController.buscarCbo()}"
-							update=":frmmensagem:tabela, :frmmensagem:growl" />
+							update=":frmmensagem:tabela, :frmmensagem:growl" >
+							<p:tooltip value="Buscar" for="botaoBusca"/>
+							</p:commandButton>
 						
-						<p:commandButton value="Limpar Busca" icon="limpar"
+						<p:commandButton  icon="limpar" id="limp"
 							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
 							actionListener="#{CboController.limparDados()}"
-							style="margin-left:20px" />
-						<br />
+							style="margin-left:20px;height:30px;width:40px;" >
+								<p:tooltip value="Limpar Busca" for="limp"/>
+								</p:commandButton>
+						<hr/>
 
 						<p:commandButton id="btninc" value="Novo"
 							action="#{CboController.redirectInsert()}"
 							 icon="add"
-							style="margin-top: 15px;">
+							style="margin-top: -35px;">
 							<f:setPropertyActionListener value="1"
 								target="#{CboController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
@@ -99,7 +105,7 @@
 						</center>
 					</p:column>
 				</p:dataTable>
-			</p:panel>
+
 		</h:form>
 
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"

@@ -84,7 +84,7 @@ public class CboController implements Serializable{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"CBO cadastrado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";	
+			return "cadastroCbo?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=CBO cadastrado com sucesso!";	
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
