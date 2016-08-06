@@ -806,12 +806,11 @@ li.ui-selectonemenu-item {
 }
 
 .ui-icon.podeGravar {
-    top: 2px;
-    left: 0px;
-    margin: 5px 0px 0px 5px;
+    margin: -7px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
     background-position: 0 0 !important;
-    width: 60px;
-    height: 40px;
+    width: 24px;
+    height: 24px;
     background-image: url("../imgs/confirma.png") !important;
 }
 
@@ -934,8 +933,7 @@ li.ui-selectonemenu-item {
     padding: 0px 0px 0px 0px;
     background-position: 0 0 !important;
     width: 24px;
-    height: 24px;//
-    background-image: url("../imgs/back.png") !important;
+    height: 24px;
     background-image: url("../imgs/voltar.png") !important;
 }
 

@@ -3,26 +3,17 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	
-	xmlns:p="http://primefaces.org/ui"
-	>
+	xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="../../template/templategeral.xhtml">
-<f:metadata>
-		<f:viewAction action="#{EquipeController.getEditEquipe()}"/>
-		</f:metadata>
-	
+	<f:metadata>
+		<f:viewAction action="#{EquipeController.getEditEquipe()}" />
+	</f:metadata>
+
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
 
-			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:absolute; left:71%; top:100%;"
-					styleClass="btn btn-info"
-					action="/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true">
-				</p:commandButton>
-			</h:form>
 
 			<h:form class="form-horizontal" id="formCADU">
 
@@ -67,7 +58,7 @@
 										<p:column headerText="Nome" style="font-weight:bold;">
 											<h:outputText value="#{tab.descricaoProf}" />
 										</p:column>
-										
+
 										<p:column headerText="AÃ§Ã£o">
 											<center>
 												<p:commandButton process="@this"
@@ -89,51 +80,52 @@
 
 				</p:panel>
 				<!-- FIM DO FORMULARIO -->
-				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-					<p:commandButton action="#{EquipeController.gravarEquipe()}"
+				<center>
+					<p:commandButton action="#{EquipeController.gravarEquipe()}" style="width:85px"
 						update=":formCADU:message,:formCADU:pnlCadEquipe"
-						value="Cadastrar" 
-						 />
+						value="Incluir"  icon="podeGravar"/>
 
 
-					<p:commandButton action="#{EquipeController.alterarEquipe()}"
-						update=":formCADU:message,:formCADU:pnlCadEquipe"
-						value="Alterar" 
+					<p:commandButton style="width:85px" icon="podeGravar" action="#{EquipeController.alterarEquipe()}"
+						update=":formCADU:message,:formCADU:pnlCadEquipe" value="Alterar"
 						rendered="#{EquipeController.tipo  == 2}" />
-				</p:panelGrid>
-
 				
+<p:commandButton value="Voltar" icon="btvoltar"
+					style="width:85px;margin-left:10px" process="@this"
+					action="/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true">
+				</p:commandButton>
 
+</center>
 			</h:form>
 		</div>
-<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProfE"
-					modal="true" width="550px">
-					<h:form id="formConsuProfE">
-						<p:dataTable value="#{ProfissionalController.listaProfissional}"
-							id="dtTipoAt" resizableColumns="true" var="profi"
-							emptyMessage="NÃ£o existe nenhum tipo cadastrado!">
-							<p:column headerText="CÃ“D.">
-								<p:outputLabel value="#{profi.idProfissional}" />
-							</p:column>
-							<p:column headerText="Profissional">
-								<p:outputLabel value="#{profi.descricaoProf}" />
-							</p:column>
-							<p:column headerText="Especialidade">
-								<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
-							</p:column>
+		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProfE"
+			modal="true" width="550px">
+			<h:form id="formConsuProfE">
+				<p:dataTable value="#{ProfissionalController.listaProfissional}"
+					id="dtTipoAt" resizableColumns="true" var="profi"
+					emptyMessage="NÃ£o existe nenhum tipo cadastrado!">
+					<p:column headerText="CÃ“D.">
+						<p:outputLabel value="#{profi.idProfissional}" />
+					</p:column>
+					<p:column headerText="Profissional">
+						<p:outputLabel value="#{profi.descricaoProf}" />
+					</p:column>
+					<p:column headerText="Especialidade">
+						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+					</p:column>
 
-							<p:column style="width:50px;text-align: center">
-								<p:commandButton process="@this" update=":formCADU:pnlCadEquipe"
-									icon="ui-icon-check" title="Selecionar"
-									action="#{EquipeController.equipe.addProfList()}"
-									onclick="PF('dlgConsuProfE').hide();">
-									<f:setPropertyActionListener value="#{profi}"
-										target="#{EquipeController.equipe.profAdd}" />
-								</p:commandButton>
-							</p:column>
-						</p:dataTable>
-					</h:form>
-				</p:dialog>
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton process="@this" update=":formCADU:pnlCadEquipe"
+							icon="ui-icon-check" title="Selecionar"
+							action="#{EquipeController.equipe.addProfList()}"
+							onclick="PF('dlgConsuProfE').hide();">
+							<f:setPropertyActionListener value="#{profi}"
+								target="#{EquipeController.equipe.profAdd}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>
 </html>

@@ -14,13 +14,7 @@
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
 
-	<h:form>			
-				<p:commandButton value="Voltar"
-					style="position:absolute; left:71%; top:100%;"
-					
-					action="/pages/sishosp/gerenciarEscola.faces?faces-redirect=true"></p:commandButton>
-
-</h:form>
+	
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
@@ -51,18 +45,21 @@
 					
 					
 						<!-- FIM DO FORMULARIO -->
-						<h:panelGrid columns="2" styleClass="semBorda">
-							<p:commandButton action="#{EscolaController.gravarEscola()}"
+
+							<p:commandButton icon="podeGravar" action="#{EscolaController.gravarEscola()}"
 								update=":formCADU:message,:formCADU:pnlCadPaciente"
-								value="Cadastrar"
+								value="Cadastrar" style="width:85px"
 								rendered="#{EscolaController.tipoesc == 1}" />
 
 
-							<p:commandButton action="#{EscolaController.alterarEscola()}"
+							<p:commandButton icon="podeGravar" action="#{EscolaController.alterarEscola()}"
 								update=":formCADU:message,:formCADU:pnlCadPaciente"
-								value="Alterar" 
+								value="Alterar" style="width:85px"
 								rendered="#{EscolaController.tipoesc ==2}" />
-						</h:panelGrid>
+						<p:commandButton value="Voltar" icon="btvoltar"
+							style="width:85px;margin-left:10px" process="@this"
+							action="/pages/sishosp/gerenciarEscola.faces?faces-redirect=true"></p:commandButton>
+
 					</center>
 				</p:panel>
 

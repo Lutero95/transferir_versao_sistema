@@ -12,10 +12,11 @@
 
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
-			<h3>GERENCIAMENTO DE TRANSPORTE</h3>
-			<br />
-		</div>
+		<div class="sub-header">
+						<h4>Gerenciamento de Forma de Transporte</h4>
+						
+						<p:separator/>
+					</div>
 		<h:form id="frmmensagem"
 			onkeypress="
                 if (event.keyCode == 13) {
@@ -25,10 +26,10 @@
 
 
 			<p:growl id="growl" showDetail="false" />
-			<p:panel id="pnlprincipal" header="">
+			
 				<p:panelGrid columns="7" styleClass="semBorda"
 					style="font-size:12px !important;">
-					<p:outputPanel autoUpdate="true">
+					<p:outputPanel id="pnlprincipal">
 						<p:outputLabel value="Pesquisar por: " />
 						<p:selectOneMenu
 							value="#{FormaTransporteController.tipoBuscaTransporte}"
@@ -43,29 +44,32 @@
 						</p:selectOneMenu>
 
 						<p:inputText id="campoBuscanome"
-							style="height:28px;margin-top:-6px;margin-left:16px;"
+							style="height:28px;margin-top:-6px;margin-left:16px;" size="35"
 							value="#{FormaTransporteController.campoBuscaTransporte}"
 							rendered="#{FormaTransporteController.tipoBuscaTransporte == 1}" />
 
 
 
-						<!-- actionListener="#{PacienteController.limparDados()}" -->
-						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							styleClass="btn btn-info"
-							style="height:30px; margin-left:2px; margin-top:10px;"
+						
+						<p:commandButton id="botaoBusca" icon="buscaLupa"
+							
+							style="height:30px;width:40px;margin-left:10px"
 							action="#{FormaTransporteController.buscarTransportes()}"
-							update=":frmmensagem:tabela, :frmmensagem:growl" />
-						<p:commandButton value="Limpar Busca" icon="limpar"
+							update=":frmmensagem:tabela, :frmmensagem:growl" >
+<p:tooltip value="Buscar" for="botaoBusca"/>							
+							</p:commandButton>
+						<p:commandButton id="limp" icon="limpar"
 							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
 							actionListener="#{FormaTransporteController.limparBuscaDados()}"
-							style="margin-left:20px" />
+							style="margin-left:20px;height:30px;width:40px;">
+							<p:tooltip value="Limpar Busca" for="limp"/>
+							</p:commandButton>
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							actionListener="#{FormaTransporteController.limparDados()}"
-							action="/pages/sishosp/cadastroFormaTransporte.faces?faces-redirect=true" icon="add"
-							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
-							<f:setPropertyActionListener value="I"
+							action="#{FormaTransporteController.redirectInsert()}"  icon="add"
+							 style="margin-top: 15px;">
+							<f:setPropertyActionListener value="1"
 								target="#{FormaTransporteController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>
@@ -97,12 +101,12 @@
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroFormaTransporte.faces?faces-redirect=true">
+									action="#{FormaTransporteController.redirectEdit()}">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{FormaTransporteController.transporte}" />
 
 
-									<f:setPropertyActionListener value="A"
+									<f:setPropertyActionListener value="2"
 										target="#{FormaTransporteController.tipo}" />
 								</p:menuitem>
 
@@ -116,7 +120,6 @@
 						</center>
 					</p:column>
 				</p:dataTable>
-			</p:panel>
 		</h:form>
 
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"

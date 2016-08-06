@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -12,6 +13,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FormaTransporteDAO;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 
@@ -28,7 +30,7 @@ public class FormaTransporteController implements Serializable{
 	private String cabecalho;
 
 	// BUSCAS
-	private String tipo;
+	private int tipo;
 	private Integer tipoBuscaTransporte;
 	private String campoBuscaTransporte;
 	private String statusTransporte;
@@ -39,7 +41,6 @@ public class FormaTransporteController implements Serializable{
 		transporte = new FormaTransporteBean();
 
 		// BUSCA
-		tipo = "";
 		tipoBuscaTransporte = 1;
 		campoBuscaTransporte = "";
 		statusTransporte = "P";
@@ -49,6 +50,39 @@ public class FormaTransporteController implements Serializable{
 
 	}
 
+	public String redirectEdit() {
+		return "cadastroFormaTransporte?faces-redirect=true&amp;id=" + this.transporte.getCodformatransporte()+"&amp;tipo="+tipo;
+	}	
+	
+	
+	public String redirectInsert() {
+		return "cadastroFormaTransporte?faces-redirect=true&amp;tipo="+tipo;
+	}	
+	
+	
+	public void getEditFormaTransporte() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo =Integer.parseInt(params.get("tipo"));			
+			
+			FormaTransporteDAO udao = new FormaTransporteDAO();
+			this.transporte = udao.buscatransportecodigo(id);
+		}
+		else{
+			
+			tipo =Integer.parseInt(params.get("tipo"));
+			
+		}
+		
+	}
+		
+	
+	
+	
 	public void gravarTransporte() throws ProjetoException {
 		FormaTransporteDAO udao = new FormaTransporteDAO();
 		boolean cadastrou = udao.cadastrar(transporte);
@@ -165,13 +199,7 @@ public class FormaTransporteController implements Serializable{
 		this.abaAtiva = abaAtiva;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
+	
 
 	public Integer getTipoBuscaTransporte() {
 		return tipoBuscaTransporte;
@@ -212,9 +240,9 @@ public class FormaTransporteController implements Serializable{
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
+		if (this.tipo==1) {
 			cabecalho = "CADASTRO DE TRANSPORTE";
-		} else if (this.tipo.equals("A")) {
+		} else if (this.tipo==2) {
 			cabecalho = "ALTERAR TRANSPORTE";
 		}
 		return cabecalho;
@@ -222,6 +250,14 @@ public class FormaTransporteController implements Serializable{
 
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 
 }

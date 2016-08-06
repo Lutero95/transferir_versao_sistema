@@ -121,11 +121,11 @@ public class EspecialidadeController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public List<EspecialidadeBean> getListaEspecialidade() throws ProjetoException {
-		if (listaEspecialidade == null) {
+	public void getListarTodasEspecialidades() throws ProjetoException {
+		
 			this.listaEspecialidade = eDao.listarEspecialidades();
-		}
-		return listaEspecialidade;
+		
+		
 	}
 
 	public String gravarEspecialidade() throws ProjetoException, SQLException {
@@ -212,5 +212,13 @@ public class EspecialidadeController implements Serializable {
 	 */
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
+	}
+
+	public List<EspecialidadeBean> getListaEspecialidade() {
+		return listaEspecialidade;
+	}
+
+	public void setListaEspecialidade(List<EspecialidadeBean> listaEspecialidade) {
+		this.listaEspecialidade = listaEspecialidade;
 	}
 }

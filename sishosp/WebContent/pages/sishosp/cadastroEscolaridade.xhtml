@@ -8,18 +8,13 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:composition template="../../template/templategeral.xhtml">
-<f:metadata>
+	<f:metadata>
 		<f:viewAction action="#{EscolaridadeController.getEditEscolaridade()}" />
-		</f:metadata>
+	</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
-			<h:form>
-				<h:commandButton value="Voltar"
-					style="position:absolute; left:71%; top:100%;"
-					styleClass="btn btn-info"
-					action="/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true"></h:commandButton>
-			</h:form>
+
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
@@ -47,22 +42,28 @@
 					<p:separator></p:separator>
 					<!-- FIM DO FORMULARIO -->
 					<center>
-						<h:panelGrid columns="2">
-
-							<h:commandButton
-								action="#{EscolaridadeController.gravarEscolaridade()}"
-								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
-								value="Cadastrar" styleClass="btn btn-sm btn-success"
-								rendered="#{EscolaridadeController.tipo == 1}" />
 
 
-							<h:commandButton
-								action="#{EscolaridadeController.alterarEscolaridade()}"
-								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
-								value="Alterar" styleClass="btn btn-danger"
-								rendered="#{EscolaridadeController.tipo == 2}" />
+						<p:commandButton
+							action="#{EscolaridadeController.gravarEscolaridade()}"
+							icon="podeGravar"
+							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
+							value="Incluir" 
+							style="width:85px"
+							rendered="#{EscolaridadeController.tipo == 1}" />
 
-						</h:panelGrid>
+
+						<p:commandButton
+							action="#{EscolaridadeController.alterarEscolaridade()}"
+							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
+							value="Alterar" 
+							icon="podeGravar"
+							style="width:85px"
+							rendered="#{EscolaridadeController.tipo == 2}" />
+						<p:commandButton value="Voltar" icon="btvoltar" process="@this"
+							style="width:85px;margin-left:10px"
+							action="/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true" />
+
 					</center>
 
 				</p:panel>

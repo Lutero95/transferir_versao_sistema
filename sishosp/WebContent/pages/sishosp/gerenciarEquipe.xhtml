@@ -8,16 +8,17 @@
 	xmlns:stella="http://stella.caelum.com.br/faces2"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-<ui:composition template="../../template/templatepagsistemas.xhtml">
+<ui:composition template="../../template/templategeral.xhtml">
 	<f:metadata>
 				<f:event type="preRenderView" listener="#{EquipeController.ListarTodasEquipes}" />
 			</f:metadata>
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
-			<h3>GERENCIAMENTO DE EQUIPES</h3>
-			<br />
-		</div>
+		<div class="sub-header">
+						<h4>Gerenciamento de Equipe</h4>
+						
+						<p:separator/>
+					</div>
+
 		<h:form id="frmmensagem"
 			onkeypress="
                 if (event.keyCode == 13) {
@@ -27,10 +28,10 @@
 
 
 			<p:growl id="growl" showDetail="false" />
-			<p:panel id="pnlprincipal" header="">
+			
 				<p:panelGrid columns="7" styleClass="semBorda"
 					style="font-size:12px !important;">
-					<p:outputPanel autoUpdate="true">
+					<p:outputPanel id="pnlprincipal">
 						<p:outputLabel value="Pesquisar por: " />
 						<p:selectOneMenu value="#{EquipeController.tipoBuscar}"
 							required="true"
@@ -41,18 +42,22 @@
 						</p:selectOneMenu>
 
 						<p:inputText id="campoBuscanome"
-							style="height:28px;margin-top:-6px;margin-left:16px;"
+							style="height:28px;margin-top:-6px;margin-left:16px;" size="35"
 							value="#{EquipeController.descricaoBusca}" />
 
-						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							styleClass="btn btn-info" style="height:30px; margin-left:2px; margin-top:10px;"
+						<p:commandButton id="botaoBusca" icon="buscaLupa"
+														style="height:30px;width:40px;margin-left:10px"
 							action="#{EquipeController.buscarEquipes()}"
-							update=":frmmensagem:tabela, :frmmensagem:growl" />
+							update=":frmmensagem:tabela, :frmmensagem:growl">
+							<p:tooltip value="Buscar" for="botaoBusca"/>
+							</p:commandButton>
 						
-						<p:commandButton value="Limpar Busca" icon="limpar"
+						<p:commandButton  icon="limpar" id="limp"
 							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
 							actionListener="#{EquipeController.limparDados()}"
-							style="margin-left:20px" />
+							style="margin-left:20px;height:30px;width:40px;">
+							<p:tooltip value="Limpar Busca" for="limp"/>
+							</p:commandButton>
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
@@ -102,7 +107,7 @@
 						</center>
 					</p:column>
 				</p:dataTable>
-			</p:panel>
+
 		</h:form>
 
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="AtenÃ§Ã£o"

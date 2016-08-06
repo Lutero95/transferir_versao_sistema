@@ -8,53 +8,55 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:composition template="../../template/templategeral.xhtml">
-<f:metadata>
-		<f:viewAction action="#{EspecialidadeController.getEditEspecialidade()}"/>
-		</f:metadata>
+	<f:metadata>
+		<f:viewAction
+			action="#{EspecialidadeController.getEditEspecialidade()}" />
+	</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
 
-			<h:form>
-				<h:commandButton value="Voltar"
-					style="position:absolute; left:71%; top:100%;"
-					styleClass="btn btn-info"
-					action="/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true"></h:commandButton>
-			</h:form>
-
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
-				<p:panel id="pnlCadEspec" header="#{EspecialidadeController.cabecalho}"
+				<p:panel id="pnlCadEspec"
+					header="#{EspecialidadeController.cabecalho}"
 					style="height:auto; width:auto; background-color: #F5F5F5;">
 
-							
-							<div class="form-group">
-								<h:outputLabel for="inputname" value="Descrição da Especialidade: "
-									styleClass="col-sm-3 control-label" />
-								<div class="col-sm-6">
-									<h:inputText value="#{EspecialidadeController.espec.descEspecialidade}"
-										class="form-control" id="inputname" required="true" requiredMessage="Descrição obrigatória!"/>
-								</div>
-							</div>
-						<p:separator></p:separator>
-								<!-- FIM DO FORMULARIO -->
-				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-					<p:commandButton action="#{EspecialidadeController.gravarEspecialidade()}"
-						update=":formCADU:message,:formCADU:pnlCadEspec"
-						value="Cadastrar" styleClass="btn btn-sm btn-success"
-						rendered="#{EspecialidadeController.tipo == 1}" />
+
+					<div class="form-group">
+						<h:outputLabel for="inputname"
+							value="Descrição da Especialidade: "
+							styleClass="col-sm-3 control-label" />
+						<div class="col-sm-6">
+							<h:inputText
+								value="#{EspecialidadeController.espec.descEspecialidade}"
+								class="form-control" id="inputname" required="true"
+								requiredMessage="Descrição obrigatória!" />
+						</div>
+					</div>
+					<p:separator></p:separator>
+					<!-- FIM DO FORMULARIO -->
+					<center>
+						<p:commandButton icon="podeGravar"
+							action="#{EspecialidadeController.gravarEspecialidade()}"
+							update=":formCADU:message,:formCADU:pnlCadEspec"
+							value="Cadastrar" style="width:85px"
+							rendered="#{EspecialidadeController.tipo == 1}" />
 
 
-					<p:commandButton action="#{EspecialidadeController.alterarEspecialidade()}"
-						update=":formCADU:message,:formCADU:pnlCadEspec"
-						value="Alterar" styleClass="btn btn-info"
-						rendered="#{EspecialidadeController.tipo  == 2}" />
-				</p:panelGrid>
-						
+						<p:commandButton
+							action="#{EspecialidadeController.alterarEspecialidade()}"
+							update=":formCADU:message,:formCADU:pnlCadEspec" value="Alterar"
+							style="width:85px" icon="podeGravar"
+							rendered="#{EspecialidadeController.tipo  == 2}" />
+						<p:commandButton value="Voltar" icon="btvoltar"
+							style="width:85px;margin-left:10px" process="@this"
+							action="/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true" />
+					</center>
 
 				</p:panel>
-		
+
 			</h:form>
 		</div>
 
