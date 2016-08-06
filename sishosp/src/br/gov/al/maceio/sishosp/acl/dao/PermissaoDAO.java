@@ -279,4 +279,32 @@ public class PermissaoDAO {
         }
         return perm;
     }
+    
+    public Long recIdPermissoesFuncionalidade(Long idFuncionalidade) {
+
+        String sql = "select id_permissao from acl.perm_geral where id_funcionalidade = ?";
+        
+        Long perm = null;
+        
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setLong(1, idFuncionalidade);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+                perm = rs.getLong("id_permissao");
+            }
+        } catch(SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return perm;
+    }
 }

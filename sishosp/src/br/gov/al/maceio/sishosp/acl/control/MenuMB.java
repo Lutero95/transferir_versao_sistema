@@ -24,7 +24,7 @@ import org.primefaces.model.menu.MenuModel;
 
 /**
  *
- * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
+ * @author Thulio e Thiago
  * @since 26/03/2015
  */
 @ManagedBean
