@@ -1,0 +1,438 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/templategeral.xhtml">
+
+	<ui:define name="head">
+
+	</ui:define>
+
+	<ui:define name="body">
+
+		<h:form id="form"
+			onkeypress="
+                if (event.keyCode == 13) {
+                    document.getElementById('form:botaoBusca').click();
+                    return false;
+                }">
+
+			<p:growl id="growl" showDetail="false" />
+
+			<p:panel id="pnlprincipal" header="Gerenciar Funcionalidades">
+				<p:panelGrid columns="6" styleClass="semBorda">
+
+					<p:commandButton value="Nova Funcionalidade" icon="ui-icon-plus"
+						style="margin-top:4px; margin-bottom:10px;"
+						actionListener="#{funcionalidadeMB.limparDados()}"
+						action="#{funcionalidadeMB.limparDualMenuSis()}"
+						onclick="PF('dlgCadMenu').show();" update=":formCM:pnlCM" />
+
+					<p:inputText id="campoBusca" value="#{funcionalidadeMB.valorBusca}"
+						style="margin-top:-6px;" maxlength="10" required="false"
+						requiredMessage="Infome a descrição para realizar uma busca.">
+						<p:watermark value="Informe a descrição." for="campoBusca" />
+					</p:inputText>
+
+					<p:commandButton id="botaoBusca" icon="ui-icon-search"
+						style="height:28px; margin-top:-6px; margin-left:-20px;"
+						actionListener="#{funcionalidadeMB.buscarFuncionalidade()}"
+						update=":form:tabela, :form:growl" />
+
+					<p:commandButton value="Limpar" icon="ui-icon-minus"
+						style="height:28px; margin-top:-6px;"
+						actionListener="#{funcionalidadeMB.limparBusca()}"
+						update=":form:campoBusca, :form:tabela" />
+				</p:panelGrid>
+
+				<p:dataTable id="tabela" value="#{funcionalidadeMB.listaFuncionalidadesGeral}" var="tab"
+					paginator="true" paginatorPosition="bottom" rows="15"
+					emptyMessage="Nenhum dado encontrado.">
+
+					<p:column headerText="Descrição" style="text-align:left;">
+						<p:outputLabel value="#{tab.descricao}" />
+					</p:column>
+					
+					<p:column headerText="Descrição da Pagina" style="text-align:left;">
+						<p:outputLabel value="#{tab.descPagina}" />
+					</p:column>
+					
+					<p:column headerText="Diretorio" style="text-align:left;">
+						<p:outputLabel value="#{tab.diretorio}" />
+					</p:column>
+					
+					<p:column headerText="Extensão" style="text-align:left;">
+						<p:outputLabel value="#{tab.extensao}" />
+					</p:column>
+
+					<p:column headerText="Imagem" width="10%">
+						<p:outputLabel value="#{tab.imagem}" />
+					</p:column>
+
+					<p:column headerText="Ativo" width="5%">
+						<center>
+							<p:graphicImage value="#{funcionalidadeMB.verificarBolTab(tab.ativo)}" />
+						</center>
+					</p:column>
+
+					<p:column headerText="Ações" width="6%">
+						<center>
+							<p:commandButton icon="ui-icon-pencil"
+								actionListener="#{funcionalidadeMB.limparDados()}"
+								action="#{funcionalidadeMB.limparDualMenuSisAlt()}"
+								onclick="PF('dlgAltMenu').show();" update=":formAM:pnlAM">
+
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{funcionalidadeMB.funcionalidade}" />
+
+								<f:setPropertyActionListener value="#{tab.ativo}"
+									target="#{funcionalidadeMB.statusFuncionalidade}" />
+								<f:setPropertyActionListener value="#{tab.id}"
+									target="#{funcionalidadeMB.idMenuAlt}" />
+							</p:commandButton>
+
+							<p:commandButton icon="ui-icon-trash" onclick="PF('dlgExcMenu').show();" update=":formCEM:pnlCEM" 
+							disabled="false">
+							<f:setPropertyActionListener value="#{tab.id}" target="#{funcionalidadeMB.funcionalidade.id}" />
+						    </p:commandButton>
+						</center>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Cadastro de Funcionalidades" widgetVar="dlgCadMenu"
+			draggable="false" resizable="false" closable="true" modal="true"
+			width="600px">
+
+			<h:form id="formCM">
+				<p:panel id="pnlCM" style="height:510px;">
+
+					<p:tabView activeIndex="#{funcionalidadeMB.abaAtiva}" style="height:390px;">
+						<p:tab title="Geral">
+							<p:panelGrid styleClass="semBorda">
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Descrição da Funcionalidade: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:inputText id="desc"
+											value="#{funcionalidadeMB.funcionalidade.descricao}"
+											size="40" required="true"
+											requiredMessage="Informe o nome do menu." />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Página: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:inputText
+											value="#{funcionalidadeMB.funcionalidade.descPagina}"
+											required="true" requiredMessage="Informe a página associada." />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Extensão página: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:selectOneRadio
+											value="#{funcionalidadeMB.funcionalidade.extensao}">
+											<f:selectItems value="#{funcionalidadeMB.listaExtensoesPag}" />
+										</p:selectOneRadio>
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Diretório: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:selectOneMenu
+											value="#{funcionalidadeMB.funcionalidade.diretorio}"
+											required="true"
+											requiredMessage="Informe o diretório da página.">
+
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems value="#{funcionalidadeMB.listaDiretorios}"
+												var="dir" itemLabel="#{dir.sigla}" itemValue="#{dir.sigla}" />
+										</p:selectOneMenu>
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Nome da Imagem do Sistema ou Icone: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:inputText id="imagem" size="40" required="true"
+											value="#{funcionalidadeMB.funcionalidade.imagem}"
+											requiredMessage="Informe o nome da imagem." />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Status: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:selectOneMenu value="#{funcionalidadeMB.statusFuncionalidade}"
+											required="true" requiredMessage="Informe o status.">
+
+											<f:selectItem itemLabel="Habilitado" itemValue="true" />
+											<f:selectItem itemLabel="Desabilitado" itemValue="false" />
+										</p:selectOneMenu>
+									</p:column>
+								</p:row>
+							</p:panelGrid>
+						</p:tab>
+
+						<p:tab title="Associar Sistemas">
+							<p:panelGrid columns="2" styleClass="semBorda">
+								<p:pickList id="pick"
+									value="#{funcionalidadeMB.listaSistemasDual}" var="sis"
+									itemLabel="#{sis.descricao}" itemValue="#{sis}"
+									showCheckbox="true" showSourceFilter="true"
+									showTargetFilter="true" filterMatchMode="contains"
+									converter="conPickListSistema">
+
+									<f:facet name="sourceCaption">Sistemas não associados</f:facet>
+									<f:facet name="targetCaption">Sistemas associados</f:facet>
+
+									<p:ajax event="transfer"
+										listener="#{funcionalidadeMB.onTransferMenuSis}" />
+								</p:pickList>
+							</p:panelGrid>
+						</p:tab>
+					</p:tabView>
+
+					<center>
+						<p:separator />
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:outputLabel>
+								<font color="#FF0000">(*)</font>
+							</p:outputLabel>
+							<p:outputLabel value="Preenchimento Obrigatório" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:commandButton value="Gravar" icon="ui-icon-check"
+								style="width:100px;"
+								action="#{funcionalidadeMB.cadastrarFuncionalidade()}"
+								update=":formCM:pnlCM, :form:growl, :form:tabela" />
+
+							<p:commandButton value="Cancelar" icon="ui-icon-close"
+								style="width:100px;" onclick="PF('dlgCadMenu').hide();"
+								process="@this" />
+						</p:panelGrid>
+					</center>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Alterar Funcionalidade" widgetVar="dlgAltMenu"
+			draggable="false" resizable="false" closable="true" modal="true"
+			width="600px">
+
+			<h:form id="formAM">
+				<p:panel id="pnlAM" style="height:510px;">
+
+					<p:tabView activeIndex="#{funcionalidadeMB.abaAtiva}" style="height:390px;">
+						<p:tab title="Geral">
+							<p:panelGrid styleClass="semBorda">
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Descrição da Funcionalidade: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:inputText id="desc"
+											value="#{funcionalidadeMB.funcionalidade.descricao}"
+											size="40" required="true"
+											requiredMessage="Informe o nome do menu." />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Página: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:inputText
+											value="#{funcionalidadeMB.funcionalidade.descPagina}"
+											required="true" requiredMessage="Informe a página associada." />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Extensão página: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:selectOneRadio
+											value="#{funcionalidadeMB.funcionalidade.extensao}">
+											<f:selectItems value="#{funcionalidadeMB.listaExtensoesPag}" />
+										</p:selectOneRadio>
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Diretório: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:selectOneMenu
+											value="#{funcionalidadeMB.funcionalidade.diretorio}"
+											required="true"
+											requiredMessage="Informe o diretório da página.">
+
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems value="#{funcionalidadeMB.listaDiretorios}"
+												var="dir" itemLabel="#{dir.sigla}" itemValue="#{dir.sigla}" />
+										</p:selectOneMenu>
+									</p:column>
+								</p:row>
+								
+									<p:row>
+									<p:column>
+										<p:outputLabel value="Nome da Imagem do Sistema ou Icone: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:inputText id="imagem" size="40" required="true"
+											value="#{funcionalidadeMB.funcionalidade.imagem}"
+											requiredMessage="Informe o nome da imagem." />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Status: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:selectOneMenu value="#{funcionalidadeMB.statusFuncionalidade}"
+											required="true" requiredMessage="Informe o status.">
+
+											<f:selectItem itemLabel="Habilitado" itemValue="true" />
+											<f:selectItem itemLabel="Desabilitado" itemValue="false" />
+										</p:selectOneMenu>
+									</p:column>
+								</p:row>
+							</p:panelGrid>
+						</p:tab>
+
+						<p:tab title="Associar Sistemas">
+							<p:panelGrid columns="2" styleClass="semBorda">
+								<p:pickList id="pick"
+									value="#{funcionalidadeMB.listaSistemasDual}" var="sis"
+									itemLabel="#{sis.descricao}" itemValue="#{sis}"
+									showCheckbox="true" showSourceFilter="true"
+									showTargetFilter="true" filterMatchMode="contains"
+									converter="conPickListSistema">
+
+									<f:facet name="sourceCaption">Sistemas não associados</f:facet>
+									<f:facet name="targetCaption">Sistemas associados</f:facet>
+
+									<p:ajax event="transfer"
+										listener="#{funcionalidadeMB.onTransferMenuSis}" />
+								</p:pickList>
+							</p:panelGrid>
+						</p:tab>
+					</p:tabView>
+
+					<center>
+						<p:separator />
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:outputLabel>
+								<font color="#FF0000">(*)</font>
+							</p:outputLabel>
+							<p:outputLabel value="Preenchimento Obrigatório" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:commandButton value="Gravar" icon="ui-icon-check"
+								style="width:100px;"
+								action="#{funcionalidadeMB.alterarFuncionalidade()}"
+								update=":formAM:pnlAM, :form:growl, :form:tabela" />
+
+							<p:commandButton value="Cancelar" icon="ui-icon-close"
+								style="width:100px;" onclick="PF('dlgAltMenu').hide();"
+								process="@this" />
+						</p:panelGrid>
+					</center>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="dlgExcMenu" resizable="false" modal="true"
+			header="Excluir Funcionalidade" width="400px" height="auto">
+
+			<h:form id="formCEM">
+				<p:panel id="pnlCEM">
+					<center>
+						<p:panelGrid columns="1" styleClass="semBorda">
+							<p:outputLabel
+								value="Deseja realmente excluir a funcionalide selecionado?" />
+						</p:panelGrid>
+
+						<p:separator />
+
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:commandButton value="Sim" icon="ui-icon-check"
+								style="width:100px;"
+								action="#{funcionalidadeMB.excluirFuncionalidade()}"
+								update=":form:tabela, :form:growl" />
+
+							<p:commandButton value="Não" icon="ui-icon-close"
+								style="width:100px;" onclick="PF('dlgExcMenu').hide();"
+								process="@this" />
+						</p:panelGrid>
+					</center>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+</html>

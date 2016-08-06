@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.acl.control;
 
 import br.gov.al.maceio.sishosp.acl.model.Funcao;
+import br.gov.al.maceio.sishosp.acl.model.Funcionalidade;
 import br.gov.al.maceio.sishosp.acl.model.Menu;
 import br.gov.al.maceio.sishosp.acl.model.Perfil;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
@@ -27,7 +28,7 @@ import org.primefaces.model.menu.MenuModel;
 
 /**
  *
- * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
+ * @author Thulio
  * @since 26/03/2015
  */
 @ManagedBean
@@ -52,6 +53,10 @@ public class PerfilMB implements Serializable {
     private DualListModel<Funcao> listaFuncoesDualEdit;
     private List<Funcao> listaFuncoesSourceEdit;
     private List<Funcao> listaFuncoesTargetEdit;
+    
+    private DualListModel<Funcionalidade> listaFuncionalidadesDualEdit;
+    private List<Funcionalidade> listaFuncionalidadesSourceEdit;
+    private List<Funcionalidade> listaFuncionalidadesTargetEdit;
     
     private String perfilSelecionado = "1";
     
@@ -85,6 +90,10 @@ public class PerfilMB implements Serializable {
         listaFuncoesDualEdit = new DualListModel<Funcao>();
         listaFuncoesSourceEdit = new ArrayList<>();
         listaFuncoesTargetEdit = new ArrayList<>();
+        
+        listaFuncionalidadesDualEdit = new DualListModel<Funcionalidade>();
+        listaFuncionalidadesSourceEdit = new ArrayList<>();
+        listaFuncionalidadesTargetEdit = new ArrayList<>();
         
         listaSistemasPreMenu = new ArrayList<>();
         menuModelPreview = new DefaultMenuModel();
@@ -144,9 +153,10 @@ public class PerfilMB implements Serializable {
         List<Long> permissoes = new ArrayList<>();
         List<Menu> listaMenusAux = listaMenusDualEdit.getTarget();
         List<Funcao> listaFuncoesAux = listaFuncoesDualEdit.getTarget();
+        List<Funcionalidade> listaFuncionalidadesAux = listaFuncionalidadesDualEdit.getTarget();
         
         if((listaMenusAux != null && listaMenusAux.size() > 0) || 
-            (listaFuncoesAux != null && listaFuncoesAux.size() > 0)) {
+            (listaFuncoesAux != null && listaFuncoesAux.size() > 0) || (listaFuncionalidadesAux != null && listaFuncionalidadesAux.size() > 0) ) {
             
             MenuMB mmb = new MenuMB();
             List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
@@ -157,6 +167,10 @@ public class PerfilMB implements Serializable {
             }
             for(Funcao f : listaFuncoesAux) {
                 permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
+            }
+            
+            for(Funcionalidade fu : listaFuncionalidadesAux) {
+                permissoes.add(pmdao.recIdPermissoesFuncionalidade(fu.getId()));
             }
             perfil.setListaPermissoes(permissoes);
             
@@ -279,6 +293,19 @@ public class PerfilMB implements Serializable {
         }        
     }
     
+    public void onTransferFuncionalidadeAlt(TransferEvent event) {
+        StringBuilder builder = new StringBuilder();
+
+        for(Object item : event.getItems()) {
+            builder.append(((Menu) item).getId());
+            if(listaFuncionalidadesTargetEdit.contains(item)) {
+                listaFuncionalidadesTargetEdit.remove(item);
+            } else {
+                listaFuncionalidadesTargetEdit.add((Funcionalidade) item);
+            }
+        }        
+    }
+    
     public void onTransferFuncaoAlt(TransferEvent event) {
         StringBuilder builder = new StringBuilder();
 
@@ -323,6 +350,10 @@ public class PerfilMB implements Serializable {
         listaFuncoesSourceEdit = new ArrayList<>();
         listaFuncoesTargetEdit = new ArrayList<>();
         listaFuncoesDualEdit = null;
+        
+        listaFuncionalidadesSourceEdit = new ArrayList<>();
+        listaFuncionalidadesTargetEdit = new ArrayList<>();
+        listaFuncionalidadesDualEdit = null;
         
         listaSistemasPreMenu = null;
     }
@@ -561,4 +592,40 @@ public class PerfilMB implements Serializable {
     public void setDescPerfilBusca(String descPerfilBusca) {
         this.descPerfilBusca = descPerfilBusca;
     }
+
+	public DualListModel<Funcionalidade> getListaFuncionalidadesDualEdit() {
+		if(listaFuncionalidadesDualEdit == null) {
+            listaFuncionalidadesSourceEdit = null;
+            listaFuncionalidadesTargetEdit = null;
+            getListaFuncionalidadesSourceEdit();
+            getListaFuncionalidadesTargetEdit();
+            listaFuncionalidadesDualEdit = new DualListModel<>(listaFuncionalidadesSourceEdit, listaFuncionalidadesTargetEdit);
+        }
+		return listaFuncionalidadesDualEdit;
+	}
+
+	public void setListaFuncionalidadesDualEdit(
+			DualListModel<Funcionalidade> listaFuncionalidadesDualEdit) {
+		this.listaFuncionalidadesDualEdit = listaFuncionalidadesDualEdit;
+	}
+
+	public List<Funcionalidade> getListaFuncionalidadesSourceEdit() {
+		return listaFuncionalidadesSourceEdit;
+	}
+
+	public void setListaFuncionalidadesSourceEdit(
+			List<Funcionalidade> listaFuncionalidadesSourceEdit) {
+		this.listaFuncionalidadesSourceEdit = listaFuncionalidadesSourceEdit;
+	}
+
+	public List<Funcionalidade> getListaFuncionalidadesTargetEdit() {
+		return listaFuncionalidadesTargetEdit;
+	}
+
+	public void setListaFuncionalidadesTargetEdit(
+			List<Funcionalidade> listaFuncionalidadesTargetEdit) {
+		this.listaFuncionalidadesTargetEdit = listaFuncionalidadesTargetEdit;
+	}
+    
+    
 }
