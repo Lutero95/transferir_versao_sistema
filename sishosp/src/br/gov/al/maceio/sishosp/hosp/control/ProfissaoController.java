@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -19,7 +20,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.ProfissaoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 
-@ManagedBean(name="ProfissaoController")
+@ManagedBean(name = "ProfissaoController")
 @ViewScoped
 public class ProfissaoController implements Serializable {
 
@@ -31,7 +32,7 @@ public class ProfissaoController implements Serializable {
 	private Integer abaAtiva = 0;
 	// BUSCAS
 	private String cabecalho;
-	private String tipo;
+	private int tipo;
 	private Integer tipoBuscaProfissao;
 	private String campoBuscaProfissao;
 	private String statusProfissao;
@@ -46,7 +47,6 @@ public class ProfissaoController implements Serializable {
 		listaProfissoes = null;
 
 		// BUSCA
-		tipo = "";
 		tipoBuscaProfissao = 1;
 		campoBuscaProfissao = "";
 		statusProfissao = "P";
@@ -160,12 +160,8 @@ public class ProfissaoController implements Serializable {
 	}
 
 	public List<ProfissaoBean> getListaProfissoes() throws ProjetoException {
-		if (listaProfissoes == null) {
-
-			ProfissaoDAO fdao = new ProfissaoDAO();
-			listaProfissoes = fdao.listaProfissoes();
-
-		}
+		ProfissaoDAO fdao = new ProfissaoDAO();
+		listaProfissoes = fdao.listaProfissoes();
 		return listaProfissoes;
 	}
 
@@ -173,11 +169,11 @@ public class ProfissaoController implements Serializable {
 		this.listaProfissoes = listaProfissoes;
 	}
 
-	public String getTipo() {
+	public int getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(int tipo) {
 		this.tipo = tipo;
 	}
 
@@ -214,9 +210,9 @@ public class ProfissaoController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
+		if (this.tipo == 1) {
 			cabecalho = "CADASTRO DE PROFISSÃO";
-		} else if (this.tipo.equals("A")) {
+		} else if (this.tipo == 2) {
 			cabecalho = "ALTERAR PROFISSÃO";
 		}
 		return cabecalho;
@@ -226,4 +222,28 @@ public class ProfissaoController implements Serializable {
 		this.cabecalho = cabecalho;
 	}
 
+	public void getEditProfissao() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			ProfissaoDAO pDao = new ProfissaoDAO();
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo = Integer.parseInt(params.get("tipo"));
+			this.profissao = pDao.buscaprofissaocodigo(id);
+		} else {
+			tipo = Integer.parseInt(params.get("tipo"));
+
+		}
+
+	}
+
+	public String redirectInsert() {
+		return "cadastroProfissoes?faces-redirect=true&amp;tipo=" + this.tipo;
+	}
+
+	public String redirectEdit() {
+		return "cadastroProfissoes?faces-redirect=true&amp;id="
+				+ this.profissao.getCodprofissao() + "&amp;tipo=" + this.tipo;
+	}
 }

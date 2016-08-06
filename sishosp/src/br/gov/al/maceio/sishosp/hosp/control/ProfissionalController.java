@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -34,7 +35,7 @@ public class ProfissionalController implements Serializable {
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private String cabecalho;
-	private String tipo;
+	private int tipo;
 	private Integer abaAtiva = 0;
 
 	private GrupoBean grupoSelecionado;
@@ -42,7 +43,6 @@ public class ProfissionalController implements Serializable {
 	public ProfissionalController() {
 		this.profissional = new ProfissionalBean();
 		this.descricaoBusca = new String();
-		this.tipo = new String();
 	}
 
 	public void limparDados() throws ProjetoException {
@@ -75,11 +75,11 @@ public class ProfissionalController implements Serializable {
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	public String getTipo() {
+	public int getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(int tipo) {
 		this.tipo = tipo;
 	}
 
@@ -91,10 +91,9 @@ public class ProfissionalController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public List<ProfissionalBean> getListarProfissional() throws ProjetoException {
-		if (listaProfissional == null) {
-			listaProfissional = pDao.listarProfissional();
-		}
+	public List<ProfissionalBean> getListarProfissional()
+			throws ProjetoException {
+		listaProfissional = pDao.listarProfissional();
 		return listaProfissional;
 	}
 
@@ -205,9 +204,9 @@ public class ProfissionalController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
+		if (this.tipo == 1) {
 			cabecalho = "CADASTRO DE PROFISSIONAL";
-		} else if (this.tipo.equals("A")) {
+		} else if (this.tipo == 2) {
 			cabecalho = "ALTERAR PROFISSIONAL";
 		}
 		return cabecalho;
@@ -222,15 +221,40 @@ public class ProfissionalController implements Serializable {
 		List<ProfissionalBean> result = pDao.listarProfissionalBusca(query, 1);
 		return result;
 	}
-	
-	
-	public void atualizaListaProfPorGrupo(SelectEvent event) throws ProjetoException{
+
+	public void atualizaListaProfPorGrupo(SelectEvent event)
+			throws ProjetoException {
 		System.out.println("VAI ATualahsdas");
 		this.grupoSelecionado = (GrupoBean) event.getObject();
-		this.listaProfissional = pDao.listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
+		this.listaProfissional = pDao
+				.listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
 	}
 
 	public List<ProfissionalBean> getListaProfissional() {
 		return listaProfissional;
+	}
+
+	public String redirectInsert() {
+		return "cadastroProfissional?faces-redirect=true&amp;tipo=" + this.tipo;
+	}
+
+	public String redirectEdit() {
+		return "cadastroProfissional?faces-redirect=true&amp;id="
+				+ this.profissional.getIdProfissional() + "&amp;tipo=" + tipo;
+	}
+
+	public void getEditProfissional() throws ProjetoException, SQLException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo = Integer.parseInt(params.get("tipo"));
+			this.profissional = pDao.buscarProfissionalPorId(id);
+		} else {
+			tipo = Integer.parseInt(params.get("tipo"));
+
+		}
+
 	}
 }

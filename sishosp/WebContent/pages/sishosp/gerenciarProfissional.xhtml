@@ -16,13 +16,11 @@
 			<h3>GERENCIAMENTO DE PROFISSIONAL</h3>
 			<br />
 		</div>
-		<h:form id="frmmensagem"
-			onkeypress="
-                if (event.keyCode == 13) {
-                    document.getElementById('form:botaoBusca').click();
-                    return false;
-                }">
-
+		<h:form id="frmmensagem">
+			<f:metadata>
+				<f:event type="preRenderView"
+					listener="#{ProfissionalController.getListarProfissional}" />
+			</f:metadata>
 
 			<p:growl id="growl" showDetail="false" />
 			<p:panel id="pnlprincipal" header="">
@@ -43,10 +41,11 @@
 							value="#{ProfissionalController.descricaoBusca}" />
 
 						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							styleClass="btn btn-info" style="height:30px; margin-left:2px; margin-top:10px;"
+							styleClass="btn btn-info"
+							style="height:30px; margin-left:2px; margin-top:10px;"
 							action="#{ProfissionalController.buscarProfissional()}"
 							update=":frmmensagem:tabela, :frmmensagem:growl" />
-						
+
 						<p:commandButton value="Limpar Busca" icon="limpar"
 							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
 							actionListener="#{ProfissionalController.limparDados()}"
@@ -54,10 +53,9 @@
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							actionListener="#{ProfissionalController.limparDados()}"
-							action="/pages/sishosp/cadastroProfissional.faces?faces-redirect=true" icon="add"
-							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
-							<f:setPropertyActionListener value="I"
+							action="#{ProfissionalController.redirectInsert()}" icon="add"
+							style="margin-top: 15px;">
+							<f:setPropertyActionListener value="1"
 								target="#{ProfissionalController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>
@@ -67,7 +65,7 @@
 
 				<p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover"
 					id="tabela" style="margin-top:20px;" resizableColumns="true"
-					value="#{ProfissionalController.listaProfissional}" var="tab"
+					value="#{ProfissionalController.listarProfissional}" var="tab"
 					paginator="true" paginatorPosition="bottom" rows="12">
 
 					<p:column headerText="Cód." style="font-weight:bold;width:5%;">
@@ -77,29 +75,29 @@
 					<p:column headerText="Profissional" style="font-weight:bold;">
 						<h:outputText value="#{tab.descricaoProf}" />
 					</p:column>
-					
+
 					<p:column headerText="Especialidade" style="font-weight:bold;">
 						<h:outputText value="#{tab.especialidade.descEspecialidade}" />
 					</p:column>
-					
+
 					<p:column headerText="CNS" style="font-weight:bold;">
-						<h:outputText value="#{tab.cns}"/>
+						<h:outputText value="#{tab.cns}" />
 					</p:column>
-					
+
 					<p:column headerText="Ativo" style="font-weight:bold;">
-						<h:outputText value="Sim" rendered="#{tab.ativo==true}"/>
-						<h:outputText value="Não" rendered="#{tab.ativo==false}"/>
+						<h:outputText value="Sim" rendered="#{tab.ativo==true}" />
+						<h:outputText value="Não" rendered="#{tab.ativo==false}" />
 					</p:column>
-	
+
 					<p:column headerText="Ações" width="15%">
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroProfissional.faces?faces-redirect=true">
+									action="#{ProfissionalController.redirectEdit()}">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{ProfissionalController.profissional}" />
 
-									<f:setPropertyActionListener value="A"
+									<f:setPropertyActionListener value="2"
 										target="#{ProfissionalController.tipo}" />
 								</p:menuitem>
 

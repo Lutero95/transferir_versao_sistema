@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -28,7 +29,7 @@ public class ProcedimentoController implements Serializable {
 	private List<ProcedimentoBean> listaProcedimentos;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
-	private String tipo;
+	private int tipo;
 	private String cabecalho;
 	ProcedimentoDAO pDao = new ProcedimentoDAO();
 
@@ -36,7 +37,6 @@ public class ProcedimentoController implements Serializable {
 		this.proc = new ProcedimentoBean();
 		this.listaProcedimentos = null;
 		this.descricaoBusca = new String();
-		this.tipo = new String();
 	}
 
 	public void limparDados() throws ProjetoException {
@@ -54,10 +54,9 @@ public class ProcedimentoController implements Serializable {
 		this.proc = proc;
 	}
 
-	public List<ProcedimentoBean> getListaProcedimentos() throws ProjetoException {
-		if (listaProcedimentos == null) {
-			this.listaProcedimentos = pDao.listarProcedimento();
-		}
+	public List<ProcedimentoBean> getListaProcedimentos()
+			throws ProjetoException {
+		this.listaProcedimentos = pDao.listarProcedimento();
 		return listaProcedimentos;
 	}
 
@@ -81,11 +80,11 @@ public class ProcedimentoController implements Serializable {
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	public String getTipo() {
+	public int getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(int tipo) {
 		this.tipo = tipo;
 	}
 
@@ -161,9 +160,9 @@ public class ProcedimentoController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
+		if (this.tipo == 1) {
 			cabecalho = "CADASTRO DE PROCEDIMENTO";
-		} else if (this.tipo.equals("A")) {
+		} else if (this.tipo == 2) {
 			cabecalho = "ALTERAR PROCEDIMENTO";
 		}
 		return cabecalho;
@@ -177,5 +176,29 @@ public class ProcedimentoController implements Serializable {
 			throws ProjetoException {
 		List<ProcedimentoBean> result = pDao.listarProcedimentoBusca(query, 1);
 		return result;
+	}
+	
+	public String redirectInsert() {
+		return "cadastroProcedimento?faces-redirect=true&amp;tipo=" + this.tipo;
+	}
+	
+	public String redirectEdit() {
+		return "cadastroProcedimento?faces-redirect=true&amp;id=" + this.proc.getIdProc()
+				+ "&amp;tipo=" + tipo;
+	}
+	
+	public void getEditProcedimento() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo = Integer.parseInt(params.get("tipo"));
+			this.proc = pDao.listarProcedimentoPorId(id);
+		} else {
+			tipo = Integer.parseInt(params.get("tipo"));
+
+		}
+
 	}
 }

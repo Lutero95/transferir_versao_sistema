@@ -8,13 +8,15 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:composition template="../../template/templategeral.xhtml">
-
+	<f:metadata>
+		<f:viewAction action="#{ProcedimentoController.getEditProcedimento()}" />
+	</f:metadata>
 	<ui:define name="body">
 
 		<h:form id="frmCadProc">
 			<p:panel id="pnlCadProc" header="#{ProcedimentoController.cabecalho}"
 				style="height:auto; width:600px; background-color: #F5F5F5;">
-				<p:growl id="msg" />
+				<p:growl id="message" />
 				<p:panelGrid columns="2" styleClass="semBorda">
 
 					<h:outputLabel value="Descrição do Procedimento: *" />
@@ -24,7 +26,7 @@
 					<p:panelGrid columns="2" styleClass="semBorda">
 						<h:outputLabel value="Código: *" />
 						<p:inputText value="#{ProcedimentoController.proc.codProc}"
-							style="width: 100px"  />
+							style="width: 100px" />
 					</p:panelGrid>
 
 					<p:panelGrid columns="4" styleClass="semBorda">
@@ -67,29 +69,30 @@
 				</p:outputPanel>
 
 				<p:separator></p:separator>
-				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-					<h:commandButton
-						action="#{ProcedimentoController.gravarProcedimento()}"
-						update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
-						value="Cadastrar" styleClass="btn btn-sm btn-success"
-						rendered="#{ProcedimentoController.tipo == 'I'}" />
+				<center>
+					<p:panelGrid columns="3" styleClass="semBorda">
+						<p:commandButton
+							action="#{ProcedimentoController.gravarProcedimento()}"
+							update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
+							value="Gravar" icon="confirmar"
+							rendered="#{ProcedimentoController.tipo == 1}" />
 
+						<p:commandButton
+							action="#{ProcedimentoController.alterarProcedimento()}"
+							update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
+							value="Alterar" icon="alterar-dados"
+							rendered="#{ProcedimentoController.tipo  == 2}" />
 
-					<h:commandButton
-						action="#{ProcedimentoController.alterarProcedimento()}"
-						update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
-						value="Alterar" styleClass="btn btn-info"
-						rendered="#{ProcedimentoController.tipo  == 'A'}" />
+						<p:commandButton value="Voltar" icon="btvoltar"
+							style="width:80px;"
+							action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true" />
 
-				</p:panelGrid>
+					</p:panelGrid>
+				</center>
 			</p:panel>
 
 		</h:form>
-		<h:form>
-			<h:commandButton value="Voltar" styleClass="btn btn-info"
-				action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true">
-			</h:commandButton>
-		</h:form>
+
 	</ui:define>
 </ui:composition>
 </html>

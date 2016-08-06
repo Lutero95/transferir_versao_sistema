@@ -16,13 +16,11 @@
 			<h3>GERENCIAMENTO DE PROCEDIMENTOS</h3>
 			<br />
 		</div>
-		<h:form id="frmmensagem"
-			onkeypress="
-                if (event.keyCode == 13) {
-                    document.getElementById('form:botaoBusca').click();
-                    return false;
-                }">
-
+		<h:form id="frmmensagem">
+			<f:metadata>
+				<f:event type="preRenderView"
+					listener="#{ProcedimentoController.getListaProcedimentos}" />
+			</f:metadata>
 
 			<p:growl id="growl" showDetail="false" />
 			<p:panel id="pnlprincipal" header="">
@@ -43,10 +41,11 @@
 							value="#{ProcedimentoController.descricaoBusca}" />
 
 						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							styleClass="btn btn-info" style="height:30px; margin-left:2px; margin-top:10px;"
+							styleClass="btn btn-info"
+							style="height:30px; margin-left:2px; margin-top:10px;"
 							action="#{ProcedimentoController.buscarProcedimento()}"
 							update=":frmmensagem:tabela, :frmmensagem:growl" />
-						
+
 						<p:commandButton value="Limpar Busca" icon="limpar"
 							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
 							actionListener="#{ProcedimentoController.limparDados()}"
@@ -54,10 +53,9 @@
 						<br />
 
 						<p:commandButton id="btninc" value="Novo"
-							actionListener="#{ProcedimentoController.limparDados()}"
-							action="/pages/sishosp/cadastroProcedimento.faces?faces-redirect=true" icon="add"
-							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
-							<f:setPropertyActionListener value="I"
+							action="#{ProcedimentoController.redirectInsert()}" icon="add"
+							style="margin-top: 15px;">
+							<f:setPropertyActionListener value="1"
 								target="#{ProcedimentoController.tipo}" />
 							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 						</p:commandButton>
@@ -77,16 +75,16 @@
 					<p:column headerText="Nome" style="font-weight:bold;">
 						<h:outputText value="#{tab.nomeProc}" />
 					</p:column>
-					
+
 					<p:column headerText="Ações" width="15%">
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroProcedimento.faces?faces-redirect=true">
+									action="#{ProcedimentoController.redirectEdit()}">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{ProcedimentoController.proc}" />
 
-									<f:setPropertyActionListener value="A"
+									<f:setPropertyActionListener value="2"
 										target="#{ProcedimentoController.tipo}" />
 								</p:menuitem>
 

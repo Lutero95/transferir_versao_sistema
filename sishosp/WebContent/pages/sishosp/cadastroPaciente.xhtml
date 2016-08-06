@@ -13,13 +13,6 @@
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
 
-			<h:form>
-				<h:commandButton value="Voltar"
-					style="position:absolute; left:71%; top:100%;"
-					styleClass="btn btn-info"
-					action="/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true"></h:commandButton>
-			</h:form>
-
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
@@ -293,8 +286,7 @@
 									<div class="col-sm-6">
 										<h:inputText
 											value="#{PacienteController.paciente.endereco.numero}"
-											class="form-control" id="numero"
-											required="true"
+											class="form-control" id="numero" required="true"
 											requiredMessage="é necessario que você informe seu numero"
 											pt:placeholder="Digite aqui seu numero">
 											<f:validateLength minimum="2" maximum="50" />
@@ -871,19 +863,22 @@
 					<p:separator></p:separator>
 					<!-- FIM DO FORMULARIO -->
 					<center>
-					<h:panelGrid columns="2" styleClass="semBorda">
-						<h:commandButton action="#{PacienteController.gravarPaciente()}"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
-							value="Cadastrar" 
-							styleClass="btn btn-sm btn-success"
-							rendered="#{PacienteController.tipo == 'I'}" />
+						<h:panelGrid columns="2" styleClass="semBorda">
+							<h:commandButton action="#{PacienteController.gravarPaciente()}"
+								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
+								value="Cadastrar" styleClass="btn btn-sm btn-success"
+								rendered="#{PacienteController.tipo == 'I'}" />
 
 
-						<h:commandButton action="#{PacienteController.alterarPaciente()}"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
-							value="Alterar" styleClass="btn btn-info"
-							rendered="#{PacienteController.tipo == 'A'}" />
-					</h:panelGrid>
+							<h:commandButton action="#{PacienteController.alterarPaciente()}"
+								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
+								value="Alterar" styleClass="btn btn-info"
+								rendered="#{PacienteController.tipo == 'A'}" />
+							<h:commandButton value="Voltar"
+								style="position:absolute; left:71%; top:100%;"
+								styleClass="btn btn-info"
+								action="/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true"></h:commandButton>
+						</h:panelGrid>
 					</center>
 				</p:panel>
 
