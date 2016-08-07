@@ -6,6 +6,7 @@ import br.gov.al.maceio.sishosp.acl.model.Menu;
 import br.gov.al.maceio.sishosp.acl.model.Perfil;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
+import br.gov.al.maceio.sishosp.acl.dao.FuncionalidadeDAO;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.PerfilDAO;
 import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
@@ -610,6 +611,12 @@ public class PerfilMB implements Serializable {
 	}
 
 	public List<Funcionalidade> getListaFuncionalidadesSourceEdit() {
+		  if(listaFuncionalidadesSourceEdit == null) {
+			  FuncionalidadeDAO mdao = new FuncionalidadeDAO();
+	            System.out.println("l1 = " + perfilSelecionado);
+	            listaFuncionalidadesSourceEdit = mdao.listarFuncionalidadeItemSourcerEdit(Integer.parseInt(perfilSelecionado));
+	        }
+		
 		return listaFuncionalidadesSourceEdit;
 	}
 
@@ -619,6 +626,11 @@ public class PerfilMB implements Serializable {
 	}
 
 	public List<Funcionalidade> getListaFuncionalidadesTargetEdit() {
+	      if(listaFuncionalidadesTargetEdit == null) {
+	    	  FuncionalidadeDAO mdao = new FuncionalidadeDAO();
+	            System.out.println("l2 = " + perfilSelecionado);
+	            listaFuncionalidadesTargetEdit = mdao.listarFuncionalidadeItemTargetEdit(Integer.parseInt(perfilSelecionado));
+	        }
 		return listaFuncionalidadesTargetEdit;
 	}
 

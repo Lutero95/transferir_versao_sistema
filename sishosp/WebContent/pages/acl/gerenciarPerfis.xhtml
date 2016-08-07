@@ -244,7 +244,7 @@
                                 <p:panelGrid styleClass="semBorda" columns="2" >                                    
                                     <p:pickList id="pickFuncionalidade" value="#{perfilMB.listaFuncionalidadesDualEdit}" 
                                         var="funcionalidade" 
-                                        itemLabel="#{funcionalidade.descricao}" 
+                                        itemLabel="#{funcionalidade.descricao} - #{funcionalidade.descSistema} (#{funcionalidade.siglaSistema})" 
                                         itemValue="#{funcionalidade}" showCheckbox="true" 
                                         showSourceFilter="true" showTargetFilter="true" 
                                         filterMatchMode="contains" converter="conPickListFuncionalidade">
