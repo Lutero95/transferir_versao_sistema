@@ -221,6 +221,7 @@ public class EquipeDAO {
 				equipe = new EquipeBean();
 				equipe.setCodEquipe(rs.getInt("id_equipe"));
 				equipe.setDescEquipe(rs.getString("descequipe"));
+				equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs.getInt("id_equipe")));
 				equipe.setCodEmpresa(0);//COD EMPRESA ?
 			}
 			

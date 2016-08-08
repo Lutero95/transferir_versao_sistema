@@ -149,7 +149,9 @@ public class CboController implements Serializable{
 	}
 
 	public void buscarCbo() throws ProjetoException {
+		System.out.println("buscar cbo");
 		this.listaCbo = cDao.listarCboBusca(descricaoBusca, tipoBuscar);
+		System.out.println("tam"+listaCbo.size());
 	}
 
 	public Integer getTipoBuscar() {

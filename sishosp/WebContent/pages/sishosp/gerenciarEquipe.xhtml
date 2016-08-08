@@ -89,11 +89,11 @@
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroEquipe.faces?faces-redirect=true">
+									action="#{EquipeController.redirectEdit()}">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{EquipeController.equipe}" />
 
-									<f:setPropertyActionListener value="A"
+									<f:setPropertyActionListener value="2"
 										target="#{EquipeController.tipo}" />
 								</p:menuitem>
 

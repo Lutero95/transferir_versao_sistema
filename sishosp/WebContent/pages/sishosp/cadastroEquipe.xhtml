@@ -8,6 +8,7 @@
 <ui:composition template="../../template/templategeral.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{EquipeController.getEditEquipe()}" />
+
 	</f:metadata>
 
 	<ui:define name="body">
@@ -38,11 +39,11 @@
 							<div class="form-group">
 								<h:outputLabel value="Profissional: "
 									styleClass="col-sm-3 control-label" />
-								<p:commandButton
-									style="position:absolute; top:130px; left:162px;"
-									icon="ui-icon-plus" onclick="PF('dlgConsuProfE').show();" />
+								<p:commandButton process="@this"
+									style="position:absolute; top:130px; left:162px;" action="#{ProfissionalController.ListarTodosProfissionais()}"
+									icon="ui-icon-plus" oncomplete="PF('dlgConsuProfE').show();" update=":formConsuProfE:dtTipoAt"/>
 								<div class="col-sm-6">
-
+					
 									<p:dataTable emptyMessage="Sem Dados"
 										styleClass="table table-hover" id="tabela"
 										style="margin-top:20px;"
@@ -71,6 +72,7 @@
 										</p:column>
 
 									</p:dataTable>
+
 								</div>
 							</div>
 
@@ -81,9 +83,9 @@
 				</p:panel>
 				<!-- FIM DO FORMULARIO -->
 				<center>
-					<p:commandButton action="#{EquipeController.gravarEquipe()}" style="width:85px"
-						update=":formCADU:message,:formCADU:pnlCadEquipe"
-						value="Incluir"  icon="podeGravar"/>
+					<p:commandButton action="#{EquipeController.gravarEquipe()}" style="width:85px" icon="podeGravar"
+						update=":formCADU:message,:formCADU:pnlCadEquipe" rendered="#{EquipeController.tipo  == 1}" 
+						value="Incluir"  />
 
 
 					<p:commandButton style="width:85px" icon="podeGravar" action="#{EquipeController.alterarEquipe()}"
@@ -101,6 +103,7 @@
 		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProfE"
 			modal="true" width="550px">
 			<h:form id="formConsuProfE">
+			
 				<p:dataTable value="#{ProfissionalController.listaProfissional}"
 					id="dtTipoAt" resizableColumns="true" var="profi"
 					emptyMessage="NÃ£o existe nenhum tipo cadastrado!">

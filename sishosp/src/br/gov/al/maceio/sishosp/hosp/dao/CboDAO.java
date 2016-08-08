@@ -112,6 +112,7 @@ public class CboDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
+				System.out.println("next");
 				CboBean cbo = new CboBean();
 				cbo.setCodCbo(rs.getInt("id"));
 				cbo.setDescCbo(rs.getString("descricao"));

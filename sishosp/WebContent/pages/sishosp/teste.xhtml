@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<title>Project Name</title>
+	<meta name="author" content="The Author"></meta>
+	<link rel="styleSheet" type="text/css" href="../../css/estilo.css" />
+</h:head>
+<h:body style="padding: 60px;">
+<h:form>
+<b:messages></b:messages>
+					<b:inputText id="campoBuscanome" required="true" requiredMessage="Informe a descrição"
+							style="margin-left:10px;" size="35"
+							value="#{CboController.descricaoBusca}" />
+<b:commandButton ajax="true" value="Buscar" icon="search" action="#{CboController.buscarCbo()}"  
+							/>
+</h:form>
+	<p:ajaxStatus onstart="PF('statusDialog').show();"
+		onsuccess="PF('statusDialog').hide();" />
+	<p:dialog id="myDialogId" styleClass="process_msg" modal="true"
+		showHeader="true" header="Processando..."
+		style="width:40px; height:20px; border:0;" resizable="false"
+		widgetVar="statusDialog" draggable="false" closable="false">
+		<center>
+			<p:graphicImage value="../../imgs/ajax_loading_bar.gif" />
+		</center>
+	</p:dialog>
+
+	<b:navBar brand="Ehosp" brandHref="#" fixed="top" inverse="true">
+		<h:form id="mainFormtempSist">
+			<ui:include src="/pages/comum/menux.xhtml" />
+
+		</h:form>
+
+	</b:navBar>
+	<b:container>
+
+
+
+		<ui:insert name="body" />
+
+	</b:container>
+
+</h:body>
+</html>

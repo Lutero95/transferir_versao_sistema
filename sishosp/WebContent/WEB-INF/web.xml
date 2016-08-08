@@ -13,6 +13,10 @@
     <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
     <param-value>false</param-value>
   </context-param>
+   <context-param>
+    <param-name>primefaces.THEME</param-name>
+    <param-value>none</param-value>
+  </context-param>
   <context-param>
     <param-name>javax.faces.PROJECT_STAGE</param-name>
     <param-value>Development</param-value>
@@ -34,7 +38,19 @@
     <param-name>timezone3</param-name>
     <param-value>GMT-3</param-value>
   </context-param> 
- 
+<context-param>
+    <param-name>BootsFaces_THEME</param-name>
+    <param-value>cerulean</param-value>
+</context-param>
+<context-param>
+    <param-name>BootsFaces_USETHEME</param-name>
+    <param-value>true</param-value>
+</context-param>
+
+<context-param>
+   <param-name>net.bootsfaces.get_fontawesome_from_cdn</param-name>
+   <param-value>false</param-value>
+</context-param>
 
   <session-config>
     <session-timeout>60000000</session-timeout>

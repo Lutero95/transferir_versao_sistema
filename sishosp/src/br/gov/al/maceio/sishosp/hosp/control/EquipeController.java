@@ -103,6 +103,7 @@ public class EquipeController implements Serializable {
 			System.out.println("tipo do walter"+tipo);
 			EquipeDAO cDao = new EquipeDAO();
 			this.equipe = cDao.buscarEquipePorID(id);
+			
 		}
 		else{
 			System.out.println("tipo sera"+tipo);
@@ -122,13 +123,13 @@ public class EquipeController implements Serializable {
 	public String gravarEquipe() throws ProjetoException, SQLException {
 		if (this.equipe.getProfissionais().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário no mínimo um profissional na equipe!", "Erro");
+					"ï¿½ necessï¿½rio no mï¿½nimo um profissional na equipe!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
 		if (this.equipe.getDescEquipe().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Descrição obrigatória!", "Erro");
+					"Descriï¿½ï¿½o obrigatï¿½ria!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
@@ -155,13 +156,13 @@ public class EquipeController implements Serializable {
 	public String alterarEquipe() throws ProjetoException {
 		if (this.equipe.getProfissionais().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário no mínimo um profissional na equipe!", "Erro");
+					"ï¿½ necessï¿½rio no mï¿½nimo um profissional na equipe!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
 		if (this.equipe.getDescEquipe().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Descrição obrigatória!", "Erro");
+					"Descriï¿½ï¿½o obrigatï¿½ria!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}

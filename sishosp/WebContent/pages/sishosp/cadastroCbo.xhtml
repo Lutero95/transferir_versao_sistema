@@ -10,60 +10,57 @@
 		<f:viewAction action="#{CboController.getEditCbo()}" />
 	</f:metadata>
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
+<div class="panel panel-default">
+				<div class="panel-body">
 
-			<h:form>
-
-				<p:commandButton value="Voltar"
-					style="position:absolute; left:71%; top:100%;"
-					action="/pages/sishosp/gerenciarCbo.faces?faces-redirect=true">
-				</p:commandButton>
-			</h:form>
-
+<div class="ui-fluid" >
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
-				<p:panel id="pnlCadCbo" header="#{CboController.cabecalho}"
-					style="height:auto; width:850px; background-color: #F5F5F5;">
-					<p:tabView activeIndex="#{CboController.abaAtiva}"
-						style="height:auto; width:800px">
-						<p:tab title="DADOS CBO">
+	<div class="sub-header">
+						<h:panelGroup>
+								<h4>#{CboController.cabecalho}</h4>
+						</h:panelGroup>  
+						
+						<hr/>
+					</div>					
+					
 							<div class="form-group">
-								<h:outputLabel value="Descrição do Cbo: "
+								<h:outputLabel value="Descrição"
 									styleClass="col-sm-3 control-label" />
 								<div class="col-sm-6">
 									<h:inputText value="#{CboController.cbo.descCbo}"
-										class="form-control" required="true"
+										class="form-control" required="true" id="indesc"
 										requiredMessage="Descrição obrigatória!" />
 
 								</div>
 							</div>
-						</p:tab>
 
-					</p:tabView>
-
-				</p:panel>
+				
 				<!-- FIM DO FORMULARIO -->
-				<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-					<p:commandButton action="#{CboController.gravarCbo()}"
-						update=":formCADU:message,:formCADU:pnlCadCbo" value="Cadastrar"
-						styleClass="btn btn-sm btn-success"
+				<center>
+					<p:commandButton action="#{CboController.gravarCbo()}"  style="width:85px" icon="podeGravar"
+						update=":formCADU:message,:formCADU:indesc" value="Cadastrar"
+						
 						rendered="#{CboController.tipo == 1}" />
 
 
-					<p:commandButton action="#{CboController.alterarCbo()}"
-						update=":formCADU:message,:formCADU:pnlCadCbo" value="Alterar"
+					<p:commandButton action="#{CboController.alterarCbo()}" icon="podeGravar" style="width:85px" 
+						update=":formCADU:message,:formCADU:indesc" value="Alterar"
 						rendered="#{CboController.tipo  == 2}" />
+					<p:commandButton value="Voltar" icon="btvoltar"
+						style="width:85px;margin-left:10px" process="@this"
+						action="/pages/sishosp/gerenciarCbo.faces?faces-redirect=true">
+					</p:commandButton>
 
-
-				</p:panelGrid>
+				</center>
 
 
 
 			</h:form>
 		</div>
-
+</div>
+</div>
 	</ui:define>
 </ui:composition>
 </html>
