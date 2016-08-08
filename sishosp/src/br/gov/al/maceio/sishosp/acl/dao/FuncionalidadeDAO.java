@@ -895,6 +895,95 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
+    public ArrayList<Funcionalidade> listarFuncionalidadeItemSourcerEdit(Integer idPerfil) {
+
+        String sql = "select fu.id, fu.descricao, fu.desc_pagina, fu.diretorio, fu.extensao, fu.imagem, fu.ativo "
+        		+ "from acl.funcionalidade fu "
+        		+ "join acl.perm_geral pg on pg.id_funcionalidade = fu.id "
+        		+ "join acl.permissao pm on pm.id = pg.id_permissao "
+        		+ "where fu.id not in(select fu.id from acl.perm_perfil pp "
+        		+ "join acl.perfil pf on pf.id = pp.id_perfil "
+        		+ "join acl.permissao pm on pm.id = pp.id_permissao "
+        		+ "join acl.perm_geral pg on pg.id_permissao = pm.id where pf.id = ?) "
+        		+ "order by fu.descricao";
+
+        ArrayList<Funcionalidade> lista = new ArrayList();
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, idPerfil);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {            
+            	Funcionalidade f = new Funcionalidade();
+                f.setId(rs.getLong("id"));
+                f.setDescricao(rs.getString("descricao"));
+                f.setDiretorio(rs.getString("diretorio"));
+                f.setDescPagina(rs.getString("desc_pagina"));
+                f.setExtensao(rs.getString("extensao"));
+                f.setImagem(rs.getString("imagem"));
+                f.setAtivo(rs.getBoolean("ativo"));
+                // f.setIdSistema(rs.getInt("id_sis"));
+                //f.setDescSistema(rs.getString("desc_sis"));
+                //f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+                lista.add(f);
+            }
+        } catch(SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return lista;
+    }
+    // LISTA OK
+    public ArrayList<Funcionalidade> listarFuncionalidadeItemTargetEdit(Integer idPerfil) {
+
+        String sql = "select fu.id, fu.descricao, fu.desc_pagina, fu.diretorio, fu.extensao, fu.imagem, fu.ativo "
+        		+ "from acl.funcionalidade fu "
+        		+ "join acl.perm_geral pg on pg.id_funcionalidade = fu.id "
+        		+ "join acl.permissao pm on pm.id = pg.id_permissao "
+        		+ "join acl.perm_perfil pp on pp.id_permissao = pg.id_permissao "
+        		+ "join acl.perfil pf on pf.id = pp.id_perfil "
+        		+ "where pf.id = ? order by fu.descricao";
+             
+        ArrayList<Funcionalidade> lista = new ArrayList<>();
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, idPerfil);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {            
+               	Funcionalidade f = new Funcionalidade();
+                f.setId(rs.getLong("id"));
+                f.setDescricao(rs.getString("descricao"));
+                f.setDiretorio(rs.getString("diretorio"));
+                f.setDescPagina(rs.getString("desc_pagina"));
+                f.setExtensao(rs.getString("extensao"));
+                f.setImagem(rs.getString("imagem"));
+                f.setAtivo(rs.getBoolean("ativo"));
+                f.setIdSistema(rs.getInt("id_sis"));
+                f.setDescSistema(rs.getString("desc_sis"));
+                f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+                lista.add(f);
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return lista;
+    }
     
     public ArrayList<Menu> listarMenusPerfil(Integer idPerfil) {
 
