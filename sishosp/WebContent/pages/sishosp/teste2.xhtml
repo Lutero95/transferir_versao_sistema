@@ -9,7 +9,13 @@
 	<title>Project Name</title>
 	<meta name="author" content="The Author"></meta>
 	<link rel="styleSheet" type="text/css" href="../../css/estilo.css" />
+<link rel="styleSheet" type="text/css" href="../../css/bootstrap.min.css" />
+	<link rel="styleSheet" type="text/css" href="../../css/dataTables.bootstrap.min.css" />
+<link rel="styleSheet" type="text/css" href="../../css/datatable.css" />
+ 
 
+	
+	 
 </h:head>
 <h:body style="padding: 60px;">
 
@@ -34,7 +40,7 @@
 
 
 
-				<b:dataTable   styleClass="table table-striped table-bordered" paginated="false" id="tabela" value="#{CboController.listaCbo}" var="tab" responsive="true" lang="es">
+				<b:dataTable cu paginated="false" id="tabela" value="#{CboController.listaCbo}" var="tab" responsive="true" lang="es">
 
 					<b:dataTableColumn label="Código">
 						<h:outputText value="#{tab.codCbo}" />

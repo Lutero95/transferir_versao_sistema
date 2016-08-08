@@ -1,15 +1,34 @@
 @CHARSET "ISO-8859-1";
 
+.toolbar {
+    float: left !important;
+}
 .dataTables_filter {
-   float: left;
+   float: left !important;
    text-align: right;
    
+}
+
+.dataTables_paginate { 
+           float: right; 
+           text-align: left; 
+        } 
+
+
+#table_div_id.dataTables_filter {
+  float: left;
+  text-align: right;
 }
 
 #table_div_id.dataTables_filter {
   float: left;
   text-align: right;
 }
+
+.datatables_filter { 
+   float: left; 
+   text-align: left; 
+} 
 
 * {
 	font-size: 12px !important;

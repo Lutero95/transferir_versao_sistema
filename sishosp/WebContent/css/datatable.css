@@ -1,0 +1,14 @@
+/*
+    Author: Emerson Gama
+    Since: 01/07/2015
+*/
+
+/*.ui-datatable tr.ui-datatable-even:hover, .ui-datatable tr.ui-datatable-odd:hover {
+    background: #78BCFF !important;
+}*/
+
+.ui-datatable .ui-state-highlight {
+	/*color: white !important;
+    background: #704214 !important;*/
+}
+
