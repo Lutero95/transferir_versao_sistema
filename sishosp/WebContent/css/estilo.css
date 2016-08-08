@@ -1,5 +1,16 @@
 @CHARSET "ISO-8859-1";
 
+.dataTables_filter {
+   float: left;
+   text-align: right;
+   
+}
+
+#table_div_id.dataTables_filter {
+  float: left;
+  text-align: right;
+}
+
 * {
 	font-size: 12px !important;
 }

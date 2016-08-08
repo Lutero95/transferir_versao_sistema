@@ -9,13 +9,7 @@
 	<title>Project Name</title>
 	<meta name="author" content="The Author"></meta>
 	<link rel="styleSheet" type="text/css" href="../../css/estilo.css" />
-	 <script type="text/javascript">
-	 $(document).ready(function() {
-		    $('#example').DataTable( {
-		        "dom": '<"top"i>rt<"bottom"flp><"clear">'
-		    } );
-		} );
-</script>
+
 </h:head>
 <h:body style="padding: 60px;">
 
@@ -40,7 +34,7 @@
 
 
 
-				<b:dataTable   styleClass="table table-striped table-bordered" searching="true" paginated="false"  id="tabela" value="#{CboController.listaCbo}" var="tab" responsive="true" lang="es">
+				<b:dataTable   styleClass="table table-striped table-bordered" paginated="false" id="tabela" value="#{CboController.listaCbo}" var="tab" responsive="true" lang="es">
 
 					<b:dataTableColumn label="Código">
 						<h:outputText value="#{tab.codCbo}" />
