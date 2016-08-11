@@ -8,17 +8,16 @@
 <h:head>
 	<title>Project Name</title>
 	<meta name="author" content="The Author"></meta>
-	<link rel="styleSheet" type="text/css" href="../../css/estilo.css" />
+<!-- Última versão CSS compilada e minificada -->
+<link rel="stylesheet" href="../../css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
+
+<!-- Tema opcional -->
+<link rel="stylesheet" href="../../css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
+
+<!-- Última versão JavaScript compilada e minificada -->
+<script src="../../js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 </h:head>
 <h:body style="padding: 60px;">
-<h:form>
-<b:messages></b:messages>
-					<b:inputText id="campoBuscanome" required="true" requiredMessage="Informe a descrição"
-							style="margin-left:10px;" size="35"
-							value="#{CboController.descricaoBusca}" />
-<b:commandButton ajax="true" value="Buscar" icon="search" action="#{CboController.buscarCbo()}"  
-							/>
-</h:form>
 	<p:ajaxStatus onstart="PF('statusDialog').show();"
 		onsuccess="PF('statusDialog').hide();" />
 	<p:dialog id="myDialogId" styleClass="process_msg" modal="true"
@@ -30,7 +29,7 @@
 		</center>
 	</p:dialog>
 
-	<b:navBar brand="Ehosp" brandHref="#" fixed="top" inverse="true">
+	<b:navBar  brand="Ehosp" brandHref="#" fixed="top" inverse="false">
 		<h:form id="mainFormtempSist">
 			<ui:include src="/pages/comum/menux.xhtml" />
 

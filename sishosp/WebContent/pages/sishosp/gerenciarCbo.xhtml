@@ -15,48 +15,11 @@
 						<p:separator/>
 
 		<h:form id="frmmensagem">
-<b:messages/>
-<p:growl id="growl" showDetail="false" />
 			<f:metadata>
 				<f:event type="preRenderView" listener="#{CboController.getListarCbo}" />
 			</f:metadata>
-				<p:panelGrid columns="7" styleClass="semBorda" 
-					style="font-size:12px !important;">
 
-						<p:outputLabel value="Pesquisar por: " />
-						<p:selectOneMenu value="#{CboController.tipoBuscar}"
-							required="true"
-							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
-							requiredMessage="Informe o diretório da página.">
-							<f:selectItem itemLabel="Descrição" itemValue="1" />
-							<p:ajax event="change" />
-						</p:selectOneMenu>
-
-						<b:inputText id="campoBuscanome" required="true" requiredMessage="Informe a descrição"
-							style="margin-left:10px;" size="35"
-							value="#{CboController.descricaoBusca}" />
-<b:commandButton ajax="true" value="Buscar" icon="search" action="#{CboController.buscarCbo()}"  
-							/>
-						
-						
-					
-						<br/>
-
-						<b:commandButton id="btninc" value="Novo"
-							action="#{CboController.redirectInsert()}"
-							 icon="add"
-														 style="margin-top: 15px;">
-							<f:setPropertyActionListener value="1"
-								target="#{CboController.tipo}" />
-							
-						</b:commandButton>
-
-						
-
-
-				</p:panelGrid>
-
-				<b:dataTable  id="tabela" value="#{CboController.listaCbo}" var="tab" responsive="true" >
+				<b:dataTable  id="tabela" value="#{CboController.listaCbo}" var="tab"  >
 
 					<b:dataTableColumn label="Código">
 						<h:outputText value="#{tab.codCbo}" />
@@ -105,7 +68,7 @@
 					<p:commandButton value="Sim"
 						action="#{CboController.excluirCbo()}"
 						icon="ui-icon-check" style="font-size:14px;"
-						update=":frmmensagem:tabela, :frmmensagem:growl">
+						update=":frmmensagem:tabela">
 					</p:commandButton>
 					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
 						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
