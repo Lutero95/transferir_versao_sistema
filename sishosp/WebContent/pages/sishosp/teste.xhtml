@@ -8,14 +8,7 @@
 <h:head>
 	<title>Project Name</title>
 	<meta name="author" content="The Author"></meta>
-<!-- Última versão CSS compilada e minificada -->
-<link rel="stylesheet" href="../../css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
 
-<!-- Tema opcional -->
-<link rel="stylesheet" href="../../css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
-
-<!-- Última versão JavaScript compilada e minificada -->
-<script src="../../js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 </h:head>
 <h:body style="padding: 60px;">
 	<p:ajaxStatus onstart="PF('statusDialog').show();"
@@ -29,7 +22,7 @@
 		</center>
 	</p:dialog>
 
-	<b:navBar  brand="Ehosp" brandHref="#" fixed="top" inverse="false">
+	<b:navBar  brand="Ehosp" brandHref="#" fixed="top" inverse="true">
 		<h:form id="mainFormtempSist">
 			<ui:include src="/pages/comum/menux.xhtml" />
 

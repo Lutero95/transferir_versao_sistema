@@ -8,41 +8,21 @@
 <h:head>
 	<title>Project Name</title>
 	<meta name="author" content="The Author"></meta>
-	<link rel="styleSheet" type="text/css" href="../../css/estilo.css" />
-<link rel="styleSheet" type="text/css" href="../../css/bootstrap.min.css" />
-	<link rel="styleSheet" type="text/css" href="../../css/dataTables.bootstrap.min.css" />
-<link rel="styleSheet" type="text/css" href="../../css/datatable.css" />
+
  
 
 	
 	 
 </h:head>
 <h:body style="padding: 60px;">
-
-		<h:form id="frmmensagem">
-<b:messages/>
-<p:growl id="growl" showDetail="false" />
+	<h:form id="frmmensagem">
 			<f:metadata>
 				<f:event type="preRenderView" listener="#{CboController.getListarCbo}" />
 			</f:metadata>
-						<b:commandButton id="btninc" value="Novo" look="primary"
-							action="#{CboController.redirectInsert()}"
-							 icon="add"
-														 style="margin-top: 15px;">
-							<f:setPropertyActionListener value="1"
-								target="#{CboController.tipo}" />
-							
-						</b:commandButton>
-						<p:separator/>
 
-						
+				<b:dataTable  id="tabela" value="#{CboController.listaCbo}" var="tab"  lang="es">
 
-
-
-
-				<b:dataTable id="tabela" value="#{CboController.listaCbo}" var="tab" responsive="true" lang="es">
-
-					<b:dataTableColumn  label="Código">
+					<b:dataTableColumn label="Código">
 						<h:outputText value="#{tab.codCbo}" />
 					</b:dataTableColumn>
 
@@ -51,78 +31,17 @@
 					</b:dataTableColumn>
 					
 					<b:dataTableColumn label="Ação">
-						<center>
-							<p:splitButton icon="confirmar">
-								<p:menuitem value="Alterar" icon="alterar-dados"
+					<p:commandButton id="oi" value="alt" icon="alterar-dados" process="@this"
 									action="#{CboController.redirectEdit()}">
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{CboController.cbo}" />
-
-									<f:setPropertyActionListener value="2"
-										target="#{CboController.tipo}" />
-								</p:menuitem>
-
-								<p:menuitem value="Excluir" icon="trash"
-									onclick="PF('dialogAtencao').show()">
-
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{CboController.cbo}" />
-								</p:menuitem>
-							</p:splitButton>
-						</center>
+									</p:commandButton>
+						
 </b:dataTableColumn>
 				</b:dataTable>
 
 		</h:form>
 
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
-			resizable="false">
+	
 
-			<h:form id="dlgexcluir">
-				<h:panelGrid columns="1">
-
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						esse cbo?</div>
-
-				</h:panelGrid>
-				<center>
-					<p:commandButton value="Sim"
-						action="#{CboController.excluirCbo()}"
-						icon="ui-icon-check" style="font-size:14px;"
-						update=":frmmensagem:tabela, :frmmensagem:growl">
-					</p:commandButton>
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
-
-				</center>
-			</h:form>
-		</p:dialog>
-
-	<p:ajaxStatus onstart="PF('statusDialog').show();"
-		onsuccess="PF('statusDialog').hide();" />
-	<p:dialog id="myDialogId" styleClass="process_msg" modal="true"
-		showHeader="true" header="Processando..."
-		style="width:40px; height:20px; border:0;" resizable="false"
-		widgetVar="statusDialog" draggable="false" closable="false">
-		<center>
-			<p:graphicImage value="../../imgs/ajax_loading_bar.gif" />
-		</center>
-	</p:dialog>
-
-	<b:navBar brand="Ehosp" brandHref="#" fixed="top" inverse="true">
-		<h:form id="mainFormtempSist">
-			<ui:include src="/pages/comum/menux.xhtml" />
-
-		</h:form>
-
-	</b:navBar>
-	<b:container>
-
-
-
-		<ui:insert name="body" />
-
-	</b:container>
 
 </h:body>
 </html>

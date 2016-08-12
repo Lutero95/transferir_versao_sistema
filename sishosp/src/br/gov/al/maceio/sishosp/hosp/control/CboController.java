@@ -43,6 +43,7 @@ public class CboController implements Serializable{
 	}
 	
 	public String redirectEdit() {
+		System.out.println("edit");
 		return "cadastroCbo?faces-redirect=true&amp;id=" + this.cbo.getCodCbo()+"&amp;tipo="+tipo;
 	}	
 	
@@ -138,7 +139,7 @@ public class CboController implements Serializable{
 	}
 
 	public List<CboBean> getListarCbo() throws ProjetoException {
-		
+		System.out.println("lst cbo");
 			listaCbo = cDao.listarCbo();
 	
 		return listaCbo;
