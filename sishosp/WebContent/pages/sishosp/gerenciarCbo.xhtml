@@ -16,48 +16,49 @@
 
 		<h:form id="frmmensagem">
 			<f:metadata>
-				<f:event type="preRenderView" listener="#{CboController.getListarCbo}" />
+				<f:viewAction action="#{CboController.getListarCbo}" />
 			</f:metadata>
+  <p:dataTable id="tabela" var="tab" value="#{CboController.listaCbo}" widgetVar="tabcbo" 
+                 emptyMessage="No cars found with given criteria" filteredValue="#{CboController.listaCboFiltrada}">
+                         <f:facet name="header">
+            <p:outputPanel>
+                <h:outputText value="Busca:" style="margin-left:-80%"/>
+                <p:inputText id="globalFilter" onkeyup="PF('tabcbo').filter()" style="width:150px"/>
+            </p:outputPanel>
+            
+            
+        </f:facet>
+         <p:column  filterBy="#{tab.codCbo}"   headerText="Model" filterMatchMode="contains">
+            <h:outputText value="#{tab.codCbo}" />
+        </p:column>
+        
+         <p:column  filterBy="#{tab.descCbo}" headerText="Model" filterMatchMode="contains">
+            <h:outputText value="#{tab.descCbo}" />
+        </p:column>
+                 <p:column  headerText="Model" >
+        
 
-				<b:dataTable  id="tabela" value="#{CboController.listaCbo}" var="tab"  lang="es">
-
-					<b:dataTableColumn label="Código">
-						<h:outputText value="#{tab.codCbo}" />
-					</b:dataTableColumn>
-
-					<b:dataTableColumn label="Descrição">
-						<h:outputText value="#{tab.descCbo}" />
-					</b:dataTableColumn>
-					
-					<b:dataTableColumn label="Ação">
-					<b:commandButton value="alt" icon="alterar-dados" process="@this"
+        					<b:commandButton tooltip="Alterar" icon="glyphicon-edit"  
 									action="#{CboController.redirectEdit()}">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{CboController.cbo}" />
 
 									<f:setPropertyActionListener value="2"
 										target="#{CboController.tipo}" /></b:commandButton>
-						<center>
-							<p:splitButton icon="confirmar">
-								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="#{CboController.redirectEdit()}">
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{CboController.cbo}" />
-
-									<f:setPropertyActionListener value="2"
-										target="#{CboController.tipo}" />
-								</p:menuitem>
-
-								<p:menuitem value="Excluir" icon="trash"
+										
+										<b:commandButton tooltip="Excluir" icon="glyphicon-trash" style="margin-left:10px"
 									onclick="PF('dialogAtencao').show()">
 
-									<f:setPropertyActionListener value="#{tab}"
+<f:setPropertyActionListener value="#{tab}"
 										target="#{CboController.cbo}" />
-								</p:menuitem>
-							</p:splitButton>
-						</center>
-</b:dataTableColumn>
-				</b:dataTable>
+								</b:commandButton>
+										
+</p:column>        
+        </p:dataTable>
+        
+
+
+
 
 		</h:form>
 

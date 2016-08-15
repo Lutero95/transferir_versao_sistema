@@ -1,0 +1,94 @@
+	/*Titulo*/
+	.ui-widget-header {
+  	    color: black !important;
+    	
+	}
+	
+	/*Font*/
+	
+	.ui-widget-content {
+   		 color: #060606 !important;
+   		 font-size: 12px;
+   		/* font-family: verdana;*/
+	}
+	
+	.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+	    color: #060606  !important;
+	    
+	}
+	
+	
+	Icon
+	.ui-state-default .ui-icon{
+		background-image: url("/beautyclinic/javax.faces.resource/images/ui-icons_222222_256x240.png.faces?ln=primefaces-smoothness") !important;	
+	}
+	.ui-icon {
+   		 background-image: url("/beautyclinic/javax.faces.resource/images/ui-icons_222222_256x240.png.faces?ln=primefaces-smoothness") !important;
+	}
+	
+	/*Button*/
+	/*.ui-button:hover  {
+		background: #DB4865 url("/beautyclinic/javax.faces.resource/images/ui-bg_diagonals-small_40_db4865_40x40.png.faces?ln=primefaces-hot-sneaks") 50% 50% repeat !important;
+		color: #fff !important;
+	}
+	
+	.ui-button:focus  {
+		background: #DB4865 url("/beautyclinic/javax.faces.resource/images/ui-bg_diagonals-small_50_ff3853_40x40.png.faces?ln=primefaces-hot-sneaks") 50% 50% repeat !important;
+		color: #fff !important;
+	}
+	/*spinner*/
+	/*.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+   	    background: #ea93a4 !important;
+   	    
+	}
+	
+	.ui-selectonemenu-trigger:hover {
+	 	background: #ea93a4 !important;
+	}
+	.ui-selectonemenu-trigger:focus {
+	 	background: #ea93a4 !important;
+	}
+		
+	
+	/*navbar*/
+	.ui-menubar .ui-menuitem:hover {
+  		background: #DB4865 url("/beautyclinic/javax.faces.resource/images/ui-bg_diagonals-small_40_db4865_40x40.png.faces?ln=primefaces-hot-sneaks") 50% 50% repeat !important;
+	}
+	.ui-menubar .ui-menuitem:focus {
+  		background: #DB4865 url("/beautyclinic/javax.faces.resource/images/ui-bg_diagonals-small_40_db4865_40x40.png.faces?ln=primefaces-hot-sneaks") 50% 50% repeat !important;
+	}
+	.ui-menubar .ui-menu-child .ui-menuitem-link:hover {
+   		background: #DB4865 url("/beautyclinic/javax.faces.resource/images/ui-bg_diagonals-small_40_db4865_40x40.png.faces?ln=primefaces-hot-sneaks") 50% 50% repeat !important;	
+	}
+	.ui-menubar .ui-state-hover {
+   		/*background: #DB4865 url("/beautyclinic/javax.faces.resource/images/ui-bg_diagonals-small_40_db4865_40x40.png.faces?ln=primefaces-hot-sneaks") 50% 50% repeat !important;*/
+		background:  rgba(0, 0, 0, 0.20) !important;
+	}
+	
+	/*Modal*/
+	.ui-widget-overlay {
+   	   	background: #DB4865 url("/beautyclinic/javax.faces.resource/images/ui-bg_diagonals-small_40_db4865_40x40.png.faces?ln=primefaces-hot-sneaks") 50% 50% repeat !important;	;
+   	   	opacity: 0.4;
+    }
+	
+	/*panel*/
+	
+	.ui-tabs .ui-tabs-panel{
+		background: #FFEAF2  !important;
+	}
+	
+	/*Imput*/
+	.form-control{
+		height: 26px !important;;
+	}
+
+	/*Table*/
+	.ui-datatable .ui-state-highlight {
+   		 color: white !important;
+   		 background: #474747 !important;
+   		 border: 1px solid #fff !important;
+
+	}
+
+
+	

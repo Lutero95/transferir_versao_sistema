@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class CboBean {
+import java.io.Serializable;
+
+public class CboBean implements Serializable{
 	
 	private Integer codCbo;
 	private String descCbo;

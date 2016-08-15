@@ -3,11 +3,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
+		
 	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 <h:head>
 	<title>Project Name</title>
 	<meta name="author" content="The Author"></meta>
+<link rel="stylesheet" type="text/css" href="../../css/datatable.css" />
+        <link rel="styleSheet" type="text/css" href="../../css/style.css" />
+        <link rel="styleSheet" type="text/css" href="../../css/tema.css" />
 
  
 
@@ -15,32 +19,44 @@
 	 
 </h:head>
 <h:body style="padding: 60px;">
-	<h:form id="frmmensagem">
-			<f:metadata>
-				<f:event type="preRenderView" listener="#{CboController.getListarCbo}" />
-			</f:metadata>
-
-				<b:dataTable  id="tabela" value="#{CboController.listaCbo}" var="tab"  lang="es">
-
-					<b:dataTableColumn label="Código">
-						<h:outputText value="#{tab.codCbo}" />
-					</b:dataTableColumn>
-
-					<b:dataTableColumn label="Descrição">
-						<h:outputText value="#{tab.descCbo}" />
-					</b:dataTableColumn>
-					
-					<b:dataTableColumn label="Ação">
-					<p:commandButton id="oi" value="alt" icon="alterar-dados" process="@this"
+	<h:form id="frm">
+		<f:metadata>
+			<f:viewAction action="#{CboController.getListarCbo}"/>
+		</f:metadata>
+		
+		  <p:dataTable styleClass="table table-striped"  var="car" value="#{CboController.listaCbo}" widgetVar="carsTable" 
+                 emptyMessage="No cars found with given criteria" filteredValue="#{CboController.listaCboFiltrada}">
+                         <f:facet name="header">
+            <p:outputPanel>
+                <h:outputText value="Busca:" style="margin-left:-80%"/>
+                <p:inputText id="globalFilter" onkeyup="PF('carsTable').filter()" style="width:150px" placeholder="Digite o que procura"/>
+            </p:outputPanel>
+            
+            
+        </f:facet>
+         <p:column  filterBy="#{car.codCbo}"   headerText="Model" filterMatchMode="contains">
+            <h:outputText value="#{car.codCbo}" />
+        </p:column>
+        
+         <p:column  filterBy="#{car.descCbo}" headerText="Model" filterMatchMode="contains">
+            <h:outputText value="#{car.descCbo}" />
+        </p:column>
+                 <p:column  headerText="Model" >
+        
+        					<b:commandButton value="alt" icon="alterar-dados"
 									action="#{CboController.redirectEdit()}">
-									</p:commandButton>
-						
-</b:dataTableColumn>
-				</b:dataTable>
+									<f:setPropertyActionListener value="#{car}"
+										target="#{CboController.cbo}" />
 
-		</h:form>
+									<f:setPropertyActionListener value="2"
+										target="#{CboController.tipo}" /></b:commandButton>
+</p:column>        
+        </p:dataTable>
+        
 
-	
+		
+
+	</h:form>
 
 
 </h:body>
