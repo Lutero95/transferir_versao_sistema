@@ -71,6 +71,7 @@ public class GrupoController implements Serializable{
 	
 	
 	public String redirectInsert() {
+		System.out.println("vai redir grupo");
 		return "cadastroGrupo?faces-redirect=true&amp;tipo="+tipo;
 	}	
 	

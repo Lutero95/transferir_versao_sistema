@@ -10,7 +10,7 @@
 
 <ui:composition template="../../template/templategeral.xhtml">
 <f:metadata>
-				<f:event type="preRenderView" listener="#{GrupoController.getListaTodosGrupos()}" />
+				<f:viewAction action="#{GrupoController.getListaTodosGrupos()}" />
 			</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
@@ -62,7 +62,7 @@
 							
 						<br />
 
-						<p:commandButton id="btninc" value="Novo"
+						<p:commandButton id="btninc" value="Novo" process="@this"
 							action="#{GrupoController.redirectInsert()}" icon="add"
 							style="margin-top: 15px;">
 							<f:setPropertyActionListener value="1"
