@@ -35,7 +35,7 @@
 						<p:outputLabel value="Nome: " />
 						<p:inputText id="campoBuscanome" value="#{LaudoController.nome}" />
 						<p:outputLabel value="Situação: " />
-						<p:selectOneRadio id="campoBuscaSituacao" required="true"
+						<p:selectOneRadio id="campoBuscaSituacao" required="false"
 							value="#{LaudoController.situacao}">
 
 							<f:selectItem itemLabel="Pendente" itemValue="P" />
@@ -44,7 +44,7 @@
 
 						</p:selectOneRadio>
 						<p:outputLabel value="Recurso: " />
-						<p:selectOneRadio id="campoBuscaRecurso" required="true"
+						<p:selectOneRadio id="campoBuscaRecurso" required="false"
 							value="#{LaudoController.prontuario}">
 							<f:selectItem itemLabel="Todos" itemValue="T" />
 							<f:selectItem itemLabel="Faec" itemValue="F" />
@@ -98,12 +98,11 @@
 
 				<p:panelGrid columns="3" styleClass="semBorda">
 					<p:commandButton id="btninc" value="Novo" process="@this"
-						action="/pages/sishosp/cadastroLaudo.faces?faces-redirect=true"
-						icon="add" styleClass="btn btn-sm btn-success"
+						action="#{LaudoController.redirectInsert()}" icon="add"
+						styleClass="btn btn-sm btn-success"
 						actionListener="#{LaudoController.limparDados()}">
-
-						<f:setPropertyActionListener value="I"
-							target="#{LaudoController.tipo}" />
+						<f:setPropertyActionListener value="1"
+							target="#{LaudoController.tipo2}" />
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 					</p:commandButton>
 
@@ -166,14 +165,12 @@
 						<center>
 							<p:splitButton icon="confirmar">
 								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroLaudo.faces?faces-redirect=true">
+									action="#{LaudoController.redirectEdit()}">
 									<f:setPropertyActionListener value="#{tab}"
 										target="#{LaudoController.laudo}" />
 
-
-
-									<f:setPropertyActionListener value="A"
-										target="#{LaudoController.tipo}" />
+									<f:setPropertyActionListener value="2"
+										target="#{LaudoController.tipo2}" />
 								</p:menuitem>
 
 								<p:menuitem value="Excluir" icon="trash"

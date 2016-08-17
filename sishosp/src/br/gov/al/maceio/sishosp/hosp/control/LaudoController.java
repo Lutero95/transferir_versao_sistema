@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -15,6 +16,7 @@ import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.acl.model.UsuarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
@@ -56,6 +58,7 @@ public class LaudoController implements Serializable {
 	private List<LaudoBean> listaLaudoDigita;
 
 	// BUSCAS
+	private int tipo2;
 	private String tipo;
 	private Integer tipoBuscaLaudo;
 	private String campoBuscaLaudo;
@@ -72,6 +75,8 @@ public class LaudoController implements Serializable {
 	private Integer prontuario;
 	private String programa2;
 
+	private LaudoDAO lDao = new LaudoDAO();
+	
 	public LaudoController() {
 		// CLASSES
 		laudo = new LaudoBean();
@@ -193,7 +198,7 @@ public class LaudoController implements Serializable {
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a alteração!", "Erro");
+					"Ocorreu um erro durante a alteraï¿½ï¿½o!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
@@ -338,11 +343,38 @@ public class LaudoController implements Serializable {
 			}
 		} catch (Exception ex) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-					"Informe a Data de autorização.", "Aviso");
+					"Informe a Data de autorizaï¿½ï¿½o.", "Aviso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			this.laudo.setProrrogar(null);
 		}
 
+	}
+	public String redirectInsert() {
+		return "cadastroLaudo?faces-redirect=true&amp;tipo2=" + this.tipo2;
+	}
+	
+	public String redirectEdit() {
+		return "cadastroLaudo?faces-redirect=true&amp;id_apac=" + this.laudo.getId_apac()+"&amp;tipo2="+tipo2;
+	}	
+	
+	
+	public void getEditLaudo() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id_apac") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id_apac"));
+			tipo2 =Integer.parseInt(params.get("tipo2"));			
+			System.out.println("tipo do walter"+tipo2);
+			this.laudo = lDao.buscaLaudoPorId(id);
+		}
+		else{
+			System.out.println("tipo sera"+tipo2);
+			tipo2 =Integer.parseInt(params.get("tipo2"));
+			
+		}
+		
 	}
 
 	@SuppressWarnings("deprecation")
@@ -350,10 +382,10 @@ public class LaudoController implements Serializable {
 		if (laudo.getDtautorizacao() != null) {
 			// System.out.println("Entrou aqui"+ laudo.getDtavencimento()
 			// +"---"+ laudo.getDtautorizacao());
-			// Usuário informa uma data
+			// Usuï¿½rio informa uma data
 			Date dataDoUsuario = this.laudo.getDtautorizacao();
 
-			// Através do Calendar, trabalhamos a data informada e adicionamos 1
+			// Atravï¿½s do Calendar, trabalhamos a data informada e adicionamos 1
 			// dia nela
 			Calendar c = Calendar.getInstance();
 			c.setTime(dataDoUsuario);
@@ -629,6 +661,14 @@ public class LaudoController implements Serializable {
 
 	public void setPrograma2(String programa2) {
 		this.programa2 = programa2;
+	}
+
+	public int getTipo2() {
+		return tipo2;
+	}
+
+	public void setTipo2(int tipo2) {
+		this.tipo2 = tipo2;
 	}
 
 }
