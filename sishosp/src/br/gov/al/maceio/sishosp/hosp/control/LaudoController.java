@@ -574,18 +574,18 @@ public class LaudoController implements Serializable {
 	}
 
 	public String getCabecalho2() {
-		if (this.tipo.equals("I")) {
+		if (this.tipo2 == 1 ) {
 			cabecalho = "CADASTRO DE LAUDO DIGITA";
-		} else if (this.tipo.equals("A")) {
+		} else if (this.tipo2 == 2) {
 			cabecalho = "ALTERAR LAUDO DIGITA";
 		}
 		return cabecalho;
 	}
 
 	public String getCabecalho3() {
-		if (this.tipo.equals("I")) {
+		if (this.tipo2 == 1) {
 			cabecalho = "CONTROLE LAUDO";
-		} else if (this.tipo.equals("A")) {
+		} else if (this.tipo2 == 2) {
 			cabecalho = "ALTERAR LAUDO DIGITA";
 		}
 		return cabecalho;

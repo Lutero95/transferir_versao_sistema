@@ -72,34 +72,34 @@
 								minQueryLength="1" itemValue="#{theme}"
 								itemLabel="#{theme.descGrupo}">
 								<p:ajax event="itemSelect"
-								
 									update=":formLaudo:outEquipe,:formLaudo:btBusEquipe, 
 									:formLaudo:outEquipe" />
-									<!-- listener="#{GrupoController.selectEqupProf}" -->
+								<!-- listener="#{GrupoController.selectEqupProf}" -->
 							</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusGr" value="Buscar" icon="buscar"
 							disabled="#{LaudoController.laudo.programa==null}"
 							onclick="PF('dlgConsuGrop').show();" />
-							
-						<p:column id="outEquipe" rendered="#{LaudoController.laudo.grupo.equipeThulio == true}">	
-                        <h:outputLabel value="Equipe:" />
-						<p:outputPanel  >
-							<p:autoComplete value="#{LaudoController.laudo.equipe}" size="60"
-								converter="conEquipe"
+
+						<p:column id="outEquipe"
+							rendered="#{LaudoController.laudo.grupo.equipeThulio == true}">
+							<h:outputLabel value="Equipe:" />
+							<p:outputPanel>
+								<p:autoComplete value="#{LaudoController.laudo.equipe}"
+									size="60" converter="conEquipe"
+									disabled="#{LaudoController.laudo.grupo==null}"
+									completeMethod="#{EquipeController.listaEquipeAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descEquipe}">
+									<p:ajax event="itemSelect"
+										update=":formLaudo:outProfissional,:formLaudo:btBusPro" />
+								</p:autoComplete>
+							</p:outputPanel>
+							<p:commandButton id="btBusEquipe" value="Buscar" icon="buscar"
 								disabled="#{LaudoController.laudo.grupo==null}"
-								completeMethod="#{EquipeController.listaEquipeAutoComplete}"
-								effect="fade" var="theme" forceSelection="true"
-								minQueryLength="1" itemValue="#{theme}"
-								itemLabel="#{theme.descEquipe}">
-								<p:ajax event="itemSelect"
-									update=":formLaudo:outProfissional,:formLaudo:btBusPro" />
-							</p:autoComplete>
-						</p:outputPanel>
-						<p:commandButton id="btBusEquipe" value="Buscar" icon="buscar"
-							disabled="#{LaudoController.laudo.grupo==null}"
-							onclick="PF('dlgConsuEquipe').show();" />
-                     </p:column>
+								onclick="PF('dlgConsuEquipe').show();" />
+						</p:column>
 						<h:outputLabel value="Profissional:" />
 						<p:outputPanel id="outProfissional">
 							<p:autoComplete value="#{LaudoController.laudo.profissional}"
@@ -149,7 +149,8 @@
 							<p:inputText id="codCpf"
 								value="#{LaudoController.laudo.paciente.cpf}" readonly="true" />
 						</p:outputPanel>
-
+					</h:panelGrid>
+					<h:panelGrid columns="6" styleClass="semBorda">
 						<p:outputPanel style="margin-left:16px;">
 							<h:outputLabel value="Data para Solicitação" />
 							<br />
@@ -157,6 +158,17 @@
 								value="#{LaudoController.laudo.dtasolicitacao}" navigator="true"
 								mask="true" pattern="dd/MM/yyyy" />
 						</p:outputPanel>
+
+						<p:panel style="background-color: #F5F5F5; border:none;">
+							<h:outputLabel value="Data para Vencimento:" />
+							<br />
+							<p:outputLabel id="dtFim"
+								value="#{LaudoController.laudo.dtavencimento}">
+								<f:convertDateTime locale="pt" timeZone="-3GTM"
+									pattern="MM/yyyy" />
+							</p:outputLabel>
+
+						</p:panel>
 
 						<p:outputPanel style="margin-left:16px;">
 							<p:outputLabel value="Recurso:" />
@@ -240,25 +252,10 @@
 									value="#{LaudoController.laudo.dtautorizacao}" navigator="true"
 									mask="true" pattern="dd/MM/yyyy">
 
-									<p:ajax event="dateSelect" update="dtFim"
+									<!-- <p:ajax event="dateSelect" update="dtFim"
 										process="@this,dataAt"
-										listener="#{LaudoController.calcularDiasCalendario}" />
-
+										listener="#{LaudoController.calcularDiasCalendario}" /> -->
 								</p:calendar>
-
-
-							</p:panel>
-
-							<p:panel style="background-color: #F5F5F5; border:none;"
-								rendered="#{LaudoController.laudo.situacao == 'A'}">
-								<h:outputLabel value="Data para Vencimento:" />
-								<br />
-								<p:outputLabel id="dtFim"
-									value="#{LaudoController.laudo.dtavencimento}">
-									<f:convertDateTime locale="pt" timeZone="-3GTM"
-										pattern="MM/yyyy" />
-								</p:outputLabel>
-
 							</p:panel>
 						</h:panelGrid>
 					</p:outputPanel>
@@ -272,7 +269,7 @@
 							<p:inputText id="cid" value="#{LaudoController.laudo.cid10_1}"
 								readonly="false" style="width: 300px; margin-left:16px;" />
 
-							
+
 						</p:outputPanel>
 						<p:commandButton id="btBusCid" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuCid').show();" />
@@ -281,7 +278,7 @@
 						<p:outputPanel id="outCid2">
 							<p:inputText id="cid2" value="#{LaudoController.laudo.cid10_2}"
 								readonly="false" style="width: 300px; margin-left:16px;" />
-							
+
 						</p:outputPanel>
 						<p:commandButton id="btBusCid2" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuCid2').show();" />
@@ -290,7 +287,7 @@
 						<p:outputPanel id="outCid3">
 							<p:inputText id="cid3" value="#{LaudoController.laudo.cid10_3}"
 								readonly="false" style="width: 300px; margin-left:16px;" />
-							
+
 						</p:outputPanel>
 						<p:commandButton id="btBusCid3" value="Buscar" icon="buscar"
 							onclick="PF('dlgConsuCid3').show();" />
@@ -396,8 +393,7 @@
 
 							<p:commandButton value="Limpar" icon="limpar"
 								style="margin-left:15px;"
-								action="#{LaudoController.limparDados()}"
-								update=":formLaudo" />
+								action="#{LaudoController.limparDados()}" update=":formLaudo" />
 
 						</h:panelGrid>
 					</center>
@@ -535,7 +531,7 @@
 					</p:dataTable>
 				</h:form>
 			</p:dialog>
-			
+
 			<p:dialog header="Consulta Equipe" widgetVar="dlgConsuEquipe"
 				modal="true" width="500px">
 				<h:form id="formConsuEquipe">
