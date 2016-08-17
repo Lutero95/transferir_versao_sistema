@@ -12,6 +12,7 @@ public class GrupoBean {
 	private List<EquipeBean> equipes;
 	private List<EquipeBean> equipesNovo;
 	private EquipeBean equipeAdd;
+	private boolean inserção_pac_institut;
 	
 	private boolean equipeThulio;
 
@@ -95,6 +96,14 @@ public class GrupoBean {
 
 	public void setEquipeThulio(boolean equipeThulio) {
 		this.equipeThulio = equipeThulio;
+	}
+
+	public boolean isInserção_pac_institut() {
+		return inserção_pac_institut;
+	}
+
+	public void setInserção_pac_institut(boolean inserção_pac_institut) {
+		this.inserção_pac_institut = inserção_pac_institut;
 	}
 
 	

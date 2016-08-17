@@ -40,7 +40,7 @@
 					</p:panelGrid>
 				</p:panelGrid>
 
-				<p:panelGrid columns="2" styleClass="semBorda">
+				<p:panelGrid columns="4" styleClass="semBorda">
 					<h:outputLabel value="Utiliza Equipamento: " />
 					<p:selectBooleanCheckbox
 						value="#{ProcedimentoController.proc.utilizaEquipamento}" />
@@ -51,6 +51,33 @@
 						<p:ajax update="pnlModelo" />
 					</p:selectBooleanCheckbox>
 
+					<h:outputLabel value="Gerar Laudo na Digitação: " />
+					<p:selectBooleanCheckbox
+						value="#{ProcedimentoController.proc.gera_laudo_digita}">
+						<p:ajax update="pnlMes" />
+					</p:selectBooleanCheckbox>
+					<p:outputPanel id="pnlMes">
+						<p:panel header="Validade Laudo" style="width:300px;"
+							rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}">
+							<p:selectOneMenu id="mes"
+								value="#{ProcedimentoController.proc.validade_laudo}"
+								style="width:200px;" required="true"
+								requiredMessage="Informe o mês.">
+								<f:selectItem itemLabel="Janeiro" itemValue="1" />
+								<f:selectItem itemLabel="Fevereiro" itemValue="2" />
+								<f:selectItem itemLabel="Março" itemValue="3" />
+								<f:selectItem itemLabel="Abril" itemValue="4" />
+								<f:selectItem itemLabel="Maio" itemValue="5" />
+								<f:selectItem itemLabel="Junho" itemValue="6" />
+								<f:selectItem itemLabel="Julho" itemValue="7" />
+								<f:selectItem itemLabel="Agosto" itemValue="8" />
+								<f:selectItem itemLabel="Setembro" itemValue="9" />
+								<f:selectItem itemLabel="Outubro" itemValue="10" />
+								<f:selectItem itemLabel="Novembro" itemValue="11" />
+								<f:selectItem itemLabel="Dezembro" itemValue="12" />
+							</p:selectOneMenu>
+						</p:panel>
+					</p:outputPanel>
 				</p:panelGrid>
 
 				<p:outputPanel id="pnlModelo">

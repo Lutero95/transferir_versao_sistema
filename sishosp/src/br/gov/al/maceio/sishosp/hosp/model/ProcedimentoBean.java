@@ -11,6 +11,8 @@ public class ProcedimentoBean {
 	private String tipoExameAuditivo;
 	private Boolean utilizaEquipamento;
 	private Integer codEmpresa;
+	private boolean gera_laudo_digita;
+	private Integer validade_laudo;
 	
 	
 	public ProcedimentoBean() {
@@ -96,6 +98,24 @@ public class ProcedimentoBean {
 
 	public void setCodEmpresa(Integer codEmpresa) {
 		this.codEmpresa = codEmpresa;
+	}
+	
+
+
+	public Integer getValidade_laudo() {
+		return validade_laudo;
+	}
+
+	public void setValidade_laudo(Integer validade_laudo) {
+		this.validade_laudo = validade_laudo;
+	}
+
+	public boolean isGera_laudo_digita() {
+		return gera_laudo_digita;
+	}
+
+	public void setGera_laudo_digita(boolean gera_laudo_digita) {
+		this.gera_laudo_digita = gera_laudo_digita;
 	}
 
 	@Override
