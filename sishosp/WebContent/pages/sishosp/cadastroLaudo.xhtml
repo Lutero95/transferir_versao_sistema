@@ -16,7 +16,7 @@
 		<div class="col-md-8">
 			<h:form>
 				<h:commandButton value="Voltar"
-					style="position:absolute; left:76%; top:100%;"
+					style="margin-top:10px;"
 					styleClass="btn btn-info"
 					action="/pages/sishosp/gerenciarLaudo.faces?faces-redirect=true"></h:commandButton>
 			</h:form>
@@ -24,7 +24,7 @@
 			<h:form id="formLaudo">
 				<p:growl id="message" />
 				<p:panel header="#{LaudoController.cabecalho}"
-					style="position: relative; height:auto; width:717px; background-color: #F5F5F5; margin-left:50%;border: 3px solid gray;">
+					style="position: relative; height:auto; width:800px; background-color: #F5F5F5; margin-left:20%;border: 3px solid gray;">
 					<h:panelGrid columns="3">
 
 						<h:outputLabel value="Paciente:" />
@@ -72,8 +72,7 @@
 								minQueryLength="1" itemValue="#{theme}"
 								itemLabel="#{theme.descGrupo}">
 								<p:ajax event="itemSelect"
-									update=":formLaudo:outEquipe,:formLaudo:btBusEquipe, 
-									:formLaudo:outEquipe" />
+									update=":formLaudo:outProfissional,:formLaudo:btBusPro" />
 								<!-- listener="#{GrupoController.selectEqupProf}" -->
 							</p:autoComplete>
 						</p:outputPanel>
@@ -100,11 +99,12 @@
 								disabled="#{LaudoController.laudo.grupo==null}"
 								onclick="PF('dlgConsuEquipe').show();" />
 						</p:column>
+
 						<h:outputLabel value="Profissional:" />
 						<p:outputPanel id="outProfissional">
 							<p:autoComplete value="#{LaudoController.laudo.profissional}"
 								size="60" converter="conProfissional"
-								disabled="#{LaudoController.laudo.equipe==null}"
+								disabled="#{LaudoController.laudo.grupo==null}"
 								completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
 								minQueryLength="1" itemValue="#{theme}"
@@ -114,7 +114,7 @@
 							</p:autoComplete>
 						</p:outputPanel>
 						<p:commandButton id="btBusPro" value="Buscar" icon="buscar"
-							disabled="#{LaudoController.laudo.equipe==null}"
+							disabled="#{LaudoController.laudo.grupo==null}"
 							onclick="PF('dlgConsuProf').show();" />
 
 						<h:outputLabel value="Procedimento:" />
@@ -126,7 +126,8 @@
 								effect="fade" var="theme" forceSelection="true"
 								minQueryLength="1" itemValue="#{theme}"
 								itemLabel="#{theme.nomeProc}">
-								<p:ajax event="itemSelect" update=":formLaudo:outDadosForne" />
+								<p:ajax event="itemSelect" 
+									update=":formLaudo:outDadosForne, pnlVencimento, pnlSolicitacao" process="@this, outProce"/>
 							</p:autoComplete>
 
 						</p:outputPanel>
@@ -151,25 +152,32 @@
 						</p:outputPanel>
 					</h:panelGrid>
 					<h:panelGrid columns="6" styleClass="semBorda">
-						<p:outputPanel style="margin-left:16px;">
+						<p:outputPanel style="margin-left:16px;" id="pnlSolicitacao">
 							<h:outputLabel value="Data para Solicitação" />
 							<br />
-							<p:calendar id="data" locale="pt" showOn="button"
+							<p:calendar id="dataSol" locale="pt" showOn="button"
 								value="#{LaudoController.laudo.dtasolicitacao}" navigator="true"
-								mask="true" pattern="dd/MM/yyyy" />
+								mask="true" yearRange="-111:+39" pages="1" pattern="MM/yyyy" >
+								
+								<p:ajax event="dateSelect" update="dtFim"
+									process="@this,dataSol"
+									listener="#{LaudoController.calcularDiasCalendario}" />
+
+							</p:calendar>
 						</p:outputPanel>
+						<p:outputPanel id="pnlVencimento">
+							<p:panel style="background-color: #F5F5F5; border:none;"
+								rendered="#{LaudoController.laudo.procedimento.gera_laudo_digita==true}">
+								<h:outputLabel value="Data para Vencimento:" />
+								<br />
+								<p:outputLabel id="dtFim"
+									value="#{LaudoController.laudo.dtavencimento}">
+									<f:convertDateTime locale="pt" timeZone="-3GTM"
+										pattern="MM/yyyy" />
+								</p:outputLabel>
 
-						<p:panel style="background-color: #F5F5F5; border:none;">
-							<h:outputLabel value="Data para Vencimento:" />
-							<br />
-							<p:outputLabel id="dtFim"
-								value="#{LaudoController.laudo.dtavencimento}">
-								<f:convertDateTime locale="pt" timeZone="-3GTM"
-									pattern="MM/yyyy" />
-							</p:outputLabel>
-
-						</p:panel>
-
+							</p:panel>
+						</p:outputPanel>
 						<p:outputPanel style="margin-left:16px;">
 							<p:outputLabel value="Recurso:" />
 							<p:selectOneRadio id="recursos" style="border: double;"
@@ -250,11 +258,8 @@
 								<p:calendar id="dataAt" showOn="button" locale="pt"
 									required="true" requiredMessage="Data Autorização e necessaria"
 									value="#{LaudoController.laudo.dtautorizacao}" navigator="true"
-									mask="true" pattern="dd/MM/yyyy">
+									mask="true" pattern="MM/yyyy">
 
-									<!-- <p:ajax event="dateSelect" update="dtFim"
-										process="@this,dataAt"
-										listener="#{LaudoController.calcularDiasCalendario}" /> -->
 								</p:calendar>
 							</p:panel>
 						</h:panelGrid>
@@ -593,19 +598,25 @@
 			</p:dialog>
 
 			<p:dialog header="Consulta Procedimento" widgetVar="dlgConsuProce"
-				modal="true" width="550px">
+				modal="true" width="700px">
 				<h:form id="formConsuProce">
 					<p:dataTable value="#{ProcedimentoController.listaProcedimentos}"
 						id="dtProce" resizableColumns="true" var="procedimento"
 						emptyMessage="Não existe nenhum procedimento cadastrado!">
-						<p:column headerText="ID">
+						<p:column headerText="ID" style="width:auto;">
 							<p:outputLabel value="#{procedimento.idProc}" />
 						</p:column>
-						<p:column headerText="CÓD.">
+						<p:column headerText="CÓD." style="width:auto;">
 							<p:outputLabel value="#{procedimento.codProc}" />
 						</p:column>
-						<p:column headerText="PROCEDIMENTO" style="width:55%;">
+						<p:column headerText="PROCEDIMENTO" style="width:auto;">
 							<p:outputLabel value="#{procedimento.nomeProc}" />
+						</p:column>
+						<p:column headerText="Gera Laudo" style="width:auto;">
+							<p:outputLabel value="#{procedimento.gera_laudo_digita}" />
+						</p:column>
+						<p:column headerText="Mes" style="width:auto;">
+							<p:outputLabel value="#{procedimento.validade_laudo}" />
 						</p:column>
 
 						<p:column headerText="Confirmar"

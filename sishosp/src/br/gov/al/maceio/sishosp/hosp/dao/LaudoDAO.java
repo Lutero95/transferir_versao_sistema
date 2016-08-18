@@ -13,6 +13,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 
@@ -32,7 +33,7 @@ public class LaudoDAO {
 	private CidDAO cidDao = new CidDAO();
 	private EquipamentoDAO equipamentoDao = new EquipamentoDAO();
 	
-	// COMEÇO DO CODIGO
+	// COMEï¿½O DO CODIGO
 	
 	public Boolean cadastrarLaudo(LaudoBean laudo) throws ProjetoException {
         boolean cadastrou = false;
@@ -43,8 +44,8 @@ public class LaudoDAO {
                 .get("obj_paciente");*/
 
         String sql = "insert into hosp.apac (codpaciente, codprograma, codgrupo, codequipe, codmedico, codproc, dtasolicitacao, recurso, apac, unidade, situacao, dtautorizacao, cid10_1, cid10_2,cid10_3, "
-        		+ "codfornecedor, valor, nota, qtd, codequipamento, obs) values (?, ? , ? , ?, ? , ?, ? , ?, ?, ?, "
-        		+ "?, ?, ?, ?, ?, ?, ? , ? , ?, ?, ?)";
+        		+ "codfornecedor, valor, nota, qtd, codequipamento, obs, laudo) values (?, ? , ? , ?, ? , ?, ? , ?, ?, ?, "
+        		+ "?, ?, ?, ?, ?, ?, ? , ? , ?, ?, ?, (select coalesce(gera_laudo_digita, false) laudo from hosp.proc where proc.codproc=?)";
         
             try {
             	System.out.println("passou aqui 3");
@@ -116,6 +117,7 @@ public class LaudoDAO {
     			} else {
     				stmt.setString(21, laudo.getObs().toUpperCase().trim());
     			}    
+                stmt.setInt(22, laudo.getProcedimento().getIdProc());
                 
             stmt.execute();   
             System.out.println("passou aqui 4");
@@ -133,7 +135,7 @@ public class LaudoDAO {
         boolean alterou = false;
         String sql = "update hosp.apac set codpaciente = ?, codprograma = ?, codgrupo = ?, codequipe = ?, codmedico = ?, "
         		+ "codproc = ?, dtasolicitacao = ?, recurso = ?, apac = ?, unidade = ?, situacao = ?, dtautorizacao = ?, "
-        		+ "cid10_1 = ?, cid10_2 = ?, cid10_3 = ?, codfornecedor = ?, valor = ?, nota = ?, qtd = ?, codequipamento = ?, obs = ? where id_apac = ?";
+        		+ "cid10_1 = ?, cid10_2 = ?, cid10_3 = ?, codfornecedor = ?, valor = ?, nota = ?, qtd = ?, codequipamento = ?, obs = ?, (select coalesce(gera_laudo_digita, false) laudo from hosp.proc where proc.codproc=?) where id_apac = ?";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -197,7 +199,8 @@ public class LaudoDAO {
 			} else {
 				stmt.setString(21, laudo.getObs().toUpperCase().trim());
 			}           
-            stmt.setInt(22, laudo.getId_apac());
+            stmt.setInt(22, laudo.getProcedimento().getIdProc());
+            stmt.setInt(23, laudo.getId_apac());
             
             stmt.executeUpdate();
             conexao.commit();
@@ -683,53 +686,108 @@ public class LaudoDAO {
             
             
             public LaudoBean buscaLaudoPorId(Integer i) throws ProjetoException {
-        		String sql = "select * from hosp.apac where id_apac =? order by id_grupo";
+        		String sql = "select * from hosp.apac where id_apac = ?";
+        		LaudoBean l = new LaudoBean();
         		try {
         			conexao = ConnectionFactory.getConnection();
         			ps = conexao.prepareStatement(sql);
         			ps.setInt(1, i);
-        			ResultSet rs = ps.executeQuery();
-        			LaudoBean l = new LaudoBean();
+        			ResultSet rs = ps.executeQuery();		
         			if (rs.next()) {
+        				l = new LaudoBean();
 
-          				l.setId_apac(rs.getInt("id_apac"));
-     	                l.setApac(rs.getString("apac").toUpperCase());
+      	                l.setCodLaudoDigita(rs.getInt("id"));
+      	                l.setId_apac(rs.getInt("id_apac"));
     	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("codpaciente")));
     	                l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
     	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
+      	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
     	                l.setProfissional(profDao.buscarProfissionalPorId(rs.getInt("codmedico")));
     	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codproc")));
-    	                l.setDtasolicitacao(rs.getDate("dtasolicitacao"));
+    	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("codfornecedor")));
     	                l.setRecurso(rs.getString("recurso"));
+    	                l.setApac(rs.getString("apac"));
     	                l.setUnidade(rs.getString("unidade"));
     	                l.setSituacao(rs.getString("situacao"));
+    	                l.setDtainicio(rs.getDate("periodoinicio"));
+      	                l.setDtafim(rs.getDate("periodofim"));
     	                l.setDtautorizacao(rs.getDate("dtautorizacao"));
+    	                l.setDtasolicitacao(rs.getDate("dtasolicitacao"));
     	                l.setCid10_1(rs.getString("cid10_1"));
     	                l.setCid10_2(rs.getString("cid10_2"));
-    	                l.setCid10_2(rs.getString("cid10_3"));
-    	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("codfornecedor")));
+    	                l.setCid10_3(rs.getString("cid10_3"));
     	                l.setValor(rs.getDouble("valor"));
     	                l.setNota(rs.getString("nota"));
     	                l.setQtd(rs.getInt("qtd"));
     	                l.setCodequipamento(rs.getInt("codequipamento"));
     	                l.setObs(rs.getString("obs"));
+      	                l.setLaudo(rs.getBoolean("laudo"));
         			}
-        			return l;
-        		} catch (Exception sqle) {
-
-        			throw new ProjetoException(sqle);
-
-        		} finally {
-        			try {
-        				con.close();
-        			} catch (Exception sqlc) {
-        				sqlc.printStackTrace();
-        				System.exit(1);
-        				// TODO: handle exception
-        			}
-
-        		}
-        	}
+        		
+    		} catch (SQLException ex) {
+    			throw new RuntimeException(ex);
+    		} finally {
+    			try {
+    				con.close();
+    			} catch (Exception ex) {
+    				ex.printStackTrace();
+    				System.exit(1);
+    			}
+    		}
+    		return l;
+    	}
+            
+            public LaudoBean listarLaudoPorId(int id) throws ProjetoException {
+               
+      		LaudoBean l = new LaudoBean();
+      		String sql = "select id_apac, codpaciente, codprograma,codgrupo, codequipe, codmedico, "
+            		+ "codproc,dtasolicitacao, recurso,apac, unidade, situacao, dtautorizacao, "
+            		+ "cid10_1, cid10_2, cid10_3,codfornecedor,valor, nota, qtd, codequipamento, "
+            		+ "obs from hosp.apac where id_apac = ?";
+      		try {
+      			con = ConnectionFactory.getConnection();
+      			PreparedStatement stm = con.prepareStatement(sql);
+      			stm.setInt(1, id);
+      			ResultSet rs = stm.executeQuery();
+      			while (rs.next()) {
+      				l = new LaudoBean();
+      			    l.setId_apac(rs.getInt("id_apac"));
+	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("codpaciente")));
+	                l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
+	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
+	                l.setProfissional(profDao.buscarProfissionalPorId(rs.getInt("codmedico")));
+	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codproc")));
+	                l.setDtasolicitacao(rs.getDate("dtasolicitacao"));
+	                l.setRecurso(rs.getString("recurso"));
+	                l.setApac(rs.getString("apac"));
+	                l.setUnidade(rs.getString("unidade"));
+	                l.setSituacao(rs.getString("situacao"));
+	                l.setDtautorizacao(rs.getDate("dtautorizacao"));
+	                l.setCid10_1(rs.getString("cid10_1"));
+	                l.setCid10_2(rs.getString("cid10_2"));
+	                l.setCid10_3(rs.getString("cid10_3"));
+	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("codfornecedor")));
+	                l.setValor(rs.getDouble("valor"));
+	                l.setNota(rs.getString("nota"));
+	                l.setQtd(rs.getInt("qtd"));
+	                l.setCodequipamento(rs.getInt("codequipamento"));
+	                l.setObs(rs.getString("obs"));
+      		
+      			}
+      		} catch (SQLException ex) {
+      			throw new RuntimeException(ex);
+      		} finally {
+      			try {
+      				con.close();
+      			} catch (Exception ex) {
+      				ex.printStackTrace();
+      				System.exit(1);
+      			}
+      		}
+      		return l;
+      	}
+            
             
             
 }

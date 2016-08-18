@@ -367,7 +367,7 @@ public class LaudoController implements Serializable {
 			Integer id = Integer.parseInt(params.get("id_apac"));
 			tipo2 =Integer.parseInt(params.get("tipo2"));			
 			System.out.println("tipo do walter"+tipo2);
-			this.laudo = lDao.buscaLaudoPorId(id);
+			this.laudo = lDao.listarLaudoPorId(id);
 		}
 		else{
 			System.out.println("tipo sera"+tipo2);
@@ -379,23 +379,23 @@ public class LaudoController implements Serializable {
 
 	@SuppressWarnings("deprecation")
 	public void calcularDiasCalendario() {
-		if (laudo.getDtautorizacao() != null) {
-			// System.out.println("Entrou aqui"+ laudo.getDtavencimento()
-			// +"---"+ laudo.getDtautorizacao());
-			// Usu�rio informa uma data
-			Date dataDoUsuario = this.laudo.getDtautorizacao();
+	if (laudo.getDtasolicitacao() != null) {
+	// System.out.println("Entrou aqui"+ laudo.getDtavencimento()
+	// +"---"+ laudo.getDtautorizacao());
+	// Usu�rio informa uma data
+	Date dataDoUsuario = this.laudo.getDtasolicitacao();
 
-			// Atrav�s do Calendar, trabalhamos a data informada e adicionamos 1
-			// dia nela
-			Calendar c = Calendar.getInstance();
-			c.setTime(dataDoUsuario);
-			c.add(Calendar.DATE, 30);
+	// Atrav�s do Calendar, trabalhamos a data informada e adicionamos 1
+	// dia nela
+	Calendar c = Calendar.getInstance();
+	c.setTime(dataDoUsuario);
+	c.add(Calendar.MONTH,getLaudo().getProcedimento().getValidade_laudo());
+	c.add(Calendar.DAY_OF_MONTH,-1);
+	// Obtemos a data alterada
+	dataDoUsuario = c.getTime();
 
-			// Obtemos a data alterada
-			dataDoUsuario = c.getTime();
-
-			this.laudo.setDtavencimento(dataDoUsuario);
-		}
+	this.laudo.setDtavencimento(dataDoUsuario);
+	}
 	}
 
 	public Integer getAbaAtiva() {
@@ -503,9 +503,9 @@ public class LaudoController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
+		if (this.tipo2 == 1) {
 			cabecalho = "CADASTRO DE APAC/BPI";
-		} else if (this.tipo.equals("A")) {
+		} else if (this.tipo2 == 2) {
 			cabecalho = "ALTERAR APAC/BPI";
 		}
 		return cabecalho;

@@ -43,7 +43,7 @@ public class LaudoBean {
 	private Date dtainicio;
 	private Date dtafim;
 	private Integer Prorrogar;
-
+    private boolean laudo;
 	// CLASSES HERDADAS
 	private PacienteBean paciente;
 	private ProgramaBean programa;
@@ -465,4 +465,13 @@ public class LaudoBean {
 		this.programaBuscar = programaBuscar;
 	}
 
+	public boolean isLaudo() {
+		return laudo;
+	}
+
+	public void setLaudo(boolean laudo) {
+		this.laudo = laudo;
+	}
+
+	
 }
