@@ -5,25 +5,21 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{EscolaridadeController.getEditEscolaridade()}" />
 	</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
-
+		 <b:panel title="#{EscolaridadeController.cabecalho}" collapsible="false">
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
-				<p:panel id="pnlCadPaciente"
-					header="#{EscolaridadeController.cabecalho}"
-					style="height:400px; width:600px; margin-left:50%; margin-top:10%; background-color: #F5F5F5;">
-
 					<div class="form-group">
-						<h:outputLabel for="inputname" value="Nome Escolaridade"
+						<h:outputLabel for="inputname" value="Descrição"
 							styleClass="col-sm-3 control-label" />
 						<div class="col-sm-6">
 							<h:inputText
@@ -43,35 +39,28 @@
 					<!-- FIM DO FORMULARIO -->
 					<center>
 
-
-						<p:commandButton
-							action="#{EscolaridadeController.gravarEscolaridade()}"
-							icon="podeGravar"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
-							value="Incluir" 
-							style="width:85px"
-							rendered="#{EscolaridadeController.tipo == 1}" />
+					<b:commandButton action="#{EscolaridadeController.gravarEscolaridade()}" icon="glyphicon-ok" size="sm" look="success"
+						update=":formCADU:message,:formCADU" value="Incluir"
+						
+						rendered="#{EscolaridadeController.tipo == 1}" />
 
 
-						<p:commandButton
-							action="#{EscolaridadeController.alterarEscolaridade()}"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
-							value="Alterar" 
-							icon="podeGravar"
-							style="width:85px"
-							rendered="#{EscolaridadeController.tipo == 2}" />
-						<p:commandButton value="Voltar" icon="btvoltar" process="@this"
-							style="width:85px;margin-left:10px"
-							action="/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true" />
+					<b:commandButton action="#{EscolaridadeController.alterarEscolaridade()}" icon="glyphicon-ok" size="sm" 
+						update=":formCADU:message,:formCADU" value="Alterar" look="success"
+						rendered="#{EscolaridadeController.tipo  == 2}" />
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="margin-left:10px" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true">
+					</b:commandButton>
+
+
+
 
 					</center>
 
-				</p:panel>
-
 
 			</h:form>
-		</div>
-
+</b:panel>
 	</ui:define>
 </ui:composition>
 </html>

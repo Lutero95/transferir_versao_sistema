@@ -99,7 +99,7 @@ public class GrupoController implements Serializable{
 
 
 	public void gravarGrupo() throws ProjetoException, SQLException {
-
+		
 		boolean cadastrou = gDao.gravarGrupo(grupo);
 
 		if (cadastrou == true) {
@@ -112,6 +112,7 @@ public class GrupoController implements Serializable{
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+		
 	}
 
 	public String alterarGrupo() throws ProjetoException {
@@ -212,9 +213,9 @@ public class GrupoController implements Serializable{
 
 	public String getCabecalho() {
 		if (this.tipo==1) {
-			cabecalho = "CADASTRO DE GRUPO";
+			cabecalho = "Inclusão de Grupo";
 		} else if (this.tipo==2) {
-			cabecalho = "ALTERAR GRUPO";
+			cabecalho = "Alteração de Grupo";
 		}
 		return cabecalho;
 	}

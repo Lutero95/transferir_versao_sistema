@@ -78,6 +78,8 @@ public class EquipeDAO {
 		}
 	}
 
+	
+	
 	public List<EquipeBean> listarEquipe() throws ProjetoException {
 		List<EquipeBean> lista = new ArrayList<>();
 		String sql = "select id_equipe, descequipe, codempresa from hosp.equipe order by id_equipe";

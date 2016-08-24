@@ -142,7 +142,7 @@ public class EscolaController implements Serializable{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Escola excluido com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaEscolas = null;
+			buscarEscola();
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
 		} else {

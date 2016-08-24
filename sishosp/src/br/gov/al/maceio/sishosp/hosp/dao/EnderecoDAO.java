@@ -5,18 +5,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 
 
 
 public class EnderecoDAO {
 	private Connection conexao = null;
-	// COMEÇO DO CODIGO
+	// COMEï¿½O DO CODIGO
 	
             @SuppressWarnings("deprecation")
 			public Boolean cadastrarMunicipio(EnderecoBean endereco) throws ProjetoException {
@@ -56,8 +58,16 @@ public class EnderecoDAO {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
                     stmt.setString(1, endereco.getMunicipio());
+                    if (endereco.getCodfederal()!=null)
                     stmt.setInt(2, endereco.getCodfederal());
-                    stmt.setInt(3, endereco.getCodmacregiao());
+                    else
+                    	stmt.setNull(2, Types.OTHER);
+                    
+                    if (endereco.getCodmacregiao()!=null)
+                        stmt.setInt(3, endereco.getCodmacregiao());
+                        else
+                        	stmt.setNull(3, Types.OTHER);
+                    System.out.println("endereco.getCodmunicipio()"+endereco.getCodmunicipio());
                     stmt.setInt(4, endereco.getCodmunicipio());
                     stmt.executeUpdate();
 
@@ -259,6 +269,39 @@ public class EnderecoDAO {
                 }
                 return lista;
             }
+            
+            
+            public EnderecoBean listarMunicipioPorId(int id) throws ProjetoException {
+
+        		EnderecoBean end = new EnderecoBean();
+        		String sql = "select municipio.id_municipio, municipio.descmunicipio, codfederal, codmacregiao from hosp.municipio where id_municipio=?";
+        		try {
+        			conexao = ConnectionFactory.getConnection();
+        			PreparedStatement stm = conexao.prepareStatement(sql);
+        			stm.setInt(1, id);
+        			ResultSet rs = stm.executeQuery();
+        			while(rs.next()){
+        				end = new EnderecoBean();
+        				end.setId(rs.getLong("id_municipio"));
+        				end.setCodmunicipio(rs.getInt("id_municipio"));
+        	        	end.setMunicipio(rs.getString("descmunicipio"));    
+        	        	end.setCodfederal(rs.getInt("codfederal"));
+        	        	end.setCodmacregiao(rs.getInt("codmacregiao"));    	        	
+        			}
+
+        		} catch (SQLException ex) {
+        			throw new RuntimeException(ex);
+        		} finally {
+        			try {
+        				conexao.close();
+        			} catch (Exception ex) {
+        				ex.printStackTrace();
+        				System.exit(1);
+        			}
+        		}
+        		return end;
+        	}
+
             
             public List<EnderecoBean> buscarTipoMunicipio(String valor, Integer tipo) throws ProjetoException {
         		

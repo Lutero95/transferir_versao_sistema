@@ -7,6 +7,7 @@ public class CboBean implements Serializable{
 	private Integer codCbo;
 	private String descCbo;
 	private Integer codEmpresa;
+	private String codigo;
 	
 	public CboBean() {
 		// TODO Auto-generated constructor stub
@@ -40,6 +41,14 @@ public class CboBean implements Serializable{
 
 	public void setCodEmpresa(Integer codEmpresa) {
 		this.codEmpresa = codEmpresa;
+	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 	
 }

@@ -119,6 +119,7 @@ public class CboController implements Serializable{
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
+			getListarCbo();			
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusao!", "Erro");
@@ -183,9 +184,9 @@ public class CboController implements Serializable{
 	
 	public String getCabecalho() {
 		if(this.tipo==1){
-			cabecalho = "CADASTRO DE CBO";
+			cabecalho = "Inclusão de CBO";
 		}else if(this.tipo==2){
-			cabecalho = "ALTERAR CBO";
+			cabecalho = "Alteração de CBO";
 		}
 		return cabecalho;
 	}

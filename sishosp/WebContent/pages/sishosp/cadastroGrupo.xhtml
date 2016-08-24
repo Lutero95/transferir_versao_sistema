@@ -5,22 +5,20 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{GrupoController.getEditGrupo()}" />
 	</f:metadata>
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
+		
 
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
-				<p:panel id="pnlCadGrupo" header="#{GrupoController.cabecalho}"
-					style="height:auto; width:auto; background-color: #F5F5F5;">
-
+				<b:panel title="#{GrupoController.cabecalho}" collapsible="false">
+				
 					<div class="form-group">
 						<h:outputLabel for="inputdesc" value="Descrição do Grupo: "
 							styleClass="col-sm-3 control-label" />
@@ -66,13 +64,20 @@
 					<div class="form-group">
 						<h:outputLabel value="Equipe: "
 							styleClass="col-sm-3 control-label" />
-						<p:commandButton style="position:absolute; top:195px; left:282px;"
-							onclick="PF('dlgConsultEquipes').show();" icon="ui-icon-plus" />
+							<div class="col-sm-1">
+						<b:commandButton process="@this" style="margin-left:-5px"
+									size="sm"
+									action="#{EquipeController.ListarTodasEquipes()	}"
+									tooltip="Incluir Profissional" icon="glyphicon-plus"
+									oncomplete="PF('dlgConsultEquipes').show();"
+									update="formConsuEquipe" />
+									 
+							</div>
 						<div class="col-sm-6">
 
-							<p:dataTable emptyMessage="Sem Dados"
+							<p:dataTable emptyMessage="Nenhuma Equipe"
 								styleClass="table table-hover" id="tabela"
-								style="margin-top:10px;"
+								style="margin-left:-50px;width:94%"
 								value="#{GrupoController.grupo.equipes}" var="tab"
 								paginator="true" paginatorPosition="bottom" rows="12"
 								resizableColumns="true">
@@ -87,12 +92,12 @@
 
 								<p:column headerText="Ação">
 									<center>
-										<p:commandButton process="@this"
+										<b:commandButton process="@this"
 											action="#{GrupoController.grupo.rmvEquipe()}"
-											icon="ui-icon-trash" update=":formCADU:pnlCadGrupo">
+											icon="ui-icon-trash" update=":formCADU">
 											<f:setPropertyActionListener value="#{tab}"
 												target="#{GrupoController.grupo.equipeAdd}" />
-										</p:commandButton>
+										</b:commandButton>
 									</center>
 								</p:column>
 
@@ -104,25 +109,24 @@
 					<!-- FIM DO FORMULARIO -->
 					<center>
 
-						<p:commandButton icon="podeGravar"
-							action="#{GrupoController.gravarGrupo()}"
-							update=":formCADU:message,:formCADU:pnlCadGrupo" value="Incluir"
-							style="width:85px" rendered="#{GrupoController.tipo ==1}" />
+				<b:commandButton action="#{GrupoController.gravarGrupo()}"
+					icon="glyphicon-ok" size="sm" look="success"
+					update=":formCADU:message,:formCADU" value="Incluir"
+					rendered="#{GrupoController.tipo == 1}" />
 
 
-						<p:commandButton action="#{GrupoController.alterarGrupo()}"
-							update=":formCADU:message,:formCADU:pnlCadGrupo" value="Alterar"
-							style="width:85px" icon="podeGravar"
-							rendered="#{GrupoController.tipo  == 2}" />
-						<p:commandButton value="Voltar" icon="btvoltar" process="@this"
-							style="width:85px;margin-left:10px"
-							action="/pages/sishosp/gerenciarGrupo.faces?faces-redirect=true">
-						</p:commandButton>
-
+				<b:commandButton action="#{GrupoController.alterarGrupo()}"
+					icon="glyphicon-ok" size="sm"
+					update=":formCADU:message,:formCADU" value="Alterar"
+					look="success" rendered="#{GrupoController.tipo  == 2}" />
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					style="margin-left:10px" size="sm" immediate="true" look="info"
+					action="/pages/sishosp/gerenciarGrupo.faces?faces-redirect=true">
+				</b:commandButton>
 
 
 					</center>
-				</p:panel>
+				</b:panel>
 
 			</h:form>
 			<p:dialog header="Consulta Equipes" widgetVar="dlgConsultEquipes"
@@ -138,7 +142,7 @@
 							<p:outputLabel value="#{equipe.descEquipe}" />
 						</p:column>
 						<p:column style="width:50px;text-align: center">
-							<p:commandButton update=":formCADU:pnlCadGrupo"
+							<p:commandButton update=":formCADU"
 								icon="ui-icon-check" title="Selecionar"
 								onclick="PF('dlgConsultEquipes').hide();"
 								action="#{GrupoController.grupo.addEquipe()}">
@@ -149,7 +153,7 @@
 					</p:dataTable>
 				</h:form>
 			</p:dialog>
-		</div>
+		
 
 	</ui:define>
 </ui:composition>

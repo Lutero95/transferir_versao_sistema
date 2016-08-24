@@ -3,32 +3,28 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-<f:metadata>
-				<f:viewAction action="#{EscolaController.getEditEscola()}"  />
-			</f:metadata>
+		<f:metadata>
+			<f:viewAction action="#{EscolaController.getEditEscola()}" />
+		</f:metadata>
 		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
 
-	
+
+		<b:panel title="#{EscolaController.cabecalho}" collapsible="false">
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
-				
-				<p:panel id="pnlCadPaciente" header="#{EscolaController.cabecalho}"
-					style="height:400px; width:600px; margin-left:50%; margin-top:10%; background-color: #F5F5F5;">
-<p:outputPanel>
+				<p:outputPanel>
 					<div class="form-group">
-						<h:outputLabel for="inputname" value="Nome Escola"
+						<h:outputLabel for="inputname" value="Descrição"
 							styleClass="col-sm-3 control-label" />
 						<div class="col-sm-6">
 							<p:inputText value="#{EscolaController.escola.descescola}"
-								class="form-control" id="inputname"
-								required="true"
+								class="form-control" id="inputname" required="true"
 								validatorMessage="Nome deve conter entre 2 e 30 caracteres."
 								requiredMessage="é necessário que você informe seu nome.">
 								<f:validateLength minimum="2" maximum="40" />
@@ -38,36 +34,28 @@
 						</div>
 					</div>
 
-</p:outputPanel>
-					<p:separator></p:separator>
-					<center>
-					
-					
-					
-						<!-- FIM DO FORMULARIO -->
+				</p:outputPanel>
 
-							<p:commandButton icon="podeGravar" action="#{EscolaController.gravarEscola()}"
-								update=":formCADU:message,:formCADU:pnlCadPaciente"
-								value="Cadastrar" style="width:85px"
-								rendered="#{EscolaController.tipoesc == 1}" />
+				<center>
+					<b:commandButton action="#{EscolaController.gravarEscola()}"
+						icon="glyphicon-ok" size="sm" look="success"
+						update=":formCADU:message,:formCADU" value="Incluir"
+						rendered="#{EscolaController.tipoesc == 1}" />
 
 
-							<p:commandButton icon="podeGravar" action="#{EscolaController.alterarEscola()}"
-								update=":formCADU:message,:formCADU:pnlCadPaciente"
-								value="Alterar" style="width:85px"
-								rendered="#{EscolaController.tipoesc ==2}" />
-						<p:commandButton value="Voltar" icon="btvoltar"
-							style="width:85px;margin-left:10px" process="@this"
-							action="/pages/sishosp/gerenciarEscola.faces?faces-redirect=true"></p:commandButton>
+					<b:commandButton action="#{EscolaController.alterarEscola()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU:message,:formCADU"
+						value="Alterar" look="success"
+						rendered="#{EscolaController.tipoesc  == 2}" />
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="margin-left:10px" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarEscola.faces?faces-redirect=true">
+					</b:commandButton>
 
-					</center>
-				</p:panel>
-
-
-
-
+				</center>
 			</h:form>
-		</div>
+		</b:panel>
+
 
 	</ui:define>
 </ui:composition>

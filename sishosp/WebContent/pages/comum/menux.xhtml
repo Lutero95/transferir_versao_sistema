@@ -5,9 +5,9 @@
       xmlns:ui="http://java.sun.com/jsf/facelets">
 
     <h:body>
-    <h:form id="mainFormtempSist">
-
-
+        <h:form> 
+    	
+ 
 				<p:menubar autoDisplay="true">
 					<p:menuitem value="Home"
 						action="/pages/comum/selecaoSistema.faces?faces-redirect=true"
@@ -23,9 +23,9 @@
 							url="/pages/sishosp/gerenciarMunicipio.faces" />
 						<p:menuitem value="Gerenciar Pacientes"
 							url="/pages/sishosp/gerenciarPaciente.faces" />
-						<p:menuitem value="Gerenciar ProfissÃ£o"
+						<p:menuitem value="Gerenciar Profissão"
 							url="/pages/sishosp/gerenciarProfissoes.faces" />
-						<p:menuitem value="Gerenciar RaÃ§a"
+						<p:menuitem value="Gerenciar Raça"
 							url="/pages/sishosp/gerenciarRaca.faces" />
 						<p:menuitem value="Gerenciar Tipo De Encaminhamento"
 							url="/pages/sishosp/gerenciarTipoEncaminhamento.faces" />
@@ -50,14 +50,14 @@
 					</p:submenu>
 					<p:submenu label="Cadastros" icon="ui-icon-document">
 						<p:submenu label="Agenda" icon="ui-icon-document">
-							<p:menuitem value="ConfiguraÃ§Ã£o da Agenda"
+							<p:menuitem value="Configuração da Agenda"
 								url="/pages/agenda/configuracaoAgenda.faces" />
-							<p:menuitem value="ConfiguraÃ§Ã£o da Agenda por equipe"
+							<p:menuitem value="Configuração da Agenda por equipe"
 								url="/pages/agenda/configuracaoAgendaEquipe.faces" />
 							<p:menuitem value="Bloqueio" url="/pages/agenda/bloqueio.faces" />
 						</p:submenu>
 						
-						<p:menuitem value="ConvÃªnios"
+						<p:menuitem value="Convênios"
 							onclick="PF('dlgCadConvenio').show();" />
 						<p:menuitem value="CBO" onclick="PF('dlgCadCBO').show();" />
 						<p:menuitem value="Escolaridades"
@@ -75,13 +75,13 @@
 						
 						<p:menuitem value="Profissionais"
 							onclick="PF('dlgCadProfissional').show();" />
-						<p:menuitem value="ProfissÃµes"
+						<p:menuitem value="Profissões"
 							onclick="PF('dlgCadProfissoes').show();" />
 						<p:menuitem value="Procedimentos"
 							onclick="PF('dlgCadProcedimento').show();" />
 						<p:menuitem value="Programas"
 							onclick="PF('dlgCadPrograma').show();" />
-						<p:menuitem value="RaÃ§a" onclick="PF('dlgCadRaca').show();" />
+						<p:menuitem value="Raça" onclick="PF('dlgCadRaca').show();" />
 						<p:menuitem value="Tipos de escolas"
 							onclick="PF('dlgCadTipoEscola').show();" />
 						<p:menuitem value="Tipos de encaminhamento"
@@ -93,7 +93,7 @@
 					
 					
 					<p:submenu label="Suporte" icon="ui-icon-document">
-						<p:menuitem value="Cadastros de UsuÃ¡rios"
+						<p:menuitem value="Cadastros de Usuários"
 							url="/pages/sishosp/agendaPaciente.faces" />
 
 					</p:submenu>
@@ -109,13 +109,13 @@
 							url="/pages/sishosp/gerenciarLaudoDigita.faces" />
 						<p:menuitem value="Controle Apac"
 							url="/pages/sishosp/ControleApac.faces" />
-						<p:menuitem value="Agenda MÃ©dica"
+						<p:menuitem value="Agenda Médica"
 							url="/pages/agenda/agendaMedica.faces" />
 						<p:menuitem value="Atendimento"
 							url="/pages/agenda/consAgendamentos.faces" />
 						<p:menuitem value="Consulta Agendamento"
 							url="/pages/sishosp/agendaPaciente.faces" />
-						<p:submenu label="ServiÃ§o Social" icon="ui-icon-contact">
+						<p:submenu label="Serviço Social" icon="ui-icon-contact">
 							<p:menuitem value="Primeiro Atendimento"
 								url="/pages/sishosp/agendaPaciente.faces" />
 						</p:submenu>
@@ -150,10 +150,7 @@
 
 
 				</p:menubar>
-
-			</h:form>
-    <h:form> 
-    	
+ 
     
     
     <p:menubar model="#{MBUsuarios.menuModel}"   style="font-size:14px !important;width:80%;float:right;height:50px;"

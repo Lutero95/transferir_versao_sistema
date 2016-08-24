@@ -3,118 +3,66 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:stella="http://stella.caelum.com.br/faces2"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
-<f:metadata>
-				<f:viewAction action="#{GrupoController.getListaTodosGrupos()}" />
-			</f:metadata>
+<ui:composition template="../../template/template.xhtml">
+	<f:metadata>
+		<f:viewAction action="#{GrupoController.getListaTodosGrupos()}" />
+	</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-		<div class="sub-header">
-						<h4>Gerenciamento de Grupo</h4>
-						
-						<p:separator/>
-					</div>
-		<h:form id="frmmensagem"
-			onkeypress="
-                if (event.keyCode == 13) {
-                    document.getElementById('form:botaoBusca').click();
-                    return false;
-                }">
+		<b:panel title="Gerenciamento de Grupo" collapsible="false">
 
+			<h:form id="frmmensagem">
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{GrupoController.redirectInsert()}" icon="glyphicon-plus"
+					look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{GrupoController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
+				<p:growl id="growl" showDetail="false" />
 
-			<p:growl id="growl" showDetail="false" />
-			
-				<p:panelGrid columns="7" styleClass="semBorda"
-					style="font-size:12px !important;">
-					<p:outputPanel id="pnlprincipal">
-						<p:outputLabel value="Pesquisar por: " />
-						<p:selectOneMenu value="#{GrupoController.tipoBuscar}"
-							required="true"
-							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
-							requiredMessage="Informe o diretório da página.">
-							<f:selectItem itemLabel="Nome" itemValue="1" />
-							<p:ajax event="change" update=":frmmensagem:pnlprincipal" />
-						</p:selectOneMenu>
+				<b:dataTable id="dt" var="tab" 
+					value="#{GrupoController.listaGrupos}" lang="es"
+					display="Nenhum Grupo">
+					<h:column>
+						<f:facet name="header">
+                        Descrição
+                    </f:facet>
 
-						<p:inputText id="campoBuscanome" required="true" requiredMessage="Informe a descrição do grupo"
-							style="height:28px;margin-top:-6px;margin-left:16px;" size="35"
-							value="#{GrupoController.descricaoBusca}" />
-
-						<p:commandButton  id="botaoBusca" icon="buscaLupa"
-							style="height:30px;width:40px;margin-left:10px"
-							action="#{GrupoController.buscarGrupo()}"
-							update=":frmmensagem:tabela, :frmmensagem:growl" >
-								<p:tooltip value="Buscar" for="botaoBusca"/>
-								</p:commandButton>
-						
-						<p:commandButton icon="limpar" id="limp"
-							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
-							actionListener="#{GrupoController.limparDados()}"
-							style="margin-left:20px;height:30px;width:40px;" >
-							
-							<p:tooltip value="Limpar Busca" for="limp"/>
-							</p:commandButton>
-							
-						<br />
-
-						<p:commandButton id="btninc" value="Novo" process="@this"
-							action="#{GrupoController.redirectInsert()}" icon="add"
-							style="margin-top: 15px;">
-							<f:setPropertyActionListener value="1"
-								target="#{GrupoController.tipo}" />
-							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-						</p:commandButton>
-
-					</p:outputPanel>
-				</p:panelGrid>
-
-				<p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover"
-					id="tabela" style="margin-top:20px;"
-					value="#{GrupoController.listaGrupos}" var="tab"
-					paginator="true" paginatorPosition="bottom" rows="12">
-
-					<p:column headerText="Cód." style="font-weight:bold;width:5%;">
-						<h:outputText value="#{tab.idGrupo}" />
-					</p:column>
-
-					<p:column headerText="Nome" style="font-weight:bold;">
 						<h:outputText value="#{tab.descGrupo}" />
-					</p:column>
-					
-					<p:column headerText="Quantidade Frequência" style="font-weight:bold;">
-						<h:outputText value="#{tab.qtdFrequencia}" />
-					</p:column>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+                        Ação
+                    </f:facet>
 
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{GrupoController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{GrupoController.grupo}" />
 
-					<p:column headerText="Ações" width="15%">
-						<center>
-							<p:splitButton icon="confirmar">
-								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="#{GrupoController.redirectEdit()}">
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{GrupoController.grupo}" />
+							<f:setPropertyActionListener value="2"
+								target="#{GrupoController.tipo}" />
+						</b:commandButton>
 
-									<f:setPropertyActionListener value="1"
-										target="#{GrupoController.tipo}" />
-								</p:menuitem>
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogAtencao').show()">
 
-								<p:menuitem value="Excluir" icon="trash"
-									onclick="PF('dialogAtencao').show()">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{GrupoController.grupo}" />
+						</b:commandButton>
 
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{GrupoController.grupo}" />
-								</p:menuitem>
-							</p:splitButton>
-						</center>
-					</p:column>
-				</p:dataTable>
-		</h:form>
+					</h:column>
 
+				</b:dataTable>
+			</h:form>
+		</b:panel>
+		
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
@@ -126,13 +74,12 @@
 
 				</h:panelGrid>
 				<center>
-					<p:commandButton value="Sim"
-						action="#{GrupoController.excluirGrupo()}"
-						icon="ui-icon-check" style="font-size:14px;"
-						update=":frmmensagem:tabela, :frmmensagem:growl">
-					</p:commandButton>
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+<p:separator/>
+					<b:commandButton look="success" value="Sim" action="#{GrupoController.excluirGrupo()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem"/>
+					
+					<b:commandButton value="Não" oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;"/>
 
 				</center>
 			</h:form>

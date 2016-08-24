@@ -104,6 +104,7 @@ public class EscolaridadeController implements Serializable {
 			listaEscolaridade = null;
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
+			listarEscolaridade();			
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusao!", "Erro");
@@ -239,9 +240,9 @@ public class EscolaridadeController implements Serializable {
 
 	public String getCabecalho() {
 		if (this.tipo==1) {
-			cabecalho = "CADASTRO DE ESCOLARIDADE";
+			cabecalho = "Inclusão de Escolaridade";
 		} else if (this.tipo==2) {
-			cabecalho = "ALTERAR ESCOLARIDADE";
+			cabecalho = "Alteração de Escolaridade";
 		}
 		return cabecalho;
 	}

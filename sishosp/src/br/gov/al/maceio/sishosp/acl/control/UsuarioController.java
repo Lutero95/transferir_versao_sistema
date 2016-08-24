@@ -309,7 +309,7 @@ public class UsuarioController implements Serializable {
 	        
 	        // Gerar menu início.
 	        DefaultMenuItem item1 = new DefaultMenuItem();
-	        item1.setValue("In�cio");
+	        item1.setValue("Início");
 	        item1.setUrl(sistema.getUrl().replace("?faces-redirect=true", ""));
 	        menuModel.addElement(item1);
 	        

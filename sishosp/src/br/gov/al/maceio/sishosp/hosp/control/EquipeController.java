@@ -123,13 +123,13 @@ public class EquipeController implements Serializable {
 	public String gravarEquipe() throws ProjetoException, SQLException {
 		if (this.equipe.getProfissionais().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"� necess�rio no m�nimo um profissional na equipe!", "Erro");
+					"É necessário pelo menos um profissional na equipe!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
 		if (this.equipe.getDescEquipe().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Descri��o obrigat�ria!", "Erro");
+					"Descrição Obrigatória!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
@@ -156,13 +156,13 @@ public class EquipeController implements Serializable {
 	public String alterarEquipe() throws ProjetoException {
 		if (this.equipe.getProfissionais().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"� necess�rio no m�nimo um profissional na equipe!", "Erro");
+					"É necessário peo menos um profissional na equipe!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
 		if (this.equipe.getDescEquipe().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Descri��o obrigat�ria!", "Erro");
+					"Descrição Obrigatória!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
@@ -204,9 +204,9 @@ public class EquipeController implements Serializable {
 
 	public String getCabecalho() {
 		if (this.tipo==1) {
-			cabecalho = "CADASTRO DE EQUIPE";
+			cabecalho = "Inclusão de Equipe";
 		} else if (this.tipo==2) {
-			cabecalho = "ALTERAR EQUIPE";
+			cabecalho = "Alteração de Equipe";
 		}
 		return cabecalho;
 	}

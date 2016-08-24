@@ -5,81 +5,81 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:stella="http://stella.caelum.com.br/faces2"
-		xmlns:b="http://bootsfaces.net/ui">
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../pages/sishosp/teste.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-						<h4>Gerenciamento de CBO</h4>
-						
-						<p:separator/>
-
-		<h:form id="frmmensagem">
+	 <b:panel title="Gerenciamento de CBO"  collapsible="false">
+			<h:form id="frmmensagem">
 			<f:metadata>
 				<f:viewAction action="#{CboController.getListarCbo}" />
 			</f:metadata>
-  <p:dataTable id="tabela" var="tab" value="#{CboController.listaCbo}" widgetVar="tabcbo" 
-                 emptyMessage="No cars found with given criteria" filteredValue="#{CboController.listaCboFiltrada}">
-                         <f:facet name="header">
-            <p:outputPanel>
-                <h:outputText value="Busca:" style="margin-left:-80%"/>
-                <p:inputText id="globalFilter" onkeyup="PF('tabcbo').filter()" style="width:150px"/>
-            </p:outputPanel>
-            
-            
-        </f:facet>
-         <p:column  filterBy="#{tab.codCbo}"   headerText="Model" filterMatchMode="contains">
-            <h:outputText value="#{tab.codCbo}" />
-        </p:column>
-        
-         <p:column  filterBy="#{tab.descCbo}" headerText="Model" filterMatchMode="contains">
-            <h:outputText value="#{tab.descCbo}" />
-        </p:column>
-                 <p:column  headerText="Model" >
-        
 
-        					<b:commandButton tooltip="Alterar" icon="glyphicon-edit"  
-									action="#{CboController.redirectEdit()}">
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{CboController.cbo}" />
+			<b:commandButton id="btninc" value="Novo" size="sm"
+				action="#{CboController.redirectInsert()}" icon="glyphicon-plus"
+				look="primary">
+				<f:setPropertyActionListener value="1"
+					target="#{CboController.tipo}" />
+				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+			</b:commandButton>
+			<br />
+			<br />
 
-									<f:setPropertyActionListener value="2"
-										target="#{CboController.tipo}" /></b:commandButton>
-										
-										<b:commandButton tooltip="Excluir" icon="glyphicon-trash" style="margin-left:10px"
-									onclick="PF('dialogAtencao').show()">
+			<b:dataTable id="dt" var="tab" value="#{CboController.listaCbo}"  
+				lang="es" display="Nenhum CBO">
+			
+				<h:column>
+					<f:facet name="header">
+                        Descrição
+                    </f:facet>
 
-<f:setPropertyActionListener value="#{tab}"
-										target="#{CboController.cbo}" />
-								</b:commandButton>
-										
-</p:column>        
-        </p:dataTable>
-        
+					<h:outputText value="#{tab.descCbo}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+                        Ação
+                    </f:facet>
+
+					<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+						action="#{CboController.redirectEdit()}">
+						<f:setPropertyActionListener value="#{tab}"
+							target="#{CboController.cbo}" />
+
+						<f:setPropertyActionListener value="2"
+							target="#{CboController.tipo}" />
+					</b:commandButton>
+
+					<b:commandButton tooltip="Excluir" icon="glyphicon-trash" size="sm"
+						ajax="true" style="margin-left:10px"
+						oncomplete="PF('dialogAtencao').show()">
+
+						<f:setPropertyActionListener value="#{tab}"
+							target="#{CboController.cbo}" />
+					</b:commandButton>
+
+				</h:column>
+			</b:dataTable>
+
 
 
 
 
 		</h:form>
-
+</b:panel>
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
 			<h:form id="dlgexcluir">
-				<h:panelGrid columns="1">
-
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						esse cbo?</div>
-
-				</h:panelGrid>
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					este cbo?</div>
 				<center>
-					<p:commandButton value="Sim"
-						action="#{CboController.excluirCbo()}"
-						icon="ui-icon-check" style="font-size:14px;"
-						update=":frmmensagem:tabela">
-					</p:commandButton>
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+				<p:separator/>
+					<b:commandButton look="success" value="Sim" action="#{CboController.excluirCbo()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem"/>
+					
+					<b:commandButton value="Não" oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;"/>
 
 				</center>
 			</h:form>

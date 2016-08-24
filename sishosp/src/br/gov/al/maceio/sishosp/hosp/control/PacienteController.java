@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -64,7 +65,7 @@ public class PacienteController implements Serializable{
 	private RacaBean raca;
 
 	// BUSCAS
-	private String tipo;
+	private int tipo;
 	private Integer tipoBuscaPaciente;
 	private String campoBuscaPaciente;
 	private String statusPaciente;
@@ -168,7 +169,6 @@ public class PacienteController implements Serializable{
 		listaMunicipios = null;
 
 		// BUSCA
-		tipo = "";
 		tipoBuscaPaciente = 1;
 		campoBuscaPaciente = "";
 		statusPaciente = "P";
@@ -187,6 +187,38 @@ public class PacienteController implements Serializable{
 			List<PacienteBean> listaPacientesParaAgenda) {
 		this.listaPacientesParaAgenda = listaPacientesParaAgenda;
 	}
+	
+	
+	public String redirectEdit() {
+		return "cadastroPaciente?faces-redirect=true&amp;id=" + this.paciente.getId_paciente()+"&amp;tipo="+tipo;
+	}	
+	
+	
+	public String redirectInsert() {
+		return "cadastroPaciente?faces-redirect=true&amp;tipo="+tipo;
+	}		
+	
+	public void getEditPaciente() throws ProjetoException, SQLException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo =Integer.parseInt(params.get("tipo"));			
+			System.out.println("tipo do walter"+tipo);
+			PacienteDAO cDao = new PacienteDAO();
+			this.paciente = cDao.listarPacientePorID(id);
+		}
+		else{
+			System.out.println("tipo sera"+tipo);
+			tipo =Integer.parseInt(params.get("tipo"));
+			
+		}
+		
+	}
+
+
 
 	public void gravarPaciente() throws ProjetoException {
 		PacienteDAO udao = new PacienteDAO();
@@ -221,7 +253,7 @@ public class PacienteController implements Serializable{
 		PacienteDAO udao = new PacienteDAO();
 		if (tipoBuscar.equals("VAZIO") || descricaoParaBuscar.isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Escolha uma opção válida e insira uma descrição!",
+					"Escolha uma opï¿½ï¿½o vï¿½lida e insira uma descriï¿½ï¿½o!",
 					"Insira os dados");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
@@ -231,8 +263,8 @@ public class PacienteController implements Serializable{
 
 			if (this.listaPacientesParaAgenda.isEmpty()) {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Não existe paciente com essa descrição!",
-						"Paciente não encontrado");
+						"Nï¿½o existe paciente com essa descriï¿½ï¿½o!",
+						"Paciente nï¿½o encontrado");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 		}
@@ -300,7 +332,7 @@ public class PacienteController implements Serializable{
 		if (cadastrou == true) {
 			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cor/Raça cadastrado com sucesso!", "Sucesso");
+					"Cor/Raï¿½a cadastrado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaRaca = null;
 
@@ -321,7 +353,7 @@ public class PacienteController implements Serializable{
 		if (alterou == true) {
 			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cor/Raça alterado com sucesso!", "Sucesso");
+					"Cor/Raï¿½a alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "/pages/sishosp/gerenciarRaca.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
@@ -342,7 +374,7 @@ public class PacienteController implements Serializable{
 
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cor/Raça excluido com sucesso!", "Sucesso");
+					"Cor/Raï¿½a excluido com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaRaca = null;
 			RequestContext.getCurrentInstance().execute(
@@ -383,7 +415,7 @@ public class PacienteController implements Serializable{
 		} else {
 			profissaobuscarapida = new ProfissaoBean();
 			FacesMessage message = new FacesMessage(
-					" Código da Profissao incorreto!");
+					" Cï¿½digo da Profissao incorreto!");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
@@ -430,7 +462,7 @@ public class PacienteController implements Serializable{
 		} else {
 			transportebuscarapida = new FormaTransporteBean();
 			FacesMessage message = new FacesMessage(
-					" Código do Encaminhado incorreto!");
+					" Cï¿½digo do Encaminhado incorreto!");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
@@ -478,7 +510,7 @@ public class PacienteController implements Serializable{
 		} else {
 			encaminhadobuscarapida = new EncaminhadoBean();
 			FacesMessage message = new FacesMessage(
-					" Código do Encaminhado incorreto!");
+					" Cï¿½digo do Encaminhado incorreto!");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
@@ -526,7 +558,7 @@ public class PacienteController implements Serializable{
 		} else {
 			encaminhamentobuscarapida = new EncaminhamentoBean();
 			FacesMessage message = new FacesMessage(
-					" Código do Encaminhado incorreto!");
+					" Cï¿½digo do Encaminhado incorreto!");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
@@ -573,7 +605,7 @@ public class PacienteController implements Serializable{
 		} else {
 			escolaridadebuscarapida = new EscolaridadeBean();
 			FacesMessage message = new FacesMessage(
-					" Código da Escolaridade incorreto!");
+					" Cï¿½digo da Escolaridade incorreto!");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
@@ -639,7 +671,7 @@ public class PacienteController implements Serializable{
 		} else {
 			escolabuscarapida = new EscolaBean();
 			FacesMessage message = new FacesMessage(
-					" Código da Escola incorreto!");
+					" Cï¿½digo da Escola incorreto!");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
@@ -744,7 +776,7 @@ public class PacienteController implements Serializable{
 		} else {
 			// listaAss = null;
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-					"Nenhuma Raça encontrada.", "Aviso");
+					"Nenhuma Raï¿½a encontrada.", "Aviso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 
@@ -876,14 +908,9 @@ public class PacienteController implements Serializable{
 		this.encaminhado = encaminhado;
 	}
 
-	public List<PacienteBean> getListaPacientes() throws ProjetoException {
-		if (listaPacientes == null) {
-
+	public void listarPacientes() throws ProjetoException {
 			PacienteDAO fdao = new PacienteDAO();
 			listaPacientes = fdao.listaPacientes();
-
-		}
-		return listaPacientes;
 	}
 
 	public void setListaPacientes(List<PacienteBean> listaPacientes) {
@@ -1370,14 +1397,7 @@ public class PacienteController implements Serializable{
 		this.statusPaciente = statusPaciente;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
+	
 	public Integer getTipoBuscaRaca() {
 		return tipoBuscaRaca;
 	}
@@ -1403,10 +1423,10 @@ public class PacienteController implements Serializable{
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
-			cabecalho = "CADASTRO DE PACIENTE";
-		} else if (this.tipo.equals("A")) {
-			cabecalho = "ALTERAR PACIENTE";
+		if (this.tipo==1) {
+			cabecalho = "InclusÃ£o de Paciente";
+		} else if (this.tipo==2) {
+			cabecalho = "AlteraÃ§Ã£o de Paciente";
 		}
 		return cabecalho;
 	}
@@ -1424,10 +1444,10 @@ public class PacienteController implements Serializable{
 	}
 
 	public String getCabecalho2() {
-		if (this.tipo.equals("I")) {
-			cabecalho2 = "CADASTRO DE RAÇA";
-		} else if (this.tipo.equals("A")) {
-			cabecalho2 = "ALTERAR RAÇA";
+		if (this.tipo==1) {
+			cabecalho2 = "InclusÃ£o de RaÃ§a";
+		} else if (this.tipo==2) {
+			cabecalho2 = "AlteraÃ§Ã£o de RaÃ§a";
 		}
 		return cabecalho2;
 	}
@@ -1447,6 +1467,18 @@ public class PacienteController implements Serializable{
 
 	public void setPacienteSelecionado(PacienteBean pacienteSelecionado) {
 		this.pacienteSelecionado = pacienteSelecionado;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
+	}
+
+	public List<PacienteBean> getListaPacientes() {
+		return listaPacientes;
 	}
 	
 	

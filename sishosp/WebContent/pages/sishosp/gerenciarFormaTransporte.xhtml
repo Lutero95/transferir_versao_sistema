@@ -3,125 +3,71 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:stella="http://stella.caelum.com.br/faces2"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-		<div class="sub-header">
-						<h4>Gerenciamento de Forma de Transporte</h4>
-						
-						<p:separator/>
-					</div>
-		<h:form id="frmmensagem"
-			onkeypress="
-                if (event.keyCode == 13) {
-                    document.getElementById('form:botaoBusca').click();
-                    return false;
-                }">
+		<b:panel title="Gerenciamento de Forma de Transporte"
+			collapsible="false">
+			<f:metadata>
+				<f:viewAction action="#{FormaTransporteController.listarTransporte()}" />
+			</f:metadata>
+			<h:form id="frmmensagem">
 
 
-			<p:growl id="growl" showDetail="false" />
-			
-				<p:panelGrid columns="7" styleClass="semBorda"
-					style="font-size:12px !important;">
-					<p:outputPanel id="pnlprincipal">
-						<p:outputLabel value="Pesquisar por: " />
-						<p:selectOneMenu
-							value="#{FormaTransporteController.tipoBuscaTransporte}"
-							required="true"
-							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
-							requiredMessage="Informe o diretório da página.">
+				<p:growl id="growl" showDetail="false" />
+<b:commandButton id="btninc" value="Novo" size="sm"
+				action="#{FormaTransporteController.redirectInsert()}" icon="glyphicon-plus"
+				look="primary">
+				<f:setPropertyActionListener value="1"
+					target="#{FormaTransporteController.tipo}" />
+				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+			</b:commandButton>
+			<br />
+			<br />
 
-							<f:selectItem itemLabel="Nome" itemValue="1" />
-
-
-							<p:ajax event="change" update=":frmmensagem:pnlprincipal" />
-						</p:selectOneMenu>
-
-						<p:inputText id="campoBuscanome"
-							style="height:28px;margin-top:-6px;margin-left:16px;" size="35"
-							value="#{FormaTransporteController.campoBuscaTransporte}"
-							rendered="#{FormaTransporteController.tipoBuscaTransporte == 1}" />
+				<b:dataTable id="dt" var="tab"
+					value="#{FormaTransporteController.listaTransporte}" lang="es"
+					display="Nenhuma forma de transporte">
 
 
+					<h:column>
+						<f:facet name="header">
+                        Descrição
+                    </f:facet>
 
-						
-						<p:commandButton id="botaoBusca" icon="buscaLupa"
-							
-							style="height:30px;width:40px;margin-left:10px"
-							action="#{FormaTransporteController.buscarTransportes()}"
-							update=":frmmensagem:tabela, :frmmensagem:growl" >
-<p:tooltip value="Buscar" for="botaoBusca"/>							
-							</p:commandButton>
-						<p:commandButton id="limp" icon="limpar"
-							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
-							actionListener="#{FormaTransporteController.limparBuscaDados()}"
-							style="margin-left:20px;height:30px;width:40px;">
-							<p:tooltip value="Limpar Busca" for="limp"/>
-							</p:commandButton>
-						<br />
-
-						<p:commandButton id="btninc" value="Novo"
-							action="#{FormaTransporteController.redirectInsert()}"  icon="add"
-							 style="margin-top: 15px;">
-							<f:setPropertyActionListener value="1"
-								target="#{FormaTransporteController.tipo}" />
-							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-						</p:commandButton>
-
-					</p:outputPanel>
-				</p:panelGrid>
-
-
-
-
-
-
-				<p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover"
-					id="tabela" style="margin-top:20px;"
-					value="#{FormaTransporteController.listaTransporte}" var="tab"
-					paginator="true" paginatorPosition="bottom" rows="12">
-
-
-					<p:column headerText="Cód." style="font-weight:bold;width:5%;">
-						<h:outputText value="#{tab.codformatransporte}" />
-					</p:column>
-
-					<p:column headerText="Nome" style="font-weight:bold;">
 						<h:outputText value="#{tab.descformatransporte}" />
-					</p:column>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+                        Ação
+                    </f:facet>
+
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{FormaTransporteController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{FormaTransporteController.transporte}" />
+
+							<f:setPropertyActionListener value="2"
+								target="#{FormaTransporteController.tipo}" />
+						</b:commandButton>
+
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogAtencao').show()">
+
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{FormaTransporteController.transporte}" />
+						</b:commandButton>
+
+					</h:column>
 
 
-					<p:column headerText="Ações" width="15%">
-						<center>
-							<p:splitButton icon="confirmar">
-								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="#{FormaTransporteController.redirectEdit()}">
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{FormaTransporteController.transporte}" />
-
-
-									<f:setPropertyActionListener value="2"
-										target="#{FormaTransporteController.tipo}" />
-								</p:menuitem>
-
-								<p:menuitem value="Excluir" icon="trash"
-									onclick="PF('dialogAtencao').show()">
-
-									<f:setPropertyActionListener value="#{tab.codformatransporte}"
-										target="#{FormaTransporteController.transporte.codformatransporte}" />
-								</p:menuitem>
-							</p:splitButton>
-						</center>
-					</p:column>
-				</p:dataTable>
-		</h:form>
-
+				</b:dataTable>
+			</h:form>
+		</b:panel>
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
@@ -138,22 +84,20 @@
 
 				<center>
 
-					<p:commandButton value="Sim"
+					<p:separator />
+					<b:commandButton look="success" value="Sim"
 						action="#{FormaTransporteController.excluirTransporte()}"
-						icon="ui-icon-check" style="font-size:14px;"
-						update=":frmmensagem:tabela">
-					</p:commandButton>
+						ajax="true" icon="glyphicon-ok" update="frmmensagem" />
 
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;" />
 
 				</center>
 
 
 			</h:form>
 		</p:dialog>
-
-
 	</ui:define>
 </ui:composition>
 </html>

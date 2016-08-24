@@ -5,18 +5,15 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
-			<p:outputLabel value="CADASTRO DE MUNICÍPIOS"
-				rendered="#{EnderecoController.tipo == 'I'}"></p:outputLabel>
-			<p:outputLabel value="ALTERAR MUNICÍPIOS"
-				rendered="#{EnderecoController.tipo == 'A'}"></p:outputLabel>
-			<br />
+		<f:metadata>
+		<f:viewAction action="#{EnderecoController.getEditMunicipio()}" />
+	</f:metadata>
+		<b:panel title="#{EnderecoController.cabecalho}" collapsible="false">
 			<h:form>
 				<p:commandButton value="Voltar"
 					style="position:relative; right:18%; width:100px; " icon="btvoltar"
@@ -26,11 +23,10 @@
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
-				<p:panel id="pnlCadPaciente"
-					style="height:auto; width:auto; background-color: #F5F5F5;">
+				
 
 					<div class="form-group">
-						<h:outputLabel for="inputname" value="Nome do Município"
+						<h:outputLabel for="inputname" value="Município"
 							styleClass="col-sm-3 control-label" />
 						<div class="col-sm-6">
 							<h:inputText value="#{EnderecoController.endereco.municipio}"
@@ -46,7 +42,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<h:outputLabel for="inputcod" value="Cod Federal"
+						<h:outputLabel for="inputcod" value="Cód. Federal"
 							styleClass="col-sm-3 control-label" />
 						<div class="col-sm-6">
 							<h:inputText class="form-control"
@@ -56,7 +52,7 @@
 					</div>
 
 					<div class="form-group">
-						<h:outputLabel for="inputcod" value="Cod MacRegião"
+						<h:outputLabel for="inputcod" value="Cód. MacRegião"
 							styleClass="col-sm-3 control-label" />
 						<div class="col-sm-6">
 							<h:inputText class="form-control"
@@ -64,29 +60,29 @@
 								style="width: 300px" />
 						</div>
 					</div>
-					<p:separator></p:separator>
-					<!-- FIM DO FORMULARIO -->
-					<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-						<h:commandButton action="#{EnderecoController.gravarMunicipios()}"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
-							value="Cadastrar" styleClass="btn btn-sm btn-success"
-							rendered="#{EnderecoController.tipo == 'I'}" />
+					<center>
+								<b:commandButton action="#{EnderecoController.gravarMunicipios()}"
+					icon="glyphicon-ok" size="sm" look="success"
+					update=":formCADU:message,:formCADU" value="Incluir"
+					rendered="#{EnderecoController.tipo == 1}" />
 
 
-						<h:commandButton
-							action="#{EnderecoController.alterarMunicipios()}"
-							update=":formCADU:message,:formCADU:pnlCadPaciente,:formCadu"
-							value="Alterar" styleClass="btn btn-info"
-							rendered="#{EnderecoController.tipo == 'A'}" />
-					</p:panelGrid>
+				<b:commandButton action="#{EnderecoController.alterarMunicipios()}"
+					icon="glyphicon-ok" size="sm"
+					update=":formCADU:message,:formCADU" value="Alterar"
+					look="success" rendered="#{EnderecoController.tipo  == 2}" />
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					style="margin-left:10px" size="sm" immediate="true" look="info"
+					action="/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true">
+				</b:commandButton>
 
-				</p:panel>
 
+</center>
 
 
 			</h:form>
-		</div>
 
+</b:panel>
 	</ui:define>
 </ui:composition>
 </html>

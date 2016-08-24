@@ -111,6 +111,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup,
 	font-family: arial !important;
 	font-size: 12px !important;
 	font-weight: normal !important;
+	background-color: white;
 }
 
 .ui-menu .ui-menu-parent .ui-menu-child {
@@ -128,6 +129,20 @@ article, aside, details, figcaption, figure, footer, header, hgroup,
 	padding: 0px !important;
 	background: none !important;
 	
+}
+
+.dataTables .pagination li {display: none;}
+.dataTables .pagination li.prev, #my_table .pagination li.next {display: inline;}
+
+.dataTables_pagination, .dataTables_info { display: none; }
+
+
+.dataTables_paginate .paginate_button.disabled {
+    display: none;
+}
+
+.toolbar {
+    float: left;
 }
 
 /*.menu-sistema .ui-menu-parent>a .ui-menuitem-text,.menu-sistema>.ui-menu-list>.ui-menuitem>a>.ui-menuitem-text
@@ -196,4 +211,11 @@ article, aside, details, figcaption, figure, footer, header, hgroup,
 		float: initial;
 		margin-left: 50%;
 	}
+}
+
+.ui-inputtext {
+height:300px;]
+	}
+.corbranca{
+	background-color: white !important;
 }

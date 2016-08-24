@@ -10,7 +10,9 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 public class GrupoDAO {
@@ -20,7 +22,7 @@ public class GrupoDAO {
 
 	public boolean gravarGrupo(GrupoBean grupo) throws SQLException, ProjetoException {
 
-		String sql = "insert into hosp.grupo (descgrupo, qtdfrequencia, auditivo, inserção_pac_institut) values (?, ?, ?, ?);";
+		String sql = "insert into hosp.grupo (descgrupo, qtdfrequencia, auditivo, inserção_pac_institut) values (?, ?, ?, ?) RETURNING id_grupo;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -32,7 +34,21 @@ public class GrupoDAO {
 			} else {
 				ps.setBoolean(4, grupo.isInserção_pac_institut());
 			}
-			ps.execute();
+			ResultSet rs = ps.executeQuery();
+			Integer idGrupo =0;
+			if (rs.next()) {
+				idGrupo = rs.getInt("id_grupo");
+				String sql2 = "insert into hosp.equipe_grupo (id_grupo, codequipe) values(?,?);";
+				PreparedStatement ps2 = null;
+				for (EquipeBean eq : grupo.getEquipes()) {
+					ps2 = null;
+					ps2 = con.prepareStatement(sql2);
+					ps2.setInt(1, idGrupo);
+					ps2.setInt(2, eq.getCodEquipe());
+					ps2.execute();
+				}				
+			}	
+			
 			con.commit();
 			return true;
 		} catch (SQLException ex) {
@@ -46,6 +62,40 @@ public class GrupoDAO {
 			}
 		}
 	}
+	
+	
+	public List<EquipeBean> listarEquipesDoGrupo(int id) throws ProjetoException, SQLException {
+
+		List<EquipeBean> lista = new ArrayList<EquipeBean>();
+		String sql = "select eg.codequipe, e.descequipe from hosp.equipe_grupo eg"
+					+" join hosp.equipe e on e.id_equipe = eg.codequipe"
+					+" where eg.id_grupo=?";
+		ProfissionalDAO pDao = new ProfissionalDAO();
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				EquipeBean equipe = new EquipeBean();
+				equipe.setCodEquipe(rs.getInt("codequipe"));
+				equipe.setDescEquipe(rs.getString("descequipe"));
+				lista.add(equipe);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				con.close();
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+	
 
 	public List<GrupoBean> listarGruposPorPrograma(int codPrograma) throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<>();
@@ -238,6 +288,24 @@ public class GrupoDAO {
 			}
 			stmt.setInt(5, grupo.getIdGrupo());
 			stmt.executeUpdate();
+			
+			String sql2 = "delete from  hosp.equipe_grupo where id_grupo=?";
+			PreparedStatement ps2 = null;
+			ps2 = con.prepareStatement(sql2);
+			ps2.setInt(1, grupo.getIdGrupo());
+			ps2.execute();
+			
+			String sql3 = "insert into hosp.equipe_grupo (id_grupo, codequipe) values(?,?);";
+			PreparedStatement ps3 = null;
+			
+			for (EquipeBean eq : grupo.getEquipes()) {
+				ps3 = null;
+				ps3 = con.prepareStatement(sql3);
+				ps3.setInt(1, grupo.getIdGrupo());
+				ps3.setInt(2, eq.getCodEquipe());
+				ps3.execute();
+			}
+			
 			con.commit();
 			return true;
 		} catch (SQLException ex) {
@@ -272,6 +340,8 @@ public class GrupoDAO {
 	}
 
 	
+	
+	
 
 	public GrupoBean listarGrupoPorId(int id) throws ProjetoException {
 
@@ -283,11 +353,14 @@ public class GrupoDAO {
 			stm.setInt(1, id);
 			ResultSet rs = stm.executeQuery();
 			while (rs.next()) {
+				
+				
 				grupo.setIdGrupo(rs.getInt("id_grupo"));
 				grupo.setDescGrupo(rs.getString("descgrupo"));
 				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
 				grupo.setAuditivo(rs.getBoolean("auditivo"));
 				grupo.setInserção_pac_institut(rs.getBoolean("inserção_pac_institut"));
+				grupo.setEquipes(listarEquipesDoGrupo(rs.getInt("id_grupo")));				
 			}
 
 		} catch (SQLException ex) {

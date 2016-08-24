@@ -17,9 +17,9 @@ import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FormaTransporteDAO;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 
-@ManagedBean(name="FormaTransporteController")
+@ManagedBean(name = "FormaTransporteController")
 @ViewScoped
-public class FormaTransporteController implements Serializable{
+public class FormaTransporteController implements Serializable {
 
 	/**
 	 * 
@@ -51,38 +51,34 @@ public class FormaTransporteController implements Serializable{
 	}
 
 	public String redirectEdit() {
-		return "cadastroFormaTransporte?faces-redirect=true&amp;id=" + this.transporte.getCodformatransporte()+"&amp;tipo="+tipo;
-	}	
-	
-	
+		return "cadastroFormaTransporte?faces-redirect=true&amp;id="
+				+ this.transporte.getCodformatransporte() + "&amp;tipo=" + tipo;
+	}
+
 	public String redirectInsert() {
-		return "cadastroFormaTransporte?faces-redirect=true&amp;tipo="+tipo;
-	}	
-	
-	
+		return "cadastroFormaTransporte?faces-redirect=true&amp;tipo=" + tipo;
+	}
+
 	public void getEditFormaTransporte() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
 		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
+		if (params.get("id") != null) {
 			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
-			tipo =Integer.parseInt(params.get("tipo"));			
-			
+			tipo = Integer.parseInt(params.get("tipo"));
+
 			FormaTransporteDAO udao = new FormaTransporteDAO();
 			this.transporte = udao.buscatransportecodigo(id);
+		} else {
+
+			tipo = Integer.parseInt(params.get("tipo"));
+
 		}
-		else{
-			
-			tipo =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
+
 	}
-		
-	
-	
-	
+
 	public void gravarTransporte() throws ProjetoException {
 		FormaTransporteDAO udao = new FormaTransporteDAO();
 		boolean cadastrou = udao.cadastrar(transporte);
@@ -136,9 +132,10 @@ public class FormaTransporteController implements Serializable{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Transporte excluido com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaTransporte = null;
+			
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
+			listarTransporte();
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusao!", "Erro");
@@ -199,8 +196,6 @@ public class FormaTransporteController implements Serializable{
 		this.abaAtiva = abaAtiva;
 	}
 
-	
-
 	public Integer getTipoBuscaTransporte() {
 		return tipoBuscaTransporte;
 	}
@@ -225,14 +220,11 @@ public class FormaTransporteController implements Serializable{
 		this.statusTransporte = statusTransporte;
 	}
 
-	public List<FormaTransporteBean> getListaTransporte() throws ProjetoException {
-		if (listaTransporte == null) {
+	public void listarTransporte() throws ProjetoException {
 
-			FormaTransporteDAO fdao = new FormaTransporteDAO();
-			listaTransporte = fdao.listaTransportes();
+		FormaTransporteDAO fdao = new FormaTransporteDAO();
+		listaTransporte = fdao.listaTransportes();
 
-		}
-		return listaTransporte;
 	}
 
 	public void setListaTransporte(List<FormaTransporteBean> listaTransporte) {
@@ -240,10 +232,10 @@ public class FormaTransporteController implements Serializable{
 	}
 
 	public String getCabecalho() {
-		if (this.tipo==1) {
-			cabecalho = "CADASTRO DE TRANSPORTE";
-		} else if (this.tipo==2) {
-			cabecalho = "ALTERAR TRANSPORTE";
+		if (this.tipo == 1) {
+			cabecalho = "Inclusão de Forma de Transporte";
+		} else if (this.tipo == 2) {
+			cabecalho = "Alteração de Forma de Transporte";
 		}
 		return cabecalho;
 	}
@@ -258,6 +250,10 @@ public class FormaTransporteController implements Serializable{
 
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
+	}
+
+	public List<FormaTransporteBean> getListaTransporte() {
+		return listaTransporte;
 	}
 
 }

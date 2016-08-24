@@ -3,64 +3,65 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{CboController.getEditCbo()}" />
 	</f:metadata>
 	<ui:define name="body">
-<div class="panel panel-default">
-				<div class="panel-body">
 
-<div class="ui-fluid" >
-			<h:form class="form-horizontal" id="formCADU">
+		<h:form class="form-horizontal" id="formCADU">
 
-				<p:growl id="message" />
-	<div class="sub-header">
-						<h:panelGroup>
-								<h4>#{CboController.cabecalho}</h4>
-						</h:panelGroup>  
-						
-						<hr/>
-					</div>					
-					
-							<div class="form-group">
-								<h:outputLabel value="Descrição"
-									styleClass="col-sm-3 control-label" />
-								<div class="col-sm-6">
-									<h:inputText value="#{CboController.cbo.descCbo}"
-										class="form-control" required="true" id="indesc"
-										requiredMessage="Descrição obrigatória!" />
+			<p:growl id="message" />
+			<b:panel title="#{CboController.cabecalho}" collapsible="false">
 
-								</div>
-							</div>
+				<div class="form-group">
+					<h:outputLabel value="Código" styleClass="col-sm-3 control-label" />
+					<div class="col-sm-2">
+						<h:inputText value="#{CboController.cbo.codigo}"
+							class="form-control" required="true" id="incod"
+							requiredMessage="Código obrigatório!" />
 
-				
-				<!-- FIM DO FORMULARIO -->
-				<center>
-					<p:commandButton action="#{CboController.gravarCbo()}"  style="width:85px" icon="podeGravar"
-						update=":formCADU:message,:formCADU:indesc" value="Cadastrar"
-						
-						rendered="#{CboController.tipo == 1}" />
+					</div>
+				</div>
 
 
-					<p:commandButton action="#{CboController.alterarCbo()}" icon="podeGravar" style="width:85px" 
-						update=":formCADU:message,:formCADU:indesc" value="Alterar"
-						rendered="#{CboController.tipo  == 2}" />
-					<p:commandButton value="Voltar" icon="btvoltar"
-						style="width:85px;margin-left:10px" process="@this"
-						action="/pages/sishosp/gerenciarCbo.faces?faces-redirect=true">
-					</p:commandButton>
+				<div class="form-group">
+					<h:outputLabel value="Descrição"
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText value="#{CboController.cbo.descCbo}"
+							class="form-control" required="true" id="indesc"
+							requiredMessage="Descrição obrigatória!" />
 
-				</center>
+					</div>
+				</div>
+			</b:panel>
+
+			<!-- FIM DO FORMULARIO -->
+			<center>
+				<b:commandButton action="#{CboController.gravarCbo()}"
+					icon="glyphicon-ok" size="sm" look="success"
+					update=":formCADU:message,:formCADU:indesc" value="Incluir"
+					rendered="#{CboController.tipo == 1}" />
+
+
+				<b:commandButton action="#{CboController.alterarCbo()}"
+					icon="glyphicon-ok" size="sm"
+					update=":formCADU:message,:formCADU:indesc" value="Alterar"
+					look="success" rendered="#{CboController.tipo  == 2}" />
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					style="margin-left:10px" size="sm" immediate="true" look="info"
+					action="/pages/sishosp/gerenciarCbo.faces?faces-redirect=true">
+				</b:commandButton>
+
+			</center>
 
 
 
-			</h:form>
-		</div>
-</div>
-</div>
+		</h:form>
+
 	</ui:define>
 </ui:composition>
 </html>

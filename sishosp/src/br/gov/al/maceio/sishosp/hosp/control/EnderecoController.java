@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -15,10 +16,10 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 
-@ManagedBean(name="EnderecoController")
+@ManagedBean(name = "EnderecoController")
 @ViewScoped
-public class EnderecoController implements Serializable{
-	
+public class EnderecoController implements Serializable {
+
 	/**
 	 * 
 	 */
@@ -32,7 +33,7 @@ public class EnderecoController implements Serializable{
 	private List<EnderecoBean> listaBairros;
 
 	// BUSCAS
-	private String tipo;
+	private int tipo;
 	private Integer tipoBuscaMunicipio;
 	private String campoBuscaMunicipio;
 	private String statusMunicipio;
@@ -42,7 +43,6 @@ public class EnderecoController implements Serializable{
 		endereco = new EnderecoBean();
 
 		// BUSCA
-		tipo = "";
 		tipoBuscaMunicipio = 1;
 		campoBuscaMunicipio = "";
 		statusMunicipio = "P";
@@ -54,6 +54,36 @@ public class EnderecoController implements Serializable{
 		listaBairros = null;
 	}
 
+	public String redirectEdit() {
+		return "cadastroMunicipios?faces-redirect=true&amp;id=" + this.endereco.getCodmunicipio()+"&amp;tipo="+tipo;
+	}	
+	
+	
+	public String redirectInsert() {
+		return "cadastroMunicipios?faces-redirect=true&amp;tipo="+tipo;
+	}		
+	
+	public void getEditMunicipio() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo =Integer.parseInt(params.get("tipo"));			
+			System.out.println("tipo do walter"+tipo);
+			EnderecoDAO cDao = new EnderecoDAO();
+			this.endereco = cDao.listarMunicipioPorId(id);
+		}
+		else{
+			System.out.println("tipo sera"+tipo);
+			tipo =Integer.parseInt(params.get("tipo"));
+			
+		}
+		
+	}
+	
+	
 	public void gravarLogradouro() throws ProjetoException {
 		EnderecoDAO udao = new EnderecoDAO();
 
@@ -150,7 +180,7 @@ public class EnderecoController implements Serializable{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Municipio excluido com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaMunicipios = null;
+			listarMunicipios();
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
 		} else {
@@ -206,14 +236,10 @@ public class EnderecoController implements Serializable{
 		this.endereco = endereco;
 	}
 
-	public List<EnderecoBean> getListaMunicipios() throws ProjetoException {
-		if (listaMunicipios == null) {
+	public void listarMunicipios() throws ProjetoException {
+		EnderecoDAO fdao = new EnderecoDAO();
+		listaMunicipios = fdao.listaMunicipios();
 
-			EnderecoDAO fdao = new EnderecoDAO();
-			listaMunicipios = fdao.listaMunicipios();
-
-		}
-		return listaMunicipios;
 	}
 
 	public void setListaMunicipios(List<EnderecoBean> listaMunicipios) {
@@ -234,14 +260,7 @@ public class EnderecoController implements Serializable{
 		this.listaBairros = listaBairros;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
+	
 	public Integer getTipoBuscaMunicipio() {
 		return tipoBuscaMunicipio;
 	}
@@ -275,16 +294,28 @@ public class EnderecoController implements Serializable{
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
-			cabecalho = "CADASTRO DE ENDERE�O";
-		} else if (this.tipo.equals("A")) {
-			cabecalho = "ALTERAR ENDERE�O";
+		if (this.tipo==1) {
+			cabecalho = "Inclusão de Município";
+		} else if (this.tipo==2) {
+			cabecalho = "Alteração de Município";
 		}
 		return cabecalho;
 	}
 
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
+	}
+
+	public List<EnderecoBean> getListaMunicipios() {
+		return listaMunicipios;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 
 }
