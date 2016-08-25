@@ -102,7 +102,7 @@ public class ProfissionalController implements Serializable {
 	}
 
 	public void gravarProfissional() throws SQLException, ProjetoException {
-		if (this.profissional.getCbo().getCodCbo() == null
+/*		if (this.profissional.getCbo().getCodCbo() == null
 				|| this.profissional.getCns().isEmpty()
 				|| this.profissional.getDescricaoProf().isEmpty()
 				|| this.profissional.getEspecialidade().getCodEspecialidade() == null) {
@@ -112,11 +112,12 @@ public class ProfissionalController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
+		*/
 
 		if (this.profissional.getPrograma().isEmpty()
 				|| this.profissional.getGrupo().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Programa e Grupo obrigat�rios!", "Campos obrigat�rios!");
+					"Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatórios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}

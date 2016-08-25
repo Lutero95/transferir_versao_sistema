@@ -6,114 +6,93 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:stella="http://stella.caelum.com.br/faces2"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
-			<h3>GERENCIAMENTO DE PROFISSIONAL</h3>
-			<br />
-		</div>
-		<h:form id="frmmensagem">
-			<f:metadata>
-				<f:event type="preRenderView"
-					listener="#{ProfissionalController.getListarProfissional}" />
-			</f:metadata>
+		<b:panel title="Gerenciamento de Profissional" collapsible="false">
+			<h:form id="frmmensagem">
+				<f:metadata>
+					<f:viewAction
+						action="#{ProfissionalController.ListarTodosProfissionais()}" />
+				</f:metadata>
 
-			<p:growl id="growl" showDetail="false" />
-			<p:panel id="pnlprincipal" header="">
-				<p:panelGrid columns="7" styleClass="semBorda"
-					style="font-size:12px !important;">
-					<p:outputPanel autoUpdate="true">
-						<p:outputLabel value="Pesquisar por: " />
-						<p:selectOneMenu value="#{ProfissionalController.tipoBuscar}"
-							required="true"
-							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
-							requiredMessage="Informe o diretório da página.">
-							<f:selectItem itemLabel="Nome" itemValue="1" />
-							<p:ajax event="change" update=":frmmensagem:pnlprincipal" />
-						</p:selectOneMenu>
+				<p:growl id="growl" showDetail="false" />
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{ProfissionalController.redirectInsert()}"
+					icon="glyphicon-plus" look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{ProfissionalController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
+				<b:dataTable id="dt" var="tab"
+					value="#{ProfissionalController.listaProfissional}" lang="es"
+					display="Nenhum Profissional">
 
-						<p:inputText id="campoBuscanome"
-							style="height:28px;margin-top:-6px;margin-left:16px;"
-							value="#{ProfissionalController.descricaoBusca}" />
+					<h:column>
+						<f:facet name="header">
+                        Nome
+                    </f:facet>
 
-						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							styleClass="btn btn-info"
-							style="height:30px; margin-left:2px; margin-top:10px;"
-							action="#{ProfissionalController.buscarProfissional()}"
-							update=":frmmensagem:tabela, :frmmensagem:growl" />
-
-						<p:commandButton value="Limpar Busca" icon="limpar"
-							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
-							actionListener="#{ProfissionalController.limparDados()}"
-							style="margin-left:20px" />
-						<br />
-
-						<p:commandButton id="btninc" value="Novo"
-							action="#{ProfissionalController.redirectInsert()}" icon="add"
-							style="margin-top: 15px;">
-							<f:setPropertyActionListener value="1"
-								target="#{ProfissionalController.tipo}" />
-							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-						</p:commandButton>
-
-					</p:outputPanel>
-				</p:panelGrid>
-
-				<p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover"
-					id="tabela" style="margin-top:20px;" resizableColumns="true"
-					value="#{ProfissionalController.listarProfissional}" var="tab"
-					paginator="true" paginatorPosition="bottom" rows="12">
-
-					<p:column headerText="Cód." style="font-weight:bold;width:5%;">
-						<h:outputText value="#{tab.idProfissional}" />
-					</p:column>
-
-					<p:column headerText="Profissional" style="font-weight:bold;">
 						<h:outputText value="#{tab.descricaoProf}" />
-					</p:column>
+					</h:column>
 
-					<p:column headerText="Especialidade" style="font-weight:bold;">
+					<h:column>
+						<f:facet name="header">
+                        Especialidade
+                    </f:facet>
+
 						<h:outputText value="#{tab.especialidade.descEspecialidade}" />
-					</p:column>
+					</h:column>
 
-					<p:column headerText="CNS" style="font-weight:bold;">
+					<h:column>
+						<f:facet name="header">
+                        CNS
+                    </f:facet>
+
 						<h:outputText value="#{tab.cns}" />
-					</p:column>
+					</h:column>
 
-					<p:column headerText="Ativo" style="font-weight:bold;">
+					<h:column>
+						<f:facet name="header">
+                        Ativo
+                    </f:facet>
+
 						<h:outputText value="Sim" rendered="#{tab.ativo==true}" />
 						<h:outputText value="Não" rendered="#{tab.ativo==false}" />
-					</p:column>
+					</h:column>
 
-					<p:column headerText="Ações" width="15%">
-						<center>
-							<p:splitButton icon="confirmar">
-								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="#{ProfissionalController.redirectEdit()}">
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{ProfissionalController.profissional}" />
 
-									<f:setPropertyActionListener value="2"
-										target="#{ProfissionalController.tipo}" />
-								</p:menuitem>
+					<h:column>
+						<f:facet name="header">
+                        Ação
+                    </f:facet>
 
-								<p:menuitem value="Excluir" icon="trash"
-									onclick="PF('dialogAtencao').show()">
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{ProfissionalController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{ProfissionalController.profissional}" />
 
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{ProfissionalController.profissional}" />
-								</p:menuitem>
-							</p:splitButton>
-						</center>
-					</p:column>
-				</p:dataTable>
-			</p:panel>
-		</h:form>
+							<f:setPropertyActionListener value="2"
+								target="#{ProfissionalController.tipo}" />
+						</b:commandButton>
 
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogAtencao').show()">
+
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{ProfissionalController.profissional}" />
+						</b:commandButton>
+
+					</h:column>
+				</b:dataTable>
+			</h:form>
+		</b:panel>
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
@@ -125,13 +104,14 @@
 
 				</h:panelGrid>
 				<center>
-					<p:commandButton value="Sim"
+					<p:separator />
+					<b:commandButton look="success" value="Sim"
 						action="#{ProfissionalController.excluirProfissional()}"
-						icon="ui-icon-check" style="font-size:14px;"
-						update=":frmmensagem:tabela, :frmmensagem:growl">
-					</p:commandButton>
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+						ajax="true" icon="glyphicon-ok" update="frmmensagem" />
+
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;" />
 
 				</center>
 			</h:form>

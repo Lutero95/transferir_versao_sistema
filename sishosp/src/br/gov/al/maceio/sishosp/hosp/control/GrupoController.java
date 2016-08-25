@@ -161,6 +161,7 @@ public class GrupoController implements Serializable{
 
 	public void getListaTodosGrupos() throws ProjetoException {
 			listaGrupos = gDao.listarGrupos();
+			System.out.println("listaGrupos size "+listaGrupos.size());
 
 	}
 

@@ -1,8 +1,10 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 
 
-public class EncaminhadoBean {
+
+public class EncaminhadoBean implements Serializable{
 
 	private Integer codencaminhado;
 	private String descencaminhado;

@@ -5,168 +5,209 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{ProfissionalController.getEditProfissional()}" />
 	</f:metadata>
 	<ui:define name="body">
 
 
-		<h:form id="frmCadProfi">
-			<p:panel id="pnlCadProf" header="#{ProfissionalController.cabecalho}"
-				style="height:auto; width:1050px; background-color: #F5F5F5;">
+		<h:form id="frmCadProfi" class="form-horizontal">
+			<b:panel title="#{ProfissionalController.cabecalho}"
+				collapsible="false">
+
 				<p:growl id="message" />
-				<p:panelGrid columns="3" styleClass="semBorda">
-					<h:outputLabel for="espP" value="Especialidade" />
-					<p:outputPanel id="outEspeci">
-						<p:inputText id="codEsp"
-							value="#{ProfissionalController.profissional.especialidade.codEspecialidade}"
-							readonly="true" style="width: 60px" />
-						<p:inputText id="descE"
-							value="#{ProfissionalController.profissional.especialidade.descEspecialidade}"
-							readonly="true" style="width: 350px" />
-					</p:outputPanel>
-					<p:commandButton id="btBusEsp" value="Buscar"
-						onclick="PF('dlgConsulEspecialidade').show();" />
+				<div class="form-group">
+					<h:outputLabel value="Especialidade"
+						styleClass="col-sm-1 control-label" />
+					<div class="col-sm-4">
+						<p:outputPanel id="outEspeci">
 
-					<h:outputLabel for="cboP" value="CBO:" />
-					<p:outputPanel id="outCboP">
-						<p:inputText id="codCob"
-							value="#{ProfissionalController.profissional.cbo.codCbo}"
-							readonly="true" style="width: 60px" />
-						<p:inputText id="descCbo"
-							value="#{ProfissionalController.profissional.cbo.descCbo}"
-							readonly="true" style="width: 350px" />
-					</p:outputPanel>
-					<p:commandButton id="btBusCbo" value="Buscar"
-						onclick="PF('dlgConsulCbo').show();" />
+							<h:inputText id="descE"
+								value="#{ProfissionalController.profissional.especialidade.descEspecialidade}"
+								class="form-control" />
+						</p:outputPanel>
+					</div>
+					<div class="col-sm-1">
+						<p:commandButton id="btBusEsp" icon="ui-icon-search"
+							style="margin-left:-20px;height:35px" update=":formConsulEspec"
+							onclick="PF('dlgConsulEspecialidade').show();"
+							actionListener="#{EspecialidadeController.getListarTodasEspecialidades()}" />
 
-					<h:outputLabel for="proced1" value="Procedimento 1" />
-					<p:outputPanel id="outProcP1">
-						<p:inputText id="codProc1"
-							value="#{ProfissionalController.profissional.proc1.codProc}"
-							readonly="true" style="width: 60px" />
-						<p:inputText id="descProc1"
-							value="#{ProfissionalController.profissional.proc1.nomeProc}"
-							readonly="true" style="width: 350px" />
-					</p:outputPanel>
-					<p:commandButton id="btBusProc1" value="Buscar"
-						onclick="PF('dlgConsulProc1').show();" />
+					</div>
 
-					<h:outputLabel for="proced2" value="Procedimento 2" />
-					<p:outputPanel id="outProcP2">
-						<p:inputText id="codProc2"
-							value="#{ProfissionalController.profissional.proc2.codProc}"
-							readonly="true" style="width: 60px" />
-						<p:inputText id="descProc2"
-							value="#{ProfissionalController.profissional.proc2.nomeProc}"
-							readonly="true" style="width: 350px" />
-					</p:outputPanel>
-					<p:commandButton id="btBusProc2" value="Buscar"
-						onclick="PF('dlgConsulProc2').show();" />
+					<h:outputLabel value="C.B.O." styleClass="col-sm-1 control-label" />
+					<div class="col-sm-4">
+						<p:outputPanel id="outCboP">
+
+							<h:inputText id="descCbo"
+								value="#{ProfissionalController.profissional.cbo.descCbo}"
+								class="form-control" />
+						</p:outputPanel>
+					</div>
+					<div class="col-sm-1">
+						<p:commandButton id="btBusCbo" icon="ui-icon-search"
+							style="margin-left:-20px;height:35px"
+							onclick="PF('dlgConsulCbo').show();" />
+
+					</div>
+
+				</div>
+
+				<div class="form-group">
+					<h:outputLabel value="Procedimento 1"
+						styleClass="col-sm-1 control-label" />
+					<div class="col-sm-4">
+						<p:outputPanel id="outProcP1">
+							<h:inputText id="descProc1"
+								value="#{ProfissionalController.profissional.proc1.nomeProc}" 
+								class="form-control" />
+						</p:outputPanel>
+					</div>
+					<div class="col-sm-1">
+
+						<p:commandButton id="btBusProc1" icon="ui-icon-search"
+							onclick="PF('dlgConsulProc1').show();" actionListener="#{ProcedimentoController.listarProcedimentos()}"
+							style="margin-left:-20px;height:35px" />
+					</div>
+
+					<h:outputLabel value="Procedimento 2"
+						styleClass="col-sm-1 control-label" />
+					<div class="col-sm-4">
+						<p:outputPanel id="outProcP2">
+
+							<h:inputText id="descProc2"
+								value="#{ProfissionalController.profissional.proc2.nomeProc}"
+								class="form-control" />
+						</p:outputPanel>
+					</div>
+					<div class="col-sm-1">
+						<p:commandButton id="btBusProc2" icon="ui-icon-search"
+							onclick="PF('dlgConsulProc2').show();" actionListener="#{ProcedimentoController.listarProcedimentos()}"
+							style="margin-left:-20px;height:35px" />
+					</div>
+
+				</div>
 
 
-					<h:outputLabel value="Descrição do Profissional:" />
-					<p:inputText
-						value="#{ProfissionalController.profissional.descricaoProf}"
-						style="width: 440px" />
 
-				</p:panelGrid>
+				<div class="form-group">
+					<h:outputLabel value="Nome" styleClass="col-sm-1 control-label" />
+					<div class="col-sm-4">
+						<h:inputText
+							value="#{ProfissionalController.profissional.descricaoProf}" required="true" requiredMessage="Informe o Nome"
+							class="form-control" />
+					</div>
+					<h:outputLabel value="CNS" styleClass="col-sm-2 control-label" />
+					<div class="col-sm-2">
+						<h:inputText value="#{ProfissionalController.profissional.cns}"
+							class="form-control" />
 
-				<p:panelGrid columns="4" styleClass="semBorda">
-					<h:outputLabel value="CNS:" />
-					<p:inputText value="#{ProfissionalController.profissional.cns}"
-						style="width: 250px" />
+					</div>
+					<h:outputLabel value="Ativo" class="col-sm-1 control-label" />
+					<div class="col-sm-1">
+						<h:selectOneMenu style="width:75px" styleClass="form-control"
+							value="#{ProfissionalController.profissional.ativo}">
+							<f:selectItem itemLabel="SIM" itemValue="true" />
+							<f:selectItem itemLabel="NÃO" itemValue="false" />
+						</h:selectOneMenu>
 
-					<h:outputLabel value="Ativo" />
-					<p:selectOneMenu style="width:75px"
-						value="#{ProfissionalController.profissional.ativo}">
-						<f:selectItem itemLabel="SIM" itemValue="true" />
-						<f:selectItem itemLabel="NÃO" itemValue="false" />
-					</p:selectOneMenu>
-				</p:panelGrid>
+					</div>
 
-				<p:panelGrid columns="3" styleClass="semBorda">
-					<h:outputLabel value="Programa:" />
-					<p:commandButton onclick="PF('dlgConsulProgramas').show();"
-						icon="ui-icon-plus" />
-					<p:dataTable style="width: 480px" emptyMessage="Sem registros."
-						value="#{ProfissionalController.profissional.programa}" var="prog"
-						paginator="true" paginatorPosition="bottom" rows="3"
-						resizableColumns="true">
-						<p:column headerText="Cód." style="width: 80px">
-							<p:outputLabel value="#{prog.idPrograma}" />
-						</p:column>
-						<p:column headerText="Programa">
-							<p:outputLabel value="#{prog.descPrograma}" />
-						</p:column>
-						<p:column headerText="Ação">
-							<center>
-								<p:commandButton
-									action="#{ProfissionalController.profissional.removeProgLista()}"
-									icon="ui-icon-trash" update=":frmCadProfi:pnlCadProf">
-									<f:setPropertyActionListener value="#{prog}"
-										target="#{ProfissionalController.profissional.progRmv}" />
-								</p:commandButton>
-							</center>
-						</p:column>
-					</p:dataTable>
+				</div>
 
-					<h:outputLabel value="Grupo:" />
-					<p:commandButton onclick="PF('dlgConsuGrupos').show();"
-						icon="ui-icon-plus" />
-					<p:dataTable style="width: 480px" emptyMessage="Sem registros."
-						value="#{ProfissionalController.profissional.grupo}" var="grupo"
-						paginator="true" paginatorPosition="bottom" rows="3"
-						resizableColumns="true">
-						<p:column headerText="Cód." style="width: 80px">
-							<p:outputLabel value="#{grupo.idGrupo}" />
-						</p:column>
-						<p:column headerText="Grupo">
-							<p:outputLabel value="#{grupo.descGrupo}" />
-						</p:column>
-						<p:column headerText="Ação">
-							<center>
-								<p:commandButton
-									action="#{ProfissionalController.profissional.removeGrupoLista()}"
-									icon="ui-icon-trash" update=":frmCadProfi:pnlCadProf">
-									<f:setPropertyActionListener value="#{grupo}"
-										target="#{ProfissionalController.profissional.grupoRmv}" />
-								</p:commandButton>
-							</center>
-						</p:column>
-					</p:dataTable>
-				</p:panelGrid>
+
+				<div class="form-group">
+					<div class="col-sm-5">
+						<p:commandButton onclick="PF('dlgConsulProgramas').show();"
+							value="Incluir Programa" styleClass="btn btn-primary text-center" process="@this"
+							style="color:black;" icon="ui-icon-plus" />
+						<br /> <br />
+						<p:dataTable emptyMessage="Nenhum Programa"
+							value="#{ProfissionalController.profissional.programa}"
+							var="prog" scrollRows="3" scrollHeight="150" scrollable="true">
+							<p:column headerText="Programa" width="80%">
+								<p:outputLabel value="#{prog.descPrograma}" />
+							</p:column>
+							<p:column headerText="Ação">
+								<center>
+									<p:commandButton
+										action="#{ProfissionalController.profissional.removeProgLista()}"
+										icon="ui-icon-trash" update=":frmCadProfi">
+										<f:setPropertyActionListener value="#{prog}"
+											target="#{ProfissionalController.profissional.progRmv}" />
+									</p:commandButton>
+								</center>
+							</p:column>
+						</p:dataTable>
+
+					</div>
+
+
+					<div class="col-sm-5">
+						<p:commandButton onclick="PF('dlgConsuGrupos').show();" actionListener="#{GrupoController.getListaTodosGrupos()}"
+							value="Incluir Grupo" styleClass="btn btn-primary text-center"
+							style="color:black;" icon="ui-icon-plus" process="@this"/>
+						<br /> <br />
+						<p:dataTable style="width: 480px" emptyMessage="Nenhum Grupo"
+							value="#{ProfissionalController.profissional.grupo}" var="grupo"
+							 scrollRows="3" scrollHeight="150" scrollable="true"
+							>
+							<p:column headerText="Grupo">
+								<p:outputLabel value="#{grupo.descGrupo}" />
+							</p:column>
+							<p:column headerText="Ação">
+								<center>
+									<p:commandButton
+										action="#{ProfissionalController.profissional.removeGrupoLista()}"
+										icon="ui-icon-trash" update=":frmCadProfi">
+										<f:setPropertyActionListener value="#{grupo}"
+											target="#{ProfissionalController.profissional.grupoRmv}" />
+									</p:commandButton>
+								</center>
+							</p:column>
+						</p:dataTable>
+
+
+					</div>
+
+
+				</div>
+
+
+
+
 
 				<p:separator />
 
 				<center>
-					<p:panelGrid columns="3" styleClass="semBorda">
-						<p:commandButton
-							action="#{ProfissionalController.gravarProfissional()}"
-							update=":frmCadProfi:message,:frmCadProfi:pnlCadProf,:frmCadProfi"
-							value="Cadastrar" icon="confirmar"
+						<b:commandButton action="#{ProfissionalController.gravarProfissional()}"
+							icon="glyphicon-ok" size="sm" look="success"
+							update=":frmCadProfi" value="Incluir"
 							rendered="#{ProfissionalController.tipo == 1}" />
 
-						<p:commandButton
-							action="#{ProfissionalController.alterarProfissional()}"
-							update=":frmCadProfi:message,:frmCadProfi:pnlCadProf,:frmCadProfi"
-							value="Alterar" icon="alterar-dados"
-							rendered="#{ProfissionalController.tipo  == 2}" />
 
-						<p:commandButton value="Voltar" icon="btvoltar"
-							style="width:80px;"
-							action="/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true" />
+						<b:commandButton action="#{ProfissionalController.alterarProfissional()}"
+							icon="glyphicon-ok" size="sm"
+							update=":frmCadProfi" value="Alterar"
+							look="success" rendered="#{ProfissionalController.tipo  == 2}" />
+						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							style="margin-left:10px" size="sm" immediate="true" look="info"
+							action="/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true">
+						</b:commandButton>
 
-					</p:panelGrid>
+
+
 				</center>
 
-			</p:panel>
 
-
+			</b:panel>
 		</h:form>
+
+
 
 		<p:dialog header="Consulta Programa" widgetVar="dlgConsulProgramas"
 			modal="true" width="500px">
@@ -181,8 +222,7 @@
 						<p:outputLabel value="#{prog.descPrograma}" />
 					</p:column>
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton
-							update=":frmCadProfi:pnlCadProf, :formConsuGrops:dtGrupos"
+						<p:commandButton update=":frmCadProfi, :formConsuGrops:dtGrupos"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsulProgramas').hide();"
 							action="#{ProfissionalController.profissional.addProgLista()}">
@@ -194,46 +234,47 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Especialidade"
-			widgetVar="dlgConsulEspecialidade" modal="true" width="500px">
+		<p:dialog header="Consulta Especialidade" height="300px"
+			resizable="false" widgetVar="dlgConsulEspecialidade" modal="true"
+			width="500px">
 			<h:form id="formConsulEspec">
-				<p:dataTable value="#{EspecialidadeController.listaEspecialidade}"
-					var="espec" resizableColumns="true"
-					emptyMessage="Não existe nenhuma especialidade cadastrada!">
-					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{espec.codEspecialidade}" />
-					</p:column>
-					<p:column headerText="ESPECIALIDADE">
-						<p:outputLabel value="#{espec.descEspecialidade}" />
-					</p:column>
-					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":frmCadProfi:pnlCadProf"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsulEspecialidade').hide();">
-							<f:setPropertyActionListener value="#{espec}"
-								target="#{ProfissionalController.profissional.especialidade}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+				<p:outputPanel autoUpdate="true">
+					<p:dataTable value="#{EspecialidadeController.listaEspecialidade}"
+						scrollRows="3" scrollHeight="270" scrollable="true" var="espec"
+						resizableColumns="true"
+						emptyMessage="Não existe nenhuma especialidade cadastrada!">
+						<p:column headerText="ESPECIALIDADE">
+							<p:outputLabel value="#{espec.descEspecialidade}" />
+						</p:column>
+						<p:column style="width:50px;text-align: center">
+							<p:commandButton update=":frmCadProfi" icon="ui-icon-check"
+								title="Selecionar"
+								onclick="PF('dlgConsulEspecialidade').hide();">
+								<f:setPropertyActionListener value="#{espec}"
+									target="#{ProfissionalController.profissional.especialidade}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Consulta Cbo" widgetVar="dlgConsulCbo" modal="true"
-			width="500px">
+			height="300px" width="500px">
 			<h:form id="formConsulCbo">
 				<p:dataTable value="#{CboController.listarCbo}" var="cbo"
+					scrollRows="3" scrollHeight="270" scrollable="true"
 					resizableColumns="true"
 					emptyMessage="Não existe nenhum CBO cadastrado!">
 					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{cbo.codCbo}" />
+						<p:outputLabel value="#{cbo.codigo}" />
 					</p:column>
 					<p:column headerText="DESCRIÇÃO">
 						<p:outputLabel value="#{cbo.descCbo}" />
 					</p:column>
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":frmCadProfi:pnlCadProf"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsulCbo').hide();">
+						<p:commandButton update=":frmCadProfi" icon="ui-icon-check"
+							title="Selecionar" onclick="PF('dlgConsulCbo').hide();">
 							<f:setPropertyActionListener value="#{cbo}"
 								target="#{ProfissionalController.profissional.cbo}" />
 						</p:commandButton>
@@ -243,10 +284,12 @@
 		</p:dialog>
 
 		<p:dialog header="Consulta Procedimento 1" widgetVar="dlgConsulProc1"
-			modal="true" width="500px">
+			height="300px" modal="true" width="500px">
 			<h:form id="formConsulProc1">
+			<p:outputPanel autoUpdate="true">
 				<p:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-					var="proc" resizableColumns="true"
+					scrollRows="3" scrollHeight="270" scrollable="true" var="proc"
+					resizableColumns="true"
 					emptyMessage="Não existe nenhum procedimento cadastrado!">
 					<p:column headerText="CÓD.">
 						<p:outputLabel value="#{proc.codProc}" />
@@ -255,22 +298,24 @@
 						<p:outputLabel value="#{proc.nomeProc}" />
 					</p:column>
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":frmCadProfi:pnlCadProf"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsulProc1').hide();">
+						<p:commandButton update=":frmCadProfi" icon="ui-icon-check"
+							title="Selecionar" onclick="PF('dlgConsulProc1').hide();">
 							<f:setPropertyActionListener value="#{proc}"
 								target="#{ProfissionalController.profissional.proc1}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
+				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Consulta Procedimento 2" widgetVar="dlgConsulProc2"
-			modal="true" width="500px">
+			height="300px" modal="true" width="500px">
 			<h:form id="formConsulProc2">
+			<p:outputPanel autoUpdate="true">
 				<p:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-					var="proc" resizableColumns="true"
+					scrollRows="3" scrollHeight="270" scrollable="true" var="proc"
+					resizableColumns="true"
 					emptyMessage="Não existe nenhum procedimento cadastrado!">
 					<p:column headerText="CÓD.">
 						<p:outputLabel value="#{proc.codProc}" />
@@ -279,21 +324,23 @@
 						<p:outputLabel value="#{proc.nomeProc}" />
 					</p:column>
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":frmCadProfi:pnlCadProf"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsulProc2').hide();">
+						<p:commandButton update=":frmCadProfi" icon="ui-icon-check"
+							title="Selecionar" onclick="PF('dlgConsulProc2').hide();">
 							<f:setPropertyActionListener value="#{proc}"
 								target="#{ProfissionalController.profissional.proc2}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
+				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupos"
-			modal="true" width="550px">
+			height="300px" modal="true" width="550px">
 			<h:form id="formConsuGrops">
+			<p:outputPanel autoUpdate="true">
 				<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupos"
+					scrollRows="3" scrollHeight="270" scrollable="true"
 					resizableColumns="true" var="grupo"
 					emptyMessage="Não existe nenhum grupo cadastrado!">
 					<p:column headerText="CÓD.">
@@ -307,15 +354,15 @@
 					</p:column>
 
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":frmCadProfi:pnlCadProf"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsuGrupos').hide();"
+						<p:commandButton update=":frmCadProfi" icon="ui-icon-check"
+							title="Selecionar" onclick="PF('dlgConsuGrupos').hide();"
 							action="#{ProfissionalController.profissional.addGrupoLista()}">
 							<f:setPropertyActionListener value="#{grupo}"
 								target="#{ProfissionalController.profissional.grupoAdd}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
+				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 

@@ -5,119 +5,145 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{ProcedimentoController.getEditProcedimento()}" />
 	</f:metadata>
 	<ui:define name="body">
 
-		<h:form id="frmCadProc">
-			<p:panel id="pnlCadProc" header="#{ProcedimentoController.cabecalho}"
-				style="height:auto; width:600px; background-color: #F5F5F5;">
+		<h:form class="form-horizontal" id="frmCadProc">
+			<b:panel id="pnlCadProc" title="#{ProcedimentoController.cabecalho}"
+				collapsible="false">
 				<p:growl id="message" />
-				<p:panelGrid columns="2" styleClass="semBorda">
 
-					<h:outputLabel value="Descrição do Procedimento: *" />
-					<p:inputText value="#{ProcedimentoController.proc.nomeProc}"
-						style="width: 300px" />
 
-					<p:panelGrid columns="2" styleClass="semBorda">
-						<h:outputLabel value="Código: *" />
-						<p:inputText value="#{ProcedimentoController.proc.codProc}"
-							style="width: 100px" />
-					</p:panelGrid>
 
-					<p:panelGrid columns="4" styleClass="semBorda">
-						<h:outputLabel value="Apac: " />
-						<p:selectBooleanCheckbox
-							value="#{ProcedimentoController.proc.apac}" />
+				<div class="form-group">
+					<h:outputLabel value="Descrição" class="col-md-1 control-label" />
+					<div class="col-md-5">
+						<h:inputText value="#{ProcedimentoController.proc.nomeProc}"
+							required="true" requiredMessage="Informe a Descrição"
+							class="form-control" id="incod" />
+					</div>
+					<h:outputLabel value="Código" class="col-md-1 control-label" />
+					<div class="col-md-3">
+						<h:inputText value="#{ProcedimentoController.proc.codProc}"
+							required="true" requiredMessage="Informe o Código"
+							class="form-control" />
+					</div>
 
-						<h:outputLabel value="BPI: " />
-						<p:selectBooleanCheckbox
-							value="#{ProcedimentoController.proc.bpi}" />
-					</p:panelGrid>
-				</p:panelGrid>
 
-				<p:panelGrid columns="4" styleClass="semBorda">
-					<h:outputLabel value="Utiliza Equipamento: " />
-					<p:selectBooleanCheckbox
+
+
+				</div>
+				<p:panelGrid columns="8" style="border: none !important;"
+					styleClass="semBorda">
+					<h:outputLabel value="Apac " class="control-label" />
+					<p:selectBooleanCheckbox styleClass="control-label"
+						value="#{ProcedimentoController.proc.apac}" />
+
+					<h:outputLabel value="Bpi" class="control-label" />
+
+					<p:selectBooleanCheckbox styleClass="control-label"
+						value="#{ProcedimentoController.proc.bpi}" />
+					<h:outputLabel value="Utiliza Equipamento" class="control-label" />
+					<p:selectBooleanCheckbox styleClass="control-label"
 						value="#{ProcedimentoController.proc.utilizaEquipamento}" />
 
-					<h:outputLabel value="Auditivo: " />
-					<p:selectBooleanCheckbox
-						value="#{ProcedimentoController.proc.auditivo}">
-						<p:ajax update="pnlModelo" />
-					</p:selectBooleanCheckbox>
 
-					<h:outputLabel value="Gerar Laudo na Digitação: " />
-					<p:selectBooleanCheckbox
-						value="#{ProcedimentoController.proc.gera_laudo_digita}">
-						<p:ajax update="pnlMes" />
-					</p:selectBooleanCheckbox>
-					<p:outputPanel id="pnlMes">
-						<p:panel header="Validade Laudo" style="width:300px;"
-							rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}">
-							<p:selectOneMenu id="mes"
-								value="#{ProcedimentoController.proc.validade_laudo}"
-								style="width:200px;" required="true"
-								requiredMessage="Informe o mês.">
-								<f:selectItem itemLabel="1" itemValue="1" />
-								<f:selectItem itemLabel="2" itemValue="2" />
-								<f:selectItem itemLabel="3" itemValue="3" />
-								<f:selectItem itemLabel="4" itemValue="4" />
-								<f:selectItem itemLabel="5" itemValue="5" />
-								<f:selectItem itemLabel="6" itemValue="6" />
-								<f:selectItem itemLabel="7" itemValue="7" />
-								<f:selectItem itemLabel="8" itemValue="8" />
-								<f:selectItem itemLabel="9" itemValue="9" />
-								<f:selectItem itemLabel="10" itemValue="10" />
-								<f:selectItem itemLabel="11" itemValue="11" />
-								<f:selectItem itemLabel="12" itemValue="12" />
-							</p:selectOneMenu>
-						</p:panel>
-					</p:outputPanel>
 				</p:panelGrid>
 
-				<p:outputPanel id="pnlModelo">
-					<p:panel header="Modelo Auditivo" style="width:300px;"
-						rendered="#{ProcedimentoController.proc.auditivo==true}">
-						<p:selectOneRadio
-							value="#{ProcedimentoController.proc.tipoExameAuditivo}"
-							layout="grid" columns="2">
-							<f:selectItem itemLabel="Acompanhamentos"
-								itemValue="ACOMPANHAMENTOS" />
-							<f:selectItem itemLabel="Consultas" itemValue="CONSULTAS" />
-							<f:selectItem itemLabel="Aparelhos" itemValue="APARELHOS" />
-							<f:selectItem itemLabel="Teste" itemValue="TESTE" />
-						</p:selectOneRadio>
-					</p:panel>
-				</p:outputPanel>
+				<div class="row">
+					<div class="col-md-2">
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<h:outputLabel value="Auditivo" class="control-label" style="margin-left:-30px" />
+							<p:selectBooleanCheckbox styleClass="control-label"
+								value="#{ProcedimentoController.proc.auditivo}">
+								<p:ajax update="pnlModelo" />
+							</p:selectBooleanCheckbox>
 
+						</p:panelGrid>
+					</div>
+					<div class="col-md-2">
+						<p:outputPanel id="pnlModelo">
+							<p:panel header="Modelo Auditivo"
+								style="width:220px;margin-left:-80px"
+								rendered="#{ProcedimentoController.proc.auditivo==true}">
+
+								<p:selectOneRadio
+									value="#{ProcedimentoController.proc.tipoExameAuditivo}"
+									layout="grid" columns="2">
+									<f:selectItem itemLabel="Acompanhamentos"
+										itemValue="ACOMPANHAMENTOS" />
+									<f:selectItem itemLabel="Consultas" itemValue="CONSULTAS" />
+									<f:selectItem itemLabel="Aparelhos" itemValue="APARELHOS" />
+									<f:selectItem itemLabel="Teste" itemValue="TESTE" />
+								</p:selectOneRadio>
+							</p:panel>
+						</p:outputPanel>
+					</div>
+
+				</div>
+				<div class="row">
+					<div class="col-md-2">
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<h:outputLabel value="Laudo" styleClass="control-label" style="margin-left:-22px"/>
+							<p:selectBooleanCheckbox
+								value="#{ProcedimentoController.proc.gera_laudo_digita}">
+								<p:ajax update="pnlMes" />
+							</p:selectBooleanCheckbox>
+						</p:panelGrid>
+
+					</div>
+					<div class="col-md-2">
+						<p:outputPanel id="pnlMes" style="margin-left:-120px">
+							<p:panelGrid columns="2" styleClass="semBorda">
+								<h:outputLabel value="Validade(Meses)" styleClass="control-label"
+									rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}" />
+								<p:selectOneMenu id="mes"
+									rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"
+									value="#{ProcedimentoController.proc.validade_laudo}"
+									style="width:200px;" required="true"
+									requiredMessage="Informe a Validade">
+									<f:selectItem itemLabel="Informe a Validade" itemValue="" />
+									<f:selectItem itemLabel="1" itemValue="1" />
+									<f:selectItem itemLabel="2" itemValue="2" />
+									<f:selectItem itemLabel="3" itemValue="3" />
+									<f:selectItem itemLabel="4" itemValue="4" />
+									<f:selectItem itemLabel="5" itemValue="5" />
+									<f:selectItem itemLabel="6" itemValue="6" />
+									<f:selectItem itemLabel="7" itemValue="7" />
+									<f:selectItem itemLabel="8" itemValue="8" />
+									<f:selectItem itemLabel="9" itemValue="9" />
+									<f:selectItem itemLabel="10" itemValue="10" />
+									<f:selectItem itemLabel="11" itemValue="11" />
+									<f:selectItem itemLabel="12" itemValue="12" />
+								</p:selectOneMenu>
+							</p:panelGrid>
+						</p:outputPanel>
+					</div>
+				</div>
 				<p:separator></p:separator>
 				<center>
-					<p:panelGrid columns="3" styleClass="semBorda">
-						<p:commandButton
-							action="#{ProcedimentoController.gravarProcedimento()}"
-							update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
-							value="Gravar" icon="confirmar"
-							rendered="#{ProcedimentoController.tipo == 1}" />
+					<b:commandButton
+						action="#{ProcedimentoController.gravarProcedimento()}"
+						icon="glyphicon-ok" size="sm" look="success" update="frmCadProc"
+						value="Incluir" rendered="#{ProcedimentoController.tipo == 1}" />
 
-						<p:commandButton
-							action="#{ProcedimentoController.alterarProcedimento()}"
-							update=":frmCadProc:message,:frmCadProc:pnlCadProc,:frmCadProc"
-							value="Alterar" icon="alterar-dados"
-							rendered="#{ProcedimentoController.tipo  == 2}" />
 
-						<p:commandButton value="Voltar" icon="btvoltar"
-							style="width:80px;"
-							action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true" />
-
-					</p:panelGrid>
+					<b:commandButton
+						action="#{ProcedimentoController.alterarProcedimento()}"
+						icon="glyphicon-ok" size="sm" update="frmCadProc" value="Alterar"
+						look="success" rendered="#{ProcedimentoController.tipo  == 2}" />
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="margin-left:10px" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true">
+					</b:commandButton>
 				</center>
-			</p:panel>
-
+			</b:panel>
 		</h:form>
 
 	</ui:define>

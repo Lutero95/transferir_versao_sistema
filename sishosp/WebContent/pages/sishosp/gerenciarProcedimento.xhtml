@@ -6,120 +6,81 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:stella="http://stella.caelum.com.br/faces2"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
-
-	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
-			<h3>GERENCIAMENTO DE PROCEDIMENTOS</h3>
-			<br />
-		</div>
-		<h:form id="frmmensagem">
-			<f:metadata>
-				<f:event type="preRenderView"
-					listener="#{ProcedimentoController.getListaProcedimentos}" />
+<ui:composition template="../../template/template.xhtml">
+<f:metadata>
+				<f:viewAction action="#{ProcedimentoController.listarProcedimentos()}" />
 			</f:metadata>
+	<ui:define name="body">
+
+	 <b:panel title="Gerenciamento de Procedimento"  collapsible="false">		
+		<h:form id="frmmensagem">
+	<b:commandButton id="btninc" value="Novo" size="sm"
+				action="#{ProcedimentoController.redirectInsert()}" icon="glyphicon-plus"
+				look="primary">
+				<f:setPropertyActionListener value="1"
+					target="#{ProcedimentoController.tipo}" />
+				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+			</b:commandButton>
+			<br />
+			<br />
 
 			<p:growl id="growl" showDetail="false" />
-			<p:panel id="pnlprincipal" header="">
-				<p:panelGrid columns="7" styleClass="semBorda"
-					style="font-size:12px !important;">
-					<p:outputPanel autoUpdate="true">
-						<p:outputLabel value="Pesquisar por: " />
-						<p:selectOneMenu value="#{ProcedimentoController.tipoBuscar}"
-							required="true"
-							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
-							requiredMessage="Informe o diretório da página.">
-							<f:selectItem itemLabel="Nome" itemValue="1" />
-							<p:ajax event="change" update=":frmmensagem:pnlprincipal" />
-						</p:selectOneMenu>
+	<b:dataTable id="dt" var="tab" value="#{ProcedimentoController.listaProcedimentos}"
+				lang="es" display="Nenhum Procedimento">
+				<h:column>
+					<f:facet name="header">
+                        Descrição
+                    </f:facet>
 
-						<p:inputText id="campoBuscanome"
-							style="height:28px;margin-top:-6px;margin-left:16px;"
-							value="#{ProcedimentoController.descricaoBusca}" />
+					<h:outputText value="#{tab.nomeProc}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+                        Ação
+                    </f:facet>
 
-						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							styleClass="btn btn-info"
-							style="height:30px; margin-left:2px; margin-top:10px;"
-							action="#{ProcedimentoController.buscarProcedimento()}"
-							update=":frmmensagem:tabela, :frmmensagem:growl" />
+					<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+						action="#{ProcedimentoController.redirectEdit()}">
+						<f:setPropertyActionListener value="#{tab}"
+							target="#{ProcedimentoController.proc}" />
 
-						<p:commandButton value="Limpar Busca" icon="limpar"
-							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
-							actionListener="#{ProcedimentoController.limparDados()}"
-							style="margin-left:20px" />
-						<br />
+						<f:setPropertyActionListener value="2"
+							target="#{ProcedimentoController.tipo}" />
+					</b:commandButton>
 
-						<p:commandButton id="btninc" value="Novo"
-							action="#{ProcedimentoController.redirectInsert()}" icon="add"
-							style="margin-top: 15px;">
-							<f:setPropertyActionListener value="1"
-								target="#{ProcedimentoController.tipo}" />
-							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-						</p:commandButton>
+					<b:commandButton tooltip="Excluir" icon="glyphicon-trash" size="sm"
+						ajax="true" style="margin-left:10px"
+						oncomplete="PF('dialogAtencao').show()">
 
-					</p:outputPanel>
-				</p:panelGrid>
+						<f:setPropertyActionListener value="#{tab}"
+							target="#{ProcedimentoController.proc}" />
+					</b:commandButton>
 
-				<p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover"
-					id="tabela" style="margin-top:20px;"
-					value="#{ProcedimentoController.listaProcedimentos}" var="tab"
-					paginator="true" paginatorPosition="bottom" rows="12">
+				</h:column>
 
-					<p:column headerText="Cód." style="font-weight:bold;width:15%;">
-						<h:outputText value="#{tab.codProc}" />
-					</p:column>
-
-					<p:column headerText="Nome" style="font-weight:bold;">
-						<h:outputText value="#{tab.nomeProc}" />
-					</p:column>
-
-					<p:column headerText="Ações" width="15%">
-						<center>
-							<p:splitButton icon="confirmar">
-								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="#{ProcedimentoController.redirectEdit()}">
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{ProcedimentoController.proc}" />
-
-									<f:setPropertyActionListener value="2"
-										target="#{ProcedimentoController.tipo}" />
-								</p:menuitem>
-
-								<p:menuitem value="Excluir" icon="trash"
-									onclick="PF('dialogAtencao').show()">
-
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{ProcedimentoController.proc}" />
-								</p:menuitem>
-							</p:splitButton>
-						</center>
-					</p:column>
-				</p:dataTable>
-			</p:panel>
+				</b:dataTable>
+			
 		</h:form>
+		</b:panel>
 
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
 			<h:form id="dlgexcluir">
-				<h:panelGrid columns="1">
-
 					<div class="alert alert-warning" role="alert">Deseja excluir
 						esse procedimento?</div>
 
-				</h:panelGrid>
+				
 				<center>
-					<p:commandButton value="Sim"
-						action="#{ProcedimentoController.excluirProcedimento()}"
-						icon="ui-icon-check" style="font-size:14px;"
-						update=":frmmensagem:tabela, :frmmensagem:growl">
-					</p:commandButton>
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
-
+				<p:separator/>
+					<b:commandButton look="success" value="Sim" action="#{ProcedimentoController.excluirProcedimento()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem"/>
+					
+					<b:commandButton value="Não" oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;"/>
 				</center>
 			</h:form>
 		</p:dialog>

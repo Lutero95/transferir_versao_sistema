@@ -169,11 +169,13 @@ System.out.println("listarProcedimentoPorId");
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, proc.getCodProc());
+			System.out.println("id a ser excl"+proc.getCodProc());
+			stmt.setLong(1, proc.getIdProc());
 			stmt.execute();
 			con.commit();
 			return true;
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {

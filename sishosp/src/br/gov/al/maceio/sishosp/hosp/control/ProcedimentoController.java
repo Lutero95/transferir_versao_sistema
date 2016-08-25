@@ -54,10 +54,10 @@ public class ProcedimentoController implements Serializable {
 		this.proc = proc;
 	}
 
-	public List<ProcedimentoBean> getListaProcedimentos()
+	public void listarProcedimentos()
 			throws ProjetoException {
 		this.listaProcedimentos = pDao.listarProcedimento();
-		return listaProcedimentos;
+		
 	}
 
 	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
@@ -97,7 +97,7 @@ public class ProcedimentoController implements Serializable {
 
 		if (this.proc.getCodProc() == null || this.proc.getNomeProc() == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Código e descrição obrigatórios!", "Campos Obrigatórios.");
+					"Cï¿½digo e descriï¿½ï¿½o obrigatï¿½rios!", "Campos Obrigatï¿½rios.");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -119,7 +119,7 @@ public class ProcedimentoController implements Serializable {
 	public String alterarProcedimento() throws ProjetoException {
 		if (this.proc.getCodProc() == null || this.proc.getNomeProc() == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Código e descrição obrigatórios!", "Campos Obrigatórios.");
+					"Cï¿½digo e descriï¿½ï¿½o obrigatï¿½rios!", "Campos Obrigatï¿½rios.");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
@@ -161,9 +161,9 @@ public class ProcedimentoController implements Serializable {
 
 	public String getCabecalho() {
 		if (this.tipo == 1) {
-			cabecalho = "CADASTRO DE PROCEDIMENTO";
+			cabecalho = "InclusÃ£o de Procedimento";
 		} else if (this.tipo == 2) {
-			cabecalho = "ALTERAR PROCEDIMENTO";
+			cabecalho = "AlteraÃ§Ã£o de Procedimento";
 		}
 		return cabecalho;
 	}
@@ -200,5 +200,9 @@ public class ProcedimentoController implements Serializable {
 
 		}
 
+	}
+
+	public List<ProcedimentoBean> getListaProcedimentos() {
+		return listaProcedimentos;
 	}
 }
