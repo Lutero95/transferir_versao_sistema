@@ -20,7 +20,7 @@ public class PacienteDAO {
 	private Connection con = null;
 	private PreparedStatement ps = null;
 
-	// COMEÇO DO CODIGO
+	// COMEï¿½O DO CODIGO
 
 	public Boolean cadastrar(PacienteBean paciente) throws ProjetoException {
 		boolean cadastrou = false;
@@ -147,13 +147,6 @@ public class PacienteDAO {
 				stmt.setString(51, paciente.getTipoDeficiencia());
 			}
 
-			// ResultSet rs = stmt.executeQuery();
-			/*
-			 * if(rs.next()) { PacienteBean p = paciente; String idRetorno =
-			 * null; idRetorno = String.valueOf(rs.getLong("id_paciente"));
-			 * p.setId_paciente(Long.parseLong(idRetorno));
-			 * System.out.println("|THU1|"+ idRetorno); }
-			 */
 			stmt.execute();
 			System.out.println("|THU|" + paciente.getNome());
 			System.out.println("passou aqui 4");
@@ -164,6 +157,12 @@ public class PacienteDAO {
 			return cadastrou;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
 		}
 	}
 

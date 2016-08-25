@@ -62,7 +62,7 @@
 									<f:selectItem itemLabel="Viúvo" itemValue="V" />
 									<f:selectItem itemLabel="Divorciado" itemValue="D" />
 									<f:selectItem itemLabel="Outros" itemValue="O" />
-									<f:ajax event="blur" />
+
 								</b:selectOneMenu>
 
 							</div>
@@ -81,7 +81,7 @@
 									<f:selectItem itemLabel="Selecione" itemValue="" />
 									<f:selectItem itemLabel="Masculino" itemValue="M" />
 									<f:selectItem itemLabel="Feminino" itemValue="F" />
-									<f:ajax event="blur" />
+
 								</b:selectOneMenu>
 
 							</div>
@@ -101,7 +101,7 @@
 									<f:selectItem itemLabel="AB-" itemValue="AB-" />
 									<f:selectItem itemLabel="O+" itemValue="O+" />
 									<f:selectItem itemLabel="O-" itemValue="O-" />
-									<f:ajax event="blur" />
+
 								</b:selectOneMenu>
 
 							</div>
@@ -167,7 +167,7 @@
 										var="sis" itemLabel="#{sis.descRaca}"
 										itemValue="#{sis.codRaca}" />
 
-									<f:ajax event="blur" />
+
 								</b:selectOneMenu>
 
 							</div>
@@ -216,7 +216,7 @@
 									validatorMessage="Cep deve conter entre 8 digitos"
 									requiredMessage="é necessário que você informe seu cep.">
 									<f:validateLength minimum="8" maximum="8" />
-									<f:ajax event="blur" />
+
 								</h:inputText>
 
 							</div>
@@ -440,10 +440,9 @@
 							<div class="col-sm-2">
 								<h:inputText value="#{PacienteController.paciente.pis}"
 									class="form-control" id="pis"
-									validatorMessage="pis deve conter entre 11 digitos."
 									requiredMessage="é necessário que você informe seu pis.">
-									<f:validateLength minimum="11" maximum="11" />
-									<f:ajax event="blur" />
+									<!-- <f:validateLength minimum="11" maximum="11" /> -->
+
 								</h:inputText>
 
 							</div>
@@ -505,37 +504,42 @@
 						<div class="form-group">
 
 							<div class="col-sm-1">
-								<b:selectBooleanCheckbox
-									value="#{PacienteController.paciente.associado}"
-									caption="Associado" />
+
+								
+									<p:outputLabel value="Associado"></p:outputLabel>
+									<p:selectOneRadio value="#{PacienteController.paciente.associado}">
+									<f:selectItem  itemLabel="Sim" itemValue="s"/>
+									<f:selectItem  itemLabel="Não" itemValue="n"/>
+									</p:selectOneRadio>
 
 							</div>
-							
-							<h:outputLabel value="Escolaridade: #{PacienteController.escolaridadeSuggestion}"
+							<!--  -->
+							<h:outputLabel
+								value="Escolaridade: #{PacienteController.escolaridadeSuggestion}"
 								class="col-sm-1 control-label">
 							</h:outputLabel>
-							
+
 							<div class="col-sm-6">
 
-<p:outputPanel id="outescolaridade">
-								<p:autoComplete class="col-sm-1 control-label" 
-									label="Digite a escolaridade"
-									emptyMessage="Digite a Escolaridade" id="escolacomplete1"
-									style="background-color:white !important"
-									value="#{PacienteController.escolaridadeSuggestion}" size="45"
-									completeMethod="#{PacienteController.completeText2}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descescolaridade}"
-									converter="conEscolaridade">
-									<p:ajax event="itemSelect"
-										listener="#{PacienteController.onItemSelect2}" />
-								</p:autoComplete>
+								<p:outputPanel id="outescolaridade">
+									<p:autoComplete class="col-sm-1 control-label"
+										label="Digite a escolaridade"
+										emptyMessage="Digite a Escolaridade" id="escolacomplete1"
+										style="background-color:white !important"
+										value="#{PacienteController.escolaridadeSuggestion}" size="45"
+										completeMethod="#{PacienteController.completeText2}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.descescolaridade}"
+										converter="conEscolaridade">
+										<p:ajax event="itemSelect"
+											listener="#{PacienteController.onItemSelect2}" />
+									</p:autoComplete>
 
-</p:outputPanel>
+								</p:outputPanel>
 							</div>
-							<p:commandButton
-								onclick="PF('dlgbuscaescolaridade').show();" icon="ui-icon-search" process="@this"/>
+							<p:commandButton onclick="PF('dlgbuscaescolaridade').show();"
+								icon="ui-icon-search" process="@this" />
 						</div>
 
 
@@ -565,8 +569,7 @@
 
 
 							</div>
-							<p:commandButton
-							process="@this"
+							<p:commandButton process="@this"
 								onclick="PF('dlgbuscaescola').show();" icon="ui-icon-search" />
 
 						</div>
@@ -593,10 +596,9 @@
 
 
 							</div>
-							<p:commandButton
-							process="@this"
+							<p:commandButton process="@this"
 								onclick="PF('dlgbuscaprofissao').show();" icon="ui-icon-search" />
-							
+
 						</div>
 
 						<div class="form-group">
@@ -808,11 +810,11 @@
 				<p:separator></p:separator>
 				<!-- FIM DO FORMULARIO -->
 				<center>
-								<b:commandButton action="#{PacienteController.gravarPaciente()}"
-					icon="glyphicon-ok" size="sm" look="success"
-					update=":formCADU:message,formCADU" value="Incluir"
-					rendered="#{PacienteController.tipo == 1}" />
-				
+					<b:commandButton action="#{PacienteController.gravarPaciente()}"
+						icon="glyphicon-ok" size="sm" look="success"
+						update=":formCADU:message,formCADU" value="Incluir"
+						rendered="#{PacienteController.tipo == 1}" />
+
 					<b:commandButton action="#{PacienteController.alterarPaciente()}"
 						icon="glyphicon-ok" size="sm" update=":formCADU:message,:formCADU"
 						value="Alterar" look="success"
@@ -881,7 +883,7 @@
 
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.escolaSuggestion}" />
-	
+
 									<p:tooltip for="confirmar" value="Selecionar Escola"></p:tooltip>
 								</p:commandButton>
 							</p:column>
@@ -931,9 +933,10 @@
 									<h:outputText id="n16" value="Ação" class="fonteForm" />
 								</f:facet>
 
-								<p:commandButton oncomplete="PF('dlgbuscaescolaridade').hide();" process="@this"
-									icon="ui-icon-search" id="confirmar" update=":formCADU:tbv:outescolaridade">
-									
+								<p:commandButton oncomplete="PF('dlgbuscaescolaridade').hide();"
+									process="@this" icon="ui-icon-search" id="confirmar"
+									update=":formCADU:tbv:outescolaridade">
+
 
 
 									<f:setPropertyActionListener value="#{busca}"

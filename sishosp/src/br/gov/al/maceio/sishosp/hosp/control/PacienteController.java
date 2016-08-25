@@ -222,6 +222,7 @@ public class PacienteController implements Serializable{
 
 	public void gravarPaciente() throws ProjetoException {
 		PacienteDAO udao = new PacienteDAO();
+
 		paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
 		paciente.getEscolaridade().setCodescolaridade(
 				escolaridadeSuggestion.getCodescolaridade());
