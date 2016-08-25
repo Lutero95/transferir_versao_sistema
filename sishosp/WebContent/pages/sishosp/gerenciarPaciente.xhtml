@@ -12,7 +12,7 @@
 <ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-	<p:autoComplete></p:autoComplete>
+
 		 <b:panel title="Gerenciamento de Paciente"  collapsible="false">
 			<h:form id="frmmensagem">
 			<f:metadata>
@@ -20,10 +20,10 @@
 			</f:metadata>
 
 			<b:commandButton id="btninc" value="Novo" size="sm"
-				action="#{CboController.redirectInsert()}" icon="glyphicon-plus"
+				action="#{PacienteController.redirectInsert()}" icon="glyphicon-plus"
 				look="primary">
 				<f:setPropertyActionListener value="1"
-					target="#{CboController.tipo}" />
+					target="#{PacienteController.tipo}" />
 				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 			</b:commandButton>
 			<br />

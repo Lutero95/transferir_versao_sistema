@@ -113,7 +113,7 @@
 								<h:inputText value="#{PacienteController.paciente.nomePai}"
 									class="form-control" id="pai"
 									pt:placeholder="Digite aqui o nome do seu pai entre 2 e 30 caracteres"
-									required="true"
+									required="false"
 									validatorMessage="Nome deve conter entre 2 e 30 caracteres."
 									requiredMessage="é necessário que você informe o nome do seu pai.">
 									<f:validateLength minimum="2" maximum="40" />
@@ -535,7 +535,7 @@
 </p:outputPanel>
 							</div>
 							<p:commandButton
-								onclick="PF('dlgbuscaescolaridade').show();" icon="ui-icon-search" />
+								onclick="PF('dlgbuscaescolaridade').show();" icon="ui-icon-search" process="@this"/>
 						</div>
 
 
@@ -566,9 +566,9 @@
 
 							</div>
 							<p:commandButton
-								style="position:absolute; top:150px; left:550px;"
-								onclick="PF('dlgbuscaescola').show();" icon="buscaProcess" />
-							<!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
+							process="@this"
+								onclick="PF('dlgbuscaescola').show();" icon="ui-icon-search" />
+
 						</div>
 						<!-- 3 LISTA -->
 
@@ -594,9 +594,9 @@
 
 							</div>
 							<p:commandButton
-								style="position:absolute; top:200px; left:550px;"
-								onclick="PF('dlgbuscaprofissao').show();" icon="buscaProcess" />
-							<!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
+							process="@this"
+								onclick="PF('dlgbuscaprofissao').show();" icon="ui-icon-search" />
+							
 						</div>
 
 						<div class="form-group">
@@ -808,6 +808,11 @@
 				<p:separator></p:separator>
 				<!-- FIM DO FORMULARIO -->
 				<center>
+								<b:commandButton action="#{PacienteController.gravarPaciente()}"
+					icon="glyphicon-ok" size="sm" look="success"
+					update=":formCADU:message,formCADU" value="Incluir"
+					rendered="#{PacienteController.tipo == 1}" />
+				
 					<b:commandButton action="#{PacienteController.alterarPaciente()}"
 						icon="glyphicon-ok" size="sm" update=":formCADU:message,:formCADU"
 						value="Alterar" look="success"
@@ -926,13 +931,14 @@
 									<h:outputText id="n16" value="Ação" class="fonteForm" />
 								</f:facet>
 
-								<p:commandButton oncomplete="PF('dlgbuscaescolaridade').hide();"
-									icon="ui-icon-ok" id="confirmar" update=":formCADU:tbv:outescolaridade">
+								<p:commandButton oncomplete="PF('dlgbuscaescolaridade').hide();" process="@this"
+									icon="ui-icon-search" id="confirmar" update=":formCADU:tbv:outescolaridade">
+									
 
 
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.escolaridadeSuggestion}" />
-									<p:tooltip for="confirmar" value="Selecionar Escolaridade"></p:tooltip>
+									<p:tooltip for="confirmar" value="Selecionar Escolaridade2"></p:tooltip>
 								</p:commandButton>
 							</p:column>
 
