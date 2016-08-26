@@ -1,141 +1,95 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:stella="http://stella.caelum.com.br/faces2"
-    xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:stella="http://stella.caelum.com.br/faces2"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	>
 
-    <ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
-        <ui:define name="body">
-               <!-- INICIO DO FORMULARIO -->
-    <div class="col-md-8">
-        <h3 >GERENCIAMENTO DE TIPO DE ENCAMINHAMENTO</h3>
-        <br />
-       </div>
-        <h:form id="frmmensagem" onkeypress="
-                if (event.keyCode == 13) {
-                    document.getElementById('form:botaoBusca').click();
-                    return false;
-                }">
-        
+	<ui:define name="body">
+		<!-- INICIO DO FORMULARIO -->
+		<b:panel title="Gerenciamento de Tipo de Encaminhamento"
+			collapsible="false">
+			<h:form id="frmmensagem">
 
-                   <p:growl id="growl" showDetail="false" />
-                   <p:panel id="pnlprincipal" header="">
-                        <p:panelGrid columns="7" styleClass="semBorda" style="font-size:12px !important;">
-                        <p:outputPanel autoUpdate="true">
-                        <p:outputLabel value="Pesquisar por: " />
-                        <p:selectOneMenu value="#{EncaminhadoController.tipoBuscaEncaminhado}" required="true"
-                            style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
-                            requiredMessage="Informe o diretório da página.">
-                               
-                            <f:selectItem itemLabel="Nome" itemValue="1" />
+				<p:growl id="growl" showDetail="false" />
+	<b:commandButton id="btninc" value="Novo" size="sm"
+				action="#{EncaminhadoController.redirectInsert()}" icon="glyphicon-plus"
+				look="primary">
+				<f:setPropertyActionListener value="1"
+					target="#{EncaminhadoController.tipo}" />
+				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+			</b:commandButton>
+			<br />
+			<br />
 
-                            
-                            <p:ajax event="change" update=":frmmensagem:pnlprincipal" />
-                        </p:selectOneMenu>
+				<b:dataTable id="dt" var="tab"
+					value="#{EncaminhadoController.listaEncaminhado}" lang="es"
+					display="Nenhum Tipo de Atendimento">
 
-                        <p:inputText id="campoBuscanome"
-                            style="height:28px;margin-top:-6px;margin-left:16px;"
-                            value="#{EncaminhadoController.campoBuscaEncaminhado}"
-                            rendered="#{EncaminhadoController.tipoBuscaEncaminhado == 1}" />
-                            
+					<h:column>
+						<f:facet name="header">
+                        Descrição
+                    </f:facet>
 
-                            
-	<!-- actionListener="#{PacienteController.limparDados()}" -->
-						<p:commandButton value="Buscar" id="botaoBusca" 
-						icon="buscaLupa" styleClass="btn btn-info" style="height:30px; margin-left:2px; margin-top:10px;" 
-						action="#{EncaminhadoController.buscarEncaminhados()}" update=":frmmensagem:tabela, :frmmensagem:growl" />
-						<p:commandButton value="Limpar Busca" icon="limpar"  update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"  actionListener="#{EncaminhadoController.limparBuscaDados()}"
-						style="margin-left:20px"/>
-						<br/>
-                 
-                         <p:commandButton id="btninc" value="Novo"
-                                             actionListener="#{EncaminhadoController.limparDados()}"
-                                             action ="/pages/sishosp/cadastroTipoEncaminhamento.faces?faces-redirect=true" icon="add"  styleClass="btn btn-sm btn-success" style="margin-top: 15px;" >
-                                    <f:setPropertyActionListener value="I" target="#{EncaminhadoController.tipo}" /> 
-                                <p:tooltip for="btninc" value="Incluir"></p:tooltip>
-                            </p:commandButton>   
+						<h:outputText value="#{tab.descencaminhado}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+                        Ação
+                    </f:facet>
 
-						</p:outputPanel>
-                        </p:panelGrid>
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{EncaminhadoController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{EncaminhadoController.encaminhado}" />
 
+							<f:setPropertyActionListener value="2"
+								target="#{EncaminhadoController.encaminhado}" />
+						</b:commandButton>
 
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogAtencao').show()">
 
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{EncaminhadoController.encaminhado}" />
+						</b:commandButton>
 
+					</h:column>
 
+				</b:dataTable>
 
-                <p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover" id="tabela"
-                             style="margin-top:20px;" value="#{EncaminhadoController.listaEncaminhado}"
-                             var="tab" paginator="true" paginatorPosition="bottom" rows="12">
+			</h:form>
+		</b:panel>
+		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
+			resizable="false">
 
+			<h:form id="dlgexcluir">
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					esse Encaminhado?</div>
+				<center>
 
-                    <p:column headerText="Cód." style="font-weight:bold;width:5%;">
-                        <h:outputText value="#{tab.codencaminhado}" />
-                    </p:column>
+					<p:separator />
+					<b:commandButton look="success" value="Sim"
+						action="#{EncaminhadoController.excluirEncaminhado()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem" />
 
-                    <p:column headerText="Nome" style="font-weight:bold;">
-                        <h:outputText value="#{tab.descencaminhado}" />
-                    </p:column>
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;" />
 
-                    
-                    <p:column headerText="Ações" width="15%">
-                            <center>
-                                <p:splitButton icon="confirmar">
-                                    <p:menuitem value="Alterar" icon="alterar-dados"  
-                                       action ="/pages/sishosp/cadastroTipoEncaminhamento.faces?faces-redirect=true" >
-                                        <f:setPropertyActionListener value="#{tab}" target="#{EncaminhadoController.encaminhado}" />
-  
-                                       
-                                       <f:setPropertyActionListener value="A" target="#{EncaminhadoController.tipo}" /> 
-                                    </p:menuitem>
-                                    
-                                    <p:menuitem value="Excluir" icon="trash" 
-                                        onclick="PF('dialogAtencao').show()">
-
-                                        <f:setPropertyActionListener value="#{tab.codencaminhado}" target="#{EncaminhadoController.encaminhado.codencaminhado}" />
-                                    </p:menuitem>
-                                </p:splitButton>   
-                            </center>
-                        </p:column>
-                </p:dataTable>
-</p:panel>
-            </h:form>
-
-            <p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
-                      resizable="false">
-
-<h:form id="dlgexcluir">
-                <h:panelGrid columns="1">
+				</center>
 
 
-                    <div class="alert alert-warning" role="alert">Deseja excluir
-                        esse Encaminhado?</div>
-
-                </h:panelGrid>
-
-
-
-                <center>
-
-                    <p:commandButton value="Sim" 
-                                     action="#{EncaminhadoController.excluirEncaminhado()}"
-                                     icon="ui-icon-check" style="font-size:14px;" update=":frmmensagem:tabela">
-                    </p:commandButton>
-
-                    <p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-                                     icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
-
-                </center>
-
-
-</h:form>
-            </p:dialog>
-        
-    
-        </ui:define>
-    </ui:composition>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
 </html>

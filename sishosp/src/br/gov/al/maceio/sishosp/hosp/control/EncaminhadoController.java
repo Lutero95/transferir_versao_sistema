@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -26,7 +27,7 @@ public class EncaminhadoController implements Serializable {
 	private Integer abaAtiva = 0;
 	private EncaminhadoBean encaminhado;
 	// BUSCAS
-	private String tipo;
+	private int tipo;
 	private Integer tipoBuscaEncaminhado;
 	private String campoBuscaEncaminhado;
 	private String statusEncaminhado;
@@ -37,7 +38,6 @@ public class EncaminhadoController implements Serializable {
 	public EncaminhadoController() {
 		encaminhado = new EncaminhadoBean();
 		// BUSCA
-		tipo = "";
 		tipoBuscaEncaminhado = 1;
 		campoBuscaEncaminhado = "";
 		statusEncaminhado = "P";
@@ -45,6 +45,37 @@ public class EncaminhadoController implements Serializable {
 		listaEncaminhado = new ArrayList<>();
 		listaEncaminhado = null;
 	}
+	
+	public String redirectEdit() {
+		return "cadastroTipoEncaminhamento?faces-redirect=true&amp;id=" + this.encaminhado.getCodencaminhado()+"&amp;tipo="+tipo;
+	}	
+	
+	
+	public String redirectInsert() {
+		return "cadastroTipoEncaminhamento?faces-redirect=true&amp;tipo="+tipo;
+	}		
+	
+	public void getEditTipoEncaminhamento() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo =Integer.parseInt(params.get("tipo"));			
+			System.out.println("tipo do walter"+tipo);
+			EncaminhadoDAO cDao = new EncaminhadoDAO();
+			this.encaminhado = cDao.buscaencaminhadocodigo(id);
+		}
+		else{
+			System.out.println("tipo sera"+tipo);
+			tipo =Integer.parseInt(params.get("tipo"));
+			
+		}
+		
+	}
+
+	
 
 	public void gravarEncaminhado() throws ProjetoException {
 		EncaminhadoDAO udao = new EncaminhadoDAO();
@@ -160,13 +191,6 @@ public class EncaminhadoController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
 
 	public Integer getTipoBuscaEncaminhado() {
 		return tipoBuscaEncaminhado;
@@ -207,16 +231,24 @@ public class EncaminhadoController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
-			cabecalho = "CADASTRO DE ENCAMINHADO";
-		} else if (this.tipo.equals("A")) {
-			cabecalho = "ALTERAR ENCAMINHADO";
+		if (this.tipo==1) {
+			cabecalho = "Inclusão de Tipo de Encaminhamento";
+		} else if (this.tipo==2) {
+			cabecalho = "Alteração de Tipo de Encaminhamento";
 		}
 		return cabecalho;
 	}
 
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 
 }
