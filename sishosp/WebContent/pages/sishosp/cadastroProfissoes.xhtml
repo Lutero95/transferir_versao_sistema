@@ -5,64 +5,61 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{ProfissaoController.getEditProfissao()}" />
 	</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
 
-			<h:form class="form-horizontal" id="formCADU">
 
-				<p:growl id="message" />
-				<p:panel id="pnlCadProfissao"
-					header="#{ProfissaoController.cabecalho}"
-					style="height:400px; width:600px; margin-left:50%; margin-top:10%; background-color: #F5F5F5;">
+		<h:form class="form-horizontal" id="formCADU">
 
-					<div class="form-group">
-						<h:outputLabel for="inputname" value="Nome da Profissão"
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<h:inputText
-								value="#{ProfissaoController.profissao.descprofissao}"
-								class="form-control" id="inputname"
-								pt:placeholder="Digite aqui sua profissão" required="true"
-								requiredMessage="é necessário que você informe sua profissão.">
-								<f:validateLength minimum="2" maximum="40" />
+			<p:growl id="message" />
+			<b:panel title="#{ProfissaoController.cabecalho}" collapsible="false">
 
-							</h:inputText>
 
-						</div>
+				<div class="form-group">
+					<h:outputLabel for="inputname" value="Descrição"
+						styleClass="col-sm-2 control-label" />
+					<div class="col-sm-6">
+						<h:inputText
+							value="#{ProfissaoController.profissao.descprofissao}"
+							class="form-control" id="inputname"
+							pt:placeholder="Digite aqui a descrição" required="true"
+							requiredMessage="é necessário que você informe sua profissão.">
+							<f:validateLength minimum="2" maximum="40" />
+
+						</h:inputText>
+
 					</div>
-					<p:separator></p:separator>
+				</div>
+				<p:separator></p:separator>
 
-					<center>
-						<p:panelGrid columns="3" styleClass="semBorda">
-							<p:commandButton
-								action="#{ProfissaoController.gravarProfissao()}"
-								update=":formCADU:message,:formCADU:pnlCadProfissao,:formCADU"
-								value="Gravar" icon="confirmar"
-								rendered="#{ProfissaoController.tipo == 1}" />
+				<center>
+				<b:commandButton action="#{ProfissaoController.gravarProfissao()}"
+					icon="glyphicon-ok" size="sm" look="success"
+					update=":formCADU:message,:formCADU" value="Incluir"
+					rendered="#{ProfissaoController.tipo == 1}" />
 
-							<p:commandButton
-								action="#{ProfissaoController.alterarProfissao()}"
-								update=":formCADU:message,:formCADU:pnlCadProfissao,:formCADU"
-								value="Alterar" icon="alterar-dados"
-								rendered="#{ProfissaoController.tipo == 2}" />
 
-							<p:commandButton value="Voltar" icon="btvoltar"
-								style="width:80px;"
-								action="/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true" />
-
-						</p:panelGrid>
-					</center>
-				</p:panel>
-
-			</h:form>
-		</div>
+				<b:commandButton action="#{ProfissaoController.alterarProfissao()}"
+					icon="glyphicon-ok" size="sm"
+					update=":formCADU:message,:formCADU" value="Alterar"
+					look="success" rendered="#{ProfissaoController.tipo  == 2}" />
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					style="margin-left:10px" size="sm" immediate="true" look="info"
+					action="/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true">
+				</b:commandButton>
+				</center>
+				
+		</b:panel>
+		</h:form>
+		
+		
 
 	</ui:define>
 </ui:composition>

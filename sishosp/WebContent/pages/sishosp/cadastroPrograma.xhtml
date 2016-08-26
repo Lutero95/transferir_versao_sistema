@@ -4,134 +4,137 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
+		<f:metadata>
+			<f:viewAction action="#{ProgramaController.getEditProg()}" />
+		</f:metadata>
+		<h:form>
+			<h:commandButton value="Voltar"
+				style="position:absolute; left:71%; top:100%;"
+				styleClass="btn btn-info"
+				action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
+			</h:commandButton>
+		</h:form>
 
-			<h:form>
-				<h:commandButton value="Voltar"
-					style="position:absolute; left:71%; top:100%;"
-					styleClass="btn btn-info"
+		<h:form class="form-horizontal" id="formCADU">
+
+			<p:growl id="message" />
+				<b:panel title="#{ProgramaController.cabecalho}" collapsible="false">
+
+								<div class="form-group">
+					<h:outputLabel for="inputname" value="Descrição"
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText value="#{ProgramaController.prog.descPrograma}"
+							class="form-control" id="inputname" required="true"
+							requiredMessage="Descrição obrigatória!" />
+					</div>
+				</div>
+
+<div class="form-group">
+					<h:outputLabel for="inputcd" value="Código Federal"
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText value="#{ProgramaController.prog.codFederal}"
+							class="form-control" id="inputcd"
+							requiredMessage="Código Federal obrigatório!" required="true" />
+
+					</div>
+				</div>
+
+				<div class="form-group">
+					<h:outputLabel value="Grupos" styleClass="col-sm-3 control-label" />
+					
+					<div class="col-sm-6">
+<p:commandButton styleClass="btn btn-primary text-center"
+						style="color:black;" icon="ui-icon-plus" value="Incluir Grupo" process="@this"
+						oncomplete="PF('dlgConsuGrupos').show();" actionListener="#{GrupoController.getListaTodosGrupos()}"/> 
+						<p:dataTable emptyMessage="Nenhum Grupo"
+							styleClass="table table-hover" id="tabela"
+							style="margin-top:20px;" value="#{ProgramaController.prog.grupo}"
+							var="tab" paginator="true" paginatorPosition="bottom" rows="12"
+							resizableColumns="true">
+
+							<p:column headerText="Cód." style="font-weight:bold;width:20%;">
+								<h:outputText value="#{tab.idGrupo}" />
+							</p:column>
+
+							<p:column headerText="Nome" style="font-weight:bold;">
+								<h:outputText value="#{tab.descGrupo}" />
+							</p:column>
+
+							<p:column headerText="Ação">
+								<center>
+									<p:commandButton process="@this"
+										action="#{ProgramaController.prog.removeGrupoLista()}"
+										icon="ui-icon-trash" update=":formCADU">
+										<f:setPropertyActionListener value="#{tab}"
+											target="#{ProgramaController.prog.grupoRmv}" />
+									</p:commandButton>
+								</center>
+							</p:column>
+
+						</p:dataTable>
+					</div>
+				</div>
+				<p:separator></p:separator>
+			</b:panel>
+			<center>
+				<b:commandButton action="#{ProgramaController.gravarPrograma()}"
+					icon="glyphicon-ok" size="sm" look="success"
+					update=":formCADU:message,:formCADU" value="Incluir"
+					rendered="#{ProgramaController.tipo == 1}" />
+
+
+				<b:commandButton action="#{ProgramaController.alterarPrograma()}"
+					icon="glyphicon-ok" size="sm" update=":formCADU:message,:formCADU"
+					value="Alterar" look="success"
+					rendered="#{ProgramaController.tipo  == 2}" />
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					style="margin-left:10px" size="sm" immediate="true" look="info"
 					action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
-				</h:commandButton>
+				</b:commandButton>
+
+			</center>
+
+		</h:form>
+
+		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupos"
+			modal="true" width="550px" height="200px">
+			<h:form id="formConsuGrop">
+			<p:outputPanel autoUpdate="true">
+				<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
+				 scrollRows="3" scrollHeight="150" scrollable="true"
+					resizableColumns="true" var="grupo"
+					emptyMessage="Não existe nenhum grupo cadastrado!">
+					<p:column headerText="CÓD.">
+						<p:outputLabel value="#{grupo.idGrupo}" />
+					</p:column>
+					<p:column headerText="GRUPO">
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</p:column>
+					<p:column headerText="QTD. FREQ>">
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</p:column>
+
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton update=":formCADU"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuGrupos').hide();"
+							action="#{ProgramaController.prog.addGrupoLista()}">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{ProgramaController.prog.grupoParaAdd}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				</p:outputPanel>
 			</h:form>
+		</p:dialog>
 
-			<h:form class="form-horizontal" id="formCADU">
-
-				<p:growl id="message" />
-				<p:panel id="pnlCadPrograma"
-					header="#{ProgramaController.cabecalho}"
-					style="height:auto; width:auto; background-color: #F5F5F5;">
-
-					<div class="form-group">
-						<h:outputLabel for="inputcd" value="Código Federal: "
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<h:inputText value="#{ProgramaController.prog.codFederal}"
-								class="form-control" id="inputcd"
-								requiredMessage="Código Federal obrigatório!" required="true" />
-
-						</div>
-					</div>
-					<div class="form-group">
-						<h:outputLabel for="inputname" value="Descrição do Programa: "
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<h:inputText value="#{ProgramaController.prog.descPrograma}"
-								class="form-control" id="inputname" required="true"
-								requiredMessage="Descrição obrigatória!" />
-						</div>
-					</div>
-
-					<div class="form-group">
-						<h:outputLabel value="Grupos: "
-							styleClass="col-sm-3 control-label" />
-						<p:commandButton style="position:absolute; top:165px; left:192px;"
-							onclick="PF('dlgConsuGrupos').show();" icon="ui-icon-plus" />
-						<div class="col-sm-6">
-
-							<p:dataTable emptyMessage="Sem Dados"
-								styleClass="table table-hover" id="tabela"
-								style="margin-top:20px;"
-								value="#{ProgramaController.prog.grupo}" var="tab"
-								paginator="true" paginatorPosition="bottom" rows="12"
-								resizableColumns="true">
-
-								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
-									<h:outputText value="#{tab.idGrupo}" />
-								</p:column>
-
-								<p:column headerText="Nome" style="font-weight:bold;">
-									<h:outputText value="#{tab.descGrupo}" />
-								</p:column>
-
-								<p:column headerText="Ação">
-									<center>
-										<p:commandButton process="@this"
-											action="#{ProgramaController.prog.removeGrupoLista()}"
-											icon="ui-icon-trash" update=":formCADU:pnlCadPrograma">
-											<f:setPropertyActionListener value="#{tab}"
-												target="#{ProgramaController.prog.grupoRmv}" />
-										</p:commandButton>
-									</center>
-								</p:column>
-
-							</p:dataTable>
-						</div>
-					</div>
-					<p:separator></p:separator>
-					<!-- FIM DO FORMULARIO -->
-					<p:panelGrid columns="2" styleClass="semBorda" style="width: 500px">
-						<h:commandButton action="#{ProgramaController.gravarPrograma()}"
-							update=":formCADU:message,:formCADU:pnlCadPrograma,:formCadu"
-							value="Cadastrar" styleClass="btn btn-sm btn-success"
-							rendered="#{ProgramaController.tipo == 'I'}" />
-
-
-						<h:commandButton action="#{ProgramaController.alterarPrograma()}"
-							update=":formCADU:message,:formCADU:pnlCadPrograma,:formCadu"
-							value="Alterar" styleClass="btn btn-info"
-							rendered="#{ProgramaController.tipo  == 'A'}" />
-					</p:panelGrid>
-
-				</p:panel>
-
-			</h:form>
-			
-			<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupos"
-				modal="true" width="550px">
-				<h:form id="formConsuGrop">
-					<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
-						resizableColumns="true" var="grupo"
-						emptyMessage="Não existe nenhum grupo cadastrado!">
-						<p:column headerText="CÓD.">
-							<p:outputLabel value="#{grupo.idGrupo}" />
-						</p:column>
-						<p:column headerText="GRUPO">
-							<p:outputLabel value="#{grupo.descGrupo}" />
-						</p:column>
-						<p:column headerText="QTD. FREQ>">
-							<p:outputLabel value="#{grupo.qtdFrequencia}" />
-						</p:column>
-
-						<p:column style="width:50px;text-align: center">
-							<p:commandButton update=":formCADU:pnlCadPrograma"
-								icon="ui-icon-check" title="Selecionar"
-								onclick="PF('dlgConsuGrupos').hide();"
-								action="#{ProgramaController.prog.addGrupoLista()}">
-								<f:setPropertyActionListener value="#{grupo}"
-									target="#{ProgramaController.prog.grupoParaAdd}" />
-							</p:commandButton>
-						</p:column>
-					</p:dataTable>
-				</h:form>
-			</p:dialog>
-		</div>
 
 	</ui:define>
 </ui:composition>

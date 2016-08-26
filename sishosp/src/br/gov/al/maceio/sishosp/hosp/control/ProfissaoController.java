@@ -104,7 +104,7 @@ public class ProfissaoController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Profissao excluido com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaProfissoes = null;
+			listarProfissoes();
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
 		} else {
@@ -159,10 +159,10 @@ public class ProfissaoController implements Serializable {
 		this.profissao = profissao;
 	}
 
-	public List<ProfissaoBean> getListaProfissoes() throws ProjetoException {
+	public void listarProfissoes() throws ProjetoException {
 		ProfissaoDAO fdao = new ProfissaoDAO();
 		listaProfissoes = fdao.listaProfissoes();
-		return listaProfissoes;
+		
 	}
 
 	public void setListaProfissoes(List<ProfissaoBean> listaProfissoes) {
@@ -211,9 +211,9 @@ public class ProfissaoController implements Serializable {
 
 	public String getCabecalho() {
 		if (this.tipo == 1) {
-			cabecalho = "CADASTRO DE PROFISS�O";
+			cabecalho = "Inclusão de Profissão";
 		} else if (this.tipo == 2) {
-			cabecalho = "ALTERAR PROFISS�O";
+			cabecalho = "Alteração de Profissão";
 		}
 		return cabecalho;
 	}
@@ -245,5 +245,9 @@ public class ProfissaoController implements Serializable {
 	public String redirectEdit() {
 		return "cadastroProfissoes?faces-redirect=true&amp;id="
 				+ this.profissao.getCodprofissao() + "&amp;tipo=" + this.tipo;
+	}
+
+	public List<ProfissaoBean> getListaProfissoes() {
+		return listaProfissoes;
 	}
 }

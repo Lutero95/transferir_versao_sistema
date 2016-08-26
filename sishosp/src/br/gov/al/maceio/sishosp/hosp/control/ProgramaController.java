@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -27,7 +28,7 @@ public class ProgramaController implements Serializable{
 	private List<ProgramaBean> listaProgramas;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
-	private String tipo;
+	private int tipo;
 	private String cabecalho;
 	private Integer abaAtiva = 0;
 	
@@ -38,8 +39,40 @@ public class ProgramaController implements Serializable{
 		this.prog = new ProgramaBean();
 		this.listaProgramas = null;
 		this.descricaoBusca = new String();
-		this.tipo = new String();
+
 	}
+
+	
+	public String redirectEdit() {
+		
+		return "cadastroPrograma?faces-redirect=true&amp;id=" + this.prog.getIdPrograma()+"&amp;tipo="+tipo;
+	}	
+	
+	
+	public String redirectInsert() {
+		return "cadastroPrograma?faces-redirect=true&amp;tipo="+tipo;
+	}		
+	
+	public void getEditProg() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo =Integer.parseInt(params.get("tipo"));			
+			System.out.println("tipo do walter"+tipo);
+			ProgramaDAO cDao = new ProgramaDAO();
+			this.prog = cDao.listarProgramaPorId(id);
+		}
+		else{
+			System.out.println("tipo sera"+tipo);
+			tipo =Integer.parseInt(params.get("tipo"));
+			
+		}
+		
+	}
+	
 	
 	public void limparDados() throws ProjetoException{
 		prog = new ProgramaBean();
@@ -141,14 +174,7 @@ public class ProgramaController implements Serializable{
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
+	
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
@@ -158,10 +184,10 @@ public class ProgramaController implements Serializable{
 	}
 	
 	public String getCabecalho() {
-		if(this.tipo.equals("I")){
-			cabecalho = "CADASTRO DE PROGRAMA";
-		}else if(this.tipo.equals("A")){
-			cabecalho = "ALTERAR PROGRAMA";
+		if(this.tipo==1){
+			cabecalho = "Inclusão de Programa";
+		}else if(this.tipo==2){
+			cabecalho = "Alteração de Programa";
 		}
 		return cabecalho;
 	}
@@ -175,6 +201,16 @@ public class ProgramaController implements Serializable{
 		ProgramaDAO pDao = new ProgramaDAO();
 		List<ProgramaBean> result = pDao.listarProgramasBusca(query, 1);
 		return result;
+	}
+
+
+	public int getTipo() {
+		return tipo;
+	}
+
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 	
 }

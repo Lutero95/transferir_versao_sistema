@@ -4,134 +4,83 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:stella="http://stella.caelum.com.br/faces2"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
-			<h3>GERENCIAMENTO DE PROGRAMAS</h3>
-			<br />
-		</div>
-		<h:form id="frmmensagem"
-			onkeypress="
-                if (event.keyCode == 13) {
-                    document.getElementById('form:botaoBusca').click();
-                    return false;
-                }">
+		<b:panel title="Gerenciamento de Programa" collapsible="false">
+			<h:form id="frmmensagem">
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{ProgramaController.redirectInsert()}"
+					icon="glyphicon-plus" look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{ProgramaController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
 
+				<p:growl id="growl" showDetail="false" />
 
-			<p:growl id="growl" showDetail="false" />
-			<p:panel id="pnlprincipal" header="">
-				<p:panelGrid columns="7" styleClass="semBorda"
-					style="font-size:12px !important;">
-					<p:outputPanel autoUpdate="true">
-						<p:outputLabel value="Pesquisar por: " />
-						<p:selectOneMenu value="#{ProgramaController.tipoBuscar}"
-							required="true"
-							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
-							requiredMessage="Informe o diretório da página.">
-							<f:selectItem itemLabel="Nome" itemValue="1" />
-							<p:ajax event="change" update=":frmmensagem:pnlprincipal" />
-						</p:selectOneMenu>
+				<b:dataTable id="dt" var="tab"
+					value="#{ProgramaController.listaProgramas}" lang="es"
+					display="Nenhum Programa">
+					<h:column>
+						<f:facet name="header">
+                        Descrição
+                    </f:facet>
 
-						<p:inputText id="campoBuscanome"
-							style="height:28px;margin-top:-6px;margin-left:16px;"
-							value="#{ProgramaController.descricaoBusca}" />
-
-						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							styleClass="btn btn-info" style="height:30px; margin-left:2px; margin-top:10px;"
-							action="#{ProgramaController.buscarProgramas()}"
-							update=":frmmensagem:tabela, :frmmensagem:growl" />
-						
-						<p:commandButton value="Limpar Busca" icon="limpar"
-							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
-							actionListener="#{ProgramaController.limparDados()}"
-							style="margin-left:20px" />
-						<br />
-
-						<p:commandButton id="btninc" value="Novo"
-							actionListener="#{ProgramaController.limparDados()}"
-							action="/pages/sishosp/cadastroPrograma.faces?faces-redirect=true" icon="add"
-							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
-							<f:setPropertyActionListener value="I"
-								target="#{ProgramaController.tipo}" />
-							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-						</p:commandButton>
-
-					</p:outputPanel>
-				</p:panelGrid>
-
-				<p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover"
-					id="tabela" style="margin-top:20px;"
-					value="#{ProgramaController.listaProgramas}" var="tab"
-					paginator="true" paginatorPosition="bottom" rows="12">
-
-					<p:column headerText="Cód." style="font-weight:bold;width:5%;">
-						<h:outputText value="#{tab.idPrograma}" />
-					</p:column>
-
-					<p:column headerText="Nome" style="font-weight:bold;">
 						<h:outputText value="#{tab.descPrograma}" />
-					</p:column>
-					
-					<p:column headerText="Código Federal" style="font-weight:bold;">
-						<h:outputText value="#{tab.codFederal}" />
-					</p:column>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+                        Ação
+                    </f:facet>
 
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{ProgramaController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{ProgramaController.prog}" />
 
-					<p:column headerText="Ações" width="15%">
-						<center>
-							<p:splitButton icon="confirmar">
-								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroPrograma.faces?faces-redirect=true">
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{ProgramaController.prog}" />
+							<f:setPropertyActionListener value="2"
+								target="#{ProgramaController.tipo}" />
+						</b:commandButton>
 
-									<f:setPropertyActionListener value="A"
-										target="#{ProgramaController.tipo}" />
-								</p:menuitem>
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogAtencao').show()">
 
-								<p:menuitem value="Excluir" icon="trash"
-									onclick="PF('dialogAtencao').show()">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{ProgramaController.prog}" />
+						</b:commandButton>
 
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{ProgramaController.prog}" />
-								</p:menuitem>
-							</p:splitButton>
-						</center>
-					</p:column>
-				</p:dataTable>
-			</p:panel>
-		</h:form>
+					</h:column>
+				</b:dataTable>
 
+			</h:form>
+		</b:panel>
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
 			<h:form id="dlgexcluir">
-				<h:panelGrid columns="1">
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					esse programa?</div>
 
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						esse programa?</div>
 
-				</h:panelGrid>
 				<center>
-					<p:commandButton value="Sim"
-						action="#{ProgramaController.excluirPrograma()}"
-						icon="ui-icon-check" style="font-size:14px;"
-						update=":frmmensagem:tabela">
-					</p:commandButton>
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+					<p:separator />
+					<b:commandButton look="success" value="Sim"
+						action="#{ProgramaController.excluirPrograma()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem" />
+
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;" />
 
 				</center>
 			</h:form>
 		</p:dialog>
-
-
 	</ui:define>
 </ui:composition>
 </html>

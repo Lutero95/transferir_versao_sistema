@@ -222,7 +222,8 @@ public class ProgramaDAO {
 				programa = new ProgramaBean();
 				programa.setIdPrograma(rs.getInt("id_programa"));
 				programa.setDescPrograma(rs.getString("descprograma"));
-				// programa.setCodFederal(rs.getDouble("codfederal"));
+				if (rs.getString(	"codfederal")!=null)
+				 programa.setCodFederal(rs.getDouble("codfederal"));
 			}
 
 		} catch (SQLException ex) {
