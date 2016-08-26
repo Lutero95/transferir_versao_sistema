@@ -1,10 +1,11 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ConfigAgendaParte1Bean {
+public class ConfigAgendaParte1Bean implements Serializable {
 
 	private Integer idConfiAgenda;
 	private Integer mes;

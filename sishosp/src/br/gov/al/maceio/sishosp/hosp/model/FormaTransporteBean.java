@@ -1,8 +1,10 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 
 
-public class FormaTransporteBean {
+
+public class FormaTransporteBean implements Serializable{
 
 	private Integer codformatransporte;
 	private String descformatransporte;

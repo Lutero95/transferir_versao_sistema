@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class ConvenioBean {
+import java.io.Serializable;
+
+public class ConvenioBean implements Serializable{
 
 	private Integer codconvenio;
 	private String  descconvenio;

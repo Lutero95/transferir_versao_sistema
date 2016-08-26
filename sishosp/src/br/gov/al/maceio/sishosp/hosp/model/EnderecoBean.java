@@ -1,9 +1,10 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class EnderecoBean {
+public class EnderecoBean implements Serializable {
     // ATRIBUTOS
 	private Long id;
 	private String municipio;

@@ -1,9 +1,10 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class PacienteBean {
+public class PacienteBean implements Serializable{
 	// ATRIBUTOS
 	private Integer id_paciente;
 	private String nome;

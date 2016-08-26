@@ -1,9 +1,10 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProgramaBean {
+public class ProgramaBean implements Serializable{
 	private Integer idPrograma;
 	private String descPrograma;
 	private Double codFederal;

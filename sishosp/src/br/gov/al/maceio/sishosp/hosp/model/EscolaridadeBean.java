@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class EscolaridadeBean {
+import java.io.Serializable;
+
+public class EscolaridadeBean  implements Serializable{
 
 	private Integer codescolaridade;
 	private String  descescolaridade;

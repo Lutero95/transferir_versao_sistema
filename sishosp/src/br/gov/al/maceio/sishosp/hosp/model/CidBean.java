@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class CidBean {
+import java.io.Serializable;
+
+public class CidBean implements Serializable{
 	
 	private Integer idCid;
 	private String descCid;

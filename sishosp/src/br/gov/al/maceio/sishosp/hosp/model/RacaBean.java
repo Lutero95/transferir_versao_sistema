@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class RacaBean {
+import java.io.Serializable;
+
+public class RacaBean implements Serializable{
 	
 	private Integer codRaca;
 	private String descRaca;

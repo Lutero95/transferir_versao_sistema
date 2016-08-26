@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class FornecedorBean {
+import java.io.Serializable;
+
+public class FornecedorBean implements Serializable {
 	
 	private Integer idFornecedor;
 	private String descFornecedor;

@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class ConfigAgendaParte2Bean {
+import java.io.Serializable;
+
+public class ConfigAgendaParte2Bean implements Serializable {
 
 	private ProgramaBean programa;
 	private GrupoBean grupo;

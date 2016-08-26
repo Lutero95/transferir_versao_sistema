@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class EquipamentoBean {
+import java.io.Serializable;
+
+public class EquipamentoBean implements Serializable{
 	
 	private Integer id_equipamento;
 	private String descEquipamento;

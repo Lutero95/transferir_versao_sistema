@@ -1,8 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class LaudoBean {
+public class LaudoBean implements Serializable{
 	private Integer id_apac;
 	private String apac;
 	private Integer codmedico;

@@ -222,16 +222,31 @@ public class PacienteController implements Serializable{
 
 	public void gravarPaciente() throws ProjetoException {
 		PacienteDAO udao = new PacienteDAO();
-
+		if (escolaSuggestion!=null)
 		paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
+		else
+		paciente.getEscola().setCodEscola(null);
+		if (escolaridadeSuggestion!=null)
 		paciente.getEscolaridade().setCodescolaridade(
 				escolaridadeSuggestion.getCodescolaridade());
+		else
+			paciente.getEscolaridade().setCodescolaridade(null);
+		if (profissaoSuggestion!=null) 
 		paciente.getProfissao().setCodprofissao(
 				profissaoSuggestion.getCodprofissao());
+		else
+			paciente.getProfissao().setCodprofissao(null);			
+		
+		if (encaminhadoSuggestion!=null)
 		paciente.getEncaminhado().setCodencaminhado(
 				encaminhadoSuggestion.getCodencaminhado());
+		else
+			paciente.getEncaminhado().setCodencaminhado(null);			
+		if (transporteSuggestion!=null)
 		paciente.getFormatransporte().setCodformatransporte(
 				transporteSuggestion.getCodformatransporte());
+		else
+			paciente.getFormatransporte().setCodformatransporte(null);			
 		boolean cadastrou = udao.cadastrar(paciente);
 
 		if (cadastrou == true) {

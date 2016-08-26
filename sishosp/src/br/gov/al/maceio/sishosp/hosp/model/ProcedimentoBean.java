@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class ProcedimentoBean {
+import java.io.Serializable;
+
+public class ProcedimentoBean implements Serializable{
 	
 	private Integer idProc;
 	private Integer codProc;

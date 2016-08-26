@@ -1,9 +1,11 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EquipeBean {
+public class EquipeBean implements Serializable
+{
 
 	private Integer codEquipe;
 	private String descEquipe;

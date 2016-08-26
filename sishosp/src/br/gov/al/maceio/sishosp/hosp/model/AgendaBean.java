@@ -1,8 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AgendaBean {
+public class AgendaBean implements Serializable {
 	
 	private Integer idAgenda;
 	private PacienteBean paciente;

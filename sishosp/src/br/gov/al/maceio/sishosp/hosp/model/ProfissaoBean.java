@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class ProfissaoBean {
+import java.io.Serializable;
+
+public class ProfissaoBean implements Serializable {
 
 	private Integer codprofissao;
 	private String  descprofissao;

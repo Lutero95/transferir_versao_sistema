@@ -1,9 +1,10 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TipoAtendimentoBean {
+public class TipoAtendimentoBean implements Serializable{
 	
 	private Integer idTipo;
 	private String descTipoAt;

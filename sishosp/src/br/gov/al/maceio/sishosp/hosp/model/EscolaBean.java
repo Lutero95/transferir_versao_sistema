@@ -1,6 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-public class EscolaBean {
+import java.io.Serializable;
+
+public class EscolaBean implements Serializable{
 	private Integer codEscola;
 	private String descescola;
 	private Integer codtipoescola;	

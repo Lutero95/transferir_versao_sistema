@@ -1,8 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BloqueioBean {
+public class BloqueioBean implements Serializable{
 	
 	private Integer idBloqueio;
 	private ProfissionalBean prof;
