@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -29,7 +30,7 @@ public class TipoAtendimentoController implements Serializable {
 	private List<TipoAtendimentoBean> listaTipos;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
-	private String tipoS;
+	private int tipoS;
 	private GrupoBean grupoSelecionado;
 	private String cabecalho;
 
@@ -41,7 +42,6 @@ public class TipoAtendimentoController implements Serializable {
 		this.tipo = new TipoAtendimentoBean();
 		this.listaTipos = null;
 		this.descricaoBusca = new String();
-		this.tipoS = new String();
 		this.grupoSelecionado = new GrupoBean();
 	}
 
@@ -61,11 +61,10 @@ public class TipoAtendimentoController implements Serializable {
 		this.tipo = tipo;
 	}
 
-	public List<TipoAtendimentoBean> getListaTipos() throws ProjetoException {
-		if (listaTipos == null) {
+	public void listarTipos() throws ProjetoException {
 			listaTipos = tDao.listarTipoAt();
-		}
-		return listaTipos;
+
+
 	}
 
 	public void atualizaListaTipos(GrupoBean g) throws ProjetoException {
@@ -88,7 +87,7 @@ public class TipoAtendimentoController implements Serializable {
 	public void gravarTipo() throws ProjetoException, SQLException {
 		if (this.tipo.getGrupo().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário no mínimo um grupo!", "Campos obrigatórios!");
+					"Ã‰ necessÃ¡rio no minimo informar um grupo!", "Campos obrigatÃ³rios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -107,10 +106,39 @@ public class TipoAtendimentoController implements Serializable {
 		listaTipos = tDao.listarTipoAt();
 	}
 
+	public String redirectEdit() {
+		return "cadastroTipoAtendimento?faces-redirect=true&amp;id=" + this.tipo.getIdTipo()+"&amp;tipo="+tipoS;
+	}	
+	
+	
+	public String redirectInsert() {
+		return "cadastroTipoAtendimento?faces-redirect=true&amp;tipo="+tipoS;
+	}		
+	
+	public void getEditTipoAtend() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			TipoAtendimentoDAO cDao = new TipoAtendimentoDAO();
+			tipoS =Integer.parseInt(params.get("tipo"));			
+			this.tipo = cDao.listarTipoPorId(id);
+		}
+		else{
+			System.out.println("tipo sera"+tipo);
+			tipoS =Integer.parseInt(params.get("tipo"));
+			
+		}
+		
+	}
+	
+	
 	public String alterarTipo() throws ProjetoException {
 		if (this.tipo.getGrupo().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário no mínimo um grupo!", "Campos obrigatórios!");
+					"Ã‰ necessÃ¡rio no mÃ­nimo informar um grupo!", "Campos obrigatï¿½rios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
@@ -165,27 +193,21 @@ public class TipoAtendimentoController implements Serializable {
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	public String getTipoS() {
-		return tipoS;
-	}
-
-	public void setTipoS(String tipoS) {
-		this.tipoS = tipoS;
-	}
+	
 
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
-
+	
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
 	}
 
 	public String getCabecalho() {
-		if (this.tipoS.equals("I")) {
-			cabecalho = "CADASTRO DE TIPO ATENDIMENTO";
-		} else if (this.tipoS.equals("A")) {
-			cabecalho = "ALTERAR TIPO ATENDIMENTO";
+		if (this.tipoS==1) {
+			cabecalho = "InclusÃ£o de tipo de Atendimento";
+		} else if (this.tipoS==2) {
+			cabecalho = "AlteraÃ§Ã£o de tipo de Atendimento";
 		}
 		return cabecalho;
 	}
@@ -207,5 +229,17 @@ public class TipoAtendimentoController implements Serializable {
 	public List<TipoAtendimentoBean> listaTipoAtAutoCompleteTodos(String query)
 			throws ProjetoException {
 		return tDao.listarTipoAtBusca(query, 1);
+	}
+
+	public List<TipoAtendimentoBean> getListaTipos() {
+		return listaTipos;
+	}
+
+	public int getTipoS() {
+		return tipoS;
+	}
+
+	public void setTipoS(int tipoS) {
+		this.tipoS = tipoS;
 	}
 };

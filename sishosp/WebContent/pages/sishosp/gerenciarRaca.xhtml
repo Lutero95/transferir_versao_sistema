@@ -6,117 +6,66 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:stella="http://stella.caelum.com.br/faces2"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
-			<h3>GERENCIAMENTO DE RAÇA</h3>
-			<br />
-		</div>
-		<h:form id="frmmensagem"
-			onkeypress="
-                if (event.keyCode == 13) {
-                    document.getElementById('form:botaoBusca').click();
-                    return false;
-                }">
+		<f:metadata>
+			<f:viewAction action="#{PacienteController.listarRaca()}" />
+		</f:metadata>
 
+		<h:form id="frmmensagem">
 
-			<p:growl id="growl" showDetail="false" />
-			<p:panel id="pnlprincipal" header="">
-				<p:panelGrid columns="7" styleClass="semBorda"
-					style="font-size:12px !important;">
-					<p:outputPanel autoUpdate="true">
-						<p:outputLabel value="Pesquisar por: " />
-						<p:selectOneMenu value="#{PacienteController.tipoBuscaRaca}"
-							required="true"
-							style="height:28px; top:9px;margin-top:6px;margin-left:16px;"
-							requiredMessage="Informe o diretório da página.">
+			<b:panel title="Gerenciamento de Raça" collapsible="false">
+				<p:growl id="growl" showDetail="false" />
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{PacienteController.redirectInsertRaca()}"
+					icon="glyphicon-plus" look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{PacienteController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
 
-							<f:selectItem itemLabel="Nome" itemValue="1" />
+				<b:dataTable id="dt" var="tab"
+					value="#{PacienteController.listaRaca}" lang="es"
+					display="Nenhuma Raça">
+					<h:column>
+						<f:facet name="header">
+                        Descrição
+                    </f:facet>
 
-
-							<p:ajax event="change" update=":frmmensagem:pnlprincipal" />
-						</p:selectOneMenu>
-
-						<p:inputText id="campoBuscanome"
-							style="height:28px;margin-top:-6px;margin-left:16px;"
-							value="#{PacienteController.campoBuscaRaca}"
-							rendered="#{PacienteController.tipoBuscaRaca == 1}" />
-
-
-
-						<!-- actionListener="#{PacienteController.limparDados()}" -->
-						<p:commandButton value="Buscar" id="botaoBusca" icon="buscaLupa"
-							styleClass="btn btn-info"
-							style="height:30px; margin-left:2px; margin-top:10px;"
-							action="#{PacienteController.buscarRacas()}"
-							update=":frmmensagem:tabela, :frmmensagem:growl" />
-						<p:commandButton value="Limpar Busca" icon="limpar"
-							update=":frmmensagem:pnlprincipal,:frmmensagem:tabela"
-							actionListener="#{PacienteController.limparBuscaDadosRaca()}"
-							style="margin-left:20px" />
-						<br />
-
-						<p:commandButton id="btninc" value="Novo"
-							actionListener="#{PacienteController.limparDados()}"
-							action="/pages/sishosp/cadastroRaca.faces?faces-redirect=true" icon="add"
-							styleClass="btn btn-sm btn-success" style="margin-top: 15px;">
-							<f:setPropertyActionListener value="I"
-								target="#{PacienteController.tipo}" />
-							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-						</p:commandButton>
-
-					</p:outputPanel>
-				</p:panelGrid>
-
-
-
-
-
-
-				<p:dataTable emptyMessage="Sem Dados" styleClass="table table-hover"
-					id="tabela" style="margin-top:20px;"
-					value="#{PacienteController.listaRaca}" var="tab" paginator="true"
-					paginatorPosition="bottom" rows="12">
-
-
-					<p:column headerText="Cód." style="font-weight:bold;width:5%;">
-						<h:outputText value="#{tab.codRaca}" />
-					</p:column>
-
-					<p:column headerText="Nome" style="font-weight:bold;">
 						<h:outputText value="#{tab.descRaca}" />
-					</p:column>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+                        Ação
+                    </f:facet>
 
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{PacienteController.redirectEditRaca()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{PacienteController.raca}" />
 
-					<p:column headerText="Ações" width="15%">
-						<center>
-							<p:splitButton icon="confirmar">
-								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroRaca.faces?faces-redirect=true">
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{PacienteController.raca}" />
+							<f:setPropertyActionListener value="2"
+								target="#{PacienteController.tipo}" />
+						</b:commandButton>
 
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogAtencao').show()">
 
-									<f:setPropertyActionListener value="A"
-										target="#{PacienteController.tipo}" />
-								</p:menuitem>
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{PacienteController.raca}" />
+						</b:commandButton>
 
-								<p:menuitem value="Excluir" icon="trash"
-									onclick="PF('dialogAtencao').show()">
+					</h:column>
 
-									<f:setPropertyActionListener value="#{tab.codRaca}"
-										target="#{PacienteController.raca.codRaca}" />
-								</p:menuitem>
-							</p:splitButton>
-						</center>
-					</p:column>
-				</p:dataTable>
-
-			</p:panel>
+				</b:dataTable>
+			</b:panel>
 		</h:form>
 
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
@@ -134,14 +83,14 @@
 
 
 				<center>
+					<p:separator />
+					<b:commandButton look="success" value="Sim"
+						action="#{PacienteController.excluirRaca()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem" />
 
-					<p:commandButton value="Sim"
-						action="#{PacienteController.excluirRaca()}" icon="ui-icon-check"
-						style="font-size:14px;" update=":frmmensagem:tabela">
-					</p:commandButton>
-
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;" />
 
 				</center>
 

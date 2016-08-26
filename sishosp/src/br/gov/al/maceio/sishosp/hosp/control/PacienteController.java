@@ -219,6 +219,36 @@ public class PacienteController implements Serializable{
 	}
 
 
+	public String redirectEditRaca() {
+		return "cadastroRaca?faces-redirect=true&amp;id=" + this.raca.getCodRaca()+"&amp;tipo="+tipo;
+	}	
+	
+	
+	public String redirectInsertRaca() {
+		return "cadastroRaca?faces-redirect=true&amp;tipo="+tipo;
+	}		
+	
+	public void getEditRaca() throws ProjetoException, SQLException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo =Integer.parseInt(params.get("tipo"));			
+			System.out.println("tipo do walter"+tipo);
+			PacienteDAO cDao = new PacienteDAO();
+			this.raca = cDao.listarRacaPorID(id);
+		}
+		else{
+			System.out.println("tipo sera"+tipo);
+			tipo =Integer.parseInt(params.get("tipo"));
+			
+		}
+		
+	}
+	
+
 
 	public void gravarPaciente() throws ProjetoException {
 		PacienteDAO udao = new PacienteDAO();
@@ -392,7 +422,7 @@ public class PacienteController implements Serializable{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Cor/Ra�a excluido com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaRaca = null;
+			listarRaca();
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
 		} else {
@@ -969,14 +999,9 @@ public class PacienteController implements Serializable{
 		this.listaTransporte = listaTransporte;
 	}
 
-	public List<RacaBean> getListaRaca() throws ProjetoException {
-		if (listaRaca == null) {
-
+	public void listarRaca() throws ProjetoException {
 			PacienteDAO fdao = new PacienteDAO();
 			listaRaca = fdao.listaCor();
-
-		}
-		return listaRaca;
 	}
 
 	public void setListaRaca(List<RacaBean> listaRaca) {
@@ -1495,6 +1520,10 @@ public class PacienteController implements Serializable{
 
 	public List<PacienteBean> getListaPacientes() {
 		return listaPacientes;
+	}
+
+	public List<RacaBean> getListaRaca() {
+		return listaRaca;
 	}
 	
 	

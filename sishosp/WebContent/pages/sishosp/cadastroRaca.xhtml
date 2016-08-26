@@ -5,64 +5,56 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
+		<f:metadata>
+			<f:viewAction action="#{PacienteController.getEditRaca()}" />
+		</f:metadata>
 		<!-- INICIO DO FORMULARIO -->
-		<div class="col-md-8">
-			<h:form>
-				<h:commandButton value="Voltar"
-					style="position:absolute; left:71%; top:100%;"
-					styleClass="btn btn-info"
-					action="/pages/sishosp/gerenciarRaca.faces?faces-redirect=true"></h:commandButton>
-			</h:form>
+		<b:panel title="#{PacienteController.cabecalho2}" collapsible="false">
 
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:growl id="message" />
-				<p:panel id="pnlCadPaciente" header="#{PacienteController.cabecalho2}"
-					style="height:400px; width:600px; margin-left:50%; margin-top:10%; background-color: #F5F5F5;">
+				<div class="form-group">
+					<h:outputLabel for="inputname" value="Nome da Raça"
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText value="#{PacienteController.raca.descRaca}"
+							class="form-control" id="inputname"
+							pt:placeholder="Digite aqui sua raça" required="true"
+							validatorMessage="Raça deve conter entre 2 e 30 caracteres."
+							requiredMessage="é necessário que você informe sua raça.">
+							<f:validateLength minimum="2" maximum="40" />
 
-					<div class="form-group">
-						<h:outputLabel for="inputname" value="Nome da Raça"
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<h:inputText value="#{PacienteController.raca.descRaca}"
-								class="form-control" id="inputname"
-								pt:placeholder="Digite aqui sua raça" required="true"
-								validatorMessage="Raça deve conter entre 2 e 30 caracteres."
-								requiredMessage="é necessário que você informe sua raça.">
-								<f:validateLength minimum="2" maximum="40" />
+						</h:inputText>
 
-							</h:inputText>
-
-						</div>
 					</div>
-					<p:separator></p:separator>
-					<!-- FIM DO FORMULARIO -->
-					<center>
-						<h:panelGrid columns="2" styleClass="semBorda">
-							<h:commandButton action="#{PacienteController.gravarRaca()}"
-								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
-								value="Cadastrar" styleClass="btn btn-sm btn-success"
-								rendered="#{PacienteController.tipo == 'I'}" />
+				</div>
+				<p:separator></p:separator>
+				<!-- FIM DO FORMULARIO -->
+				<center>
+					<b:commandButton action="#{PacienteController.gravarRaca()}"
+						update=":formCADU:message,:formCADU" icon="glyphicon-ok"
+						value="Incluir" styleClass="btn btn-primary" look="success" size="sm"
+						rendered="#{PacienteController.tipo == 1}" />
+					<b:commandButton action="#{PacienteController.alterarRaca()}"
+						update=":formCADU:message,:formCADU"
+						value="Alterar" styleClass="btn btn-primary" size="sm" look="success"
+						rendered="#{PacienteController.tipo == 2}" />
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="margin-left:10px" styleClass="btn btn-primary" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarRaca.faces?faces-redirect=true">
+					</b:commandButton>
 
 
-							<h:commandButton action="#{PacienteController.alterarRaca()}"
-								update=":formCADU:message,:formCADU:pnlCadPaciente,:formCADU"
-								value="Alterar" styleClass="btn btn-danger"
-								rendered="#{PacienteController.tipo == 'A'}" />
-						</h:panelGrid>
-					</center>
-
-				</p:panel>
-
-
-
+				</center>
 			</h:form>
-		</div>
+		</b:panel>
 
 	</ui:define>
 </ui:composition>
