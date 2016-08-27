@@ -54,8 +54,7 @@
 							style="color:black;" icon="ui-icon-plus" value="Incluir Grupo"
 							process="@this" oncomplete="PF('dlgConsuGrupos').show();"
 							actionListener="#{GrupoController.getListaTodosGrupos()}" />
-						<p:outputPanel autoUpdate="true">
-							<p:dataTable emptyMessage="Nenhum Grupo"
+						<p:dataTable emptyMessage="Nenhum Grupo"
 							styleClass="table table-hover" id="tabela"
 							style="margin-top:20px;" value="#{ProgramaController.prog.grupo}"
 							var="tab" paginator="true" paginatorPosition="bottom" rows="12"
@@ -81,7 +80,6 @@
 							</p:column>
 
 						</p:dataTable>
-						</p:outputPanel>
 					</div>
 				</div>
 				<p:separator></p:separator>
