@@ -17,7 +17,8 @@ public class ProgramaDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarPrograma(ProgramaBean prog) throws SQLException, ProjetoException {
+	public boolean gravarPrograma(ProgramaBean prog) throws SQLException,
+			ProjetoException {
 
 		String sql = "insert into hosp.programa (descprograma, codfederal) values (?, ?) RETURNING id_programa;";
 		try {
@@ -46,12 +47,13 @@ public class ProgramaDAO {
 		}
 	}
 
-	public void insereProgramaGrupo(int idProg, ProgramaBean programa, int gamb) throws ProjetoException {
+	public void insereProgramaGrupo(int idProg, ProgramaBean programa, int gamb)
+			throws ProjetoException {
 		String sql = "insert into hosp.grupo_programa (codprograma, codgrupo) values(?,?);";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			if(gamb == 0){
+			if (gamb == 0) {
 				for (GrupoBean grupoBean : programa.getGrupo()) {
 					ps.setInt(1, idProg);
 					ps.setInt(2, grupoBean.getIdGrupo());
@@ -59,7 +61,7 @@ public class ProgramaDAO {
 					ps.execute();
 					con.commit();
 				}
-			}else if(gamb == 1){
+			} else if (gamb == 1) {
 				for (GrupoBean grupoBean : programa.getGrupoNovo()) {
 					ps.setInt(1, idProg);
 					ps.setInt(2, grupoBean.getIdGrupo());
@@ -94,7 +96,8 @@ public class ProgramaDAO {
 				programa.setIdPrograma(rs.getInt("id_programa"));
 				programa.setDescPrograma(rs.getString("descprograma"));
 				programa.setCodFederal(rs.getDouble("codfederal"));
-				programa.setGrupo(gDao.listarGruposPorPrograma(rs.getInt("id_programa")));
+				programa.setGrupo(gDao.listarGruposPorPrograma(rs
+						.getInt("id_programa")));
 				lista.add(programa);
 			}
 		} catch (SQLException ex) {
@@ -141,7 +144,7 @@ public class ProgramaDAO {
 				System.exit(1);
 			}
 		}
-		
+
 		return lista;
 	}
 
@@ -165,7 +168,7 @@ public class ProgramaDAO {
 			}
 		}
 	}
-	
+
 	public void excluirNaTabProgramaGrupo(int cod) throws ProjetoException {
 		String sql = "delete from hosp.grupo_programa where codprograma = ?";
 		try {
@@ -208,10 +211,11 @@ public class ProgramaDAO {
 			}
 		}
 	}
-	
+
 	public ProgramaBean listarProgramaPorId(int id) throws ProjetoException {
 
 		ProgramaBean programa = new ProgramaBean();
+		GrupoDAO gDao = new GrupoDAO();
 		String sql = "select id_programa, descprograma, codfederal from hosp.programa where id_programa = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -222,8 +226,10 @@ public class ProgramaDAO {
 				programa = new ProgramaBean();
 				programa.setIdPrograma(rs.getInt("id_programa"));
 				programa.setDescPrograma(rs.getString("descprograma"));
-				if (rs.getString(	"codfederal")!=null)
-				 programa.setCodFederal(rs.getDouble("codfederal"));
+				programa.setGrupo(gDao.listarGruposPorPrograma(rs
+						.getInt("id_programa")));
+				if (rs.getString("codfederal") != null)
+					programa.setCodFederal(rs.getDouble("codfederal"));
 			}
 
 		} catch (SQLException ex) {

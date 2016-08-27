@@ -21,15 +21,15 @@
 
 
 				<p:growl id="growl" showDetail="false" />
-	<b:commandButton id="btninc" value="Novo" size="sm"
-				action="#{TipoAtendimentoController.redirectInsert()}" icon="glyphicon-plus"
-				look="primary">
-				<f:setPropertyActionListener value="1"
-					target="#{TipoAtendimentoController.tipoS}" />
-				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-			</b:commandButton>
-			<br />
-			<br />
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{TipoAtendimentoController.redirectInsert()}"
+					icon="glyphicon-plus" look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{TipoAtendimentoController.tipoS}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
 				<b:dataTable id="dt" var="tab"
 					value="#{TipoAtendimentoController.listaTipos}" lang="es"
 					display="Nenhum Tipo de Atendimento">
@@ -61,7 +61,7 @@
 								target="#{TipoAtendimentoController.tipo}" />
 
 							<f:setPropertyActionListener value="2"
-								target="#{CboController.tipo}" />
+								target="#{TipoAtendimentoController.tipoS}" />
 						</b:commandButton>
 
 						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
@@ -100,7 +100,7 @@
 					<b:commandButton value="Não"
 						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" style="margin-left:5px;" />
-				
+
 
 
 

@@ -13,7 +13,9 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 @ManagedBean(name="ProgramaController")
@@ -43,8 +45,7 @@ public class ProgramaController implements Serializable{
 	}
 
 	
-	public String redirectEdit() {
-		
+	public String redirectEdit() throws ProjetoException {
 		return "cadastroPrograma?faces-redirect=true&amp;id=" + this.prog.getIdPrograma()+"&amp;tipo="+tipo;
 	}	
 	

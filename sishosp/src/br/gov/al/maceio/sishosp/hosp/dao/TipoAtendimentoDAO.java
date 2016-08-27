@@ -325,6 +325,7 @@ public class TipoAtendimentoDAO {
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, id);
 			ResultSet rs = stm.executeQuery();
+			GrupoDAO gDao = new GrupoDAO();
 			TipoAtendimentoBean tipo = null;
 			while (rs.next()) {
 				tipo = new TipoAtendimentoBean();
@@ -333,6 +334,7 @@ public class TipoAtendimentoDAO {
 				tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
 				tipo.setCodEmpresa(rs.getInt("codempresa"));
 				tipo.setEquipe(rs.getBoolean("equipe_programa"));
+				tipo.setGrupo(gDao.listarGruposPorTipoAtend(tipo.getIdTipo()));
 			}
 			return tipo;
 		} catch (SQLException ex) {

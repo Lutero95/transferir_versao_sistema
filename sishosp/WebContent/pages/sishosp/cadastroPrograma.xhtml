@@ -23,9 +23,9 @@
 		<h:form class="form-horizontal" id="formCADU">
 
 			<p:growl id="message" />
-				<b:panel title="#{ProgramaController.cabecalho}" collapsible="false">
+			<b:panel title="#{ProgramaController.cabecalho}" collapsible="false">
 
-								<div class="form-group">
+				<div class="form-group">
 					<h:outputLabel for="inputname" value="Descrição"
 						styleClass="col-sm-3 control-label" />
 					<div class="col-sm-6">
@@ -35,7 +35,7 @@
 					</div>
 				</div>
 
-<div class="form-group">
+				<div class="form-group">
 					<h:outputLabel for="inputcd" value="Código Federal"
 						styleClass="col-sm-3 control-label" />
 					<div class="col-sm-6">
@@ -48,12 +48,14 @@
 
 				<div class="form-group">
 					<h:outputLabel value="Grupos" styleClass="col-sm-3 control-label" />
-					
+
 					<div class="col-sm-6">
-<p:commandButton styleClass="btn btn-primary text-center"
-						style="color:black;" icon="ui-icon-plus" value="Incluir Grupo" process="@this"
-						oncomplete="PF('dlgConsuGrupos').show();" actionListener="#{GrupoController.getListaTodosGrupos()}"/> 
-						<p:dataTable emptyMessage="Nenhum Grupo"
+						<p:commandButton styleClass="btn btn-primary text-center"
+							style="color:black;" icon="ui-icon-plus" value="Incluir Grupo"
+							process="@this" oncomplete="PF('dlgConsuGrupos').show();"
+							actionListener="#{GrupoController.getListaTodosGrupos()}" />
+						<p:outputPanel autoUpdate="true">
+							<p:dataTable emptyMessage="Nenhum Grupo"
 							styleClass="table table-hover" id="tabela"
 							style="margin-top:20px;" value="#{ProgramaController.prog.grupo}"
 							var="tab" paginator="true" paginatorPosition="bottom" rows="12"
@@ -79,6 +81,7 @@
 							</p:column>
 
 						</p:dataTable>
+						</p:outputPanel>
 					</div>
 				</div>
 				<p:separator></p:separator>
@@ -106,31 +109,30 @@
 		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupos"
 			modal="true" width="550px" height="200px">
 			<h:form id="formConsuGrop">
-			<p:outputPanel autoUpdate="true">
-				<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
-				 scrollRows="3" scrollHeight="150" scrollable="true"
-					resizableColumns="true" var="grupo"
-					emptyMessage="Não existe nenhum grupo cadastrado!">
-					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{grupo.idGrupo}" />
-					</p:column>
-					<p:column headerText="GRUPO">
-						<p:outputLabel value="#{grupo.descGrupo}" />
-					</p:column>
-					<p:column headerText="QTD. FREQ>">
-						<p:outputLabel value="#{grupo.qtdFrequencia}" />
-					</p:column>
+				<p:outputPanel autoUpdate="true">
+					<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
+						scrollRows="3" scrollHeight="150" scrollable="true"
+						resizableColumns="true" var="grupo"
+						emptyMessage="Não existe nenhum grupo cadastrado!">
+						<p:column headerText="CÓD.">
+							<p:outputLabel value="#{grupo.idGrupo}" />
+						</p:column>
+						<p:column headerText="GRUPO">
+							<p:outputLabel value="#{grupo.descGrupo}" />
+						</p:column>
+						<p:column headerText="QTD. FREQ>">
+							<p:outputLabel value="#{grupo.qtdFrequencia}" />
+						</p:column>
 
-					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":formCADU"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsuGrupos').hide();"
-							action="#{ProgramaController.prog.addGrupoLista()}">
-							<f:setPropertyActionListener value="#{grupo}"
-								target="#{ProgramaController.prog.grupoParaAdd}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+						<p:column style="width:50px;text-align: center">
+							<p:commandButton update=":formCADU" icon="ui-icon-check"
+								title="Selecionar" onclick="PF('dlgConsuGrupos').hide();"
+								action="#{ProgramaController.prog.addGrupoLista()}">
+								<f:setPropertyActionListener value="#{grupo}"
+									target="#{ProgramaController.prog.grupoParaAdd}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>
