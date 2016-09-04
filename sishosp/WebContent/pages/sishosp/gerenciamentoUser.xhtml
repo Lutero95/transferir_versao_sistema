@@ -26,7 +26,7 @@
                 
                 <p:panel header="Gerenciamento Usuários" id="panel">
                
-                    <p:panelGrid columns="6" styleClass="semBorda"
+                    <p:panelGrid columns="1" styleClass="semBorda"
                                  style="float:left;font-size:12px;" id="panelBusca">
                         
                         <p:commandButton value="Novo Usuário" icon="ui-icon-plus"
@@ -35,24 +35,6 @@
                                          action="#{MBUsuarioCadastro.limparDualCad()}" 
                                          update=":formCADU:pnlCadUsuario"/>
 
-                        <p:selectOneMenu value="#{MBUsuarioCadastro.tipoBusca}">
-                            <f:selectItem itemLabel="Nome" itemValue="descusuario" />
-                            <f:selectItem itemLabel="CPF" itemValue="cpf" />
-                            <f:selectItem itemLabel="Login" itemValue="login" />
-                            <f:selectItem itemLabel="Setor" itemValue="setor" />
-
-                            <p:ajax update="panelBusca"
-                                    listener="#{MBUsuarioCadastro.buscaRenderes()}"></p:ajax>
-                        </p:selectOneMenu>
-
-
-                        <p:inputText value="#{MBUsuarioCadastro.valor}"
-                                     rendered="#{MBUsuarioCadastro.rendererSetor == 'N'}"></p:inputText>
-
-                        <p:commandButton icon="buscaProcess" process="@parent"
-                                         id="btnBusca" update="tabela"
-                                         action="#{MBUsuarioCadastro.buscaPersonalizada()}">
-                        </p:commandButton>
                     </p:panelGrid>
 
                     <p:dataTable id="tabela" var="user" rows="15" paginator="true" paginatorPosition="bottom"
@@ -78,16 +60,6 @@
                         </p:column>
 
                         <p:column headerText="Ação" style="width:2%;">
-                            <!--<p:commandButton icon="mnuManterProcesso2"
-                                             title="Click para Alterar Usuário" immediate="true"
-                                             oncomplete="alterarUser.show();"
-                                             action="#{MBUsuarioCadastro.limparEdit}"
-                                             update=":frmalt:pnlgeral2">
-
-                                <f:setPropertyActionListener
-                                    target="#{MBUsuarioCadastro.usuarioEdit}" value="#{user}" />
-                            </p:commandButton>-->
-                            
                             <p:commandButton icon="mnuManterProcesso2"
                                 title="Clique para Alterar o Usuário" immediate="true" 
                                 actionListener="#{MBUsuarioCadastro.limparDados()}" 
@@ -101,10 +73,6 @@
                                     value="#{user.codigo}" target="#{MBUsuarioCadastro.usuarioSelecionado}" />
                                 <f:setPropertyActionListener 
                                     value="#{user.idPerfil}" target="#{MBUsuarioCadastro.perfilSelecionado}" />    
-                                <f:setPropertyActionListener 
-                                    value="#{user.permissaoJunta}" target="#{MBUsuarioCadastro.usuarioEdit.permissaoJunta}" /> 
-                                <f:setPropertyActionListener 
-                                    value="#{user.liberaRh}" target="#{MBUsuarioCadastro.usuarioEdit.liberaRh}" />
                             </p:commandButton>
                         </p:column>
 
@@ -626,223 +594,6 @@
                     </p:panel>
                 </h:form>
             </p:dialog>
-            
-            <h:form id="frmalt">
-                <p:dialog id="alterar" widgetVar="alterarUser" resizable="false"
-                          modal="true" header="Alterar Dados Usuário">
-
-                    <p:panel id="pnlgeral2"
-                             style="border:none !important; margin-left:0px; height:420px; width:1000px;">
-
-                        <p:tabView id="tabViewAlt"
-                                   style="font-size:12px;border:none !important;"
-                                   widgetVar="tabAlter">
-
-                            <p:tab id="tabAlt1" title="Cadastro">
-                                <p:panel styleClass="semBorda" style="height:360px">
-                                    <p:outputPanel autoUpdate="true">
-                                        <p:panelGrid id="principal" styleClass="semBorda">
-                                            <p:row>
-                                                <p:column>
-                                                    <p:outputLabel value="Nome:" for="nome2"
-                                                                   styleClass="rotulosBold" />
-                                                </p:column>
-
-                                                <p:column>
-                                                    <p:inputText id="nome2"
-                                                                 value="#{MBUsuarioCadastro.usuarioEdit.nome}" size="45"
-                                                                 required="true"
-                                                                 requiredMessage="O campo nome é obrigatório." />
-                                                </p:column>
-
-                                                <p:column>
-                                                    <p:outputLabel value="CPF: " for="cpf2"
-                                                                   styleClass="rotulosBold" />
-                                                </p:column>
-
-                                                <p:column>
-                                                    <p:inputMask id="cpf2" mask="999.999.999-99" size="16"
-                                                                 required="true"
-                                                                 requiredMessage="O campo CPF é obrigatório."
-                                                                 value="#{MBUsuarioCadastro.usuarioEdit.cpf}" />
-                                                </p:column>
-
-                                                <p:column>
-                                                    <p:panelGrid columns="2" styleClass="semBorda">
-                                                        <p:outputLabel value="Ativo: " />
-                                                        <p:selectOneMenu id="ativo"
-                                                                         value="#{MBUsuarioCadastro.usuarioEdit.ativo}">
-                                                            <f:selectItem itemLabel="SIM" itemValue="S" />
-                                                            <f:selectItem itemLabel="NÃO" itemValue="N" />
-                                                        </p:selectOneMenu>
-                                                    </p:panelGrid>
-                                                </p:column>
-                                            </p:row>
-
-                                            <p:row>
-                                                <p:column>
-                                                    <p:outputLabel value="Email: " for="email2"
-                                                                   styleClass="rotulosBold" />
-                                                </p:column>
-
-                                                <p:column>
-                                                    <p:inputText id="email2" size="40"
-                                                                 value="#{MBUsuarioCadastro.usuarioEdit.email}" />
-                                                </p:column>
-
-                                                <p:column>
-                                                    <p:outputLabel value="Login: " for="login2"
-                                                                   styleClass="rotulosBold" />
-                                                </p:column>
-
-                                                <p:column>
-                                                    <p:inputText id="login2" maxlength="10"
-                                                                 value="#{MBUsuarioCadastro.usuarioEdit.login}"
-                                                                 required="true"
-                                                                 requiredMessage="O campo login é obrigatório." />
-                                                </p:column>
-                                            </p:row>
-                                        </p:panelGrid>
-
-                                        <p:panelGrid columns="4" styleClass="semBorda">
-                                            <p:outputLabel value="Alterar Senha: " />
-                                            <p:selectBooleanCheckbox
-                                                value="#{MBUsuarioCadastro.isVisiblePnlSenha}">
-
-                                                <p:ajax event="change" update=":frmalt:pnlgeral2" />
-                                            </p:selectBooleanCheckbox>
-
-                                            <p:outputLabel value="Alterar Senha no Login: "
-                                                           rendered="#{MBUsuarioCadastro.isVisiblePnlSenha}" />
-                                            <p:selectBooleanCheckbox
-                                                value="#{MBUsuarioCadastro.usuarioEdit.primeiroAcesso}"
-                                                rendered="#{MBUsuarioCadastro.isVisiblePnlSenha}" />
-                                        </p:panelGrid>
-
-                                        <p:panelGrid id="altSenha" styleClass="semBorda"
-                                                     rendered="#{MBUsuarioCadastro.isVisiblePnlSenha}">
-                                            <p:row>
-                                                <p:column>
-                                                    <p:outputLabel value="Nova senha: " for="altPass1"
-                                                                   styleClass="rotulosBold" />
-                                                </p:column>
-
-                                                <p:column>
-                                                    <p:password id="altPass1" required="true"
-                                                                requiredMessage="O campo nova senha é obrigatório."
-                                                                validatorMessage="Informe uma senha com no mínimo 6 caracteres e um máximo de 200."
-                                                                binding="#{MBUsuarioCadastro.senhaInputEdit}"
-                                                                value="#{MBUsuarioCadastro.usuarioEdit.senha}"
-                                                                maxlength="200">
-
-                                                        <f:validateLength minimum="6" />
-                                                    </p:password>
-                                                </p:column>
-
-                                                <p:column>
-                                                    <p:outputLabel value="Confirmar nova senha: " for="altPass2"
-                                                                   styleClass="rotulosBold" />
-                                                </p:column>
-
-                                                <p:column>
-                                                    <p:password id="altPass2" required="true"
-                                                                validator="#{MBUsuarioCadastro.validateSenhaEdit}"
-                                                                validatorMessage="As senhas precisam ser iguais!"
-                                                                requiredMessage="O campo confirmar nova senha é obrigatório."
-                                                                maxlength="200">
-
-                                                        <f:validateLength minimum="6" />
-                                                    </p:password>
-                                                </p:column>
-                                            </p:row>
-                                        </p:panelGrid>
-                                    </p:outputPanel>
-                                </p:panel>
-                            </p:tab>
-
-                            <p:tab id="tabAlt2" title="Permissões">
-                                <p:panel styleClass="semBorda" style="height:360px">
-                                    <p:panelGrid columns="12">
-                                        <p:outputLabel value="Protocolar" />
-                                        <p:selectBooleanCheckbox
-                                            value="#{MBUsuarioCadastro.usuarioEdit.permissao.protocolar}" />
-
-                                        <p:outputLabel value="Tramitar" />
-                                        <p:selectBooleanCheckbox
-                                            value="#{MBUsuarioCadastro.usuarioEdit.permissao.tramitar}" />
-
-                                        <p:outputLabel value="Alterar Protocolo" />
-                                        <p:selectBooleanCheckbox
-                                            value="#{MBUsuarioCadastro.usuarioEdit.permissao.alterarProtocolo}" />
-                                        
-                                        <p:outputLabel value="Alterar Natureza" />
-                                        <p:selectBooleanCheckbox
-                                            value="#{MBUsuarioCadastro.usuarioEdit.permissao.alterarNatureza}" />
-
-                                        <p:outputLabel value="Incluir Parecer" />
-                                        <p:selectBooleanCheckbox
-                                            value="#{MBUsuarioCadastro.usuarioEdit.permissao.incluirParecer}" />
-
-                                        <p:outputLabel value="Despachar" />
-                                        <p:selectBooleanCheckbox
-                                            value="#{MBUsuarioCadastro.usuarioEdit.permissao.despachar}" />
-
-                                        <p:outputLabel value="Assinatura Digital" />
-                                        <p:selectBooleanCheckbox
-                                            value="#{MBUsuarioCadastro.usuarioEdit.permissao.assDigital}"
-                                            disabled="true" />
-
-                                        <p:outputLabel value="Administrador: " />
-                                        <p:selectBooleanCheckbox
-                                            value="#{MBUsuarioCadastro.usuarioEdit.administrador}" />
-
-                                        <p:outputLabel value="Acessar Favoritos: " />
-                                        <p:selectBooleanCheckbox
-                                            value="#{MBUsuarioCadastro.usuarioEdit.favorito}" />
-                                    </p:panelGrid>
-                                </p:panel>
-                            </p:tab>
-
-                            <p:tab id="tabAlt3" title="Associar setores">
-                                <p:panel styleClass="semBorda" style="height:360px">
-                                    <center>
-                                        <p:pickList id="setorEdit"
-                                                    value="#{MBUsuarioCadastro.setoresEdit}" var="setorEdit"
-                                                    itemLabel="#{setorEdit.codsetor}-#{setorEdit.descricao}"
-                                                    itemValue="#{setorEdit}" addAllLabel="Associar todos"
-                                                    addLabel="Associar" removeAllLabel="Remover todos"
-                                                    removeLabel="Remover" converter="conPickList">
-
-                                            <p:ajax event="transfer"
-                                                    listener="#{MBUsuarioCadastro.onTransfer}" />
-
-                                            <f:facet name="sourceCaption">Setores</f:facet>
-                                            <f:facet name="targetCaption">Associados</f:facet>
-                                        </p:pickList>
-                                    </center>
-                                </p:panel>
-                            </p:tab>
-                        </p:tabView>
-                    </p:panel>
-
-                    <p:panel style="border:none !important;">
-                        <p:panelGrid columns="2" style="margin-left:38%"
-                                     styleClass="semBorda">
-
-                            <p:commandButton icon="botaoConfirmar" value="Gravar"
-                                             actionListener="#{MBUsuarioCadastro.editarDados}"
-                                             update=":form:panel :form:message :frmalt:pnlgeral2"
-                                             style="font-size:12px">
-                            </p:commandButton>
-
-                            <p:commandButton icon="botaoNaoConfirmar" value="Cancelar"
-                                             onclick="alterarUser.hide();" immediate="true" ajax="false"
-                                             style="font-size:12px">
-                            </p:commandButton>
-                        </p:panelGrid>
-                    </p:panel>
-                </p:dialog>
-            </h:form>
             
             <p:dialog style="font-size: 12px;" widgetVar="dlgbuscapessoa" 
                         height="460" width="800" modal="true" resizable="false">

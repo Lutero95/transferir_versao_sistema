@@ -52,7 +52,6 @@ public class UsuarioController implements Serializable {
 	private UsuarioBean usuario;
 	private UsuarioBean novousuario, editausuario;
 	private UIData id_tupla;
-	private List listaUserSecretaria;
 	private Object objeto1, menuAdm, nomeUserLogado, permissaoInteressado;
 	private Object nomeSecretaria, nomeSetor;
 	public String DescSetor, permissaoProcessos;
