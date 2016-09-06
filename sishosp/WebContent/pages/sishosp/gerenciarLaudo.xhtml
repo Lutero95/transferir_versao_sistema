@@ -69,29 +69,18 @@
 							mask="true" pattern="MM/yyyy" />
 
 						<h:outputLabel value="Programa:" />
-						<p:outputPanel id="outProg">
-							<p:autoComplete value="#{LaudoController.laudo.programa}"
-								size="30" converter="conPrograma"
-								completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
-								effect="fade" var="theme" forceSelection="true"
-								minQueryLength="1" itemValue="#{theme}"
-								itemLabel="#{theme.descPrograma}">
-								<p:ajax event="itemSelect"
-									listener="#{GrupoController.selectPrograma}" />
-							</p:autoComplete>
-						</p:outputPanel>
+						<p:selectOneMenu value="#{LaudoController.laudo.programa.idPrograma}"
+							required="false" requiredMessage="Selecione um programa."
+							style="width:130px;">
 
-						<h:outputLabel value="Grupo:" />
-						<p:outputPanel id="outGrupo">
-							<p:autoComplete value="#{LaudoController.laudo.grupo}" size="30"
-								converter="conGrupo"
-								completeMethod="#{GrupoController.listaGrupoAutoComplete}"
-								effect="fade" var="theme" forceSelection="true"
-								minQueryLength="1" itemValue="#{theme}"
-								itemLabel="#{theme.descGrupo}">
-								<p:ajax event="itemSelect" />
-							</p:autoComplete>
-						</p:outputPanel>
+							<f:selectItem itemLabel="Selecione" itemValue="" />
+							<f:selectItems value="#{ProgramaController.buscalistaProgramas}" var="prog"
+								itemLabel="#{prog.descPrograma}" itemValue="#{prog.idPrograma}" />
+
+						
+						</p:selectOneMenu>
+		             <!-- <p:ajax event="itemSelect" /> -->
+					
 
 					</p:panelGrid>
 				</p:outputPanel>

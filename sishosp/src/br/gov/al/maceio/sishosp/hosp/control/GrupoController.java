@@ -33,6 +33,7 @@ public class GrupoController implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private GrupoBean grupo;
 	private List<GrupoBean> listaGrupos;
+	private List<GrupoBean> BuscarlistaGrupos;
 	private List<GrupoBean> listaGruposProgramas;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
