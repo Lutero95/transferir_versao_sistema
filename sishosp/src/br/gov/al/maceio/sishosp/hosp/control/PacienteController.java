@@ -1522,7 +1522,11 @@ public class PacienteController implements Serializable{
 		return listaPacientes;
 	}
 
-	public List<RacaBean> getListaRaca() {
+	public List<RacaBean> getListaRaca() throws ProjetoException {
+		 if (listaRaca == null) {
+				PacienteDAO fdao = new PacienteDAO();
+				listaRaca = fdao.listaCor();
+				}
 		return listaRaca;
 	}
 	

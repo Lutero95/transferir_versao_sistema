@@ -31,7 +31,7 @@ public class ProgramaController implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ProgramaBean prog;
 	private List<ProgramaBean> listaProgramas;
-	private List<ProgramaBean> BuscalistaProgramas;
+	private List<ProgramaBean> buscalistaProgramas;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private int tipo;
@@ -44,8 +44,8 @@ public class ProgramaController implements Serializable {
 
 		this.prog = new ProgramaBean();
 		this.listaProgramas = null;
-		BuscalistaProgramas = new ArrayList<>();
-		BuscalistaProgramas = null;
+		buscalistaProgramas = new ArrayList<>();
+		buscalistaProgramas = null;
 		this.descricaoBusca = new String();
 
 	}
@@ -215,18 +215,19 @@ public class ProgramaController implements Serializable {
 		this.tipo = tipo;
 	}
 
-	public void listarPrograma() throws ProjetoException {
-		BuscalistaProgramas = pDao.BuscalistarProgramas();
-	}
-
-	public List<ProgramaBean> getBuscalistaProgramas() {
-		return BuscalistaProgramas;
+	public List<ProgramaBean> getBuscalistaProgramas() throws ProjetoException {
+		 if (buscalistaProgramas == null) {
+	            ProgramaDAO pdaos = new ProgramaDAO();
+	            buscalistaProgramas = pdaos.BuscalistarProgramas();
+	        }
+		return buscalistaProgramas;
 	}
 
 	public void setBuscalistaProgramas(List<ProgramaBean> buscalistaProgramas) {
-		BuscalistaProgramas = buscalistaProgramas;
+		this.buscalistaProgramas = buscalistaProgramas;
 	}
 
+	
 
 
 }

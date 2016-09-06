@@ -50,7 +50,6 @@ public class LaudoController implements Serializable {
 	private FornecedorBean fornecedor;
 	private CidBean cid;
 	private EquipamentoBean equipamento;
-
 	private String cabecalho;
 
 	// LISTAS
@@ -80,7 +79,7 @@ public class LaudoController implements Serializable {
 	public LaudoController() {
 		// CLASSES
 		laudo = new LaudoBean();
-
+        programa = new ProgramaBean();
 		this.tipoAt = null;// new TipoAtendimentoBean();
 
 		// BUSCA
@@ -671,4 +670,7 @@ public class LaudoController implements Serializable {
 		this.tipo2 = tipo2;
 	}
 
+	
+
+	
 }
