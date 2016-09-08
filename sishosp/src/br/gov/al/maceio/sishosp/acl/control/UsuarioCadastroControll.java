@@ -344,7 +344,7 @@ public class UsuarioCadastroControll implements Serializable {
         }
     }
     
-    public void alterarSenha() {
+    public void alterarSenha() throws ProjetoException {
         UsuarioDAO udao = new UsuarioDAO();
         boolean alterou = udao.alterarSenha(usuarioEdit);
 
@@ -632,7 +632,7 @@ public class UsuarioCadastroControll implements Serializable {
 	} 
     
  // ACL
-    public DualListModel<Sistema> getListaSistemasDual() {
+    public DualListModel<Sistema> getListaSistemasDual() throws ProjetoException {
         if (listaSistemasDual == null) {
             listaSistemasSoucer = null;
             listaSistemasTarget = new ArrayList<>();
@@ -647,7 +647,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaSistemasDual = listaSistemasDual;
     }
 
-    public List<Sistema> getListaSistemasSoucer() {
+    public List<Sistema> getListaSistemasSoucer() throws ProjetoException {
         if (listaSistemasSoucer == null) {
             UsuarioDAO udao = new UsuarioDAO();
             listaSistemasSoucer = udao.recListaSisSoucerCad();
@@ -659,7 +659,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaSistemasSoucer = listaSistemasSoucer;
     }
 
-    public List<Sistema> getListaSistemasTarget() {
+    public List<Sistema> getListaSistemasTarget() throws NumberFormatException, ProjetoException {
         if (listaSistemasTarget == null) {
             UsuarioDAO udao = new UsuarioDAO();
             listaSistemasSoucer = udao.recListaSisTarget(Long.valueOf(idUsuario));
@@ -687,7 +687,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.idUsuario = idUsuario;
     }
 
-    public DualListModel<Permissao> getListaPermissoesDual() {
+    public DualListModel<Permissao> getListaPermissoesDual() throws NumberFormatException, ProjetoException {
         if (listaPermissoesDual == null) {
             listaPermissoesSource = null;
             listaPermissoesTarget = new ArrayList<>();
@@ -702,7 +702,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaPermissoesDual = listaPermissoesDual;
     }
 
-    public List<Permissao> getListaPermissoesSource() {
+    public List<Permissao> getListaPermissoesSource() throws NumberFormatException, ProjetoException {
         if (listaPermissoesSource == null) {
             UsuarioDAO udao = new UsuarioDAO();
             listaPermissoesSource = udao.listarPermSemPerfSource(Integer.parseInt(perfilSelecionado));
@@ -722,7 +722,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaPermissoesTarget = listaPermissoesTarget;
     }
 
-    public DualListModel<Sistema> getListaSistemasDualAlt() {
+    public DualListModel<Sistema> getListaSistemasDualAlt() throws NumberFormatException, ProjetoException {
         if (listaSistemasDualAlt == null) {
             listaSistemasSoucerAlt = null;
             listaSistemasTargetAlt = null;
@@ -741,7 +741,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaSistemasSoucerAlt = listaSistemasSoucerAlt;
     }
 
-    public List<Sistema> getListaSistemasTargetAlt() {
+    public List<Sistema> getListaSistemasTargetAlt() throws NumberFormatException, ProjetoException {
         if (listaSistemasTargetAlt == null) {
             UsuarioDAO udao = new UsuarioDAO();
             listaSistemasTargetAlt = udao.recListaSisTarget(Long.valueOf(usuarioSelecionado));
@@ -761,7 +761,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.codigoSistemaAlt = codigoSistemaAlt;
     }
 
-    public List<Sistema> getListaSistemasSoucerAlt() {
+    public List<Sistema> getListaSistemasSoucerAlt() throws NumberFormatException, ProjetoException {
         if (listaSistemasSoucerAlt == null) {
             UsuarioDAO udao = new UsuarioDAO();
             listaSistemasSoucerAlt = udao.recListaSisSoucer(Long.valueOf(usuarioSelecionado));
@@ -777,7 +777,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.usuarioSelecionado = usuarioSelecionado;
     }
 
-    public DualListModel<Permissao> getListaPermissoesDualAlt() {
+    public DualListModel<Permissao> getListaPermissoesDualAlt() throws NumberFormatException, ProjetoException {
         if (listaPermissoesDualAlt == null) {
             listaPermissoesSourceAlt = null;
             listaPermissoesTargetAlt = null;
@@ -792,7 +792,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaPermissoesDualAlt = listaPermissoesDualAlt;
     }
 
-    public List<Permissao> getListaPermissoesSourceAlt() {
+    public List<Permissao> getListaPermissoesSourceAlt() throws NumberFormatException, ProjetoException {
         if (listaPermissoesSourceAlt == null) {
             UsuarioDAO udao = new UsuarioDAO();
             listaPermissoesSourceAlt = udao.listarPermSemPerfAssSource(
@@ -805,7 +805,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaPermissoesSourceAlt = listaPermissoesSourceAlt;
     }
 
-    public List<Permissao> getListaPermissoesTargetAlt() {
+    public List<Permissao> getListaPermissoesTargetAlt() throws NumberFormatException, ProjetoException {
         if (listaPermissoesTargetAlt == null) {
             UsuarioDAO udao = new UsuarioDAO();
             listaPermissoesTargetAlt = udao.listarPermSemPerfAssTarget(Integer.parseInt(usuarioSelecionado));

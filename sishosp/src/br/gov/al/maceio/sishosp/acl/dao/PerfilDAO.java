@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.acl.dao;
 
 import br.gov.al.maceio.sishosp.acl.model.Perfil;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -20,7 +21,7 @@ public class PerfilDAO {
 
     private Connection conexao = null;
     
-    public Boolean cadastrar(Perfil perfil) {       
+    public Boolean cadastrar(Perfil perfil) throws ProjetoException {       
         
         boolean cadastrou = false;
         
@@ -63,7 +64,7 @@ public class PerfilDAO {
         return cadastrou;
     }
     
-    public Boolean alterar(Perfil perfil) {       
+    public Boolean alterar(Perfil perfil) throws ProjetoException {       
   
         String sql = "update acl.perfil set descricao = ? where id = ?";
         
@@ -117,7 +118,7 @@ public class PerfilDAO {
     }
     
     
-    public boolean excluirPerfil(Perfil perfil) {
+    public boolean excluirPerfil(Perfil perfil) throws ProjetoException {
         
         String sql = "delete from acl.perm_perfil where id_perfil = ?";
         
@@ -153,7 +154,7 @@ public class PerfilDAO {
         return excluiu;
     }
 
-    public ArrayList<Perfil> listarPerfil() {
+    public ArrayList<Perfil> listarPerfil() throws ProjetoException {
         
         String sql = "select * from acl.perfil order by descricao";
 
@@ -182,7 +183,7 @@ public class PerfilDAO {
         return lista;
     }
     
-    public ArrayList<Perfil> buscarPerfisDesc(String valor) {
+    public ArrayList<Perfil> buscarPerfisDesc(String valor) throws ProjetoException {
         
         String sql = "select id, descricao from acl.perfil "
             + "where upper(descricao) like ? order by descricao";
@@ -213,7 +214,7 @@ public class PerfilDAO {
         return lista;
     }
     
-    public boolean associarPermAoPerf(Perfil perfil) {
+    public boolean associarPermAoPerf(Perfil perfil) throws ProjetoException {
         
         String sql = "delete from acl.perm_perfil where id_permissao = ?";
 
@@ -255,7 +256,7 @@ public class PerfilDAO {
         return associou;
     }
 
-    public boolean editarPermissaoAssAoPerf(Perfil perfil) {
+    public boolean editarPermissaoAssAoPerf(Perfil perfil) throws ProjetoException {
 
         String sql = "delete from acl.perm_perfil where id_permissao = ?";
 
@@ -296,7 +297,7 @@ public class PerfilDAO {
         return associou;
     }
     
-    public boolean associarPerfilAoSisAlt(Perfil perfil) {
+    public boolean associarPerfilAoSisAlt(Perfil perfil) throws ProjetoException {
         
         String sql = "update acl.perm_perfil set id_sistema = ? where id_perfil = ? and id_permissao = ?";
         
@@ -334,7 +335,7 @@ public class PerfilDAO {
         return associou;
     }
     
-    public boolean associarPerfilAoSisCad(Perfil perfil) {
+    public boolean associarPerfilAoSisCad(Perfil perfil) throws ProjetoException {
         
         String sql = "delete from acl.perm_perfil where id_perfil = ?";
         

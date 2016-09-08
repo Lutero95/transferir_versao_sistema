@@ -11,6 +11,7 @@ import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.PerfilDAO;
 import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
 import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -102,7 +103,7 @@ public class PerfilMB implements Serializable {
         sisPreMenu = new Sistema();
     }
 
-    public void cadastrarPerfil() {
+    public void cadastrarPerfil() throws ProjetoException {
         
         List<Long> permissoes = new ArrayList<>();
         List<Menu> listaMenusAux = listaMenusDual.getTarget();
@@ -149,7 +150,7 @@ public class PerfilMB implements Serializable {
         }
     }
     
-    public void alterarPerfil() {
+    public void alterarPerfil() throws ProjetoException {
                
         List<Long> permissoes = new ArrayList<>();
         List<Menu> listaMenusAux = listaMenusDualEdit.getTarget();
@@ -201,7 +202,7 @@ public class PerfilMB implements Serializable {
         }
     }
 
-    public void excluirPerfil() {
+    public void excluirPerfil() throws ProjetoException {
         
         PerfilDAO pdao = new PerfilDAO();
         boolean excluiu = pdao.excluirPerfil(perfil);
@@ -224,7 +225,7 @@ public class PerfilMB implements Serializable {
         }
     }
     
-    public void buscarPerfil() {
+    public void buscarPerfil() throws ProjetoException {
         PerfilDAO pdao = new PerfilDAO();
         List<Perfil> listaAux = pdao.buscarPerfisDesc(descPerfilBusca);
         
@@ -372,7 +373,7 @@ public class PerfilMB implements Serializable {
         this.perfil = perfil;
     }
 
-    public List<Perfil> getListaPerfil() {
+    public List<Perfil> getListaPerfil() throws ProjetoException {
         if (listaPerfil == null) {
             PerfilDAO pdao = new PerfilDAO();
             listaPerfil = pdao.listarPerfil();

@@ -257,7 +257,7 @@ public class UsuarioDAO{
     }    
     
 
-    public UsuarioBean autenticarUsuarioacl(UsuarioBean usuario) {
+    public UsuarioBean autenticarUsuarioacl(UsuarioBean usuario) throws ProjetoException {
 
         String sql = "select us.id, us.nome, us.sexo, us.cpf, us.email, us.login, "
                 + "us.senha, us.ativo, us.id_perfil, pf.descricao from acl.usuario us "
@@ -614,7 +614,7 @@ public class UsuarioDAO{
         return lista;
     } 
 
-    public List<Sistema> recListaSisSoucerCad() {
+    public List<Sistema> recListaSisSoucerCad() throws ProjetoException {
 
         String sql = "select id, descricao from acl.sistema "
                 + "where ativo = true order by descricao";
@@ -649,7 +649,7 @@ public class UsuarioDAO{
         return listaSistemas;
     }
 
-    public List<Sistema> recListaSisSoucer(Long id) {
+    public List<Sistema> recListaSisSoucer(Long id) throws ProjetoException {
 
         String sql = "select id, descricao from acl.sistema "
                 + "where id not in(select si.id from acl.perm_sistema ps "
@@ -688,7 +688,7 @@ public class UsuarioDAO{
         return listaSistemas;
     }
 
-    public List<Sistema> recListaSisTarget(Long id) {
+    public List<Sistema> recListaSisTarget(Long id) throws ProjetoException {
 
         String sql = "select si.id, si.descricao from acl.perm_sistema ps "
                 + "join acl.sistema si on si.id = ps.id_sistema "
@@ -726,7 +726,7 @@ public class UsuarioDAO{
         return listaSistemas;
     }
     
-    public ArrayList<Permissao> listarPermSemPerfSource(Integer id) {
+    public ArrayList<Permissao> listarPermSemPerfSource(Integer id) throws ProjetoException {
 
         String sql = "select p.id, p.descricao from acl.permissao p "
                 + "where p.id not in (select pm.id from acl.perfil pf "
@@ -766,7 +766,7 @@ public class UsuarioDAO{
     }
 
     public ArrayList<Permissao> listarPermSemPerfAssSource(Integer idPefil,
-            Integer idUsuario) {
+            Integer idUsuario) throws ProjetoException {
 
         String sql = "select id, descricao from acl.permissao where id not in ("
                 + "select pm.id from acl.perfil pf "
@@ -810,7 +810,7 @@ public class UsuarioDAO{
         return lista;
     }
 
-    public ArrayList<Permissao> listarPermSemPerfAssTarget(Integer id) {
+    public ArrayList<Permissao> listarPermSemPerfAssTarget(Integer id) throws ProjetoException {
 
         String sql = "select p.id, p.descricao from acl.usuarios u "
                 + "join acl.perm_usuario pu on u.id_usuario = pu.id_usuario "
@@ -848,7 +848,7 @@ public class UsuarioDAO{
         return lista;
     }
 
-    public Boolean alterarSenha(UsuarioBean usuario) {
+    public Boolean alterarSenha(UsuarioBean usuario) throws ProjetoException {
 
         String sql = "update acl.usuarios set senha = ? where id_usuario = ?";
 
