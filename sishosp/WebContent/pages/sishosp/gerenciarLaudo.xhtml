@@ -76,10 +76,22 @@
 							<f:selectItem itemLabel="Selecione" itemValue="" />
 							<f:selectItems value="#{ProgramaController.buscalistaProgramas}" var="prog"
 								itemLabel="#{prog.descPrograma}" itemValue="#{prog.idPrograma}" />
-
-						
+                   
+						<f:ajax immediate="true" listener="#{GrupoController.atualizaLista(LaudoController.laudo.programa)}" update="gruposP" ></f:ajax>
 						</p:selectOneMenu>
 		             <!-- <p:ajax event="itemSelect" /> -->
+		             
+		             	<h:outputLabel value="Grupo:" />
+							<p:selectOneMenu id="gruposP" value="#{LaudoController.grupo.idGrupo}"
+							required="false" requiredMessage="Selecione um grupo."
+							style="width:130px;">
+
+							<f:selectItem itemLabel="Selecione" itemValue="" />
+							<f:selectItems value="#{GrupoController.buscarlistaGrupos}" var="grupo"
+								itemLabel="#{grupo.descGrupo}" itemValue="#{grupo.idGrupo}" />
+
+						</p:selectOneMenu>
+					
 					
 
 					</p:panelGrid>
@@ -125,6 +137,10 @@
 						<h:outputText value="#{tab.programa.descPrograma}" />
 					</p:column>
 
+                    <p:column headerText="Grupo" style="font-weight:bold;">
+						<h:outputText value="#{tab.grupo.descGrupo}" />
+					</p:column> 
+					
 					<p:column headerText="Período Inicial" style="font-weight:bold;">
 						<h:outputText value="#{tab.dtasolicitacao}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />

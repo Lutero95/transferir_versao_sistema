@@ -17,6 +17,7 @@ import org.primefaces.event.SelectEvent;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
@@ -33,7 +34,7 @@ public class GrupoController implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private GrupoBean grupo;
 	private List<GrupoBean> listaGrupos;
-	private List<GrupoBean> BuscarlistaGrupos;
+	private List<GrupoBean> buscarlistaGrupos;
 	private List<GrupoBean> listaGruposProgramas;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
@@ -55,6 +56,8 @@ public class GrupoController implements Serializable{
 		this.programaSelecionado = new ProgramaBean();
 		this.equipeSelecionado = new EquipeBean();
 		this.profissionalSelecionado = new ProfissionalBean();
+		buscarlistaGrupos = new ArrayList<>();
+		buscarlistaGrupos = null;
 	}
 
 	public void limparDados() throws ProjetoException {
@@ -171,9 +174,12 @@ public class GrupoController implements Serializable{
 	}
 
 	public void atualizaLista(ProgramaBean p) throws ProjetoException {
+		System.out.println("ProgramaId"+p.getIdPrograma());
 		GrupoDAO gDao = new GrupoDAO();
 		this.programaSelecionado = p;
 		this.listaGruposProgramas = gDao.listarGruposPorPrograma(p.getIdPrograma());
+	
+		
 	}
 
 	public List<GrupoBean> getListaGruposProgramas() {
@@ -258,4 +264,17 @@ public class GrupoController implements Serializable{
 	public List<GrupoBean> getListaGrupos() {
 		return listaGrupos;
 	}
+
+	public List<GrupoBean> getBuscarlistaGrupos() throws ProjetoException {
+		 if (buscarlistaGrupos == null) {
+	            GrupoDAO gdaos = new GrupoDAO();
+	            buscarlistaGrupos = gdaos.BuscalistarGrupos();
+	        }
+		return buscarlistaGrupos;
+	}
+
+	public void setBuscarlistaGrupos(List<GrupoBean> buscarlistaGrupos) {
+		this.buscarlistaGrupos = buscarlistaGrupos;
+	}
+	
 }

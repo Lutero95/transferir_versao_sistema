@@ -80,6 +80,7 @@ public class LaudoController implements Serializable {
 		// CLASSES
 		laudo = new LaudoBean();
         programa = new ProgramaBean();
+        grupo = new GrupoBean();
 		this.tipoAt = null;// new TipoAtendimentoBean();
 
 		// BUSCA
