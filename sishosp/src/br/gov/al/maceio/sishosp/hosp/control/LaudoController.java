@@ -401,9 +401,15 @@ public class LaudoController implements Serializable {
         dataDoUsuario2 = dataFinal.getTime();
         this.dataAtorizacao = dataDoUsuario;
         this.dataSolicitacao = dataDoUsuario2;
-        
-        //ProgramaDAO pdaos = new ProgramaDAO();
-        //buscalistaProgramas = pdaos.BuscalistarProgramasDefaut();
+
+        ProgramaDAO pdaos = new ProgramaDAO();
+        buscalistaProgramas = pdaos.BuscalistarProgramasDefaut();
+        if (buscalistaProgramas.size()==1){
+        	for(int i=0;i<buscalistaProgramas.size();i++){
+        		programa.setIdPrograma(buscalistaProgramas.get(i).getIdPrograma());  
+        		}
+        	
+        }
 	}
 
 	@SuppressWarnings("deprecation")
