@@ -6,6 +6,7 @@ import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionalidadeDAO;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class FuncionalidadeMB implements Serializable {
         valorBusca = "";
     }
 
-    public void cadastrarFuncionalidade() {
+    public void cadastrarFuncionalidade() throws ProjetoException {
                 
         if(listaSistemasDual.getTarget().size() > 0) {
             List<Integer> listaSis = new ArrayList<>();
@@ -122,7 +123,7 @@ public class FuncionalidadeMB implements Serializable {
         }
     }
     
-    public void alterarFuncionalidade() {
+    public void alterarFuncionalidade() throws ProjetoException {
     
         /*if(listaSistemasDualAlt.getTarget().size() > 0) {
             List<Integer> listaSis = new ArrayList<>();
@@ -161,7 +162,7 @@ public class FuncionalidadeMB implements Serializable {
           
     } 
     
-    public void excluirFuncionalidade() {
+    public void excluirFuncionalidade() throws ProjetoException {
         
     	FuncionalidadeDAO mdao = new FuncionalidadeDAO();
         boolean excluiu = mdao.excluirFuncionalidade(funcionalidade);
@@ -184,7 +185,7 @@ public class FuncionalidadeMB implements Serializable {
         }        
     }
     
-    public void buscarFuncionalidade() {
+    public void buscarFuncionalidade() throws ProjetoException {
     	FuncionalidadeDAO mdao = new FuncionalidadeDAO();
         List<Funcionalidade> listaAux = mdao.buscarFuncionalidadeDesc(valorBusca);
         
@@ -195,7 +196,7 @@ public class FuncionalidadeMB implements Serializable {
             listaFuncionalidadesGeral = null;
             
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-                "Funcionalidade não encontrado!", "Aviso");
+                "Funcionalidade nï¿½o encontrado!", "Aviso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } 
     }
@@ -256,7 +257,7 @@ public class FuncionalidadeMB implements Serializable {
         this.listaExtensoesPag = listaExtensoesPag;
     }
 
-    public List<Sistema> getListaDiretorios() {
+    public List<Sistema> getListaDiretorios() throws ProjetoException {
         if(listaDiretorios == null) {
             SistemaDAO sdao = new SistemaDAO();
             listaDiretorios = sdao.listarSiglas();
@@ -268,7 +269,7 @@ public class FuncionalidadeMB implements Serializable {
         this.listaDiretorios = listaDiretorios;
     }
 
-    public DualListModel<Sistema> getListaSistemasDual() {
+    public DualListModel<Sistema> getListaSistemasDual() throws ProjetoException {
         if(listaSistemasDual == null) {
             listaSistemasSoucer = null;
             listaSistemasTarget = new ArrayList<>();
@@ -282,7 +283,7 @@ public class FuncionalidadeMB implements Serializable {
         this.listaSistemasDual = listaSistemasDual;
     }
 
-    public List<Sistema> getListaSistemasSoucer() {
+    public List<Sistema> getListaSistemasSoucer() throws ProjetoException {
         if(listaSistemasSoucer == null) {
             SistemaDAO sdao = new SistemaDAO();
             listaSistemasSoucer = sdao.listarSistemasSource();
@@ -311,7 +312,7 @@ public class FuncionalidadeMB implements Serializable {
     }
 
     
-    public DualListModel<Sistema> getListaSistemasDualAlt() {       
+    public DualListModel<Sistema> getListaSistemasDualAlt() throws NumberFormatException, ProjetoException {       
         if(listaSistemasDualAlt == null) {
             listaSistemasSoucerAlt = null;
             listaSistemasTargetAlt = null;
@@ -326,7 +327,7 @@ public class FuncionalidadeMB implements Serializable {
         this.listaSistemasDualAlt = listaSistemasDualAlt;
     }
 
-    public List<Sistema> getListaSistemasSoucerAlt() {
+    public List<Sistema> getListaSistemasSoucerAlt() throws NumberFormatException, ProjetoException {
         if(listaSistemasSoucerAlt == null)  {
             MenuDAO mdao = new MenuDAO();
             listaSistemasSoucerAlt = mdao.listarSisAssNaoMenuSource(Long.valueOf(idMenuAlt));           
@@ -338,7 +339,7 @@ public class FuncionalidadeMB implements Serializable {
         this.listaSistemasSoucerAlt = listaSistemasSoucerAlt;
     }
 
-    public List<Sistema> getListaSistemasTargetAlt() {
+    public List<Sistema> getListaSistemasTargetAlt() throws NumberFormatException, ProjetoException {
         
         if(listaSistemasTargetAlt == null) {
             MenuDAO mdao = new MenuDAO();
@@ -407,7 +408,7 @@ public class FuncionalidadeMB implements Serializable {
 		this.sistema = sistema;
 	}
 
-	public List<Funcionalidade> getListaFuncionalidadesGeral() {
+	public List<Funcionalidade> getListaFuncionalidadesGeral() throws ProjetoException {
 	       if (listaFuncionalidadesGeral == null) {
 	        	FuncionalidadeDAO mdao = new FuncionalidadeDAO();
 	            listaFuncionalidadesGeral = mdao.listarFuncionalidadesGeral();

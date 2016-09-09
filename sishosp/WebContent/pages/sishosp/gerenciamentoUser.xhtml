@@ -28,9 +28,9 @@
                
                     <p:panelGrid columns="1" styleClass="semBorda"
                                  style="float:left;font-size:12px;" id="panelBusca">
-                        
+                   
                         <p:commandButton value="Novo Usuário" icon="ui-icon-plus"
-                                         id="btNew" immediate="true" onclick="dlgNovoUsuario.show();"
+                                         id="btNew" immediate="true" onclick="PF('dlgNovoUsuario').show();"
                                          actionListener="#{MBUsuarioCadastro.limparDados()}"
                                          action="#{MBUsuarioCadastro.limparDualCad()}" 
                                          update=":formCADU:pnlCadUsuario"/>
@@ -118,7 +118,7 @@
                             <p:tab title="Geral">
                                 
                             <p:panelGrid columns="2" styleClass="semBorda">
-                                <p:commandButton value="Buscar Pessoa" onclick="dlgbuscapessoa.show();" 
+                                <p:commandButton value="Buscar Pessoa" onclick="PF('dlgbuscapessoa').show();" 
                                 actionListener="#{MBUsuarioCadastro.limparbuscapessoa()}" />
                             </p:panelGrid>
                                 
@@ -339,7 +339,7 @@
                                     process="@this,:formCADU" />
 
                                 <p:commandButton value="Cancelar" icon="fechar" style="width:100px;"  
-                                    onclick="dlgNovoUsuario.hide();" process="@this" />
+                                    onclick="PF('dlgNovoUsuario').hide();" process="@this" />
                             </p:panelGrid>
                         </center>
                     </p:panel>
@@ -421,7 +421,7 @@
 
                                         <p:column>
                                             <p:commandButton value="Alterar senha" icon="alterar-senha" 
-                                                onclick="altSenha.show();" immediate="true"                                 
+                                                onclick="PF('altSenha').show();" immediate="true"                                 
                                                 update=":formALTS:pnlAltSenha" />
                                         </p:column>
                                     </p:row>
@@ -548,7 +548,7 @@
                                     update=":form:tabela, :form:message, :formALTU:pnlAltUsuario" />
 
                                 <p:commandButton value="Cancelar" icon="fechar" style="width:100px;"  
-                                    onclick="altUsuario.hide();" process="@this" />
+                                    onclick="PF('altUsuario').hide();" process="@this" />
                             </p:panelGrid>
                         </center>
                     </p:panel>
@@ -588,7 +588,7 @@
                                     update=":form:tabela, :form:message, :formALTU:pnlAltUsuario" />
 
                                 <p:commandButton value="Fechar" icon="fechar" style="width:100px;"  
-                                    onclick="altSenha.hide();" process="@this" />
+                                    onclick="PF('altSenha').hide();" process="@this" />
                             </p:panelGrid>
                         </center>
                     </p:panel>

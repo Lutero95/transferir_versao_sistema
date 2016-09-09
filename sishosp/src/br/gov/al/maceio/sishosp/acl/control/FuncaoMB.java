@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.acl.control;
 
 import br.gov.al.maceio.sishosp.acl.model.Funcao;
 import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class FuncaoMB  implements Serializable{
         sisBusca = "0";
     }
 
-    public void cadastrarFuncao() {
+    public void cadastrarFuncao() throws ProjetoException {
         
         FuncaoDAO fdao = new FuncaoDAO();
         boolean cadastrou = fdao.cadastrarFuncao(funcao);
@@ -62,7 +63,7 @@ public class FuncaoMB  implements Serializable{
         }
     }
 
-    public void alterarFuncao() {
+    public void alterarFuncao() throws ProjetoException {
 
         FuncaoDAO fdao = new FuncaoDAO();
         boolean alterou = fdao.alterarFuncao(funcao);
@@ -85,7 +86,7 @@ public class FuncaoMB  implements Serializable{
         }
     }
 
-    public void excluirFuncao() {
+    public void excluirFuncao() throws ProjetoException {
         
         FuncaoDAO fdao = new FuncaoDAO();
         boolean excluiu = fdao.excluirFuncao(funcao);
@@ -152,7 +153,7 @@ public class FuncaoMB  implements Serializable{
         this.funcao = funcao;
     }
     
-    public List<Funcao> getListaFuncoes() {
+    public List<Funcao> getListaFuncoes() throws ProjetoException {
         if (listaFuncoes == null) {
             FuncaoDAO fdao = new FuncaoDAO();
             listaFuncoes = fdao.listarFuncoes();

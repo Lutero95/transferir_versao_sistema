@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.acl.control;
 
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class SistemaMB implements Serializable {
         valorBusca = "";
     }
 
-    public void cadastrarSistema() {
+    public void cadastrarSistema() throws ProjetoException {
         
         String dirPag = "/pages/" + sistema.getSigla().toLowerCase() + "/";
         String dirImg = "../../imgs/";
@@ -84,7 +85,7 @@ public class SistemaMB implements Serializable {
         }
     }
 
-    public void alterarSistema() {
+    public void alterarSistema() throws ProjetoException {
         
         String dirImg = "../../imgs/";
         String aux = dirImg + sistema.getImagem() + extensaoImg;
@@ -111,7 +112,7 @@ public class SistemaMB implements Serializable {
         }
     }
 
-    public void excluirSistema() {
+    public void excluirSistema() throws ProjetoException {
         
         SistemaDAO sdao = new SistemaDAO();
         boolean excluiu = sdao.excluirSistema(sistema);
@@ -134,7 +135,7 @@ public class SistemaMB implements Serializable {
         }
     }
     
-    public void buscarSistema() {
+    public void buscarSistema() throws ProjetoException {
         SistemaDAO sdao = new SistemaDAO();
         List<Sistema> listaAux = sdao.buscarSistemaDesc(valorBusca);
         
@@ -177,7 +178,7 @@ public class SistemaMB implements Serializable {
         this.sistema = sistema;
     }
 
-    public List<Sistema> getListaSistemas() {
+    public List<Sistema> getListaSistemas() throws ProjetoException {
         if(listaSistemas == null) {
             SistemaDAO sdao = new SistemaDAO();
             listaSistemas = sdao.listarSistemas();

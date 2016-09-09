@@ -18,6 +18,7 @@ import br.gov.al.maceio.sishosp.acl.model.UsuarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
@@ -55,6 +56,7 @@ public class LaudoController implements Serializable {
 	// LISTAS
 	private List<LaudoBean> listaLaudo;
 	private List<LaudoBean> listaLaudoDigita;
+	private List<ProgramaBean> buscalistaProgramas;
 
 	// BUSCAS
 	private int tipo2;
@@ -91,11 +93,15 @@ public class LaudoController implements Serializable {
 		campoBuscaNumero = 1;
 		campoBuscaData = null;
 		this.cabecalho = "";
+		this.situacao = "P";
+		this.recurso = "T";
 		listaLaudo = new ArrayList<>();
 		listaLaudo = null;
 
 		listaLaudoDigita = new ArrayList<>();
 		listaLaudoDigita = null;
+		buscalistaProgramas = new ArrayList<>();
+		buscalistaProgramas = null;
 
 	}
 
@@ -235,11 +241,15 @@ public class LaudoController implements Serializable {
 		listaLaudo = new ArrayList<>();
 
 		LaudoDAO adao = new LaudoDAO();
-
-		listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso,
+		System.out.println("PROGRAMA ID:"+this.getPrograma().getIdPrograma());
+	
+			listaAux = adao.buscarTipoLaudo1(this.getPrograma().getIdPrograma(),this.dataAtorizacao);
+			
+		
+		/*listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso,
 				this.prontuario, this.dataAtorizacao, this.dataSolicitacao,
-				this.laudo.getPrograma());
-
+				this.laudo.getPrograma().getIdPrograma(), this.laudo.getGrupo().getIdGrupo());*/
+		
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
 			listaLaudo = listaAux;
@@ -375,6 +385,25 @@ public class LaudoController implements Serializable {
 			
 		}
 		
+	}
+	
+	public void getValoresLaudo() throws ProjetoException {
+		System.out.println("Entrou aqui NAS DATAS ATUAIS");
+		Date dataDoUsuario = this.dataAtorizacao;
+		Date dataDoUsuario2 =  this.dataSolicitacao;
+		Calendar dataInicial = Calendar.getInstance(); 
+		Calendar dataFinal = Calendar.getInstance();  
+		dataInicial.setTime(new Date());
+		dataFinal.setTime(new Date());
+		dataInicial.set(Calendar.DAY_OF_MONTH, dataInicial.getActualMinimum(Calendar.DAY_OF_MONTH));
+        dataFinal.set(Calendar.DAY_OF_MONTH, dataFinal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        dataDoUsuario = dataInicial.getTime();
+        dataDoUsuario2 = dataFinal.getTime();
+        this.dataAtorizacao = dataDoUsuario;
+        this.dataSolicitacao = dataDoUsuario2;
+        
+        //ProgramaDAO pdaos = new ProgramaDAO();
+        //buscalistaProgramas = pdaos.BuscalistarProgramasDefaut();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -669,6 +698,14 @@ public class LaudoController implements Serializable {
 
 	public void setTipo2(int tipo2) {
 		this.tipo2 = tipo2;
+	}
+
+	public List<ProgramaBean> getBuscalistaProgramas() {
+		return buscalistaProgramas;
+	}
+
+	public void setBuscalistaProgramas(List<ProgramaBean> buscalistaProgramas) {
+		this.buscalistaProgramas = buscalistaProgramas;
 	}
 
 	

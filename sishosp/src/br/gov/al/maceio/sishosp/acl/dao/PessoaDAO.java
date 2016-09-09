@@ -492,7 +492,7 @@ public class PessoaDAO {
 		}
 	}
 
-	public boolean gravarPessoa(PessoaBean p) {
+	public boolean gravarPessoa(PessoaBean p) throws ProjetoException {
 		boolean gravou = false;
 
 		Connection con = ConnectionFactory.getConnection();
@@ -605,7 +605,7 @@ public class PessoaDAO {
 		}
 	}
 
-	public boolean buscaCPF(double cpf) {
+	public boolean buscaCPF(double cpf) throws ProjetoException {
 		PreparedStatement ps = null;
 		Connection con = ConnectionFactory.getConnection();
 

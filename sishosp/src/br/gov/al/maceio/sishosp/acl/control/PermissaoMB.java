@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.acl.control;
 
 import br.gov.al.maceio.sishosp.acl.model.Permissao;
 import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class PermissaoMB implements Serializable{
         }
     }
     
-    public void buscarPermissao() {
+    public void buscarPermissao() throws ProjetoException {
         PermissaoDAO pdao = new PermissaoDAO();
         List<Permissao> listaAux = pdao.buscarPermissaoDesc(valorBusca);
         
@@ -143,7 +144,7 @@ public class PermissaoMB implements Serializable{
         this.permissao = permissao;
     }
     
-    public List<Permissao> getListaPermissoes() {
+    public List<Permissao> getListaPermissoes() throws ProjetoException {
         if (listaPermissoes == null) {
             PermissaoDAO pdao = new PermissaoDAO();
             listaPermissoes = pdao.listarPermissoes();

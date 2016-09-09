@@ -1,7 +1,9 @@
 package br.gov.al.maceio.sishosp.acl.dao;
 
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +20,7 @@ public class SistemaDAO {
 
     private Connection conexao = null;
 
-    public boolean cadastrarSistema(Sistema sistema) {
+    public boolean cadastrarSistema(Sistema sistema) throws ProjetoException {
         
         String sql = "insert into acl.sistema (descricao, sigla, url, imagem, "
             + "versao, ativo) values (?, ?, ?, ?, ?, ?)";
@@ -49,7 +51,7 @@ public class SistemaDAO {
         }
     }
     
-    public boolean alterarSistema(Sistema sistema) {
+    public boolean alterarSistema(Sistema sistema) throws ProjetoException {
         String sql = "update acl.sistema set descricao = ?, imagem = ?, versao = ?, "
             + "ativo = ? where id = ?";
 
@@ -80,7 +82,7 @@ public class SistemaDAO {
         return alterou;
     }
     
-    public boolean excluirSistema(Sistema sistema) {
+    public boolean excluirSistema(Sistema sistema) throws ProjetoException {
         
         String sql = "delete from acl.sistema where id = ?";
         
@@ -107,7 +109,7 @@ public class SistemaDAO {
         return excluiu;
     }
     
-    public ArrayList<Sistema> buscarSistemaDesc(String valor) {
+    public ArrayList<Sistema> buscarSistemaDesc(String valor) throws ProjetoException {
 
         String sql = "select * from acl.sistema where upper(descricao) like ? "
             + "order by ativo desc, descricao";
@@ -149,7 +151,7 @@ public class SistemaDAO {
         return lista;
     }
     
-    public ArrayList<Sistema> listarSistemas() {
+    public ArrayList<Sistema> listarSistemas() throws ProjetoException {
 
         String sql = "select * from acl.sistema order by ativo desc, descricao";
 
@@ -189,7 +191,7 @@ public class SistemaDAO {
         return lista;
     }
     
-    public ArrayList<Sistema> listarSiglas() {
+    public ArrayList<Sistema> listarSiglas() throws ProjetoException {
 
         String sql = "select id, sigla from acl.sistema order by descricao";
              
@@ -219,7 +221,7 @@ public class SistemaDAO {
         return lista;
     }
     
-    public List<Sistema> listarSistemasNaoAss(Integer id) {
+    public List<Sistema> listarSistemasNaoAss(Integer id) throws ProjetoException {
 
         String sql = "select id,descricao from acl.sistema where id not in "
             + "(select si.id from acl.sistema si "
@@ -253,7 +255,7 @@ public class SistemaDAO {
         return lista;
     }  
         
-    public ArrayList<Sistema> listarSistemasAss(Integer id) {
+    public ArrayList<Sistema> listarSistemasAss(Integer id) throws ProjetoException {
 
         String sql = "select si.id, si.descricao from acl.sistema si "
             + "join acl.perm_perfil pp on si.id = pp.id_sistema "
@@ -287,7 +289,7 @@ public class SistemaDAO {
         return lista;
     }
     
-    public Sistema buscarSisMenuPreview(Integer idSistema) {
+    public Sistema buscarSisMenuPreview(Integer idSistema) throws ProjetoException {
 
         String sql = "select * from acl.sistema where id = ?";
 
@@ -327,7 +329,7 @@ public class SistemaDAO {
         return sis;
     }
 
-    public ArrayList<Sistema> listarSistemasSource() {
+    public ArrayList<Sistema> listarSistemasSource() throws ProjetoException {
 
         String sql = "select id, descricao from acl.sistema order by descricao";
              
