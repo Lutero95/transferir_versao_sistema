@@ -123,6 +123,7 @@ public class ProgramaDAO {
 		UsuarioBean user_session = (UsuarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
+		
 		String sql = "select id_programa, descprograma, codfederal from hosp.programa "
 				+ "join hosp.usuario_programa on programa.id_programa = usuario_programa.codprograma where codusuario = ?";
 		GrupoDAO gDao = new GrupoDAO();
@@ -157,14 +158,22 @@ public class ProgramaDAO {
 	public List<ProgramaBean> listarProgramasBusca(String descricao,
 			Integer tipo) throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<>();
-		String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma , codfederal from hosp.programa ";
+		String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma , codfederal from hosp.programa "
+				+ "join hosp.usuario_programa on programa.id_programa = usuario_programa.codprograma where codusuario = ?";
+				
 		if (tipo == 1) {
-			sql += " where upper(id_programa ||'-'|| descprograma) LIKE ?";
+			sql += " and upper(id_programa ||'-'|| descprograma) LIKE ?";
 		}
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			UsuarioBean user_session = (UsuarioBean) FacesContext
+					.getCurrentInstance().getExternalContext().getSessionMap()
+					.get("obj_usuario");
+			System.out.println("codigo e "+user_session.getCodigo());
+			stm.setInt(1, user_session.getCodigo());
+			stm.setString(2, "%" + descricao.toUpperCase() + "%");
+		
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
