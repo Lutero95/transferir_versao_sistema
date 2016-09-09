@@ -1,7 +1,9 @@
 package br.gov.al.maceio.sishosp.acl.dao;
 
 import br.gov.al.maceio.sishosp.acl.model.Permissao;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +19,7 @@ public class PermissaoDAO {
     
     private Connection conexao = null;
     
-    public ArrayList<Permissao> buscarPermissaoDesc(String valor) {
+    public ArrayList<Permissao> buscarPermissaoDesc(String valor) throws ProjetoException {
         
         String sql = "select id, descricao from acl.permissao where upper(descricao) "
             + "like ? order by descricao";
@@ -49,7 +51,7 @@ public class PermissaoDAO {
         return lista;
     }
     
-    public ArrayList<Permissao> listarPermissoes() {
+    public ArrayList<Permissao> listarPermissoes() throws ProjetoException {
         
         String sql = "select * from acl.permissao order by descricao";
              
@@ -79,7 +81,7 @@ public class PermissaoDAO {
         return lista;
     }
     
-    public ArrayList<Permissao> listarPermPerfilSource() {
+    public ArrayList<Permissao> listarPermPerfilSource() throws ProjetoException {
         
         String sql = "select pm.id, pm.descricao, si.id as id_sis, si.descricao as desc_sis, "
             + "si.sigla as sigla_sis from acl.permissao pm "
@@ -125,7 +127,7 @@ public class PermissaoDAO {
         return lista;
     }
 
-    public ArrayList<Permissao> listarPermNaoAssPerf(Integer id) {
+    public ArrayList<Permissao> listarPermNaoAssPerf(Integer id) throws ProjetoException {
 
         String sql = "select id, descricao from acl.permissao where id not in "
             + "(select pm.id from acl.permissao pm "
@@ -159,7 +161,7 @@ public class PermissaoDAO {
         return lista;
     } 
     
-    public ArrayList<Permissao> listarPermAssPerf(Integer id) {
+    public ArrayList<Permissao> listarPermAssPerf(Integer id) throws ProjetoException {
 
         String sql = "select pm.id, pm.descricao from acl.permissao pm "
             + "join acl.perm_perfil pp on pm.id = pp.id_permissao "
@@ -193,7 +195,7 @@ public class PermissaoDAO {
         return lista;
     } 
     
-    public ArrayList<Long> listarPermissoesPerfil(Long id) {
+    public ArrayList<Long> listarPermissoesPerfil(Long id) throws ProjetoException {
 
         String sql = "select pm.id as permid from acl.perm_perfil pp "
             + "join acl.perfil pf on pf.id = pp.id_perfil "
@@ -224,7 +226,7 @@ public class PermissaoDAO {
         return lista;
     }
     
-    public Long recIdPermissoesMenu(Long idMenu) {
+    public Long recIdPermissoesMenu(Long idMenu) throws ProjetoException {
 
         String sql = "select id_permissao from acl.perm_geral where id_menu = ?";
              
@@ -252,7 +254,7 @@ public class PermissaoDAO {
         return perm;
     } 
     
-    public Long recIdPermissoesFuncao(Long idFuncao) {
+    public Long recIdPermissoesFuncao(Long idFuncao) throws ProjetoException {
 
         String sql = "select id_permissao from acl.perm_geral where id_funcao = ?";
         
@@ -280,7 +282,7 @@ public class PermissaoDAO {
         return perm;
     }
     
-    public Long recIdPermissoesFuncionalidade(Long idFuncionalidade) {
+    public Long recIdPermissoesFuncionalidade(Long idFuncionalidade) throws ProjetoException {
 
         String sql = "select id_permissao from acl.perm_geral where id_funcionalidade = ?";
         

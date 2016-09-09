@@ -9,7 +9,9 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:composition template="../../template/templategeral.xhtml">
-
+	<f:metadata>
+		<f:viewAction action="#{LaudoController.getValoresLaudo()}" />
+	</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 		<div class="col-md-8">
@@ -45,7 +47,7 @@
 						</p:selectOneRadio>
 						<p:outputLabel value="Recurso: " />
 						<p:selectOneRadio id="campoBuscaRecurso" required="false"
-							value="#{LaudoController.prontuario}">
+							value="#{LaudoController.recurso}">
 							<f:selectItem itemLabel="Todos" itemValue="T" />
 							<f:selectItem itemLabel="Faec" itemValue="F" />
 							<f:selectItem itemLabel="Mac" itemValue="M" />
@@ -66,7 +68,7 @@
 						<p:outputLabel value="Período Final: " />
 						<p:calendar id="campoBuscaDataFim" locale="pt"
 							value="#{LaudoController.dataSolicitacao}" navigator="true"
-							mask="true" pattern="MM/yyyy" />
+							mask="true" pattern="dd/MM/yyyy" />
 
 						<h:outputLabel value="Programa:" />
 						<p:selectOneMenu value="#{LaudoController.programa.idPrograma}"
@@ -74,25 +76,29 @@
 							style="width:130px;">
 
 							<f:selectItem itemLabel="Selecione" itemValue="" />
-							<f:selectItems value="#{ProgramaController.buscalistaProgramas}" var="prog"
-								itemLabel="#{prog.descPrograma}" itemValue="#{prog.idPrograma}" />
-                   
-						<f:ajax immediate="true" listener="#{GrupoController.atualizaLista(LaudoController.laudo.programa)}" update="gruposP" ></f:ajax>
+							<f:selectItems value="#{ProgramaController.buscalistaProgramas}"
+								var="prog" itemLabel="#{prog.descPrograma}"
+								itemValue="#{prog.idPrograma}" />
+
+							<f:ajax
+								listener="#{GrupoController.atualizaLista(LaudoController.programa)}"
+								update="gruposP"></f:ajax>
 						</p:selectOneMenu>
-		             <!-- <p:ajax event="itemSelect" /> -->
-		             
-		             	<h:outputLabel value="Grupo:" />
-							<p:selectOneMenu id="gruposP" value="#{LaudoController.grupo.idGrupo}"
-							required="false" requiredMessage="Selecione um grupo."
-							style="width:130px;">
+						<!-- <p:ajax event="itemSelect" /> -->
+
+						<h:outputLabel value="Grupo:" />
+						<p:selectOneMenu id="gruposP"
+							value="#{LaudoController.grupo.idGrupo}" required="false"
+							requiredMessage="Selecione um grupo." style="width:130px;">
 
 							<f:selectItem itemLabel="Selecione" itemValue="" />
-							<f:selectItems value="#{GrupoController.buscarlistaGrupos}" var="grupo"
-								itemLabel="#{grupo.descGrupo}" itemValue="#{grupo.idGrupo}" />
+							<f:selectItems value="#{GrupoController.listaGruposProgramas}"
+								var="grupo" itemLabel="#{grupo.descGrupo}"
+								itemValue="#{grupo.idGrupo}" />
 
 						</p:selectOneMenu>
-					
-					
+
+
 
 					</p:panelGrid>
 				</p:outputPanel>
@@ -137,18 +143,18 @@
 						<h:outputText value="#{tab.programa.descPrograma}" />
 					</p:column>
 
-                    <p:column headerText="Grupo" style="font-weight:bold;">
+					<p:column headerText="Grupo" style="font-weight:bold;">
 						<h:outputText value="#{tab.grupo.descGrupo}" />
-					</p:column> 
-					
+					</p:column>
+
 					<p:column headerText="Período Inicial" style="font-weight:bold;">
-						<h:outputText value="#{tab.dtasolicitacao}">
+						<h:outputText value="#{tab.dtautorizacao}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Período Final" style="font-weight:bold;">
-						<h:outputText value="#{tab.dtautorizacao}">
+						<h:outputText value="#{tab.dtasolicitacao}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>

@@ -241,7 +241,7 @@ public class PerfilMB implements Serializable {
         } 
     }
     
-    public void gerarPreMenuPerfil(String tipo) {
+    public void gerarPreMenuPerfil(String tipo) throws ProjetoException {
         
         MenuMB mmb = new MenuMB();
         List<Menu> listaVerificada = mmb.filtrarPreMenu(
@@ -385,7 +385,7 @@ public class PerfilMB implements Serializable {
         this.listaPerfil = listaPerfil;
     }
 
-    public DualListModel<Menu> getListaMenusDual() {
+    public DualListModel<Menu> getListaMenusDual() throws ProjetoException {
         if(listaMenusDual == null) {
             listaMenusSource = null;
             listaMenusTarget = new ArrayList<>();
@@ -399,7 +399,7 @@ public class PerfilMB implements Serializable {
         this.listaMenusDual = listaMenusDual;
     }
 
-    public List<Menu> getListaMenusSource() {
+    public List<Menu> getListaMenusSource() throws ProjetoException {
         if(listaMenusSource == null) {
             MenuDAO mdao = new MenuDAO();
             listaMenusSource = mdao.listarMenuItemComSis();
@@ -419,7 +419,7 @@ public class PerfilMB implements Serializable {
         this.listaMenusTarget = listaMenusTarget;
     }
 
-    public DualListModel<Funcao> getListaFuncoesDual() {
+    public DualListModel<Funcao> getListaFuncoesDual() throws ProjetoException {
         if(listaFuncoesDual == null) {
             listaFuncoesSource = null;
             listaFuncoesTarget = new ArrayList<>();
@@ -433,7 +433,7 @@ public class PerfilMB implements Serializable {
         this.listaFuncoesDual = listaFuncoesDual;
     }
 
-    public List<Funcao> getListaFuncoesSource() {
+    public List<Funcao> getListaFuncoesSource() throws ProjetoException {
         if(listaFuncoesSource == null) {
             FuncaoDAO fdao = new FuncaoDAO();
             listaFuncoesSource = fdao.listarFuncoesComSisRot();
@@ -453,7 +453,7 @@ public class PerfilMB implements Serializable {
         this.listaFuncoesTarget = listaFuncoesTarget;
     }
 
-    public DualListModel<Menu> getListaMenusDualEdit() {
+    public DualListModel<Menu> getListaMenusDualEdit() throws NumberFormatException, ProjetoException {
         if(listaMenusDualEdit == null) {
             listaMenusSourceEdit = null;
             listaMenusTargetEdit = null;
@@ -468,7 +468,7 @@ public class PerfilMB implements Serializable {
         this.listaMenusDualEdit = listaMenusDualEdit;
     }
 
-    public List<Menu> getListaMenusSourceEdit() {
+    public List<Menu> getListaMenusSourceEdit() throws NumberFormatException, ProjetoException {
         if(listaMenusSourceEdit == null) {
             MenuDAO mdao = new MenuDAO();
             System.out.println("l1 = " + perfilSelecionado);
@@ -481,7 +481,7 @@ public class PerfilMB implements Serializable {
         this.listaMenusSourceEdit = listaMenusSourceEdit;
     }
 
-    public List<Menu> getListaMenusTargetEdit() {
+    public List<Menu> getListaMenusTargetEdit() throws NumberFormatException, ProjetoException {
         if(listaMenusTargetEdit == null) {
             MenuDAO mdao = new MenuDAO();
             System.out.println("l2 = " + perfilSelecionado);
@@ -494,7 +494,7 @@ public class PerfilMB implements Serializable {
         this.listaMenusTargetEdit = listaMenusTargetEdit;
     }
 
-    public DualListModel<Funcao> getListaFuncoesDualEdit() {
+    public DualListModel<Funcao> getListaFuncoesDualEdit() throws NumberFormatException, ProjetoException {
         if(listaFuncoesDualEdit == null) {
             listaFuncoesSourceEdit = null;
             listaFuncoesTargetEdit = null;
@@ -509,7 +509,7 @@ public class PerfilMB implements Serializable {
         this.listaFuncoesDualEdit = listaFuncoesDualEdit;
     }
 
-    public List<Funcao> getListaFuncoesSourceEdit() {
+    public List<Funcao> getListaFuncoesSourceEdit() throws NumberFormatException, ProjetoException {
         if(listaFuncoesSourceEdit == null) {
             FuncaoDAO fdao = new FuncaoDAO();
             System.out.println("l3 = " + perfilSelecionado);
@@ -522,7 +522,7 @@ public class PerfilMB implements Serializable {
         this.listaFuncoesSourceEdit = listaFuncoesSourceEdit;
     }
 
-    public List<Funcao> getListaFuncoesTargetEdit() {
+    public List<Funcao> getListaFuncoesTargetEdit() throws NumberFormatException, ProjetoException {
         if(listaFuncoesTargetEdit == null) {
             FuncaoDAO fdao = new FuncaoDAO();
             System.out.println("l4 = " + perfilSelecionado);
@@ -543,7 +543,7 @@ public class PerfilMB implements Serializable {
         this.perfilSelecionado = perfilSelecionado;
     }
 
-    public List<Sistema> getListaSistemasPreMenu() {
+    public List<Sistema> getListaSistemasPreMenu() throws ProjetoException {
         if(listaSistemasPreMenu == null) {
             SistemaDAO sdao = new SistemaDAO();
             listaSistemasPreMenu = sdao.listarSistemas();
@@ -595,7 +595,7 @@ public class PerfilMB implements Serializable {
         this.descPerfilBusca = descPerfilBusca;
     }
 
-	public DualListModel<Funcionalidade> getListaFuncionalidadesDualEdit() {
+	public DualListModel<Funcionalidade> getListaFuncionalidadesDualEdit() throws NumberFormatException, ProjetoException {
 		if(listaFuncionalidadesDualEdit == null) {
             listaFuncionalidadesSourceEdit = null;
             listaFuncionalidadesTargetEdit = null;
@@ -611,7 +611,7 @@ public class PerfilMB implements Serializable {
 		this.listaFuncionalidadesDualEdit = listaFuncionalidadesDualEdit;
 	}
 
-	public List<Funcionalidade> getListaFuncionalidadesSourceEdit() {
+	public List<Funcionalidade> getListaFuncionalidadesSourceEdit() throws NumberFormatException, ProjetoException {
 		  if(listaFuncionalidadesSourceEdit == null) {
 			  FuncionalidadeDAO mdao = new FuncionalidadeDAO();
 	            System.out.println("l1 = " + perfilSelecionado);
@@ -626,7 +626,7 @@ public class PerfilMB implements Serializable {
 		this.listaFuncionalidadesSourceEdit = listaFuncionalidadesSourceEdit;
 	}
 
-	public List<Funcionalidade> getListaFuncionalidadesTargetEdit() {
+	public List<Funcionalidade> getListaFuncionalidadesTargetEdit() throws NumberFormatException, ProjetoException {
 	      if(listaFuncionalidadesTargetEdit == null) {
 	    	  FuncionalidadeDAO mdao = new FuncionalidadeDAO();
 	            System.out.println("l2 = " + perfilSelecionado);

@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.acl.dao;
 import br.gov.al.maceio.sishosp.acl.model.Funcionalidade;
 import br.gov.al.maceio.sishosp.acl.model.Menu;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 
 import java.sql.CallableStatement;
@@ -23,7 +24,7 @@ public class FuncionalidadeDAO {
     
     private Connection conexao;
     
-    public Boolean cadastrar(Funcionalidade funcionalidade) {       
+    public Boolean cadastrar(Funcionalidade funcionalidade) throws ProjetoException {       
         
         boolean cadastrou = false;
         List<Integer> listaId = funcionalidade.getListaSistemas();
@@ -75,7 +76,7 @@ public class FuncionalidadeDAO {
         return cadastrou;
     }
     
-    public Boolean alterar(Funcionalidade funcionalidade) {       
+    public Boolean alterar(Funcionalidade funcionalidade) throws ProjetoException {       
         
     	 String sql = "update acl.funcionalidade set descricao = ?, desc_pagina = ?, diretorio = ?, "
     	            + "extensao = ?, ativo = ?, imagem = ? where id = ?";
@@ -130,7 +131,7 @@ public class FuncionalidadeDAO {
         return alterou;
     }
     
-    public boolean excluirFuncionalidade(Funcionalidade funcionalidade) {
+    public boolean excluirFuncionalidade(Funcionalidade funcionalidade) throws ProjetoException {
         
         String sql = "delete from acl.funcionalidade where id = ?";
         
@@ -157,7 +158,7 @@ public class FuncionalidadeDAO {
         return excluiu;
     }
     
-    public List<Funcionalidade> buscarFuncionalidadeDesc(String valor) {
+    public List<Funcionalidade> buscarFuncionalidadeDesc(String valor) throws ProjetoException {
 
         String sql = "select f.id, f.descricao, f.desc_pagina, f.diretorio, f.extensao, f.imagem, f.ativo from acl.funcionalidade f "
         		+ "where upper(f.descricao) like ? order by f.ativo desc, f.descricao";
@@ -197,7 +198,7 @@ public class FuncionalidadeDAO {
         return lista;
     } 
     
-    public List<Funcionalidade> listarFuncionalidadesGeral() {
+    public List<Funcionalidade> listarFuncionalidadesGeral() throws ProjetoException {
 
         String sql = "select f.id, f.descricao, f.desc_pagina, f.diretorio, f.extensao, f.imagem, f.ativo "
         		+ "from acl.funcionalidade f order by f.ativo desc, f.descricao";
@@ -233,7 +234,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
-    public ArrayList<Menu> listarMenus() {
+    public ArrayList<Menu> listarMenus() throws ProjetoException {
 
         String sql = "select * from acl.menu order by descricao";
              
@@ -267,7 +268,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
-    public List<Menu> listarMenusPaiSubmenus() {
+    public List<Menu> listarMenusPaiSubmenus() throws ProjetoException {
 
         String sql = "select * from acl.menu where tipo = 'menuPai' or tipo = 'submenu' "
             + "and ativo = true order by descricao, tipo";
@@ -312,7 +313,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
-    public List<Menu> listarMenuItem() {
+    public List<Menu> listarMenuItem() throws ProjetoException {
 
         String sql = "select * from acl.menu where tipo = 'menuItem' and ativo = true "
             + "order by descricao";
@@ -348,7 +349,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
-    public ArrayList<Menu> listarMenuItemComSis() {
+    public ArrayList<Menu> listarMenuItemComSis() throws ProjetoException {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
             + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
@@ -403,7 +404,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
-    public ArrayList<Menu> listarMenuItemSourcerEdit(Integer idPerfil) {
+    public ArrayList<Menu> listarMenuItemSourcerEdit(Integer idPerfil) throws ProjetoException {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
             + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
@@ -466,7 +467,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
     // LISTA OK
-    public ArrayList<Menu> listarMenuItemTargetEdit(Integer idPerfil) {
+    public ArrayList<Menu> listarMenuItemTargetEdit(Integer idPerfil) throws ProjetoException {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
             + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
@@ -524,7 +525,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
-    public ArrayList<Menu> listarMenuPaiSubmenuComSis() {
+    public ArrayList<Menu> listarMenuPaiSubmenuComSis() throws ProjetoException {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, me.ativo, "
             + "diretorio, desc_pagina, extensao, si.id as id_sis, "
@@ -578,7 +579,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
      
-    public ArrayList<Menu> listarMenusPorSistema(Integer id) {
+    public ArrayList<Menu> listarMenusPorSistema(Integer id) throws ProjetoException {
 
         String sql = "select ms.id, " +
             "ms.id_menu, " +
@@ -618,7 +619,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
-    public ArrayList<Sistema> listarSisAssNaoMenuSource(Long idMenu) {
+    public ArrayList<Sistema> listarSisAssNaoMenuSource(Long idMenu) throws ProjetoException {
 
         String sql = "select id, descricao from acl.sistema where id not in "
             + "(select si.id from acl.sistema si "
@@ -653,7 +654,7 @@ public class FuncionalidadeDAO {
         return lista;
     } 
     
-    public ArrayList<Sistema> listarSisAssMenuTarget(Long idMenu) {
+    public ArrayList<Sistema> listarSisAssMenuTarget(Long idMenu) throws ProjetoException {
 
         String sql = "select si.id, si.descricao from acl.sistema si "
             + "join acl.menu_sistema ms on ms.id_sistema = si.id "
@@ -687,7 +688,7 @@ public class FuncionalidadeDAO {
         return lista;
     }   
     
-    public ArrayList<Menu> listarMenuItemSourcerUser(Integer idPerfil) {
+    public ArrayList<Menu> listarMenuItemSourcerUser(Integer idPerfil) throws ProjetoException {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
             + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
@@ -755,11 +756,11 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
-    public ArrayList<Menu> listarMenuItemSourcerEditUser(Integer idPerfil, Integer idUsuario) {
+    public ArrayList<Menu> listarMenuItemSourcerEditUser(Integer idPerfil, Integer idUsuario) throws ProjetoException {
 
         System.out.println("MENU SOURCE");
         System.out.println("ID PERFIL: " + idPerfil);
-        System.out.println("ID USUÃ?RIO: " + idUsuario + "\n");
+        System.out.println("ID USUï¿½?RIO: " + idUsuario + "\n");
         
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
             + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
@@ -836,10 +837,10 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
-    public ArrayList<Menu> listarMenuItemTargetEditUser(Integer idUsuario) {
+    public ArrayList<Menu> listarMenuItemTargetEditUser(Integer idUsuario) throws ProjetoException {
 
         System.out.println("MENU TARGET");
-        System.out.println("ID USUÃ?RIO: " + idUsuario + "\n");
+        System.out.println("ID USUï¿½?RIO: " + idUsuario + "\n");
         
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
             + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
@@ -895,7 +896,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
-    public ArrayList<Funcionalidade> listarFuncionalidadeItemSourcerEdit(Integer idPerfil) {
+    public ArrayList<Funcionalidade> listarFuncionalidadeItemSourcerEdit(Integer idPerfil) throws ProjetoException {
 
         String sql = "select fu.id, fu.descricao, fu.desc_pagina, fu.diretorio, fu.extensao, fu.imagem, fu.ativo "
         		+ "from acl.funcionalidade fu "
@@ -941,7 +942,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
     // LISTA OK
-    public ArrayList<Funcionalidade> listarFuncionalidadeItemTargetEdit(Integer idPerfil) {
+    public ArrayList<Funcionalidade> listarFuncionalidadeItemTargetEdit(Integer idPerfil) throws ProjetoException {
 
         String sql = "select fu.id, fu.descricao, fu.desc_pagina, fu.diretorio, fu.extensao, fu.imagem, fu.ativo "
         		+ "from acl.funcionalidade fu "
@@ -985,7 +986,7 @@ public class FuncionalidadeDAO {
         return lista;
     }
     
-    public ArrayList<Menu> listarMenusPerfil(Integer idPerfil) {
+    public ArrayList<Menu> listarMenusPerfil(Integer idPerfil) throws ProjetoException {
 
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
             + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "

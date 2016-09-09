@@ -1,7 +1,9 @@
 package br.gov.al.maceio.sishosp.acl.dao;
 
 import br.gov.al.maceio.sishosp.acl.model.Funcao;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +22,7 @@ public class FuncaoDAO {
 
     private Connection conexao;
 
-    public Boolean cadastrarFuncao(Funcao funcao) {
+    public Boolean cadastrarFuncao(Funcao funcao) throws ProjetoException {
         
         boolean cadastrou = false;
         
@@ -75,7 +77,7 @@ public class FuncaoDAO {
         return cadastrou;
     }
 
-    public Boolean alterarFuncao(Funcao funcao) {
+    public Boolean alterarFuncao(Funcao funcao) throws ProjetoException {
         
         String sql = "update acl.funcao set descricao = ?,  "
             + "id_sistema = ?, ativa = ? where id = ?";
@@ -107,7 +109,7 @@ public class FuncaoDAO {
         return alterou;
     }
     
-    public boolean excluirFuncao(Funcao funcao) {
+    public boolean excluirFuncao(Funcao funcao) throws ProjetoException {
         
         String sql = "delete from acl.funcao where id = ?";
         
@@ -135,7 +137,7 @@ public class FuncaoDAO {
         return excluiu;
     }
     
-    public List<Funcao> listarFuncoes() {
+    public List<Funcao> listarFuncoes() throws ProjetoException {
 
         String sql = "select fun.id, fun.descricao, fun.codigo, "
             + "fun.id_sistema, fun.ativa,  "
@@ -176,7 +178,7 @@ public class FuncaoDAO {
         return lista;
     }
     
-    public List<Funcao> listarFuncoesComSisRot() {
+    public List<Funcao> listarFuncoesComSisRot() throws ProjetoException {
 
         String sql = "select fu.id, fu.descricao, fu.codigo,  fu.ativa, si.id as id_sis, "
             + "si.descricao as desc_sis, si.sigla as sigla_sis  "
@@ -220,7 +222,7 @@ public class FuncaoDAO {
         return lista;
     }
     
-    public List<Funcao> listarFuncoesSourceEdit(Integer idPerfil) {
+    public List<Funcao> listarFuncoesSourceEdit(Integer idPerfil) throws ProjetoException {
 
         String sql = "select fu.id, fu.descricao, fu.codigo,  fu.ativa, "
             + "si.id as id_sis, si.descricao as desc_sis, si.sigla as sigla_sis "
@@ -270,7 +272,7 @@ public class FuncaoDAO {
         return lista;
     }
     
-    public List<Funcao> listarFuncoesTargetEdit(Integer idPerfil) {
+    public List<Funcao> listarFuncoesTargetEdit(Integer idPerfil) throws ProjetoException {
 
         String sql = "select fu.id, fu.descricao, fu.codigo,  fu.ativa, "
             + "si.id as id_sis, si.descricao as desc_sis, si.sigla as sigla_sis "
@@ -315,9 +317,9 @@ public class FuncaoDAO {
         return lista;
     }
     
-    public List<Funcao> listarFuncaoItemSourcerUser(Integer idPerfil) {
+    public List<Funcao> listarFuncaoItemSourcerUser(Integer idPerfil) throws ProjetoException {
 
-        String sql = "select fu.id, fu.descricao, fu.codigo,  fu.ativa, si.id as id_sis, "
+        String sql = "select fu.id, fu.descricao, fu.codigo, fu.ativa, si.id as id_sis, "
             + "si.descricao as desc_sis, si.sigla as sigla_sis"
             + "from acl.permissao pm "
             + "join acl.perm_geral pg on pg.id_permissao = pm.id "
@@ -367,7 +369,7 @@ public class FuncaoDAO {
         return lista;
     }
     
-    public List<Funcao> listarFuncaosPerfil(Integer idPerfil) {
+    public List<Funcao> listarFuncaosPerfil(Integer idPerfil) throws ProjetoException {
 
         String sql = "select fu.id, fu.descricao, fu.codigo, fu.ativa, si.id as id_sis, "
             + "si.descricao as desc_sis, si.sigla as sigla_sis "
@@ -415,11 +417,11 @@ public class FuncaoDAO {
         return lista;
     }
     
-    public List<Funcao> listarFuncaoItemSourcerUserEdit(Integer idPerfil, Integer idUsuario) {
+    public List<Funcao> listarFuncaoItemSourcerUserEdit(Integer idPerfil, Integer idUsuario) throws ProjetoException {
         
         System.out.println("FUNÇÃO SOURCE");
         System.out.println("ID PERFIL: " + idPerfil);
-        System.out.println("ID USU�?RIO: " + idUsuario + "\n");
+        System.out.println("ID USU�?RIO: " + idUsuario + "\n");
 
         String sql = "select fu.id, fu.descricao, fu.codigo,  fu.ativa, "
             + "si.id as id_sis, si.descricao as desc_sis, si.sigla as sigla_sis "
@@ -478,10 +480,10 @@ public class FuncaoDAO {
         return lista;
     }
     
-    public List<Funcao> listarFuncaoItemTargetUserEdit(Integer idUsuario) {
+    public List<Funcao> listarFuncaoItemTargetUserEdit(Integer idUsuario) throws ProjetoException {
 
         System.out.println("FUNÇÃO TARGET");
-        System.out.println("ID USU�?RIO: " + idUsuario + "\n");
+        System.out.println("ID USU�?RIO: " + idUsuario + "\n");
         
         String sql = "select fu.id, fu.descricao, fu.codigo,  fu.ativa, "
             + "si.id as id_sis, si.descricao as desc_sis, si.sigla as sigla_sis, "

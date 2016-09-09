@@ -154,6 +154,44 @@ public class ProgramaDAO {
 		}
 		return lista;
 	}
+	
+	public ArrayList<ProgramaBean> BuscalistarProgramasDefaut()
+			throws ProjetoException {
+		PreparedStatement ps = null;
+		con = ConnectionFactory.getConnection();
+		UsuarioBean user_session = (UsuarioBean) FacesContext
+				.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("obj_usuario");
+		String sql = "select id_programa, descprograma, codfederal from hosp.programa "
+				+ "join hosp.usuario_programa on programa.id_programa = usuario_programa.codprograma where codusuario = ?";
+		GrupoDAO gDao = new GrupoDAO();
+		ArrayList<ProgramaBean> lista = new ArrayList();
+		try {
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, user_session.getCodigo());
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				ProgramaBean programa = new ProgramaBean();
+				programa.setIdPrograma(rs.getInt("id_programa"));
+				programa.setDescPrograma(rs.getString("descprograma"));
+				programa.setCodFederal(rs.getDouble("codfederal"));
+				programa.setGrupo(gDao.listarGruposPorPrograma(rs
+						.getInt("id_programa")));
+				lista.add(programa);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
+	}
 
 	public List<ProgramaBean> listarProgramasBusca(String descricao,
 			Integer tipo) throws ProjetoException {

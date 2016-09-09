@@ -817,7 +817,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaPermissoesTargetAlt = listaPermissoesTargetAlt;
     }
     
-    public DualListModel<Menu> getListaMenusDual() {
+    public DualListModel<Menu> getListaMenusDual() throws NumberFormatException, ProjetoException {
         if(listaMenusDual == null) {
             listaMenusSource = null;
             listaMenusTarget = new ArrayList<>();
@@ -831,7 +831,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaMenusDual = listaMenusDual;
     }
 
-    public List<Menu> getListaMenusSource() {
+    public List<Menu> getListaMenusSource() throws NumberFormatException, ProjetoException {
         if(listaMenusSource == null) {
             MenuDAO mdao = new MenuDAO();
             listaMenusSource = mdao.listarMenuItemSourcerUser(Integer.parseInt(perfilSelecionado));
@@ -851,7 +851,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaMenusTarget = listaMenusTarget;
     }
 
-    public DualListModel<Funcao> getListaFuncoesDual() {
+    public DualListModel<Funcao> getListaFuncoesDual() throws NumberFormatException, ProjetoException {
         if(listaFuncoesDual == null) {
             listaFuncoesSource = null;
             listaFuncoesTarget = new ArrayList<>();
@@ -865,7 +865,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaFuncoesDual = listaFuncoesDual;
     }
 
-    public List<Funcao> getListaFuncoesSource() {
+    public List<Funcao> getListaFuncoesSource() throws NumberFormatException, ProjetoException {
         if(listaFuncoesSource == null) {
             FuncaoDAO fdao = new FuncaoDAO();
             listaFuncoesSource = fdao.listarFuncaoItemSourcerUser(Integer.parseInt(perfilSelecionado));
@@ -885,7 +885,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaFuncoesTarget = listaFuncoesTarget;
     }
     
-    public DualListModel<Menu> getListaMenusDualEdit() {
+    public DualListModel<Menu> getListaMenusDualEdit() throws NumberFormatException, ProjetoException {
         if(listaMenusDualEdit == null) {
             listaMenusSourceEdit = null;
             listaMenusTargetEdit = null;
@@ -900,7 +900,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaMenusDualEdit = listaMenusDualEdit;
     }
 
-    public List<Menu> getListaMenusSourceEdit() {
+    public List<Menu> getListaMenusSourceEdit() throws NumberFormatException, ProjetoException {
         if(listaMenusSourceEdit == null) {
             MenuDAO mdao = new MenuDAO();
             listaMenusSourceEdit = mdao.listarMenuItemSourcerEditUser(
@@ -913,7 +913,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaMenusSourceEdit = listaMenusSourceEdit;
     }
 
-    public List<Menu> getListaMenusTargetEdit() {
+    public List<Menu> getListaMenusTargetEdit() throws NumberFormatException, ProjetoException {
         if(listaMenusTargetEdit == null) {
             MenuDAO mdao = new MenuDAO();
             listaMenusTargetEdit = mdao.listarMenuItemTargetEditUser(Integer.parseInt(usuarioSelecionado));
@@ -925,7 +925,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaMenusTargetEdit = listaMenusTargetEdit;
     }
 
-    public DualListModel<Funcao> getListaFuncoesDualEdit() {
+    public DualListModel<Funcao> getListaFuncoesDualEdit() throws NumberFormatException, ProjetoException {
         if(listaFuncoesDualEdit == null) {
             listaFuncoesSourceEdit = null;
             listaFuncoesTargetEdit = null;
@@ -940,7 +940,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaFuncoesDualEdit = listaFuncoesDualEdit;
     }
 
-    public List<Funcao> getListaFuncoesSourceEdit() {
+    public List<Funcao> getListaFuncoesSourceEdit() throws NumberFormatException, ProjetoException {
         if(listaFuncoesSourceEdit == null) {
             FuncaoDAO fdao = new FuncaoDAO();
             listaFuncoesSourceEdit = fdao.listarFuncaoItemSourcerUserEdit(
@@ -953,7 +953,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaFuncoesSourceEdit = listaFuncoesSourceEdit;
     }
 
-    public List<Funcao> getListaFuncoesTargetEdit() {
+    public List<Funcao> getListaFuncoesTargetEdit() throws NumberFormatException, ProjetoException {
         if(listaFuncoesTargetEdit == null) {
             FuncaoDAO fdao = new FuncaoDAO();
             listaFuncoesTargetEdit = fdao.listarFuncaoItemTargetUserEdit(Integer.parseInt(usuarioSelecionado));

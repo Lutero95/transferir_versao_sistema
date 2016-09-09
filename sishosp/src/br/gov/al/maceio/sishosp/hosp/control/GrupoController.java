@@ -33,6 +33,7 @@ public class GrupoController implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private GrupoBean grupo;
+	private ProgramaBean prog;
 	private List<GrupoBean> listaGrupos;
 	private List<GrupoBean> buscarlistaGrupos;
 	private List<GrupoBean> listaGruposProgramas;
@@ -265,16 +266,14 @@ public class GrupoController implements Serializable{
 		return listaGrupos;
 	}
 
-	public List<GrupoBean> getBuscarlistaGrupos() throws ProjetoException {
-		 if (buscarlistaGrupos == null) {
-	            GrupoDAO gdaos = new GrupoDAO();
-	            buscarlistaGrupos = gdaos.BuscalistarGrupos();
-	        }
-		return buscarlistaGrupos;
+	public ProgramaBean getProg() {
+		return prog;
 	}
 
-	public void setBuscarlistaGrupos(List<GrupoBean> buscarlistaGrupos) {
-		this.buscarlistaGrupos = buscarlistaGrupos;
+	public void setProg(ProgramaBean prog) {
+		this.prog = prog;
 	}
+	
+	
 	
 }

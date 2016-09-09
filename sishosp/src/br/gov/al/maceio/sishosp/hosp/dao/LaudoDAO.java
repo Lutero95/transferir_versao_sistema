@@ -12,6 +12,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
@@ -411,14 +412,14 @@ public class LaudoDAO {
                 return lista;
             } 
             
-            public List<LaudoBean> buscarTipoLaudo(String nome, String situacao, String recurso, Integer prontuario, Date dataAutorizacao, Date dataSolicitacao, ProgramaBean programa) throws ProjetoException {
+            public List<LaudoBean> buscarTipoLaudo(String nome, String situacao, String recurso, Integer prontuario, Date dataAutorizacao, Date dataSolicitacao, Integer idPrograma, Integer idGrupo) throws ProjetoException {
         		
             	
           		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente where";
-          		if(programa==null)
+          		if(idPrograma==null)
           			System.out.println("programa null");
           			
-          		if (programa!=null && dataAutorizacao!=null) {
+          		if (idPrograma!=null && dataAutorizacao!=null) {
           			sql += " CAST(apac.codprograma AS INT) = ? and apac.dtautorizacao = ? order by pacientes.nome";
           		}
           		/*if (tipo == 2) {
@@ -439,9 +440,9 @@ public class LaudoDAO {
           		try {
           			conexao = ConnectionFactory.getConnection();
           			PreparedStatement stmt = conexao.prepareStatement(sql);
-          			if (programa!=null && dataAutorizacao!=null) {
-          				System.out.println("Programa:"+programa.getIdPrograma()+"| DATA:|"+dataAutorizacao);
-          				stmt.setInt(1,programa.getIdPrograma());
+          			if (idPrograma!=null && dataAutorizacao!=null) {
+          				System.out.println("Programa:"+idPrograma+"| DATA:|"+dataAutorizacao);
+          				stmt.setInt(1,idPrograma);
           				stmt.setDate(2, new java.sql.Date(dataAutorizacao.getTime()));
           			}
           			/*if (tipo == 2) {
@@ -506,6 +507,100 @@ public class LaudoDAO {
           		return lista;
           	}
             
+            public List<LaudoBean> buscarTipoLaudo1(Integer idPrograma, Date dataAutorizacao) throws ProjetoException {
+        		
+            	
+         		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente where";
+         		if(idPrograma==null)
+         			System.out.println("programa null");
+         			
+         		if (idPrograma!=null && dataAutorizacao!=null) {
+         			sql += " CAST(apac.codprograma AS INT) = ? and apac.dtautorizacao = ? order by pacientes.nome";
+         		}
+         		/*if (situacao!=null && recurso!=null && idPrograma!=null && idGrupo!=null && dataAutorizacao!=null && dataSolicitacao!=null) {
+         			sql += " apac.situacao = ? and apac. recurso = ? and CAST(apac.codprograma AS INT) = ? and CAST(apac.codgrupo AS INT) = ? and apac.dtautorizacao = ? and apac.dtasolicitacao = ? order by pacientes.nome";
+         		}
+         		if (tipo == 3) {
+         			sql += " apac.recurso like ? order by pacientes.nome";
+         		}
+         		if (tipo == 4) {
+         			sql += " CAST(apac.id_apac AS INT) = ? order by pacientes.nome";
+         		}
+         		if (tipo == 5) {
+         			sql += " BETWEEN = ? AND = ? order by pacientes.nome";
+         		}*/
+         
+         		List<LaudoBean> lista = new ArrayList<>();
+    
+         		try {
+         			conexao = ConnectionFactory.getConnection();
+         			PreparedStatement stmt = conexao.prepareStatement(sql);
+         			if (idPrograma!=null && dataAutorizacao!=null) {
+         				System.out.println("Programa:"+idPrograma+"| DATA:|"+dataAutorizacao);
+         				stmt.setInt(1, idPrograma);
+         				stmt.setDate(2, new java.sql.Date(dataAutorizacao.getTime()));
+         			}
+         			/*if (tipo == 2) {
+         				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+         			}
+         			if (tipo == 3) {
+         				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+         			}
+         			if (tipo == 4) {
+         				stmt.setInt(1,numero);
+         			}
+         			if (tipo == 5) {
+         				stmt.setDate(1, new java.sql.Date(data.getTime()));
+         				stmt.setDate(2, new java.sql.Date(data.getTime()));
+         			}*/
+
+         			ResultSet rs = stmt.executeQuery();
+
+         			while (rs.next()) {
+         				LaudoBean l = new LaudoBean();
+         				
+         	
+         				l.setId_apac(rs.getInt("id_apac"));
+    	                l.setApac(rs.getString("apac").toUpperCase());
+   	                l.setPaciente(pacieDao.listarPacientePorID(rs.getInt("codpaciente")));
+   	                l.setPrograma(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+   	                l.setGrupo(grupoDao.listarGrupoPorId(rs.getInt("codgrupo")));
+   	                l.setEquipe(equipeDao.buscarEquipePorID(rs.getInt("codequipe")));
+   	                l.setProfissional(profDao.buscarProfissionalPorId(rs.getInt("codmedico")));
+   	                l.setProcedimento(procDao.listarProcedimentoPorId(rs.getInt("codproc")));
+   	                l.setDtasolicitacao(rs.getDate("dtasolicitacao"));
+   	                l.setRecurso(rs.getString("recurso"));
+   	                l.setUnidade(rs.getString("unidade"));
+   	                l.setSituacao(rs.getString("situacao"));
+   	                l.setDtautorizacao(rs.getDate("dtautorizacao"));
+   	                l.setCid10_1(rs.getString("cid10_1"));
+   	                l.setCid10_2(rs.getString("cid10_2"));
+   	                l.setCid10_2(rs.getString("cid10_3"));
+   	                l.setFornecedor(forneDao.listarFornecedorPorId(rs.getInt("codfornecedor")));
+   	                l.setValor(rs.getDouble("valor"));
+   	                l.setNota(rs.getString("nota"));
+   	                l.setQtd(rs.getInt("qtd"));
+   	                l.setCodequipamento(rs.getInt("codequipamento"));
+   	                l.setObs(rs.getString("obs"));
+   	              
+   	   
+
+         				lista.add(l);
+
+         			}
+         		} catch (SQLException ex) {
+         			ex.printStackTrace();
+         			// throw new RuntimeException(ex); //
+         		} finally {
+         			try {
+         				conexao.close();
+         			} catch (Exception ex) {
+         				ex.printStackTrace();
+         				System.exit(1);
+         			}
+         		}
+         		return lista;
+         	}
             
             
             public ArrayList<LaudoBean> listaLaudosDigita() throws ProjetoException {

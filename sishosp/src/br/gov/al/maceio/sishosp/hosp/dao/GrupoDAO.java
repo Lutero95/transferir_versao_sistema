@@ -102,12 +102,16 @@ public class GrupoDAO {
 
 	public List<GrupoBean> listarGruposPorPrograma(int codPrograma) throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<>();
-		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
-				+ " where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma order by g.id_grupo";
+		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut from hosp.grupo g,hosp.grupo_programa gp, hosp.programa p ,hosp.usuario_grupo where p.id_programa = ? and codusuario = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma and g.id_grupo=usuario_grupo.codgrupo";
+		
+		UsuarioBean user_session = (UsuarioBean) FacesContext
+				.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("obj_usuario");
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, codPrograma);
+			stm.setInt(2, user_session.getCodigo());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -413,41 +417,4 @@ public class GrupoDAO {
 		return lista;
 	}
 	
-	public ArrayList<GrupoBean> BuscalistarGrupos()
-			throws ProjetoException {
-		PreparedStatement ps = null;
-		con = ConnectionFactory.getConnection();
-		UsuarioBean user_session = (UsuarioBean) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
-		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, inserção_pac_institut from hosp.grupo "
-				+ "join hosp.usuario_grupo on grupo.id_grupo=usuario_grupo.codgrupo where codusuario = ?";
-		GrupoDAO gDao = new GrupoDAO();
-		ArrayList<GrupoBean> lista = new ArrayList();
-		try {
-			ps = con.prepareStatement(sql);
-			ps.setInt(1, user_session.getCodigo());
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-				GrupoBean grupo = new GrupoBean();
-				grupo.setIdGrupo(rs.getInt("id_grupo"));
-				grupo.setDescGrupo(rs.getString("descgrupo"));
-				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
-				grupo.setAuditivo(rs.getBoolean("auditivo"));
-				grupo.setInserção_pac_institut(rs.getBoolean("inserção_pac_institut"));
-				lista.add(grupo);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
 }

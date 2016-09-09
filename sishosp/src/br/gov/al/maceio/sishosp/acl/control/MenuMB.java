@@ -4,6 +4,7 @@ import br.gov.al.maceio.sishosp.acl.model.Menu;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ public class MenuMB implements Serializable {
         valorBusca = "";
     }
 
-    public void cadastrarMenu() {
+    public void cadastrarMenu() throws ProjetoException {
                 
         if(listaSistemasDual.getTarget().size() > 0) {
             List<Integer> listaSis = new ArrayList<>();
@@ -157,7 +158,7 @@ public class MenuMB implements Serializable {
         }
     }
     
-    public void alterarMenu() {
+    public void alterarMenu() throws ProjetoException {
     
         if(listaSistemasDualAlt.getTarget().size() > 0) {
             List<Integer> listaSis = new ArrayList<>();
@@ -195,7 +196,7 @@ public class MenuMB implements Serializable {
         }       
     } 
     
-    public void excluirMenu() {
+    public void excluirMenu() throws ProjetoException {
         
         MenuDAO mdao = new MenuDAO();
         boolean excluiu = mdao.excluirMenu(menu);
@@ -218,7 +219,7 @@ public class MenuMB implements Serializable {
         }        
     }
     
-    public void buscarMenu() {
+    public void buscarMenu() throws ProjetoException {
         MenuDAO mdao = new MenuDAO();
         List<Menu> listaAux = mdao.buscarMenuDesc(valorBusca);
         
@@ -234,7 +235,7 @@ public class MenuMB implements Serializable {
         } 
     }
     
-    public List<Menu> filtrarListaMenu(List<Menu> lista) {
+    public List<Menu> filtrarListaMenu(List<Menu> lista) throws ProjetoException {
         
         List<Menu> listaMenusAux = lista;
         List<Menu> listaVerificada = new ArrayList<>();
@@ -271,7 +272,7 @@ public class MenuMB implements Serializable {
         return listaVerificada;
     }
     
-    public List<Menu> filtrarPreMenu(String tipo, List<Menu> listaCad, List<Menu> listaAlt) {
+    public List<Menu> filtrarPreMenu(String tipo, List<Menu> listaCad, List<Menu> listaAlt) throws ProjetoException {
         List<Menu> listaMenusAux = new ArrayList<>();
         List<Menu> listaVerificada = new ArrayList<>();
         
@@ -552,14 +553,14 @@ public class MenuMB implements Serializable {
         this.idMenuAss = idMenuAss;
     }
 
-    public List<Menu> getListaMenus() {
+    public List<Menu> getListaMenus() throws ProjetoException {
         if (listaMenus == null) {
             MenuDAO mdao = new MenuDAO();
             listaMenus = mdao.listarMenusPaiSubmenus();
         }
         return listaMenus;
     }
-    public List<Menu> getListaMenusGeral() {
+    public List<Menu> getListaMenusGeral() throws ProjetoException {
         if (listaMenusGeral == null) {
             MenuDAO mdao = new MenuDAO();
             listaMenusGeral = mdao.listarMenuGeral();
@@ -571,7 +572,7 @@ public class MenuMB implements Serializable {
         this.listaMenus = listaMenus;
     }
 
-    public List<Menu> getListaMenusPag() {
+    public List<Menu> getListaMenusPag() throws ProjetoException {
         if (listaMenusPag == null) {
             MenuDAO mdao = new MenuDAO();
             listaMenusPag = mdao.listarMenuItem();
@@ -591,7 +592,7 @@ public class MenuMB implements Serializable {
         this.listaExtensoesPag = listaExtensoesPag;
     }
 
-    public List<Sistema> getListaDiretorios() {
+    public List<Sistema> getListaDiretorios() throws ProjetoException {
         if(listaDiretorios == null) {
             SistemaDAO sdao = new SistemaDAO();
             listaDiretorios = sdao.listarSiglas();
@@ -603,7 +604,7 @@ public class MenuMB implements Serializable {
         this.listaDiretorios = listaDiretorios;
     }
 
-    public DualListModel<Sistema> getListaSistemasDual() {
+    public DualListModel<Sistema> getListaSistemasDual() throws ProjetoException {
         if(listaSistemasDual == null) {
             listaSistemasSoucer = null;
             listaSistemasTarget = new ArrayList<>();
@@ -617,7 +618,7 @@ public class MenuMB implements Serializable {
         this.listaSistemasDual = listaSistemasDual;
     }
 
-    public List<Sistema> getListaSistemasSoucer() {
+    public List<Sistema> getListaSistemasSoucer() throws ProjetoException {
         if(listaSistemasSoucer == null) {
             SistemaDAO sdao = new SistemaDAO();
             listaSistemasSoucer = sdao.listarSistemasSource();
@@ -646,7 +647,7 @@ public class MenuMB implements Serializable {
     }
 
     
-    public DualListModel<Sistema> getListaSistemasDualAlt() {       
+    public DualListModel<Sistema> getListaSistemasDualAlt() throws NumberFormatException, ProjetoException {       
         if(listaSistemasDualAlt == null) {
             listaSistemasSoucerAlt = null;
             listaSistemasTargetAlt = null;
@@ -661,7 +662,7 @@ public class MenuMB implements Serializable {
         this.listaSistemasDualAlt = listaSistemasDualAlt;
     }
 
-    public List<Sistema> getListaSistemasSoucerAlt() {
+    public List<Sistema> getListaSistemasSoucerAlt() throws NumberFormatException, ProjetoException {
         if(listaSistemasSoucerAlt == null)  {
             MenuDAO mdao = new MenuDAO();
             listaSistemasSoucerAlt = mdao.listarSisAssNaoMenuSource(Long.valueOf(idMenuAlt));           
@@ -673,7 +674,7 @@ public class MenuMB implements Serializable {
         this.listaSistemasSoucerAlt = listaSistemasSoucerAlt;
     }
 
-    public List<Sistema> getListaSistemasTargetAlt() {
+    public List<Sistema> getListaSistemasTargetAlt() throws NumberFormatException, ProjetoException {
         
         if(listaSistemasTargetAlt == null) {
             MenuDAO mdao = new MenuDAO();
