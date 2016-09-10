@@ -203,10 +203,8 @@ public class ProfissionalDAO {
 				ProfissionalBean prof = new ProfissionalBean();
 				prof.setIdProfissional(rs.getInt("id_medico"));
 				prof.setDescricaoProf(rs.getString("descmedico"));
-				prof.setPrograma(listarProgProf(rs.getInt("id_medico")));
-				prof.setGrupo(listarProgGrupo(rs.getInt("id_medico")));
 				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
-						.getInt("codespecialidade")));
+						.getInt("codespecialidade")));				
 				prof.setCns(rs.getString("cns"));
 				prof.setAtivo(rs.getBoolean("ativo"));
 				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));

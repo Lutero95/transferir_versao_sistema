@@ -13,6 +13,8 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
+import com.sun.org.apache.bcel.internal.generic.LSTORE;
+
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -202,6 +204,17 @@ public class ProfissionalController implements Serializable {
 			this.listaProfissional = pDao.listarProfissionalBusca(
 					descricaoBusca, tipoBuscar);
 		}
+	}
+	
+    
+
+	public void listarProfissionais()
+			throws ProjetoException {
+		ProfissionalDAO prDao = new ProfissionalDAO();
+			listaProfissional = prDao.listarProfissional();
+			System.out.println("tam lista "+listaProfissional.size());
+		
+		//return listaProfissional;
 	}
 
 	public String getCabecalho() {

@@ -15,7 +15,7 @@ public class ConnectionFactory {
 
         String url = "jdbc:postgresql://localhost:5432/sishosp";
         String usuario = "postgres";
-        String senha  = "engetron";	
+        String senha  = "post";	
       
         //String senha = "engetron";
      

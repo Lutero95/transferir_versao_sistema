@@ -30,8 +30,8 @@
 							<p:ajax event="itemSelect" update=":formConfiAgenda" />
 						</p:autoComplete>
 					</p:outputPanel>
-					<p:commandButton value="Buscar"
-						update=":formConfiAgenda" onclick="PF('dlgConsultaProf').show();" />
+					<p:commandButton value="Buscar" action="#{ProfissionalController.listarProfissionais}" process="@this"
+						update="formConsultProf" oncomplete="PF('dlgConsultaProf').show();" />
 				</p:panelGrid>
 				
 				<p:panelGrid columns="3" styleClass="semBorda">
@@ -319,6 +319,7 @@
 		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsultaProf"
 			modal="true" width="550px">
 			<h:form id="formConsultProf">
+			<p:outputPanel autoUpdate="false">
 				<p:dataTable value="#{ProfissionalController.listaProfissional}"
 					id="dtTipoAt" resizableColumns="true" var="profi"
 					emptyMessage="Não existe nenhum tipo cadastrado!">
@@ -341,6 +342,7 @@
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
+				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 
