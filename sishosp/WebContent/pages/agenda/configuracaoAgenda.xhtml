@@ -24,7 +24,9 @@
 							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descricaoProf}">
+							itemLabel="#{theme.descricaoProf}"
+							required="#{param['formConfiAgenda:b5']==null}" 
+							requiredMessage="Informe o profissional">
 							<p:ajax event="itemSelect" update=":formConfiAgenda" />
 						</p:autoComplete>
 					</p:outputPanel>
@@ -101,7 +103,7 @@
 						style="width: 40px" required="true" requiredMessage="Informe a Quantidade"/>
 
 					<p:commandButton value="Incluir"
-						action="#{ConfigAgendaController.addNaLista()}"
+						action="#{ConfigAgendaController.addNaLista()}" id="b5"
 						update=":formConfiAgenda:dtConfi, :formConfiAgenda:msg, :formConfiAgenda" />
 				</p:panelGrid>
 				<br />

@@ -287,6 +287,14 @@ public class ConfigAgendaController implements Serializable {
 			return;
 		}
 		
+		if (confParte1.getProfissional() == null) {
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Escolha um profissional!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+		
 
 		if (this.opcao.equals("1") && this.confParte1.getDataEspecifica() == null) {
 			FacesMessage msg = new FacesMessage(
@@ -311,6 +319,9 @@ public class ConfigAgendaController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
+		
+		
+		
 
 		ok = cDao.gravarConfigAgenda(confParte1, confParte2, listaTipos);
 
