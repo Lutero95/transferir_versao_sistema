@@ -87,11 +87,18 @@ public class ProgramaDAO {
 
 	public List<ProgramaBean> listarProgramas() throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<>();
-		String sql = "select id_programa, descprograma, codfederal from hosp.programa order by id_programa";
+		String sql = "select id_programa, descprograma, codfederal "
+				+ "from hosp.programa join hosp.usuario_programa on programa.id_programa = usuario_programa.codprograma "
+				+ "where codusuario = ? order by id_programa";
+		UsuarioBean user_session = (UsuarioBean) FacesContext
+				.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("obj_usuario");
+		
 		GrupoDAO gDao = new GrupoDAO();
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, user_session.getCodigo());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {

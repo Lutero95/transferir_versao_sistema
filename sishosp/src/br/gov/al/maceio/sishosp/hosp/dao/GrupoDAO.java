@@ -102,7 +102,9 @@ public class GrupoDAO {
 
 	public List<GrupoBean> listarGruposPorPrograma(int codPrograma) throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<>();
-		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut from hosp.grupo g,hosp.grupo_programa gp, hosp.programa p ,hosp.usuario_grupo where p.id_programa = ? and codusuario = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma and g.id_grupo=usuario_grupo.codgrupo";
+		String sql = "select distinct g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut "
+				+ "from hosp.grupo g,hosp.grupo_programa gp, hosp.programa p ,hosp.usuario_grupo  where p.id_programa = ? "
+				+ "and usuario_grupo.codusuario = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma and g.id_grupo=usuario_grupo.codgrupo";
 		
 		UsuarioBean user_session = (UsuarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()

@@ -14,14 +14,33 @@
 		<h:form id="formConfiAgenda">
 			<p:growl id="msg" />
 			<p:panel header="CONFIGURAÇÃO DA AGENDA" id="pnlConfAgenda">
+			
 
 				<p:panelGrid columns="3" styleClass="semBorda">
-
+					<h:outputLabel value="Profissional: " />
+					<p:outputPanel id="outProf">
+						<p:autoComplete value="#{ConfigAgendaController.confParte1.profissional}"
+							size="60" converter="conProfissional"
+							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descricaoProf}">
+							<p:ajax event="itemSelect" update=":formConfiAgenda" />
+						</p:autoComplete>
+					</p:outputPanel>
+					<p:commandButton value="Buscar"
+						update=":formConfiAgenda" onclick="PF('dlgConsultaProf').show();" />
+				</p:panelGrid>
+				
+				<p:panelGrid columns="3" styleClass="semBorda">
+				
 					<h:outputLabel for="prog" value="Programa: " />
 					<p:outputPanel id="outProg">
 						<p:autoComplete
-							value="#{ConfigAgendaController.confParte2.programa}" size="60"
+							value="#{ConfigAgendaController.confParte2.programa}" size="60" 
 							converter="conPrograma"
+							required="true" 
+							 requiredMessage="Informe o Programa"
 							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
@@ -40,6 +59,7 @@
 					<p:outputPanel id="outGrupo">
 						<p:autoComplete value="#{ConfigAgendaController.confParte2.grupo}"
 							size="60" converter="conGrupo"
+							required="true" requiredMessage="Informe o Grupo"
 							disabled="#{ConfigAgendaController.confParte2.programa==null}"
 							completeMethod="#{GrupoController.listaGrupoAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
@@ -78,7 +98,7 @@
 
 					<h:outputLabel value="Qtd.:" />
 					<p:inputText value="#{ConfigAgendaController.confParte2.qtd}"
-						style="width: 40px" />
+						style="width: 40px" required="true" requiredMessage="Informe a Quantidade"/>
 
 					<p:commandButton value="Incluir"
 						action="#{ConfigAgendaController.addNaLista()}"
@@ -107,21 +127,7 @@
 
 				<p:separator />
 
-				<p:panelGrid columns="3" styleClass="semBorda">
-					<h:outputLabel value="Profissional: " />
-					<p:outputPanel id="outProf">
-						<p:autoComplete value="#{ConfigAgendaController.confParte1.profissional}"
-							size="60" converter="conProfissional"
-							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descricaoProf}">
-							<p:ajax event="itemSelect" update=":formConfiAgenda" />
-						</p:autoComplete>
-					</p:outputPanel>
-					<p:commandButton value="Buscar"
-						update=":formConfiAgenda" onclick="PF('dlgConsultaProf').show();" />
-				</p:panelGrid>
+				
 
 				<p:panelGrid columns="2" styleClass="semBorda">
 					<h:outputLabel value="Opção: " />
@@ -190,28 +196,31 @@
 					</p:selectOneMenu>
 
 					<h:outputLabel value="Qtd. Máx: " />
-					<p:inputText style="width: 40px"
+					<h:outputText style="width: 40px"
 						value="#{ConfigAgendaController.confParte1.qtdMax}" />
 
 				</p:panelGrid>
 
 				<p:separator />
-
+				</p:panel>
+				</h:form>
+				<h:form>
+				<p:panel>
 				<center>
 					<p:panelGrid columns="4" styleClass="semBorda">
 
-						<p:commandButton value="Gravar" icon="confirmar"
+						<p:commandButton value="Gravar" icon="confirmar" id="b1"
 							update=":formConfiAgenda:msg, :formConfiAgenda"
 							action="#{ConfigAgendaController.gravarConfigAgenda()}" />
 
-						<p:commandButton value="Consultar" icon="buscar"
+						<p:commandButton value="Consultar" icon="buscar" id="b2"
 							action="/pages/agenda/consConfAgenda.xhtml?faces-redirect=true" />
 
-						<p:commandButton value="Limpar" icon="limpar"
+						<p:commandButton value="Limpar" icon="limpar" id="b3"
 							actionListener="#{ConfigAgendaController.limparDados()}"
 							update=":formConfiAgenda" />
 
-						<p:commandButton value="Sair" icon="btlogout"
+						<p:commandButton value="Sair" icon="btlogout" id="b4"
 							update=":formConfiAgenda"
 							actionListener="#{ConfigAgendaController.limparDados()}"
 							action="/pages/comum/selecaoSistema.xhtml?faces-redirect=true" />

@@ -63,7 +63,7 @@ public class ConfigAgendaController implements Serializable {
 		this.listaProfissionais = null;
 		this.listaEquipes = null;
 		this.tipo = new String();
-		this.opcao = new String("1");
+		this.opcao = new String("2");
 		this.nomeBusca = "";
 
 	}
@@ -215,7 +215,7 @@ public class ConfigAgendaController implements Serializable {
 	public void buscarProfissional() throws ProjetoException {
 		if (this.tipoBusca == 0) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha uma opção de busca válida!", "Erro");
+					"Escolha uma opï¿½ï¿½o de busca vï¿½lida!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			this.listaProfissionais = pDao.listarProfissionalBusca(nomeBusca,
@@ -227,7 +227,7 @@ public class ConfigAgendaController implements Serializable {
 	public void buscarEquipe() throws ProjetoException {
 		if (this.tipoBusca == 0) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha uma opção de busca válida!", "Erro");
+					"Escolha uma opï¿½ï¿½o de busca vï¿½lida!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			this.listaEquipes = eDao.listarEquipeBusca(nomeBusca, tipoBusca);
@@ -236,8 +236,16 @@ public class ConfigAgendaController implements Serializable {
 	}
 
 	public void addNaLista() {
+		//if (confParte2.getPrograma() == null){
+			//FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+				//	"Insirar o Programa", "Erro");
+			//FacesContext.getCurrentInstance().addMessage(null, msg);
+		//}
+		//else{
+		//ConfigAgendaController.confParte1.qtdMax
+		confParte1.setQtdMax(confParte2.getQtd());
 		if (confParte2.getQtd() == null
-				|| confParte2.getTipoAt().getDescTipoAt() == null
+				//|| confParte2.getTipoAt().getDescTipoAt() == null
 				|| confParte2.getPrograma().getDescPrograma() == null
 				|| confParte2.getGrupo().getDescGrupo() == null) {
 			this.confParte2 = new ConfigAgendaParte2Bean();
@@ -251,7 +259,7 @@ public class ConfigAgendaController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 		this.confParte2 = new ConfigAgendaParte2Bean();
-
+		//}
 	}
 
 	public void gravarConfigAgenda() throws SQLException, ProjetoException {
@@ -266,7 +274,7 @@ public class ConfigAgendaController implements Serializable {
 			if (somatorio != confParte1.getQtdMax()) {
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
-						"Quantidade máxima está divergente!", "Erro");
+						"Quantidade mï¿½xima estï¿½ divergente!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				ok = false;
 				return;
@@ -274,7 +282,7 @@ public class ConfigAgendaController implements Serializable {
 		}else{
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
-					"Quantidade máxima obrigatória!", "Erro");
+					"Quantidade mï¿½xima obrigatï¿½ria!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -283,7 +291,7 @@ public class ConfigAgendaController implements Serializable {
 		if (this.opcao.equals("1") && this.confParte1.getDataEspecifica() == null) {
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
-					"Escolha uma data específica!", "Erro");
+					"Escolha uma data especï¿½fica!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -291,7 +299,7 @@ public class ConfigAgendaController implements Serializable {
 		if(this.opcao.equals("2") && this.confParte1.getDiasSemana().isEmpty()){
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
-						"Escolha no mínimo um dia da semana!", "Erro");
+						"Escolha no mï¿½nimo um dia da semana!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				return;
 		}
@@ -299,7 +307,7 @@ public class ConfigAgendaController implements Serializable {
 		if(this.opcao.equals("2") && this.confParte1.getAno() == null){
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
-					"Ano é ebrigatório!", "Erro");
+					"Ano ï¿½ ebrigatï¿½rio!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -308,7 +316,7 @@ public class ConfigAgendaController implements Serializable {
 
 		if (ok) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração gravada com sucesso!", "Sucesso");
+					"Configuraï¿½ï¿½o gravada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -331,7 +339,7 @@ public class ConfigAgendaController implements Serializable {
 
 		if (ok) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração gravada com sucesso!", "Sucesso");
+					"Configuraï¿½ï¿½o gravada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -354,7 +362,7 @@ public class ConfigAgendaController implements Serializable {
 			if (somatorio != confParte1.getQtdMax()) {
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
-						"Quantidade máxima está divergente!", "Erro");
+						"Quantidade mï¿½xima estï¿½ divergente!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				ok = false;
 				return;
@@ -365,7 +373,7 @@ public class ConfigAgendaController implements Serializable {
 
 		if (ok) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração alterada com sucesso!", "Sucesso");
+					"Configuraï¿½ï¿½o alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -384,7 +392,7 @@ public class ConfigAgendaController implements Serializable {
 
 		if (ok) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração alterada com sucesso!", "Sucesso");
+					"Configuraï¿½ï¿½o alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -400,7 +408,7 @@ public class ConfigAgendaController implements Serializable {
 
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração excluida com sucesso!", "Sucesso");
+					"Configuraï¿½ï¿½o excluida com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
@@ -420,7 +428,7 @@ public class ConfigAgendaController implements Serializable {
 
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração excluida com sucesso!", "Sucesso");
+					"Configuraï¿½ï¿½o excluida com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
