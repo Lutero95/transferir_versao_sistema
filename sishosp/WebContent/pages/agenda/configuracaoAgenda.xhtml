@@ -25,8 +25,7 @@
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descricaoProf}"
-							required="#{param['formConfiAgenda:b5']==null}" 
-							requiredMessage="Informe o profissional">
+							>
 							<p:ajax event="itemSelect" update=":formConfiAgenda" />
 						</p:autoComplete>
 					</p:outputPanel>
@@ -41,8 +40,7 @@
 						<p:autoComplete
 							value="#{ConfigAgendaController.confParte2.programa}" size="60" 
 							converter="conPrograma"
-							required="true" 
-							 requiredMessage="Informe o Programa"
+							
 							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
@@ -52,16 +50,16 @@
 								update=":formConfiAgenda:outGrupo, :formConsuGrop:dtGrupo, :formConfiAgenda:btBusGr" />
 						</p:autoComplete>
 					</p:outputPanel>
-					<p:commandButton value="Buscar"
+					<p:commandButton value="Buscar" 
 						action="#{ConfigAgendaController.limparBuscaPrograma()}"
 						update=":formConfiAgenda:outGrupo, :formConfiAgenda:outTipoAt"
-						onclick="PF('dlgConsuProg').show();" />
+						onclick="PF('dlgConsuProg').show();" process="@this"/>
 
 					<h:outputLabel for="grupo" value="Grupo: " />
 					<p:outputPanel id="outGrupo">
 						<p:autoComplete value="#{ConfigAgendaController.confParte2.grupo}"
 							size="60" converter="conGrupo"
-							required="true" requiredMessage="Informe o Grupo"
+							
 							disabled="#{ConfigAgendaController.confParte2.programa==null}"
 							completeMethod="#{GrupoController.listaGrupoAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
@@ -72,7 +70,7 @@
 								update=":formConfiAgenda:outTipoAt, :formConsuTipoAt:dtTipoAt, :formConfiAgenda:btBusTi" />
 						</p:autoComplete>
 					</p:outputPanel>
-					<p:commandButton id="btBusGr" value="Buscar"
+					<p:commandButton id="btBusGr" value="Buscar" process="@this"
 						disabled="#{ConfigAgendaController.confParte2.programa==null}"
 						action="#{ConfigAgendaController.limparBuscaGrupo()}"
 						update=":formConfiAgenda:outTipoAt"
@@ -94,7 +92,7 @@
 							<p:ajax event="itemSelect" update=":formConfiAgenda" />
 						</p:autoComplete>
 					</p:outputPanel>
-					<p:commandButton id="btBusTi" value="Buscar"
+					<p:commandButton id="btBusTi" value="Buscar" process="@this"
 						disabled="#{ConfigAgendaController.confParte2.grupo==null}"
 						update=":formConfiAgenda" onclick="PF('dlgConsuTipoAt').show();" />
 
@@ -205,17 +203,17 @@
 
 				<p:separator />
 				</p:panel>
-				</h:form>
-				<h:form>
+				
+				
 				<p:panel>
 				<center>
 					<p:panelGrid columns="4" styleClass="semBorda">
 						
 						<p:commandButton value="Gravar" icon="confirmar" id="b1"
-						update=":formConfiAgenda:msg" process="@this, :formConfiAgenda:dtesp"
+						update=":formConfiAgenda:msg" 
 						action="#{ConfigAgendaController.gravarConfigAgenda()}" />
 
-						<p:commandButton value="Consultar" icon="buscar" id="b2"
+						<p:commandButton value="Consultar" icon="buscar" id="b2" process="@this"
 							action="/pages/agenda/consConfAgenda.xhtml?faces-redirect=true" />
 
 						<p:commandButton value="Limpar" icon="limpar" id="b3"

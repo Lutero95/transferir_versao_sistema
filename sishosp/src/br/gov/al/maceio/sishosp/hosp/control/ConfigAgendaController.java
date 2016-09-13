@@ -307,6 +307,8 @@ public class ConfigAgendaController implements Serializable {
 		}
 		
 		System.out.println("DATA ESPECIFICA: "+confParte1.getDataEspecifica());
+		System.out.println("this.opcao"+this.opcao);
+		System.out.println("confParte1.getDataEspecifica()"+confParte1.getDataEspecifica());
 		if (this.opcao.equals("1") && this.confParte1.getDataEspecifica() == null) {
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
