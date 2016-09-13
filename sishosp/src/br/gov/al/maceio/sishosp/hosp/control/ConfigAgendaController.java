@@ -14,6 +14,8 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
+import com.lowagie.text.pdf.AcroFields.Item;
+
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ConfigAgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
@@ -265,10 +267,11 @@ public class ConfigAgendaController implements Serializable {
 	public void gravarConfigAgenda() throws SQLException, ProjetoException {
 		boolean ok = false;
 		int somatorio = 0;
-
+		System.out.println("ENTROU NO METODO");
 		for (ConfigAgendaParte2Bean conf : listaTipos) {
 			somatorio += conf.getQtd();
 		}
+		
 
 		if (confParte1.getQtdMax() != null) {
 			if (somatorio != confParte1.getQtdMax()) {
@@ -287,7 +290,15 @@ public class ConfigAgendaController implements Serializable {
 			return;
 		}
 		
-		if (confParte1.getProfissional() == null) {
+		if (listaTipos.size() == 0 ){
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Adicione na lista!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+		System.out.println("PROFISSIONAL: "+confParte1.getProfissional().getIdProfissional());
+		if (confParte1.getProfissional().getIdProfissional() == null) {
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
 					"Escolha um profissional!", "Erro");
@@ -295,7 +306,7 @@ public class ConfigAgendaController implements Serializable {
 			return;
 		}
 		
-
+		System.out.println("DATA ESPECIFICA: "+confParte1.getDataEspecifica());
 		if (this.opcao.equals("1") && this.confParte1.getDataEspecifica() == null) {
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
@@ -303,8 +314,9 @@ public class ConfigAgendaController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
-		
-		if(this.opcao.equals("2") && this.confParte1.getDiasSemana().isEmpty()){
+		System.out.println("LISTA DOS DIAS DA SEMANA: "+confParte1.getDiasSemana().size());
+		//							<!-- update=":formConfiAgenda:msg, :formConfiAgenda"-->
+		if(this.opcao.equals("2") && this.confParte1.getDiasSemana().size()==0){
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
 						"Escolha no m�nimo um dia da semana!", "Erro");

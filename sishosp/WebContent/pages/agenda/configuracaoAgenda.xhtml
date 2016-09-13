@@ -155,7 +155,7 @@
 						<f:selectItem itemLabel="SÁBADO" itemValue="7" />
 					</p:selectManyCheckbox>
 
-					<h:outputLabel value="Data Específica: "
+					<h:outputLabel value="Data Específica: " id="dtesp"
 						rendered="#{ConfigAgendaController.opcao==1}" />
 					<p:calendar locale="pt" navigator="true" mask="true"
 						pattern="dd/MM/yyyy" rendered="#{ConfigAgendaController.opcao==1}"
@@ -210,10 +210,10 @@
 				<p:panel>
 				<center>
 					<p:panelGrid columns="4" styleClass="semBorda">
-
+						
 						<p:commandButton value="Gravar" icon="confirmar" id="b1"
-							update=":formConfiAgenda:msg, :formConfiAgenda"
-							action="#{ConfigAgendaController.gravarConfigAgenda()}" />
+						update=":formConfiAgenda:msg" process="@this, :formConfiAgenda:dtesp"
+						action="#{ConfigAgendaController.gravarConfigAgenda()}" />
 
 						<p:commandButton value="Consultar" icon="buscar" id="b2"
 							action="/pages/agenda/consConfAgenda.xhtml?faces-redirect=true" />
