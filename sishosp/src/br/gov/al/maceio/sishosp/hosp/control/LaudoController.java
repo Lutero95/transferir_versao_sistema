@@ -17,6 +17,7 @@ import org.primefaces.context.RequestContext;
 import br.gov.al.maceio.sishosp.acl.model.UsuarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
@@ -57,7 +58,7 @@ public class LaudoController implements Serializable {
 	private List<LaudoBean> listaLaudo;
 	private List<LaudoBean> listaLaudoDigita;
 	private List<ProgramaBean> buscalistaProgramas;
-
+	private List<GrupoBean> listaGruposProgramas;
 	// BUSCAS
 	private int tipo2;
 	private String tipo;
@@ -102,7 +103,7 @@ public class LaudoController implements Serializable {
 		listaLaudoDigita = null;
 		buscalistaProgramas = new ArrayList<>();
 		buscalistaProgramas = null;
-
+		this.listaGruposProgramas = new ArrayList<>();
 	}
 
 	public void gravarLaudo() throws ProjetoException {
@@ -239,16 +240,25 @@ public class LaudoController implements Serializable {
 
 		List<LaudoBean> listaAux = null;
 		listaLaudo = new ArrayList<>();
-
+		System.out.println("Entrou aqui:"+"nome:"+this.nome+"situacao:"+this.situacao+"recurso:"+this.recurso+"prontuario:"+this.prontuario+"dataSoli:"+this.dataSolicitacao+"dataAutorizada:"+this.dataAtorizacao+"ProgramaID"+this.getPrograma().getIdPrograma()+"grupoid:"+this.getGrupo().getIdGrupo());
 		LaudoDAO adao = new LaudoDAO();
-		System.out.println("PROGRAMA ID:"+this.getPrograma().getIdPrograma());
-	
-			listaAux = adao.buscarTipoLaudo1(this.getPrograma().getIdPrograma(),this.dataAtorizacao);
-			
 		
-		/*listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso,
+			listaAux = adao.buscarTipoLaudo(null, null, null,
+					null, this.dataSolicitacao, this.dataAtorizacao,
+					this.laudo.getPrograma().getIdPrograma(), null);
+			
+		//listaAux = adao.buscarTipoLaudo1(this.getPrograma().getIdPrograma(), this.dataSolicitacao, this.dataAtorizacao);
+		
+			/*if(this.nome==null && this.situacao==null && this.recurso==null && this.prontuario==null 
+					&& this.dataSolicitacao!=null && this.dataAtorizacao!=null 
+					&& this.laudo.getPrograma().getIdPrograma()!=null && this.laudo.getGrupo().getIdGrupo()==null){ 
+				listaAux = adao.buscarTipoLaudo(null, null, null,
+						null, this.dataSolicitacao, this.dataAtorizacao,
+						this.laudo.getPrograma().getIdPrograma(), null);
+			          }
+		listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso,
 				this.prontuario, this.dataAtorizacao, this.dataSolicitacao,
-				this.laudo.getPrograma().getIdPrograma(), this.laudo.getGrupo().getIdGrupo());*/
+				this.laudo.getPrograma().getIdPrograma(), this.laudo.getGrupo().getIdGrupo());*/	
 		
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -328,7 +338,10 @@ public class LaudoController implements Serializable {
 		profissional = new ProfissionalBean();
 		equipe = new EquipeBean();
 		procedimento = new ProcedimentoBean();
-
+        this.buscalistaProgramas = null;
+        prontuario = null;
+        recurso = null;
+        situacao = null;
 	}
 
 	public void calcularDias() {
@@ -406,7 +419,11 @@ public class LaudoController implements Serializable {
         buscalistaProgramas = pdaos.BuscalistarProgramasDefaut();
         if (buscalistaProgramas.size()==1){
         	for(int i=0;i<buscalistaProgramas.size();i++){
-        		programa.setIdPrograma(buscalistaProgramas.get(i).getIdPrograma());  
+        		programa.setIdPrograma(buscalistaProgramas.get(i).getIdPrograma());
+        GrupoDAO gdao = new GrupoDAO();
+        this.listaGruposProgramas = gdao.listarGruposPorPrograma(programa.getIdPrograma());
+        System.out.println("Prog:"+programa.getIdPrograma());
+        System.out.println("Tamanho:"+listaGruposProgramas.size());
         		}
         	
         }
@@ -712,6 +729,14 @@ public class LaudoController implements Serializable {
 
 	public void setBuscalistaProgramas(List<ProgramaBean> buscalistaProgramas) {
 		this.buscalistaProgramas = buscalistaProgramas;
+	}
+
+	public List<GrupoBean> getListaGruposProgramas() {
+		return listaGruposProgramas;
+	}
+
+	public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
+		this.listaGruposProgramas = listaGruposProgramas;
 	}
 
 	

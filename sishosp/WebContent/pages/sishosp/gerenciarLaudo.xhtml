@@ -62,12 +62,12 @@
 						style="font-size:12px !important;">
 						<p:outputLabel value="Período Inicial: " />
 						<p:calendar id="campoBuscaDataInicio" locale="pt"
-							value="#{LaudoController.dataAtorizacao}" navigator="true"
+							value="#{LaudoController.dataSolicitacao}" navigator="true"
 							mask="true" pattern="dd/MM/yyyy" />
 
 						<p:outputLabel value="Período Final: " />
 						<p:calendar id="campoBuscaDataFim" locale="pt"
-							value="#{LaudoController.dataSolicitacao}" navigator="true"
+							value="#{LaudoController.dataAtorizacao}" navigator="true"
 							mask="true" pattern="dd/MM/yyyy" />
 
 						<h:outputLabel value="Programa:" />
@@ -92,7 +92,7 @@
 							requiredMessage="Selecione um grupo." style="width:130px;">
 
 							<f:selectItem itemLabel="Selecione" itemValue="" />
-							<f:selectItems value="#{GrupoController.listaGruposProgramas}"
+							<f:selectItems value="#{LaudoController.listaGruposProgramas}"
 								var="grupo" itemLabel="#{grupo.descGrupo}"
 								itemValue="#{grupo.idGrupo}" />
 
@@ -148,13 +148,13 @@
 					</p:column>
 
 					<p:column headerText="Período Inicial" style="font-weight:bold;">
-						<h:outputText value="#{tab.dtautorizacao}">
+						<h:outputText value="#{tab.dtasolicitacao}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Período Final" style="font-weight:bold;">
-						<h:outputText value="#{tab.dtasolicitacao}">
+						<h:outputText value="#{tab.dtautorizacao}">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>

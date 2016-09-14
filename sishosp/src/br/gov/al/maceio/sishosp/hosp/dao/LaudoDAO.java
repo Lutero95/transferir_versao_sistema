@@ -412,15 +412,13 @@ public class LaudoDAO {
                 return lista;
             } 
             
-            public List<LaudoBean> buscarTipoLaudo(String nome, String situacao, String recurso, Integer prontuario, Date dataAutorizacao, Date dataSolicitacao, Integer idPrograma, Integer idGrupo) throws ProjetoException {
+            public List<LaudoBean> buscarTipoLaudo(String nome, String situacao, String recurso, Integer prontuario, Date dataSolicitacao, Date dataAutorizacao, Integer idPrograma, Integer idGrupo) throws ProjetoException {
         		
             	
           		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente where";
-          		if(idPrograma==null)
-          			System.out.println("programa null");
           			
-          		if (idPrograma!=null && dataAutorizacao!=null) {
-          			sql += " CAST(apac.codprograma AS INT) = ? and apac.dtautorizacao = ? order by pacientes.nome";
+          		if (dataSolicitacao!=null && dataAutorizacao!=null && idPrograma!=null) {
+          			sql += "apac.dtautorizacao between ? and ? and CAST(apac.codprograma AS INT) = ? order by pacientes.nome";
           		}
           		/*if (tipo == 2) {
           			sql += " apac.situacao like ? order by pacientes.nome";
@@ -440,10 +438,13 @@ public class LaudoDAO {
           		try {
           			conexao = ConnectionFactory.getConnection();
           			PreparedStatement stmt = conexao.prepareStatement(sql);
-          			if (idPrograma!=null && dataAutorizacao!=null) {
-          				System.out.println("Programa:"+idPrograma+"| DATA:|"+dataAutorizacao);
-          				stmt.setInt(1,idPrograma);
+          			if (dataSolicitacao!=null && dataAutorizacao!=null && idPrograma!=null ) {
+          				System.out.println("eNTROU AQUI ACARAKOIORAI:");
+          				
+          				stmt.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));
           				stmt.setDate(2, new java.sql.Date(dataAutorizacao.getTime()));
+          				stmt.setInt(3,idPrograma);
+          				
           			}
           			/*if (tipo == 2) {
           				stmt.setString(1, "%" + valor.toUpperCase() + "%");
@@ -507,15 +508,15 @@ public class LaudoDAO {
           		return lista;
           	}
             
-            public List<LaudoBean> buscarTipoLaudo1(Integer idPrograma, Date dataAutorizacao) throws ProjetoException {
+            public List<LaudoBean> buscarTipoLaudo1(Integer idPrograma, Date dataSolicitacao, Date dataAutorizacao) throws ProjetoException {
         		
             	
          		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente where";
          		if(idPrograma==null)
          			System.out.println("programa null");
          			
-         		if (idPrograma!=null && dataAutorizacao!=null) {
-         			sql += " CAST(apac.codprograma AS INT) = ? and apac.dtautorizacao = ? order by pacientes.nome";
+         		if (idPrograma!=null && dataSolicitacao!=null && dataAutorizacao!=null) {
+         			sql += " CAST(apac.codprograma AS INT) = ? and apac.dtautorizacao between ? and ? order by pacientes.nome";
          		}
          		/*if (situacao!=null && recurso!=null && idPrograma!=null && idGrupo!=null && dataAutorizacao!=null && dataSolicitacao!=null) {
          			sql += " apac.situacao = ? and apac. recurso = ? and CAST(apac.codprograma AS INT) = ? and CAST(apac.codgrupo AS INT) = ? and apac.dtautorizacao = ? and apac.dtasolicitacao = ? order by pacientes.nome";
@@ -535,10 +536,11 @@ public class LaudoDAO {
          		try {
          			conexao = ConnectionFactory.getConnection();
          			PreparedStatement stmt = conexao.prepareStatement(sql);
-         			if (idPrograma!=null && dataAutorizacao!=null) {
+         			if (idPrograma!=null  && dataSolicitacao!=null && dataAutorizacao!=null) {
          				System.out.println("Programa:"+idPrograma+"| DATA:|"+dataAutorizacao);
          				stmt.setInt(1, idPrograma);
-         				stmt.setDate(2, new java.sql.Date(dataAutorizacao.getTime()));
+         				stmt.setDate(2, new java.sql.Date(dataSolicitacao.getTime()));
+          				stmt.setDate(3, new java.sql.Date(dataAutorizacao.getTime()));
          			}
          			/*if (tipo == 2) {
          				stmt.setString(1, "%" + valor.toUpperCase() + "%");
