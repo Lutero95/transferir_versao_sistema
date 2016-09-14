@@ -97,7 +97,7 @@ public class LaudoController implements Serializable {
 		this.situacao = "P";
 		this.recurso = "T";
 		listaLaudo = new ArrayList<>();
-		listaLaudo = null;
+		//listaLaudo = null;
 
 		listaLaudoDigita = new ArrayList<>();
 		listaLaudoDigita = null;
@@ -401,6 +401,7 @@ public class LaudoController implements Serializable {
 	}
 	
 	public void getValoresLaudo() throws ProjetoException {
+		
 		System.out.println("Entrou aqui NAS DATAS ATUAIS");
 		Date dataDoUsuario = this.dataAtorizacao;
 		Date dataDoUsuario2 =  this.dataSolicitacao;

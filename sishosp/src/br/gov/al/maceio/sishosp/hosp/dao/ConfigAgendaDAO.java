@@ -21,15 +21,15 @@ public class ConfigAgendaDAO {
 	ProfissionalDAO pDao = new ProfissionalDAO();
 	EquipeDAO eDao = new EquipeDAO();
 
-	// ------------------------------------------------------------------GRAVAÇÕES--------------------------------------------------------
+	// ------------------------------------------------------------------GRAVAï¿½ï¿½ES--------------------------------------------------------
 	public boolean gravarConfigAgenda(ConfigAgendaParte1Bean confParte1,
 			ConfigAgendaParte2Bean confParte2,
 			List<ConfigAgendaParte2Bean> listaTipos) throws SQLException, ProjetoException {
 
-		if (confParte1.getProfissional().getIdProfissional() == null
-				|| confParte1.getQtdMax() == null) {
-			return false;
-		}
+		//if (confParte1.getProfissional().getIdProfissional() == null
+			//	|| confParte1.getQtdMax() == null) {
+			//return false;
+		//}
 
 		try {
 			if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
@@ -472,7 +472,7 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
-	// -----------------------------------------------------------------------EXCLUSÕES----------------------------------------------------------
+	// -----------------------------------------------------------------------EXCLUSï¿½ES----------------------------------------------------------
 
 	public boolean excluirConfig(ConfigAgendaParte1Bean confParte1) throws ProjetoException {
 		String sql = "delete from hosp.config_agenda where id_configagenda = ?";
@@ -536,7 +536,7 @@ public class ConfigAgendaDAO {
 		}
 	}
 
-	// ---------------------------------------------ALTERAÇÕES------------------------------------------------------------
+	// ---------------------------------------------ALTERAï¿½ï¿½ES------------------------------------------------------------
 
 	public boolean alterarConfigAgenda(ConfigAgendaParte1Bean confParte1,
 			ConfigAgendaParte2Bean confParte2,

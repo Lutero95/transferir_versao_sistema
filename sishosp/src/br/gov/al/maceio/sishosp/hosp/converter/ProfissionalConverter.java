@@ -16,6 +16,7 @@ public class ProfissionalConverter implements Converter {
 
 	public Object getAsObject(FacesContext contet, UIComponent component,
 			String value) {
+		System.out.println("con prof 1");
 		if (value.equals("null") || value.equals("") || value == null)
 			return null;
 		try {
@@ -24,12 +25,13 @@ public class ProfissionalConverter implements Converter {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Procional não válido", ""));
+					FacesMessage.SEVERITY_ERROR, "Procional nï¿½o vï¿½lido", ""));
 		}
 	}
 
 	public String getAsString(FacesContext contet, UIComponent component,
 			Object value) {
+		System.out.println("con prof 2");
 		if (value == null || value.equals(""))
 			return null;
 		return String.valueOf(((ProfissionalBean) value).getIdProfissional());
