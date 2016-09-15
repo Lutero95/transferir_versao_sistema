@@ -416,7 +416,7 @@ public class LaudoDAO {
         		
             	
           		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente where "+
-          		 " CAST(apac.codprograma AS INT) = ? and CAST(apac.codgrupo AS INT) = ?";
+          		 " CAST(apac.codprograma AS INT) = ? and CAST(apac.codgrupo AS INT) = ? ";
           
           				
           		if (situacao=="P") {
@@ -436,11 +436,11 @@ public class LaudoDAO {
           			System.out.println("entrou aqui4");
           			sql += "and apac.recurso = ? ";
           		}
-          		if  (prontuario!=null) {
-          			System.out.println("entrou aqui5");
-          			sql += "apac.id_apac = ? ";
+          		if  ((prontuario!=null) && (prontuario!=0)) {
+          			System.out.println("entrou prontuario "+prontuario);
+          			sql += " and apac.id_apac = ? ";
           		}
-          
+          System.out.println("sql "+sql);
           		List<LaudoBean> lista = new ArrayList<>();
           		Integer i = 2;
           		try {
@@ -471,7 +471,7 @@ public class LaudoDAO {
           				stmt.setString(i, recurso);
           			}
           			
-          			else if (prontuario!=null) {
+          			else if  ((prontuario!=null) && (prontuario!=0)) {
           				i = i+ 1;	
           				stmt.setInt(i, prontuario);
           			}
