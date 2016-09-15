@@ -245,10 +245,9 @@ public class LaudoController implements Serializable {
 		LaudoDAO adao = new LaudoDAO();
 		
 			listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso,
-					this.prontuario, this.dataAtorizacao, this.dataSolicitacao,
-					this.laudo.getPrograma().getIdPrograma(), this.laudo.getGrupo().getIdGrupo());
-			
-			
+					this.prontuario, this.dataSolicitacao, this.dataAtorizacao, 
+					this.getPrograma().getIdPrograma(), this.getGrupo().getIdGrupo());
+				
 		//listaAux = adao.buscarTipoLaudo1(this.getPrograma().getIdPrograma(), this.dataSolicitacao, this.dataAtorizacao);
 		
 		if (listaAux != null && listaAux.size() > 0) {
@@ -318,6 +317,7 @@ public class LaudoController implements Serializable {
 		this.recurso = null;
 		this.nome = null;
 		this.prontuario = null;
+
 	}
 
 	public void limparDados() {
