@@ -417,48 +417,51 @@ public class LaudoDAO {
             	
           		 String sql = "select * from hosp.apac left join hosp.pacientes on apac.codpaciente=pacientes.id_paciente where";
           			
-          		if (dataSolicitacao!=null && dataAutorizacao!=null && idPrograma!=null) {
-          			sql += "apac.dtautorizacao between ? and ? and CAST(apac.codprograma AS INT) = ? order by pacientes.nome";
+          		if (situacao=="P" && dataSolicitacao!=null && dataAutorizacao!=null && idPrograma!=null && idGrupo!=null) {
+          			sql += "apac.situacao = ? and apac.dtasolicitacao between ? and ? and CAST(apac.codprograma AS INT) = ? and CAST(apac.codgrupo AS INT) = ? order by pacientes.nome";
           		}
-          		/*if (tipo == 2) {
-          			sql += " apac.situacao like ? order by pacientes.nome";
+          		if (situacao=="A" && dataSolicitacao!=null && dataAutorizacao!=null && idPrograma!=null && idGrupo!=null) {
+          			sql += "apac.situacao = ? and apac.dtautorizacao between ? and ? and CAST(apac.codprograma AS INT) = ? and CAST(apac.codgrupo AS INT) = ? order by pacientes.nome";
           		}
-          		if (tipo == 3) {
-          			sql += " apac.recurso like ? order by pacientes.nome";
+          		if (nome!=null) {
+          			sql += "paciente.nome like ? order by pacientes.nome";
           		}
-          		if (tipo == 4) {
-          			sql += " CAST(apac.id_apac AS INT) = ? order by pacientes.nome";
+          		if (recurso!=null) {
+          			sql += "apac.recurso = ? order by pacientes.nome";
           		}
-          		if (tipo == 5) {
-          			sql += " BETWEEN = ? AND = ? order by pacientes.nome";
-          		}*/
+          		if (prontuario!=null) {
+          			sql += "apac.id_apac = ? order by pacientes.nome";
+          		}
           
           		List<LaudoBean> lista = new ArrayList<>();
      
           		try {
           			conexao = ConnectionFactory.getConnection();
           			PreparedStatement stmt = conexao.prepareStatement(sql);
-          			if (dataSolicitacao!=null && dataAutorizacao!=null && idPrograma!=null ) {
-          				System.out.println("eNTROU AQUI ACARAKOIORAI:");
-          				
-          				stmt.setDate(1, new java.sql.Date(dataSolicitacao.getTime()));
-          				stmt.setDate(2, new java.sql.Date(dataAutorizacao.getTime()));
-          				stmt.setInt(3,idPrograma);
-          				
+          			if (situacao=="P" && dataSolicitacao!=null && dataAutorizacao!=null && idPrograma!=null && idGrupo!=null) {
+          				System.out.println("eNTROU AQUI 1:");
+          				stmt.setString(1, situacao);
+          				stmt.setDate(2, new java.sql.Date(dataSolicitacao.getTime()));
+          				stmt.setDate(3, new java.sql.Date(dataAutorizacao.getTime()));
+          				stmt.setInt(4,idPrograma);
+          				stmt.setInt(5,idGrupo);
           			}
-          			/*if (tipo == 2) {
-          				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+          			if (situacao=="A" && dataSolicitacao!=null && dataAutorizacao!=null && idPrograma!=null && idGrupo!=null) {
+          				stmt.setString(1, situacao);
+          				stmt.setDate(2, new java.sql.Date(dataSolicitacao.getTime()));
+          				stmt.setDate(3, new java.sql.Date(dataAutorizacao.getTime()));
+          				stmt.setInt(4,idPrograma);
+          				stmt.setInt(5,idGrupo);
           			}
-          			if (tipo == 3) {
-          				stmt.setString(1, "%" + valor.toUpperCase() + "%");
+          			if (nome!=null) {
+          				stmt.setString(1, nome);
           			}
-          			if (tipo == 4) {
-          				stmt.setInt(1,numero);
+          			if (recurso!=null) {
+          				stmt.setString(1, recurso);
           			}
-          			if (tipo == 5) {
-          				stmt.setDate(1, new java.sql.Date(data.getTime()));
-          				stmt.setDate(2, new java.sql.Date(data.getTime()));
-          			}*/
+          			if (prontuario!=null) {
+          				stmt.setInt(1,prontuario);
+          			}
 
           			ResultSet rs = stmt.executeQuery();
 

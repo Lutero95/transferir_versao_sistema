@@ -96,8 +96,9 @@ public class LaudoController implements Serializable {
 		this.cabecalho = "";
 		this.situacao = "P";
 		this.recurso = "T";
+		//this.prontuario = 1;
 		listaLaudo = new ArrayList<>();
-		//listaLaudo = null;
+		listaLaudo = null;
 
 		listaLaudoDigita = new ArrayList<>();
 		listaLaudoDigita = null;
@@ -243,22 +244,12 @@ public class LaudoController implements Serializable {
 		System.out.println("Entrou aqui:"+"nome:"+this.nome+"situacao:"+this.situacao+"recurso:"+this.recurso+"prontuario:"+this.prontuario+"dataSoli:"+this.dataSolicitacao+"dataAutorizada:"+this.dataAtorizacao+"ProgramaID"+this.getPrograma().getIdPrograma()+"grupoid:"+this.getGrupo().getIdGrupo());
 		LaudoDAO adao = new LaudoDAO();
 		
-			listaAux = adao.buscarTipoLaudo(null, null, null,
-					null, this.dataSolicitacao, this.dataAtorizacao,
-					this.laudo.getPrograma().getIdPrograma(), null);
+			listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso,
+					this.prontuario, this.dataAtorizacao, this.dataSolicitacao,
+					this.laudo.getPrograma().getIdPrograma(), this.laudo.getGrupo().getIdGrupo());
+			
 			
 		//listaAux = adao.buscarTipoLaudo1(this.getPrograma().getIdPrograma(), this.dataSolicitacao, this.dataAtorizacao);
-		
-			/*if(this.nome==null && this.situacao==null && this.recurso==null && this.prontuario==null 
-					&& this.dataSolicitacao!=null && this.dataAtorizacao!=null 
-					&& this.laudo.getPrograma().getIdPrograma()!=null && this.laudo.getGrupo().getIdGrupo()==null){ 
-				listaAux = adao.buscarTipoLaudo(null, null, null,
-						null, this.dataSolicitacao, this.dataAtorizacao,
-						this.laudo.getPrograma().getIdPrograma(), null);
-			          }
-		listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso,
-				this.prontuario, this.dataAtorizacao, this.dataSolicitacao,
-				this.laudo.getPrograma().getIdPrograma(), this.laudo.getGrupo().getIdGrupo());*/	
 		
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
@@ -403,8 +394,8 @@ public class LaudoController implements Serializable {
 	public void getValoresLaudo() throws ProjetoException {
 		
 		System.out.println("Entrou aqui NAS DATAS ATUAIS");
-		Date dataDoUsuario = this.dataAtorizacao;
-		Date dataDoUsuario2 =  this.dataSolicitacao;
+		Date dataDoUsuario = this.dataSolicitacao;
+		Date dataDoUsuario2 =  this.dataAtorizacao;
 		Calendar dataInicial = Calendar.getInstance(); 
 		Calendar dataFinal = Calendar.getInstance();  
 		dataInicial.setTime(new Date());
@@ -413,9 +404,9 @@ public class LaudoController implements Serializable {
         dataFinal.set(Calendar.DAY_OF_MONTH, dataFinal.getActualMaximum(Calendar.DAY_OF_MONTH));
         dataDoUsuario = dataInicial.getTime();
         dataDoUsuario2 = dataFinal.getTime();
-        this.dataAtorizacao = dataDoUsuario;
-        this.dataSolicitacao = dataDoUsuario2;
-
+        this.dataSolicitacao = dataDoUsuario;
+        this.dataAtorizacao = dataDoUsuario2;
+       
         ProgramaDAO pdaos = new ProgramaDAO();
         buscalistaProgramas = pdaos.BuscalistarProgramasDefaut();
         if (buscalistaProgramas.size()==1){
