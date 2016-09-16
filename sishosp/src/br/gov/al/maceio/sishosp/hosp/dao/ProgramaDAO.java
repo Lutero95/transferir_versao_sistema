@@ -132,7 +132,7 @@ public class ProgramaDAO {
 				.get("obj_usuario");
 		
 		String sql = "select id_programa, descprograma, codfederal from hosp.programa "
-				+ "join hosp.usuario_programa on programa.id_programa = usuario_programa.codprograma where codusuario = ?";
+				+ "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma where codusuario = ?";
 		GrupoDAO gDao = new GrupoDAO();
 		ArrayList<ProgramaBean> lista = new ArrayList();
 		try {
@@ -170,7 +170,7 @@ public class ProgramaDAO {
 				.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
 		String sql = "select id_programa, descprograma, codfederal from hosp.programa "
-				+ "join hosp.usuario_programa on programa.id_programa = usuario_programa.codprograma where codusuario = ?";
+				+ "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma where codusuario = ?";
 		GrupoDAO gDao = new GrupoDAO();
 		ArrayList<ProgramaBean> lista = new ArrayList();
 		try {
