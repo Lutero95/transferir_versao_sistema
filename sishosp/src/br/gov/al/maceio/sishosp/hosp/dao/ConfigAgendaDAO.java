@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
+import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 
 public class ConfigAgendaDAO {
 
@@ -397,6 +398,44 @@ public class ConfigAgendaDAO {
 		}
 		return lista;
 	}
+	
+	public ConfigAgendaParte1Bean listarHorariosPorIDProfissionalThulio(int id) throws ProjetoException {
+        
+		ConfigAgendaParte1Bean c = new ConfigAgendaParte1Bean();
+  		String sql = "SELECT id_configagenda, codmedico, diasemana, qtdmax, dataagenda,"
+				+ " turno, mes, ano, codempresa FROM hosp.config_agenda where codmedico = ? order by id_configagenda ";
+  		System.out.println("TESTE CODMEDICO="+c.getProfissional().getIdProfissional());
+  		System.out.println("ID AGENDA:"+c.getIdConfiAgenda()+"|DIA SEMANA:"+c.getDiaDaSemana()+"|QTD:"+c.getQtdMax()+"|turno:"+c.getTurno()+"|mes:"+c.getMes()+"|ano:"+c.getAno()+"|data esp:"+c.getDataEspecifica());
+  		try {
+  			con = ConnectionFactory.getConnection();
+  			PreparedStatement stm = con.prepareStatement(sql);
+  			stm.setInt(1, id);
+  			ResultSet rs = stm.executeQuery();
+  			while (rs.next()) {
+				ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
+				conf.setIdConfiAgenda(rs.getInt("id_configagenda"));
+				conf.setProfissional(pDao.buscarProfissionalPorId(rs
+						.getInt("codmedico")));
+				conf.setDiaDaSemana(rs.getInt("diasemana"));
+				conf.setDataEspecifica(rs.getDate("dataagenda"));
+				conf.setQtdMax(rs.getInt("qtdmax"));
+				conf.setTurno(rs.getString("turno"));
+				conf.setMes(rs.getInt("mes"));
+				conf.setAno(rs.getInt("ano"));
+				
+			}
+  		} catch (SQLException ex) {
+  			throw new RuntimeException(ex);
+  		} finally {
+  			try {
+  				con.close();
+  			} catch (Exception ex) {
+  				ex.printStackTrace();
+  				System.exit(1);
+  			}
+  		}
+  		return c;
+  	}
 	
 	public List<ConfigAgendaParte1Bean> listarHorariosPorIDEquipe(int id) throws ProjetoException {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();

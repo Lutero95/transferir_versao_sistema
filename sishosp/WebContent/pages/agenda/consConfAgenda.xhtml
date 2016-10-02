@@ -128,13 +128,16 @@
 								<p:splitButton icon="confirmar">
 									<p:menuitem value="Alterar" icon="alterar-dados"
 									action="#{ConfigAgendaController.redirectEdit()}">
+									
+									<f:setPropertyActionListener value="#{prof}"
+											target="#{ConfigAgendaController.confParte1}" />
 										
 										<f:setPropertyActionListener value="#{config}"
 											target="#{ConfigAgendaController.confParte1}" />
 											
-
-										<f:setPropertyActionListener value="A"
-											target="#{ConfigAgendaController.tipo}" />
+                                        <f:setPropertyActionListener value="2"
+										target="#{ConfigAgendaController.tipo2}" />
+								
 									</p:menuitem>
 
 									<p:menuitem value="Excluir" icon="trash"

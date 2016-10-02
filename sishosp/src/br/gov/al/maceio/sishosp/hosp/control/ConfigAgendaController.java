@@ -144,24 +144,26 @@ public class ConfigAgendaController implements Serializable {
 	}
 	//errado = action="/pages/agenda/editarConfAgenda.xhtml?faces-redirect=true">
 	public String redirectEdit() {
-		System.out.println("edit"+this.confParte1.getProfissional().getIdProfissional());
-		return "editarConfAgenda?faces-redirect=true&amp;id=" + this.confParte1.getProfissional().getIdProfissional()+"&amp;tipo="+tipo;
+		System.out.println("COD MEDICO||:"+this.confParte1.getProfissional().getIdProfissional());
+		return "editarConfAgenda?faces-redirect=true&amp;codmedico=" + this.confParte1.getProfissional().getIdProfissional()+"&amp;tipo2="+tipo2;
+		
 	}	
 	
 	public void getEditAgenda() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
 		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
+		if(params.get("codmedico") != null) {
 			System.out.println("entrou no editar");
-			Integer id = Integer.parseInt(params.get("id"));
-			tipo2 =Integer.parseInt(params.get("tipo"));			
-			System.out.println("tipo do walter"+tipo);
-			this.confParte1 = (ConfigAgendaParte1Bean) cDao.listarHorariosPorIDProfissional(id);
+			Integer id = Integer.parseInt(params.get("codmedico"));
+			tipo2 =Integer.parseInt(params.get("tipo2"));			
+			System.out.println("TESTE ENTROU"+id);
+		
+			this.confParte1 = cDao.listarHorariosPorIDProfissionalThulio(id);
 		}
 		else{
-			System.out.println("tipo sera"+tipo);
-			tipo2 =Integer.parseInt(params.get("tipo"));
+			System.out.println("tipo sera"+tipo2);
+			tipo2 =Integer.parseInt(params.get("tipo2"));
 			
 		}
 		
@@ -524,5 +526,15 @@ public class ConfigAgendaController implements Serializable {
 		this.confParte2.setGrupo(null);
 		this.confParte2.setTipoAt(null);
 	}
+
+	public int getTipo2() {
+		return tipo2;
+	}
+
+	public void setTipo2(int tipo2) {
+		this.tipo2 = tipo2;
+	}
+	
+	
 
 }

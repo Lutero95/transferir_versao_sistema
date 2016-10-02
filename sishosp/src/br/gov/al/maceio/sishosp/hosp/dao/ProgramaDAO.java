@@ -88,7 +88,7 @@ public class ProgramaDAO {
 	public List<ProgramaBean> listarProgramas() throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<>();
 		String sql = "select id_programa, descprograma, codfederal "
-				+ "from hosp.programa join hosp.usuario_programa on programa.id_programa = usuario_programa.codprograma "
+				+ "from hosp.programa join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
 				+ "where codusuario = ? order by id_programa";
 		UsuarioBean user_session = (UsuarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()
