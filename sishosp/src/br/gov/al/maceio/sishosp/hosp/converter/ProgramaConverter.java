@@ -16,6 +16,7 @@ public class ProgramaConverter implements Converter {
 
 	public Object getAsObject(FacesContext contet, UIComponent component,
 			String value) {
+		System.out.println("con prog getasob "+value);
 		if (value.equals("null") || value.equals("") || value == null)
 			return null;
 		try {
@@ -24,12 +25,13 @@ public class ProgramaConverter implements Converter {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Paciente não válido", ""));
+					FacesMessage.SEVERITY_ERROR, "Paciente nï¿½o vï¿½lido", ""));
 		}
 	}
 
 	public String getAsString(FacesContext contet, UIComponent component,
 			Object value) {
+		System.out.println("con prog getassstring "+value);
 		if (value == null || value.equals(""))
 			return null;
 		return String.valueOf(((ProgramaBean) value).getIdPrograma());

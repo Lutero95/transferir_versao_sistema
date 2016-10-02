@@ -241,6 +241,8 @@ public class GrupoController implements Serializable{
 
 	public void selectPrograma(SelectEvent event) throws ProjetoException {
 		this.programaSelecionado = (ProgramaBean) event.getObject();
+		System.out.println("cod programa selecionado "+programaSelecionado.getIdPrograma());
+		System.out.println("cod grupo selecionado "+programaSelecionado.getGrupoParaAdd().getIdGrupo());		
 		atualizaLista(programaSelecionado);
 	}
 	

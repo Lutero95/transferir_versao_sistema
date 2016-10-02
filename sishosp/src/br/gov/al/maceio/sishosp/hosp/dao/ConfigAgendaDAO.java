@@ -403,16 +403,17 @@ public class ConfigAgendaDAO {
         
 		ConfigAgendaParte1Bean c = new ConfigAgendaParte1Bean();
   		String sql = "SELECT id_configagenda, codmedico, diasemana, qtdmax, dataagenda,"
-				+ " turno, mes, ano, codempresa FROM hosp.config_agenda where codmedico = ? order by id_configagenda ";
+				+ " turno, mes, ano, codempresa FROM hosp.config_agenda where id_configagenda = ? order by id_configagenda ";
   		System.out.println("TESTE CODMEDICO="+c.getProfissional().getIdProfissional());
   		System.out.println("ID AGENDA:"+c.getIdConfiAgenda()+"|DIA SEMANA:"+c.getDiaDaSemana()+"|QTD:"+c.getQtdMax()+"|turno:"+c.getTurno()+"|mes:"+c.getMes()+"|ano:"+c.getAno()+"|data esp:"+c.getDataEspecifica());
+		ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();  		
   		try {
   			con = ConnectionFactory.getConnection();
   			PreparedStatement stm = con.prepareStatement(sql);
   			stm.setInt(1, id);
   			ResultSet rs = stm.executeQuery();
   			while (rs.next()) {
-				ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
+  				System.out.println("achou configagenda");
 				conf.setIdConfiAgenda(rs.getInt("id_configagenda"));
 				conf.setProfissional(pDao.buscarProfissionalPorId(rs
 						.getInt("codmedico")));
@@ -434,7 +435,7 @@ public class ConfigAgendaDAO {
   				System.exit(1);
   			}
   		}
-  		return c;
+  		return conf;
   	}
 	
 	public List<ConfigAgendaParte1Bean> listarHorariosPorIDEquipe(int id) throws ProjetoException {

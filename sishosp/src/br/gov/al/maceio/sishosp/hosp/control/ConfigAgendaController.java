@@ -144,8 +144,7 @@ public class ConfigAgendaController implements Serializable {
 	}
 	//errado = action="/pages/agenda/editarConfAgenda.xhtml?faces-redirect=true">
 	public String redirectEdit() {
-		System.out.println("COD MEDICO||:"+this.confParte1.getProfissional().getIdProfissional());
-		return "editarConfAgenda?faces-redirect=true&amp;codmedico=" + this.confParte1.getProfissional().getIdProfissional()+"&amp;tipo2="+tipo2;
+		return "editarConfAgenda?faces-redirect=true&amp;codconfigagenda=" + this.confParte1.getIdConfiAgenda()+"&amp;tipo2="+tipo2;
 		
 	}	
 	
@@ -153,9 +152,9 @@ public class ConfigAgendaController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
 		System.out.println("vai ve se entrar no editar");
-		if(params.get("codmedico") != null) {
+		if(params.get("codconfigagenda") != null) {
 			System.out.println("entrou no editar");
-			Integer id = Integer.parseInt(params.get("codmedico"));
+			Integer id = Integer.parseInt(params.get("codconfigagenda"));
 			tipo2 =Integer.parseInt(params.get("tipo2"));			
 			System.out.println("TESTE ENTROU"+id);
 		

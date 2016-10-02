@@ -5,7 +5,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/templatepagsistemas.xhtml">
 
@@ -14,9 +15,34 @@
 		<h:form id="formConfiAgenda">
 			<p:growl id="msg" />
 			<p:panel header="CONFIGURAÇÃO DA AGENDA" id="pnlConfAgenda">
-			
+<b:tabView>
+<b:tab title="Geral">
+<p:panelGrid columns="4" styleClass="semBorda" id="panelMesAno">
+					<h:outputLabel value="Mês: "
+						rendered="#{ConfigAgendaController.opcao==2}" />
+					<p:selectOneMenu style="width:120px"
+						rendered="#{ConfigAgendaController.opcao==2}"
+						value="#{ConfigAgendaController.confParte1.mes}">
+						<f:selectItem itemLabel="JANEIRO" itemValue="1" />
+						<f:selectItem itemLabel="FEVEREIRO" itemValue="2" />
+						<f:selectItem itemLabel="MARÇO" itemValue="3" />
+						<f:selectItem itemLabel="ABRIL" itemValue="4" />
+						<f:selectItem itemLabel="MAIO" itemValue="5" />
+						<f:selectItem itemLabel="JUNHO" itemValue="6" />
+						<f:selectItem itemLabel="JULHO" itemValue="7" />
+						<f:selectItem itemLabel="AGOSTO" itemValue="8" />
+						<f:selectItem itemLabel="SETEMBRO" itemValue="9" />
+						<f:selectItem itemLabel="OUTUBRO" itemValue="10" />
+						<f:selectItem itemLabel="NOVEMBRO" itemValue="11" />
+						<f:selectItem itemLabel="DEZEMBRO" itemValue="12" />
+					</p:selectOneMenu>
+					<h:outputLabel value="Ano: "
+						rendered="#{ConfigAgendaController.opcao==2}" />
+					<p:inputText value="#{ConfigAgendaController.confParte1.ano}"
+						rendered="#{ConfigAgendaController.opcao==2}" />
+				</p:panelGrid>
 
-				<p:panelGrid columns="3" styleClass="semBorda">
+<p:panelGrid columns="3" styleClass="semBorda">
 					<h:outputLabel value="Profissional: " />
 					<p:outputPanel id="outProf">
 						<p:autoComplete value="#{ConfigAgendaController.confParte1.profissional}"
@@ -33,6 +59,57 @@
 						update="formConsultProf" oncomplete="PF('dlgConsultaProf').show();" />
 				</p:panelGrid>
 				
+<p:panelGrid columns="2" styleClass="semBorda">
+					<h:outputLabel value="Opção: " />
+					<p:selectOneRadio value="#{ConfigAgendaController.opcao}">
+						<f:selectItem itemLabel="Data Específica" itemValue="1" />
+						<f:selectItem itemLabel="Dias Semana" itemValue="2" />
+						<p:ajax update="panelDias, panelMesAno" event="change" />
+					</p:selectOneRadio>
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" styleClass="semBorda" id="panelDias">
+					<h:outputLabel value="Dia: "
+						rendered="#{ConfigAgendaController.opcao==2}" />
+					<p:selectManyCheckbox layout="grid" columns="7"
+						rendered="#{ConfigAgendaController.opcao==2}"
+						value="#{ConfigAgendaController.confParte1.diasSemana}">
+						<f:selectItem itemLabel="DOMINGO" itemValue="1" />
+						<f:selectItem itemLabel="SEGUNDA" itemValue="2" />
+						<f:selectItem itemLabel="TERÇA" itemValue="3" />
+						<f:selectItem itemLabel="QUARTA" itemValue="4" />
+						<f:selectItem itemLabel="QUINTA" itemValue="5" />
+						<f:selectItem itemLabel="SEXTA" itemValue="6" />
+						<f:selectItem itemLabel="SÁBADO" itemValue="7" />
+					</p:selectManyCheckbox>
+
+					<h:outputLabel value="Data Específica: " id="dtesp"
+						rendered="#{ConfigAgendaController.opcao==1}" />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						pattern="dd/MM/yyyy" rendered="#{ConfigAgendaController.opcao==1}"
+						value="#{ConfigAgendaController.confParte1.dataEspecifica}" />
+				</p:panelGrid>
+
+				
+				<p:panelGrid columns="4" styleClass="semBorda">
+
+					<h:outputLabel value="Turno: " />
+					<p:selectOneMenu style="width:100px"
+						value="#{ConfigAgendaController.confParte1.turno}">
+						<f:selectItem itemLabel="MANHÃ" itemValue="M" />
+						<f:selectItem itemLabel="TARDE" itemValue="T" />
+						<f:selectItem itemLabel="AMBOS" itemValue="A" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Qtd. Máx: " />
+					<h:outputText style="width: 40px"
+						value="#{ConfigAgendaController.confParte1.qtdMax}" />
+
+				</p:panelGrid>
+				
+</b:tab>
+<b:tab title="Tipo de Atendimento">
+				
 				<p:panelGrid columns="3" styleClass="semBorda">
 				
 					<h:outputLabel for="prog" value="Programa: " />
@@ -40,7 +117,6 @@
 						<p:autoComplete
 							value="#{ConfigAgendaController.confParte2.programa}" size="60" 
 							converter="conPrograma"
-							
 							completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
@@ -125,82 +201,17 @@
 					</p:dataTable>
 				</p:panel>
 
+</b:tab>
+</b:tabView>
+			
+
+				
+
 				<p:separator />
 
 				
 
-				<p:panelGrid columns="2" styleClass="semBorda">
-					<h:outputLabel value="Opção: " />
-					<p:selectOneRadio value="#{ConfigAgendaController.opcao}">
-						<f:selectItem itemLabel="Data Específica" itemValue="1" />
-						<f:selectItem itemLabel="Dias Semana" itemValue="2" />
-						<p:ajax update="panelDias, panelMesAno" event="change" />
-					</p:selectOneRadio>
-				</p:panelGrid>
-
-				<p:panelGrid columns="2" styleClass="semBorda" id="panelDias">
-					<h:outputLabel value="Dia: "
-						rendered="#{ConfigAgendaController.opcao==2}" />
-					<p:selectManyCheckbox layout="grid" columns="7"
-						rendered="#{ConfigAgendaController.opcao==2}"
-						value="#{ConfigAgendaController.confParte1.diasSemana}">
-						<f:selectItem itemLabel="DOMINGO" itemValue="1" />
-						<f:selectItem itemLabel="SEGUNDA" itemValue="2" />
-						<f:selectItem itemLabel="TERÇA" itemValue="3" />
-						<f:selectItem itemLabel="QUARTA" itemValue="4" />
-						<f:selectItem itemLabel="QUINTA" itemValue="5" />
-						<f:selectItem itemLabel="SEXTA" itemValue="6" />
-						<f:selectItem itemLabel="SÁBADO" itemValue="7" />
-					</p:selectManyCheckbox>
-
-					<h:outputLabel value="Data Específica: " id="dtesp"
-						rendered="#{ConfigAgendaController.opcao==1}" />
-					<p:calendar locale="pt" navigator="true" mask="true"
-						pattern="dd/MM/yyyy" rendered="#{ConfigAgendaController.opcao==1}"
-						value="#{ConfigAgendaController.confParte1.dataEspecifica}" />
-				</p:panelGrid>
-
-				<p:panelGrid columns="4" styleClass="semBorda" id="panelMesAno">
-					<h:outputLabel value="Mês: "
-						rendered="#{ConfigAgendaController.opcao==2}" />
-					<p:selectOneMenu style="width:120px"
-						rendered="#{ConfigAgendaController.opcao==2}"
-						value="#{ConfigAgendaController.confParte1.mes}">
-						<f:selectItem itemLabel="JANEIRO" itemValue="1" />
-						<f:selectItem itemLabel="FEVEREIRO" itemValue="2" />
-						<f:selectItem itemLabel="MARÇO" itemValue="3" />
-						<f:selectItem itemLabel="ABRIL" itemValue="4" />
-						<f:selectItem itemLabel="MAIO" itemValue="5" />
-						<f:selectItem itemLabel="JUNHO" itemValue="6" />
-						<f:selectItem itemLabel="JULHO" itemValue="7" />
-						<f:selectItem itemLabel="AGOSTO" itemValue="8" />
-						<f:selectItem itemLabel="SETEMBRO" itemValue="9" />
-						<f:selectItem itemLabel="OUTUBRO" itemValue="10" />
-						<f:selectItem itemLabel="NOVEMBRO" itemValue="11" />
-						<f:selectItem itemLabel="DEZEMBRO" itemValue="12" />
-					</p:selectOneMenu>
-					<h:outputLabel value="Ano: "
-						rendered="#{ConfigAgendaController.opcao==2}" />
-					<p:inputText value="#{ConfigAgendaController.confParte1.ano}"
-						rendered="#{ConfigAgendaController.opcao==2}" />
-				</p:panelGrid>
-
-				<p:panelGrid columns="4" styleClass="semBorda">
-
-					<h:outputLabel value="Turno: " />
-					<p:selectOneMenu style="width:100px"
-						value="#{ConfigAgendaController.confParte1.turno}">
-						<f:selectItem itemLabel="MANHÃ" itemValue="M" />
-						<f:selectItem itemLabel="TARDE" itemValue="T" />
-						<f:selectItem itemLabel="AMBOS" itemValue="A" />
-					</p:selectOneMenu>
-
-					<h:outputLabel value="Qtd. Máx: " />
-					<h:outputText style="width: 40px"
-						value="#{ConfigAgendaController.confParte1.qtdMax}" />
-
-				</p:panelGrid>
-
+				
 				<p:separator />
 				</p:panel>
 						</h:form>

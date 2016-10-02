@@ -16,8 +16,8 @@ public class ProgramaBean implements Serializable{
 	
 	public ProgramaBean(){
 		this.grupo = new ArrayList<GrupoBean>();
-		this.grupoRmv = null;
-		this.grupoParaAdd = null;
+		this.grupoRmv = new GrupoBean();
+		this.grupoParaAdd = new GrupoBean();
 		this.grupoNovo = new ArrayList<GrupoBean>();
 		this.idPrograma = null;
 		this.descPrograma = new String();
