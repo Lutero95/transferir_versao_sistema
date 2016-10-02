@@ -127,9 +127,11 @@
 							<center>
 								<p:splitButton icon="confirmar">
 									<p:menuitem value="Alterar" icon="alterar-dados"
-										action="/pages/agenda/editarConfAgenda.xhtml?faces-redirect=true">
+									action="#{ConfigAgendaController.redirectEdit()}">
+										
 										<f:setPropertyActionListener value="#{config}"
 											target="#{ConfigAgendaController.confParte1}" />
+											
 
 										<f:setPropertyActionListener value="A"
 											target="#{ConfigAgendaController.tipo}" />

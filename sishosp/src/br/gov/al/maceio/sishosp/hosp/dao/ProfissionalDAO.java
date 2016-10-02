@@ -192,7 +192,7 @@ public class ProfissionalDAO {
 
 	public List<ProfissionalBean> listarProfissional() throws ProjetoException {
 		List<ProfissionalBean> listaProf = new ArrayList<ProfissionalBean>();
-		String sql = "select id_medico, descmedico, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, codprocedimentopadrao2, codempresa"
+		String sql = "select distinct id_medico, descmedico, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, codprocedimentopadrao2, codempresa"
 				+ " from hosp.medicos order by id_medico";
 		try {
 			con = ConnectionFactory.getConnection();

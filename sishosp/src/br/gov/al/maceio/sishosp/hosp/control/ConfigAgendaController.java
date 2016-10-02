@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -43,7 +44,7 @@ public class ConfigAgendaController implements Serializable {
 	private List<ConfigAgendaParte1Bean> listaHorariosEquipe;
 	private List<ProfissionalBean> listaProfissionais;
 	private List<EquipeBean> listaEquipes;
-
+	
 	private ConfigAgendaDAO cDao = new ConfigAgendaDAO();
 	private ProfissionalDAO pDao = new ProfissionalDAO();
 	private EquipeDAO eDao = new EquipeDAO();
@@ -52,6 +53,7 @@ public class ConfigAgendaController implements Serializable {
 	private Integer tipoBusca;
 
 	private String tipo;
+	private int tipo2;
 
 	private String opcao;
 
@@ -139,6 +141,30 @@ public class ConfigAgendaController implements Serializable {
 			}
 		}
 		return listaHorariosEquipe;
+	}
+	//errado = action="/pages/agenda/editarConfAgenda.xhtml?faces-redirect=true">
+	public String redirectEdit() {
+		System.out.println("edit"+this.confParte1.getProfissional().getIdProfissional());
+		return "editarConfAgenda?faces-redirect=true&amp;id=" + this.confParte1.getProfissional().getIdProfissional()+"&amp;tipo="+tipo;
+	}	
+	
+	public void getEditAgenda() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if(params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo2 =Integer.parseInt(params.get("tipo"));			
+			System.out.println("tipo do walter"+tipo);
+			this.confParte1 = (ConfigAgendaParte1Bean) cDao.listarHorariosPorIDProfissional(id);
+		}
+		else{
+			System.out.println("tipo sera"+tipo);
+			tipo2 =Integer.parseInt(params.get("tipo"));
+			
+		}
+		
 	}
 
 	public void setListaHorariosEquipe(
