@@ -96,6 +96,7 @@ public class LaudoController implements Serializable {
 		this.cabecalho = "";
 		this.situacao = "P";
 		this.recurso = "T";
+		this.nome = null;
 		//this.prontuario = 1;
 		listaLaudo = new ArrayList<>();
 		listaLaudo = null;

@@ -1,7 +1,5 @@
 package br.gov.al.maceio.sishosp.acl.control;
 
-
-
 import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
@@ -12,6 +10,8 @@ import br.gov.al.maceio.sishosp.acl.model.Perfil;
 import br.gov.al.maceio.sishosp.acl.model.Permissao;
 import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.acl.dao.UsuarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.PessoaBean;
@@ -19,6 +19,8 @@ import br.gov.al.maceio.sishosp.acl.model.UsuarioBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -48,7 +50,7 @@ public class UsuarioCadastroControll implements Serializable {
     private UsuarioBean usuarioEdit;
     private String login;
     private String senha;
-    private String idUsuario = "0";
+    private String idUsuario;
     private UIInput senhaInput;
     private UIInput senhaInputEdit;
 
@@ -78,13 +80,13 @@ public class UsuarioCadastroControll implements Serializable {
     private List<Sistema> listaSistemasTargetAlt;
     private List<Integer> codigoSistemaAlt;
 
-    private String usuarioSelecionado = "0";
+    private String usuarioSelecionado;
 
     private DualListModel<Permissao> listaPermissoesDualAlt;
     private List<Permissao> listaPermissoesSourceAlt;
     private List<Permissao> listaPermissoesTargetAlt;
 
-    private Integer abaAtiva = 0;
+    private Integer abaAtiva;
     
     private Perfil pf;
     
@@ -104,9 +106,9 @@ public class UsuarioCadastroControll implements Serializable {
     private List<Funcao> listaFuncoesSourceEdit;
     private List<Funcao> listaFuncoesTargetEdit;
     
-    private String perfilSelecionado = "0";
+    private String perfilSelecionado;
     
-    private Integer abaAtivaV2 = 0;
+    private Integer abaAtivaV2;
 
 
 
@@ -128,7 +130,11 @@ public class UsuarioCadastroControll implements Serializable {
         listaPermissoesDual = null;
         listaPermissoesSource = new ArrayList<>();
         listaPermissoesTarget = new ArrayList<>();
+        abaAtiva = 0;
+        abaAtivaV2 = 0;
         perfilSelecionado = null;
+        usuarioSelecionado = "0";
+        idUsuario = "0";
 
         listaSistemasDualAlt = null;
         listaSistemasSoucerAlt = new ArrayList<>();
@@ -168,13 +174,11 @@ public class UsuarioCadastroControll implements Serializable {
         if(listaSistemasDual.getTarget().size() > 0
             && Integer.parseInt(perfilSelecionado) > 0) {
             
-            if(usuario.getCodSetor().size() > 0 && usuario.getCodSetor() != null) {
-            
                 List<Integer> listaSis = new ArrayList<>();
 
                 List<Long> permissoes = new ArrayList<>();
                 List<Menu> listaMenusAux = listaMenusDual.getTarget();
-                List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
+                //List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
 
                 MenuDAO mdao = new MenuDAO();
                 List<Menu> menusPerfil = mdao.listarMenusPerfil(Integer.parseInt(perfilSelecionado));
@@ -190,14 +194,14 @@ public class UsuarioCadastroControll implements Serializable {
                     }
                 }
 
-                PermissaoDAO pmdao = new PermissaoDAO();
+                /*PermissaoDAO pmdao = new PermissaoDAO();
                 for(Menu m : listaFiltrada) {
                     permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
                 }
 
                 for(Funcao f : listaFuncoesAux) {
                     permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
-                }
+                }*/
 
                 for(Sistema s : listaSistemasDual.getTarget()) {
                     listaSis.add(s.getId());
@@ -206,7 +210,7 @@ public class UsuarioCadastroControll implements Serializable {
 
                 usuario.setIdPerfil(Integer.parseInt(perfilSelecionado));
                 usuario.setListaIdSistemas(listaSis);
-                usuario.setListaIdPermissoes(permissoes);
+                //usuario.setListaIdPermissoes(permissoes);
 
                 boolean cadastrou = udao.cadastrar(usuario);
 
@@ -225,7 +229,7 @@ public class UsuarioCadastroControll implements Serializable {
 
                     RequestContext.getCurrentInstance().execute("dlgNovoUsuario.hide();");
                 }
-            } 
+            
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Selecione um perfil e pelo menos um sistema", "Erro");
@@ -366,10 +370,10 @@ public class UsuarioCadastroControll implements Serializable {
     public void verificaLoginCadastrado(FacesContext context,
             UIComponent toValidate, Object value) throws ProjetoException {
 
-       UsuarioDAO icdao = new UsuarioDAO();
+    	UsuarioDAO udao = new UsuarioDAO();
         String login = (String) value;
 
-        String isExist = icdao.verificaLoginCadastrado(login);
+        String isExist = udao.verificaLoginCadastrado(login);
 
         if (isExist == "S") {
             ((EditableValueHolder) toValidate).setValid(false);
@@ -378,6 +382,29 @@ public class UsuarioCadastroControll implements Serializable {
 
         }
     }
+    
+    public void verificaUserCadastrado(FacesContext context,
+            UIComponent toValidate, Object value) throws ProjetoException {
+    	UsuarioDAO udao = new UsuarioDAO(); 
+        String cpf = (String) value;
+
+        String isExist = udao.verificaUserCadastrado(cpf);
+
+        if (isExist == "S") {
+
+            ((EditableValueHolder) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage(
+                    " Usuario ja Cadastrado para este CPF!");
+            context.addMessage(toValidate.getClientId(context), message);
+
+        }
+    }
+    
+public void getValoresUsuario() throws ProjetoException {
+		
+		System.out.println("Entrou aqui GOSTOSO");
+		perfilSelecionado = "0";
+	}
     
     public void onTransferMenu(TransferEvent event) {
         StringBuilder builder = new StringBuilder();
@@ -817,7 +844,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaPermissoesTargetAlt = listaPermissoesTargetAlt;
     }
     
-    public DualListModel<Menu> getListaMenusDual() throws NumberFormatException, ProjetoException {
+    public DualListModel<Menu> getListaMenusDual() throws ProjetoException {
         if(listaMenusDual == null) {
             listaMenusSource = null;
             listaMenusTarget = new ArrayList<>();
@@ -831,7 +858,7 @@ public class UsuarioCadastroControll implements Serializable {
         this.listaMenusDual = listaMenusDual;
     }
 
-    public List<Menu> getListaMenusSource() throws NumberFormatException, ProjetoException {
+    public List<Menu> getListaMenusSource() throws ProjetoException {
         if(listaMenusSource == null) {
             MenuDAO mdao = new MenuDAO();
             listaMenusSource = mdao.listarMenuItemSourcerUser(Integer.parseInt(perfilSelecionado));

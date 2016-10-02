@@ -29,6 +29,7 @@ import java.util.List;
 
 
 
+
 import javax.faces.context.FacesContext;
 
 
@@ -304,18 +305,18 @@ public class UsuarioDAO{
 
         try {
             conexao = ConnectionFactory.getConnection();
-            CallableStatement cs = conexao.prepareCall("{ ? = call prot2.gravausuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }");
+            CallableStatement cs = conexao.prepareCall("{ ? = call acl.gravausuario(?, ?, ?, ?, ?, ?, ?, ?, ?) }");
             cs.registerOutParameter(1, Types.INTEGER);
             cs.setString(2, usuario.getNome().toUpperCase().trim());
             cs.setString(3, usuario.getCpf().replaceAll("[^0-9]", ""));
-            cs.setString(5, usuario.getSenha().toUpperCase().trim());
-            cs.setString(6, "S");
-            cs.setString(7, usuario.getLogin().toUpperCase().trim());
-            cs.setString(8, usuario.getEmail().toLowerCase().trim());
-            cs.setInt(9, user_session.getCodigo());
-            cs.setBoolean(10, true);
-            cs.setInt(11, usuario.getIdPerfil());
-            cs.setInt(12, usuario.getIdpessoa());
+            cs.setString(4, usuario.getSenha().toUpperCase().trim());
+            cs.setString(5, "S");
+            cs.setString(6, usuario.getLogin().toUpperCase().trim());
+            cs.setString(7, usuario.getEmail().toLowerCase().trim());
+            cs.setInt(8, user_session.getCodigo());
+            cs.setBoolean(9, true);
+            cs.setInt(10, usuario.getIdPerfil());
+            //cs.setInt(11, usuario.getIdpessoa());
             cs.execute();
 
             UsuarioBean u = usuario;
@@ -329,16 +330,16 @@ public class UsuarioDAO{
 
             }
 
-            boolean associouPerm = false;
+            /*boolean associouPerm = false;
             if (associouSis == true) {
                 for (Long perm : u.getListaIdPermissoes()) {
                 }
                 associouPerm = associarPermAoUsuario(u);
             }
 
+            && associouPerm != false*/
 
-            if (idRetorno != null && associouSis != false
-                    && associouPerm != false) {
+            if (idRetorno != null && associouSis != false) {
 
                 cadastrou = true;
             }
@@ -905,5 +906,39 @@ public class UsuarioDAO{
         return isExist;
     }
   
+    public String verificaUserCadastrado(String cpf) throws ProjetoException {
+        PreparedStatement ps = null;
+        Connection con = ConnectionFactory.getConnection();
+        String isExist = "N";
+
+        try {
+            String sql = "select * from acl.usuarios where cpf=? and ativo=?";
+
+            ps = con.prepareStatement(sql);
+            ps.setString(1, cpf);
+            ps.setString(2, "S");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                isExist = "S";
+            }
+
+        } catch (Exception sqle) {
+
+            throw new ProjetoException(sqle);
+
+        } finally {
+            try {
+                con.close();
+            } catch (Exception sqlc) {
+                sqlc.printStackTrace();
+                System.exit(1);
+                // TODO: handle exception
+            }
+
+        }
+        return isExist;
+    }
     
 }

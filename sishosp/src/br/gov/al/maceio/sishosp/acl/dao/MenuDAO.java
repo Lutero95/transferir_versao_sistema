@@ -780,7 +780,7 @@ public class MenuDAO {
             + "	join acl.menu_sistema ms on ms.id_menu = me.id "
             + "	join acl.sistema si on si.id = ms.id_sistema "
             + "	where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pf.id = ?"
-            + ") and (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') order by me.descricao;";
+            + ") order by me.descricao";
              
         ArrayList<Menu> lista = new ArrayList();
         try {
@@ -851,7 +851,7 @@ public class MenuDAO {
             + "	join acl.menu me on me.id = pg.id_menu "
             + "	join acl.menu_sistema ms on ms.id_menu = me.id "
             + "	join acl.sistema si on si.id = ms.id_sistema "
-            + "	where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pf.id = ?"
+            + "	where (me.tipo = 'menuItem') and pf.id = ?"
             + "	union"
             + "	select me.id from acl.perm_usuario pu "
             + "	join acl.permissao pm on pm.id = pu.id_permissao "
@@ -859,8 +859,8 @@ public class MenuDAO {
             + "	join acl.menu me on me.id = pg.id_menu "
             + "	join acl.menu_sistema ms on ms.id_menu = me.id "
             + "	join acl.sistema si on si.id = ms.id_sistema "
-            + "	where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pu.id_usuario = ?"
-            + ") and (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') order by me.descricao;";
+            + "	where (me.tipo = 'menuItem') and pu.id_usuario = ?"
+            + ") order by me.descricao;";
              
         ArrayList<Menu> lista = new ArrayList();
         try {
@@ -876,9 +876,6 @@ public class MenuDAO {
                 m.setDescricao(rs.getString("descricao"));
                 m.setCodigo(rs.getString("codigo"));
                 m.setIndice(rs.getString("indice"));
-                
-                ////System.out.println("codigo: " + rs.getString("codigo"));
-                ////System.out.println("indece: " + rs.getString("indice"));
                 
                 m.setTipo(rs.getString("tipo"));
                 m.setAtivo(rs.getBoolean("ativo"));
@@ -914,7 +911,7 @@ public class MenuDAO {
     public ArrayList<Menu> listarMenuItemTargetEditUser(Integer idUsuario) throws ProjetoException {
 
         System.out.println("MENU TARGET");
-        System.out.println("ID USU�?RIO: " + idUsuario + "\n");
+        System.out.println("ID USUARIO: " + idUsuario + "\n");
         
         String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
             + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
@@ -924,7 +921,7 @@ public class MenuDAO {
             + "join acl.menu me on me.id = pg.id_menu "
             + "join acl.menu_sistema ms on ms.id_menu = me.id "
             + "join acl.sistema si on si.id = ms.id_sistema "
-            + "where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pu.id_usuario = ?";
+            + "where (me.tipo = 'menuItem') and pu.id_usuario = ?";
              
         ArrayList<Menu> lista = new ArrayList();
         try {

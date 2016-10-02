@@ -331,8 +331,7 @@ public class FuncaoDAO {
             + "	join acl.permissao pm on pm.id = pp.id_permissao "
             + "	join acl.perm_geral pg on pg.id_permissao = pm.id "
             + "	join acl.funcao fu on fu.id = pg.id_funcao "
-            + "	join acl.sistema si on si.id = fu.id_sistema where pf.id = ?"
-            + ") order by fu.descricao;";
+            + "	join acl.sistema si on si.id = fu.id_sistema where pf.id = ? ) order by fu.descricao";
 
         List<Funcao> lista = new ArrayList();
 
@@ -347,10 +346,7 @@ public class FuncaoDAO {
                 f.setId(rs.getLong("id"));
                 f.setDescricao(rs.getString("descricao"));
                 f.setAtiva(rs.getBoolean("ativa"));
-                
-                f.setCodigo(rs.getString("codigo"));
-                
-                
+                f.setCodigo(rs.getString("codigo"));           
                 f.setIdSistema(rs.getInt("id_sis"));
                 f.setDescSistema(rs.getString("desc_sis"));
                 f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
