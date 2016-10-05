@@ -16,7 +16,8 @@ public class GrupoConverter implements Converter {
 
 	public Object getAsObject(FacesContext contet, UIComponent component,
 			String value) {
-		if (value.equals("null") || value.equals("") || value == null)
+//		if (value.equals("null") || value.equals("") || value == null)
+		if (value == null)		
 			return null;
 		try {
 			int id = Integer.parseInt(value);
@@ -24,7 +25,7 @@ public class GrupoConverter implements Converter {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Grupo não válido", ""));
+					FacesMessage.SEVERITY_ERROR, "Grupo nï¿½o vï¿½lido", ""));
 		}
 	}
 

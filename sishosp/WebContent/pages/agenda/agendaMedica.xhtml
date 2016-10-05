@@ -15,7 +15,7 @@
 		<h3>Agenda Médica</h3>
 		<h:form id="formAgendaMedica">
 			<p:growl id="msgFeriado" />
-			<div class="form-group">
+			<div class="form-group row">
 				<h:outputLabel value="Paciente" styleClass="col-sm-1 control-label" />
 				<div class="col-sm-4">
 					<p:outputPanel id="outPa">
@@ -171,8 +171,8 @@
 						rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
 				</div>
 				<h:outputLabel for="obs" value="Obs"
-					styleClass="col-sm-1 control-label" />
-				<div class="col-sm-5">
+					styleClass="col-sm-2 control-label" />
+				<div class="col-sm-2">
 					<p:inputTextarea id="obs"
 						value="#{AgendaController.agenda.observacao}" style="width: 328px"
 						autoResize="false" />
@@ -180,57 +180,55 @@
 
 
 			</div>
+			<h:outputLabel value="Data para Atendimento"
+				styleClass="col-sm-1 control-label" />
 			<br />
-			<p:separator/>
-			
-				<h:outputLabel value="Data para Atendimento" styleClass="col-sm-1 control-label" />
+			<p:calendar value="#{AgendaController.agenda.dataAtendimento}"
+				id="dtagen" locale="pt" navigator="true" mask="true" showOn="button"
+				pattern="dd/MM/yyyy" />
+
+
+			<p:outputPanel>
+				<h:outputLabel for="turno" value="Turno" />
 				<br />
-				<p:calendar value="#{AgendaController.agenda.dataAtendimento}"
-					id="dtagen" locale="pt" navigator="true" mask="true"
-					showOn="button" pattern="dd/MM/yyyy" />
+				<p:selectOneMenu value="#{AgendaController.agenda.turno}">
+					<f:selectItem itemLabel="Manhã" itemValue="M" />
+					<f:selectItem itemLabel="Tarde" itemValue="T" />
+					<p:ajax event="change" process="@this dtagen"
+						update=":formAgendaMedica:msgFeriado"
+						listener="#{AgendaController.verificaDisponibilidadeData()}" />
+				</p:selectOneMenu>
+			</p:outputPanel>
 
-
-				<p:outputPanel>
-					<h:outputLabel for="turno" value="Turno" />
-					<br />
-					<p:selectOneMenu value="#{AgendaController.agenda.turno}">
-						<f:selectItem itemLabel="Manhã" itemValue="M" />
-						<f:selectItem itemLabel="Tarde" itemValue="T" />
-						<p:ajax event="change" process="@this dtagen"
-							update=":formAgendaMedica:msgFeriado"
-							listener="#{AgendaController.verificaDisponibilidadeData()}" />
-					</p:selectOneMenu>
-				</p:outputPanel>
-
-				<p:commandButton value="Ver agenda" style="margin-top: 25px;"
-					action="#{AgendaController.verAgenda()}"
-					update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd,
+			<p:commandButton value="Ver agenda" style="margin-top: 25px;"
+				action="#{AgendaController.verAgenda()}"
+				update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd,
 						 :formAgendaMedica:outlAgendados, :formAgendaMedica:dtAgData,
 						 :formAgendaMedica:msgFeriado" />
 
-				<p:outputPanel id="outQtd">
-					<h:outputLabel for="qtd" value="Qtd." />
-					<br />
-					<p:inputText id="qtd" value="#{AgendaController.agenda.qtd}"
-						style="width: 40px" readonly="true" />
-				</p:outputPanel>
+			<p:outputPanel id="outQtd">
+				<h:outputLabel for="qtd" value="Qtd." />
+				<br />
+				<p:inputText id="qtd" value="#{AgendaController.agenda.qtd}"
+					style="width: 40px" readonly="true" />
+			</p:outputPanel>
 
-				<p:outputPanel id="outMax">
-					<h:outputLabel for="max" value="Máx." />
-					<br />
-					<p:inputText id="max" value="#{AgendaController.agenda.max}"
-						style="width: 40px" readonly="true" />
-				</p:outputPanel>
+			<p:outputPanel id="outMax">
+				<h:outputLabel for="max" value="Máx." />
+				<br />
+				<p:inputText id="max" value="#{AgendaController.agenda.max}"
+					style="width: 40px" readonly="true" />
+			</p:outputPanel>
 
-				<p:commandButton value="Confirmar" style="margin-top: 25px;"
-					update=":formAgendaMedica:dtNovosAg"
-					action="#{AgendaController.addListaNovosAgendamentos()}" />
+			<p:commandButton value="Confirmar" style="margin-top: 25px;"
+				update=":formAgendaMedica:dtNovosAg"
+				action="#{AgendaController.addListaNovosAgendamentos()}" />
 
-				<p:commandButton value="Limpar Busca" style="margin-top: 25px;"
-					actionListener="#{AgendaController.limparDados()}"
-					update=":formAgendaMedica" />
+			<p:commandButton value="Limpar Busca" style="margin-top: 25px;"
+				actionListener="#{AgendaController.limparDados()}"
+				update=":formAgendaMedica" />
 
-			
+
 			<p:panelGrid columns="1" styleClass="semBorda">
 				<h:outputLabel value="Novo(s) Agendamento(s)" />
 				<p:dataTable id="dtNovosAg" resizableColumns="true"
@@ -319,49 +317,17 @@
 
 
 		<p:dialog header="Consulta Pacientes" widgetVar="dlgConsuPac"
-			modal="true" width="750px">
+			modal="true" width="750px" height="400px">
 			<h:form id="formConsuPac">
 				<p:growl id="msgC" />
-				<center>
-					<p:panelGrid columns="2" styleClass="semBorda">
-						<p:outputPanel id="outOp">
-							<h:outputLabel for="op" value="Opção" />
-							<br />
-							<p:selectOneMenu id="op" value="#{PacienteController.tipoBuscar}">
-								<f:selectItem itemLabel="Escolha Opção" itemValue="VAZIO" />
-								<f:selectItem itemLabel="CPF" itemValue="CPF" />
-								<f:selectItem itemLabel="Nome" itemValue="NOME" />
-								<f:selectItem itemLabel="Prontuário Velho"
-									itemValue="PRONTVELHO" />
-								<f:selectItem itemLabel="Prontuário Novo" itemValue="PRONTNOVO" />
-							</p:selectOneMenu>
-						</p:outputPanel>
-
-						<p:outputPanel id="outDesP">
-							<h:outputLabel for="descPac" value="Descrição" />
-							<br />
-							<p:inputText id="descPac"
-								value="#{PacienteController.descricaoParaBuscar}"
-								style="width: 300px" />
-						</p:outputPanel>
-					</p:panelGrid>
-
-					<p:separator style="margin-top: 10px;" />
-
-					<p:panelGrid columns="3" styleClass="semBorda">
-						<p:commandButton value="OK" icon="ui-icon-check"
-							action="#{PacienteController.buscarPaciente()}"
-							update=":formConsuPac:msgC" />
-						<p:commandButton value="Nova Consulta" icon="ui-icon-search"
-							actionListener="#{PacienteController.limparDados()}"
-							update=":formConsuPac:outOp, :formConsuPac:outDesP" />
-						<p:commandButton
-							actionListener="#{PacienteController.limparDados()}"
-							onclick="PF('dlgConsuPac').hide();"
-							update=":formConsuPac:outOp, :formConsuPac:outDesP" value="Sair"
-							icon="ui-icon-close" />
-					</p:panelGrid>
-				</center>
+				
+					<div class="form-group row">
+					<div class="col-sm-2">
+					
+						</div>
+					</div>
+					
+					
 
 				<b:dataTable id="dt" var="tab"
 					value="#{PacienteController.listaPacientesParaAgenda}" lang="es"

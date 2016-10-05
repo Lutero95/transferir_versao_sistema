@@ -222,7 +222,9 @@ public class TipoAtendimentoController implements Serializable {
 	}
 
 	public void selectGrupo(SelectEvent event) throws ProjetoException {
+		System.out.println("selecionou o grupo");
 		this.grupoSelecionado = (GrupoBean) event.getObject();
+		System.out.println("id do grupo selecionado foi "+grupoSelecionado.getIdGrupo());
 		atualizaListaTipos(grupoSelecionado);
 	}
 
