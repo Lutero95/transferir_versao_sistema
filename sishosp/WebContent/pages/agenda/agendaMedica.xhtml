@@ -81,14 +81,10 @@
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descGrupo}">
-							<p:ajax event="itemSelect"
+							<p:ajax event="itemSelect" 
 								listener="#{TipoAtendimentoController.selectGrupo}"
 								update=":formAgendaMedica:outTipoAt, :formConsuTipoAt:dtTipoAt" />
-							<p:ajax event="itemSelect"
-								listener="#{ProfissionalController.atualizaListaProfPorGrupo}"
-								update=":formAgendaMedica:outProf, :formConsuProf:dtProf" />
-							<p:ajax event="change" update=":formAgendaMedica"
-								listener="#{AgendaController.limparNaBuscaGrupo()}" />
+							
 						</p:autoComplete>
 					</p:outputPanel>
 				</div>
