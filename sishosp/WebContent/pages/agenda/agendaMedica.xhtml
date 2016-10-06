@@ -84,7 +84,11 @@
 							<p:ajax event="itemSelect" 
 								listener="#{TipoAtendimentoController.selectGrupo}"
 								update=":formAgendaMedica:outTipoAt, :formConsuTipoAt:dtTipoAt" />
-							
+							<p:ajax event="itemSelect"
+								listener="#{ProfissionalController.atualizaListaProfPorGrupo}"
+								update=":formAgendaMedica:outProf, :formConsuProf:dtProf" />
+							<p:ajax event="change" update=":formAgendaMedica"
+								listener="#{AgendaController.limparNaBuscaGrupo()}" />
 						</p:autoComplete>
 					</p:outputPanel>
 				</div>
