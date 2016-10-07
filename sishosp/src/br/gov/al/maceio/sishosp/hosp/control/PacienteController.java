@@ -673,7 +673,7 @@ public class PacienteController implements Serializable{
 	}
 
 	public void onItemSelect2(SelectEvent event) throws Exception {
-
+		System.out.println("itemselect escolaridade");
 		EscolaridadeBean prodsel = new EscolaridadeBean();
 		prodsel = (EscolaridadeBean) event.getObject();
 
