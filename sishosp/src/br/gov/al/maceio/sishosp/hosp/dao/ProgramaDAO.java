@@ -204,7 +204,7 @@ public class ProgramaDAO {
 			Integer tipo) throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<>();
 		String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma , codfederal from hosp.programa "
-				+ "join hosp.usuario_programa on programa.id_programa = usuario_programa.codprograma where codusuario = ?";
+				+ "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma where codusuario = ?";
 				
 		if (tipo == 1) {
 			sql += " and upper(id_programa ||'-'|| descprograma) LIKE ?";
