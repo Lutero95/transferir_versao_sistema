@@ -23,10 +23,9 @@ import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
-
 @ManagedBean(name = "GrupoController")
 @ViewScoped
-public class GrupoController implements Serializable{
+public class GrupoController implements Serializable {
 
 	/**
 	 * 
@@ -69,42 +68,39 @@ public class GrupoController implements Serializable{
 		listaGrupos = gDao.listarGrupos();
 		this.programaSelecionado = new ProgramaBean();
 	}
-	
+
 	public String redirectEdit() {
-		return "cadastroGrupo?faces-redirect=true&amp;id=" + this.grupo.getIdGrupo()+"&amp;tipo="+tipo;
-	}	
-	
-	
+		return "cadastroGrupo?faces-redirect=true&amp;id="
+				+ this.grupo.getIdGrupo() + "&amp;tipo=" + tipo;
+	}
+
 	public String redirectInsert() {
 		System.out.println("vai redir grupo");
-		return "cadastroGrupo?faces-redirect=true&amp;tipo="+tipo;
-	}	
-	
-	
+		return "cadastroGrupo?faces-redirect=true&amp;tipo=" + tipo;
+	}
+
 	public void getEditGrupo() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
 		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
+		if (params.get("id") != null) {
 			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
-			tipo =Integer.parseInt(params.get("tipo"));			
-			
+			tipo = Integer.parseInt(params.get("tipo"));
+
 			GrupoDAO udao = new GrupoDAO();
 			this.grupo = udao.listarGrupoPorId(id);
-		}
-		else{
-			
-			tipo =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
-	}
-		
+		} else {
 
+			tipo = Integer.parseInt(params.get("tipo"));
+
+		}
+
+	}
 
 	public void gravarGrupo() throws ProjetoException, SQLException {
-		
+
 		boolean cadastrou = gDao.gravarGrupo(grupo);
 
 		if (cadastrou == true) {
@@ -117,7 +113,7 @@ public class GrupoController implements Serializable{
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
-		
+
 	}
 
 	public String alterarGrupo() throws ProjetoException {
@@ -165,22 +161,13 @@ public class GrupoController implements Serializable{
 	}
 
 	public void getListaTodosGrupos() throws ProjetoException {
-			listaGrupos = gDao.listarGrupos();
-			System.out.println("listaGrupos size "+listaGrupos.size());
+		listaGrupos = gDao.listarGrupos();
+		System.out.println("listaGrupos size " + listaGrupos.size());
 
 	}
 
 	public void setListaGrupos(List<GrupoBean> listaGrupos) {
 		this.listaGrupos = listaGrupos;
-	}
-
-	public void atualizaLista(ProgramaBean p) throws ProjetoException {
-		System.out.println("ProgramaId"+p.getIdPrograma());
-		GrupoDAO gDao = new GrupoDAO();
-		this.programaSelecionado = p;
-		this.listaGruposProgramas = gDao.listarGruposPorPrograma(p.getIdPrograma());
-	
-		
 	}
 
 	public List<GrupoBean> getListaGruposProgramas() {
@@ -211,7 +198,6 @@ public class GrupoController implements Serializable{
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
@@ -221,9 +207,9 @@ public class GrupoController implements Serializable{
 	}
 
 	public String getCabecalho() {
-		if (this.tipo==1) {
+		if (this.tipo == 1) {
 			cabecalho = "Inclusão de Grupo";
-		} else if (this.tipo==2) {
+		} else if (this.tipo == 2) {
 			cabecalho = "Alteração de Grupo";
 		}
 		return cabecalho;
@@ -233,27 +219,20 @@ public class GrupoController implements Serializable{
 			throws ProjetoException {
 		return gDao.listarGruposAutoComplete(query, this.programaSelecionado);
 	}
-	
+
 	public List<GrupoBean> listaGrupoAutoComplete2(String query)
 			throws ProjetoException {
 		return gDao.listarGruposAutoComplete2(query);
 	}
 
-	public void selectPrograma(SelectEvent event) throws ProjetoException {
-		this.programaSelecionado = (ProgramaBean) event.getObject();
-		System.out.println("cod programa selecionado "+programaSelecionado.getIdPrograma());
-		System.out.println("cod grupo selecionado "+programaSelecionado.getGrupoParaAdd().getIdGrupo());		
-		atualizaLista(programaSelecionado);
-	}
-	
 	public void selectEqupProf(SelectEvent event) {
-		//if(equipe ID == TRUE){}
+		// if(equipe ID == TRUE){}
 		this.equipeSelecionado = (EquipeBean) event.getObject();
-		//atualizaLista2(equipeSelecionado);
+		// atualizaLista2(equipeSelecionado);
 
-		//if(profissional ID == TRUE){}
+		// if(profissional ID == TRUE){}
 		this.profissionalSelecionado = (ProfissionalBean) event.getObject();
-		//atualizaLista3(profissionalSelecionado);
+		// atualizaLista3(profissionalSelecionado);
 	}
 
 	public int getTipo() {
@@ -275,7 +254,5 @@ public class GrupoController implements Serializable{
 	public void setProg(ProgramaBean prog) {
 		this.prog = prog;
 	}
-	
-	
-	
+
 }

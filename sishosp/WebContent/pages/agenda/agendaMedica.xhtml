@@ -25,10 +25,9 @@
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
 							<p:ajax event="itemSelect" update=":formAgendaMedica:outProg"
-								global="false" />
-							<p:ajax event="change" update=":formAgendaMedica"
 								listener="#{AgendaController.limparNaBuscaPaciente()}"
 								global="false" />
+
 
 						</p:autoComplete>
 					</p:outputPanel>
@@ -56,10 +55,9 @@
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descPrograma}">
 							<p:ajax event="itemSelect"
-								listener="#{GrupoController.selectPrograma}"
+								listener="#{AgendaController.selectPrograma}"
 								update=":formAgendaMedica:outGrupo, :formConsuGrop:dtGrupo" />
-							<p:ajax event="change" update=":formAgendaMedica"
-								listener="#{AgendaController.limparNaBuscaPrograma()}" />
+
 						</p:autoComplete>
 					</p:outputPanel>
 				</div>
@@ -81,7 +79,7 @@
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descGrupo}">
-							<p:ajax event="itemSelect" 
+							<p:ajax event="itemSelect"
 								listener="#{TipoAtendimentoController.selectGrupo}"
 								update=":formAgendaMedica:outTipoAt, :formConsuTipoAt:dtTipoAt" />
 							<p:ajax event="itemSelect"
@@ -320,14 +318,12 @@
 			modal="true" width="750px" height="400px">
 			<h:form id="formConsuPac">
 				<p:growl id="msgC" />
-				
-					<div class="form-group row">
-					<div class="col-sm-2">
-					
-						</div>
-					</div>
-					
-					
+
+				<div class="form-group row">
+					<div class="col-sm-2"></div>
+				</div>
+
+
 
 				<b:dataTable id="dt" var="tab"
 					value="#{PacienteController.listaPacientesParaAgenda}" lang="es"

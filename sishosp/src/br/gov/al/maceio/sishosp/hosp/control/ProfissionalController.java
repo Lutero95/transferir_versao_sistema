@@ -40,7 +40,7 @@ public class ProfissionalController implements Serializable {
 	private int tipo;
 	private Integer abaAtiva = 0;
 
-	private GrupoBean grupoSelecionado;
+	
 
 	public ProfissionalController() {
 		this.profissional = new ProfissionalBean();
@@ -236,13 +236,7 @@ public class ProfissionalController implements Serializable {
 		return result;
 	}
 
-	public void atualizaListaProfPorGrupo(SelectEvent event)
-			throws ProjetoException {
-		System.out.println("VAI ATualahsdas");
-		this.grupoSelecionado = (GrupoBean) event.getObject();
-		this.listaProfissional = pDao
-				.listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
-	}
+
 
 	public List<ProfissionalBean> getListaProfissional() {
 		return listaProfissional;
