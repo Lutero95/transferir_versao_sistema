@@ -30,6 +30,7 @@ import java.util.List;
 
 
 
+
 import javax.faces.context.FacesContext;
 
 
@@ -330,14 +331,12 @@ public class UsuarioDAO{
 
             }
 
-            /*boolean associouPerm = false;
+            boolean associouPerm = false;
             if (associouSis == true) {
                 for (Long perm : u.getListaIdPermissoes()) {
                 }
                 associouPerm = associarPermAoUsuario(u);
             }
-
-            && associouPerm != false*/
 
             if (idRetorno != null && associouSis != false) {
 

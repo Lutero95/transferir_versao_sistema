@@ -194,12 +194,12 @@ public class UsuarioCadastroControll implements Serializable {
                     }
                 }
 
-                /*PermissaoDAO pmdao = new PermissaoDAO();
+                PermissaoDAO pmdao = new PermissaoDAO();
                 for(Menu m : listaFiltrada) {
                     permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
                 }
 
-                for(Funcao f : listaFuncoesAux) {
+                /*for(Funcao f : listaFuncoesAux) {
                     permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
                 }*/
 
@@ -210,7 +210,7 @@ public class UsuarioCadastroControll implements Serializable {
 
                 usuario.setIdPerfil(Integer.parseInt(perfilSelecionado));
                 usuario.setListaIdSistemas(listaSis);
-                //usuario.setListaIdPermissoes(permissoes);
+                usuario.setListaIdPermissoes(permissoes);
 
                 boolean cadastrou = udao.cadastrar(usuario);
 

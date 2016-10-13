@@ -236,13 +236,13 @@ public class MenuMB implements Serializable {
     }
     
     public List<Menu> filtrarListaMenu(List<Menu> lista) throws ProjetoException {
-        
+        System.out.println("entrou aqui");
         List<Menu> listaMenusAux = lista;
         List<Menu> listaVerificada = new ArrayList<>();
 
         MenuDAO mdao = new MenuDAO();
         List<Menu> listaMenusPI = mdao.listarMenuPaiSubmenuComSis();
- 
+        System.out.println("entrou aqui2");
         for(Menu mp : listaMenusAux) {
             for(Menu mn1 : listaMenusPI) {
                 Menu menuAux = new Menu();
