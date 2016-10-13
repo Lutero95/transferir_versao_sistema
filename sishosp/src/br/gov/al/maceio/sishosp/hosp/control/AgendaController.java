@@ -16,6 +16,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
@@ -49,6 +50,8 @@ public class AgendaController implements Serializable {
 	private List<AgendaBean> listaConsulta;
 	private List<ProfissionalBean> listaProfissional;
 	private boolean habilitarDetalhes;
+	private List<TipoAtendimentoBean> listaTipos;	
+	TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();	
 
 	private String situacao;
 
@@ -58,6 +61,7 @@ public class AgendaController implements Serializable {
 		this.agenda = new AgendaBean();
 		grupoSelecionado = new GrupoBean();
 		listaGruposProgramas = new ArrayList<GrupoBean>();
+		listaTipos = new ArrayList<TipoAtendimentoBean>();		
 		programaSelecionado = new ProgramaBean();
 		this.listaNovosAgendamentos = new ArrayList<AgendaBean>();
 		this.listaProfissional = new ArrayList<ProfissionalBean>();		
@@ -374,6 +378,7 @@ public class AgendaController implements Serializable {
 	}
 
 	public void selectPrograma(SelectEvent event) throws ProjetoException {
+		System.out.println("xxxxxxxxxxxxxxx");
 		this.programaSelecionado = (ProgramaBean) event.getObject();
 		System.out.println("cod programa selecionado "
 				+ programaSelecionado.getIdPrograma());
@@ -392,10 +397,25 @@ public class AgendaController implements Serializable {
 
 	}
 	
-	public void atualizaListaProfPorGrupo(SelectEvent event)
+	public void atualizaListaTipos(GrupoBean g) throws ProjetoException {
+		this.grupoSelecionado = g;
+		this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
+	}
+
+	
+	public void selectGrupo(SelectEvent event) throws ProjetoException {
+		System.out.println("selecionou o grupo");
+		this.grupoSelecionado = (GrupoBean) event.getObject();
+		System.out.println("grupo selec foi "+grupoSelecionado);
+		System.out.println("id do grupo selecionado foi "+grupoSelecionado.getIdGrupo());
+		atualizaListaTipos(grupoSelecionado);
+		atualizaListaProfPorGrupo();
+		limparNaBuscaGrupo();
+	}
+	
+	public void atualizaListaProfPorGrupo()
 			throws ProjetoException {
 		System.out.println("VAI ATualahsdas");
-		this.grupoSelecionado = (GrupoBean) event.getObject();
 		this.listaProfissional = pDao
 				.listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
 	}	
@@ -455,6 +475,20 @@ public class AgendaController implements Serializable {
 	 */
 	public void setListaProfissional(List<ProfissionalBean> listaProfissional) {
 		this.listaProfissional = listaProfissional;
+	}
+
+	/**
+	 * @return the listaTipos
+	 */
+	public List<TipoAtendimentoBean> getListaTipos() {
+		return listaTipos;
+	}
+
+	/**
+	 * @param listaTipos the listaTipos to set
+	 */
+	public void setListaTipos(List<TipoAtendimentoBean> listaTipos) {
+		this.listaTipos = listaTipos;
 	}
 
 }

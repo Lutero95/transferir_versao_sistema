@@ -67,10 +67,6 @@ public class TipoAtendimentoController implements Serializable {
 
 	}
 
-	public void atualizaListaTipos(GrupoBean g) throws ProjetoException {
-		this.grupoSelecionado = g;
-		this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
-	}
 
 	public void buscarTipoAt() throws ProjetoException {
 		this.listaTipos = tDao.listarTipoAtBusca(descricaoBusca, tipoBuscar);
@@ -221,13 +217,7 @@ public class TipoAtendimentoController implements Serializable {
 		return tDao.listarTipoAtAutoComplete(query, this.grupoSelecionado);
 	}
 
-	public void selectGrupo(SelectEvent event) throws ProjetoException {
-		System.out.println("selecionou o grupo");
-		this.grupoSelecionado = (GrupoBean) event.getObject();
-		System.out.println("grupo selec foi "+grupoSelecionado);
-		System.out.println("id do grupo selecionado foi "+grupoSelecionado.getIdGrupo());
-		atualizaListaTipos(grupoSelecionado);
-	}
+
 
 	public List<TipoAtendimentoBean> listaTipoAtAutoCompleteTodos(String query)
 			throws ProjetoException {

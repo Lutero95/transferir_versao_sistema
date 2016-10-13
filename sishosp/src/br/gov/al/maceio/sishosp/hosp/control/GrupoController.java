@@ -217,6 +217,7 @@ public class GrupoController implements Serializable {
 
 	public List<GrupoBean> listaGrupoAutoComplete(String query)
 			throws ProjetoException {
+		System.out.println("id do programa selecionado e vai buscar grupo "+programaSelecionado.getIdPrograma());
 		return gDao.listarGruposAutoComplete(query, this.programaSelecionado);
 	}
 

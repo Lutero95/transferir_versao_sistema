@@ -80,13 +80,9 @@
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descGrupo}">
 							<p:ajax event="itemSelect"
-								listener="#{TipoAtendimentoController.selectGrupo}"
+								listener="#{AgendaController.selectGrupo}"
 								update=":formAgendaMedica:outTipoAt, :formConsuTipoAt:dtTipoAt" />
-							<p:ajax event="itemSelect"
-								listener="#{ProfissionalController.atualizaListaProfPorGrupo}"
-								update=":formAgendaMedica:outProf, :formConsuProf:dtProf" />
-							<p:ajax event="change" update=":formAgendaMedica"
-								listener="#{AgendaController.limparNaBuscaGrupo()}" />
+
 						</p:autoComplete>
 					</p:outputPanel>
 				</div>
@@ -388,7 +384,7 @@
 							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, 
 							:formAgendaMedica:btBusGr, :formAgendaMedica:outGrupo"
 							icon="ui-icon-check" title="Selecionar"
-							action="#{GrupoController.atualizaLista(AgendaController.agenda.programa)}"
+							action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
 							onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
 								target="#{AgendaController.agenda.programa}" />
