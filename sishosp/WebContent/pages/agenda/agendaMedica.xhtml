@@ -75,7 +75,7 @@
 						<p:autoComplete value="#{AgendaController.agenda.grupo}" size="60"
 							converter="conGrupo"
 							disabled="#{AgendaController.agenda.programa==null}"
-							completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+							completeMethod="#{AgendaController.listaGrupoAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descGrupo}">
@@ -100,13 +100,13 @@
 						<p:autoComplete value="#{AgendaController.agenda.tipoAt}"
 							size="60" converter="conTipoAtendimento"
 							disabled="#{AgendaController.agenda.grupo==null}"
-							completeMethod="#{TipoAtendimentoController.listaTipoAtAutoComplete}"
+							completeMethod="#{AgendaController.listaTipoAtAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descTipoAt}">
 							<p:ajax event="itemSelect" update=":formAgendaMedica" />
-							<p:ajax event="change" update=":formAgendaMedica"
-								listener="#{AgendaController.limparNaBuscaTipo()}" />
+						<!-- 	<p:ajax event="change" update=":formAgendaMedica"
+							listener="#{AgendaController.limparNaBuscaTipo()}" /> -->
 						</p:autoComplete>
 					</p:outputPanel>
 				</div>

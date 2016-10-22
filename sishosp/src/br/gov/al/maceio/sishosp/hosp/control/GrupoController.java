@@ -218,7 +218,16 @@ public class GrupoController implements Serializable {
 	public List<GrupoBean> listaGrupoAutoComplete(String query)
 			throws ProjetoException {
 		System.out.println("id do programa selecionado e vai buscar grupo "+programaSelecionado.getIdPrograma());
-		return gDao.listarGruposAutoComplete(query, this.programaSelecionado);
+		
+		if(programaSelecionado.getIdPrograma()!= null){
+			System.out.println("walter gay");
+			return gDao.listarGruposAutoComplete(query, this.programaSelecionado);
+		}else{
+			System.out.println("walter gay null");
+			return null; 
+		}
+		
+		
 	}
 
 	public List<GrupoBean> listaGrupoAutoComplete2(String query)
