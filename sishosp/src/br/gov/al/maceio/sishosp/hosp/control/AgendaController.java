@@ -1,4 +1,4 @@
-package br.gov.al.maceio.sishosp.hosp.control;
+	package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -168,6 +168,9 @@ public class AgendaController implements Serializable {
 	}
 
 	public void verificaDisponibilidadeData() throws ProjetoException {
+		System.out.println("verificadispdata");
+		if (!agenda.getTipoAt().isEquipe()){
+		System.out.println("vai verificar a disp sem ser equipe");
 		FeriadoBean feriado = aDao.verificarFeriado(this.agenda.getDataAtendimento());
 		List<BloqueioBean> bloqueio = new ArrayList<BloqueioBean>();
 		if (this.agenda.getProfissional().getIdProfissional() != null) {
@@ -179,12 +182,19 @@ public class AgendaController implements Serializable {
 					"Data bloqueada! " + feriado.getDescFeriado(), "Feriado");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+		else
 
 		if (!bloqueio.isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Data bloqueada para este profissional!",
 					"Bloqueio");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+		else
+			verAgenda();	
+		
+		
+		}
+		
 	}
 
 	public void verAgenda() throws ProjetoException {
@@ -198,13 +208,13 @@ public class AgendaController implements Serializable {
 		}
 		boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
 		boolean diaSem = aDao.buscarDiaSemana(this.agenda);
-		boolean ehTipoAtend = aDao.buscarTabTipoAtendAgenda(this.agenda);
-		if (dtEspecifica && ehTipoAtend) {
+		boolean limitePorTipoAtend = aDao.buscarTabTipoAtendAgenda(this.agenda);
+		if (dtEspecifica && limitePorTipoAtend) {
 			System.out.println("Eh data especifica");
 			listarAgendamentosData();
 			this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));
 			this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
-		} else if (diaSem && ehTipoAtend) {
+		} else if (diaSem && limitePorTipoAtend) {
 			System.out.println("Eh dia Semana");
 			listarAgendamentosData();
 			this.agenda.setMax(aDao.verQtdMaxAgendaEspec(this.agenda));

@@ -200,12 +200,17 @@
 						 :formAgendaMedica:outlAgendados, :formAgendaMedica:dtAgData,
 						 :formAgendaMedica:msgFeriado" />
 
+<div class="form-group row">
+<div class="col-sm-12">
 			<p:outputPanel id="outQtd">
 				<h:outputLabel for="qtd" value="Qtd." />
 				<br />
 				<p:inputText id="qtd" value="#{AgendaController.agenda.qtd}"
-					style="width: 40px" readonly="true" />
+				readonly="true" />
 			</p:outputPanel>
+			
+			</div>
+			</div>
 
 			<p:outputPanel id="outMax">
 				<h:outputLabel for="max" value="Máx." />
