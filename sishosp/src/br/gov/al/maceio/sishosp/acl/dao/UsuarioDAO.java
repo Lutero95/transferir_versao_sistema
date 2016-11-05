@@ -396,12 +396,13 @@ public class UsuarioDAO{
     
     public boolean associarPermAoUsuario(UsuarioBean usuario) {
 
-        String sql = "insert into acl.perm_usuario (id_usuario, id_permissao) values (?, ?)";
+        String sql = "insert into acl.perm_usuario (id_usuario, id_permissao, dtacadastro) values (?, ?, CURRENT_TIMESTAMP)";
 
         boolean associou = false;
 
         List<Long> listaId = usuario.getListaIdPermissoes();
-
+        System.out.println("id"+usuario.getId());
+        System.out.println("lista"+listaId.size());
         try {
             // conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);

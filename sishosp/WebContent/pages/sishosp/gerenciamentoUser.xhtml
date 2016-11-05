@@ -61,12 +61,13 @@
 						<h:outputText value="#{user.cpf}"></h:outputText>
 					</p:column>
 
-					<p:column headerText="Ação" style="width:2%;">
-						<p:commandButton icon="alterar"
-							title="Clique para Alterar o Usuário" immediate="true"
+					<p:column headerText="Ação" style="width:4%;">
+						<p:commandButton value="Alterar" icon="ui-icon-gear"
+							immediate="true"
 							actionListener="#{MBUsuarioCadastro.limparDados()}"
 							action="#{MBUsuarioCadastro.limparDualAlt()}"
-							oncomplete="altUsuario.show()" update=":formALTU:pnlAltUsuario">
+							oncomplete="PF('altUsuario').show()"
+							update=":formALTU:pnlAltUsuario">
 
 							<f:setPropertyActionListener value="#{user}"
 								target="#{MBUsuarioCadastro.usuarioEdit}" />
@@ -305,7 +306,7 @@
 
 									</p:tab>
 
-									<!-- <p:tab title="Associar Funções">
+									<p:tab title="Associar Funções">
 										<p:panelGrid styleClass="semBorda" columns="2">
 											<p:pickList id="pickFuncao"
 												value="#{MBUsuarioCadastro.listaFuncoesDual}" var="funcao"
@@ -322,7 +323,7 @@
 											</p:pickList>
 										</p:panelGrid>
 									</p:tab>
-									 -->
+
 
 									<!-- <p:tab title="Associar Programa Grupo">
 										<p:panelGrid styleClass="semBorda" columns="2">
@@ -412,7 +413,7 @@
 											value="#{MBUsuarioCadastro.usuarioEdit.cpf}"
 											validatorMessage="CPF inválido.">
 
-											<stella:validateCPF formatted="false" />
+											<stella:validateCPF formatted="true" />
 										</p:inputMask>
 									</p:column>
 								</p:row>
@@ -516,11 +517,68 @@
 										<f:facet name="targetCaption">Sistemas associados</f:facet>
 
 										<p:ajax event="transfer"
-											listener="#{MBUsuarioCadastro.onTransferSistema}" />
+											listener="#{MBUsuarioCadastro.onTransferSistemaEdit}" />
 									</p:pickList>
 								</p:panelGrid>
 							</center>
 						</p:tab>
+
+
+						<!--  <p:tab title="Associar Menus">
+							<p:panelGrid styleClass="semBorda" columns="2">
+								<p:pickList id="pickMenu"
+									value="#{MBUsuarioCadastro.listaMenusDualEdit}" var="menu"
+									itemLabel="#{menuMB.verificarTipoRel(menu.descricao, menu.tipo)} - #{menu.descSistema} (#{menu.siglaSistema})"
+									itemValue="#{menu}" showCheckbox="true" showSourceFilter="true"
+									showTargetFilter="true" filterMatchMode="contains"
+									converter="conPickListMenu">
+
+									<f:facet name="sourceCaption">Menus não associadas</f:facet>
+									<f:facet name="targetCaption">Menus associadas</f:facet>
+
+									<p:ajax event="transfer"
+										listener="#{MBUsuarioCadastro.onTransferMenuEdit}" />
+								</p:pickList>
+							</p:panelGrid>
+
+						</p:tab> 
+
+						<p:tab title="Associar Funções">
+							<p:panelGrid styleClass="semBorda" columns="2">
+								<p:pickList id="pickFuncao"
+									value="#{MBUsuarioCadastro.listaFuncoesDualEdit}" var="funcao"
+									itemLabel="#{funcao.descricao} - #{funcao.descSistema} (#{funcao.siglaSistema})"
+									itemValue="#{funcao}" showCheckbox="true"
+									showSourceFilter="true" showTargetFilter="true"
+									filterMatchMode="contains" converter="conPickListFuncao">
+
+									<f:facet name="sourceCaption">Funções não associadas</f:facet>
+									<f:facet name="targetCaption">Funções associadas</f:facet>
+
+									<p:ajax event="transfer"
+										listener="#{MBUsuarioCadastro.onTransferFuncaoEdit}" />
+								</p:pickList>
+							</p:panelGrid>
+						</p:tab> -->
+
+						<!-- <p:tab title="Associar Programa Grupo">
+										<p:panelGrid styleClass="semBorda" columns="2">
+											<p:pickList id="pickProgramaGrupo"
+												value="#{MBUsuarioCadastro.listaProgGrupoDualAlt}" var="funcao"
+												itemLabel="#{funcao.descPrograma} - #{funcao.descGrupo})"
+												itemValue="#{funcao}" showCheckbox="true"
+												showSourceFilter="true" showTargetFilter="true"
+												filterMatchMode="contains" converter="conPickListProgramaGrupo">
+
+												<f:facet name="sourceCaption">Programa/Grupo não associadas</f:facet>
+												<f:facet name="targetCaption">Programa/Grupo  associadas</f:facet>
+
+												<p:ajax event="transfer"
+													listener="#{MBUsuarioCadastro.onTransferProgramaGrupo}" />
+											</p:pickList>
+										</p:panelGrid>
+									</p:tab>
+									 -->
 
 					</p:tabView>
 

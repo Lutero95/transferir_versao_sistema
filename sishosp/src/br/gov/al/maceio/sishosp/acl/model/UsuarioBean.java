@@ -15,6 +15,8 @@ public class UsuarioBean implements Serializable{
     /**
 	 * 
 	 */
+	
+	
 	private static final long serialVersionUID = 1L;
 	private Integer codigo;
     private String nome;
@@ -44,6 +46,7 @@ public class UsuarioBean implements Serializable{
     private Integer idPerfil;
     private String descPerfil;
     private List<Integer> listaIdSistemas;
+    private List<Long> listaIdMenus;
     private List<Long> listaIdPermissoes;
 
     private List<SecretariaBean> listaSecreFolha;
@@ -279,7 +282,16 @@ public class UsuarioBean implements Serializable{
         this.listaIdSistemas = listaIdSistemas;
     }
 
-    public List<Long> getListaIdPermissoes() {
+    
+    public List<Long> getListaIdMenus() {
+		return listaIdMenus;
+	}
+
+	public void setListaIdMenus(List<Long> listaIdMenus) {
+		this.listaIdMenus = listaIdMenus;
+	}
+
+	public List<Long> getListaIdPermissoes() {
         return listaIdPermissoes;
     }
 

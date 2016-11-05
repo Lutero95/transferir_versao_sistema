@@ -319,19 +319,16 @@ public class FuncaoDAO {
     
     public List<Funcao> listarFuncaoItemSourcerUser(Integer idPerfil) throws ProjetoException {
 
-        String sql = "select fu.id, fu.descricao, fu.codigo, fu.ativa, si.id as id_sis, "
-            + "si.descricao as desc_sis, si.sigla as sigla_sis"
-            + "from acl.permissao pm "
-            + "join acl.perm_geral pg on pg.id_permissao = pm.id "
-            + "join acl.funcao fu on fu.id = pg.id_funcao "
-            + "join acl.sistema si on si.id = fu.id_sistema "
-            + "where fu.id not in ("
-            + "	select fu.id from acl.perm_perfil pp "
-            + "	join acl.perfil pf on pf.id = pp.id_perfil "
-            + "	join acl.permissao pm on pm.id = pp.id_permissao "
-            + "	join acl.perm_geral pg on pg.id_permissao = pm.id "
-            + "	join acl.funcao fu on fu.id = pg.id_funcao "
-            + "	join acl.sistema si on si.id = fu.id_sistema where pf.id = ? ) order by fu.descricao";
+        String sql = "select fu.id, fu.descricao, fu.codigo, fu.ativa, si.id as id_sis, si.descricao as desc_sis, si.sigla as sigla_sis from acl.permissao "
+        		+ "pm join acl.perm_geral pg on pg.id_permissao = pm.id "
+        		+ "join acl.funcao fu on fu.id = pg.id_funcao "
+        		+ "join acl.sistema si on si.id = fu.id_sistema "
+        		+ "where fu.id not in (select fu.id from acl.perm_perfil pp "
+        		+ "join acl.perfil pf on pf.id = pp.id_perfil "
+        		+ "join acl.permissao pm on pm.id = pp.id_permissao "
+        		+ "join acl.perm_geral pg on pg.id_permissao = pm.id "
+        		+ "join acl.funcao fu on fu.id = pg.id_funcao "
+        		+ "join acl.sistema si on si.id = fu.id_sistema where pf.id = ? ) order by fu.descricao";
 
         List<Funcao> lista = new ArrayList();
 
@@ -482,8 +479,8 @@ public class FuncaoDAO {
         System.out.println("ID USU�?RIO: " + idUsuario + "\n");
         
         String sql = "select fu.id, fu.descricao, fu.codigo,  fu.ativa, "
-            + "si.id as id_sis, si.descricao as desc_sis, si.sigla as sigla_sis, "
-            + "  from acl.perm_usuario pu "
+            + "si.id as id_sis, si.descricao as desc_sis, si.sigla as sigla_sis "
+            + "from acl.perm_usuario pu "
             + "join acl.permissao pm on pm.id = pu.id_permissao "
             + "join acl.perm_geral pg on pg.id_permissao = pm.id "
             + "join acl.funcao fu on fu.id = pg.id_funcao "

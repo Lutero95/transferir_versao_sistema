@@ -46,6 +46,7 @@ import org.primefaces.model.menu.MenuModel;
 //@ViewScoped
 public class UsuarioCadastroControll implements Serializable {
 
+	//OBJETOS
     private UsuarioBean usuario;
     private UsuarioBean usuarioEdit;
     private String login;
@@ -55,7 +56,7 @@ public class UsuarioCadastroControll implements Serializable {
     private UIInput senhaInputEdit;
 
 
-    // busca personalizada
+    // BUSCA PERSONALIZADA
     private String valor;
 	private String tipoBusca;
     private String rendererSetor;
@@ -65,49 +66,46 @@ public class UsuarioCadastroControll implements Serializable {
     
     //LISTAS
     
-    // Dual Sistema
+    // DUAL LISTAS
     private DualListModel<Sistema> listaSistemasDual;
     private List<Sistema> listaSistemasSoucer;
     private List<Sistema> listaSistemasTarget;
     private List<Integer> codigoSistema;
     
-    private DualListModel<Permissao> listaPermissoesDual;
-    private List<Permissao> listaPermissoesSource;
-    private List<Permissao> listaPermissoesTarget;
-
     private DualListModel<Sistema> listaSistemasDualAlt;
     private List<Sistema> listaSistemasSoucerAlt;
     private List<Sistema> listaSistemasTargetAlt;
     private List<Integer> codigoSistemaAlt;
-
-    private String usuarioSelecionado;
+    
+    private DualListModel<Permissao> listaPermissoesDual;
+    private List<Permissao> listaPermissoesSource;
+    private List<Permissao> listaPermissoesTarget;
 
     private DualListModel<Permissao> listaPermissoesDualAlt;
     private List<Permissao> listaPermissoesSourceAlt;
     private List<Permissao> listaPermissoesTargetAlt;
-
-    private Integer abaAtiva;
-    
-    private Perfil pf;
     
     private DualListModel<Menu> listaMenusDual;
     private List<Menu> listaMenusSource;
     private List<Menu> listaMenusTarget;
     
-    private DualListModel<Funcao> listaFuncoesDual;
-    private List<Funcao> listaFuncoesSource;
-    private List<Funcao> listaFuncoesTarget;
-    
     private DualListModel<Menu> listaMenusDualEdit;
     private List<Menu> listaMenusSourceEdit;
     private List<Menu> listaMenusTargetEdit;
     
+    private DualListModel<Funcao> listaFuncoesDual;
+    private List<Funcao> listaFuncoesSource;
+    private List<Funcao> listaFuncoesTarget;
+     
     private DualListModel<Funcao> listaFuncoesDualEdit;
     private List<Funcao> listaFuncoesSourceEdit;
     private List<Funcao> listaFuncoesTargetEdit;
-    
-    private String perfilSelecionado;
-    
+
+    // OBJETOS
+    private String usuarioSelecionado;
+    private Integer abaAtiva;
+    private Perfil pf; 
+    private String perfilSelecionado;  
     private Integer abaAtivaV2;
 
 
@@ -175,41 +173,29 @@ public class UsuarioCadastroControll implements Serializable {
             && Integer.parseInt(perfilSelecionado) > 0) {
             
                 List<Integer> listaSis = new ArrayList<>();
-
+                List<Long> listaMen = new ArrayList<>();
                 List<Long> permissoes = new ArrayList<>();
-                List<Menu> listaMenusAux = listaMenusDual.getTarget();
-                //List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
-
-                MenuDAO mdao = new MenuDAO();
-                List<Menu> menusPerfil = mdao.listarMenusPerfil(Integer.parseInt(perfilSelecionado));
-
-                MenuMB mmb = new MenuMB();
-                List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
-
-                for(Menu mp : menusPerfil) {
-                    for(Menu mf : listaFiltrada) {
-                        if(mp.getCodigo().equals(mf.getCodigo())) {
-                            listaFiltrada.remove(mf);
-                        }
-                    }
-                }
-
-                PermissaoDAO pmdao = new PermissaoDAO();
-                for(Menu m : listaFiltrada) {
-                    permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
-                }
-
-                /*for(Funcao f : listaFuncoesAux) {
-                    permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
-                }*/
 
                 for(Sistema s : listaSistemasDual.getTarget()) {
                     listaSis.add(s.getId());
                 }
 
+                for(Menu m : listaMenusDual.getTarget()) {
+                    listaMen.add(m.getId());
+                }
+                
+                PermissaoDAO pmdao = new PermissaoDAO();
+                for(Menu m : listaMenusDual.getTarget()) {
+                    permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
+                }
+                
+                for(Funcao f : listaFuncoesDual.getTarget()) {
+                    permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
+                }
 
                 usuario.setIdPerfil(Integer.parseInt(perfilSelecionado));
                 usuario.setListaIdSistemas(listaSis);
+                usuario.setListaIdMenus(listaMen);
                 usuario.setListaIdPermissoes(permissoes);
 
                 boolean cadastrou = udao.cadastrar(usuario);
@@ -221,13 +207,13 @@ public class UsuarioCadastroControll implements Serializable {
 
                     listaUsuario = null;
 
-                    RequestContext.getCurrentInstance().execute("dlgNovoUsuario.hide();");
+                    RequestContext.getCurrentInstance().execute("PF('dlgNovoUsuario').hide();");
                 } else {
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Ocorreu um erro durante o cadastro!", "Erro");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
 
-                    RequestContext.getCurrentInstance().execute("dlgNovoUsuario.hide();");
+                    RequestContext.getCurrentInstance().execute("PF('dlgNovoUsuario').hide();");
                 }
             
         } else {
@@ -243,41 +229,24 @@ public class UsuarioCadastroControll implements Serializable {
 
         if(listaSistemasDualAlt.getTarget().size() > 0
             && Integer.parseInt(perfilSelecionado) > 0) {
-            
-            if(usuarioEdit.getCodSetor().size() > 0 && usuarioEdit.getCodSetor() != null) {
 
                 List<Integer> listaSis = new ArrayList<>();        
                 List<Long> listaPerms = new ArrayList<>();
-                List<Menu> listaMenusAux = listaMenusDualEdit.getTarget();
-                List<Funcao> listaFuncoesAux = listaFuncoesDualEdit.getTarget();
-
-                MenuDAO mdao = new MenuDAO();
-                List<Menu> menusPerfil = mdao.listarMenusPerfil(Integer.parseInt(perfilSelecionado));
-                MenuMB mmb = new MenuMB();
-                List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
-                List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
-                for(Menu mp : menusPerfil) {
-                    for(Menu mf : listaFiltradaaux) {
-                        if(mp.getCodigo().equals(mf.getCodigo())) {
-                            listaFiltrada.remove(mf);
-                        }
-                    }
-                }
-
-                PermissaoDAO pmdao = new PermissaoDAO();
-                for(Menu m : listaFiltrada) {
-                    listaPerms.add(pmdao.recIdPermissoesMenu(m.getId()));
-                }
-
-                for(Funcao f : listaFuncoesAux) {
-                    listaPerms.add(pmdao.recIdPermissoesFuncao(f.getId()));
-                }
-
-                boolean alterou = false;
-
+                
                 for(Sistema s : listaSistemasDualAlt.getTarget()) {
                     listaSis.add(s.getId());
                 }
+
+                /*PermissaoDAO pmdao = new PermissaoDAO();
+                for(Menu m : listaMenusDualEdit.getTarget()) {
+                    listaPerms.add(pmdao.recIdPermissoesMenu(m.getId()));
+                }
+
+                for(Funcao f : listaFuncoesDualEdit.getTarget()) {
+                    listaPerms.add(pmdao.recIdPermissoesFuncao(f.getId()));
+                }*/
+
+                boolean alterou = false;
 
                 if(listaPerms.size() > 0) {
                     usuarioEdit.setIdPerfil(Integer.parseInt(perfilSelecionado));
@@ -298,15 +267,15 @@ public class UsuarioCadastroControll implements Serializable {
 	
                     listaUsuario = null;
 
-                    RequestContext.getCurrentInstance().execute("altUsuario.hide();");
+                    RequestContext.getCurrentInstance().execute("PF('altUsuario').hide();");
                 } else {
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Ocorreu um erro durante a alteracao!", "Erro");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
 
-                    RequestContext.getCurrentInstance().execute("altUsuario.hide();");
+                    RequestContext.getCurrentInstance().execute("PF('altUsuario').hide();");
                 }
-            } 
+             
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "Selecione um perfil e um sistema.", "Erro");
@@ -360,7 +329,7 @@ public class UsuarioCadastroControll implements Serializable {
             RequestContext.getCurrentInstance().execute("altSenha.hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante a alteraÃ§Ã£o!", "Erro");
+                    "Ocorreu um erro durante a alteração!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
 
             RequestContext.getCurrentInstance().execute("altSenha.hide();");
@@ -456,6 +425,19 @@ public void getValoresUsuario() throws ProjetoException {
                 listaFuncoesTargetEdit.add((Funcao) item);
             }
         }        
+    }
+    
+    public void onTransferSistemaEdit(TransferEvent event) {
+        StringBuilder builder = new StringBuilder();
+
+        for (Object item : event.getItems()) {
+            builder.append(((Sistema) item).getId());
+            if (listaSistemasTargetAlt.contains(item)) {
+                listaSistemasTargetAlt.remove(item);
+            } else {
+                listaSistemasTargetAlt.add((Sistema) item);
+            }
+        }
     }
 
     public void onTransferSistema(TransferEvent event) {

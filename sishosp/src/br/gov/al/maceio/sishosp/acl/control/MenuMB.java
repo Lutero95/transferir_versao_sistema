@@ -248,7 +248,7 @@ public class MenuMB implements Serializable {
                 Menu menuAux = new Menu();
                 if(mp.getIndice().equals(mn1.getCodigo()) 
                     && mp.getIdSistema().equals(mn1.getIdSistema())) {                    
-                    
+                    //System.out.println("teste:"+mp.getIndice()+"idSistema:"+mp.getIdSistema()+"codigo:"+mn1.getCodigo());
                     if(!listaVerificada.contains(mn1)) {
                         listaVerificada.add(mn1);
                     }
