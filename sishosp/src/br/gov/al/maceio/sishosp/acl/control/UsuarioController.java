@@ -44,7 +44,7 @@ import org.primefaces.model.menu.MenuModel;
  * @author Thulio e Thiago
  * @since 06/04/2016
  */
-@ManagedBean(name="MBUsuarios")
+@ManagedBean(name = "MBUsuarios")
 @SessionScoped
 public class UsuarioController implements Serializable {
 
@@ -136,30 +136,33 @@ public class UsuarioController implements Serializable {
 	}
 
 	public boolean verificarPermComp(String codigo, Integer idSistema) {
-        boolean valida = false;       
-        for(Permissoes perms : permsUsuarioLogado) {            
-            if(perms.getIdSistemaFunc() != null && perms.getCodigoFuncao() != null) {
-                if(perms.getIdSistemaFunc().equals(idSistema) 
-                    && perms.getCodigoFuncao().equals(codigo)) {               
-                    valida = true;
-                }  
-            }                     
-        }
-        return valida;
-    }
-    	
+		boolean valida = false;
+		for (Permissoes perms : permsUsuarioLogado) {
+			if (perms.getIdSistemaFunc() != null
+					&& perms.getCodigoFuncao() != null) {
+				if (perms.getIdSistemaFunc().equals(idSistema)
+						&& perms.getCodigoFuncao().equals(codigo)) {
+					valida = true;
+				}
+			}
+		}
+		return valida;
+	}
+
 	public String ultimoDiaMes(Integer Ano, Integer Mes) {
 		Calendar cal = new GregorianCalendar(Ano, Mes - 1, 1);
 		return toString().valueOf(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 	}
 
 	public String login() throws ProjetoException {
+		UsuarioDAO udao = new UsuarioDAO();
+
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.put("expired", "N");
 		permissaoProcessos = "false";
 
-		UsuarioDAO udao = new UsuarioDAO();
-		System.out.println("NOME USER: " + usuario.getLogin());
+		usuario.setAtivo(udao.usuarioAtivo(usuario));
+
 		usuarioLogado = udao.autenticarUsuario(usuario);
 
 		if (usuarioLogado == null) {
@@ -169,91 +172,86 @@ public class UsuarioController implements Serializable {
 
 			return "";
 		} else {
-//			FacesContext.getCurrentInstance().getExternalContext()
-					//.getSessionMap().put("obj_usuario", usuarioLogado);
-			//return "/pages/comum/selecaoSistema.faces?faces-redirect=true";
+			// FacesContext.getCurrentInstance().getExternalContext()
+			// .getSessionMap().put("obj_usuario", usuarioLogado);
+			// return "/pages/comum/selecaoSistema.faces?faces-redirect=true";
 
-            FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().put("obj_usuario", usuarioLogado);
+			FacesContext.getCurrentInstance().getExternalContext()
+					.getSessionMap().put("obj_usuario", usuarioLogado);
 
-            nomeSetor = DescSetor;
-            permissaoInteressado = permissaoProcessos;
+			nomeSetor = DescSetor;
+			permissaoInteressado = permissaoProcessos;
 
-            
-            
-            // ACL =============================================================
-                        
-            List<Sistema> sistemas = udao.carregarSistemasUsuario(usuarioLogado);
-            
-            FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().put("perms_usuario_sis", sistemas);
-            
-            List<Permissoes> permissoes = udao.carregarPermissoes(usuarioLogado);
-            
-            sistemaLogado.setDescricao("Sem Sistema");
-            sistemaLogado.setSigla("Sem Sistema");
-            FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().put("sistema_logado", sistemaLogado);
-            
-            for(Sistema s : sistemas) {
-                Menu m = new Menu();
-                m.setDescricao("Principal");
-                m.setUrl(s.getUrl());
-                m.setTipo("injetado");
-                Permissoes perms = new Permissoes();
-                perms.setMenu(m);
-                permissoes.add(perms);
-            }
-            
-            for(Sistema s : sistemas) {
-                Menu m = new Menu();
-                m.setDescricao("Fale Conosco");
-                m.setUrl(s.getUrl());
-                m.setTipo("injetado");
-                Permissoes perms = new Permissoes();
-                perms.setMenu(m);
-                permissoes.add(perms);
-            }
-            
-            /*Permissoes perms = new Permissoes();
-            Menu m2 = new Menu();
-            m2.setDescricao("Fale Conosco");
-            m2.setUrl("/pages/comum/contato.faces");
-            m2.setTipo("injetado");
-            perms.setMenu(m2);
-            permissoes.add(perms);*/
-            
-            Permissoes perms2 = new Permissoes();            
-            Menu m3 = new Menu();
-            m3.setDescricao("Primeiro Acesso");
-            m3.setUrl("/pages/comum/primeiroAcesso.faces");
-            m3.setTipo("injetado");
-            perms2.setMenu(m3);
-            permissoes.add(perms2);
-            
-            FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().put("perms_usuario", permissoes);
-            
-            HttpSession session = SessionUtil.getSession();
-            session.setAttribute("User", usuarioLogado.getLogin());
-                        
-            recoverDataFromSession();
-            
-            /*if(usuarioLogado.getIdPerfil() == 1) {
-                url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
-            } else {   
-                for(Sistema sis : sistemas) {
-                    if(sis.getId() == 1) {
-                        sistemaLogado = sis;
-                    } else {
-                        
-                    }
-                }
-                url = "/pages/clin/principal.faces?faces-redirect=true";
-            }*/
-          String  url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
-       
-        return url;			
+			// ACL =============================================================
+
+			List<Sistema> sistemas = udao
+					.carregarSistemasUsuario(usuarioLogado);
+
+			FacesContext.getCurrentInstance().getExternalContext()
+					.getSessionMap().put("perms_usuario_sis", sistemas);
+
+			List<Permissoes> permissoes = udao
+					.carregarPermissoes(usuarioLogado);
+
+			sistemaLogado.setDescricao("Sem Sistema");
+			sistemaLogado.setSigla("Sem Sistema");
+			FacesContext.getCurrentInstance().getExternalContext()
+					.getSessionMap().put("sistema_logado", sistemaLogado);
+
+			for (Sistema s : sistemas) {
+				Menu m = new Menu();
+				m.setDescricao("Principal");
+				m.setUrl(s.getUrl());
+				m.setTipo("injetado");
+				Permissoes perms = new Permissoes();
+				perms.setMenu(m);
+				permissoes.add(perms);
+			}
+
+			for (Sistema s : sistemas) {
+				Menu m = new Menu();
+				m.setDescricao("Fale Conosco");
+				m.setUrl(s.getUrl());
+				m.setTipo("injetado");
+				Permissoes perms = new Permissoes();
+				perms.setMenu(m);
+				permissoes.add(perms);
+			}
+
+			/*
+			 * Permissoes perms = new Permissoes(); Menu m2 = new Menu();
+			 * m2.setDescricao("Fale Conosco");
+			 * m2.setUrl("/pages/comum/contato.faces"); m2.setTipo("injetado");
+			 * perms.setMenu(m2); permissoes.add(perms);
+			 */
+
+			Permissoes perms2 = new Permissoes();
+			Menu m3 = new Menu();
+			m3.setDescricao("Primeiro Acesso");
+			m3.setUrl("/pages/comum/primeiroAcesso.faces");
+			m3.setTipo("injetado");
+			perms2.setMenu(m3);
+			permissoes.add(perms2);
+
+			FacesContext.getCurrentInstance().getExternalContext()
+					.getSessionMap().put("perms_usuario", permissoes);
+
+			HttpSession session = SessionUtil.getSession();
+			session.setAttribute("User", usuarioLogado.getLogin());
+
+			recoverDataFromSession();
+
+			/*
+			 * if(usuarioLogado.getIdPerfil() == 1) { url =
+			 * "/pages/comum/selecaoSistema.faces?faces-redirect=true"; } else {
+			 * for(Sistema sis : sistemas) { if(sis.getId() == 1) {
+			 * sistemaLogado = sis; } else {
+			 * 
+			 * } } url = "/pages/clin/principal.faces?faces-redirect=true"; }
+			 */
+			String url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
+
+			return url;
 
 		}
 	}
@@ -294,196 +292,225 @@ public class UsuarioController implements Serializable {
 		menuModel = new DefaultMenuModel();
 	}
 
-	 public void gerarMenus(Sistema sistema) {   
-	    	
-	        limparMenuModel();
-	        List<DefaultSubMenu> menuPai = new ArrayList<>();
-	        List<DefaultSubMenu> submenu = new ArrayList<>();
-	       // List<DefaultSubMenu> submenu2 = new ArrayList<>();
-	        List<DefaultMenuItem> menuItem = new ArrayList<>();
-	        List<DefaultSubMenu> subsubAssSubMenu = new ArrayList<>();
-	        List<DefaultSubMenu> menuItemAssSubmenu = new ArrayList<>();
-	        List<DefaultSubMenu> submenuAssSubMenuPai = new ArrayList<>();
-	        List<DefaultSubMenu> menusAssociados = new ArrayList<>();
-	        
-	        // Gerar menu início.
-	        DefaultMenuItem item1 = new DefaultMenuItem();
-	        item1.setValue("Início");
-	        item1.setUrl(sistema.getUrl().replace("?faces-redirect=true", ""));
-	        menuModel.addElement(item1);
-	        
-	        for(Permissoes p : permsUsuarioLogado) {         
-	            // Gerar menu pai.
-	            if((p.getMenu().getIndice() == null) && (p.getMenu().getUrl() == null) 
-	                && (p.getMenu().getTipo().equals("menuPai"))
-	                && (p.getIdSistema().equals(sistema.getId())) 
-	                && (p.getMenu().isAtivo() == true)) {           
-	                
-	                DefaultSubMenu mp = new DefaultSubMenu();
-	                mp.setLabel(p.getMenu().getDescricao());//o nome(descri��o) que vai aparecer na interface
-	                mp.setIcon(p.getMenu().getCodigo()); // faz a associa��o em que menu ele vai ficar
-	                menuPai.add(mp); //adiciona o menu
-	            }
-	           
-	           
-	            // Gerar submenu.
-	            if((p.getMenu().getIndice() != null) && (p.getMenu().getUrl() == null) 
-	                && (p.getMenu().getTipo().equals("submenu")) //compara o tipo para verificar se � submenu
-	                && (p.getIdSistema().equals(sistema.getId()))  //compara os ids
-	                && (p.getMenu().isAtivo() == true)) { //se for ativo
-	                
-	                DefaultSubMenu sb = new DefaultSubMenu();//inicia a cria��o do submenu
-	                sb.setLabel(p.getMenu().getDescricao());
-	                sb.setIcon(p.getMenu().getCodigo());
-	                sb.setId(p.getMenu().getIndice());
-	                System.out.println("Gerar SubMenu - Label: "+sb.getLabel());
-	                System.out.println("Gerar SubMenu - Icon: "+sb.getIcon());
-	                System.out.println("Gerar SubMenu - Id: "+sb.getId());
-	                submenu.add(sb);//cria o submenu
-	            }
-	            
-	            // Gerar menu item com url.
-	            if((p.getMenu().getIndice() != null) && (p.getMenu().getUrl() != null) 
-	                && (p.getMenu().getTipo().equals("menuItem"))//compara o tipo 
-	                && (p.getIdSistema().equals(sistema.getId())) 
-	                && (p.getMenu().isAtivo() == true)) {
-	                //System.out.println("gerar menu item com url, p.getIdSistema: "+p.getIdSistema());
-	                //System.out.println("gerar menu item com url, sistema.getId: "+sistema.getId());
-	                Menu mi = p.getMenu();
-	                //System.out.println("gerar menu item com url, p.getMenu: "+p.getMenu());
-	                DefaultMenuItem item = new DefaultMenuItem();
-	                item.setValue(mi.getDescricao());
-	                System.out.println("Gerar menuitem com url, descri��o: "+mi.getDescricao());
-	                System.out.println("Gerar menuitem com url, URL: "+mi.getUrl());	                
-	                item.setUrl(mi.getUrl());
-	                item.setIcon(p.getMenu().getCodigo());//coloca o submenu dentro do menu
-	                item.setId(mi.getIndice());
-	                menuItem.add(item);
-	            }
-	            
-	            // Gerar menu item com action/onclick.
-	            if((p.getMenu().getIndice() != null) && (p.getMenu().getUrl() == null) 
-	                && (p.getMenu().getTipo().equals("menuItemRel"))
-	                && (p.getIdSistema().equals(sistema.getId())) 
-	                && (p.getMenu().isAtivo() == true)) {
-	                
-	                Menu mi = p.getMenu();
-	                
-	                DefaultMenuItem item = new DefaultMenuItem();
-	                item.setValue(mi.getDescricao());
-	                
-	                if(mi.getAction() != null) {
-	                    item.setCommand(mi.getAction());
-	                    item.setAjax(false);
-	                } else {
-	                    item.setOnclick(mi.getOnclick());
-	                }
-	                
-	                item.setIcon(p.getMenu().getCodigo());
-	                item.setId(mi.getIndice());
-	                menuItem.add(item);
-	            }
-	        }
-	        
-	        // Associar menu item com submenu.    
-	        for(DefaultSubMenu sb : submenu) { 
-	            DefaultSubMenu submenuAux = sb; //submenu que � elemento da lista recebe sb(submenu)
-	            System.out.println("TESTE FORA DO FOR, ICON: "+sb.getIcon());
-	            for(DefaultMenuItem mi : menuItem) {
-	                if(sb.getIcon().equals(mi.getId())) { 
-	                	System.out.println("1 - Menu item com submenu, sb.getIcon: "+sb.getIcon());
-	                    mi.setIcon(null);
-	                    submenuAux.addElement(mi);
-	                    System.out.println("1 - Menu item com submenu, mi.getId: "+mi.getValue());
-	                }
-	            }
-	            menuItemAssSubmenu.add(submenuAux);
-	            
-	        }
-	        
-	     // Associar submenu com submenu.
-	        for(DefaultSubMenu sb2 : submenu) { 
-	          
-	            
-	            for(DefaultSubMenu sb : menuItemAssSubmenu) {
-	            	System.out.println("ENTROU NO SUB MENU"+sb2.getLabel());
-	            	System.out.println("sb2.getIcon "+sb.getIcon());
-	            	System.out.println("sb2.getId()"+sb2.getId());
-	            	if(sb2.getIcon().equals(sb.getId())) {
-	            		System.out.println("Procurar id: "+sb.getId());
-	                	System.out.println("SUBMENU OK");
-	                	System.out.println("LABEL COM ERRO: "+sb.getLabel());
-	                  //  sb.setIcon(null);
-	                   
-	                    sb2.addElement(sb);//esse auxiliar recebe o submenu e depois mais embaixo adiciona ele na lista
-	                }
-	            }
-	            subsubAssSubMenu.add(sb2);
-	        }
-	        
-	        // Associar submenu com menu pai.
-	        for(DefaultSubMenu mp : menuPai) { 
-	            DefaultSubMenu menuPaiAux = mp;
-	            
-	            for(DefaultSubMenu sb : subsubAssSubMenu) {
-	                if(mp.getIcon().equals(sb.getId())) {
-	                	System.out.println("2 - Submneu com meunupai, sb.getId: "+sb.getId());
-	                	System.out.println("2 - Submneu com meunupai, sb.getIcon: "+sb.getIcon());
-	                    sb.setIcon(null);
-	                    menuPaiAux.addElement(sb);//esse auxiliar recebe o submenu e depois mais embaixo adiciona ele na lista
-	                    System.out.println("2-  Submenu com menupai, menuPaiAux.getLabel: "+menuPaiAux.getLabel());
-	                }
-	            }
-	            submenuAssSubMenuPai.add(menuPaiAux);
-	        }
-	        
-	        // Associar menu item com menu pai.    
-	        for(DefaultSubMenu sa : submenuAssSubMenuPai) { 
-	            DefaultSubMenu menuPaiAux = sa;
-	            //Argemiro
-	            for(DefaultMenuItem mi : menuItem) {           	
-	                if(sa.getIcon().equals(mi.getId())) {
-	                    mi.setIcon(null);
-	                    menuPaiAux.addElement(mi);
-	                    System.out.println("3 - Menuitem com menupai, icon: "+sa.getIcon());
-	                	System.out.println("3 - Menuitem com menupai, id: "+mi.getId());
-	                    System.out.println("3 - Menuitem com menupai, menuPaiAux.getLabel: "+menuPaiAux.getLabel());
-	                    System.out.println("3 - Menuitem com menupai, mi.getId: "+mi.getId());
-	                    
-	                    
-	                }
-	            }
-	            menuPaiAux.setIcon(null);
-	            menusAssociados.add(menuPaiAux);
-	            
-	        }
-	        
-	        
-	                
-	        // Preencher menu model.
-	        for(DefaultSubMenu menuAss : menusAssociados) {
-	            menuModel.addElement(menuAss);
-	        }
-	        
-	        // Gerar menu fale conosco.        
-	        DefaultMenuItem item2 = new DefaultMenuItem();
-	        item2.setValue("Fale Conosco");
-	        //item2.setUrl("/pages/comum/contato.faces");
-	        item2.setUrl(sistema.getUrl().replace("?faces-redirect=true", ""));
-	        menuModel.addElement(item2);
-	        
-	        // Gerar menu sistemas.
-	        DefaultMenuItem item3 = new DefaultMenuItem();
-	        item3.setValue("Sistemas");
-	        item3.setUrl("/pages/comum/selecaoSistema.faces");
-	        menuModel.addElement(item3);
-	        
-	        // Gerar menu sair.
-	        DefaultMenuItem item4 = new DefaultMenuItem();
-	        item4.setValue("Sair");
-	        item4.setCommand("#{MBUsuarios.logout()}");
-	        menuModel.addElement(item4);
-	    }
+	public void gerarMenus(Sistema sistema) {
+
+		limparMenuModel();
+		List<DefaultSubMenu> menuPai = new ArrayList<>();
+		List<DefaultSubMenu> submenu = new ArrayList<>();
+		// List<DefaultSubMenu> submenu2 = new ArrayList<>();
+		List<DefaultMenuItem> menuItem = new ArrayList<>();
+		List<DefaultSubMenu> subsubAssSubMenu = new ArrayList<>();
+		List<DefaultSubMenu> menuItemAssSubmenu = new ArrayList<>();
+		List<DefaultSubMenu> submenuAssSubMenuPai = new ArrayList<>();
+		List<DefaultSubMenu> menusAssociados = new ArrayList<>();
+
+		// Gerar menu início.
+		DefaultMenuItem item1 = new DefaultMenuItem();
+		item1.setValue("Início");
+		item1.setUrl(sistema.getUrl().replace("?faces-redirect=true", ""));
+		menuModel.addElement(item1);
+
+		for (Permissoes p : permsUsuarioLogado) {
+			// Gerar menu pai.
+			if ((p.getMenu().getIndice() == null)
+					&& (p.getMenu().getUrl() == null)
+					&& (p.getMenu().getTipo().equals("menuPai"))
+					&& (p.getIdSistema().equals(sistema.getId()))
+					&& (p.getMenu().isAtivo() == true)) {
+
+				DefaultSubMenu mp = new DefaultSubMenu();
+				mp.setLabel(p.getMenu().getDescricao());// o nome(descri��o) que
+														// vai aparecer na
+														// interface
+				mp.setIcon(p.getMenu().getCodigo()); // faz a associa��o em que
+														// menu ele vai ficar
+				menuPai.add(mp); // adiciona o menu
+			}
+
+			// Gerar submenu.
+			if ((p.getMenu().getIndice() != null)
+					&& (p.getMenu().getUrl() == null)
+					&& (p.getMenu().getTipo().equals("submenu")) // compara o
+																	// tipo para
+																	// verificar
+																	// se �
+																	// submenu
+					&& (p.getIdSistema().equals(sistema.getId())) // compara os
+																	// ids
+					&& (p.getMenu().isAtivo() == true)) { // se for ativo
+
+				DefaultSubMenu sb = new DefaultSubMenu();// inicia a cria��o do
+															// submenu
+				sb.setLabel(p.getMenu().getDescricao());
+				sb.setIcon(p.getMenu().getCodigo());
+				sb.setId(p.getMenu().getIndice());
+				System.out.println("Gerar SubMenu - Label: " + sb.getLabel());
+				System.out.println("Gerar SubMenu - Icon: " + sb.getIcon());
+				System.out.println("Gerar SubMenu - Id: " + sb.getId());
+				submenu.add(sb);// cria o submenu
+			}
+
+			// Gerar menu item com url.
+			if ((p.getMenu().getIndice() != null)
+					&& (p.getMenu().getUrl() != null)
+					&& (p.getMenu().getTipo().equals("menuItem"))// compara o
+																	// tipo
+					&& (p.getIdSistema().equals(sistema.getId()))
+					&& (p.getMenu().isAtivo() == true)) {
+				// System.out.println("gerar menu item com url, p.getIdSistema: "+p.getIdSistema());
+				// System.out.println("gerar menu item com url, sistema.getId: "+sistema.getId());
+				Menu mi = p.getMenu();
+				// System.out.println("gerar menu item com url, p.getMenu: "+p.getMenu());
+				DefaultMenuItem item = new DefaultMenuItem();
+				item.setValue(mi.getDescricao());
+				System.out.println("Gerar menuitem com url, descri��o: "
+						+ mi.getDescricao());
+				System.out.println("Gerar menuitem com url, URL: "
+						+ mi.getUrl());
+				item.setUrl(mi.getUrl());
+				item.setIcon(p.getMenu().getCodigo());// coloca o submenu dentro
+														// do menu
+				item.setId(mi.getIndice());
+				menuItem.add(item);
+			}
+
+			// Gerar menu item com action/onclick.
+			if ((p.getMenu().getIndice() != null)
+					&& (p.getMenu().getUrl() == null)
+					&& (p.getMenu().getTipo().equals("menuItemRel"))
+					&& (p.getIdSistema().equals(sistema.getId()))
+					&& (p.getMenu().isAtivo() == true)) {
+
+				Menu mi = p.getMenu();
+
+				DefaultMenuItem item = new DefaultMenuItem();
+				item.setValue(mi.getDescricao());
+
+				if (mi.getAction() != null) {
+					item.setCommand(mi.getAction());
+					item.setAjax(false);
+				} else {
+					item.setOnclick(mi.getOnclick());
+				}
+
+				item.setIcon(p.getMenu().getCodigo());
+				item.setId(mi.getIndice());
+				menuItem.add(item);
+			}
+		}
+
+		// Associar menu item com submenu.
+		for (DefaultSubMenu sb : submenu) {
+			DefaultSubMenu submenuAux = sb; // submenu que � elemento da lista
+											// recebe sb(submenu)
+			System.out.println("TESTE FORA DO FOR, ICON: " + sb.getIcon());
+			for (DefaultMenuItem mi : menuItem) {
+				if (sb.getIcon().equals(mi.getId())) {
+					System.out
+							.println("1 - Menu item com submenu, sb.getIcon: "
+									+ sb.getIcon());
+					mi.setIcon(null);
+					submenuAux.addElement(mi);
+					System.out.println("1 - Menu item com submenu, mi.getId: "
+							+ mi.getValue());
+				}
+			}
+			menuItemAssSubmenu.add(submenuAux);
+
+		}
+
+		// Associar submenu com submenu.
+		for (DefaultSubMenu sb2 : submenu) {
+
+			for (DefaultSubMenu sb : menuItemAssSubmenu) {
+				System.out.println("ENTROU NO SUB MENU" + sb2.getLabel());
+				System.out.println("sb2.getIcon " + sb.getIcon());
+				System.out.println("sb2.getId()" + sb2.getId());
+				if (sb2.getIcon().equals(sb.getId())) {
+					System.out.println("Procurar id: " + sb.getId());
+					System.out.println("SUBMENU OK");
+					System.out.println("LABEL COM ERRO: " + sb.getLabel());
+					// sb.setIcon(null);
+
+					sb2.addElement(sb);// esse auxiliar recebe o submenu e
+										// depois mais embaixo adiciona ele na
+										// lista
+				}
+			}
+			subsubAssSubMenu.add(sb2);
+		}
+
+		// Associar submenu com menu pai.
+		for (DefaultSubMenu mp : menuPai) {
+			DefaultSubMenu menuPaiAux = mp;
+
+			for (DefaultSubMenu sb : subsubAssSubMenu) {
+				if (mp.getIcon().equals(sb.getId())) {
+					System.out.println("2 - Submneu com meunupai, sb.getId: "
+							+ sb.getId());
+					System.out.println("2 - Submneu com meunupai, sb.getIcon: "
+							+ sb.getIcon());
+					sb.setIcon(null);
+					menuPaiAux.addElement(sb);// esse auxiliar recebe o submenu
+												// e depois mais embaixo
+												// adiciona ele na lista
+					System.out
+							.println("2-  Submenu com menupai, menuPaiAux.getLabel: "
+									+ menuPaiAux.getLabel());
+				}
+			}
+			submenuAssSubMenuPai.add(menuPaiAux);
+		}
+
+		// Associar menu item com menu pai.
+		for (DefaultSubMenu sa : submenuAssSubMenuPai) {
+			DefaultSubMenu menuPaiAux = sa;
+			// Argemiro
+			for (DefaultMenuItem mi : menuItem) {
+				if (sa.getIcon().equals(mi.getId())) {
+					mi.setIcon(null);
+					menuPaiAux.addElement(mi);
+					System.out.println("3 - Menuitem com menupai, icon: "
+							+ sa.getIcon());
+					System.out.println("3 - Menuitem com menupai, id: "
+							+ mi.getId());
+					System.out
+							.println("3 - Menuitem com menupai, menuPaiAux.getLabel: "
+									+ menuPaiAux.getLabel());
+					System.out.println("3 - Menuitem com menupai, mi.getId: "
+							+ mi.getId());
+
+				}
+			}
+			menuPaiAux.setIcon(null);
+			menusAssociados.add(menuPaiAux);
+
+		}
+
+		// Preencher menu model.
+		for (DefaultSubMenu menuAss : menusAssociados) {
+			menuModel.addElement(menuAss);
+		}
+
+		// Gerar menu fale conosco.
+		DefaultMenuItem item2 = new DefaultMenuItem();
+		item2.setValue("Fale Conosco");
+		// item2.setUrl("/pages/comum/contato.faces");
+		item2.setUrl(sistema.getUrl().replace("?faces-redirect=true", ""));
+		menuModel.addElement(item2);
+
+		// Gerar menu sistemas.
+		DefaultMenuItem item3 = new DefaultMenuItem();
+		item3.setValue("Sistemas");
+		item3.setUrl("/pages/comum/selecaoSistema.faces");
+		menuModel.addElement(item3);
+
+		// Gerar menu sair.
+		DefaultMenuItem item4 = new DefaultMenuItem();
+		item4.setValue("Sair");
+		item4.setCommand("#{MBUsuarios.logout()}");
+		menuModel.addElement(item4);
+	}
 
 	public String verificarBolTab(boolean ativo, String tipo) {
 		if (ativo == true) {

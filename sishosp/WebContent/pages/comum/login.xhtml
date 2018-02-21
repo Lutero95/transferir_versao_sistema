@@ -5,9 +5,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui" 
-	
-	>
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
 
 <h:head>
@@ -17,42 +15,53 @@
 	<meta name="description" content="" />
 	<meta name="author" content="" />
 
+	<title>Login - EHosp</title>
 
 </h:head>
 
 <h:body>
-	<img class="img-circle"
-		style="position:absolute; top: 1%; right: 44%;"
-		src="../../imgs/EHOSP2.PNG" alt="Ehosp" />
-	<div class="row" style="padding-top: 130px;">
-		<div class="form-signin">
-			<h:form id="fmrLogin">
-			<p:autoComplete style="padding:10px; margin-bottom:20px;height:100px"></p:autoComplete>
-				<p:growl id="msg" />
-				<h2 class="form-signin-heading">Acesse sua conta</h2>
-				<!-- <p:inputMask style="padding:10px;" placeholder="CPF" mask="999-999-999-99" value="#{usuarioController.usuario.cpf}"></p:inputMask> -->
-				<p:inputText id="usuario" size="20"
-					style="padding:10px; margin-bottom:20px;" placeholder="Usuario"
-					required="true" requiredMessage="Informe o usuário."
-					value="#{MBUsuarios.funcionario.login}" />
-				<p:inputText style="padding:10px;" required="true"
-					requiredMessage="Informe a Senha." placeholder="Senha"
-					type="password" value="#{MBUsuarios.funcionario.senha}"></p:inputText>
-				<div class="checkbox">
-					<label class="checkbox"> <input type="checkbox"
-						id="remember-me" name="remember-me" checked="checked" />
-						Mantenha-me conectado.
-					</label>
 
-				</div>
-				<p class="pull-right">
-					<a href="#">Esqueceu sua senha?</a>
-				</p>
-				<h:commandButton value="Entrar" style="width: 100px; height: 40px;"
-					styleClass="btn btn-sm btn-success" action="#{MBUsuarios.login}"
-					update=":fmrLogin:msg, :frmLogin"></h:commandButton>
-				<br />
-			</h:form>
+	<b:navBar brand="EHosp" style="font-size:50px;font-weight: bold;"
+		brandHref="#" fixed="top">
+		<b:navbarLinks>
+		</b:navbarLinks>
+	</b:navBar>
+
+	<center>
+		<img class="img-circle" style="position: center; margin-top: 30px"
+			src="../../imgs/EHOSP2.PNG" alt="Ehosp" />
+	</center>
+	<div class="row">
+		<div class="form-signin">
+			<b:form id="fmrLogin">
+				<p:growl id="msg" />
+
+				<center>
+					<h2 style="color: black;">Acesse sua conta</h2>
+
+					<h:panelGrid columns="1" cellpadding="5">
+
+						<b:inputText mask="999-999-999-99" style="padding:10px;"
+							required="true" value="#{MBUsuarios.usuario.cpf}"
+							placeholder="Digite o CPF" render-label="true" />
+						<b:message for="@previous" />
+
+						<b:inputSecret style="padding:10px;margin-top:10px"
+							required="true" placeholder="Digite a Senha"
+							value="#{MBUsuarios.usuario.senha}"></b:inputSecret>
+						<b:message for="@previous" />
+
+					</h:panelGrid>
+				</center>
+
+				<center>
+					<b:commandButton value="Entrar"
+						style="width: 100px;margin-top:10px"
+						styleClass="btn btn-sm btn-success" action="#{MBUsuarios.login}"
+						update="@form"></b:commandButton>
+				</center>
+
+			</b:form>
 		</div>
 		<div class="container">
 			<p:outputPanel id="outExpired" autoUpdate="false">
@@ -69,15 +78,10 @@
 				</p:dialog>
 			</p:outputPanel>
 
-			<footer class="footer" style="bottom:-180px;">
-			<div class="connect">
-
-				<a href="#" target="_blank"> <img src="../../imgs/facebook.png" /></a>
-				<a href="#" target="_blank"> <img src="../../imgs/twitter.png" /></a>
-			</div>
-
-			<div class="direito">© EHOSP - 2016. Todos os direitos
-				reservados.</div>
+			<footer>
+			<hr />
+			<p>&copy; EHosp</p>
+			<p class="small">Versão: 1.1.1</p>
 			</footer>
 		</div>
 	</div>
