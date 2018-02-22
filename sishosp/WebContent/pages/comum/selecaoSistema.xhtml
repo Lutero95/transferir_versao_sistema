@@ -1,63 +1,77 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui">
 
-    <ui:composition template="../../template/templatepagsistemas.xhtml">
+<ui:composition template="../../template/templatepagsistemas.xhtml">
 
-        <ui:define name="body">
-            <h:form  > 
-            thiago gay
-            <p:panelGrid columns="2" styleClass="semBorda">
-                <h:outputText value="Usuário Online: " />
-                
+	<ui:define name="body">
 
-                <h:outputText value="Perfil: " />
-                <h:outputText value="#{MBUsuarios.usuarioLogado.descPerfil}" />
+		<b:navBar brand="EHosp" style="font-size:50px;font-weight: bold;"
+			brandHref="#" fixed="top">
+			<b:navbarLinks>
+			</b:navbarLinks>
+		</b:navBar>
 
-                <h:outputText value="Empresa: " />
-             
-            
-                <p:commandButton value="SAIR" icon="ui-icon-power" 
-                    style="width:auto !important" action="#{MBUsuarios.logout()}" />
-                <h:inputHidden />
-            </p:panelGrid>
-            </h:form>
-		
-            <div class="sistemas">
-                <h:form id="formSIS">
-                    <p:outputPanel autoUpdate="true">
-                        <ui:repeat var="sis" value="#{MBUsuarios.sistemasUsuarioLogado}" 
-                            varStatus="status">
-                            
-                            <div class="col-md-3">
-                                <div class="thumbnail sistemas-opc">
-                                    <p:graphicImage value="#{sis.imagem}" />
+		<h:form>
+			<p:panelGrid columns="2" styleClass="semBorda"
+				style="margin-top: 60px">
+				<h:outputText value="Usuário Online: " />
+				<h:outputText value="Falta Setar" style="font-weight: bold;"/>
 
-                                    <div class="panel-body">
-                                        <p:outputLabel value="#{sis.descricao}" 
-                                            escape="true" />
-                                    </div>
-                                </div>
 
-                                <div class="thumbnail sistemas-opc-bt">
-                                   
-                                    <p:commandButton value="Acesse" 
-                                        style="font-size: 20px !important;" 
-                                        styleClass="acesse" 
-                                        actionListener="#{MBUsuarios.recSistemaLogado(sis)}" 
-                                        action="#{MBUsuarios.redirecionar(sis.url)}" />
-                                </div>
-                            </div>
-                            
-                        </ui:repeat>
-                    </p:outputPanel>
-                </h:form>
-            </div>
-          
-            
-        </ui:define>
-    </ui:composition>
+				<h:outputText value="Perfil: " />
+				<h:outputText value="#{MBUsuarios.usuarioLogado.descPerfil}" style="font-weight: bold;"/>
+
+
+				<h:outputText value="Empresa: " />
+				<h:outputText value="Falta Setar" style="font-weight: bold;"/>
+
+
+				<p:commandButton value="SAIR" icon="ui-icon-power"
+					style="width:100px !important" action="#{MBUsuarios.logout()}" />
+					
+				<h:inputHidden />
+			</p:panelGrid>
+		</h:form>
+
+		<div class="sistemas">
+			<h:form id="formSIS">
+				<p:outputPanel autoUpdate="true">
+					<ui:repeat var="sis" value="#{MBUsuarios.sistemasUsuarioLogado}"
+						varStatus="status">
+
+						<div class="col-md-3" style="margin-top: 20px">
+							<div class="thumbnail sistemas-opc">
+								<p:graphicImage value="#{sis.imagem}" />
+
+								<div class="panel-body">
+									<center>
+										<p:outputLabel value="#{sis.descricao}" escape="true" />
+									</center>
+								</div>
+							</div>
+
+							<div class="thumbnail sistemas-opc-bt">
+
+								<center>
+									<p:commandButton value="Acesse"
+										style="font-size: 20px !important;" styleClass="acesse"
+										actionListener="#{MBUsuarios.recSistemaLogado(sis)}"
+										action="#{MBUsuarios.redirecionar(sis.url)}" />
+								</center>
+							</div>
+						</div>
+
+					</ui:repeat>
+				</p:outputPanel>
+			</h:form>
+
+		</div>
+
+	</ui:define>
+</ui:composition>
 </html>
