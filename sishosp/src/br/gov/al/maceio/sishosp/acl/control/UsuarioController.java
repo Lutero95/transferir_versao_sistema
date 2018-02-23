@@ -34,6 +34,7 @@ import br.gov.al.maceio.sishosp.acl.model.UsuarioBean;
 
 import javax.faces.component.EditableValueHolder;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
@@ -166,11 +167,12 @@ public class UsuarioController implements Serializable {
 		usuarioLogado = udao.autenticarUsuario(usuario);
 
 		if (usuarioLogado == null) {
-			FacesContext fct = FacesContext.getCurrentInstance();
-			fct.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Usuario ou senha invalidos!", "Erro"));
 
-			return "";
+			FacesMessage msg = new FacesMessage("Usuário ou senha inválido!");
+			FacesContext.getCurrentInstance().addMessage("Error", msg);
+			RequestContext.getCurrentInstance().update("msgError");
+			return null;
+
 		} else {
 			// FacesContext.getCurrentInstance().getExternalContext()
 			// .getSessionMap().put("obj_usuario", usuarioLogado);

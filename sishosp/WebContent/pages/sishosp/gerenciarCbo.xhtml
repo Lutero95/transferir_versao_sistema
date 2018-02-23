@@ -10,63 +10,69 @@
 <ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-	 <b:panel title="Gerenciamento de CBO"  collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de CBO</h4>
+				<hr />
+			</div>
 			<h:form id="frmmensagem">
-			<f:metadata>
-				<f:viewAction action="#{CboController.getListarCbo}" />
-			</f:metadata>
+				<f:metadata>
+					<f:viewAction action="#{CboController.getListarCbo}" />
+				</f:metadata>
 
-			<b:commandButton id="btninc" value="Novo" size="sm"
-				action="#{CboController.redirectInsert()}" icon="glyphicon-plus"
-				look="primary">
-				<f:setPropertyActionListener value="1"
-					target="#{CboController.tipo}" />
-				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-			</b:commandButton>
-			<br />
-			<br />
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{CboController.redirectInsert()}" icon="glyphicon-plus"
+					look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{CboController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
 
-			<b:dataTable id="dt" var="tab" value="#{CboController.listaCbo}"  
-				lang="es" display="Nenhum CBO">
-			
-				<h:column>
-					<f:facet name="header">
+				<b:dataTable id="dt" var="tab" value="#{CboController.listaCbo}"
+					lang="es" display="Nenhum CBO">
+
+					<h:column>
+						<f:facet name="header">
                         Descrição
                     </f:facet>
 
-					<h:outputText value="#{tab.descCbo}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">
+						<h:outputText value="#{tab.descCbo}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
                         Ação
                     </f:facet>
 
-					<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-						action="#{CboController.redirectEdit()}">
-						<f:setPropertyActionListener value="#{tab}"
-							target="#{CboController.cbo}" />
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{CboController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{CboController.cbo}" />
 
-						<f:setPropertyActionListener value="2"
-							target="#{CboController.tipo}" />
-					</b:commandButton>
+							<f:setPropertyActionListener value="2"
+								target="#{CboController.tipo}" />
+						</b:commandButton>
 
-					<b:commandButton tooltip="Excluir" icon="glyphicon-trash" size="sm"
-						ajax="true" style="margin-left:10px"
-						oncomplete="PF('dialogAtencao').show()">
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogAtencao').show()">
 
-						<f:setPropertyActionListener value="#{tab}"
-							target="#{CboController.cbo}" />
-					</b:commandButton>
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{CboController.cbo}" />
+						</b:commandButton>
 
-				</h:column>
-			</b:dataTable>
-
-
+					</h:column>
+				</b:dataTable>
 
 
 
-		</h:form>
-</b:panel>
+
+
+			</h:form>
+
+		</div>
+
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
@@ -74,12 +80,14 @@
 				<div class="alert alert-warning" role="alert">Deseja excluir
 					este cbo?</div>
 				<center>
-				<p:separator/>
-					<b:commandButton look="success" value="Sim" action="#{CboController.excluirCbo()}" ajax="true"
-						icon="glyphicon-ok" update="frmmensagem"/>
-					
-					<b:commandButton value="Não" oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;"/>
+					<p:separator />
+					<b:commandButton look="success" value="Sim"
+						action="#{CboController.excluirCbo()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem" />
+
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;" />
 
 				</center>
 			</h:form>

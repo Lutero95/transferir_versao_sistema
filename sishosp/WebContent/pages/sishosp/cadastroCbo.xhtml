@@ -11,17 +11,23 @@
 	</f:metadata>
 	<ui:define name="body">
 
-		<h:form class="form-horizontal" id="formCADU">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{CboController.cabecalho}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
 
-			<p:growl id="message" />
-			<b:panel title="#{CboController.cabecalho}" collapsible="false">
+			<h:form class="form-horizontal" id="formCADU">
+
 
 				<div class="form-group">
 					<h:outputLabel value="Código" styleClass="col-sm-3 control-label" />
 					<div class="col-sm-2">
-						<h:inputText value="#{CboController.cbo.codigo}"
+						<b:inputText value="#{CboController.cbo.codigo}"
 							class="form-control" required="true" id="incod"
 							requiredMessage="Código obrigatório!" />
+						<b:message for="@previous" />
 
 					</div>
 				</div>
@@ -31,36 +37,36 @@
 					<h:outputLabel value="Descrição"
 						styleClass="col-sm-3 control-label" />
 					<div class="col-sm-6">
-						<h:inputText value="#{CboController.cbo.descCbo}"
+						<b:inputText value="#{CboController.cbo.descCbo}"
 							class="form-control" required="true" id="indesc"
 							requiredMessage="Descrição obrigatória!" />
+						<b:message for="@previous" />
 
 					</div>
 				</div>
-			</b:panel>
 
-			<!-- FIM DO FORMULARIO -->
-			<center>
-				<b:commandButton action="#{CboController.gravarCbo()}"
-					icon="glyphicon-ok" size="sm" look="success"
-					update=":formCADU:message,:formCADU:indesc" value="Incluir"
-					rendered="#{CboController.tipo == 1}" />
-
-
-				<b:commandButton action="#{CboController.alterarCbo()}"
-					icon="glyphicon-ok" size="sm"
-					update=":formCADU:message,:formCADU:indesc" value="Alterar"
-					look="success" rendered="#{CboController.tipo  == 2}" />
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					style="margin-left:10px" size="sm" immediate="true" look="info"
-					action="/pages/sishosp/gerenciarCbo.faces?faces-redirect=true">
-				</b:commandButton>
-
-			</center>
+				<!-- FIM DO FORMULARIO -->
+				<center>
+					<b:commandButton action="#{CboController.gravarCbo()}"
+						icon="glyphicon-ok" size="sm" look="success"
+						update=":formCADU :formCADU:indesc" value="Incluir"
+						rendered="#{CboController.tipo == 1}" />
 
 
+					<b:commandButton action="#{CboController.alterarCbo()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU :formCADU:indesc"
+						value="Alterar" look="success"
+						rendered="#{CboController.tipo  == 2}" />
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="margin-left:10px" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarCbo.faces?faces-redirect=true">
+					</b:commandButton>
 
-		</h:form>
+				</center>
+
+			</h:form>
+
+		</div>
 
 	</ui:define>
 </ui:composition>

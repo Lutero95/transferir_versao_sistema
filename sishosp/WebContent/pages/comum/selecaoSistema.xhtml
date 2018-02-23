@@ -20,20 +20,21 @@
 			<p:panelGrid columns="2" styleClass="semBorda"
 				style="margin-top: 60px">
 				<h:outputText value="Usuário Online: " />
-				<h:outputText value="Falta Setar" style="font-weight: bold;"/>
+				<h:outputText value="Falta Setar" style="font-weight: bold;" />
 
 
 				<h:outputText value="Perfil: " />
-				<h:outputText value="#{MBUsuarios.usuarioLogado.descPerfil}" style="font-weight: bold;"/>
+				<h:outputText value="#{MBUsuarios.usuarioLogado.descPerfil}"
+					style="font-weight: bold;" />
 
 
 				<h:outputText value="Empresa: " />
-				<h:outputText value="Falta Setar" style="font-weight: bold;"/>
+				<h:outputText value="Falta Setar" style="font-weight: bold;" />
 
 
 				<p:commandButton value="SAIR" icon="ui-icon-power"
 					style="width:100px !important" action="#{MBUsuarios.logout()}" />
-					
+
 				<h:inputHidden />
 			</p:panelGrid>
 		</h:form>
@@ -46,11 +47,18 @@
 
 						<div class="col-md-3" style="margin-top: 20px">
 							<div class="thumbnail sistemas-opc">
-								<p:graphicImage value="#{sis.imagem}" />
-
+								<h:commandLink
+									actionListener="#{MBUsuarios.recSistemaLogado(sis)}"
+									action="#{MBUsuarios.redirecionar(sis.url)}">
+									<p:graphicImage value="#{sis.imagem}" />
+								</h:commandLink>
 								<div class="panel-body">
 									<center>
-										<p:outputLabel value="#{sis.descricao}" escape="true" />
+										<h:commandLink
+											actionListener="#{MBUsuarios.recSistemaLogado(sis)}"
+											action="#{MBUsuarios.redirecionar(sis.url)}">
+											<p:outputLabel value="#{sis.descricao}" escape="true" />
+										</h:commandLink>
 									</center>
 								</div>
 							</div>

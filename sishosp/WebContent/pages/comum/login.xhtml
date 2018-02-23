@@ -43,11 +43,13 @@
 
 						<b:inputText mask="999-999-999-99" style="padding:10px;"
 							required="true" value="#{MBUsuarios.usuario.cpf}"
-							placeholder="Digite o CPF" render-label="true" />
+							placeholder="Digite o CPF" render-label="true"
+							requiredMessage="CPF obrigatório" />
 						<b:message for="@previous" />
 
 						<b:inputSecret style="padding:10px;margin-top:10px"
 							required="true" placeholder="Digite a Senha"
+							requiredMessage="Senha obrigatório"
 							value="#{MBUsuarios.usuario.senha}"></b:inputSecret>
 						<b:message for="@previous" />
 
@@ -59,9 +61,15 @@
 						style="width: 180px;margin-top:10px"
 						styleClass="btn btn-sm btn-success" action="#{MBUsuarios.login}"
 						update="@form"></b:commandButton>
+
 				</center>
 
 			</b:form>
+
+			<center>
+				<b:messages value="Error" id="msgError"></b:messages>
+			</center>
+
 		</div>
 		<div class="container">
 			<p:outputPanel id="outExpired" autoUpdate="false">

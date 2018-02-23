@@ -9,6 +9,18 @@ article, aside, details, figcaption, figure, footer, header, hgroup,
 	display: block;
 }
 
+.cadcabecalho {
+	font-size: 18px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-weight: 500;
+	line-height: 1.2;
+	color: #317EAC;
+	font-family: "
+	HelveticaNeue
+	", Helvetica, Arial, sans-serif;"
+}
+
 body {
 	margin: 0;
 	padding: 0;
