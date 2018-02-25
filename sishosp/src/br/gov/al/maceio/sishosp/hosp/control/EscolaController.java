@@ -118,7 +118,7 @@ public class EscolaController implements Serializable{
 		if (alterou == true) {
 			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Escola alterado com sucesso!", "Sucesso");
+					"Escola alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "/pages/sishosp/gerenciarEscola.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
@@ -140,7 +140,7 @@ public class EscolaController implements Serializable{
 		if (excluio == true) {
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Escola excluido com sucesso!", "Sucesso");
+					"Escola excluída com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			buscarEscola();
 			RequestContext.getCurrentInstance().execute(

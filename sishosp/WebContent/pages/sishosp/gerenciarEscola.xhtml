@@ -3,76 +3,81 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-xmlns:b="http://bootsfaces.net/ui"	
-	xmlns:p="http://primefaces.org/ui"
-	
-	>
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 <f:metadata>
-				 <f:viewAction action="#{EscolaController.buscarEscola()}" />
-				
-			</f:metadata>
+	<f:viewAction action="#{EscolaController.buscarEscola()}" />
+
+</f:metadata>
 
 <ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-			<b:panel title="Gerenciamento de Escola"  collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Escola</h4>
+				<hr />
+			</div>
 
-		<h:form id="frmmensagem"
-			>
-<b:commandButton id="btninc" value="Novo" size="sm"
-				action="#{EscolaController.redirectInsert()}" icon="glyphicon-plus"
-				look="primary">
-				<f:setPropertyActionListener value="1"
-					target="#{EscolaController.tipoesc}" />
-				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-			</b:commandButton>
-			<br />
-			<br />
-
-			<p:growl id="growl" showDetail="false" />
-				<b:dataTable id="tabela"  value="#{EscolaController.listaEscolas}"
-				lang="es" var="tab">
+			<h:form id="frmmensagem">
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{EscolaController.redirectInsert()}" icon="glyphicon-plus"
+					look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{EscolaController.tipoesc}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
 				
-<h:column>
-					<f:facet name="header">
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<b:dataTable id="tabela" value="#{EscolaController.listaEscolas}"
+					lang="es" var="tab">
+
+					<h:column>
+						<f:facet name="header">
                         Descrição
                     </f:facet>
-					<h:outputText value="#{tab.descescola}" />
-				</h:column>
+						<h:outputText value="#{tab.descescola}" />
+					</h:column>
 
 
 
-<h:column>
-					<f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                         Ação
                     </f:facet>
 
 
-					<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-						action="#{EscolaController.redirectEdit()}">
-						<f:setPropertyActionListener value="#{tab}"
-							target="#{EscolaController.escola}" />
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{EscolaController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{EscolaController.escola}" />
 
-						<f:setPropertyActionListener value="2"
-							target="#{EscolaController.tipoesc}" />
-					</b:commandButton>
+							<f:setPropertyActionListener value="2"
+								target="#{EscolaController.tipoesc}" />
+						</b:commandButton>
 
-					<b:commandButton tooltip="Excluir" icon="glyphicon-trash" size="sm"
-						ajax="true" style="margin-left:10px"
-						oncomplete="PF('dialogAtencao').show()">
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogAtencao').show()">
 
-<f:setPropertyActionListener value="#{tab.codEscola}"
-										target="#{EscolaController.escola.codEscola}" />
-					</b:commandButton>
+							<f:setPropertyActionListener value="#{tab.codEscola}"
+								target="#{EscolaController.escola.codEscola}" />
+						</b:commandButton>
 
 
-				</h:column>
+					</h:column>
 
 				</b:dataTable>
 
-		</h:form>
-</b:panel>
+			</h:form>
+
+		</div>
+
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
@@ -80,10 +85,10 @@ xmlns:b="http://bootsfaces.net/ui"
 
 
 
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						esta Escola?</div>
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					esta Escola?</div>
 
-			<p:separator/>				
+				<p:separator />
 
 
 
@@ -99,7 +104,7 @@ xmlns:b="http://bootsfaces.net/ui"
 
 
 
-				
+
 				</center>
 
 

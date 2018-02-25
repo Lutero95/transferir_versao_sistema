@@ -10,59 +10,62 @@
 		<f:viewAction action="#{EquipeController.ListarTodasEquipes}" />
 	</f:metadata>
 	<ui:define name="body">
-<b:panel title="Gerenciamento de Equipe"  collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Equipe</h4>
+				<hr />
+			</div>
 
-		<h:form id="frmmensagem">
-<b:commandButton id="btninc" value="Novo" size="sm"
-				action="#{EquipeController.redirectInsert()}" icon="glyphicon-plus"
-				look="primary">
-				<f:setPropertyActionListener value="1"
-					target="#{EquipeController.tipo}" />
-				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-			</b:commandButton>
-			<br />
-			<br />
+			<h:form id="frmmensagem">
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{EquipeController.redirectInsert()}" icon="glyphicon-plus"
+					look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{EquipeController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
 
-			<p:growl id="growl" showDetail="false" />
 
-			<b:dataTable id="tabela" value="#{EquipeController.listaEquipe}"
-				lang="es" var="tab">
-				<h:column>
-					<f:facet name="header">
+				<b:dataTable id="tabela" value="#{EquipeController.listaEquipe}"
+					lang="es" var="tab">
+					<h:column>
+						<f:facet name="header">
                         Descrição
                     </f:facet>
-					<h:outputText value="#{tab.descEquipe}" />
-				</h:column>
+						<h:outputText value="#{tab.descEquipe}" />
+					</h:column>
 
 
-				<h:column>
-					<f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                         Ação
                     </f:facet>
 
 
-					<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-						action="#{EquipeController.redirectEdit()}">
-						<f:setPropertyActionListener value="#{tab}"
-							target="#{EquipeController.equipe}" />
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{EquipeController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{EquipeController.equipe}" />
 
-						<f:setPropertyActionListener value="2"
-							target="#{EquipeController.tipo}" />
-					</b:commandButton>
+							<f:setPropertyActionListener value="2"
+								target="#{EquipeController.tipo}" />
+						</b:commandButton>
 
-					<b:commandButton tooltip="Excluir" icon="glyphicon-trash" size="sm"
-						ajax="true" style="margin-left:10px"
-						oncomplete="PF('dialogAtencao').show()">
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogAtencao').show()">
 
-						<f:setPropertyActionListener value="#{tab}"
-							target="#{EquipeController.equipe}" />
-					</b:commandButton>
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{EquipeController.equipe}" />
+						</b:commandButton>
 
 
-				</h:column>
-			</b:dataTable>
-		</h:form>
-</b:panel>
+					</h:column>
+				</b:dataTable>
+			</h:form>
+		</div>
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 

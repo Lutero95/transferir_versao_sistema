@@ -10,15 +10,24 @@
 <ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
+
+<b:messages id="msgCadAlt" globalOnly="true" escape="false"
+			severity="error,fatal" />
+		
+			
 		<div class="panel-body">
 			<div class="sub-header">
 				<h4>Gerenciamento de CBO</h4>
 				<hr />
 			</div>
+
+
 			<h:form id="frmmensagem">
 				<f:metadata>
 					<f:viewAction action="#{CboController.getListarCbo}" />
 				</f:metadata>
+
+
 
 				<b:commandButton id="btninc" value="Novo" size="sm"
 					action="#{CboController.redirectInsert()}" icon="glyphicon-plus"
@@ -83,7 +92,7 @@
 					<p:separator />
 					<b:commandButton look="success" value="Sim"
 						action="#{CboController.excluirCbo()}" ajax="true"
-						icon="glyphicon-ok" update="frmmensagem" />
+						icon="glyphicon-ok" update=":frmmensagem" />
 
 					<b:commandButton value="Não"
 						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"

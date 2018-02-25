@@ -14,10 +14,20 @@
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
 
-		<b:panel title="#{EquipeController.cabecalho}" collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{EquipeController.cabecalho}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
+
+			<center>
+				<b:messages value="Error" id="msgError"></b:messages>
+			</center>
+
 			<h:form class="form-horizontal" id="formCADU">
 
-				<p:growl id="message" />
+
 				<div class="form-group">
 					<h:outputLabel for="inputname" value="Descrição"
 						styleClass="col-sm-3 control-label" />
@@ -89,24 +99,23 @@
 				<!-- FIM DO FORMULARIO -->
 				<center>
 					<b:commandButton action="#{EquipeController.gravarEquipe()}"
-						icon="glyphicon-ok" size="sm" look="success"
-						update=":formCADU:message,:formCADU" value="Incluir"
+						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
+						value="Incluir" style="float:left"
 						rendered="#{EquipeController.tipo == 1}" />
 
-
 					<b:commandButton action="#{EquipeController.alterarEquipe()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU:message,:formCADU"
-						value="Alterar" look="success"
+						icon="glyphicon-ok" size="sm" update=":formCADU,:formCADU"
+						value="Alterar" look="success" style="float:left"
 						rendered="#{EquipeController.tipo  == 2}" />
+
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="margin-left:10px" size="sm" immediate="true" look="info"
+						size="sm" immediate="true" look="info" style="float:right"
 						action="/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true">
 					</b:commandButton>
 
 				</center>
 			</h:form>
-		</b:panel>
-
+		</div>
 
 		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProfE"
 			modal="true" width="550px">

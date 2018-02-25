@@ -82,10 +82,10 @@ public class CboController implements Serializable{
 
 		if (cadastrou == true) {
 			//limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"CBO cadastrado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "cadastroCbo?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=CBO cadastrado com sucesso!";	
+			FacesMessage msg = new FacesMessage("CBO cadastrado com sucesso!");
+			FacesContext.getCurrentInstance().addMessage("Error", msg);
+			RequestContext.getCurrentInstance().update("msgCadAlt");
+			return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
@@ -97,10 +97,10 @@ public class CboController implements Serializable{
 	public String alterarCbo() throws ProjetoException {
 		boolean alterou = cDao.alterarCbo(cbo);
 		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cbo alterado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";	
+			FacesMessage msg = new FacesMessage("CBO alterado com sucesso!");
+			FacesContext.getCurrentInstance().addMessage("Error", msg);
+			RequestContext.getCurrentInstance().update("msgCadAlt");
+			return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO alterado com sucesso!";	
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");

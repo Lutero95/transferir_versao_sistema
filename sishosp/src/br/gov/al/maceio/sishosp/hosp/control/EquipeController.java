@@ -140,6 +140,9 @@ public class EquipeController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Equipe cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			RequestContext.getCurrentInstance().update("msgError");
+			
 			return "cadastroEquipe?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=CBO cadastrado com sucesso!";	
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -173,6 +176,7 @@ public class EquipeController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Equipe alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().update("msgError");
 			this.listaEquipe = eDao.listarEquipe();
 			return "/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true";
 		} else {

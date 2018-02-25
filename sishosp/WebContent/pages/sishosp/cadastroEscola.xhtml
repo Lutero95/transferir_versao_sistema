@@ -13,23 +13,27 @@
 		</f:metadata>
 		<!-- INICIO DO FORMULARIO -->
 
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{EscolaController.cabecalho}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
 
-		<b:panel title="#{EscolaController.cabecalho}" collapsible="false">
 			<h:form class="form-horizontal" id="formCADU">
 
-				<p:growl id="message" />
 				<p:outputPanel>
 					<div class="form-group">
 						<h:outputLabel for="inputname" value="Descrição"
 							styleClass="col-sm-3 control-label" />
 						<div class="col-sm-6">
-							<p:inputText value="#{EscolaController.escola.descescola}"
+							<b:inputText value="#{EscolaController.escola.descescola}"
 								class="form-control" id="inputname" required="true"
 								validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-								requiredMessage="é necessário que você informe seu nome.">
+								requiredMessage="É necessário que você informe seu nome.">
 								<f:validateLength minimum="2" maximum="40" />
 
-							</p:inputText>
+							</b:inputText>
 
 						</div>
 					</div>
@@ -37,24 +41,29 @@
 				</p:outputPanel>
 
 				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<center>
 					<b:commandButton action="#{EscolaController.gravarEscola()}"
 						icon="glyphicon-ok" size="sm" look="success"
-						update=":formCADU:message,:formCADU" value="Incluir"
-						rendered="#{EscolaController.tipoesc == 1}" />
-
+						update=":formCADU, msgError" value="Incluir"
+						style="float:left" rendered="#{EscolaController.tipoesc == 1}" />
 
 					<b:commandButton action="#{EscolaController.alterarEscola()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU:message,:formCADU"
-						value="Alterar" look="success"
+						icon="glyphicon-ok" size="sm" update=":formCADU, msgError"
+						value="Alterar" look="success" style="float:left"
 						rendered="#{EscolaController.tipoesc  == 2}" />
+
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="margin-left:10px" size="sm" immediate="true" look="info"
+						style="float:right" size="sm" immediate="true" look="info"
 						action="/pages/sishosp/gerenciarEscola.faces?faces-redirect=true">
 					</b:commandButton>
 
 				</center>
 			</h:form>
-		</b:panel>
+
+		</div>
 
 
 	</ui:define>
