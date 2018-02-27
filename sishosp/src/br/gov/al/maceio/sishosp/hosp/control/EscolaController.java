@@ -99,7 +99,7 @@ public class EscolaController implements Serializable{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Escola cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "cadastroEscola?faces-redirect=true&amp;tipo="+tipoesc+"&amp;sucesso=Escola cadastrada com sucesso!";	
+			return "gerenciarEscola?faces-redirect=true&amp;tipo="+tipoesc+"&amp;sucesso=Escola cadastrada com sucesso!";	
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");

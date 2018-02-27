@@ -14,53 +14,58 @@
 	</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-		 <b:panel title="#{EscolaridadeController.cabecalho}" collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{EscolaridadeController.cabecalho}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
 			<h:form class="form-horizontal" id="formCADU">
 
-				<p:growl id="message" />
-					<div class="form-group">
-						<h:outputLabel for="inputname" value="Descrição"
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<h:inputText
-								value="#{EscolaridadeController.escolaridade.descescolaridade}"
-								class="form-control" id="inputname"
-								pt:placeholder="Digite aqui a escolaridade" required="true"
-								size="10"
-								validatorMessage="Escolaridade deve conter entre 2 e 30 caracteres."
-								requiredMessage="é necessário que você informe sua escolaridade.">
-								<f:validateLength minimum="2" maximum="40" />
-
-							</h:inputText>
-						</div>
+				<div class="form-group">
+					<h:outputLabel for="inputname" value="Descrição"
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText
+							value="#{EscolaridadeController.escolaridade.descescolaridade}"
+							class="form-control" id="inputname"
+							pt:placeholder="Digite aqui a escolaridade" required="true"
+							size="10"
+							validatorMessage="Escolaridade deve conter entre 2 e 30 caracteres."
+							requiredMessage="é necessário que você informe sua escolaridade.">
+							<f:validateLength minimum="2" maximum="40" />
+						</h:inputText>
 					</div>
+				</div>
 
-					<p:separator></p:separator>
-					<!-- FIM DO FORMULARIO -->
-					<center>
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+				
+				<center>
 
-					<b:commandButton action="#{EscolaridadeController.gravarEscolaridade()}" icon="glyphicon-ok" size="sm" look="success"
-						update=":formCADU:message,:formCADU" value="Incluir"
-						
-						rendered="#{EscolaridadeController.tipo == 1}" />
+					<b:commandButton
+						action="#{EscolaridadeController.gravarEscolaridade()}"
+						icon="glyphicon-ok" size="sm" look="success"
+						update=":formCADU" value="Incluir"
+						style="float:left" rendered="#{EscolaridadeController.tipo == 1}" />
 
-
-					<b:commandButton action="#{EscolaridadeController.alterarEscolaridade()}" icon="glyphicon-ok" size="sm" 
-						update=":formCADU:message,:formCADU" value="Alterar" look="success"
+					<b:commandButton
+						action="#{EscolaridadeController.alterarEscolaridade()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU"
+						value="Alterar" look="success" style="float:left"
 						rendered="#{EscolaridadeController.tipo  == 2}" />
+
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="margin-left:10px" size="sm" immediate="true" look="info"
+						style="float:right" size="sm" immediate="true" look="info"
 						action="/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true">
 					</b:commandButton>
 
-
-
-
-					</center>
+				</center>
 
 
 			</h:form>
-</b:panel>
+		</div>
 	</ui:define>
 </ui:composition>
 </html>

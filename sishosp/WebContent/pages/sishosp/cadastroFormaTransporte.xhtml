@@ -4,8 +4,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui"
-		xmlns:b="http://bootsfaces.net/ui">
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
 	<f:metadata>
@@ -16,52 +15,62 @@
 		<!-- INICIO DO FORMULARIO -->
 
 
-			<h:form class="form-horizontal" id="formCADU">
+		<h:form class="form-horizontal" id="formCADU">
 
-				<p:growl id="message" />
-			<b:panel title="#{FormaTransporteController.cabecalho}" collapsible="false">
+			<div class="panel-body">
+				<div class="sub-header">
+					<h:outputText value="#{FormaTransporteController.cabecalho}"
+						styleClass="cadcabecalho"></h:outputText>
+					<hr />
+				</div>
 
 
-					<div class="form-group">
-						<h:outputLabel for="inputname" value="Descrição"
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<h:inputText
-								value="#{FormaTransporteController.transporte.descformatransporte}"
-								class="form-control" id="inputname"
-								pt:placeholder="Digite aqui nome do transporte" required="true"
-								requiredMessage="é necessário que você informe o nome do transporte.">
-								<f:validateLength minimum="2" maximum="40" />
+				<div class="form-group">
+					<h:outputLabel for="inputname" value="Descrição"
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText
+							value="#{FormaTransporteController.transporte.descformatransporte}"
+							class="form-control" id="inputname"
+							pt:placeholder="Digite aqui nome do transporte" required="true"
+							validatorMessage="Forma de Transporte deve conter entre 2 e 30 caracteres."
+							requiredMessage="é necessário que você informe o nome do transporte.">
+							<f:validateLength minimum="2" maximum="40" />
 
-							</h:inputText>
+						</h:inputText>
 
-						</div>
 					</div>
-					<p:separator></p:separator>
-					<!-- FIM DO FORMULARIO -->
-					<center>
-										<b:commandButton action="#{FormaTransporteController.gravarTransporte()}"
-					icon="glyphicon-ok" size="sm" look="success"
-					update=":formCADU:message,:formCADU" value="Incluir"
-					rendered="#{FormaTransporteController.tipo == 1}" />
+				</div>
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<center>
+					<b:commandButton
+						action="#{FormaTransporteController.gravarTransporte()}"
+						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
+						value="Incluir" style="float:left"
+						rendered="#{FormaTransporteController.tipo == 1}" />
+
+					<b:commandButton
+						action="#{FormaTransporteController.alterarTransporte()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+						look="success" style="float:left"
+						rendered="#{FormaTransporteController.tipo  == 2}" />
+
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="float:right" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true">
+					</b:commandButton>
 
 
-				<b:commandButton action="#{FormaTransporteController.alterarTransporte()}"
-					icon="glyphicon-ok" size="sm"
-					update=":formCADU:message,:formCADU" value="Alterar"
-					look="success" rendered="#{FormaTransporteController.tipo  == 2}" />
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					style="margin-left:10px" size="sm" immediate="true" look="info"
-					action="/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true">
-				</b:commandButton>
-						
-						
-											</center>
-</b:panel>
+				</center>
+			</div>
 
 
 
-			</h:form>
+		</h:form>
 
 	</ui:define>
 </ui:composition>

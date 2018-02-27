@@ -9,12 +9,12 @@
 
 <ui:composition template="../../template/template.xhtml">
 
+	<f:metadata>
+		<f:viewAction action="#{CboController.listarCbo}" />
+	</f:metadata>
+
 	<ui:define name="body">
 
-<b:messages id="msgCadAlt" globalOnly="true" escape="false"
-			severity="error,fatal" />
-		
-			
 		<div class="panel-body">
 			<div class="sub-header">
 				<h4>Gerenciamento de CBO</h4>
@@ -23,9 +23,7 @@
 
 
 			<h:form id="frmmensagem">
-				<f:metadata>
-					<f:viewAction action="#{CboController.getListarCbo}" />
-				</f:metadata>
+
 
 
 
@@ -38,6 +36,10 @@
 				</b:commandButton>
 				<br />
 				<br />
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
 				<b:dataTable id="dt" var="tab" value="#{CboController.listaCbo}"
 					lang="es" display="Nenhum CBO">

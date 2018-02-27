@@ -18,7 +18,7 @@ import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 
 public class FormaTransporteDAO {
 	private Connection conexao = null;
-	// COMEÇO DO CODIGO
+	// COMEï¿½O DO CODIGO
 	
             public Boolean cadastrar(FormaTransporteBean transporte) throws ProjetoException {
                 boolean cadastrou = false;
@@ -112,7 +112,7 @@ public class FormaTransporteDAO {
             
             public ArrayList<FormaTransporteBean> listaTransportes() throws ProjetoException {
 
-                String sql = "select * from hosp.formatransporte order by id_formatransporte,descformatransporte";
+                String sql = "select * from hosp.formatransporte order by descformatransporte";
 
                 ArrayList<FormaTransporteBean> lista = new ArrayList();
 

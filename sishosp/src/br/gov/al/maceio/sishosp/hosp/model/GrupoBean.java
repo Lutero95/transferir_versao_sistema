@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GrupoBean implements Serializable{
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
+public class GrupoBean implements Serializable {
 
 	private Integer idGrupo;
 	private String descGrupo;
@@ -14,7 +17,7 @@ public class GrupoBean implements Serializable{
 	private List<EquipeBean> equipesNovo;
 	private EquipeBean equipeAdd;
 	private boolean inserção_pac_institut;
-	
+
 	private boolean equipeThulio;
 
 	public GrupoBean() {
@@ -84,7 +87,31 @@ public class GrupoBean implements Serializable{
 	}
 
 	public void addEquipe() {
-		this.equipes.add(this.equipeAdd);
+		boolean existe = false;
+		if (equipes.size() == 0) {
+			this.equipes.add(this.equipeAdd);
+			System.out.println("sim");
+
+		} else {
+			System.out.println("nao");
+			System.out.println("objeto: " + equipeAdd.getCodEquipe());
+
+			for (int i = 0; i < equipes.size(); i++) {
+				System.out.println("lista: " + equipes.get(i).getCodEquipe());
+				if (equipes.get(i).getCodEquipe() == equipeAdd.getCodEquipe()) {
+					System.out.println("sim 2");
+					existe = true;
+				}
+			}
+			if (existe == false) {
+				this.equipes.add(this.equipeAdd);
+			} else {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Essa equipe já foi adicionada!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+
+		}
 	}
 
 	public void rmvEquipe() {
@@ -107,5 +134,4 @@ public class GrupoBean implements Serializable{
 		this.inserção_pac_institut = inserção_pac_institut;
 	}
 
-	
 }

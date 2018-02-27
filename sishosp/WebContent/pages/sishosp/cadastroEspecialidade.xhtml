@@ -15,9 +15,12 @@
 
 		<h:form class="form-horizontal" id="formCADU">
 
-			<p:growl id="message" />
-			<b:panel title="#{EspecialidadeController.cabecalho}"
-				collapsible="false">
+			<div class="panel-body">
+				<div class="sub-header">
+					<h:outputText value="#{EspecialidadeController.cabecalho}"
+						styleClass="cadcabecalho"></h:outputText>
+					<hr />
+				</div>
 
 
 				<div class="form-group">
@@ -27,26 +30,36 @@
 						<h:inputText
 							value="#{EspecialidadeController.espec.descEspecialidade}"
 							class="form-control" id="inputname" required="true"
-							requiredMessage="Descrição obrigatória!" />
+							validatorMessage="Nome deve conter entre 2 e 30 caracteres."
+							requiredMessage="Descrição obrigatória!">
+							<f:validateLength minimum="2" maximum="40" />
+						</h:inputText>
 					</div>
 				</div>
-				<!-- FIM DO FORMULARIO -->
+
 				<center>
-					<b:commandButton action="#{EspecialidadeController.gravarEspecialidade()}" icon="glyphicon-ok" size="sm" look="success"
-						update=":formCADU:message,:formCADU" value="Incluir"
-						
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<center>
+					<b:commandButton
+						action="#{EspecialidadeController.gravarEspecialidade()}"
+						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
+						value="Incluir" style="float:left"
 						rendered="#{EspecialidadeController.tipo == 1}" />
 
-
-					<b:commandButton action="#{EspecialidadeController.alterarEspecialidade()}" icon="glyphicon-ok" size="sm" 
-						update=":formCADU:message,:formCADU" value="Alterar" look="success"
+					<b:commandButton
+						action="#{EspecialidadeController.alterarEspecialidade()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+						look="success" style="float:left"
 						rendered="#{EspecialidadeController.tipo  == 2}" />
+
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="margin-left:10px" size="sm" immediate="true" look="info"
+						style="float:right" size="sm" immediate="true" look="info"
 						action="/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true">
 					</b:commandButton>
 				</center>
-			</b:panel>
+			</div>
 		</h:form>
 
 

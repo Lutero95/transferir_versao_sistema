@@ -9,24 +9,32 @@
 
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-		<b:panel title="Gerenciamento de Forma de Transporte"
-			collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Forma de Transporte</h4>
+				<hr />
+			</div>
 			<f:metadata>
-				<f:viewAction action="#{FormaTransporteController.listarTransporte()}" />
+				<f:viewAction
+					action="#{FormaTransporteController.listarTransporte()}" />
 			</f:metadata>
 			<h:form id="frmmensagem">
 
 
 				<p:growl id="growl" showDetail="false" />
-<b:commandButton id="btninc" value="Novo" size="sm"
-				action="#{FormaTransporteController.redirectInsert()}" icon="glyphicon-plus"
-				look="primary">
-				<f:setPropertyActionListener value="1"
-					target="#{FormaTransporteController.tipo}" />
-				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-			</b:commandButton>
-			<br />
-			<br />
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{FormaTransporteController.redirectInsert()}"
+					icon="glyphicon-plus" look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{FormaTransporteController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
 				<b:dataTable id="dt" var="tab"
 					value="#{FormaTransporteController.listaTransporte}" lang="es"
@@ -67,7 +75,7 @@
 
 				</b:dataTable>
 			</h:form>
-		</b:panel>
+		</div>
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 

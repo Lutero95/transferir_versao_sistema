@@ -146,7 +146,7 @@ public class GrupoDAO {
 		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.inserção_pac_institut from hosp.grupo g, "
 				+ " hosp.tipoatendimento_grupo tg, hosp.tipoatendimento t"
 				+ " where t.id = ? and g.id_grupo = tg.codgrupo "
-				+ " and t.id = tg.codtipoatendimento order by g.id_grupo";
+				+ " and t.id = tg.codtipoatendimento order by g.descgrupo";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -179,7 +179,7 @@ public class GrupoDAO {
 
 	public List<GrupoBean> listarGrupos() throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<>();
-		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, inserção_pac_institut from hosp.grupo order by id_grupo";
+		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, inserção_pac_institut from hosp.grupo order by descgrupo";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -211,7 +211,7 @@ public class GrupoDAO {
 		List<GrupoBean> lista = new ArrayList<>();
 		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, inserção_pac_institut from hosp.grupo ";
 		if (tipo == 1) {
-			sql += " where descgrupo LIKE ?  order by id_grupo";
+			sql += " where descgrupo LIKE ?  order by descgrupo";
 		}
 		try {
 			con = ConnectionFactory.getConnection();
@@ -247,7 +247,7 @@ public class GrupoDAO {
 		List<GrupoBean> lista = new ArrayList<>();
 		String sql = "select g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
 				+ " where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma"
-				+ " and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ?  order by id_grupo";
+				+ " and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ?  order by descgrupo";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -389,7 +389,7 @@ public class GrupoDAO {
 		List<GrupoBean> lista = new ArrayList<>();
 
 		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, inserção_pac_institut from hosp.grupo  "
-				+ "where descgrupo LIKE ?  order by id_grupo";
+				+ "where descgrupo LIKE ?  order by descgrupo";
 
 		try {
 			con = ConnectionFactory.getConnection();

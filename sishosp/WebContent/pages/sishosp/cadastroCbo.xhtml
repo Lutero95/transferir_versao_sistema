@@ -39,13 +39,17 @@
 					<div class="col-sm-6">
 						<b:inputText value="#{CboController.cbo.descCbo}"
 							class="form-control" required="true" id="indesc"
-							requiredMessage="Descrição obrigatória!" />
-						<b:message for="@previous" />
-
+							requiredMessage="Descrição obrigatória!"
+							validatorMessage="CBO deve conter entre 2 e 30 caracteres.">
+							<f:validateLength minimum="2" maximum="40" />
+						</b:inputText>
 					</div>
 				</div>
 
-				<!-- FIM DO FORMULARIO -->
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
 				<b:commandButton action="#{CboController.gravarCbo()}"
 					icon="glyphicon-ok" size="sm" look="success" style="float:left"
 					update=":formCADU :formCADU:indesc" value="Incluir"

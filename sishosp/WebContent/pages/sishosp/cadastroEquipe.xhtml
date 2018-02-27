@@ -34,7 +34,10 @@
 					<div class="col-sm-6">
 						<h:inputText value="#{EquipeController.equipe.descEquipe}"
 							class="form-control" id="inputname" required="true"
-							requiredMessage="Descrição Obrigatória!" />
+							requiredMessage="Descrição Obrigatória!"
+							validatorMessage="Equipe deve conter entre 2 e 30 caracteres.">
+							<f:validateLength minimum="2" maximum="40" />
+						</h:inputText>
 					</div>
 				</div>
 
@@ -94,9 +97,11 @@
 
 				</div>
 
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
 
-				<!-- FIM DO FORMULARIO -->
 				<center>
 					<b:commandButton action="#{EquipeController.gravarEquipe()}"
 						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
@@ -104,8 +109,8 @@
 						rendered="#{EquipeController.tipo == 1}" />
 
 					<b:commandButton action="#{EquipeController.alterarEquipe()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU,:formCADU"
-						value="Alterar" look="success" style="float:left"
+						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+						look="success" style="float:left"
 						rendered="#{EquipeController.tipo  == 2}" />
 
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
@@ -123,8 +128,8 @@
 
 				<p:dataTable value="#{ProfissionalController.listaProfissional}"
 					id="dtTipoAt" resizableColumns="true" var="profi"
-					emptyMessage="NÃ£o existe nenhum tipo cadastrado!">
-					<p:column headerText="CÃ“D.">
+					emptyMessage="Não existe nenhum tipo cadastrado!">
+					<p:column headerText="Código">
 						<p:outputLabel value="#{profi.idProfissional}" />
 					</p:column>
 					<p:column headerText="Profissional">
@@ -135,7 +140,7 @@
 					</p:column>
 
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton process="@this" update="formCADU"
+						<p:commandButton process="@this" update="formCADU:tabela"
 							icon="ui-icon-check" title="Selecionar"
 							action="#{EquipeController.equipe.addProfList()}"
 							onclick="PF('dlgConsuProfE').hide();">

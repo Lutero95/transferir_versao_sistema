@@ -43,7 +43,7 @@ public class CboDAO {
 	
 	public List<CboBean> listarCbo() throws ProjetoException{
 		List<CboBean> lista = new ArrayList<>();
-		String sql = "select id , descricao, codempresa, codigo from hosp.cbo order by id ";
+		String sql = "select id , descricao, codempresa, codigo from hosp.cbo order by descricao ";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -105,7 +105,7 @@ public class CboDAO {
 		List<CboBean> lista = new ArrayList<>();
 		String sql = "select id , descricao, codempresa, codigo from hosp.cbo";
 		if (tipo == 1) {
-			sql += " where descricao LIKE ? order by id";
+			sql += " where descricao LIKE ? order by descricao";
 		}
 		try {
 			con = ConnectionFactory.getConnection();

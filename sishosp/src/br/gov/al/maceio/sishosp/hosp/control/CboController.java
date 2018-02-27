@@ -138,6 +138,11 @@ public class CboController implements Serializable{
 	public void setCbo(CboBean cbo) {
 		this.cbo = cbo;
 	}
+	
+	public void listarCbo() throws ProjetoException {
+			listaCbo = cDao.listarCbo();
+	
+	}
 
 	public List<CboBean> getListarCbo() throws ProjetoException {
 		System.out.println("lst cbo");

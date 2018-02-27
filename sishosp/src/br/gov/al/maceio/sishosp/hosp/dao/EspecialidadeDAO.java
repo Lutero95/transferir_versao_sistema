@@ -37,7 +37,7 @@ public class EspecialidadeDAO {
 
 	public List<EspecialidadeBean> listarEspecialidades() throws ProjetoException {
 		List<EspecialidadeBean> lista = new ArrayList<>();
-		String sql = "select id_especialidade, descespecialidade, codempresa from hosp.especialidade order by id_especialidade";
+		String sql = "select id_especialidade, descespecialidade, codempresa from hosp.especialidade order by descespecialidade";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);

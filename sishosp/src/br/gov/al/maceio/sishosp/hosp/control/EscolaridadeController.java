@@ -59,7 +59,7 @@ public class EscolaridadeController implements Serializable {
 					"Escolaridade cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			return "cadastroEscolaridade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Escolaridade cadastrada com sucesso!";	
+			return "gerenciarEscolaridade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Escolaridade cadastrada com sucesso!";	
 
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -78,7 +78,7 @@ public class EscolaridadeController implements Serializable {
 		if (alterou == true) {
 			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Escolaridade alterado com sucesso!", "Sucesso");
+					"Escolaridade alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
@@ -99,7 +99,7 @@ public class EscolaridadeController implements Serializable {
 
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Encaminhado excluido com sucesso!", "Sucesso");
+					"Escolaridade excluída com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaEscolaridade = null;
 			RequestContext.getCurrentInstance().execute(

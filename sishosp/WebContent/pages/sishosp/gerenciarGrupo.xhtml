@@ -11,7 +11,11 @@
 	</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-		<b:panel title="Gerenciamento de Grupo" collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Grupo</h4>
+				<hr />
+			</div>
 
 			<h:form id="frmmensagem">
 				<b:commandButton id="btninc" value="Novo" size="sm"
@@ -23,9 +27,12 @@
 				</b:commandButton>
 				<br />
 				<br />
-				<p:growl id="growl" showDetail="false" />
 
-				<b:dataTable id="dt" var="tab" 
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<b:dataTable id="dt" var="tab"
 					value="#{GrupoController.listaGrupos}" lang="es"
 					display="Nenhum Grupo">
 					<h:column>
@@ -61,8 +68,8 @@
 
 				</b:dataTable>
 			</h:form>
-		</b:panel>
-		
+		</div>
+
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
@@ -74,12 +81,14 @@
 
 				</h:panelGrid>
 				<center>
-<p:separator/>
-					<b:commandButton look="success" value="Sim" action="#{GrupoController.excluirGrupo()}" ajax="true"
-						icon="glyphicon-ok" update="frmmensagem"/>
-					
-					<b:commandButton value="Não" oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;"/>
+					<p:separator />
+					<b:commandButton look="success" value="Sim"
+						action="#{GrupoController.excluirGrupo()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem" />
+
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;" />
 
 				</center>
 			</h:form>

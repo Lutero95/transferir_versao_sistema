@@ -12,21 +12,28 @@
 	</f:metadata>
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-		<b:panel title="Gerenciamento de Especialidade" collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Especialidade</h4>
+				<hr />
+			</div>
 			<h:form id="frmmensagem">
 
 
-				<p:growl id="growl" showDetail="false" />
 				<b:commandButton id="btninc" value="Novo" size="sm"
-				action="#{EspecialidadeController.redirectInsert()}" icon="glyphicon-plus"
-				look="primary">
-				<f:setPropertyActionListener value="1"
-					target="#{EspecialidadeController.tipo}" />
-				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-			</b:commandButton>
-			<br />
-			<br />
-				
+					action="#{EspecialidadeController.redirectInsert()}"
+					icon="glyphicon-plus" look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{EspecialidadeController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
 				<b:dataTable id="dt" var="tab"
 					value="#{EspecialidadeController.listaEspecialidade}" lang="es"
 					display="Nenhuma Especialidade">
@@ -63,7 +70,7 @@
 
 				</b:dataTable>
 			</h:form>
-		</b:panel>
+		</div>
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 

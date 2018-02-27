@@ -4,156 +4,162 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:b="http://bootsfaces.net/ui">
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
 	<f:metadata>
 		<f:viewAction action="#{GrupoController.getEditGrupo()}" />
 	</f:metadata>
 	<ui:define name="body">
-		
 
-			<h:form class="form-horizontal" id="formCADU">
 
-				<p:growl id="message" />
-				<b:panel title="#{GrupoController.cabecalho}" collapsible="false">
-				
-					<div class="form-group">
-						<h:outputLabel for="inputdesc" value="Descrição do Grupo: "
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<h:inputText value="#{GrupoController.grupo.descGrupo}"
-								class="form-control" id="inputdesc" required="true"
-								requiredMessage="Descrição obrigatória!" />
+		<h:form class="form-horizontal" id="formCADU">
 
-						</div>
+			<div class="panel-body">
+				<div class="sub-header">
+					<h:outputText value="#{GrupoController.cabecalho}"
+						styleClass="cadcabecalho"></h:outputText>
+					<hr />
+				</div>
+
+				<div class="form-group">
+					<h:outputLabel for="inputdesc" value="Descrição do Grupo: "
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText value="#{GrupoController.grupo.descGrupo}"
+							class="form-control" id="inputdesc" required="true"
+							validatorMessage="Descrição deve conter entre 2 e 30 caracteres."
+							requiredMessage="Descrição obrigatória!">
+							<f:validateLength minimum="2" maximum="40" />
+						</h:inputText>
+
 					</div>
-					<div class="form-group">
-						<h:outputLabel for="inputqtd" value="Quantidade de Frequência: "
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<p:spinner id="inputqtd"
-								value="#{GrupoController.grupo.qtdFrequencia}" min="1" />
-						</div>
+				</div>
+				<div class="form-group">
+					<h:outputLabel for="inputqtd" value="Quantidade de Frequência: "
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<p:spinner id="inputqtd"
+							value="#{GrupoController.grupo.qtdFrequencia}" min="1" />
 					</div>
+				</div>
 
 
-					<div class="form-group">
-						<h:outputLabel value="Auditivo: "
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<p:selectBooleanCheckbox
-								value="#{GrupoController.grupo.auditivo}">
-							</p:selectBooleanCheckbox>
-						</div>
+				<div class="form-group">
+					<h:outputLabel value="Auditivo: "
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<p:selectBooleanCheckbox value="#{GrupoController.grupo.auditivo}">
+						</p:selectBooleanCheckbox>
 					</div>
+				</div>
 
 
-					<div class="form-group">
-						<h:outputLabel
-							value="Inserção Temporária de Pacientes na Instituição: "
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<p:selectBooleanCheckbox
-								value="#{GrupoController.grupo.inserção_pac_institut}">
-							</p:selectBooleanCheckbox>
-						</div>
+				<div class="form-group">
+					<h:outputLabel
+						value="Inserção Temporária de Pacientes na Instituição: "
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<p:selectBooleanCheckbox
+							value="#{GrupoController.grupo.inserção_pac_institut}">
+						</p:selectBooleanCheckbox>
 					</div>
+				</div>
 
-					<div class="form-group">
-						<h:outputLabel value="Equipe: "
-							styleClass="col-sm-3 control-label" />
-							<div class="col-sm-1">
+				<div class="form-group">
+					<h:outputLabel value="Equipe: " styleClass="col-sm-3 control-label" />
+					<div class="col-sm-1">
 						<b:commandButton process="@this" style="margin-left:-5px"
-									size="sm"
-									action="#{EquipeController.ListarTodasEquipes()	}"
-									tooltip="Incluir Profissional" icon="glyphicon-plus"
-									oncomplete="PF('dlgConsultEquipes').show();"
-									update="formConsuEquipe" />
-									 
-							</div>
-						<div class="col-sm-6">
+							size="sm" action="#{EquipeController.ListarTodasEquipes()	}"
+							tooltip="Incluir Profissional" icon="glyphicon-plus"
+							oncomplete="PF('dlgConsultEquipes').show();"
+							update="formConsuEquipe" />
 
-							<p:dataTable emptyMessage="Nenhuma Equipe"
-								styleClass="table table-hover" id="tabela"
-								style="margin-left:-50px;width:94%"
-								value="#{GrupoController.grupo.equipes}" var="tab"
-								paginator="true" paginatorPosition="bottom" rows="12"
-								resizableColumns="true">
-
-								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
-									<h:outputText value="#{tab.codEquipe}" />
-								</p:column>
-
-								<p:column headerText="Equipe" style="font-weight:bold;">
-									<h:outputText value="#{tab.descEquipe}" />
-								</p:column>
-
-								<p:column headerText="Ação">
-									<center>
-										<b:commandButton process="@this"
-											action="#{GrupoController.grupo.rmvEquipe()}"
-											icon="ui-icon-trash" update=":formCADU">
-											<f:setPropertyActionListener value="#{tab}"
-												target="#{GrupoController.grupo.equipeAdd}" />
-										</b:commandButton>
-									</center>
-								</p:column>
-
-							</p:dataTable>
-						</div>
 					</div>
+					<div class="col-sm-6">
 
-					<p:separator></p:separator>
-					<!-- FIM DO FORMULARIO -->
-					<center>
+						<p:dataTable emptyMessage="Nenhuma Equipe"
+							styleClass="table table-hover" id="tabela"
+							style="margin-left:-50px;width:94%"
+							value="#{GrupoController.grupo.equipes}" var="tab"
+							paginator="true" paginatorPosition="bottom" rows="12"
+							resizableColumns="true">
 
-				<b:commandButton action="#{GrupoController.gravarGrupo()}"
-					icon="glyphicon-ok" size="sm" look="success"
-					update=":formCADU:message,:formCADU" value="Incluir"
-					rendered="#{GrupoController.tipo == 1}" />
+							<p:column headerText="Cód." style="font-weight:bold;width:20%;">
+								<h:outputText value="#{tab.codEquipe}" />
+							</p:column>
+
+							<p:column headerText="Equipe" style="font-weight:bold;">
+								<h:outputText value="#{tab.descEquipe}" />
+							</p:column>
+
+							<p:column headerText="Ação">
+								<center>
+									<p:commandButton process="@this"
+										action="#{GrupoController.grupo.rmvEquipe()}"
+										icon="ui-icon-trash" update=":formCADU:tabela">
+										<f:setPropertyActionListener value="#{tab}"
+											target="#{GrupoController.grupo.equipeAdd}" />
+									</p:commandButton>
+								</center>
+							</p:column>
+
+						</p:dataTable>
+					</div>
+				</div>
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<center>
+
+					<b:commandButton action="#{GrupoController.gravarGrupo()}"
+						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
+						value="Incluir" style="float:left"
+						rendered="#{GrupoController.tipo == 1}" />
+
+					<b:commandButton action="#{GrupoController.alterarGrupo()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+						look="success" style="float:left"
+						rendered="#{GrupoController.tipo  == 2}" />
+
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="float:right" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarGrupo.faces?faces-redirect=true">
+					</b:commandButton>
 
 
-				<b:commandButton action="#{GrupoController.alterarGrupo()}"
-					icon="glyphicon-ok" size="sm"
-					update=":formCADU:message,:formCADU" value="Alterar"
-					look="success" rendered="#{GrupoController.tipo  == 2}" />
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					style="margin-left:10px" size="sm" immediate="true" look="info"
-					action="/pages/sishosp/gerenciarGrupo.faces?faces-redirect=true">
-				</b:commandButton>
+				</center>
 
+			</div>
 
-					</center>
-				</b:panel>
-
+		</h:form>
+		<p:dialog header="Consulta Equipes" widgetVar="dlgConsultEquipes"
+			modal="true" width="550px">
+			<h:form id="formConsuEquipe">
+				<p:dataTable value="#{EquipeController.listaEquipe}" id="dtEquipe"
+					resizableColumns="true" var="equipe"
+					emptyMessage="Não existe nenhuma equipe cadastrada!">
+					<p:column headerText="Código">
+						<p:outputLabel value="#{equipe.codEquipe}" />
+					</p:column>
+					<p:column headerText="Equipe">
+						<p:outputLabel value="#{equipe.descEquipe}" />
+					</p:column>
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton update=":formCADU:tabela, :formCADU:msgError"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsultEquipes').hide();"
+							action="#{GrupoController.grupo.addEquipe()}">
+							<f:setPropertyActionListener value="#{equipe}"
+								target="#{GrupoController.grupo.equipeAdd}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
 			</h:form>
-			<p:dialog header="Consulta Equipes" widgetVar="dlgConsultEquipes"
-				modal="true" width="550px">
-				<h:form id="formConsuEquipe">
-					<p:dataTable value="#{EquipeController.listaEquipe}" id="dtEquipe"
-						resizableColumns="true" var="equipe"
-						emptyMessage="Não existe nenhuma equipe cadastrada!">
-						<p:column headerText="CÓD.">
-							<p:outputLabel value="#{equipe.codEquipe}" />
-						</p:column>
-						<p:column headerText="EQUIPE">
-							<p:outputLabel value="#{equipe.descEquipe}" />
-						</p:column>
-						<p:column style="width:50px;text-align: center">
-							<p:commandButton update=":formCADU"
-								icon="ui-icon-check" title="Selecionar"
-								onclick="PF('dlgConsultEquipes').hide();"
-								action="#{GrupoController.grupo.addEquipe()}">
-								<f:setPropertyActionListener value="#{equipe}"
-									target="#{GrupoController.grupo.equipeAdd}" />
-							</p:commandButton>
-						</p:column>
-					</p:dataTable>
-				</h:form>
-			</p:dialog>
-		
+		</p:dialog>
+
 
 	</ui:define>
 </ui:composition>

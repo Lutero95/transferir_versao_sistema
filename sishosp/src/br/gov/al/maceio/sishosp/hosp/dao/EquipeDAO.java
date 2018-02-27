@@ -82,7 +82,7 @@ public class EquipeDAO {
 	
 	public List<EquipeBean> listarEquipe() throws ProjetoException {
 		List<EquipeBean> lista = new ArrayList<>();
-		String sql = "select id_equipe, descequipe, codempresa from hosp.equipe order by id_equipe";
+		String sql = "select id_equipe, descequipe, codempresa from hosp.equipe order by descequipe";
 		
 		try {
 			con = ConnectionFactory.getConnection();
@@ -115,7 +115,7 @@ public class EquipeDAO {
 		List<EquipeBean> lista = new ArrayList<>();
 		String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, codempresa from hosp.equipe ";
 		if (tipo == 1) {
-			sql += " where upper(id_equipe ||'-'|| descequipe) LIKE ? order by id_equipe";
+			sql += " where upper(id_equipe ||'-'|| descequipe) LIKE ? order by descequipe";
 		}
 		try {
 			con = ConnectionFactory.getConnection();

@@ -137,7 +137,7 @@ public class GrupoController implements Serializable {
 		boolean ok = gDao.excluirGrupo(grupo);
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Grupo excluido com sucesso!", "Sucesso");
+					"Grupo excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");

@@ -16,7 +16,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 
 public class EscolaDAO {
 	private Connection conexao = null;
-	// COMEÇO DO CODIGO
+	// COMEï¿½O DO CODIGO
 	
             public Boolean cadastrar(EscolaBean escola) throws ProjetoException {
                 boolean cadastrou = false;
@@ -206,7 +206,7 @@ public class EscolaDAO {
                     	EscolaBean p = new EscolaBean();
     	            
     	                p.setCodEscola(rs.getInt("id_escola"));
-    	                p.setDescescola(rs.getString("descescola").toUpperCase());
+    	                p.setDescescola(rs.getString("descescola"));
     	                p.setCodtipoescola(rs.getInt("codtipoescola"));
     	                
     	                lista.add(p);

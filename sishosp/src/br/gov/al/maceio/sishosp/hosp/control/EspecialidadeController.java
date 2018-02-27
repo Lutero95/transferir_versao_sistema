@@ -138,7 +138,7 @@ public class EspecialidadeController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Especialidade cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "cadastroEspecialidade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Especialidade cadastrada com sucesso!";
+			return "gerenciarEspecialidade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Especialidade cadastrada com sucesso!";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
@@ -173,7 +173,7 @@ public class EspecialidadeController implements Serializable {
 		boolean ok = eDao.excluirEspecialidade(espec);
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Especialidade excluida com sucesso!", "Sucesso");
+					"Especialidade excluída com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");

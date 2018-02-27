@@ -130,7 +130,7 @@ public class FormaTransporteController implements Serializable {
 
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Transporte excluido com sucesso!", "Sucesso");
+					"Transporte excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			
 			RequestContext.getCurrentInstance().execute(

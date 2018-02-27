@@ -143,7 +143,7 @@ public class EquipeController implements Serializable {
 			
 			RequestContext.getCurrentInstance().update("msgError");
 			
-			return "cadastroEquipe?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=CBO cadastrado com sucesso!";	
+			return "gerenciarEquipe?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=CBO cadastrado com sucesso!";	
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
@@ -159,7 +159,7 @@ public class EquipeController implements Serializable {
 	public String alterarEquipe() throws ProjetoException {
 		if (this.equipe.getProfissionais().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário peo menos um profissional na equipe!", "Erro");
+					"É necessário peo menos um profissional na equipe!", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
