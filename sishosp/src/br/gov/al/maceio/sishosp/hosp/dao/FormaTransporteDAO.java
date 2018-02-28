@@ -65,7 +65,7 @@ public class FormaTransporteDAO {
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setString(1, transporte.getDescformatransporte());
+                    stmt.setString(1, transporte.getDescformatransporte().toUpperCase());
                     stmt.setInt(2, transporte.getCodformatransporte());
                     stmt.executeUpdate();
 

@@ -72,40 +72,40 @@ public class CboController implements Serializable{
 	}
 
 	public void limparDados() {
-		this.descricaoBusca = new String();
+		cbo = new CboBean();
 		
 	}
 	
 
-	public String gravarCbo() throws ProjetoException, SQLException {
+	public void gravarCbo() throws ProjetoException, SQLException {
 		boolean cadastrou = cDao.gravarCBO(this.cbo);
 
 		if (cadastrou == true) {
-			//limparDados();
+			limparDados();
 			FacesMessage msg = new FacesMessage("CBO cadastrado com sucesso!");
 			FacesContext.getCurrentInstance().addMessage("Error", msg);
 			RequestContext.getCurrentInstance().update("msgCadAlt");
-			return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";
+			//return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			//return "";
 		}
 	}
 
-	public String alterarCbo() throws ProjetoException {
+	public void alterarCbo() throws ProjetoException {
 		boolean alterou = cDao.alterarCbo(cbo);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage("CBO alterado com sucesso!");
 			FacesContext.getCurrentInstance().addMessage("Error", msg);
 			RequestContext.getCurrentInstance().update("msgCadAlt");
-			return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO alterado com sucesso!";	
+			//return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO alterado com sucesso!";	
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			//return "";
 		}
 		
 

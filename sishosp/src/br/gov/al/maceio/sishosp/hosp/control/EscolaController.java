@@ -90,43 +90,43 @@ public class EscolaController implements Serializable{
 	
 	
 	
-	public String gravarEscola() throws ProjetoException, SQLException {
+	public void gravarEscola() throws ProjetoException, SQLException {
 		EscolaDAO udao = new EscolaDAO();
 		boolean cadastrou = udao.cadastrar(escola);
 
 		if (cadastrou == true) {
-			//limparDados();
+			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Escola cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "gerenciarEscola?faces-redirect=true&amp;tipo="+tipoesc+"&amp;sucesso=Escola cadastrada com sucesso!";	
+			//return "gerenciarEscola?faces-redirect=true&amp;tipo="+tipoesc+"&amp;sucesso=Escola cadastrada com sucesso!";	
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			//return "";
 		}
 	}
 
 	
 	
-	public String alterarEscola() throws ProjetoException {
+	public void alterarEscola() throws ProjetoException {
 
 		EscolaDAO rdao = new EscolaDAO();
 		boolean alterou = rdao.alterar(escola);
 		listaEscolas = null;
 		if (alterou == true) {
-			limparDados();
+			//limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Escola alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "/pages/sishosp/gerenciarEscola.faces?faces-redirect=true";
+			//return "/pages/sishosp/gerenciarEscola.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			//return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 

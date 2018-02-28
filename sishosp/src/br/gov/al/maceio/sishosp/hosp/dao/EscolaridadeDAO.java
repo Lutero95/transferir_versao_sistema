@@ -14,7 +14,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 public class EscolaridadeDAO {
 	private Connection conexao = null;
 
-	// COMEÇO DO CODIGO
+	// COMEï¿½O DO CODIGO
 
 	public Boolean cadastrar(EscolaridadeBean escolaridade)
 			throws ProjetoException {
@@ -66,7 +66,7 @@ public class EscolaridadeDAO {
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setString(1, escolaridade.getDescescolaridade());
+			stmt.setString(1, escolaridade.getDescescolaridade().toUpperCase());
 			stmt.setInt(2, escolaridade.getCodescolaridade());
 			stmt.executeUpdate();
 
@@ -114,7 +114,7 @@ public class EscolaridadeDAO {
 
 	public ArrayList<EscolaridadeBean> listaEscolaridade() throws ProjetoException {
 
-		String sql = "select * from hosp.escolaridade order by id_escolaridade,descescolaridade";
+		String sql = "select * from hosp.escolaridade order by descescolaridade";
 
 		ArrayList<EscolaridadeBean> lista = new ArrayList();
 

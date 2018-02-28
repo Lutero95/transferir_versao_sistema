@@ -129,7 +129,7 @@ public class EspecialidadeController implements Serializable {
 		
 	}
 
-	public String gravarEspecialidade() throws ProjetoException, SQLException {
+	public void gravarEspecialidade() throws ProjetoException, SQLException {
 
 		boolean cadastrou = eDao.gravarEspecialidade(espec);
 
@@ -138,12 +138,12 @@ public class EspecialidadeController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Especialidade cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "gerenciarEspecialidade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Especialidade cadastrada com sucesso!";
+			//return "gerenciarEspecialidade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Especialidade cadastrada com sucesso!";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			//return "";
 		}
 	}
 
@@ -152,20 +152,20 @@ public class EspecialidadeController implements Serializable {
 				descricaoBusca, tipoBuscar);
 	}
 
-	public String alterarEspecialidade() throws ProjetoException {
+	public void alterarEspecialidade() throws ProjetoException {
 		boolean alterou = eDao.alterarEspecialidade(espec);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Especialidade alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			this.listaEspecialidade = eDao.listarEspecialidades();
-			return "/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true";
+			//return "/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			this.listaEspecialidade = eDao.listarEspecialidades();
-			return "";
+			//return "";
 		}
 	}
 

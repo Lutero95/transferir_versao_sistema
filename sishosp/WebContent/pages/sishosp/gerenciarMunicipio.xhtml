@@ -8,11 +8,15 @@
 <ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-		<b:panel title="Gerenciamento de Município" collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Município</h4>
+				<hr />
+			</div>
 			<f:metadata>
 				<f:viewAction action="#{EnderecoController.listarMunicipios()}" />
 			</f:metadata>
-		
+
 			<h:form id="frmmensagem">
 				<b:commandButton id="btninc" value="Novo" size="sm"
 					action="#{EnderecoController.redirectInsert()}"
@@ -24,8 +28,10 @@
 				<br />
 				<br />
 
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
-				<p:growl id="growl" showDetail="false" />
 				<b:dataTable id="dt" var="tab"
 					value="#{EnderecoController.listaMunicipios}" lang="es"
 					display="Nenhum Município">
@@ -37,11 +43,11 @@
 
 						<h:outputText value="#{tab.municipio}" />
 					</h:column>
-<h:column>
-					<f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                         Cód. Federal
                     </f:facet>
-					
+
 						<h:outputText value="#{tab.codfederal}" />
 					</h:column>
 					<h:column>
@@ -68,9 +74,10 @@
 
 					</h:column>
 
-					</b:dataTable>
+				</b:dataTable>
 			</h:form>
-		</b:panel>
+		</div>
+
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
@@ -79,7 +86,7 @@
 
 
 					<div class="alert alert-warning" role="alert">Deseja excluir
-						este Municipio?</div>
+						este Município?</div>
 
 				</h:panelGrid>
 
@@ -87,12 +94,14 @@
 
 				<center>
 
-				<p:separator/>
-					<b:commandButton look="success" value="Sim" action="#{EnderecoController.excluirMunicipios()}" ajax="true"
-						icon="glyphicon-ok" update="frmmensagem"/>
-					
-					<b:commandButton value="Não" oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;"/>
+					<p:separator />
+					<b:commandButton look="success" value="Sim"
+						action="#{EnderecoController.excluirMunicipios()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem" />
+
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;" />
 
 				</center>
 

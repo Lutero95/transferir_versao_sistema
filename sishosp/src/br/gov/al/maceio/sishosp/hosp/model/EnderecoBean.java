@@ -17,7 +17,7 @@ public class EnderecoBean implements Serializable {
 	private Integer codfederal;
 	private Integer codmacregiao;
 	private String complemento;
-	private Integer cep;
+	private String cep;
 	private String bairro;
 	
 	private String telefoneres;
@@ -92,11 +92,11 @@ public class EnderecoBean implements Serializable {
 		this.complemento = complemento;
 	}
 
-	public Integer getCep() {
+	public String getCep() {
 		return cep;
 	}
 
-	public void setCep(Integer cep) {
+	public void setCep(String cep) {
 		this.cep = cep;
 	}
 

@@ -100,24 +100,24 @@ public class FormaTransporteController implements Serializable {
 
 	}
 
-	public String alterarTransporte() throws ProjetoException {
+	public void alterarTransporte() throws ProjetoException {
 
 		FormaTransporteDAO rdao = new FormaTransporteDAO();
 		boolean alterou = rdao.alterar(transporte);
 
 		if (alterou == true) {
-			limparDados();
+			//limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Transporte alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true";
+			//return "/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true";
 
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			//return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 

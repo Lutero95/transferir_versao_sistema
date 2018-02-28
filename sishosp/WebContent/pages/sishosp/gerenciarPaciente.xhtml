@@ -13,86 +13,97 @@
 
 	<ui:define name="body">
 
-		 <b:panel title="Gerenciamento de Paciente"  collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Paciente</h4>
+				<hr />
+			</div>
 			<h:form id="frmmensagem">
-			<f:metadata>
-				<f:viewAction action="#{PacienteController.listarPacientes()}" />
-			</f:metadata>
+				<f:metadata>
+					<f:viewAction action="#{PacienteController.listarPacientes()}" />
+				</f:metadata>
 
-			<b:commandButton id="btninc" value="Novo" size="sm"
-				action="#{PacienteController.redirectInsert()}" icon="glyphicon-plus"
-				look="primary">
-				<f:setPropertyActionListener value="1"
-					target="#{PacienteController.tipo}" />
-				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-			</b:commandButton>
-			<br />
-			<br />
-			<p:growl id="growl" showDetail="false" />
-<b:dataTable id="dt" var="tab" value="#{PacienteController.listaPacientes}"  
-				lang="es" display="Nenhum CBO">
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{PacienteController.redirectInsert()}"
+					icon="glyphicon-plus" look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{PacienteController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
+				
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+				
+				<b:dataTable id="dt" var="tab"
+					value="#{PacienteController.listaPacientes}" lang="es"
+					display="Nenhum CBO">
 
-				<h:column>
-					<f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                         Nome
                     </f:facet>
 
-					<h:outputText value="#{tab.nome}" />
-				</h:column>
-				
-				<h:column>
-					<f:facet name="header">
+						<h:outputText value="#{tab.nome}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
                         CPF
                     </f:facet>
 
-					<h:outputText value="#{tab.cpf}" />
-				</h:column>	
-				
-								<h:column>
-					<f:facet name="header">
+						<h:outputText value="#{tab.cpf}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
                         CNS
                     </f:facet>
 
 						<h:outputText value="#{tab.cns}" />
-				</h:column>			
-				<h:column>
-					<f:facet name="header">
+					</h:column>
+					<h:column>
+						<f:facet name="header">
                         Ação
                     </f:facet>
 
-					<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-						action="#{PacienteController.redirectEdit()}">
-						<f:setPropertyActionListener value="#{tab}"
-										target="#{PacienteController.paciente}" />
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{PacienteController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{PacienteController.paciente}" />
 
-									<f:setPropertyActionListener value="#{tab.escola}"
-										target="#{PacienteController.escolaSuggestion}" />
-									<f:setPropertyActionListener value="#{tab.escolaridade}"
-										target="#{PacienteController.escolaridadeSuggestion}" />
-									<f:setPropertyActionListener value="#{tab.profissao}"
-										target="#{PacienteController.profissaoSuggestion}" />
-									<f:setPropertyActionListener value="#{tab.encaminhado}"
-										target="#{PacienteController.encaminhadoSuggestion}" />
-									<f:setPropertyActionListener value="#{tab.formatransporte}"
-										target="#{PacienteController.transporteSuggestion}" />
-									<!-- url="/pages/sishosp/cadastroPaciente.faces" -->
-									<f:setPropertyActionListener value="2"
-										target="#{PacienteController.tipo}" />
-					</b:commandButton>
+							<f:setPropertyActionListener value="#{tab.escola}"
+								target="#{PacienteController.escolaSuggestion}" />
+							<f:setPropertyActionListener value="#{tab.escolaridade}"
+								target="#{PacienteController.escolaridadeSuggestion}" />
+							<f:setPropertyActionListener value="#{tab.profissao}"
+								target="#{PacienteController.profissaoSuggestion}" />
+							<f:setPropertyActionListener value="#{tab.encaminhado}"
+								target="#{PacienteController.encaminhadoSuggestion}" />
+							<f:setPropertyActionListener value="#{tab.formatransporte}"
+								target="#{PacienteController.transporteSuggestion}" />
+							<!-- url="/pages/sishosp/cadastroPaciente.faces" -->
+							<f:setPropertyActionListener value="2"
+								target="#{PacienteController.tipo}" />
+						</b:commandButton>
 
-					<b:commandButton tooltip="Excluir" icon="glyphicon-trash" size="sm"
-						ajax="true" style="margin-left:10px"
-						oncomplete="PF('dialogAtencao').show()">
-									<f:setPropertyActionListener value="#{tab.id_paciente}"
-										target="#{PacienteController.paciente.id_paciente}" />
-					</b:commandButton>
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogAtencao').show()">
+							<f:setPropertyActionListener value="#{tab.id_paciente}"
+								target="#{PacienteController.paciente.id_paciente}" />
+						</b:commandButton>
 
-				</h:column>
+					</h:column>
 
-			</b:dataTable>
-			
-		</h:form>
-</b:panel>
+				</b:dataTable>
+
+			</h:form>
+		
+		</div>
+		
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
@@ -111,8 +122,7 @@
 
 					<p:commandButton value="Sim"
 						action="#{PacienteController.excluirPaciente()}"
-						icon="ui-icon-check" style="font-size:14px;"
-						update=":frmmensagem">
+						icon="ui-icon-check" style="font-size:14px;" update=":frmmensagem">
 					</p:commandButton>
 
 					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"

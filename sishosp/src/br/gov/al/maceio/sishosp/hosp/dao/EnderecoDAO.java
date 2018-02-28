@@ -57,7 +57,7 @@ public class EnderecoDAO {
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setString(1, endereco.getMunicipio());
+                    stmt.setString(1, endereco.getMunicipio().toUpperCase());
                     if (endereco.getCodfederal()!=null)
                     stmt.setInt(2, endereco.getCodfederal());
                     else

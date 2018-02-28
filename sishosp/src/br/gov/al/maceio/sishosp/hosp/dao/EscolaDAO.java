@@ -64,7 +64,7 @@ public class EscolaDAO {
                 try {
                     conexao = ConnectionFactory.getConnection();
                     PreparedStatement stmt = conexao.prepareStatement(sql);
-                    stmt.setString(1, escola.getDescescola());
+                    stmt.setString(1, escola.getDescescola().toUpperCase());
                     stmt.setInt(2, escola.getCodEscola());
                     stmt.executeUpdate();
 

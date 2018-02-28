@@ -116,19 +116,19 @@ public class GrupoController implements Serializable {
 
 	}
 
-	public String alterarGrupo() throws ProjetoException {
+	public void alterarGrupo() throws ProjetoException {
 		boolean alterou = gDao.alterarGrupo(grupo);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Grupo alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaGrupos = gDao.listarGrupos();
-			return "/pages/sishosp/gerenciarGrupo.faces?faces-redirect=true";
+			//return "/pages/sishosp/cadastrarGrupo.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			//return "";
 		}
 
 	}

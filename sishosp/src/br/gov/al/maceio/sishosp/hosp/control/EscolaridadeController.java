@@ -49,7 +49,7 @@ public class EscolaridadeController implements Serializable {
 		
 	}
 
-	public String gravarEscolaridade() throws ProjetoException {
+	public void gravarEscolaridade() throws ProjetoException {
 		EscolaridadeDAO udao = new EscolaridadeDAO();
 		boolean cadastrou = udao.cadastrar(escolaridade);
 
@@ -59,34 +59,34 @@ public class EscolaridadeController implements Serializable {
 					"Escolaridade cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			return "gerenciarEscolaridade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Escolaridade cadastrada com sucesso!";	
+			//return "gerenciarEscolaridade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Escolaridade cadastrada com sucesso!";	
 
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			//return "";
 		}
 
 	}
 
-	public String alterarEscolaridade() throws ProjetoException {
+	public void alterarEscolaridade() throws ProjetoException {
 
 		EscolaridadeDAO rdao = new EscolaridadeDAO();
 		boolean alterou = rdao.alterar(escolaridade);
 
 		if (alterou == true) {
-			limparDados();
+			//limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Escolaridade alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true";
+			//return "/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			//return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 

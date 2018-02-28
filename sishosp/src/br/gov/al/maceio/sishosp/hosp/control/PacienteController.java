@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
+import br.gov.al.maceio.sishosp.comum.util.CepWebService;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EncaminhadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EncaminhamentoDAO;
@@ -36,9 +37,9 @@ import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
-@ManagedBean(name="PacienteController")
+@ManagedBean(name = "PacienteController")
 @ViewScoped
-public class PacienteController implements Serializable{
+public class PacienteController implements Serializable {
 	/**
 	 * 
 	 */
@@ -187,96 +188,109 @@ public class PacienteController implements Serializable{
 			List<PacienteBean> listaPacientesParaAgenda) {
 		this.listaPacientesParaAgenda = listaPacientesParaAgenda;
 	}
-	
-	
+
 	public String redirectEdit() {
-		return "cadastroPaciente?faces-redirect=true&amp;id=" + this.paciente.getId_paciente()+"&amp;tipo="+tipo;
-	}	
-	
-	
+		return "cadastroPaciente?faces-redirect=true&amp;id="
+				+ this.paciente.getId_paciente() + "&amp;tipo=" + tipo;
+	}
+
 	public String redirectInsert() {
-		return "cadastroPaciente?faces-redirect=true&amp;tipo="+tipo;
-	}		
-	
+		return "cadastroPaciente?faces-redirect=true&amp;tipo=" + tipo;
+	}
+
 	public void getEditPaciente() throws ProjetoException, SQLException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
 		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
+		if (params.get("id") != null) {
 			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
-			tipo =Integer.parseInt(params.get("tipo"));			
-			System.out.println("tipo do walter"+tipo);
+			tipo = Integer.parseInt(params.get("tipo"));
+			System.out.println("tipo do walter" + tipo);
 			PacienteDAO cDao = new PacienteDAO();
 			this.paciente = cDao.listarPacientePorID(id);
-		}
-		else{
-			System.out.println("tipo sera"+tipo);
-			tipo =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
-	}
+		} else {
+			System.out.println("tipo sera" + tipo);
+			tipo = Integer.parseInt(params.get("tipo"));
 
+		}
+
+	}
 
 	public String redirectEditRaca() {
-		return "cadastroRaca?faces-redirect=true&amp;id=" + this.raca.getCodRaca()+"&amp;tipo="+tipo;
-	}	
-	
-	
+		return "cadastroRaca?faces-redirect=true&amp;id="
+				+ this.raca.getCodRaca() + "&amp;tipo=" + tipo;
+	}
+
 	public String redirectInsertRaca() {
-		return "cadastroRaca?faces-redirect=true&amp;tipo="+tipo;
-	}		
-	
-	public void getEditRaca() throws ProjetoException, SQLException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
-			System.out.println("entrou no editar");
-			Integer id = Integer.parseInt(params.get("id"));
-			tipo =Integer.parseInt(params.get("tipo"));			
-			System.out.println("tipo do walter"+tipo);
-			PacienteDAO cDao = new PacienteDAO();
-			this.raca = cDao.listarRacaPorID(id);
-		}
-		else{
-			System.out.println("tipo sera"+tipo);
-			tipo =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
+		return "cadastroRaca?faces-redirect=true&amp;tipo=" + tipo;
 	}
 	
+	public void encontraCEP() {
+		System.out.println("CODIGO: "+paciente.getId_paciente());
+		System.out.println("CEP: "+paciente.getEndereco().getCep());
+		CepWebService cepWebService = new CepWebService(paciente.getEndereco().getCep());
+		if (cepWebService.getResultado() != 0) {
+			paciente.getEndereco().setLogradouro(
+					cepWebService.getTipoLogradouro() + " "
+							+ cepWebService.getLogradouro());
+			paciente.getEndereco().setUf(cepWebService.getEstado());
+			paciente.getEndereco().setMunicipio(cepWebService.getCidade());
+			paciente.getEndereco().setBairro(cepWebService.getBairro());
 
+		} else {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"CEP inválido!",""));
+		}
+	}
+
+	public void getEditRaca() throws ProjetoException, SQLException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if (params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo = Integer.parseInt(params.get("tipo"));
+			System.out.println("tipo do walter" + tipo);
+			PacienteDAO cDao = new PacienteDAO();
+			this.raca = cDao.listarRacaPorID(id);
+		} else {
+			System.out.println("tipo sera" + tipo);
+			tipo = Integer.parseInt(params.get("tipo"));
+
+		}
+
+	}
 
 	public void gravarPaciente() throws ProjetoException {
 		PacienteDAO udao = new PacienteDAO();
-		if (escolaSuggestion!=null)
-		paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
+		if (escolaSuggestion != null)
+			paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
 		else
-		paciente.getEscola().setCodEscola(null);
-		if (escolaridadeSuggestion!=null)
-		paciente.getEscolaridade().setCodescolaridade(
-				escolaridadeSuggestion.getCodescolaridade());
+			paciente.getEscola().setCodEscola(null);
+		if (escolaridadeSuggestion != null)
+			paciente.getEscolaridade().setCodescolaridade(
+					escolaridadeSuggestion.getCodescolaridade());
 		else
 			paciente.getEscolaridade().setCodescolaridade(null);
-		if (profissaoSuggestion!=null) 
-		paciente.getProfissao().setCodprofissao(
-				profissaoSuggestion.getCodprofissao());
+		if (profissaoSuggestion != null)
+			paciente.getProfissao().setCodprofissao(
+					profissaoSuggestion.getCodprofissao());
 		else
-			paciente.getProfissao().setCodprofissao(null);			
-		
-		if (encaminhadoSuggestion!=null)
-		paciente.getEncaminhado().setCodencaminhado(
-				encaminhadoSuggestion.getCodencaminhado());
+			paciente.getProfissao().setCodprofissao(null);
+
+		if (encaminhadoSuggestion != null)
+			paciente.getEncaminhado().setCodencaminhado(
+					encaminhadoSuggestion.getCodencaminhado());
 		else
-			paciente.getEncaminhado().setCodencaminhado(null);			
-		if (transporteSuggestion!=null)
-		paciente.getFormatransporte().setCodformatransporte(
-				transporteSuggestion.getCodformatransporte());
+			paciente.getEncaminhado().setCodencaminhado(null);
+		if (transporteSuggestion != null)
+			paciente.getFormatransporte().setCodformatransporte(
+					transporteSuggestion.getCodformatransporte());
 		else
-			paciente.getFormatransporte().setCodformatransporte(null);			
+			paciente.getFormatransporte().setCodformatransporte(null);
 		boolean cadastrou = udao.cadastrar(paciente);
 
 		if (cadastrou == true) {
@@ -317,7 +331,7 @@ public class PacienteController implements Serializable{
 
 	}
 
-	public String alterarPaciente() throws ProjetoException {
+	public void alterarPaciente() throws ProjetoException {
 		paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
 		paciente.getEscolaridade().setCodescolaridade(
 				escolaridadeSuggestion.getCodescolaridade());
@@ -336,13 +350,14 @@ public class PacienteController implements Serializable{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Paciente alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -355,7 +370,7 @@ public class PacienteController implements Serializable{
 
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Paciente excluido com sucesso!", "Sucesso");
+					"Paciente excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaPacientes = null;
 			RequestContext.getCurrentInstance().execute(
@@ -664,7 +679,7 @@ public class PacienteController implements Serializable{
 		result = icdao.buscaescolaridade(query);
 		return result;
 	}
-	
+
 	public List<PacienteBean> listaPacienteAutoComplete(String query)
 			throws ProjetoException {
 		PacienteDAO pDao = new PacienteDAO();
@@ -684,14 +699,14 @@ public class PacienteController implements Serializable{
 		// FacesContext.getCurrentInstance().addMessage(null, new
 		// FacesMessage("Item Selected", prodsel.getDescricao()));
 	}
-	
+
 	public void onItemSelectPaciente(SelectEvent event) throws Exception {
 
 		PacienteBean prodsel = new PacienteBean();
 		prodsel = (PacienteBean) event.getObject();
 
 		EscolaridadeDAO dao = new EscolaridadeDAO();
-		//buscaEscolaridadeCod(prodsel.getCodescolaridade());
+		// buscaEscolaridadeCod(prodsel.getCodescolaridade());
 		escolaridadeSuggestion = new EscolaridadeBean();
 		escolaridadeSuggestion = null;
 		// FacesContext.getCurrentInstance().addMessage(null, new
@@ -918,7 +933,8 @@ public class PacienteController implements Serializable{
 		this.listaEscolas = listaEscolas;
 	}
 
-	public List<EscolaridadeBean> getListaEscolaridade() throws ProjetoException {
+	public List<EscolaridadeBean> getListaEscolaridade()
+			throws ProjetoException {
 		if (listaEscolaridade == null) {
 
 			EscolaridadeDAO fdao = new EscolaridadeDAO();
@@ -955,8 +971,8 @@ public class PacienteController implements Serializable{
 	}
 
 	public void listarPacientes() throws ProjetoException {
-			PacienteDAO fdao = new PacienteDAO();
-			listaPacientes = fdao.listaPacientes();
+		PacienteDAO fdao = new PacienteDAO();
+		listaPacientes = fdao.listaPacientes();
 	}
 
 	public void setListaPacientes(List<PacienteBean> listaPacientes) {
@@ -985,7 +1001,8 @@ public class PacienteController implements Serializable{
 		this.transporte = transporte;
 	}
 
-	public List<FormaTransporteBean> getListaTransporte() throws ProjetoException {
+	public List<FormaTransporteBean> getListaTransporte()
+			throws ProjetoException {
 		if (listaTransporte == null) {
 
 			FormaTransporteDAO fdao = new FormaTransporteDAO();
@@ -1000,8 +1017,8 @@ public class PacienteController implements Serializable{
 	}
 
 	public void listarRaca() throws ProjetoException {
-			PacienteDAO fdao = new PacienteDAO();
-			listaRaca = fdao.listaCor();
+		PacienteDAO fdao = new PacienteDAO();
+		listaRaca = fdao.listaCor();
 	}
 
 	public void setListaRaca(List<RacaBean> listaRaca) {
@@ -1438,7 +1455,6 @@ public class PacienteController implements Serializable{
 		this.statusPaciente = statusPaciente;
 	}
 
-	
 	public Integer getTipoBuscaRaca() {
 		return tipoBuscaRaca;
 	}
@@ -1464,9 +1480,9 @@ public class PacienteController implements Serializable{
 	}
 
 	public String getCabecalho() {
-		if (this.tipo==1) {
+		if (this.tipo == 1) {
 			cabecalho = "Inclusão de Paciente";
-		} else if (this.tipo==2) {
+		} else if (this.tipo == 2) {
 			cabecalho = "Alteração de Paciente";
 		}
 		return cabecalho;
@@ -1485,9 +1501,9 @@ public class PacienteController implements Serializable{
 	}
 
 	public String getCabecalho2() {
-		if (this.tipo==1) {
+		if (this.tipo == 1) {
 			cabecalho2 = "Inclusão de Raça";
-		} else if (this.tipo==2) {
+		} else if (this.tipo == 2) {
 			cabecalho2 = "Alteração de Raça";
 		}
 		return cabecalho2;
@@ -1496,8 +1512,7 @@ public class PacienteController implements Serializable{
 	public void setCabecalho2(String cabecalho2) {
 		this.cabecalho2 = cabecalho2;
 	}
-	
-	
+
 	public void selectPaciente(SelectEvent event) {
 		this.pacienteSelecionado = (PacienteBean) event.getObject();
 	}
@@ -1523,13 +1538,11 @@ public class PacienteController implements Serializable{
 	}
 
 	public List<RacaBean> getListaRaca() throws ProjetoException {
-		 if (listaRaca == null) {
-				PacienteDAO fdao = new PacienteDAO();
-				listaRaca = fdao.listaCor();
-				}
+		if (listaRaca == null) {
+			PacienteDAO fdao = new PacienteDAO();
+			listaRaca = fdao.listaCor();
+		}
 		return listaRaca;
 	}
-	
-	
 
 }

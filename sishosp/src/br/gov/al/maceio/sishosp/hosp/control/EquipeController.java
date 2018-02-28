@@ -38,7 +38,7 @@ public class EquipeController implements Serializable {
 		this.equipe = new EquipeBean();
 		this.listaEquipe = null;
 		this.descricaoBusca = new String();
-		
+
 		this.descricaoBusca = new String();
 	}
 
@@ -73,8 +73,6 @@ public class EquipeController implements Serializable {
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	
-
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
@@ -82,56 +80,56 @@ public class EquipeController implements Serializable {
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
 	}
-	
+
 	public String redirectEdit() {
-		return "cadastroEquipe?faces-redirect=true&amp;id=" + this.equipe.getCodEquipe()+"&amp;tipo="+tipo;
-	}	
-	
-	
+		return "cadastroEquipe?faces-redirect=true&amp;id="
+				+ this.equipe.getCodEquipe() + "&amp;tipo=" + tipo;
+	}
+
 	public String redirectInsert() {
-		return "cadastroEquipe?faces-redirect=true&amp;tipo="+tipo;
-	}		
-	
+		return "cadastroEquipe?faces-redirect=true&amp;tipo=" + tipo;
+	}
+
 	public void getEditEquipe() throws ProjetoException, SQLException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
 		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
+		if (params.get("id") != null) {
 			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
-			tipo =Integer.parseInt(params.get("tipo"));			
-			System.out.println("tipo do walter"+tipo);
+			tipo = Integer.parseInt(params.get("tipo"));
+			System.out.println("tipo do walter" + tipo);
 			EquipeDAO cDao = new EquipeDAO();
 			this.equipe = cDao.buscarEquipePorID(id);
-			
+
+		} else {
+			System.out.println("tipo sera" + tipo);
+			tipo = Integer.parseInt(params.get("tipo"));
+
 		}
-		else{
-			System.out.println("tipo sera"+tipo);
-			tipo =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
+
 	}
 
 	public void ListarTodasEquipes() throws ProjetoException {
-		
-			this.listaEquipe = eDao.listarEquipe();
-		
-		
+
+		this.listaEquipe = eDao.listarEquipe();
+
 	}
 
-	public String gravarEquipe() throws ProjetoException, SQLException {
+	public void gravarEquipe() throws ProjetoException, SQLException {
 		if (this.equipe.getProfissionais().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário pelo menos um profissional na equipe!", "Erro");
+					"É necessário pelo menos um profissional na equipe!",
+					"Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 		if (this.equipe.getDescEquipe().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Descrição Obrigatória!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 		boolean cadastrou = eDao.gravarEquipe(this.equipe);
 
@@ -140,15 +138,16 @@ public class EquipeController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Equipe cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			
+
 			RequestContext.getCurrentInstance().update("msgError");
-			
-			return "gerenciarEquipe?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=CBO cadastrado com sucesso!";	
+
+			// return
+			// "gerenciarEquipe?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=CBO cadastrado com sucesso!";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 	}
 
@@ -156,34 +155,33 @@ public class EquipeController implements Serializable {
 		this.listaEquipe = eDao.listarEquipeBusca(descricaoBusca, tipoBuscar);
 	}
 
-	public String alterarEquipe() throws ProjetoException {
+	public void alterarEquipe() throws ProjetoException {
 		if (this.equipe.getProfissionais().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"É necessário peo menos um profissional na equipe!", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
-		}
-		if (this.equipe.getDescEquipe().isEmpty()) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Descrição Obrigatória!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 
-		boolean alterou = eDao.alterarEquipe(equipe);
+		else {
 
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Equipe alterada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().update("msgError");
-			this.listaEquipe = eDao.listarEquipe();
-			return "/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true";
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			boolean alterou = eDao.alterarEquipe(equipe);
+
+			if (alterou == true) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Equipe alterada com sucesso!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				RequestContext.getCurrentInstance().update("msgError");
+				this.listaEquipe = eDao.listarEquipe();
+				// return
+				// "/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true";
+			} else {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Ocorreu um erro durante o cadastro!", "Erro");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				// return "";
+			}
 		}
 	}
 
@@ -207,9 +205,9 @@ public class EquipeController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo==1) {
+		if (this.tipo == 1) {
 			cabecalho = "Inclusão de Equipe";
-		} else if (this.tipo==2) {
+		} else if (this.tipo == 2) {
 			cabecalho = "Alteração de Equipe";
 		}
 		return cabecalho;

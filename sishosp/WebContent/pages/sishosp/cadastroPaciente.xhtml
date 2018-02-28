@@ -17,8 +17,12 @@
 		<!-- INICIO DO FORMULARIO -->
 		<h:form class="form-horizontal" id="formCADU">
 
-			<p:growl id="message" />
-			<b:panel title="#{PacienteController.cabecalho}" collapsible="false">
+			<div class="panel-body">
+				<div class="sub-header">
+					<h:outputText value="#{PacienteController.cabecalho}"
+						styleClass="cadcabecalho"></h:outputText>
+					<hr />
+				</div>
 
 				<p:tabView activeIndex="#{PacienteController.abaAtiva}"
 					style="height:auto; width:auto" id="tbv">
@@ -35,7 +39,7 @@
 									pt:placeholder="Digite aqui seu nome entre 2 e 30 caracteres"
 									required="true"
 									validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-									requiredMessage="é necessário que você informe seu nome.">
+									requiredMessage="É necessário que você informe o nome.">
 									<f:validateLength minimum="2" maximum="40" />
 
 								</h:inputText>
@@ -75,7 +79,7 @@
 							<h:outputLabel for="sexo" value="Sexo"
 								class="col-sm-1 control-label" />
 							<div class="col-sm-2">
-								<b:selectOneMenu required="false" disable="true"
+								<b:selectOneMenu required="true" disable="true"
 									requiredMessage="Informe o sexo" id="sexo"
 									value="#{PacienteController.paciente.sexo}">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
@@ -111,10 +115,8 @@
 								class="col-sm-1 control-label" />
 							<div class="col-sm-5">
 								<h:inputText value="#{PacienteController.paciente.nomePai}"
-									class="form-control" id="pai"
-									pt:placeholder="Digite aqui o nome do seu pai entre 2 e 30 caracteres"
-									required="false"
-									validatorMessage="Nome deve conter entre 2 e 30 caracteres."
+									class="form-control" id="pai" required="false"
+									validatorMessage="Nome do Pai deve conter entre 2 e 30 caracteres."
 									requiredMessage="é necessário que você informe o nome do seu pai.">
 									<f:validateLength minimum="2" maximum="40" />
 
@@ -130,10 +132,8 @@
 								class="col-xs-1 control-label" />
 							<div class="col-sm-5">
 								<h:inputText value="#{PacienteController.paciente.nomeMae}"
-									class="form-control" id="mae"
-									pt:placeholder="Digite aqui o nome da sua mãe entre 2 e 30 caracteres"
-									required="true"
-									validatorMessage="Nome deve conter entre 2 e 30 caracteres."
+									class="form-control" id="mae" required="true"
+									validatorMessage="Nome da Mãe deve conter entre 2 e 30 caracteres."
 									requiredMessage="é necessário que você informe o nome da sua mãe.">
 									<f:validateLength minimum="2" maximum="40" />
 
@@ -144,9 +144,7 @@
 								class="col-sm-1 control-label" />
 							<div class="col-sm-5">
 								<h:inputText value="#{PacienteController.paciente.conjuge}"
-									class="form-control" id="conjuge"
-									pt:placeholder="Digite aqui seu conjuge entre 2 e 30 caracteres"
-									required="false"
+									class="form-control" id="conjuge" required="false"
 									validatorMessage="Conjuge deve conter entre 2 e 30 caracteres."
 									requiredMessage="é necessário que você informe seu nome.">
 									<f:validateLength minimum="2" maximum="40" />
@@ -209,15 +207,15 @@
 							<h:outputLabel for="inputcep" value="CEP"
 								class="col-sm-1 control-label" />
 							<div class="col-sm-2">
-								<h:inputText value="#{PacienteController.paciente.endereco.cep}"
-									class="form-control" id="inputcep"
-									pt:placeholder="Digite aqui seu cep entre 8 digitos"
-									required="false"
-									validatorMessage="Cep deve conter entre 8 digitos"
+								<p:inputMask mask="99999-999"
+									value="#{PacienteController.paciente.endereco.cep}"
+									class="form-control" required="true"
 									requiredMessage="é necessário que você informe seu cep.">
-									<f:validateLength minimum="8" maximum="8" />
 
-								</h:inputText>
+									<p:ajax listener="#{PacienteController.encontraCEP}"
+										update="inputbairro, inputrua, estado, municipio"
+										global="false" event="blur"></p:ajax>
+								</p:inputMask>
 
 							</div>
 
@@ -228,8 +226,7 @@
 									value="#{PacienteController.paciente.endereco.logradouro}"
 									required="true"
 									requiredMessage="é necessario que você informe seu logradouro"
-									class="form-control" id="inputrua"
-									pt:placeholder="Digite aqui seu Logradouro entre 50 digitos">
+									class="form-control" id="inputrua">
 									<f:validateLength minimum="2" maximum="50" />
 								</h:inputText>
 							</div>
@@ -272,16 +269,15 @@
 							<h:outputLabel for="municipio" value="Municipio"
 								class="col-md-1 control-label" />
 							<div class="col-md-2">
-								<b:selectOneMenu
+								<h:inputText
 									value="#{PacienteController.paciente.endereco.municipio}"
-									id="municipio">
-									<f:selectItem itemLabel="Selecione" itemValue="0" />
-									<f:selectItems value="#{PacienteController.listaMunicipios}"
-										var="sis" itemLabel="#{sis.municipio}"
-										itemValue="#{sis.codmunicipio}" />
+									required="true"
+									requiredMessage="é necessario que você informe seu municipio"
+									class="form-control" id="municipio">
+								</h:inputText>
 
-								</b:selectOneMenu>
 							</div>
+
 
 							<h:outputLabel for="estado" value="Estado"
 								class="col-sm-1 control-label" />
@@ -505,12 +501,13 @@
 
 							<div class="col-sm-1">
 
-								
-									<p:outputLabel value="Associado"></p:outputLabel>
-									<p:selectOneRadio value="#{PacienteController.paciente.associado}">
-									<f:selectItem  itemLabel="Sim" itemValue="s"/>
-									<f:selectItem  itemLabel="Não" itemValue="n"/>
-									</p:selectOneRadio>
+
+								<p:outputLabel value="Associado"></p:outputLabel>
+								<p:selectOneRadio
+									value="#{PacienteController.paciente.associado}">
+									<f:selectItem itemLabel="Sim" itemValue="s" />
+									<f:selectItem itemLabel="Não" itemValue="n" />
+								</p:selectOneRadio>
 
 							</div>
 							<!--  -->
@@ -804,31 +801,32 @@
 					</p:tab>
 
 				</p:tabView>
+			</div>
+			<center>
+				<b:messages value="Error" id="msgError"></b:messages>
+			</center>
+
+			<center>
+				<b:commandButton action="#{PacienteController.gravarPaciente()}"
+					icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
+					value="Incluir" style="float:left"
+					rendered="#{PacienteController.tipo == 1}" />
+
+				<b:commandButton action="#{PacienteController.alterarPaciente()}"
+					icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+					look="success" style="float:left"
+					rendered="#{PacienteController.tipo  == 2}" />
+
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					style="float:right" size="sm" immediate="true" look="info"
+					action="/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true">
+				</b:commandButton>
+
+			</center>
 
 
 
-				<p:separator></p:separator>
-				<!-- FIM DO FORMULARIO -->
-				<center>
-					<b:commandButton action="#{PacienteController.gravarPaciente()}"
-						icon="glyphicon-ok" size="sm" look="success"
-						update=":formCADU:message,formCADU" value="Incluir"
-						rendered="#{PacienteController.tipo == 1}" />
 
-					<b:commandButton action="#{PacienteController.alterarPaciente()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU:message,:formCADU"
-						value="Alterar" look="success"
-						rendered="#{PacienteController.tipo  == 2}" />
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="margin-left:10px" size="sm" immediate="true" look="info"
-						action="/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true">
-					</b:commandButton>
-
-				</center>
-
-
-
-			</b:panel>
 		</h:form>
 
 

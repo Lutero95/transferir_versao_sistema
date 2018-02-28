@@ -79,7 +79,7 @@ public class PacienteDAO {
 			if (paciente.getEndereco().getCep() == null) {
 				stmt.setNull(10, Types.INTEGER);
 			} else {
-				stmt.setInt(10, paciente.getEndereco().getCep());
+				stmt.setString(10, paciente.getEndereco().getCep());
 			}
 			if (paciente.getEndereco().getUf() == null) {
 				stmt.setNull(11, Types.CHAR);
@@ -318,7 +318,7 @@ public class PacienteDAO {
 			stmt.setString(7, paciente.getNomeMae());
 			stmt.setString(8, paciente.getConjuge());
 			stmt.setInt(9, paciente.getCodRaca());
-			stmt.setInt(10, paciente.getEndereco().getCep());
+			stmt.setString(10, paciente.getEndereco().getCep());
 			stmt.setString(11, paciente.getEndereco().getUf());
 			stmt.setString(12, paciente.getEndereco().getMunicipio());
 			stmt.setString(13, paciente.getEndereco().getBairro());
@@ -447,7 +447,7 @@ public class PacienteDAO {
 				p.setNomeMae(rs.getString("mae"));
 				p.setConjuge(rs.getString("conjuge"));
 				p.setCodRaca(rs.getInt("codraca"));
-				p.getEndereco().setCep(rs.getInt("cep"));
+				p.getEndereco().setCep(rs.getString("cep"));
 				p.getEndereco().setUf(rs.getString("uf"));
 				p.getEndereco().setMunicipio(rs.getString("cidade"));
 				p.getEndereco().setBairro(rs.getString("bairro"));
@@ -635,7 +635,7 @@ public class PacienteDAO {
 				p.setNomeMae(rs.getString("mae"));
 				p.setConjuge(rs.getString("conjuge"));
 				p.setCodRaca(rs.getInt("codraca"));
-				p.getEndereco().setCep(rs.getInt("cep"));
+				p.getEndereco().setCep(rs.getString("cep"));
 				p.getEndereco().setUf(rs.getString("uf"));
 				p.getEndereco().setMunicipio(rs.getString("cidade"));
 				p.getEndereco().setBairro(rs.getString("bairro"));
@@ -816,7 +816,7 @@ public class PacienteDAO {
 				p.setNomeMae(rs.getString("mae"));
 				p.setConjuge(rs.getString("conjuge"));
 				p.setCodRaca(rs.getInt("codraca"));
-				p.getEndereco().setCep(rs.getInt("cep"));
+				p.getEndereco().setCep(rs.getString("cep"));
 				p.getEndereco().setUf(rs.getString("uf"));
 				p.getEndereco().setMunicipio(rs.getString("cidade"));
 				p.getEndereco().setBairro(rs.getString("bairro"));
@@ -922,7 +922,7 @@ public class PacienteDAO {
 				p.setNomeMae(rs.getString("mae"));
 				p.setConjuge(rs.getString("conjuge"));
 				p.setCodRaca(rs.getInt("codraca"));
-				p.getEndereco().setCep(rs.getInt("cep"));
+				p.getEndereco().setCep(rs.getString("cep"));
 				p.getEndereco().setUf(rs.getString("uf"));
 				p.getEndereco().setMunicipio(rs.getString("cidade"));
 				p.getEndereco().setBairro(rs.getString("bairro"));
@@ -1066,7 +1066,7 @@ public class PacienteDAO {
 				p.setNomeMae(rs.getString("mae"));
 				p.setConjuge(rs.getString("conjuge"));
 				p.setCodRaca(rs.getInt("codraca"));
-				p.getEndereco().setCep(rs.getInt("cep"));
+				p.getEndereco().setCep(rs.getString("cep"));
 				p.getEndereco().setUf(rs.getString("uf"));
 				p.getEndereco().setMunicipio(rs.getString("cidade"));
 				p.getEndereco().setBairro(rs.getString("bairro"));

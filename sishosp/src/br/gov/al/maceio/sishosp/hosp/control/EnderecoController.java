@@ -55,35 +55,34 @@ public class EnderecoController implements Serializable {
 	}
 
 	public String redirectEdit() {
-		return "cadastroMunicipios?faces-redirect=true&amp;id=" + this.endereco.getCodmunicipio()+"&amp;tipo="+tipo;
-	}	
-	
-	
+		return "cadastroMunicipios?faces-redirect=true&amp;id="
+				+ this.endereco.getCodmunicipio() + "&amp;tipo=" + tipo;
+	}
+
 	public String redirectInsert() {
-		return "cadastroMunicipios?faces-redirect=true&amp;tipo="+tipo;
-	}		
-	
+		return "cadastroMunicipios?faces-redirect=true&amp;tipo=" + tipo;
+	}
+
 	public void getEditMunicipio() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
 		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
+		if (params.get("id") != null) {
 			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
-			tipo =Integer.parseInt(params.get("tipo"));			
-			System.out.println("tipo do walter"+tipo);
+			tipo = Integer.parseInt(params.get("tipo"));
+			System.out.println("tipo do walter" + tipo);
 			EnderecoDAO cDao = new EnderecoDAO();
 			this.endereco = cDao.listarMunicipioPorId(id);
+		} else {
+			System.out.println("tipo sera" + tipo);
+			tipo = Integer.parseInt(params.get("tipo"));
+
 		}
-		else{
-			System.out.println("tipo sera"+tipo);
-			tipo =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
+
 	}
-	
-	
+
 	public void gravarLogradouro() throws ProjetoException {
 		EnderecoDAO udao = new EnderecoDAO();
 
@@ -112,7 +111,7 @@ public class EnderecoController implements Serializable {
 		if (cadastrou == true) {
 			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Municipio cadastrado com sucesso!", "Sucesso");
+					"Município cadastrado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			listaMunicipios = null;
@@ -126,23 +125,23 @@ public class EnderecoController implements Serializable {
 
 	}
 
-	public String alterarMunicipios() throws ProjetoException {
+	public void alterarMunicipios() throws ProjetoException {
 
 		EnderecoDAO udao = new EnderecoDAO();
 		boolean alterou = udao.alterarMunicipio(endereco);
 		listaMunicipios = null;
 		if (alterou == true) {
-			limparDados();
+			//limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Municipio alterado com sucesso!", "Sucesso");
+					"Município alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true";
+			//return "/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			//return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -155,7 +154,7 @@ public class EnderecoController implements Serializable {
 
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Logradouro excluido com sucesso!", "Sucesso");
+					"Logradouro excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			RequestContext.getCurrentInstance().execute(
@@ -178,7 +177,7 @@ public class EnderecoController implements Serializable {
 
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Municipio excluido com sucesso!", "Sucesso");
+					"Município excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listarMunicipios();
 			RequestContext.getCurrentInstance().execute(
@@ -260,7 +259,6 @@ public class EnderecoController implements Serializable {
 		this.listaBairros = listaBairros;
 	}
 
-	
 	public Integer getTipoBuscaMunicipio() {
 		return tipoBuscaMunicipio;
 	}
@@ -294,9 +292,9 @@ public class EnderecoController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo==1) {
+		if (this.tipo == 1) {
 			cabecalho = "Inclusão de Município";
-		} else if (this.tipo==2) {
+		} else if (this.tipo == 2) {
 			cabecalho = "Alteração de Município";
 		}
 		return cabecalho;

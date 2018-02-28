@@ -4,16 +4,22 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:b="http://bootsfaces.net/ui">
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
 		<f:metadata>
-		<f:viewAction action="#{EnderecoController.getEditMunicipio()}" />
-	</f:metadata>
-		<b:panel title="#{EnderecoController.cabecalho}" collapsible="false">
+			<f:viewAction action="#{EnderecoController.getEditMunicipio()}" />
+		</f:metadata>
+
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{EnderecoController.cabecalho}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
+
 			<h:form>
 				<p:commandButton value="Voltar"
 					style="position:relative; right:18%; width:100px; " icon="btvoltar"
@@ -22,67 +28,68 @@
 
 			<h:form class="form-horizontal" id="formCADU">
 
-				<p:growl id="message" />
-				
 
-					<div class="form-group">
-						<h:outputLabel for="inputname" value="Município"
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<h:inputText value="#{EnderecoController.endereco.municipio}"
-								class="form-control" id="inputname"
-								pt:placeholder="Digite aqui seu nome entre 2 e 30 caracteres"
-								required="false"
-								validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-								requiredMessage="é necessário que você informe seu nome.">
-								<f:validateLength minimum="2" maximum="40" />
+				<div class="form-group">
+					<h:outputLabel for="inputname" value="Município"
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText value="#{EnderecoController.endereco.municipio}"
+							class="form-control" id="inputname" required="false"
+							validatorMessage="Nome deve conter entre 2 e 30 caracteres."
+							requiredMessage="é necessário que você informe seu nome.">
+							<f:validateLength minimum="2" maximum="40" />
 
-							</h:inputText>
+						</h:inputText>
 
-						</div>
 					</div>
-					<div class="form-group">
-						<h:outputLabel for="inputcod" value="Cód. Federal"
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<h:inputText class="form-control"
-								value="#{EnderecoController.endereco.codfederal}"
-								style="width: 300px" />
-						</div>
+				</div>
+				<div class="form-group">
+					<h:outputLabel for="inputcod" value="Cód. Federal"
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText class="form-control"
+							value="#{EnderecoController.endereco.codfederal}"
+							style="width: 300px" />
 					</div>
+				</div>
 
-					<div class="form-group">
-						<h:outputLabel for="inputcod" value="Cód. MacRegião"
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<h:inputText class="form-control"
-								value="#{EnderecoController.endereco.codmacregiao}"
-								style="width: 300px" />
-						</div>
+				<div class="form-group">
+					<h:outputLabel for="inputcod" value="Cód. MacRegião"
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText class="form-control"
+							value="#{EnderecoController.endereco.codmacregiao}"
+							style="width: 300px" />
 					</div>
-					<center>
-								<b:commandButton action="#{EnderecoController.gravarMunicipios()}"
-					icon="glyphicon-ok" size="sm" look="success"
-					update=":formCADU:message,:formCADU" value="Incluir"
-					rendered="#{EnderecoController.tipo == 1}" />
+				</div>
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<center>
+					<b:commandButton action="#{EnderecoController.gravarMunicipios()}"
+						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
+						value="Incluir" style="float:left"
+						rendered="#{EnderecoController.tipo == 1}" />
+
+					<b:commandButton action="#{EnderecoController.alterarMunicipios()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+						look="success" style="float:left"
+						rendered="#{EnderecoController.tipo  == 2}" />
+
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="float:right" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true">
+					</b:commandButton>
 
 
-				<b:commandButton action="#{EnderecoController.alterarMunicipios()}"
-					icon="glyphicon-ok" size="sm"
-					update=":formCADU:message,:formCADU" value="Alterar"
-					look="success" rendered="#{EnderecoController.tipo  == 2}" />
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					style="margin-left:10px" size="sm" immediate="true" look="info"
-					action="/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true">
-				</b:commandButton>
-
-
-</center>
+				</center>
 
 
 			</h:form>
 
-</b:panel>
+		</div>
 	</ui:define>
 </ui:composition>
 </html>
