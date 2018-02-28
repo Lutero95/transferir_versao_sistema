@@ -131,7 +131,7 @@ public class EnderecoDAO {
                         PreparedStatement stmt = conexao.prepareStatement(sql);
                         stmt.setString(1, endereco.getLogradouro().toUpperCase().trim());
                         stmt.setInt(2, endereco.getCodbairro());
-                        stmt.setInt(3, endereco.getCep());
+                        stmt.setString(3, endereco.getCep());
                         stmt.setInt(4, endereco.getCodmunicipio());
                         
                        
@@ -155,7 +155,7 @@ public class EnderecoDAO {
                     PreparedStatement stmt = conexao.prepareStatement(sql);
                     stmt.setString(1, endereco.getLogradouro());
                     stmt.setInt(2, endereco.getCodbairro());
-                    stmt.setInt(3, endereco.getCep());
+                    stmt.setString(3, endereco.getCep());
                     stmt.setInt(4, endereco.getCodmunicipio());
                     stmt.executeUpdate();
 
