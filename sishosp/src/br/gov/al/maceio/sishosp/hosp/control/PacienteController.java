@@ -226,11 +226,12 @@ public class PacienteController implements Serializable {
 	public String redirectInsertRaca() {
 		return "cadastroRaca?faces-redirect=true&amp;tipo=" + tipo;
 	}
-	
+
 	public void encontraCEP() {
-		System.out.println("CODIGO: "+paciente.getId_paciente());
-		System.out.println("CEP: "+paciente.getEndereco().getCep());
-		CepWebService cepWebService = new CepWebService(paciente.getEndereco().getCep());
+		System.out.println("CODIGO: " + paciente.getId_paciente());
+		System.out.println("CEP: " + paciente.getEndereco().getCep());
+		CepWebService cepWebService = new CepWebService(paciente.getEndereco()
+				.getCep());
 		if (cepWebService.getResultado() != 0) {
 			paciente.getEndereco().setLogradouro(
 					cepWebService.getTipoLogradouro() + " "
@@ -240,7 +241,10 @@ public class PacienteController implements Serializable {
 			paciente.getEndereco().setBairro(cepWebService.getBairro());
 
 		} else {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"CEP inválido!",""));
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"CEP inválido!", ""));
 		}
 	}
 
@@ -332,21 +336,31 @@ public class PacienteController implements Serializable {
 	}
 
 	public void alterarPaciente() throws ProjetoException {
-		paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
-		paciente.getEscolaridade().setCodescolaridade(
-				escolaridadeSuggestion.getCodescolaridade());
-		paciente.getProfissao().setCodprofissao(
-				profissaoSuggestion.getCodprofissao());
-		paciente.getEncaminhado().setCodencaminhado(
-				encaminhadoSuggestion.getCodencaminhado());
-		paciente.getFormatransporte().setCodformatransporte(
-				transporteSuggestion.getCodformatransporte());
+		if (escolaSuggestion != null) {
+			paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
+		}
+		if (escolaridadeSuggestion != null) {
+			paciente.getEscolaridade().setCodescolaridade(
+					escolaridadeSuggestion.getCodescolaridade());
+		}
+		if (profissaoSuggestion != null) {
+			paciente.getProfissao().setCodprofissao(
+					profissaoSuggestion.getCodprofissao());
+		}
+		if (encaminhadoSuggestion != null) {
+			paciente.getEncaminhado().setCodencaminhado(
+					encaminhadoSuggestion.getCodencaminhado());
+		}
+		if (transporteSuggestion != null) {
+			paciente.getFormatransporte().setCodformatransporte(
+					transporteSuggestion.getCodformatransporte());
+		}
 
 		PacienteDAO mdao = new PacienteDAO();
 		boolean alterou = mdao.alterar(paciente);
 
 		if (alterou == true) {
-			limparDados();
+			//limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Paciente alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);

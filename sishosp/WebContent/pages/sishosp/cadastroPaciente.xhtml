@@ -5,6 +5,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
+	xmlns:stella="http://stella.caelum.com.br/faces2"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:b="http://bootsfaces.net/ui">
 
@@ -116,10 +117,7 @@
 							<div class="col-sm-5">
 								<h:inputText value="#{PacienteController.paciente.nomePai}"
 									class="form-control" id="pai" required="false"
-									validatorMessage="Nome do Pai deve conter entre 2 e 30 caracteres."
-									requiredMessage="é necessário que você informe o nome do seu pai.">
-									<f:validateLength minimum="2" maximum="40" />
-
+									requiredMessage="É necessário que você informe o nome do seu pai.">
 								</h:inputText>
 
 							</div>
@@ -133,8 +131,8 @@
 							<div class="col-sm-5">
 								<h:inputText value="#{PacienteController.paciente.nomeMae}"
 									class="form-control" id="mae" required="true"
-									validatorMessage="Nome da Mãe deve conter entre 2 e 30 caracteres."
-									requiredMessage="é necessário que você informe o nome da sua mãe.">
+									requiredMessage="É necessário que você informe o nome da sua mãe."
+									validatorMessage="Nome da Mãe deve conter entre 2 e 30 caracteres.">
 									<f:validateLength minimum="2" maximum="40" />
 
 								</h:inputText>
@@ -145,9 +143,7 @@
 							<div class="col-sm-5">
 								<h:inputText value="#{PacienteController.paciente.conjuge}"
 									class="form-control" id="conjuge" required="false"
-									validatorMessage="Conjuge deve conter entre 2 e 30 caracteres."
-									requiredMessage="é necessário que você informe seu nome.">
-									<f:validateLength minimum="2" maximum="40" />
+									requiredMessage="É necessário que você informe seu nome.">
 
 								</h:inputText>
 
@@ -210,7 +206,7 @@
 								<p:inputMask mask="99999-999"
 									value="#{PacienteController.paciente.endereco.cep}"
 									class="form-control" required="true"
-									requiredMessage="é necessário que você informe seu cep.">
+									requiredMessage="É necessário que você informe seu cep.">
 
 									<p:ajax listener="#{PacienteController.encontraCEP}"
 										update="inputbairro, inputrua, estado, municipio"
@@ -225,7 +221,7 @@
 								<h:inputText
 									value="#{PacienteController.paciente.endereco.logradouro}"
 									required="true"
-									requiredMessage="é necessario que você informe seu logradouro"
+									requiredMessage="É necessário que você informe seu logradouro"
 									class="form-control" id="inputrua">
 									<f:validateLength minimum="2" maximum="50" />
 								</h:inputText>
@@ -248,10 +244,8 @@
 							<div class="col-sm-1">
 								<h:inputText
 									value="#{PacienteController.paciente.endereco.numero}"
-									class="form-control" id="numero" required="true"
-									requiredMessage="é necessario que você informe seu numero"
-									pt:placeholder="Digite aqui seu numero">
-									<f:validateLength minimum="2" maximum="50" />
+									class="form-control" id="numero" required="false"
+									requiredMessage="É necessário que você informe seu número">
 								</h:inputText>
 							</div>
 							<h:outputLabel for="inputbairro" value="Bairro"
@@ -260,7 +254,7 @@
 								<h:inputText
 									value="#{PacienteController.paciente.endereco.bairro}"
 									required="true"
-									requiredMessage="é necessario que você informe seu bairro"
+									requiredMessage="É necessário que você informe seu bairro"
 									class="form-control" id="inputbairro"
 									pt:placeholder="Digite aqui seu bairro">
 								</h:inputText>
@@ -272,13 +266,14 @@
 								<h:inputText
 									value="#{PacienteController.paciente.endereco.municipio}"
 									required="true"
-									requiredMessage="é necessario que você informe seu municipio"
+									requiredMessage="É necessário que você informe seu município"
 									class="form-control" id="municipio">
 								</h:inputText>
 
 							</div>
+						</div>
 
-
+						<div class="form-group">
 							<h:outputLabel for="estado" value="Estado"
 								class="col-sm-1 control-label" />
 							<div class="col-sm-1">
@@ -344,7 +339,7 @@
 									value="#{PacienteController.paciente.rg}" class="form-control"
 									id="rg" pt:placeholder=" Digite seu RG" required="false"
 									validatorMessage="RG deve conter entre 8 digitos."
-									requiredMessage="é necessário que você informe seu RG.">
+									requiredMessage="É necessário que você informe seu RG.">
 									<!-- <f:validateLength minimum="9" maximum="9" />  -->
 									<!--  <f:ajax event="blur" render="m_rg" />-->
 								</h:inputText>
@@ -368,13 +363,12 @@
 							<h:outputLabel for="cpf" value="CPF"
 								class="col-sm-1 control-label" />
 							<div class="col-sm-2">
-								<h:inputText value="#{PacienteController.paciente.cpf}"
-									class="form-control" id="cpf"
-									pt:placeholder="Digite aqui seu cpf entre 11 digitos"
-									required="false"
-									validatorMessage="Cpf deve conter entre 11 digitos."
-									requiredMessage="é necessário que você informe seu cpf." />
-
+								<p:inputMask mask="999.999.999-99"
+									value="#{PacienteController.paciente.cpf}" class="form-control"
+									id="cpf" required="true"
+									requiredMessage="É necessário que você informe o CPF">
+									<stella:validateCPF formatted="true" />
+								</p:inputMask>
 
 							</div>
 
@@ -387,9 +381,9 @@
 							<div class="col-sm-2">
 								<h:inputText value="#{PacienteController.paciente.cns}"
 									class="form-control" id="cns"
-									pt:placeholder="Digite aqui seu cns" required="true"
+									pt:placeholder="Digite aqui seu cns" required="false"
 									validatorMessage="CNS deve conter entre 15 digitos."
-									requiredMessage="é necessário que você informe seu cns.">
+									requiredMessage="É necessário que você informe seu cns.">
 									<!--  <f:validateLength minimum="15" maximum="15" /> -->
 									<!--  <f:ajax event="blur" render="m_cns" /> -->
 								</h:inputText>
@@ -398,10 +392,9 @@
 							<h:outputLabel for="protant" value="Prot.Ant"
 								class="col-sm-1 control-label" />
 							<div class="col-sm-2">
-								<h:inputText value="#{PacienteController.paciente.protant}"
-									class="form-control" id="protant"
-									pt:placeholder="Digite aqui seu Prot.Ant">
-								</h:inputText>
+								<b:inputText value="#{PacienteController.paciente.protant}"
+									class="form-control" id="protant">
+								</b:inputText>
 							</div>
 							<h:outputLabel for="reservista" value="Reservista"
 								class="col-sm-1 control-label" />
@@ -409,7 +402,7 @@
 								<h:inputText value="#{PacienteController.paciente.reservista}"
 									class="form-control" id="reservista"
 									validatorMessage="Numero da Reservista deve conter entre 12 digitos."
-									requiredMessage="é necessário que você informe seu Numero da Reservista.">
+									requiredMessage="É necessário que você informe seu Numero da Reservista.">
 
 								</h:inputText>
 
@@ -436,7 +429,7 @@
 							<div class="col-sm-2">
 								<h:inputText value="#{PacienteController.paciente.pis}"
 									class="form-control" id="pis"
-									requiredMessage="é necessário que você informe seu pis.">
+									requiredMessage="É necessário que você informe seu pis.">
 									<!-- <f:validateLength minimum="11" maximum="11" /> -->
 
 								</h:inputText>
@@ -499,7 +492,7 @@
 					<p:tab title="COMPLEMENTO 1">
 						<div class="form-group">
 
-							<div class="col-sm-1">
+							<div class="col-sm-12">
 
 
 								<p:outputLabel value="Associado"></p:outputLabel>
@@ -511,10 +504,10 @@
 
 							</div>
 							<!--  -->
-							<h:outputLabel
-								value="Escolaridade: #{PacienteController.escolaridadeSuggestion}"
+							<p:outputLabel value="Escolaridade: "
 								class="col-sm-1 control-label">
-							</h:outputLabel>
+								<font color="#FF0000">*</font>
+							</p:outputLabel>
 
 							<div class="col-sm-6">
 
@@ -618,7 +611,7 @@
 								<font color="#FF0000">*</font>
 							</p:outputLabel>
 							<div class="col-sm-6">
-								<p:outputPanel class="col-sm-1 control-label">
+								<p:outputPanel class="col-sm-3 control-label">
 									<p:inputText id="nome4" size="45" required="false"
 										requiredMessage="O campo nome é obrigatório."
 										value="#{PacienteController.paciente.localtrabalha}" />
@@ -675,9 +668,11 @@
 							</p:outputLabel>
 							<div class="col-sm-6">
 								<p:outputPanel class="col-sm-1 control-label">
-									<p:inputText id="nome7" size="45" required="false"
-										requiredMessage="O campo nome é obrigatório."
-										value="#{PacienteController.paciente.cpfresp}" />
+									<b:inputText mask="999.999.999-99" id="nome7" size="45"
+										required="false" requiredMessage="O campo nome é obrigatório."
+										value="#{PacienteController.paciente.cpfresp}">
+										<stella:validateCPF formatted="true" />
+									</b:inputText>
 								</p:outputPanel>
 							</div>
 						</div>

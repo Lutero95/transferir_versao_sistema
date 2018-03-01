@@ -93,9 +93,10 @@ public class PacienteDAO {
 				stmt.setString(12, paciente.getEndereco().getMunicipio()
 						.toUpperCase().trim());
 			}
-		    stmt.setString(13, paciente.getEndereco().getBairro().toUpperCase().trim());
+			stmt.setString(13, paciente.getEndereco().getBairro().toUpperCase()
+					.trim());
 			stmt.setString(14, paciente.getEndereco().getLogradouro()
-					.toUpperCase().trim());		
+					.toUpperCase().trim());
 			stmt.setString(15, paciente.getEndereco().getNumero().toUpperCase()
 					.trim());
 			if (paciente.getEndereco().getComplemento() == null) {
@@ -143,23 +144,25 @@ public class PacienteDAO {
 			if (paciente.getDataExpedicao1() == null) {
 				stmt.setNull(24, Types.DATE);
 			} else {
-				stmt.setDate(24, new java.sql.Date(paciente.getDataExpedicao1().getTime()));
+				stmt.setDate(24, new java.sql.Date(paciente.getDataExpedicao1()
+						.getTime()));
 			}
 			if (paciente.getCpf() == null) {
 				stmt.setNull(25, Types.CHAR);
 			} else {
-				stmt.setString(25, paciente.getCpf());
+				stmt.setString(25, paciente.getCpf().replaceAll("[^0-9]", ""));
 			}
 			stmt.setString(26, paciente.getCns().toUpperCase().trim());
 			if (paciente.getProtant() == null) {
-				stmt.setNull(27, Types.CHAR);
+				stmt.setNull(27, Types.INTEGER);
 			} else {
 				stmt.setInt(27, paciente.getProtant());
 			}
 			if (paciente.getReservista() == null) {
 				stmt.setNull(28, Types.CHAR);
 			} else {
-				stmt.setString(28, paciente.getReservista().toUpperCase().trim());
+				stmt.setString(28, paciente.getReservista().toUpperCase()
+						.trim());
 			}
 			if (paciente.getCtps() == null) {
 				stmt.setNull(29, Types.INTEGER);
@@ -180,7 +183,7 @@ public class PacienteDAO {
 				stmt.setNull(32, Types.CHAR);
 			} else {
 				stmt.setString(32, paciente.getCartorio().toUpperCase().trim());
-			}	
+			}
 			if (paciente.getNumeroCartorio() == null) {
 				stmt.setNull(33, Types.CHAR);
 			} else {
@@ -193,7 +196,7 @@ public class PacienteDAO {
 				stmt.setString(34, paciente.getLivro().toUpperCase().trim());
 			}
 			if (paciente.getFolha() == null) {
-				stmt.setNull(35, Types.CHAR);
+				stmt.setNull(35, Types.INTEGER);
 			} else {
 				stmt.setInt(35, paciente.getFolha());
 			}
@@ -231,7 +234,8 @@ public class PacienteDAO {
 			if (paciente.getLocaltrabalha() == null) {
 				stmt.setNull(42, Types.CHAR);
 			} else {
-				stmt.setString(42, paciente.getLocaltrabalha().toUpperCase().trim());
+				stmt.setString(42, paciente.getLocaltrabalha().toUpperCase()
+						.trim());
 			}
 			if (paciente.getCodparentesco() == null) {
 				stmt.setNull(43, Types.INTEGER);
@@ -243,7 +247,7 @@ public class PacienteDAO {
 			} else {
 				stmt.setString(44, paciente.getNomeresp().toUpperCase().trim());
 			}
-			if ( paciente.getRgresp() == null) {
+			if (paciente.getRgresp() == null) {
 				stmt.setNull(45, Types.CHAR);
 			} else {
 				stmt.setString(45, paciente.getRgresp().toUpperCase().trim());
@@ -251,12 +255,13 @@ public class PacienteDAO {
 			if (paciente.getCpfresp() == null) {
 				stmt.setNull(46, Types.CHAR);
 			} else {
-				stmt.setString(46, paciente.getCpfresp());
+				stmt.setString(46, paciente.getCpfresp().replaceAll("[^0-9]", ""));
 			}
 			if (paciente.getDataNascimentoresp() == null) {
 				stmt.setNull(47, Types.DATE);
 			} else {
-				stmt.setDate(47, new java.sql.Date(paciente.getDataNascimentoresp().getTime()));
+				stmt.setDate(47, new java.sql.Date(paciente
+						.getDataNascimentoresp().getTime()));
 			}
 			if (paciente.getEncaminhado().getCodencaminhado() == null) {
 				stmt.setNull(48, Types.INTEGER);
@@ -332,11 +337,23 @@ public class PacienteDAO {
 			stmt.setString(21, paciente.getEndereco().getTelefoneorelhao());
 			stmt.setString(22, paciente.getRg());
 			stmt.setString(23, paciente.getOe());
-			stmt.setDate(24, new java.sql.Date(paciente.getDataExpedicao1()
-					.getTime()));
-			stmt.setString(25, paciente.getCpf());
+
+			if (paciente.getDataExpedicao1() != null) {
+				stmt.setDate(24, new java.sql.Date(paciente.getDataExpedicao1()
+						.getTime()));
+			} else {
+				stmt.setNull(24, Types.DATE);
+			}
+
+			stmt.setString(25, paciente.getCpf().replaceAll("[^0-9]", ""));
 			stmt.setString(26, paciente.getCns());
-			stmt.setInt(27, paciente.getProtant());
+
+			if (paciente.getProtant() == null) {
+				stmt.setNull(27, Types.INTEGER);
+			} else {
+				stmt.setInt(27, paciente.getProtant());
+			}
+
 			stmt.setString(28, paciente.getReservista());
 			stmt.setInt(29, paciente.getCtps());
 			stmt.setInt(30, paciente.getSerie());
@@ -345,20 +362,38 @@ public class PacienteDAO {
 			stmt.setString(33, paciente.getNumeroCartorio());
 			stmt.setString(34, paciente.getLivro());
 			stmt.setInt(35, paciente.getFolha());
-			stmt.setDate(36, new java.sql.Date(paciente.getDataExpedicao2()
-					.getTime()));
+
+			if (paciente.getDataExpedicao2() != null) {
+				stmt.setDate(36, new java.sql.Date(paciente.getDataExpedicao2()
+						.getTime()));
+			} else {
+				stmt.setNull(36, Types.DATE);
+			}
+
 			stmt.setString(37, paciente.getAssociado().toUpperCase().trim());
 			stmt.setInt(38, paciente.getEscolaridade().getCodescolaridade());
 			stmt.setInt(39, paciente.getEscola().getCodEscola());
 			stmt.setInt(40, paciente.getProfissao().getCodprofissao());
 			stmt.setString(41, paciente.getTrabalha());
 			stmt.setString(42, paciente.getLocaltrabalha());
-			stmt.setInt(43, paciente.getCodparentesco());
+
+			if (paciente.getCodparentesco() != null) {
+				stmt.setInt(43, paciente.getCodparentesco());
+			} else {
+				stmt.setNull(43, Types.INTEGER);
+			}
+
 			stmt.setString(44, paciente.getNomeresp());
 			stmt.setString(45, paciente.getRgresp());
-			stmt.setString(46, paciente.getCpfresp());
-			stmt.setDate(47, new java.sql.Date(paciente.getDataNascimentoresp()
-					.getTime()));
+			stmt.setString(46, paciente.getCpfresp().replaceAll("[^0-9]", ""));
+
+			if (paciente.getDataNascimentoresp() != null) {
+				stmt.setDate(47, new java.sql.Date(paciente
+						.getDataNascimentoresp().getTime()));
+			} else {
+				stmt.setNull(47, Types.DATE);
+			}
+
 			stmt.setInt(48, paciente.getEncaminhado().getCodencaminhado());
 			stmt.setInt(49, paciente.getFormatransporte()
 					.getCodformatransporte());
@@ -373,6 +408,7 @@ public class PacienteDAO {
 
 			return alterou;
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -582,7 +618,8 @@ public class PacienteDAO {
 		return lista;
 	}
 
-	public List<PacienteBean> buscarTipoPaciente(String valor, Integer tipo) throws ProjetoException {
+	public List<PacienteBean> buscarTipoPaciente(String valor, Integer tipo)
+			throws ProjetoException {
 		System.out.println("Entrou Ass");
 		// lpad(trim(to_char(pa.cpf,'99999999999')),11,'0') cpf
 		String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
@@ -706,7 +743,6 @@ public class PacienteDAO {
 		}
 		return lista;
 	}
-
 
 	public List<PacienteBean> listarPacientesAgenda() throws ProjetoException {
 		Connection con = null;
@@ -885,7 +921,8 @@ public class PacienteDAO {
 		}
 	}
 
-	public PacienteBean listarPacientePorID(int id) throws SQLException, ProjetoException {
+	public PacienteBean listarPacientePorID(int id) throws SQLException,
+			ProjetoException {
 		PacienteBean p = new PacienteBean();
 
 		String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
@@ -992,7 +1029,8 @@ public class PacienteDAO {
 
 	}
 
-	public RacaBean listarRacaPorID(int id) throws SQLException, ProjetoException {
+	public RacaBean listarRacaPorID(int id) throws SQLException,
+			ProjetoException {
 		PacienteBean p = new PacienteBean();
 		String sql = "select  id_raca, descraca from hosp.raca order by descraca";
 
@@ -1019,11 +1057,8 @@ public class PacienteDAO {
 			}
 		}
 
-		
-		
 	}
-	
-	
+
 	public List<PacienteBean> buscaPacienteAutoComplete(String str)
 			throws ProjetoException {
 		PreparedStatement ps = null;
