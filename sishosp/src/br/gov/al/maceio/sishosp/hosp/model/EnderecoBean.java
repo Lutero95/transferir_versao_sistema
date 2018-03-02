@@ -14,6 +14,7 @@ public class EnderecoBean implements Serializable {
 	private String logradouro;
 	private Integer codbairro;
 	private Integer codmunicipio;
+	private Integer codibge;
 	private Integer codfederal;
 	private Integer codmacregiao;
 	private String complemento;
@@ -194,6 +195,14 @@ public class EnderecoBean implements Serializable {
 
 	public void setCodmacregiao(Integer codmacregiao) {
 		this.codmacregiao = codmacregiao;
+	}
+
+	public Integer getCodibge() {
+		return codibge;
+	}
+
+	public void setCodibge(Integer codibge) {
+		this.codibge = codibge;
 	}
 
 

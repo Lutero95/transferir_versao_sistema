@@ -20,7 +20,6 @@ public class CepWebService {
 	@SuppressWarnings("rawtypes")
 	public CepWebService(String cep) {
 		try {
-			System.out.println("CEP: "+cep.replaceAll("[^0-9]", ""));
 			URL url = new URL(
 					"http://viacep.com.br/ws/" + cep.replaceAll("[^0-9]", "") + "/xml/");
 

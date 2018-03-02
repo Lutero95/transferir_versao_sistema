@@ -22,25 +22,35 @@ public class PacienteDAO {
 
 	// COME�O DO CODIGO
 
-	public Boolean cadastrar(PacienteBean paciente) throws ProjetoException {
+	public Boolean cadastrar(PacienteBean paciente, Integer codmunicipio)
+			throws ProjetoException {
 		boolean cadastrou = false;
-		System.out.println("passou aqui 2");
-
-		/*
-		 * PacienteBean user_session = (PacienteBean) FacesContext
-		 * .getCurrentInstance().getExternalContext().getSessionMap()
-		 * .get("obj_paciente");
-		 */
-
-		String sql = "insert into hosp.pacientes (dtacadastro, nome, dtanascimento, estcivil, sexo, sangue, "
-				+ "pai, mae, conjuge,codraca, cep, uf, cidade, bairro, logradouro, numero, complemento, referencia, telres, telcel, teltrab, telorelhao, rg, oe, dtaexpedicaorg, cpf, cns, protreab, "
-				+ "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, contribuinte, id_escolaridade, id_escola, id_profissao, trabalha, localtrabalha, codparentesco, "
-				+ "nomeresp, rgresp, cpfresp, dtanascimentoresp, id_encaminhado, id_formatransporte ,deficiencia, tipodeficiencia)"
-				+ " values (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ? , ? , "
-				+ "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		conexao = ConnectionFactory.getConnection();
 
 		try {
-			conexao = ConnectionFactory.getConnection();
+			if (codmunicipio == 0) {
+				String sql1 = "INSERT INTO hosp.municipio(descmunicipio, codfederal) "
+						+ " VALUES (?, ?) returning id_municipio;";
+
+				PreparedStatement ps1 = conexao.prepareStatement(sql1);
+
+				ps1.setString(1, paciente.getEndereco().getMunicipio()
+						.toUpperCase());
+				ps1.setInt(2, paciente.getEndereco().getCodibge());
+
+				ResultSet set = ps1.executeQuery();
+				while (set.next()) {
+					codmunicipio = set.getInt(1);
+				}
+			}
+			System.out.println("codmunicipio DAO2: " + codmunicipio);
+			String sql = "insert into hosp.pacientes (dtacadastro, nome, dtanascimento, estcivil, sexo, sangue, "
+					+ "pai, mae, conjuge,codraca, cep, uf, cidade, bairro, logradouro, numero, complemento, referencia, telres, telcel, teltrab, telorelhao, rg, oe, dtaexpedicaorg, cpf, cns, protreab, "
+					+ "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, contribuinte, id_escolaridade, id_escola, id_profissao, trabalha, localtrabalha, codparentesco, "
+					+ "nomeresp, rgresp, cpfresp, dtanascimentoresp, id_encaminhado, id_formatransporte ,deficiencia, tipodeficiencia, codmunicipio)"
+					+ " values (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ? , ? , "
+					+ "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setString(1, paciente.getNome().toUpperCase().trim());
 			stmt.setDate(2, new java.sql.Date(paciente.getDtanascimento()
@@ -255,7 +265,8 @@ public class PacienteDAO {
 			if (paciente.getCpfresp() == null) {
 				stmt.setNull(46, Types.CHAR);
 			} else {
-				stmt.setString(46, paciente.getCpfresp().replaceAll("[^0-9]", ""));
+				stmt.setString(46,
+						paciente.getCpfresp().replaceAll("[^0-9]", ""));
 			}
 			if (paciente.getDataNascimentoresp() == null) {
 				stmt.setNull(47, Types.DATE);
@@ -281,6 +292,8 @@ public class PacienteDAO {
 				stmt.setString(51, paciente.getTipoDeficiencia());
 			}
 
+			stmt.setInt(52, codmunicipio);
+
 			stmt.execute();
 			System.out.println("|THU|" + paciente.getNome());
 			System.out.println("passou aqui 4");
@@ -290,6 +303,7 @@ public class PacienteDAO {
 
 			return cadastrou;
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -300,18 +314,38 @@ public class PacienteDAO {
 		}
 	}
 
-	public Boolean alterar(PacienteBean paciente) throws ProjetoException {
+	public Boolean alterar(PacienteBean paciente, Integer codmunicipio)
+			throws ProjetoException {
 		boolean alterou = false;
-		String sql = "update hosp.pacientes set nome = ?, dtanascimento = ?, estcivil = ?, sexo = ? , sangue = ?, pai = ? "
-				+ ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, cidade = ?, bairro = ?, logradouro = ?, numero = ?"
-				+ ", complemento = ?, referencia = ?, telres = ?, telcel = ?, teltrab = ?, telorelhao = ?"
-				+ ", rg = ?,  oe = ?, dtaexpedicaorg = ?, cpf = ?, cns = ?, protreab = ?"
-				+ ", reservista = ?, ctps = ?, serie = ?, pis = ?, cartorio = ?, regnascimento = ?, livro = ?, folha = ?, dtaregistro = ?"
-				+ ", contribuinte = ?, id_escolaridade = ?, id_escola = ?, id_profissao = ?, trabalha = ?, localtrabalha = ?"
-				+ ", codparentesco = ?, nomeresp = ?, rgresp = ?, cpfresp = ?, dtanascimentoresp = ?, id_encaminhado = ?"
-				+ ", id_formatransporte = ?, deficiencia = ?, tipodeficiencia = ? where id_paciente = ?";
+		conexao = ConnectionFactory.getConnection();
+
 		try {
-			conexao = ConnectionFactory.getConnection();
+			System.out.println("codmunicipio alterar2: " + codmunicipio);
+			if (codmunicipio == 0) {
+				String sql1 = "INSERT INTO hosp.municipio(descmunicipio, codfederal) "
+						+ " VALUES (?, ?) returning id_municipio;";
+
+				PreparedStatement ps1 = conexao.prepareStatement(sql1);
+
+				ps1.setString(1, paciente.getEndereco().getMunicipio()
+						.toUpperCase());
+				ps1.setInt(2, paciente.getEndereco().getCodibge());
+
+				ResultSet set = ps1.executeQuery();
+				while (set.next()) {
+					codmunicipio = set.getInt("id_municipio");
+				}
+			}
+			System.out.println("codmunicipio alterar3: " + codmunicipio);
+			String sql = "update hosp.pacientes set nome = ?, dtanascimento = ?, estcivil = ?, sexo = ? , sangue = ?, pai = ? "
+					+ ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, cidade = ?, bairro = ?, logradouro = ?, numero = ?"
+					+ ", complemento = ?, referencia = ?, telres = ?, telcel = ?, teltrab = ?, telorelhao = ?"
+					+ ", rg = ?,  oe = ?, dtaexpedicaorg = ?, cpf = ?, cns = ?, protreab = ?"
+					+ ", reservista = ?, ctps = ?, serie = ?, pis = ?, cartorio = ?, regnascimento = ?, livro = ?, folha = ?, dtaregistro = ?"
+					+ ", contribuinte = ?, id_escolaridade = ?, id_escola = ?, id_profissao = ?, trabalha = ?, localtrabalha = ?"
+					+ ", codparentesco = ?, nomeresp = ?, rgresp = ?, cpfresp = ?, dtanascimentoresp = ?, id_encaminhado = ?"
+					+ ", id_formatransporte = ?, deficiencia = ?, tipodeficiencia = ?, codmunicipio = ? where id_paciente = ?";
+
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setString(1, paciente.getNome());
 			stmt.setDate(2, new java.sql.Date(paciente.getDtanascimento()
@@ -399,7 +433,8 @@ public class PacienteDAO {
 					.getCodformatransporte());
 			stmt.setString(50, paciente.getDeficiencia());
 			stmt.setString(51, paciente.getTipoDeficiencia());
-			stmt.setLong(52, paciente.getId_paciente());
+			stmt.setInt(52, codmunicipio);
+			stmt.setLong(53, paciente.getId_paciente());
 			stmt.executeUpdate();
 
 			conexao.commit();

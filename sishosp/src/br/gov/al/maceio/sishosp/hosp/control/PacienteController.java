@@ -239,6 +239,8 @@ public class PacienteController implements Serializable {
 			paciente.getEndereco().setUf(cepWebService.getEstado());
 			paciente.getEndereco().setMunicipio(cepWebService.getCidade());
 			paciente.getEndereco().setBairro(cepWebService.getBairro());
+			paciente.getEndereco().setCodibge(cepWebService.getResultado());
+			System.out.println("IBGE: " + paciente.getEndereco().getCodibge());
 
 		} else {
 			FacesContext.getCurrentInstance().addMessage(
@@ -270,6 +272,8 @@ public class PacienteController implements Serializable {
 
 	public void gravarPaciente() throws ProjetoException {
 		PacienteDAO udao = new PacienteDAO();
+		EnderecoDAO edao = new EnderecoDAO();
+
 		if (escolaSuggestion != null)
 			paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
 		else
@@ -295,7 +299,10 @@ public class PacienteController implements Serializable {
 					transporteSuggestion.getCodformatransporte());
 		else
 			paciente.getFormatransporte().setCodformatransporte(null);
-		boolean cadastrou = udao.cadastrar(paciente);
+
+		int codmunicipio = edao.municipioExiste(paciente);
+		System.out.println("codmunicipio gravar: " + codmunicipio);
+		boolean cadastrou = udao.cadastrar(paciente, codmunicipio);
 
 		if (cadastrou == true) {
 			limparDados();
@@ -336,6 +343,9 @@ public class PacienteController implements Serializable {
 	}
 
 	public void alterarPaciente() throws ProjetoException {
+		PacienteDAO mdao = new PacienteDAO();
+		EnderecoDAO edao = new EnderecoDAO();
+
 		if (escolaSuggestion != null) {
 			paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
 		}
@@ -356,11 +366,12 @@ public class PacienteController implements Serializable {
 					transporteSuggestion.getCodformatransporte());
 		}
 
-		PacienteDAO mdao = new PacienteDAO();
-		boolean alterou = mdao.alterar(paciente);
+		int codmunicipio = edao.municipioExiste(paciente);
+		System.out.println("codmunicipio alterar: " + codmunicipio);
+		boolean alterou = mdao.alterar(paciente, codmunicipio);
 
 		if (alterou == true) {
-			//limparDados();
+			// limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Paciente alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
