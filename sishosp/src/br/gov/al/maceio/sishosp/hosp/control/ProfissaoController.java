@@ -59,7 +59,7 @@ public class ProfissaoController implements Serializable {
 		if (cadastrou == true) {
 			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Profissao cadastrado com sucesso!", "Sucesso");
+					"Profissão cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaProfissoes = null;
 
@@ -72,24 +72,25 @@ public class ProfissaoController implements Serializable {
 
 	}
 
-	public String alterarProfissao() throws ProjetoException {
+	public void alterarProfissao() throws ProjetoException {
 
 		ProfissaoDAO rdao = new ProfissaoDAO();
 		boolean alterou = rdao.alterar(profissao);
 		listaProfissoes = null;
 		if (alterou == true) {
-			limparDados();
+			// limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Profissao alterado com sucesso!", "Sucesso");
+					"Profissão alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true";
 
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -102,7 +103,7 @@ public class ProfissaoController implements Serializable {
 
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Profissao excluido com sucesso!", "Sucesso");
+					"Profissao excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listarProfissoes();
 			RequestContext.getCurrentInstance().execute(
@@ -162,7 +163,7 @@ public class ProfissaoController implements Serializable {
 	public void listarProfissoes() throws ProjetoException {
 		ProfissaoDAO fdao = new ProfissaoDAO();
 		listaProfissoes = fdao.listaProfissoes();
-		
+
 	}
 
 	public void setListaProfissoes(List<ProfissaoBean> listaProfissoes) {

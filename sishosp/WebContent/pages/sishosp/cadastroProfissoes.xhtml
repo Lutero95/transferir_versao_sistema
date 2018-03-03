@@ -18,8 +18,12 @@
 
 		<h:form class="form-horizontal" id="formCADU">
 
-			<p:growl id="message" />
-			<b:panel title="#{ProfissaoController.cabecalho}" collapsible="false">
+			<div class="panel-body">
+				<div class="sub-header">
+					<h:outputText value="#{ProfissaoController.cabecalho}"
+						styleClass="cadcabecalho"></h:outputText>
+					<hr />
+				</div>
 
 
 				<div class="form-group">
@@ -37,29 +41,33 @@
 
 					</div>
 				</div>
-				<p:separator></p:separator>
 
 				<center>
-				<b:commandButton action="#{ProfissaoController.gravarProfissao()}"
-					icon="glyphicon-ok" size="sm" look="success"
-					update=":formCADU:message,:formCADU" value="Incluir"
-					rendered="#{ProfissaoController.tipo == 1}" />
-
-
-				<b:commandButton action="#{ProfissaoController.alterarProfissao()}"
-					icon="glyphicon-ok" size="sm"
-					update=":formCADU:message,:formCADU" value="Alterar"
-					look="success" rendered="#{ProfissaoController.tipo  == 2}" />
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					style="margin-left:10px" size="sm" immediate="true" look="info"
-					action="/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true">
-				</b:commandButton>
+					<b:messages value="Error" id="msgError"></b:messages>
 				</center>
-				
-		</b:panel>
+
+				<center>
+
+					<b:commandButton action="#{ProfissaoController.gravarProfissao()}"
+						icon="glyphicon-ok" size="sm" look="success"
+						update=":formCADU" value="Incluir"
+						style="float:left" rendered="#{ProfissaoController.tipo == 1}" />
+
+					<b:commandButton action="#{ProfissaoController.alterarProfissao()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU"
+						value="Alterar" style="float:left" look="success"
+						rendered="#{ProfissaoController.tipo  == 2}" />
+
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="float:right" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true">
+					</b:commandButton>
+				</center>
+
+			</div>
 		</h:form>
-		
-		
+
+
 
 	</ui:define>
 </ui:composition>

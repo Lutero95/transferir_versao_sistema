@@ -15,10 +15,12 @@
 	<ui:define name="body">
 
 		<h:form class="form-horizontal" id="frmCadProc">
-			<b:panel id="pnlCadProc" title="#{ProcedimentoController.cabecalho}"
-				collapsible="false">
-				<p:growl id="message" />
-
+			<div class="panel-body">
+				<div class="sub-header">
+					<h:outputText value="#{ProcedimentoController.cabecalho}"
+						styleClass="cadcabecalho"></h:outputText>
+					<hr />
+				</div>
 
 
 				<div class="form-group">
@@ -26,7 +28,10 @@
 					<div class="col-md-5">
 						<h:inputText value="#{ProcedimentoController.proc.nomeProc}"
 							required="true" requiredMessage="Informe a Descrição"
-							class="form-control" id="incod" />
+							validatorMessage="Descrição deve conter entre 2 e 30 caracteres."
+							class="form-control" id="incod">
+							<f:validateLength minimum="2" maximum="40" />
+							</h:inputText>
 					</div>
 					<h:outputLabel value="Código" class="col-md-1 control-label" />
 					<div class="col-md-3">
@@ -59,7 +64,8 @@
 				<div class="row">
 					<div class="col-md-2">
 						<p:panelGrid columns="2" styleClass="semBorda">
-							<h:outputLabel value="Auditivo" class="control-label" style="margin-left:-30px" />
+							<h:outputLabel value="Auditivo" class="control-label"
+								style="margin-left:-30px" />
 							<p:selectBooleanCheckbox styleClass="control-label"
 								value="#{ProcedimentoController.proc.auditivo}">
 								<p:ajax update="pnlModelo" />
@@ -90,7 +96,8 @@
 				<div class="row">
 					<div class="col-md-2">
 						<p:panelGrid columns="2" styleClass="semBorda">
-							<h:outputLabel value="Laudo" styleClass="control-label" style="margin-left:-22px"/>
+							<h:outputLabel value="Laudo" styleClass="control-label"
+								style="margin-left:-22px" />
 							<p:selectBooleanCheckbox
 								value="#{ProcedimentoController.proc.gera_laudo_digita}">
 								<p:ajax update="pnlMes" />
@@ -101,7 +108,8 @@
 					<div class="col-md-2">
 						<p:outputPanel id="pnlMes" style="margin-left:-120px">
 							<p:panelGrid columns="2" styleClass="semBorda">
-								<h:outputLabel value="Validade(Meses)" styleClass="control-label"
+								<h:outputLabel value="Validade(Meses)"
+									styleClass="control-label"
 									rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}" />
 								<p:selectOneMenu id="mes"
 									rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"
@@ -126,25 +134,35 @@
 						</p:outputPanel>
 					</div>
 				</div>
-				<p:separator></p:separator>
-				<center>
-					<b:commandButton
-						action="#{ProcedimentoController.gravarProcedimento()}"
-						icon="glyphicon-ok" size="sm" look="success" update="frmCadProc"
-						value="Incluir" rendered="#{ProcedimentoController.tipo == 1}" />
+			</div>
 
+			<center>
+				<b:messages value="Error" id="msgError"></b:messages>
+			</center>
 
-					<b:commandButton
-						action="#{ProcedimentoController.alterarProcedimento()}"
-						icon="glyphicon-ok" size="sm" update="frmCadProc" value="Alterar"
-						look="success" rendered="#{ProcedimentoController.tipo  == 2}" />
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="margin-left:10px" size="sm" immediate="true" look="info"
-						action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true">
-					</b:commandButton>
-				</center>
-			</b:panel>
+			<center>
+
+				<b:commandButton
+					action="#{ProcedimentoController.gravarProcedimento()}"
+					icon="glyphicon-ok" size="sm" look="success" update="frmCadProc"
+					style="float:left" value="Incluir"
+					rendered="#{ProcedimentoController.tipo == 1}" />
+
+				<b:commandButton
+					action="#{ProcedimentoController.alterarProcedimento()}"
+					icon="glyphicon-ok" size="sm" update="frmCadProc" value="Alterar"
+					style="float:left" look="success"
+					rendered="#{ProcedimentoController.tipo  == 2}" />
+
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					style="float:right" size="sm" immediate="true" look="info"
+					action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true">
+				</b:commandButton>
+
+			</center>
 		</h:form>
+
+
 
 	</ui:define>
 </ui:composition>

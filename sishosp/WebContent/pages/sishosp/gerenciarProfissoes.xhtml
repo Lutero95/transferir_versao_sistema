@@ -12,22 +12,30 @@
 <ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-		<b:panel title="Gerenciamento de Profissão" collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Profissão</h4>
+				<hr />
+			</div>
 			<h:form id="frmmensagem">
-			<b:commandButton id="btninc" value="Novo" size="sm"
-				action="#{ProfissaoController.redirectInsert()}" icon="glyphicon-plus"
-				look="primary">
-				<f:setPropertyActionListener value="1"
-					target="#{ProfissaoController.tipo}" />
-				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-			</b:commandButton>
-			<br />
-			<br />
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{ProfissaoController.redirectInsert()}"
+					icon="glyphicon-plus" look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{ProfissaoController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
 				<f:metadata>
 					<f:viewAction action="#{ProfissaoController.listarProfissoes()}" />
 				</f:metadata>
-				<p:growl id="growl" showDetail="false" />
+
 				<b:dataTable id="dt" var="tab"
 					value="#{ProfissaoController.listaProfissoes}" lang="es"
 					display="Nenhuma Profissão">
@@ -65,7 +73,7 @@
 
 				</b:dataTable>
 			</h:form>
-		</b:panel>
+		</div>
 
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
@@ -82,12 +90,14 @@
 
 
 				<center>
-				<p:separator/>
-					<b:commandButton look="success" value="Sim" action="#{ProfissaoController.excluirProfissao()}" ajax="true"
-						icon="glyphicon-ok" update="frmmensagem"/>
-					
-					<b:commandButton value="Não" oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;"/>
+					<p:separator />
+					<b:commandButton look="success" value="Sim"
+						action="#{ProfissaoController.excluirProfissao()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem" />
+
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;" />
 
 				</center>
 

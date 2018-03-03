@@ -54,10 +54,9 @@ public class ProcedimentoController implements Serializable {
 		this.proc = proc;
 	}
 
-	public void listarProcedimentos()
-			throws ProjetoException {
+	public void listarProcedimentos() throws ProjetoException {
 		this.listaProcedimentos = pDao.listarProcedimento();
-		
+
 	}
 
 	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
@@ -97,7 +96,7 @@ public class ProcedimentoController implements Serializable {
 
 		if (this.proc.getCodProc() == null || this.proc.getNomeProc() == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"C�digo e descri��o obrigat�rios!", "Campos Obrigat�rios.");
+					"Código e descrição obrigatórios!", "Campos Obrigatórios.");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -116,12 +115,12 @@ public class ProcedimentoController implements Serializable {
 		}
 	}
 
-	public String alterarProcedimento() throws ProjetoException {
+	public void alterarProcedimento() throws ProjetoException {
 		if (this.proc.getCodProc() == null || this.proc.getNomeProc() == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"C�digo e descri��o obrigat�rios!", "Campos Obrigat�rios.");
+					"Código e descrição obrigatórios!", "Campos Obrigatórios.");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 
 		boolean alterou = pDao.alterarProcedimento(proc);
@@ -130,12 +129,13 @@ public class ProcedimentoController implements Serializable {
 					"Procedimento alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaProcedimentos = pDao.listarProcedimento();
-			return "/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 
 	}
@@ -144,7 +144,7 @@ public class ProcedimentoController implements Serializable {
 		boolean ok = pDao.excluirProcedimento(proc);
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Procedimento excluido com sucesso!", "Sucesso");
+					"Procedimento excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
@@ -177,16 +177,16 @@ public class ProcedimentoController implements Serializable {
 		List<ProcedimentoBean> result = pDao.listarProcedimentoBusca(query, 1);
 		return result;
 	}
-	
+
 	public String redirectInsert() {
 		return "cadastroProcedimento?faces-redirect=true&amp;tipo=" + this.tipo;
 	}
-	
+
 	public String redirectEdit() {
-		return "cadastroProcedimento?faces-redirect=true&amp;id=" + this.proc.getIdProc()
-				+ "&amp;tipo=" + tipo;
+		return "cadastroProcedimento?faces-redirect=true&amp;id="
+				+ this.proc.getIdProc() + "&amp;tipo=" + tipo;
 	}
-	
+
 	public void getEditProcedimento() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()

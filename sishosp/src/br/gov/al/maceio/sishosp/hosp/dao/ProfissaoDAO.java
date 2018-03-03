@@ -16,7 +16,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 
 public class ProfissaoDAO {
 	private Connection conexao = null;
-	// COMEÇO DO CODIGO
+	// COMEï¿½O DO CODIGO
 	
             public Boolean cadastrar(ProfissaoBean profissao) throws ProjetoException {
                 boolean cadastrou = false;
@@ -110,7 +110,7 @@ public class ProfissaoDAO {
             
             public ArrayList<ProfissaoBean> listaProfissoes() throws ProjetoException {
 
-                String sql = "select * from hosp.profissao order by id_profissao,descprofissao";
+		String sql = "select * from hosp.profissao order by descprofissao";
 
                 ArrayList<ProfissaoBean> lista = new ArrayList();
 
