@@ -39,6 +39,7 @@ public class ProgramaController implements Serializable {
 	private Integer abaAtiva = 0;
 
 	ProgramaDAO pDao = new ProgramaDAO();
+	GrupoDAO gDao = new GrupoDAO();
 
 	public ProgramaController() {
 
@@ -71,6 +72,7 @@ public class ProgramaController implements Serializable {
 			System.out.println("tipo do walter" + tipo);
 			ProgramaDAO cDao = new ProgramaDAO();
 			this.prog = cDao.listarProgramaPorId(id);
+			prog.setGrupo(gDao.listarGruposDoPrograma(prog.getIdPrograma()));
 		} else {
 			System.out.println("tipo sera" + tipo);
 			tipo = Integer.parseInt(params.get("tipo"));
@@ -107,7 +109,7 @@ public class ProgramaController implements Serializable {
 		boolean ok = pDao.excluirPrograma(prog);
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Programa excluido com sucesso!", "Sucesso");
+					"Programa excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
@@ -122,19 +124,20 @@ public class ProgramaController implements Serializable {
 		listaProgramas = pDao.listarProgramas();
 	}
 
-	public String alterarPrograma() throws ProjetoException {
+	public void alterarPrograma() throws ProjetoException {
 		boolean alterou = pDao.alterarPrograma(prog);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Programa alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaProgramas = pDao.listarProgramas();
-			return "/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 
 	}
@@ -216,18 +219,15 @@ public class ProgramaController implements Serializable {
 	}
 
 	public List<ProgramaBean> getBuscalistaProgramas() throws ProjetoException {
-		 if (buscalistaProgramas == null) {
-	            ProgramaDAO pdaos = new ProgramaDAO();
-	            buscalistaProgramas = pdaos.BuscalistarProgramas();
-	        }
+		if (buscalistaProgramas == null) {
+			ProgramaDAO pdaos = new ProgramaDAO();
+			buscalistaProgramas = pdaos.BuscalistarProgramas();
+		}
 		return buscalistaProgramas;
 	}
 
 	public void setBuscalistaProgramas(List<ProgramaBean> buscalistaProgramas) {
 		this.buscalistaProgramas = buscalistaProgramas;
 	}
-
-	
-
 
 }

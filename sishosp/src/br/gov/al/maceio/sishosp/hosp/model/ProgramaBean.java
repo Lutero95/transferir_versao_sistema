@@ -4,17 +4,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProgramaBean implements Serializable{
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
+public class ProgramaBean implements Serializable {
 	private Integer idPrograma;
 	private String descPrograma;
 	private Double codFederal;
-	
+
 	private GrupoBean grupoParaAdd;
 	private GrupoBean grupoRmv;
 	private List<GrupoBean> grupo;
 	private List<GrupoBean> grupoNovo;
-	
-	public ProgramaBean(){
+
+	public ProgramaBean() {
 		this.grupo = new ArrayList<GrupoBean>();
 		this.grupoRmv = new GrupoBean();
 		this.grupoParaAdd = new GrupoBean();
@@ -23,7 +26,6 @@ public class ProgramaBean implements Serializable{
 		this.descPrograma = new String();
 		this.codFederal = null;
 	}
-	
 
 	public Integer getIdPrograma() {
 		return idPrograma;
@@ -48,7 +50,7 @@ public class ProgramaBean implements Serializable{
 	public void setCodFederal(Double codFederal) {
 		this.codFederal = codFederal;
 	}
-	
+
 	public List<GrupoBean> getGrupo() {
 		return grupo;
 	}
@@ -73,7 +75,7 @@ public class ProgramaBean implements Serializable{
 	public void setGrupoParaAdd(GrupoBean grupoParaAdd) {
 		this.grupoParaAdd = grupoParaAdd;
 	}
-	
+
 	public GrupoBean getGrupoRmv() {
 		return grupoRmv;
 	}
@@ -82,12 +84,27 @@ public class ProgramaBean implements Serializable{
 		this.grupoRmv = grupoRmv;
 	}
 
-	public void addGrupoLista(){
-		System.out.println("ADD");
-		this.grupo.add(this.grupoParaAdd);
+	public void addGrupoLista() {
+		boolean existe = false;
+		if (grupo.size() == 0) {
+			this.grupo.add(this.grupoParaAdd);
+		} else {
+			for (int i = 0; i < grupo.size(); i++) {
+				if (grupo.get(i).getIdGrupo() == grupoParaAdd.getIdGrupo()) {
+					existe = true;
+				}
+			}
+			if (existe == false) {
+				this.grupo.add(this.grupoParaAdd);
+			} else {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Esse Grupo já foi adicionado!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+		}
 	}
-	
-	public void removeGrupoLista(){
+
+	public void removeGrupoLista() {
 		System.out.println("RMV");
 		this.grupo.remove(this.grupoRmv);
 	}

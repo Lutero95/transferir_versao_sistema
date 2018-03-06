@@ -241,6 +241,37 @@ public class GrupoDAO {
 
 		return lista;
 	}
+	
+	public List<GrupoBean> listarGruposDoPrograma(Integer codprograma) throws ProjetoException {
+		List<GrupoBean> lista = new ArrayList<>();
+		String sql = "select gp.codgrupo, g.descgrupo from hosp.grupo_programa gp left join hosp.grupo g on (gp.codgrupo = g.id_grupo) where codprograma = ? order by g.descgrupo";
+		
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, codprograma);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				GrupoBean grupo = new GrupoBean();
+				grupo.setIdGrupo(rs.getInt("codgrupo"));
+				grupo.setDescGrupo(rs.getString("descgrupo"));
+				lista.add(grupo);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+	
 
 	public List<GrupoBean> listarGruposAutoComplete(String descricao,
 			ProgramaBean prog) throws ProjetoException {

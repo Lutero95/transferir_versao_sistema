@@ -18,10 +18,11 @@ import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 public class ProgramaDAO {
 
 	Connection con = null;
-	PreparedStatement ps = null;
 
 	public boolean gravarPrograma(ProgramaBean prog) throws SQLException,
 			ProjetoException {
+
+		PreparedStatement ps = null;
 
 		String sql = "insert into hosp.programa (descprograma, codfederal) values (?, ?) RETURNING id_programa;";
 		try {
@@ -30,15 +31,28 @@ public class ProgramaDAO {
 			ps.setString(1, prog.getDescPrograma().toUpperCase());
 			ps.setDouble(2, prog.getCodFederal());
 			ResultSet rs = ps.executeQuery();
-			con.commit();
+
 			int idProg = 0;
 			if (rs.next()) {
 				idProg = rs.getInt("id_programa");
-				insereProgramaGrupo(idProg, prog, 0);
-
 			}
+
+			String sql2 = "insert into hosp.grupo_programa (codprograma, codgrupo) values(?,?);";
+			PreparedStatement ps2 = con.prepareStatement(sql2);
+
+			if (prog.getGrupo().size() > 0) {
+				for (int i = 0; i < prog.getGrupo().size(); i++) {
+					ps2.setInt(1, idProg);
+					ps2.setInt(2, prog.getGrupo().get(i).getIdGrupo());
+
+					ps2.execute();
+				}
+			}
+			con.commit();
+
 			return true;
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -50,8 +64,11 @@ public class ProgramaDAO {
 		}
 	}
 
+	// SEM USO, MATEI ESSE MÉTODO POIS O CÓDIGO ESTÁ ERRADO
 	public void insereProgramaGrupo(int idProg, ProgramaBean programa, int gamb)
 			throws ProjetoException {
+		PreparedStatement ps = null;
+
 		String sql = "insert into hosp.grupo_programa (codprograma, codgrupo) values(?,?);";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -74,6 +91,7 @@ public class ProgramaDAO {
 				}
 			}
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -88,17 +106,19 @@ public class ProgramaDAO {
 	public List<ProgramaBean> listarProgramas() throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<>();
 		String sql = "select id_programa, descprograma, codfederal "
-				+ "from hosp.programa join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
-				+ "where codusuario = ? order by id_programa";
+				+ "from hosp.programa left join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
+				// + "where codusuario = ? "
+				+ "order by descprograma";
 		UsuarioBean user_session = (UsuarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
-		
+
 		GrupoDAO gDao = new GrupoDAO();
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, user_session.getCodigo());
+			System.out.println("user: " + user_session.getCodigo());
+			// stm.setInt(1, user_session.getCodigo());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -130,14 +150,16 @@ public class ProgramaDAO {
 		UsuarioBean user_session = (UsuarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
-		
+
 		String sql = "select id_programa, descprograma, codfederal from hosp.programa "
-				+ "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma where codusuario = ?";
+				+ "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
+				// + "where codusuario = ? "
+				+ "order by descprograma";
 		GrupoDAO gDao = new GrupoDAO();
 		ArrayList<ProgramaBean> lista = new ArrayList();
 		try {
 			ps = con.prepareStatement(sql);
-			ps.setInt(1, user_session.getCodigo());
+			// ps.setInt(1, user_session.getCodigo());
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -161,7 +183,7 @@ public class ProgramaDAO {
 		}
 		return lista;
 	}
-	
+
 	public ArrayList<ProgramaBean> BuscalistarProgramasDefaut()
 			throws ProjetoException {
 		PreparedStatement ps = null;
@@ -170,12 +192,14 @@ public class ProgramaDAO {
 				.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
 		String sql = "select id_programa, descprograma, codfederal from hosp.programa "
-				+ "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma where codusuario = ?";
+				+ "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
+				// + "where codusuario = ? "
+				+ "order by descprograma";
 		GrupoDAO gDao = new GrupoDAO();
 		ArrayList<ProgramaBean> lista = new ArrayList();
 		try {
 			ps = con.prepareStatement(sql);
-			ps.setInt(1, user_session.getCodigo());
+			// ps.setInt(1, user_session.getCodigo());
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -204,10 +228,11 @@ public class ProgramaDAO {
 			Integer tipo) throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<>();
 		String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma , codfederal from hosp.programa "
-				+ "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma where codusuario = ?";
-				
+				+ "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
+				+ "where codusuario = ?";
+
 		if (tipo == 1) {
-			sql += " and upper(id_programa ||'-'|| descprograma) LIKE ?";
+			sql += " and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma";
 		}
 		try {
 			con = ConnectionFactory.getConnection();
@@ -215,10 +240,10 @@ public class ProgramaDAO {
 			UsuarioBean user_session = (UsuarioBean) FacesContext
 					.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("obj_usuario");
-			System.out.println("codigo e "+user_session.getCodigo());
+			System.out.println("codigo e " + user_session.getCodigo());
 			stm.setInt(1, user_session.getCodigo());
 			stm.setString(2, "%" + descricao.toUpperCase() + "%");
-		
+
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -250,8 +275,14 @@ public class ProgramaDAO {
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, prog.getIdPrograma());
 			stmt.execute();
+			
+			String sql2 = "delete from hosp.grupo_programa where codprograma = ?";
+			PreparedStatement stmt2 = con.prepareStatement(sql2);
+			stmt2.setLong(1, prog.getIdPrograma());
+			stmt2.execute();
+			
 			con.commit();
-			excluirNaTabProgramaGrupo(prog.getIdPrograma());
+			//excluirNaTabProgramaGrupo(prog.getIdPrograma());
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -264,6 +295,7 @@ public class ProgramaDAO {
 		}
 	}
 
+	// SEM USO, MATEI ESSE MÉTODO POR FAZER 2 COMMITS
 	public void excluirNaTabProgramaGrupo(int cod) throws ProjetoException {
 		String sql = "delete from hosp.grupo_programa where codprograma = ?";
 		try {
@@ -292,11 +324,30 @@ public class ProgramaDAO {
 			stmt.setDouble(2, prog.getCodFederal());
 			stmt.setInt(3, prog.getIdPrograma());
 			stmt.executeUpdate();
+
+			String sql2 = "delete from hosp.grupo_programa where codprograma = ?";
+			PreparedStatement stmt2 = con.prepareStatement(sql2);
+			stmt2.setLong(1, prog.getIdPrograma());
+			stmt2.execute();
+
+			String sql3 = "insert into hosp.grupo_programa (codprograma, codgrupo) values(?,?);";
+			PreparedStatement stmt3 = con.prepareStatement(sql3);
+
+			if (prog.getGrupo().size() > 0) {
+				for (int i = 0; i < prog.getGrupo().size(); i++) {
+					stmt3.setInt(1, prog.getIdPrograma());
+					stmt3.setInt(2, prog.getGrupo().get(i).getIdGrupo());
+
+					stmt3.execute();
+				}
+			}
+
 			con.commit();
-			excluirNaTabProgramaGrupo(prog.getIdPrograma());
-			insereProgramaGrupo(prog.getIdPrograma(), prog, 1);
+
 			return true;
+
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -311,7 +362,7 @@ public class ProgramaDAO {
 
 		ProgramaBean programa = new ProgramaBean();
 		GrupoDAO gDao = new GrupoDAO();
-		String sql = "select id_programa, descprograma, codfederal from hosp.programa where id_programa = ?";
+		String sql = "select id_programa, descprograma, codfederal from hosp.programa where id_programa = ? order by descprograma";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);

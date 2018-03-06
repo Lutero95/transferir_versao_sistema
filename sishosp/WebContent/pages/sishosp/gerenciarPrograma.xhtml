@@ -9,8 +9,14 @@
 <ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-		<b:panel title="Gerenciamento de Programa" collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Programa</h4>
+				<hr />
+			</div>
+
 			<h:form id="frmmensagem">
+
 				<b:commandButton id="btninc" value="Novo" size="sm"
 					action="#{ProgramaController.redirectInsert()}"
 					icon="glyphicon-plus" look="primary">
@@ -21,7 +27,9 @@
 				<br />
 				<br />
 
-				<p:growl id="growl" showDetail="false" />
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
 				<b:dataTable id="dt" var="tab"
 					value="#{ProgramaController.listaProgramas}" lang="es"
@@ -59,7 +67,7 @@
 				</b:dataTable>
 
 			</h:form>
-		</b:panel>
+		</div>
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 

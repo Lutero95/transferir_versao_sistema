@@ -12,18 +12,15 @@
 		<f:metadata>
 			<f:viewAction action="#{ProgramaController.getEditProg()}" />
 		</f:metadata>
-		<h:form>
-			<h:commandButton value="Voltar"
-				style="position:absolute; left:71%; top:100%;"
-				styleClass="btn btn-info"
-				action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
-			</h:commandButton>
-		</h:form>
 
 		<h:form class="form-horizontal" id="formCADU">
 
-			<p:growl id="message" />
-			<b:panel title="#{ProgramaController.cabecalho}" collapsible="false">
+			<div class="panel-body">
+				<div class="sub-header">
+					<h:outputText value="#{ProgramaController.cabecalho}"
+						styleClass="cadcabecalho"></h:outputText>
+					<hr />
+				</div>
 
 				<div class="form-group">
 					<h:outputLabel for="inputname" value="Descrição"
@@ -31,7 +28,10 @@
 					<div class="col-sm-6">
 						<h:inputText value="#{ProgramaController.prog.descPrograma}"
 							class="form-control" id="inputname" required="true"
-							requiredMessage="Descrição obrigatória!" />
+							requiredMessage="Descrição obrigatória!"
+							validatorMessage="Escolaridade deve conter entre 2 e 30 caracteres.">
+							<f:validateLength minimum="2" maximum="40" />
+						</h:inputText>
 					</div>
 				</div>
 
@@ -54,6 +54,7 @@
 							style="color:black;" icon="ui-icon-plus" value="Incluir Grupo"
 							process="@this" oncomplete="PF('dlgConsuGrupos').show();"
 							actionListener="#{GrupoController.getListaTodosGrupos()}" />
+							
 						<p:dataTable emptyMessage="Nenhum Grupo"
 							styleClass="table table-hover" id="tabela"
 							style="margin-top:20px;" value="#{ProgramaController.prog.grupo}"
@@ -72,7 +73,7 @@
 								<center>
 									<p:commandButton process="@this"
 										action="#{ProgramaController.prog.removeGrupoLista()}"
-										icon="ui-icon-trash" update=":formCADU">
+										icon="ui-icon-trash" update=":formCADU:tabela">
 										<f:setPropertyActionListener value="#{tab}"
 											target="#{ProgramaController.prog.grupoRmv}" />
 									</p:commandButton>
@@ -82,21 +83,24 @@
 						</p:dataTable>
 					</div>
 				</div>
-				<p:separator></p:separator>
-			</b:panel>
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+			</div>
 			<center>
+
 				<b:commandButton action="#{ProgramaController.gravarPrograma()}"
-					icon="glyphicon-ok" size="sm" look="success"
-					update=":formCADU:message,:formCADU" value="Incluir"
+					icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
+					value="Incluir" style="float:left"
 					rendered="#{ProgramaController.tipo == 1}" />
 
-
 				<b:commandButton action="#{ProgramaController.alterarPrograma()}"
-					icon="glyphicon-ok" size="sm" update=":formCADU:message,:formCADU"
+					icon="glyphicon-ok" size="sm" update=":formCADU" style="float:left"
 					value="Alterar" look="success"
 					rendered="#{ProgramaController.tipo  == 2}" />
+
 				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					style="margin-left:10px" size="sm" immediate="true" look="info"
+					style="float:right" size="sm" immediate="true" look="info"
 					action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
 				</b:commandButton>
 
@@ -112,19 +116,20 @@
 						scrollRows="3" scrollHeight="150" scrollable="true"
 						resizableColumns="true" var="grupo"
 						emptyMessage="Não existe nenhum grupo cadastrado!">
-						<p:column headerText="CÓD.">
+						<p:column headerText="Código">
 							<p:outputLabel value="#{grupo.idGrupo}" />
 						</p:column>
-						<p:column headerText="GRUPO">
+						<p:column headerText="Grupo">
 							<p:outputLabel value="#{grupo.descGrupo}" />
 						</p:column>
-						<p:column headerText="QTD. FREQ>">
+						<p:column headerText="Quantidade Frequência">
 							<p:outputLabel value="#{grupo.qtdFrequencia}" />
 						</p:column>
 
 						<p:column style="width:50px;text-align: center">
-							<p:commandButton update=":formCADU" icon="ui-icon-check"
-								title="Selecionar" onclick="PF('dlgConsuGrupos').hide();"
+							<p:commandButton update=":formCADU:tabela, :formCADU:msgError"
+								icon="ui-icon-check" title="Selecionar"
+								onclick="PF('dlgConsuGrupos').hide();"
 								action="#{ProgramaController.prog.addGrupoLista()}">
 								<f:setPropertyActionListener value="#{grupo}"
 									target="#{ProgramaController.prog.grupoParaAdd}" />
