@@ -12,14 +12,17 @@
 <ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-		<b:panel title="Gerenciamento de Profissional" collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Profissional</h4>
+				<hr />
+			</div>
 			<h:form id="frmmensagem">
 				<f:metadata>
 					<f:viewAction
 						action="#{ProfissionalController.ListarTodosProfissionais()}" />
 				</f:metadata>
 
-				<p:growl id="growl" showDetail="false" />
 				<b:commandButton id="btninc" value="Novo" size="sm"
 					action="#{ProfissionalController.redirectInsert()}"
 					icon="glyphicon-plus" look="primary">
@@ -29,6 +32,11 @@
 				</b:commandButton>
 				<br />
 				<br />
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
 				<b:dataTable id="dt" var="tab"
 					value="#{ProfissionalController.listaProfissional}" lang="es"
 					display="Nenhum Profissional">
@@ -92,7 +100,7 @@
 					</h:column>
 				</b:dataTable>
 			</h:form>
-		</b:panel>
+		</div>
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 

@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfissionalBean implements Serializable{
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
+public class ProfissionalBean implements Serializable {
 	private Integer idProfissional;
 	private List<ProgramaBean> programa;
 	private List<ProgramaBean> programaNovo;
@@ -180,18 +183,51 @@ public class ProfissionalBean implements Serializable{
 	}
 
 	public void addGrupoLista() {
-		this.grupo.add(grupoAdd);
+		boolean existe = false;
+		if (grupo.size() == 0) {
+			this.grupo.add(grupoAdd);
+		} else {
+			for (int i = 0; i < grupo.size(); i++) {
+				if (grupo.get(i).getIdGrupo() == grupoAdd.getIdGrupo()) {
+					existe = true;
+				}
+			}
+			if (existe == false) {
+				this.grupo.add(grupoAdd);
+			} else {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Esse grupo já foi adicionado!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+		}
 	}
 
 	public void addProgLista() {
-		this.programa.add(progAdd);
+		boolean existe = false;
+		if (programa.size() == 0) {
+			this.programa.add(progAdd);
+		} else {
+			for (int i = 0; i < programa.size(); i++) {
+				if (programa.get(i).getIdPrograma() == progAdd.getIdPrograma()) {
+					existe = true;
+				}
+			}
+			if (existe == false) {
+				this.programa.add(progAdd);
+			} else {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Esse programa já foi adicionado!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+		}
+
 	}
-	
-	public void removeProgLista(){
+
+	public void removeProgLista() {
 		this.programa.remove(this.progRmv);
 	}
-	
-	public void removeGrupoLista(){
+
+	public void removeGrupoLista() {
 		this.grupo.remove(this.grupoRmv);
 	}
 }

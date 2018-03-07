@@ -16,6 +16,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaridadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 
 @ManagedBean(name = "EspecialidadeController")
@@ -85,6 +86,12 @@ public class EspecialidadeController implements Serializable {
 			
 		}
 		
+	}
+	
+	public List<EspecialidadeBean> listaEspecialidadeAutoComplete(String query)
+			throws ProjetoException {
+		List<EspecialidadeBean> result = eDao.listarEspecialidadesBusca(query, 1);
+		return result;
 	}
 		
 

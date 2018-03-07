@@ -15,6 +15,7 @@ import org.primefaces.context.RequestContext;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 @ManagedBean(name="CboController")
 @ViewScoped
@@ -76,7 +77,12 @@ public class CboController implements Serializable{
 		
 	}
 	
-
+	public List<CboBean> listaCboAutoComplete(String query)
+			throws ProjetoException {
+		List<CboBean> result = cDao.listarCboBusca(query, 1);
+		return result;
+	}
+	
 	public void gravarCbo() throws ProjetoException, SQLException {
 		boolean cadastrou = cDao.gravarCBO(this.cbo);
 

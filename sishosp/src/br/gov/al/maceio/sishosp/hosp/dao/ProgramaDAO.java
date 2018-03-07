@@ -117,7 +117,6 @@ public class ProgramaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			System.out.println("user: " + user_session.getCodigo());
 			// stm.setInt(1, user_session.getCodigo());
 			ResultSet rs = stm.executeQuery();
 

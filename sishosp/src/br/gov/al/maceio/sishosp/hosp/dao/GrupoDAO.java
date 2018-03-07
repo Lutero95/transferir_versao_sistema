@@ -104,7 +104,8 @@ public class GrupoDAO {
 		List<GrupoBean> lista = new ArrayList<>();
 		String sql = "select distinct g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut "
 				+ "from hosp.grupo g,hosp.grupo_programa gp, hosp.programa p ,hosp.usuario_programa_grupo where p.id_programa = ? "
-				+ "and usuario_programa_grupo.codusuario = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma and g.id_grupo=usuario_programa_grupo.codgrupo";
+				//+ "and usuario_programa_grupo.codusuario = ? "
+				+ "and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma and g.id_grupo=usuario_programa_grupo.codgrupo";
 		
 		UsuarioBean user_session = (UsuarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()
@@ -113,7 +114,7 @@ public class GrupoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, codPrograma);
-			stm.setInt(2, user_session.getCodigo());
+			//stm.setInt(2, user_session.getCodigo());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {

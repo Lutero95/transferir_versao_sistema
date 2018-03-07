@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.xml.internal.ws.wsdl.writer.document.Types;
+
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -32,21 +34,36 @@ public class ProfissionalDAO {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, prof.getDescricaoProf().toUpperCase());
-			ps.setInt(2, prof.getEspecialidade().getCodEspecialidade());
+
+			if (prof.getEspecialidade() != null) {
+				ps.setInt(2, prof.getEspecialidade().getCodEspecialidade());
+			} else {
+				ps.setInt(2, 0);
+			}
+
 			ps.setString(3, prof.getCns().toUpperCase());
 			ps.setBoolean(4, prof.isAtivo());
-			ps.setInt(5, prof.getCbo().getCodCbo());
+
+			if (prof.getCbo() != null) {
+				ps.setInt(5, prof.getCbo().getCodCbo());
+			} else {
+				ps.setInt(5, 0);
+			}
+
 			if (prof.getProc1().getCodProc() != null) {
 				ps.setInt(6, prof.getProc1().getCodProc());
 			} else {
 				ps.setInt(6, 0);
 			}
-			if (prof.getProc2().getCodProc() != null) {
+			
+			if (prof.getProc2() != null) {
 				ps.setInt(7, prof.getProc2().getCodProc());
 			} else {
 				ps.setInt(7, 0);
 			}
+			
 			ps.setInt(8, 0);// COD EMPRESA ??
+			
 			ResultSet rs = ps.executeQuery();
 			con.commit();
 
@@ -106,7 +123,7 @@ public class ProfissionalDAO {
 			}
 		}
 	}
-	
+
 	public void insereTabProfGrupo(ProfissionalBean prof, int idProf, int gamb)
 			throws SQLException, ProjetoException {
 		String sql = "insert into hosp.profissional_grupo (codgrupo, codprofissional)"
@@ -150,7 +167,7 @@ public class ProfissionalDAO {
 		String sql = "select id_medico,id_medico ||'-'|| descmedico as descmedico, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, codprocedimentopadrao2, codempresa"
 				+ " from hosp.medicos ";
 		if (tipoBuscar == 1) {
-			sql += " where upper(id_medico ||' - '|| descmedico) LIKE ?  order by id_medico";
+			sql += " where upper(id_medico ||' - '|| descmedico) LIKE ?  order by descmedico";
 		}
 		try {
 			con = ConnectionFactory.getConnection();
@@ -193,7 +210,7 @@ public class ProfissionalDAO {
 	public List<ProfissionalBean> listarProfissional() throws ProjetoException {
 		List<ProfissionalBean> listaProf = new ArrayList<ProfissionalBean>();
 		String sql = "select distinct id_medico, descmedico, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, codprocedimentopadrao2, codempresa"
-				+ " from hosp.medicos order by id_medico";
+				+ " from hosp.medicos order by descmedico";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -204,7 +221,7 @@ public class ProfissionalDAO {
 				prof.setIdProfissional(rs.getInt("id_medico"));
 				prof.setDescricaoProf(rs.getString("descmedico"));
 				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
-						.getInt("codespecialidade")));				
+						.getInt("codespecialidade")));
 				prof.setCns(rs.getString("cns"));
 				prof.setAtivo(rs.getBoolean("ativo"));
 				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
@@ -229,7 +246,8 @@ public class ProfissionalDAO {
 		return listaProf;
 	}
 
-	public boolean excluirProfissional(ProfissionalBean profissional) throws ProjetoException {
+	public boolean excluirProfissional(ProfissionalBean profissional)
+			throws ProjetoException {
 		String sql = "delete from hosp.medicos where id_medico = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -251,7 +269,8 @@ public class ProfissionalDAO {
 		}
 	}
 
-	public void excluirTabProfProg(ProfissionalBean profissional) throws ProjetoException {
+	public void excluirTabProfProg(ProfissionalBean profissional)
+			throws ProjetoException {
 		String sql = "delete from hosp.profissional_programa where codprofissional = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -269,8 +288,9 @@ public class ProfissionalDAO {
 			}
 		}
 	}
-	
-	public void excluirTabProfGrupo(ProfissionalBean profissional) throws ProjetoException {
+
+	public void excluirTabProfGrupo(ProfissionalBean profissional)
+			throws ProjetoException {
 		String sql = "delete from hosp.profissional_grupo where codprofissional = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -289,7 +309,8 @@ public class ProfissionalDAO {
 		}
 	}
 
-	public boolean alterarProfissional(ProfissionalBean profissional) throws ProjetoException {
+	public boolean alterarProfissional(ProfissionalBean profissional)
+			throws ProjetoException {
 
 		String sql = "update hosp.medicos set descmedico = ?, codespecialidade = ?, cns = ?, ativo = ?,"
 				+ " codcbo = ?, codprocedimentopadrao = ?, codprocedimentopadrao2 = ?, codempresa = ? "
@@ -321,7 +342,8 @@ public class ProfissionalDAO {
 			excluirTabProfProg(profissional);
 			insereTabProfProg(profissional, profissional.getIdProfissional(), 1);
 			excluirTabProfGrupo(profissional);
-			insereTabProfGrupo(profissional, profissional.getIdProfissional(), 1);
+			insereTabProfGrupo(profissional, profissional.getIdProfissional(),
+					1);
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -340,7 +362,7 @@ public class ProfissionalDAO {
 
 		String sql = "select id_medico, descmedico, codespecialidade, "
 				+ " cns, ativo, codcbo, codprocedimentopadrao, codprocedimentopadrao2, codempresa"
-				+ " from hosp.medicos where id_medico = ?";
+				+ " from hosp.medicos where id_medico = ? order by descmedico";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -381,7 +403,8 @@ public class ProfissionalDAO {
 
 	}
 
-	public List<ProfissionalBean> listarProfissionaisPorEquipe(int id) throws ProjetoException {
+	public List<ProfissionalBean> listarProfissionaisPorEquipe(int id)
+			throws ProjetoException {
 
 		List<ProfissionalBean> lista = new ArrayList<ProfissionalBean>();
 		String sql = "select medico from hosp.equipe_medico where equipe = ? order by medico";
@@ -408,7 +431,8 @@ public class ProfissionalDAO {
 		return lista;
 	}
 
-	public List<ProgramaBean> listarProgProf(int idProf) throws ProjetoException {
+	public List<ProgramaBean> listarProgProf(int idProf)
+			throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<ProgramaBean>();
 		String sql = "select codprograma from hosp.profissional_programa where codprofissional = ?";
 		try {
@@ -432,7 +456,7 @@ public class ProfissionalDAO {
 
 		return lista;
 	}
-	
+
 	public List<GrupoBean> listarProgGrupo(int idProf) throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<GrupoBean>();
 		String sql = "select codgrupo from hosp.profissional_grupo where codprofissional = ?";
@@ -457,8 +481,9 @@ public class ProfissionalDAO {
 
 		return lista;
 	}
-	
-	public List<ProfissionalBean> listarProfissionalPorGrupo(int idGrupo) throws ProjetoException {
+
+	public List<ProfissionalBean> listarProfissionalPorGrupo(int idGrupo)
+			throws ProjetoException {
 		List<ProfissionalBean> lista = new ArrayList<ProfissionalBean>();
 		String sql = "select codprofissional from hosp.profissional_grupo where codgrupo = ?";
 		try {

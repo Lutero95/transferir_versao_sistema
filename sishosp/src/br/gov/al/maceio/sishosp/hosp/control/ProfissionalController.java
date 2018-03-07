@@ -40,8 +40,6 @@ public class ProfissionalController implements Serializable {
 	private int tipo;
 	private Integer abaAtiva = 0;
 
-	
-
 	public ProfissionalController() {
 		this.profissional = new ProfissionalBean();
 		this.descricaoBusca = new String();
@@ -93,10 +91,9 @@ public class ProfissionalController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
-	public void ListarTodosProfissionais()
-			throws ProjetoException {
+	public void ListarTodosProfissionais() throws ProjetoException {
 		listaProfissional = pDao.listarProfissional();
-		
+
 	}
 
 	public void setListaProfissional(List<ProfissionalBean> listaProfissional) {
@@ -104,22 +101,22 @@ public class ProfissionalController implements Serializable {
 	}
 
 	public void gravarProfissional() throws SQLException, ProjetoException {
-/*		if (this.profissional.getCbo().getCodCbo() == null
-				|| this.profissional.getCns().isEmpty()
-				|| this.profissional.getDescricaoProf().isEmpty()
-				|| this.profissional.getEspecialidade().getCodEspecialidade() == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"CBO, CNS, especialidade e descri��o obrigat�rios!",
-					"Campos obrigat�rios!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-		*/
+		/*
+		 * if (this.profissional.getCbo().getCodCbo() == null ||
+		 * this.profissional.getCns().isEmpty() ||
+		 * this.profissional.getDescricaoProf().isEmpty() ||
+		 * this.profissional.getEspecialidade().getCodEspecialidade() == null) {
+		 * FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+		 * "CBO, CNS, especialidade e descri��o obrigat�rios!",
+		 * "Campos obrigat�rios!");
+		 * FacesContext.getCurrentInstance().addMessage(null, msg); return; }
+		 */
 
 		if (this.profissional.getPrograma().isEmpty()
 				|| this.profissional.getGrupo().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatórios!");
+					"Deve ser informado pelo menos um Programa e um Grupo!",
+					"Campos obrigatórios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -143,7 +140,7 @@ public class ProfissionalController implements Serializable {
 		boolean ok = pDao.excluirProfissional(profissional);
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Profissional excluido com sucesso!", "Sucesso");
+					"Profissional excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
@@ -158,24 +155,24 @@ public class ProfissionalController implements Serializable {
 		this.listaProfissional = pDao.listarProfissional();
 	}
 
-	public String alterarProfissional() throws ProjetoException {
+	public void alterarProfissional() throws ProjetoException {
 		if (this.profissional.getCbo().getCodCbo() == null
 				|| this.profissional.getCns().isEmpty()
 				|| this.profissional.getDescricaoProf().isEmpty()
 				|| this.profissional.getEspecialidade().getCodEspecialidade() == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"CBO, CNS, especialidade e descri��o obrigat�rios!",
-					"Campos obrigat�rios!");
+					"CBO, CNS, especialidade e descrição obrigatórios!",
+					"Campos obrigatórios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 
 		if (this.profissional.getPrograma().isEmpty()
 				|| this.profissional.getGrupo().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Programa e Grupo obrigat�rios!", "Campos obrigat�rios!");
+					"Programa e Grupo obrigatórios!", "Campos obrigatórios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 
 		boolean alterou = pDao.alterarProfissional(profissional);
@@ -185,12 +182,13 @@ public class ProfissionalController implements Serializable {
 					"Profissional alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			this.listaProfissional = pDao.listarProfissional();
-			return "/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 
 	}
@@ -205,16 +203,13 @@ public class ProfissionalController implements Serializable {
 					descricaoBusca, tipoBuscar);
 		}
 	}
-	
-    
 
-	public void listarProfissionais()
-			throws ProjetoException {
+	public void listarProfissionais() throws ProjetoException {
 		ProfissionalDAO prDao = new ProfissionalDAO();
-			listaProfissional = prDao.listarProfissional();
-			System.out.println("tam lista "+listaProfissional.size());
-		
-		//return listaProfissional;
+		listaProfissional = prDao.listarProfissional();
+		System.out.println("tam lista " + listaProfissional.size());
+
+		// return listaProfissional;
 	}
 
 	public String getCabecalho() {
@@ -235,8 +230,6 @@ public class ProfissionalController implements Serializable {
 		List<ProfissionalBean> result = pDao.listarProfissionalBusca(query, 1);
 		return result;
 	}
-
-
 
 	public List<ProfissionalBean> getListaProfissional() {
 		return listaProfissional;
