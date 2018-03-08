@@ -129,7 +129,7 @@ public class EspecialidadeController implements Serializable {
 	}
 
 	public void getListarTodasEspecialidades() throws ProjetoException {
-		
+		System.out.println("ok");
 			this.listaEspecialidade = eDao.listarEspecialidades();
 			System.out.println("listaEspecialidade .size "+listaEspecialidade .size());
 		

@@ -156,10 +156,10 @@ public class ProfissionalController implements Serializable {
 	}
 
 	public void alterarProfissional() throws ProjetoException {
-		if (this.profissional.getCbo().getCodCbo() == null
+		if (this.profissional.getCbo() == null
 				|| this.profissional.getCns().isEmpty()
 				|| this.profissional.getDescricaoProf().isEmpty()
-				|| this.profissional.getEspecialidade().getCodEspecialidade() == null) {
+				|| this.profissional.getEspecialidade() == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"CBO, CNS, especialidade e descrição obrigatórios!",
 					"Campos obrigatórios!");

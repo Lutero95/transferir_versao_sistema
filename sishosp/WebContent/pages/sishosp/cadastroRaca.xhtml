@@ -15,11 +15,15 @@
 			<f:viewAction action="#{PacienteController.getEditRaca()}" />
 		</f:metadata>
 		<!-- INICIO DO FORMULARIO -->
-		<b:panel title="#{PacienteController.cabecalho2}" collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{PacienteController.cabecalho2}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
 
 			<h:form class="form-horizontal" id="formCADU">
 
-				<p:growl id="message" />
 				<div class="form-group">
 					<h:outputLabel for="inputname" value="Nome da Raça"
 						styleClass="col-sm-3 control-label" />
@@ -35,26 +39,34 @@
 
 					</div>
 				</div>
-				<p:separator></p:separator>
-				<!-- FIM DO FORMULARIO -->
+
 				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<center>
+
 					<b:commandButton action="#{PacienteController.gravarRaca()}"
-						update=":formCADU:message,:formCADU" icon="glyphicon-ok"
-						value="Incluir" styleClass="btn btn-primary" look="success" size="sm"
-						rendered="#{PacienteController.tipo == 1}" />
+						update=":formCADU" icon="glyphicon-ok" value="Incluir"
+						styleClass="btn btn-primary" look="success" style="float:left"
+						size="sm" rendered="#{PacienteController.tipo == 1}" />
+
 					<b:commandButton action="#{PacienteController.alterarRaca()}"
-						update=":formCADU:message,:formCADU"
-						value="Alterar" styleClass="btn btn-primary" size="sm" look="success"
+						update=":formCADU" value="Alterar" styleClass="btn btn-primary"
+						size="sm" look="success" style="float:left"
 						rendered="#{PacienteController.tipo == 2}" />
+
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="margin-left:10px" styleClass="btn btn-primary" size="sm" immediate="true" look="info"
+						style="float:right" styleClass="btn btn-primary" size="sm"
+						immediate="true" look="info"
 						action="/pages/sishosp/gerenciarRaca.faces?faces-redirect=true">
 					</b:commandButton>
 
 
 				</center>
 			</h:form>
-		</b:panel>
+
+		</div>
 
 	</ui:define>
 </ui:composition>

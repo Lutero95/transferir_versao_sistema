@@ -418,7 +418,7 @@ public class PacienteController implements Serializable {
 		if (cadastrou == true) {
 			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cor/Ra�a cadastrado com sucesso!", "Sucesso");
+					"Cor/Raça cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaRaca = null;
 
@@ -431,23 +431,23 @@ public class PacienteController implements Serializable {
 
 	}
 
-	public String alterarRaca() throws ProjetoException {
+	public void alterarRaca() throws ProjetoException {
 
 		RacaDAO rdao = new RacaDAO();
 		boolean alterou = rdao.alterar(raca);
 
 		if (alterou == true) {
-			limparDados();
+			// limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cor/Ra�a alterado com sucesso!", "Sucesso");
+					"Cor/Raça alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "/pages/sishosp/gerenciarRaca.faces?faces-redirect=true";
+			// return "/pages/sishosp/gerenciarRaca.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -460,7 +460,7 @@ public class PacienteController implements Serializable {
 
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cor/Ra�a excluido com sucesso!", "Sucesso");
+					"Cor/Raça excluída com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listarRaca();
 			RequestContext.getCurrentInstance().execute(
@@ -501,7 +501,7 @@ public class PacienteController implements Serializable {
 		} else {
 			profissaobuscarapida = new ProfissaoBean();
 			FacesMessage message = new FacesMessage(
-					" C�digo da Profissao incorreto!");
+					" Código da Profissao incorreto!");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
@@ -548,7 +548,7 @@ public class PacienteController implements Serializable {
 		} else {
 			transportebuscarapida = new FormaTransporteBean();
 			FacesMessage message = new FacesMessage(
-					" C�digo do Encaminhado incorreto!");
+					" Código do Encaminhado incorreto!");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
@@ -596,7 +596,7 @@ public class PacienteController implements Serializable {
 		} else {
 			encaminhadobuscarapida = new EncaminhadoBean();
 			FacesMessage message = new FacesMessage(
-					" C�digo do Encaminhado incorreto!");
+					" Código do Encaminhado incorreto!");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
@@ -691,7 +691,7 @@ public class PacienteController implements Serializable {
 		} else {
 			escolaridadebuscarapida = new EscolaridadeBean();
 			FacesMessage message = new FacesMessage(
-					" C�digo da Escolaridade incorreto!");
+					" Código da Escolaridade incorreto!");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
@@ -757,7 +757,7 @@ public class PacienteController implements Serializable {
 		} else {
 			escolabuscarapida = new EscolaBean();
 			FacesMessage message = new FacesMessage(
-					" C�digo da Escola incorreto!");
+					" Código da Escola incorreto!");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
@@ -862,7 +862,7 @@ public class PacienteController implements Serializable {
 		} else {
 			// listaAss = null;
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-					"Nenhuma Ra�a encontrada.", "Aviso");
+					"Nenhuma Raça encontrada.", "Aviso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 

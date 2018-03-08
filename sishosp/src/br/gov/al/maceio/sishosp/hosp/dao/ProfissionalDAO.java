@@ -50,20 +50,20 @@ public class ProfissionalDAO {
 				ps.setInt(5, 0);
 			}
 
-			if (prof.getProc1().getCodProc() != null) {
+			if (prof.getProc1() != null) {
 				ps.setInt(6, prof.getProc1().getCodProc());
 			} else {
 				ps.setInt(6, 0);
 			}
-			
+
 			if (prof.getProc2() != null) {
 				ps.setInt(7, prof.getProc2().getCodProc());
 			} else {
 				ps.setInt(7, 0);
 			}
-			
+
 			ps.setInt(8, 0);// COD EMPRESA ??
-			
+
 			ResultSet rs = ps.executeQuery();
 			con.commit();
 
@@ -324,13 +324,17 @@ public class ProfissionalDAO {
 					.getCodEspecialidade());
 			stmt.setString(3, profissional.getCns().toUpperCase());
 			stmt.setBoolean(4, profissional.isAtivo());
-			stmt.setInt(5, profissional.getCbo().getCodCbo());
-			if (profissional.getProc1().getCodProc() != null) {
+			if (profissional.getCbo() != null) {
+				stmt.setInt(5, profissional.getCbo().getCodCbo());
+			} else {
+				stmt.setInt(5, 0);
+			}
+			if (profissional.getProc1() != null) {
 				stmt.setInt(6, profissional.getProc1().getCodProc());
 			} else {
 				stmt.setInt(6, 0);
 			}
-			if (profissional.getProc2().getCodProc() != null) {
+			if (profissional.getProc2() != null) {
 				stmt.setInt(7, profissional.getProc2().getCodProc());
 			} else {
 				stmt.setInt(7, 0);

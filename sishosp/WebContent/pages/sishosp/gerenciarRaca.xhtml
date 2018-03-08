@@ -18,8 +18,12 @@
 
 		<h:form id="frmmensagem">
 
-			<b:panel title="Gerenciamento de Raça" collapsible="false">
-				<p:growl id="growl" showDetail="false" />
+			<div class="panel-body">
+				<div class="sub-header">
+					<h4>Gerenciamento de Raça</h4>
+					<hr />
+				</div>
+
 				<b:commandButton id="btninc" value="Novo" size="sm"
 					action="#{PacienteController.redirectInsertRaca()}"
 					icon="glyphicon-plus" look="primary">
@@ -27,8 +31,11 @@
 						target="#{PacienteController.tipo}" />
 					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 				</b:commandButton>
-				<br />
-				<br />
+				<br /> <br />
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
 				<b:dataTable id="dt" var="tab"
 					value="#{PacienteController.listaRaca}" lang="es"
@@ -65,7 +72,7 @@
 					</h:column>
 
 				</b:dataTable>
-			</b:panel>
+			</div>
 		</h:form>
 
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"

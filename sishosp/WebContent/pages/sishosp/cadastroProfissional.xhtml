@@ -43,7 +43,7 @@
 					<div class="col-sm-1">
 						<p:commandButton id="btBusEsp" icon="ui-icon-search"
 							style="margin-left:-20px;height:35px" update=":formConsulEspec"
-							onclick="PF('dlgConsulEspecialidade').show();"
+							onclick="PF('dlgConsulEspecialidade').show();" immediate="true"
 							actionListener="#{EspecialidadeController.getListarTodasEspecialidades()}" />
 
 					</div>
@@ -57,15 +57,15 @@
 								converter="conCbo" id="descCbo"
 								completeMethod="#{CboController.listaCboAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
-								minQueryLength="1" itemValue="#{theme}"
-								itemLabel="#{theme.descCbo}">
+								minQueryLength="1" itemValue="#{theme}" required="true"
+								requiredMessage="Escolha o C.B.O." itemLabel="#{theme.descCbo}">
 							</p:autoComplete>
 
 						</p:outputPanel>
 					</div>
 					<div class="col-sm-1">
 						<p:commandButton id="btBusCbo" icon="ui-icon-search"
-							style="margin-left:-20px;height:35px"
+							style="margin-left:-20px;height:35px" immediate="true"
 							onclick="PF('dlgConsulCbo').show();" />
 
 					</div>
@@ -90,7 +90,7 @@
 					<div class="col-sm-1">
 
 						<p:commandButton id="btBusProc1" icon="ui-icon-search"
-							onclick="PF('dlgConsulProc1').show();"
+							onclick="PF('dlgConsulProc1').show();" immediate="true"
 							actionListener="#{ProcedimentoController.listarProcedimentos()}"
 							style="margin-left:-20px;height:35px" />
 					</div>
@@ -110,7 +110,7 @@
 					</div>
 					<div class="col-sm-1">
 						<p:commandButton id="btBusProc2" icon="ui-icon-search"
-							onclick="PF('dlgConsulProc2').show();"
+							onclick="PF('dlgConsulProc2').show();" immediate="true"
 							actionListener="#{ProcedimentoController.listarProcedimentos()}"
 							style="margin-left:-20px;height:35px" />
 					</div>
@@ -133,6 +133,7 @@
 					<h:outputLabel value="CNS" styleClass="col-sm-2 control-label" />
 					<div class="col-sm-2">
 						<h:inputText value="#{ProfissionalController.profissional.cns}"
+							required="true" requiredMessage="CNS obrigátorio!"
 							class="form-control" />
 
 					</div>
@@ -155,7 +156,7 @@
 							value="Incluir Programa" styleClass="btn btn-primary text-center"
 							process="@this" style="color:black;" icon="ui-icon-plus" />
 						<br /> <br />
-						<p:dataTable emptyMessage="Nenhum Programa"
+						<p:dataTable emptyMessage="Nenhum Programa" id="tabelaprograma"
 							value="#{ProfissionalController.profissional.programa}"
 							var="prog" scrollRows="3" scrollHeight="150" scrollable="true">
 							<p:column headerText="Programa" width="80%">
@@ -183,6 +184,7 @@
 							style="color:black;" icon="ui-icon-plus" process="@this" />
 						<br /> <br />
 						<p:dataTable style="width: 480px" emptyMessage="Nenhum Grupo"
+							id="tabelagrupo"
 							value="#{ProfissionalController.profissional.grupo}" var="grupo"
 							scrollRows="3" scrollHeight="150" scrollable="true">
 							<p:column headerText="Grupo">
@@ -251,7 +253,8 @@
 						<p:outputLabel value="#{prog.descPrograma}" />
 					</p:column>
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":frmCadProfi, :formConsuGrops:dtGrupos"
+						<p:commandButton
+							update=":frmCadProfi:tabelaprograma, :frmCadProfi:msgError, :formConsuGrops:dtGrupos"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsulProgramas').hide();"
 							action="#{ProfissionalController.profissional.addProgLista()}">
@@ -288,8 +291,8 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Cbo" widgetVar="dlgConsulCbo" modal="true"
-			height="300px" width="500px">
+		<p:dialog header="Consulta C.B.O." widgetVar="dlgConsulCbo"
+			modal="true" height="300px" width="500px">
 			<h:form id="formConsulCbo">
 				<p:dataTable value="#{CboController.listarCbo}" var="cbo"
 					scrollRows="3" scrollHeight="270" scrollable="true"
@@ -383,8 +386,10 @@
 						</p:column>
 
 						<p:column style="width:50px;text-align: center">
-							<p:commandButton update=":frmCadProfi" icon="ui-icon-check"
-								title="Selecionar" onclick="PF('dlgConsuGrupos').hide();"
+							<p:commandButton
+								update=":frmCadProfi:tabelagrupo :frmCadProfi:msgError"
+								icon="ui-icon-check" title="Selecionar"
+								onclick="PF('dlgConsuGrupos').hide();"
 								action="#{ProfissionalController.profissional.addGrupoLista()}">
 								<f:setPropertyActionListener value="#{grupo}"
 									target="#{ProfissionalController.profissional.grupoAdd}" />
