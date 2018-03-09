@@ -12,14 +12,15 @@
 	</f:metadata>
 
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<b:panel title="#{TipoAtendimentoController.cabecalho}"
-			collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{TipoAtendimentoController.cabecalho}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
 
 
 			<h:form class="form-horizontal" id="formCADU">
-
-				<p:growl id="message" />
 
 
 				<div class="form-group">
@@ -32,22 +33,25 @@
 
 					</div>
 				</div>
-				
-				
-				
-				
+
+
+
+
 				<div class="form-group">
 					<h:outputLabel for="inputg" value="Grupos "
 						styleClass="col-sm-3 control-label" />
-										<div class="col-sm-5">
-					<p:commandButton style="color:black" styleClass="btn btn-primary col-sm-3 text-center" value="Incluir" process="@this" actionListener="#{GrupoController.getListaTodosGrupos()}"
-						onclick="PF('dlgConsuGrupo').show();" icon="ui-icon-plus" />
+					<div class="col-sm-5">
+						<p:commandButton style="color:black"
+							styleClass="btn btn-primary col-sm-3 text-center" value="Incluir"
+							process="@this"
+							actionListener="#{GrupoController.getListaTodosGrupos()}"
+							onclick="PF('dlgConsuGrupo').show();" icon="ui-icon-plus" />
 						<br /> <br />
 
 
 						<p:dataTable emptyMessage="Sem Dados"
 							styleClass="table table-hover" id="tabela"
-							style="margin-top:1px;"
+							style="margin-top:10px;"
 							value="#{TipoAtendimentoController.tipo.grupo}" var="tab"
 							paginator="true" paginatorPosition="bottom" rows="12"
 							resizableColumns="true">
@@ -64,7 +68,7 @@
 								<center>
 									<p:commandButton process="@this"
 										action="#{TipoAtendimentoController.tipo.rmvGrupoLista()}"
-										icon="ui-icon-trash" update=":formCADU">
+										icon="ui-icon-trash" update=":formCADU:tabela">
 										<f:setPropertyActionListener value="#{tab}"
 											target="#{TipoAtendimentoController.tipo.grupoParaAdd}" />
 									</p:commandButton>
@@ -72,7 +76,7 @@
 							</p:column>
 
 						</p:dataTable>
-						
+
 					</div>
 				</div>
 				<div class="form-group">
@@ -93,63 +97,66 @@
 						</p:selectBooleanCheckbox>
 					</div>
 				</div>
-				<p:separator></p:separator>
-				<!-- FIM DO FORMULARIO -->
-			<center>
-							<b:commandButton action="#{TipoAtendimentoController.gravarTipo()}"
-					icon="glyphicon-ok" size="sm" look="success"
-					update=":formCADU:message,:formCADU" value="Incluir"
-					rendered="#{TipoAtendimentoController.tipoS == 1}" />
 
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
-				<b:commandButton action="#{TipoAtendimentoController.alterarTipo()}"
-					icon="glyphicon-ok" size="sm"
-					update=":formCADU:message,:formCADU" value="Alterar"
-					look="success" rendered="#{TipoAtendimentoController.tipoS  == 2}" />
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					style="margin-left:10px" size="sm" immediate="true" look="info"
-					action="/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true">
-				</b:commandButton>
-			
-			</center>
+				<center>
+
+					<b:commandButton action="#{TipoAtendimentoController.gravarTipo()}"
+						icon="glyphicon-ok" size="sm" look="success" style="float:left"
+						update=":formCADU" value="Incluir"
+						rendered="#{TipoAtendimentoController.tipoS == 1}" />
+
+					<b:commandButton
+						action="#{TipoAtendimentoController.alterarTipo()}"
+						icon="glyphicon-ok" size="sm" style="float:left"
+						update=":formCADU" value="Alterar" look="success"
+						rendered="#{TipoAtendimentoController.tipoS  == 2}" />
+
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="float:right" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true">
+					</b:commandButton>
+
+				</center>
 
 			</h:form>
-		</b:panel>
+		</div>
 
 		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"
 			modal="true" width="550px" height="300px">
 			<h:form id="formConsuGrop">
-			<p:outputPanel autoUpdate="true">
-				<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
-					resizableColumns="true" var="grupo"
-					scrollRows="3" scrollHeight="270" scrollable="true"
-					emptyMessage="Não existe nenhum grupo cadastrado!">
-					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{grupo.idGrupo}" />
-					</p:column>
-					<p:column headerText="GRUPO">
-						<p:outputLabel value="#{grupo.descGrupo}" />
-					</p:column>
-					<p:column headerText="QTD. FREQ>">
-						<p:outputLabel value="#{grupo.qtdFrequencia}" />
-					</p:column>
+				<p:outputPanel autoUpdate="true">
+					<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
+						resizableColumns="true" var="grupo" scrollRows="3"
+						scrollHeight="270" scrollable="true"
+						emptyMessage="Não existe nenhum grupo cadastrado!">
+						<p:column headerText="Código">
+							<p:outputLabel value="#{grupo.idGrupo}" />
+						</p:column>
+						<p:column headerText="Grupo">
+							<p:outputLabel value="#{grupo.descGrupo}" />
+						</p:column>
+						<p:column headerText="Quantidade Frequência">
+							<p:outputLabel value="#{grupo.qtdFrequencia}" />
+						</p:column>
 
-					<p:column style="width:50px;text-align: center">
-						<p:commandButton process="@this" update=":formCADU"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsuGrupo').hide();"
-							action="#{TipoAtendimentoController.tipo.addGrupoLista()}">
-							<f:setPropertyActionListener value="#{grupo}"
-								target="#{TipoAtendimentoController.tipo.grupoParaAdd}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+						<p:column style="width:50px;text-align: center">
+							<p:commandButton process="@this"
+								update=":formCADU:tabela, :formCADU:msgError"
+								icon="ui-icon-check" title="Selecionar"
+								onclick="PF('dlgConsuGrupo').hide();"
+								action="#{TipoAtendimentoController.tipo.addGrupoLista()}">
+								<f:setPropertyActionListener value="#{grupo}"
+									target="#{TipoAtendimentoController.tipo.grupoParaAdd}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>
-
-
-
 	</ui:define>
 </ui:composition>
 </html>

@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EquipeBean implements Serializable
-{
+public class EquipeBean implements Serializable {
 
 	private Integer codEquipe;
 	private String descEquipe;

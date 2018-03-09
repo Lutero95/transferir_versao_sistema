@@ -17,7 +17,8 @@ public class TipoAtendimentoDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarTipoAt(TipoAtendimentoBean tipo) throws SQLException, ProjetoException {
+	public boolean gravarTipoAt(TipoAtendimentoBean tipo) throws SQLException,
+			ProjetoException {
 
 		String sql = "insert into hosp.tipoatendimento (desctipoatendimento, "
 				+ " primeiroatendimento, equipe_programa, codempresa, id) values (?, ?, ?, ?, DEFAULT) RETURNING id;";
@@ -70,7 +71,7 @@ public class TipoAtendimentoDAO {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
-				//con.close();
+				// con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				System.exit(1);
@@ -78,7 +79,8 @@ public class TipoAtendimentoDAO {
 		}
 	}
 
-	public List<TipoAtendimentoBean> listarTipoAtPorGrupo(int codGrupo) throws ProjetoException {
+	public List<TipoAtendimentoBean> listarTipoAtPorGrupo(int codGrupo)
+			throws ProjetoException {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
 		String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa"
 				+ " from hosp.grupo g, hosp.tipoatendimento t, hosp.tipoatendimento_grupo tg"
@@ -116,7 +118,7 @@ public class TipoAtendimentoDAO {
 	public List<TipoAtendimentoBean> listarTipoAt() throws ProjetoException {
 		List<TipoAtendimentoBean> lista = new ArrayList<>();
 		String sql = "select id, desctipoatendimento, primeiroatendimento, codempresa, equipe_programa"
-				+ " from hosp.tipoatendimento order by id";
+				+ " from hosp.tipoatendimento order by desctipoatendimento";
 		GrupoDAO gDao = new GrupoDAO();
 		try {
 			con = ConnectionFactory.getConnection();
@@ -178,7 +180,7 @@ public class TipoAtendimentoDAO {
 		String sql = "select id, desctipoatendimento, primeiroatendimento, codempresa, equipe_programa"
 				+ " from hosp.tipoatendimento";
 		if (tipo == 1) {
-			sql += " where desctipoatendimento LIKE ?  order by id";
+			sql += " where desctipoatendimento LIKE ?  order by desctipoatendimento";
 		}
 		try {
 			con = ConnectionFactory.getConnection();
@@ -218,7 +220,7 @@ public class TipoAtendimentoDAO {
 				+ " where ? = tg.codgrupo and t.id = tg.codtipoatendimento "
 				+ " and upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? "
 				+ " group by t.id, t.id ||' - '|| t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa "
-				+ " order by t.id ";
+				+ " order by t.desctipoatendimento ";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -251,7 +253,8 @@ public class TipoAtendimentoDAO {
 		return lista;
 	}
 
-	public boolean alterarTipo(TipoAtendimentoBean tipo) throws ProjetoException {
+	public boolean alterarTipo(TipoAtendimentoBean tipo)
+			throws ProjetoException {
 		String sql = "update hosp.tipoatendimento set desctipoatendimento = ?, primeiroatendimento = ?, equipe_programa = ? where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -310,7 +313,7 @@ public class TipoAtendimentoDAO {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
-				//con.close();
+				// con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}

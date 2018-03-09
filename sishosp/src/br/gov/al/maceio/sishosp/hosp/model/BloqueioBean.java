@@ -3,8 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class BloqueioBean implements Serializable{
-	
+public class BloqueioBean implements Serializable {
+
 	private Integer idBloqueio;
 	private ProfissionalBean prof;
 	private Date dataInicio;
@@ -12,7 +12,7 @@ public class BloqueioBean implements Serializable{
 	private String turno;
 	private String descBloqueio;
 	private Integer codEmpresa;
-	
+
 	public BloqueioBean() {
 		this.prof = new ProfissionalBean();
 		this.dataInicio = null;
@@ -75,5 +75,5 @@ public class BloqueioBean implements Serializable{
 	public void setCodEmpresa(Integer codEmpresa) {
 		this.codEmpresa = codEmpresa;
 	}
-	
+
 }

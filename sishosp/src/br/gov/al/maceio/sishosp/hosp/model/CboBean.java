@@ -2,17 +2,16 @@ package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
 
-public class CboBean implements Serializable{
-	
+public class CboBean implements Serializable {
+
 	private Integer codCbo;
 	private String descCbo;
 	private Integer codEmpresa;
 	private String codigo;
-	
+
 	public CboBean() {
-		// TODO Auto-generated constructor stub
 	}
-	
+
 	public CboBean(Integer codCbo, String descCbo, Integer codEmpresa) {
 		this.codCbo = codCbo;
 		this.descCbo = descCbo;
@@ -50,5 +49,5 @@ public class CboBean implements Serializable{
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
 	}
-	
+
 }

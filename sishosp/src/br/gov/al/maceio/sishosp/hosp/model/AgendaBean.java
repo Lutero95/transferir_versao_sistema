@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class AgendaBean implements Serializable {
-	
+
 	private Integer idAgenda;
 	private PacienteBean paciente;
 	private ProcedimentoBean procedimento;
@@ -22,7 +22,7 @@ public class AgendaBean implements Serializable {
 	private Date dataMarcacao;
 	private String situacao;
 	private String ativo;
-	
+
 	public AgendaBean() {
 		this.paciente = null;// new PacienteBean();
 		this.procedimento = null;
@@ -30,7 +30,8 @@ public class AgendaBean implements Serializable {
 		this.programa = null;// new ProgramaBean();
 		this.tipoAt = null;// new TipoAtendimentoBean();
 		this.profissional = new ProfissionalBean();
-		this.equipe = new EquipeBean();;
+		this.equipe = new EquipeBean();
+		;
 		this.prontoGravar = false;
 		this.turno = new String();
 		this.ativo = new String();
@@ -42,7 +43,7 @@ public class AgendaBean implements Serializable {
 		this.max = null;
 		this.idAgenda = null;
 	}
-	
+
 	public Integer getIdAgenda() {
 		return idAgenda;
 	}
@@ -178,5 +179,5 @@ public class AgendaBean implements Serializable {
 	public void setAtivo(String ativo) {
 		this.ativo = ativo;
 	}
-	
+
 }

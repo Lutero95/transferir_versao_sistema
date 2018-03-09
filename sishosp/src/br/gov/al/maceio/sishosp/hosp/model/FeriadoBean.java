@@ -3,14 +3,14 @@ package br.gov.al.maceio.sishosp.hosp.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class FeriadoBean implements Serializable{
-	
+public class FeriadoBean implements Serializable {
+
 	private Integer codFeriado;
 	private String descFeriado;
 	private Date dataFeriado;
-	
-	public FeriadoBean(){
-		
+
+	public FeriadoBean() {
+
 	}
 
 	public Integer getCodFeriado() {
@@ -36,5 +36,5 @@ public class FeriadoBean implements Serializable{
 	public void setDataFeriado(Date dataFeriado) {
 		this.dataFeriado = dataFeriado;
 	}
-	
+
 }

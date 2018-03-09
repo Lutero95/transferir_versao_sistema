@@ -7,27 +7,33 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:stella="http://stella.caelum.com.br/faces2"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	>
+	xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<b:panel title="Gerenciamento de Tipo de Encaminhamento"
-			collapsible="false">
+
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Tipo de Encaminhamento</h4>
+				<hr />
+			</div>
+			
 			<h:form id="frmmensagem">
 
-				<p:growl id="growl" showDetail="false" />
-	<b:commandButton id="btninc" value="Novo" size="sm"
-				action="#{EncaminhadoController.redirectInsert()}" icon="glyphicon-plus"
-				look="primary">
-				<f:setPropertyActionListener value="1"
-					target="#{EncaminhadoController.tipo}" />
-				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-			</b:commandButton>
-			<br />
-			<br />
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{EncaminhadoController.redirectInsert()}"
+					icon="glyphicon-plus" look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{EncaminhadoController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
 				<b:dataTable id="dt" var="tab"
 					value="#{EncaminhadoController.listaEncaminhado}" lang="es"
@@ -67,13 +73,13 @@
 				</b:dataTable>
 
 			</h:form>
-		</b:panel>
+		</div>
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
 			<h:form id="dlgexcluir">
 				<div class="alert alert-warning" role="alert">Deseja excluir
-					esse Encaminhado?</div>
+					esse Encaminhamento?</div>
 				<center>
 
 					<p:separator />

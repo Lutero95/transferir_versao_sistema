@@ -15,12 +15,15 @@
 	<ui:define name="body">
 
 
-		<b:panel title="Gerenciamento de Tipo de Atendimento"
-			collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Tipo de Atendimento</h4>
+				<hr />
+			</div>
+
 			<h:form id="frmmensagem">
 
 
-				<p:growl id="growl" showDetail="false" />
 				<b:commandButton id="btninc" value="Novo" size="sm"
 					action="#{TipoAtendimentoController.redirectInsert()}"
 					icon="glyphicon-plus" look="primary">
@@ -30,6 +33,11 @@
 				</b:commandButton>
 				<br />
 				<br />
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
 				<b:dataTable id="dt" var="tab"
 					value="#{TipoAtendimentoController.listaTipos}" lang="es"
 					display="Nenhum Tipo de Atendimento">
@@ -80,7 +88,7 @@
 				</b:dataTable>
 
 			</h:form>
-		</b:panel>
+		</div>
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 
@@ -88,7 +96,7 @@
 
 
 				<div class="alert alert-warning" role="alert">Deseja excluir
-					esse tipo de atendimento?</div>
+					esse Tipo de Atendimento?</div>
 
 
 				<center>

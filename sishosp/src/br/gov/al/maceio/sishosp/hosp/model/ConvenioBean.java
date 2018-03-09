@@ -2,13 +2,13 @@ package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
 
-public class ConvenioBean implements Serializable{
+public class ConvenioBean implements Serializable {
 
 	private Integer codconvenio;
-	private String  descconvenio;
-	
-	public ConvenioBean(){
-		
+	private String descconvenio;
+
+	public ConvenioBean() {
+
 	}
 
 	public Integer getCodconvenio() {
@@ -26,5 +26,5 @@ public class ConvenioBean implements Serializable{
 	public void setDescconvenio(String descconvenio) {
 		this.descconvenio = descconvenio;
 	}
-	
+
 }

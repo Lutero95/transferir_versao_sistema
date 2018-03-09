@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 public class EnderecoBean implements Serializable {
-    // ATRIBUTOS
+
 	private Long id;
 	private String municipio;
 	private String referencia;
@@ -20,23 +20,21 @@ public class EnderecoBean implements Serializable {
 	private String complemento;
 	private String cep;
 	private String bairro;
-	
+
 	private String telefoneres;
 	private String telefonecel;
 	private String telefonetrab;
 	private String telefoneorelhao;
-	
+
 	private Date dataCadastro;
 	private Date dataAlteracao;
-	
-	//LISTA
-	 private List<Integer> listaEstado;
-	 
-	public EnderecoBean(){
-		
-		
+
+	private List<Integer> listaEstado;
+
+	public EnderecoBean() {
+
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -205,7 +203,4 @@ public class EnderecoBean implements Serializable {
 		this.codibge = codibge;
 	}
 
-
-	
-	
 }

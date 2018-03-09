@@ -3,7 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.model;
 import java.io.Serializable;
 import java.sql.Date;
 
-public class EncaminhamentoBean implements Serializable{
+public class EncaminhamentoBean implements Serializable {
 
 	private Integer cod;
 	private Integer codpaciente;
@@ -21,9 +21,9 @@ public class EncaminhamentoBean implements Serializable{
 	private Integer codprograma;
 	private Date datarecebido;
 	private String sta;
-	
-	public EncaminhamentoBean(){
-		
+
+	public EncaminhamentoBean() {
+
 	}
 
 	public Integer getCod() {
@@ -153,6 +153,5 @@ public class EncaminhamentoBean implements Serializable{
 	public void setSta(String sta) {
 		this.sta = sta;
 	}
-	
 
 }

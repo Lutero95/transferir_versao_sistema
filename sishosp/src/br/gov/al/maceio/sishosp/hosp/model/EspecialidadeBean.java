@@ -7,9 +7,9 @@ public class EspecialidadeBean implements Serializable {
 	private Integer codEspecialidade;
 	private String descEspecialidade;
 	private Integer codEmpresa;
-	
-	public EspecialidadeBean(){
-		
+
+	public EspecialidadeBean() {
+
 	}
 
 	public Integer getCodEspecialidade() {
@@ -36,6 +36,4 @@ public class EspecialidadeBean implements Serializable {
 		this.codEmpresa = codEmpresa;
 	}
 
-	
-	
 }

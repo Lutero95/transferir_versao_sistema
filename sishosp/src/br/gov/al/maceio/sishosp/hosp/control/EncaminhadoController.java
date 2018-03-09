@@ -18,7 +18,6 @@ import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
 
 @ManagedBean(name = "EncaminhadoController")
 @ViewScoped
-
 public class EncaminhadoController implements Serializable {
 	/**
 	 * 
@@ -45,37 +44,36 @@ public class EncaminhadoController implements Serializable {
 		listaEncaminhado = new ArrayList<>();
 		listaEncaminhado = null;
 	}
-	
+
 	public String redirectEdit() {
-		return "cadastroTipoEncaminhamento?faces-redirect=true&amp;id=" + this.encaminhado.getCodencaminhado()+"&amp;tipo="+tipo;
-	}	
-	
-	
-	public String redirectInsert() {
-		return "cadastroTipoEncaminhamento?faces-redirect=true&amp;tipo="+tipo;
-	}		
-	
-	public void getEditTipoEncaminhamento() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
-			System.out.println("entrou no editar");
-			Integer id = Integer.parseInt(params.get("id"));
-			tipo =Integer.parseInt(params.get("tipo"));			
-			System.out.println("tipo do walter"+tipo);
-			EncaminhadoDAO cDao = new EncaminhadoDAO();
-			this.encaminhado = cDao.buscaencaminhadocodigo(id);
-		}
-		else{
-			System.out.println("tipo sera"+tipo);
-			tipo =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
+		return "cadastroTipoEncaminhamento?faces-redirect=true&amp;id="
+				+ this.encaminhado.getCodencaminhado() + "&amp;tipo=" + tipo;
 	}
 
-	
+	public String redirectInsert() {
+		return "cadastroTipoEncaminhamento?faces-redirect=true&amp;tipo="
+				+ tipo;
+	}
+
+	public void getEditTipoEncaminhamento() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		System.out.println("vai ve se entrar no editar");
+		if (params.get("id") != null) {
+			System.out.println("entrou no editar");
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo = Integer.parseInt(params.get("tipo"));
+			System.out.println("tipo do walter" + tipo);
+			EncaminhadoDAO cDao = new EncaminhadoDAO();
+			this.encaminhado = cDao.buscaencaminhadocodigo(id);
+		} else {
+			System.out.println("tipo sera" + tipo);
+			tipo = Integer.parseInt(params.get("tipo"));
+
+		}
+
+	}
 
 	public void gravarEncaminhado() throws ProjetoException {
 		EncaminhadoDAO udao = new EncaminhadoDAO();
@@ -84,7 +82,7 @@ public class EncaminhadoController implements Serializable {
 		if (cadastrou == true) {
 			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Encaminhado cadastrado com sucesso!", "Sucesso");
+					"Encaminhamento cadastrado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaEncaminhado = null;
 
@@ -97,23 +95,24 @@ public class EncaminhadoController implements Serializable {
 
 	}
 
-	public String alterarEncaminhado() throws ProjetoException {
+	public void alterarEncaminhado() throws ProjetoException {
 
 		EncaminhadoDAO rdao = new EncaminhadoDAO();
 		boolean alterou = rdao.alterar(encaminhado);
 
 		if (alterou == true) {
-			limparDados();
+			// limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Encaminhado alterado com sucesso!", "Sucesso");
+					"Encaminhamento alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "/pages/sishosp/gerenciarTipoEncaminhamento.faces?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarTipoEncaminhamento.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -126,7 +125,7 @@ public class EncaminhadoController implements Serializable {
 
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Encaminhado excluido com sucesso!", "Sucesso");
+					"Encaminhamento excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaEncaminhado = null;
 			RequestContext.getCurrentInstance().execute(
@@ -191,7 +190,6 @@ public class EncaminhadoController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
-
 	public Integer getTipoBuscaEncaminhado() {
 		return tipoBuscaEncaminhado;
 	}
@@ -231,9 +229,9 @@ public class EncaminhadoController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo==1) {
+		if (this.tipo == 1) {
 			cabecalho = "Inclusão de Tipo de Encaminhamento";
-		} else if (this.tipo==2) {
+		} else if (this.tipo == 2) {
 			cabecalho = "Alteração de Tipo de Encaminhamento";
 		}
 		return cabecalho;

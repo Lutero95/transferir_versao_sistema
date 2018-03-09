@@ -10,56 +10,62 @@
 
 <ui:composition template="../../template/template.xhtml">
 	<f:metadata>
-		<f:viewAction action="#{EncaminhadoController.getEditTipoEncaminhamento()}" />
+		<f:viewAction
+			action="#{EncaminhadoController.getEditTipoEncaminhamento()}" />
 	</f:metadata>
 
 	<ui:define name="body">
 		<!-- INICIO DO FORMULARIO -->
-<b:panel title="#{EncaminhadoController.cabecalho}" collapsible="false">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{EncaminhadoController.cabecalho}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
 			<h:form class="form-horizontal" id="formCADU">
 
-				<p:growl id="message" />
 
-					<div class="form-group">
-						<h:outputLabel for="inputname" value="Descrição"
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
-							<h:inputText
-								value="#{EncaminhadoController.encaminhado.descencaminhado}"
-								class="form-control" id="inputname"
-								pt:placeholder="Digite aqui seu encaminhamento" required="true"
-								requiredMessage="é necessário que você informe seu encaminhamento.">
-								<f:validateLength minimum="2" maximum="40" />
+				<div class="form-group">
+					<h:outputLabel for="inputname" value="Descrição"
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText
+							value="#{EncaminhadoController.encaminhado.descencaminhado}"
+							class="form-control" id="inputname"
+							pt:placeholder="Digite aqui seu encaminhamento" required="true"
+							requiredMessage="é necessário que você informe seu encaminhamento.">
+							<f:validateLength minimum="2" maximum="40" />
 
-							</h:inputText>
-						</div>
+						</h:inputText>
 					</div>
-					<p:separator></p:separator>
-					<!-- FIM DO FORMULARIO -->
-					<center>
-						<b:commandButton
-							action="#{EncaminhadoController.gravarEncaminhado()}"
-							icon="glyphicon-ok" size="sm" look="success"
-							update=":formCADU:message,:formCADU" value="Incluir"
-							rendered="#{EncaminhadoController.tipo == 1}" />
+				</div>
 
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
-						<b:commandButton
-							action="#{EncaminhadoController.alterarEncaminhado()}"
-							icon="glyphicon-ok" size="sm" update=":formCADU,:formCADU"
-							value="Alterar" look="success"
-							rendered="#{EncaminhadoController.tipo  == 2}" />
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-							style="margin-left:10px" size="sm" immediate="true" look="info"
-							action="/pages/sishosp/gerenciarTipoEncaminhamento.faces?faces-redirect=true">
-						</b:commandButton>
-					</center>
+				<center>
 
+					<b:commandButton
+						action="#{EncaminhadoController.gravarEncaminhado()}"
+						icon="glyphicon-ok" size="sm" look="success" style="float:left"
+						update=":formCADU" value="Incluir"
+						rendered="#{EncaminhadoController.tipo == 1}" />
 
+					<b:commandButton
+						action="#{EncaminhadoController.alterarEncaminhado()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+						look="success" style="float:left"
+						rendered="#{EncaminhadoController.tipo  == 2}" />
 
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="float:right" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarTipoEncaminhamento.faces?faces-redirect=true">
+					</b:commandButton>
+				</center>
 
 			</h:form>
-		</b:panel>
+		</div>
 
 	</ui:define>
 </ui:composition>

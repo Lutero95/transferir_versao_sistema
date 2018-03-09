@@ -18,7 +18,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
-@ManagedBean(name="TipoAtendimentoController")
+@ManagedBean(name = "TipoAtendimentoController")
 @ViewScoped
 public class TipoAtendimentoController implements Serializable {
 
@@ -62,11 +62,9 @@ public class TipoAtendimentoController implements Serializable {
 	}
 
 	public void listarTipos() throws ProjetoException {
-			listaTipos = tDao.listarTipoAt();
-
+		listaTipos = tDao.listarTipoAt();
 
 	}
-
 
 	public void buscarTipoAt() throws ProjetoException {
 		this.listaTipos = tDao.listarTipoAtBusca(descricaoBusca, tipoBuscar);
@@ -83,14 +81,15 @@ public class TipoAtendimentoController implements Serializable {
 	public void gravarTipo() throws ProjetoException, SQLException {
 		if (this.tipo.getGrupo().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário no minimo informar um grupo!", "Campos obrigatórios!");
+					"É necessário no minimo informar um grupo!",
+					"Campos obrigatórios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
 		boolean cadastrou = tDao.gravarTipoAt(tipo);
 
 		if (cadastrou == true) {
-			limparDados();
+			// limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Tipo de Atendimento cadastrado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -103,40 +102,40 @@ public class TipoAtendimentoController implements Serializable {
 	}
 
 	public String redirectEdit() {
-		return "cadastroTipoAtendimento?faces-redirect=true&amp;id=" + this.tipo.getIdTipo()+"&amp;tipo="+tipoS;
-	}	
-	
-	
+		return "cadastroTipoAtendimento?faces-redirect=true&amp;id="
+				+ this.tipo.getIdTipo() + "&amp;tipo=" + tipoS;
+	}
+
 	public String redirectInsert() {
-		return "cadastroTipoAtendimento?faces-redirect=true&amp;tipo="+tipoS;
-	}		
-	
+		return "cadastroTipoAtendimento?faces-redirect=true&amp;tipo=" + tipoS;
+	}
+
 	public void getEditTipoAtend() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
 		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
+		if (params.get("id") != null) {
 			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
 			TipoAtendimentoDAO cDao = new TipoAtendimentoDAO();
-			tipoS =Integer.parseInt(params.get("tipo"));			
+			tipoS = Integer.parseInt(params.get("tipo"));
 			this.tipo = cDao.listarTipoPorId(id);
+		} else {
+			System.out.println("tipo sera" + tipo);
+			tipoS = Integer.parseInt(params.get("tipo"));
+
 		}
-		else{
-			System.out.println("tipo sera"+tipo);
-			tipoS =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
+
 	}
-	
-	
-	public String alterarTipo() throws ProjetoException {
+
+	public void alterarTipo() throws ProjetoException {
 		if (this.tipo.getGrupo().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário no mínimo informar um grupo!", "Campos obrigat�rios!");
+					"É necessário no mínimo informar um grupo!",
+					"Campos obrigat�rios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 		boolean alterou = tDao.alterarTipo(this.tipo);
 		if (alterou == true) {
@@ -144,12 +143,13 @@ public class TipoAtendimentoController implements Serializable {
 					"Tipo de atendimento alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaTipos = tDao.listarTipoAt();
-			return "/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 
 	}
@@ -158,7 +158,7 @@ public class TipoAtendimentoController implements Serializable {
 		boolean ok = tDao.excluirTipo(this.tipo);
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Tipo de atendimento excluido com sucesso!", "Sucesso");
+					"Tipo de Atendimento excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
@@ -189,20 +189,18 @@ public class TipoAtendimentoController implements Serializable {
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	
-
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
-	
+
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
 	}
 
 	public String getCabecalho() {
-		if (this.tipoS==1) {
+		if (this.tipoS == 1) {
 			cabecalho = "Inclusão de tipo de Atendimento";
-		} else if (this.tipoS==2) {
+		} else if (this.tipoS == 2) {
 			cabecalho = "Alteração de tipo de Atendimento";
 		}
 		return cabecalho;
@@ -216,8 +214,6 @@ public class TipoAtendimentoController implements Serializable {
 			throws ProjetoException {
 		return tDao.listarTipoAtAutoComplete(query, this.grupoSelecionado);
 	}
-
-
 
 	public List<TipoAtendimentoBean> listaTipoAtAutoCompleteTodos(String query)
 			throws ProjetoException {

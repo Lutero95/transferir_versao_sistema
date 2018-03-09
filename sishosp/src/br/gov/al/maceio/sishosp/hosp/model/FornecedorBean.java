@@ -3,7 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.model;
 import java.io.Serializable;
 
 public class FornecedorBean implements Serializable {
-	
+
 	private Integer idFornecedor;
 	private String descFornecedor;
 	private String cnpj;
@@ -18,8 +18,8 @@ public class FornecedorBean implements Serializable {
 	private String tel2;
 	private String ie;
 	private Integer codempresa;
-	
-	public FornecedorBean(){
+
+	public FornecedorBean() {
 		idFornecedor = null;
 		descFornecedor = null;
 	}
@@ -135,8 +135,5 @@ public class FornecedorBean implements Serializable {
 	public void setCodempresa(Integer codempresa) {
 		this.codempresa = codempresa;
 	}
-	
-	
-	
 
 }
