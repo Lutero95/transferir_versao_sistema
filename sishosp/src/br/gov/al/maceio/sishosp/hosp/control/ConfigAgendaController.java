@@ -158,7 +158,7 @@ public class ConfigAgendaController implements Serializable {
 			tipo2 =Integer.parseInt(params.get("tipo2"));			
 			System.out.println("TESTE ENTROU"+id);
 		
-			this.confParte1 = cDao.listarHorariosPorIDProfissionalThulio(id);
+			this.confParte1 = cDao.listarHorariosPorIDProfissional2(id);
 		}
 		else{
 			System.out.println("tipo sera"+tipo2);

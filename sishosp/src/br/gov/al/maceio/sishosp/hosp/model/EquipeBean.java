@@ -9,8 +9,12 @@ public class EquipeBean implements Serializable {
 	private Integer codEquipe;
 	private String descEquipe;
 	private Integer codEmpresa;
+
+	// LISTAS
 	private List<ProfissionalBean> profissionais;
 	private List<ProfissionalBean> profissionaisNovo;
+
+	// HERDADO
 	private ProfissionalBean profAdd;
 
 	public EquipeBean() {

@@ -2,13 +2,13 @@ package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
 
-public class RacaBean implements Serializable{
-	
+public class RacaBean implements Serializable {
+
 	private Integer codRaca;
 	private String descRaca;
-	
-	public RacaBean(){
-		
+
+	public RacaBean() {
+
 	}
 
 	public Integer getCodRaca() {
@@ -26,7 +26,5 @@ public class RacaBean implements Serializable{
 	public void setDescRaca(String descRaca) {
 		this.descRaca = descRaca;
 	}
-	
-	
 
 }

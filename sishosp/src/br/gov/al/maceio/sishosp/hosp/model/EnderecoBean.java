@@ -20,15 +20,14 @@ public class EnderecoBean implements Serializable {
 	private String complemento;
 	private String cep;
 	private String bairro;
-
 	private String telefoneres;
 	private String telefonecel;
 	private String telefonetrab;
 	private String telefoneorelhao;
-
 	private Date dataCadastro;
 	private Date dataAlteracao;
 
+	// LISTA
 	private List<Integer> listaEstado;
 
 	public EnderecoBean() {

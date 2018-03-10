@@ -14,12 +14,9 @@ import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 public class EscolaridadeDAO {
 	private Connection conexao = null;
 
-	// COME�O DO CODIGO
-
 	public Boolean cadastrar(EscolaridadeBean escolaridade)
 			throws ProjetoException {
 		boolean cadastrou = false;
-		System.out.println("passou aqui 2");
 
 		/*
 		 * PacienteBean user_session = (PacienteBean) FacesContext
@@ -31,7 +28,6 @@ public class EscolaridadeDAO {
 				+ " values (?)";
 		// returning id_paciente
 		try {
-			System.out.println("passou aqui 3");
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setString(1, escolaridade.getDescescolaridade().toUpperCase()
@@ -48,7 +44,6 @@ public class EscolaridadeDAO {
 			 * }
 			 */
 			stmt.execute();
-			System.out.println("passou aqui 4");
 			conexao.commit();
 			cadastrou = true;
 			conexao.close();
@@ -112,7 +107,8 @@ public class EscolaridadeDAO {
 		}
 	}
 
-	public ArrayList<EscolaridadeBean> listaEscolaridade() throws ProjetoException {
+	public ArrayList<EscolaridadeBean> listaEscolaridade()
+			throws ProjetoException {
 
 		String sql = "select * from hosp.escolaridade order by descescolaridade";
 
@@ -147,7 +143,6 @@ public class EscolaridadeDAO {
 
 	public EscolaridadeBean buscaescolaridadecodigo(Integer i)
 			throws ProjetoException {
-		System.out.println("buscaescolaridadecodigo");
 		PreparedStatement ps = null;
 		conexao = ConnectionFactory.getConnection();
 
@@ -185,13 +180,13 @@ public class EscolaridadeDAO {
 
 	public List<EscolaridadeBean> buscaescolaridade(String s)
 			throws ProjetoException {
-		System.out.println("buscaescolaridade");
 		PreparedStatement ps = null;
 		conexao = ConnectionFactory.getConnection();
 
 		try {
 			List<EscolaridadeBean> listaescolaridades = new ArrayList<EscolaridadeBean>();
-			String sql = "select id_escolaridade,id_escolaridade ||'-'|| descescolaridade descescolaridade from hosp.escolaridade where upper(id_escolaridade ||'-'|| descescolaridade) like ? order by descescolaridade";
+			String sql = "select id_escolaridade,id_escolaridade ||'-'|| descescolaridade descescolaridade from hosp.escolaridade "
+					+ " where upper(id_escolaridade ||'-'|| descescolaridade) like ? order by descescolaridade";
 
 			ps = conexao.prepareStatement(sql);
 			ps.setString(1, "%" + s.toUpperCase() + "%");

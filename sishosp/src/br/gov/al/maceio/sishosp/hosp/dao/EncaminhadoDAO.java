@@ -14,12 +14,9 @@ import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
 public class EncaminhadoDAO {
 	private Connection conexao = null;
 
-	// COME�O DO CODIGO
-
 	public Boolean cadastrar(EncaminhadoBean encaminhado)
 			throws ProjetoException {
 		boolean cadastrou = false;
-		System.out.println("passou aqui 2");
 
 		/*
 		 * PacienteBean user_session = (PacienteBean) FacesContext
@@ -31,7 +28,6 @@ public class EncaminhadoDAO {
 				+ " values (?)";
 		// returning id_paciente
 		try {
-			System.out.println("passou aqui 3");
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setString(1, encaminhado.getDescencaminhado().toUpperCase()
@@ -48,7 +44,6 @@ public class EncaminhadoDAO {
 			 * }
 			 */
 			stmt.execute();
-			System.out.println("passou aqui 4");
 			conexao.commit();
 			cadastrou = true;
 			conexao.close();
@@ -146,7 +141,6 @@ public class EncaminhadoDAO {
 
 	public EncaminhadoBean buscaencaminhadocodigo(Integer i)
 			throws ProjetoException {
-		System.out.println("buscaencaminhadocodigo");
 		PreparedStatement ps = null;
 		conexao = ConnectionFactory.getConnection();
 
@@ -184,13 +178,13 @@ public class EncaminhadoDAO {
 
 	public List<EncaminhadoBean> buscaencaminhado(String s)
 			throws ProjetoException {
-		System.out.println("buscaencaminhado");
 		PreparedStatement ps = null;
 		conexao = ConnectionFactory.getConnection();
 
 		try {
 			List<EncaminhadoBean> listaencaminhados = new ArrayList<EncaminhadoBean>();
-			String sql = "select id_encaminhado,id_encaminhado ||'-'|| descencaminhado descencaminhado from hosp.encaminhado where upper(id_encaminhado ||'-'|| descencaminhado) like ? order by descencaminhado";
+			String sql = "select id_encaminhado,id_encaminhado ||'-'|| descencaminhado descencaminhado from hosp.encaminhado "
+					+ " where upper(id_encaminhado ||'-'|| descencaminhado) like ? order by descencaminhado";
 
 			ps = conexao.prepareStatement(sql);
 			ps.setString(1, "%" + s.toUpperCase() + "%");

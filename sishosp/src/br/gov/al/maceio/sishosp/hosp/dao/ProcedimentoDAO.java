@@ -22,7 +22,6 @@ public class ProcedimentoDAO {
 		String sql = "INSERT INTO hosp.proc (codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo)"
 				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		try {
-			System.out.println("VAI CADASTRAR Procedimento");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 
@@ -47,7 +46,6 @@ public class ProcedimentoDAO {
 			ps.execute();
 			con.commit();
 			con.close();
-			System.out.println("CADASTROU Procedimento");
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -56,8 +54,8 @@ public class ProcedimentoDAO {
 
 	public List<ProcedimentoBean> listarProcedimento() throws ProjetoException {
 		List<ProcedimentoBean> lista = new ArrayList<>();
-		String sql = "select id, codproc, nome, apac, bpi, auditivo,"
-				+ " tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo from hosp.proc order by nome";
+		String sql = "select id, codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo "
+				+ " from hosp.proc order by nome";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -92,7 +90,6 @@ public class ProcedimentoDAO {
 
 	public ProcedimentoBean listarProcedimentoPorId(int id)
 			throws ProjetoException {
-		System.out.println("listarProcedimentoPorId");
 		ProcedimentoBean proc = new ProcedimentoBean();
 		String sql = "select id, codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo "
 				+ "from hosp.proc where id = ? order by nome";
@@ -173,7 +170,6 @@ public class ProcedimentoDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			System.out.println("id a ser excl" + proc.getCodProc());
 			stmt.setLong(1, proc.getIdProc());
 			stmt.execute();
 			con.commit();

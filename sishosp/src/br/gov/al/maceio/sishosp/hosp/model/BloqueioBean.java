@@ -6,12 +6,14 @@ import java.util.Date;
 public class BloqueioBean implements Serializable {
 
 	private Integer idBloqueio;
-	private ProfissionalBean prof;
 	private Date dataInicio;
 	private Date dataFim;
 	private String turno;
 	private String descBloqueio;
 	private Integer codEmpresa;
+
+	// HERDADO
+	private ProfissionalBean prof;
 
 	public BloqueioBean() {
 		this.prof = new ProfissionalBean();

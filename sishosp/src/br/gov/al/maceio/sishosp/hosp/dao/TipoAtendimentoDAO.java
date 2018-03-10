@@ -20,8 +20,8 @@ public class TipoAtendimentoDAO {
 	public boolean gravarTipoAt(TipoAtendimentoBean tipo) throws SQLException,
 			ProjetoException {
 
-		String sql = "insert into hosp.tipoatendimento (desctipoatendimento, "
-				+ " primeiroatendimento, equipe_programa, codempresa, id) values (?, ?, ?, ?, DEFAULT) RETURNING id;";
+		String sql = "insert into hosp.tipoatendimento (desctipoatendimento, primeiroatendimento, equipe_programa, codempresa, id) "
+				+ " values (?, ?, ?, ?, DEFAULT) RETURNING id;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);

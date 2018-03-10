@@ -11,72 +11,65 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 
-
-
-
 public class EquipamentoDAO {
 	private Connection conexao = null;
 	Connection con = null;
 	PreparedStatement ps = null;
-	
-	public boolean gravarEquipamento(EquipamentoBean equip) throws SQLException, ProjetoException{
-		
+
+	public boolean gravarEquipamento(EquipamentoBean equip)
+			throws SQLException, ProjetoException {
+
 		String sql = "insert into hosp.tipoaparelho (desctipoaparelho) values (?);";
 		try {
-			System.out.println("VAI CADASTRAR Cid");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, equip.getDescEquipamento().toUpperCase());
 			ps.execute();
 			con.commit();
-			System.out.println("CADASTROU grupo");
 			return true;
 		} catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
-        }
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
 	}
-	
-	public ArrayList<EquipamentoBean> listarEquipamentos() throws SQLException, ProjetoException {
-        System.out.println("passou aqui porraaaaaa tnc");
+
+	public ArrayList<EquipamentoBean> listarEquipamentos() throws SQLException,
+			ProjetoException {
 		String sql = "select id, desctipoaparelho from hosp.tipoaparelho order by id";
 
-        ArrayList<EquipamentoBean> lista = new ArrayList();
+		ArrayList<EquipamentoBean> lista = new ArrayList();
 
-        try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stm = conexao.prepareStatement(sql);
-            ResultSet rs = stm.executeQuery();
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
 
-            while (rs.next()) {
-            	EquipamentoBean e = new EquipamentoBean();
-            	e.setId_equipamento(rs.getInt("id"));
-            	e.setDescEquipamento(rs.getString("desctipoaparelho")); 
-              
-                
-                lista.add(e);
-            }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                conexao.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
-        }
-        return lista;
-    } 
-	
-	
-	
+			while (rs.next()) {
+				EquipamentoBean e = new EquipamentoBean();
+				e.setId_equipamento(rs.getInt("id"));
+				e.setDescEquipamento(rs.getString("desctipoaparelho"));
+
+				lista.add(e);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
+	}
+
 	public List<EquipamentoBean> listarEquipamentoBusca(String descricao,
 			Integer tipo) throws ProjetoException {
 		List<EquipamentoBean> lista = new ArrayList<>();
@@ -94,7 +87,6 @@ public class EquipamentoDAO {
 				EquipamentoBean equip = new EquipamentoBean();
 				equip.setId_equipamento(rs.getInt("id"));
 				equip.setDescEquipamento(rs.getString("desctipoaparelho"));
-				
 
 				lista.add(equip);
 			}
@@ -108,11 +100,12 @@ public class EquipamentoDAO {
 				System.exit(1);
 			}
 		}
-		
+
 		return lista;
 	}
-	
-	public Boolean alterarEquipamento(EquipamentoBean equip) throws ProjetoException {
+
+	public Boolean alterarEquipamento(EquipamentoBean equip)
+			throws ProjetoException {
 		String sql = "update hosp.tipoaparelho set desctipoaparelho = ? where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -132,8 +125,9 @@ public class EquipamentoDAO {
 			}
 		}
 	}
-	
-	public Boolean excluirEquipamento(EquipamentoBean equip) throws ProjetoException {
+
+	public Boolean excluirEquipamento(EquipamentoBean equip)
+			throws ProjetoException {
 		String sql = "delete from hosp.tipoaparelho where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -152,11 +146,12 @@ public class EquipamentoDAO {
 			}
 		}
 	}
-	
-	public EquipamentoBean buscaEquipamentoPorId (Integer i) throws ProjetoException {
+
+	public EquipamentoBean buscaEquipamentoPorId(Integer i)
+			throws ProjetoException {
 		String sql = "select id, desctipoaparelho from hosp.tipoaparelho where id =? order by id";
 		try {
-			
+
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, i);
 			ResultSet rs = ps.executeQuery();
@@ -164,9 +159,9 @@ public class EquipamentoDAO {
 			while (rs.next()) {
 				g.setId_equipamento(rs.getInt("id"));
 				g.setDescEquipamento(rs.getString("desctipoaparelho"));
-			
+
 			}
-			
+
 			return g;
 		} catch (Exception sqle) {
 
@@ -182,8 +177,6 @@ public class EquipamentoDAO {
 			}
 
 		}
-	}	
-	
-	
+	}
 
 }

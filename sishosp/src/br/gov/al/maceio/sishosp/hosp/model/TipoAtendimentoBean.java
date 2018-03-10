@@ -14,10 +14,13 @@ public class TipoAtendimentoBean implements Serializable {
 	private boolean equipe;
 	private boolean primeiroAt;
 	private Integer codEmpresa;
-	private GrupoBean grupoParaAdd;
 
+	// LISTAS
 	private List<GrupoBean> grupo;
 	private List<GrupoBean> grupoNovo;
+
+	// HERDADOS
+	private GrupoBean grupoParaAdd;
 
 	public TipoAtendimentoBean() {
 		this.grupo = new ArrayList<GrupoBean>();

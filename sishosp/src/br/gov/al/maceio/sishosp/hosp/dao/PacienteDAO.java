@@ -16,11 +16,8 @@ import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
 public class PacienteDAO {
 	private Connection conexao = null;
-	// private PreparedStatement ps;
 	private Connection con = null;
 	private PreparedStatement ps = null;
-
-	// COME�O DO CODIGO
 
 	public Boolean cadastrar(PacienteBean paciente, Integer codmunicipio)
 			throws ProjetoException {
@@ -43,7 +40,6 @@ public class PacienteDAO {
 					codmunicipio = set.getInt(1);
 				}
 			}
-			System.out.println("codmunicipio DAO2: " + codmunicipio);
 			String sql = "insert into hosp.pacientes (dtacadastro, nome, dtanascimento, estcivil, sexo, sangue, "
 					+ "pai, mae, conjuge,codraca, cep, uf, cidade, bairro, logradouro, numero, complemento, referencia, telres, telcel, teltrab, telorelhao, rg, oe, dtaexpedicaorg, cpf, cns, protreab, "
 					+ "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, contribuinte, id_escolaridade, id_escola, id_profissao, trabalha, localtrabalha, codparentesco, "
@@ -295,8 +291,6 @@ public class PacienteDAO {
 			stmt.setInt(52, codmunicipio);
 
 			stmt.execute();
-			System.out.println("|THU|" + paciente.getNome());
-			System.out.println("passou aqui 4");
 			conexao.commit();
 			cadastrou = true;
 			conexao.close();
@@ -320,7 +314,6 @@ public class PacienteDAO {
 		conexao = ConnectionFactory.getConnection();
 
 		try {
-			System.out.println("codmunicipio alterar2: " + codmunicipio);
 			if (codmunicipio == 0) {
 				String sql1 = "INSERT INTO hosp.municipio(descmunicipio, codfederal) "
 						+ " VALUES (?, ?) returning id_municipio;";
@@ -336,7 +329,6 @@ public class PacienteDAO {
 					codmunicipio = set.getInt("id_municipio");
 				}
 			}
-			System.out.println("codmunicipio alterar3: " + codmunicipio);
 			String sql = "update hosp.pacientes set nome = ?, dtanascimento = ?, estcivil = ?, sexo = ? , sangue = ?, pai = ? "
 					+ ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, cidade = ?, bairro = ?, logradouro = ?, numero = ?"
 					+ ", complemento = ?, referencia = ?, telres = ?, telcel = ?, teltrab = ?, telorelhao = ?"
@@ -601,7 +593,6 @@ public class PacienteDAO {
 
 			while (rs.next()) {
 				RacaBean p = new RacaBean();
-				System.out.println("|1|");
 				p.setCodRaca(rs.getInt("id_raca"));
 				p.setDescRaca(rs.getString("descraca").toUpperCase());
 
@@ -633,7 +624,6 @@ public class PacienteDAO {
 
 			while (rs.next()) {
 				EscolaBean p = new EscolaBean();
-				System.out.println("|1|");
 				p.setCodEscola(rs.getInt("id_escola"));
 				p.setDescescola(rs.getString("descescola").toLowerCase());
 				p.setCodtipoescola(rs.getInt("codtipoescola"));
@@ -655,8 +645,6 @@ public class PacienteDAO {
 
 	public List<PacienteBean> buscarTipoPaciente(String valor, Integer tipo)
 			throws ProjetoException {
-		System.out.println("Entrou Ass");
-		// lpad(trim(to_char(pa.cpf,'99999999999')),11,'0') cpf
 		String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
 				+ "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, pacientes.cidade, pacientes.bairro, "
 				+ "pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, pacientes.telres, pacientes.telcel,"
@@ -678,7 +666,6 @@ public class PacienteDAO {
 			sql += " pacientes.nome like ? order by pacientes.nome ";
 		} else if (tipo == 2) {
 			sql += " pacientes.cpf like ? order by pacientes.nome ";
-			// lpad(trim(to_char(pacientes.cpf,'99999999999')),11,'0')
 		}
 
 		List<PacienteBean> lista = new ArrayList<>();
@@ -834,19 +821,16 @@ public class PacienteDAO {
 		PacienteBean p = null;
 
 		if (tipo.equals("CPF")) {
-			System.out.println("Vai buscar por cpf");
 			sql += " cpf = ? ;";
 			ps = conexao.prepareStatement(sql);
 			ps.setString(1, conteudo.toUpperCase());
 		}
 		if (tipo.equals("NOME")) {
-			System.out.println("Vai buscar por NOME");
 			sql += " nome LIKE ? ;";
 			ps = conexao.prepareStatement(sql);
 			ps.setString(1, '%' + conteudo.toUpperCase() + '%');
 		}
 		if (tipo.equals("PRONTVELHO")) {
-			System.out.println("Vai buscar por pront velho");
 			sql += " protreab = ? ;";
 			ps = conexao.prepareStatement(sql);
 			Integer prontVelho = null;
@@ -860,7 +844,6 @@ public class PacienteDAO {
 				ps.setInt(1, prontVelho);
 		}
 		if (tipo.equals("PRONTNOVO")) {
-			System.out.println("Vai buscar por pront novo");
 			sql += " id_paciente = ? ;";
 			ps = conexao.prepareStatement(sql);
 			Long prontNovo = null;

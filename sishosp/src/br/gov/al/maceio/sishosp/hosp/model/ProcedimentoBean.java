@@ -2,8 +2,8 @@ package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
 
-public class ProcedimentoBean implements Serializable{
-	
+public class ProcedimentoBean implements Serializable {
+
 	private Integer idProc;
 	private Integer codProc;
 	private String nomeProc;
@@ -15,8 +15,7 @@ public class ProcedimentoBean implements Serializable{
 	private Integer codEmpresa;
 	private boolean gera_laudo_digita;
 	private Integer validade_laudo;
-	
-	
+
 	public ProcedimentoBean() {
 		super();
 		this.idProc = null;
@@ -101,8 +100,6 @@ public class ProcedimentoBean implements Serializable{
 	public void setCodEmpresa(Integer codEmpresa) {
 		this.codEmpresa = codEmpresa;
 	}
-	
-
 
 	public Integer getValidade_laudo() {
 		return validade_laudo;
@@ -128,6 +125,5 @@ public class ProcedimentoBean implements Serializable{
 				+ tipoExameAuditivo + ", utilizaEquipamento="
 				+ utilizaEquipamento + ", codEmpresa=" + codEmpresa + "]";
 	}
-	
-}
 
+}

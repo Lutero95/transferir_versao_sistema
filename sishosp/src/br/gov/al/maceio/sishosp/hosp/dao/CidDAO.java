@@ -11,69 +11,63 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 
-
 public class CidDAO {
-	
+
 	Connection con = null;
 	PreparedStatement ps = null;
-	
-	public boolean gravarCid(CidBean cid) throws SQLException, ProjetoException{
-		
+
+	public boolean gravarCid(CidBean cid) throws SQLException, ProjetoException {
+
 		String sql = "insert into hosp.cid (desccid) values (?);";
 		try {
-			System.out.println("VAI CADASTRAR Cid");
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, cid.getDescCid().toUpperCase());
 			ps.execute();
 			con.commit();
-			System.out.println("CADASTROU grupo");
 			return true;
 		} catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
-        }
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
 	}
 
-	
-	public List<CidBean> listarCid() throws ProjetoException{
+	public List<CidBean> listarCid() throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
 		String sql = "select cod, desccid from hosp.cid order by cod";
-        try {
-        	System.out.println("CHEGOU AQUI");
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            ResultSet rs = stm.executeQuery();
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
 
-            while (rs.next()) {
-            	CidBean cid = new CidBean();
-            	cid.setIdCid(rs.getInt("cod"));
-            	cid.setDescCid(rs.getString("desccid"));    
-                
-                
-                lista.add(cid);
-            }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
-        }
+			while (rs.next()) {
+				CidBean cid = new CidBean();
+				cid.setIdCid(rs.getInt("cod"));
+				cid.setDescCid(rs.getString("desccid"));
+
+				lista.add(cid);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
 		return lista;
 	}
-	
-	public List<CidBean> listarCidBusca(String descricao,
-			Integer tipo) throws ProjetoException {
+
+	public List<CidBean> listarCidBusca(String descricao, Integer tipo)
+			throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
 		String sql = "select cod, desccid from hosp.cid ";
 		if (tipo == 1) {
@@ -89,7 +83,6 @@ public class CidDAO {
 				CidBean cid = new CidBean();
 				cid.setIdCid(rs.getInt("cod"));
 				cid.setDescCid(rs.getString("desccid"));
-				
 
 				lista.add(cid);
 			}
@@ -103,10 +96,10 @@ public class CidDAO {
 				System.exit(1);
 			}
 		}
-		
+
 		return lista;
 	}
-	
+
 	public Boolean alterarCid(CidBean cid) throws ProjetoException {
 		String sql = "update hosp.cid set desccid = ? where cod = ?";
 		try {
@@ -127,7 +120,7 @@ public class CidDAO {
 			}
 		}
 	}
-	
+
 	public Boolean excluirCid(CidBean cid) throws ProjetoException {
 		String sql = "delete from hosp.cid where cod = ?";
 		try {
@@ -147,11 +140,11 @@ public class CidDAO {
 			}
 		}
 	}
-	
-	public CidBean buscaCidPorId (Integer i) throws ProjetoException {
+
+	public CidBean buscaCidPorId(Integer i) throws ProjetoException {
 		String sql = "select cod, desccid from hosp.cid where cod = ?";
 		try {
-			
+
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, i);
 			ResultSet rs = ps.executeQuery();
@@ -159,9 +152,9 @@ public class CidDAO {
 			while (rs.next()) {
 				g.setIdCid(rs.getInt("cod"));
 				g.setDescCid(rs.getString("desccid"));
-			
+
 			}
-			
+
 			return g;
 		} catch (Exception sqle) {
 
@@ -177,10 +170,10 @@ public class CidDAO {
 			}
 
 		}
-	}	
-	
-	public List<CidBean> listarCidsBusca(String descricao,
-			Integer tipo) throws ProjetoException {
+	}
+
+	public List<CidBean> listarCidsBusca(String descricao, Integer tipo)
+			throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
 		String sql = "select cod, desccid from hosp.cid ";
 		if (tipo == 1) {
@@ -209,10 +202,8 @@ public class CidDAO {
 				System.exit(1);
 			}
 		}
-		
+
 		return lista;
 	}
-	
-	
 
 }

@@ -17,8 +17,6 @@ import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 public class EnderecoDAO {
 	private Connection conexao = null;
 
-	// COME�O DO CODIGO
-
 	@SuppressWarnings("deprecation")
 	public Boolean cadastrarMunicipio(EnderecoBean endereco)
 			throws ProjetoException {
@@ -69,8 +67,6 @@ public class EnderecoDAO {
 				stmt.setInt(3, endereco.getCodmacregiao());
 			else
 				stmt.setNull(3, Types.OTHER);
-			System.out.println("endereco.getCodmunicipio()"
-					+ endereco.getCodmunicipio());
 			stmt.setInt(4, endereco.getCodmunicipio());
 			stmt.executeUpdate();
 
@@ -131,7 +127,6 @@ public class EnderecoDAO {
 				+ " values (?, ?, ?, ?)";
 
 		try {
-			System.out.println("|WAL|" + endereco.getLogradouro());
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setString(1, endereco.getLogradouro().toUpperCase().trim());

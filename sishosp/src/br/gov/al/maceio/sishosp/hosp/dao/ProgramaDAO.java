@@ -239,7 +239,6 @@ public class ProgramaDAO {
 			UsuarioBean user_session = (UsuarioBean) FacesContext
 					.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("obj_usuario");
-			System.out.println("codigo e " + user_session.getCodigo());
 			stm.setInt(1, user_session.getCodigo());
 			stm.setString(2, "%" + descricao.toUpperCase() + "%");
 

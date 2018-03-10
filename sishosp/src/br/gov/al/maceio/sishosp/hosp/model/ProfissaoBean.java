@@ -5,10 +5,10 @@ import java.io.Serializable;
 public class ProfissaoBean implements Serializable {
 
 	private Integer codprofissao;
-	private String  descprofissao;
-	
-	public ProfissaoBean(){
-		
+	private String descprofissao;
+
+	public ProfissaoBean() {
+
 	}
 
 	public Integer getCodprofissao() {
@@ -27,7 +27,4 @@ public class ProfissaoBean implements Serializable {
 		this.descprofissao = descprofissao;
 	}
 
-	
-	
-	
 }

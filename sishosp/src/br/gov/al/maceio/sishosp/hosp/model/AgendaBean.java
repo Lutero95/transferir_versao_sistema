@@ -6,13 +6,6 @@ import java.util.Date;
 public class AgendaBean implements Serializable {
 
 	private Integer idAgenda;
-	private PacienteBean paciente;
-	private ProcedimentoBean procedimento;
-	private GrupoBean grupo;
-	private ProgramaBean programa;
-	private TipoAtendimentoBean tipoAt;
-	private ProfissionalBean profissional;
-	private EquipeBean equipe;
 	private boolean prontoGravar;
 	private Date dataAtendimento;
 	private String turno;
@@ -23,6 +16,15 @@ public class AgendaBean implements Serializable {
 	private String situacao;
 	private String ativo;
 
+	// HERDADOS
+	private PacienteBean paciente;
+	private ProcedimentoBean procedimento;
+	private GrupoBean grupo;
+	private ProgramaBean programa;
+	private TipoAtendimentoBean tipoAt;
+	private ProfissionalBean profissional;
+	private EquipeBean equipe;
+
 	public AgendaBean() {
 		this.paciente = null;// new PacienteBean();
 		this.procedimento = null;
@@ -31,7 +33,6 @@ public class AgendaBean implements Serializable {
 		this.tipoAt = null;// new TipoAtendimentoBean();
 		this.profissional = new ProfissionalBean();
 		this.equipe = new EquipeBean();
-		;
 		this.prontoGravar = false;
 		this.turno = new String();
 		this.ativo = new String();

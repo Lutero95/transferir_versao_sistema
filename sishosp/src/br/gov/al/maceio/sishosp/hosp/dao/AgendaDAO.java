@@ -21,10 +21,10 @@ public class AgendaDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public FeriadoBean verificarFeriado(Date dataAtendimento) throws ProjetoException {
+	public FeriadoBean verificarFeriado(Date dataAtendimento)
+			throws ProjetoException {
 
-		String sql = "select codferiado, descferiado, dataferiado"
-				+ " from hosp.feriado where dataferiado = ?";
+		String sql = "select codferiado, descferiado, dataferiado from hosp.feriado where dataferiado = ?";
 		FeriadoBean fer = null;
 		try {
 			con = ConnectionFactory.getConnection();
@@ -52,15 +52,14 @@ public class AgendaDAO {
 	}
 
 	public List<BloqueioBean> verificarBloqueioProfissional(
-			ProfissionalBean prof, Date dataAtendimento, String turno) throws ProjetoException {
+			ProfissionalBean prof, Date dataAtendimento, String turno)
+			throws ProjetoException {
 
 		List<BloqueioBean> lista = new ArrayList<>();
 		ProfissionalDAO pDao = new ProfissionalDAO();
-		String sql = "select id_bloqueioagenda, codmedico,"
-				+ " dataagenda, turno, descricao, codempresa "
+		String sql = "select id_bloqueioagenda, codmedico, dataagenda, turno, descricao, codempresa "
 				+ " from hosp.bloqueio_agenda "
-				+ " where codmedico = ? and  dataagenda = ? and turno = ?"
-				+ " order by id_bloqueioagenda";
+				+ " where codmedico = ? and  dataagenda = ? and turno = ? order by id_bloqueioagenda";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -152,7 +151,6 @@ public class AgendaDAO {
 			while (rs.next()) {
 				qtd = rs.getInt("qtd");
 			}
-			System.out.println("QTD " + qtd);
 			return qtd;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -166,7 +164,8 @@ public class AgendaDAO {
 		}
 	}
 
-	public boolean buscarDataEspecifica(AgendaBean agenda) throws ProjetoException {
+	public boolean buscarDataEspecifica(AgendaBean agenda)
+			throws ProjetoException {
 		int id = 0;
 		String sqlPro = "select id_configagenda from hosp.config_agenda where codmedico = ? and dataagenda = ? and turno = ?";
 		String sqlEqui = "select id_configagenda from hosp.config_agenda_equipe where codequipe = ? and dataagenda = ? and turno = ?";
@@ -204,7 +203,8 @@ public class AgendaDAO {
 		}
 	}
 
-	public boolean buscarTabTipoAtendAgenda(AgendaBean agenda) throws ProjetoException {
+	public boolean buscarTabTipoAtendAgenda(AgendaBean agenda)
+			throws ProjetoException {
 		int achou = 0;
 		String sql = "select codtipoatendimento from hosp.tipo_atend_agenda "
 				+ " where codtipoatendimento = ? and codprograma = ? and codgrupo = ?";
@@ -218,7 +218,6 @@ public class AgendaDAO {
 
 			while (rs.next()) {
 				achou = rs.getInt("codtipoatendimento");
-				System.out.println("ACHOU " + achou);
 			}
 			if (achou == 0) {
 				return false;
@@ -256,7 +255,7 @@ public class AgendaDAO {
 			}
 			stm.setInt(2, diaSemana);
 			stm.setString(3, agenda.getTurno().toUpperCase());
-			stm.setInt(4, mes+1);
+			stm.setInt(4, mes + 1);
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -337,7 +336,8 @@ public class AgendaDAO {
 		}
 	}
 
-	public void gravarAgendaAtendimento1(AgendaBean agenda, int idAgendamento) throws ProjetoException {
+	public void gravarAgendaAtendimento1(AgendaBean agenda, int idAgendamento)
+			throws ProjetoException {
 
 		String sql = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
 				+ " cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
@@ -345,13 +345,11 @@ public class AgendaDAO {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			if (agenda.getProfissional().getIdProfissional() != null) {
-				System.out.println("EH PRO");
 				ps.setInt(1, agenda.getProfissional().getIdProfissional());
 				ps.setInt(2, idAgendamento);
 				ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
 				ps.setInt(4, agenda.getProfissional().getProc1().getIdProc());
 			} else if (agenda.getEquipe().getCodEquipe() != null) {
-				System.out.println("EH EQUIPE");
 				for (ProfissionalBean prof : agenda.getEquipe()
 						.getProfissionais()) {
 					ps.setInt(1, prof.getIdProfissional());
@@ -459,25 +457,21 @@ public class AgendaDAO {
 			PreparedStatement stm = null;
 			stm = con.prepareStatement(sql);
 			if (pront == null && tipo == null) {
-				System.out.println("DT ATENDE");
 				sql += " a.dtaatende = ? ";
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
 			} else if (pront != null && tipo == null) {
-				System.out.println("DT CODPAC");
 				sql += " a.dtaatende = ? and a.codpaciente = ?";
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
 				stm.setInt(2, pront);
 
 			} else if (pront == null && tipo != null) {
-				System.out.println("DT CODTI");
 				sql += "a.dtaatende = ? and a.codtipoatendimento = ?";
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
 				stm.setInt(2, tipo.getIdTipo());
 			} else if (pront != null && tipo != null) {
-				System.out.println("DT CODTI");
 				sql += "a.dtaatende = ? and a.codtipoatendimento = ? and a.codpaciente = ?";
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
@@ -504,7 +498,8 @@ public class AgendaDAO {
 				agenda.setEquipe(eDao.buscarEquipePorID(rs.getInt("codequipe")));
 				agenda.setObservacao(rs.getString("observacao"));
 				agenda.setAtivo(rs.getString("ativo"));
-				agenda.setProcedimento(proDao.listarProcedimentoPorId(rs.getInt("codprocedimento")));
+				agenda.setProcedimento(proDao.listarProcedimentoPorId(rs
+						.getInt("codprocedimento")));
 				lista.add(agenda);
 			}
 		} catch (SQLException ex) {
@@ -520,7 +515,8 @@ public class AgendaDAO {
 		return lista;
 	}
 
-	public boolean excluirAgendamento(AgendaBean agenda) throws ProjetoException {
+	public boolean excluirAgendamento(AgendaBean agenda)
+			throws ProjetoException {
 		String sql = "delete from hosp.atendimentos where id_atendimento = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -541,7 +537,8 @@ public class AgendaDAO {
 		}
 	}
 
-	public void excluirTabelaAgendamentos1(AgendaBean agenda) throws ProjetoException {
+	public void excluirTabelaAgendamentos1(AgendaBean agenda)
+			throws ProjetoException {
 		String sql = "delete from hosp.atendimentos1 where id_atendimento = ?";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -619,7 +616,6 @@ public class AgendaDAO {
 			while (rs.next()) {
 				qtd = rs.getInt("qtd");
 			}
-			System.out.println("QTD " + qtd);
 			return qtd;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -633,13 +629,13 @@ public class AgendaDAO {
 		}
 	}
 
-	public boolean confirmarAtendimento(AgendaBean agenda, String situacaoConf) throws ProjetoException {
+	public boolean confirmarAtendimento(AgendaBean agenda, String situacaoConf)
+			throws ProjetoException {
 		String sql = "update hosp.atendimentos1 set codprofissionalatendimento = ?, cbo = ?,"
 				+ " codprocedimento = ?,  situacao = ?, dtaatendido = ?"
 				+ " where id_atendimento = ?";
 		try {
-			System.out.println("s "+ situacaoConf);
-			System.out.println("id "+ agenda.getIdAgenda());
+
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setInt(1, agenda.getProfissional().getIdProfissional());
@@ -661,6 +657,5 @@ public class AgendaDAO {
 			}
 		}
 	}
-	
 
 }

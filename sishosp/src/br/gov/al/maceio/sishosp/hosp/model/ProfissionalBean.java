@@ -8,25 +8,31 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 public class ProfissionalBean implements Serializable {
+
 	private Integer idProfissional;
-	private List<ProgramaBean> programa;
-	private List<ProgramaBean> programaNovo;
-	private List<GrupoBean> grupo;
-	private List<GrupoBean> grupoNovo;
-	private EspecialidadeBean especialidade;
-	private CboBean cbo;
-	private ProcedimentoBean proc1;
-	private ProcedimentoBean proc2;
 	private String descricaoProf;
 	private String cns;
 	private boolean ativo;
 	private Integer codEmpresa;
+
+	// LISTAS
+	private List<ProgramaBean> programa;
+	private List<ProgramaBean> programaNovo;
+	private List<GrupoBean> grupo;
+	private List<GrupoBean> grupoNovo;
+
+	// HERDADOS
+	private EspecialidadeBean especialidade;
+	private CboBean cbo;
+	private ProcedimentoBean proc1;
+	private ProcedimentoBean proc2;
 	private ProgramaBean progAdd;
 	private GrupoBean grupoAdd;
 	private ProgramaBean progRmv;
 	private GrupoBean grupoRmv;
 
 	public ProfissionalBean() {
+
 		this.programa = new ArrayList<ProgramaBean>();
 		this.programaNovo = new ArrayList<ProgramaBean>();
 		this.grupo = new ArrayList<GrupoBean>();

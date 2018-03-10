@@ -3,7 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class LaudoBean implements Serializable{
+public class LaudoBean implements Serializable {
+
 	private Integer id_apac;
 	private String apac;
 	private Integer codmedico;
@@ -32,7 +33,6 @@ public class LaudoBean implements Serializable{
 	private String recurso;
 	private Integer codgrupo;
 	private Integer codempresa;
-
 	private String desceApac;
 	private Integer codLaudoBpi;
 	private String descBpi;
@@ -44,8 +44,9 @@ public class LaudoBean implements Serializable{
 	private Date dtainicio;
 	private Date dtafim;
 	private Integer Prorrogar;
-    private boolean laudo;
-	// CLASSES HERDADAS
+	private boolean laudo;
+
+	// HERDADOS
 	private PacienteBean paciente;
 	private ProgramaBean programa;
 	private ProfissaoBean profissao;
@@ -65,7 +66,7 @@ public class LaudoBean implements Serializable{
 		this.programa = null;
 		this.profissional = null;
 		situacao = "P";
-		//this.fornecedor = null;
+		// this.fornecedor = null;
 		this.cid = null;
 		this.paciente = null;
 		this.dtautorizacao = null;
@@ -474,5 +475,4 @@ public class LaudoBean implements Serializable{
 		this.laudo = laudo;
 	}
 
-	
 }

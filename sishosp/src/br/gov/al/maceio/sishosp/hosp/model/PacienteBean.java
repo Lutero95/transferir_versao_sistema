@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class PacienteBean implements Serializable{
-	// ATRIBUTOS
+public class PacienteBean implements Serializable {
+
 	private Integer id_paciente;
 	private String nome;
 	private String estadoCivil;
@@ -18,12 +18,10 @@ public class PacienteBean implements Serializable{
 	private String associado;
 	private String trabalha;
 	private String corRaca;
-
 	private String localtrabalha;
 	private Integer codProfissao;
 	private Integer codRaca;
 	private String descRaca;
-
 	private String deficiencia;
 	private String tipoDeficiencia;
 
@@ -50,6 +48,7 @@ public class PacienteBean implements Serializable{
 	private Integer protant;
 	private Integer serie;
 	private Date dataExpedicao1;
+
 	// REGISTROS DO CARTORIO
 	private String cartorio;
 	private String numeroCartorio;
@@ -58,7 +57,7 @@ public class PacienteBean implements Serializable{
 	private Date dataregistro;
 	private Date dataExpedicao2;
 
-	// CLASSES HERDADAS
+	// HERDADOS
 	private EnderecoBean endereco;
 	private EscolaBean escola;
 	private EscolaridadeBean escolaridade;

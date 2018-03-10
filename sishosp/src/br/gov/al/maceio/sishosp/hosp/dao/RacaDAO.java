@@ -14,8 +14,6 @@ import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 public class RacaDAO {
 	private Connection conexao = null;
 
-	// COME�O DO CODIGO
-
 	@SuppressWarnings("deprecation")
 	public Boolean cadastrar(RacaBean raca) throws ProjetoException {
 		boolean cadastrou = false;
@@ -38,7 +36,6 @@ public class RacaDAO {
 			 * if(rs.next()) { PacienteBean p = paciente; String idRetorno =
 			 * null; idRetorno = String.valueOf(rs.getLong("id_paciente"));
 			 * p.setId_paciente(Long.parseLong(idRetorno));
-			 * System.out.println("|THU1|"+ idRetorno); }
 			 */
 			stmt.execute();
 			conexao.commit();
@@ -115,7 +112,6 @@ public class RacaDAO {
 
 			while (rs.next()) {
 				RacaBean p = new RacaBean();
-				System.out.println("|1|");
 				p.setCodRaca(rs.getInt("id_raca"));
 				p.setDescRaca(rs.getString("descraca").toUpperCase());
 

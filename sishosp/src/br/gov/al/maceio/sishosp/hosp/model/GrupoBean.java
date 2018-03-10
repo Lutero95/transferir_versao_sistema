@@ -13,12 +13,15 @@ public class GrupoBean implements Serializable {
 	private String descGrupo;
 	private Integer qtdFrequencia;
 	private boolean auditivo;
-	private List<EquipeBean> equipes;
-	private List<EquipeBean> equipesNovo;
-	private EquipeBean equipeAdd;
+	private boolean equipeSim;
 	private boolean inserção_pac_institut;
 
-	private boolean equipeThulio;
+	// LISTAS
+	private List<EquipeBean> equipes;
+	private List<EquipeBean> equipesNovo;
+
+	// HERDADO
+	private EquipeBean equipeAdd;
 
 	public GrupoBean() {
 		this.idGrupo = null;
@@ -26,7 +29,7 @@ public class GrupoBean implements Serializable {
 		this.equipes = new ArrayList<EquipeBean>();
 		this.equipesNovo = new ArrayList<EquipeBean>();
 		this.equipeAdd = null;
-		equipeThulio = false;
+		equipeSim = false;
 	}
 
 	public Integer getIdGrupo() {
@@ -90,16 +93,11 @@ public class GrupoBean implements Serializable {
 		boolean existe = false;
 		if (equipes.size() == 0) {
 			this.equipes.add(this.equipeAdd);
-			System.out.println("sim");
 
 		} else {
-			System.out.println("nao");
-			System.out.println("objeto: " + equipeAdd.getCodEquipe());
 
 			for (int i = 0; i < equipes.size(); i++) {
-				System.out.println("lista: " + equipes.get(i).getCodEquipe());
 				if (equipes.get(i).getCodEquipe() == equipeAdd.getCodEquipe()) {
-					System.out.println("sim 2");
 					existe = true;
 				}
 			}
@@ -118,13 +116,6 @@ public class GrupoBean implements Serializable {
 		this.equipes.remove(this.equipeAdd);
 	}
 
-	public boolean isEquipeThulio() {
-		return equipeThulio;
-	}
-
-	public void setEquipeThulio(boolean equipeThulio) {
-		this.equipeThulio = equipeThulio;
-	}
 
 	public boolean isInserção_pac_institut() {
 		return inserção_pac_institut;
@@ -132,6 +123,14 @@ public class GrupoBean implements Serializable {
 
 	public void setInserção_pac_institut(boolean inserção_pac_institut) {
 		this.inserção_pac_institut = inserção_pac_institut;
+	}
+
+	public boolean isEquipeSim() {
+		return equipeSim;
+	}
+
+	public void setEquipeSim(boolean equipeSim) {
+		this.equipeSim = equipeSim;
 	}
 
 }

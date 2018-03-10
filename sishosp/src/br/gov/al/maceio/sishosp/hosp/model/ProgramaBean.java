@@ -8,14 +8,18 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 public class ProgramaBean implements Serializable {
+
 	private Integer idPrograma;
 	private String descPrograma;
 	private Double codFederal;
 
-	private GrupoBean grupoParaAdd;
-	private GrupoBean grupoRmv;
+	// LISTAS
 	private List<GrupoBean> grupo;
 	private List<GrupoBean> grupoNovo;
+
+	// HERDADOS
+	private GrupoBean grupoParaAdd;
+	private GrupoBean grupoRmv;
 
 	public ProgramaBean() {
 		this.grupo = new ArrayList<GrupoBean>();
@@ -105,7 +109,6 @@ public class ProgramaBean implements Serializable {
 	}
 
 	public void removeGrupoLista() {
-		System.out.println("RMV");
 		this.grupo.remove(this.grupoRmv);
 	}
 }

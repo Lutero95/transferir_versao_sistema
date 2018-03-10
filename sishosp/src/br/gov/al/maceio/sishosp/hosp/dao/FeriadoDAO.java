@@ -18,7 +18,8 @@ public class FeriadoDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarFeriado(FeriadoBean feriado) throws SQLException, ProjetoException {
+	public boolean gravarFeriado(FeriadoBean feriado) throws SQLException,
+			ProjetoException {
 
 		String sql = "insert into hosp.feriado (descferiado, dataferiado) values (?, ?);";
 		try {
@@ -112,7 +113,7 @@ public class FeriadoDAO {
 				sql += " where descferiado LIKE ? order by codferiado";
 				stm = con.prepareStatement(sql);
 				stm.setString(1, "%" + descricao.toUpperCase() + "%");
-				
+
 			} else if (tipo == 2) {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(data);

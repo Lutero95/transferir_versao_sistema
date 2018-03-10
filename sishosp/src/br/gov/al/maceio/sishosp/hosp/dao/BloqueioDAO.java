@@ -19,7 +19,8 @@ public class BloqueioDAO {
 	PreparedStatement ps = null;
 	ProfissionalDAO pDao = new ProfissionalDAO();
 
-	public boolean gravarBloqueio(BloqueioBean bloqueio) throws SQLException, ProjetoException {
+	public boolean gravarBloqueio(BloqueioBean bloqueio) throws SQLException,
+			ProjetoException {
 
 		Calendar calendarData = Calendar.getInstance();
 		boolean condicao = true;
@@ -94,26 +95,41 @@ public class BloqueioDAO {
 		return lista;
 	}
 
-	/*
-	 * public BloqueioBean listarBloqueioPorId(int id) {
-	 * 
-	 * BloqueioBean bloqueio = new BloqueioBean(); String sql =
-	 * "select codbloqueio, descbloqueio, databloqueio from hosp.bloqueio where codbloqueio = ?"
-	 * ; try { con = ConnectionFactory.getConnection(); PreparedStatement stm =
-	 * con.prepareStatement(sql); stm.setInt(1, id); ResultSet rs =
-	 * stm.executeQuery(); while (rs.next()) { bloqueio = new BloqueioBean();
-	 * bloqueio.setCodBloqueio(rs.getInt("codbloqueio"));
-	 * bloqueio.setDescBloqueio(rs.getString("descbloqueio"));
-	 * bloqueio.setDataBloqueio(rs.getDate("databloqueio")); }
-	 * 
-	 * } catch (SQLException ex) { throw new RuntimeException(ex); } finally {
-	 * try { con.close(); } catch (Exception ex) { ex.printStackTrace();
-	 * System.exit(1); } } return bloqueio; }
-	 */
-	public List<BloqueioBean> listarBloqueioPorProfissional(ProfissionalBean prof) throws ProjetoException {
+	// public BloqueioBean listarBloqueioPorId(int id) {
+	//
+	// BloqueioBean bloqueio = new BloqueioBean();
+	// String sql =
+	// "select codbloqueio, descbloqueio, databloqueio from hosp.bloqueio where codbloqueio = ?";
+	// try {
+	// con = ConnectionFactory.getConnection();
+	// PreparedStatement stm = con.prepareStatement(sql);
+	// stm.setInt(1, id);
+	// ResultSet rs = stm.executeQuery();
+	// while (rs.next()) {
+	// bloqueio = new BloqueioBean();
+	// bloqueio.setCodBloqueio(rs.getInt("codbloqueio"));
+	// bloqueio.setDescBloqueio(rs.getString("descbloqueio"));
+	// bloqueio.setDataBloqueio(rs.getDate("databloqueio"));
+	// }
+	//
+	// } catch (SQLException ex) {
+	// throw new RuntimeException(ex);
+	// } finally {
+	// try {
+	// con.close();
+	// } catch (Exception ex) {
+	// ex.printStackTrace();
+	// System.exit(1);
+	// }
+	// }
+	// return bloqueio;
+	// }
+
+	public List<BloqueioBean> listarBloqueioPorProfissional(
+			ProfissionalBean prof) throws ProjetoException {
 		List<BloqueioBean> lista = new ArrayList<>();
-		String sql = "select id_bloqueioagenda, codmedico,"
-				+ " dataagenda, turno, descricao, codempresa from hosp.bloqueio_agenda where codmedico = ? order by id_bloqueioagenda";
+		String sql = "select id_bloqueioagenda, codmedico, dataagenda, turno, descricao, codempresa "
+				+ "from hosp.bloqueio_agenda where codmedico = ? order by id_bloqueioagenda";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -148,19 +164,12 @@ public class BloqueioDAO {
 
 	public Boolean alterarBloqueio(BloqueioBean bloqueio)
 			throws ProjetoException {
-		String sql = "update hosp.bloqueio_agenda set codmedico = ?,"
-				+ " dataagenda = ?,turno = ?, descricao = ?"
+		String sql = "update hosp.bloqueio_agenda set codmedico = ?, dataagenda = ?,turno = ?, descricao = ?"
 				+ " where id_bloqueioagenda = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			
-			System.out.println(bloqueio.getProf().getIdProfissional());
-			System.out.println(bloqueio.getDataInicio());
-			System.out.println(bloqueio.getTurno().toUpperCase());
-			System.out.println(bloqueio.getDescBloqueio().toUpperCase());
-			System.out.println(bloqueio.getIdBloqueio());
-			
+
 			stmt.setInt(1, bloqueio.getProf().getIdProfissional());
 			stmt.setDate(2, new java.sql.Date(bloqueio.getDataInicio()
 					.getTime()));
@@ -201,14 +210,14 @@ public class BloqueioDAO {
 			}
 		}
 	}
-	
-	public List<BloqueioBean> verificarBloqueioProfissional(ProfissionalBean prof, Date dataAtendimento, String turno) throws ProjetoException {
+
+	public List<BloqueioBean> verificarBloqueioProfissional(
+			ProfissionalBean prof, Date dataAtendimento, String turno)
+			throws ProjetoException {
 		List<BloqueioBean> lista = new ArrayList<>();
-		String sql = "select id_bloqueioagenda, codmedico,"
-				+ " dataagenda, turno, descricao, codempresa "
+		String sql = "select id_bloqueioagenda, codmedico, dataagenda, turno, descricao, codempresa "
 				+ " from hosp.bloqueio_agenda "
-				+ " where codmedico = ? and  dataagenda = ? and turno = ?"
-				+ " order by id_bloqueioagenda";
+				+ " where codmedico = ? and  dataagenda = ? and turno = ? order by id_bloqueioagenda";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
