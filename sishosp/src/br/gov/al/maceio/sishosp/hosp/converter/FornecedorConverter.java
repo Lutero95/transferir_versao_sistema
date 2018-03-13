@@ -24,7 +24,7 @@ public class FornecedorConverter implements Converter {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Grupo n„o v·lido", ""));
+					FacesMessage.SEVERITY_ERROR, "Grupo n√£o v√°lido", ""));
 		}
 	}
 

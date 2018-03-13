@@ -1,4 +1,4 @@
-	package br.gov.al.maceio.sishosp.hosp.control;
+package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,9 +30,6 @@ import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 @ViewScoped
 public class AgendaController implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private AgendaBean agenda;
@@ -87,122 +84,44 @@ public class AgendaController implements Serializable {
 		this.situacao = new String();
 	}
 
-	public String getSituacao() {
-		return situacao;
-	}
-
-	public void setSituacao(String situacao) {
-		this.situacao = situacao;
-	}
-
-	public List<AgendaBean> getListaNovosAgendamentos() {
-		return listaNovosAgendamentos;
-	}
-
-	public void setListaNovosAgendamentos(List<AgendaBean> listaNovosAgendamentos) {
-		this.listaNovosAgendamentos = listaNovosAgendamentos;
-	}
-
-	public AgendaBean getAgenda() {
-		return agenda;
-	}
-
-	public void setAgenda(AgendaBean agenda) {
-		this.agenda = agenda;
-	}
-
-	public List<AgendaBean> getListaAgendamentosData() {
-		return listaAgendamentosData;
-	}
-
-	public void setListaAgendamentosData(List<AgendaBean> listaAgendamentosData) {
-		this.listaAgendamentosData = listaAgendamentosData;
-	}
-
-	public Date getDataAtendimentoC() {
-		return dataAtendimentoC;
-	}
-
-	public void setDataAtendimentoC(Date dataAtendimentoC) {
-		this.dataAtendimentoC = dataAtendimentoC;
-	}
-
-	public String getCnsC() {
-		return cnsC;
-	}
-
-	public void setCnsC(String cnsC) {
-		this.cnsC = cnsC;
-	}
-
-	public Integer getProtuarioC() {
-		return protuarioC;
-	}
-
-	public void setProtuarioC(Integer protuarioC) {
-		this.protuarioC = protuarioC;
-	}
-
-	public TipoAtendimentoBean getTipoC() {
-		return tipoC;
-	}
-
-	public void setTipoC(TipoAtendimentoBean tipoC) {
-		this.tipoC = tipoC;
-	}
-
-	public List<AgendaBean> getListaConsulta() {
-		return listaConsulta;
-	}
-
-	public void setListaConsulta(List<AgendaBean> listaConsulta) {
-		this.listaConsulta = listaConsulta;
-	}
-
-	public boolean isHabilitarDetalhes() {
-		return habilitarDetalhes;
-	}
-
-	public void setHabilitarDetalhes(boolean habilitarDetalhes) {
-		this.habilitarDetalhes = habilitarDetalhes;
-	}
-
 	public void verificaDisponibilidadeData() throws ProjetoException {
-		System.out.println("verificadispdata");
-		if (!agenda.getTipoAt().isEquipe()){
-		System.out.println("vai verificar a disp sem ser equipe");
-		FeriadoBean feriado = aDao.verificarFeriado(this.agenda.getDataAtendimento());
-		List<BloqueioBean> bloqueio = new ArrayList<BloqueioBean>();
-		if (this.agenda.getProfissional().getIdProfissional() != null) {
-			bloqueio = aDao.verificarBloqueioProfissional(this.agenda.getProfissional(),
-					this.agenda.getDataAtendimento(), this.agenda.getTurno());
-		}
-		if (feriado != null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Data bloqueada! " + feriado.getDescFeriado(), "Feriado");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-		else
+		if (!agenda.getTipoAt().isEquipe()) {
+			FeriadoBean feriado = aDao.verificarFeriado(this.agenda
+					.getDataAtendimento());
+			List<BloqueioBean> bloqueio = new ArrayList<BloqueioBean>();
+			if (this.agenda.getProfissional().getIdProfissional() != null) {
+				bloqueio = aDao.verificarBloqueioProfissional(
+						this.agenda.getProfissional(),
+						this.agenda.getDataAtendimento(),
+						this.agenda.getTurno());
+			}
+			if (feriado != null) {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, "Data bloqueada! "
+								+ feriado.getDescFeriado(), "Feriado");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else
 
-		if (!bloqueio.isEmpty()) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Data bloqueada para este profissional!",
-					"Bloqueio");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			if (!bloqueio.isEmpty()) {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Data bloqueada para este profissional!", "Bloqueio");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else
+				verAgenda();
+
 		}
-		else
-			verAgenda();	
-		
-		
-		}
-		
+
 	}
 
 	public void verAgenda() throws ProjetoException {
-		System.out.println("VAI VER AGENDA");
-		if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
-				|| this.agenda.getTipoAt() == null || this.agenda.getDataAtendimento() == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Campo(s) obrigat�rio(s) em falta!",
-					"Erro");
+		if (this.agenda.getPaciente() == null
+				|| this.agenda.getPrograma() == null
+				|| this.agenda.getGrupo() == null
+				|| this.agenda.getTipoAt() == null
+				|| this.agenda.getDataAtendimento() == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Campo(s) obrigatório(s) em falta!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -210,17 +129,14 @@ public class AgendaController implements Serializable {
 		boolean diaSem = aDao.buscarDiaSemana(this.agenda);
 		boolean limitePorTipoAtend = aDao.buscarTabTipoAtendAgenda(this.agenda);
 		if (dtEspecifica && limitePorTipoAtend) {
-			System.out.println("Eh data especifica");
 			listarAgendamentosData();
 			this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));
 			this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
 		} else if (diaSem && limitePorTipoAtend) {
-			System.out.println("Eh dia Semana");
 			listarAgendamentosData();
 			this.agenda.setMax(aDao.verQtdMaxAgendaEspec(this.agenda));
 			this.agenda.setQtd(aDao.verQtdAgendadosEspec(this.agenda));
 		} else {
-			System.out.println("Eh porra nenhuma");
 			listarAgendamentosData();
 			this.agenda.setMax(0);
 			this.agenda.setQtd(0);
@@ -239,17 +155,21 @@ public class AgendaController implements Serializable {
 
 	public void gravarAgenda() throws ProjetoException {
 		// verificar se existe algum campo nao preenchido
-		if (this.agenda.getPaciente() == null || this.agenda.getPrograma() == null || this.agenda.getGrupo() == null
-				|| this.agenda.getTipoAt() == null || this.agenda.getDataAtendimento() == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Campo(s) obrigat�rio(s) em falta!",
-					"Erro");
+		if (this.agenda.getPaciente() == null
+				|| this.agenda.getPrograma() == null
+				|| this.agenda.getGrupo() == null
+				|| this.agenda.getTipoAt() == null
+				|| this.agenda.getDataAtendimento() == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Campo(s) obrigatório(s) em falta!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
 
 		// verificar as quantidades de vagas
 		if (this.agenda.getMax() <= 0) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Quantidade m�xima inv�lida!", "Erro");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Quantidade máxima inválida!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -257,26 +177,27 @@ public class AgendaController implements Serializable {
 		// verificar a quantidade de agendamentos
 		if (this.agenda.getQtd() >= this.agenda.getMax()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Quantidade de agendamentos est� no limite!", "Erro");
+					"Quantidade de agendamentos está no limite!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
 
 		if (this.listaNovosAgendamentos.isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"A lista de novos agendamentos est� vazia!", "Erro");
+					"A lista de novos agendamentos está vazia!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
-		boolean ok = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos);
+		boolean ok = aDao
+				.gravarAgenda(this.agenda, this.listaNovosAgendamentos);
 		if (ok) {
 			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Agenda cadastrada com sucesso!",
-					"Sucesso");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Agenda cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um erro durante o cadastro!",
-					"Erro");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 		limparDados();
@@ -284,24 +205,25 @@ public class AgendaController implements Serializable {
 
 	public void consultarAgenda() throws ProjetoException {
 		if (this.dataAtendimentoC == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Selecione uma data de atendimento!",
-					"Erro");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Selecione uma data de atendimento!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
-		this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC, this.protuarioC, this.cnsC, this.tipoC);
+		this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC,
+				this.protuarioC, this.cnsC, this.tipoC);
 	}
 
 	public void excluirAgendamento() throws ProjetoException {
 		boolean ok = aDao.excluirAgendamento(this.agenda);
 		if (ok) {
 			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Agendamento exclu�do com sucesso!",
-					"Sucesso");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Agendamento excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um erro durante a exclus�o!",
-					"Erro");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusão!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 		limparDados();
@@ -365,7 +287,8 @@ public class AgendaController implements Serializable {
 	public void confirmarAtendimento() throws ProjetoException {
 		boolean ok = aDao.confirmarAtendimento(this.agenda, situacao);
 		if (ok) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Atendimento Confirmado", "");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Atendimento Confirmado", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -375,21 +298,17 @@ public class AgendaController implements Serializable {
 	}
 
 	public void selectPrograma(SelectEvent event) throws ProjetoException {
-		System.out.println("xxxxxxxxxxxxxxx");
 		this.programaSelecionado = (ProgramaBean) event.getObject();
-		System.out.println("cod programa selecionado " + programaSelecionado.getIdPrograma());
-		System.out.println("cod grupo selecionado " + programaSelecionado.getGrupoParaAdd().getIdGrupo());
 		atualizaListaGrupos(programaSelecionado);
 		limparNaBuscaPrograma();
 	}
 
 	public void atualizaListaGrupos(ProgramaBean p) throws ProjetoException {
-		System.out.println("ProgramaId" + p.getIdPrograma());
 		GrupoDAO gDao = new GrupoDAO();
 		this.programaSelecionado = p;
-		this.listaGruposProgramas = gDao.listarGruposPorPrograma(p.getIdPrograma());
+		this.listaGruposProgramas = gDao.listarGruposPorPrograma(p
+				.getIdPrograma());
 		for (GrupoBean g : listaGruposProgramas) {
-			System.out.println("+ " + g.getDescGrupo());
 		}
 
 	}
@@ -399,39 +318,35 @@ public class AgendaController implements Serializable {
 		this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
 	}
 
-	public List<GrupoBean> listaGrupoAutoComplete(String query) throws ProjetoException {
+	public List<GrupoBean> listaGrupoAutoComplete(String query)
+			throws ProjetoException {
 
 		GrupoDAO gDao = new GrupoDAO();
 
 		if (agenda.getPrograma().getIdPrograma() != null) {
-			System.out.println("walter gay");
-			return gDao.listarGruposAutoComplete(query, this.agenda.getPrograma());
+			return gDao.listarGruposAutoComplete(query,
+					this.agenda.getPrograma());
 		} else {
-			System.out.println("walter gay null");
 			return null;
 		}
 
 	}
-	
+
 	public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
 			throws ProjetoException {
-		System.out.println(this.agenda.getGrupo().getDescGrupo());
 		return tDao.listarTipoAtAutoComplete(query, this.agenda.getGrupo());
 	}
 
 	public void selectGrupo(SelectEvent event) throws ProjetoException {
-		System.out.println("selecionou o grupo");
 		this.grupoSelecionado = (GrupoBean) event.getObject();
-		System.out.println("grupo selec foi " + grupoSelecionado);
-		System.out.println("id do grupo selecionado foi " + grupoSelecionado.getIdGrupo());
 		atualizaListaTipos(grupoSelecionado);
 		atualizaListaProfPorGrupo();
 		limparNaBuscaGrupo();
 	}
 
 	public void atualizaListaProfPorGrupo() throws ProjetoException {
-		System.out.println("VAI ATualahsdas");
-		this.listaProfissional = pDao.listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
+		this.listaProfissional = pDao
+				.listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
 	}
 
 	/**
@@ -507,6 +422,87 @@ public class AgendaController implements Serializable {
 	 */
 	public void setListaTipos(List<TipoAtendimentoBean> listaTipos) {
 		this.listaTipos = listaTipos;
+	}
+
+	public String getSituacao() {
+		return situacao;
+	}
+
+	public void setSituacao(String situacao) {
+		this.situacao = situacao;
+	}
+
+	public List<AgendaBean> getListaNovosAgendamentos() {
+		return listaNovosAgendamentos;
+	}
+
+	public void setListaNovosAgendamentos(
+			List<AgendaBean> listaNovosAgendamentos) {
+		this.listaNovosAgendamentos = listaNovosAgendamentos;
+	}
+
+	public AgendaBean getAgenda() {
+		return agenda;
+	}
+
+	public void setAgenda(AgendaBean agenda) {
+		this.agenda = agenda;
+	}
+
+	public List<AgendaBean> getListaAgendamentosData() {
+		return listaAgendamentosData;
+	}
+
+	public void setListaAgendamentosData(List<AgendaBean> listaAgendamentosData) {
+		this.listaAgendamentosData = listaAgendamentosData;
+	}
+
+	public Date getDataAtendimentoC() {
+		return dataAtendimentoC;
+	}
+
+	public void setDataAtendimentoC(Date dataAtendimentoC) {
+		this.dataAtendimentoC = dataAtendimentoC;
+	}
+
+	public String getCnsC() {
+		return cnsC;
+	}
+
+	public void setCnsC(String cnsC) {
+		this.cnsC = cnsC;
+	}
+
+	public Integer getProtuarioC() {
+		return protuarioC;
+	}
+
+	public void setProtuarioC(Integer protuarioC) {
+		this.protuarioC = protuarioC;
+	}
+
+	public TipoAtendimentoBean getTipoC() {
+		return tipoC;
+	}
+
+	public void setTipoC(TipoAtendimentoBean tipoC) {
+		this.tipoC = tipoC;
+	}
+
+	public List<AgendaBean> getListaConsulta() {
+		return listaConsulta;
+	}
+
+	public void setListaConsulta(List<AgendaBean> listaConsulta) {
+		this.listaConsulta = listaConsulta;
+	}
+
+	public boolean isHabilitarDetalhes() {
+		return habilitarDetalhes;
+	}
+
+	public void setHabilitarDetalhes(boolean habilitarDetalhes) {
+		this.habilitarDetalhes = habilitarDetalhes;
 	}
 
 }

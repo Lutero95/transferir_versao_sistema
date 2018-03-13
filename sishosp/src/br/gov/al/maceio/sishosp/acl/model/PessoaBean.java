@@ -3,10 +3,9 @@ package br.gov.al.maceio.sishosp.acl.model;
 import java.io.Serializable;
 import java.util.Date;
 
-
 public class PessoaBean implements Serializable {
 
-	private Integer id_pessoa;	
+	private Integer id_pessoa;
 	private String nome;
 	private Date dtanasc2;
 	private Integer sexo;
@@ -47,7 +46,7 @@ public class PessoaBean implements Serializable {
 	private String email1;
 	private String email2;
 	private Integer codmun;
-	private Integer depir; 
+	private Integer depir;
 	private Integer depsf;
 	private Date dtincor2;
 	private String conjuge;
@@ -62,87 +61,84 @@ public class PessoaBean implements Serializable {
 	private String chcrs;
 	private Date dtvalchcrs;
 	private String catchcrs;
-	
-	public PessoaBean(){}
-	/*
-	public PessoaBean(Integer id_pessoa, String nome, Date dtanasc2,
-			Integer sexo, Integer estcivil, Integer naciona, String naturale,
-			String munnat, Integer instruc, String sangue, String nomepai,
-			String nomemae, String idnum, String IdUser, String iduf,
-			String profnum, String profser, String profuf, String cpf,
-			String pispas, String elenum, Integer elezona, Integer elesec,
-			String eleuf, String resnum, String rescsm, String resser,
-			String ender, Integer endernum, String enderc, String bairro,
-			String cidade, String uf, Integer cep, Integer ddd, String telef,
-			Integer dddc, String celular, String email1, String email2,
-			Integer codmun, Integer depir, Integer depsf, Date dtincor2,
-			String conjuge, Date dtnascconjuge, Integer racacor,
-			Integer tipodeficiencia, Date dtcheg2, String flagnat,
-			String rpnum, String rpexp, String rpuf, String chcrs,
-			Date dtvalchcrs, String catchcrs) {
-		super();
-		this.id_pessoa = id_pessoa;
-		this.nome = nome;
-		this.dtanasc2 = dtanasc2;
-		this.sexo = sexo;
-		this.estcivil = estcivil;
-		this.naciona = naciona;
-		this.naturale = naturale;
-		this.munnat = munnat;
-		this.instruc = instruc;
-		this.sangue = sangue;
-		this.nomepai = nomepai;
-		this.nomemae = nomemae;
-		this.idnum = idnum;
-		this.Idser = Idser;
-		this.iduf = iduf;
-		this.profnum = profnum;
-		this.profser = profser;
-		this.profuf = profuf;
-		this.cpf = cpf;
-		this.pispas = pispas;
-		this.elenum = elenum;
-		this.elezona = elezona;
-		this.elesec = elesec;
-		this.eleuf = eleuf;
-		this.resnum = resnum;
-		this.rescsm = rescsm;
-		this.resser = resser;
-		this.ender = ender;
-		this.endernum = endernum;
-		this.enderc = enderc;
-		this.bairro = bairro;
-		this.cidade = cidade;
-		this.uf = uf;
-		this.cep = cep;
-		this.ddd = ddd;
-		this.telef = telef;
-		this.dddc = dddc;
-		this.celular = celular;
-		this.email1 = email1;
-		this.email2 = email2;
-		this.codmun = codmun;
-		this.depir = depir;
-		this.depsf = depsf;
-		this.dtincor2 = dtincor2;
-		this.conjuge = conjuge;
-		this.dtnascconjuge = dtnascconjuge;
-		this.racacor = racacor;
-		this.tipodeficiencia = tipodeficiencia;
-		this.dtcheg2 = dtcheg2;
-		this.flagnat = flagnat;
-		this.rpnum = rpnum;
-		this.rpexp = rpexp;
-		this.rpuf = rpuf;
-		this.chcrs = chcrs;
-		this.dtvalchcrs = dtvalchcrs;
-		this.catchcrs = catchcrs;
-	}
-*/
-	
 
-	
-	
+	public PessoaBean() {
+	}
+
+	// public PessoaBean(Integer id_pessoa, String nome, Date dtanasc2,
+	// Integer sexo, Integer estcivil, Integer naciona, String naturale,
+	// String munnat, Integer instruc, String sangue, String nomepai,
+	// String nomemae, String idnum, String IdUser, String iduf,
+	// String profnum, String profser, String profuf, String cpf,
+	// String pispas, String elenum, Integer elezona, Integer elesec,
+	// String eleuf, String resnum, String rescsm, String resser,
+	// String ender, Integer endernum, String enderc, String bairro,
+	// String cidade, String uf, Integer cep, Integer ddd, String telef,
+	// Integer dddc, String celular, String email1, String email2,
+	// Integer codmun, Integer depir, Integer depsf, Date dtincor2,
+	// String conjuge, Date dtnascconjuge, Integer racacor,
+	// Integer tipodeficiencia, Date dtcheg2, String flagnat,
+	// String rpnum, String rpexp, String rpuf, String chcrs,
+	// Date dtvalchcrs, String catchcrs) {
+	// super();
+	// this.id_pessoa = id_pessoa;
+	// this.nome = nome;
+	// this.dtanasc2 = dtanasc2;
+	// this.sexo = sexo;
+	// this.estcivil = estcivil;
+	// this.naciona = naciona;
+	// this.naturale = naturale;
+	// this.munnat = munnat;
+	// this.instruc = instruc;
+	// this.sangue = sangue;
+	// this.nomepai = nomepai;
+	// this.nomemae = nomemae;
+	// this.idnum = idnum;
+	// this.Idser = Idser;
+	// this.iduf = iduf;
+	// this.profnum = profnum;
+	// this.profser = profser;
+	// this.profuf = profuf;
+	// this.cpf = cpf;
+	// this.pispas = pispas;
+	// this.elenum = elenum;
+	// this.elezona = elezona;
+	// this.elesec = elesec;
+	// this.eleuf = eleuf;
+	// this.resnum = resnum;
+	// this.rescsm = rescsm;
+	// this.resser = resser;
+	// this.ender = ender;
+	// this.endernum = endernum;
+	// this.enderc = enderc;
+	// this.bairro = bairro;
+	// this.cidade = cidade;
+	// this.uf = uf;
+	// this.cep = cep;
+	// this.ddd = ddd;
+	// this.telef = telef;
+	// this.dddc = dddc;
+	// this.celular = celular;
+	// this.email1 = email1;
+	// this.email2 = email2;
+	// this.codmun = codmun;
+	// this.depir = depir;
+	// this.depsf = depsf;
+	// this.dtincor2 = dtincor2;
+	// this.conjuge = conjuge;
+	// this.dtnascconjuge = dtnascconjuge;
+	// this.racacor = racacor;
+	// this.tipodeficiencia = tipodeficiencia;
+	// this.dtcheg2 = dtcheg2;
+	// this.flagnat = flagnat;
+	// this.rpnum = rpnum;
+	// this.rpexp = rpexp;
+	// this.rpuf = rpuf;
+	// this.chcrs = chcrs;
+	// this.dtvalchcrs = dtvalchcrs;
+	// this.catchcrs = catchcrs;
+	// }
+
 	public Integer getId_pessoa() {
 		return id_pessoa;
 	}
@@ -589,9 +585,6 @@ public class PessoaBean implements Serializable {
 
 	public void setCatchcrs(String catchcrs) {
 		this.catchcrs = catchcrs;
-	}	
-	
-	
-	
+	}
 
 }

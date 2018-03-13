@@ -30,9 +30,6 @@ import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 @ViewScoped
 public class ConfigAgendaController implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private ConfigAgendaParte1Bean confParte1;
@@ -44,7 +41,7 @@ public class ConfigAgendaController implements Serializable {
 	private List<ConfigAgendaParte1Bean> listaHorariosEquipe;
 	private List<ProfissionalBean> listaProfissionais;
 	private List<EquipeBean> listaEquipes;
-	
+
 	private ConfigAgendaDAO cDao = new ConfigAgendaDAO();
 	private ProfissionalDAO pDao = new ProfissionalDAO();
 	private EquipeDAO eDao = new EquipeDAO();
@@ -86,6 +83,302 @@ public class ConfigAgendaController implements Serializable {
 		this.opcao = new String("1");
 	}
 
+	// errado =
+	// action="/pages/agenda/editarConfAgenda.xhtml?faces-redirect=true">
+	public String redirectEdit() {
+		return "editarConfAgenda?faces-redirect=true&amp;codconfigagenda="
+				+ this.confParte1.getIdConfiAgenda() + "&amp;tipo2=" + tipo2;
+
+	}
+
+	public void getEditAgenda() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("codconfigagenda") != null) {
+			Integer id = Integer.parseInt(params.get("codconfigagenda"));
+			tipo2 = Integer.parseInt(params.get("tipo2"));
+
+			this.confParte1 = cDao.listarHorariosPorIDProfissional2(id);
+		} else {
+			tipo2 = Integer.parseInt(params.get("tipo2"));
+
+		}
+
+	}
+
+	public void buscarProfissional() throws ProjetoException {
+		if (this.tipoBusca == 0) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Escolha uma opção de busca válida!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			this.listaProfissionais = pDao.listarProfissionalBusca(nomeBusca,
+					tipoBusca);
+			this.listaHorarios = null;
+		}
+	}
+
+	public void buscarEquipe() throws ProjetoException {
+		if (this.tipoBusca == 0) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Escolha uma opção de busca válida!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			this.listaEquipes = eDao.listarEquipeBusca(nomeBusca, tipoBusca);
+			this.listaHorariosEquipe = null;
+		}
+	}
+
+	public void addNaLista() {
+		// if (confParte2.getPrograma() == null){
+		// FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+		// "Insirar o Programa", "Erro");
+		// FacesContext.getCurrentInstance().addMessage(null, msg);
+		// }
+		// else{
+		// ConfigAgendaController.confParte1.qtdMax
+		confParte1.setQtdMax(confParte2.getQtd());
+		if (confParte2.getQtd() == null
+				// || confParte2.getTipoAt().getDescTipoAt() == null
+				|| confParte2.getPrograma().getDescPrograma() == null
+				|| confParte2.getGrupo().getDescGrupo() == null) {
+			this.confParte2 = new ConfigAgendaParte2Bean();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Insira os dados corretamente!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			this.listaTipos.add(confParte2);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Dados inseridos na tabela!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+		this.confParte2 = new ConfigAgendaParte2Bean();
+		// }
+	}
+
+	public void gravarConfigAgenda() throws SQLException, ProjetoException {
+		boolean ok = false;
+		int somatorio = 0;
+		for (ConfigAgendaParte2Bean conf : listaTipos) {
+			somatorio += conf.getQtd();
+		}
+
+		if (confParte1.getQtdMax() != null) {
+			if (somatorio != confParte1.getQtdMax()) {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Quantidade máxima está divergente!", "Erro");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				ok = false;
+				return;
+			}
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Quantidade máxima obrigatória!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		if (listaTipos.size() == 0) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Adicione na lista!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+		if (confParte1.getProfissional().getIdProfissional() == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Escolha um profissional!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		if (this.opcao.equals("1")
+				&& this.confParte1.getDataEspecifica() == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Escolha uma data específica!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+		if (this.opcao.equals("2")
+				&& this.confParte1.getDiasSemana().size() == 0) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Escolha no mínimo um dia da semana!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		if (this.opcao.equals("2") && this.confParte1.getAno() == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ano é ebrigatório!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
+
+		ok = cDao.gravarConfigAgenda(confParte1, confParte2, listaTipos);
+
+		if (ok) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Configuração gravada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Insira os dados corretamente!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+		limparDados();
+	}
+
+	public void gravarConfigAgendaEquipe() throws SQLException,
+			ProjetoException {
+		boolean ok = false;
+
+		if (this.opcao.equals("1")) {
+			this.confParte1.setAno(0);
+			this.confParte1.setMes(0);
+		}
+
+		ok = cDao.gravarConfigAgendaEquipe(confParte1, confParte2, listaTipos);
+
+		if (ok) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Configuração gravada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Insira os dados corretamente!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+		limparDados();
+	}
+
+	public void alterarConfigAgenda() throws SQLException, ProjetoException {
+		boolean ok = false;
+		int somatorio = 0;
+
+		for (ConfigAgendaParte2Bean conf : listaTiposEditar) {
+			somatorio += conf.getQtd();
+		}
+
+		if (confParte1.getQtdMax() != null) {
+			if (somatorio != confParte1.getQtdMax()) {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Quantidade máxima está divergente!", "Erro");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				ok = false;
+				return;
+			}
+		}
+
+		ok = cDao.alterarConfigAgenda(confParte1, confParte2, listaTiposEditar);
+
+		if (ok) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Configuração alterada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Insira os dados corretamente!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+		limparDados();
+	}
+
+	public void alterarConfigAgendaEquipe() throws SQLException,
+			ProjetoException {
+		boolean ok = false;
+
+		ok = cDao.alterarConfigAgendaEquipe(confParte1, confParte2,
+				listaTiposEditar);
+
+		if (ok) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Configuração alterada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Insira os dados corretamente!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+		limparDados();
+	}
+
+	public void excluirConfig() throws ProjetoException {
+		boolean ok = cDao.excluirConfig(confParte1);
+
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Configuração excluída com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
+		this.listaHorarios = cDao.listarHorarios();
+	}
+
+	public void excluirConfigEquipe() throws ProjetoException {
+		boolean ok = cDao.excluirConfigEquipe(confParte1);
+
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Configuração excluida com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
+		this.listaHorariosEquipe = cDao.listarHorariosEquipe();
+	}
+
+	public void onRowSelect(SelectEvent event) throws ProjetoException {
+		ProfissionalBean prof = (ProfissionalBean) event.getObject();
+		this.listaHorarios = cDao.listarHorariosPorIDProfissional(prof
+				.getIdProfissional());
+	}
+
+	public void onRowUnselect(UnselectEvent event) {
+		this.listaHorarios = null;
+	}
+
+	public void onRowSelectEquipe(SelectEvent event) throws ProjetoException {
+		EquipeBean equipe = (EquipeBean) event.getObject();
+		this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe
+				.getCodEquipe());
+	}
+
+	public void onRowUnselectEquipe(UnselectEvent event) {
+		this.listaHorariosEquipe = null;
+	}
+
+	public void limparBuscaPrograma() {
+		this.confParte2.setPrograma(null);
+		this.confParte2.setGrupo(null);
+		this.confParte2.setTipoAt(null);
+	}
+
+	public void limparBuscaGrupo() {
+		this.confParte2.setGrupo(null);
+		this.confParte2.setTipoAt(null);
+	}
+
 	public ConfigAgendaParte1Bean getConfParte1() {
 		return confParte1;
 	}
@@ -110,12 +403,12 @@ public class ConfigAgendaController implements Serializable {
 		this.listaTipos = listaTipos;
 	}
 
-	public List<ConfigAgendaParte1Bean> getListaHorarios() throws ProjetoException {
+	public List<ConfigAgendaParte1Bean> getListaHorarios()
+			throws ProjetoException {
 		if (listaHorarios == null) {
 			return listaHorarios;
 		} else {
 			if (this.confParte1.getProfissional() == null) {
-				System.out.println("AHSUDHASDUHASIUHDUAISUHDIUAS");
 			}
 			if (this.confParte1.getProfissional().getIdProfissional() != null) {
 				this.listaHorarios = cDao
@@ -130,7 +423,8 @@ public class ConfigAgendaController implements Serializable {
 		this.listaHorarios = listaHorarios;
 	}
 
-	public List<ConfigAgendaParte1Bean> getListaHorariosEquipe() throws ProjetoException {
+	public List<ConfigAgendaParte1Bean> getListaHorariosEquipe()
+			throws ProjetoException {
 		if (listaHorariosEquipe == null) {
 			return listaHorariosEquipe;
 		} else {
@@ -142,30 +436,13 @@ public class ConfigAgendaController implements Serializable {
 		}
 		return listaHorariosEquipe;
 	}
-	//errado = action="/pages/agenda/editarConfAgenda.xhtml?faces-redirect=true">
-	public String redirectEdit() {
-		return "editarConfAgenda?faces-redirect=true&amp;codconfigagenda=" + this.confParte1.getIdConfiAgenda()+"&amp;tipo2="+tipo2;
-		
-	}	
-	
-	public void getEditAgenda() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
-		if(params.get("codconfigagenda") != null) {
-			System.out.println("entrou no editar");
-			Integer id = Integer.parseInt(params.get("codconfigagenda"));
-			tipo2 =Integer.parseInt(params.get("tipo2"));			
-			System.out.println("TESTE ENTROU"+id);
-		
-			this.confParte1 = cDao.listarHorariosPorIDProfissional2(id);
-		}
-		else{
-			System.out.println("tipo sera"+tipo2);
-			tipo2 =Integer.parseInt(params.get("tipo2"));
-			
-		}
-		
+
+	public int getTipo2() {
+		return tipo2;
+	}
+
+	public void setTipo2(int tipo2) {
+		this.tipo2 = tipo2;
 	}
 
 	public void setListaHorariosEquipe(
@@ -173,7 +450,8 @@ public class ConfigAgendaController implements Serializable {
 		this.listaHorariosEquipe = listaHorariosEquipe;
 	}
 
-	public List<ProfissionalBean> getListaProfissionais() throws ProjetoException {
+	public List<ProfissionalBean> getListaProfissionais()
+			throws ProjetoException {
 		if (this.listaProfissionais == null) {
 			this.listaProfissionais = pDao.listarProfissional();
 		}
@@ -240,300 +518,5 @@ public class ConfigAgendaController implements Serializable {
 			List<ConfigAgendaParte2Bean> listaTiposEditar) {
 		this.listaTiposEditar = listaTiposEditar;
 	}
-
-	public void buscarProfissional() throws ProjetoException {
-		if (this.tipoBusca == 0) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha uma op��o de busca v�lida!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			this.listaProfissionais = pDao.listarProfissionalBusca(nomeBusca,
-					tipoBusca);
-			this.listaHorarios = null;
-		}
-	}
-
-	public void buscarEquipe() throws ProjetoException {
-		if (this.tipoBusca == 0) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha uma op��o de busca v�lida!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			this.listaEquipes = eDao.listarEquipeBusca(nomeBusca, tipoBusca);
-			this.listaHorariosEquipe = null;
-		}
-	}
-
-	public void addNaLista() {
-		//if (confParte2.getPrograma() == null){
-			//FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-				//	"Insirar o Programa", "Erro");
-			//FacesContext.getCurrentInstance().addMessage(null, msg);
-		//}
-		//else{
-		//ConfigAgendaController.confParte1.qtdMax
-		confParte1.setQtdMax(confParte2.getQtd());
-		if (confParte2.getQtd() == null
-				//|| confParte2.getTipoAt().getDescTipoAt() == null
-				|| confParte2.getPrograma().getDescPrograma() == null
-				|| confParte2.getGrupo().getDescGrupo() == null) {
-			this.confParte2 = new ConfigAgendaParte2Bean();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Insira os dados corretamente!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			this.listaTipos.add(confParte2);
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Dados inseridos na tabela!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-		this.confParte2 = new ConfigAgendaParte2Bean();
-		//}
-	}
-
-	public void gravarConfigAgenda() throws SQLException, ProjetoException {
-		boolean ok = false;
-		int somatorio = 0;
-		System.out.println("ENTROU NO METODO");
-		for (ConfigAgendaParte2Bean conf : listaTipos) {
-			somatorio += conf.getQtd();
-		}
-		
-
-		if (confParte1.getQtdMax() != null) {
-			if (somatorio != confParte1.getQtdMax()) {
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Quantidade m�xima est� divergente!", "Erro");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				ok = false;
-				return;
-			}
-		}else{
-			FacesMessage msg = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Quantidade m�xima obrigat�ria!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-		
-		if (listaTipos.size() == 0 ){
-			FacesMessage msg = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Adicione na lista!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-		System.out.println("PROFISSIONAL: "+confParte1.getProfissional().getIdProfissional());
-		if (confParte1.getProfissional().getIdProfissional() == null) {
-			FacesMessage msg = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Escolha um profissional!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-		
-		System.out.println("DATA ESPECIFICA: "+confParte1.getDataEspecifica());
-		System.out.println("this.opcao"+this.opcao);
-		System.out.println("confParte1.getDataEspecifica()"+confParte1.getDataEspecifica());
-		if (this.opcao.equals("1") && this.confParte1.getDataEspecifica() == null) {
-			FacesMessage msg = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Escolha uma data espec�fica!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-		System.out.println("LISTA DOS DIAS DA SEMANA: "+confParte1.getDiasSemana().size());
-		//							<!-- update=":formConfiAgenda:msg, :formConfiAgenda"-->
-		if(this.opcao.equals("2") && this.confParte1.getDiasSemana().size()==0){
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Escolha no m�nimo um dia da semana!", "Erro");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				return;
-		}
-		
-		if(this.opcao.equals("2") && this.confParte1.getAno() == null){
-			FacesMessage msg = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Ano � ebrigat�rio!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-		
-		
-		
-
-		ok = cDao.gravarConfigAgenda(confParte1, confParte2, listaTipos);
-
-		if (ok) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configura��o gravada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Insira os dados corretamente!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		limparDados();
-	}
-
-	public void gravarConfigAgendaEquipe() throws SQLException, ProjetoException {
-		boolean ok = false;
-
-		if (this.opcao.equals("1")) {
-			this.confParte1.setAno(0);
-			this.confParte1.setMes(0);
-		}
-
-		ok = cDao.gravarConfigAgendaEquipe(confParte1, confParte2, listaTipos);
-
-		if (ok) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configura��o gravada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Insira os dados corretamente!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		limparDados();
-	}
-
-	public void alterarConfigAgenda() throws SQLException, ProjetoException {
-		boolean ok = false;
-		int somatorio = 0;
-
-		for (ConfigAgendaParte2Bean conf : listaTiposEditar) {
-			somatorio += conf.getQtd();
-		}
-
-		if (confParte1.getQtdMax() != null) {
-			if (somatorio != confParte1.getQtdMax()) {
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Quantidade m�xima est� divergente!", "Erro");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				ok = false;
-				return;
-			}
-		}
-
-		ok = cDao.alterarConfigAgenda(confParte1, confParte2, listaTiposEditar);
-
-		if (ok) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configura��o alterada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Insira os dados corretamente!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		limparDados();
-	}
-
-	public void alterarConfigAgendaEquipe() throws SQLException, ProjetoException {
-		boolean ok = false;
-
-		ok = cDao.alterarConfigAgendaEquipe(confParte1, confParte2,
-				listaTiposEditar);
-
-		if (ok) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configura��o alterada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Insira os dados corretamente!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		limparDados();
-	}
-
-	public void excluirConfig() throws ProjetoException {
-		boolean ok = cDao.excluirConfig(confParte1);
-
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configura��o excluida com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		this.listaHorarios = cDao.listarHorarios();
-	}
-
-	public void excluirConfigEquipe() throws ProjetoException {
-		boolean ok = cDao.excluirConfigEquipe(confParte1);
-
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configura��o excluida com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		this.listaHorariosEquipe = cDao.listarHorariosEquipe();
-	}
-
-	public void onRowSelect(SelectEvent event) throws ProjetoException {
-		ProfissionalBean prof = (ProfissionalBean) event.getObject();
-		this.listaHorarios = cDao.listarHorariosPorIDProfissional(prof
-				.getIdProfissional());
-	}
-
-	public void onRowUnselect(UnselectEvent event) {
-		this.listaHorarios = null;
-	}
-
-	public void onRowSelectEquipe(SelectEvent event) throws ProjetoException {
-		EquipeBean equipe = (EquipeBean) event.getObject();
-		this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe
-				.getCodEquipe());
-	}
-
-	public void onRowUnselectEquipe(UnselectEvent event) {
-		this.listaHorariosEquipe = null;
-	}
-
-	public void limparBuscaPrograma() {
-		this.confParte2.setPrograma(null);
-		this.confParte2.setGrupo(null);
-		this.confParte2.setTipoAt(null);
-	}
-
-	public void limparBuscaGrupo() {
-		this.confParte2.setGrupo(null);
-		this.confParte2.setTipoAt(null);
-	}
-
-	public int getTipo2() {
-		return tipo2;
-	}
-
-	public void setTipo2(int tipo2) {
-		this.tipo2 = tipo2;
-	}
-	
-	
 
 }

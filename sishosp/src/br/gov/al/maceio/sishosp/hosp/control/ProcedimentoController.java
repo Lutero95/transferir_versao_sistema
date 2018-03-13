@@ -46,47 +46,6 @@ public class ProcedimentoController implements Serializable {
 		listaProcedimentos = pDao.listarProcedimento();
 	}
 
-	public ProcedimentoBean getProc() {
-		return proc;
-	}
-
-	public void setProc(ProcedimentoBean proc) {
-		this.proc = proc;
-	}
-
-	public void listarProcedimentos() throws ProjetoException {
-		this.listaProcedimentos = pDao.listarProcedimento();
-
-	}
-
-	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
-		this.listaProcedimentos = listaProcedimentos;
-	}
-
-	public Integer getTipoBuscar() {
-		return tipoBuscar;
-	}
-
-	public void setTipoBuscar(Integer tipoBuscar) {
-		this.tipoBuscar = tipoBuscar;
-	}
-
-	public String getDescricaoBusca() {
-		return descricaoBusca;
-	}
-
-	public void setDescricaoBusca(String descricaoBusca) {
-		this.descricaoBusca = descricaoBusca;
-	}
-
-	public int getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(int tipo) {
-		this.tipo = tipo;
-	}
-
 	public void buscarProcedimento() throws ProjetoException {
 		this.listaProcedimentos = pDao.listarProcedimentoBusca(descricaoBusca,
 				tipoBuscar);
@@ -204,5 +163,46 @@ public class ProcedimentoController implements Serializable {
 
 	public List<ProcedimentoBean> getListaProcedimentos() {
 		return listaProcedimentos;
+	}
+
+	public ProcedimentoBean getProc() {
+		return proc;
+	}
+
+	public void setProc(ProcedimentoBean proc) {
+		this.proc = proc;
+	}
+
+	public void listarProcedimentos() throws ProjetoException {
+		this.listaProcedimentos = pDao.listarProcedimento();
+
+	}
+
+	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
+		this.listaProcedimentos = listaProcedimentos;
+	}
+
+	public Integer getTipoBuscar() {
+		return tipoBuscar;
+	}
+
+	public void setTipoBuscar(Integer tipoBuscar) {
+		this.tipoBuscar = tipoBuscar;
+	}
+
+	public String getDescricaoBusca() {
+		return descricaoBusca;
+	}
+
+	public void setDescricaoBusca(String descricaoBusca) {
+		this.descricaoBusca = descricaoBusca;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 }

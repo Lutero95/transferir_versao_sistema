@@ -20,9 +20,6 @@ import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 @ViewScoped
 public class CidController implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private CidBean cid;
 	private List<CidBean> listaCids;
@@ -86,7 +83,7 @@ public class CidController implements Serializable {
 		boolean ok = gDao.excluirCid(cid);
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Grupo excluido com sucesso!", "Sucesso");
+					"Grupo excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");

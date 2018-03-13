@@ -22,9 +22,6 @@ import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 @ViewScoped
 public class TipoAtendimentoController implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private TipoAtendimentoBean tipo;
 	private List<TipoAtendimentoBean> listaTipos;
@@ -53,35 +50,10 @@ public class TipoAtendimentoController implements Serializable {
 		this.grupoSelecionado = new GrupoBean();
 	}
 
-	public TipoAtendimentoBean getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(TipoAtendimentoBean tipo) {
-		this.tipo = tipo;
-	}
-
-	public void listarTipos() throws ProjetoException {
-		listaTipos = tDao.listarTipoAt();
-
-	}
-
-	public void buscarTipoAt() throws ProjetoException {
-		this.listaTipos = tDao.listarTipoAtBusca(descricaoBusca, tipoBuscar);
-	}
-
-	public void listarTodosTipos() throws ProjetoException {
-		this.listaTipos = tDao.listarTipoAt();
-	}
-
-	public void setListaTipos(List<TipoAtendimentoBean> listaTipos) {
-		this.listaTipos = listaTipos;
-	}
-
 	public void gravarTipo() throws ProjetoException, SQLException {
 		if (this.tipo.getGrupo().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário no minimo informar um grupo!",
+					"É necessário no mínimo informar um grupo!",
 					"Campos obrigatórios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
@@ -114,15 +86,12 @@ public class TipoAtendimentoController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
 				.getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
 		if (params.get("id") != null) {
-			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
 			TipoAtendimentoDAO cDao = new TipoAtendimentoDAO();
 			tipoS = Integer.parseInt(params.get("tipo"));
 			this.tipo = cDao.listarTipoPorId(id);
 		} else {
-			System.out.println("tipo sera" + tipo);
 			tipoS = Integer.parseInt(params.get("tipo"));
 
 		}
@@ -133,7 +102,7 @@ public class TipoAtendimentoController implements Serializable {
 		if (this.tipo.getGrupo().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"É necessário no mínimo informar um grupo!",
-					"Campos obrigat�rios!");
+					"Campos obrigatórios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			// return "";
 		}
@@ -171,6 +140,31 @@ public class TipoAtendimentoController implements Serializable {
 					"PF('dialogAtencao').hide();");
 		}
 		listaTipos = tDao.listarTipoAt();
+	}
+
+	public TipoAtendimentoBean getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoAtendimentoBean tipo) {
+		this.tipo = tipo;
+	}
+
+	public void listarTipos() throws ProjetoException {
+		listaTipos = tDao.listarTipoAt();
+
+	}
+
+	public void buscarTipoAt() throws ProjetoException {
+		this.listaTipos = tDao.listarTipoAtBusca(descricaoBusca, tipoBuscar);
+	}
+
+	public void listarTodosTipos() throws ProjetoException {
+		this.listaTipos = tDao.listarTipoAt();
+	}
+
+	public void setListaTipos(List<TipoAtendimentoBean> listaTipos) {
+		this.listaTipos = listaTipos;
 	}
 
 	public Integer getTipoBuscar() {

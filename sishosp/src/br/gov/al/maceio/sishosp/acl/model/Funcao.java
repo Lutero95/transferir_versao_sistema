@@ -3,133 +3,129 @@ package br.gov.al.maceio.sishosp.acl.model;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- *
- * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
- * @since 17/03/2015
- */
-public class Funcao implements Serializable{
-    
-    private Long id;
-    private String descricao;
-    private Integer IdRotina;
-    private String codigo;
-    private String descRotina;
-    private boolean ativa;
-    
-    private Integer idPermissao;
-    
-    private Integer idSistema;
-    private String descSistema;
-    private String siglaSistema;
-    
-    private List<Integer> listaSistemas;
+public class Funcao implements Serializable {
 
-    public Funcao() {
-        
-    }
+	private Long id;
+	private String descricao;
+	private Integer IdRotina;
+	private String codigo;
+	private String descRotina;
+	private boolean ativa;
 
-    public Funcao(Long id, String descricao, Integer IdRotina, String codigo, 
-        String descRotina, boolean ativa, Integer idPermissao, Integer idSistema, 
-        String descSistema, String siglaSistema, List<Integer> listaSistemas) {
-        this.id = id;
-        this.descricao = descricao;
-        this.IdRotina = IdRotina;
-        this.codigo = codigo;
-        this.descRotina = descRotina;
-        this.ativa = ativa;
-        this.idPermissao = idPermissao;
-        this.idSistema = idSistema;
-        this.descSistema = descSistema;
-        this.siglaSistema = siglaSistema;
-        this.listaSistemas = listaSistemas;
-    }
+	private Integer idPermissao;
 
-    public Long getId() {
-        return id;
-    }
+	private Integer idSistema;
+	private String descSistema;
+	private String siglaSistema;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	private List<Integer> listaSistemas;
 
-    public String getDescricao() {
-        return descricao;
-    }
+	public Funcao() {
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+	}
 
-    public Integer getIdRotina() {
-        return IdRotina;
-    }
+	public Funcao(Long id, String descricao, Integer IdRotina, String codigo,
+			String descRotina, boolean ativa, Integer idPermissao,
+			Integer idSistema, String descSistema, String siglaSistema,
+			List<Integer> listaSistemas) {
+		this.id = id;
+		this.descricao = descricao;
+		this.IdRotina = IdRotina;
+		this.codigo = codigo;
+		this.descRotina = descRotina;
+		this.ativa = ativa;
+		this.idPermissao = idPermissao;
+		this.idSistema = idSistema;
+		this.descSistema = descSistema;
+		this.siglaSistema = siglaSistema;
+		this.listaSistemas = listaSistemas;
+	}
 
-    public void setIdRotina(Integer IdRotina) {
-        this.IdRotina = IdRotina;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getCodigo() {
-        return codigo;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
+	public String getDescricao() {
+		return descricao;
+	}
 
-    public String getDescRotina() {
-        return descRotina;
-    }
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
 
-    public void setDescRotina(String descRotina) {
-        this.descRotina = descRotina;
-    }
+	public Integer getIdRotina() {
+		return IdRotina;
+	}
 
-    public boolean isAtiva() {
-        return ativa;
-    }
+	public void setIdRotina(Integer IdRotina) {
+		this.IdRotina = IdRotina;
+	}
 
-    public void setAtiva(boolean ativa) {
-        this.ativa = ativa;
-    }
+	public String getCodigo() {
+		return codigo;
+	}
 
-    public Integer getIdPermissao() {
-        return idPermissao;
-    }
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
 
-    public void setIdPermissao(Integer idPermissao) {
-        this.idPermissao = idPermissao;
-    }
+	public String getDescRotina() {
+		return descRotina;
+	}
 
-    public Integer getIdSistema() {
-        return idSistema;
-    }
+	public void setDescRotina(String descRotina) {
+		this.descRotina = descRotina;
+	}
 
-    public void setIdSistema(Integer idSistema) {
-        this.idSistema = idSistema;
-    }
+	public boolean isAtiva() {
+		return ativa;
+	}
 
-    public String getDescSistema() {
-        return descSistema;
-    }
+	public void setAtiva(boolean ativa) {
+		this.ativa = ativa;
+	}
 
-    public void setDescSistema(String descSistema) {
-        this.descSistema = descSistema;
-    }
+	public Integer getIdPermissao() {
+		return idPermissao;
+	}
 
-    public String getSiglaSistema() {
-        return siglaSistema;
-    }
+	public void setIdPermissao(Integer idPermissao) {
+		this.idPermissao = idPermissao;
+	}
 
-    public void setSiglaSistema(String siglaSistema) {
-        this.siglaSistema = siglaSistema;
-    }
+	public Integer getIdSistema() {
+		return idSistema;
+	}
 
-    public List<Integer> getListaSistemas() {
-        return listaSistemas;
-    }
+	public void setIdSistema(Integer idSistema) {
+		this.idSistema = idSistema;
+	}
 
-    public void setListaSistemas(List<Integer> listaSistemas) {
-        this.listaSistemas = listaSistemas;
-    }
+	public String getDescSistema() {
+		return descSistema;
+	}
+
+	public void setDescSistema(String descSistema) {
+		this.descSistema = descSistema;
+	}
+
+	public String getSiglaSistema() {
+		return siglaSistema;
+	}
+
+	public void setSiglaSistema(String siglaSistema) {
+		this.siglaSistema = siglaSistema;
+	}
+
+	public List<Integer> getListaSistemas() {
+		return listaSistemas;
+	}
+
+	public void setListaSistemas(List<Integer> listaSistemas) {
+		this.listaSistemas = listaSistemas;
+	}
 }

@@ -51,55 +51,6 @@ public class ProfissionalController implements Serializable {
 		this.listaProfissional = pDao.listarProfissional();
 	}
 
-	public ProfissionalBean getProfissional() {
-		return profissional;
-	}
-
-	public void setProfissional(ProfissionalBean profissional) {
-		this.profissional = profissional;
-	}
-
-	public Integer getTipoBuscar() {
-		return tipoBuscar;
-	}
-
-	public void setTipoBuscar(Integer tipoBuscar) {
-		this.tipoBuscar = tipoBuscar;
-	}
-
-	public String getDescricaoBusca() {
-		return descricaoBusca;
-	}
-
-	public void setDescricaoBusca(String descricaoBusca) {
-		this.descricaoBusca = descricaoBusca;
-	}
-
-	public int getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(int tipo) {
-		this.tipo = tipo;
-	}
-
-	public Integer getAbaAtiva() {
-		return abaAtiva;
-	}
-
-	public void setAbaAtiva(Integer abaAtiva) {
-		this.abaAtiva = abaAtiva;
-	}
-
-	public void ListarTodosProfissionais() throws ProjetoException {
-		listaProfissional = pDao.listarProfissional();
-
-	}
-
-	public void setListaProfissional(List<ProfissionalBean> listaProfissional) {
-		this.listaProfissional = listaProfissional;
-	}
-
 	public void gravarProfissional() throws SQLException, ProjetoException {
 		/*
 		 * if (this.profissional.getCbo().getCodCbo() == null ||
@@ -196,7 +147,7 @@ public class ProfissionalController implements Serializable {
 	public void buscarProfissional() throws ProjetoException {
 		if (this.tipoBuscar == 0) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha uma op��o de busca v�lida!", "Erro");
+					"Escolha uma opção de busca válida!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			this.listaProfissional = pDao.listarProfissionalBusca(
@@ -207,7 +158,6 @@ public class ProfissionalController implements Serializable {
 	public void listarProfissionais() throws ProjetoException {
 		ProfissionalDAO prDao = new ProfissionalDAO();
 		listaProfissional = prDao.listarProfissional();
-		System.out.println("tam lista " + listaProfissional.size());
 
 		// return listaProfissional;
 	}
@@ -257,5 +207,54 @@ public class ProfissionalController implements Serializable {
 
 		}
 
+	}
+
+	public ProfissionalBean getProfissional() {
+		return profissional;
+	}
+
+	public void setProfissional(ProfissionalBean profissional) {
+		this.profissional = profissional;
+	}
+
+	public Integer getTipoBuscar() {
+		return tipoBuscar;
+	}
+
+	public void setTipoBuscar(Integer tipoBuscar) {
+		this.tipoBuscar = tipoBuscar;
+	}
+
+	public String getDescricaoBusca() {
+		return descricaoBusca;
+	}
+
+	public void setDescricaoBusca(String descricaoBusca) {
+		this.descricaoBusca = descricaoBusca;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
+	}
+
+	public Integer getAbaAtiva() {
+		return abaAtiva;
+	}
+
+	public void setAbaAtiva(Integer abaAtiva) {
+		this.abaAtiva = abaAtiva;
+	}
+
+	public void ListarTodosProfissionais() throws ProjetoException {
+		listaProfissional = pDao.listarProfissional();
+
+	}
+
+	public void setListaProfissional(List<ProfissionalBean> listaProfissional) {
+		this.listaProfissional = listaProfissional;
 	}
 }

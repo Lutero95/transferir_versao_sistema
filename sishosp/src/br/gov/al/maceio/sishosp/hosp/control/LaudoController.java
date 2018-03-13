@@ -35,9 +35,7 @@ import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 @ManagedBean(name = "LaudoController")
 @ViewScoped
 public class LaudoController implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Integer abaAtiva = 0;
 	private UsuarioBean usuario;
@@ -59,6 +57,7 @@ public class LaudoController implements Serializable {
 	private List<LaudoBean> listaLaudoDigita;
 	private List<ProgramaBean> buscalistaProgramas;
 	private List<GrupoBean> listaGruposProgramas;
+
 	// BUSCAS
 	private int tipo2;
 	private String tipo;
@@ -78,12 +77,12 @@ public class LaudoController implements Serializable {
 	private String programa2;
 
 	private LaudoDAO lDao = new LaudoDAO();
-	
+
 	public LaudoController() {
 		// CLASSES
 		laudo = new LaudoBean();
-        programa = new ProgramaBean();
-        grupo = new GrupoBean();
+		programa = new ProgramaBean();
+		grupo = new GrupoBean();
 		this.tipoAt = null;// new TipoAtendimentoBean();
 
 		// BUSCA
@@ -97,7 +96,7 @@ public class LaudoController implements Serializable {
 		this.situacao = "P";
 		this.recurso = "T";
 		this.nome = null;
-		//this.prontuario = 1;
+		// this.prontuario = 1;
 		listaLaudo = new ArrayList<>();
 		listaLaudo = null;
 
@@ -242,15 +241,17 @@ public class LaudoController implements Serializable {
 
 		List<LaudoBean> listaAux = null;
 		listaLaudo = new ArrayList<>();
-		System.out.println("Entrou aqui:"+"nome:"+this.nome+"situacao:"+this.situacao+"recurso:"+this.recurso+"prontuario:"+this.prontuario+"dataSoli:"+this.dataSolicitacao+"dataAutorizada:"+this.dataAtorizacao+"ProgramaID"+this.getPrograma().getIdPrograma()+"grupoid:"+this.getGrupo().getIdGrupo());
+
 		LaudoDAO adao = new LaudoDAO();
-		
-			listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso,
-					this.prontuario, this.dataSolicitacao, this.dataAtorizacao, 
-					this.getPrograma().getIdPrograma(), this.getGrupo().getIdGrupo());
-				
-		//listaAux = adao.buscarTipoLaudo1(this.getPrograma().getIdPrograma(), this.dataSolicitacao, this.dataAtorizacao);
-		
+
+		listaAux = adao.buscarTipoLaudo(this.nome, this.situacao, this.recurso,
+				this.prontuario, this.dataSolicitacao, this.dataAtorizacao,
+				this.getPrograma().getIdPrograma(), this.getGrupo()
+						.getIdGrupo());
+
+		// listaAux = adao.buscarTipoLaudo1(this.getPrograma().getIdPrograma(),
+		// this.dataSolicitacao, this.dataAtorizacao);
+
 		if (listaAux != null && listaAux.size() > 0) {
 			// listaAss = null;
 			listaLaudo = listaAux;
@@ -285,8 +286,7 @@ public class LaudoController implements Serializable {
 	}
 
 	public void buscaPersonalizada() throws ProjetoException {
-		System.out.println("TESTE:" + laudo.getDtautorizacao() + "||"
-				+ laudo.getPrograma().getIdPrograma());
+
 		List<LaudoBean> listaAux = null;
 		listaLaudo = new ArrayList<>();
 
@@ -330,10 +330,10 @@ public class LaudoController implements Serializable {
 		profissional = new ProfissionalBean();
 		equipe = new EquipeBean();
 		procedimento = new ProcedimentoBean();
-        this.buscalistaProgramas = null;
-        prontuario = null;
-        recurso = null;
-        situacao = null;
+		this.buscalistaProgramas = null;
+		prontuario = null;
+		recurso = null;
+		situacao = null;
 	}
 
 	public void calcularDias() {
@@ -342,105 +342,96 @@ public class LaudoController implements Serializable {
 				Integer dias = this.laudo.getProrrogar();
 				Date dataFim = this.laudo.getDtasolicitacao();
 
-				// System.out.println("DATA:"+laudo.getProrrogar()+"||"+laudo.getDtainicio()+"||"+laudo.getDtavencimento());
-
-				// System.out.println("DIAS: " + (dias - 1));
-
 				Calendar cl = Calendar.getInstance();
 				cl.setTime(dataFim);
 				cl.add(Calendar.DATE, (dias - 1));
 
 				Date dataFinal = cl.getTime();
 
-				// System.out.println("DATA FINAL: " + dataFinal);
-
 				this.laudo.setDtafim(dataFinal);
 			}
 		} catch (Exception ex) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-					"Informe a Data de autoriza��o.", "Aviso");
+					"Informe a Data de autorização.", "Aviso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			this.laudo.setProrrogar(null);
 		}
 
 	}
+
 	public String redirectInsert() {
 		return "cadastroLaudo?faces-redirect=true&amp;tipo2=" + this.tipo2;
 	}
-	
+
 	public String redirectEdit() {
-		return "cadastroLaudo?faces-redirect=true&amp;id_apac=" + this.laudo.getId_apac()+"&amp;tipo2="+tipo2;
-	}	
-	
-	
+		return "cadastroLaudo?faces-redirect=true&amp;id_apac="
+				+ this.laudo.getId_apac() + "&amp;tipo2=" + tipo2;
+	}
+
 	public void getEditLaudo() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
-		if(params.get("id_apac") != null) {
-			System.out.println("entrou no editar");
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id_apac") != null) {
 			Integer id = Integer.parseInt(params.get("id_apac"));
-			tipo2 =Integer.parseInt(params.get("tipo2"));			
-			System.out.println("tipo do walter"+tipo2);
+			tipo2 = Integer.parseInt(params.get("tipo2"));
 			this.laudo = lDao.listarLaudoPorId(id);
+		} else {
+			tipo2 = Integer.parseInt(params.get("tipo2"));
+
 		}
-		else{
-			System.out.println("tipo sera"+tipo2);
-			tipo2 =Integer.parseInt(params.get("tipo2"));
-			
-		}
-		
+
 	}
-	
+
 	public void getValoresLaudo() throws ProjetoException {
-		
-		System.out.println("Entrou aqui NAS DATAS ATUAIS");
+
 		Date dataDoUsuario = this.dataSolicitacao;
-		Date dataDoUsuario2 =  this.dataAtorizacao;
-		Calendar dataInicial = Calendar.getInstance(); 
-		Calendar dataFinal = Calendar.getInstance();  
+		Date dataDoUsuario2 = this.dataAtorizacao;
+		Calendar dataInicial = Calendar.getInstance();
+		Calendar dataFinal = Calendar.getInstance();
 		dataInicial.setTime(new Date());
 		dataFinal.setTime(new Date());
-		dataInicial.set(Calendar.DAY_OF_MONTH, dataInicial.getActualMinimum(Calendar.DAY_OF_MONTH));
-        dataFinal.set(Calendar.DAY_OF_MONTH, dataFinal.getActualMaximum(Calendar.DAY_OF_MONTH));
-        dataDoUsuario = dataInicial.getTime();
-        dataDoUsuario2 = dataFinal.getTime();
-        this.dataSolicitacao = dataDoUsuario;
-        this.dataAtorizacao = dataDoUsuario2;
-       
-        ProgramaDAO pdaos = new ProgramaDAO();
-        buscalistaProgramas = pdaos.BuscalistarProgramasDefaut();
-        if (buscalistaProgramas.size()==1){
-        	for(int i=0;i<buscalistaProgramas.size();i++){
-        		programa.setIdPrograma(buscalistaProgramas.get(i).getIdPrograma());
-        GrupoDAO gdao = new GrupoDAO();
-        this.listaGruposProgramas = gdao.listarGruposPorPrograma(programa.getIdPrograma());
-        System.out.println("Prog:"+programa.getIdPrograma());
-        System.out.println("Tamanho:"+listaGruposProgramas.size());
-        		}
-        	
-        }
+		dataInicial.set(Calendar.DAY_OF_MONTH,
+				dataInicial.getActualMinimum(Calendar.DAY_OF_MONTH));
+		dataFinal.set(Calendar.DAY_OF_MONTH,
+				dataFinal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		dataDoUsuario = dataInicial.getTime();
+		dataDoUsuario2 = dataFinal.getTime();
+		this.dataSolicitacao = dataDoUsuario;
+		this.dataAtorizacao = dataDoUsuario2;
+
+		ProgramaDAO pdaos = new ProgramaDAO();
+		buscalistaProgramas = pdaos.BuscalistarProgramasDefaut();
+		if (buscalistaProgramas.size() == 1) {
+			for (int i = 0; i < buscalistaProgramas.size(); i++) {
+				programa.setIdPrograma(buscalistaProgramas.get(i)
+						.getIdPrograma());
+				GrupoDAO gdao = new GrupoDAO();
+				this.listaGruposProgramas = gdao
+						.listarGruposPorPrograma(programa.getIdPrograma());
+
+			}
+
+		}
 	}
 
 	@SuppressWarnings("deprecation")
 	public void calcularDiasCalendario() {
-	if (laudo.getDtasolicitacao() != null) {
-	// System.out.println("Entrou aqui"+ laudo.getDtavencimento()
-	// +"---"+ laudo.getDtautorizacao());
-	// Usu�rio informa uma data
-	Date dataDoUsuario = this.laudo.getDtasolicitacao();
+		if (laudo.getDtasolicitacao() != null) {
+			Date dataDoUsuario = this.laudo.getDtasolicitacao();
 
-	// Atrav�s do Calendar, trabalhamos a data informada e adicionamos 1
-	// dia nela
-	Calendar c = Calendar.getInstance();
-	c.setTime(dataDoUsuario);
-	c.add(Calendar.MONTH,getLaudo().getProcedimento().getValidade_laudo());
-	c.add(Calendar.DAY_OF_MONTH,-1);
-	// Obtemos a data alterada
-	dataDoUsuario = c.getTime();
+			// Atrav�s do Calendar, trabalhamos a data informada e adicionamos 1
+			// dia nela
+			Calendar c = Calendar.getInstance();
+			c.setTime(dataDoUsuario);
+			c.add(Calendar.MONTH, getLaudo().getProcedimento()
+					.getValidade_laudo());
+			c.add(Calendar.DAY_OF_MONTH, -1);
+			// Obtemos a data alterada
+			dataDoUsuario = c.getTime();
 
-	this.laudo.setDtavencimento(dataDoUsuario);
-	}
+			this.laudo.setDtavencimento(dataDoUsuario);
+		}
 	}
 
 	public Integer getAbaAtiva() {
@@ -619,7 +610,7 @@ public class LaudoController implements Serializable {
 	}
 
 	public String getCabecalho2() {
-		if (this.tipo2 == 1 ) {
+		if (this.tipo2 == 1) {
 			cabecalho = "CADASTRO DE LAUDO DIGITA";
 		} else if (this.tipo2 == 2) {
 			cabecalho = "ALTERAR LAUDO DIGITA";
@@ -732,7 +723,4 @@ public class LaudoController implements Serializable {
 		this.listaGruposProgramas = listaGruposProgramas;
 	}
 
-	
-
-	
 }

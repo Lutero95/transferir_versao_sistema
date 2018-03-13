@@ -2,91 +2,87 @@ package br.gov.al.maceio.sishosp.acl.model;
 
 import java.io.Serializable;
 
-/**
- *
- * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
- * @since 17/03/2015
- */
 public class Permissao implements Serializable {
-    
-    private Long id;
-    private String descricao;
-    
-    private Integer idRecurso;
-    private Integer idAux;
-    
-    private Integer idSistema;
-    private String descSistema;
-    private String siglaSistema;
 
-    public Permissao() {
-        
-    }
+	private Long id;
+	private String descricao;
 
-    public Permissao(Long id, String descricao, Integer idRecurso, Integer idAux, 
-        Integer idSistema, String descSistema, String siglaSistema) {
-        this.id = id;
-        this.descricao = descricao;
-        this.idRecurso = idRecurso;
-        this.idAux = idAux;
-        this.idSistema = idSistema;
-        this.descSistema = descSistema;
-        this.siglaSistema = siglaSistema;
-    }
+	private Integer idRecurso;
+	private Integer idAux;
 
-    public Long getId() {
-        return id;
-    }
+	private Integer idSistema;
+	private String descSistema;
+	private String siglaSistema;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Permissao() {
 
-    public String getDescricao() {
-        return descricao;
-    }
+	}
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+	public Permissao(Long id, String descricao, Integer idRecurso,
+			Integer idAux, Integer idSistema, String descSistema,
+			String siglaSistema) {
+		this.id = id;
+		this.descricao = descricao;
+		this.idRecurso = idRecurso;
+		this.idAux = idAux;
+		this.idSistema = idSistema;
+		this.descSistema = descSistema;
+		this.siglaSistema = siglaSistema;
+	}
 
-    public Integer getIdRecurso() {
-        return idRecurso;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setIdRecurso(Integer idRecurso) {
-        this.idRecurso = idRecurso;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public Integer getIdAux() {
-        return idAux;
-    }
+	public String getDescricao() {
+		return descricao;
+	}
 
-    public void setIdAux(Integer idAux) {
-        this.idAux = idAux;
-    }
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
 
-    public Integer getIdSistema() {
-        return idSistema;
-    }
+	public Integer getIdRecurso() {
+		return idRecurso;
+	}
 
-    public void setIdSistema(Integer idSistema) {
-        this.idSistema = idSistema;
-    }
+	public void setIdRecurso(Integer idRecurso) {
+		this.idRecurso = idRecurso;
+	}
 
-    public String getDescSistema() {
-        return descSistema;
-    }
+	public Integer getIdAux() {
+		return idAux;
+	}
 
-    public void setDescSistema(String descSistema) {
-        this.descSistema = descSistema;
-    }
+	public void setIdAux(Integer idAux) {
+		this.idAux = idAux;
+	}
 
-    public String getSiglaSistema() {
-        return siglaSistema;
-    }
+	public Integer getIdSistema() {
+		return idSistema;
+	}
 
-    public void setSiglaSistema(String siglaSistema) {
-        this.siglaSistema = siglaSistema;
-    }
+	public void setIdSistema(Integer idSistema) {
+		this.idSistema = idSistema;
+	}
+
+	public String getDescSistema() {
+		return descSistema;
+	}
+
+	public void setDescSistema(String descSistema) {
+		this.descSistema = descSistema;
+	}
+
+	public String getSiglaSistema() {
+		return siglaSistema;
+	}
+
+	public void setSiglaSistema(String siglaSistema) {
+		this.siglaSistema = siglaSistema;
+	}
 }

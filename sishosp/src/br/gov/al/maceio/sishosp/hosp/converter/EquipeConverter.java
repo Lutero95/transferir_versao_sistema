@@ -24,7 +24,7 @@ public class EquipeConverter implements Converter {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Equipe inv·lida!", ""));
+					FacesMessage.SEVERITY_ERROR, "Equipe inv√°lida!", ""));
 		}
 	}
 

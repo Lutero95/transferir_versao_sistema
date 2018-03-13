@@ -24,7 +24,7 @@ public class EncaminhamentoConverter implements Converter {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Encaminhamento n„o v·lido",
+					FacesMessage.SEVERITY_ERROR, "Encaminhamento n√£o v√°lido",
 					""));
 		}
 	}

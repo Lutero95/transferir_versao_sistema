@@ -11,7 +11,7 @@ public class ConvertTipoLocal implements Converter {
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String valor) {
 		// TODO Auto-generated method stub
-		
+
 		return valor;
 	}
 
@@ -19,22 +19,17 @@ public class ConvertTipoLocal implements Converter {
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object objeto) {
 		// TODO Auto-generated method stub
 
-		
 		String descTipo = objeto.toString();
 
-		
-		if (descTipo == null || descTipo.trim().length() == 0
-				|| descTipo == "") {
+		if (descTipo == null || descTipo.trim().length() == 0 || descTipo == "") {
 
 			return null;
 
 		} else {
 
-			
 			return descTipo;
 		}
 
 	}
-
 
 }

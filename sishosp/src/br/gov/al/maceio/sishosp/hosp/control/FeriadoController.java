@@ -16,9 +16,9 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.FeriadoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
 
-@ManagedBean(name="FeriadoController")
+@ManagedBean(name = "FeriadoController")
 @ViewScoped
-public class FeriadoController implements Serializable{
+public class FeriadoController implements Serializable {
 
 	/**
 	 * 
@@ -31,9 +31,7 @@ public class FeriadoController implements Serializable{
 	private Integer tipoBuscar;
 	private Date dataBuscar;
 	private String cabecalho;
-
 	private Integer abaAtiva = 0;
-
 	private FeriadoDAO fDao = new FeriadoDAO();
 
 	public FeriadoController() {
@@ -51,6 +49,57 @@ public class FeriadoController implements Serializable{
 		this.descricaoBusca = new String();
 		this.dataBuscar = null;
 		this.tipoBuscar = 1;
+	}
+
+	public void gravarFeriado() throws ProjetoException, SQLException {
+		boolean cadastrou = fDao.gravarFeriado(feriado);
+
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Feriado cadastrado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}
+
+	public String alterarFeriado() throws ProjetoException {
+		boolean alterou = fDao.alterarFeriado(feriado);
+		if (alterou == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Feriado alterado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			this.listaFeriados = fDao.listarFeriado();
+			return "/pages/sishosp/gerenciarFeriados.xhtml?faces-redirect=true";
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
+
+	}
+
+	public void excluirFeriado() throws ProjetoException {
+		boolean ok = fDao.excluirFeriado(feriado);
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Feriado excluído com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
+		this.listaFeriados = fDao.listarFeriado();
 	}
 
 	public FeriadoBean getFeriado() {
@@ -119,8 +168,8 @@ public class FeriadoController implements Serializable{
 	}
 
 	public void buscarFeriado() throws ProjetoException {
-		this.listaFeriados = fDao
-				.listarFeriadoBusca(descricaoBusca, tipoBuscar, dataBuscar);
+		this.listaFeriados = fDao.listarFeriadoBusca(descricaoBusca,
+				tipoBuscar, dataBuscar);
 	}
 
 	public Date getDataBuscar() {
@@ -129,56 +178,5 @@ public class FeriadoController implements Serializable{
 
 	public void setDataBuscar(Date dataBuscar) {
 		this.dataBuscar = dataBuscar;
-	}
-
-	public void gravarFeriado() throws ProjetoException, SQLException {
-		boolean cadastrou = fDao.gravarFeriado(feriado);
-
-		if (cadastrou == true) {
-			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Feriado cadastrado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-	}
-
-	public String alterarFeriado() throws ProjetoException {
-		boolean alterou = fDao.alterarFeriado(feriado);
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Feriado alterado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			this.listaFeriados = fDao.listarFeriado();
-			return "/pages/sishosp/gerenciarFeriados.xhtml?faces-redirect=true";
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
-		}
-
-	}
-
-	public void excluirFeriado() throws ProjetoException {
-		boolean ok = fDao.excluirFeriado(feriado);
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cbo excluido com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		this.listaFeriados = fDao.listarFeriado();
 	}
 }

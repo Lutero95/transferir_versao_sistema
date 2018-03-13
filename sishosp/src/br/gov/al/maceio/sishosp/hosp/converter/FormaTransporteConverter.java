@@ -24,7 +24,7 @@ public class FormaTransporteConverter implements Converter {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Transporte n„o v·lido", ""));
+					FacesMessage.SEVERITY_ERROR, "Transporte n√£o v√°lido", ""));
 		}
 	}
 

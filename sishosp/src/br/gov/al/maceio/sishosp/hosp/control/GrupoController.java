@@ -27,9 +27,6 @@ import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 @ViewScoped
 public class GrupoController implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private GrupoBean grupo;
 	private ProgramaBean prog;
@@ -75,7 +72,6 @@ public class GrupoController implements Serializable {
 	}
 
 	public String redirectInsert() {
-		System.out.println("vai redir grupo");
 		return "cadastroGrupo?faces-redirect=true&amp;tipo=" + tipo;
 	}
 
@@ -83,9 +79,7 @@ public class GrupoController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
 				.getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
 		if (params.get("id") != null) {
-			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
 
@@ -123,12 +117,12 @@ public class GrupoController implements Serializable {
 					"Grupo alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaGrupos = gDao.listarGrupos();
-			//return "/pages/sishosp/cadastrarGrupo.faces?faces-redirect=true";
+			// return "/pages/sishosp/cadastrarGrupo.faces?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "";
+			// return "";
 		}
 
 	}
@@ -162,7 +156,6 @@ public class GrupoController implements Serializable {
 
 	public void getListaTodosGrupos() throws ProjetoException {
 		listaGrupos = gDao.listarGrupos();
-		System.out.println("listaGrupos size " + listaGrupos.size());
 
 	}
 
@@ -217,17 +210,14 @@ public class GrupoController implements Serializable {
 
 	public List<GrupoBean> listaGrupoAutoComplete(String query)
 			throws ProjetoException {
-		System.out.println("id do programa selecionado e vai buscar grupo "+programaSelecionado.getIdPrograma());
-		
-		if(programaSelecionado.getIdPrograma()!= null){
-			System.out.println("walter gay");
-			return gDao.listarGruposAutoComplete(query, this.programaSelecionado);
-		}else{
-			System.out.println("walter gay null");
-			return null; 
+
+		if (programaSelecionado.getIdPrograma() != null) {
+			return gDao.listarGruposAutoComplete(query,
+					this.programaSelecionado);
+		} else {
+			return null;
 		}
-		
-		
+
 	}
 
 	public List<GrupoBean> listaGrupoAutoComplete2(String query)

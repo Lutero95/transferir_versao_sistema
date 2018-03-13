@@ -99,7 +99,7 @@ public class FornecedorController implements Serializable {
 
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Fornecedor excluido com sucesso!", "Sucesso");
+					"Fornecedor excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaFornecedor = null;
 			RequestContext.getCurrentInstance().execute(

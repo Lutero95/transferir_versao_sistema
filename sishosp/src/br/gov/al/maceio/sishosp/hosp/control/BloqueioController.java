@@ -19,9 +19,6 @@ import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 @ViewScoped
 public class BloqueioController implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private BloqueioBean bloqueio;
 	private List<BloqueioBean> listaBloqueios;
@@ -38,33 +35,6 @@ public class BloqueioController implements Serializable {
 	public void limparDados() {
 		this.bloqueio = new BloqueioBean();
 		this.listaBloqueios = null;
-	}
-
-	public BloqueioBean getBloqueio() {
-		return bloqueio;
-	}
-
-	public void setBloqueio(BloqueioBean bloqueio) {
-		this.bloqueio = bloqueio;
-	}
-
-	public List<BloqueioBean> getListaBloqueios() throws ProjetoException {
-		if (this.listaBloqueios == null) {
-			this.listaBloqueios = bDao.listarBloqueio();
-		}
-		return listaBloqueios;
-	}
-
-	public void setListaBloqueios(List<BloqueioBean> listaBloqueios) {
-		this.listaBloqueios = listaBloqueios;
-	}
-
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
 	}
 
 	public void gravarBloqueio() throws ProjetoException, SQLException {
@@ -119,6 +89,33 @@ public class BloqueioController implements Serializable {
 	public void atualizarListaBloqueio() throws ProjetoException {
 		this.listaBloqueios = bDao.listarBloqueioPorProfissional(bloqueio
 				.getProf());
+	}
+
+	public BloqueioBean getBloqueio() {
+		return bloqueio;
+	}
+
+	public void setBloqueio(BloqueioBean bloqueio) {
+		this.bloqueio = bloqueio;
+	}
+
+	public List<BloqueioBean> getListaBloqueios() throws ProjetoException {
+		if (this.listaBloqueios == null) {
+			this.listaBloqueios = bDao.listarBloqueio();
+		}
+		return listaBloqueios;
+	}
+
+	public void setListaBloqueios(List<BloqueioBean> listaBloqueios) {
+		this.listaBloqueios = listaBloqueios;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 }

@@ -17,9 +17,9 @@ import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
-@ManagedBean(name="CboController")
+@ManagedBean(name = "CboController")
 @ViewScoped
-public class CboController implements Serializable{
+public class CboController implements Serializable {
 
 	/**
 	 * 
@@ -39,50 +39,44 @@ public class CboController implements Serializable{
 	public CboController() {
 		this.cbo = new CboBean();
 		this.descricaoBusca = new String();
-		
+
 	}
-	
+
 	public String redirectEdit() {
-		System.out.println("edit"+this.cbo.getCodCbo());
-		System.out.println("tipo"+this.cbo.getCodCbo());
-		return "cadastroCbo?faces-redirect=true&amp;id=" + this.cbo.getCodCbo()+"&amp;tipo="+tipo;
-	}	
-	
-	
+		return "cadastroCbo?faces-redirect=true&amp;id=" + this.cbo.getCodCbo()
+				+ "&amp;tipo=" + tipo;
+	}
+
 	public String redirectInsert() {
-		return "cadastroCbo?faces-redirect=true&amp;tipo="+tipo;
-	}		
-	
+		return "cadastroCbo?faces-redirect=true&amp;tipo=" + tipo;
+	}
+
 	public void getEditCbo() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
-			System.out.println("entrou no editar");
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
-			tipo =Integer.parseInt(params.get("tipo"));			
-			System.out.println("tipo do walter"+tipo);
+			tipo = Integer.parseInt(params.get("tipo"));
 			this.cbo = cDao.listarCboPorId(id);
+		} else {
+			tipo = Integer.parseInt(params.get("tipo"));
+
 		}
-		else{
-			System.out.println("tipo sera"+tipo);
-			tipo =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
+
 	}
 
 	public void limparDados() {
 		cbo = new CboBean();
-		
+
 	}
-	
+
 	public List<CboBean> listaCboAutoComplete(String query)
 			throws ProjetoException {
 		List<CboBean> result = cDao.listarCboBusca(query, 1);
 		return result;
 	}
-	
+
 	public void gravarCbo() throws ProjetoException, SQLException {
 		boolean cadastrou = cDao.gravarCBO(this.cbo);
 
@@ -91,12 +85,13 @@ public class CboController implements Serializable{
 			FacesMessage msg = new FacesMessage("CBO cadastrado com sucesso!");
 			FacesContext.getCurrentInstance().addMessage("Error", msg);
 			RequestContext.getCurrentInstance().update("msgCadAlt");
-			//return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";
+			// return
+			// "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO cadastrado com sucesso!";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "";
+			// return "";
 		}
 	}
 
@@ -106,14 +101,14 @@ public class CboController implements Serializable{
 			FacesMessage msg = new FacesMessage("CBO alterado com sucesso!");
 			FacesContext.getCurrentInstance().addMessage("Error", msg);
 			RequestContext.getCurrentInstance().update("msgCadAlt");
-			//return "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO alterado com sucesso!";	
+			// return
+			// "gerenciarCbo?faces-redirect=true&amp;sucesso=CBO alterado com sucesso!";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "";
+			// return "";
 		}
-		
 
 	}
 
@@ -125,7 +120,7 @@ public class CboController implements Serializable{
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
-			getListarCbo();			
+			getListarCbo();
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusao!", "Erro");
@@ -144,16 +139,15 @@ public class CboController implements Serializable{
 	public void setCbo(CboBean cbo) {
 		this.cbo = cbo;
 	}
-	
+
 	public void listarCbo() throws ProjetoException {
-			listaCbo = cDao.listarCbo();
-	
+		listaCbo = cDao.listarCbo();
+
 	}
 
 	public List<CboBean> getListarCbo() throws ProjetoException {
-		System.out.println("lst cbo");
-			listaCbo = cDao.listarCbo();
-	
+		listaCbo = cDao.listarCbo();
+
 		return listaCbo;
 	}
 
@@ -162,9 +156,7 @@ public class CboController implements Serializable{
 	}
 
 	public void buscarCbo() throws ProjetoException {
-		System.out.println("buscar cbo");
 		this.listaCbo = cDao.listarCboBusca(descricaoBusca, tipoBuscar);
-		System.out.println("tam"+listaCbo.size());
 	}
 
 	public Integer getTipoBuscar() {
@@ -183,8 +175,6 @@ public class CboController implements Serializable{
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	
-
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
@@ -192,11 +182,11 @@ public class CboController implements Serializable{
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
 	}
-	
+
 	public String getCabecalho() {
-		if(this.tipo==1){
+		if (this.tipo == 1) {
 			cabecalho = "Inclusão de CBO";
-		}else if(this.tipo==2){
+		} else if (this.tipo == 2) {
 			cabecalho = "Alteração de CBO";
 		}
 		return cabecalho;

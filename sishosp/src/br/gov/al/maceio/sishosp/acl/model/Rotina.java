@@ -3,79 +3,75 @@ package br.gov.al.maceio.sishosp.acl.model;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- *
- * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
- * @since 17/03/2015
- */
-public class Rotina implements Serializable{
-    
-    private Long id;
-    private String descricao;
-    private String descSistema;
-    private List<Menu> listaMenusAss;
-    private List<Funcao> listaFuncoesAss;
-    
-    // Variáveis da url do menu item. Adcionadas para Rotina!
-    private String descPagina;
+public class Rotina implements Serializable {
+
+	private Long id;
+	private String descricao;
+	private String descSistema;
+	private List<Menu> listaMenusAss;
+	private List<Funcao> listaFuncoesAss;
+
+	// Variáveis da url do menu item. Adcionadas para Rotina!
+	private String descPagina;
 	private String diretorio;
-    private String extensao;
+	private String extensao;
 
-   
 	public Rotina() {
-        
-    }
 
-    public Rotina(Long id, String descricao, String descSistema) {
-        this.id = id;
-        this.descricao = descricao;
-        this.descSistema = descSistema;
-    }
+	}
 
-    public Rotina(String descricao, List<Menu> listaMenusAss) {
-        this.descricao = descricao;
-        this.listaMenusAss = listaMenusAss;
-    }
+	public Rotina(Long id, String descricao, String descSistema) {
+		this.id = id;
+		this.descricao = descricao;
+		this.descSistema = descSistema;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Rotina(String descricao, List<Menu> listaMenusAss) {
+		this.descricao = descricao;
+		this.listaMenusAss = listaMenusAss;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getDescricao() {
-        return descricao;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-    public String getDescSistema() {
-        return descSistema;
-    }
+	public String getDescricao() {
+		return descricao;
+	}
 
-    public void setDescSistema(String descSistema) {
-        this.descSistema = descSistema;
-    }
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
 
-    public List<Menu> getListaMenusAss() {
-        return listaMenusAss;
-    }
+	public String getDescSistema() {
+		return descSistema;
+	}
 
-    public void setListaMenusAss(List<Menu> listaMenusAss) {
-        this.listaMenusAss = listaMenusAss;
-    }
+	public void setDescSistema(String descSistema) {
+		this.descSistema = descSistema;
+	}
 
-    public List<Funcao> getListaFuncoesAss() {
-        return listaFuncoesAss;
-    }
+	public List<Menu> getListaMenusAss() {
+		return listaMenusAss;
+	}
 
-    public void setListaFuncoesAss(List<Funcao> listaFuncoesAss) {
-        this.listaFuncoesAss = listaFuncoesAss;
-    }
-    public String getDescPagina() {
+	public void setListaMenusAss(List<Menu> listaMenusAss) {
+		this.listaMenusAss = listaMenusAss;
+	}
+
+	public List<Funcao> getListaFuncoesAss() {
+		return listaFuncoesAss;
+	}
+
+	public void setListaFuncoesAss(List<Funcao> listaFuncoesAss) {
+		this.listaFuncoesAss = listaFuncoesAss;
+	}
+
+	public String getDescPagina() {
 		return descPagina;
 	}
 

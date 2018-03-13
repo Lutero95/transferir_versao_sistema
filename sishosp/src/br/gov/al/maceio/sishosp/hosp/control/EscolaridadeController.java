@@ -16,13 +16,10 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaridadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 
-@ManagedBean(name="EscolaridadeController")
+@ManagedBean(name = "EscolaridadeController")
 @ViewScoped
 public class EscolaridadeController implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Integer abaAtiva = 0;
 	private EscolaridadeBean escolaridade;
@@ -46,7 +43,7 @@ public class EscolaridadeController implements Serializable {
 		statusEscolaridade = "P";
 
 		listaEscolaridade = new ArrayList<>();
-		
+
 	}
 
 	public void gravarEscolaridade() throws ProjetoException {
@@ -59,13 +56,14 @@ public class EscolaridadeController implements Serializable {
 					"Escolaridade cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			//return "gerenciarEscolaridade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Escolaridade cadastrada com sucesso!";	
+			// return
+			// "gerenciarEscolaridade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Escolaridade cadastrada com sucesso!";
 
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "";
+			// return "";
 		}
 
 	}
@@ -76,17 +74,18 @@ public class EscolaridadeController implements Serializable {
 		boolean alterou = rdao.alterar(escolaridade);
 
 		if (alterou == true) {
-			//limparDados();
+			// limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Escolaridade alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarEscolaridade.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "";
+			// return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -104,7 +103,7 @@ public class EscolaridadeController implements Serializable {
 			listaEscolaridade = null;
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
-			listarEscolaridade();			
+			listarEscolaridade();
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusao!", "Erro");
@@ -145,43 +144,37 @@ public class EscolaridadeController implements Serializable {
 	}
 
 	public String redirectEdit() {
-		return "cadastroEscolaridade?faces-redirect=true&amp;id=" + this.escolaridade.getCodescolaridade()+"&amp;tipo="+tipo;
-	}	
-	
-	
+		return "cadastroEscolaridade?faces-redirect=true&amp;id="
+				+ this.escolaridade.getCodescolaridade() + "&amp;tipo=" + tipo;
+	}
+
 	public String redirectInsert() {
-		//System.out.println("tipo do redir "+tipoesc);
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-		.put("tipo", tipo);
-		int tipoesc2=  (int) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("tipo");
-		
-		return "cadastroEscolaridade?faces-redirect=true&amp;tipo="+tipo;
-	}	
-	
-	
+				.put("tipo", tipo);
+		int tipoesc2 = (int) FacesContext.getCurrentInstance()
+				.getExternalContext().getSessionMap().get("tipo");
+
+		return "cadastroEscolaridade?faces-redirect=true&amp;tipo=" + tipo;
+	}
+
 	public void getEditEscolaridade() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
-			System.out.println("entrou no editar");
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
-			tipo =Integer.parseInt(params.get("tipo"));			
-			
+			tipo = Integer.parseInt(params.get("tipo"));
+
 			EscolaridadeDAO udao = new EscolaridadeDAO();
 			this.escolaridade = udao.buscaescolaridadecodigo(id);
+		} else {
+
+			tipo = Integer.parseInt(params.get("tipo"));
+
 		}
-		else{
-			
-			tipo =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
+
 	}
-	
-	
+
 	public void limparDados() {
 		escolaridade = new EscolaridadeBean();
 
@@ -202,8 +195,6 @@ public class EscolaridadeController implements Serializable {
 	public void setAbaAtiva(Integer abaAtiva) {
 		this.abaAtiva = abaAtiva;
 	}
-
-	
 
 	public Integer getTipoBuscaEscolaridade() {
 		return tipoBuscaEscolaridade;
@@ -230,8 +221,8 @@ public class EscolaridadeController implements Serializable {
 	}
 
 	public void listarEscolaridade() throws ProjetoException {
-			EscolaridadeDAO fdao = new EscolaridadeDAO();
-			listaEscolaridade = fdao.listaEscolaridade();
+		EscolaridadeDAO fdao = new EscolaridadeDAO();
+		listaEscolaridade = fdao.listaEscolaridade();
 	}
 
 	public void setListaEscolaridade(List<EscolaridadeBean> listaEscolaridade) {
@@ -239,9 +230,9 @@ public class EscolaridadeController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo==1) {
+		if (this.tipo == 1) {
 			cabecalho = "Inclusão de Escolaridade";
-		} else if (this.tipo==2) {
+		} else if (this.tipo == 2) {
 			cabecalho = "Alteração de Escolaridade";
 		}
 		return cabecalho;

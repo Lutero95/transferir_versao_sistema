@@ -63,9 +63,7 @@ public class FormaTransporteController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
 				.getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
 		if (params.get("id") != null) {
-			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
 
@@ -106,18 +104,19 @@ public class FormaTransporteController implements Serializable {
 		boolean alterou = rdao.alterar(transporte);
 
 		if (alterou == true) {
-			//limparDados();
+			// limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Transporte alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true";
 
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "";
+			// return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -132,7 +131,7 @@ public class FormaTransporteController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Transporte excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			
+
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
 			listarTransporte();

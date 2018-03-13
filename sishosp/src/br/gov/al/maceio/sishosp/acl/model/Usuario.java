@@ -3,140 +3,136 @@ package br.gov.al.maceio.sishosp.acl.model;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- *
- * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
- * @since 17/03/2015
- */
-public class Usuario implements Serializable{
-    
-    private Long id;
-    private String nome;
-    private String sexo;
-    private String cpf;
-    private String email;
-    private String login;
-    private String senha;
-    private boolean ativo;
-    private Integer idPerfil;
-    private String descPerfil;
-    private List<Integer> listaIdSistemas;
-    private List<Long> listaIdPermissoes;
+public class Usuario implements Serializable {
 
-    public Usuario() {
-        
-    }
+	private Long id;
+	private String nome;
+	private String sexo;
+	private String cpf;
+	private String email;
+	private String login;
+	private String senha;
+	private boolean ativo;
+	private Integer idPerfil;
+	private String descPerfil;
+	private List<Integer> listaIdSistemas;
+	private List<Long> listaIdPermissoes;
 
-    public Usuario(Long id, String nome, String sexo, String cpf, String email, 
-        String login, String senha, boolean ativo, Integer idPerfil, String descPerfil, 
-        List<Integer> listaIdSistemas, List<Long> listaIdPermissoes) {
-        this.id = id;
-        this.nome = nome;
-        this.sexo = sexo;
-        this.cpf = cpf;
-        this.email = email;
-        this.login = login;
-        this.senha = senha;
-        this.ativo = ativo;
-        this.idPerfil = idPerfil;
-        this.descPerfil = descPerfil;
-        this.listaIdSistemas = listaIdSistemas;
-        this.listaIdPermissoes = listaIdPermissoes;
-    }
+	public Usuario() {
 
-    public Long getId() {
-        return id;
-    }
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Usuario(Long id, String nome, String sexo, String cpf, String email,
+			String login, String senha, boolean ativo, Integer idPerfil,
+			String descPerfil, List<Integer> listaIdSistemas,
+			List<Long> listaIdPermissoes) {
+		this.id = id;
+		this.nome = nome;
+		this.sexo = sexo;
+		this.cpf = cpf;
+		this.email = email;
+		this.login = login;
+		this.senha = senha;
+		this.ativo = ativo;
+		this.idPerfil = idPerfil;
+		this.descPerfil = descPerfil;
+		this.listaIdSistemas = listaIdSistemas;
+		this.listaIdPermissoes = listaIdPermissoes;
+	}
 
-    public String getNome() {
-        return nome;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getSexo() {
-        return sexo;
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-    public String getCpf() {
-        return cpf;
-    }
+	public String getSexo() {
+		return sexo;
+	}
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getCpf() {
+		return cpf;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
 
-    public String getLogin() {
-        return login;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getSenha() {
-        return senha;
-    }
+	public String getLogin() {
+		return login;
+	}
 
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
+	public void setLogin(String login) {
+		this.login = login;
+	}
 
-    public boolean isAtivo() {
-        return ativo;
-    }
+	public String getSenha() {
+		return senha;
+	}
 
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
-    }
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
 
-    public Integer getIdPerfil() {
-        return idPerfil;
-    }
+	public boolean isAtivo() {
+		return ativo;
+	}
 
-    public void setIdPerfil(Integer idPerfil) {
-        this.idPerfil = idPerfil;
-    }
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}
 
-    public String getDescPerfil() {
-        return descPerfil;
-    }
+	public Integer getIdPerfil() {
+		return idPerfil;
+	}
 
-    public void setDescPerfil(String descPerfil) {
-        this.descPerfil = descPerfil;
-    }
+	public void setIdPerfil(Integer idPerfil) {
+		this.idPerfil = idPerfil;
+	}
 
-    public List<Integer> getListaIdSistemas() {
-        return listaIdSistemas;
-    }
+	public String getDescPerfil() {
+		return descPerfil;
+	}
 
-    public void setListaIdSistemas(List<Integer> listaIdSistemas) {
-        this.listaIdSistemas = listaIdSistemas;
-    }
+	public void setDescPerfil(String descPerfil) {
+		this.descPerfil = descPerfil;
+	}
 
-    public List<Long> getListaIdPermissoes() {
-        return listaIdPermissoes;
-    }
+	public List<Integer> getListaIdSistemas() {
+		return listaIdSistemas;
+	}
 
-    public void setListaIdPermissoes(List<Long> listaIdPermissoes) {
-        this.listaIdPermissoes = listaIdPermissoes;
-    }
+	public void setListaIdSistemas(List<Integer> listaIdSistemas) {
+		this.listaIdSistemas = listaIdSistemas;
+	}
+
+	public List<Long> getListaIdPermissoes() {
+		return listaIdPermissoes;
+	}
+
+	public void setListaIdPermissoes(List<Long> listaIdPermissoes) {
+		this.listaIdPermissoes = listaIdPermissoes;
+	}
 }

@@ -25,8 +25,9 @@ public class EspecialidadeConverter implements Converter {
 			return e.listarEspecialidadePorId(id);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Especialidade não válida", ""));
+			throw new ConverterException(
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Especialidade não válida", ""));
 		}
 	}
 
@@ -34,6 +35,7 @@ public class EspecialidadeConverter implements Converter {
 			Object value) {
 		if (value == null || value.equals(""))
 			return null;
-		return String.valueOf(((EspecialidadeBean) value).getCodEspecialidade());
+		return String
+				.valueOf(((EspecialidadeBean) value).getCodEspecialidade());
 	}
 }

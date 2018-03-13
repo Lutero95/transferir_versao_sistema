@@ -103,7 +103,7 @@ public class ProfissaoController implements Serializable {
 
 		if (excluio == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Profissao excluído com sucesso!", "Sucesso");
+					"Profissão excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listarProfissoes();
 			RequestContext.getCurrentInstance().execute(
@@ -134,7 +134,7 @@ public class ProfissaoController implements Serializable {
 		} else {
 			// listaAss = null;
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-					"Nenhuma Profissao encontrada.", "Aviso");
+					"Nenhuma Profissão encontrada.", "Aviso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 

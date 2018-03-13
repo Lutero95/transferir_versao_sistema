@@ -67,16 +67,12 @@ public class EnderecoController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
 				.getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
 		if (params.get("id") != null) {
-			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
-			System.out.println("tipo do walter" + tipo);
 			EnderecoDAO cDao = new EnderecoDAO();
 			this.endereco = cDao.listarMunicipioPorId(id);
 		} else {
-			System.out.println("tipo sera" + tipo);
 			tipo = Integer.parseInt(params.get("tipo"));
 
 		}
@@ -131,17 +127,18 @@ public class EnderecoController implements Serializable {
 		boolean alterou = udao.alterarMunicipio(endereco);
 		listaMunicipios = null;
 		if (alterou == true) {
-			//limparDados();
+			// limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Município alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "";
+			// return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -149,7 +146,6 @@ public class EnderecoController implements Serializable {
 
 	public void excluirLogradourou() throws ProjetoException {
 		EnderecoDAO udao = new EnderecoDAO();
-		System.out.println("excluio");
 		boolean excluio = udao.excluirLogradouro(endereco);
 
 		if (excluio == true) {

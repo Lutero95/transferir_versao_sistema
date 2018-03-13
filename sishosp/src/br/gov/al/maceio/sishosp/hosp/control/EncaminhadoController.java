@@ -59,16 +59,12 @@ public class EncaminhadoController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
 				.getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
 		if (params.get("id") != null) {
-			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
-			System.out.println("tipo do walter" + tipo);
 			EncaminhadoDAO cDao = new EncaminhadoDAO();
 			this.encaminhado = cDao.buscaencaminhadocodigo(id);
 		} else {
-			System.out.println("tipo sera" + tipo);
 			tipo = Integer.parseInt(params.get("tipo"));
 
 		}

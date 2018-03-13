@@ -20,9 +20,6 @@ import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 @ViewScoped
 public class EquipamentoController implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private EquipamentoBean equipamento;
 	private List<EquipamentoBean> listaEquipamentos;
@@ -88,7 +85,7 @@ public class EquipamentoController implements Serializable {
 		boolean ok = gDao.excluirEquipamento(equipamento);
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Equipamento excluido com sucesso!", "Sucesso");
+					"Equipamento excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");

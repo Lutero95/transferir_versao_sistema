@@ -3,59 +3,55 @@ package br.gov.al.maceio.sishosp.acl.model;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- *
- * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
- * @since 17/03/2015
- */
 public class Perfil implements Serializable {
-    
-    private Long id;
-    private String descricao;
-    private List<Integer> listaSistemas;
-    private List<Long> listaPermissoes;
 
-    public Perfil() {
-        
-    }
+	private Long id;
+	private String descricao;
+	private List<Integer> listaSistemas;
+	private List<Long> listaPermissoes;
 
-    public Perfil(Long id, String descricao, List<Integer> listaSistemas, List<Long> listaPermissoes) {
-        this.id = id;
-        this.descricao = descricao;
-        this.listaSistemas = listaSistemas;
-        this.listaPermissoes = listaPermissoes;
-    }
+	public Perfil() {
 
-    public Long getId() {
-        return id;
-    }
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Perfil(Long id, String descricao, List<Integer> listaSistemas,
+			List<Long> listaPermissoes) {
+		this.id = id;
+		this.descricao = descricao;
+		this.listaSistemas = listaSistemas;
+		this.listaPermissoes = listaPermissoes;
+	}
 
-    public String getDescricao() {
-        return descricao;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public List<Integer> getListaSistemas() {
-        return listaSistemas;
-    }
+	public String getDescricao() {
+		return descricao;
+	}
 
-    public void setListaSistemas(List<Integer> listaSistemas) {
-        this.listaSistemas = listaSistemas;
-    }
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
 
-    public List<Long> getListaPermissoes() {
-        return listaPermissoes;
-    }
+	public List<Integer> getListaSistemas() {
+		return listaSistemas;
+	}
 
-    public void setListaPermissoes(List<Long> listaPermissoes) {
-        this.listaPermissoes = listaPermissoes;
-    }
+	public void setListaSistemas(List<Integer> listaSistemas) {
+		this.listaSistemas = listaSistemas;
+	}
+
+	public List<Long> getListaPermissoes() {
+		return listaPermissoes;
+	}
+
+	public void setListaPermissoes(List<Long> listaPermissoes) {
+		this.listaPermissoes = listaPermissoes;
+	}
 
 }

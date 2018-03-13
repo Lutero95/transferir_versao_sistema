@@ -18,7 +18,6 @@ import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
-
 @ManagedBean(name = "EspecialidadeController")
 @ViewScoped
 public class EspecialidadeController implements Serializable {
@@ -50,50 +49,87 @@ public class EspecialidadeController implements Serializable {
 		this.tipoBuscar = 1;
 		this.listaEspecialidade = eDao.listarEspecialidades();
 	}
-	
+
 	public String redirectEdit() {
-		return "cadastroEspecialidade?faces-redirect=true&amp;id=" + this.espec.getCodEspecialidade()+"&amp;tipo="+tipo;
-	}	
-	
-	
+		return "cadastroEspecialidade?faces-redirect=true&amp;id="
+				+ this.espec.getCodEspecialidade() + "&amp;tipo=" + tipo;
+	}
+
 	public String redirectInsert() {
-		//System.out.println("tipo do redir "+tipoesc);
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-		.put("tipo", tipo);
-		int tipoesc2=  (int) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("tipo");
-		
-		return "cadastroEspecialidade?faces-redirect=true&amp;tipo="+tipo;
-	}	
-	
-	
+				.put("tipo", tipo);
+		int tipoesc2 = (int) FacesContext.getCurrentInstance()
+				.getExternalContext().getSessionMap().get("tipo");
+
+		return "cadastroEspecialidade?faces-redirect=true&amp;tipo=" + tipo;
+	}
+
+	public void buscarEspecialidades() throws ProjetoException {
+		this.listaEspecialidade = eDao.listarEspecialidadesBusca(
+				descricaoBusca, tipoBuscar);
+	}
+
+	public void alterarEspecialidade() throws ProjetoException {
+		boolean alterou = eDao.alterarEspecialidade(espec);
+		if (alterou == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Especialidade alterada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			this.listaEspecialidade = eDao.listarEspecialidades();
+			// return
+			// "/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true";
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			this.listaEspecialidade = eDao.listarEspecialidades();
+			// return "";
+		}
+	}
+
+	public void excluirEspecialidade() throws ProjetoException {
+		boolean ok = eDao.excluirEspecialidade(espec);
+		if (ok == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Especialidade excluída com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusao!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').hide();");
+		}
+		this.listaEspecialidade = eDao.listarEspecialidades();
+	}
+
 	public void getEditEspecialidade() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
-			System.out.println("entrou no editar");
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
-			tipo =Integer.parseInt(params.get("tipo"));			
-			
+			tipo = Integer.parseInt(params.get("tipo"));
+
 			EspecialidadeDAO udao = new EspecialidadeDAO();
 			this.espec = udao.listarEspecialidadePorId((id));
+		} else {
+
+			tipo = Integer.parseInt(params.get("tipo"));
+
 		}
-		else{
-			
-			tipo =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
+
 	}
-	
+
 	public List<EspecialidadeBean> listaEspecialidadeAutoComplete(String query)
 			throws ProjetoException {
-		List<EspecialidadeBean> result = eDao.listarEspecialidadesBusca(query, 1);
+		List<EspecialidadeBean> result = eDao.listarEspecialidadesBusca(query,
+				1);
 		return result;
 	}
-		
 
 	public EspecialidadeBean getEspec() {
 		return espec;
@@ -119,7 +155,6 @@ public class EspecialidadeController implements Serializable {
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
@@ -129,11 +164,8 @@ public class EspecialidadeController implements Serializable {
 	}
 
 	public void getListarTodasEspecialidades() throws ProjetoException {
-		System.out.println("ok");
-			this.listaEspecialidade = eDao.listarEspecialidades();
-			System.out.println("listaEspecialidade .size "+listaEspecialidade .size());
-		
-		
+		this.listaEspecialidade = eDao.listarEspecialidades();
+
 	}
 
 	public void gravarEspecialidade() throws ProjetoException, SQLException {
@@ -145,60 +177,20 @@ public class EspecialidadeController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Especialidade cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "gerenciarEspecialidade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Especialidade cadastrada com sucesso!";
+			// return
+			// "gerenciarEspecialidade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Especialidade cadastrada com sucesso!";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "";
+			// return "";
 		}
-	}
-
-	public void buscarEspecialidades() throws ProjetoException {
-		this.listaEspecialidade = eDao.listarEspecialidadesBusca(
-				descricaoBusca, tipoBuscar);
-	}
-
-	public void alterarEspecialidade() throws ProjetoException {
-		boolean alterou = eDao.alterarEspecialidade(espec);
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Especialidade alterada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			this.listaEspecialidade = eDao.listarEspecialidades();
-			//return "/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true";
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			this.listaEspecialidade = eDao.listarEspecialidades();
-			//return "";
-		}
-	}
-
-	public void excluirEspecialidade() throws ProjetoException {
-		boolean ok = eDao.excluirEspecialidade(espec);
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Especialidade excluída com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		this.listaEspecialidade = eDao.listarEspecialidades();
 	}
 
 	public String getCabecalho() {
-		if (this.tipo==1) {
+		if (this.tipo == 1) {
 			cabecalho = "CADASTRO DE ESPECIALIDADE";
-		} else if (this.tipo==2) {
+		} else if (this.tipo == 2) {
 			cabecalho = "ALTERAR ESPECIALIDADE";
 		}
 		return cabecalho;
@@ -216,7 +208,8 @@ public class EspecialidadeController implements Serializable {
 	}
 
 	/**
-	 * @param tipo the tipo to set
+	 * @param tipo
+	 *            the tipo to set
 	 */
 	public void setTipo(int tipo) {
 		this.tipo = tipo;

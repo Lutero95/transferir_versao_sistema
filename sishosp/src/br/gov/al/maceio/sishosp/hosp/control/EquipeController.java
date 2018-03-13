@@ -49,38 +49,6 @@ public class EquipeController implements Serializable {
 		this.listaEquipe = eDao.listarEquipe();
 	}
 
-	public EquipeBean getEquipe() {
-		return equipe;
-	}
-
-	public void setEquipe(EquipeBean equipe) {
-		this.equipe = equipe;
-	}
-
-	public Integer getTipoBuscar() {
-		return tipoBuscar;
-	}
-
-	public void setTipoBuscar(Integer tipoBuscar) {
-		this.tipoBuscar = tipoBuscar;
-	}
-
-	public String getDescricaoBusca() {
-		return descricaoBusca;
-	}
-
-	public void setDescricaoBusca(String descricaoBusca) {
-		this.descricaoBusca = descricaoBusca;
-	}
-
-	public Integer getAbaAtiva() {
-		return abaAtiva;
-	}
-
-	public void setAbaAtiva(Integer abaAtiva) {
-		this.abaAtiva = abaAtiva;
-	}
-
 	public String redirectEdit() {
 		return "cadastroEquipe?faces-redirect=true&amp;id="
 				+ this.equipe.getCodEquipe() + "&amp;tipo=" + tipo;
@@ -94,17 +62,13 @@ public class EquipeController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
 				.getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
 		if (params.get("id") != null) {
-			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
-			System.out.println("tipo do walter" + tipo);
 			EquipeDAO cDao = new EquipeDAO();
 			this.equipe = cDao.buscarEquipePorID(id);
 
 		} else {
-			System.out.println("tipo sera" + tipo);
 			tipo = Integer.parseInt(params.get("tipo"));
 
 		}
@@ -238,4 +202,37 @@ public class EquipeController implements Serializable {
 	public List<EquipeBean> getListaEquipe() {
 		return listaEquipe;
 	}
+
+	public EquipeBean getEquipe() {
+		return equipe;
+	}
+
+	public void setEquipe(EquipeBean equipe) {
+		this.equipe = equipe;
+	}
+
+	public Integer getTipoBuscar() {
+		return tipoBuscar;
+	}
+
+	public void setTipoBuscar(Integer tipoBuscar) {
+		this.tipoBuscar = tipoBuscar;
+	}
+
+	public String getDescricaoBusca() {
+		return descricaoBusca;
+	}
+
+	public void setDescricaoBusca(String descricaoBusca) {
+		this.descricaoBusca = descricaoBusca;
+	}
+
+	public Integer getAbaAtiva() {
+		return abaAtiva;
+	}
+
+	public void setAbaAtiva(Integer abaAtiva) {
+		this.abaAtiva = abaAtiva;
+	}
+
 }

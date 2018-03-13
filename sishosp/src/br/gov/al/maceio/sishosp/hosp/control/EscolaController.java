@@ -17,9 +17,9 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 
-@ManagedBean(name="EscolaController")
+@ManagedBean(name = "EscolaController")
 @ViewScoped
-public class EscolaController implements Serializable{
+public class EscolaController implements Serializable {
 	/**
 	 * 
 	 */
@@ -31,21 +31,20 @@ public class EscolaController implements Serializable{
 	private List<EscolaBean> listaTipoEscola;
 	private List<EscolaBean> listaEscolas;
 
-	// BUSCAS	
+	// BUSCAS
 	private int tipoesc;
-	
+
 	private Integer tipoBuscaEscola;
 	private String campoBuscaEscola;
 	private String statusEscola;
 	private String cabecalho;
 
 	public EscolaController() {
-		System.out.println("constur");
 
 		escola = new EscolaBean();
 
 		// BUSCA
-		
+
 		tipoBuscaEscola = 1;
 		campoBuscaEscola = "";
 		statusEscola = "P";
@@ -57,39 +56,32 @@ public class EscolaController implements Serializable{
 	}
 
 	public String redirectEdit() {
-		return "cadastroEscola?faces-redirect=true&amp;id=" + this.escola.getCodEscola()+"&amp;tipo="+tipoesc;
-	}	
-	
-	
-	public String redirectInsert() {
-		return "cadastroEscola?faces-redirect=true&amp;tipo="+tipoesc;
-	}	
-	
-	
-	public void getEditEscola() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
-		if(params.get("id") != null) {
-			System.out.println("entrou no editar");
-			Integer id = Integer.parseInt(params.get("id"));
-			tipoesc =Integer.parseInt(params.get("tipo"));			
-			
-			EscolaDAO udao = new EscolaDAO();
-			this.escola = udao.buscaescolacodigo(id);
-		}
-		else{
-			
-			tipoesc =Integer.parseInt(params.get("tipo"));
-			
-		}
-		
+		return "cadastroEscola?faces-redirect=true&amp;id="
+				+ this.escola.getCodEscola() + "&amp;tipo=" + tipoesc;
 	}
 
-	
-	
-	
-	
+	public String redirectInsert() {
+		return "cadastroEscola?faces-redirect=true&amp;tipo=" + tipoesc;
+	}
+
+	public void getEditEscola() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			tipoesc = Integer.parseInt(params.get("tipo"));
+
+			EscolaDAO udao = new EscolaDAO();
+			this.escola = udao.buscaescolacodigo(id);
+		} else {
+
+			tipoesc = Integer.parseInt(params.get("tipo"));
+
+		}
+
+	}
+
 	public void gravarEscola() throws ProjetoException, SQLException {
 		EscolaDAO udao = new EscolaDAO();
 		boolean cadastrou = udao.cadastrar(escola);
@@ -99,34 +91,34 @@ public class EscolaController implements Serializable{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Escola cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "gerenciarEscola?faces-redirect=true&amp;tipo="+tipoesc+"&amp;sucesso=Escola cadastrada com sucesso!";	
+			// return
+			// "gerenciarEscola?faces-redirect=true&amp;tipo="+tipoesc+"&amp;sucesso=Escola cadastrada com sucesso!";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "";
+			// return "";
 		}
 	}
 
-	
-	
 	public void alterarEscola() throws ProjetoException {
 
 		EscolaDAO rdao = new EscolaDAO();
 		boolean alterou = rdao.alterar(escola);
 		listaEscolas = null;
 		if (alterou == true) {
-			//limparDados();
+			// limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Escola alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "/pages/sishosp/gerenciarEscola.faces?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarEscola.faces?faces-redirect=true";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//return "";
+			// return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
 		}
 
@@ -271,8 +263,6 @@ public class EscolaController implements Serializable{
 		this.listaTipoEscola = listaTipoEscola;
 	}
 
-
-
 	public Integer getTipoBuscaEscola() {
 		return tipoBuscaEscola;
 	}
@@ -297,8 +287,6 @@ public class EscolaController implements Serializable{
 		this.statusEscola = statusEscola;
 	}
 
-	
-	
 	public void buscarEscola() throws ProjetoException {
 		EscolaDAO fdao = new EscolaDAO();
 		listaEscolas = fdao.listaEscolas();
@@ -317,9 +305,9 @@ public class EscolaController implements Serializable{
 	}
 
 	public String getCabecalho() {
-		if (this.tipoesc==1) {
+		if (this.tipoesc == 1) {
 			cabecalho = "CADASTRO DE ESCOLA";
-		} else if (this.tipoesc==2) {
+		} else if (this.tipoesc == 2) {
 			cabecalho = "ALTERAR ESCOLA";
 		}
 		return cabecalho;
@@ -344,6 +332,5 @@ public class EscolaController implements Serializable{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
 
 }

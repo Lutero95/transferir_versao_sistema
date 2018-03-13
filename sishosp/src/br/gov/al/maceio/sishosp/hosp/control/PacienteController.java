@@ -179,16 +179,6 @@ public class PacienteController implements Serializable {
 		statusRaca = "P";
 	}
 
-	public List<PacienteBean> getListaPacientesParaAgenda() {
-
-		return listaPacientesParaAgenda;
-	}
-
-	public void setListaPacientesParaAgenda(
-			List<PacienteBean> listaPacientesParaAgenda) {
-		this.listaPacientesParaAgenda = listaPacientesParaAgenda;
-	}
-
 	public String redirectEdit() {
 		return "cadastroPaciente?faces-redirect=true&amp;id="
 				+ this.paciente.getId_paciente() + "&amp;tipo=" + tipo;
@@ -202,16 +192,12 @@ public class PacienteController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
 				.getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
 		if (params.get("id") != null) {
-			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
-			System.out.println("tipo do walter" + tipo);
 			PacienteDAO cDao = new PacienteDAO();
 			this.paciente = cDao.listarPacientePorID(id);
 		} else {
-			System.out.println("tipo sera" + tipo);
 			tipo = Integer.parseInt(params.get("tipo"));
 
 		}
@@ -228,8 +214,6 @@ public class PacienteController implements Serializable {
 	}
 
 	public void encontraCEP() {
-		System.out.println("CODIGO: " + paciente.getId_paciente());
-		System.out.println("CEP: " + paciente.getEndereco().getCep());
 		CepWebService cepWebService = new CepWebService(paciente.getEndereco()
 				.getCep());
 		if (cepWebService.getResultado() != 0) {
@@ -240,7 +224,6 @@ public class PacienteController implements Serializable {
 			paciente.getEndereco().setMunicipio(cepWebService.getCidade());
 			paciente.getEndereco().setBairro(cepWebService.getBairro());
 			paciente.getEndereco().setCodibge(cepWebService.getResultado());
-			System.out.println("IBGE: " + paciente.getEndereco().getCodibge());
 
 		} else {
 			FacesContext.getCurrentInstance().addMessage(
@@ -254,16 +237,12 @@ public class PacienteController implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
 				.getRequestParameterMap();
-		System.out.println("vai ve se entrar no editar");
 		if (params.get("id") != null) {
-			System.out.println("entrou no editar");
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
-			System.out.println("tipo do walter" + tipo);
 			PacienteDAO cDao = new PacienteDAO();
 			this.raca = cDao.listarRacaPorID(id);
 		} else {
-			System.out.println("tipo sera" + tipo);
 			tipo = Integer.parseInt(params.get("tipo"));
 
 		}
@@ -301,7 +280,6 @@ public class PacienteController implements Serializable {
 			paciente.getFormatransporte().setCodformatransporte(null);
 
 		int codmunicipio = edao.municipioExiste(paciente);
-		System.out.println("codmunicipio gravar: " + codmunicipio);
 		boolean cadastrou = udao.cadastrar(paciente, codmunicipio);
 
 		if (cadastrou == true) {
@@ -324,7 +302,7 @@ public class PacienteController implements Serializable {
 		PacienteDAO udao = new PacienteDAO();
 		if (tipoBuscar.equals("VAZIO") || descricaoParaBuscar.isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Escolha uma op��o v�lida e insira uma descri��o!",
+					"Escolha uma opção válida e insira uma descrição!",
 					"Insira os dados");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
@@ -334,8 +312,8 @@ public class PacienteController implements Serializable {
 
 			if (this.listaPacientesParaAgenda.isEmpty()) {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"N�o existe paciente com essa descri��o!",
-						"Paciente n�o encontrado");
+						"Não existe paciente com essa descrição!",
+						"Paciente não encontrado");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 		}
@@ -367,7 +345,6 @@ public class PacienteController implements Serializable {
 		}
 
 		int codmunicipio = edao.municipioExiste(paciente);
-		System.out.println("codmunicipio alterar: " + codmunicipio);
 		boolean alterou = mdao.alterar(paciente, codmunicipio);
 
 		if (alterou == true) {
@@ -563,8 +540,7 @@ public class PacienteController implements Serializable {
 	}
 
 	public void onItemSelect5(SelectEvent event) throws Exception {
-		System.out.println("Marce:"
-				+ transporteSuggestion.getCodformatransporte());
+
 		FormaTransporteBean prodsel = new FormaTransporteBean();
 		prodsel = (FormaTransporteBean) event.getObject();
 
@@ -611,7 +587,6 @@ public class PacienteController implements Serializable {
 	}
 
 	public void onItemSelect4(SelectEvent event) throws Exception {
-		System.out.println("NATH:" + encaminhadoSuggestion.getCodencaminhado());
 		EncaminhadoBean prodsel = new EncaminhadoBean();
 		prodsel = (EncaminhadoBean) event.getObject();
 
@@ -713,7 +688,6 @@ public class PacienteController implements Serializable {
 	}
 
 	public void onItemSelect2(SelectEvent event) throws Exception {
-		System.out.println("itemselect escolaridade");
 		EscolaridadeBean prodsel = new EscolaridadeBean();
 		prodsel = (EscolaridadeBean) event.getObject();
 
@@ -771,7 +745,6 @@ public class PacienteController implements Serializable {
 	}
 
 	public void onItemSelect(SelectEvent event) throws Exception {
-		System.out.println("THULIO" + escolaSuggestion.getCodEscola());
 
 		EscolaBean prodsel = new EscolaBean();
 		prodsel = (EscolaBean) event.getObject();
@@ -1568,6 +1541,16 @@ public class PacienteController implements Serializable {
 			listaRaca = fdao.listaCor();
 		}
 		return listaRaca;
+	}
+
+	public List<PacienteBean> getListaPacientesParaAgenda() {
+
+		return listaPacientesParaAgenda;
+	}
+
+	public void setListaPacientesParaAgenda(
+			List<PacienteBean> listaPacientesParaAgenda) {
+		this.listaPacientesParaAgenda = listaPacientesParaAgenda;
 	}
 
 }
