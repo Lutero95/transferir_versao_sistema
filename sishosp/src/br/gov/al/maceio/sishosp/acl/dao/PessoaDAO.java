@@ -12,8 +12,6 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-
-
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.acl.control.PessoaController;
@@ -35,13 +33,10 @@ public class PessoaDAO {
 					+ "pispas, replace(to_char(cpf, '000:000:000-00'), ':', '.'), Trim(resnum), Trim(rescsm), elenum, elezona, elesec, eleuf , rpnum,rpuf, rpexp, chcrs, catchcrs,"
 					+ " dtvalchcrs, id_pessoa, racacor, cep,trim(to_char(telef,'999999999999')) as telef, email1,trim(to_char(celular,'999999999999')) AS celular "
 					+ " from fp.cadpessoa ";
-			
-					
-		
-			
+
 			if (busca == 1) {
 				sql += " where lpad(trim(to_char(cpf,'99999999999')),11,'0') like ? ";
-						
+
 			} else if (busca == 2) {
 				sql += " where nome like ? ";
 			}
@@ -103,31 +98,29 @@ public class PessoaDAO {
 				aux.setId_pessoa(rs.getInt(42));
 				if (rs.getObject("racacor") != null)
 					aux.setRacacor(rs.getInt(43));
-				if (rs.getObject("cep") != null){
+				if (rs.getObject("cep") != null) {
 					aux.setCep(Integer.valueOf((String.valueOf(rs.getInt(44))
 							.replaceAll("[^0123456789]", ""))));
-				}else{
+				} else {
 					aux.setCep(null);
 				}
-				if(rs.getObject("telef") != null){
+				if (rs.getObject("telef") != null) {
 					aux.setTelef(rs.getString(45));
 				}
-				if (rs.getObject("email1") != null){
+				if (rs.getObject("email1") != null) {
 					aux.setEmail1((rs.getString(46)));
 				}
-				//Double.valueOf(rs.getObject("celular").toString()).doubleValue() == 0
-				if (rs.getObject("celular") != null){	
+				// Double.valueOf(rs.getObject("celular").toString()).doubleValue()
+				// == 0
+				if (rs.getObject("celular") != null) {
 					aux.setCelular(rs.getString(47));
 				}
-		
-				
+
 				c.add(aux);
 			}
-		
+
 			return c;
 
-			
-			
 		} catch (Exception sqle) {
 			throw new ProjetoException(sqle);
 
@@ -143,27 +136,28 @@ public class PessoaDAO {
 		}
 	}
 
-	public List<PessoaBean> buscarpessoas(PessoaBean pess) throws ProjetoException {
+	public List<PessoaBean> buscarpessoas(PessoaBean pess)
+			throws ProjetoException {
 
 		PreparedStatement ps = null;
 		Connection con = ConnectionFactory.getConnection();
 		List<PessoaBean> c = new ArrayList<PessoaBean>();
 		try {
-				String sql = "select nome,lpad(trim(to_char(cpf,'99999999999')),11,'0') as cpf,id_pessoa from fp.cadpessoa "
-						+ "where nome like ? and lpad(trim(to_char(cpf,'99999999999')),11,'0') like ? order by nome,cpf";
+			String sql = "select nome,lpad(trim(to_char(cpf,'99999999999')),11,'0') as cpf,id_pessoa from fp.cadpessoa "
+					+ "where nome like ? and lpad(trim(to_char(cpf,'99999999999')),11,'0') like ? order by nome,cpf";
 
-				ps = con.prepareStatement(sql);
-				ps.setString(1, "%" + pess.getNome().toUpperCase() + "%");
-				ps.setString(2, "%" + pess.getCpf().replaceAll("[^0-9]", "")+ "%");
-				ResultSet rs = ps.executeQuery();
-	
-				while (rs.next()) {
-					PessoaBean aux = new PessoaBean();
-					aux.setNome(rs.getString("nome"));
-					aux.setCpf(rs.getString("cpf")); 
-					aux.setId_pessoa(rs.getInt("id_pessoa"));
-					c.add(aux);
-				}			
+			ps = con.prepareStatement(sql);
+			ps.setString(1, "%" + pess.getNome().toUpperCase() + "%");
+			ps.setString(2, "%" + pess.getCpf().replaceAll("[^0-9]", "") + "%");
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				PessoaBean aux = new PessoaBean();
+				aux.setNome(rs.getString("nome"));
+				aux.setCpf(rs.getString("cpf"));
+				aux.setId_pessoa(rs.getInt("id_pessoa"));
+				c.add(aux);
+			}
 			return c;
 		} catch (Exception sqle) {
 
@@ -257,12 +251,10 @@ public class PessoaDAO {
 					aux.setEmail1((rs.getString(46)));
 				if (rs.getObject("celular") != null)
 					aux.setCelular(rs.getString(47));
-					
+
 			}
-			
-	
+
 			return aux;
-			
 
 		} catch (Exception sqle) {
 
@@ -455,12 +447,14 @@ public class PessoaDAO {
 				ps.setNull(43, Types.INTEGER);
 			}
 			if ((U.getTelef() != null) && (U.getTelef() != "")) {
-				ps.setDouble(44, Integer.valueOf((U.getTelef()).replaceAll("[^0123456789]", "")));
+				ps.setDouble(44, Integer.valueOf((U.getTelef()).replaceAll(
+						"[^0123456789]", "")));
 			} else {
 				ps.setNull(44, Types.DOUBLE);
 			}
-			if ((U.getCelular() != null) &&( U.getCelular() != "")) {
-				ps.setDouble(45, Integer.valueOf((U.getCelular()).replaceAll("[^0123456789]", "")));
+			if ((U.getCelular() != null) && (U.getCelular() != "")) {
+				ps.setDouble(45, Integer.valueOf((U.getCelular()).replaceAll(
+						"[^0123456789]", "")));
 			} else {
 				ps.setNull(45, Types.DOUBLE);
 			}
@@ -672,7 +666,6 @@ public class PessoaDAO {
 		}
 	}
 
-
 	public int calcularDigito(String numero) {
 		char[] n = numero.toCharArray();
 		int soma = 0;
@@ -703,6 +696,5 @@ public class PessoaDAO {
 
 		return intDigito;
 	}
-	
-	
+
 }

@@ -417,8 +417,6 @@ public class UsuarioDAO {
 		boolean associou = false;
 
 		List<Long> listaId = usuario.getListaIdPermissoes();
-		System.out.println("id" + usuario.getId());
-		System.out.println("lista" + listaId.size());
 		try {
 			// conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);

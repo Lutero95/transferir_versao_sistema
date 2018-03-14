@@ -15,169 +15,171 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
 
-/**
- *
- * @author Arthur Alves, Emerson Gama & Jerônimo do Nascimento 
- * @since 17/03/2015
- */
 @ManagedBean
 @ViewScoped
-public class FuncaoMB  implements Serializable{
+public class FuncaoMB implements Serializable {
 
-    private Funcao funcao;
-    private List<Funcao> listaFuncoes;
+	private Funcao funcao;
+	private List<Funcao> listaFuncoes;
 
-    private String valorBusca;
-    private String sisBusca;
+	private String valorBusca;
+	private String sisBusca;
 
-    public FuncaoMB() {
-        funcao = new Funcao();
-        funcao.setAtiva(true);
-        listaFuncoes = new ArrayList<>();
-        listaFuncoes = null;   
-        
-        valorBusca = "";
-        sisBusca = "0";
-    }
+	public FuncaoMB() {
+		funcao = new Funcao();
+		funcao.setAtiva(true);
+		listaFuncoes = new ArrayList<>();
+		listaFuncoes = null;
 
-    public void cadastrarFuncao() throws ProjetoException {
-        
-        FuncaoDAO fdao = new FuncaoDAO();
-        boolean cadastrou = fdao.cadastrarFuncao(funcao);
+		valorBusca = "";
+		sisBusca = "0";
+	}
 
-        if(cadastrou == true) {
+	public void cadastrarFuncao() throws ProjetoException {
 
-            listaFuncoes = null;
+		FuncaoDAO fdao = new FuncaoDAO();
+		boolean cadastrou = fdao.cadastrarFuncao(funcao);
 
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Função cadastrada com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgCadFuncao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+		if (cadastrou == true) {
 
-            RequestContext.getCurrentInstance().execute("PF('dlgCadFuncao').hide();");
-        }
-    }
+			listaFuncoes = null;
 
-    public void alterarFuncao() throws ProjetoException {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Função cadastrada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-        FuncaoDAO fdao = new FuncaoDAO();
-        boolean alterou = fdao.alterarFuncao(funcao);
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlgCadFuncao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-        if(alterou == true) {
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlgCadFuncao').hide();");
+		}
+	}
 
-            listaFuncoes = null;
+	public void alterarFuncao() throws ProjetoException {
 
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Função alterada com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgAltFuncao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a alteração!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+		FuncaoDAO fdao = new FuncaoDAO();
+		boolean alterou = fdao.alterarFuncao(funcao);
 
-            RequestContext.getCurrentInstance().execute("PF('dlgAltFuncao').hide();");
-        }
-    }
+		if (alterou == true) {
 
-    public void excluirFuncao() throws ProjetoException {
-        
-        FuncaoDAO fdao = new FuncaoDAO();
-        boolean excluiu = fdao.excluirFuncao(funcao);
+			listaFuncoes = null;
 
-        if(excluiu == true) {
-            
-            listaFuncoes = null;
-            
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Função excluida com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgExcFuncao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Ocorreu um erro durante a exclusão!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgExcFuncao').hide();");
-        }       
-    }
-    
-    public void buscarFuncao() {
-        FuncaoDAO fdao = new FuncaoDAO();
-        List<Funcao> listaAux = null;
-        //List<Funcao> listaAux = fdao.buscarFuncaoDescSis(valorBusca, Integer.parseInt(sisBusca));
-        
-        if(listaAux != null && listaAux.size() > 0) {
-            listaFuncoes = null;
-            listaFuncoes = listaAux;
-        } else {
-            listaFuncoes = null;
-            
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-                "Função não encontrada!", "Aviso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } 
-    }
-    
-    public String verificarBolTab(boolean ativo) {
-        if(ativo == true) {
-            return "../../imgs/status_green.png";
-        } else {
-            return "../../imgs/status_red.png";
-        }
-    }
-    
-    public void limparDados() {
-        funcao = new Funcao();
-        sisBusca = "0";
-    }
-    
-    public void limparBusca() {
-        valorBusca = "";
-        sisBusca = "0";
-        listaFuncoes = null;
-    }
-    
-    public Funcao getFuncao() {
-        return funcao;
-    }
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Função alterada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-    public void setFuncao(Funcao funcao) {
-        this.funcao = funcao;
-    }
-    
-    public List<Funcao> getListaFuncoes() throws ProjetoException {
-        if (listaFuncoes == null) {
-            FuncaoDAO fdao = new FuncaoDAO();
-            listaFuncoes = fdao.listarFuncoes();
-        }
-        return listaFuncoes;
-    }
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlgAltFuncao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a alteração!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-    public void setListaFuncoes(List<Funcao> listaFuncoes) {
-        this.listaFuncoes = listaFuncoes;
-    }
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlgAltFuncao').hide();");
+		}
+	}
 
-    public String getValorBusca() {
-        return valorBusca;
-    }
+	public void excluirFuncao() throws ProjetoException {
 
-    public void setValorBusca(String valorBusca) {
-        this.valorBusca = valorBusca;
-    }
+		FuncaoDAO fdao = new FuncaoDAO();
+		boolean excluiu = fdao.excluirFuncao(funcao);
 
-    public String getSisBusca() {
-        return sisBusca;
-    }
+		if (excluiu == true) {
 
-    public void setSisBusca(String sisBusca) {
-        this.sisBusca = sisBusca;
-    }
+			listaFuncoes = null;
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Função excluída com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlgExcFuncao').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante a exclusão!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlgExcFuncao').hide();");
+		}
+	}
+
+	public void buscarFuncao() {
+		FuncaoDAO fdao = new FuncaoDAO();
+		List<Funcao> listaAux = null;
+		// List<Funcao> listaAux = fdao.buscarFuncaoDescSis(valorBusca,
+		// Integer.parseInt(sisBusca));
+
+		if (listaAux != null && listaAux.size() > 0) {
+			listaFuncoes = null;
+			listaFuncoes = listaAux;
+		} else {
+			listaFuncoes = null;
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Função não encontrada!", "Aviso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}
+
+	public String verificarBolTab(boolean ativo) {
+		if (ativo == true) {
+			return "../../imgs/status_green.png";
+		} else {
+			return "../../imgs/status_red.png";
+		}
+	}
+
+	public void limparDados() {
+		funcao = new Funcao();
+		sisBusca = "0";
+	}
+
+	public void limparBusca() {
+		valorBusca = "";
+		sisBusca = "0";
+		listaFuncoes = null;
+	}
+
+	public Funcao getFuncao() {
+		return funcao;
+	}
+
+	public void setFuncao(Funcao funcao) {
+		this.funcao = funcao;
+	}
+
+	public List<Funcao> getListaFuncoes() throws ProjetoException {
+		if (listaFuncoes == null) {
+			FuncaoDAO fdao = new FuncaoDAO();
+			listaFuncoes = fdao.listarFuncoes();
+		}
+		return listaFuncoes;
+	}
+
+	public void setListaFuncoes(List<Funcao> listaFuncoes) {
+		this.listaFuncoes = listaFuncoes;
+	}
+
+	public String getValorBusca() {
+		return valorBusca;
+	}
+
+	public void setValorBusca(String valorBusca) {
+		this.valorBusca = valorBusca;
+	}
+
+	public String getSisBusca() {
+		return sisBusca;
+	}
+
+	public void setSisBusca(String sisBusca) {
+		this.sisBusca = sisBusca;
+	}
 }

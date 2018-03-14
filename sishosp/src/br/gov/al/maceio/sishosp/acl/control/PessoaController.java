@@ -27,13 +27,12 @@ import br.gov.al.maceio.sishosp.acl.dao.PessoaDAO;
 import br.gov.al.maceio.sishosp.acl.model.PessoaBean;
 import br.gov.al.maceio.sishosp.acl.model.UsuarioPosseBean;
 
-
 import javax.faces.component.EditableValueHolder;
 import javax.servlet.ServletContext;
 
 @ManagedBean(name = "MBPessoa")
 @ViewScoped
-public class PessoaController implements Serializable{
+public class PessoaController implements Serializable {
 
 	private PessoaBean pessoa;
 	private List<UsuarioPosseBean> listaUsuario;
@@ -45,8 +44,6 @@ public class PessoaController implements Serializable{
 	private Integer tipo;
 	private String campotexto;
 	private Integer campobusca;
-	
-	
 
 	public PessoaController() {
 		pessoa = new PessoaBean();
@@ -62,12 +59,12 @@ public class PessoaController implements Serializable{
 
 	public void setListaUsuario(List<UsuarioPosseBean> listaUsuario) {
 		this.listaUsuario = listaUsuario;
-	
+
 	}
 
 	public void limparBeans() {
 		pessoa = new PessoaBean();
-	
+
 	}
 
 	public void LimparBusca() {
@@ -99,11 +96,12 @@ public class PessoaController implements Serializable{
 	}
 
 	public void ConsultaPessoa() throws ProjetoException {
-		if (campotexto != null || campotexto != "0" || campobusca != null || campobusca != 0) {
+		if (campotexto != null || campotexto != "0" || campobusca != null
+				|| campobusca != 0) {
 			listapessoa = new ArrayList<>();
 			PessoaDAO pdao = new PessoaDAO();
 			listapessoa = pdao.ConsultaPessoa(campotexto, campobusca);
-			
+
 			if (campobusca == 1
 					&& (listapessoa.size() == 0 || listapessoa == null)) {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
@@ -120,54 +118,40 @@ public class PessoaController implements Serializable{
 			}
 		}
 	}
-	
-	
-
-
-	
 
 	/*
-	public void removerZeros(){
-			if(Double.valueOf(pessoa.getCelular().toString()).doubleValue() == 0 ||
-			   Double.valueOf(pessoa.getTelef().toString()).doubleValue() == 0	||
-			   Integer.valueOf(pessoa.getElesec().toString()).intValue() == 0	||
-			   Integer.valueOf(pessoa.getElezona().toString()).intValue() == 0 ){
-				
-	
-				System.out.println("Entrou Teste");
-				pessoa.setCelular(null);
-				pessoa.setTelef(null);
-				pessoa.setElesec(null);
-				pessoa.setElezona(null);
-
-			}
-	}
-	*/
+	 * public void removerZeros(){
+	 * if(Double.valueOf(pessoa.getCelular().toString()).doubleValue() == 0 ||
+	 * Double.valueOf(pessoa.getTelef().toString()).doubleValue() == 0 ||
+	 * Integer.valueOf(pessoa.getElesec().toString()).intValue() == 0 ||
+	 * Integer.valueOf(pessoa.getElezona().toString()).intValue() == 0 ){
+	 * 
+	 * 
+	 * pessoa.setCelular(null); pessoa.setTelef(null); pessoa.setElesec(null);
+	 * pessoa.setElezona(null);
+	 * 
+	 * } }
+	 */
 	public void updateDadosServidor() throws ProjetoException {
-		
+
 		boolean alterou = false;
 		PessoaDAO pdao = new PessoaDAO();
-		
+
 		if (pessoa != null) {
 			alterou = pdao.atualizaDadosPessoais(pessoa);
-			
+
 		}
-		
+
 		if (alterou) {
 			FacesMessage msg = new FacesMessage("Atualizado com Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			
+
 		} else {
 			FacesMessage msg = new FacesMessage(
 					"Ocorreu um erro na alteração, por favor verificar os dados");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
-	
-	
-
-
-
 
 	public PessoaBean getPessoa() {
 		return pessoa;

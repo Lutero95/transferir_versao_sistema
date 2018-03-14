@@ -21,354 +21,365 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 
-/**
- *
- * @author Thulio e Thiago
- * @since 26/03/2015
- */
 @ManagedBean
 @ViewScoped
 public class FuncionalidadeMB implements Serializable {
 
 	private Sistema sistema;
 	private Funcionalidade funcionalidade;
-    private List<Funcionalidade> listaFuncionalidadesGeral;
-    private List<String> listaExtensoesPag;
-    private List<Sistema> listaDiretorios;
-    
-    private Integer abaAtiva;   
-    private boolean statusFuncionalidade;
-   
-    private DualListModel<Sistema> listaSistemasDual;
-    private List<Sistema> listaSistemasSoucer;
-    private List<Sistema> listaSistemasTarget;
+	private List<Funcionalidade> listaFuncionalidadesGeral;
+	private List<String> listaExtensoesPag;
+	private List<Sistema> listaDiretorios;
 
-    private DualListModel<Sistema> listaSistemasDualAlt;
-    private List<Sistema> listaSistemasSoucerAlt;
-    private List<Sistema> listaSistemasTargetAlt;
-    
-    private String idMenuAlt = "0";
-    private String indiceAux = "null";    
-    private String tipoMenuRel = "A";
-    
-    private String valorBusca;
+	private Integer abaAtiva;
+	private boolean statusFuncionalidade;
 
-    public FuncionalidadeMB() {
-        funcionalidade = new Funcionalidade();
-        sistema = new Sistema();
-       
-        funcionalidade.setExtensao(".faces");
+	private DualListModel<Sistema> listaSistemasDual;
+	private List<Sistema> listaSistemasSoucer;
+	private List<Sistema> listaSistemasTarget;
 
-        listaFuncionalidadesGeral = new ArrayList<>();
-        listaFuncionalidadesGeral = null;
-        
-        listaExtensoesPag = new ArrayList<>();
-        listaExtensoesPag.add(".faces");
-        listaExtensoesPag.add(".jsf");
-        listaExtensoesPag.add(".xhtml");
-        
-        listaDiretorios = new ArrayList<>();
-        listaDiretorios = null;
-        
-        listaSistemasDual = null;
-        listaSistemasSoucer = new ArrayList<>();
-        listaSistemasTarget = new ArrayList<>();
-        
-        listaSistemasDualAlt = null;
-        listaSistemasSoucerAlt = new ArrayList<>();
-        listaSistemasTargetAlt = new ArrayList<>(); 
-        
-        valorBusca = "";
-    }
+	private DualListModel<Sistema> listaSistemasDualAlt;
+	private List<Sistema> listaSistemasSoucerAlt;
+	private List<Sistema> listaSistemasTargetAlt;
 
-    public void cadastrarFuncionalidade() throws ProjetoException {
-                
-        if(listaSistemasDual.getTarget().size() > 0) {
-            List<Integer> listaSis = new ArrayList<>();
-            
-            for (Sistema s : listaSistemasDual.getTarget()) {
-                listaSis.add(s.getId());
-            }
-            
-            //funcionalidade.setDescPagina(null);
-            //funcionalidade.setDiretorio(null);
-            //funcionalidade.setExtensao(null);
-            //sistema.setImagem(null);
-            funcionalidade.setAtivo(statusFuncionalidade);
-            funcionalidade.setListaSistemas(listaSis);
+	private String idMenuAlt = "0";
+	private String indiceAux = "null";
+	private String tipoMenuRel = "A";
 
-            FuncionalidadeDAO mdao = new FuncionalidadeDAO();
-            boolean cadastrou = mdao.cadastrar(funcionalidade);
+	private String valorBusca;
 
-            if(cadastrou == true) {
+	public FuncionalidadeMB() {
+		funcionalidade = new Funcionalidade();
+		sistema = new Sistema();
 
-                listaFuncionalidadesGeral = null;
+		funcionalidade.setExtensao(".faces");
 
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Funcionalidade cadastrado com sucesso!", "Sucesso");
-                FacesContext.getCurrentInstance().addMessage(null, msg);
-                
-                RequestContext.getCurrentInstance().execute("PF('dlgCadMenu').hide();");
-            } else {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante o cadastro!", "Erro");
-                FacesContext.getCurrentInstance().addMessage(null, msg);
+		listaFuncionalidadesGeral = new ArrayList<>();
+		listaFuncionalidadesGeral = null;
 
-                RequestContext.getCurrentInstance().execute("PF('dlgCadMenu').hide();");
-            }
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Selecione pelo menos um sistema", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }
-    }
-    
-    public void alterarFuncionalidade() throws ProjetoException {
-    
-        /*if(listaSistemasDualAlt.getTarget().size() > 0) {
-            List<Integer> listaSis = new ArrayList<>();
-            
-            for(Sistema s : listaSistemasDualAlt.getTarget()) {
-                listaSis.add(s.getId());
-                
-                } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Selecione pelo menos um sistema", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }     
-            }*/
-            
-            funcionalidade.setAtivo(statusFuncionalidade);
-            //funcionalidade.setListaSistemas(listaSis);
-            FuncionalidadeDAO mdao = new FuncionalidadeDAO();
-            boolean alterou = mdao.alterar(funcionalidade);
+		listaExtensoesPag = new ArrayList<>();
+		listaExtensoesPag.add(".faces");
+		listaExtensoesPag.add(".jsf");
+		listaExtensoesPag.add(".xhtml");
 
-            if(alterou == true) {
+		listaDiretorios = new ArrayList<>();
+		listaDiretorios = null;
 
-                listaFuncionalidadesGeral = null;
+		listaSistemasDual = null;
+		listaSistemasSoucer = new ArrayList<>();
+		listaSistemasTarget = new ArrayList<>();
 
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Funcionalidade alterado com sucesso!", "Sucesso");
-                FacesContext.getCurrentInstance().addMessage(null, msg);
-                
-                RequestContext.getCurrentInstance().execute("PF('dlgAltMenu').hide();");
-            } else {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante o cadastro!", "Erro");
-                FacesContext.getCurrentInstance().addMessage(null, msg);
+		listaSistemasDualAlt = null;
+		listaSistemasSoucerAlt = new ArrayList<>();
+		listaSistemasTargetAlt = new ArrayList<>();
 
-                RequestContext.getCurrentInstance().execute("PF('dlgAltMenu').hide();");
-            }
-          
-    } 
-    
-    public void excluirFuncionalidade() throws ProjetoException {
-        
-    	FuncionalidadeDAO mdao = new FuncionalidadeDAO();
-        boolean excluiu = mdao.excluirFuncionalidade(funcionalidade);
+		valorBusca = "";
+	}
 
-        if(excluiu == true) {
-            
-            listaFuncionalidadesGeral = null;
-            
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Funcionalidade excluido com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgExcMenu').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Ocorreu um erro durante a exclusão!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            
-            RequestContext.getCurrentInstance().execute("PF('dlgExcMenu').hide();");
-        }        
-    }
-    
-    public void buscarFuncionalidade() throws ProjetoException {
-    	FuncionalidadeDAO mdao = new FuncionalidadeDAO();
-        List<Funcionalidade> listaAux = mdao.buscarFuncionalidadeDesc(valorBusca);
-        
-        if(listaAux != null && listaAux.size() > 0) {
-            listaFuncionalidadesGeral = null;
-            listaFuncionalidadesGeral = listaAux;
-        } else {
-            listaFuncionalidadesGeral = null;
-            
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-                "Funcionalidade n�o encontrado!", "Aviso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } 
-    }
+	public void cadastrarFuncionalidade() throws ProjetoException {
 
-    public String verificarBolTab(boolean ativo) {
-        if(ativo == true) {
-            return "../../imgs/status_green.png";
-        } else {
-            return "../../imgs/status_red.png";
-        }
-    }
-    
-    public void onTransferMenuSis(TransferEvent event) {
-        StringBuilder builder = new StringBuilder();
+		if (listaSistemasDual.getTarget().size() > 0) {
+			List<Integer> listaSis = new ArrayList<>();
 
-        for(Object item : event.getItems()) {
-            builder.append(((Sistema) item).getId());
-            if(listaSistemasTarget.contains(item)) {
-                listaSistemasTarget.remove(item);
-            } else {
-                listaSistemasTarget.add((Sistema) item);
-            }
-        }
-    }
-    
-    public void limparDados() {
-        abaAtiva = 0;
-        funcionalidade.setExtensao(".faces");
-        listaDiretorios = null;
-        statusFuncionalidade = true;
-    }
-    
-    public void limparBusca() {
-        valorBusca = "";
-        listaFuncionalidadesGeral = null;
-    }
-    
-    public void limparDualMenuSis() {
-        listaSistemasDual = null;
-        
-        listaSistemasTarget = null;
-        listaSistemasTarget = new ArrayList<>();
-    }
-    
-    public void limparDualMenuSisAlt() {
-        listaSistemasDualAlt = null;
-        
-        listaSistemasTargetAlt = null;
-        listaSistemasTargetAlt = new ArrayList<>();
+			for (Sistema s : listaSistemasDual.getTarget()) {
+				listaSis.add(s.getId());
+			}
 
-    }
+			// funcionalidade.setDescPagina(null);
+			// funcionalidade.setDiretorio(null);
+			// funcionalidade.setExtensao(null);
+			// sistema.setImagem(null);
+			funcionalidade.setAtivo(statusFuncionalidade);
+			funcionalidade.setListaSistemas(listaSis);
 
-    public List<String> getListaExtensoesPag() {
-        return listaExtensoesPag;
-    }
+			FuncionalidadeDAO mdao = new FuncionalidadeDAO();
+			boolean cadastrou = mdao.cadastrar(funcionalidade);
 
-    public void setListaExtensoesPag(List<String> listaExtensoesPag) {
-        this.listaExtensoesPag = listaExtensoesPag;
-    }
+			if (cadastrou == true) {
 
-    public List<Sistema> getListaDiretorios() throws ProjetoException {
-        if(listaDiretorios == null) {
-            SistemaDAO sdao = new SistemaDAO();
-            listaDiretorios = sdao.listarSiglas();
-        }
-        return listaDiretorios;
-    }
+				listaFuncionalidadesGeral = null;
 
-    public void setListaDiretorios(List<Sistema> listaDiretorios) {
-        this.listaDiretorios = listaDiretorios;
-    }
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Funcionalidade cadastrada com sucesso!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-    public DualListModel<Sistema> getListaSistemasDual() throws ProjetoException {
-        if(listaSistemasDual == null) {
-            listaSistemasSoucer = null;
-            listaSistemasTarget = new ArrayList<>();
-            getListaSistemasSoucer();
-            listaSistemasDual = new DualListModel<>(listaSistemasSoucer, listaSistemasTarget);
-        }
-        return listaSistemasDual;
-    }
+				RequestContext.getCurrentInstance().execute(
+						"PF('dlgCadMenu').hide();");
+			} else {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Ocorreu um erro durante o cadastro!", "Erro");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-    public void setListaSistemasDual(DualListModel<Sistema> listaSistemasDual) {
-        this.listaSistemasDual = listaSistemasDual;
-    }
+				RequestContext.getCurrentInstance().execute(
+						"PF('dlgCadMenu').hide();");
+			}
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Selecione pelo menos um sistema", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}
 
-    public List<Sistema> getListaSistemasSoucer() throws ProjetoException {
-        if(listaSistemasSoucer == null) {
-            SistemaDAO sdao = new SistemaDAO();
-            listaSistemasSoucer = sdao.listarSistemasSource();
-        }
-        return listaSistemasSoucer;
-    }
+	public void alterarFuncionalidade() throws ProjetoException {
 
-    public void setListaSistemasSoucer(List<Sistema> listaSistemasSoucer) {
-        this.listaSistemasSoucer = listaSistemasSoucer;
-    }
+		/*
+		 * if(listaSistemasDualAlt.getTarget().size() > 0) { List<Integer>
+		 * listaSis = new ArrayList<>();
+		 * 
+		 * for(Sistema s : listaSistemasDualAlt.getTarget()) {
+		 * listaSis.add(s.getId());
+		 * 
+		 * } else { FacesMessage msg = new
+		 * FacesMessage(FacesMessage.SEVERITY_ERROR,
+		 * "Selecione pelo menos um sistema", "Erro");
+		 * FacesContext.getCurrentInstance().addMessage(null, msg); } }
+		 */
 
-    public List<Sistema> getListaSistemasTarget() {
-        return listaSistemasTarget;
-    }
+		funcionalidade.setAtivo(statusFuncionalidade);
+		// funcionalidade.setListaSistemas(listaSis);
+		FuncionalidadeDAO mdao = new FuncionalidadeDAO();
+		boolean alterou = mdao.alterar(funcionalidade);
 
-    public void setListaSistemasTarget(List<Sistema> listaSistemasTarget) {
-        this.listaSistemasTarget = listaSistemasTarget;
-    }
+		if (alterou == true) {
 
-    public Integer getAbaAtiva() {
-        return abaAtiva;
-    }
+			listaFuncionalidadesGeral = null;
 
-    public void setAbaAtiva(Integer abaAtiva) {
-        this.abaAtiva = abaAtiva;
-    }
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Funcionalidade alterada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-    
-    public DualListModel<Sistema> getListaSistemasDualAlt() throws NumberFormatException, ProjetoException {       
-        if(listaSistemasDualAlt == null) {
-            listaSistemasSoucerAlt = null;
-            listaSistemasTargetAlt = null;
-            getListaSistemasSoucerAlt();
-            getListaSistemasTargetAlt();
-            listaSistemasDualAlt = new DualListModel<>(listaSistemasSoucerAlt, listaSistemasTargetAlt);
-        }
-        return listaSistemasDualAlt;
-    }
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlgAltMenu').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-    public void setListaSistemasDualAlt(DualListModel<Sistema> listaSistemasDualAlt) {
-        this.listaSistemasDualAlt = listaSistemasDualAlt;
-    }
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlgAltMenu').hide();");
+		}
 
-    public List<Sistema> getListaSistemasSoucerAlt() throws NumberFormatException, ProjetoException {
-        if(listaSistemasSoucerAlt == null)  {
-            MenuDAO mdao = new MenuDAO();
-            listaSistemasSoucerAlt = mdao.listarSisAssNaoMenuSource(Long.valueOf(idMenuAlt));           
-        }
-        return listaSistemasSoucerAlt;
-    }
+	}
 
-    public void setListaSistemasSoucerAlt(List<Sistema> listaSistemasSoucerAlt) {
-        this.listaSistemasSoucerAlt = listaSistemasSoucerAlt;
-    }
+	public void excluirFuncionalidade() throws ProjetoException {
 
-    public List<Sistema> getListaSistemasTargetAlt() throws NumberFormatException, ProjetoException {
-        
-        if(listaSistemasTargetAlt == null) {
-            MenuDAO mdao = new MenuDAO();
-            listaSistemasTargetAlt = mdao.listarSisAssMenuTarget(Long.valueOf(idMenuAlt));
-        }
-        return listaSistemasTargetAlt;
-    }
+		FuncionalidadeDAO mdao = new FuncionalidadeDAO();
+		boolean excluiu = mdao.excluirFuncionalidade(funcionalidade);
 
-    public void setListaSistemasTargetAlt(List<Sistema> listaSistemasTargetAlt) {
-        this.listaSistemasTargetAlt = listaSistemasTargetAlt;
-    }
+		if (excluiu == true) {
 
-    public String getIdMenuAlt() {
-        return idMenuAlt;
-    }
+			listaFuncionalidadesGeral = null;
 
-    public void setIdMenuAlt(String idMenuAlt) {
-        this.idMenuAlt = idMenuAlt;
-    }
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Funcionalidade excluída com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-    public String getIndiceAux() {
-        return indiceAux;
-    }
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlgExcMenu').hide();");
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Ocorreu um erro durante a exclusão!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-    public void setIndiceAux(String indiceAux) {
-        this.indiceAux = indiceAux;
-    }
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlgExcMenu').hide();");
+		}
+	}
 
-    public boolean isStatusFuncionalidade() {
+	public void buscarFuncionalidade() throws ProjetoException {
+		FuncionalidadeDAO mdao = new FuncionalidadeDAO();
+		List<Funcionalidade> listaAux = mdao
+				.buscarFuncionalidadeDesc(valorBusca);
+
+		if (listaAux != null && listaAux.size() > 0) {
+			listaFuncionalidadesGeral = null;
+			listaFuncionalidadesGeral = listaAux;
+		} else {
+			listaFuncionalidadesGeral = null;
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Funcionalidade não encontrada!", "Aviso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}
+
+	public String verificarBolTab(boolean ativo) {
+		if (ativo == true) {
+			return "../../imgs/status_green.png";
+		} else {
+			return "../../imgs/status_red.png";
+		}
+	}
+
+	public void onTransferMenuSis(TransferEvent event) {
+		StringBuilder builder = new StringBuilder();
+
+		for (Object item : event.getItems()) {
+			builder.append(((Sistema) item).getId());
+			if (listaSistemasTarget.contains(item)) {
+				listaSistemasTarget.remove(item);
+			} else {
+				listaSistemasTarget.add((Sistema) item);
+			}
+		}
+	}
+
+	public void limparDados() {
+		abaAtiva = 0;
+		funcionalidade.setExtensao(".faces");
+		listaDiretorios = null;
+		statusFuncionalidade = true;
+	}
+
+	public void limparBusca() {
+		valorBusca = "";
+		listaFuncionalidadesGeral = null;
+	}
+
+	public void limparDualMenuSis() {
+		listaSistemasDual = null;
+
+		listaSistemasTarget = null;
+		listaSistemasTarget = new ArrayList<>();
+	}
+
+	public void limparDualMenuSisAlt() {
+		listaSistemasDualAlt = null;
+
+		listaSistemasTargetAlt = null;
+		listaSistemasTargetAlt = new ArrayList<>();
+
+	}
+
+	public List<String> getListaExtensoesPag() {
+		return listaExtensoesPag;
+	}
+
+	public void setListaExtensoesPag(List<String> listaExtensoesPag) {
+		this.listaExtensoesPag = listaExtensoesPag;
+	}
+
+	public List<Sistema> getListaDiretorios() throws ProjetoException {
+		if (listaDiretorios == null) {
+			SistemaDAO sdao = new SistemaDAO();
+			listaDiretorios = sdao.listarSiglas();
+		}
+		return listaDiretorios;
+	}
+
+	public void setListaDiretorios(List<Sistema> listaDiretorios) {
+		this.listaDiretorios = listaDiretorios;
+	}
+
+	public DualListModel<Sistema> getListaSistemasDual()
+			throws ProjetoException {
+		if (listaSistemasDual == null) {
+			listaSistemasSoucer = null;
+			listaSistemasTarget = new ArrayList<>();
+			getListaSistemasSoucer();
+			listaSistemasDual = new DualListModel<>(listaSistemasSoucer,
+					listaSistemasTarget);
+		}
+		return listaSistemasDual;
+	}
+
+	public void setListaSistemasDual(DualListModel<Sistema> listaSistemasDual) {
+		this.listaSistemasDual = listaSistemasDual;
+	}
+
+	public List<Sistema> getListaSistemasSoucer() throws ProjetoException {
+		if (listaSistemasSoucer == null) {
+			SistemaDAO sdao = new SistemaDAO();
+			listaSistemasSoucer = sdao.listarSistemasSource();
+		}
+		return listaSistemasSoucer;
+	}
+
+	public void setListaSistemasSoucer(List<Sistema> listaSistemasSoucer) {
+		this.listaSistemasSoucer = listaSistemasSoucer;
+	}
+
+	public List<Sistema> getListaSistemasTarget() {
+		return listaSistemasTarget;
+	}
+
+	public void setListaSistemasTarget(List<Sistema> listaSistemasTarget) {
+		this.listaSistemasTarget = listaSistemasTarget;
+	}
+
+	public Integer getAbaAtiva() {
+		return abaAtiva;
+	}
+
+	public void setAbaAtiva(Integer abaAtiva) {
+		this.abaAtiva = abaAtiva;
+	}
+
+	public DualListModel<Sistema> getListaSistemasDualAlt()
+			throws NumberFormatException, ProjetoException {
+		if (listaSistemasDualAlt == null) {
+			listaSistemasSoucerAlt = null;
+			listaSistemasTargetAlt = null;
+			getListaSistemasSoucerAlt();
+			getListaSistemasTargetAlt();
+			listaSistemasDualAlt = new DualListModel<>(listaSistemasSoucerAlt,
+					listaSistemasTargetAlt);
+		}
+		return listaSistemasDualAlt;
+	}
+
+	public void setListaSistemasDualAlt(
+			DualListModel<Sistema> listaSistemasDualAlt) {
+		this.listaSistemasDualAlt = listaSistemasDualAlt;
+	}
+
+	public List<Sistema> getListaSistemasSoucerAlt()
+			throws NumberFormatException, ProjetoException {
+		if (listaSistemasSoucerAlt == null) {
+			MenuDAO mdao = new MenuDAO();
+			listaSistemasSoucerAlt = mdao.listarSisAssNaoMenuSource(Long
+					.valueOf(idMenuAlt));
+		}
+		return listaSistemasSoucerAlt;
+	}
+
+	public void setListaSistemasSoucerAlt(List<Sistema> listaSistemasSoucerAlt) {
+		this.listaSistemasSoucerAlt = listaSistemasSoucerAlt;
+	}
+
+	public List<Sistema> getListaSistemasTargetAlt()
+			throws NumberFormatException, ProjetoException {
+
+		if (listaSistemasTargetAlt == null) {
+			MenuDAO mdao = new MenuDAO();
+			listaSistemasTargetAlt = mdao.listarSisAssMenuTarget(Long
+					.valueOf(idMenuAlt));
+		}
+		return listaSistemasTargetAlt;
+	}
+
+	public void setListaSistemasTargetAlt(List<Sistema> listaSistemasTargetAlt) {
+		this.listaSistemasTargetAlt = listaSistemasTargetAlt;
+	}
+
+	public String getIdMenuAlt() {
+		return idMenuAlt;
+	}
+
+	public void setIdMenuAlt(String idMenuAlt) {
+		this.idMenuAlt = idMenuAlt;
+	}
+
+	public String getIndiceAux() {
+		return indiceAux;
+	}
+
+	public void setIndiceAux(String indiceAux) {
+		this.indiceAux = indiceAux;
+	}
+
+	public boolean isStatusFuncionalidade() {
 		return statusFuncionalidade;
 	}
 
@@ -377,20 +388,20 @@ public class FuncionalidadeMB implements Serializable {
 	}
 
 	public String getTipoMenuRel() {
-        return tipoMenuRel;
-    }
+		return tipoMenuRel;
+	}
 
-    public void setTipoMenuRel(String tipoMenuRel) {
-        this.tipoMenuRel = tipoMenuRel;
-    }
+	public void setTipoMenuRel(String tipoMenuRel) {
+		this.tipoMenuRel = tipoMenuRel;
+	}
 
-    public String getValorBusca() {
-        return valorBusca;
-    }
+	public String getValorBusca() {
+		return valorBusca;
+	}
 
-    public void setValorBusca(String valorBusca) {
-        this.valorBusca = valorBusca;
-    }
+	public void setValorBusca(String valorBusca) {
+		this.valorBusca = valorBusca;
+	}
 
 	public Funcionalidade getFuncionalidade() {
 		return funcionalidade;
@@ -408,11 +419,12 @@ public class FuncionalidadeMB implements Serializable {
 		this.sistema = sistema;
 	}
 
-	public List<Funcionalidade> getListaFuncionalidadesGeral() throws ProjetoException {
-	       if (listaFuncionalidadesGeral == null) {
-	        	FuncionalidadeDAO mdao = new FuncionalidadeDAO();
-	            listaFuncionalidadesGeral = mdao.listarFuncionalidadesGeral();
-	        }
+	public List<Funcionalidade> getListaFuncionalidadesGeral()
+			throws ProjetoException {
+		if (listaFuncionalidadesGeral == null) {
+			FuncionalidadeDAO mdao = new FuncionalidadeDAO();
+			listaFuncionalidadesGeral = mdao.listarFuncionalidadesGeral();
+		}
 		return listaFuncionalidadesGeral;
 	}
 
@@ -420,7 +432,5 @@ public class FuncionalidadeMB implements Serializable {
 			List<Funcionalidade> listaFuncionalidadesGeral) {
 		this.listaFuncionalidadesGeral = listaFuncionalidadesGeral;
 	}
-    
-	
-    
+
 }

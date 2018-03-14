@@ -40,11 +40,6 @@ import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
 
-/**
- *
- * @author Thulio e Thiago
- * @since 06/04/2016
- */
 @ManagedBean(name = "MBUsuarios")
 @SessionScoped
 public class UsuarioController implements Serializable {
@@ -59,8 +54,6 @@ public class UsuarioController implements Serializable {
 	private UIInput senhaInput;
 	private String timeSession;
 	private String visibleExpirationMsg;
-
-	// ACL =====================================================================
 
 	// Sessão
 	private UsuarioBean usuarioLogado;
@@ -87,8 +80,6 @@ public class UsuarioController implements Serializable {
 
 	// SETORES
 	private Boolean rendDlgSetores;
-
-	// =========================================================================
 
 	public UsuarioController() {
 		usuario = new UsuarioBean();
@@ -259,7 +250,6 @@ public class UsuarioController implements Serializable {
 	}
 
 	public String redirecionar(String url) {
-		System.out.println("vai redir");
 		gerarMenus(sistemaLogado);
 		return url;
 	}
@@ -346,9 +336,6 @@ public class UsuarioController implements Serializable {
 				sb.setLabel(p.getMenu().getDescricao());
 				sb.setIcon(p.getMenu().getCodigo());
 				sb.setId(p.getMenu().getIndice());
-				System.out.println("Gerar SubMenu - Label: " + sb.getLabel());
-				System.out.println("Gerar SubMenu - Icon: " + sb.getIcon());
-				System.out.println("Gerar SubMenu - Id: " + sb.getId());
 				submenu.add(sb);// cria o submenu
 			}
 
@@ -359,16 +346,9 @@ public class UsuarioController implements Serializable {
 																	// tipo
 					&& (p.getIdSistema().equals(sistema.getId()))
 					&& (p.getMenu().isAtivo() == true)) {
-				// System.out.println("gerar menu item com url, p.getIdSistema: "+p.getIdSistema());
-				// System.out.println("gerar menu item com url, sistema.getId: "+sistema.getId());
 				Menu mi = p.getMenu();
-				// System.out.println("gerar menu item com url, p.getMenu: "+p.getMenu());
 				DefaultMenuItem item = new DefaultMenuItem();
 				item.setValue(mi.getDescricao());
-				System.out.println("Gerar menuitem com url, descri��o: "
-						+ mi.getDescricao());
-				System.out.println("Gerar menuitem com url, URL: "
-						+ mi.getUrl());
 				item.setUrl(mi.getUrl());
 				item.setIcon(p.getMenu().getCodigo());// coloca o submenu dentro
 														// do menu
@@ -403,18 +383,14 @@ public class UsuarioController implements Serializable {
 
 		// Associar menu item com submenu.
 		for (DefaultSubMenu sb : submenu) {
-			DefaultSubMenu submenuAux = sb; // submenu que � elemento da lista
+			DefaultSubMenu submenuAux = sb; // submenu que é elemento da lista
 											// recebe sb(submenu)
-			System.out.println("TESTE FORA DO FOR, ICON: " + sb.getIcon());
 			for (DefaultMenuItem mi : menuItem) {
 				if (sb.getIcon().equals(mi.getId())) {
-					System.out
-							.println("1 - Menu item com submenu, sb.getIcon: "
-									+ sb.getIcon());
+
 					mi.setIcon(null);
 					submenuAux.addElement(mi);
-					System.out.println("1 - Menu item com submenu, mi.getId: "
-							+ mi.getValue());
+
 				}
 			}
 			menuItemAssSubmenu.add(submenuAux);
@@ -425,13 +401,7 @@ public class UsuarioController implements Serializable {
 		for (DefaultSubMenu sb2 : submenu) {
 
 			for (DefaultSubMenu sb : menuItemAssSubmenu) {
-				System.out.println("ENTROU NO SUB MENU" + sb2.getLabel());
-				System.out.println("sb2.getIcon " + sb.getIcon());
-				System.out.println("sb2.getId()" + sb2.getId());
 				if (sb2.getIcon().equals(sb.getId())) {
-					System.out.println("Procurar id: " + sb.getId());
-					System.out.println("SUBMENU OK");
-					System.out.println("LABEL COM ERRO: " + sb.getLabel());
 					// sb.setIcon(null);
 
 					sb2.addElement(sb);// esse auxiliar recebe o submenu e
@@ -448,17 +418,12 @@ public class UsuarioController implements Serializable {
 
 			for (DefaultSubMenu sb : subsubAssSubMenu) {
 				if (mp.getIcon().equals(sb.getId())) {
-					System.out.println("2 - Submneu com meunupai, sb.getId: "
-							+ sb.getId());
-					System.out.println("2 - Submneu com meunupai, sb.getIcon: "
-							+ sb.getIcon());
+
 					sb.setIcon(null);
 					menuPaiAux.addElement(sb);// esse auxiliar recebe o submenu
 												// e depois mais embaixo
 												// adiciona ele na lista
-					System.out
-							.println("2-  Submenu com menupai, menuPaiAux.getLabel: "
-									+ menuPaiAux.getLabel());
+
 				}
 			}
 			submenuAssSubMenuPai.add(menuPaiAux);
@@ -472,15 +437,6 @@ public class UsuarioController implements Serializable {
 				if (sa.getIcon().equals(mi.getId())) {
 					mi.setIcon(null);
 					menuPaiAux.addElement(mi);
-					System.out.println("3 - Menuitem com menupai, icon: "
-							+ sa.getIcon());
-					System.out.println("3 - Menuitem com menupai, id: "
-							+ mi.getId());
-					System.out
-							.println("3 - Menuitem com menupai, menuPaiAux.getLabel: "
-									+ menuPaiAux.getLabel());
-					System.out.println("3 - Menuitem com menupai, mi.getId: "
-							+ mi.getId());
 
 				}
 			}
