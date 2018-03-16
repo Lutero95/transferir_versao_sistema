@@ -41,7 +41,7 @@ public class EquipamentoDAO {
 
 	public ArrayList<EquipamentoBean> listarEquipamentos() throws SQLException,
 			ProjetoException {
-		String sql = "select id, desctipoaparelho from hosp.tipoaparelho order by id";
+		String sql = "select id, desctipoaparelho from hosp.tipoaparelho order by desctipoaparelho";
 
 		ArrayList<EquipamentoBean> lista = new ArrayList();
 
@@ -75,7 +75,7 @@ public class EquipamentoDAO {
 		List<EquipamentoBean> lista = new ArrayList<>();
 		String sql = "select id, desctipoaparelho from hosp.tipoaparelho ";
 		if (tipo == 1) {
-			sql += " where desctipoaparelho LIKE ?  order by id";
+			sql += " where desctipoaparelho LIKE ?  order by desctipoaparelho";
 		}
 		try {
 			con = ConnectionFactory.getConnection();
@@ -149,9 +149,9 @@ public class EquipamentoDAO {
 
 	public EquipamentoBean buscaEquipamentoPorId(Integer i)
 			throws ProjetoException {
-		String sql = "select id, desctipoaparelho from hosp.tipoaparelho where id =? order by id";
+		String sql = "select id, desctipoaparelho from hosp.tipoaparelho where id =? order by desctipoaparelho";
 		try {
-
+			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, i);
 			ResultSet rs = ps.executeQuery();
@@ -164,7 +164,7 @@ public class EquipamentoDAO {
 
 			return g;
 		} catch (Exception sqle) {
-
+			sqle.printStackTrace();
 			throw new ProjetoException(sqle);
 
 		} finally {

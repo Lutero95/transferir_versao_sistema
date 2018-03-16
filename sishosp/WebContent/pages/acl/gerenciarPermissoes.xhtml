@@ -6,7 +6,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:ui="http://java.sun.com/jsf/facelets">
 
-    <ui:composition template="../../template/templategeral.xhtml">
+    <ui:composition template="../../template/templateacl.xhtml">
         
         <ui:define name="head">
             
@@ -24,11 +24,11 @@
                 
                 <p:panel id="pnlprincipal" header="Gerenciar Permissões">
                     <p:panelGrid columns="6" styleClass="semBorda">                                              
-                        <p:inputText id="campoBusca" value="#{permissaoMB.valorBusca}" 
+                        <h:inputText id="campoBusca" value="#{permissaoMB.valorBusca}" 
                             style="margin-top:5px; margin-bottom:10px;" maxlength="10" required="false" 
                             requiredMessage="Infome a descrição para realizar uma busca.">
                             <p:watermark value="Informe a descrição." for="campoBusca" />
-                        </p:inputText>
+                        </h:inputText>
 
                         <p:commandButton id="botaoBusca" icon="ui-icon-search" 
                             style="height:28px; margin-left:-20px; margin-top:5px; margin-bottom:10px;" 

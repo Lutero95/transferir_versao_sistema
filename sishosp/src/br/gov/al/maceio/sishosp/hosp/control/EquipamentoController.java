@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -13,6 +14,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.EncaminhadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipamentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 
@@ -25,7 +27,7 @@ public class EquipamentoController implements Serializable {
 	private List<EquipamentoBean> listaEquipamentos;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
-	private String tipo;
+	private int tipo;
 	private String cabecalho;
 
 	private Integer abaAtiva = 0;
@@ -36,9 +38,17 @@ public class EquipamentoController implements Serializable {
 		listaEquipamentos = new ArrayList<>();
 		listaEquipamentos = null;
 		this.descricaoBusca = new String();
-		this.tipo = new String();
 		this.cabecalho = "";
 
+	}
+
+	public String redirectEdit() {
+		return "cadastroEquipamento?faces-redirect=true&amp;id="
+				+ this.equipamento.getId_equipamento() + "&amp;tipo=" + tipo;
+	}
+
+	public String redirectInsert() {
+		return "cadastroEquipamento?faces-redirect=true&amp;tipo=" + tipo;
 	}
 
 	public void limparDados() {
@@ -100,6 +110,22 @@ public class EquipamentoController implements Serializable {
 		listaEquipamentos = gDao.listarEquipamentos();
 	}
 
+	public void getEditEquipamento() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo = Integer.parseInt(params.get("tipo"));
+			EquipamentoDAO cDao = new EquipamentoDAO();
+			this.equipamento = cDao.buscaEquipamentoPorId(id);
+		} else {
+			tipo = Integer.parseInt(params.get("tipo"));
+
+		}
+
+	}
+
 	public EquipamentoBean getEquipamento() {
 		return equipamento;
 	}
@@ -124,14 +150,6 @@ public class EquipamentoController implements Serializable {
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
@@ -140,20 +158,29 @@ public class EquipamentoController implements Serializable {
 		this.abaAtiva = abaAtiva;
 	}
 
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
+	}
+
 	public void setCabecalho(String cabecalho) {
 		this.cabecalho = cabecalho;
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
-			cabecalho = "CADASTRO DE EQUIPAMENTO";
-		} else if (this.tipo.equals("A")) {
-			cabecalho = "ALTERAR EQUIPAMENTO";
+		if (this.tipo == 1) {
+			cabecalho = "Inclusão de Equipamento";
+		} else if (this.tipo == 2) {
+			cabecalho = "Alteração de Equipamento";
 		}
 		return cabecalho;
 	}
 
-	public List<EquipamentoBean> getListaEquipamentos() throws SQLException, ProjetoException {
+	public List<EquipamentoBean> getListaEquipamentos() throws SQLException,
+			ProjetoException {
 		if (listaEquipamentos == null) {
 
 			EquipamentoDAO fdao = new EquipamentoDAO();

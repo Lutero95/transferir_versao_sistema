@@ -6,7 +6,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:ui="http://java.sun.com/jsf/facelets">
     
-    <ui:composition template="../../template/templategeral.xhtml">
+    <ui:composition template="../../template/templateacl.xhtml">
         
         <ui:define name="body">
             
@@ -131,9 +131,9 @@
                                 itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
                         </p:selectOneMenu>
                         
-                        <p:inputText id="campoFiltro" size="40" disabled="true">
+                        <h:inputText id="campoFiltro"   disabled="true">
                             <p:watermark for="campoFiltro" value="Informe a descrição..." />
-                        </p:inputText>
+                        </h:inputText>
                         
                         <p:commandButton value="Filtrar" icon="ui-icon-check" style="width:100px;" 
                             disabled="true" />

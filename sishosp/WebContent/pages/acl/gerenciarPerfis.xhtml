@@ -6,7 +6,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:ui="http://java.sun.com/jsf/facelets">
 
-    <ui:composition template="../../template/templategeral.xhtml">
+    <ui:composition template="../../template/templateacl.xhtml">
         
         <ui:define name="head">
             <link rel="StyleSheet" type="text/css" href="../../css/picklist.css" />
@@ -32,11 +32,11 @@
                             onclick="PF('dlgCadPerfil').show();" 
                             update=":formCP:pnlCP" />
                                                
-                        <p:inputText id="campoBusca" value="#{perfilMB.descPerfilBusca}" 
+                        <h:inputText id="campoBusca" value="#{perfilMB.descPerfilBusca}" 
                             style="margin-top:-6px;" maxlength="10" required="false" 
                             requiredMessage="Infome a descrição para realizar uma busca.">
                             <p:watermark value="Informe a descrição." for="campoBusca" />
-                        </p:inputText>
+                        </h:inputText>
 
                         <p:commandButton id="botaoBusca" icon="ui-icon-search" 
                             style="height:28px; margin-top:-6px; margin-left:-20px;" 
@@ -95,7 +95,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="urlpag" size="50" required="true"
+                                    <h:inputText id="urlpag" size="50" required="true"
                                         value="#{perfilMB.perfil.descricao}" 
                                         requiredMessage="Informe a descrição." /> 
                                 </p:column>                             
@@ -199,7 +199,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="urlpag" size="50" required="true"
+                                    <h:inputText id="urlpag" size="50" required="true"
                                         value="#{perfilMB.perfil.descricao}" 
                                         requiredMessage="Informe a descrição." /> 
                                 </p:column>                             

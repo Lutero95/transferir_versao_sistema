@@ -9,6 +9,33 @@ article, aside, details, figcaption, figure, footer, header, hgroup,
 	display: block;
 }
 
+.menu {
+	background-color: #f2f1f1 !important;
+	background: #f2f1f1 !important;
+	border-radius: 0 0 0 0 !important;
+	margin-bottom: 20px !important;
+}
+
+.sistemas {
+	font-size: 62.5%;
+	width: 1178px;
+	width: auto;
+	height: 800px;
+	height: 600px;
+	height: auto;
+	margin: 30px auto 20px auto;
+	padding-left: 1.315789474%;
+	text-align: center;
+	float: none;
+}
+
+.menu-sistema {
+    border: 0px !important;
+    padding: 0px !important;
+    background: none !important;
+    margin-top: 9px;
+}
+
 .cadcabecalho {
 	font-size: 18px;
 	margin-top: 10px;
@@ -117,7 +144,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup,
 	font-family: arial !important;
 	font-size: 12px !important;
 	font-weight: normal !important;
-	background-color: white;
+	background-color: background: rgb(64, 171, 233) !important;
 }
 
 .ui-menu .ui-menu-parent .ui-menu-child {
@@ -129,11 +156,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup,
 	/*background: #FDEDF3 !important;*/
 }
 
-.menu-sistema {
-	border: 0px !important;
-	padding: 0px !important;
-	background: none !important;
-}
 
 .dataTables .pagination li {
 	display: none;
@@ -279,4 +301,33 @@ article, aside, details, figcaption, figure, footer, header, hgroup,
 	-moz-transition: none;
 	-o-transition: none;
 	transition: none;
+}
+
+.btnLogin {
+  background: #33ff00;
+  background-image: -webkit-linear-gradient(top, #33ff00, #458242);
+  background-image: -moz-linear-gradient(top, #33ff00, #458242);
+  background-image: -ms-linear-gradient(top, #33ff00, #458242);
+  background-image: -o-linear-gradient(top, #33ff00, #458242);
+  background-image: linear-gradient(to bottom, #33ff00, #458242);
+  -webkit-border-radius: 11;
+  -moz-border-radius: 11;
+  border-radius: 11px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 5px 30px 5px 30px;
+  border: solid #000000 2px;
+  text-decoration: none;
+}
+
+.btnLogin:hover {
+ background: #33ff00;
+  background-image: -webkit-linear-gradient(top, #33ff00, #458242);
+  background-image: -moz-linear-gradient(top, #33ff00, #458242);
+  background-image: -ms-linear-gradient(top, #33ff00, #458242);
+  background-image: -o-linear-gradient(top, #33ff00, #458242);
+  background-image: linear-gradient(to bottom, #33ff00, #458242);
+   border: solid #000000 2px;
+  text-decoration: none;
 }

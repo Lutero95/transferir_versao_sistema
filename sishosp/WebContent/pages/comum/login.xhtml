@@ -22,7 +22,7 @@
 
 <h:body>
 
-	<b:navBar brand="EHosp" style="font-size:50px;font-weight: bold;"
+	<b:navBar brand="EHosp" style="font-size:50px;font-weight: bold;" inverse="true"
 		brandHref="#" fixed="top">
 		<b:navbarLinks>
 		</b:navbarLinks>
@@ -39,7 +39,7 @@
 				<center>
 					<h2 style="color: black;">Acesse sua conta</h2>
 
-					<h:panelGrid columns="1" cellpadding="5">
+					<h:panelGrid columns="1" cellpadding="3">
 
 						<b:inputText mask="999-999-999-99" style="padding:10px;"
 							required="true" value="#{MBUsuarios.usuario.cpf}"
@@ -59,7 +59,7 @@
 				<center>
 					<b:commandButton value="Entrar"
 						style="width: 180px;margin-top:10px"
-						styleClass="btn btn-sm btn-success" action="#{MBUsuarios.login}"
+						styleClass="btnLogin" action="#{MBUsuarios.login}"
 						update="@form"></b:commandButton>
 
 				</center>

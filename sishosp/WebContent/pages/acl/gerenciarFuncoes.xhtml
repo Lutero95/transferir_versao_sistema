@@ -6,7 +6,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:ui="http://java.sun.com/jsf/facelets">
 
-    <ui:composition template="../../template/templategeral.xhtml">
+    <ui:composition template="../../template/templateacl.xhtml">
         
         <ui:define name="head">
             
@@ -101,7 +101,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="desc" value="#{funcaoMB.funcao.descricao}" 
+                                    <h:inputText id="desc" value="#{funcaoMB.funcao.descricao}" 
                                         size="40" required="true" requiredMessage="Informe a descrição." />
                                 </p:column>                             
                             </p:row>
@@ -114,7 +114,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="cod" value="#{funcaoMB.funcao.codigo}" 
+                                    <h:inputText id="cod" value="#{funcaoMB.funcao.codigo}" 
                                         size="40" required="true" requiredMessage="Informe o código." />
                                 </p:column>                             
                             </p:row>-->
@@ -194,7 +194,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="desc" value="#{funcaoMB.funcao.descricao}" 
+                                    <h:inputText id="desc" value="#{funcaoMB.funcao.descricao}" 
                                         size="40" required="true" requiredMessage="Informe a descrição." />
                                 </p:column>                             
                             </p:row>
@@ -207,7 +207,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="cod" value="#{funcaoMB.funcao.codigo}" 
+                                    <h:inputText id="cod" value="#{funcaoMB.funcao.codigo}" 
                                         size="40" required="true" requiredMessage="Informe o código." />
                                 </p:column>                             
                             </p:row>

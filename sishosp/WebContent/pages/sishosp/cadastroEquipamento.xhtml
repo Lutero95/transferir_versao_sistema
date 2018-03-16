@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/template.xhtml">
+	<f:metadata>
+		<f:viewAction
+			action="#{EquipamentoController.getEditEquipamento()}" />
+	</f:metadata>
+
+	<ui:define name="body">
+		<!-- INICIO DO FORMULARIO -->
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{EquipamentoController.cabecalho}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
+			<h:form class="form-horizontal" id="formCADU">
+
+
+				<div class="form-group">
+					<h:outputLabel for="inputname" value="Descrição"
+						styleClass="col-sm-3 control-label" />
+					<div class="col-sm-6">
+						<h:inputText
+							value="#{EquipamentoController.equipamento.descEquipamento}"
+							class="form-control" id="inputname"
+							pt:placeholder="Digite aqui o Equipamento" required="true"
+							requiredMessage="é necessário que você informe o equipamento.">
+							<f:validateLength minimum="2" maximum="40" />
+
+						</h:inputText>
+					</div>
+				</div>
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<center>
+
+					<b:commandButton
+						action="#{EquipamentoController.gravarEquipamento()}"
+						icon="glyphicon-ok" size="sm" look="success" style="float:left"
+						update=":formCADU" value="Incluir"
+						rendered="#{EquipamentoController.tipo == 1}" />
+
+					<b:commandButton
+						action="#{EquipamentoController.alterarEquipamento()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+						look="success" style="float:left"
+						rendered="#{EquipamentoController.tipo  == 2}" />
+
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="float:right" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarEquipamento.faces?faces-redirect=true">
+					</b:commandButton>
+				</center>
+
+			</h:form>
+		</div>
+
+	</ui:define>
+</ui:composition>
+</html>

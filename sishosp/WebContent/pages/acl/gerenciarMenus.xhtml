@@ -6,7 +6,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:ui="http://java.sun.com/jsf/facelets">
 
-    <ui:composition template="../../template/templategeral.xhtml">
+    <ui:composition template="../../template/templateacl.xhtml">
         
         <ui:define name="head">
             
@@ -32,11 +32,11 @@
                             onclick="PF('dlgCadMenu').show();" 
                             update=":formCM:pnlCM" />
                                                
-                        <p:inputText id="campoBusca" value="#{menuMB.valorBusca}" 
+                        <h:inputText id="campoBusca" value="#{menuMB.valorBusca}" 
                             style="margin-top:-6px;" maxlength="10" required="false" 
                             requiredMessage="Infome a descrição para realizar uma busca.">
                             <p:watermark value="Informe a descrição." for="campoBusca" />
-                        </p:inputText>
+                        </h:inputText>
 
                         <p:commandButton id="botaoBusca" icon="ui-icon-search" 
                             style="height:28px; margin-top:-6px; margin-left:-20px;" 
@@ -163,7 +163,7 @@
                                         </p:column>
 
                                         <p:column>
-                                            <p:inputText id="act" value="#{menuMB.menu.action}" size="40" 
+                                            <h:inputText id="act" value="#{menuMB.menu.action}" size="40" 
                                                 required="true" requiredMessage="Informe o valor do action."/>
                                         </p:column>
                                     </p:row>
@@ -178,7 +178,7 @@
                                         </p:column>
 
                                         <p:column>
-                                            <p:inputText id="onc" value="#{menuMB.menu.onclick}" size="40" 
+                                            <h:inputText id="onc" value="#{menuMB.menu.onclick}" size="40" 
                                                 required="true" requiredMessage="Informe o valor do onclick."/>
                                         </p:column>
                                     </p:row>
@@ -191,7 +191,7 @@
                                         </p:column>
 
                                         <p:column>
-                                            <p:inputText id="desc" value="#{menuMB.menu.descricao}" 
+                                            <h:inputText id="desc" value="#{menuMB.menu.descricao}" 
                                                 size="40" required="true" requiredMessage="Informe o nome do menu." />
                                         </p:column>                             
                                     </p:row>
@@ -204,7 +204,7 @@
                                         </p:column>
 
                                         <p:column>
-                                            <p:inputText value="#{menuMB.menu.descPagina}" 
+                                            <h:inputText value="#{menuMB.menu.descPagina}" 
                                                 required="true" requiredMessage="Informe a página associada." />
                                         </p:column>
                                     </p:row>
@@ -381,7 +381,7 @@
                                         </p:column>
 
                                         <p:column>
-                                            <p:inputText id="act" value="#{menuMB.menu.action}" size="40" 
+                                            <h:inputText id="act" value="#{menuMB.menu.action}" size="40" 
                                                 required="true" requiredMessage="Informe o valor do action."/>
                                         </p:column>
                                     </p:row>
@@ -396,7 +396,7 @@
                                         </p:column>
 
                                         <p:column>
-                                            <p:inputText id="onc" value="#{menuMB.menu.onclick}" size="40" 
+                                            <h:inputText id="onc" value="#{menuMB.menu.onclick}" size="40" 
                                                 required="true" requiredMessage="Informe o valor do onclick."/>
                                         </p:column>
                                     </p:row>
@@ -409,7 +409,7 @@
                                         </p:column>
 
                                         <p:column>
-                                            <p:inputText id="desc" value="#{menuMB.menu.descricao}" 
+                                            <h:inputText id="desc" value="#{menuMB.menu.descricao}" 
                                                 size="40" required="true" requiredMessage="Informe o nome do menu." />
                                         </p:column>                             
                                     </p:row>
@@ -422,7 +422,7 @@
                                         </p:column>
 
                                         <p:column>
-                                            <p:inputText value="#{menuMB.menu.descPagina}" 
+                                            <h:inputText value="#{menuMB.menu.descPagina}" 
                                                 required="true" requiredMessage="Informe a página associada." />
                                         </p:column>
                                     </p:row>

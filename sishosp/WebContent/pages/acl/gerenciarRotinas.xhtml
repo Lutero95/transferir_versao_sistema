@@ -6,7 +6,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:ui="http://java.sun.com/jsf/facelets">
 
-    <ui:composition template="../../template/templategeral.xhtml">
+    <ui:composition template="../../template/templateacl.xhtml">
         
         <ui:define name="head">
             
@@ -40,11 +40,11 @@
                                 var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
                         </p:selectOneMenu>
                                                
-                        <p:inputText id="campoBusca" value="#{rotinaMB.valorBusca}" 
+                        <h:inputText id="campoBusca" value="#{rotinaMB.valorBusca}" 
                             style="margin-top:-6px;" maxlength="10" required="false" 
                             requiredMessage="Infome a descrição para realizar uma busca.">
                             <p:watermark value="Informe a descrição." for="campoBusca" />
-                        </p:inputText>
+                        </h:inputText>
 
                         <p:commandButton id="botaoBusca" icon="ui-icon-search" 
                             style="height:28px; margin-top:-6px; margin-left:-20px;" 
@@ -107,7 +107,7 @@
                                 <font color="#FF0000">*</font>
                             </p:outputLabel>
 
-                            <p:inputText value="#{rotinaMB.rotina.descricao}" size="40" 
+                            <h:inputText value="#{rotinaMB.rotina.descricao}" size="40" 
                                 required="true" requiredMessage="Informe a descrição." />
 
                             <p:outputLabel value="Tipo:">
@@ -161,7 +161,7 @@
                                 <font color="#FF0000">*</font>
                             </p:outputLabel>
 
-                            <p:inputText value="#{rotinaMB.rotina.descricao}" size="40" 
+                            <h:inputText value="#{rotinaMB.rotina.descricao}" size="40" 
                                 required="true" requiredMessage="Informe a descrição." />
 
                             <p:outputLabel value="Tipo:">

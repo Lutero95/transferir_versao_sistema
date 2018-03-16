@@ -6,7 +6,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:ui="http://java.sun.com/jsf/facelets">
 
-    <ui:composition template="../../template/templategeral.xhtml">
+    <ui:composition template="../../template/templateacl.xhtml">
         
         <ui:define name="head">
             
@@ -31,11 +31,11 @@
                             onclick="PF('dlgCadSistema').show();" 
                             update=":formCS:pnlCS" />
                                                
-                        <p:inputText id="campoBusca" value="#{sistemaMB.valorBusca}" 
+                        <h:inputText id="campoBusca" value="#{sistemaMB.valorBusca}" 
                             style="margin-top:-6px;" maxlength="10" required="false" 
                             requiredMessage="Infome a descrição para realizar uma busca.">
                             <p:watermark value="Informe a descrição." for="campoBusca" />
-                        </p:inputText>
+                        </h:inputText>
 
                         <p:commandButton id="botaoBusca" icon="ui-icon-search" 
                             style="height:28px; margin-top:-6px; margin-left:-20px;" 
@@ -105,7 +105,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="nome" size="60" required="true" 
+                                    <h:inputText id="nome" size="60" required="true" 
                                         value="#{sistemaMB.sistema.descricao}" 
                                         requiredMessage="Informe a descrição." />
                                 </p:column>                             
@@ -119,7 +119,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="sigla" size="10" required="true"
+                                    <h:inputText id="sigla" size="10" required="true"
                                         value="#{sistemaMB.sistema.sigla}" 
                                         requiredMessage="Informe a sigla." /> 
                                 </p:column>
@@ -133,7 +133,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="url" size="40" required="true"
+                                    <h:inputText id="url" size="40" required="true"
                                         value="#{sistemaMB.sistema.url}" 
                                         requiredMessage="Informe o nome da página." />
                                 </p:column>
@@ -161,7 +161,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="imagem" size="40" required="true"
+                                    <h:inputText id="imagem" size="40" required="true"
                                         value="#{sistemaMB.sistema.imagem}" 
                                         requiredMessage="Informe o nome da imagem." />
                                 </p:column>
@@ -189,7 +189,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText value="#{sistemaMB.sistema.versao}" 
+                                    <h:inputText value="#{sistemaMB.sistema.versao}" 
                                         required="true" requiredMessage="Informe a versão do sistema."/>
                                 </p:column>
                             </p:row>
@@ -248,7 +248,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="nome" size="60" required="true" 
+                                    <h:inputText id="nome" size="60" required="true" 
                                         value="#{sistemaMB.sistema.descricao}" 
                                         requiredMessage="Informe a descrição." />
                                 </p:column>                             
@@ -262,7 +262,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText id="imagem" size="40" required="true"
+                                    <h:inputText id="imagem" size="40" required="true"
                                         value="#{sistemaMB.sistema.imagem}" 
                                         requiredMessage="Informe o nome da imagem." />
                                 </p:column>
@@ -290,7 +290,7 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:inputText value="#{sistemaMB.sistema.versao}" 
+                                    <h:inputText value="#{sistemaMB.sistema.versao}" 
                                         required="true" requiredMessage="Informe a versão do sistema."/>
                                 </p:column>
                             </p:row>
