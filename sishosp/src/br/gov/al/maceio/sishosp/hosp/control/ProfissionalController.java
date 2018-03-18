@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.bridj.cpp.std.list;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
@@ -24,9 +25,6 @@ import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 @ViewScoped
 public class ProfissionalController implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private ProfissionalBean profissional;
@@ -160,6 +158,14 @@ public class ProfissionalController implements Serializable {
 		listaProfissional = prDao.listarProfissional();
 
 		// return listaProfissional;
+	}
+
+	public List<ProfissionalBean> listarProfissionaisConfigAgenda()
+			throws ProjetoException {
+		ProfissionalDAO prDao = new ProfissionalDAO();
+		listaProfissional = prDao.listarProfissional();
+
+		return listaProfissional;
 	}
 
 	public String getCabecalho() {

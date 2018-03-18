@@ -163,6 +163,7 @@ public class ProfissionalDAO {
 
 	public List<ProfissionalBean> listarProfissionalBusca(
 			String descricaoBusca, Integer tipoBuscar) throws ProjetoException {
+		System.out.println("OK2");
 		List<ProfissionalBean> lista = new ArrayList<>();
 		String sql = "select id_medico,id_medico ||'-'|| descmedico as descmedico, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, codprocedimentopadrao2, codempresa"
 				+ " from hosp.medicos ";

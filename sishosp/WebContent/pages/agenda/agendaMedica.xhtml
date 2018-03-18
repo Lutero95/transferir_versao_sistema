@@ -167,7 +167,7 @@
 				<h:outputLabel for="obs" value="Obs"
 					styleClass="col-sm-2 control-label" />
 				<div class="col-sm-2">
-					<p:inputTextarea id="obs"
+					<h:inputTextarea id="obs"
 						value="#{AgendaController.agenda.observacao}" style="width: 328px"
 						autoResize="false" />
 				</div>
@@ -205,7 +205,7 @@
 			<p:outputPanel id="outQtd">
 				<h:outputLabel for="qtd" value="Qtd." />
 				<br />
-				<p:inputText id="qtd" value="#{AgendaController.agenda.qtd}"
+				<h:inputText id="qtd" value="#{AgendaController.agenda.qtd}"
 				readonly="true" />
 			</p:outputPanel>
 			
@@ -215,7 +215,7 @@
 			<p:outputPanel id="outMax">
 				<h:outputLabel for="max" value="Máx." />
 				<br />
-				<p:inputText id="max" value="#{AgendaController.agenda.max}"
+				<h:inputText id="max" value="#{AgendaController.agenda.max}"
 					style="width: 40px" readonly="true" />
 			</p:outputPanel>
 

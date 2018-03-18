@@ -16,7 +16,7 @@ public class ProfissionalConverter implements Converter {
 
 	public Object getAsObject(FacesContext contet, UIComponent component,
 			String value) {
-
+		System.out.println("Sim");
 		if (value.equals("null") || value.equals("") || value == null)
 			return null;
 		try {
@@ -25,7 +25,7 @@ public class ProfissionalConverter implements Converter {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Procional não vãlido", ""));
+					FacesMessage.SEVERITY_ERROR, "Profissional não válido", ""));
 		}
 	}
 
