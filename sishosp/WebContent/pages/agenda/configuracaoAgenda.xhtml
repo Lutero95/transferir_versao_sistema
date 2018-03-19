@@ -26,18 +26,18 @@
 							<p:selectOneMenu style="width:120px"
 								rendered="#{ConfigAgendaController.opcao==2}"
 								value="#{ConfigAgendaController.confParte1.mes}">
-								<f:selectItem itemLabel="JANEIRO" itemValue="1" />
-								<f:selectItem itemLabel="FEVEREIRO" itemValue="2" />
-								<f:selectItem itemLabel="MARÇO" itemValue="3" />
-								<f:selectItem itemLabel="ABRIL" itemValue="4" />
-								<f:selectItem itemLabel="MAIO" itemValue="5" />
-								<f:selectItem itemLabel="JUNHO" itemValue="6" />
-								<f:selectItem itemLabel="JULHO" itemValue="7" />
-								<f:selectItem itemLabel="AGOSTO" itemValue="8" />
-								<f:selectItem itemLabel="SETEMBRO" itemValue="9" />
-								<f:selectItem itemLabel="OUTUBRO" itemValue="10" />
-								<f:selectItem itemLabel="NOVEMBRO" itemValue="11" />
-								<f:selectItem itemLabel="DEZEMBRO" itemValue="12" />
+								<f:selectItem itemLabel="Janeiro" itemValue="1" />
+								<f:selectItem itemLabel="Fevereiro" itemValue="2" />
+								<f:selectItem itemLabel="Março" itemValue="3" />
+								<f:selectItem itemLabel="Abril" itemValue="4" />
+								<f:selectItem itemLabel="Maio" itemValue="5" />
+								<f:selectItem itemLabel="Junho" itemValue="6" />
+								<f:selectItem itemLabel="Julho" itemValue="7" />
+								<f:selectItem itemLabel="Agosto" itemValue="8" />
+								<f:selectItem itemLabel="Setembro" itemValue="9" />
+								<f:selectItem itemLabel="Outubro" itemValue="10" />
+								<f:selectItem itemLabel="Novembro" itemValue="11" />
+								<f:selectItem itemLabel="Dezembro" itemValue="12" />
 							</p:selectOneMenu>
 							<h:outputLabel value="Ano: "
 								rendered="#{ConfigAgendaController.opcao==2}" />
@@ -59,7 +59,7 @@
 									<p:ajax event="itemSelect" update=":formConfiAgenda" />
 								</p:autoComplete>
 							</p:outputPanel>
-							<b:commandButton value="Buscar" icon="glyphicon-search"
+							<p:commandButton value="Buscar" icon="ui-icon-search"
 								action="#{ProfissionalController.listarProfissionais}"
 								process="@this" update="formConsultProf"
 								oncomplete="PF('dlgConsultaProf').show();" />
@@ -134,22 +134,25 @@
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descPrograma}">
 									<p:ajax event="itemSelect"
-										listener="#{GrupoController.selectPrograma}"
+										listener="#{ConfigAgendaController.selectPrograma}"
 										update=":formConfiAgenda, :formConsuGrop:dtGrupo, :formConfiAgenda" />
 								</p:autoComplete>
 							</p:outputPanel>
-							<b:commandButton value="Buscar" icon="glyphicon-search"
+							<p:commandButton value="Buscar" icon="ui-icon-search"
+								immediate="true"
 								action="#{ConfigAgendaController.limparBuscaPrograma()}"
-								update=":formConfiAgenda, :formConfiAgenda"
-								onclick="PF('dlgConsuProg').show();" process="@this" />
+								onclick="PF('dlgConsuProg').show();" />
 
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" styleClass="semBorda">
 							<h:outputLabel for="grupo" value="Grupo: " />
 							<p:outputPanel id="outGrupo">
 								<p:autoComplete
 									value="#{ConfigAgendaController.confParte2.grupo}" size="60"
 									converter="conGrupo"
 									disabled="#{ConfigAgendaController.confParte2.programa==null}"
-									completeMethod="#{GrupoController.listaGrupoAutoComplete}"
+									completeMethod="#{ConfigAgendaController.listaGrupoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descGrupo}">
@@ -158,8 +161,8 @@
 										update=":formConfiAgenda, :formConsuTipoAt:dtTipoAt, :formConfiAgenda" />
 								</p:autoComplete>
 							</p:outputPanel>
-							<b:commandButton id="btBusGr" value="Buscar" process="@this"
-								icon="glyphicon-search"
+							<p:commandButton id="btBusGr" value="Buscar" process="@this"
+								icon="ui-icon-search"
 								disabled="#{ConfigAgendaController.confParte2.programa==null}"
 								action="#{ConfigAgendaController.limparBuscaGrupo()}"
 								update=":formConfiAgenda" onclick="PF('dlgConsuGrop').show();" />
@@ -167,27 +170,27 @@
 						</p:panelGrid>
 
 						<p:panelGrid columns="6" styleClass="semBorda">
-							<h:outputLabel value="Tipo At.:" />
+							<h:outputLabel value="Tipo de Atendimento:" />
 							<p:outputPanel id="outTipoAt">
 								<p:autoComplete
 									value="#{ConfigAgendaController.confParte2.tipoAt}" size="60"
 									converter="conTipoAtendimento"
-									disabled="#{ConfigAgendaController.confParte2.grupo==null}"
-									completeMethod="#{TipoAtendimentoController.listaTipoAtAutoComplete}"
+									disabled="#{ConfigAgendaController.confParte2.programa==null}"
+									completeMethod="#{ConfigAgendaController.listaTipoAtAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descTipoAt}">
 									<p:ajax event="itemSelect" update=":formConfiAgenda" />
 								</p:autoComplete>
 							</p:outputPanel>
-							<b:commandButton id="btBusTi" value="Buscar" process="@this"
-								icon="glyphicon-search"
-								disabled="#{ConfigAgendaController.confParte2.grupo==null}"
+							<p:commandButton id="btBusTi" value="Buscar" process="@this"
+								icon="ui-icon-search"
+								disabled="#{ConfigAgendaController.confParte2.programa==null}"
 								update=":formConfiAgenda" onclick="PF('dlgConsuTipoAt').show();" />
 
 							<h:outputLabel value="Quantidade:" />
 							<b:inputText value="#{ConfigAgendaController.confParte2.qtd}"
-								style="width: 70px;margin-top:15px;" required="true"
+								style="width: 70px;" required="true"
 								requiredMessage="Informe a Quantidade" />
 
 							<b:commandButton value="Incluir" icon="glyphicon-plus"
@@ -249,7 +252,7 @@
 			</center>
 
 		</h:form>
-		<p:dialog header="Consulta Programas" widgetVar="dlgConsuProg"
+		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
 			modal="true" width="500px">
 			<h:form id="formConsuProg">
 				<p:dataTable value="#{ProgramaController.listaProgramas}" var="prog"
@@ -266,7 +269,6 @@
 							update=":formConfiAgenda, :formConsuGrop:dtGrupo, 
 							:formConfiAgenda, :formConfiAgenda"
 							icon="ui-icon-check" title="Selecionar"
-							action="#{GrupoController.atualizaLista(ConfigAgendaController.confParte2.programa)}"
 							onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
 								target="#{ConfigAgendaController.confParte2.programa}" />
@@ -276,19 +278,19 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrop"
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
 			modal="true" width="550px">
 			<h:form id="formConsuGrop">
-				<p:dataTable value="#{GrupoController.listaGruposProgramas}"
+				<p:dataTable value="#{ConfigAgendaController.selectPrograma()}"
 					id="dtGrupo" resizableColumns="true" var="grupo"
 					emptyMessage="Não existe nenhum grupo cadastrado!">
-					<p:column headerText="CÓD.">
+					<p:column headerText="Código">
 						<p:outputLabel value="#{grupo.idGrupo}" />
 					</p:column>
-					<p:column headerText="GRUPO">
+					<p:column headerText="Grupo">
 						<p:outputLabel value="#{grupo.descGrupo}" />
 					</p:column>
-					<p:column headerText="QTD. FREQ>">
+					<p:column headerText="Quantidade Frequência">
 						<p:outputLabel value="#{grupo.qtdFrequencia}" />
 					</p:column>
 
@@ -297,23 +299,22 @@
 							update=":formConfiAgenda, :formConsuTipoAt:dtTipoAt,
 							 :formConfiAgenda, :formConfiAgenda"
 							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsuGrop').hide();"
-							action="#{TipoAtendimentoController.atualizaListaTipos(ConfigAgendaController.confParte2.grupo)}">
+							onclick="PF('dlgConsuGrop').hide();">
 							<f:setPropertyActionListener value="#{grupo}"
-								target="#{ConfigAgendaController.confParte2.grupo}" />
+								target="#{listarTipoAtendimento.confParte2.grupo}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Tipos de Atendimento"
+		<p:dialog header="Consultar Tipos de Atendimento"
 			widgetVar="dlgConsuTipoAt" modal="true" width="550px">
 			<h:form id="formConsuTipoAt">
-				<p:dataTable value="#{TipoAtendimentoController.listaTipos}"
+				<p:dataTable value="#{listarTipoAtendimento.listarTipoAtendimento}"
 					id="dtTipoAt" resizableColumns="true" var="tipo"
 					emptyMessage="Não existe nenhum tipo cadastrado!">
-					<p:column headerText="CÓD.">
+					<p:column headerText="Código">
 						<p:outputLabel value="#{tipo.idTipo}" />
 					</p:column>
 					<p:column headerText="Tipo de Atendimento">
@@ -355,11 +356,11 @@
 
 						<p:column style="width:50px;text-align: center">
 							<center>
-								<b:commandButton icon="glyphicon-ok" title="Selecionar"
-									oncomplete="PF('dlgConsultProf').hide();">
+								<p:commandButton icon="ui-icon-check" title="Selecionar"
+									onclick="PF('dlgConsultProf').hide();">
 									<f:setPropertyActionListener value="#{profi}"
 										target="#{ConfigAgendaController.confParte1.profissional}" />
-								</b:commandButton>
+								</p:commandButton>
 							</center>
 						</p:column>
 					</p:dataTable>

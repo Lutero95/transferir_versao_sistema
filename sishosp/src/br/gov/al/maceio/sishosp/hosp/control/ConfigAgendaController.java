@@ -20,11 +20,15 @@ import com.lowagie.text.pdf.AcroFields.Item;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ConfigAgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
+import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 @ManagedBean(name = "ConfigAgendaController")
 @ViewScoped
@@ -41,6 +45,9 @@ public class ConfigAgendaController implements Serializable {
 	private List<ConfigAgendaParte1Bean> listaHorariosEquipe;
 	private List<ProfissionalBean> listaProfissionais;
 	private List<EquipeBean> listaEquipes;
+
+	private List<GrupoBean> listaGruposProgramas;
+	private List<TipoAtendimentoBean> listaTipoAtendimentos;;
 
 	private ConfigAgendaDAO cDao = new ConfigAgendaDAO();
 	private ProfissionalDAO pDao = new ProfissionalDAO();
@@ -66,6 +73,8 @@ public class ConfigAgendaController implements Serializable {
 		this.tipo = new String();
 		this.opcao = new String("2");
 		this.nomeBusca = "";
+		this.listaGruposProgramas = new ArrayList<>();
+		this.listaTipoAtendimentos = new ArrayList<>();
 
 	}
 
@@ -155,6 +164,47 @@ public class ConfigAgendaController implements Serializable {
 		}
 		this.confParte2 = new ConfigAgendaParte2Bean();
 		// }
+	}
+
+	public List<GrupoBean> selectPrograma() throws ProjetoException {
+		GrupoDAO gDao = new GrupoDAO();
+		if (confParte2.getPrograma() != null) {
+			listaGruposProgramas = gDao.listarGruposPorPrograma(confParte2
+					.getPrograma().getIdPrograma());
+		}
+		return listaGruposProgramas;
+	}
+
+	public List<GrupoBean> listaGrupoAutoComplete(String query)
+			throws ProjetoException {
+		GrupoDAO gDao = new GrupoDAO();
+		if (confParte2.getPrograma() != null) {
+			return gDao.listarGruposAutoComplete(query,
+					confParte2.getPrograma());
+		} else {
+			return null;
+		}
+
+	}
+
+	public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
+			throws ProjetoException {
+		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+		if (confParte2.getTipoAt() != null) {
+			return tDao.listarTipoAtAutoComplete(query, confParte2.getGrupo());
+		} else {
+			return null;
+		}
+	}
+
+	public List<TipoAtendimentoBean> listarTipoAtendimento()
+			throws ProjetoException {
+		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+		if (confParte2.getTipoAt() != null) {
+			return tDao.listarTipoAtAutoDoGrupo(confParte2.getGrupo());
+		} else {
+			return null;
+		}
 	}
 
 	public void gravarConfigAgenda() throws SQLException, ProjetoException {
@@ -369,7 +419,7 @@ public class ConfigAgendaController implements Serializable {
 	}
 
 	public void limparBuscaPrograma() {
-		this.confParte2.setPrograma(null);
+		// this.confParte2.setPrograma(null);
 		this.confParte2.setGrupo(null);
 		this.confParte2.setTipoAt(null);
 	}

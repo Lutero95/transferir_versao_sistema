@@ -227,8 +227,8 @@ public class ProgramaDAO {
 			Integer tipo) throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<>();
 		String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma , codfederal from hosp.programa "
-				+ "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
-				+ "where codusuario = ?";
+				+ "left join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma ";
+				//+ "where codusuario = ?";
 
 		if (tipo == 1) {
 			sql += " and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma";
@@ -239,8 +239,8 @@ public class ProgramaDAO {
 			UsuarioBean user_session = (UsuarioBean) FacesContext
 					.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("obj_usuario");
-			stm.setInt(1, user_session.getCodigo());
-			stm.setString(2, "%" + descricao.toUpperCase() + "%");
+			//stm.setInt(1, user_session.getCodigo());
+			stm.setString(1, "%" + descricao.toUpperCase() + "%");
 
 			ResultSet rs = stm.executeQuery();
 

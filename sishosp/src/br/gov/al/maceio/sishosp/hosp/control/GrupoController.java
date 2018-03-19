@@ -145,6 +145,7 @@ public class GrupoController implements Serializable {
 		}
 		listaGrupos = gDao.listarGrupos();
 	}
+	
 
 	public GrupoBean getGrupo() {
 		return grupo;

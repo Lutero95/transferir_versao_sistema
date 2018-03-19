@@ -39,9 +39,9 @@ public class GrupoDAO {
 				ps.setBoolean(4, grupo.isInserção_pac_institut());
 			}
 			ResultSet rs = ps.executeQuery();
-			
+
 			Integer idGrupo = 0;
-			
+
 			if (rs.next()) {
 				idGrupo = rs.getInt("id_grupo");
 				String sql2 = "insert into hosp.equipe_grupo (id_grupo, codequipe) values(?,?);";
@@ -105,10 +105,9 @@ public class GrupoDAO {
 	public List<GrupoBean> listarGruposPorPrograma(int codPrograma)
 			throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<>();
-		String sql = "select distinct g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut "
-				+ "from hosp.grupo g,hosp.grupo_programa gp, hosp.programa p ,hosp.usuario_programa_grupo where p.id_programa = ? "
-				// + "and usuario_programa_grupo.codusuario = ? "
-				+ "and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma and g.id_grupo=usuario_programa_grupo.codgrupo";
+		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut from hosp.grupo g  "
+				+ "left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)  "
+				+ "where p.id_programa = ?";
 
 		UsuarioBean user_session = (UsuarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()
@@ -117,7 +116,6 @@ public class GrupoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setInt(1, codPrograma);
-			// stm.setInt(2, user_session.getCodigo());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -286,10 +284,9 @@ public class GrupoDAO {
 	public List<GrupoBean> listarGruposAutoComplete(String descricao,
 			ProgramaBean prog) throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<>();
-		String sql = "select g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut "
-				+ " from hosp.grupo g, hosp.grupo_programa gp, hosp.programa p"
-				+ " where p.id_programa = ? and g.id_grupo = gp.codgrupo and p.id_programa = gp.codprograma and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? "
-				+ " order by descgrupo";
+		String sql = "select g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut  "
+				+ " from hosp.grupo g left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)"
+				+ " where p.id_programa = ? and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? order by descgrupo ";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -310,6 +307,7 @@ public class GrupoDAO {
 				lista.add(grupo);
 			}
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
