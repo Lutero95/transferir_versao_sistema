@@ -58,6 +58,7 @@
 									itemLabel="#{theme.descricaoProf}">
 									<p:ajax event="itemSelect" update=":formConfiAgenda" />
 								</p:autoComplete>
+
 							</p:outputPanel>
 							<p:commandButton value="Buscar" icon="ui-icon-search"
 								action="#{ProfissionalController.listarProfissionais}"
@@ -118,7 +119,6 @@
 								value="#{ConfigAgendaController.confParte1.qtdMax}" />
 
 						</p:panelGrid>
-
 					</b:tab>
 					<b:tab title="Tipo de Atendimento">
 
@@ -134,7 +134,7 @@
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descPrograma}">
 									<p:ajax event="itemSelect"
-										listener="#{ConfigAgendaController.selectPrograma}"
+										listener="#{ConfigAgendaController.selectGrupo}"
 										update=":formConfiAgenda, :formConsuGrop:dtGrupo, :formConfiAgenda" />
 								</p:autoComplete>
 							</p:outputPanel>
@@ -157,8 +157,8 @@
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descGrupo}">
 									<p:ajax event="itemSelect"
-										listener="#{TipoAtendimentoController.selectGrupo}"
-										update=":formConfiAgenda, :formConsuTipoAt:dtTipoAt, :formConfiAgenda" />
+										listener="#{ConfigAgendaController.selectTipoAtendimento}"
+										update=":formConfiAgenda, :formConsuTipoAt:dtTipoAt" />
 								</p:autoComplete>
 							</p:outputPanel>
 							<p:commandButton id="btBusGr" value="Buscar" process="@this"
@@ -185,8 +185,9 @@
 							</p:outputPanel>
 							<p:commandButton id="btBusTi" value="Buscar" process="@this"
 								icon="ui-icon-search"
+								action="#{ConfigAgendaController.limparBuscaGrupo()}"
 								disabled="#{ConfigAgendaController.confParte2.programa==null}"
-								update=":formConfiAgenda" onclick="PF('dlgConsuTipoAt').show();" />
+								update="formConsuTipoAt" onclick="PF('dlgConsuTipoAt').show();" />
 
 							<h:outputLabel value="Quantidade:" />
 							<b:inputText value="#{ConfigAgendaController.confParte2.qtd}"
@@ -258,16 +259,14 @@
 				<p:dataTable value="#{ProgramaController.listaProgramas}" var="prog"
 					resizableColumns="true"
 					emptyMessage="Não existe nenhum programa cadastrado!">
-					<p:column headerText="CÓD.">
+					<p:column headerText="Código">
 						<p:outputLabel value="#{prog.idPrograma}" />
 					</p:column>
-					<p:column headerText="PROGRAMA">
+					<p:column headerText="Programa">
 						<p:outputLabel value="#{prog.descPrograma}" />
 					</p:column>
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton
-							update=":formConfiAgenda, :formConsuGrop:dtGrupo, 
-							:formConfiAgenda, :formConfiAgenda"
+						<p:commandButton update=":formConfiAgenda, :formConsuGrop:dtGrupo"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
@@ -281,7 +280,7 @@
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
 			modal="true" width="550px">
 			<h:form id="formConsuGrop">
-				<p:dataTable value="#{ConfigAgendaController.selectPrograma()}"
+				<p:dataTable value="#{ConfigAgendaController.selectGrupo()}"
 					id="dtGrupo" resizableColumns="true" var="grupo"
 					emptyMessage="Não existe nenhum grupo cadastrado!">
 					<p:column headerText="Código">
@@ -301,7 +300,7 @@
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuGrop').hide();">
 							<f:setPropertyActionListener value="#{grupo}"
-								target="#{listarTipoAtendimento.confParte2.grupo}" />
+								target="#{ConfigAgendaController.confParte2.grupo}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
@@ -311,7 +310,8 @@
 		<p:dialog header="Consultar Tipos de Atendimento"
 			widgetVar="dlgConsuTipoAt" modal="true" width="550px">
 			<h:form id="formConsuTipoAt">
-				<p:dataTable value="#{listarTipoAtendimento.listarTipoAtendimento}"
+				<p:dataTable
+					value="#{ConfigAgendaController.selectTipoAtendimento()}"
 					id="dtTipoAt" resizableColumns="true" var="tipo"
 					emptyMessage="Não existe nenhum tipo cadastrado!">
 					<p:column headerText="Código">
@@ -357,7 +357,8 @@
 						<p:column style="width:50px;text-align: center">
 							<center>
 								<p:commandButton icon="ui-icon-check" title="Selecionar"
-									onclick="PF('dlgConsultProf').hide();">
+									update="formConfiAgenda"
+									onclick="PF('dlgConsultaProf').hide();">
 									<f:setPropertyActionListener value="#{profi}"
 										target="#{ConfigAgendaController.confParte1.profissional}" />
 								</p:commandButton>

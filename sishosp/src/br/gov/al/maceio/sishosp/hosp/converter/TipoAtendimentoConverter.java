@@ -26,7 +26,7 @@ public class TipoAtendimentoConverter implements Converter {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
-					"Tipo de atendimento invalido!", ""));
+					"Tipo de atendimento inválido!", ""));
 		}
 	}
 

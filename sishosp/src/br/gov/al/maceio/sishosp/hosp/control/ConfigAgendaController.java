@@ -47,7 +47,7 @@ public class ConfigAgendaController implements Serializable {
 	private List<EquipeBean> listaEquipes;
 
 	private List<GrupoBean> listaGruposProgramas;
-	private List<TipoAtendimentoBean> listaTipoAtendimentos;;
+	private List<TipoAtendimentoBean> listaTipoAtendimentosGrupo;
 
 	private ConfigAgendaDAO cDao = new ConfigAgendaDAO();
 	private ProfissionalDAO pDao = new ProfissionalDAO();
@@ -74,7 +74,7 @@ public class ConfigAgendaController implements Serializable {
 		this.opcao = new String("2");
 		this.nomeBusca = "";
 		this.listaGruposProgramas = new ArrayList<>();
-		this.listaTipoAtendimentos = new ArrayList<>();
+		this.listaTipoAtendimentosGrupo = new ArrayList<>();
 
 	}
 
@@ -166,7 +166,8 @@ public class ConfigAgendaController implements Serializable {
 		// }
 	}
 
-	public List<GrupoBean> selectPrograma() throws ProjetoException {
+	// GRUPOBEAN
+	public List<GrupoBean> selectGrupo() throws ProjetoException {
 		GrupoDAO gDao = new GrupoDAO();
 		if (confParte2.getPrograma() != null) {
 			listaGruposProgramas = gDao.listarGruposPorPrograma(confParte2
@@ -187,25 +188,29 @@ public class ConfigAgendaController implements Serializable {
 
 	}
 
+	// FINAL GRUPOBEAN
+
+	// TIPOATENDIMENTOBEAN
 	public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
 			throws ProjetoException {
 		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
-		if (confParte2.getTipoAt() != null) {
+		if (confParte2.getGrupo() != null) {
 			return tDao.listarTipoAtAutoComplete(query, confParte2.getGrupo());
 		} else {
 			return null;
 		}
 	}
 
-	public List<TipoAtendimentoBean> listarTipoAtendimento()
-			throws ProjetoException {
+	public List<TipoAtendimentoBean> selectTipoAtendimento() throws ProjetoException {
 		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
-		if (confParte2.getTipoAt() != null) {
-			return tDao.listarTipoAtAutoDoGrupo(confParte2.getGrupo());
-		} else {
-			return null;
+		if (confParte2.getGrupo() != null) {
+			listaTipoAtendimentosGrupo = tDao.listarTipoAtPorGrupo(confParte2
+					.getGrupo().getIdGrupo());
 		}
+		return listaTipoAtendimentosGrupo;
 	}
+
+	// FINAL TIPOATENDIMENTOBEAN
 
 	public void gravarConfigAgenda() throws SQLException, ProjetoException {
 		boolean ok = false;
@@ -425,7 +430,7 @@ public class ConfigAgendaController implements Serializable {
 	}
 
 	public void limparBuscaGrupo() {
-		this.confParte2.setGrupo(null);
+		//this.confParte2.setGrupo(null);
 		this.confParte2.setTipoAt(null);
 	}
 
