@@ -147,7 +147,7 @@ public class ConfigAgendaController implements Serializable {
 		// }
 		// else{
 		// ConfigAgendaController.confParte1.qtdMax
-		confParte1.setQtdMax(confParte2.getQtd());
+		// confParte1.setQtdMax(confParte2.getQtd());
 		if (confParte2.getQtd() == null
 				// || confParte2.getTipoAt().getDescTipoAt() == null
 				|| confParte2.getPrograma().getDescPrograma() == null
@@ -164,6 +164,11 @@ public class ConfigAgendaController implements Serializable {
 		}
 		this.confParte2 = new ConfigAgendaParte2Bean();
 		// }
+	}
+
+	public void removeNaLista() {
+		this.listaTipos.remove(confParte2);
+
 	}
 
 	// GRUPOBEAN
@@ -201,7 +206,8 @@ public class ConfigAgendaController implements Serializable {
 		}
 	}
 
-	public List<TipoAtendimentoBean> selectTipoAtendimento() throws ProjetoException {
+	public List<TipoAtendimentoBean> selectTipoAtendimento()
+			throws ProjetoException {
 		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 		if (confParte2.getGrupo() != null) {
 			listaTipoAtendimentosGrupo = tDao.listarTipoAtPorGrupo(confParte2
@@ -241,7 +247,7 @@ public class ConfigAgendaController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
-		if (confParte1.getProfissional().getIdProfissional() == null) {
+		if (confParte1.getProfissional() == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Escolha um profissional!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -255,6 +261,7 @@ public class ConfigAgendaController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
+
 		if (this.opcao.equals("2")
 				&& this.confParte1.getDiasSemana().size() == 0) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -430,7 +437,7 @@ public class ConfigAgendaController implements Serializable {
 	}
 
 	public void limparBuscaGrupo() {
-		//this.confParte2.setGrupo(null);
+		// this.confParte2.setGrupo(null);
 		this.confParte2.setTipoAt(null);
 	}
 

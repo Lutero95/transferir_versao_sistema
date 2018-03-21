@@ -17,9 +17,9 @@
 					<h4>Configuração de Agenda</h4>
 					<hr />
 				</div>
-				<b:tabView>
+				<p:tabView>
 
-					<b:tab title="Geral">
+					<p:tab title="Geral">
 						<p:panelGrid columns="4" styleClass="semBorda" id="panelMesAno">
 							<h:outputLabel value="Mês: "
 								rendered="#{ConfigAgendaController.opcao==2}" />
@@ -85,13 +85,13 @@
 							<p:selectManyCheckbox layout="grid" columns="7"
 								rendered="#{ConfigAgendaController.opcao==2}"
 								value="#{ConfigAgendaController.confParte1.diasSemana}">
-								<f:selectItem itemLabel="DOMINGO" itemValue="1" />
-								<f:selectItem itemLabel="SEGUNDA" itemValue="2" />
-								<f:selectItem itemLabel="TERÇA" itemValue="3" />
-								<f:selectItem itemLabel="QUARTA" itemValue="4" />
-								<f:selectItem itemLabel="QUINTA" itemValue="5" />
-								<f:selectItem itemLabel="SEXTA" itemValue="6" />
-								<f:selectItem itemLabel="SÁBADO" itemValue="7" />
+								<f:selectItem itemLabel="Domingo" itemValue="1" />
+								<f:selectItem itemLabel="Segunda" itemValue="2" />
+								<f:selectItem itemLabel="Terça" itemValue="3" />
+								<f:selectItem itemLabel="Quarta" itemValue="4" />
+								<f:selectItem itemLabel="Quinta" itemValue="5" />
+								<f:selectItem itemLabel="Sexta" itemValue="6" />
+								<f:selectItem itemLabel="Sábado" itemValue="7" />
 							</p:selectManyCheckbox>
 
 							<h:outputLabel value="Data Específica: " id="dtesp"
@@ -108,19 +108,19 @@
 							<h:outputLabel value="Turno: " />
 							<p:selectOneMenu style="width:100px"
 								value="#{ConfigAgendaController.confParte1.turno}">
-								<f:selectItem itemLabel="MANHÃ" itemValue="M" />
-								<f:selectItem itemLabel="TARDE" itemValue="T" />
-								<f:selectItem itemLabel="AMBOS" itemValue="A" />
+								<f:selectItem itemLabel="Manhã" itemValue="M" />
+								<f:selectItem itemLabel="Tarde" itemValue="T" />
+								<f:selectItem itemLabel="Ambos" itemValue="A" />
 							</p:selectOneMenu>
 
 							<h:outputLabel value="Quantidade Máxima:" />
-							<b:inputText style="width: 70px;margin-top:15px;" required="true"
-								requiredMessage="Informe a quantidade máxima!"
+							<b:inputText style="width: 70px;margin-top:15px;"
+								required="false" requiredMessage="Informe a quantidade máxima!"
 								value="#{ConfigAgendaController.confParte1.qtdMax}" />
 
 						</p:panelGrid>
-					</b:tab>
-					<b:tab title="Tipo de Atendimento">
+					</p:tab>
+					<p:tab title="Tipo de Atendimento">
 
 						<p:panelGrid columns="3" styleClass="semBorda">
 
@@ -135,7 +135,7 @@
 									itemLabel="#{theme.descPrograma}">
 									<p:ajax event="itemSelect"
 										listener="#{ConfigAgendaController.selectGrupo}"
-										update=":formConfiAgenda, :formConsuGrop:dtGrupo, :formConfiAgenda" />
+										update=":formConfiAgenda, :formConsuGrop:dtGrupo" />
 								</p:autoComplete>
 							</p:outputPanel>
 							<p:commandButton value="Buscar" icon="ui-icon-search"
@@ -191,18 +191,18 @@
 
 							<h:outputLabel value="Quantidade:" />
 							<b:inputText value="#{ConfigAgendaController.confParte2.qtd}"
-								style="width: 70px;" required="true"
+								style="width: 70px;margin-top:14px" required="true"
 								requiredMessage="Informe a Quantidade" />
 
 							<b:commandButton value="Incluir" icon="glyphicon-plus"
 								action="#{ConfigAgendaController.addNaLista()}" id="b5"
-								update=":formConfiAgenda, , :formConfiAgenda" />
+								update=":formConfiAgenda" />
 						</p:panelGrid>
 						<br />
-						<h:outputLabel value="Configuração dos Tipos de Atendimento" />
+						<h:outputLabel value="Configuração dos Tipos de Atendimento:" />
 						<p:dataTable value="#{ConfigAgendaController.listaTipos}"
 							id="dtConfi" resizableColumns="true" var="tipo"
-							emptyMessage="Sem dados...">
+							emptyMessage="Sem dados inseridos.">
 							<p:column headerText="Programa">
 								<p:outputLabel value="#{tipo.programa.descPrograma}" />
 							</p:column>
@@ -215,10 +215,19 @@
 								<p:outputLabel value="#{tipo.qtd}" />
 							</p:column>
 
+							<p:column headerText="Ação">
+								<p:commandButton process="@this"
+									action="#{ConfigAgendaController.removeNaLista()}"
+									icon="ui-icon-trash" update=":formConfiAgenda">
+									<f:setPropertyActionListener value="#{tipo}"
+										target="#{ConfigAgendaController.confParte2}" />
+								</p:commandButton>
+							</p:column>
+
 						</p:dataTable>
 
-					</b:tab>
-				</b:tabView>
+					</p:tab>
+				</p:tabView>
 
 
 			</div>
@@ -295,8 +304,7 @@
 
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton
-							update=":formConfiAgenda, :formConsuTipoAt:dtTipoAt,
-							 :formConfiAgenda, :formConfiAgenda"
+							update=":formConfiAgenda, :formConsuTipoAt:dtTipoAt"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuGrop').hide();">
 							<f:setPropertyActionListener value="#{grupo}"
@@ -322,9 +330,8 @@
 					</p:column>
 
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":formConfiAgenda, :formConfiAgenda"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsuTipoAt').hide();">
+						<p:commandButton update=":formConfiAgenda" icon="ui-icon-check"
+							title="Selecionar" onclick="PF('dlgConsuTipoAt').hide();">
 							<f:setPropertyActionListener value="#{tipo}"
 								target="#{ConfigAgendaController.confParte2.tipoAt}" />
 						</p:commandButton>
@@ -357,7 +364,7 @@
 						<p:column style="width:50px;text-align: center">
 							<center>
 								<p:commandButton icon="ui-icon-check" title="Selecionar"
-									update="formConfiAgenda"
+									update=":formConfiAgenda"
 									onclick="PF('dlgConsultaProf').hide();">
 									<f:setPropertyActionListener value="#{profi}"
 										target="#{ConfigAgendaController.confParte1.profissional}" />
