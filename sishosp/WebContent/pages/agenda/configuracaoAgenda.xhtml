@@ -364,8 +364,8 @@
 						<p:column style="width:50px;text-align: center">
 							<center>
 								<p:commandButton icon="ui-icon-check" title="Selecionar"
-									update=":formConfiAgenda"
-									onclick="PF('dlgConsultaProf').hide();">
+									update=":formConfiAgenda:outProf"
+									on="PF('dlgConsultaProf').hide();">
 									<f:setPropertyActionListener value="#{profi}"
 										target="#{ConfigAgendaController.confParte1.profissional}" />
 								</p:commandButton>
