@@ -17,7 +17,7 @@
 					<h4>Configuração de Agenda</h4>
 					<hr />
 				</div>
-				<p:tabView>
+				<p:tabView id="tbview">
 
 					<p:tab title="Geral">
 						<p:panelGrid columns="4" styleClass="semBorda" id="panelMesAno">
@@ -364,8 +364,8 @@
 						<p:column style="width:50px;text-align: center">
 							<center>
 								<p:commandButton icon="ui-icon-check" title="Selecionar"
-									update=":formConfiAgenda:outProf"
-									on="PF('dlgConsultaProf').hide();">
+									update=":formConfiAgenda:tbview:outProf"
+									oncomplete="PF('dlgConsultaProf').hide();">
 									<f:setPropertyActionListener value="#{profi}"
 										target="#{ConfigAgendaController.confParte1.profissional}" />
 								</p:commandButton>
