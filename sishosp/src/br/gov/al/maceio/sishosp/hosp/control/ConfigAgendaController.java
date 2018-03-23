@@ -218,6 +218,15 @@ public class ConfigAgendaController implements Serializable {
 
 	// FINAL TIPOATENDIMENTOBEAN
 
+	// EQUIPEBEAN
+	public List<EquipeBean> listaEquipeAutoComplete(String query)
+			throws ProjetoException {
+		List<EquipeBean> result = eDao.listarEquipePorGrupo(query, confParte2.getGrupo().getIdGrupo());
+		return result;
+	}
+
+	// FINAL EQUIPEBEAN
+
 	public void gravarConfigAgenda() throws SQLException, ProjetoException {
 		boolean ok = false;
 		int somatorio = 0;

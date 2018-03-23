@@ -20,9 +20,6 @@ import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 @ViewScoped
 public class EquipeController implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private EquipeBean equipe;
 	private List<EquipeBean> listaEquipe;

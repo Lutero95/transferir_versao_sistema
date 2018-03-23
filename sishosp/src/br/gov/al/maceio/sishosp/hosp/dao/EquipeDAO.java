@@ -146,6 +146,39 @@ public class EquipeDAO {
 		return lista;
 	}
 
+	public List<EquipeBean> listarEquipePorGrupo(String descricao,
+			Integer codgrupo) throws ProjetoException {
+		List<EquipeBean> lista = new ArrayList<>();
+		String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe from hosp.equipe e "
+				+ " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where eg.id_grupo = ? and descequipe like ? order by descequipe ";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, codgrupo);
+			stm.setString(2, "%" + descricao.toUpperCase() + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				EquipeBean equipe = new EquipeBean();
+				equipe.setCodEquipe(rs.getInt("id_equipe"));
+				equipe.setDescEquipe(rs.getString("descequipe"));
+
+				lista.add(equipe);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
+	}
+
 	public boolean alterarEquipe(EquipeBean equipe) throws ProjetoException {
 		String sql = "update hosp.equipe set descequipe = ? where id_equipe = ?";
 		try {
