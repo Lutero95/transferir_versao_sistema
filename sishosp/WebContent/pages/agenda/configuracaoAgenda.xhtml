@@ -165,7 +165,7 @@
 								icon="ui-icon-search"
 								disabled="#{ConfigAgendaController.confParte2.programa==null}"
 								action="#{ConfigAgendaController.limparBuscaGrupo()}"
-								update=":formConfiAgenda" onclick="PF('dlgConsuGrop').show();" />
+								update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();" />
 
 						</p:panelGrid>
 
@@ -275,7 +275,8 @@
 						<p:outputLabel value="#{prog.descPrograma}" />
 					</p:column>
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":formConfiAgenda, :formConsuGrop:dtGrupo"
+						<p:commandButton
+							update=":formConfiAgenda:tbview:outGrupo, :formConfiAgenda:tbview:outProg, :formConfiAgenda:tbview:btBusGr, :formConsuGrop:dtGrupo"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
@@ -304,7 +305,7 @@
 
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton
-							update=":formConfiAgenda, :formConsuTipoAt:dtTipoAt"
+							update=":formConfiAgenda:tbview:outGrupo, :formConfiAgenda:tbview:outTipoAt, :formConfiAgenda:tbview:btBusGr, :formConfiAgenda:tbview:btBusTi"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuGrop').hide();">
 							<f:setPropertyActionListener value="#{grupo}"
@@ -330,8 +331,10 @@
 					</p:column>
 
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":formConfiAgenda" icon="ui-icon-check"
-							title="Selecionar" onclick="PF('dlgConsuTipoAt').hide();">
+						<p:commandButton
+							update=":formConfiAgenda:tbview:outTipoAt, :formConfiAgenda:tbview:btBusTi"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuTipoAt').hide();">
 							<f:setPropertyActionListener value="#{tipo}"
 								target="#{ConfigAgendaController.confParte2.tipoAt}" />
 						</p:commandButton>

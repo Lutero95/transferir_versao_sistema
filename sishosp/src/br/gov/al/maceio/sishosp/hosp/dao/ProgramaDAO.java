@@ -265,6 +265,50 @@ public class ProgramaDAO {
 
 		return lista;
 	}
+	
+	public List<ProgramaBean> listarProgramasBuscaUsuario(String descricao,
+			Integer tipo) throws ProjetoException {
+		List<ProgramaBean> lista = new ArrayList<>();
+		String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma , codfederal from hosp.programa "
+				+ "left join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
+				+ "where codusuario = ?";
+
+		if (tipo == 1) {
+			sql += " and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma";
+		}
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			UsuarioBean user_session = (UsuarioBean) FacesContext
+					.getCurrentInstance().getExternalContext().getSessionMap()
+					.get("obj_usuario");
+
+			stm.setInt(1, user_session.getCodigo());
+			stm.setString(2, "%" + descricao.toUpperCase() + "%");
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ProgramaBean programa = new ProgramaBean();
+				programa.setIdPrograma(rs.getInt("id_programa"));
+				programa.setDescPrograma(rs.getString("descprograma"));
+				programa.setCodFederal(rs.getDouble("codfederal"));
+
+				lista.add(programa);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
 
 	public Boolean excluirPrograma(ProgramaBean prog) throws ProjetoException {
 		String sql = "delete from hosp.programa where id_programa = ?";

@@ -221,8 +221,20 @@ public class ConfigAgendaController implements Serializable {
 	// EQUIPEBEAN
 	public List<EquipeBean> listaEquipeAutoComplete(String query)
 			throws ProjetoException {
-		List<EquipeBean> result = eDao.listarEquipePorGrupo(query, confParte2.getGrupo().getIdGrupo());
+		List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
+				confParte2.getGrupo().getIdGrupo());
 		return result;
+	}
+
+	public List<EquipeBean> selectEquipe() throws ProjetoException {
+		EquipeDAO eDao = new EquipeDAO();
+
+		if (confParte2.getGrupo() != null) {
+			this.listaEquipes = eDao.listarEquipePorGrupo(confParte2.getGrupo()
+					.getIdGrupo());
+		}
+		return listaEquipes;
+
 	}
 
 	// FINAL EQUIPEBEAN

@@ -206,6 +206,13 @@ public class ProgramaController implements Serializable {
 		return result;
 	}
 
+	public List<ProgramaBean> listaProgramaAutoCompleteUsuario(String query)
+			throws ProjetoException {
+		ProgramaDAO pDao = new ProgramaDAO();
+		List<ProgramaBean> result = pDao.listarProgramasBuscaUsuario(query, 1);
+		return result;
+	}
+
 	public int getTipo() {
 		return tipo;
 	}

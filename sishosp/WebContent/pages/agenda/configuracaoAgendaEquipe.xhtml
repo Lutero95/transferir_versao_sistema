@@ -37,6 +37,8 @@
 
 					</p:outputPanel>
 					<p:commandButton id="btBusPr" value="Buscar" icon="ui-icon-search"
+						immediate="true"
+						action="#{ConfigAgendaController.limparBuscaPrograma()}"
 						onclick="PF('dlgConsultProg').show();" />
 
 					<h:outputLabel for="grupo" value="Grupo: " />
@@ -55,7 +57,8 @@
 					</p:outputPanel>
 					<p:commandButton id="btBusGr" value="Buscar" icon="ui-icon-search"
 						disabled="#{ConfigAgendaController.confParte2.programa==null}"
-						onclick="PF('dlgConsultGrop').show();" />
+						action="#{ConfigAgendaController.limparBuscaGrupo()}"
+						update=":formConsuGrop" onclick="PF('dlgConsultGrop').show();" />
 
 					<h:outputLabel value="Equipe: " />
 					<p:outputPanel id="outEquipe">
@@ -72,6 +75,7 @@
 						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton value="Buscar" icon="ui-icon-search" id="btBusEq"
+						update=":formConsuEquipe"
 						disabled="#{ConfigAgendaController.confParte2.grupo==null}"
 						onclick="PF('dlgConsultEquipe').show();" />
 
@@ -190,9 +194,8 @@
 					</p:column>
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton
-							update=":formConfiAgendaEquipe:outProg, :formConsuGrop:dtGrupo, :formConfiAgendaEquipe:btBusGr"
+							update=":formConfiAgendaEquipe:outProg, :formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:btBusGr"
 							icon="ui-icon-check" title="Selecionar"
-							action="#{GrupoController.atualizaLista(ConfigAgendaController.confParte2.programa)}"
 							onclick="PF('dlgConsultProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
 								target="#{ConfigAgendaController.confParte2.programa}" />
@@ -205,7 +208,7 @@
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsultGrop"
 			modal="true" width="550px">
 			<h:form id="formConsuGrop">
-				<p:dataTable value="#{GrupoController.listaGruposProgramas}"
+				<p:dataTable value="#{ConfigAgendaController.selectGrupo()}"
 					id="dtGrupo" resizableColumns="true" var="grupo"
 					emptyMessage="Não existe nenhum grupo cadastrado!">
 					<p:column headerText="Código">
@@ -219,10 +222,10 @@
 					</p:column>
 
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton update=":formConfiAgendaEquipe:outGrupo"
+						<p:commandButton
+							update=":formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:outEquipe, :formConfiAgendaEquipe:btBusEq"
 							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsultGrop').hide();"
-							action="#{TipoAtendimentoController.atualizaListaTipos(ConfigAgendaController.confParte2.grupo)}">
+							onclick="PF('dlgConsultGrop').hide();">
 							<f:setPropertyActionListener value="#{grupo}"
 								target="#{ConfigAgendaController.confParte2.grupo}" />
 						</p:commandButton>
@@ -234,8 +237,8 @@
 		<p:dialog header="Consultar Equipes" widgetVar="dlgConsultEquipe"
 			modal="true" width="550px">
 			<h:form id="formConsuEquipe">
-				<p:dataTable value="#{EquipeController.listaEquipe}" id="dtEquipe"
-					resizableColumns="true" var="equipe"
+				<p:dataTable value="#{ConfigAgendaController.selectEquipe()}"
+					id="dtEquipe" resizableColumns="true" var="equipe"
 					emptyMessage="Não existe nenhuma equipe cadastrada!">
 					<p:column headerText="Código">
 						<p:outputLabel value="#{equipe.codEquipe}" />
