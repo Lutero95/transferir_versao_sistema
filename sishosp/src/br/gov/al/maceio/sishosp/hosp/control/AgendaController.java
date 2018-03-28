@@ -334,7 +334,10 @@ public class AgendaController implements Serializable {
 
 	public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
 			throws ProjetoException {
-		return tDao.listarTipoAtAutoComplete(query, this.agenda.getGrupo());
+		if (agenda.getGrupo() != null) {
+			return tDao.listarTipoAtAutoComplete(query, this.agenda.getGrupo());
+		} else
+			return null;
 	}
 
 	public void selectGrupo(SelectEvent event) throws ProjetoException {

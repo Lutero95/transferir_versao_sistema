@@ -683,7 +683,7 @@ public class PacienteController implements Serializable {
 	public List<PacienteBean> listaPacienteAutoComplete(String query)
 			throws ProjetoException {
 		PacienteDAO pDao = new PacienteDAO();
-		List<PacienteBean> result = pDao.buscaPacienteAutoComplete(query);
+		List<PacienteBean> result = pDao.buscaPacienteAutoCompleteOk(query);
 		return result;
 	}
 
