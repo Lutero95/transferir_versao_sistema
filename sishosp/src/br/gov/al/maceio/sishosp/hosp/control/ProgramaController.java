@@ -137,6 +137,14 @@ public class ProgramaController implements Serializable {
 		}
 
 	}
+	
+	public List<ProgramaBean> listaProgramasUsuario()
+			throws ProjetoException {
+		ProgramaDAO pDao = new ProgramaDAO();
+		System.out.println("ok");
+		List<ProgramaBean> result = pDao.listarProgramasUsuario();
+		return result;
+	}
 
 	public ProgramaBean getProg() {
 		return prog;

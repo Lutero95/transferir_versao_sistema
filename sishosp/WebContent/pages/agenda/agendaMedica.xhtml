@@ -45,7 +45,7 @@
 						styleClass="btn btn-primary text-center"
 						action="#{AgendaController.limparNaBuscaPaciente()}"
 						icon="ui-icon-search" style="margin-left:-20px;height:25px"
-						update=":formAgendaMedica" onclick="PF('dlgConsuPac').show();" />
+						update=":formConsuPac" onclick="PF('dlgConsuPac').show();" />
 				</div>
 
 
@@ -72,9 +72,10 @@
 				<div class="col-sm-1">
 					<p:commandButton id="btBusPr"
 						styleClass="btn btn-primary text-center"
+						disabled="#{AgendaController.agenda.paciente==null}"
 						style="margin-left:-20px;height:25px" icon="ui-icon-search"
 						action="#{AgendaController.limparNaBuscaPrograma()}"
-						update=":formAgendaMedica" onclick="PF('dlgConsuProg').show();" />
+						update=":formConsuProg" onclick="PF('dlgConsuProg').show();" />
 				</div>
 				<h:outputLabel for="grupo" value="Grupo"
 					styleClass="col-sm-1 control-label" />
@@ -98,6 +99,7 @@
 					<p:commandButton id="btBusGr"
 						styleClass="btn btn-primary text-center"
 						style="margin-left:-20px;height:25px" icon="ui-icon-search"
+						disabled="#{AgendaController.agenda.programa==null}"
 						action="#{AgendaController.limparNaBuscaGrupo()}"
 						update=":formAgendaMedica" onclick="PF('dlgConsuGrop').show();" />
 				</div>
@@ -122,18 +124,19 @@
 					<p:commandButton id="btBusTi"
 						styleClass="btn btn-primary text-center"
 						style="margin-left:-20px;height:25px" icon="ui-icon-search"
+						disabled="#{AgendaController.agenda.grupo==null}"
 						action="#{AgendaController.limparNaBuscaTipo()}"
 						update=":formAgendaMedica" onclick="PF('dlgConsuTipoAt').show();" />
 				</div>
 				<h:outputLabel value="Profissional"
 					styleClass="col-sm-1 control-label"
 					rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
-				<div class="col-sm-4">
+				<div class="col-sm-1">
 					<p:outputPanel id="outProf"
 						rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
 						<p:autoComplete value="#{AgendaController.agenda.profissional}"
 							size="60" converter="conProfissional"
-							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descricaoProf}">
@@ -141,14 +144,13 @@
 						</p:autoComplete>
 					</p:outputPanel>
 				</div>
-				<div class="col-sm-1">
-					<p:commandButton id="btBusProf" styleClass="btn btn-primary text-center" icon="ui-icon-search"
-					style="margin-left:-20px;height:25px"
+					<p:commandButton id="btBusProf"
+						styleClass="btn btn-primary text-center" icon="ui-icon-search"
+						style="margin-left:-20px;height:25px"
 						disabled="#{AgendaController.agenda.tipoAt==null}"
 						action="#{AgendaController.limparNaBuscaEquipeProf()}"
 						update=":formAgendaMedica" onclick="PF('dlgConsuProf').show();"
 						rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
-				</div>
 				<h:outputLabel for="equipe" value="Equipe"
 					styleClass="col-sm-1 control-label"
 					rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
@@ -157,7 +159,7 @@
 						rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
 						<p:autoComplete value="#{AgendaController.agenda.equipe}"
 							size="60" converter="conEquipe"
-							completeMethod="#{EquipeController.listaEquipeAutoComplete}"
+							completeMethod="#{AgendaController.listaEquipeAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descEquipe}">
@@ -165,7 +167,7 @@
 						</p:autoComplete>
 					</p:outputPanel>
 				</div>
-				<div class="col-sm-1">
+				<div class="col-sm-4">
 					<p:commandButton id="btBusEqui" value="Buscar"
 						disabled="#{AgendaController.agenda.tipoAt==null}"
 						onclick="PF('dlgConsuEquipe').show();"
@@ -234,18 +236,18 @@
 
 			</div>
 
-			<b:commandButton value="Confirmar" style="margin-top: 25px;"
+			<b:commandButton value="Confirmar" style="margin-top:5px;"
 				update=":formAgendaMedica:dtNovosAg" icon="glyphicon-ok"
 				action="#{AgendaController.addListaNovosAgendamentos()}" />
 
 			<b:commandButton value="Limpar Busca"
-				style="margin-top: 25px;margin-left:5px"
-				icon="glyphicon-remove-sign"
+				style="margin-top:5px;margin-left:5px" icon="glyphicon-remove-sign"
 				actionListener="#{AgendaController.limparDados()}"
 				update=":formAgendaMedica" />
 
 
-			<p:panelGrid columns="1" styleClass="semBorda">
+			<p:panelGrid columns="1" styleClass="semBorda"
+				style="margin-top:25px">
 				<h:outputLabel value="Novo(s) Agendamento(s)" />
 				<p:dataTable id="dtNovosAg" resizableColumns="true"
 					value="#{AgendaController.listaNovosAgendamentos}" var="agend"
@@ -333,7 +335,7 @@
 		</h:form>
 
 
-		<p:dialog header="Consulta Pacientes" widgetVar="dlgConsuPac"
+		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
 			modal="true" width="750px" height="400px">
 			<h:form id="formConsuPac">
 				<p:growl id="msgC" />
@@ -343,14 +345,13 @@
 				</div>
 
 
-
-				<b:dataTable id="dt" var="tab"
-					value="#{PacienteController.listaPacientesParaAgenda}" lang="es"
+				<b:dataTable id="dt" var="pacie"
+					value="#{PacienteController.listarPacienteAgenda()}" lang="pt-br"
 					display="Nenhum Paciente">
 
 					<h:column>
 						<f:facet name="header">
-                        Prontuário
+                        Código
                     </f:facet>
 
 						<p:outputLabel value="#{pacie.id_paciente}" />
@@ -373,15 +374,15 @@
 
 					<h:column>
 						<f:facet name="header">
-                        Cpf
+                        Ação
                     </f:facet>
-						<h:commandButton
+						<p:commandButton
 							update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuPac').hide();">
 							<f:setPropertyActionListener value="#{pacie}"
 								target="#{AgendaController.agenda.paciente}" />
-						</h:commandButton>
+						</p:commandButton>
 
 					</h:column>
 
@@ -390,16 +391,16 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Programas" widgetVar="dlgConsuProg"
+		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
 			modal="true" width="500px">
 			<h:form id="formConsuProg">
-				<p:dataTable value="#{ProgramaController.listaProgramas}" var="prog"
+				<p:dataTable value="#{ProgramaController.listaProgramasUsuario()}" var="prog"
 					resizableColumns="true"
 					emptyMessage="Não existe nenhum programa cadastrado!">
-					<p:column headerText="CÓD.">
+					<p:column headerText="Código">
 						<p:outputLabel value="#{prog.idPrograma}" />
 					</p:column>
-					<p:column headerText="PROGRAMA">
+					<p:column headerText="Programa">
 						<p:outputLabel value="#{prog.descPrograma}" />
 					</p:column>
 					<p:column style="width:50px;text-align: center">

@@ -1076,6 +1076,45 @@ public class PacienteDAO {
 		}
 
 	}
+	
+	public List<PacienteBean> listaPaciente()
+			throws ProjetoException {
+		PreparedStatement ps = null;
+		conexao = ConnectionFactory.getConnection();
+		try {
+			String sql = " select id_paciente, nome, cpf, cns from hosp.pacientes order by nome";
+
+			ps = conexao.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+
+			List<PacienteBean> lista = new ArrayList<PacienteBean>();
+
+			while (rs.next()) {
+				PacienteBean p = new PacienteBean();
+				p.setId_paciente(rs.getInt("id_paciente"));
+				p.setNome(rs.getString("nome").toUpperCase());
+				p.setCpf(rs.getString("cpf"));
+				p.setCns(rs.getString("cns"));
+
+				lista.add(p);
+
+			}
+			return lista;
+		} catch (Exception sqle) {
+
+			throw new ProjetoException(sqle);
+
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception sqlc) {
+				sqlc.printStackTrace();
+				System.exit(1);
+				// TODO: handle exception
+			}
+
+		}
+	}
 
 	public List<PacienteBean> buscaPacienteAutoCompleteOk(String str)
 			throws ProjetoException {

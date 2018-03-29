@@ -14,8 +14,10 @@ import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
@@ -331,6 +333,21 @@ public class AgendaController implements Serializable {
 		}
 
 	}
+	
+	public List<EquipeBean> listaEquipeAutoComplete(String query)
+			throws ProjetoException {
+		EquipeDAO eDao = new EquipeDAO();
+		
+		List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
+				agenda.getGrupo().getIdGrupo());
+		return result;
+	}
+	
+	public List<ProfissionalBean> listaProfissionalPorGrupoAutoComplete(String query)
+			throws ProjetoException {
+		List<ProfissionalBean> result = pDao.listarProfissionalBuscaPorGrupo(query, agenda.getGrupo().getIdGrupo());
+		return result;
+	}
 
 	public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
 			throws ProjetoException {
@@ -346,6 +363,8 @@ public class AgendaController implements Serializable {
 		atualizaListaProfPorGrupo();
 		limparNaBuscaGrupo();
 	}
+	
+	
 
 	public void atualizaListaProfPorGrupo() throws ProjetoException {
 		this.listaProfissional = pDao

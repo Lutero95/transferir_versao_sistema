@@ -22,6 +22,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaridadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FormaTransporteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissaoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RacaDAO;
@@ -33,6 +34,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
@@ -124,6 +126,7 @@ public class PacienteController implements Serializable {
 	private List<EncaminhadoBean> listaEncaminhado;
 	private List<FormaTransporteBean> listaTransporte;
 	private List<EnderecoBean> listaMunicipios;
+	private List<PacienteBean> listaPacientesAgenda;
 
 	public PacienteController() {
 		paciente = new PacienteBean();
@@ -168,6 +171,7 @@ public class PacienteController implements Serializable {
 		listaTransporte = null;
 		listaMunicipios = new ArrayList<>();
 		listaMunicipios = null;
+		listaPacientesAgenda = new ArrayList<PacienteBean>();
 
 		// BUSCA
 		tipoBuscaPaciente = 1;
@@ -839,6 +843,13 @@ public class PacienteController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 
+	}
+
+	public List<PacienteBean> listarPacienteAgenda() throws ProjetoException {
+		PacienteDAO pDao = new PacienteDAO();
+		listaPacientesAgenda = pDao.listaPaciente();
+		
+		return listaPacientesAgenda;
 	}
 
 	public void buscarescolaridade() {
@@ -1551,6 +1562,14 @@ public class PacienteController implements Serializable {
 	public void setListaPacientesParaAgenda(
 			List<PacienteBean> listaPacientesParaAgenda) {
 		this.listaPacientesParaAgenda = listaPacientesParaAgenda;
+	}
+
+	public List<PacienteBean> getListaPacientesAgenda() {
+		return listaPacientesAgenda;
+	}
+
+	public void setListaPacientesAgenda(List<PacienteBean> listaPacientesAgenda) {
+		this.listaPacientesAgenda = listaPacientesAgenda;
 	}
 
 }

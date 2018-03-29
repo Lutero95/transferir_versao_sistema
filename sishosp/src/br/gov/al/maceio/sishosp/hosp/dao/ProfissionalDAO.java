@@ -208,6 +208,54 @@ public class ProfissionalDAO {
 		return lista;
 	}
 
+	public List<ProfissionalBean> listarProfissionalBuscaPorGrupo(
+			String descricaoBusca, Integer codgrupo) throws ProjetoException {
+		System.out.println("OK2: "+codgrupo);
+		List<ProfissionalBean> lista = new ArrayList<>();
+		String sql = "select h.id_medico,h.id_medico ||'-'|| h.descmedico as descmedico, h.codespecialidade, h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, h.codprocedimentopadrao2, h.codempresa"
+				+ " from hosp.medicos h left join hosp.profissional_grupo g on (g.codprofissional = h.id_medico)"
+				+ " where upper(id_medico ||' - '|| descmedico) LIKE ? and g.codgrupo = ? order by descmedico";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			
+			stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
+			stm.setInt(2, codgrupo);
+			
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ProfissionalBean prof = new ProfissionalBean();
+				prof.setIdProfissional(rs.getInt("id_medico"));
+				prof.setDescricaoProf(rs.getString("descmedico"));
+				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
+						.getInt("codespecialidade")));
+				prof.setCns(rs.getString("cns"));
+				prof.setAtivo(rs.getBoolean("ativo"));
+				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+				prof.setProc1(procDao.listarProcedimentoPorId(rs
+						.getInt("codprocedimentopadrao")));
+				prof.setProc2(procDao.listarProcedimentoPorId(rs
+						.getInt("codprocedimentopadrao2")));
+				prof.setPrograma(listarProgProf(rs.getInt("id_medico")));
+				prof.setGrupo(listarProgGrupo(rs.getInt("id_medico")));
+
+				lista.add(prof);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+
 	public List<ProfissionalBean> listarProfissional() throws ProjetoException {
 		List<ProfissionalBean> listaProf = new ArrayList<ProfissionalBean>();
 		String sql = "select distinct id_medico, descmedico, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, codprocedimentopadrao2, codempresa"
