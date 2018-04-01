@@ -50,6 +50,8 @@ public class AgendaController implements Serializable {
 	private List<ProfissionalBean> listaProfissional;
 	private boolean habilitarDetalhes;
 	private List<TipoAtendimentoBean> listaTipos;
+	private List<TipoAtendimentoBean> listaTiposPorGrupo;
+	private List<EquipeBean> listaEquipePorTipoAtendimento;
 	TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 
 	private String situacao;
@@ -71,6 +73,8 @@ public class AgendaController implements Serializable {
 		this.protuarioC = null;
 		this.tipoC = new TipoAtendimentoBean();
 		this.situacao = new String();
+		listaTiposPorGrupo = new ArrayList<TipoAtendimentoBean>();
+		listaEquipePorTipoAtendimento = new ArrayList<EquipeBean>();
 	}
 
 	public void limparDados() {
@@ -320,6 +324,7 @@ public class AgendaController implements Serializable {
 		this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
 	}
 
+	// LISTAS E AUTOCOMPLETES INÍCIO
 	public List<GrupoBean> listaGrupoAutoComplete(String query)
 			throws ProjetoException {
 
@@ -333,20 +338,51 @@ public class AgendaController implements Serializable {
 		}
 
 	}
-	
+
+	public List<GrupoBean> listaGruposPorPrograma() throws ProjetoException {
+		GrupoDAO gDao = new GrupoDAO();
+		if (agenda.getPrograma() != null) {
+			listaGruposProgramas = gDao.listarGruposPorPrograma(agenda
+					.getPrograma().getIdPrograma());
+		}
+		return listaGruposProgramas;
+	}
+
 	public List<EquipeBean> listaEquipeAutoComplete(String query)
 			throws ProjetoException {
 		EquipeDAO eDao = new EquipeDAO();
-		
+
 		List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
 				agenda.getGrupo().getIdGrupo());
 		return result;
 	}
-	
-	public List<ProfissionalBean> listaProfissionalPorGrupoAutoComplete(String query)
+
+	public List<EquipeBean> listaEquipePorTipoAtendimento()
 			throws ProjetoException {
-		List<ProfissionalBean> result = pDao.listarProfissionalBuscaPorGrupo(query, agenda.getGrupo().getIdGrupo());
+		EquipeDAO eDao = new EquipeDAO();
+		if (agenda.getTipoAt() != null) {
+			listaEquipePorTipoAtendimento = eDao.listarEquipePorGrupo(agenda
+					.getGrupo().getIdGrupo());
+		}
+		return listaEquipePorTipoAtendimento;
+	}
+
+	public List<ProfissionalBean> listaProfissionalPorGrupoAutoComplete(
+			String query) throws ProjetoException {
+		List<ProfissionalBean> result = pDao.listarProfissionalBuscaPorGrupo(
+				query, agenda.getGrupo().getIdGrupo());
 		return result;
+	}
+
+	public List<ProfissionalBean> listaProfissionalPorGrupo()
+			throws ProjetoException {
+		if (agenda.getGrupo() != null) {
+			List<ProfissionalBean> result = pDao
+					.listarProfissionalPorGrupo(agenda.getGrupo().getIdGrupo());
+			return result;
+		} else
+			return null;
+
 	}
 
 	public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
@@ -357,14 +393,24 @@ public class AgendaController implements Serializable {
 			return null;
 	}
 
+	public List<TipoAtendimentoBean> listaTipoAtendimentoPorGrupo()
+			throws ProjetoException {
+		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+		if (agenda.getGrupo() != null) {
+			listaTiposPorGrupo = tDao.listarTipoAtPorGrupo(agenda.getGrupo()
+					.getIdGrupo());
+		}
+		return listaTiposPorGrupo;
+	}
+
+	// LISTAS E AUTOCOMPLETES FINAL
+
 	public void selectGrupo(SelectEvent event) throws ProjetoException {
 		this.grupoSelecionado = (GrupoBean) event.getObject();
 		atualizaListaTipos(grupoSelecionado);
 		atualizaListaProfPorGrupo();
 		limparNaBuscaGrupo();
 	}
-	
-	
 
 	public void atualizaListaProfPorGrupo() throws ProjetoException {
 		this.listaProfissional = pDao

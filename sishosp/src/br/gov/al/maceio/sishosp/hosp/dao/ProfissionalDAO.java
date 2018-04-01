@@ -163,7 +163,6 @@ public class ProfissionalDAO {
 
 	public List<ProfissionalBean> listarProfissionalBusca(
 			String descricaoBusca, Integer tipoBuscar) throws ProjetoException {
-		System.out.println("OK2");
 		List<ProfissionalBean> lista = new ArrayList<>();
 		String sql = "select id_medico,id_medico ||'-'|| descmedico as descmedico, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, codprocedimentopadrao2, codempresa"
 				+ " from hosp.medicos ";
@@ -210,7 +209,6 @@ public class ProfissionalDAO {
 
 	public List<ProfissionalBean> listarProfissionalBuscaPorGrupo(
 			String descricaoBusca, Integer codgrupo) throws ProjetoException {
-		System.out.println("OK2: "+codgrupo);
 		List<ProfissionalBean> lista = new ArrayList<>();
 		String sql = "select h.id_medico,h.id_medico ||'-'|| h.descmedico as descmedico, h.codespecialidade, h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, h.codprocedimentopadrao2, h.codempresa"
 				+ " from hosp.medicos h left join hosp.profissional_grupo g on (g.codprofissional = h.id_medico)"
@@ -218,10 +216,10 @@ public class ProfissionalDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			
+
 			stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
 			stm.setInt(2, codgrupo);
-			
+
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -278,6 +276,45 @@ public class ProfissionalDAO {
 						.getInt("codprocedimentopadrao")));
 				prof.setProc2(procDao.listarProcedimentoPorId(rs
 						.getInt("codprocedimentopadrao2")));
+
+				listaProf.add(prof);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return listaProf;
+	}
+
+	public List<ProfissionalBean> listarProfissionalPorGrupo(Integer codgrupo)
+			throws ProjetoException {
+		List<ProfissionalBean> listaProf = new ArrayList<ProfissionalBean>();
+		String sql = "select m.id_medico, m.descmedico, m.codespecialidade, e.descespecialidade, m.cns from hosp.medicos m"
+				+ " left join hosp.profissional_grupo p on (m.id_medico = p.codprofissional)"
+				+ " left join hosp.especialidade e on (e.id_especialidade = m.codespecialidade)"
+				+ " where m.ativo is true and p.codgrupo = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, codgrupo);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ProfissionalBean prof = new ProfissionalBean();
+				prof.setIdProfissional(rs.getInt("id_medico"));
+				prof.setDescricaoProf(rs.getString("descmedico"));
+				prof.getEspecialidade().setCodEspecialidade(
+						rs.getInt("codespecialidade"));
+				prof.getEspecialidade().setDescEspecialidade(
+						rs.getString("descespecialidade"));
+				prof.setCns(rs.getString("cns"));
 
 				listaProf.add(prof);
 			}

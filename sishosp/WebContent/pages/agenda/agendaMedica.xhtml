@@ -128,56 +128,52 @@
 						action="#{AgendaController.limparNaBuscaTipo()}"
 						update=":formAgendaMedica" onclick="PF('dlgConsuTipoAt').show();" />
 				</div>
-				<h:outputLabel value="Profissional"
-					styleClass="col-sm-1 control-label"
-					rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
-				<div class="col-sm-1">
-					<p:outputPanel id="outProf"
-						rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
-						<p:autoComplete value="#{AgendaController.agenda.profissional}"
-							size="60" converter="conProfissional"
-							completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descricaoProf}">
-							<p:ajax event="itemSelect" update=":formAgendaMedica" />
-						</p:autoComplete>
-					</p:outputPanel>
-				</div>
-					<p:commandButton id="btBusProf"
-						styleClass="btn btn-primary text-center" icon="ui-icon-search"
-						style="margin-left:-20px;height:25px"
-						disabled="#{AgendaController.agenda.tipoAt==null}"
-						action="#{AgendaController.limparNaBuscaEquipeProf()}"
-						update=":formAgendaMedica" onclick="PF('dlgConsuProf').show();"
-						rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
-				<h:outputLabel for="equipe" value="Equipe"
-					styleClass="col-sm-1 control-label"
-					rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
-				<div class="col-sm-4">
-					<p:outputPanel id="outEquipe"
-						rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
-						<p:autoComplete value="#{AgendaController.agenda.equipe}"
-							size="60" converter="conEquipe"
-							completeMethod="#{AgendaController.listaEquipeAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descEquipe}">
-							<p:ajax event="itemSelect" update=":formAgendaMedica" />
-						</p:autoComplete>
-					</p:outputPanel>
-				</div>
-				<div class="col-sm-4">
-					<p:commandButton id="btBusEqui" value="Buscar"
-						disabled="#{AgendaController.agenda.tipoAt==null}"
-						onclick="PF('dlgConsuEquipe').show();"
-						action="#{AgendaController.limparNaBuscaEquipeProf()}"
-						update=":formAgendaMedica"
-						rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
-				</div>
-
 
 			</div>
+
+			<p:panelGrid columns="3" styleClass="semBorda" style="margin-bottom: 10px;">
+
+				<h:outputLabel value="Profissional"
+					rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
+				<p:outputPanel id="outProf"
+					rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
+					<p:autoComplete value="#{AgendaController.agenda.profissional}"
+						size="60" converter="conProfissional"
+						completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
+						effect="fade" var="theme" forceSelection="true" minQueryLength="1"
+						itemValue="#{theme}" itemLabel="#{theme.descricaoProf}">
+						<p:ajax event="itemSelect" update=":formAgendaMedica" />
+					</p:autoComplete>
+				</p:outputPanel>
+				<p:commandButton id="btBusProf"
+					styleClass="btn btn-primary text-center" icon="ui-icon-search"
+					style="margin-left:10px;height:25px;"
+					disabled="#{AgendaController.agenda.tipoAt==null}"
+					action="#{AgendaController.limparNaBuscaEquipeProf()}"
+					update=":formConsuProf" onclick="PF('dlgConsuProf').show();"
+					rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
+
+
+				<h:outputLabel for="equipe" value="Equipe"
+					rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
+				<p:outputPanel id="outEquipe"
+					rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
+					<p:autoComplete value="#{AgendaController.agenda.equipe}" size="60"
+						converter="conEquipe"
+						completeMethod="#{AgendaController.listaEquipeAutoComplete}"
+						effect="fade" var="theme" forceSelection="true" minQueryLength="1"
+						itemValue="#{theme}" itemLabel="#{theme.descEquipe}">
+						<p:ajax event="itemSelect" update=":formAgendaMedica" />
+					</p:autoComplete>
+				</p:outputPanel>
+				<p:commandButton id="btBusEqui"
+					disabled="#{AgendaController.agenda.tipoAt==null}"
+					styleClass="btn btn-primary text-center" icon="ui-icon-search"
+					style="margin-left:10px;height:25px"
+					onclick="PF('dlgConsuEquipe').show();" update=":formConsuEquipe"
+					rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
+
+			</p:panelGrid>
 
 			<h:outputLabel for="obs" value="Observação"
 				styleClass="col-sm-1 control-label" />
@@ -271,7 +267,7 @@
 						<h:outputLabel value="#{agend.tipoAt.descTipoAt}" />
 					</p:column>
 
-					<p:column headerText="Obs.">
+					<p:column headerText="Observação">
 
 						<h:outputLabel value="#{agend.observacao}" />
 					</p:column>
@@ -394,8 +390,8 @@
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
 			modal="true" width="500px">
 			<h:form id="formConsuProg">
-				<p:dataTable value="#{ProgramaController.listaProgramasUsuario()}" var="prog"
-					resizableColumns="true"
+				<p:dataTable value="#{ProgramaController.listaProgramasUsuario()}"
+					var="prog" resizableColumns="true"
 					emptyMessage="Não existe nenhum programa cadastrado!">
 					<p:column headerText="Código">
 						<p:outputLabel value="#{prog.idPrograma}" />
@@ -418,19 +414,19 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrop"
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
 			modal="true" width="550px">
 			<h:form id="formConsuGrop">
-				<p:dataTable value="#{GrupoController.listaGruposProgramas}"
+				<p:dataTable value="#{AgendaController.listaGruposPorPrograma()}"
 					id="dtGrupo" resizableColumns="true" var="grupo"
 					emptyMessage="Não existe nenhum grupo cadastrado!">
-					<p:column headerText="CÓD.">
+					<p:column headerText="Código">
 						<p:outputLabel value="#{grupo.idGrupo}" />
 					</p:column>
-					<p:column headerText="GRUPO">
+					<p:column headerText="Grupo">
 						<p:outputLabel value="#{grupo.descGrupo}" />
 					</p:column>
-					<p:column headerText="QTD. FREQ>">
+					<p:column headerText="Quantidade Frequência">
 						<p:outputLabel value="#{grupo.qtdFrequencia}" />
 					</p:column>
 
@@ -440,7 +436,7 @@
 							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuGrop').hide();"
-							action="#{TipoAtendimentoController.atualizaListaTipos(AgendaController.agenda.grupo)}">
+							action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}">
 							<f:setPropertyActionListener value="#{grupo}"
 								target="#{AgendaController.agenda.grupo}" />
 						</p:commandButton>
@@ -449,13 +445,14 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Tipos de Atendimento"
+		<p:dialog header="Consultar Tipos de Atendimento"
 			widgetVar="dlgConsuTipoAt" modal="true" width="550px">
 			<h:form id="formConsuTipoAt">
-				<p:dataTable value="#{TipoAtendimentoController.listaTipos}"
+				<p:dataTable
+					value="#{AgendaController.listaTipoAtendimentoPorGrupo()}"
 					id="dtTipoAt" resizableColumns="true" var="tipo"
 					emptyMessage="Não existe nenhum tipo cadastrado!">
-					<p:column headerText="CÓD.">
+					<p:column headerText="Código">
 						<p:outputLabel value="#{tipo.idTipo}" />
 					</p:column>
 					<p:column headerText="Tipo de Atendimento">
@@ -475,11 +472,12 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Equipes" widgetVar="dlgConsuEquipe"
+		<p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
 			modal="true" width="550px">
 			<h:form id="formConsuEquipe">
-				<p:dataTable value="#{EquipeController.listaEquipe}" id="dtEquipe"
-					resizableColumns="true" var="equipe"
+				<p:dataTable
+					value="#{AgendaController.listaEquipePorTipoAtendimento()}"
+					id="dtEquipe" resizableColumns="true" var="equipe"
 					emptyMessage="Não existe nenhuma equipe cadastrada!">
 					<p:column headerText="CÓD.">
 						<p:outputLabel value="#{equipe.codEquipe}" />
@@ -500,13 +498,13 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProf"
+		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
 			modal="true" width="550px">
 			<h:form id="formConsuProf">
-				<p:dataTable value="#{ProfissionalController.listaProfissional}"
+				<p:dataTable value="#{AgendaController.listaProfissionalPorGrupo()}"
 					id="dtProf" resizableColumns="true" var="profi"
 					emptyMessage="Não existe nenhum tipo cadastrado!">
-					<p:column headerText="CÓD.">
+					<p:column headerText="Código">
 						<p:outputLabel value="#{profi.idProfissional}" />
 					</p:column>
 					<p:column headerText="Profissional">
