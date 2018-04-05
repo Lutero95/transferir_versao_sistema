@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -26,7 +27,7 @@ public class FeriadoController implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private FeriadoBean feriado;
 	private List<FeriadoBean> listaFeriados;
-	private String tipo;
+	private int tipo;
 	private String descricaoBusca;
 	private Integer tipoBuscar;
 	private Date dataBuscar;
@@ -37,7 +38,6 @@ public class FeriadoController implements Serializable {
 	public FeriadoController() {
 		this.feriado = new FeriadoBean();
 		this.listaFeriados = null;
-		this.tipo = new String();
 		this.descricaoBusca = new String();
 		this.dataBuscar = null;
 		this.tipoBuscar = 1;
@@ -49,6 +49,30 @@ public class FeriadoController implements Serializable {
 		this.descricaoBusca = new String();
 		this.dataBuscar = null;
 		this.tipoBuscar = 1;
+	}
+
+	public String redirectInsert() {
+		return "cadastroFeriado?faces-redirect=true&amp;tipo=" + tipo;
+	}
+
+	public String redirectEdit() {
+		return "cadastroFeriado?faces-redirect=true&amp;id="
+				+ this.feriado.getCodFeriado() + "&amp;tipo=" + tipo;
+	}
+
+	public void getEditFeriado() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo = Integer.parseInt(params.get("tipo"));
+			this.feriado = fDao.listarFeriadoPorId(id);
+		} else {
+			tipo = Integer.parseInt(params.get("tipo"));
+
+		}
+
 	}
 
 	public void gravarFeriado() throws ProjetoException, SQLException {
@@ -66,19 +90,20 @@ public class FeriadoController implements Serializable {
 		}
 	}
 
-	public String alterarFeriado() throws ProjetoException {
+	public void alterarFeriado() throws ProjetoException {
 		boolean alterou = fDao.alterarFeriado(feriado);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Feriado alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			this.listaFeriados = fDao.listarFeriado();
-			return "/pages/sishosp/gerenciarFeriados.xhtml?faces-redirect=true";
+			// return
+			// "/pages/sishosp/gerenciarFeriados.xhtml?faces-redirect=true";
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
+			// return "";
 		}
 
 	}
@@ -121,14 +146,6 @@ public class FeriadoController implements Serializable {
 		this.listaFeriados = listaFeriados;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
 	public String getDescricaoBusca() {
 		return descricaoBusca;
 	}
@@ -154,10 +171,10 @@ public class FeriadoController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
-			cabecalho = "CADASTRO DE FERIADO";
-		} else if (this.tipo.equals("A")) {
-			cabecalho = "ALTERAR FERIADO";
+		if (this.tipo == 1) {
+			cabecalho = "Inclusão de Feriado";
+		} else if (this.tipo == 2) {
+			cabecalho = "Alteração de Feriado";
 		}
 
 		return cabecalho;
@@ -178,5 +195,13 @@ public class FeriadoController implements Serializable {
 
 	public void setDataBuscar(Date dataBuscar) {
 		this.dataBuscar = dataBuscar;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 }
