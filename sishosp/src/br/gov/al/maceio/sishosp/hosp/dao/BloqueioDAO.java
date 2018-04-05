@@ -64,8 +64,8 @@ public class BloqueioDAO {
 
 	public List<BloqueioBean> listarBloqueio() throws ProjetoException {
 		List<BloqueioBean> lista = new ArrayList<>();
-		String sql = "select id_bloqueioagenda, codmedico,"
-				+ " dataagenda, turno, descricao, codempresa from hosp.bloqueio_agenda order by id_bloqueioagenda ";
+		String sql = "select b.id_bloqueioagenda, b.codmedico, m.descmedico, b.dataagenda, b.turno, b.descricao, b.codempresa "
+				+ " from hosp.bloqueio_agenda b left join hosp.medicos m on (b.codmedico = m.id_medico) order by b.id_bloqueioagenda";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -74,8 +74,8 @@ public class BloqueioDAO {
 			while (rs.next()) {
 				BloqueioBean bloqueio = new BloqueioBean();
 				bloqueio.setIdBloqueio(rs.getInt("id_bloqueioagenda"));
-				bloqueio.setProf(pDao.buscarProfissionalPorId(rs
-						.getInt("codmedico")));
+				bloqueio.getProf().setIdProfissional(rs.getInt("codmedico"));
+				bloqueio.getProf().setDescricaoProf(rs.getString("descmedico"));
 				bloqueio.setDataInicio(rs.getDate("dataagenda"));
 				bloqueio.setTurno(rs.getString("turno"));
 				bloqueio.setDescBloqueio(rs.getString("descricao"));

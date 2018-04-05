@@ -71,7 +71,7 @@ public class BloqueioController implements Serializable {
 		boolean ok = bDao.excluirBloqueio(bloqueio);
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Bloqueio excluido com sucesso!", "Sucesso");
+					"Bloqueio excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");

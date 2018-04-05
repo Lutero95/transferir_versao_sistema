@@ -3,90 +3,119 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templatepagsistemas.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
 
 
 		<h:form id="formConsulBloqueio">
-			<p:growl id="msg" />
-			<p:panel header="CONSULTA DE BLOQUEIO" id="pnlConsuBloqueio">
+
+			<div class="panel-body">
+				<div class="sub-header">
+					<h4>Consulta de Bloqueio</h4>
+					<hr />
+				</div>
 
 				<p:panelGrid columns="3" styleClass="semBorda">
 					<h:outputLabel value="Profissional: " />
 					<p:outputPanel id="outProfi">
-						<p:inputText
-							value="#{BloqueioController.bloqueio.prof.idProfissional}"
-							readonly="true" style="width: 60px" />
-						<p:inputText
-							value="#{BloqueioController.bloqueio.prof.descricaoProf}"
-							readonly="true" style="width: 300px" />
+						<p:autoComplete id="acpro"
+							value="#{BloqueioController.bloqueio.prof}" size="60"
+							converter="conProfissional"
+							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descricaoProf}">
+							<p:ajax event="itemSelect" update="formConsulBloqueio" />
+						</p:autoComplete>
 					</p:outputPanel>
-					<p:commandButton value="Buscar"
-						onclick="PF('dlgConsultProfi').show();" />
+					<p:commandButton value="Buscar" icon="ui-icon-search"
+						action="#{ProfissionalController.listarProfissionais}"
+						process="@this" update="formConsultProf"
+						oncomplete="PF('dlgConsultProfi').show();" />
 				</p:panelGrid>
 
-				<p:separator/>
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
-				<h:outputLabel value="Bloqueios" />
+				<br></br> <br></br>
+
 				<p:outputPanel id="outBloq">
-					<p:dataTable id="dtBloqueios"
+
+					<b:dataTable id="dtBloqueios"
 						value="#{BloqueioController.listaBloqueios}" var="bloqueio"
-						resizableColumns="true" paginator="true" rows="10"
-						emptyMessage="Não existe nenhum bloqueio cadastrado!">
-						<p:column headerText="MÉDICO" style="width: 450px;">
-							<p:outputLabel value="#{bloqueio.prof.descricaoProf}" />
-						</p:column>
-						<p:column headerText="DATA">
-							<p:outputLabel value="#{bloqueio.dataInicio}">
+						lang="es" display="Nenhum Bloqueio">
+
+						<h:column>
+							<f:facet name="header">
+                        Médico
+                    </f:facet>
+							<h:outputText value="#{bloqueio.prof.descricaoProf}" />
+						</h:column>
+
+
+						<h:column>
+							<f:facet name="header">
+                        Data
+                    </f:facet>
+							<h:outputText value="#{bloqueio.dataInicio}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</p:outputLabel>
-						</p:column>
-						<p:column headerText="TURNO">
-							<p:outputLabel value="MANHÃ" rendered="#{bloqueio.turno == 'M'}" />
-							<p:outputLabel value="TARDE" rendered="#{bloqueio.turno == 'T'}" />
-						</p:column>
+							</h:outputText>
+						</h:column>
 
 
-						<p:column headerText="Ações" width="15%">
-							<center>
-								<p:splitButton icon="confirmar">
-									<p:menuitem value="Alterar" icon="alterar-dados"
-										action="/pages/agenda/editarBloqueio.xhtml?faces-redirect=true">
-										<f:setPropertyActionListener value="#{bloqueio}"
-											target="#{BloqueioController.bloqueio}" />
+						<h:column>
+							<f:facet name="header">
+                        Turno
+                    </f:facet>
+							<h:outputText value="Manhã" rendered="#{bloqueio.turno == 'M'}" />
+							<h:outputText value="Tarde" rendered="#{bloqueio.turno == 'T'}" />
+						</h:column>
 
-										<f:setPropertyActionListener value="A"
-											target="#{BloqueioController.tipo}" />
-									</p:menuitem>
 
-									<p:menuitem value="Excluir" icon="trash"
-										onclick="PF('dialogAtencao').show()">
+						<h:column>
+							<f:facet name="header">
+                        Ação
+                    </f:facet>
+							<b:commandButton tooltip="Confirmar" icon="glyphicon-edit"
+								size="sm"
+								action="/pages/agenda/editarBloqueio.xhtml?faces-redirect=true">
+								<f:setPropertyActionListener value="#{bloqueio}"
+									target="#{BloqueioController.bloqueio}" />
 
-										<f:setPropertyActionListener value="#{bloqueio}"
-											target="#{BloqueioController.bloqueio}" />
-									</p:menuitem>
-								</p:splitButton>
-							</center>
-						</p:column>
+								<f:setPropertyActionListener value="A"
+									target="#{BloqueioController.tipo}" />
+							</b:commandButton>
 
-					</p:dataTable>
+							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+								size="sm" ajax="true" style="margin-left:10px"
+								oncomplete="PF('dialogAtencao').show()">
+
+								<f:setPropertyActionListener value="#{bloqueio}"
+									target="#{BloqueioController.bloqueio}" />
+							</b:commandButton>
+
+						</h:column>
+
+
+					</b:dataTable>
 				</p:outputPanel>
 
-			</p:panel>
+			</div>
+
 		</h:form>
 
-		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsultProfi"
+		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultProfi"
 			modal="true" width="550px">
 			<h:form id="formConsultProf">
-				<p:dataTable value="#{ProfissionalController.listaProfissional}"
+				<p:dataTable
+					value="#{ProfissionalController.listarProfissionaisConfigAgenda()}"
 					id="dtTipoAt" resizableColumns="true" var="profi"
 					emptyMessage="Não existe nenhum tipo cadastrado!">
-					<p:column headerText="CÓD.">
+					<p:column headerText="Código">
 						<p:outputLabel value="#{profi.idProfissional}" />
 					</p:column>
 					<p:column headerText="Profissional">
@@ -99,8 +128,7 @@
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsultProfi').hide();"
-							action="#{BloqueioController.atualizarListaBloqueio()}"
-							update=":formConsulBloqueio:outProfi, :formConsulBloqueio:outBloq">
+							update=":formConsulBloqueio:outProfi">
 							<f:setPropertyActionListener value="#{profi}"
 								target="#{BloqueioController.bloqueio.prof}" />
 						</p:commandButton>
@@ -108,7 +136,7 @@
 				</p:dataTable>
 			</h:form>
 		</p:dialog>
-		
+
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 			<h:form id="dlgexcluir">
@@ -122,7 +150,7 @@
 					<p:commandButton value="Sim"
 						action="#{BloqueioController.excluirBloqueio()}"
 						icon="ui-icon-check" style="font-size:14px;"
-						update=":formConsulBloqueio:msg, :formConsulBloqueio:outBloq">
+						update=":formConsulBloqueio:msgError, :formConsulBloqueio:outBloq">
 					</p:commandButton>
 					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
 						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
