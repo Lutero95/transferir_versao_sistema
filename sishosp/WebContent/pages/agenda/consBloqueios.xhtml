@@ -18,24 +18,6 @@
 					<hr />
 				</div>
 
-				<p:panelGrid columns="3" styleClass="semBorda">
-					<h:outputLabel value="Profissional: " />
-					<p:outputPanel id="outProfi">
-						<p:autoComplete id="acpro"
-							value="#{BloqueioController.bloqueio.prof}" size="60"
-							converter="conProfissional"
-							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descricaoProf}">
-							<p:ajax event="itemSelect" update="formConsulBloqueio" />
-						</p:autoComplete>
-					</p:outputPanel>
-					<p:commandButton value="Buscar" icon="ui-icon-search"
-						action="#{ProfissionalController.listarProfissionais}"
-						process="@this" update="formConsultProf"
-						oncomplete="PF('dlgConsultProfi').show();" />
-				</p:panelGrid>
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>
@@ -128,7 +110,7 @@
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsultProfi').hide();"
-							update=":formConsulBloqueio:outProfi">
+							update=":formConsulBloqueio">
 							<f:setPropertyActionListener value="#{profi}"
 								target="#{BloqueioController.bloqueio.prof}" />
 						</p:commandButton>
