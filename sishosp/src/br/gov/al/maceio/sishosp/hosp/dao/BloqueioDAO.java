@@ -95,35 +95,37 @@ public class BloqueioDAO {
 		return lista;
 	}
 
-	// public BloqueioBean listarBloqueioPorId(int id) {
-	//
-	// BloqueioBean bloqueio = new BloqueioBean();
-	// String sql =
-	// "select codbloqueio, descbloqueio, databloqueio from hosp.bloqueio where codbloqueio = ?";
-	// try {
-	// con = ConnectionFactory.getConnection();
-	// PreparedStatement stm = con.prepareStatement(sql);
-	// stm.setInt(1, id);
-	// ResultSet rs = stm.executeQuery();
-	// while (rs.next()) {
-	// bloqueio = new BloqueioBean();
-	// bloqueio.setCodBloqueio(rs.getInt("codbloqueio"));
-	// bloqueio.setDescBloqueio(rs.getString("descbloqueio"));
-	// bloqueio.setDataBloqueio(rs.getDate("databloqueio"));
-	// }
-	//
-	// } catch (SQLException ex) {
-	// throw new RuntimeException(ex);
-	// } finally {
-	// try {
-	// con.close();
-	// } catch (Exception ex) {
-	// ex.printStackTrace();
-	// System.exit(1);
-	// }
-	// }
-	// return bloqueio;
-	// }
+	public BloqueioBean listarBloqueioPorId(int id) throws ProjetoException {
+
+		BloqueioBean bloqueio = new BloqueioBean();
+		String sql = "select b.id_bloqueioagenda, b.descricao, b.dataagenda, b.codmedico, m.descmedico "
+				+ " from hosp.bloqueio_agenda b left join hosp.medicos m on (b.codmedico = m.id_medico) where b.id_bloqueioagenda = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				bloqueio = new BloqueioBean();
+				bloqueio.setIdBloqueio(rs.getInt("id_bloqueioagenda"));
+				bloqueio.setDescBloqueio(rs.getString("descricao"));
+				bloqueio.setDataInicio(rs.getDate("dataagenda"));
+				bloqueio.getProf().setIdProfissional(rs.getInt("codmedico"));
+				bloqueio.getProf().setDescricaoProf(rs.getString("descmedico"));
+			}
+
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return bloqueio;
+	}
 
 	public List<BloqueioBean> listarBloqueioPorProfissional(
 			ProfissionalBean prof) throws ProjetoException {

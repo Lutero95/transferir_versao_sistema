@@ -63,8 +63,7 @@
                         Ação
                     </f:facet>
 							<b:commandButton tooltip="Confirmar" icon="glyphicon-edit"
-								size="sm"
-								action="/pages/agenda/editarBloqueio.xhtml?faces-redirect=true">
+								size="sm" action="#{BloqueioController.redirectEdit()}">
 								<f:setPropertyActionListener value="#{bloqueio}"
 									target="#{BloqueioController.bloqueio}" />
 

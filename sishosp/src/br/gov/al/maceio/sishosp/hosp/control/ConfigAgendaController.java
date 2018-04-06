@@ -38,6 +38,7 @@ public class ConfigAgendaController implements Serializable {
 
 	private ConfigAgendaParte1Bean confParte1;
 	private ConfigAgendaParte2Bean confParte2;
+	private ProfissionalBean prof;
 
 	private List<ConfigAgendaParte2Bean> listaTipos;
 	private List<ConfigAgendaParte2Bean> listaTiposEditar;
@@ -64,6 +65,7 @@ public class ConfigAgendaController implements Serializable {
 	public ConfigAgendaController() {
 		this.confParte1 = new ConfigAgendaParte1Bean();
 		this.confParte2 = new ConfigAgendaParte2Bean();
+		this.prof = new ProfissionalBean();
 		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
 		this.listaTiposEditar = new ArrayList<ConfigAgendaParte2Bean>();
 		this.listaHorarios = null;
@@ -430,6 +432,32 @@ public class ConfigAgendaController implements Serializable {
 		}
 		this.listaHorariosEquipe = cDao.listarHorariosEquipe();
 	}
+	
+	
+	
+	
+	public void selectProfissional() throws ProjetoException {
+		this.listaHorarios = cDao.listarHorariosPorIDProfissional(prof
+				.getIdProfissional());
+	}
+	
+	
+	
+	public void selectProfissionalConsConfAgenda() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("codconfigagenda") != null) {
+			Integer id = Integer.parseInt(params.get("codconfigagenda"));
+
+			this.confParte1 = cDao.listarHorariosPorIDProfissional2(id);
+		} else {
+			
+		}
+		
+		
+		
+	}
 
 	public void onRowSelect(SelectEvent event) throws ProjetoException {
 		ProfissionalBean prof = (ProfissionalBean) event.getObject();
@@ -600,6 +628,14 @@ public class ConfigAgendaController implements Serializable {
 	public void setListaTiposEditar(
 			List<ConfigAgendaParte2Bean> listaTiposEditar) {
 		this.listaTiposEditar = listaTiposEditar;
+	}
+
+	public ProfissionalBean getProf() {
+		return prof;
+	}
+
+	public void setProf(ProfissionalBean prof) {
+		this.prof = prof;
 	}
 
 }

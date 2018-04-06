@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -35,6 +36,24 @@ public class BloqueioController implements Serializable {
 	public void limparDados() {
 		this.bloqueio = new BloqueioBean();
 		this.listaBloqueios = null;
+	}
+
+	public String redirectEdit() {
+		return "editarBloqueio?faces-redirect=true&amp;id="
+				+ this.bloqueio.getIdBloqueio();
+	}
+
+	public void getEditBloqueio() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			System.out.println("ID: " + id);
+			this.bloqueio = bDao.listarBloqueioPorId(id);
+		} else {
+		}
+
 	}
 
 	public void gravarBloqueio() throws ProjetoException, SQLException {

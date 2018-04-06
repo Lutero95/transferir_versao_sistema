@@ -3,30 +3,44 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templatepagsistemas.xhtml">
+<ui:composition template="../../template/template.xhtml">
+	<f:metadata>
+		<f:viewAction action="#{BloqueioController.getEditBloqueio()}" />
+	</f:metadata>
 
 	<ui:define name="body">
 
 		<h:form id="formEdtBloq">
-			<p:growl id="msg" />
-			<p:panel header="EDITAR BLOQUEIO" id="pnlBloqueio">
+			<div class="panel-body">
+				<div class="sub-header">
+					<h4>Editar Bloqueio</h4>
+					<hr />
+				</div>
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
 				<p:panelGrid columns="3" styleClass="semBorda">
 					<h:outputLabel value="Profissional: " />
 					<p:outputPanel id="outProfi">
-						<p:inputText
-							value="#{BloqueioController.bloqueio.prof.idProfissional}"
-							readonly="true" style="width: 60px" />
-						<p:inputText
-							value="#{BloqueioController.bloqueio.prof.descricaoProf}"
-							readonly="true" style="width: 300px" />
+						<p:autoComplete id="acpro"
+							value="#{BloqueioController.bloqueio.prof}" size="60"
+							converter="conProfissional"
+							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descricaoProf}">
+							<p:ajax event="itemSelect" update="formEdtBloq" />
+						</p:autoComplete>
 					</p:outputPanel>
-					<p:commandButton value="Buscar"
-						onclick="PF('dlgConProf').show();" />
+					<p:commandButton value="Buscar" icon="ui-icon-search"
+						action="#{ProfissionalController.listarProfissionais}"
+						process="@this" update="formConsultProf"
+						oncomplete="PF('dlgConProf').show();" />
+
 				</p:panelGrid>
 
 				<p:panelGrid columns="6" styleClass="semBorda">
@@ -37,38 +51,43 @@
 
 					<h:outputLabel value="Turno: " />
 					<p:selectOneMenu value="#{BloqueioController.bloqueio.turno}">
-						<f:selectItem itemLabel="MANHÃ" itemValue="M" />
-						<f:selectItem itemLabel="TARDE" itemValue="T" />
+						<f:selectItem itemLabel="Manhã" itemValue="M" />
+						<f:selectItem itemLabel="Tarde" itemValue="T" />
 					</p:selectOneMenu>
 				</p:panelGrid>
 
 				<p:panelGrid columns="2" styleClass="semBorda">
 					<h:outputLabel value="Observação do bloqueio: " />
-					<p:inputTextarea rows="2" cols="50" maxlength="100"
+					<p:inputTextarea rows="5" cols="50" maxlength="100"
 						value="#{BloqueioController.bloqueio.descBloqueio}" />
 				</p:panelGrid>
 
+				<br></br>
+
 				<center>
-					<p:panelGrid columns="4" styleClass="semBorda">
 
-						<p:commandButton value="Alterar" icon="confirmar"
-							action="#{BloqueioController.alterarBloqueio()}"
-							update=":formEdtBloq:msg, :formEdtBloq" />
+					<b:commandButton action="#{BloqueioController.alterarBloqueio()}"
+						icon="glyphicon-ok" update=":formEdtBloq:msgError, :formEdtBloq"
+						style="float:left" value="Alterar" look="success" size="sm" />
 
-						<p:commandButton value="Sair" icon="btlogout"
-							actionListener="#{ConfigAgendaController.limparDados()}"
-							action="/pages/agenda/consBloqueios.xhtml?faces-redirect=true" />
-					</p:panelGrid>
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" look="info" style="float:right"
+						update=":formEdtBloq:msgError, :formEdtBloq"
+						actionListener="#{ConfigAgendaController.limparDados()}"
+						action="/pages/agenda/consBloqueios.xhtml?faces-redirect=true">
+					</b:commandButton>
+
 				</center>
 
-			</p:panel>
-			<p:dialog header="Consulta Profissionais" widgetVar="dlgConProf"
+			</div>
+			<p:dialog header="Consultar Profissionais" widgetVar="dlgConProf"
 				modal="true" width="550px">
 				<h:form id="formConsultProf">
-					<p:dataTable value="#{ProfissionalController.listaProfissional}"
+					<p:dataTable
+						value="#{ProfissionalController.listarProfissionaisConfigAgenda()}"
 						id="dtTipoAt" resizableColumns="true" var="profi"
 						emptyMessage="Não existe nenhum tipo cadastrado!">
-						<p:column headerText="CÓD.">
+						<p:column headerText="Código">
 							<p:outputLabel value="#{profi.idProfissional}" />
 						</p:column>
 						<p:column headerText="Profissional">
