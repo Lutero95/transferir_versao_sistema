@@ -62,81 +62,125 @@
 					</b:dataTable>
 
 					<br />
-					
+
+					<p:panelGrid columns="7" styleClass="semBorda">
+						<!--  
+						<h:outputLabel value="Turno:"></h:outputLabel>
+						<p:selectOneMenu style="width:100px"
+							value="#{ConfigAgendaController.confParte1.turno}">
+							<f:selectItem itemLabel="Selecione" itemValue="" />
+							<f:selectItem itemLabel="Manhã" itemValue="M" />
+							<f:selectItem itemLabel="Tarde" itemValue="T" />
+						</p:selectOneMenu>
+						-->
+
+						<h:outputLabel value="Mês: " />
+						<p:selectOneMenu style="width:120px"
+							value="#{ConfigAgendaController.confParte1.mes}">
+							<f:selectItem itemLabel="Selecione" itemValue="" />
+							<f:selectItem itemLabel="Janeiro" itemValue="1" />
+							<f:selectItem itemLabel="Fevereiro" itemValue="2" />
+							<f:selectItem itemLabel="Março" itemValue="3" />
+							<f:selectItem itemLabel="Abril" itemValue="4" />
+							<f:selectItem itemLabel="Maio" itemValue="5" />
+							<f:selectItem itemLabel="Junho" itemValue="6" />
+							<f:selectItem itemLabel="Julho" itemValue="7" />
+							<f:selectItem itemLabel="Agosto" itemValue="8" />
+							<f:selectItem itemLabel="Setembro" itemValue="9" />
+							<f:selectItem itemLabel="Outubro" itemValue="10" />
+							<f:selectItem itemLabel="Novembro" itemValue="11" />
+							<f:selectItem itemLabel="Dezembro" itemValue="12" />
+						</p:selectOneMenu>
+						<h:outputLabel value="Ano: " />
+						<h:inputText value="#{ConfigAgendaController.confParte1.ano}" />
+
+						<p:commandButton value="Buscar" icon="ui-icon-search"
+							action="#{ConfigAgendaController.selectProfissionalComFiltros}"
+							update="dtHorarios" />
+
+					</p:panelGrid>
+
+					<br></br>
+
 					<p:dataTable id="dtHorarios"
 						value="#{ConfigAgendaController.listaHorarios}" var="config"
 						resizableColumns="true" paginator="true" rows="10"
 						emptyMessage="Não existe nenhum horário cadastrado!">
-						<p:column headerText="Dia Semana" style="width: 100px;">
-							<p:outputLabel value="Domingo"
-								rendered="#{config.diaDaSemana == 1}" />
-							<p:outputLabel value="Segunda"
-								rendered="#{config.diaDaSemana == 2}" />
-							<p:outputLabel value="Terça"
-								rendered="#{config.diaDaSemana == 3}" />
-							<p:outputLabel value="Quarta"
-								rendered="#{config.diaDaSemana == 4}" />
-							<p:outputLabel value="Quinta"
-								rendered="#{config.diaDaSemana == 5}" />
-							<p:outputLabel value="Sexta"
-								rendered="#{config.diaDaSemana == 6}" />
-							<p:outputLabel value="Sábado"
-								rendered="#{config.diaDaSemana == 7}" />
-						</p:column>
-						<p:column headerText="DATA ESPECÍFICA">
-							<p:outputLabel value="#{config.dataEspecifica}">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</p:outputLabel>
-						</p:column>
-						<p:column headerText="QTD. MÁXIMA">
-							<p:outputLabel value="#{config.qtdMax}" />
-						</p:column>
-						<p:column headerText="TURNO">
-							<p:outputLabel value="MANHÃ" rendered="#{config.turno == 'M'}" />
-							<p:outputLabel value="TARDE" rendered="#{config.turno == 'T'}" />
-						</p:column>
-						<p:column headerText="MÊS">
-							<p:outputLabel value="JANEIRO" rendered="#{config.mes == 1}" />
-							<p:outputLabel value="FEVEREIRO" rendered="#{config.mes == 2}" />
-							<p:outputLabel value="MARÇO" rendered="#{config.mes == 3}" />
-							<p:outputLabel value="ABRIL" rendered="#{config.mes == 4}" />
-							<p:outputLabel value="MAIO" rendered="#{config.mes == 5}" />
-							<p:outputLabel value="JUNHO" rendered="#{config.mes == 6}" />
-							<p:outputLabel value="JULHO" rendered="#{config.mes == 7}" />
-							<p:outputLabel value="AGOSTO" rendered="#{config.mes == 8}" />
-							<p:outputLabel value="SETEMBRO" rendered="#{config.mes == 9}" />
-							<p:outputLabel value="OUTUBRO" rendered="#{config.mes == 10}" />
-							<p:outputLabel value="NOVEMBRO" rendered="#{config.mes == 11}" />
-							<p:outputLabel value="DEZEMBRO" rendered="#{config.mes == 12}" />
-						</p:column>
-						<p:column headerText="ANO">
-							<p:outputLabel value="#{config.ano}" />
-						</p:column>
-
-						<p:column headerText="Ações" width="15%">
+						<p:column headerText="Dia da Semana" width="20%">
 							<center>
-								<p:splitButton icon="confirmar">
-									<p:menuitem value="Alterar" icon="alterar-dados"
-										action="#{ConfigAgendaController.redirectEdit()}">
+								<p:outputLabel value="Domingo"
+									rendered="#{config.diaDaSemana == 1}" />
+								<p:outputLabel value="Segunda"
+									rendered="#{config.diaDaSemana == 2}" />
+								<p:outputLabel value="Terça"
+									rendered="#{config.diaDaSemana == 3}" />
+								<p:outputLabel value="Quarta"
+									rendered="#{config.diaDaSemana == 4}" />
+								<p:outputLabel value="Quinta"
+									rendered="#{config.diaDaSemana == 5}" />
+								<p:outputLabel value="Sexta"
+									rendered="#{config.diaDaSemana == 6}" />
+								<p:outputLabel value="Sábado"
+									rendered="#{config.diaDaSemana == 7}" />
+							</center>
+						</p:column>
+						<p:column headerText="Data Específica" width="16%">
+							<center>
+								<p:outputLabel value="#{config.dataEspecifica}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</p:outputLabel>
+							</center>
+						</p:column>
+						<p:column headerText="Quantidade Máxima" width="16%">
+							<center>
+								<p:outputLabel value="#{config.qtdMax}" />
+							</center>
+						</p:column>
+						<p:column headerText="Mês" width="16%">
+							<center>
+								<p:outputLabel value="Janeiro" rendered="#{config.mes == 1}" />
+								<p:outputLabel value="Fevereiro" rendered="#{config.mes == 2}" />
+								<p:outputLabel value="Março" rendered="#{config.mes == 3}" />
+								<p:outputLabel value="Abril" rendered="#{config.mes == 4}" />
+								<p:outputLabel value="Maio" rendered="#{config.mes == 5}" />
+								<p:outputLabel value="Junho" rendered="#{config.mes == 6}" />
+								<p:outputLabel value="Julho" rendered="#{config.mes == 7}" />
+								<p:outputLabel value="Agosto" rendered="#{config.mes == 8}" />
+								<p:outputLabel value="Setembro" rendered="#{config.mes == 9}" />
+								<p:outputLabel value="Outubro" rendered="#{config.mes == 10}" />
+								<p:outputLabel value="Novembro" rendered="#{config.mes == 11}" />
+								<p:outputLabel value="Dezembro" rendered="#{config.mes == 12}" />
+							</center>
+						</p:column>
+						<p:column headerText="Ano" width="16%">
+							<center>
+								<p:outputLabel value="#{config.ano}" />
+							</center>
+						</p:column>
 
-										<f:setPropertyActionListener value="#{prof}"
-											target="#{ConfigAgendaController.confParte1}" />
+						<p:column headerText="Ações" width="16%">
+							<center>
 
-										<f:setPropertyActionListener value="#{config}"
-											target="#{ConfigAgendaController.confParte1}" />
+								<p:commandButton icon="ui-icon-pencil"
+									action="#{ConfigAgendaController.redirectEdit()}">
 
-										<f:setPropertyActionListener value="2"
-											target="#{ConfigAgendaController.tipo2}" />
+									<f:setPropertyActionListener value="#{prof}"
+										target="#{ConfigAgendaController.confParte1}" />
 
-									</p:menuitem>
+									<f:setPropertyActionListener value="#{config}"
+										target="#{ConfigAgendaController.confParte1}" />
 
-									<p:menuitem value="Excluir" icon="trash"
-										onclick="PF('dialogAtencao').show()">
+									<f:setPropertyActionListener value="2"
+										target="#{ConfigAgendaController.tipo2}" />
 
-										<f:setPropertyActionListener value="#{config}"
-											target="#{ConfigAgendaController.confParte1}" />
-									</p:menuitem>
-								</p:splitButton>
+								</p:commandButton>
+
+								<p:commandButton icon="ui-icon-closethick"
+									onclick="PF('dialogAtencao').show()">
+
+									<f:setPropertyActionListener value="#{config}"
+										target="#{ConfigAgendaController.confParte1}" />
+								</p:commandButton>
 							</center>
 						</p:column>
 
@@ -144,6 +188,7 @@
 				</p:outputPanel>
 			</div>
 		</h:form>
+
 		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
 			resizable="false">
 			<h:form id="dlgexcluir">
@@ -157,7 +202,7 @@
 					<p:commandButton value="Sim"
 						action="#{ConfigAgendaController.excluirConfig()}"
 						icon="ui-icon-check" style="font-size:14px;"
-						update=":formConsConfAgenda:msgError">
+						update=":formConsConfAgenda:msgError, :formConsConfAgenda:dtHorarios">
 					</p:commandButton>
 					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
 						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>

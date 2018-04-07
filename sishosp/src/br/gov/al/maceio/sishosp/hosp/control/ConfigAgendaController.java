@@ -410,7 +410,8 @@ public class ConfigAgendaController implements Serializable {
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
 		}
-		this.listaHorarios = cDao.listarHorarios();
+		this.listaHorarios = cDao.listarHorariosComFiltros(confParte1,
+				prof.getIdProfissional());
 	}
 
 	public void excluirConfigEquipe() throws ProjetoException {
@@ -432,17 +433,17 @@ public class ConfigAgendaController implements Serializable {
 		}
 		this.listaHorariosEquipe = cDao.listarHorariosEquipe();
 	}
-	
-	
-	
-	
+
 	public void selectProfissional() throws ProjetoException {
 		this.listaHorarios = cDao.listarHorariosPorIDProfissional(prof
 				.getIdProfissional());
 	}
-	
-	
-	
+
+	public void selectProfissionalComFiltros() throws ProjetoException {
+		this.listaHorarios = cDao.listarHorariosComFiltros(confParte1,
+				prof.getIdProfissional());
+	}
+
 	public void selectProfissionalConsConfAgenda() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
@@ -452,11 +453,9 @@ public class ConfigAgendaController implements Serializable {
 
 			this.confParte1 = cDao.listarHorariosPorIDProfissional2(id);
 		} else {
-			
+
 		}
-		
-		
-		
+
 	}
 
 	public void onRowSelect(SelectEvent event) throws ProjetoException {

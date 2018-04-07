@@ -320,6 +320,90 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
+	public List<ConfigAgendaParte1Bean> listarHorariosComFiltros(
+			ConfigAgendaParte1Bean config, int codmedico)
+			throws ProjetoException {
+		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
+		String sql = "SELECT id_configagenda, codmedico, diasemana, qtdmax, dataagenda, turno, mes, ano, codempresa "
+				+ "FROM hosp.config_agenda where codmedico = ?";
+		if (config != null) {
+			if (config.getAno() != null) {
+				if (config.getAno() > 0) {
+					sql = sql + " and ano = ?";
+				}
+			}
+			if (config.getTurno() != null) {
+				if (!config.getTurno().equals("")) {
+					sql = sql + " and turno = ?";
+				}
+			}
+			if (config.getMes() != null) {
+				if (config.getMes() > 0) {
+					sql = sql + " and mes = ?";
+				}
+			}
+		}
+
+		sql = sql + "order by id_configagenda ";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			int i = 1;
+
+			stm.setInt(i, codmedico);
+
+			if (config != null) {
+				if (config.getAno() != null) {
+					if (config.getAno() > 0) {
+						i = i + 1;
+						stm.setInt(i, config.getAno());
+					}
+				}
+				if (config.getTurno() != null) {
+					if (!config.getTurno().equals("")) {
+						i = i + 1;
+						stm.setString(i, config.getTurno());
+					}
+				}
+				if (config.getMes() != null) {
+					if (config.getMes() > 0) {
+						i = i + 1;
+						stm.setInt(i, config.getMes());
+					}
+				}
+			}
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
+				conf.setIdConfiAgenda(rs.getInt("id_configagenda"));
+				conf.setProfissional(pDao.buscarProfissionalPorId(rs
+						.getInt("codmedico")));
+				conf.setDiaDaSemana(rs.getInt("diasemana"));
+				conf.setDataEspecifica(rs.getDate("dataagenda"));
+				conf.setQtdMax(rs.getInt("qtdmax"));
+				conf.setTurno(rs.getString("turno"));
+				conf.setMes(rs.getInt("mes"));
+				conf.setAno(rs.getInt("ano"));
+
+				lista.add(conf);
+
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
+	}
+
 	public List<ConfigAgendaParte1Bean> listarHorariosEquipe()
 			throws ProjetoException {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
