@@ -21,37 +21,38 @@ public class ConfigAgendaDAO {
 	ProfissionalDAO pDao = new ProfissionalDAO();
 	EquipeDAO eDao = new EquipeDAO();
 
-	public boolean gravarConfigAgenda(ConfigAgendaParte1Bean confParte1,
-			ConfigAgendaParte2Bean confParte2,
-			List<ConfigAgendaParte2Bean> listaTipos) throws SQLException,
-			ProjetoException {
-
-		// if (confParte1.getProfissional().getIdProfissional() == null
-		// || confParte1.getQtdMax() == null) {
-		// return false;
-		// }
-
-		try {
-			if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
-				for (String dia : confParte1.getDiasSemana()) {
-					gravaTurno(confParte1, listaTipos, dia);
-				}
-			} else {// ESCOLHEU DATA ESPECIFICA
-				gravaTurno(confParte1, listaTipos, null);
-			}
-
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-	}
+	// SEM USO, RETIREI
+	// public boolean gravarConfigAgenda(ConfigAgendaParte1Bean confParte1,
+	// ConfigAgendaParte2Bean confParte2,
+	// List<ConfigAgendaParte2Bean> listaTipos) throws SQLException,
+	// ProjetoException {
+	//
+	// // if (confParte1.getProfissional().getIdProfissional() == null
+	// // || confParte1.getQtdMax() == null) {
+	// // return false;
+	// // }
+	//
+	// try {
+	// if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
+	// for (String dia : confParte1.getDiasSemana()) {
+	// gravaTurno(confParte1, listaTipos, dia);
+	// }
+	// } else {// ESCOLHEU DATA ESPECIFICA
+	// gravaTurno(confParte1, listaTipos, null);
+	// }
+	//
+	// return true;
+	// } catch (SQLException ex) {
+	// throw new RuntimeException(ex);
+	// } finally {
+	// try {
+	// con.close();
+	// } catch (Exception ex) {
+	// ex.printStackTrace();
+	// System.exit(1);
+	// }
+	// }
+	// }
 
 	public boolean gravarConfigAgendaEquipe(ConfigAgendaParte1Bean confParte1,
 			ConfigAgendaParte2Bean confParte2,
@@ -116,104 +117,114 @@ public class ConfigAgendaDAO {
 		}
 	}
 
-	public void gravaTurno(ConfigAgendaParte1Bean confParte1,
+	public Boolean gravaTurno(ConfigAgendaParte1Bean confParte1,
 			List<ConfigAgendaParte2Bean> listaTipos, String dia)
 			throws SQLException, ProjetoException {
+		boolean gravou = false;
 
-		String sql = "INSERT INTO hosp.config_agenda(codmedico, diasemana, qtdmax, dataagenda, turno, mes, ano, codempresa, id_configagenda) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, DEFAULT) RETURNING id_configagenda;";
-		con = ConnectionFactory.getConnection();
-		PreparedStatement ps2 = con.prepareStatement(sql);
+		try {
+			String sql = "INSERT INTO hosp.config_agenda(codmedico, diasemana, qtdmax, dataagenda, turno, mes, ano, codempresa, id_configagenda) "
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, DEFAULT) RETURNING id_configagenda;";
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps2 = con.prepareStatement(sql);
 
-		ResultSet rs2 = null;
-		if (confParte1.getTurno().equals("A")) {
-			if (dia != null) {
-				ps2.setInt(2, Integer.parseInt(dia));
-				ps2.setDate(4, null);
+			ResultSet rs2 = null;
+			if (confParte1.getTurno().equals("A")) {
+				if (dia != null) {
+					ps2.setInt(2, Integer.parseInt(dia));
+					ps2.setDate(4, null);
+				} else {
+					ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+							.getTime()));
+					Calendar c1 = Calendar.getInstance();
+					c1.setTime(confParte1.getDataEspecifica());
+					ps2.setInt(2, 0);
+					confParte1.setMes(c1.get(Calendar.MONTH) + 1);
+					confParte1.setAno(c1.get(Calendar.YEAR));
+
+				}
+				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				ps2.setInt(3, confParte1.getQtdMax());
+				ps2.setString(5, "M");
+				ps2.setInt(6, confParte1.getMes());
+				ps2.setInt(7, confParte1.getAno());
+
+				ps2.setInt(8, 0);// COD EMPRESA ?
+				rs2 = ps2.executeQuery();
+				con.commit();
+				int idTipo1 = 0;
+				if (rs2.next()) {
+					idTipo1 = rs2.getInt("id_configagenda");
+					insereTipoAtendAgenda(idTipo1, confParte1, listaTipos);
+				}
+				con.commit();
+
+				ps2 = con.prepareStatement(sql);
+				if (dia != null) {
+					ps2.setInt(2, Integer.parseInt(dia));
+					ps2.setDate(4, null);
+				} else {
+					ps2.setInt(2, 0);
+					Calendar c1 = Calendar.getInstance();
+					c1.setTime(confParte1.getDataEspecifica());
+					ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+							.getTime()));
+					confParte1.setMes(c1.get(Calendar.MONTH) + 1);
+					confParte1.setAno(c1.get(Calendar.YEAR));
+				}
+				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				ps2.setInt(3, confParte1.getQtdMax());
+				ps2.setString(5, "T");
+				ps2.setInt(6, confParte1.getMes());
+				ps2.setInt(7, confParte1.getAno());
+				ps2.setInt(8, 0);// COD EMPRESA ?
+				rs2 = ps2.executeQuery();
+				con.commit();
+				int idTipo2 = 0;
+				if (rs2.next()) {
+					idTipo2 = rs2.getInt("id_configagenda");
+					insereTipoAtendAgenda(idTipo2, confParte1, listaTipos);
+
+				}
+				con.commit();
+
 			} else {
-				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
-						.getTime()));
-				Calendar c1 = Calendar.getInstance();
-				c1.setTime(confParte1.getDataEspecifica());
-				ps2.setInt(2, 0);
-				confParte1.setMes(c1.get(Calendar.MONTH) + 1);
-				confParte1.setAno(c1.get(Calendar.YEAR));
+				if (dia != null) {
+					ps2.setInt(2, Integer.parseInt(dia));
+					ps2.setDate(4, null);
+				} else {
+					ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+							.getTime()));
+					Calendar c1 = Calendar.getInstance();
+					c1.setTime(confParte1.getDataEspecifica());
+					ps2.setInt(2, 0);
+					confParte1.setMes(c1.get(Calendar.MONTH) + 1);
+					confParte1.setAno(c1.get(Calendar.YEAR));
 
+				}
+				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				ps2.setInt(3, confParte1.getQtdMax());
+				ps2.setString(5, confParte1.getTurno());
+				ps2.setInt(6, confParte1.getMes());
+				ps2.setInt(7, confParte1.getAno());
+				ps2.setInt(8, 0);// COD EMPRESA ?
+				rs2 = ps2.executeQuery();
+				con.commit();
+				int idTipo3 = 0;
+				if (rs2.next()) {
+					idTipo3 = rs2.getInt("id_configagenda");
+					insereTipoAtendAgenda(idTipo3, confParte1, listaTipos);
+
+				}
 			}
-			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
-			ps2.setInt(3, confParte1.getQtdMax());
-			ps2.setString(5, "M");
-			ps2.setInt(6, confParte1.getMes());
-			ps2.setInt(7, confParte1.getAno());
+			gravou = true;
 
-			ps2.setInt(8, 0);// COD EMPRESA ?
-			rs2 = ps2.executeQuery();
-			con.commit();
-			int idTipo1 = 0;
-			if (rs2.next()) {
-				idTipo1 = rs2.getInt("id_configagenda");
-				insereTipoAtendAgenda(idTipo1, confParte1, listaTipos);
-			}
-			con.commit();
-
-			ps2 = con.prepareStatement(sql);
-			if (dia != null) {
-				ps2.setInt(2, Integer.parseInt(dia));
-				ps2.setDate(4, null);
-			} else {
-				ps2.setInt(2, 0);
-				Calendar c1 = Calendar.getInstance();
-				c1.setTime(confParte1.getDataEspecifica());
-				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
-						.getTime()));
-				confParte1.setMes(c1.get(Calendar.MONTH) + 1);
-				confParte1.setAno(c1.get(Calendar.YEAR));
-			}
-			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
-			ps2.setInt(3, confParte1.getQtdMax());
-			ps2.setString(5, "T");
-			ps2.setInt(6, confParte1.getMes());
-			ps2.setInt(7, confParte1.getAno());
-			ps2.setInt(8, 0);// COD EMPRESA ?
-			rs2 = ps2.executeQuery();
-			con.commit();
-			int idTipo2 = 0;
-			if (rs2.next()) {
-				idTipo2 = rs2.getInt("id_configagenda");
-				insereTipoAtendAgenda(idTipo2, confParte1, listaTipos);
-
-			}
-			con.commit();
-
-		} else {
-			if (dia != null) {
-				ps2.setInt(2, Integer.parseInt(dia));
-				ps2.setDate(4, null);
-			} else {
-				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
-						.getTime()));
-				Calendar c1 = Calendar.getInstance();
-				c1.setTime(confParte1.getDataEspecifica());
-				ps2.setInt(2, 0);
-				confParte1.setMes(c1.get(Calendar.MONTH) + 1);
-				confParte1.setAno(c1.get(Calendar.YEAR));
-
-			}
-			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
-			ps2.setInt(3, confParte1.getQtdMax());
-			ps2.setString(5, confParte1.getTurno());
-			ps2.setInt(6, confParte1.getMes());
-			ps2.setInt(7, confParte1.getAno());
-			ps2.setInt(8, 0);// COD EMPRESA ?
-			rs2 = ps2.executeQuery();
-			con.commit();
-			int idTipo3 = 0;
-			if (rs2.next()) {
-				idTipo3 = rs2.getInt("id_configagenda");
-				insereTipoAtendAgenda(idTipo3, confParte1, listaTipos);
-
-			}
+		} catch (ProjetoException e) {
+			e.printStackTrace();
+			return false;
 		}
+
+		return gravou;
 	}
 
 	public void gravaTurnoEquipe(ConfigAgendaParte1Bean confParte1,
@@ -658,38 +669,39 @@ public class ConfigAgendaDAO {
 		}
 	}
 
-	public boolean alterarConfigAgenda(ConfigAgendaParte1Bean confParte1,
-			ConfigAgendaParte2Bean confParte2,
-			List<ConfigAgendaParte2Bean> listaTiposEditar)
-			throws ProjetoException {
-
-		if (confParte1.getProfissional().getIdProfissional() == null
-				|| confParte1.getQtdMax() == null
-				|| confParte1.getAno() == null) {
-			return false;
-		}
-
-		try {
-			if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
-				for (String dia : confParte1.getDiasSemana()) {
-					alterarTurno(confParte1, listaTiposEditar, dia);
-				}
-			} else {// ESCOLHEU DATA ESPECIFICA
-				alterarTurno(confParte1, listaTiposEditar, null);
-			}
-
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-	}
+	// SEM USO, RETIREI
+	// public boolean alterarConfigAgenda(ConfigAgendaParte1Bean confParte1,
+	// ConfigAgendaParte2Bean confParte2,
+	// List<ConfigAgendaParte2Bean> listaTiposEditar)
+	// throws ProjetoException {
+	//
+	// if (confParte1.getProfissional().getIdProfissional() == null
+	// || confParte1.getQtdMax() == null
+	// || confParte1.getAno() == null) {
+	// return false;
+	// }
+	//
+	// try {
+	// if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
+	// for (String dia : confParte1.getDiasSemana()) {
+	// alterarTurno(confParte1, listaTiposEditar, dia);
+	// }
+	// } else {// ESCOLHEU DATA ESPECIFICA
+	// alterarTurno(confParte1, listaTiposEditar, null);
+	// }
+	//
+	// return true;
+	// } catch (SQLException ex) {
+	// throw new RuntimeException(ex);
+	// } finally {
+	// try {
+	// con.close();
+	// } catch (Exception ex) {
+	// ex.printStackTrace();
+	// System.exit(1);
+	// }
+	// }
+	// }
 
 	public boolean alterarConfigAgendaEquipe(ConfigAgendaParte1Bean confParte1,
 			ConfigAgendaParte2Bean confParte2,
@@ -724,77 +736,170 @@ public class ConfigAgendaDAO {
 		}
 	}
 
-	public void alterarTurno(ConfigAgendaParte1Bean confParte1,
-			List<ConfigAgendaParte2Bean> listaTipos, String dia)
-			throws SQLException, ProjetoException {
+	public Boolean alterarTurno(ConfigAgendaParte1Bean confParte1,
+			List<ConfigAgendaParte2Bean> listaTipos) throws SQLException,
+			ProjetoException {
 
-		String sql = "UPDATE hosp.config_agenda SET codmedico = ?, diasemana = ?, qtdmax = ?, dataagenda = ?, turno = ?, mes = ?, ano = ?, codempresa = ? "
-				+ " WHERE id_configagenda = ?;";
-		con = ConnectionFactory.getConnection();
-		PreparedStatement ps2 = con.prepareStatement(sql);
+		try {
+			String sql = "UPDATE hosp.config_agenda SET codmedico = ?, diasemana = ?, qtdmax = ?, dataagenda = ?, turno = ?, mes = ?, ano = ?, codempresa = ? "
+					+ " WHERE id_configagenda = ?;";
+			con = ConnectionFactory.getConnection();
+			PreparedStatement ps2 = con.prepareStatement(sql);
 
-		if (confParte1.getTurno().equals("A")) {
-			if (dia != null) {
-				ps2.setInt(2, Integer.parseInt(dia));
-				ps2.setDate(4, null);
+			System.out.println("tamanho: " + listaTipos.size());
+
+			if (confParte1.getTurno().equals("A")) {
+				if (confParte1.getDiaDaSemana() != null) {
+					ps2.setInt(2, confParte1.getDiaDaSemana());
+					ps2.setDate(4, null);
+					System.out.println("1");
+				} else {
+					System.out.println("2");
+					ps2.setInt(2, 0);
+					ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+							.getTime()));
+				}
+				System.out.println("3");
+				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				ps2.setInt(3, confParte1.getQtdMax());
+				ps2.setString(5, "M");
+				ps2.setInt(6, confParte1.getMes());
+				ps2.setInt(7, confParte1.getAno());
+				ps2.setInt(8, 0);// COD EMPRESA ?
+				ps2.setInt(9, confParte1.getIdConfiAgenda());
+				ps2.executeUpdate();
+
+				String sql2 = "DELETE from hosp.tipo_atend_agenda where codconfigagenda = ?";
+				System.out.println("4");
+				PreparedStatement ps3 = con.prepareStatement(sql2);
+				ps3.setInt(1, confParte1.getIdConfiAgenda());
+				ps3.execute();
+
+				String sql3 = "INSERT INTO hosp.tipo_atend_agenda (codprograma, codtipoatendimento,  qtd, codgrupo, codconfigagenda) "
+						+ " VALUES (?, ?, ?, ?, ?); ";
+
+				PreparedStatement ps4 = con.prepareStatement(sql3);
+				System.out.println("5");
+				for (ConfigAgendaParte2Bean conf : listaTipos) {
+					System.out.println("6");
+					ps4.setInt(1, conf.getPrograma().getIdPrograma());
+					ps4.setInt(2, conf.getTipoAt().getIdTipo());
+					ps4.setInt(3, conf.getQtd());
+					ps4.setInt(4, conf.getGrupo().getIdGrupo());
+					ps4.setInt(5, confParte1.getIdConfiAgenda());
+					ps4.execute();
+				}
+
+				ps2 = con.prepareStatement(sql);
+				System.out.println("7");
+				if (confParte1.getDiaDaSemana() != null) {
+					System.out.println("8");
+					ps2.setInt(2, confParte1.getDiaDaSemana());
+					ps2.setDate(4, null);
+				} else {
+					System.out.println("9");
+					ps2.setInt(2, 0);
+					ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+							.getTime()));
+				}
+				System.out.println("10");
+				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				ps2.setInt(3, confParte1.getQtdMax());
+				ps2.setString(5, "T");
+				ps2.setInt(6, confParte1.getMes());
+				ps2.setInt(7, confParte1.getAno());
+				ps2.setInt(8, 0);// COD EMPRESA ?
+				ps2.setInt(9, confParte1.getIdConfiAgenda());
+				ps2.executeUpdate();
+
+				sql2 = "DELETE from hosp.tipo_atend_agenda where codconfigagenda = ?";
+				System.out.println("11");
+				ps3 = con.prepareStatement(sql2);
+				ps3.setInt(1, confParte1.getIdConfiAgenda());
+				ps3.execute();
+
+				sql3 = "INSERT INTO hosp.tipo_atend_agenda (codprograma, codtipoatendimento,  qtd, codgrupo, codconfigagenda) "
+						+ " VALUES (?, ?, ?, ?, ?); ";
+
+				System.out.println("12");
+				ps4 = con.prepareStatement(sql3);
+				for (ConfigAgendaParte2Bean conf : listaTipos) {
+					System.out.println("13");
+					ps4.setInt(1, conf.getPrograma().getIdPrograma());
+					ps4.setInt(2, conf.getTipoAt().getIdTipo());
+					ps4.setInt(3, conf.getQtd());
+					ps4.setInt(4, conf.getGrupo().getIdGrupo());
+					ps4.setInt(5, confParte1.getIdConfiAgenda());
+					ps4.execute();
+
+				}
 			} else {
-				ps2.setInt(2, 0);
-				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
-						.getTime()));
-			}
-			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
-			ps2.setInt(3, confParte1.getQtdMax());
-			ps2.setString(5, "M");
-			ps2.setInt(6, confParte1.getMes());
-			ps2.setInt(7, confParte1.getAno());
-			ps2.setInt(8, 0);// COD EMPRESA ?
-			ps2.setInt(9, confParte1.getIdConfiAgenda());
-			ps2.executeUpdate();
-			con.commit();
-			alteraTipoAtendAgenda(confParte1, listaTipos);
-			con.commit();
+				System.out.println("14");
+				if (confParte1.getDiaDaSemana() != null) {
+					System.out.println("15");
+					ps2.setInt(2, confParte1.getDiaDaSemana());
+					ps2.setDate(4, null);
+				} else {
+					System.out.println("16");
+					ps2.setInt(2, 0);
+					ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+							.getTime()));
+				}
+				System.out.println("17");
+				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				System.out.println("17.1");
+				ps2.setInt(3, confParte1.getQtdMax());
+				System.out.println("17.2");
+				ps2.setString(5, confParte1.getTurno());
+				System.out.println("17.3");
+				ps2.setInt(6, confParte1.getMes());
+				System.out.println("17.4");
+				ps2.setInt(7, confParte1.getAno());
+				System.out.println("17.5");
+				ps2.setInt(8, 0);// COD EMPRESA ?
+				System.out.println("17.6");
+				ps2.setInt(9, confParte1.getIdConfiAgenda());
+				System.out.println("17.7");
+				ps2.execute();
 
-			ps2 = con.prepareStatement(sql);
-			if (dia != null) {
-				ps2.setInt(2, Integer.parseInt(dia));
-				ps2.setDate(4, null);
-			} else {
-				ps2.setInt(2, 0);
-				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
-						.getTime()));
-			}
-			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
-			ps2.setInt(3, confParte1.getQtdMax());
-			ps2.setString(5, "T");
-			ps2.setInt(6, confParte1.getMes());
-			ps2.setInt(7, confParte1.getAno());
-			ps2.setInt(8, 0);// COD EMPRESA ?
-			ps2.setInt(9, confParte1.getIdConfiAgenda());
-			ps2.executeUpdate();
-			con.commit();
-			alteraTipoAtendAgenda(confParte1, listaTipos);
-			con.commit();
+				System.out.println("17.2");
+				String sql2 = "DELETE from hosp.tipo_atend_agenda where codconfigagenda = ?";
+				System.out.println("18");
+				PreparedStatement ps3 = con.prepareStatement(sql2);
+				ps3.setInt(1, confParte1.getIdConfiAgenda());
+				ps3.execute();
 
-		} else {
-			if (dia != null) {
-				ps2.setInt(2, Integer.parseInt(dia));
-				ps2.setDate(4, null);
-			} else {
-				ps2.setInt(2, 0);
-				ps2.setDate(4, new Date(confParte1.getDataEspecifica()
-						.getTime()));
+				String sql3 = "INSERT INTO hosp.tipo_atend_agenda (codprograma, codtipoatendimento,  qtd, codgrupo, codconfigagenda) "
+						+ " VALUES (?, ?, ?, ?, ?); ";
+
+				System.out.println("19");
+				PreparedStatement ps4 = con.prepareStatement(sql3);
+				for (ConfigAgendaParte2Bean conf : listaTipos) {
+					System.out.println("20");
+					ps4.setInt(1, conf.getPrograma().getIdPrograma());
+					ps4.setInt(2, conf.getTipoAt().getIdTipo());
+					ps4.setInt(3, conf.getQtd());
+					ps4.setInt(4, conf.getGrupo().getIdGrupo());
+					ps4.setInt(5, confParte1.getIdConfiAgenda());
+					ps4.execute();
+					System.out.println("21");
+				}
 			}
-			ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
-			ps2.setInt(3, confParte1.getQtdMax());
-			ps2.setString(5, confParte1.getTurno());
-			ps2.setInt(6, confParte1.getMes());
-			ps2.setInt(7, confParte1.getAno());
-			ps2.setInt(8, 0);// COD EMPRESA ?
-			ps2.setInt(9, confParte1.getIdConfiAgenda());
-			ps2.executeUpdate();
+			System.out.println("22");
 			con.commit();
-			alteraTipoAtendAgenda(confParte1, listaTipos);
+			System.out.println("23");
+			return true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+		return false;
 	}
 
 	public void alterarTurnoEquipe(ConfigAgendaParte1Bean confParte1,
@@ -865,34 +970,36 @@ public class ConfigAgendaDAO {
 		}
 	}
 
-	public void alteraTipoAtendAgenda(ConfigAgendaParte1Bean conf1,
-			List<ConfigAgendaParte2Bean> listaTipos) throws ProjetoException {
-		PreparedStatement ps1 = null;
-
-		String sql = "UPDATE hosp.tipo_atend_agenda SET codprograma = ?, codtipoatendimento = ?,  qtd = ?, codgrupo = ? "
-				+ " WHERE codconfigagenda = ?;";
-		try {
-			con = ConnectionFactory.getConnection();
-			ps1 = con.prepareStatement(sql);
-			for (ConfigAgendaParte2Bean conf : listaTipos) {
-				ps1.setInt(1, conf.getPrograma().getIdPrograma());
-				ps1.setInt(2, conf.getTipoAt().getIdTipo());
-				ps1.setInt(3, conf.getQtd());
-				ps1.setInt(4, conf.getGrupo().getIdGrupo());
-				ps1.setInt(5, conf1.getIdConfiAgenda());
-				ps1.executeUpdate();
-				con.commit();
-			}
-
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-	}
+	// SEM USO, RETIREI
+	// public void alteraTipoAtendAgenda(ConfigAgendaParte1Bean conf1,
+	// List<ConfigAgendaParte2Bean> listaTipos) throws ProjetoException {
+	// PreparedStatement ps1 = null;
+	//
+	// String sql =
+	// "UPDATE hosp.tipo_atend_agenda SET codprograma = ?, codtipoatendimento = ?,  qtd = ?, codgrupo = ? "
+	// + " WHERE codconfigagenda = ?;";
+	// try {
+	// con = ConnectionFactory.getConnection();
+	// ps1 = con.prepareStatement(sql);
+	// for (ConfigAgendaParte2Bean conf : listaTipos) {
+	// ps1.setInt(1, conf.getPrograma().getIdPrograma());
+	// ps1.setInt(2, conf.getTipoAt().getIdTipo());
+	// ps1.setInt(3, conf.getQtd());
+	// ps1.setInt(4, conf.getGrupo().getIdGrupo());
+	// ps1.setInt(5, conf1.getIdConfiAgenda());
+	// ps1.executeUpdate();
+	// con.commit();
+	// }
+	//
+	// } catch (SQLException ex) {
+	// throw new RuntimeException(ex);
+	// } finally {
+	// try {
+	// } catch (Exception ex) {
+	// ex.printStackTrace();
+	// System.exit(1);
+	// }
+	// }
+	// }
 
 }

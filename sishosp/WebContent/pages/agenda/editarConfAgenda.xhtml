@@ -189,7 +189,7 @@
 						requiredMessage="Informe a Quantidade" />
 
 					<b:commandButton value="Incluir" icon="glyphicon-plus"
-						action="#{ConfigAgendaController.addNaLista()}" id="b5"
+						action="#{ConfigAgendaController.addNaListaEditar()}" id="b5"
 						update=":formEditConfAgenda" />
 				</p:panelGrid>
 
@@ -212,6 +212,15 @@
 						<p:outputLabel value="#{tipo.qtd}" />
 					</p:column>
 
+					<p:column headerText="Ação">
+						<p:commandButton process="@this"
+							action="#{ConfigAgendaController.removeNaListaEditar()}"
+							icon="ui-icon-trash" update="dtConfi">
+							<f:setPropertyActionListener value="#{tipo}"
+								target="#{ConfigAgendaController.confParte2}" />
+						</p:commandButton>
+					</p:column>
+
 				</p:dataTable>
 
 				<br></br> <br></br>
@@ -224,6 +233,7 @@
 
 					<b:commandButton
 						action="#{ConfigAgendaController.alterarConfigAgenda()}"
+						immediate="true"
 						update=":formEditConfAgenda:msgError, :formEditConfAgenda"
 						icon="glyphicon-ok" style="float:left" value="Alterar"
 						look="success" size="sm" />

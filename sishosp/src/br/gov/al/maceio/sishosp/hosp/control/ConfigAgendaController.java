@@ -94,6 +94,10 @@ public class ConfigAgendaController implements Serializable {
 		this.opcao = new String("1");
 	}
 
+	public String redirectInsert() {
+		return "configuracaoAgenda?faces-redirect=true";
+	}
+
 	// errado =
 	// action="/pages/agenda/editarConfAgenda.xhtml?faces-redirect=true">
 	public String redirectEdit() {
@@ -168,8 +172,32 @@ public class ConfigAgendaController implements Serializable {
 		// }
 	}
 
+	public void addNaListaEditar() {
+		if (confParte2.getQtd() == null
+				// || confParte2.getTipoAt().getDescTipoAt() == null
+				|| confParte2.getPrograma().getDescPrograma() == null
+				|| confParte2.getGrupo().getDescGrupo() == null) {
+			this.confParte2 = new ConfigAgendaParte2Bean();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Insira os dados corretamente!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			this.listaTiposEditar.add(confParte2);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Dados inseridos na tabela!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+		this.confParte2 = new ConfigAgendaParte2Bean();
+		// }
+	}
+
 	public void removeNaLista() {
 		this.listaTipos.remove(confParte2);
+
+	}
+
+	public void removeNaListaEditar() {
+		this.listaTiposEditar.remove(confParte2);
 
 	}
 
@@ -300,7 +328,15 @@ public class ConfigAgendaController implements Serializable {
 			return;
 		}
 
-		ok = cDao.gravarConfigAgenda(confParte1, confParte2, listaTipos);
+		if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
+			for (String dia : confParte1.getDiasSemana()) {
+				ok = cDao.gravaTurno(confParte1, listaTipos, dia);
+			}
+		} else {// ESCOLHEU DATA ESPECIFICA
+			ok = cDao.gravaTurno(confParte1, listaTipos, null);
+		}
+
+		// ok = cDao.gravarConfigAgenda(confParte1, confParte2, listaTipos);
 
 		if (ok) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -358,7 +394,10 @@ public class ConfigAgendaController implements Serializable {
 			}
 		}
 
-		ok = cDao.alterarConfigAgenda(confParte1, confParte2, listaTiposEditar);
+		ok = cDao.alterarTurno(confParte1, listaTiposEditar);
+
+		// ok = cDao.alterarConfigAgenda(confParte1, confParte2,
+		// listaTiposEditar);
 
 		if (ok) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -617,10 +656,11 @@ public class ConfigAgendaController implements Serializable {
 
 	public List<ConfigAgendaParte2Bean> getListaTiposEditar()
 			throws ProjetoException {
-		if (this.confParte1.getIdConfiAgenda() != null) {
-			this.listaTiposEditar = cDao.listarTiposAgendPorId(this.confParte1
-					.getIdConfiAgenda());
-		}
+		/*
+		 * if (this.confParte1.getIdConfiAgenda() != null &&
+		 * !edicao.equals("S")) { this.listaTiposEditar =
+		 * cDao.listarTiposAgendPorId(this.confParte1 .getIdConfiAgenda()); }
+		 */
 		return listaTiposEditar;
 	}
 

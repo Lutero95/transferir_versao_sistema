@@ -56,7 +56,8 @@
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descricaoProf}">
-									<p:ajax event="itemSelect" update=":formConfiAgenda" />
+									<p:ajax event="itemSelect"
+										update=":formConfiAgenda:tbview:outProf" />
 								</p:autoComplete>
 
 							</p:outputPanel>
@@ -135,7 +136,7 @@
 									itemLabel="#{theme.descPrograma}">
 									<p:ajax event="itemSelect"
 										listener="#{ConfigAgendaController.selectGrupo}"
-										update=":formConfiAgenda, :formConsuGrop:dtGrupo" />
+										update=":formConfiAgenda:tbview:outGrupo, :formConfiAgenda:tbview:outProg, :formConfiAgenda:tbview:btBusGr, :formConsuGrop:dtGrupo" />
 								</p:autoComplete>
 							</p:outputPanel>
 							<p:commandButton value="Buscar" icon="ui-icon-search"
@@ -158,7 +159,7 @@
 									itemLabel="#{theme.descGrupo}">
 									<p:ajax event="itemSelect"
 										listener="#{ConfigAgendaController.selectTipoAtendimento}"
-										update=":formConfiAgenda, :formConsuTipoAt:dtTipoAt" />
+										update=":formConfiAgenda:tbview:outGrupo, :formConfiAgenda:tbview:outTipoAt, :formConfiAgenda:tbview:btBusGr, :formConfiAgenda:tbview:btBusTi" />
 								</p:autoComplete>
 							</p:outputPanel>
 							<p:commandButton id="btBusGr" value="Buscar" process="@this"
@@ -180,7 +181,8 @@
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descTipoAt}">
-									<p:ajax event="itemSelect" update=":formConfiAgenda" />
+									<p:ajax event="itemSelect"
+										update=":formConfiAgenda:tbview:outTipoAt, :formConfiAgenda:tbview:btBusTi" />
 								</p:autoComplete>
 							</p:outputPanel>
 							<p:commandButton id="btBusTi" value="Buscar" process="@this"
@@ -253,10 +255,10 @@
 						id="b3" actionListener="#{ConfigAgendaController.limparDados()}"
 						update=":formConfiAgenda" />
 
-					<b:commandButton value="Sair" icon="glyphicon-remove-circle"
+					<b:commandButton value="Voltar" icon="glyphicon-remove-circle"
 						id="b4" update=":formConfiAgenda"
 						actionListener="#{ConfigAgendaController.limparDados()}"
-						action="/pages/comum/selecaoSistema.xhtml?faces-redirect=true" />
+						action="consConfAgenda.xhtml?faces-redirect=true" />
 
 				</p:panelGrid>
 			</center>
