@@ -39,6 +39,7 @@ public class ConfigAgendaController implements Serializable {
 	private ConfigAgendaParte1Bean confParte1;
 	private ConfigAgendaParte2Bean confParte2;
 	private ProfissionalBean prof;
+	private EquipeBean equipe;
 
 	private List<ConfigAgendaParte2Bean> listaTipos;
 	private List<ConfigAgendaParte2Bean> listaTiposEditar;
@@ -66,6 +67,7 @@ public class ConfigAgendaController implements Serializable {
 		this.confParte1 = new ConfigAgendaParte1Bean();
 		this.confParte2 = new ConfigAgendaParte2Bean();
 		this.prof = new ProfissionalBean();
+		this.equipe = new EquipeBean();
 		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
 		this.listaTiposEditar = new ArrayList<ConfigAgendaParte2Bean>();
 		this.listaHorarios = null;
@@ -98,11 +100,23 @@ public class ConfigAgendaController implements Serializable {
 		return "configuracaoAgenda?faces-redirect=true";
 	}
 
+	public String redirectInsertEquipe() {
+		return "configuracaoAgendaEquipe?faces-redirect=true";
+	}
+
 	// errado =
 	// action="/pages/agenda/editarConfAgenda.xhtml?faces-redirect=true">
 	public String redirectEdit() {
 		return "editarConfAgenda?faces-redirect=true&amp;codconfigagenda="
 				+ this.confParte1.getIdConfiAgenda() + "&amp;tipo2=" + tipo2;
+
+	}
+
+	public String redirectEditEquipe() {
+		return "editarConfAgendaEquipe?faces-redirect=true&amp;codconfigagenda="
+				+ this.confParte1.getEquipe().getCodEquipe()
+				+ "&amp;tipo2="
+				+ tipo2;
 
 	}
 
@@ -409,7 +423,7 @@ public class ConfigAgendaController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 
-		limparDados();
+		// limparDados();
 	}
 
 	public void alterarConfigAgendaEquipe() throws SQLException,
@@ -478,6 +492,11 @@ public class ConfigAgendaController implements Serializable {
 				.getIdProfissional());
 	}
 
+	public void selectEquipeOnRow() throws ProjetoException {
+		this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe
+				.getCodEquipe());
+	}
+
 	public void selectProfissionalComFiltros() throws ProjetoException {
 		this.listaHorarios = cDao.listarHorariosComFiltros(confParte1,
 				prof.getIdProfissional());
@@ -511,6 +530,11 @@ public class ConfigAgendaController implements Serializable {
 		EquipeBean equipe = (EquipeBean) event.getObject();
 		this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe
 				.getCodEquipe());
+	}
+
+	public void selectEquipeComFiltros() throws ProjetoException {
+		this.listaHorariosEquipe = cDao.listarHorariosComFiltrosEquipe(
+				confParte1, equipe.getCodEquipe());
 	}
 
 	public void onRowUnselectEquipe(UnselectEvent event) {
@@ -675,6 +699,14 @@ public class ConfigAgendaController implements Serializable {
 
 	public void setProf(ProfissionalBean prof) {
 		this.prof = prof;
+	}
+
+	public EquipeBean getEquipe() {
+		return equipe;
+	}
+
+	public void setEquipe(EquipeBean equipe) {
+		this.equipe = equipe;
 	}
 
 }
