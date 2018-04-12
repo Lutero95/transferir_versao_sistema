@@ -114,9 +114,7 @@ public class ConfigAgendaController implements Serializable {
 
 	public String redirectEditEquipe() {
 		return "editarConfAgendaEquipe?faces-redirect=true&amp;codconfigagenda="
-				+ this.confParte1.getEquipe().getCodEquipe()
-				+ "&amp;tipo2="
-				+ tipo2;
+				+ this.confParte1.getIdConfiAgenda() + "&amp;tipo2=" + tipo2;
 
 	}
 
@@ -129,6 +127,22 @@ public class ConfigAgendaController implements Serializable {
 			tipo2 = Integer.parseInt(params.get("tipo2"));
 
 			this.confParte1 = cDao.listarHorariosPorIDProfissional2(id);
+		} else {
+			tipo2 = Integer.parseInt(params.get("tipo2"));
+
+		}
+
+	}
+
+	public void getEditAgendaEquipe() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("codconfigagenda") != null) {
+			Integer id = Integer.parseInt(params.get("codconfigagenda"));
+			tipo2 = Integer.parseInt(params.get("tipo2"));
+
+			this.confParte1 = cDao.listarHorariosPorIDEquipe2(id);
 		} else {
 			tipo2 = Integer.parseInt(params.get("tipo2"));
 
@@ -430,8 +444,16 @@ public class ConfigAgendaController implements Serializable {
 			ProjetoException {
 		boolean ok = false;
 
-		ok = cDao.alterarConfigAgendaEquipe(confParte1, confParte2,
-				listaTiposEditar);
+		if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
+			for (String dia : confParte1.getDiasSemana()) {
+				ok = cDao.alterarTurnoEquipe(confParte1, listaTiposEditar, dia);
+			}
+		} else {// ESCOLHEU DATA ESPECIFICA
+			ok = cDao.alterarTurnoEquipe(confParte1, listaTiposEditar, null);
+		}
+
+		// ok = cDao.alterarConfigAgendaEquipe(confParte1,
+		// confParte2,listaTiposEditar);
 
 		if (ok) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -443,7 +465,7 @@ public class ConfigAgendaController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 
-		limparDados();
+		// limparDados();
 	}
 
 	public void excluirConfig() throws ProjetoException {
