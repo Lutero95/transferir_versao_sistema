@@ -11,7 +11,6 @@
 		<f:metadata>
 			<f:viewAction action="#{EscolaController.getEditEscola()}" />
 		</f:metadata>
-		<!-- INICIO DO FORMULARIO -->
 
 		<div class="panel-body">
 			<div class="sub-header">
@@ -23,10 +22,15 @@
 			<h:form class="form-horizontal" id="formCADU">
 
 				<p:outputPanel>
-					<div class="form-group">
-						<h:outputLabel for="inputname" value="Descrição"
-							styleClass="col-sm-3 control-label" />
-						<div class="col-sm-6">
+					<b:row>
+
+						<b:column span="1">
+							<h:outputLabel for="inputname" value="Descrição"
+								style="margin-top:10px" />
+						</b:column>
+
+						<b:column span="5">
+
 							<b:inputText value="#{EscolaController.escola.descescola}"
 								class="form-control" id="inputname" required="true"
 								validatorMessage="Nome deve conter entre 2 e 30 caracteres."
@@ -34,9 +38,10 @@
 								<f:validateLength minimum="2" maximum="40" />
 
 							</b:inputText>
+						</b:column>
 
-						</div>
-					</div>
+					</b:row>
+
 
 				</p:outputPanel>
 
@@ -47,8 +52,8 @@
 				<center>
 					<b:commandButton action="#{EscolaController.gravarEscola()}"
 						icon="glyphicon-ok" size="sm" look="success"
-						update=":formCADU, msgError" value="Incluir"
-						style="float:left" rendered="#{EscolaController.tipoesc == 1}" />
+						update=":formCADU, msgError" value="Incluir" style="float:left"
+						rendered="#{EscolaController.tipoesc == 1}" />
 
 					<b:commandButton action="#{EscolaController.alterarEscola()}"
 						icon="glyphicon-ok" size="sm" update=":formCADU, msgError"

@@ -22,10 +22,15 @@
 			</div>
 			<h:form class="form-horizontal" id="formCADU">
 
-				<div class="form-group">
-					<h:outputLabel for="inputname" value="Descrição"
-						styleClass="col-sm-3 control-label" />
-					<div class="col-sm-6">
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="inputname" value="Descrição" />
+					</b:column>
+
+					<b:column span="5">
+
 						<h:inputText
 							value="#{EscolaridadeController.escolaridade.descescolaridade}"
 							class="form-control" id="inputname"
@@ -35,25 +40,28 @@
 							requiredMessage="é necessário que você informe sua escolaridade.">
 							<f:validateLength minimum="2" maximum="40" />
 						</h:inputText>
-					</div>
-				</div>
+					</b:column>
+
+				</b:row>
+
+				<br></br>
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>
 				</center>
-				
+
 				<center>
 
 					<b:commandButton
 						action="#{EscolaridadeController.gravarEscolaridade()}"
-						icon="glyphicon-ok" size="sm" look="success"
-						update=":formCADU" value="Incluir"
-						style="float:left" rendered="#{EscolaridadeController.tipo == 1}" />
+						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
+						value="Incluir" style="float:left"
+						rendered="#{EscolaridadeController.tipo == 1}" />
 
 					<b:commandButton
 						action="#{EscolaridadeController.alterarEscolaridade()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU"
-						value="Alterar" look="success" style="float:left"
+						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+						look="success" style="float:left"
 						rendered="#{EscolaridadeController.tipo  == 2}" />
 
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"

@@ -18,33 +18,41 @@
 				<hr />
 			</div>
 
-			<h:form class="form-horizontal" id="formCADU">
+			<h:form id="formCADU">
 
+				<b:row>
 
-				<div class="form-group">
-					<h:outputLabel value="Código" styleClass="col-sm-3 control-label" />
-					<div class="col-sm-2">
+					<b:column span="1">
+						<h:outputLabel value="Código" style="margin-top:10px" />
+
+					</b:column>
+
+					<b:column span="5">
 						<b:inputText value="#{CboController.cbo.codigo}"
 							class="form-control" required="true" id="incod"
 							requiredMessage="Código obrigatório!" />
 						<b:message for="@previous" />
+					</b:column>
 
-					</div>
-				</div>
+				</b:row>
 
 
-				<div class="form-group">
-					<h:outputLabel value="Descrição"
-						styleClass="col-sm-3 control-label" />
-					<div class="col-sm-6">
+				<b:row>
+					<b:column span="1">
+						<h:outputLabel value="Descrição" style="margin-top:10px" />
+					</b:column>
+
+					<b:column span="5">
 						<b:inputText value="#{CboController.cbo.descCbo}"
 							class="form-control" required="true" id="indesc"
 							requiredMessage="Descrição obrigatória!"
 							validatorMessage="CBO deve conter entre 2 e 30 caracteres.">
 							<f:validateLength minimum="2" maximum="40" />
 						</b:inputText>
-					</div>
-				</div>
+					</b:column>
+				</b:row>
+
+				<br></br>
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>

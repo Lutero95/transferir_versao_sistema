@@ -12,8 +12,6 @@
 			action="#{FormaTransporteController.getEditFormaTransporte()}" />
 	</f:metadata>
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-
 
 		<h:form class="form-horizontal" id="formCADU">
 
@@ -25,10 +23,14 @@
 				</div>
 
 
-				<div class="form-group">
-					<h:outputLabel for="inputname" value="Descrição"
-						styleClass="col-sm-3 control-label" />
-					<div class="col-sm-6">
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="inputname" value="Descrição"
+							style="margin-top:10px" />
+					</b:column>
+
+					<b:column span="5">
 						<h:inputText
 							value="#{FormaTransporteController.transporte.descformatransporte}"
 							class="form-control" id="inputname"
@@ -39,8 +41,11 @@
 
 						</h:inputText>
 
-					</div>
-				</div>
+					</b:column>
+
+				</b:row>
+
+				<br></br>
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>

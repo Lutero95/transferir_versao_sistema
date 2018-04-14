@@ -189,9 +189,9 @@ public class EspecialidadeController implements Serializable {
 
 	public String getCabecalho() {
 		if (this.tipo == 1) {
-			cabecalho = "CADASTRO DE ESPECIALIDADE";
+			cabecalho = "Inclusão de Especialidade";
 		} else if (this.tipo == 2) {
-			cabecalho = "ALTERAR ESPECIALIDADE";
+			cabecalho = "Alterar Especialidade";
 		}
 		return cabecalho;
 	}

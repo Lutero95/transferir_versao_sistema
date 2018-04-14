@@ -15,7 +15,7 @@
 	</f:metadata>
 
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
+
 		<div class="panel-body">
 			<div class="sub-header">
 				<h:outputText value="#{EncaminhadoController.cabecalho}"
@@ -25,10 +25,16 @@
 			<h:form class="form-horizontal" id="formCADU">
 
 
-				<div class="form-group">
-					<h:outputLabel for="inputname" value="Descrição"
-						styleClass="col-sm-3 control-label" />
-					<div class="col-sm-6">
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="inputname" value="Descrição"
+							style="margin-top:10px" />
+
+					</b:column>
+
+					<b:column span="5">
+
 						<h:inputText
 							value="#{EncaminhadoController.encaminhado.descencaminhado}"
 							class="form-control" id="inputname"
@@ -37,8 +43,12 @@
 							<f:validateLength minimum="2" maximum="40" />
 
 						</h:inputText>
-					</div>
-				</div>
+					</b:column>
+
+				</b:row>
+
+				<br></br>
+				<br></br>
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>

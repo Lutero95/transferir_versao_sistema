@@ -23,32 +23,49 @@
 			<h:form class="form-horizontal" id="formCADU">
 
 
-				<div class="form-group">
-					<h:outputLabel for="inputdesc" value="Descrição: "
-						styleClass="col-sm-3 control-label" />
-					<div class="col-sm-6">
-						<h:inputText value="#{TipoAtendimentoController.tipo.descTipoAt}"
-							class="form-control" id="inputdesc" required="true"
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="inputdesc" value="Descrição"
+							style="margin-top:10px" />
+
+					</b:column>
+
+					<b:column span="5">
+
+						<b:inputText value="#{TipoAtendimentoController.tipo.descTipoAt}"
+							id="inputdesc" required="true"
 							requiredMessage="Descrição obrigatória!" />
 
-					</div>
-				</div>
+					</b:column>
+
+				</b:row>
 
 
 
 
-				<div class="form-group">
-					<h:outputLabel for="inputg" value="Grupos "
-						styleClass="col-sm-3 control-label" />
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="inputg" value="Grupos "
+							style="margin-top:10px" />
+
+					</b:column>
+
 					<div class="col-sm-5">
 						<p:commandButton style="color:black"
 							styleClass="btn btn-primary col-sm-3 text-center" value="Incluir"
 							process="@this"
 							actionListener="#{GrupoController.getListaTodosGrupos()}"
 							onclick="PF('dlgConsuGrupo').show();" icon="ui-icon-plus" />
-						<br /> <br />
+					</div>
+				</b:row>
+				<br />
+				<br />
 
+				<b:row>
 
+					<b:column span="5">
 						<p:dataTable emptyMessage="Sem Dados"
 							styleClass="table table-hover" id="tabela"
 							style="margin-top:10px;"
@@ -76,27 +93,37 @@
 							</p:column>
 
 						</p:dataTable>
+					</b:column>
+				</b:row>
 
-					</div>
-				</div>
-				<div class="form-group">
-					<h:outputLabel for="inputg" value="Primeiro Atendimento: "
-						styleClass="col-sm-3 control-label" />
-					<div class="col-sm-6">
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="inputg" value="Primeiro Atendimento: " />
+
+					</b:column>
+
+					<b:column span="1">
+
 						<p:selectBooleanCheckbox
 							value="#{TipoAtendimentoController.tipo.primeiroAt}">
 						</p:selectBooleanCheckbox>
-					</div>
-				</div>
-				<div class="form-group">
-					<h:outputLabel for="inputg" value="Equipe: "
-						styleClass="col-sm-3 control-label" />
-					<div class="col-sm-6">
+					</b:column>
+				</b:row>
+
+				<b:row>
+					<b:column span="1">
+						<h:outputLabel for="inputg" value="Equipe: " />
+					</b:column>
+
+					<b:column span="1">
 						<p:selectBooleanCheckbox
 							value="#{TipoAtendimentoController.tipo.equipe}">
 						</p:selectBooleanCheckbox>
-					</div>
-				</div>
+					</b:column>
+				</b:row>
+
+				<br></br>
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>
@@ -121,8 +148,8 @@
 					</b:commandButton>
 
 				</center>
-
 			</h:form>
+
 		</div>
 
 		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"

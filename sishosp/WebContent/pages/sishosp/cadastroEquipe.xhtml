@@ -24,74 +24,69 @@
 			<h:form class="form-horizontal" id="formCADU">
 
 
-				<div class="form-group">
-					<h:outputLabel for="inputname" value="Descrição"
-						styleClass="col-sm-3 control-label" />
-					<div class="col-sm-6">
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="inputname" value="Descrição"
+							style="margin-top:10px" />
+					</b:column>
+
+					<b:column span="5">
 						<h:inputText value="#{EquipeController.equipe.descEquipe}"
 							class="form-control" id="inputname" required="true"
 							requiredMessage="Descrição Obrigatória!"
 							validatorMessage="Equipe deve conter entre 2 e 30 caracteres.">
 							<f:validateLength minimum="2" maximum="40" />
 						</h:inputText>
-					</div>
-				</div>
+					</b:column>
+				</b:row>
 
-				<div class="form-group">
-					<b:row>
-						<b:column>
-							<h:outputLabel value="Profissionais"
-								styleClass="col-sm-3 control-label" />
-							<div class="col-sm-1">
-								<b:commandButton process="@this" style="margin-left:-5px"
-									size="sm"
-									action="#{ProfissionalController.ListarTodosProfissionais()}"
-									tooltip="Incluir Profissional" icon="glyphicon-plus"
-									oncomplete="PF('dlgConsuProfE').show();"
-									update="formConsuProfE" />
-							</div>
-							<div class="col-sm-6">
-								<p:dataTable emptyMessage="Nenhum Profissional na Equipe"
-									styleClass="table table-hover" id="tabela"
-									style="margin-left:-50px;width:94%"
-									value="#{EquipeController.equipe.profissionais}" var="tab"
-									paginator="true" paginatorPosition="bottom" rows="12"
-									resizableColumns="false">
+				<br></br>
 
+				<b:row>
+					<b:column span="1">
+						<h:outputLabel value="Profissionais" style="margin-top:10px" />
+					</b:column>
 
+					<b:column span="1">
+						<b:commandButton process="@this" size="sm"
+							action="#{ProfissionalController.ListarTodosProfissionais()}"
+							tooltip="Incluir Profissional" icon="glyphicon-plus"
+							oncomplete="PF('dlgConsuProfE').show();" update="formConsuProfE" />
+					</b:column>
 
-									<p:column headerText="Nome" style="font-weight:bold;"
-										width="80%">
-										<h:outputText value="#{tab.descricaoProf}" />
-									</p:column>
-
-									<p:column headerText="Ação">
-										<center>
-											<p:commandButton process="@this"
-												action="#{EquipeController.equipe.removeProfList()}"
-												icon="ui-icon-trash" update=":formCADU">
-												<f:setPropertyActionListener value="#{tab}"
-													target="#{EquipeController.equipe.profAdd}" />
-											</p:commandButton>
-										</center>
-									</p:column>
-
-								</p:dataTable>
-
-
-							</div>
-
-
-						</b:column>
-						<b:column>
-
-
-						</b:column>
-					</b:row>
+					<b:column span="5">
+						<p:dataTable emptyMessage="Nenhum Profissional na Equipe"
+							styleClass="table table-hover" id="tabela"
+							value="#{EquipeController.equipe.profissionais}" var="tab"
+							paginator="true" paginatorPosition="bottom" rows="12"
+							resizableColumns="false">
 
 
 
-				</div>
+							<p:column headerText="Nome" style="font-weight:bold;" width="80%">
+								<h:outputText value="#{tab.descricaoProf}" />
+							</p:column>
+
+							<p:column headerText="Ação">
+								<center>
+									<p:commandButton process="@this"
+										action="#{EquipeController.equipe.removeProfList()}"
+										icon="ui-icon-trash" update=":formCADU">
+										<f:setPropertyActionListener value="#{tab}"
+											target="#{EquipeController.equipe.profAdd}" />
+									</p:commandButton>
+								</center>
+							</p:column>
+
+						</p:dataTable>
+
+
+					</b:column>
+
+
+				</b:row>
+
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>

@@ -23,10 +23,14 @@
 				</div>
 
 
-				<div class="form-group">
-					<h:outputLabel for="inputname" value="Descrição da Especialidade: "
-						styleClass="col-sm-3 control-label" />
-					<div class="col-sm-6">
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="inputname" value="Descrição"
+							style="margin-top:10px" />
+					</b:column>
+
+					<b:column span="5">
 						<h:inputText
 							value="#{EspecialidadeController.espec.descEspecialidade}"
 							class="form-control" id="inputname" required="true"
@@ -34,8 +38,10 @@
 							requiredMessage="Descrição obrigatória!">
 							<f:validateLength minimum="2" maximum="40" />
 						</h:inputText>
-					</div>
-				</div>
+					</b:column>
+				</b:row>
+
+				<br></br>
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>

@@ -306,9 +306,9 @@ public class EscolaController implements Serializable {
 
 	public String getCabecalho() {
 		if (this.tipoesc == 1) {
-			cabecalho = "CADASTRO DE ESCOLA";
+			cabecalho = "Inclusão de Escola";
 		} else if (this.tipoesc == 2) {
-			cabecalho = "ALTERAR ESCOLA";
+			cabecalho = "Alteração de Escola";
 		}
 		return cabecalho;
 	}

@@ -11,7 +11,6 @@
 	</f:metadata>
 	<ui:define name="body">
 
-
 		<div class="panel-body">
 			<div class="sub-header">
 				<h:outputText value="#{FeriadoController.cabecalho}"
@@ -31,28 +30,43 @@
 
 
 
-				<div class="form-group">
-					<h:outputLabel value="Descrição do Feriado: "
-						styleClass="col-sm-3 control-label" />
-					<div class="col-sm-6">
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel value="Descrição" style="margin-top:10px" />
+					</b:column>
+
+					<b:column span="5">
+
 						<h:inputText value="#{FeriadoController.feriado.descFeriado}"
 							class="form-control" required="true"
 							requiredMessage="Descrição obrigatória!" />
 
-					</div>
-				</div>
+					</b:column>
 
-				<div class="form-group">
-					<h:outputLabel for="dataF" value="Data: "
-						styleClass="col-sm-3 control-label" />
-					<div class="col-sm-6">
+				</b:row>
+
+				<br></br>
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="dataF" value="Data " style="margin-top:10px" />
+					</b:column>
+
+					<b:column span="5">
+
 						<p:calendar value="#{FeriadoController.feriado.dataFeriado}"
 							id="dataF" locale="pt" navigator="true" mask="true"
 							pattern="dd/MM/yyyy" showOn="button" required="true"
 							requiredMessage="Data obrigatória!" />
 
-					</div>
-				</div>
+					</b:column>
+
+				</b:row>
+
+				<br></br>
+				<br></br>
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>

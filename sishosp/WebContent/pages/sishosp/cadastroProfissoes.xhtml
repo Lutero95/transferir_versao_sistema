@@ -13,7 +13,6 @@
 		<f:viewAction action="#{ProfissaoController.getEditProfissao()}" />
 	</f:metadata>
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
 
 
 		<h:form class="form-horizontal" id="formCADU">
@@ -26,10 +25,16 @@
 				</div>
 
 
-				<div class="form-group">
-					<h:outputLabel for="inputname" value="Descrição"
-						styleClass="col-sm-2 control-label" />
-					<div class="col-sm-6">
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="inputname" value="Descrição"
+							style="margin-top:10px" />
+
+					</b:column>
+
+					<b:column span="5">
+
 						<h:inputText
 							value="#{ProfissaoController.profissao.descprofissao}"
 							class="form-control" id="inputname"
@@ -39,8 +44,11 @@
 
 						</h:inputText>
 
-					</div>
-				</div>
+					</b:column>
+
+				</b:row>
+
+				<br></br>
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>
@@ -49,13 +57,13 @@
 				<center>
 
 					<b:commandButton action="#{ProfissaoController.gravarProfissao()}"
-						icon="glyphicon-ok" size="sm" look="success"
-						update=":formCADU" value="Incluir"
-						style="float:left" rendered="#{ProfissaoController.tipo == 1}" />
+						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
+						value="Incluir" style="float:left"
+						rendered="#{ProfissaoController.tipo == 1}" />
 
 					<b:commandButton action="#{ProfissaoController.alterarProfissao()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU"
-						value="Alterar" style="float:left" look="success"
+						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+						style="float:left" look="success"
 						rendered="#{ProfissaoController.tipo  == 2}" />
 
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
