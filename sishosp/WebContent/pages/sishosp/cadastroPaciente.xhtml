@@ -15,7 +15,7 @@
 		<f:viewAction action="#{PacienteController.getEditPaciente()}" />
 	</f:metadata>
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
+
 		<h:form class="form-horizontal" id="formCADU">
 
 			<div class="panel-body">
@@ -29,12 +29,14 @@
 					style="height:auto; width:auto" id="tbv">
 					<p:tab title="DADOS PESSOAIS">
 
-						<div class="form-group">
+						<b:row>
 
-							<h:outputLabel for="inputname" value="Nome"
-								class="col-sm-1 control-label" />
+							<b:column span="1">
+								<h:outputLabel for="inputname" value="Nome"
+									style="margin-top:10px" />
+							</b:column>
 
-							<div class="col-sm-5">
+							<b:column span="5">
 								<h:inputText value="#{PacienteController.paciente.nome}"
 									class="form-control" id="inputname"
 									pt:placeholder="Digite aqui seu nome entre 2 e 30 caracteres"
@@ -42,58 +44,62 @@
 									validatorMessage="Nome deve conter entre 2 e 30 caracteres."
 									requiredMessage="É necessário que você informe o nome.">
 									<f:validateLength minimum="2" maximum="40" />
-
 								</h:inputText>
+							</b:column>
 
-							</div>
-							<h:outputLabel value="Nascimento" class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="1">
+								<h:outputLabel value="Nascimento" style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<p:calendar requiredMessage="Informe sua data de nascimento "
 									required="true"
 									value="#{PacienteController.paciente.dtanascimento}" />
+							</b:column>
 
-							</div>
-							<h:outputLabel for="estadocivil" value="Est. Civil"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="1">
+								<h:outputLabel for="estadocivil" value="Est. Civil"
+									style="margin-top:10px" />
+							</b:column>
 
+							<b:column span="2">
 								<b:selectOneMenu
 									value="#{PacienteController.paciente.estadoCivil}"
 									disable="true" id="estadocivil">
-
 									<f:selectItem itemLabel="Selecione" itemValue="" />
 									<f:selectItem itemLabel="Solteiro" itemValue="S" />
 									<f:selectItem itemLabel="Casado" itemValue="C" />
 									<f:selectItem itemLabel="Viúvo" itemValue="V" />
 									<f:selectItem itemLabel="Divorciado" itemValue="D" />
 									<f:selectItem itemLabel="Outros" itemValue="O" />
-
 								</b:selectOneMenu>
+							</b:column>
 
-							</div>
-						</div>
-
-
+						</b:row>
 
 
-						<div class="form-group">
-							<h:outputLabel for="sexo" value="Sexo"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+						<b:row>
+
+							<b:column span="1">
+								<h:outputLabel for="sexo" value="Sexo" style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="3">
 								<b:selectOneMenu required="true" disable="true"
-									requiredMessage="Informe o sexo" id="sexo"
-									value="#{PacienteController.paciente.sexo}">
+									style="margin-left:15px" requiredMessage="Informe o sexo"
+									id="sexo" value="#{PacienteController.paciente.sexo}">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
 									<f:selectItem itemLabel="Masculino" itemValue="M" />
 									<f:selectItem itemLabel="Feminino" itemValue="F" />
-
 								</b:selectOneMenu>
+							</b:column>
 
-							</div>
+							<b:column span="1">
+								<h:outputLabel for="sangue" value="Sangue"
+									style="margin-top:10px;margin-left:10px" />
+							</b:column>
 
-							<h:outputLabel for="sangue" value="Sangue"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="2">
 								<b:selectOneMenu required="false" disable="true"
 									requiredMessage="Informe o sangue" id="sangue"
 									value="#{PacienteController.paciente.sangue}">
@@ -108,101 +114,128 @@
 									<f:selectItem itemLabel="O-" itemValue="O-" />
 
 								</b:selectOneMenu>
+							</b:column>
 
-							</div>
+							<b:column span="1">
+								<h:outputLabel for="cor" value="Cor/Raça"
+									style="margin-top:10px" />
 
+							</b:column>
 
-							<h:outputLabel for="pai" value="Pai"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-5">
-								<h:inputText value="#{PacienteController.paciente.nomePai}"
-									class="form-control" id="pai" required="false"
-									requiredMessage="É necessário que você informe o nome do seu pai.">
-								</h:inputText>
-
-							</div>
-
-						</div>
-
-
-						<div class="form-group">
-							<h:outputLabel for="mae" value="Mãe"
-								class="col-xs-1 control-label" />
-							<div class="col-sm-5">
-								<h:inputText value="#{PacienteController.paciente.nomeMae}"
-									class="form-control" id="mae" required="true"
-									requiredMessage="É necessário que você informe o nome da sua mãe."
-									validatorMessage="Nome da Mãe deve conter entre 2 e 30 caracteres.">
-									<f:validateLength minimum="2" maximum="40" />
-
-								</h:inputText>
-
-							</div>
-							<h:outputLabel for="conjuge" value="Conjuge"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-5">
-								<h:inputText value="#{PacienteController.paciente.conjuge}"
-									class="form-control" id="conjuge" required="false"
-									requiredMessage="É necessário que você informe seu nome.">
-
-								</h:inputText>
-
-							</div>
-						</div>
-
-						<div class="form-group">
-							<h:outputLabel for="cor" value="Cor/Raça"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
-								<b:selectOneMenu disable="true"
+							<b:column span="3">
+								<b:selectOneMenu disable="true" style="margin-left:15px"
 									value="#{PacienteController.paciente.codRaca}" id="cor">
 									<f:selectItem itemLabel="Selecione" itemValue="0" />
 									<f:selectItems value="#{PacienteController.listaRaca}"
 										var="sis" itemLabel="#{sis.descRaca}"
 										itemValue="#{sis.codRaca}" />
-
-
 								</b:selectOneMenu>
+							</b:column>
 
-							</div>
-							<h:outputLabel for="phone1" value="Telefone Res."
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+						</b:row>
+
+						<b:row>
+
+							<b:column span="1">
+								<h:outputLabel for="mae" value="Mãe" style="margin-top:10px" />
+
+							</b:column>
+							<b:column span="5">
+								<h:inputText value="#{PacienteController.paciente.nomeMae}"
+									class="form-control" id="mae" required="true"
+									requiredMessage="É necessário que você informe o nome da sua mãe."
+									validatorMessage="Nome da Mãe deve conter entre 2 e 30 caracteres.">
+									<f:validateLength minimum="2" maximum="40" />
+								</h:inputText>
+							</b:column>
+
+							<b:column span="1">
+								<h:outputLabel for="pai" value="Pai" style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="5">
+								<h:inputText value="#{PacienteController.paciente.nomePai}"
+									class="form-control" id="pai" required="false"
+									requiredMessage="É necessário que você informe o nome do seu pai.">
+								</h:inputText>
+							</b:column>
+
+						</b:row>
+
+						<br></br>
+
+						<b:row>
+							<b:column span="1">
+								<h:outputLabel for="conjuge" value="Conjuge"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="5">
+								<h:inputText value="#{PacienteController.paciente.conjuge}"
+									class="form-control" id="conjuge" required="false"
+									requiredMessage="É necessário que você informe seu nome.">
+								</h:inputText>
+							</b:column>
+						</b:row>
+
+						<br></br>
+
+						<b:row>
+
+							<b:column span="1">
+								<h:outputLabel for="phone1" value="Telefone 1"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText id="phone1" class="form-control"
 									value="#{PacienteController.paciente.endereco.telefoneres}" />
+							</b:column>
 
-							</div>
-							<h:outputLabel for="phone2" value="Telefone Cel."
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="1">
+								<h:outputLabel for="phone2" value="Telefone 2"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText id="phone2" class="form-control"
 									value="#{PacienteController.paciente.endereco.telefonecel}" />
-							</div>
-						</div>
-						<div class="form-group">
-							<h:outputLabel for="phone3" value="Telefone Trab."
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							</b:column>
+
+							<b:column span="1">
+								<h:outputLabel for="phone2" value="Telefone 3"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText id="phone3" class="form-control"
 									value="#{PacienteController.paciente.endereco.telefonetrab}" />
-							</div>
-							<h:outputLabel for="phone4" value="Orelhão:"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							</b:column>
+
+							<b:column span="1">
+								<h:outputLabel for="phone2" value="Telefone 4"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText id="phone4" class="form-control"
 									value="#{PacienteController.paciente.endereco.telefoneorelhao}" />
-							</div>
-						</div>
+							</b:column>
+
+						</b:row>
 
 
 					</p:tab>
 
 					<p:tab title="ENDEREÇO">
 
-						<div class="form-group">
-							<h:outputLabel for="inputcep" value="CEP"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+						<b:row>
+							<b:column span="1">
+								<h:outputLabel for="inputcep" value="CEP"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<p:inputMask mask="99999-999"
 									value="#{PacienteController.paciente.endereco.cep}"
 									class="form-control" required="true"
@@ -212,12 +245,14 @@
 										update="inputbairro, inputrua, estado, municipio"
 										global="false" event="blur"></p:ajax>
 								</p:inputMask>
+							</b:column>
 
-							</div>
+							<b:column span="1">
+								<h:outputLabel for="inputrua" value="Logradouro"
+									style="margin-top:10px" />
+							</b:column>
 
-							<h:outputLabel for="inputrua" value="Logradouro"
-								class="col-md-1 control-label" />
-							<div class="col-md-8">
+							<b:column span="8">
 								<h:inputText
 									value="#{PacienteController.paciente.endereco.logradouro}"
 									required="true"
@@ -225,32 +260,45 @@
 									class="form-control" id="inputrua">
 									<f:validateLength minimum="2" maximum="50" />
 								</h:inputText>
-							</div>
+							</b:column>
 
+						</b:row>
+						<br></br>
 
-						</div>
-						<div class="form-group">
-							<h:outputLabel for="inputcomplemento" value="Complemento"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-3">
+						<b:row>
+
+							<b:column span="1">
+								<h:outputLabel for="inputcomplemento" value="Complemento"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText
 									value="#{PacienteController.paciente.endereco.complemento}"
 									class="form-control" id="inputcomplemento"
 									pt:placeholder="Digite aqui seu complemento">
 								</h:inputText>
-							</div>
-							<h:outputLabel for="numero" value="Numero"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-1">
+							</b:column>
+
+							<b:column span="1">
+								<h:outputLabel for="numero" value="Numero"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText
 									value="#{PacienteController.paciente.endereco.numero}"
 									class="form-control" id="numero" required="false"
 									requiredMessage="É necessário que você informe seu número">
 								</h:inputText>
-							</div>
-							<h:outputLabel for="inputbairro" value="Bairro"
-								class="col-md-1 control-label" />
-							<div class="col-sm-2">
+							</b:column>
+
+							<b:column span="1">
+								<h:outputLabel for="inputbairro" value="Bairro"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText
 									value="#{PacienteController.paciente.endereco.bairro}"
 									required="true"
@@ -258,26 +306,34 @@
 									class="form-control" id="inputbairro"
 									pt:placeholder="Digite aqui seu bairro">
 								</h:inputText>
-							</div>
+							</b:column>
 
-							<h:outputLabel for="municipio" value="Municipio"
-								class="col-md-1 control-label" />
-							<div class="col-md-2">
+							<b:column span="1">
+								<h:outputLabel for="municipio" value="Municipio"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText
 									value="#{PacienteController.paciente.endereco.municipio}"
 									required="true"
 									requiredMessage="É necessário que você informe seu município"
 									class="form-control" id="municipio">
 								</h:inputText>
+							</b:column>
+						</b:row>
 
-							</div>
-						</div>
+						<br></br>
 
-						<div class="form-group">
-							<h:outputLabel for="estado" value="Estado"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-1">
-								<b:selectOneMenu
+						<b:row>
+
+							<b:column span="1">
+								<h:outputLabel for="estado" value="Estado"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
+								<b:selectOneMenu style="margin-left:15px"
 									value="#{PacienteController.paciente.endereco.uf}" id="estado">
 									<f:selectItem itemLabel="UF" itemValue="" />
 									<f:selectItem itemLabel="AC" itemValue="AC" />
@@ -308,33 +364,35 @@
 									<f:selectItem itemLabel="SE" itemValue="SE" />
 									<f:selectItem itemLabel="TO" itemValue="TO" />
 								</b:selectOneMenu>
-							</div>
+							</b:column>
 
-							<h:outputLabel for="referencia" value="Referência"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-6">
+							<b:column span="1">
+								<h:outputLabel for="referencia" value="Referência"
+									style="margin-top:10px;margin-left:10px" />
+							</b:column>
+
+							<b:column span="7">
 								<h:inputText
 									value="#{PacienteController.paciente.endereco.referencia}"
 									class="form-control" id="referencia"
 									pt:placeholder="Digite aqui sua Referência">
 								</h:inputText>
-							</div>
+							</b:column>
 
-						</div>
-
-
-
+						</b:row>
 
 					</p:tab>
 
 					<p:tab title="DOCUMENTOS">
 
+						<b:row>
 
-						<div class="form-group">
+							<b:column span="1">
+								<h:outputLabel for="rg" value="RG Número"
+									style="margin-top:10px" />
+							</b:column>
 
-							<h:outputLabel for="rg" value="RG Número"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="2">
 								<h:inputText disable="true"
 									value="#{PacienteController.paciente.rg}" class="form-control"
 									id="rg" pt:placeholder=" Digite seu RG" required="false"
@@ -343,42 +401,52 @@
 									<!-- <f:validateLength minimum="9" maximum="9" />  -->
 									<!--  <f:ajax event="blur" render="m_rg" />-->
 								</h:inputText>
+							</b:column>
 
-							</div>
-							<h:outputLabel for="oe" value="RG Órgão Expedidor"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="1">
+								<h:outputLabel for="oe" value="RG Órgão Expedidor"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText value="#{PacienteController.paciente.oe}"
 									class="form-control" id="oe" pt:placeholder="EX: SSP-AL">
 								</h:inputText>
-							</div>
-							<h:outputLabel for="dtaexpedicao" value="RG Dta.Expedição"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
-								<p:calendar id="dtaexpedicao" styleClass="control-label"
+							</b:column>
+
+							<b:column span="1">
+								<h:outputLabel for="dtaexpedicao" value="RG Dta.Expedição"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
+								<p:calendar id="dtaexpedicao" style="margin-top:10px"
 									value="#{PacienteController.paciente.dataExpedicao1}" />
+							</b:column>
 
-							</div>
+							<b:column span="1">
+								<h:outputLabel for="cpf" value="CPF" style="margin-top:10px" />
+							</b:column>
 
-							<h:outputLabel for="cpf" value="CPF"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="2">
 								<p:inputMask mask="999.999.999-99"
 									value="#{PacienteController.paciente.cpf}" class="form-control"
 									id="cpf" required="true"
 									requiredMessage="É necessário que você informe o CPF">
 									<stella:validateCPF formatted="true" />
 								</p:inputMask>
+							</b:column>
+						</b:row>
 
-							</div>
+						<br></br>
 
-						</div>
+						<b:row>
 
-						<div class="form-group"></div>
-						<div class="form-group">
-							<h:outputLabel for="cns" value="CNS"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="1">
+								<h:outputLabel for="cns" value="CNS" style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText value="#{PacienteController.paciente.cns}"
 									class="form-control" id="cns"
 									pt:placeholder="Digite aqui seu cns" required="false"
@@ -387,104 +455,138 @@
 									<!--  <f:validateLength minimum="15" maximum="15" /> -->
 									<!--  <f:ajax event="blur" render="m_cns" /> -->
 								</h:inputText>
+							</b:column>
 
-							</div>
-							<h:outputLabel for="protant" value="Prot.Ant"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="1">
+								<h:outputLabel for="protant" value="Prot.Ant"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<b:inputText value="#{PacienteController.paciente.protant}"
 									class="form-control" id="protant">
 								</b:inputText>
-							</div>
-							<h:outputLabel for="reservista" value="Reservista"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							</b:column>
+
+							<b:column span="1">
+								<h:outputLabel for="reservista" value="Reservista"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText value="#{PacienteController.paciente.reservista}"
 									class="form-control" id="reservista"
 									validatorMessage="Numero da Reservista deve conter entre 12 digitos."
 									requiredMessage="É necessário que você informe seu Numero da Reservista.">
-
 								</h:inputText>
+							</b:column>
 
-							</div>
-							<h:outputLabel for="carttrabalho" value="CTPS Núm."
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="1">
+								<h:outputLabel for="carttrabalho" value="CTPS Núm."
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText value="#{PacienteController.paciente.ctps}"
 									class="form-control" id="carttrabalho">
 								</h:inputText>
-							</div>
-						</div>
-						<div class="form-group">
-							<h:outputLabel for="serie" value="CTPS Série"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							</b:column>
+
+						</b:row>
+
+						<br></br>
+
+						<b:row>
+
+							<b:column span="1">
+								<h:outputLabel for="serie" value="CTPS Série"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText value="#{PacienteController.paciente.serie}"
 									class="form-control" id="serie"
 									pt:placeholder="Digite aqui sua serie">
 								</h:inputText>
-							</div>
-							<h:outputLabel for="pis" value="PIS"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							</b:column>
+
+							<b:column span="1">
+								<h:outputLabel for="pis" value="PIS" style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText value="#{PacienteController.paciente.pis}"
 									class="form-control" id="pis"
 									requiredMessage="É necessário que você informe seu pis.">
 									<!-- <f:validateLength minimum="11" maximum="11" /> -->
-
 								</h:inputText>
+							</b:column>
 
-							</div>
+							<b:column span="1">
+								<h:outputLabel for="numero2" value="Reg. Nasc. Núm"
+									style="margin-top:10px" />
+							</b:column>
 
-							<h:outputLabel for="numero2" value="Reg. Nasc. Núm"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="2">
 								<h:inputText
 									value="#{PacienteController.paciente.numeroCartorio}"
 									class="form-control" id="numero2"
 									pt:placeholder="Digite aqui seu Número">
 								</h:inputText>
-							</div>
-							<h:outputLabel for="cartorio" value="Reg. Nasc. Cartório"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							</b:column>
+
+							<b:column span="1">
+								<h:outputLabel for="cartorio" value="Reg. Nasc. Cartório"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText value="#{PacienteController.paciente.cartorio}"
 									class="form-control" id="cartorio"
 									pt:placeholder="Digite aqui seu cartorio">
 								</h:inputText>
-							</div>
-						</div>
-						<div class="form-group"></div>
-						<div class="form-group">
+							</b:column>
 
+						</b:row>
 
-							<h:outputLabel for="livro" value="Reg. Nasc. Livro"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+						<br></br>
+
+						<b:row>
+
+							<b:column span="1">
+								<h:outputLabel for="livro" value="Reg. Nasc. Livro"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText value="#{PacienteController.paciente.livro}"
 									class="form-control" id="livro"
 									pt:placeholder="Digite aqui seu livro de nascimento">
 								</h:inputText>
-							</div>
+							</b:column>
 
-							<h:outputLabel for="folha" value="Reg. Nasc. Folha"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							<b:column span="1">
+								<h:outputLabel for="folha" value="Reg. Nasc. Folha"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<h:inputText value="#{PacienteController.paciente.folha}"
 									class="form-control" id="folha"
 									pt:placeholder="Digite aqui seu folha">
 								</h:inputText>
-							</div>
-							<h:outputLabel for="dtaexpedicao2" value="Dta.Expedição"
-								class="col-sm-1 control-label" />
-							<div class="col-sm-2">
+							</b:column>
+
+							<b:column span="1">
+								<h:outputLabel for="dtaexpedicao2" value="Dta.Expedição"
+									style="margin-top:10px" />
+							</b:column>
+
+							<b:column span="2">
 								<p:calendar id="dtaexpedicao2"
 									value="#{PacienteController.paciente.dataExpedicao2}" />
-
-
-							</div>
-
-						</div>
+							</b:column>
+						</b:row>
 
 
 					</p:tab>
