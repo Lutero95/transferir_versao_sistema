@@ -348,8 +348,8 @@ public class PacienteController implements Serializable {
 					transporteSuggestion.getCodformatransporte());
 		}
 
-		int codmunicipio = edao.municipioExiste(paciente);
-		boolean alterou = mdao.alterar(paciente, codmunicipio);
+		//int codmunicipio = edao.municipioExiste(paciente);
+		boolean alterou = mdao.alterar(paciente, 0);
 
 		if (alterou == true) {
 			// limparDados();
@@ -848,7 +848,7 @@ public class PacienteController implements Serializable {
 	public List<PacienteBean> listarPacienteAgenda() throws ProjetoException {
 		PacienteDAO pDao = new PacienteDAO();
 		listaPacientesAgenda = pDao.listaPaciente();
-		
+
 		return listaPacientesAgenda;
 	}
 
@@ -990,7 +990,6 @@ public class PacienteController implements Serializable {
 
 	public List<EncaminhadoBean> getListaEncaminhado() throws ProjetoException {
 		if (listaEncaminhado == null) {
-
 			EncaminhadoDAO fdao = new EncaminhadoDAO();
 			listaEncaminhado = fdao.listaEncaminhados();
 

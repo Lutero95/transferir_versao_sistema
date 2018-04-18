@@ -49,6 +49,13 @@ public class PacienteBean implements Serializable {
 	private Integer serie;
 	private Date dataExpedicao1;
 
+	// DEFICIÊNCIAS
+	private Boolean deficienciaFisica;
+	private Boolean deficienciaMental;
+	private Boolean deficienciaAuditiva;
+	private Boolean deficienciaVisual;
+	private Boolean deficienciaMultipla;
+
 	// REGISTROS DO CARTORIO
 	private String cartorio;
 	private String numeroCartorio;
@@ -508,6 +515,46 @@ public class PacienteBean implements Serializable {
 
 	public void setDescRaca(String descRaca) {
 		this.descRaca = descRaca;
+	}
+
+	public Boolean getDeficienciaFisica() {
+		return deficienciaFisica;
+	}
+
+	public void setDeficienciaFisica(Boolean deficienciaFisica) {
+		this.deficienciaFisica = deficienciaFisica;
+	}
+
+	public Boolean getDeficienciaMental() {
+		return deficienciaMental;
+	}
+
+	public void setDeficienciaMental(Boolean deficienciaMental) {
+		this.deficienciaMental = deficienciaMental;
+	}
+
+	public Boolean getDeficienciaAuditiva() {
+		return deficienciaAuditiva;
+	}
+
+	public void setDeficienciaAuditiva(Boolean deficienciaAuditiva) {
+		this.deficienciaAuditiva = deficienciaAuditiva;
+	}
+
+	public Boolean getDeficienciaVisual() {
+		return deficienciaVisual;
+	}
+
+	public void setDeficienciaVisual(Boolean deficienciaVisual) {
+		this.deficienciaVisual = deficienciaVisual;
+	}
+
+	public Boolean getDeficienciaMultipla() {
+		return deficienciaMultipla;
+	}
+
+	public void setDeficienciaMultipla(Boolean deficienciaMultipla) {
+		this.deficienciaMultipla = deficienciaMultipla;
 	}
 
 }

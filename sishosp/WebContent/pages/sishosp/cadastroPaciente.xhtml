@@ -592,65 +592,64 @@
 					</p:tab>
 
 					<p:tab title="COMPLEMENTO 1">
-						<div class="form-group">
 
-							<div class="col-sm-12">
+						<b:row>
+							<b:column span="2">
+								<p:outputLabel value="Associado" style="margin-top:10px"></p:outputLabel>
+							</b:column>
 
-
-								<p:outputLabel value="Associado"></p:outputLabel>
+							<b:column span="2">
 								<p:selectOneRadio
 									value="#{PacienteController.paciente.associado}">
 									<f:selectItem itemLabel="Sim" itemValue="s" />
 									<f:selectItem itemLabel="Não" itemValue="n" />
 								</p:selectOneRadio>
+							</b:column>
+						</b:row>
 
-							</div>
-							<!--  -->
-							<p:outputLabel value="Escolaridade: "
-								class="col-sm-1 control-label">
-								<font color="#FF0000">*</font>
-							</p:outputLabel>
+						<b:row>
 
-							<div class="col-sm-6">
+							<b:column span="2">
+								<p:outputLabel value="Escolaridade:" style="margin-top:10px">
+									<font color="#FF0000">*</font>
+								</p:outputLabel>
+							</b:column>
 
-								<p:outputPanel id="outescolaridade">
-									<p:autoComplete class="col-sm-1 control-label"
-										label="Digite a escolaridade"
-										emptyMessage="Digite a Escolaridade" id="escolacomplete1"
-										style="background-color:white !important"
-										value="#{PacienteController.escolaridadeSuggestion}" size="45"
-										completeMethod="#{PacienteController.completeText2}"
-										effect="fade" var="theme" forceSelection="true"
-										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.descescolaridade}"
-										converter="conEscolaridade">
-										<p:ajax event="itemSelect"
-											listener="#{PacienteController.onItemSelect2}" />
-									</p:autoComplete>
+							<b:column span="3">
+								<p:autoComplete label="Digite a escolaridade"
+									emptyMessage="Digite a Escolaridade" id="escolacomplete1"
+									style="background-color:white !important"
+									value="#{PacienteController.escolaridadeSuggestion}" size="40"
+									completeMethod="#{PacienteController.completeText2}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descescolaridade}"
+									converter="conEscolaridade">
+									<p:ajax event="itemSelect"
+										listener="#{PacienteController.onItemSelect2}" />
+								</p:autoComplete>
+							</b:column>
 
-								</p:outputPanel>
-							</div>
-							<p:commandButton onclick="PF('dlgbuscaescolaridade').show();"
-								icon="ui-icon-search" process="@this" />
-						</div>
+							<b:column span="1">
+								<p:commandButton onclick="PF('dlgbuscaescolaridade').show();"
+									icon="ui-icon-search" process="@this" />
+							</b:column>
+						</b:row>
 
+						<b:row>
 
-						<!-- LISTA 1 -->
+							<b:column span="2">
 
+								<p:outputLabel value="Escola: " style="margin-top:10px">
+									<font color="#FF0000">*</font>
+								</p:outputLabel>
+							</b:column>
 
-						<!-- 2 LISTA -->
-
-						<div class="form-group">
-
-							<p:outputLabel value="Escola: " class="col-sm-1 control-label">
-								<font color="#FF0000">*</font>
-							</p:outputLabel>
-							<div class="col-sm-6">
-
-								<p:autoComplete class="col-sm-1 control-label"
-									label="Digite a escola" emptyMessage="Digite a Escola"
-									id="escolacomplete2" style="font-size:12px"
-									value="#{PacienteController.escolaSuggestion}" size="45"
+							<b:column span="3">
+								<p:autoComplete label="Digite a escola"
+									emptyMessage="Digite a Escola" id="escolacomplete2"
+									style="font-size:12px"
+									value="#{PacienteController.escolaSuggestion}" size="40"
 									completeMethod="#{PacienteController.completeText}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -658,26 +657,27 @@
 									<p:ajax event="itemSelect"
 										listener="#{PacienteController.onItemSelect}" />
 								</p:autoComplete>
+							</b:column>
 
+							<b:column span="1">
+								<p:commandButton process="@this"
+									onclick="PF('dlgbuscaescola').show();" icon="ui-icon-search" />
+							</b:column>
+						</b:row>
 
-							</div>
-							<p:commandButton process="@this"
-								onclick="PF('dlgbuscaescola').show();" icon="ui-icon-search" />
+						<b:row>
 
-						</div>
-						<!-- 3 LISTA -->
+							<b:column span="2">
+								<p:outputLabel value="Profissão: " style="margin-top:10px">
+									<font color="#FF0000">*</font>
+								</p:outputLabel>
+							</b:column>
 
-						<div class="form-group">
-
-							<p:outputLabel value="Profissão: " class="col-sm-1 control-label">
-								<font color="#FF0000">*</font>
-							</p:outputLabel>
-							<div class="col-sm-6">
-
-								<p:autoComplete class="col-sm-1 control-label"
-									label="Digite a profissão" emptyMessage="Digite a Profissão"
-									id="escolacomplete3" style="font-size:12px"
-									value="#{PacienteController.profissaoSuggestion}" size="45"
+							<b:column span="3">
+								<p:autoComplete label="Digite a profissão"
+									emptyMessage="Digite a Profissão" id="escolacomplete3"
+									style="font-size:12px"
+									value="#{PacienteController.profissaoSuggestion}" size="40"
 									completeMethod="#{PacienteController.completeText6}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -685,19 +685,24 @@
 									<p:ajax event="itemSelect"
 										listener="#{PacienteController.onItemSelect6}" />
 								</p:autoComplete>
+							</b:column>
 
+							<b:column span="1">
+								<p:commandButton process="@this"
+									onclick="PF('dlgbuscaprofissao').show();" icon="ui-icon-search" />
 
-							</div>
-							<p:commandButton process="@this"
-								onclick="PF('dlgbuscaprofissao').show();" icon="ui-icon-search" />
+							</b:column>
+						</b:row>
 
-						</div>
+						<b:row>
 
-						<div class="form-group">
-							<p:outputLabel value="Trabalha:" class="col-sm-1 control-label">
-								<font color="#FF0000">*</font>
-							</p:outputLabel>
-							<div class="col-sm-6">
+							<b:column span="2">
+								<p:outputLabel value="Trabalha:" style="margin-top:10px">
+									<font color="#FF0000">*</font>
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="3">
 								<p:selectOneRadio style="width:40%;" id="options2"
 									required="false"
 									requiredMessage="Aba Dados:Informe a formalidade"
@@ -706,26 +711,35 @@
 									<f:selectItem itemLabel="Não" itemValue="N" />
 									<!--  <p:ajax update="pgSetor2"></p:ajax>-->
 								</p:selectOneRadio>
-							</div>
-						</div>
-						<div class="form-group">
-							<p:outputLabel value="Local: " class="col-sm-1 control-label">
-								<font color="#FF0000">*</font>
-							</p:outputLabel>
-							<div class="col-sm-6">
-								<p:outputPanel class="col-sm-3 control-label">
-									<p:inputText id="nome4" size="45" required="false"
+							</b:column>
+						</b:row>
+						<b:row>
+
+							<b:column span="2">
+								<p:outputLabel value="Local: " style="margin-top:10px">
+									<font color="#FF0000">*</font>
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="3">
+								<p:outputPanel>
+									<b:inputText id="nome4" size="45" required="false"
+										style="margin-left:15px"
 										requiredMessage="O campo nome é obrigatório."
 										value="#{PacienteController.paciente.localtrabalha}" />
 								</p:outputPanel>
-							</div>
-						</div>
-						<div class="form-group">
-							<p:outputLabel value="Responsavel:"
-								class="col-sm-1 control-label">
-								<font color="#FF0000">*</font>
-							</p:outputLabel>
-							<div class="col-sm-6">
+							</b:column>
+						</b:row>
+
+						<b:row>
+
+							<b:column span="2">
+								<p:outputLabel value="Responsavel:" style="margin-top:10px">
+									<font color="#FF0000">*</font>
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="3">
 								<p:selectOneRadio style="width:70%;" id="options3"
 									required="false"
 									requiredMessage="Aba Dados:Informe a formalidade"
@@ -735,82 +749,99 @@
 									<f:selectItem itemLabel="Outros" itemValue="O" />
 									<!--  <p:ajax update="pgSetor2"></p:ajax>-->
 								</p:selectOneRadio>
-							</div>
-						</div>
+							</b:column>
+						</b:row>
 
-						<div class="form-group">
-							<p:outputLabel value="Nome do Responsável: "
-								class="col-sm-1 control-label">
-								<font color="#FF0000">*</font>
-							</p:outputLabel>
-							<div class="col-sm-6">
-								<p:outputPanel class="col-sm-1 control-label">
-									<p:inputText id="nome5" size="45" required="false"
+						<b:row>
+
+							<b:column span="2">
+								<p:outputLabel value="Nome do Responsável: "
+									style="margin-top:10px">
+									<font color="#FF0000">*</font>
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="3">
+								<p:outputPanel>
+									<b:inputText id="nome5" size="45" required="false"
+										style="margin-left:15px"
 										requiredMessage="O campo nome é obrigatório."
 										value="#{PacienteController.paciente.nomeresp}" />
 								</p:outputPanel>
-							</div>
-						</div>
+							</b:column>
+						</b:row>
 
-						<div class="form-group">
-							<p:outputLabel value="RG: " class="col-sm-1 control-label">
-								<font color="#FF0000">*</font>
-							</p:outputLabel>
-							<div class="col-sm-6">
-								<p:outputPanel class="col-sm-1 control-label">
-									<p:inputText id="nome6" size="45" required="false"
+						<b:row>
+
+							<b:column span="2">
+								<p:outputLabel value="RG: " style="margin-top:10px">
+									<font color="#FF0000">*</font>
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="2">
+								<p:outputPanel>
+									<b:inputText id="nome6" size="45" required="false"
+										style="margin-left:15px"
 										requiredMessage="O campo nome é obrigatório."
 										value="#{PacienteController.paciente.rgresp}" />
 								</p:outputPanel>
-							</div>
-						</div>
-						<div class="form-group">
-							<p:outputLabel value="CPF: " class="col-sm-1 control-label">
-								<font color="#FF0000">*</font>
-							</p:outputLabel>
-							<div class="col-sm-6">
-								<p:outputPanel class="col-sm-1 control-label">
+							</b:column>
+						</b:row>
+
+						<b:row>
+
+							<b:column span="2">
+								<p:outputLabel value="CPF: " style="margin-top:10px">
+									<font color="#FF0000">*</font>
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="2">
+								<p:outputPanel>
 									<b:inputText mask="999.999.999-99" id="nome7" size="45"
-										required="false" requiredMessage="O campo CPF é obrigatório."
+										style="margin-left:15px" required="false"
+										requiredMessage="O campo CPF é obrigatório."
 										value="#{PacienteController.paciente.cpfresp}">
 										<!--  <stella:validateCPF formatted="true" /> -->
 									</b:inputText>
 								</p:outputPanel>
-							</div>
-						</div>
+							</b:column>
+						</b:row>
 
-						<div class="form-group">
-							<p:outputLabel value="Nascimento Resp"
-								class="col-sm-1 control-label">
-								<font color="red">*</font>
-							</p:outputLabel>
-							<div class="col-sm-6">
+						<b:row>
+
+							<b:column span="2">
+								<p:outputLabel value="Nascimento Resp">
+									<font color="red">*</font>
+								</p:outputLabel>
+							</b:column>
+
+							<b:column span="3">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									yearRange="-111:+39" pages="1" showOn="button" size="12"
 									value="#{PacienteController.paciente.dataNascimentoresp}"
 									locale="pt" required="false"
 									requiredMessage="Informe o nascimento do Responsavel" />
 
-								<!--   <p:inputMask id="nascimentoresp" required="false" size="12" value="#{PacienteController.paciente.dataNascimentoresp}" mask="99/99/9999" requiredMessage="Informe o nascimento do Responsavel"/> -->
-							</div>
-						</div>
+							</b:column>
+						</b:row>
 					</p:tab>
 					<p:tab title="COMPLEMENTO 2">
 
-						<div class="form-group">
+						<b:row>
 
+							<b:column span="2">
+								<p:outputLabel value="Encaminhado: " style="margin-top:10px">
+									<font color="#FF0000">*</font>
+								</p:outputLabel>
+							</b:column>
 
-							<p:outputLabel value="Encaminhado: "
-								class="col-sm-1 control-label">
-								<font color="#FF0000">*</font>
-							</p:outputLabel>
-							<div class="col-sm-6">
-
-								<p:autoComplete class="col-sm-1 control-label"
-									label="Digite onde estar sendo encaminhado"
+							<b:column span="3">
+								<p:autoComplete label="Digite onde estar sendo encaminhado"
 									emptyMessage="Digite onde estar sendo encaminhado"
 									id="escolacomplete4" style="font-size:12px"
-									value="#{PacienteController.encaminhadoSuggestion}" size="45"
+									value="#{PacienteController.encaminhadoSuggestion}" size="40"
 									completeMethod="#{PacienteController.completeText4}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -819,26 +850,28 @@
 										listener="#{PacienteController.onItemSelect4}" />
 								</p:autoComplete>
 
+							</b:column>
 
+							<b:column span="1">
+								<p:commandButton process="@this"
+									onclick="PF('dlgbuscaencaminhado').show();"
+									icon="ui-icon-search" />
+							</b:column>
+						</b:row>
 
-							</div>
-							<p:commandButton style="position:absolute; top:60px; left:550px;"
-								onclick="PF('dlgbuscaencaminhado').show();" icon="buscaProcess" />
-							<!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
+						<b:row>
 
-						</div>
+							<b:column span="2">
+								<p:outputLabel value="Transporte: " style="margin-top:10px">
+									<font color="#FF0000">*</font>
+								</p:outputLabel>
+							</b:column>
 
-						<div class="form-group">
-							<p:outputLabel value="Transporte: "
-								class="col-sm-1 control-label">
-								<font color="#FF0000">*</font>
-							</p:outputLabel>
-							<div class="col-sm-6">
-
-								<p:autoComplete class="col-sm-1 control-label"
-									label="Digite o transporte" emptyMessage="Digite o transporte"
-									id="escolacomplete5" style="font-size:12px"
-									value="#{PacienteController.transporteSuggestion}" size="45"
+							<b:column span="3">
+								<p:autoComplete label="Digite o transporte"
+									emptyMessage="Digite o transporte" id="escolacomplete5"
+									style="font-size:12px"
+									value="#{PacienteController.transporteSuggestion}" size="40"
 									completeMethod="#{PacienteController.completeText5}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -847,25 +880,32 @@
 									<p:ajax event="itemSelect"
 										listener="#{PacienteController.onItemSelect5}" />
 								</p:autoComplete>
+							</b:column>
 
-
-							</div>
-							<p:commandButton
-								style="position:absolute; top:110px; left:550px;"
-								onclick="PF('dlgbuscacomochegou').show();" icon="buscaProcess" />
-							<!--  actionListener="#{MBPaciente.limparbuscaescola()}" />-->
-						</div>
+							<b:column span="1">
+								<p:commandButton process="@this"
+									onclick="PF('dlgbuscacomochegou').show();"
+									icon="ui-icon-search" />
+							</b:column>
+						</b:row>
 
 					</p:tab>
 
 					<p:tab title="COMPLEMENTO 3">
+
+
+
+
 						<p:outputPanel id="outDeficiencia" autoUpdate="true">
-							<div class="form-group">
-								<p:outputLabel value="Apresenta Deficiência:"
-									class="col-sm-1 control-label">
-									<font color="#FF0000">*</font>
-								</p:outputLabel>
-								<div class="col-sm-6">
+							<b:row>
+								<b:column span="2">
+									<p:outputLabel value="Apresenta Deficiência:"
+										style="margin-top:10px">
+										<font color="#FF0000">*</font>
+									</p:outputLabel>
+								</b:column>
+
+								<b:column span="3">
 									<p:selectOneRadio style="width:40%;" required="false"
 										requiredMessage="Aba Dados:Informe a formalidade"
 										value="#{PacienteController.paciente.deficiencia}">
@@ -873,23 +913,29 @@
 										<f:selectItem itemLabel="Não" itemValue="N" />
 										<p:ajax update="outDeficiencia"></p:ajax>
 									</p:selectOneRadio>
-								</div>
-							</div>
+								</b:column>
+							</b:row>
 
 							<p:panel
 								style="height:auto; width:100px; background-color: #F5F5F5;"
 								rendered="#{PacienteController.paciente.deficiencia == 'S'}">
 								<p:outputLabel value="Tipo:"></p:outputLabel>
-								<p:selectOneRadio id="grid2" layout="grid"
-									value="#{PacienteController.paciente.tipoDeficiencia}"
-									columns="1">
-									<f:selectItem itemLabel="Física" itemValue="f"></f:selectItem>
-									<f:selectItem itemLabel="Mental" itemValue="m"></f:selectItem>
-									<f:selectItem itemLabel="Auditiva" itemValue="a"></f:selectItem>
-									<f:selectItem itemLabel="Visual" itemValue="v"></f:selectItem>
-									<f:selectItem itemLabel="Múltipla" itemValue="u"></f:selectItem>
+								<p:selectBooleanCheckbox label="Física" itemLabel="Física"
+									rendered="#{PacienteController.paciente.deficiencia == 'S'}"
+									value="#{PacienteController.paciente.deficienciaFisica}" />
+								<p:selectBooleanCheckbox label="Mental" itemLabel="Mental"
+									rendered="#{PacienteController.paciente.deficiencia == 'S'}"
+									value="#{PacienteController.paciente.deficienciaMental}" />
+								<p:selectBooleanCheckbox label="Auditiva" itemLabel="Auditiva"
+									rendered="#{PacienteController.paciente.deficiencia == 'S'}"
+									value="#{PacienteController.paciente.deficienciaAuditiva}" />
+								<p:selectBooleanCheckbox label="Visual" itemLabel="Visual"
+									rendered="#{PacienteController.paciente.deficiencia == 'S'}"
+									value="#{PacienteController.paciente.deficienciaVisual}" />
+								<p:selectBooleanCheckbox label="Múltipla" itemLabel="Múltipla"
+									rendered="#{PacienteController.paciente.deficiencia == 'S'}"
+									value="#{PacienteController.paciente.deficienciaMultipla}" />
 
-								</p:selectOneRadio>
 							</p:panel>
 
 						</p:outputPanel>
@@ -928,11 +974,11 @@
 
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscaescola"
-			height="460" width="800" modal="true" resizable="false">
+			width="550px" height="200px" modal="true" resizable="false">
 
 			<f:facet name="header">
 				<h:panelGroup>
-					<h:outputText id="n27" value="Lista de Escolas"></h:outputText>
+					<h:outputText id="n27" value="Consultar Escolas"></h:outputText>
 				</h:panelGroup>
 			</f:facet>
 			<h:form id="buscaescola">
@@ -943,15 +989,8 @@
 						<p:dataTable value="#{PacienteController.listaEscolas}"
 							var="busca" paginator="true" paginatorPosition="bottom"
 							id="tableescola" emptyMessage="Nenhum Interessado"
-							sortMode="single" rows="11" class="fonteForm" widgetVar="800">
-
-							<p:column id="n31" style="width:50px">
-								<f:facet name="header">
-									<h:outputText id="n32" value="Id Escola" class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n33" class="fonteForm"
-									value="#{busca.codEscola}" />
-							</p:column>
+							sortMode="single" scrollRows="3" scrollHeight="150"
+							class="fonteForm">
 
 							<p:column id="n34" style="width:380px">
 								<f:facet name="header">
@@ -974,7 +1013,8 @@
 								</f:facet>
 
 								<p:commandButton oncomplete="PF('dlgbuscaescola').hide()"
-									icon="ui-icon-ok" id="confirmar" update=":formCADU">
+									icon="ui-icon-check" id="confirmar"
+									update=":formCADU:tbv:escolacomplete2">
 
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.escolaSuggestion}" />
@@ -990,11 +1030,11 @@
 		</p:dialog>
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscaescolaridade"
-			height="460" width="800" modal="true" resizable="false">
+			width="550px" height="200px" modal="true" resizable="false">
 
 			<f:facet name="header">
 				<h:panelGroup>
-					<h:outputText id="n2" value="Lista de Escolaridade"></h:outputText>
+					<h:outputText id="n2" value="Consultar Escolaridades"></h:outputText>
 				</h:panelGroup>
 			</f:facet>
 			<h:form id="buscaescolaridade">
@@ -1004,15 +1044,9 @@
 						<p:dataTable value="#{PacienteController.listaEscolaridade}"
 							var="busca" paginator="true" paginatorPosition="bottom"
 							id="tableescolaridade" emptyMessage="Nenhum Interessado"
-							sortMode="single" rows="11" class="fonteForm" widgetVar="800">
+							sortMode="single" scrollRows="3" scrollHeight="150"
+							class="fonteForm" widgetVar="800">
 
-							<p:column id="n6" style="width:50px">
-								<f:facet name="header">
-									<h:outputText id="n7" value="Id Escolaridade" class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n8" class="fonteForm"
-									value="#{busca.codescolaridade}" />
-							</p:column>
 
 							<p:column id="n12" style="width:380px">
 								<f:facet name="header">
@@ -1029,8 +1063,8 @@
 								</f:facet>
 
 								<p:commandButton oncomplete="PF('dlgbuscaescolaridade').hide();"
-									process="@this" icon="ui-icon-search" id="confirmar"
-									update=":formCADU:tbv:outescolaridade">
+									process="@this" icon="ui-icon-check" id="confirmar"
+									update=":formCADU:tbv:escolacomplete1">
 
 
 
@@ -1047,11 +1081,11 @@
 		</p:dialog>
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscaprofissao"
-			height="460" width="800" modal="true" resizable="false">
+			width="550px" height="200px" modal="true" resizable="false">
 
 			<f:facet name="header">
 				<h:panelGroup>
-					<h:outputText id="n17" value="Lista de Profissão"></h:outputText>
+					<h:outputText id="n17" value="Consultar Profissões"></h:outputText>
 				</h:panelGroup>
 			</f:facet>
 			<h:form id="buscaprofissao">
@@ -1062,15 +1096,9 @@
 						<p:dataTable value="#{PacienteController.listaProfissao}"
 							var="busca" paginator="true" paginatorPosition="bottom"
 							id="tableprofissao" emptyMessage="Nenhum Interessado"
-							sortMode="single" rows="11" class="fonteForm" widgetVar="800">
+							sortMode="single" width="550px" height="200px" class="fonteForm"
+							widgetVar="800">
 
-							<p:column id="n21" style="width:50px">
-								<f:facet name="header">
-									<h:outputText id="n22" value="Id Profissão" class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n23" class="fonteForm"
-									value="#{busca.codprofissao}" />
-							</p:column>
 
 							<p:column id="n24" style="width:380px">
 								<f:facet name="header">
@@ -1087,7 +1115,8 @@
 								</f:facet>
 
 								<p:commandButton oncomplete="PF('dlgbuscaprofissao').hide()"
-									icon="podeGravar" id="confirmar" update=":formCADU">
+									icon="ui-icon-check" id="confirmar"
+									update=":formCADU:tbv:escolacomplete3">
 
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.profissaoSuggestion}" />
@@ -1105,11 +1134,11 @@
 
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscaencaminhado"
-			height="460" width="800" modal="true" resizable="false">
+			width="550px" height="200px" modal="true" resizable="false">
 
 			<f:facet name="header">
 				<h:panelGroup>
-					<h:outputText id="n46" value="Lista de Encaminhados"></h:outputText>
+					<h:outputText id="n46" value="Consultar Tipo de Encaminhamento"></h:outputText>
 				</h:panelGroup>
 			</f:facet>
 			<h:form id="buscaencaminhado">
@@ -1120,15 +1149,8 @@
 						<p:dataTable value="#{PacienteController.listaEncaminhado}"
 							var="busca" paginator="true" paginatorPosition="bottom"
 							id="tableencaminhado" emptyMessage="Nenhum Interessado"
-							sortMode="single" rows="11" class="fonteForm" widgetVar="800">
-
-							<p:column id="n50" style="width:50px">
-								<f:facet name="header">
-									<h:outputText id="n51" value="Id Encaminhado" class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n52" class="fonteForm"
-									value="#{busca.codencaminhado}" />
-							</p:column>
+							sortMode="single" scrollRows="3" scrollHeight="150"
+							class="fonteForm" widgetVar="800">
 
 							<p:column id="n53" style="width:380px">
 								<f:facet name="header">
@@ -1146,7 +1168,8 @@
 								</f:facet>
 
 								<p:commandButton oncomplete="PF('dlgbuscaencaminhado').hide()"
-									icon="podeGravar" id="confirmar" update=":formCADU">
+									icon="ui-icon-check" id="confirmar"
+									update=":formCADU:tbv:escolacomplete4">
 
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.encaminhadoSuggestion}" />
@@ -1163,11 +1186,11 @@
 		</p:dialog>
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscacomochegou"
-			height="460" width="800" modal="true" resizable="false">
+			width="550px" height="200px" modal="true" resizable="false">
 
 			<f:facet name="header">
 				<h:panelGroup>
-					<h:outputText id="n61" value="Lista de Transportes"></h:outputText>
+					<h:outputText id="n61" value="Consultar Formas de Transporte"></h:outputText>
 				</h:panelGroup>
 			</f:facet>
 			<h:form id="buscatransporte">
@@ -1177,15 +1200,8 @@
 						<p:dataTable value="#{PacienteController.listaTransporte}"
 							var="busca" paginator="true" paginatorPosition="bottom"
 							id="tabletransporte" emptyMessage="Nenhum Interessado"
-							sortMode="single" rows="11" class="fonteForm" widgetVar="800">
-
-							<p:column id="n63" style="width:50px">
-								<f:facet name="header">
-									<h:outputText id="n64" value="Id Transporte" class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n65" class="fonteForm"
-									value="#{busca.codformatransporte}" />
-							</p:column>
+							sortMode="single" scrollRows="3" scrollHeight="150"
+							class="fonteForm" widgetVar="800">
 
 							<p:column id="n66" style="width:380px">
 								<f:facet name="header">
@@ -1203,7 +1219,8 @@
 								</f:facet>
 
 								<p:commandButton oncomplete="PF('dlgbuscacomochegou').hide();"
-									icon="podeGravar" id="confirmar" update=":formCADU">
+									icon="ui-icon-check" id="confirmar"
+									update=":formCADU:tbv:escolacomplete5">
 
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.transporteSuggestion}" />
@@ -1221,7 +1238,7 @@
 
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscaatendimento"
-			height="460" width="800" modal="true" resizable="false">
+			width="550px" height="200px" modal="true" resizable="false">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1234,16 +1251,9 @@
 					<p:outputPanel id="outinter6">
 						<p:dataTable value="#{MBUsuarioCadastro.buscapessoa}" var="busca"
 							paginator="true" paginatorPosition="bottom" id="tabledeficiencia"
-							emptyMessage="Nenhum Interessado" sortMode="single" rows="11"
-							class="fonteForm" widgetVar="800">
-
-							<p:column id="n78" style="width:50px">
-								<f:facet name="header">
-									<h:outputText id="n79" value="Id Deficiencia" class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n80" class="fonteForm"
-									value="#{busca.id_pessoa}" />
-							</p:column>
+							emptyMessage="Nenhum Interessado" sortMode="single"
+							scrollRows="3" scrollHeight="150" class="fonteForm"
+							widgetVar="800">
 
 							<p:column id="n81" style="width:380px">
 								<f:facet name="header">
@@ -1265,7 +1275,7 @@
 								</f:facet>
 
 								<p:commandButton oncomplete="PF('dlgbuscaatendimento').hide()"
-									icon="podeGravar" id="confirmar">
+									icon="ui-icon-check" id="confirmar">
 
 									<f:setPropertyActionListener value="#{busca.id_pessoa}"
 										target="#{MBUsuarioCadastro.usuario.idpessoa}" />
