@@ -37,6 +37,10 @@ public class BloqueioController implements Serializable {
 		this.bloqueio = new BloqueioBean();
 		this.listaBloqueios = null;
 	}
+	
+	public String redirectInsert() {
+		return "bloqueio?faces-redirect=true";
+	}
 
 	public String redirectEdit() {
 		return "editarBloqueio?faces-redirect=true&amp;id="

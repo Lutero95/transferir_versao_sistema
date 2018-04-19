@@ -73,23 +73,15 @@
 
 				<center>
 
-					<p:panelGrid columns="4" styleClass="semBorda">
+					<b:commandButton value="Gravar" look="success" size="sm" id="b1"
+						icon="glyphicon-ok" update=":formBloqueio:msgError, :formBloqueio"
+						style="float:left" action="#{BloqueioController.gravarBloqueio()}" />
 
-						<b:commandButton value="Gravar" id="b1" icon="glyphicon-ok"
-							update=":formBloqueio:msgError, :formBloqueio"
-							action="#{BloqueioController.gravarBloqueio()}" />
-
-						<b:commandButton value="Consultar" icon="glyphicon-search" id="b2"
-							action="/pages/agenda/consBloqueios.xhtml?faces-redirect=true" />
-
-						<b:commandButton value="Limpar" icon="glyphicon-remove-sign"
-							id="b3" actionListener="#{BloqueioController.limparDados()}" />
-
-						<b:commandButton value="Sair" icon="glyphicon-remove-circle"
-							id="b4" actionListener="#{BloqueioController.limparDados()}"
-							action="/pages/comum/selecaoSistema.xhtml?faces-redirect=true" />
-
-					</p:panelGrid>
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" look="info" style="float:right"
+						actionListener="#{ConfigAgendaController.limparDados()}"
+						action="/pages/agenda/consBloqueios.xhtml?faces-redirect=true">
+					</b:commandButton>
 
 				</center>
 

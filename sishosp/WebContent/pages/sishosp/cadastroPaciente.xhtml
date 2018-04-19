@@ -516,9 +516,10 @@
 
 							<b:column span="2">
 								<h:inputText value="#{PacienteController.paciente.pis}"
-									class="form-control" id="pis"
+									class="form-control" id="pis" required="false"
 									requiredMessage="É necessário que você informe seu pis.">
 									<!-- <f:validateLength minimum="11" maximum="11" /> -->
+									<stella:validateNIT formatted="false" />
 								</h:inputText>
 							</b:column>
 

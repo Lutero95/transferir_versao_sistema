@@ -241,26 +241,19 @@
 
 		<h:form>
 			<center>
-				<p:panelGrid columns="4" styleClass="semBorda">
 
-					<b:commandButton value="Gravar" id="b1" update="msgError"
-						icon="glyphicon-ok"
-						action="#{ConfigAgendaController.gravarConfigAgenda()}" />
+				<b:commandButton
+					action="#{ConfigAgendaController.gravarConfigAgenda()}"
+					icon="glyphicon-ok" id="b1" update="msgError" style="float:left"
+					value="Gravar" look="success" size="sm" />
 
-					<b:commandButton value="Consultar" icon="glyphicon-search" id="b2"
-						process="@this"
-						action="/pages/agenda/consConfAgenda.xhtml?faces-redirect=true" />
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					size="sm" immediate="true" look="info" style="float:right" id="b4"
+					update=":formConfiAgenda"
+					actionListener="#{ConfigAgendaController.limparDados()}"
+					action="consConfAgenda.xhtml?faces-redirect=true">
+				</b:commandButton>
 
-					<b:commandButton value="Limpar" icon="glyphicon-remove-sign"
-						id="b3" actionListener="#{ConfigAgendaController.limparDados()}"
-						update=":formConfiAgenda" />
-
-					<b:commandButton value="Voltar" icon="glyphicon-remove-circle"
-						id="b4" update=":formConfiAgenda"
-						actionListener="#{ConfigAgendaController.limparDados()}"
-						action="consConfAgenda.xhtml?faces-redirect=true" />
-
-				</p:panelGrid>
 			</center>
 
 		</h:form>

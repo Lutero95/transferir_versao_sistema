@@ -257,47 +257,56 @@ public class PacienteController implements Serializable {
 		PacienteDAO udao = new PacienteDAO();
 		EnderecoDAO edao = new EnderecoDAO();
 
-		if (escolaSuggestion != null)
-			paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
-		else
-			paciente.getEscola().setCodEscola(null);
-		if (escolaridadeSuggestion != null)
-			paciente.getEscolaridade().setCodescolaridade(
-					escolaridadeSuggestion.getCodescolaridade());
-		else
-			paciente.getEscolaridade().setCodescolaridade(null);
-		if (profissaoSuggestion != null)
-			paciente.getProfissao().setCodprofissao(
-					profissaoSuggestion.getCodprofissao());
-		else
-			paciente.getProfissao().setCodprofissao(null);
-
-		if (encaminhadoSuggestion != null)
-			paciente.getEncaminhado().setCodencaminhado(
-					encaminhadoSuggestion.getCodencaminhado());
-		else
-			paciente.getEncaminhado().setCodencaminhado(null);
-		if (transporteSuggestion != null)
-			paciente.getFormatransporte().setCodformatransporte(
-					transporteSuggestion.getCodformatransporte());
-		else
-			paciente.getFormatransporte().setCodformatransporte(null);
-
-		int codmunicipio = edao.municipioExiste(paciente);
-		boolean cadastrou = udao.cadastrar(paciente, codmunicipio);
-
-		if (cadastrou == true) {
-			limparDados();
+		if (validaCns(paciente.getCns()) == false) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Paciente cadastrado com sucesso!", "Sucesso");
+					"CNS com números inválidos!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaPacientes = null;
-
 		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
 
+			if (escolaSuggestion != null)
+				paciente.getEscola().setCodEscola(
+						escolaSuggestion.getCodEscola());
+			else
+				paciente.getEscola().setCodEscola(null);
+			if (escolaridadeSuggestion != null)
+				paciente.getEscolaridade().setCodescolaridade(
+						escolaridadeSuggestion.getCodescolaridade());
+			else
+				paciente.getEscolaridade().setCodescolaridade(null);
+			if (profissaoSuggestion != null)
+				paciente.getProfissao().setCodprofissao(
+						profissaoSuggestion.getCodprofissao());
+			else
+				paciente.getProfissao().setCodprofissao(null);
+
+			if (encaminhadoSuggestion != null)
+				paciente.getEncaminhado().setCodencaminhado(
+						encaminhadoSuggestion.getCodencaminhado());
+			else
+				paciente.getEncaminhado().setCodencaminhado(null);
+			if (transporteSuggestion != null)
+				paciente.getFormatransporte().setCodformatransporte(
+						transporteSuggestion.getCodformatransporte());
+			else
+				paciente.getFormatransporte().setCodformatransporte(null);
+
+			int codmunicipio = edao.municipioExiste(paciente);
+			boolean cadastrou = udao.cadastrar(paciente, codmunicipio);
+
+			if (cadastrou == true) {
+				limparDados();
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Paciente cadastrado com sucesso!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				listaPacientes = null;
+
+			} else {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Ocorreu um erro durante o cadastro!", "Erro");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			}
 		}
 
 	}
@@ -348,7 +357,7 @@ public class PacienteController implements Serializable {
 					transporteSuggestion.getCodformatransporte());
 		}
 
-		//int codmunicipio = edao.municipioExiste(paciente);
+		// int codmunicipio = edao.municipioExiste(paciente);
 		boolean alterou = mdao.alterar(paciente, 0);
 
 		if (alterou == true) {
@@ -850,6 +859,26 @@ public class PacienteController implements Serializable {
 		listaPacientesAgenda = pDao.listaPaciente();
 
 		return listaPacientesAgenda;
+	}
+
+	public boolean validaCns(String s) {
+		Boolean retorno = false;
+
+		if (s.matches("[1-2]\\d{10}00[0-1]\\d") || s.matches("[7-9]\\d{14}")) {
+			if (somaPonderadaCns(s) % 11 == 0) {
+				retorno = true;
+			}
+		}
+		return retorno;
+	}
+
+	private int somaPonderadaCns(String s) {
+		char[] cs = s.toCharArray();
+		int soma = 0;
+		for (int i = 0; i < cs.length; i++) {
+			soma += Character.digit(cs[i], 10) * (15 - i);
+		}
+		return soma;
 	}
 
 	public void buscarescolaridade() {

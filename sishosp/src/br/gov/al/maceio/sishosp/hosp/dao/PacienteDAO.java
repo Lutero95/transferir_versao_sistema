@@ -291,15 +291,35 @@ public class PacienteDAO {
 
 			stmt.setInt(52, codmunicipio);
 
-			stmt.setBoolean(53, paciente.getDeficienciaFisica());
+			if (paciente.getDeficienciaFisica() != null) {
+				stmt.setBoolean(53, paciente.getDeficienciaFisica());
+			} else {
+				stmt.setBoolean(53, false);
+			}
 
-			stmt.setBoolean(54, paciente.getDeficienciaMental());
+			if (paciente.getDeficienciaMental() != null) {
+				stmt.setBoolean(54, paciente.getDeficienciaMental());
+			} else {
+				stmt.setBoolean(54, false);
+			}
 
-			stmt.setBoolean(55, paciente.getDeficienciaAuditiva());
+			if (paciente.getDeficienciaAuditiva() != null) {
+				stmt.setBoolean(55, paciente.getDeficienciaAuditiva());
+			} else {
+				stmt.setBoolean(55, false);
+			}
 
-			stmt.setBoolean(56, paciente.getDeficienciaVisual());
+			if (paciente.getDeficienciaVisual() != null) {
+				stmt.setBoolean(56, paciente.getDeficienciaVisual());
+			} else {
+				stmt.setBoolean(56, false);
+			}
 
-			stmt.setBoolean(57, paciente.getDeficienciaMultipla());
+			if (paciente.getDeficienciaMultipla() != null) {
+				stmt.setBoolean(57, paciente.getDeficienciaMultipla());
+			} else {
+				stmt.setBoolean(57, false);
+			}
 
 			stmt.execute();
 			conexao.commit();
@@ -325,21 +345,22 @@ public class PacienteDAO {
 		conexao = ConnectionFactory.getConnection();
 
 		try {
-//			if (codmunicipio == 0) {
-//				String sql1 = "INSERT INTO hosp.municipio(descmunicipio, codfederal) "
-//						+ " VALUES (?, ?) returning id_municipio;";
-//
-//				PreparedStatement ps1 = conexao.prepareStatement(sql1);
-//
-//				ps1.setString(1, paciente.getEndereco().getMunicipio()
-//						.toUpperCase());
-//				ps1.setInt(2, paciente.getEndereco().getCodibge());
-//
-//				ResultSet set = ps1.executeQuery();
-//				while (set.next()) {
-//					codmunicipio = set.getInt("id_municipio");
-//				}
-//			}
+			// if (codmunicipio == 0) {
+			// String sql1 =
+			// "INSERT INTO hosp.municipio(descmunicipio, codfederal) "
+			// + " VALUES (?, ?) returning id_municipio;";
+			//
+			// PreparedStatement ps1 = conexao.prepareStatement(sql1);
+			//
+			// ps1.setString(1, paciente.getEndereco().getMunicipio()
+			// .toUpperCase());
+			// ps1.setInt(2, paciente.getEndereco().getCodibge());
+			//
+			// ResultSet set = ps1.executeQuery();
+			// while (set.next()) {
+			// codmunicipio = set.getInt("id_municipio");
+			// }
+			// }
 			String sql = "update hosp.pacientes set nome = ?, dtanascimento = ?, estcivil = ?, sexo = ? , sangue = ?, pai = ? "
 					+ ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, cidade = ?, bairro = ?, logradouro = ?, numero = ?"
 					+ ", complemento = ?, referencia = ?, telres = ?, telcel = ?, teltrab = ?, telorelhao = ?"

@@ -157,24 +157,20 @@
 				</center>
 
 				<center>
-					<p:panelGrid columns="4" styleClass="semBorda">
 
-						<b:commandButton value="Gravar" icon="glyphicon-ok"
-							update=":formConfiAgendaEquipe, :formConfiAgendaEquipe"
-							action="#{ConfigAgendaController.gravarConfigAgendaEquipe()}" />
+					<b:commandButton
+						update=":formConfiAgendaEquipe, :formConfiAgendaEquipe"
+						action="#{ConfigAgendaController.gravarConfigAgendaEquipe()}"
+						icon="glyphicon-ok" id="b1" style="float:left" value="Gravar"
+						look="success" size="sm" />
 
-						<b:commandButton value="Consultar" icon="glyphicon-search"
-							action="/pages/agenda/consConfAgendaEquipe.xhtml?faces-redirect=true" />
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" look="info" style="float:right" id="b4"
+						update=":formConfiAgendaEquipe"
+						actionListener="#{ConfigAgendaController.limparDados()}"
+						action="consConfAgendaEquipe.xhtml?faces-redirect=true">
+					</b:commandButton>
 
-						<b:commandButton value="Limpar" icon="glyphicon-remove-sign"
-							actionListener="#{ConfigAgendaController.limparDados()}"
-							update=":formConfiAgendaEquipe" />
-
-						<b:commandButton value="Voltar" icon="glyphicon-remove-circle"
-							update=":formConfiAgendaEquipe"
-							actionListener="#{ConfigAgendaController.limparDados()}"
-							action="consConfAgendaEquipe.xhtml?faces-redirect=true" />
-					</p:panelGrid>
 				</center>
 
 			</div>

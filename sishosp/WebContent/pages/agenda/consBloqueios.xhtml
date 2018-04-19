@@ -18,6 +18,11 @@
 					<hr />
 				</div>
 
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{BloqueioController.redirectInsert()}"
+					icon="glyphicon-plus" look="primary">
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>
