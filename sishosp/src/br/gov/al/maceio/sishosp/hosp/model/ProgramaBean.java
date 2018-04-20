@@ -18,10 +18,12 @@ public class ProgramaBean implements Serializable {
 	private List<GrupoBean> grupoNovo;
 
 	// HERDADOS
+	private GrupoBean grupoBean;
 	private GrupoBean grupoParaAdd;
 	private GrupoBean grupoRmv;
 
 	public ProgramaBean() {
+		this.grupoBean = new GrupoBean();
 		this.grupo = new ArrayList<GrupoBean>();
 		this.grupoRmv = new GrupoBean();
 		this.grupoParaAdd = new GrupoBean();
@@ -110,5 +112,13 @@ public class ProgramaBean implements Serializable {
 
 	public void removeGrupoLista() {
 		this.grupo.remove(this.grupoRmv);
+	}
+
+	public GrupoBean getGrupoBean() {
+		return grupoBean;
+	}
+
+	public void setGrupoBean(GrupoBean grupoBean) {
+		this.grupoBean = grupoBean;
 	}
 }

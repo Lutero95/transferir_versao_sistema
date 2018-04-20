@@ -33,6 +33,7 @@ public class GrupoController implements Serializable {
 	private List<GrupoBean> listaGrupos;
 	private List<GrupoBean> buscarlistaGrupos;
 	private List<GrupoBean> listaGruposProgramas;
+	private List<ProgramaBean> listaProgramasEGrupos;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
 	private int tipo;
@@ -48,6 +49,7 @@ public class GrupoController implements Serializable {
 		this.grupo = new GrupoBean();
 		this.listaGrupos = null;
 		this.listaGruposProgramas = new ArrayList<>();
+		this.listaProgramasEGrupos = new ArrayList<ProgramaBean>();
 		this.descricaoBusca = new String();
 		this.cabecalho = "";
 		this.programaSelecionado = new ProgramaBean();
@@ -145,7 +147,13 @@ public class GrupoController implements Serializable {
 		}
 		listaGrupos = gDao.listarGrupos();
 	}
-	
+
+	public List<ProgramaBean> listarProgramasEGrupos() throws ProjetoException {
+		ProgramaDAO pDao = new ProgramaDAO();
+		listaProgramasEGrupos = pDao.listarProgramasEGrupos();
+
+		return listaProgramasEGrupos;
+	}
 
 	public GrupoBean getGrupo() {
 		return grupo;

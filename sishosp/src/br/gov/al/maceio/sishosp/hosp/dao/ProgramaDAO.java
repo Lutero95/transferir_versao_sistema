@@ -228,7 +228,7 @@ public class ProgramaDAO {
 		List<ProgramaBean> lista = new ArrayList<>();
 		String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma , codfederal from hosp.programa "
 				+ "left join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma ";
-				//+ "where codusuario = ?";
+		// + "where codusuario = ?";
 
 		if (tipo == 1) {
 			sql += " and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma";
@@ -239,7 +239,7 @@ public class ProgramaDAO {
 			UsuarioBean user_session = (UsuarioBean) FacesContext
 					.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("obj_usuario");
-			//stm.setInt(1, user_session.getCodigo());
+			// stm.setInt(1, user_session.getCodigo());
 			stm.setString(1, "%" + descricao.toUpperCase() + "%");
 
 			ResultSet rs = stm.executeQuery();
@@ -265,7 +265,7 @@ public class ProgramaDAO {
 
 		return lista;
 	}
-	
+
 	public List<ProgramaBean> listarProgramasBuscaUsuario(String descricao,
 			Integer tipo) throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<>();
@@ -309,13 +309,13 @@ public class ProgramaDAO {
 
 		return lista;
 	}
-	
+
 	public List<ProgramaBean> listarProgramasUsuario() throws ProjetoException {
 		List<ProgramaBean> lista = new ArrayList<>();
 		String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma , codfederal from hosp.programa "
 				+ "left join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
 				+ "where codusuario = ? order by descprograma";
-		
+
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -356,14 +356,14 @@ public class ProgramaDAO {
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, prog.getIdPrograma());
 			stmt.execute();
-			
+
 			String sql2 = "delete from hosp.grupo_programa where codprograma = ?";
 			PreparedStatement stmt2 = con.prepareStatement(sql2);
 			stmt2.setLong(1, prog.getIdPrograma());
 			stmt2.execute();
-			
+
 			con.commit();
-			//excluirNaTabProgramaGrupo(prog.getIdPrograma());
+			// excluirNaTabProgramaGrupo(prog.getIdPrograma());
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -470,5 +470,41 @@ public class ProgramaDAO {
 			}
 		}
 		return programa;
+	}
+
+	public List<ProgramaBean> listarProgramasEGrupos() throws ProjetoException {
+		List<ProgramaBean> lista = new ArrayList<>();
+		String sql = "select gp.codprograma, p.descprograma, gp.codgrupo, g.descgrupo "
+				+ "from hosp.grupo_programa gp "
+				+ "left join hosp.programa p on (gp.codprograma = p.id_programa) "
+				+ "left join hosp.grupo g on (gp.codgrupo = g.id_grupo) "
+				+ "order by p.descprograma";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			// stm.setInt(1, user_session.getCodigo());
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ProgramaBean programa = new ProgramaBean();
+				programa.setIdPrograma(rs.getInt("codprograma"));
+				programa.setDescPrograma(rs.getString("descprograma"));
+				programa.getGrupoBean().setIdGrupo(rs.getInt("codgrupo"));
+				programa.getGrupoBean().setDescGrupo(rs.getString("descgrupo"));
+
+				lista.add(programa);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
 	}
 }

@@ -146,56 +146,35 @@
 
 					</div>
 
-				</div>
 
-
-				<div class="form-group">
-					<div class="col-sm-5">
-						<p:commandButton onclick="PF('dlgConsulProgramas').show();"
-							value="Incluir Programa" styleClass="btn btn-primary text-center"
-							process="@this" style="color:black;" icon="ui-icon-plus" />
-						<br /> <br />
-						<p:dataTable emptyMessage="Nenhum Programa" id="tabelaprograma"
-							value="#{ProfissionalController.profissional.programa}"
-							var="prog" scrollRows="3" scrollHeight="150" scrollable="true">
-							<p:column headerText="Programa" width="80%">
-								<p:outputLabel value="#{prog.descPrograma}" />
-							</p:column>
-							<p:column headerText="Ação">
-								<center>
-									<p:commandButton
-										action="#{ProfissionalController.profissional.removeProgLista()}"
-										icon="ui-icon-trash" update=":frmCadProfi">
-										<f:setPropertyActionListener value="#{prog}"
-											target="#{ProfissionalController.profissional.progRmv}" />
-									</p:commandButton>
-								</center>
-							</p:column>
-						</p:dataTable>
-
-					</div>
-
-
-					<div class="col-sm-5">
+					<div class="col-sm-5" style="margin-top: 20px">
 						<p:commandButton onclick="PF('dlgConsuGrupos').show();"
-							actionListener="#{GrupoController.getListaTodosGrupos()}"
 							value="Incluir Grupo" styleClass="btn btn-primary text-center"
 							style="color:black;" icon="ui-icon-plus" process="@this" />
+
 						<br /> <br />
-						<p:dataTable style="width: 480px" emptyMessage="Nenhum Grupo"
-							id="tabelagrupo"
-							value="#{ProfissionalController.profissional.grupo}" var="grupo"
-							scrollRows="3" scrollHeight="150" scrollable="true">
-							<p:column headerText="Grupo">
-								<p:outputLabel value="#{grupo.descGrupo}" />
+
+						<p:dataTable style="width: 480px"
+							emptyMessage="Nenhum Programa/Grupo" id="tabelagrupo"
+							value="#{ProfissionalController.listaGruposEProgramasProfissional}"
+							var="programa" scrollRows="3" scrollHeight="150"
+							scrollable="true">
+
+							<p:column headerText="Programa">
+								<p:outputLabel value="#{programa.descPrograma}" />
 							</p:column>
+
+							<p:column headerText="Grupo">
+								<p:outputLabel value="#{programa.grupoBean.descGrupo}" />
+							</p:column>
+
 							<p:column headerText="Ação">
 								<center>
-									<p:commandButton
-										action="#{ProfissionalController.profissional.removeGrupoLista()}"
+									<p:commandButton immediate="true"
+										action="#{ProfissionalController.removeListaGruposEProgramasProfissional()}"
 										icon="ui-icon-trash" update=":frmCadProfi">
-										<f:setPropertyActionListener value="#{grupo}"
-											target="#{ProfissionalController.profissional.grupoRmv}" />
+										<f:setPropertyActionListener value="#{programa}"
+											target="#{ProfissionalController.profissional.progAdd}" />
 									</p:commandButton>
 								</center>
 							</p:column>
@@ -236,34 +215,6 @@
 
 			</div>
 		</h:form>
-
-
-
-		<p:dialog header="Consulta Programa" widgetVar="dlgConsulProgramas"
-			modal="true" width="500px">
-			<h:form id="formConsulProgP">
-				<p:dataTable value="#{ProgramaController.listaProgramas}" var="prog"
-					resizableColumns="true"
-					emptyMessage="Não existe nenhum programa cadastrado!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{prog.idPrograma}" />
-					</p:column>
-					<p:column headerText="Programa">
-						<p:outputLabel value="#{prog.descPrograma}" />
-					</p:column>
-					<p:column style="width:50px;text-align: center">
-						<p:commandButton
-							update=":frmCadProfi:tabelaprograma, :frmCadProfi:msgError, :formConsuGrops:dtGrupos"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsulProgramas').hide();"
-							action="#{ProfissionalController.profissional.addProgLista()}">
-							<f:setPropertyActionListener value="#{prog}"
-								target="#{ProfissionalController.profissional.progAdd}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
 
 		<p:dialog header="Consulta Especialidade" height="300px"
 			resizable="false" widgetVar="dlgConsulEspecialidade" modal="true"
@@ -370,28 +321,30 @@
 			height="300px" modal="true" width="550px">
 			<h:form id="formConsuGrops">
 				<p:outputPanel autoUpdate="true">
-					<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupos"
-						scrollRows="3" scrollHeight="270" scrollable="true"
-						resizableColumns="true" var="grupo"
+					<p:dataTable value="#{GrupoController.listarProgramasEGrupos()}"
+						id="dtGrupos" scrollRows="3" scrollHeight="270" scrollable="true"
+						resizableColumns="true" var="programa"
 						emptyMessage="Não existe nenhum grupo cadastrado!">
-						<p:column headerText="Código">
-							<p:outputLabel value="#{grupo.idGrupo}" />
+
+						<p:column headerText="Programa">
+							<p:outputLabel value="#{programa.descPrograma}" />
 						</p:column>
+
 						<p:column headerText="Grupo">
-							<p:outputLabel value="#{grupo.descGrupo}" />
-						</p:column>
-						<p:column headerText="Quantidade Frequência">
-							<p:outputLabel value="#{grupo.qtdFrequencia}" />
+							<p:outputLabel value="#{programa.grupoBean.descGrupo}" />
 						</p:column>
 
 						<p:column style="width:50px;text-align: center">
+
 							<p:commandButton
 								update=":frmCadProfi:tabelagrupo :frmCadProfi:msgError"
 								icon="ui-icon-check" title="Selecionar"
 								onclick="PF('dlgConsuGrupos').hide();"
-								action="#{ProfissionalController.profissional.addGrupoLista()}">
-								<f:setPropertyActionListener value="#{grupo}"
-									target="#{ProfissionalController.profissional.grupoAdd}" />
+								action="#{ProfissionalController.addListaGruposEProgramasProfissional()}">
+
+								<f:setPropertyActionListener value="#{programa}"
+									target="#{ProfissionalController.profissional.progAdd}" />
+
 							</p:commandButton>
 						</p:column>
 					</p:dataTable>

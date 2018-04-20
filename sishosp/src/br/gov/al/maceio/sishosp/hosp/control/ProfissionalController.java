@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 @ManagedBean(name = "ProfissionalController")
 @ViewScoped
@@ -37,10 +39,12 @@ public class ProfissionalController implements Serializable {
 	private String cabecalho;
 	private int tipo;
 	private Integer abaAtiva = 0;
+	private ArrayList<ProgramaBean> listaGruposEProgramasProfissional;
 
 	public ProfissionalController() {
 		this.profissional = new ProfissionalBean();
 		this.descricaoBusca = new String();
+		this.listaGruposEProgramasProfissional = new ArrayList<ProgramaBean>();
 	}
 
 	public void limparDados() throws ProjetoException {
@@ -61,13 +65,11 @@ public class ProfissionalController implements Serializable {
 		 * FacesContext.getCurrentInstance().addMessage(null, msg); return; }
 		 */
 
-		if (this.profissional.getPrograma().isEmpty()
-				|| this.profissional.getGrupo().isEmpty()) {
+		if (listaGruposEProgramasProfissional.size() == 0) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Deve ser informado pelo menos um Programa e um Grupo!",
 					"Campos obrigatórios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
 		}
 
 		boolean cadastrou = pDao.gravarProfissional(profissional);
@@ -116,12 +118,11 @@ public class ProfissionalController implements Serializable {
 			// return "";
 		}
 
-		if (this.profissional.getPrograma().isEmpty()
-				|| this.profissional.getGrupo().isEmpty()) {
+		if (listaGruposEProgramasProfissional.size() == 0) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Programa e Grupo obrigatórios!", "Campos obrigatórios!");
+					"Deve ser informado pelo menos um Programa e um Grupo!",
+					"Campos obrigatórios!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			// return "";
 		}
 
 		boolean alterou = pDao.alterarProfissional(profissional);
@@ -168,6 +169,40 @@ public class ProfissionalController implements Serializable {
 		return listaProfissional;
 	}
 
+	public void addListaGruposEProgramasProfissional() {
+		Boolean existe = false;
+
+		if (listaGruposEProgramasProfissional.size() >= 1) {
+
+			for (int i = 0; i < listaGruposEProgramasProfissional.size(); i++) {
+
+				if (listaGruposEProgramasProfissional.get(i).getIdPrograma() == profissional
+						.getProgAdd().getIdPrograma()
+						&& (listaGruposEProgramasProfissional.get(i)
+								.getGrupoBean().getIdGrupo() == profissional
+								.getProgAdd().getGrupoBean().getIdGrupo())) {
+					existe = true;
+
+				}
+			}
+			if (existe == true) {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Esse grupo já foi adicionado!", "Erro");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else {
+				listaGruposEProgramasProfissional
+						.add(profissional.getProgAdd());
+			}
+		} else {
+			listaGruposEProgramasProfissional.add(profissional.getProgAdd());
+		}
+	}
+
+	public void removeListaGruposEProgramasProfissional() {
+		listaGruposEProgramasProfissional.remove(profissional.getProgAdd());
+	}
+
 	public String getCabecalho() {
 		if (this.tipo == 1) {
 			cabecalho = "CADASTRO DE PROFISSIONAL";
@@ -175,6 +210,15 @@ public class ProfissionalController implements Serializable {
 			cabecalho = "ALTERAR PROFISSIONAL";
 		}
 		return cabecalho;
+	}
+
+	public String redirectInsert() {
+		return "cadastroProfissional?faces-redirect=true&amp;tipo=" + this.tipo;
+	}
+
+	public String redirectEdit() {
+		return "cadastroProfissional?faces-redirect=true&amp;id="
+				+ this.profissional.getIdProfissional() + "&amp;tipo=" + tipo;
 	}
 
 	public void setCabecalho(String cabecalho) {
@@ -189,15 +233,6 @@ public class ProfissionalController implements Serializable {
 
 	public List<ProfissionalBean> getListaProfissional() {
 		return listaProfissional;
-	}
-
-	public String redirectInsert() {
-		return "cadastroProfissional?faces-redirect=true&amp;tipo=" + this.tipo;
-	}
-
-	public String redirectEdit() {
-		return "cadastroProfissional?faces-redirect=true&amp;id="
-				+ this.profissional.getIdProfissional() + "&amp;tipo=" + tipo;
 	}
 
 	public void getEditProfissional() throws ProjetoException, SQLException {
@@ -262,5 +297,14 @@ public class ProfissionalController implements Serializable {
 
 	public void setListaProfissional(List<ProfissionalBean> listaProfissional) {
 		this.listaProfissional = listaProfissional;
+	}
+
+	public ArrayList<ProgramaBean> getListaGruposEProgramasProfissional() {
+		return listaGruposEProgramasProfissional;
+	}
+
+	public void setListaGruposEProgramasProfissional(
+			ArrayList<ProgramaBean> listaGruposEProgramasProfissional) {
+		this.listaGruposEProgramasProfissional = listaGruposEProgramasProfissional;
 	}
 }
