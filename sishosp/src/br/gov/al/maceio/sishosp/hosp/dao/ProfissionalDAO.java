@@ -25,8 +25,9 @@ public class ProfissionalDAO {
 	private GrupoDAO gDao = new GrupoDAO();
 	private ProcedimentoDAO procDao = new ProcedimentoDAO();
 
-	public boolean gravarProfissional(ProfissionalBean prof)
-			throws SQLException, ProjetoException {
+	public boolean gravarProfissional(ProfissionalBean prof,
+			ArrayList<ProgramaBean> lista) throws SQLException,
+			ProjetoException {
 
 		String sql = "insert into hosp.medicos (descmedico, codespecialidade, cns, ativo, codcbo,"
 				+ " codprocedimentopadrao, codprocedimentopadrao2, codempresa) values (?, ?, ?, ?, ?, ?, ?, ?) returning id_medico;";
@@ -51,13 +52,13 @@ public class ProfissionalDAO {
 			}
 
 			if (prof.getProc1() != null) {
-				ps.setInt(6, prof.getProc1().getCodProc());
+				ps.setInt(6, prof.getProc1().getIdProc());
 			} else {
 				ps.setInt(6, 0);
 			}
 
 			if (prof.getProc2() != null) {
-				ps.setInt(7, prof.getProc2().getCodProc());
+				ps.setInt(7, prof.getProc2().getIdProc());
 			} else {
 				ps.setInt(7, 0);
 			}
@@ -65,16 +66,28 @@ public class ProfissionalDAO {
 			ps.setInt(8, 0);// COD EMPRESA ??
 
 			ResultSet rs = ps.executeQuery();
-			con.commit();
 
 			int idProf = 0;
 			if (rs.next()) {
 				idProf = rs.getInt("id_medico");
-				insereTabProfProg(prof, idProf, 0);
-				insereTabProfGrupo(prof, idProf, 0);
 			}
+
+			for (int i = 0; i < lista.size(); i++) {
+				String sql2 = "INSERT INTO hosp.profissional_programa_grupo(codprofissional, codprograma, codgrupo) VALUES (?, ?, ?);";
+				ps = con.prepareStatement(sql2);
+
+				ps.setInt(1, idProf);
+				ps.setInt(2, lista.get(i).getIdPrograma());
+				ps.setInt(3, lista.get(i).getGrupoBean().getIdGrupo());
+
+				ps.executeUpdate();
+			}
+
+			con.commit();
+
 			return true;
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -87,6 +100,7 @@ public class ProfissionalDAO {
 
 	}
 
+	// RETIREI, SEM USO
 	public void insereTabProfProg(ProfissionalBean prof, int idProf, int gamb)
 			throws SQLException, ProjetoException {
 		String sql = "insert into hosp.profissional_programa (codprograma, codprofissional)"
@@ -124,6 +138,7 @@ public class ProfissionalDAO {
 		}
 	}
 
+	// RETIREI, SEM USO
 	public void insereTabProfGrupo(ProfissionalBean prof, int idProf, int gamb)
 			throws SQLException, ProjetoException {
 		String sql = "insert into hosp.profissional_grupo (codgrupo, codprofissional)"
@@ -355,6 +370,7 @@ public class ProfissionalDAO {
 		}
 	}
 
+	// RETIREI, SEM USO
 	public void excluirTabProfProg(ProfissionalBean profissional)
 			throws ProjetoException {
 		String sql = "delete from hosp.profissional_programa where codprofissional = ?";
@@ -375,6 +391,7 @@ public class ProfissionalDAO {
 		}
 	}
 
+	// RETIREI, SEM USO
 	public void excluirTabProfGrupo(ProfissionalBean profissional)
 			throws ProjetoException {
 		String sql = "delete from hosp.profissional_grupo where codprofissional = ?";
@@ -395,8 +412,8 @@ public class ProfissionalDAO {
 		}
 	}
 
-	public boolean alterarProfissional(ProfissionalBean profissional)
-			throws ProjetoException {
+	public boolean alterarProfissional(ProfissionalBean profissional,
+			ArrayList<ProgramaBean> lista) throws ProjetoException {
 
 		String sql = "update hosp.medicos set descmedico = ?, codespecialidade = ?, cns = ?, ativo = ?,"
 				+ " codcbo = ?, codprocedimentopadrao = ?, codprocedimentopadrao2 = ?, codempresa = ? "
@@ -416,24 +433,37 @@ public class ProfissionalDAO {
 				stmt.setInt(5, 0);
 			}
 			if (profissional.getProc1() != null) {
-				stmt.setInt(6, profissional.getProc1().getCodProc());
+				stmt.setInt(6, profissional.getProc1().getIdProc());
 			} else {
 				stmt.setInt(6, 0);
 			}
 			if (profissional.getProc2() != null) {
-				stmt.setInt(7, profissional.getProc2().getCodProc());
+				stmt.setInt(7, profissional.getProc2().getIdProc());
 			} else {
 				stmt.setInt(7, 0);
 			}
 			stmt.setInt(8, 0);// COD EMPRESA ? */
 			stmt.setInt(9, profissional.getIdProfissional());
 			stmt.executeUpdate();
+
+			String sql2 = "delete from hosp.profissional_programa_grupo where codprofissional = ?";
+			stmt = con.prepareStatement(sql2);
+			stmt.setInt(1, profissional.getIdProfissional());
+			stmt.executeUpdate();
+
+			for (int i = 0; i < lista.size(); i++) {
+				String sql3 = "INSERT INTO hosp.profissional_programa_grupo(codprofissional, codprograma, codgrupo) VALUES (?, ?, ?);";
+				stmt = con.prepareStatement(sql3);
+
+				stmt.setInt(1, profissional.getIdProfissional());
+				stmt.setInt(2, lista.get(i).getIdPrograma());
+				stmt.setInt(3, lista.get(i).getGrupoBean().getIdGrupo());
+
+				stmt.executeUpdate();
+			}
+
 			con.commit();
-			excluirTabProfProg(profissional);
-			insereTabProfProg(profissional, profissional.getIdProfissional(), 1);
-			excluirTabProfGrupo(profissional);
-			insereTabProfGrupo(profissional, profissional.getIdProfissional(),
-					1);
+
 			return true;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -583,6 +613,44 @@ public class ProfissionalDAO {
 			ResultSet rs = stm.executeQuery();
 			while (rs.next()) {
 				lista.add(buscarProfissionalPorId(rs.getInt("codprofissional")));
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+
+	public ArrayList<ProgramaBean> carregaProfissionalProgramaEGrupos(int idProf)
+			throws ProjetoException {
+		ArrayList<ProgramaBean> lista = new ArrayList<ProgramaBean>();
+
+		String sql = "select ppg.codprograma, p.descprograma, ppg.codgrupo, g.descgrupo "
+				+ "from hosp.profissional_programa_grupo ppg "
+				+ "left join hosp.programa p on (p.id_programa = ppg.codprograma) "
+				+ "left join hosp.grupo g on (g.id_grupo = ppg.codgrupo)"
+				+ "where codprofissional = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idProf);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				ProgramaBean p = new ProgramaBean();
+
+				p.setIdPrograma(rs.getInt("codprograma"));
+				p.setDescPrograma(rs.getString("descprograma"));
+				p.getGrupoBean().setIdGrupo(rs.getInt("codgrupo"));
+				p.getGrupoBean().setDescGrupo(rs.getString("descgrupo"));
+
+				lista.add(p);
 			}
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);

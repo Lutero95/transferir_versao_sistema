@@ -32,7 +32,8 @@
 							completeMethod="#{PacienteController.listaPacienteAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
-							<p:ajax event="itemSelect" update=":formAgendaMedica:outProg"
+							<p:ajax event="itemSelect"
+								update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
 								listener="#{AgendaController.limparNaBuscaPaciente()}"
 								global="false" />
 
@@ -64,7 +65,8 @@
 							itemLabel="#{theme.descPrograma}">
 							<p:ajax event="itemSelect"
 								listener="#{AgendaController.selectPrograma}"
-								update=":formAgendaMedica:outGrupo, :formConsuGrop:dtGrupo" />
+								update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, 
+							:formAgendaMedica:btBusGr, :formAgendaMedica:outGrupo" />
 
 						</p:autoComplete>
 					</p:outputPanel>
@@ -90,7 +92,8 @@
 							itemLabel="#{theme.descGrupo}">
 							<p:ajax event="itemSelect"
 								listener="#{AgendaController.selectGrupo}"
-								update=":formAgendaMedica:outTipoAt, :formConsuTipoAt:dtTipoAt" />
+								update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt,
+							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt" />
 
 						</p:autoComplete>
 					</p:outputPanel>
@@ -131,7 +134,8 @@
 
 			</div>
 
-			<p:panelGrid columns="3" styleClass="semBorda" style="margin-bottom: 10px;">
+			<p:panelGrid columns="3" styleClass="semBorda"
+				style="margin-bottom: 10px;">
 
 				<h:outputLabel value="Profissional"
 					rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
@@ -203,6 +207,14 @@
 			</p:outputPanel>
 
 			<b:commandButton value="Ver agenda"
+				style="margin-top: 15px;margin-left:15px"
+				icon="glyphicon glyphicon-list-alt"
+				action="#{AgendaController.verAgenda()}"
+				update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd,
+						 :formAgendaMedica:outlAgendados, :formAgendaMedica:dtAgData,
+						 :formAgendaMedica:msgFeriado" />
+
+			<b:commandButton value="Agendados na Data"
 				style="margin-top: 15px;margin-left:15px"
 				icon="glyphicon glyphicon-list-alt"
 				action="#{AgendaController.verAgenda()}"

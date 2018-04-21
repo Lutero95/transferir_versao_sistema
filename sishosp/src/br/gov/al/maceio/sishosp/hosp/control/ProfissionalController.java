@@ -51,6 +51,7 @@ public class ProfissionalController implements Serializable {
 		this.profissional = new ProfissionalBean();
 		this.descricaoBusca = new String();
 		this.listaProfissional = pDao.listarProfissional();
+		this.listaGruposEProgramasProfissional = null;
 	}
 
 	public void gravarProfissional() throws SQLException, ProjetoException {
@@ -72,7 +73,7 @@ public class ProfissionalController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 
-		boolean cadastrou = pDao.gravarProfissional(profissional);
+		boolean cadastrou = pDao.gravarProfissional(profissional, listaGruposEProgramasProfissional);
 
 		if (cadastrou == true) {
 			limparDados();
@@ -125,7 +126,7 @@ public class ProfissionalController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 
-		boolean alterou = pDao.alterarProfissional(profissional);
+		boolean alterou = pDao.alterarProfissional(profissional, listaGruposEProgramasProfissional);
 
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -243,6 +244,8 @@ public class ProfissionalController implements Serializable {
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
 			this.profissional = pDao.buscarProfissionalPorId(id);
+			listaGruposEProgramasProfissional = pDao
+					.carregaProfissionalProgramaEGrupos(id);
 		} else {
 			tipo = Integer.parseInt(params.get("tipo"));
 

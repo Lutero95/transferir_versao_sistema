@@ -134,9 +134,9 @@ public class AgendaController implements Serializable {
 		boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
 		boolean diaSem = aDao.buscarDiaSemana(this.agenda);
 		boolean limitePorTipoAtend = aDao.buscarTabTipoAtendAgenda(this.agenda);
-		System.out.println("DtEspecifica: "+dtEspecifica);
-		System.out.println("Dia Semana: "+diaSem);
-		System.out.println("Limite: "+limitePorTipoAtend);
+		System.out.println("DtEspecifica: " + dtEspecifica);
+		System.out.println("Dia Semana: " + diaSem);
+		System.out.println("Limite: " + limitePorTipoAtend);
 		if (dtEspecifica && limitePorTipoAtend) {
 			listarAgendamentosData();
 			this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));

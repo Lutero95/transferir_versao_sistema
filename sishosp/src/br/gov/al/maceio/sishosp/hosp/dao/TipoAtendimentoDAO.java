@@ -213,17 +213,21 @@ public class TipoAtendimentoDAO {
 
 	public List<TipoAtendimentoBean> listarTipoAtAutoComplete(String descricao,
 			GrupoBean grupo) throws ProjetoException {
-		List<TipoAtendimentoBean> lista = new ArrayList<>();
-		String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa "
-				+ " from hosp.tipoatendimento t left join hosp.tipoatendimento_grupo tg on (t.id = tg.codtipoatendimento) "
-				+ " where tg.codgrupo = ? and upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? order by t.desctipoatendimento";
+
+		PreparedStatement stm = null;
+		con = ConnectionFactory.getConnection();
 
 		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
+			String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.codempresa "
+					+ " from hosp.tipoatendimento t left join hosp.tipoatendimento_grupo tg on (t.id = tg.codtipoatendimento) "
+					+ " where tg.codgrupo = ? and upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? order by t.desctipoatendimento";
+
+			stm = con.prepareStatement(sql);
 			stm.setInt(1, grupo.getIdGrupo());
 			stm.setString(2, "%" + descricao.toUpperCase() + "%");
 			ResultSet rs = stm.executeQuery();
+
+			List<TipoAtendimentoBean> lista = new ArrayList<>();
 
 			while (rs.next()) {
 				TipoAtendimentoBean tipo1 = new TipoAtendimentoBean();
@@ -235,6 +239,7 @@ public class TipoAtendimentoDAO {
 
 				lista.add(tipo1);
 			}
+			return lista;
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
@@ -246,8 +251,6 @@ public class TipoAtendimentoDAO {
 				System.exit(1);
 			}
 		}
-
-		return lista;
 	}
 
 	public boolean alterarTipo(TipoAtendimentoBean tipo)
