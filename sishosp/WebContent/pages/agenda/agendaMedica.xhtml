@@ -19,16 +19,15 @@
 		</div>
 		<h:form id="formAgendaMedica">
 
-			<center>
-				<b:messages value="Error" id="msgFeriado"></b:messages>
-			</center>
+			<b:row>
+				<b:column span="1">
+					<h:outputLabel value="Paciente" />
+				</b:column>
 
-			<div class="form-group row">
-				<h:outputLabel value="Paciente" styleClass="col-sm-1 control-label" />
-				<div class="col-sm-4">
+				<b:column span="3">
 					<p:outputPanel id="outPa">
 						<p:autoComplete value="#{AgendaController.agenda.paciente}"
-							size="60" converter="conPaciente"
+							size="40" converter="conPaciente"
 							completeMethod="#{PacienteController.listaPacienteAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
@@ -40,24 +39,24 @@
 
 						</p:autoComplete>
 					</p:outputPanel>
-				</div>
-				<div class="col-sm-1">
+				</b:column>
+
+				<b:column span="1">
 					<p:commandButton id="btBPa"
 						styleClass="btn btn-primary text-center"
 						action="#{AgendaController.limparNaBuscaPaciente()}"
-						icon="ui-icon-search" style="margin-left:-20px;height:25px"
-						update=":formConsuPac" onclick="PF('dlgConsuPac').show();" />
-				</div>
+						icon="ui-icon-search" style="height:25px" update=":formConsuPac"
+						onclick="PF('dlgConsuPac').show();" />
+				</b:column>
 
+				<b:column span="1">
+					<h:outputLabel for="prog" value="Programa" />
+				</b:column>
 
-
-
-				<h:outputLabel for="prog" value="Programa"
-					styleClass="col-sm-1 control-label" />
-				<div class="col-sm-4">
+				<b:column span="3">
 					<p:outputPanel id="outProg">
 						<p:autoComplete value="#{AgendaController.agenda.programa}"
-							size="60" converter="conPrograma"
+							size="40" converter="conPrograma"
 							disabled="#{AgendaController.agenda.paciente==null}"
 							completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
 							effect="fade" var="theme" forceSelection="true"
@@ -70,20 +69,28 @@
 
 						</p:autoComplete>
 					</p:outputPanel>
-				</div>
-				<div class="col-sm-1">
+				</b:column>
+
+				<b:column span="1">
 					<p:commandButton id="btBusPr"
 						styleClass="btn btn-primary text-center"
 						disabled="#{AgendaController.agenda.paciente==null}"
-						style="margin-left:-20px;height:25px" icon="ui-icon-search"
+						style="height:25px" icon="ui-icon-search"
 						action="#{AgendaController.limparNaBuscaPrograma()}"
 						update=":formConsuProg" onclick="PF('dlgConsuProg').show();" />
-				</div>
-				<h:outputLabel for="grupo" value="Grupo"
-					styleClass="col-sm-1 control-label" />
-				<div class="col-sm-4">
+				</b:column>
+
+			</b:row>
+
+			<b:row>
+
+				<b:column span="1">
+					<h:outputLabel for="grupo" value="Grupo" />
+				</b:column>
+
+				<b:column span="3">
 					<p:outputPanel id="outGrupo">
-						<p:autoComplete value="#{AgendaController.agenda.grupo}" size="60"
+						<p:autoComplete value="#{AgendaController.agenda.grupo}" size="40"
 							converter="conGrupo"
 							disabled="#{AgendaController.agenda.programa==null}"
 							completeMethod="#{AgendaController.listaGrupoAutoComplete}"
@@ -97,21 +104,25 @@
 
 						</p:autoComplete>
 					</p:outputPanel>
-				</div>
-				<div class="col-sm-1">
+				</b:column>
+
+				<b:column span="1">
 					<p:commandButton id="btBusGr"
-						styleClass="btn btn-primary text-center"
-						style="margin-left:-20px;height:25px" icon="ui-icon-search"
+						styleClass="btn btn-primary text-center" style="height:25px"
+						icon="ui-icon-search"
 						disabled="#{AgendaController.agenda.programa==null}"
 						action="#{AgendaController.limparNaBuscaGrupo()}"
 						update=":formAgendaMedica" onclick="PF('dlgConsuGrop').show();" />
-				</div>
-				<h:outputLabel for="tipoAt" value="Tipo Atendimento"
-					styleClass="col-sm-1 control-label" />
-				<div class="col-sm-4">
+				</b:column>
+
+				<b:column span="1">
+					<h:outputLabel for="tipoAt" value="Tipo Atendimento" />
+				</b:column>
+
+				<b:column span="3">
 					<p:outputPanel id="outTipoAt">
 						<p:autoComplete value="#{AgendaController.agenda.tipoAt}"
-							size="60" converter="conTipoAtendimento"
+							size="40" converter="conTipoAtendimento"
 							disabled="#{AgendaController.agenda.grupo==null}"
 							completeMethod="#{AgendaController.listaTipoAtAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
@@ -122,17 +133,19 @@
 							listener="#{AgendaController.limparNaBuscaTipo()}" /> -->
 						</p:autoComplete>
 					</p:outputPanel>
-				</div>
-				<div class="col-sm-1">
+				</b:column>
+
+				<b:column span="1">
 					<p:commandButton id="btBusTi"
-						styleClass="btn btn-primary text-center"
-						style="margin-left:-20px;height:25px" icon="ui-icon-search"
+						styleClass="btn btn-primary text-center" style="height:25px"
+						icon="ui-icon-search"
 						disabled="#{AgendaController.agenda.grupo==null}"
 						action="#{AgendaController.limparNaBuscaTipo()}"
 						update=":formAgendaMedica" onclick="PF('dlgConsuTipoAt').show();" />
-				</div>
+				</b:column>
 
-			</div>
+			</b:row>
+
 
 			<p:panelGrid columns="3" styleClass="semBorda"
 				style="margin-bottom: 10px;">
@@ -211,16 +224,15 @@
 				icon="glyphicon glyphicon-list-alt"
 				action="#{AgendaController.verAgenda()}"
 				update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd,
-						 :formAgendaMedica:outlAgendados, :formAgendaMedica:dtAgData,
-						 :formAgendaMedica:msgFeriado" />
+						 :formAgendadosData:outlAgendados, :formAgendadosData:dtAgData" />
 
 			<b:commandButton value="Agendados na Data"
 				style="margin-top: 15px;margin-left:15px"
 				icon="glyphicon glyphicon-list-alt"
 				action="#{AgendaController.verAgenda()}"
-				update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd,
-						 :formAgendaMedica:outlAgendados, :formAgendaMedica:dtAgData,
-						 :formAgendaMedica:msgFeriado" />
+				oncomplete="PF('dlgAgendadosData').show();"
+				update=":formAgendadosData,
+						 :formAgendadosData:outlAgendados, :formAgendadosData:dtAgData" />
 
 			<div class="form-group row">
 				<div class="col-sm-12">
@@ -285,60 +297,27 @@
 					</p:column>
 				</p:dataTable>
 
-				<p:panelGrid columns="2">
-					<h:outputLabel value="Agendados na Data" />
-					<h:outputLabel id="outlAgendados"
-						value="#{AgendaController.agenda.dataAtendimento}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputLabel>
-				</p:panelGrid>
-				<p:dataTable id="dtAgData" var="agendaD"
-					value="#{AgendaController.listaAgendamentosData}"
-					resizableColumns="true" emptyMessage="Sem registros.">
-					<p:column headerText="Cod.">
-						<h:outputLabel value="#{agendaD.idAgenda}" />
-					</p:column>
-
-					<p:column headerText="Data">
-						<h:outputLabel value="#{agendaD.dataAtendimento}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputLabel>
-					</p:column>
-
-					<p:column headerText="Pront.">
-						<h:outputLabel value="#{agendaD.paciente.id_paciente}" />
-					</p:column>
-
-					<p:column headerText="Paciente">
-						<h:outputLabel value="#{agendaD.paciente.nome}" />
-					</p:column>
-
-					<p:column headerText="Tipo">
-						<h:outputLabel value="#{agendaD.tipoAt.descTipoAt}" />
-					</p:column>
-				</p:dataTable>
 			</p:panelGrid>
 
 			<center>
-				<p:panelGrid columns="4" styleClass="semBorda">
+				<b:messages value="Error" id="msgFeriado"></b:messages>
+			</center>
 
-					<b:commandButton value="Gravar" icon="glyphicon-ok"
-						action="#{AgendaController.gravarAgenda()}"
-						update=":formAgendaMedica" />
+			<br></br>
 
-					<b:commandButton value="Consultar" icon="glyphicon-search"
-						action="/pages/agenda/consAgendamentos.xhtml?faces-redirect=true" />
+			<center>
 
-					<b:commandButton value="Limpar" icon="glyphicon-remove-sign"
-						actionListener="#{AgendaController.limparDados()}"
-						update=":formAgendaMedica" />
+				<b:commandButton value="Gravar" look="success" size="sm" id="b1"
+					icon="glyphicon-ok" action="#{AgendaController.gravarAgenda()}"
+					update=":formAgendaMedica" style="float:left" />
 
-					<b:commandButton value="Voltar" icon="glyphicon-remove-circle"
-						style="width:80px;" update=":formAgendaMedica"
-						actionListener="#{AgendaController.limparDados()}"
-						action="/pages/comum/selecaoSistema.xhtml?faces-redirect=true" />
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					size="sm" immediate="true" look="info" style="float:right"
+					update=":formAgendaMedica"
+					actionListener="#{AgendaController.limparDados()}"
+					action="/pages/comum/selecaoSistema2.xhtml?faces-redirect=true">
+				</b:commandButton>
 
-				</p:panelGrid>
 			</center>
 		</h:form>
 
@@ -537,6 +516,42 @@
 				</p:dataTable>
 			</h:form>
 		</p:dialog>
+
+		<p:dialog header="Agendados na Data" widgetVar="dlgAgendadosData"
+			modal="true">
+			<h:form id="formAgendadosData">
+				<p:panelGrid columns="2">
+					<h:outputLabel value="Agendados na Data" />
+					<h:outputLabel id="outlAgendados"
+						value="#{AgendaController.agenda.dataAtendimento}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+				</p:panelGrid>
+				<p:dataTable id="dtAgData" var="agendaD"
+					value="#{AgendaController.listaAgendamentosData}"
+					resizableColumns="true" emptyMessage="Sem registros.">
+
+					<p:column headerText="Data">
+						<h:outputLabel value="#{agendaD.dataAtendimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputLabel>
+					</p:column>
+
+					<p:column headerText="Pront.">
+						<h:outputLabel value="#{agendaD.paciente.id_paciente}" />
+					</p:column>
+
+					<p:column headerText="Paciente">
+						<h:outputLabel value="#{agendaD.paciente.nome}" />
+					</p:column>
+
+					<p:column headerText="Tipo">
+						<h:outputLabel value="#{agendaD.tipoAt.descTipoAt}" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
 	</ui:define>
 </ui:composition>
 </html>

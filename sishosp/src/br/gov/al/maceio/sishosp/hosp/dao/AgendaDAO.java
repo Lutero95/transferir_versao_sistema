@@ -257,15 +257,9 @@ public class AgendaDAO {
 			stm.setString(3, agenda.getTurno().toUpperCase());
 			stm.setInt(4, mes + 1);
 			ResultSet rs = stm.executeQuery();
-			System.out.println("Profissional: "
-					+ agenda.getProfissional().getIdProfissional());
-			System.out.println("Dia: " + diaSemana);
-			System.out.println("Turno: " + agenda.getTurno());
-			System.out.println("Mês: " + (mes + 1));
 
 			while (rs.next()) {
 				id = rs.getInt("id_configagenda");
-				System.out.println("ID: " + id);
 			}
 			if (id == 0) {
 				return false;
@@ -285,7 +279,6 @@ public class AgendaDAO {
 
 	public boolean gravarAgenda(AgendaBean agenda,
 			List<AgendaBean> listaNovosAgendamentos) throws ProjetoException {
-
 		String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
 				+ " codconvenio, dtaatende, horaatende, situacao, codatendente, dtamarcacao, codtipoatendimento,"
 				+ " turno, codequipe, observacao, ativo, codempresa, codgrupo)"
@@ -327,13 +320,10 @@ public class AgendaDAO {
 			int idAgend = 0;
 			if (rs.next()) {
 				idAgend = rs.getInt("id_atendimento");
-				gravarAgendaAtendimento1(agenda, idAgend);
 			}
-
 			// RETIREI O CODPROCEDIMENTO
 			String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
 					+ " cbo) VALUES  (?, ?, ?)";
-			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql2);
 			if (agenda.getProfissional().getIdProfissional() != null) {
 				ps.setInt(1, agenda.getProfissional().getIdProfissional());
@@ -348,11 +338,12 @@ public class AgendaDAO {
 				}
 			}
 
-			ps.execute();
+			ps.executeUpdate();
 			con.commit();
 
 			return true;
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -364,6 +355,7 @@ public class AgendaDAO {
 		}
 	}
 
+	// RETIREI, SEM USO
 	public void gravarAgendaAtendimento1(AgendaBean agenda, int idAgendamento)
 			throws ProjetoException {
 
