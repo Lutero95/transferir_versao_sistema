@@ -146,115 +146,197 @@
 
 			</b:row>
 
+			<b:row>
+				<b:column span="1">
+					<h:outputLabel value="Profissional"
+						rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
+				</b:column>
 
-			<p:panelGrid columns="3" styleClass="semBorda"
-				style="margin-bottom: 10px;">
+				<b:column span="3">
+					<p:outputPanel id="outProf"
+						rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
+						<p:autoComplete value="#{AgendaController.agenda.profissional}"
+							size="40" converter="conProfissional"
+							completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descricaoProf}">
+							<p:ajax event="itemSelect" update=":formAgendaMedica" />
+						</p:autoComplete>
+					</p:outputPanel>
+				</b:column>
 
-				<h:outputLabel value="Profissional"
-					rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
-				<p:outputPanel id="outProf"
-					rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
-					<p:autoComplete value="#{AgendaController.agenda.profissional}"
-						size="60" converter="conProfissional"
-						completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
-						effect="fade" var="theme" forceSelection="true" minQueryLength="1"
-						itemValue="#{theme}" itemLabel="#{theme.descricaoProf}">
-						<p:ajax event="itemSelect" update=":formAgendaMedica" />
-					</p:autoComplete>
+				<b:column span="1">
+					<p:commandButton id="btBusProf"
+						styleClass="btn btn-primary text-center" icon="ui-icon-search"
+						style="height:25px;"
+						disabled="#{AgendaController.agenda.tipoAt==null}"
+						action="#{AgendaController.limparNaBuscaEquipeProf()}"
+						update=":formConsuProf" onclick="PF('dlgConsuProf').show();"
+						rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
+				</b:column>
+
+				<b:column span="1">
+					<h:outputLabel for="equipe" value="Equipe"
+						rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
+				</b:column>
+
+				<b:column span="3">
+					<p:outputPanel id="outEquipe"
+						rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
+						<p:autoComplete value="#{AgendaController.agenda.equipe}"
+							size="40" converter="conEquipe"
+							completeMethod="#{AgendaController.listaEquipeAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descEquipe}">
+							<p:ajax event="itemSelect" update=":formAgendaMedica" />
+						</p:autoComplete>
+					</p:outputPanel>
+				</b:column>
+
+				<b:column span="1">
+					<p:commandButton id="btBusEqui"
+						disabled="#{AgendaController.agenda.tipoAt==null}"
+						styleClass="btn btn-primary text-center" icon="ui-icon-search"
+						style="height:25px" onclick="PF('dlgConsuEquipe').show();"
+						update=":formConsuEquipe"
+						rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
+				</b:column>
+
+			</b:row>
+
+			<b:row>
+
+				<b:column span="1">
+					<h:outputLabel for="obs" value="Observação" />
+				</b:column>
+
+				<b:column span="7">
+					<b:inputTextarea id="obs" rows="1"
+						value="#{AgendaController.agenda.observacao}" autoResize="false" />
+				</b:column>
+
+			</b:row>
+
+			<b:row>
+
+				<b:column span="1">
+					<h:outputLabel value="Data para Atendimento" />
+				</b:column>
+
+				<b:column span="4">
+					<p:selectOneRadio required="false"
+						requiredMessage="Escolha o tipo de período"
+						value="#{AgendaController.tipoData}">
+						<f:selectItem itemLabel="Data única" itemValue="U" />
+						<f:selectItem itemLabel="Intervalo de datas" itemValue="I" />
+						<p:ajax
+							update="outdata, outdata2, outdata3, outdataa, outQtd, outMax, btnver"></p:ajax>
+					</p:selectOneRadio>
+				</b:column>
+
+			</b:row>
+			<!-- DATA ÚNICA -->
+			<p:outputLabel id="outdata">
+				<p:calendar rendered="#{AgendaController.tipoData == 'U'}"
+					style="margin-left:15px"
+					value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
+					locale="pt" navigator="true" mask="true" showOn="button"
+					pattern="dd/MM/yyyy" />
+			</p:outputLabel>
+
+			<!-- INTERVALO DE DATAS -->
+			<p:outputLabel id="outdata2">
+				<p:calendar rendered="#{AgendaController.tipoData == 'I'}"
+					style="margin-left:15px"
+					value="#{AgendaController.agenda.dataAtendimento}" id="dtagen2"
+					locale="pt" navigator="true" mask="true" showOn="button"
+					pattern="dd/MM/yyyy" />
+			</p:outputLabel>
+
+			<p:outputLabel id="outdataa">
+				<h:outputLabel value="a"
+					rendered="#{AgendaController.tipoData == 'I'}" />
+			</p:outputLabel>
+
+			<p:outputLabel id="outdata3">
+				<p:calendar rendered="#{AgendaController.tipoData == 'I'}"
+					value="#{AgendaController.agenda.dataAtendimentoFinal}"
+					id="dtagen3" locale="pt" navigator="true" mask="true"
+					showOn="button" pattern="dd/MM/yyyy" />
+			</p:outputLabel>
+
+			<b:row>
+
+				<p:outputPanel>
+					<b:column span="1">
+						<h:outputLabel for="turno" value="Turno" style="margin-top:10px" />
+					</b:column>
+					<b:column span="2">
+						<p:selectOneMenu value="#{AgendaController.agenda.turno}">
+							<f:selectItem itemLabel="Manhã" itemValue="M" />
+							<f:selectItem itemLabel="Tarde" itemValue="T" />
+							<p:ajax event="change" process="@this dtagen"
+								update=":formAgendaMedica:msgFeriado"
+								listener="#{AgendaController.verificaDisponibilidadeData()}" />
+						</p:selectOneMenu>
+					</b:column>
 				</p:outputPanel>
-				<p:commandButton id="btBusProf"
-					styleClass="btn btn-primary text-center" icon="ui-icon-search"
-					style="margin-left:10px;height:25px;"
-					disabled="#{AgendaController.agenda.tipoAt==null}"
-					action="#{AgendaController.limparNaBuscaEquipeProf()}"
-					update=":formConsuProf" onclick="PF('dlgConsuProf').show();"
-					rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
 
+				<b:column span="2">
 
-				<h:outputLabel for="equipe" value="Equipe"
-					rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
-				<p:outputPanel id="outEquipe"
-					rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
-					<p:autoComplete value="#{AgendaController.agenda.equipe}" size="60"
-						converter="conEquipe"
-						completeMethod="#{AgendaController.listaEquipeAutoComplete}"
-						effect="fade" var="theme" forceSelection="true" minQueryLength="1"
-						itemValue="#{theme}" itemLabel="#{theme.descEquipe}">
-						<p:ajax event="itemSelect" update=":formAgendaMedica" />
-					</p:autoComplete>
-				</p:outputPanel>
-				<p:commandButton id="btBusEqui"
-					disabled="#{AgendaController.agenda.tipoAt==null}"
-					styleClass="btn btn-primary text-center" icon="ui-icon-search"
-					style="margin-left:10px;height:25px"
-					onclick="PF('dlgConsuEquipe').show();" update=":formConsuEquipe"
-					rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
-
-			</p:panelGrid>
-
-			<h:outputLabel for="obs" value="Observação"
-				styleClass="col-sm-1 control-label" />
-			<div class="col-sm-5">
-				<b:inputTextarea id="obs"
-					value="#{AgendaController.agenda.observacao}" autoResize="false" />
-			</div>
-
-			<h:outputLabel value="Data para Atendimento"
-				styleClass="col-sm-1 control-label" />
-			<br />
-			<p:calendar value="#{AgendaController.agenda.dataAtendimento}"
-				id="dtagen" locale="pt" navigator="true" mask="true" showOn="button"
-				pattern="dd/MM/yyyy" />
-
-
-			<p:outputPanel style="margin-top:10px">
-				<h:outputLabel for="turno" value="Turno"
-					styleClass="col-sm-1 control-label" />
-				<p:selectOneMenu value="#{AgendaController.agenda.turno}">
-					<f:selectItem itemLabel="Manhã" itemValue="M" />
-					<f:selectItem itemLabel="Tarde" itemValue="T" />
-					<p:ajax event="change" process="@this dtagen"
-						update=":formAgendaMedica:msgFeriado"
-						listener="#{AgendaController.verificaDisponibilidadeData()}" />
-				</p:selectOneMenu>
-			</p:outputPanel>
-
-			<b:commandButton value="Ver agenda"
-				style="margin-top: 15px;margin-left:15px"
-				icon="glyphicon glyphicon-list-alt"
-				action="#{AgendaController.verAgenda()}"
-				update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd,
+					<b:commandButton value="Ver agenda" id="btnver"
+						disabled="#{AgendaController.tipoData == 'I'}"
+						icon="glyphicon glyphicon-list-alt"
+						action="#{AgendaController.verAgenda()}"
+						update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd,
 						 :formAgendadosData:outlAgendados, :formAgendadosData:dtAgData" />
+				</b:column>
 
-			<b:commandButton value="Agendados na Data"
-				style="margin-top: 15px;margin-left:15px"
-				icon="glyphicon glyphicon-list-alt"
-				action="#{AgendaController.verAgenda()}"
-				oncomplete="PF('dlgAgendadosData').show();"
-				update=":formAgendadosData,
+				<b:column span="2">
+					<b:commandButton value="Agendados na Data"
+						icon="glyphicon glyphicon-list-alt"
+						action="#{AgendaController.verAgenda()}"
+						oncomplete="PF('dlgAgendadosData').show();"
+						update=":formAgendadosData,
 						 :formAgendadosData:outlAgendados, :formAgendadosData:dtAgData" />
+				</b:column>
 
-			<div class="form-group row">
-				<div class="col-sm-12">
-					<p:outputPanel id="outQtd">
-						<h:outputLabel for="qtd" value="Quantidade" />
-						<br />
+			</b:row>
+
+			<b:row>
+
+				<p:outputPanel id="outQtd">
+
+					<b:column span="1">
+						<h:outputLabel for="qtd" value="Quantidade"
+							rendered="#{AgendaController.tipoData == 'U'}"
+							style="margin-top:10px" />
+					</b:column>
+
+					<b:column span="2">
 						<h:inputText id="qtd" value="#{AgendaController.agenda.qtd}"
-							readonly="true" />
-					</p:outputPanel>
+							rendered="#{AgendaController.tipoData == 'U'}" readonly="true"
+							style="margin-top:10px" />
+					</b:column>
+				</p:outputPanel>
 
-				</div>
+				<p:outputPanel id="outMax">
 
-				<div class="col-sm-12">
-					<p:outputPanel id="outMax" style="margin=left:15px">
-						<h:outputLabel for="max" value="Máximo" />
-						<br />
+					<b:column span="1">
+						<h:outputLabel for="max" value="Máximo" style="margin-top:10px"
+							rendered="#{AgendaController.tipoData == 'U'}" />
+					</b:column>
+
+					<b:column span="1">
 						<h:inputText id="max" value="#{AgendaController.agenda.max}"
-							style="width: 40px" readonly="true" />
-					</p:outputPanel>
-				</div>
+							rendered="#{AgendaController.tipoData == 'U'}"
+							style="width: 40px;margin-top:10px" readonly="true" />
+					</b:column>
+				</p:outputPanel>
 
-			</div>
+			</b:row>
 
 			<b:commandButton value="Confirmar" style="margin-top:5px;"
 				update=":formAgendaMedica:dtNovosAg" icon="glyphicon-ok"

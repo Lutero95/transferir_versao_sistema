@@ -8,6 +8,7 @@ public class AgendaBean implements Serializable {
 	private Integer idAgenda;
 	private boolean prontoGravar;
 	private Date dataAtendimento;
+	private Date dataAtendimentoFinal;
 	private String turno;
 	private String observacao;
 	private Integer qtd;
@@ -39,6 +40,7 @@ public class AgendaBean implements Serializable {
 		this.situacao = new String();
 		this.observacao = new String();
 		this.dataAtendimento = null;
+		this.dataAtendimentoFinal = null;
 		this.dataMarcacao = null;
 		this.qtd = null;
 		this.max = null;
@@ -179,6 +181,14 @@ public class AgendaBean implements Serializable {
 
 	public void setAtivo(String ativo) {
 		this.ativo = ativo;
+	}
+
+	public Date getDataAtendimentoFinal() {
+		return dataAtendimentoFinal;
+	}
+
+	public void setDataAtendimentoFinal(Date dataAtendimentoFinal) {
+		this.dataAtendimentoFinal = dataAtendimentoFinal;
 	}
 
 }

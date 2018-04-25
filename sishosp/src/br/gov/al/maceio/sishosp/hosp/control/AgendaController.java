@@ -1,6 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +55,7 @@ public class AgendaController implements Serializable {
 	private List<TipoAtendimentoBean> listaTipos;
 	private List<TipoAtendimentoBean> listaTiposPorGrupo;
 	private List<EquipeBean> listaEquipePorTipoAtendimento;
+	private String tipoData;
 	TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 
 	private String situacao;
@@ -75,6 +79,7 @@ public class AgendaController implements Serializable {
 		this.situacao = new String();
 		listaTiposPorGrupo = new ArrayList<TipoAtendimentoBean>();
 		listaEquipePorTipoAtendimento = new ArrayList<EquipeBean>();
+		tipoData = "U";
 	}
 
 	public void limparDados() {
@@ -194,8 +199,16 @@ public class AgendaController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
-		boolean ok = aDao
-				.gravarAgenda(this.agenda, this.listaNovosAgendamentos);
+
+		boolean ok = false;
+
+		if (tipoData.equals("U")) {
+			ok = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos);
+		} else if (tipoData.equals("I")) {
+			ok = aDao.gravarAgendaIntervalo(this.agenda,
+					this.listaNovosAgendamentos);
+		}
+
 		if (ok) {
 			limparDados();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -571,6 +584,14 @@ public class AgendaController implements Serializable {
 
 	public void setHabilitarDetalhes(boolean habilitarDetalhes) {
 		this.habilitarDetalhes = habilitarDetalhes;
+	}
+
+	public String getTipoData() {
+		return tipoData;
+	}
+
+	public void setTipoData(String tipoData) {
+		this.tipoData = tipoData;
 	}
 
 }
