@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ public class AgendaController implements Serializable {
 	private List<TipoAtendimentoBean> listaTiposPorGrupo;
 	private List<EquipeBean> listaEquipePorTipoAtendimento;
 	private String tipoData;
+	private List<AgendaBean> listaHorariosOcupados;
 	TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 
 	private String situacao;
@@ -80,6 +82,7 @@ public class AgendaController implements Serializable {
 		listaTiposPorGrupo = new ArrayList<TipoAtendimentoBean>();
 		listaEquipePorTipoAtendimento = new ArrayList<EquipeBean>();
 		tipoData = "U";
+		listaHorariosOcupados = new ArrayList<AgendaBean>();
 	}
 
 	public void limparDados() {
@@ -155,6 +158,86 @@ public class AgendaController implements Serializable {
 
 	}
 
+	//walter verificar
+	public void verAgendaIntervalo() throws ProjetoException {
+		if (this.agenda.getPaciente() == null
+				|| this.agenda.getPrograma() == null
+				|| this.agenda.getGrupo() == null
+				|| this.agenda.getTipoAt() == null
+				|| this.agenda.getDataAtendimento() == null
+				|| this.agenda.getDataAtendimentoFinal() == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Campo(s) obrigatório(s) em falta!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		} else {
+
+			Date data = null;
+			boolean dtEspecifica = false;
+			boolean diaSem = false;
+			boolean limitePorTipoAtend = false;
+
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			df.setLenient(false);
+			Date d1 = agenda.getDataAtendimento();
+			Date d2 = agenda.getDataAtendimentoFinal();
+			Long dt = (d2.getTime() - d1.getTime()) + 3600000; // 1 hora para
+																// compensar
+																// horário
+																// de verão
+
+			dt = (dt / 86400000L);
+			System.out.println("QTD DIAS: "+dt);
+			for (int i = 0; i < dt; i++) {
+
+				Calendar c = Calendar.getInstance();
+				c.setTime(agenda.getDataAtendimento());
+				c.add(Calendar.DATE, +i);
+				System.out.println("DATA: "+c);
+
+				agenda.setDataAtendimento(c.getTime());
+				System.out.println("DATA2: "+agenda.getDataAtendimento());
+
+				dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
+				diaSem = aDao.buscarDiaSemana(this.agenda);
+				System.out.println("ESPECIFICA: "+dtEspecifica);
+				System.out.println("DIA SEMANA: "+diaSem);
+
+				if (dtEspecifica == true || diaSem == true) {
+
+					this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));
+					this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
+					System.out.println("MAX: "+agenda.getMax());
+					System.out.println("QTD: "+agenda.getQtd());
+
+					if (agenda.getMax() > agenda.getQtd()) {
+						addListaNovosAgendamentos();
+					} else {
+						listaHorariosOcupados.add(agenda);
+					}
+
+				}
+
+			}
+
+			limitePorTipoAtend = aDao.buscarTabTipoAtendAgenda(this.agenda);
+
+			if (dtEspecifica && limitePorTipoAtend) {
+				listarAgendamentosData();
+				this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));
+				this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
+			} else if (diaSem && limitePorTipoAtend) {
+				listarAgendamentosData();
+				this.agenda.setMax(aDao.verQtdMaxAgendaEspec(this.agenda));
+				this.agenda.setQtd(aDao.verQtdAgendadosEspec(this.agenda));
+			} else {
+				listarAgendamentosData();
+				this.agenda.setMax(0);
+				this.agenda.setQtd(0);
+			}
+		}
+	}
+
 	public void addListaNovosAgendamentos() {
 		this.listaNovosAgendamentos.add(this.agenda);
 		// this.agenda = new AgendaBean();
@@ -204,10 +287,11 @@ public class AgendaController implements Serializable {
 
 		if (tipoData.equals("U")) {
 			ok = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos);
-		} else if (tipoData.equals("I")) {
-			ok = aDao.gravarAgendaIntervalo(this.agenda,
-					this.listaNovosAgendamentos);
-		}
+		} 
+//		else if (tipoData.equals("I")) {
+//			ok = aDao.gravarAgendaIntervalo(this.agenda,
+//					this.listaNovosAgendamentos);
+//		}
 
 		if (ok) {
 			limparDados();
@@ -592,6 +676,14 @@ public class AgendaController implements Serializable {
 
 	public void setTipoData(String tipoData) {
 		this.tipoData = tipoData;
+	}
+
+	public List<AgendaBean> getListaHorariosOcupados() {
+		return listaHorariosOcupados;
+	}
+
+	public void setListaHorariosOcupados(List<AgendaBean> listaHorariosOcupados) {
+		this.listaHorariosOcupados = listaHorariosOcupados;
 	}
 
 }

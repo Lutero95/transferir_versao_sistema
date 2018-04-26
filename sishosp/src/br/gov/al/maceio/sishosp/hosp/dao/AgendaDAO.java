@@ -166,6 +166,7 @@ public class AgendaDAO {
 		}
 	}
 
+	// argemiro
 	public boolean buscarDataEspecifica(AgendaBean agenda)
 			throws ProjetoException {
 		int id = 0;
@@ -357,8 +358,40 @@ public class AgendaDAO {
 		}
 	}
 
-	public boolean gravarAgendaIntervalo(AgendaBean agenda,
+	public boolean preparaGravarAgendaIntervalo(AgendaBean agenda,
 			List<AgendaBean> listaNovosAgendamentos) throws ProjetoException {
+
+		con = ConnectionFactory.getConnection();
+
+		try {
+
+			ArrayList<AgendaBean> horariosErrado = gravarAgendaIntervalo(
+					agenda, listaNovosAgendamentos, con);
+
+			if (horariosErrado.size() > 0) {
+				con.rollback();
+			} else {
+				con.commit();
+			}
+
+			return true;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+
+	//SEM USO, RETIREI
+	public ArrayList<AgendaBean> gravarAgendaIntervalo(AgendaBean agenda,
+			List<AgendaBean> listaNovosAgendamentos, Connection con2)
+			throws ProjetoException {
 
 		Date data = null;
 
@@ -369,6 +402,8 @@ public class AgendaDAO {
 		Long dt = (d2.getTime() - d1.getTime()) + 3600000; // 1 hora para
 															// compensar horário
 															// de verão
+		ArrayList<AgendaBean> horariosErrados = new ArrayList<AgendaBean>();
+
 		dt = (dt / 86400000L);
 
 		try {
@@ -380,6 +415,11 @@ public class AgendaDAO {
 				c.add(Calendar.DATE, +i);
 				data = c.getTime();
 
+				agenda.setDataAtendimento(data);
+				if (buscarDataEspecifica(agenda) == false) {
+					horariosErrados.add(agenda);
+				}
+
 				String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
 						+ " codconvenio, dtaatende, horaatende, situacao, codatendente, dtamarcacao, codtipoatendimento,"
 						+ " turno, codequipe, observacao, ativo, codempresa, codgrupo)"
@@ -388,8 +428,7 @@ public class AgendaDAO {
 						+ " ?, ?, ?, ?, ?,"
 						+ " ?, ?, ?, ?, ?, ?) RETURNING id_atendimento;";
 
-				con = ConnectionFactory.getConnection();
-				ps = con.prepareStatement(sql);
+				ps = con2.prepareStatement(sql);
 				ps.setInt(1, agenda.getPaciente().getId_paciente());
 				if (agenda.getProfissional().getIdProfissional() != null) {
 					ps.setInt(2, agenda.getProfissional().getIdProfissional());
@@ -439,10 +478,11 @@ public class AgendaDAO {
 				}
 
 				ps.executeUpdate();
-			}
-			con.commit();
 
-			return true;
+			}
+
+			return horariosErrados;
+
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);

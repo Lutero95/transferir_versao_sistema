@@ -221,8 +221,26 @@
 
 			<b:row>
 
+				<p:outputPanel>
+					<b:column span="1">
+						<h:outputLabel for="turno" value="Turno" />
+					</b:column>
+					<b:column span="2">
+						<p:selectOneMenu value="#{AgendaController.agenda.turno}">
+							<f:selectItem itemLabel="Manhã" itemValue="M" />
+							<f:selectItem itemLabel="Tarde" itemValue="T" />
+							<p:ajax event="change" process="@this dtagen"
+								update=":formAgendaMedica:msgFeriado"
+								listener="#{AgendaController.verificaDisponibilidadeData()}" />
+						</p:selectOneMenu>
+					</b:column>
+				</p:outputPanel>
+			</b:row>
+
+			<b:row>
+
 				<b:column span="1">
-					<h:outputLabel value="Data para Atendimento" />
+					<h:outputLabel value="Data para Atendimento:" />
 				</b:column>
 
 				<b:column span="4">
@@ -243,7 +261,10 @@
 					style="margin-left:15px"
 					value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
 					locale="pt" navigator="true" mask="true" showOn="button"
-					pattern="dd/MM/yyyy" />
+					pattern="dd/MM/yyyy">
+					<p:ajax event="dateSelect" listener="#{AgendaController.verAgenda}"
+						process="@form @this" update="outQtd, outMax"></p:ajax>
+				</p:calendar>
 			</p:outputLabel>
 
 			<!-- INTERVALO DE DATAS -->
@@ -269,27 +290,12 @@
 
 			<b:row>
 
-				<p:outputPanel>
-					<b:column span="1">
-						<h:outputLabel for="turno" value="Turno" style="margin-top:10px" />
-					</b:column>
-					<b:column span="2">
-						<p:selectOneMenu value="#{AgendaController.agenda.turno}">
-							<f:selectItem itemLabel="Manhã" itemValue="M" />
-							<f:selectItem itemLabel="Tarde" itemValue="T" />
-							<p:ajax event="change" process="@this dtagen"
-								update=":formAgendaMedica:msgFeriado"
-								listener="#{AgendaController.verificaDisponibilidadeData()}" />
-						</p:selectOneMenu>
-					</b:column>
-				</p:outputPanel>
-
 				<b:column span="2">
 
 					<b:commandButton value="Ver agenda" id="btnver"
-						disabled="#{AgendaController.tipoData == 'I'}"
+						disabled="#{AgendaController.tipoData == 'U'}"
 						icon="glyphicon glyphicon-list-alt"
-						action="#{AgendaController.verAgenda()}"
+						action="#{AgendaController.verAgendaIntervalo()}"
 						update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd,
 						 :formAgendadosData:outlAgendados, :formAgendadosData:dtAgData" />
 				</b:column>
