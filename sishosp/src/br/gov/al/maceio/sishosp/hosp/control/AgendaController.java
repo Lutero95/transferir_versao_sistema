@@ -14,6 +14,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -57,6 +58,7 @@ public class AgendaController implements Serializable {
 	private List<TipoAtendimentoBean> listaTiposPorGrupo;
 	private List<EquipeBean> listaEquipePorTipoAtendimento;
 	private String tipoData;
+	private Boolean temLotado;
 	private List<AgendaBean> listaHorariosOcupados;
 	TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 
@@ -82,6 +84,7 @@ public class AgendaController implements Serializable {
 		listaTiposPorGrupo = new ArrayList<TipoAtendimentoBean>();
 		listaEquipePorTipoAtendimento = new ArrayList<EquipeBean>();
 		tipoData = "U";
+		temLotado = false;
 		listaHorariosOcupados = new ArrayList<AgendaBean>();
 	}
 
@@ -158,7 +161,16 @@ public class AgendaController implements Serializable {
 
 	}
 
-	//walter verificar
+	public void preparaConfirmar() throws ProjetoException {
+		if (tipoData.equals("U")) {
+			addListaNovosAgendamentos();
+		}
+		if (tipoData.equals("I")) {
+			verAgendaIntervalo();
+		}
+	}
+
+	// walter verificar
 	public void verAgendaIntervalo() throws ProjetoException {
 		if (this.agenda.getPaciente() == null
 				|| this.agenda.getPrograma() == null
@@ -176,68 +188,79 @@ public class AgendaController implements Serializable {
 			boolean dtEspecifica = false;
 			boolean diaSem = false;
 			boolean limitePorTipoAtend = false;
+			int j = 0;
 
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			df.setLenient(false);
 			Date d1 = agenda.getDataAtendimento();
 			Date d2 = agenda.getDataAtendimentoFinal();
-			Long dt = (d2.getTime() - d1.getTime()) + 3600000; // 1 hora para
-																// compensar
-																// horário
-																// de verão
+			Long dt = (d2.getTime() - d1.getTime());
 
 			dt = (dt / 86400000L);
-			System.out.println("QTD DIAS: "+dt);
+			System.out.println("QTD DIAS: " + dt);
 			for (int i = 0; i < dt; i++) {
 
 				Calendar c = Calendar.getInstance();
 				c.setTime(agenda.getDataAtendimento());
-				c.add(Calendar.DATE, +i);
-				System.out.println("DATA: "+c);
+				c.add(Calendar.DAY_OF_MONTH, +j);
+
+				j++;
 
 				agenda.setDataAtendimento(c.getTime());
-				System.out.println("DATA2: "+agenda.getDataAtendimento());
+				System.out.println("DATA2: " + agenda.getDataAtendimento());
+				System.out.println("J: " + j);
 
 				dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
 				diaSem = aDao.buscarDiaSemana(this.agenda);
-				System.out.println("ESPECIFICA: "+dtEspecifica);
-				System.out.println("DIA SEMANA: "+diaSem);
+				System.out.println("ESPECIFICA: " + dtEspecifica);
+				System.out.println("DIA SEMANA: " + diaSem);
 
 				if (dtEspecifica == true || diaSem == true) {
 
-					this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));
-					this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
-					System.out.println("MAX: "+agenda.getMax());
-					System.out.println("QTD: "+agenda.getQtd());
+					if (diaSem) {
+						this.agenda.setMax(aDao
+								.verQtdMaxAgendaEspec(this.agenda));
+						this.agenda.setQtd(aDao
+								.verQtdAgendadosEspec(this.agenda));
+					}
+					if (dtEspecifica) {
+						this.agenda.setMax(aDao
+								.verQtdMaxAgendaData(this.agenda));
+						this.agenda.setQtd(aDao
+								.verQtdAgendadosData(this.agenda));
+					}
+					System.out.println("MAX: " + agenda.getMax());
+					System.out.println("QTD: " + agenda.getQtd());
 
 					if (agenda.getMax() > agenda.getQtd()) {
 						addListaNovosAgendamentos();
 					} else {
+						System.out.println("Adicionou");
 						listaHorariosOcupados.add(agenda);
 					}
 
 				}
-
+			}
+			if (listaHorariosOcupados.size() > 0) {
+				System.out.println("Tamanho da lista: "+listaHorariosOcupados.size());
+				temLotado = true;
+				System.out.println("Tem Lotado: "+true);
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Não foi possível agendar, pois tem horários lotados! Clique em Visualizar Ocupados para ver.",
+						"Erro");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 
-			limitePorTipoAtend = aDao.buscarTabTipoAtendAgenda(this.agenda);
-
-			if (dtEspecifica && limitePorTipoAtend) {
-				listarAgendamentosData();
-				this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));
-				this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
-			} else if (diaSem && limitePorTipoAtend) {
-				listarAgendamentosData();
-				this.agenda.setMax(aDao.verQtdMaxAgendaEspec(this.agenda));
-				this.agenda.setQtd(aDao.verQtdAgendadosEspec(this.agenda));
-			} else {
-				listarAgendamentosData();
-				this.agenda.setMax(0);
-				this.agenda.setQtd(0);
-			}
 		}
 	}
 
+	public void carregarListaOcupados(){
+		RequestContext.getCurrentInstance().execute(
+				"PF('dlgOcupados').show();");
+		getListaHorariosOcupados();
+	}
+	
 	public void addListaNovosAgendamentos() {
 		this.listaNovosAgendamentos.add(this.agenda);
 		// this.agenda = new AgendaBean();
@@ -287,11 +310,11 @@ public class AgendaController implements Serializable {
 
 		if (tipoData.equals("U")) {
 			ok = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos);
-		} 
-//		else if (tipoData.equals("I")) {
-//			ok = aDao.gravarAgendaIntervalo(this.agenda,
-//					this.listaNovosAgendamentos);
-//		}
+		}
+		// else if (tipoData.equals("I")) {
+		// ok = aDao.gravarAgendaIntervalo(this.agenda,
+		// this.listaNovosAgendamentos);
+		// }
 
 		if (ok) {
 			limparDados();
@@ -684,6 +707,14 @@ public class AgendaController implements Serializable {
 
 	public void setListaHorariosOcupados(List<AgendaBean> listaHorariosOcupados) {
 		this.listaHorariosOcupados = listaHorariosOcupados;
+	}
+
+	public Boolean getTemLotado() {
+		return temLotado;
+	}
+
+	public void setTemLotado(Boolean temLotado) {
+		this.temLotado = temLotado;
 	}
 
 }

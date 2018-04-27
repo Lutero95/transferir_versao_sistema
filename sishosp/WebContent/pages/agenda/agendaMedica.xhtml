@@ -250,7 +250,7 @@
 						<f:selectItem itemLabel="Data única" itemValue="U" />
 						<f:selectItem itemLabel="Intervalo de datas" itemValue="I" />
 						<p:ajax
-							update="outdata, outdata2, outdata3, outdataa, outQtd, outMax, btnver"></p:ajax>
+							update="outdata, outdata2, outdata3, outdataa, outQtd, outMax"></p:ajax>
 					</p:selectOneRadio>
 				</b:column>
 
@@ -290,29 +290,6 @@
 
 			<b:row>
 
-				<b:column span="2">
-
-					<b:commandButton value="Ver agenda" id="btnver"
-						disabled="#{AgendaController.tipoData == 'U'}"
-						icon="glyphicon glyphicon-list-alt"
-						action="#{AgendaController.verAgendaIntervalo()}"
-						update=":formAgendaMedica:outMax, :formAgendaMedica:outQtd,
-						 :formAgendadosData:outlAgendados, :formAgendadosData:dtAgData" />
-				</b:column>
-
-				<b:column span="2">
-					<b:commandButton value="Agendados na Data"
-						icon="glyphicon glyphicon-list-alt"
-						action="#{AgendaController.verAgenda()}"
-						oncomplete="PF('dlgAgendadosData').show();"
-						update=":formAgendadosData,
-						 :formAgendadosData:outlAgendados, :formAgendadosData:dtAgData" />
-				</b:column>
-
-			</b:row>
-
-			<b:row>
-
 				<p:outputPanel id="outQtd">
 
 					<b:column span="1">
@@ -345,13 +322,29 @@
 			</b:row>
 
 			<b:commandButton value="Confirmar" style="margin-top:5px;"
-				update=":formAgendaMedica:dtNovosAg" icon="glyphicon-ok"
-				action="#{AgendaController.addListaNovosAgendamentos()}" />
+				update=":formAgendaMedica:dtNovosAg, btnOcupados, msgFeriado"
+				icon="glyphicon-ok" action="#{AgendaController.preparaConfirmar()}" />
 
 			<b:commandButton value="Limpar Busca"
 				style="margin-top:5px;margin-left:5px" icon="glyphicon-remove-sign"
 				actionListener="#{AgendaController.limparDados()}"
 				update=":formAgendaMedica" />
+
+			<b:commandButton value="Agendados na Data"
+				style="margin-top:5px;margin-left:5px"
+				icon="glyphicon glyphicon-list-alt"
+				action="#{AgendaController.verAgenda()}"
+				oncomplete="PF('dlgAgendadosData').show();"
+				update=":formAgendadosData,
+						 :formAgendadosData:outlAgendados, :formAgendadosData:dtAgData" />
+
+			<p:outputPanel id="btnOcupados">
+				<b:commandButton value="Visualizar Ocupados"
+					rendered="#{AgendaController.temLotado == true}"
+					style="margin-top:5px;" icon="glyphicon-remove-sign"
+					actionListener="#{AgendaController.carregarListaOcupados()}"
+					update=":frmOcupados" />
+			</p:outputPanel>
 
 
 			<p:panelGrid columns="1" styleClass="semBorda"
@@ -367,8 +360,8 @@
 					</p:column>
 
 					<p:column headerText="Turno">
-						<h:outputLabel value="MANHÃ" rendered="#{agend.turno == 'M'}" />
-						<h:outputLabel value="TARDE" rendered="#{agend.turno == 'T'}" />
+						<h:outputLabel value="Manhã" rendered="#{agend.turno == 'M'}" />
+						<h:outputLabel value="Tarde" rendered="#{agend.turno == 'T'}" />
 					</p:column>
 
 					<p:column headerText="Cód. Tipo Atend.">
@@ -637,6 +630,41 @@
 						<h:outputLabel value="#{agendaD.tipoAt.descTipoAt}" />
 					</p:column>
 				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Ocupados" widgetVar="dlgOcupados" modal="true">
+			<h:form id="frmOcupados">
+				<p:panelGrid columns="1" styleClass="semBorda"
+					style="margin-top:25px">
+					<p:dataTable id="dtOcupados" resizableColumns="true"
+						value="#{AgendaController.listaHorariosOcupados}" var="agend"
+						emptyMessage="Sem registros.">
+						<p:column headerText="Data">
+							<h:outputLabel value="#{agend.dataAtendimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputLabel>
+						</p:column>
+
+						<p:column headerText="Turno">
+							<h:outputLabel value="Manhã" rendered="#{agend.turno == 'M'}" />
+							<h:outputLabel value="Tarde" rendered="#{agend.turno == 'T'}" />
+						</p:column>
+
+						<p:column headerText="Cód. Tipo Atend.">
+							<h:outputLabel value="#{agend.tipoAt.idTipo}" />
+						</p:column>
+
+						<p:column headerText="Tipo de Atendimento">
+							<h:outputLabel value="#{agend.tipoAt.descTipoAt}" />
+						</p:column>
+
+						<p:column headerText="Observação">
+							<h:outputLabel value="#{agend.observacao}" />
+						</p:column>
+					</p:dataTable>
+
+				</p:panelGrid>
 			</h:form>
 		</p:dialog>
 
