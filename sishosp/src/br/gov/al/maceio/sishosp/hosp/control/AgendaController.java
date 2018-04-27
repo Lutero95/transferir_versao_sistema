@@ -188,7 +188,7 @@ public class AgendaController implements Serializable {
 			boolean dtEspecifica = false;
 			boolean diaSem = false;
 			boolean limitePorTipoAtend = false;
-			int j = 0;
+			//int j = 0;
 
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			df.setLenient(false);
@@ -202,13 +202,13 @@ public class AgendaController implements Serializable {
 
 				Calendar c = Calendar.getInstance();
 				c.setTime(agenda.getDataAtendimento());
-				c.add(Calendar.DAY_OF_MONTH, +j);
+				c.add(Calendar.DAY_OF_MONTH, 1);
 
-				j++;
+				
 
 				agenda.setDataAtendimento(c.getTime());
 				System.out.println("DATA2: " + agenda.getDataAtendimento());
-				System.out.println("J: " + j);
+//				System.out.println("J: " + j);
 
 				dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
 				diaSem = aDao.buscarDiaSemana(this.agenda);
