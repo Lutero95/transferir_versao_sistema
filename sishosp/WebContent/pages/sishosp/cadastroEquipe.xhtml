@@ -12,7 +12,6 @@
 	</f:metadata>
 
 	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
 
 		<div class="panel-body">
 			<div class="sub-header">
@@ -113,33 +112,42 @@
 			</h:form>
 		</div>
 
-		<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProfE"
-			modal="true" width="550px">
+		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProfE"
+			modal="true">
 			<h:form id="formConsuProfE">
 
-				<p:dataTable value="#{ProfissionalController.listaProfissional}"
-					id="dtTipoAt" resizableColumns="true" var="profi"
-					emptyMessage="Não existe nenhum tipo cadastrado!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{profi.idProfissional}" />
-					</p:column>
-					<p:column headerText="Profissional">
-						<p:outputLabel value="#{profi.descricaoProf}" />
-					</p:column>
-					<p:column headerText="Especialidade">
-						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
-					</p:column>
+				<b:dataTable value="#{ProfissionalController.listaProfissional}"
+					id="dtTipoAt" var="profi" lang="pt-br" display="Nenhum Profissional">
 
-					<p:column style="width:50px;text-align: center">
-						<p:commandButton process="@this" update="formCADU:tabela"
+					<h:column>
+						<f:facet name="header">
+                        Profissional
+                    </f:facet>
+						<p:outputLabel value="#{profi.descricaoProf}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Especialidade
+                    </f:facet>
+						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
+						<p:commandButton process="@this"
+							update=":formCADU:tabela, :formCADU:msgError"
 							icon="ui-icon-check" title="Selecionar"
 							action="#{EquipeController.equipe.addProfList()}"
 							onclick="PF('dlgConsuProfE').hide();">
 							<f:setPropertyActionListener value="#{profi}"
 								target="#{EquipeController.equipe.profAdd}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 	</ui:define>

@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
 public class EquipeBean implements Serializable {
 
 	private Integer codEquipe;
@@ -74,7 +77,27 @@ public class EquipeBean implements Serializable {
 	}
 
 	public void addProfList() {
-		this.profissionais.add(this.profAdd);
+		boolean existe = false;
+		if (profissionais.size() == 0) {
+			this.profissionais.add(this.profAdd);
+
+		} else {
+
+			for (int i = 0; i < profissionais.size(); i++) {
+				if (profissionais.get(i).getIdProfissional() == profAdd
+						.getIdProfissional()) {
+					existe = true;
+				}
+			}
+			if (existe == false) {
+				this.profissionais.add(this.profAdd);
+			} else {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Esse profissional já foi adicionado!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+
+		}
 	}
 
 	public void removeProfList() {

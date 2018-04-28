@@ -169,19 +169,23 @@
 			</div>
 
 		</h:form>
-		<p:dialog header="Consulta Equipes" widgetVar="dlgConsultEquipes"
-			modal="true" width="550px">
+		<p:dialog header="Consultar Equipes" widgetVar="dlgConsultEquipes"
+			modal="true">
 			<h:form id="formConsuEquipe">
-				<p:dataTable value="#{EquipeController.listaEquipe}" id="dtEquipe"
-					resizableColumns="true" var="equipe"
-					emptyMessage="Não existe nenhuma equipe cadastrada!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{equipe.codEquipe}" />
-					</p:column>
-					<p:column headerText="Equipe">
+				<b:dataTable value="#{EquipeController.listaEquipe}" id="dtEquipe"
+					var="equipe" lang="pt-br" display="Nenhuma Equipe">
+
+					<h:column>
+						<f:facet name="header">
+                        Equipe
+                    </f:facet>
 						<p:outputLabel value="#{equipe.descEquipe}" />
-					</p:column>
-					<p:column style="width:50px;text-align: center">
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
 						<p:commandButton update=":formCADU:tabela, :formCADU:msgError"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsultEquipes').hide();"
@@ -189,8 +193,9 @@
 							<f:setPropertyActionListener value="#{equipe}"
 								target="#{GrupoController.grupo.equipeAdd}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 

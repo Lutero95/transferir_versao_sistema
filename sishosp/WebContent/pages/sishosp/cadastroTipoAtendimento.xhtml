@@ -152,25 +152,34 @@
 
 		</div>
 
-		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupo"
-			modal="true" width="550px" height="300px">
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupo"
+			modal="true">
 			<h:form id="formConsuGrop">
 				<p:outputPanel autoUpdate="true">
-					<p:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
-						resizableColumns="true" var="grupo" scrollRows="3"
-						scrollHeight="270" scrollable="true"
-						emptyMessage="Não existe nenhum grupo cadastrado!">
-						<p:column headerText="Código">
-							<p:outputLabel value="#{grupo.idGrupo}" />
-						</p:column>
-						<p:column headerText="Grupo">
-							<p:outputLabel value="#{grupo.descGrupo}" />
-						</p:column>
-						<p:column headerText="Quantidade Frequência">
-							<p:outputLabel value="#{grupo.qtdFrequencia}" />
-						</p:column>
+					<b:dataTable value="#{GrupoController.listaGrupos}" id="dtGrupo"
+						lang="pt-br" display="Nenhum Grupo" var="grupo">
 
-						<p:column style="width:50px;text-align: center">
+
+
+						<h:column>
+							<f:facet name="header">
+                        Grupo
+                    	</f:facet>
+							<p:outputLabel value="#{grupo.descGrupo}" />
+						</h:column>
+
+
+						<h:column>
+							<f:facet name="header">
+                        Quantidade Frequência
+                    	</f:facet>
+							<p:outputLabel value="#{grupo.qtdFrequencia}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                        Adicionar
+                    	</f:facet>
 							<p:commandButton process="@this"
 								update=":formCADU:tabela, :formCADU:msgError"
 								icon="ui-icon-check" title="Selecionar"
@@ -179,8 +188,9 @@
 								<f:setPropertyActionListener value="#{grupo}"
 									target="#{TipoAtendimentoController.tipo.grupoParaAdd}" />
 							</p:commandButton>
-						</p:column>
-					</p:dataTable>
+						</h:column>
+
+					</b:dataTable>
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>

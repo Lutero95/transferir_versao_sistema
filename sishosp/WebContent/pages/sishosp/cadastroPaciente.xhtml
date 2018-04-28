@@ -975,7 +975,7 @@
 
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscaescola"
-			width="550px" height="200px" modal="true" resizable="false">
+			modal="true" resizable="false">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -983,55 +983,40 @@
 				</h:panelGroup>
 			</f:facet>
 			<h:form id="buscaescola">
-
-
 				<center>
 					<p:outputPanel id="outinter">
-						<p:dataTable value="#{PacienteController.listaEscolas}"
-							var="busca" paginator="true" paginatorPosition="bottom"
-							id="tableescola" emptyMessage="Nenhum Interessado"
-							sortMode="single" scrollRows="3" scrollHeight="150"
-							class="fonteForm">
+						<b:dataTable value="#{PacienteController.listaEscolas}"
+							var="busca" id="tableescola" lang="pt-br"
+							display="Nenhuma Equipe">
 
-							<p:column id="n34" style="width:380px">
+							<h:column>
 								<f:facet name="header">
-									<h:outputText id="n35" value="Nome Escola" class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n36" class="fonteForm"
-									value="#{busca.descescola}" />
-							</p:column>
-							<p:column id="n37" style=" width:100px;text-align:center;">
-								<f:facet name="header">
-									<h:outputText id="n38" value="Codigo" class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n39" class="fonteForm"
-									value="#{busca.codtipoescola}" />
-							</p:column>
+                       		 Escola
+                    		</f:facet>
+								<p:outputLabel value="#{busca.descescola}" />
+							</h:column>
 
-							<p:column id="n40" style="width:50px">
+							<h:column>
 								<f:facet name="header">
-									<h:outputText id="n41" value="Ação" class="fonteForm" />
-								</f:facet>
-
+                       		 Adicionar
+                    		</f:facet>
 								<p:commandButton oncomplete="PF('dlgbuscaescola').hide()"
 									icon="ui-icon-check" id="confirmar"
 									update=":formCADU:tbv:escolacomplete2">
-
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.escolaSuggestion}" />
-
 									<p:tooltip for="confirmar" value="Selecionar Escola"></p:tooltip>
 								</p:commandButton>
-							</p:column>
+							</h:column>
 
-						</p:dataTable>
+						</b:dataTable>
 					</p:outputPanel>
 				</center>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscaescolaridade"
-			width="550px" height="200px" modal="true" resizable="false">
+			modal="true" resizable="false">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1042,47 +1027,38 @@
 
 				<center>
 					<p:outputPanel id="outinter2">
-						<p:dataTable value="#{PacienteController.listaEscolaridade}"
-							var="busca" paginator="true" paginatorPosition="bottom"
-							id="tableescolaridade" emptyMessage="Nenhum Interessado"
-							sortMode="single" scrollRows="3" scrollHeight="150"
-							class="fonteForm" widgetVar="800">
+						<b:dataTable value="#{PacienteController.listaEscolaridade}"
+							var="busca" id="tableescolaridade" lang="pt-br"
+							display="Nenhuma Escolaridade">
 
-
-							<p:column id="n12" style="width:380px">
+							<h:column>
 								<f:facet name="header">
-									<h:outputText id="n13" value="Escolaridade" class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n14" class="fonteForm"
-									value="#{busca.descescolaridade}" />
-							</p:column>
+                        	Escolaridade
+                    		</f:facet>
+								<p:outputLabel value="#{busca.descescolaridade}" />
+							</h:column>
 
-
-							<p:column id="n15" style="width:50px">
+							<h:column>
 								<f:facet name="header">
-									<h:outputText id="n16" value="Ação" class="fonteForm" />
-								</f:facet>
-
+                        	Adicionar
+                    		</f:facet>
 								<p:commandButton oncomplete="PF('dlgbuscaescolaridade').hide();"
 									process="@this" icon="ui-icon-check" id="confirmar"
 									update=":formCADU:tbv:escolacomplete1">
-
-
-
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.escolaridadeSuggestion}" />
 									<p:tooltip for="confirmar" value="Selecionar Escolaridade2"></p:tooltip>
 								</p:commandButton>
-							</p:column>
+							</h:column>
 
-						</p:dataTable>
+						</b:dataTable>
 					</p:outputPanel>
 				</center>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscaprofissao"
-			width="550px" height="200px" modal="true" resizable="false">
+			modal="true" resizable="false">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1094,40 +1070,32 @@
 
 				<center>
 					<p:outputPanel id="outinter3">
-						<p:dataTable value="#{PacienteController.listaProfissao}"
-							var="busca" paginator="true" paginatorPosition="bottom"
-							id="tableprofissao" emptyMessage="Nenhum Interessado"
-							sortMode="single" width="550px" height="200px" class="fonteForm"
-							widgetVar="800">
+						<b:dataTable value="#{PacienteController.listaProfissao}"
+							var="busca" id="tableprofissao" lang="pt-br"
+							display="Nenhuma Profissão">
 
 
-							<p:column id="n24" style="width:380px">
+							<h:column>
 								<f:facet name="header">
-									<h:outputText id="n25" value="Nome Profissão" class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n26" class="fonteForm"
-									value="#{busca.descprofissao}" />
-							</p:column>
+                        	Profissão
+                    		</f:facet>
+								<p:outputLabel value="#{busca.descprofissao}" />
+							</h:column>
 
-
-							<p:column id="n44" style="width:50px">
+							<h:column>
 								<f:facet name="header">
-									<h:outputText id="n45" value="Ação" class="fonteForm" />
-								</f:facet>
-
+                        	Adicionar
+                    		</f:facet>
 								<p:commandButton oncomplete="PF('dlgbuscaprofissao').hide()"
 									icon="ui-icon-check" id="confirmar"
 									update=":formCADU:tbv:escolacomplete3">
-
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.profissaoSuggestion}" />
-
-
 									<p:tooltip for="confirmar" value="Selecionar Profissão"></p:tooltip>
 								</p:commandButton>
-							</p:column>
+							</h:column>
 
-						</p:dataTable>
+						</b:dataTable>
 					</p:outputPanel>
 				</center>
 			</h:form>
@@ -1135,7 +1103,7 @@
 
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscaencaminhado"
-			width="550px" height="200px" modal="true" resizable="false">
+			modal="true" resizable="false">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1144,50 +1112,40 @@
 			</f:facet>
 			<h:form id="buscaencaminhado">
 
-
 				<center>
 					<p:outputPanel id="outinter4">
-						<p:dataTable value="#{PacienteController.listaEncaminhado}"
-							var="busca" paginator="true" paginatorPosition="bottom"
-							id="tableencaminhado" emptyMessage="Nenhum Interessado"
-							sortMode="single" scrollRows="3" scrollHeight="150"
-							class="fonteForm" widgetVar="800">
+						<b:dataTable value="#{PacienteController.listaEncaminhado}"
+							var="busca" id="tableencaminhado" lang="pt-br"
+							display="Nenhum Tipo de Encaminhamento">
 
-							<p:column id="n53" style="width:380px">
+							<h:column>
 								<f:facet name="header">
-									<h:outputText id="n54" value="Nome Encaminhado"
-										class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n55" class="fonteForm"
-									value="#{busca.descencaminhado}" />
-							</p:column>
+                        	Tipo de Encaminhamento
+                    		</f:facet>
+								<p:outputLabel value="#{busca.descencaminhado}" />
+							</h:column>
 
-
-							<p:column id="n59" style="width:50px">
+							<h:column>
 								<f:facet name="header">
-									<h:outputText id="n60" value="Ação" class="fonteForm" />
-								</f:facet>
-
+                        	Adicionar
+                    		</f:facet>
 								<p:commandButton oncomplete="PF('dlgbuscaencaminhado').hide()"
 									icon="ui-icon-check" id="confirmar"
 									update=":formCADU:tbv:escolacomplete4">
-
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.encaminhadoSuggestion}" />
-
-
 									<p:tooltip for="confirmar" value="Selecionar Encaminhado"></p:tooltip>
 								</p:commandButton>
-							</p:column>
+							</h:column>
 
-						</p:dataTable>
+						</b:dataTable>
 					</p:outputPanel>
 				</center>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscacomochegou"
-			width="550px" height="200px" modal="true" resizable="false">
+			modal="true" resizable="false">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1198,40 +1156,31 @@
 
 				<center>
 					<p:outputPanel id="outinter5">
-						<p:dataTable value="#{PacienteController.listaTransporte}"
-							var="busca" paginator="true" paginatorPosition="bottom"
-							id="tabletransporte" emptyMessage="Nenhum Interessado"
-							sortMode="single" scrollRows="3" scrollHeight="150"
-							class="fonteForm" widgetVar="800">
+						<b:dataTable value="#{PacienteController.listaTransporte}"
+							var="busca" id="tabletransporte" lang="pt-br"
+							display="Nenhuma Forma de Transporte">
 
-							<p:column id="n66" style="width:380px">
+							<h:column>
 								<f:facet name="header">
-									<h:outputText id="n67" value="Nome Transporte"
-										class="fonteForm" />
-								</f:facet>
-								<h:outputText id="n68" class="fonteForm"
-									value="#{busca.descformatransporte}" />
-							</p:column>
+                       		Transporte
+                    		</f:facet>
+								<p:outputLabel value="#{busca.descformatransporte}" />
+							</h:column>
 
-
-							<p:column id="n72" style="width:50px">
+							<h:column>
 								<f:facet name="header">
-									<h:outputText id="n73" value="Ação" class="fonteForm" />
-								</f:facet>
-
+                       		Adicionar
+                    		</f:facet>
 								<p:commandButton oncomplete="PF('dlgbuscacomochegou').hide();"
 									icon="ui-icon-check" id="confirmar"
 									update=":formCADU:tbv:escolacomplete5">
-
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.transporteSuggestion}" />
-
-
 									<p:tooltip for="confirmar" value="Selecionar Transporte"></p:tooltip>
 								</p:commandButton>
-							</p:column>
+							</h:column>
 
-						</p:dataTable>
+						</b:dataTable>
 					</p:outputPanel>
 				</center>
 			</h:form>

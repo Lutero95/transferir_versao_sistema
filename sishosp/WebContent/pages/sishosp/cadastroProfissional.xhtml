@@ -216,138 +216,168 @@
 			</div>
 		</h:form>
 
-		<p:dialog header="Consulta Especialidade" height="300px"
-			resizable="false" widgetVar="dlgConsulEspecialidade" modal="true"
-			width="500px">
+		<p:dialog header="Consultar Especialidade" modal="true"
+			widgetVar="dlgConsulEspecialidade">
 			<h:form id="formConsulEspec">
 				<p:outputPanel autoUpdate="true">
-					<p:dataTable value="#{EspecialidadeController.listaEspecialidade}"
-						scrollRows="3" scrollHeight="270" scrollable="true" var="espec"
-						resizableColumns="true"
-						emptyMessage="Não existe nenhuma especialidade cadastrada!">
-						<p:column headerText="Especialidade">
+					<b:dataTable value="#{EspecialidadeController.listaEspecialidade}"
+						page-length="5" page-length-menu="5,10,20" var="espec"
+						lang="pt-br" display="Nenhuma Especialidade">
+
+						<h:column>
+							<f:facet name="header">
+                        Especialidade
+                    	</f:facet>
 							<p:outputLabel value="#{espec.descEspecialidade}" />
-						</p:column>
-						<p:column style="width:50px;text-align: center">
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                        Adicionar
+                    	</f:facet>
 							<p:commandButton update=":frmCadProfi" icon="ui-icon-check"
 								title="Selecionar"
 								onclick="PF('dlgConsulEspecialidade').hide();">
 								<f:setPropertyActionListener value="#{espec}"
 									target="#{ProfissionalController.profissional.especialidade}" />
 							</p:commandButton>
-						</p:column>
-					</p:dataTable>
+						</h:column>
+
+					</b:dataTable>
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta C.B.O." widgetVar="dlgConsulCbo"
-			modal="true" height="300px" width="500px">
+		<p:dialog header="Consultar C.B.O." widgetVar="dlgConsulCbo"
+			modal="true">
 			<h:form id="formConsulCbo">
-				<p:dataTable value="#{CboController.listarCbo}" var="cbo"
-					scrollRows="3" scrollHeight="270" scrollable="true"
-					resizableColumns="true"
-					emptyMessage="Não existe nenhum CBO cadastrado!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{cbo.codigo}" />
-					</p:column>
-					<p:column headerText="Descrição">
+				<b:dataTable value="#{CboController.listarCbo}" var="cbo"
+					page-length="5" page-length-menu="5,10,20" lang="pt-br"
+					display="Nenhum C.B.O.">
+
+					<h:column>
+						<f:facet name="header">
+                        Descrição
+                    </f:facet>
 						<p:outputLabel value="#{cbo.descCbo}" />
-					</p:column>
-					<p:column style="width:50px;text-align: center">
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
 						<p:commandButton update=":frmCadProfi" icon="ui-icon-check"
 							title="Selecionar" onclick="PF('dlgConsulCbo').hide();">
 							<f:setPropertyActionListener value="#{cbo}"
 								target="#{ProfissionalController.profissional.cbo}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Procedimento 1" widgetVar="dlgConsulProc1"
-			height="300px" modal="true" width="500px">
+		<p:dialog header="Consultar Procedimento 1" widgetVar="dlgConsulProc1"
+			modal="true">
 			<h:form id="formConsulProc1">
 				<p:outputPanel autoUpdate="true">
-					<p:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-						scrollRows="3" scrollHeight="270" scrollable="true" var="proc"
-						resizableColumns="true"
-						emptyMessage="Não existe nenhum procedimento cadastrado!">
-						<p:column headerText="Código">
-							<p:outputLabel value="#{proc.codProc}" />
-						</p:column>
-						<p:column headerText="Descrição">
+					<b:dataTable value="#{ProcedimentoController.listaProcedimentos}"
+						var="proc" lang="pt-br" display="Nenhum Procedimento">
+
+						<h:column>
+							<f:facet name="header">
+                        Descrição
+                    	</f:facet>
 							<p:outputLabel value="#{proc.nomeProc}" />
-						</p:column>
-						<p:column style="width:50px;text-align: center">
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                        Adicionar
+                    	</f:facet>
 							<p:commandButton update=":frmCadProfi" icon="ui-icon-check"
 								title="Selecionar" onclick="PF('dlgConsulProc1').hide();">
 								<f:setPropertyActionListener value="#{proc}"
 									target="#{ProfissionalController.profissional.proc1}" />
 							</p:commandButton>
-						</p:column>
-					</p:dataTable>
+						</h:column>
+
+
+					</b:dataTable>
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Procedimento 2" widgetVar="dlgConsulProc2"
-			height="300px" modal="true" width="500px">
+		<p:dialog header="Consultar Procedimento 2" widgetVar="dlgConsulProc2"
+			modal="true">
 			<h:form id="formConsulProc2">
 				<p:outputPanel autoUpdate="true">
-					<p:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-						scrollRows="3" scrollHeight="270" scrollable="true" var="proc"
-						resizableColumns="true"
-						emptyMessage="Não existe nenhum procedimento cadastrado!">
-						<p:column headerText="Código">
-							<p:outputLabel value="#{proc.codProc}" />
-						</p:column>
-						<p:column headerText="Descrição">
+					<b:dataTable value="#{ProcedimentoController.listaProcedimentos}"
+						var="proc" lang="pt-br" display="Nenhum Procedimento">
+
+						<h:column>
+							<f:facet name="header">
+                        Descrição
+                    	</f:facet>
 							<p:outputLabel value="#{proc.nomeProc}" />
-						</p:column>
-						<p:column style="width:50px;text-align: center">
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                        Adicionar
+                    	</f:facet>
 							<p:commandButton update=":frmCadProfi" icon="ui-icon-check"
 								title="Selecionar" onclick="PF('dlgConsulProc2').hide();">
 								<f:setPropertyActionListener value="#{proc}"
 									target="#{ProfissionalController.profissional.proc2}" />
 							</p:commandButton>
-						</p:column>
-					</p:dataTable>
+						</h:column>
+
+
+					</b:dataTable>
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consulta Grupos" widgetVar="dlgConsuGrupos"
-			height="300px" modal="true" width="550px">
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupos"
+			modal="true">
 			<h:form id="formConsuGrops">
 				<p:outputPanel autoUpdate="true">
-					<p:dataTable value="#{GrupoController.listarProgramasEGrupos()}"
-						id="dtGrupos" scrollRows="3" scrollHeight="270" scrollable="true"
-						resizableColumns="true" var="programa"
-						emptyMessage="Não existe nenhum grupo cadastrado!">
+					<b:dataTable value="#{GrupoController.listarProgramasEGrupos()}"
+						id="dtGrupos" var="programa" lang="pt-br"
+						display="Nenhum Profissional">
 
-						<p:column headerText="Programa">
+
+						<h:column>
+							<f:facet name="header">
+                        Programa
+                    	</f:facet>
 							<p:outputLabel value="#{programa.descPrograma}" />
-						</p:column>
+						</h:column>
 
-						<p:column headerText="Grupo">
+						<h:column>
+							<f:facet name="header">
+                        Grupo
+                    	</f:facet>
 							<p:outputLabel value="#{programa.grupoBean.descGrupo}" />
-						</p:column>
+						</h:column>
 
-						<p:column style="width:50px;text-align: center">
 
+						<h:column>
+							<f:facet name="header">
+                        Adicionar
+                    	</f:facet>
 							<p:commandButton
 								update=":frmCadProfi:tabelagrupo :frmCadProfi:msgError"
 								icon="ui-icon-check" title="Selecionar"
 								onclick="PF('dlgConsuGrupos').hide();"
 								action="#{ProfissionalController.addListaGruposEProgramasProfissional()}">
-
 								<f:setPropertyActionListener value="#{programa}"
 									target="#{ProfissionalController.profissional.progAdd}" />
-
 							</p:commandButton>
-						</p:column>
-					</p:dataTable>
+						</h:column>
+
+					</b:dataTable>
 				</p:outputPanel>
 			</h:form>
 		</p:dialog>

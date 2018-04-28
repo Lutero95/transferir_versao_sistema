@@ -104,8 +104,8 @@ public class GrupoBean implements Serializable {
 			if (existe == false) {
 				this.equipes.add(this.equipeAdd);
 			} else {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Essa equipe já foi adicionada!", "Sucesso");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Essa equipe já foi adicionada!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 
