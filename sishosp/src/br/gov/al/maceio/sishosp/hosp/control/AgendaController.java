@@ -177,18 +177,19 @@ public class AgendaController implements Serializable {
 				|| this.agenda.getGrupo() == null
 				|| this.agenda.getTipoAt() == null
 				|| this.agenda.getDataAtendimento() == null
-				|| this.agenda.getDataAtendimentoFinal() == null) {
+				|| this.agenda.getDataAtendimentoFinal() == null
+				|| (this.agenda.getProfissional() == null && this.agenda
+						.getEquipe() == null)) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Campo(s) obrigatório(s) em falta!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		} else {
 
-			Date data = null;
 			boolean dtEspecifica = false;
 			boolean diaSem = false;
-			boolean limitePorTipoAtend = false;
-			//int j = 0;
+			boolean temData = false;
+			int j = 0;
 
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			df.setLenient(false);
@@ -199,16 +200,16 @@ public class AgendaController implements Serializable {
 			dt = (dt / 86400000L);
 			System.out.println("QTD DIAS: " + dt);
 			for (int i = 0; i < dt; i++) {
-
+				temData = false;
 				Calendar c = Calendar.getInstance();
 				c.setTime(agenda.getDataAtendimento());
-				c.add(Calendar.DAY_OF_MONTH, 1);
 
-				
+				if (i > 0) {
+					c.add(Calendar.DAY_OF_MONTH, 1);
+				}
 
 				agenda.setDataAtendimento(c.getTime());
 				System.out.println("DATA2: " + agenda.getDataAtendimento());
-//				System.out.println("J: " + j);
 
 				dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
 				diaSem = aDao.buscarDiaSemana(this.agenda);
@@ -216,7 +217,7 @@ public class AgendaController implements Serializable {
 				System.out.println("DIA SEMANA: " + diaSem);
 
 				if (dtEspecifica == true || diaSem == true) {
-
+					temData = true;
 					if (diaSem) {
 						this.agenda.setMax(aDao
 								.verQtdMaxAgendaEspec(this.agenda));
@@ -229,22 +230,40 @@ public class AgendaController implements Serializable {
 						this.agenda.setQtd(aDao
 								.verQtdAgendadosData(this.agenda));
 					}
-					System.out.println("MAX: " + agenda.getMax());
-					System.out.println("QTD: " + agenda.getQtd());
+				}
+				System.out.println("MAX: " + agenda.getMax());
+				System.out.println("QTD: " + agenda.getQtd());
 
-					if (agenda.getMax() > agenda.getQtd()) {
-						addListaNovosAgendamentos();
-					} else {
-						System.out.println("Adicionou");
+				if (temData) {
+					if (agenda.getMax() == agenda.getQtd()) {
+						System.out.println("Adicionou: "
+								+ agenda.getDataAtendimento());
 						listaHorariosOcupados.add(agenda);
+
+						System.out.println("OCUPADOS: "
+								+ listaHorariosOcupados.get(0)
+										.getDataAtendimento());
+					} else {
+						
+						System.out.println("Entra? "+agenda.getDataAtendimento());
+						//this.listaNovosAgendamentos.add(this.agenda);
+						listaNovosAgendamentos.add(j, agenda);
+						System.out.println("Entra Sim com tamanho: "+listaNovosAgendamentos.size());
+						for (int x = 0; x > listaNovosAgendamentos.size(); x++) {
+							System.out.println("ADICIONADOS: "
+									+ listaNovosAgendamentos.get(x)
+											.getDataAtendimento());
+						}
+						j++;
 					}
 
 				}
 			}
 			if (listaHorariosOcupados.size() > 0) {
-				System.out.println("Tamanho da lista: "+listaHorariosOcupados.size());
+				System.out.println("Tamanho da lista: "
+						+ listaHorariosOcupados.size());
 				temLotado = true;
-				System.out.println("Tem Lotado: "+true);
+				System.out.println("Tem Lotado: " + true);
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
 						"Não foi possível agendar, pois tem horários lotados! Clique em Visualizar Ocupados para ver.",
@@ -255,12 +274,12 @@ public class AgendaController implements Serializable {
 		}
 	}
 
-	public void carregarListaOcupados(){
-		RequestContext.getCurrentInstance().execute(
-				"PF('dlgOcupados').show();");
+	public void carregarListaOcupados() {
+		RequestContext.getCurrentInstance()
+				.execute("PF('dlgOcupados').show();");
 		getListaHorariosOcupados();
 	}
-	
+
 	public void addListaNovosAgendamentos() {
 		this.listaNovosAgendamentos.add(this.agenda);
 		// this.agenda = new AgendaBean();

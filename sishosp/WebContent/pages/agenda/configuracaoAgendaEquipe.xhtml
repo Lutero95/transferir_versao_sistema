@@ -177,18 +177,22 @@
 		</h:form>
 
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsultProg"
-			modal="true" width="500px">
+			modal="true">
 			<h:form id="formConsuProg">
-				<p:dataTable value="#{ProgramaController.listaProgramas}" var="prog"
-					resizableColumns="true"
-					emptyMessage="Não existe nenhum programa cadastrado!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{prog.idPrograma}" />
-					</p:column>
-					<p:column headerText="Programa">
+				<b:dataTable value="#{ProgramaController.listaProgramas}" var="prog"
+					lang="pt-br" display="Nenhum Programa">
+
+					<h:column>
+						<f:facet name="header">
+                        Programa
+                    </f:facet>
 						<p:outputLabel value="#{prog.descPrograma}" />
-					</p:column>
-					<p:column style="width:50px;text-align: center">
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
 						<p:commandButton
 							update=":formConfiAgendaEquipe:outProg, :formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:btBusGr"
 							icon="ui-icon-check" title="Selecionar"
@@ -196,28 +200,36 @@
 							<f:setPropertyActionListener value="#{prog}"
 								target="#{ConfigAgendaController.confParte2.programa}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsultGrop"
-			modal="true" width="550px">
+			modal="true">
 			<h:form id="formConsuGrop">
-				<p:dataTable value="#{ConfigAgendaController.selectGrupo()}"
-					id="dtGrupo" resizableColumns="true" var="grupo"
-					emptyMessage="Não existe nenhum grupo cadastrado!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{grupo.idGrupo}" />
-					</p:column>
-					<p:column headerText="Grupo">
-						<p:outputLabel value="#{grupo.descGrupo}" />
-					</p:column>
-					<p:column headerText="Quantidade Frequência">
-						<p:outputLabel value="#{grupo.qtdFrequencia}" />
-					</p:column>
+				<b:dataTable value="#{ConfigAgendaController.selectGrupo()}"
+					id="dtGrupo" var="grupo" lang="pt-br" display="Nenhum Grupo">
 
-					<p:column style="width:50px;text-align: center">
+					<h:column>
+						<f:facet name="header">
+                        Grupo
+                    </f:facet>
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Quantidade Frequência
+                    </f:facet>
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
 						<p:commandButton
 							update=":formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:outEquipe, :formConfiAgendaEquipe:btBusEq"
 							icon="ui-icon-check" title="Selecionar"
@@ -225,32 +237,38 @@
 							<f:setPropertyActionListener value="#{grupo}"
 								target="#{ConfigAgendaController.confParte2.grupo}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Consultar Equipes" widgetVar="dlgConsultEquipe"
-			modal="true" width="550px">
+			modal="true">
 			<h:form id="formConsuEquipe">
-				<p:dataTable value="#{ConfigAgendaController.selectEquipe()}"
-					id="dtEquipe" resizableColumns="true" var="equipe"
-					emptyMessage="Não existe nenhuma equipe cadastrada!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{equipe.codEquipe}" />
-					</p:column>
-					<p:column headerText="Equipe">
+				<b:dataTable value="#{ConfigAgendaController.selectEquipe()}"
+					id="dtEquipe" var="equipe" lang="pt-br" display="Nenhuma Equipe">
+
+					<h:column>
+						<f:facet name="header">
+                        Equipe
+                    </f:facet>
 						<p:outputLabel value="#{equipe.descEquipe}" />
-					</p:column>
-					<p:column style="width:50px;text-align: center">
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
 						<p:commandButton update=":formConfiAgendaEquipe:outEquipe"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsultEquipe').hide();">
 							<f:setPropertyActionListener value="#{equipe}"
 								target="#{ConfigAgendaController.confParte1.equipe}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 

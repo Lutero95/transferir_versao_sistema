@@ -139,26 +139,32 @@
 		</h:form>
 
 		<p:dialog header="Consultar Equipes" widgetVar="dlgConsultEquipe"
-			modal="true" width="550px">
+			modal="true">
 			<h:form id="formConsuEquipe">
-				<p:dataTable value="#{ConfigAgendaController.selectEquipe()}"
-					id="dtEquipe" resizableColumns="true" var="equipe"
-					emptyMessage="Não existe nenhuma equipe cadastrada!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{equipe.codEquipe}" />
-					</p:column>
-					<p:column headerText="Equipe">
+				<b:dataTable value="#{ConfigAgendaController.selectEquipe()}"
+					id="dtEquipe" var="equipe" lang="pt-br"
+					display="Nenhum Profissional">
+
+					<h:column>
+						<f:facet name="header">
+                        Equipe
+                    </f:facet>
 						<p:outputLabel value="#{equipe.descEquipe}" />
-					</p:column>
-					<p:column style="width:50px;text-align: center">
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
 						<p:commandButton update=":formConfiAgendaEquipe:outEquipe"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsultEquipe').hide();">
 							<f:setPropertyActionListener value="#{equipe}"
 								target="#{ConfigAgendaController.confParte1.equipe}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 

@@ -460,18 +460,22 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
-			modal="true" width="500px">
+			modal="true">
 			<h:form id="formConsuProg">
-				<p:dataTable value="#{ProgramaController.listaProgramasUsuario()}"
-					var="prog" resizableColumns="true"
-					emptyMessage="Não existe nenhum programa cadastrado!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{prog.idPrograma}" />
-					</p:column>
-					<p:column headerText="Programa">
+				<b:dataTable value="#{ProgramaController.listaProgramasUsuario()}"
+					var="prog" lang="pt-br" display="Nenhum Programa">
+
+					<h:column>
+						<f:facet name="header">
+                        Programa
+                    </f:facet>
 						<p:outputLabel value="#{prog.descPrograma}" />
-					</p:column>
-					<p:column style="width:50px;text-align: center">
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                       Adicionar
+                    </f:facet>
 						<p:commandButton
 							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, 
 							:formAgendaMedica:btBusGr, :formAgendaMedica:outGrupo"
@@ -481,28 +485,36 @@
 							<f:setPropertyActionListener value="#{prog}"
 								target="#{AgendaController.agenda.programa}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-			modal="true" width="550px">
+			modal="true">
 			<h:form id="formConsuGrop">
-				<p:dataTable value="#{AgendaController.listaGruposPorPrograma()}"
-					id="dtGrupo" resizableColumns="true" var="grupo"
-					emptyMessage="Não existe nenhum grupo cadastrado!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{grupo.idGrupo}" />
-					</p:column>
-					<p:column headerText="Grupo">
-						<p:outputLabel value="#{grupo.descGrupo}" />
-					</p:column>
-					<p:column headerText="Quantidade Frequência">
-						<p:outputLabel value="#{grupo.qtdFrequencia}" />
-					</p:column>
+				<b:dataTable value="#{AgendaController.listaGruposPorPrograma()}"
+					id="dtGrupo" var="grupo" lang="pt-br" display="Nenhum Grupo">
 
-					<p:column style="width:50px;text-align: center">
+					<h:column>
+						<f:facet name="header">
+                        Grupo
+                    </f:facet>
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Quantidade Frequência
+                    </f:facet>
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
 						<p:commandButton
 							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt,
 							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt"
@@ -512,26 +524,31 @@
 							<f:setPropertyActionListener value="#{grupo}"
 								target="#{AgendaController.agenda.grupo}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Consultar Tipos de Atendimento"
-			widgetVar="dlgConsuTipoAt" modal="true" width="550px">
+			widgetVar="dlgConsuTipoAt" modal="true">
 			<h:form id="formConsuTipoAt">
-				<p:dataTable
+				<b:dataTable
 					value="#{AgendaController.listaTipoAtendimentoPorGrupo()}"
-					id="dtTipoAt" resizableColumns="true" var="tipo"
-					emptyMessage="Não existe nenhum tipo cadastrado!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{tipo.idTipo}" />
-					</p:column>
-					<p:column headerText="Tipo de Atendimento">
-						<p:outputLabel value="#{tipo.descTipoAt}" />
-					</p:column>
+					id="dtTipoAt" var="tipo" lang="pt-br"
+					display="Nenhum Tipo de Atendimento">
 
-					<p:column style="width:50px;text-align: center">
+					<h:column>
+						<f:facet name="header">
+                        Tipo de Atendimento
+                    </f:facet>
+						<p:outputLabel value="#{tipo.descTipoAt}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
 						<p:commandButton
 							update=":formAgendaMedica:outTipoAt, :formAgendaMedica"
 							icon="ui-icon-check" title="Selecionar"
@@ -539,62 +556,68 @@
 							<f:setPropertyActionListener value="#{tipo}"
 								target="#{AgendaController.agenda.tipoAt}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
-			modal="true" width="550px">
+			modal="true">
 			<h:form id="formConsuEquipe">
-				<p:dataTable
+				<b:dataTable
 					value="#{AgendaController.listaEquipePorTipoAtendimento()}"
-					id="dtEquipe" resizableColumns="true" var="equipe"
-					emptyMessage="Não existe nenhuma equipe cadastrada!">
-					<p:column headerText="CÓD.">
-						<p:outputLabel value="#{equipe.codEquipe}" />
-					</p:column>
-					<p:column headerText="Descrição">
-						<p:outputLabel value="#{equipe.descEquipe}" />
-					</p:column>
+					id="dtEquipe" var="equipe" lang="pt-br" display="Nenhuma Equipe">
 
-					<p:column style="width:50px;text-align: center">
+					<h:column>
+						<f:facet name="header">
+                        Equipe
+                    </f:facet>
+						<p:outputLabel value="#{equipe.descEquipe}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
 						<p:commandButton update=":formAgendaMedica:outEquipe"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuEquipe').hide();">
 							<f:setPropertyActionListener value="#{equipe}"
 								target="#{AgendaController.agenda.equipe}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
-			modal="true" width="550px">
+			modal="true">
 			<h:form id="formConsuProf">
-				<p:dataTable value="#{AgendaController.listaProfissionalPorGrupo()}"
-					id="dtProf" resizableColumns="true" var="profi"
-					emptyMessage="Não existe nenhum tipo cadastrado!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{profi.idProfissional}" />
-					</p:column>
-					<p:column headerText="Profissional">
-						<p:outputLabel value="#{profi.descricaoProf}" />
-					</p:column>
-					<p:column headerText="Especialidade">
-						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
-					</p:column>
+				<b:dataTable value="#{AgendaController.listaProfissionalPorGrupo()}"
+					id="dtProf" var="profi" lang="pt-br" display="Nenhum Profissional">
 
-					<p:column style="width:50px;text-align: center">
+					<h:column>
+						<f:facet name="header">
+                        Profissional
+                    </f:facet>
+						<p:outputLabel value="#{profi.descricaoProf}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
 						<p:commandButton update=":formAgendaMedica:outProf"
 							icon="ui-icon-check" title="Selecionar"
 							onclick="PF('dlgConsuProf').hide();">
 							<f:setPropertyActionListener value="#{profi}"
 								target="#{AgendaController.agenda.profissional}" />
 						</p:commandButton>
-					</p:column>
-				</p:dataTable>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 
@@ -640,6 +663,7 @@
 					<p:dataTable id="dtOcupados" resizableColumns="true"
 						value="#{AgendaController.listaHorariosOcupados}" var="agend"
 						emptyMessage="Sem registros.">
+
 						<p:column headerText="Data">
 							<h:outputLabel value="#{agend.dataAtendimento}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />

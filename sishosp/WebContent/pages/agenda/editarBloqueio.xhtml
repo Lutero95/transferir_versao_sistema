@@ -81,31 +81,40 @@
 
 			</div>
 			<p:dialog header="Consultar Profissionais" widgetVar="dlgConProf"
-				modal="true" width="550px">
+				modal="true">
 				<h:form id="formConsultProf">
-					<p:dataTable
+					<b:dataTable
 						value="#{ProfissionalController.listarProfissionaisConfigAgenda()}"
-						id="dtTipoAt" resizableColumns="true" var="profi"
-						emptyMessage="Não existe nenhum tipo cadastrado!">
-						<p:column headerText="Código">
-							<p:outputLabel value="#{profi.idProfissional}" />
-						</p:column>
-						<p:column headerText="Profissional">
-							<p:outputLabel value="#{profi.descricaoProf}" />
-						</p:column>
-						<p:column headerText="Especialidade">
-							<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
-						</p:column>
+						id="dtTipoAt" var="profi" lang="pt-br"
+						display="Nenhuma Profissional">
 
-						<p:column style="width:50px;text-align: center">
+						<h:column>
+							<f:facet name="header">
+                        Profissional
+                    	</f:facet>
+							<p:outputLabel value="#{profi.descricaoProf}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                        Especialidade
+                    	</f:facet>
+							<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                        Adicionar
+                    	</f:facet>
 							<p:commandButton icon="ui-icon-check" title="Selecionar"
 								onclick="PF('dlgConProf').hide();"
 								update=":formEdtBloq:outProfi">
 								<f:setPropertyActionListener value="#{profi}"
 									target="#{BloqueioController.bloqueio.prof}" />
 							</p:commandButton>
-						</p:column>
-					</p:dataTable>
+						</h:column>
+
+					</b:dataTable>
 				</h:form>
 			</p:dialog>
 		</h:form>

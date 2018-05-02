@@ -53,7 +53,6 @@ public class BloqueioController implements Serializable {
 				.getRequestParameterMap();
 		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
-			System.out.println("ID: " + id);
 			this.bloqueio = bDao.listarBloqueioPorId(id);
 		} else {
 		}
