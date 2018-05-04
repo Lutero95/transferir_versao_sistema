@@ -501,7 +501,7 @@ public class ConfigAgendaDAO {
 	public List<ConfigAgendaParte1Bean> listarHorariosEquipe()
 			throws ProjetoException {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
-		String sql = "SELECT id_configagenda, codequipe, diasemana, qtdmax, dataagenda, turno, mes, ano, codempresa "
+		String sql = "SELECT id_configagenda, codequipe, diasemana, qtdmax, dataagenda, turno, mes, ano, codempresa, codgrupo "
 				+ "FROM hosp.config_agenda_equipe order by id_configagenda ";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -573,6 +573,35 @@ public class ConfigAgendaDAO {
 			}
 		}
 		return lista;
+	}
+
+	public Integer carregarGrupoDaEquipe(int id) throws ProjetoException {
+
+		int codgrupo = 0;
+
+		String sql = "SELECT codgrupo FROM hosp.config_agenda_equipe where id_configagenda = ? ";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				codgrupo = rs.getInt("codgrupo");
+
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return codgrupo;
 	}
 
 	public ConfigAgendaParte1Bean listarHorariosPorIDProfissional2(int id)

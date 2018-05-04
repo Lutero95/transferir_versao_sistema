@@ -150,8 +150,8 @@ public class TipoAtendimentoController implements Serializable {
 		this.tipo = tipo;
 	}
 
-	public void listarTipos() throws ProjetoException {
-		listaTipos = tDao.listarTipoAt();
+	public List<TipoAtendimentoBean> listarTipos() throws ProjetoException {
+		return listaTipos = tDao.listarTipoAt();
 
 	}
 

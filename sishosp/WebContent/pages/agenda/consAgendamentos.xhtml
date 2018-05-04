@@ -3,224 +3,214 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templatepagsistemas.xhtml">
+<ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
 
 		<h:form id="formConsAge">
-			<p:growl id="msg" />
-			<p:panel header="CONSULTAR AGENDAMENTOS" id="pnlConsAge">
+			<div class="panel-body">
+				<div class="sub-header">
+					<h4>Consultar Agendamentos</h4>
+					<hr />
+				</div>
+			</div>
 
-				<p:panelGrid columns="5" styleClass="semBorda">
-					<p:outputPanel>
-						<h:outputLabel value="Data para atendimento: " />
-						<br />
-						<p:calendar locale="pt" showOn="button" navigator="true"
-							mask="true" pattern="dd/MM/yyyy"
-							value="#{AgendaController.dataAtendimentoC}" />
-					</p:outputPanel>
+			<p:panelGrid columns="5" styleClass="semBorda">
+				<p:outputPanel>
+					<h:outputLabel value="Data para atendimento: " />
+					<br />
+					<p:calendar locale="pt" showOn="button" navigator="true"
+						mask="true" pattern="dd/MM/yyyy"
+						value="#{AgendaController.dataAtendimentoC}" />
+				</p:outputPanel>
 
-					<p:outputPanel>
-						<h:outputLabel value="Prontuário: " />
-						<br />
-						<p:inputText value="#{AgendaController.protuarioC}" />
-					</p:outputPanel>
+				<!--  
+				<p:outputPanel>
+					<h:outputLabel value="Prontuário: " />
+					<br />
+					<b:inputText value="#{AgendaController.protuarioC}" />
+				</p:outputPanel>
 
-					<p:outputPanel>
-						<h:outputLabel value="CNS: " />
-						<br />
-						<p:inputText value="#{AgendaController.cnsC}" />
-					</p:outputPanel>
+				<p:outputPanel>
+					<h:outputLabel value="CNS: " />
+					<br />
+					<b:inputText value="#{AgendaController.cnsC}" />
+				</p:outputPanel>
+				-->
 
-					<p:outputPanel id="outTipoAt">
-						<h:outputLabel for="tipoAt" value="Tipo At.:" />
-						<br />
-						<p:outputPanel>
-							<p:autoComplete value="#{AgendaController.tipoC}" size="60"
-								converter="conTipoAtendimento"
-								completeMethod="#{TipoAtendimentoController.listaTipoAtAutoCompleteTodos}"
-								effect="fade" var="theme" forceSelection="true"
-								minQueryLength="1" itemValue="#{theme}"
-								itemLabel="#{theme.descTipoAt}">
-							</p:autoComplete>
-							<p:commandButton id="btBusTi" value="Buscar"
-								action="#{TipoAtendimentoController.listarTodosTipos()}"
-								onclick="PF('dlgConsuTipoAtend').show();" />
-						</p:outputPanel>
-					</p:outputPanel>
+				<p:outputPanel id="outTipoAt">
+					<h:outputLabel for="tipoAt" value="Tipo de Atendimento:" />
+					<br />
+					<p:autoComplete value="#{AgendaController.tipoC}" size="60"
+						converter="conTipoAtendimento"
+						completeMethod="#{TipoAtendimentoController.listaTipoAtAutoCompleteTodos}"
+						effect="fade" var="theme" forceSelection="true" minQueryLength="1"
+						itemValue="#{theme}" itemLabel="#{theme.descTipoAt}">
+					</p:autoComplete>
 
-					<p:commandButton value="Ver Agenda" style="margin-top: 20px;"
-						action="#{AgendaController.consultarAgenda()}"
-						update=":formConsAge:dtConsultas, :formConsAge:msg" />
+					<p:commandButton id="btBusTi"
+						styleClass="btn btn-primary text-center"
+						style="height:25px;margin-left:10px" icon="ui-icon-search"
+						action="#{AgendaController.limparNaBuscaTipo()}"
+						update=":formConsuTipoAt" onclick="PF('dlgConsuTipoAt').show();" />
 
-				</p:panelGrid>
-				<br />
-				<p:dataTable resizableColumns="true" id="dtConsultas"
-					emptyMessage="Sem registros." scrollable="true" paginator="true"
-					rows="15" var="agenda" value="#{AgendaController.listaConsulta}">
+				</p:outputPanel>
 
-					<p:column headerText="Ação" width="60px;">
-						<center>
-							<p:commandButton icon="novoProcesso"
-								action="#{AgendaController.habilitarDetalhes()}"
-								update=":formConsAge:pnlConsAge" title="Detalhes">
-								<f:setPropertyActionListener value="#{agenda}"
-									target="#{AgendaController.agenda}" />
-							</p:commandButton>
-						</center>
-					</p:column>
-					<p:column headerText="Data" width="100px;">
-						<h:outputLabel value="#{agenda.dataAtendimento}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputLabel>
-					</p:column>
-					<p:column headerText="Prontuário" width="100px;">
-						<h:outputLabel value="#{agenda.paciente.id_paciente}" />
-					</p:column>
-					<p:column headerText="Paciente" width="300px;">
-						<h:outputLabel value="#{agenda.paciente.nome}" />
-					</p:column>
-					<p:column headerText="Tipo Atendimento" width="200px;">
-						<h:outputLabel value="#{agenda.tipoAt.descTipoAt}" />
-					</p:column>
-					<p:column headerText="Turno" width="60px;">
-						<h:outputLabel value="MANHÃ" rendered="#{agenda.turno == 'M'}" />
-						<h:outputLabel value="TARDE" rendered="#{agenda.turno == 'T'}" />
-					</p:column>
-					<p:column headerText="Status" width="60px;">
-						<h:outputLabel value="#{agenda.situacao}" />
-					</p:column>
-					<p:column headerText="Profissional" width="300px;">
-						<h:outputLabel value="#{agenda.profissional.descricaoProf}" />
-					</p:column>
-					<p:column headerText="Programa" width="200px;">
-						<h:outputLabel value="#{agenda.programa.descPrograma}" />
-					</p:column>
-					<p:column headerText="Equipe" width="200px;">
-						<h:outputLabel value="#{agenda.equipe.descEquipe}" />
-					</p:column>
-					<p:column headerText="Observação" width="300px;">
-						<h:outputLabel value="#{agenda.observacao}" />
-					</p:column>
-				</p:dataTable>
+				<b:commandButton value="Ver Agenda"
+					style="margin-top:5px;margin-left:5px"
+					icon="glyphicon glyphicon-list-alt"
+					action="#{AgendaController.consultarAgenda()}"
+					update=":formConsAge:dtConsultas, :formConsAge:msgError" />
 
-				<br />
-				<center>
-					<p:outputPanel id="outDetalhes"
-						rendered="#{AgendaController.habilitarDetalhes == true}">
-						<p:panelGrid columns="2" styleClass="semBorda">
-							<p:panel header="Confirma Atendimento">
-								<p:panelGrid columns="2" styleClass="semBorda">
-									<h:outputLabel value="Paciente: " />
-									<p:outputPanel>
-										<p:inputText
-											value="#{AgendaController.agenda.paciente.id_paciente}"
-											readonly="true" size="5" />
-										<p:inputText value="#{AgendaController.agenda.paciente.nome}"
-											readonly="true" size="50" />
-									</p:outputPanel>
+			</p:panelGrid>
+			<br />
+			<p:dataTable resizableColumns="true" id="dtConsultas"
+				emptyMessage="Sem registros." scrollable="true" paginator="true"
+				rows="15" var="agenda" value="#{AgendaController.listaConsulta}">
 
-									<h:outputLabel value="Médico: " />
-									<p:outputPanel>
-										<p:inputText
-											value="#{AgendaController.agenda.profissional.idProfissional}"
-											readonly="true" size="5" />
-										<p:inputText
-											value="#{AgendaController.agenda.profissional.descricaoProf}"
-											readonly="true" size="50" />
-									</p:outputPanel>
-								</p:panelGrid>
-							</p:panel>
-							<p:panelGrid columns="3" styleClass="semBorda">
-								<h:outputLabel value="Profissional Atendimento: " />
+				<p:column headerText="Ação" width="60px;">
+					<center>
+						<p:commandButton icon="novoProcesso"
+							action="#{AgendaController.habilitarDetalhes()}"
+							update=":formConsAge" title="Detalhes">
+							<f:setPropertyActionListener value="#{agenda}"
+								target="#{AgendaController.agenda}" />
+						</p:commandButton>
+					</center>
+				</p:column>
+				<p:column headerText="Data" width="100px;">
+					<h:outputLabel value="#{agenda.dataAtendimento}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+				</p:column>
+				<p:column headerText="Prontuário" width="100px;">
+					<h:outputLabel value="#{agenda.paciente.id_paciente}" />
+				</p:column>
+				<p:column headerText="Paciente" width="300px;">
+					<h:outputLabel value="#{agenda.paciente.nome}" />
+				</p:column>
+				<p:column headerText="Tipo Atendimento" width="200px;">
+					<h:outputLabel value="#{agenda.tipoAt.descTipoAt}" />
+				</p:column>
+				<p:column headerText="Turno" width="60px;">
+					<h:outputLabel value="MANHÃ" rendered="#{agenda.turno == 'M'}" />
+					<h:outputLabel value="TARDE" rendered="#{agenda.turno == 'T'}" />
+				</p:column>
+				<p:column headerText="Status" width="60px;">
+					<h:outputLabel value="#{agenda.situacao}" />
+				</p:column>
+				<p:column headerText="Profissional" width="300px;">
+					<h:outputLabel value="#{agenda.profissional.descricaoProf}" />
+				</p:column>
+				<p:column headerText="Programa" width="200px;">
+					<h:outputLabel value="#{agenda.programa.descPrograma}" />
+				</p:column>
+				<p:column headerText="Equipe" width="200px;">
+					<h:outputLabel value="#{agenda.equipe.descEquipe}" />
+				</p:column>
+				<p:column headerText="Observação" width="300px;">
+					<h:outputLabel value="#{agenda.observacao}" />
+				</p:column>
+			</p:dataTable>
+
+			<br />
+			<center>
+				<p:outputPanel id="outDetalhes"
+					rendered="#{AgendaController.habilitarDetalhes == true}">
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<p:panel header="Confirma Atendimento">
+							<p:panelGrid columns="2" styleClass="semBorda">
+								<h:outputLabel value="Paciente: " />
 								<p:outputPanel>
-									<p:autoComplete value="#{AgendaController.agenda.profissional}"
-										size="60" converter="conProfissional"
-										completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
-										effect="fade" var="theme" forceSelection="true"
-										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.descricaoProf}">
-									</p:autoComplete>
+									<p:inputText
+										value="#{AgendaController.agenda.paciente.id_paciente}"
+										readonly="true" size="5" />
+									<p:inputText value="#{AgendaController.agenda.paciente.nome}"
+										readonly="true" size="50" />
 								</p:outputPanel>
-								<p:commandButton value="Buscar"
-									onclick="PF('dlgConsuProf').show();" />
 
-								<h:outputLabel value="Procedimento: " />
+								<h:outputLabel value="Médico: " />
 								<p:outputPanel>
-									<p:autoComplete value="#{AgendaController.agenda.procedimento}"
-										size="60" converter="conProcedimento"
-										completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-										effect="fade" var="theme" forceSelection="true"
-										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.nomeProc}">
-									</p:autoComplete>
+									<p:inputText
+										value="#{AgendaController.agenda.profissional.idProfissional}"
+										readonly="true" size="5" />
+									<p:inputText
+										value="#{AgendaController.agenda.profissional.descricaoProf}"
+										readonly="true" size="50" />
 								</p:outputPanel>
-								<p:commandButton value="Buscar"
-									onclick="PF('dlgConsuProf').show();" />
-
-								<h:outputLabel value="Situação: " />
-								<p:selectOneMenu value="#{AgendaController.situacao}"
-									style="width:125px">
-									<f:selectItem itemLabel="ATENDIDO" itemValue="A" />
-									<f:selectItem itemLabel="PROF. FALTOU" itemValue="MF" />
-								</p:selectOneMenu>
-
 							</p:panelGrid>
+						</p:panel>
+						<p:panelGrid columns="3" styleClass="semBorda">
+							<h:outputLabel value="Profissional Atendimento: " />
+							<p:outputPanel>
+								<p:autoComplete value="#{AgendaController.agenda.profissional}"
+									size="60" converter="conProfissional"
+									completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descricaoProf}">
+								</p:autoComplete>
+							</p:outputPanel>
+							<p:commandButton value="Buscar"
+								onclick="PF('dlgConsuProf').show();" />
+
+							<h:outputLabel value="Procedimento: " />
+							<p:outputPanel>
+								<p:autoComplete value="#{AgendaController.agenda.procedimento}"
+									size="60" converter="conProcedimento"
+									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.nomeProc}">
+								</p:autoComplete>
+							</p:outputPanel>
+							<p:commandButton value="Buscar"
+								onclick="PF('dlgConsuProf').show();" />
+
+							<h:outputLabel value="Situação: " />
+							<p:selectOneMenu value="#{AgendaController.situacao}"
+								style="width:125px">
+								<f:selectItem itemLabel="ATENDIDO" itemValue="A" />
+								<f:selectItem itemLabel="PROF. FALTOU" itemValue="MF" />
+							</p:selectOneMenu>
+
 						</p:panelGrid>
-						<center>
-							<p:panelGrid columns="3" styleClass="semBorda">
+					</p:panelGrid>
+					<center>
+						<p:panelGrid columns="3" styleClass="semBorda">
 
-								<p:commandButton value="Confirmar" icon="confirmar"
-									action="#{AgendaController.confirmarAtendimento()}"
-									update=":formConsAge" />
+							<p:commandButton value="Confirmar" icon="confirmar"
+								action="#{AgendaController.confirmarAtendimento()}"
+								update=":formConsAge" />
 
-								<p:commandButton value="Excluir Agendamento" icon="trash"
-									onclick="PF('dialogAtencao').show()" update=":formConsAge" />
+							<p:commandButton value="Excluir Agendamento" icon="trash"
+								onclick="PF('dialogAtencao').show()" update=":formConsAge" />
 
-								<p:commandButton value="Limpar" icon="limpar" />
+							<p:commandButton value="Limpar" icon="limpar" />
 
-							</p:panelGrid>
-						</center>
-					</p:outputPanel>
-				</center>
-				<p:separator />
-				<center>
-					<p:commandButton value="Voltar" icon="btvoltar" style="width:80px;"
-						update=":formConsAge"
-						actionListener="#{AgendaController.limparDados()}"
-						action="/pages/comum/selecaoSistema.faces?faces-redirect=true" />
-				</center>
+						</p:panelGrid>
+					</center>
+				</p:outputPanel>
+			</center>
 
-			</p:panel>
+			<center>
+				<b:messages value="Error" id="msgError"></b:messages>
+			</center>
 
-			<p:dialog header="Consulta Tipos de Atendimento"
-				widgetVar="dlgConsuTipoAtend" modal="true" width="550px">
-				<h:form id="formConsuTipoAt">
-					<p:dataTable value="#{TipoAtendimentoController.listaTipos}"
-						id="dtTipoAt" resizableColumns="true" var="tipo"
-						emptyMessage="Não existe nenhum tipo cadastrado!">
-						<p:column headerText="CÓD.">
-							<p:outputLabel value="#{tipo.idTipo}" />
-						</p:column>
-						<p:column headerText="Tipo de Atendimento">
-							<p:outputLabel value="#{tipo.descTipoAt}" />
-						</p:column>
+			<center>
 
-						<p:column style="width:50px;text-align: center">
-							<p:commandButton update=":formConsAge:outTipoAt, :formConsAge"
-								icon="ui-icon-check" title="Selecionar"
-								onclick="PF('dlgConsuTipoAtend').hide();">
-								<f:setPropertyActionListener value="#{tipo}"
-									target="#{AgendaController.tipoC}" />
-							</p:commandButton>
-						</p:column>
-					</p:dataTable>
-				</h:form>
-			</p:dialog>
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					size="sm" immediate="true" look="info" update=":formConsAge"
+					actionListener="#{AgendaController.limparDados()}"
+					action="/pages/comum/selecaoSistema2.faces?faces-redirect=true">
+				</b:commandButton>
+
+
+			</center>
 
 		</h:form>
 
@@ -236,13 +226,43 @@
 				<center>
 					<p:commandButton value="Sim" icon="ui-icon-check"
 						action="#{AgendaController.excluirAgendamento()}"
-						update=":formConsAge:msg, :formConsAge" style="font-size:14px;"
-						onclick="PF('dialogAtencao').hide();">
+						update=":formConsAge:msgError, :formConsAge"
+						style="font-size:14px;" onclick="PF('dialogAtencao').hide();">
 					</p:commandButton>
 					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
 						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
 
 				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consultar Tipos de Atendimento"
+			widgetVar="dlgConsuTipoAt" modal="true">
+			<h:form id="formConsuTipoAt">
+				<b:dataTable value="#{TipoAtendimentoController.listarTipos()}"
+					id="dtTipoAt" var="tipo" lang="pt-br"
+					display="Nenhum Tipo de Atendimento">
+
+					<h:column>
+						<f:facet name="header">
+                        Tipo de Atendimento
+                    </f:facet>
+						<p:outputLabel value="#{tipo.descTipoAt}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuTipoAt').hide();"
+							update=":formConsAge:outTipoAt">
+							<f:setPropertyActionListener value="#{tipo}"
+								target="#{AgendaController.tipoC}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 

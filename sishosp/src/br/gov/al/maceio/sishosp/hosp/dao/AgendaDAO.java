@@ -388,7 +388,7 @@ public class AgendaDAO {
 		}
 	}
 
-	//SEM USO, RETIREI
+	// SEM USO, RETIREI
 	public ArrayList<AgendaBean> gravarAgendaIntervalo(AgendaBean agenda,
 			List<AgendaBean> listaNovosAgendamentos, Connection con2)
 			throws ProjetoException {
@@ -611,33 +611,50 @@ public class AgendaDAO {
 		String sql = "SELECT a.id_atendimento, a.codpaciente, a.codmedico, a.codprograma,"
 				+ " a.codconvenio, a.dtaatende, a.horaatende, a.situacao, a.codatendente,"
 				+ " a.dtamarcacao, a.codtipoatendimento, a.turno, a.codequipe, a.observacao, a.ativo, a.codempresa, a1.codprocedimento"
-				+ " FROM  hosp.atendimentos a inner join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) WHERE ";
+				+ " FROM  hosp.atendimentos a left join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) WHERE ";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
 			stm = con.prepareStatement(sql);
-			if (pront == null && tipo == null) {
-				sql += " a.dtaatende = ? ";
-				stm = con.prepareStatement(sql);
-				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
-			} else if (pront != null && tipo == null) {
-				sql += " a.dtaatende = ? and a.codpaciente = ?";
-				stm = con.prepareStatement(sql);
-				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
-				stm.setInt(2, pront);
+			// if (pront == null && tipo == null) {
+			// sql += " a.dtaatende = ? ";
+			// stm = con.prepareStatement(sql);
+			// stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
+			// } else if (pront != null && tipo == null) {
+			// sql += " a.dtaatende = ? and a.codpaciente = ?";
+			// stm = con.prepareStatement(sql);
+			// stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
+			// stm.setInt(2, pront);
+			//
+			// } else if (pront == null && tipo != null) {
+			// sql += "a.dtaatende = ? and a.codtipoatendimento = ?";
+			// stm = con.prepareStatement(sql);
+			// stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
+			// stm.setInt(2, tipo.getIdTipo());
+			// } else if (pront != null && tipo != null) {
+			// sql +=
+			// "a.dtaatende = ? and a.codtipoatendimento = ? and a.codpaciente = ?";
+			// stm = con.prepareStatement(sql);
+			// stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
+			// stm.setInt(2, tipo.getIdTipo());
+			// stm.setInt(3, pront);
+			// }
 
-			} else if (pront == null && tipo != null) {
-				sql += "a.dtaatende = ? and a.codtipoatendimento = ?";
+			if (tipo != null && dataAgenda != null) {
+				sql += " a.dtamarcacao = ? and a.codtipoatendimento = ?";
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
 				stm.setInt(2, tipo.getIdTipo());
-			} else if (pront != null && tipo != null) {
-				sql += "a.dtaatende = ? and a.codtipoatendimento = ? and a.codpaciente = ?";
+			} else if (tipo != null && dataAgenda == null) {
+				sql += " a.codtipoatendimento = ?";
+				stm = con.prepareStatement(sql);
+				stm.setInt(1, tipo.getIdTipo());
+			} else if (tipo == null && dataAgenda != null) {
+				sql += " a.dtamarcacao = ?";
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
-				stm.setInt(2, tipo.getIdTipo());
-				stm.setInt(3, pront);
 			}
+
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {

@@ -7,25 +7,24 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
-import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
-import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
+import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 
-@FacesConverter(value = "conTipoAtendimento")
-public class TipoAtendimentoConverter implements Converter {
-	TipoAtendimentoDAO tDAO = new TipoAtendimentoDAO();
+@FacesConverter(value = "conMunicipio")
+public class MunicipioConverter implements Converter {
+	EnderecoDAO eDao = new EnderecoDAO();
 
 	public Object getAsObject(FacesContext contet, UIComponent component,
 			String value) {
-		 if (value.equals("null") || value.equals("") || value == null)
+		if (value.equals("null") || value.equals("") || value == null)
 			return null;
 		try {
 			int id = Integer.parseInt(value);
-			return tDAO.listarTipoPorId(id);
+			return eDao.listarMunicipioPorId(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Tipo de atendimento inválido!", ""));
+					FacesMessage.SEVERITY_ERROR, "Município não válido", ""));
 		}
 	}
 
@@ -33,6 +32,6 @@ public class TipoAtendimentoConverter implements Converter {
 			Object value) {
 		if (value == null || value.equals(""))
 			return null;
-		return String.valueOf(((TipoAtendimentoBean) value).getIdTipo());
+		return String.valueOf(((EnderecoBean) value).getCodmunicipio());
 	}
 }
