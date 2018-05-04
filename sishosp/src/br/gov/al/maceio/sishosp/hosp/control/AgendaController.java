@@ -233,12 +233,21 @@ public class AgendaController implements Serializable {
 				}
 				System.out.println("MAX: " + agenda.getMax());
 				System.out.println("QTD: " + agenda.getQtd());
-
+				AgendaBean agendaAux = new AgendaBean();
+				agendaAux.setDataAtendimento(agenda.getDataAtendimento());
+				agendaAux.setPaciente(agenda.getPaciente());
+				agendaAux.setPrograma(agenda.getPrograma());
+				agendaAux.setGrupo(agenda.getGrupo());
+				agendaAux.setTipoAt(agenda.getTipoAt());
+				agendaAux.setProfissional(agenda.getProfissional());
+				agendaAux.setEquipe(agenda.getEquipe());
+				agendaAux.setMax(agenda.getMax());
+				agendaAux.setQtd(agenda.getQtd());
 				if (temData) {
 					if (agenda.getMax() == agenda.getQtd()) {
 						System.out.println("Adicionou: "
 								+ agenda.getDataAtendimento());
-						listaHorariosOcupados.add(agenda);
+						listaHorariosOcupados.add(agendaAux);
 
 						System.out.println("OCUPADOS: "
 								+ listaHorariosOcupados.get(0)
@@ -246,14 +255,19 @@ public class AgendaController implements Serializable {
 					} else {
 						
 						System.out.println("Entra? "+agenda.getDataAtendimento());
+						
 						//this.listaNovosAgendamentos.add(this.agenda);
-						listaNovosAgendamentos.add(j, agenda);
+						listaNovosAgendamentos.add(agendaAux);
+						
+						
 						System.out.println("Entra Sim com tamanho: "+listaNovosAgendamentos.size());
+					/*
 						for (int x = 0; x > listaNovosAgendamentos.size(); x++) {
-							System.out.println("ADICIONADOS: "
+							System.out.println("	: "
 									+ listaNovosAgendamentos.get(x)
 											.getDataAtendimento());
 						}
+						*/
 						j++;
 					}
 
