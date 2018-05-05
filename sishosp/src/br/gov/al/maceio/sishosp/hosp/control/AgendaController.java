@@ -42,6 +42,7 @@ public class AgendaController implements Serializable {
 	private AgendaBean agenda;
 
 	private Date dataAtendimentoC;
+	private Date dataAtendimentoFinalC;
 	private String cnsC;
 	private Integer protuarioC;
 	private ProfissionalDAO pDao = new ProfissionalDAO();
@@ -77,6 +78,7 @@ public class AgendaController implements Serializable {
 		this.listaAgendamentosData = new ArrayList<AgendaBean>();
 		this.listaConsulta = new ArrayList<AgendaBean>();
 		this.dataAtendimentoC = null;
+		this.dataAtendimentoFinalC = null;
 		this.cnsC = new String();
 		this.protuarioC = null;
 		this.tipoC = new TipoAtendimentoBean();
@@ -198,7 +200,6 @@ public class AgendaController implements Serializable {
 			Long dt = (d2.getTime() - d1.getTime());
 
 			dt = (dt / 86400000L);
-			System.out.println("QTD DIAS: " + dt);
 			for (int i = 0; i < dt; i++) {
 				temData = false;
 				Calendar c = Calendar.getInstance();
@@ -209,12 +210,9 @@ public class AgendaController implements Serializable {
 				}
 
 				agenda.setDataAtendimento(c.getTime());
-				System.out.println("DATA2: " + agenda.getDataAtendimento());
 
 				dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
 				diaSem = aDao.buscarDiaSemana(this.agenda);
-				System.out.println("ESPECIFICA: " + dtEspecifica);
-				System.out.println("DIA SEMANA: " + diaSem);
 
 				if (dtEspecifica == true || diaSem == true) {
 					temData = true;
@@ -231,8 +229,6 @@ public class AgendaController implements Serializable {
 								.verQtdAgendadosData(this.agenda));
 					}
 				}
-				System.out.println("MAX: " + agenda.getMax());
-				System.out.println("QTD: " + agenda.getQtd());
 				AgendaBean agendaAux = new AgendaBean();
 				agendaAux.setDataAtendimento(agenda.getDataAtendimento());
 				agendaAux.setPaciente(agenda.getPaciente());
@@ -245,39 +241,21 @@ public class AgendaController implements Serializable {
 				agendaAux.setQtd(agenda.getQtd());
 				if (temData) {
 					if (agenda.getMax() == agenda.getQtd()) {
-						System.out.println("Adicionou: "
-								+ agenda.getDataAtendimento());
+
 						listaHorariosOcupados.add(agendaAux);
 
-						System.out.println("OCUPADOS: "
-								+ listaHorariosOcupados.get(0)
-										.getDataAtendimento());
 					} else {
-						
-						System.out.println("Entra? "+agenda.getDataAtendimento());
-						
-						//this.listaNovosAgendamentos.add(this.agenda);
+
 						listaNovosAgendamentos.add(agendaAux);
-						
-						
-						System.out.println("Entra Sim com tamanho: "+listaNovosAgendamentos.size());
-					/*
-						for (int x = 0; x > listaNovosAgendamentos.size(); x++) {
-							System.out.println("	: "
-									+ listaNovosAgendamentos.get(x)
-											.getDataAtendimento());
-						}
-						*/
+
 						j++;
 					}
 
 				}
 			}
 			if (listaHorariosOcupados.size() > 0) {
-				System.out.println("Tamanho da lista: "
-						+ listaHorariosOcupados.size());
 				temLotado = true;
-				System.out.println("Tem Lotado: " + true);
+				
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
 						"Não foi possível agendar, pois tem horários lotados! Clique em Visualizar Ocupados para ver.",
@@ -370,7 +348,7 @@ public class AgendaController implements Serializable {
 			return;
 		}
 		this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC,
-				this.protuarioC, this.cnsC, this.tipoC);
+				dataAtendimentoFinalC);
 	}
 
 	public void excluirAgendamento() throws ProjetoException {
@@ -748,6 +726,14 @@ public class AgendaController implements Serializable {
 
 	public void setTemLotado(Boolean temLotado) {
 		this.temLotado = temLotado;
+	}
+
+	public Date getDataAtendimentoFinalC() {
+		return dataAtendimentoFinalC;
+	}
+
+	public void setDataAtendimentoFinalC(Date dataAtendimentoFinalC) {
+		this.dataAtendimentoFinalC = dataAtendimentoFinalC;
 	}
 
 }

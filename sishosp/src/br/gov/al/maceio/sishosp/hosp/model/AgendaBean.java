@@ -27,11 +27,11 @@ public class AgendaBean implements Serializable {
 	private EquipeBean equipe;
 
 	public AgendaBean() {
-		this.paciente = null;// new PacienteBean();
+		this.paciente = new PacienteBean();
 		this.procedimento = null;
-		this.grupo = null;// new GrupoBean();
-		this.programa = null;// new ProgramaBean();
-		this.tipoAt = null;// new TipoAtendimentoBean();
+		this.grupo = new GrupoBean();
+		this.programa = new ProgramaBean();
+		this.tipoAt = new TipoAtendimentoBean();
 		this.profissional = new ProfissionalBean();
 		this.equipe = new EquipeBean();
 		this.prontoGravar = false;

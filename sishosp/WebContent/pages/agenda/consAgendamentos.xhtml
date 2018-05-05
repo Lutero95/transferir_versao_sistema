@@ -21,101 +21,86 @@
 
 			<p:panelGrid columns="5" styleClass="semBorda">
 				<p:outputPanel>
-					<h:outputLabel value="Data para atendimento: " />
+					<h:outputLabel value="Data de Marcação: " />
 					<br />
 					<p:calendar locale="pt" showOn="button" navigator="true"
 						mask="true" pattern="dd/MM/yyyy"
 						value="#{AgendaController.dataAtendimentoC}" />
+
+
+					<p:outputLabel id="outdataa">
+						<h:outputLabel value="a" />
+					</p:outputLabel>
+
+					<p:calendar value="#{AgendaController.dataAtendimentoFinalC}"
+						id="dtagen3" locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy">
+						<p:ajax event="dateSelect"
+							listener="#{AgendaController.consultarAgenda()}"
+							process="@form @this"
+							update=":formConsAge:dtConsultas, :formConsAge:msgError"></p:ajax>
+					</p:calendar>
 				</p:outputPanel>
-
-				<!--  
-				<p:outputPanel>
-					<h:outputLabel value="Prontuário: " />
-					<br />
-					<b:inputText value="#{AgendaController.protuarioC}" />
-				</p:outputPanel>
-
-				<p:outputPanel>
-					<h:outputLabel value="CNS: " />
-					<br />
-					<b:inputText value="#{AgendaController.cnsC}" />
-				</p:outputPanel>
-				-->
-
-				<p:outputPanel id="outTipoAt">
-					<h:outputLabel for="tipoAt" value="Tipo de Atendimento:" />
-					<br />
-					<p:autoComplete value="#{AgendaController.tipoC}" size="60"
-						converter="conTipoAtendimento"
-						completeMethod="#{TipoAtendimentoController.listaTipoAtAutoCompleteTodos}"
-						effect="fade" var="theme" forceSelection="true" minQueryLength="1"
-						itemValue="#{theme}" itemLabel="#{theme.descTipoAt}">
-					</p:autoComplete>
-
-					<p:commandButton id="btBusTi"
-						styleClass="btn btn-primary text-center"
-						style="height:25px;margin-left:10px" icon="ui-icon-search"
-						action="#{AgendaController.limparNaBuscaTipo()}"
-						update=":formConsuTipoAt" onclick="PF('dlgConsuTipoAt').show();" />
-
-				</p:outputPanel>
-
-				<b:commandButton value="Ver Agenda"
-					style="margin-top:5px;margin-left:5px"
-					icon="glyphicon glyphicon-list-alt"
-					action="#{AgendaController.consultarAgenda()}"
-					update=":formConsAge:dtConsultas, :formConsAge:msgError" />
 
 			</p:panelGrid>
 			<br />
-			<p:dataTable resizableColumns="true" id="dtConsultas"
+			<b:dataTable resizableColumns="true" id="dtConsultas"
 				emptyMessage="Sem registros." scrollable="true" paginator="true"
 				rows="15" var="agenda" value="#{AgendaController.listaConsulta}">
 
-				<p:column headerText="Ação" width="60px;">
-					<center>
-						<p:commandButton icon="novoProcesso"
-							action="#{AgendaController.habilitarDetalhes()}"
-							update=":formConsAge" title="Detalhes">
-							<f:setPropertyActionListener value="#{agenda}"
-								target="#{AgendaController.agenda}" />
-						</p:commandButton>
-					</center>
-				</p:column>
-				<p:column headerText="Data" width="100px;">
+				<h:column>
+					<f:facet name="header">
+                        Data
+                    </f:facet>
 					<h:outputLabel value="#{agenda.dataAtendimento}">
 						<f:convertDateTime pattern="dd/MM/yyyy" />
 					</h:outputLabel>
-				</p:column>
-				<p:column headerText="Prontuário" width="100px;">
-					<h:outputLabel value="#{agenda.paciente.id_paciente}" />
-				</p:column>
-				<p:column headerText="Paciente" width="300px;">
-					<h:outputLabel value="#{agenda.paciente.nome}" />
-				</p:column>
-				<p:column headerText="Tipo Atendimento" width="200px;">
-					<h:outputLabel value="#{agenda.tipoAt.descTipoAt}" />
-				</p:column>
-				<p:column headerText="Turno" width="60px;">
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+                        Paciente
+                    </f:facet>
+					<p:outputLabel value="#{agenda.paciente.nome}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+                        CNS
+                    </f:facet>
+					<p:outputLabel value="#{agenda.paciente.cns}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+                        Tipo de Atendimento
+                    </f:facet>
+					<p:outputLabel value="#{agenda.tipoAt.descTipoAt}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+                        Turno
+                    </f:facet>
 					<h:outputLabel value="MANHÃ" rendered="#{agenda.turno == 'M'}" />
 					<h:outputLabel value="TARDE" rendered="#{agenda.turno == 'T'}" />
-				</p:column>
-				<p:column headerText="Status" width="60px;">
-					<h:outputLabel value="#{agenda.situacao}" />
-				</p:column>
-				<p:column headerText="Profissional" width="300px;">
-					<h:outputLabel value="#{agenda.profissional.descricaoProf}" />
-				</p:column>
-				<p:column headerText="Programa" width="200px;">
-					<h:outputLabel value="#{agenda.programa.descPrograma}" />
-				</p:column>
-				<p:column headerText="Equipe" width="200px;">
-					<h:outputLabel value="#{agenda.equipe.descEquipe}" />
-				</p:column>
-				<p:column headerText="Observação" width="300px;">
-					<h:outputLabel value="#{agenda.observacao}" />
-				</p:column>
-			</p:dataTable>
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+                        Profissional
+                    </f:facet>
+					<p:outputLabel value="#{agenda.profissional.descricaoProf}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+                        Equipe
+                    </f:facet>
+					<p:outputLabel value="#{agenda.equipe.descEquipe}" />
+				</h:column>
+
+			</b:dataTable>
 
 			<br />
 			<center>
@@ -233,36 +218,6 @@
 						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
 
 				</center>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Consultar Tipos de Atendimento"
-			widgetVar="dlgConsuTipoAt" modal="true">
-			<h:form id="formConsuTipoAt">
-				<b:dataTable value="#{TipoAtendimentoController.listarTipos()}"
-					id="dtTipoAt" var="tipo" lang="pt-br"
-					display="Nenhum Tipo de Atendimento">
-
-					<h:column>
-						<f:facet name="header">
-                        Tipo de Atendimento
-                    </f:facet>
-						<p:outputLabel value="#{tipo.descTipoAt}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-                        Adicionar
-                    </f:facet>
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsuTipoAt').hide();"
-							update=":formConsAge:outTipoAt">
-							<f:setPropertyActionListener value="#{tipo}"
-								target="#{AgendaController.tipoC}" />
-						</p:commandButton>
-					</h:column>
-
-				</b:dataTable>
 			</h:form>
 		</p:dialog>
 

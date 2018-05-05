@@ -598,61 +598,29 @@ public class AgendaDAO {
 		return lista;
 	}
 
-	public List<AgendaBean> consultarAgenda(Date dataAgenda, Integer pront,
-			String cns, TipoAtendimentoBean tipo) throws ProjetoException {
+	public List<AgendaBean> consultarAgenda(Date dataAgenda,
+			Date dataAgendaFinal) throws ProjetoException {
 		List<AgendaBean> lista = new ArrayList<AgendaBean>();
-		PacienteDAO pDao = new PacienteDAO();
-		ProfissionalDAO mDao = new ProfissionalDAO();
-		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
-		EquipeDAO eDao = new EquipeDAO();
-		ProgramaDAO prDao = new ProgramaDAO();
-		ProcedimentoDAO proDao = new ProcedimentoDAO();
 
-		String sql = "SELECT a.id_atendimento, a.codpaciente, a.codmedico, a.codprograma,"
-				+ " a.codconvenio, a.dtaatende, a.horaatende, a.situacao, a.codatendente,"
-				+ " a.dtamarcacao, a.codtipoatendimento, a.turno, a.codequipe, a.observacao, a.ativo, a.codempresa, a1.codprocedimento"
-				+ " FROM  hosp.atendimentos a left join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento) WHERE ";
+		String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome, p.cns, a.codmedico, m.descmedico, "
+				+ " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, "
+				+ " a.codequipe, e.descequipe "
+				+ " FROM  hosp.atendimentos a "
+				+ " left join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)"
+				+ " left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
+				+ " left join hosp.medicos m on (m.id_medico = a.codmedico) "
+				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe) "
+				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
 			stm = con.prepareStatement(sql);
-			// if (pront == null && tipo == null) {
-			// sql += " a.dtaatende = ? ";
-			// stm = con.prepareStatement(sql);
-			// stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
-			// } else if (pront != null && tipo == null) {
-			// sql += " a.dtaatende = ? and a.codpaciente = ?";
-			// stm = con.prepareStatement(sql);
-			// stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
-			// stm.setInt(2, pront);
-			//
-			// } else if (pront == null && tipo != null) {
-			// sql += "a.dtaatende = ? and a.codtipoatendimento = ?";
-			// stm = con.prepareStatement(sql);
-			// stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
-			// stm.setInt(2, tipo.getIdTipo());
-			// } else if (pront != null && tipo != null) {
-			// sql +=
-			// "a.dtaatende = ? and a.codtipoatendimento = ? and a.codpaciente = ?";
-			// stm = con.prepareStatement(sql);
-			// stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
-			// stm.setInt(2, tipo.getIdTipo());
-			// stm.setInt(3, pront);
-			// }
 
-			if (tipo != null && dataAgenda != null) {
-				sql += " a.dtamarcacao = ? and a.codtipoatendimento = ?";
+			if (dataAgenda != null) {
+				sql += " where a.dtamarcacao >= ? and a.dtamarcacao <= ?";
 				stm = con.prepareStatement(sql);
 				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
-				stm.setInt(2, tipo.getIdTipo());
-			} else if (tipo != null && dataAgenda == null) {
-				sql += " a.codtipoatendimento = ?";
-				stm = con.prepareStatement(sql);
-				stm.setInt(1, tipo.getIdTipo());
-			} else if (tipo == null && dataAgenda != null) {
-				sql += " a.dtamarcacao = ?";
-				stm = con.prepareStatement(sql);
-				stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
+				stm.setDate(2, new java.sql.Date(dataAgendaFinal.getTime()));
 			}
 
 			ResultSet rs = stm.executeQuery();
@@ -660,26 +628,26 @@ public class AgendaDAO {
 			while (rs.next()) {
 				AgendaBean agenda = new AgendaBean();
 				agenda.setIdAgenda(rs.getInt("id_atendimento"));
-				agenda.setPaciente(pDao.listarPacientePorID(rs
-						.getInt("codpaciente")));
-				agenda.setProfissional(mDao.buscarProfissionalPorId(rs
-						.getInt("codmedico")));
-				agenda.setPrograma(prDao.listarProgramaPorId(rs
-						.getInt("codprograma")));
+				agenda.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+				agenda.getPaciente().setNome(rs.getString("nome"));
+				agenda.getPaciente().setCns(rs.getString("cns"));
+				agenda.getProfissional().setIdProfissional(
+						rs.getInt("codmedico"));
+				agenda.getProfissional().setDescricaoProf(
+						rs.getString("descmedico"));
 				agenda.setDataAtendimento(rs.getDate("dtaatende"));
-				agenda.setSituacao(rs.getString("situacao"));
 				agenda.setDataMarcacao(rs.getDate("dtamarcacao"));
-				agenda.setTipoAt(tDao.listarTipoPorId(rs
-						.getInt("codtipoatendimento")));
+				agenda.getTipoAt().setIdTipo(rs.getInt("codtipoatendimento"));
+				agenda.getTipoAt().setDescTipoAt(
+						rs.getString("desctipoatendimento"));
 				agenda.setTurno(rs.getString("turno"));
-				agenda.setEquipe(eDao.buscarEquipePorID(rs.getInt("codequipe")));
-				agenda.setObservacao(rs.getString("observacao"));
-				agenda.setAtivo(rs.getString("ativo"));
-				agenda.setProcedimento(proDao.listarProcedimentoPorId(rs
-						.getInt("codprocedimento")));
+				agenda.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+				agenda.getEquipe().setDescEquipe(rs.getString("descequipe"));
+
 				lista.add(agenda);
 			}
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
