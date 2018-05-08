@@ -19,7 +19,7 @@ public class PacienteDAO {
 	private Connection con = null;
 	private PreparedStatement ps = null;
 
-	public Boolean cadastrar(PacienteBean paciente, Integer codmunicipio)
+	public Boolean cadastrar(PacienteBean paciente, Integer codmunicipio, Integer codbairro)
 			throws ProjetoException {
 		boolean cadastrou = false;
 		conexao = ConnectionFactory.getConnection();
@@ -40,13 +40,30 @@ public class PacienteDAO {
 					codmunicipio = set.getInt(1);
 				}
 			}
+			
+			if (codbairro == 0) {
+				String sql2 = "INSERT INTO hosp.bairros(descbairro, codmunicipio) "
+						+ " VALUES (?, ?) returning id_bairro;";
+
+				PreparedStatement ps2 = conexao.prepareStatement(sql2);
+
+				ps2.setString(1, paciente.getEndereco().getBairro()
+						.toUpperCase());
+				ps2.setInt(2, codmunicipio);
+
+				ResultSet set = ps2.executeQuery();
+				while (set.next()) {
+					codbairro = set.getInt(1);
+				}
+			}
+			
 			String sql = "insert into hosp.pacientes (dtacadastro, nome, dtanascimento, estcivil, sexo, sangue, "
 					+ "pai, mae, conjuge,codraca, cep, uf, cidade, bairro, logradouro, numero, complemento, referencia, telres, telcel, teltrab, telorelhao, rg, oe, dtaexpedicaorg, cpf, cns, protreab, "
 					+ "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, contribuinte, id_escolaridade, id_escola, id_profissao, trabalha, localtrabalha, codparentesco, "
 					+ "nomeresp, rgresp, cpfresp, dtanascimentoresp, id_encaminhado, id_formatransporte ,deficiencia, tipodeficiencia, codmunicipio, "
-					+ "deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla)"
+					+ "deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, codbairro)"
 					+ " values (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ? , ? , "
-					+ "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)";
+					+ "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?)";
 
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setString(1, paciente.getNome().toUpperCase().trim());
@@ -320,6 +337,8 @@ public class PacienteDAO {
 			} else {
 				stmt.setBoolean(57, false);
 			}
+			
+			stmt.setInt(58, codbairro);
 
 			stmt.execute();
 			conexao.commit();

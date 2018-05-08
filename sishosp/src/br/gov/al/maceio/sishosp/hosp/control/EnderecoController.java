@@ -16,7 +16,6 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 
-
 @ManagedBean(name = "EnderecoController")
 @ViewScoped
 public class EnderecoController implements Serializable {
@@ -107,6 +106,8 @@ public class EnderecoController implements Serializable {
 			tipo = Integer.parseInt(params.get("tipo"));
 			EnderecoDAO cDao = new EnderecoDAO();
 			this.endereco = cDao.listarBairroPorId(id);
+			// foi criado bairro e codbairro porque não estava indo pelos atributos
+			// do objeto endereco
 			bairro = endereco.getBairro();
 			codbairro = endereco.getCodbairro();
 		} else {
@@ -160,6 +161,8 @@ public class EnderecoController implements Serializable {
 
 	public void gravarBairros() throws ProjetoException {
 		EnderecoDAO udao = new EnderecoDAO();
+		// foi criado bairro e codbairro porque não estava indo pelos atributos
+		// do objeto endereco
 		endereco.setBairro(bairro);
 		boolean cadastrou = udao.cadastrarBairros(endereco);
 
@@ -205,6 +208,8 @@ public class EnderecoController implements Serializable {
 
 	public void alterarBairros() throws ProjetoException {
 		EnderecoDAO udao = new EnderecoDAO();
+		// foi criado bairro e codbairro porque não estava indo pelos atributos
+		// do objeto endereco
 		endereco.setBairro(bairro);
 		endereco.setCodbairro(codbairro);
 		boolean alterou = udao.alterarBairros(endereco);
@@ -357,8 +362,9 @@ public class EnderecoController implements Serializable {
 		listaMunicipios = fdao.listaMunicipios();
 
 	}
-	
-	public List<EnderecoBean> listarMunicipiosCadastro() throws ProjetoException {
+
+	public List<EnderecoBean> listarMunicipiosCadastro()
+			throws ProjetoException {
 		EnderecoDAO fdao = new EnderecoDAO();
 		listaMunicipios = fdao.listaMunicipios();
 		return listaMunicipios;

@@ -478,6 +478,41 @@ public class EnderecoDAO {
 		}
 		return cod;
 	}
+	
+	public Integer bairroExiste(PacienteBean paciente, Integer codMunicipio)
+			throws ProjetoException {
+
+		String sql = "select id_bairro from hosp.bairros where descbairro = ? and codmunicipio = ?";
+		int cod = 0;
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			stm.setString(1, paciente.getEndereco().getBairro().replaceAll("[^a-zZ-Z1-9 ]", ""));
+			System.out.println("Teste: "+paciente.getEndereco().getBairro().replaceAll("[^a-zZ-Z1-9 ]", ""));
+			stm.setInt(2, codMunicipio);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+
+				cod = rs.getInt("id_municipio");
+
+			}
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return cod;
+	}
 
 	public List<EnderecoBean> buscaMunicipioAutoComplete(String str)
 			throws ProjetoException {
@@ -496,6 +531,45 @@ public class EnderecoDAO {
 				EnderecoBean e = new EnderecoBean();
 				e.setCodmunicipio(rs.getInt("id_municipio"));
 				e.setMunicipio(rs.getString("descmunicipio"));
+
+				lista.add(e);
+
+			}
+			return lista;
+		} catch (Exception sqle) {
+
+			throw new ProjetoException(sqle);
+
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception sqlc) {
+				sqlc.printStackTrace();
+				System.exit(1);
+				// TODO: handle exception
+			}
+
+		}
+	}
+	
+	public List<EnderecoBean> buscaBairroAutoComplete(String str, Integer codMunicipio)
+			throws ProjetoException {
+		PreparedStatement ps = null;
+		conexao = ConnectionFactory.getConnection();
+		try {
+			String sql = " select id_bairro, desbairro from hosp.bairro where descbairro like ? and id_bairro = ? order by descbairro";
+
+			ps = conexao.prepareStatement(sql);
+			ps.setString(1, "%" + str.toUpperCase() + "%");
+			ps.setInt(2, codMunicipio);
+			ResultSet rs = ps.executeQuery();
+
+			List<EnderecoBean> lista = new ArrayList<EnderecoBean>();
+
+			while (rs.next()) {
+				EnderecoBean e = new EnderecoBean();
+				e.setCodbairro(rs.getInt("id_bairro"));
+				e.setBairro(rs.getString("descbairro"));
 
 				lista.add(e);
 

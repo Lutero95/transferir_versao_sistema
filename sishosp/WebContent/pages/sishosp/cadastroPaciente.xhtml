@@ -242,7 +242,7 @@
 									requiredMessage="É necessário que você informe seu cep.">
 
 									<p:ajax listener="#{PacienteController.encontraCEP}"
-										update="inputbairro, inputrua, estado, municipio"
+										update="inputbairro, inputbairro2, inputrua, estado, opmun1, opmun2, opbai1, opbai2, municipio, municipio2"
 										global="false" event="blur"></p:ajax>
 								</p:inputMask>
 							</b:column>
@@ -299,27 +299,59 @@
 							</b:column>
 
 							<b:column span="2">
-								<h:inputText
-									value="#{PacienteController.paciente.endereco.bairro}"
-									required="true"
-									requiredMessage="É necessário que você informe seu bairro"
-									class="form-control" id="inputbairro"
-									pt:placeholder="Digite aqui seu bairro">
-								</h:inputText>
+								<p:outputPanel id="opbai1">
+									<h:inputText
+										rendered="#{PacienteController.cidadeDoCep == true}"
+										value="#{PacienteController.paciente.endereco.bairro}"
+										required="true" readonly="true"
+										requiredMessage="É necessário que você informe seu bairro"
+										class="form-control" id="inputbairro"
+										pt:placeholder="Digite aqui seu bairro">
+									</h:inputText>
+								</p:outputPanel>
+
+								<p:outputPanel id="opbai2">
+									<p:autoComplete id="inputbairro2" required="true"
+										style="margin-top:10px"
+										rendered="#{PacienteController.cidadeDoCep == false}"
+										requiredMessage="Bairro é obrigatório"
+										completeMethod="#{PacienteController.listaBairroAutoComplete}"
+										size="25" value="#{PacienteController.paciente.endereco}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.bairro}" converter="conBairro">
+									</p:autoComplete>
+								</p:outputPanel>
 							</b:column>
 
 							<b:column span="1">
-								<h:outputLabel for="municipio" value="Municipio"
+								<h:outputLabel for="municipio" value="Município"
 									style="margin-top:10px" />
 							</b:column>
 
 							<b:column span="2">
-								<h:inputText
-									value="#{PacienteController.paciente.endereco.municipio}"
-									required="true"
-									requiredMessage="É necessário que você informe seu município"
-									class="form-control" id="municipio">
-								</h:inputText>
+								<p:outputPanel id="opmun1">
+									<h:inputText
+										rendered="#{PacienteController.cidadeDoCep == true}"
+										value="#{PacienteController.paciente.endereco.municipio}"
+										required="false" readonly="true"
+										requiredMessage="É necessário que você informe seu município"
+										class="form-control" id="municipio">
+									</h:inputText>
+								</p:outputPanel>
+
+								<p:outputPanel id="opmun2">
+									<p:autoComplete id="municipio2" required="true"
+										style="margin-top:10px"
+										rendered="#{PacienteController.cidadeDoCep == false}"
+										requiredMessage="Município é obrigatório"
+										completeMethod="#{EnderecoController.listaMunicipioAutoComplete}"
+										size="40" value="#{PacienteController.paciente.endereco}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.municipio}" converter="conMunicipio">
+									</p:autoComplete>
+								</p:outputPanel>
 							</b:column>
 						</b:row>
 
