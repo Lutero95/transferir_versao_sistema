@@ -138,37 +138,55 @@ public class AgendaController implements Serializable {
 				|| this.agenda.getPrograma() == null
 				|| this.agenda.getGrupo() == null
 				|| this.agenda.getTipoAt() == null
-				|| this.agenda.getDataAtendimento() == null) {
+				|| this.agenda.getDataAtendimento() == null
+				|| (this.agenda.getProfissional() == null && this.agenda
+						.getEquipe() == null)) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Campo(s) obrigatório(s) em falta!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
-		}
-		boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
-		boolean diaSem = aDao.buscarDiaSemana(this.agenda);
-		boolean limitePorTipoAtend = aDao.buscarTabTipoAtendAgenda(this.agenda);
-		if (dtEspecifica && limitePorTipoAtend) {
-			listarAgendamentosData();
-			this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));
-			this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
-		} else if (diaSem && limitePorTipoAtend) {
-			listarAgendamentosData();
-			this.agenda.setMax(aDao.verQtdMaxAgendaEspec(this.agenda));
-			this.agenda.setQtd(aDao.verQtdAgendadosEspec(this.agenda));
 		} else {
-			listarAgendamentosData();
-			this.agenda.setMax(0);
-			this.agenda.setQtd(0);
+			boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
+			boolean diaSem = aDao.buscarDiaSemana(this.agenda);
+			boolean limitePorTipoAtend = aDao
+					.buscarTabTipoAtendAgenda(this.agenda);
+			if (dtEspecifica && limitePorTipoAtend) {
+				listarAgendamentosData();
+				this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));
+				this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
+			} else if (diaSem && limitePorTipoAtend) {
+				listarAgendamentosData();
+				this.agenda.setMax(aDao.verQtdMaxAgendaEspec(this.agenda));
+				this.agenda.setQtd(aDao.verQtdAgendadosEspec(this.agenda));
+			} else {
+				listarAgendamentosData();
+				this.agenda.setMax(0);
+				this.agenda.setQtd(0);
+			}
 		}
-
 	}
 
 	public void preparaConfirmar() throws ProjetoException {
-		if (tipoData.equals("U")) {
-			addListaNovosAgendamentos();
-		}
-		if (tipoData.equals("I")) {
-			verAgendaIntervalo();
+		if (this.agenda.getPaciente() == null
+				|| this.agenda.getPrograma() == null
+				|| this.agenda.getGrupo() == null
+				|| this.agenda.getTipoAt() == null
+				|| this.agenda.getDataAtendimento() == null
+				|| (tipoData.equals("I") && this.agenda
+						.getDataAtendimentoFinal() == null)
+				|| (this.agenda.getProfissional() == null && this.agenda
+						.getEquipe() == null)) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Campo(s) obrigatório(s) em falta!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		} else {
+			if (tipoData.equals("U")) {
+				addListaNovosAgendamentos();
+			}
+			if (tipoData.equals("I")) {
+				verAgendaIntervalo();
+			}
 		}
 	}
 
@@ -255,7 +273,7 @@ public class AgendaController implements Serializable {
 			}
 			if (listaHorariosOcupados.size() > 0) {
 				temLotado = true;
-				
+
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
 						"Não foi possível agendar, pois tem horários lotados! Clique em Visualizar Ocupados para ver.",
@@ -473,8 +491,10 @@ public class AgendaController implements Serializable {
 	public List<GrupoBean> listaGruposPorPrograma() throws ProjetoException {
 		GrupoDAO gDao = new GrupoDAO();
 		if (agenda.getPrograma() != null) {
-			listaGruposProgramas = gDao.listarGruposPorPrograma(agenda
-					.getPrograma().getIdPrograma());
+			if (agenda.getPrograma().getIdPrograma() != null) {
+				listaGruposProgramas = gDao.listarGruposPorPrograma(agenda
+						.getPrograma().getIdPrograma());
+			}
 		}
 		return listaGruposProgramas;
 	}
@@ -492,8 +512,10 @@ public class AgendaController implements Serializable {
 			throws ProjetoException {
 		EquipeDAO eDao = new EquipeDAO();
 		if (agenda.getTipoAt() != null) {
-			listaEquipePorTipoAtendimento = eDao.listarEquipePorGrupo(agenda
-					.getGrupo().getIdGrupo());
+			if (agenda.getGrupo().getIdGrupo() != null) {
+				listaEquipePorTipoAtendimento = eDao
+						.listarEquipePorGrupo(agenda.getGrupo().getIdGrupo());
+			}
 		}
 		return listaEquipePorTipoAtendimento;
 	}
@@ -508,9 +530,15 @@ public class AgendaController implements Serializable {
 	public List<ProfissionalBean> listaProfissionalPorGrupo()
 			throws ProjetoException {
 		if (agenda.getGrupo() != null) {
-			List<ProfissionalBean> result = pDao
-					.listarProfissionalPorGrupo(agenda.getGrupo().getIdGrupo());
-			return result;
+			if (agenda.getGrupo().getIdGrupo() != null) {
+				List<ProfissionalBean> result = pDao
+						.listarProfissionalPorGrupo(agenda.getGrupo()
+								.getIdGrupo());
+				return result;
+			} else {
+				return null;
+			}
+
 		} else
 			return null;
 
@@ -528,8 +556,10 @@ public class AgendaController implements Serializable {
 			throws ProjetoException {
 		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 		if (agenda.getGrupo() != null) {
-			listaTiposPorGrupo = tDao.listarTipoAtPorGrupo(agenda.getGrupo()
-					.getIdGrupo());
+			if (agenda.getGrupo().getIdGrupo() != null) {
+				listaTiposPorGrupo = tDao.listarTipoAtPorGrupo(agenda
+						.getGrupo().getIdGrupo());
+			}
 		}
 		return listaTiposPorGrupo;
 	}

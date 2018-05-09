@@ -264,44 +264,45 @@ public class PacienteController implements Serializable {
 		PacienteDAO udao = new PacienteDAO();
 		EnderecoDAO edao = new EnderecoDAO();
 
-//		if (validaCns(paciente.getCns()) == false) {
-//			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-//					"CNS com números inválidos!", "Sucesso");
-//			FacesContext.getCurrentInstance().addMessage(null, msg);
-//		} else {
-//
-//			if (escolaSuggestion != null)
-//				paciente.getEscola().setCodEscola(
-//						escolaSuggestion.getCodEscola());
-//			else
-//				paciente.getEscola().setCodEscola(null);
-//			if (escolaridadeSuggestion != null)
-//				paciente.getEscolaridade().setCodescolaridade(
-//						escolaridadeSuggestion.getCodescolaridade());
-//			else
-//				paciente.getEscolaridade().setCodescolaridade(null);
-//			if (profissaoSuggestion != null)
-//				paciente.getProfissao().setCodprofissao(
-//						profissaoSuggestion.getCodprofissao());
-//			else
-//				paciente.getProfissao().setCodprofissao(null);
-//
-//			if (encaminhadoSuggestion != null)
-//				paciente.getEncaminhado().setCodencaminhado(
-//						encaminhadoSuggestion.getCodencaminhado());
-//			else
-//				paciente.getEncaminhado().setCodencaminhado(null);
-//			if (transporteSuggestion != null)
-//				paciente.getFormatransporte().setCodformatransporte(
-//						transporteSuggestion.getCodformatransporte());
-//			else
-//				paciente.getFormatransporte().setCodformatransporte(null);
+		if (validaCns(paciente.getCns()) == false) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"CNS com números inválidos!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+
+			if (escolaSuggestion != null)
+				paciente.getEscola().setCodEscola(
+						escolaSuggestion.getCodEscola());
+			else
+				paciente.getEscola().setCodEscola(null);
+			if (escolaridadeSuggestion != null)
+				paciente.getEscolaridade().setCodescolaridade(
+						escolaridadeSuggestion.getCodescolaridade());
+			else
+				paciente.getEscolaridade().setCodescolaridade(null);
+			if (profissaoSuggestion != null)
+				paciente.getProfissao().setCodprofissao(
+						profissaoSuggestion.getCodprofissao());
+			else
+				paciente.getProfissao().setCodprofissao(null);
+
+			if (encaminhadoSuggestion != null)
+				paciente.getEncaminhado().setCodencaminhado(
+						encaminhadoSuggestion.getCodencaminhado());
+			else
+				paciente.getEncaminhado().setCodencaminhado(null);
+			if (transporteSuggestion != null)
+				paciente.getFormatransporte().setCodformatransporte(
+						transporteSuggestion.getCodformatransporte());
+			else
+				paciente.getFormatransporte().setCodformatransporte(null);
 
 			int codmunicipio = edao.municipioExiste(paciente);
 			int codbairro = edao.bairroExiste(paciente, codmunicipio);
-			System.out.println("Codbairro: "+codbairro);
-			
-			boolean cadastrou = udao.cadastrar(paciente, codmunicipio, codbairro);
+			System.out.println("Codbairro: " + codbairro);
+
+			boolean cadastrou = udao.cadastrar(paciente, codmunicipio,
+					codbairro);
 
 			if (cadastrou == true) {
 				limparDados();
@@ -319,7 +320,7 @@ public class PacienteController implements Serializable {
 			}
 		}
 
-	//}
+	}
 
 	public void buscarPaciente() throws ProjetoException, SQLException {
 		PacienteDAO udao = new PacienteDAO();
@@ -367,8 +368,8 @@ public class PacienteController implements Serializable {
 					transporteSuggestion.getCodformatransporte());
 		}
 
-		// int codmunicipio = edao.municipioExiste(paciente);
-		boolean alterou = mdao.alterar(paciente, 0);
+		int codmunicipio = edao.municipioExiste(paciente);
+		boolean alterou = mdao.alterar(paciente, codmunicipio);
 
 		if (alterou == true) {
 			// limparDados();
@@ -890,11 +891,12 @@ public class PacienteController implements Serializable {
 		}
 		return soma;
 	}
-	
+
 	public List<EnderecoBean> listaBairroAutoComplete(String query)
 			throws ProjetoException {
 		EnderecoDAO eDao = new EnderecoDAO();
-		List<EnderecoBean> result = eDao.buscaBairroAutoComplete(query, endereco.getCodmunicipio());
+		List<EnderecoBean> result = eDao.buscaBairroAutoComplete(query,
+				endereco.getCodmunicipio());
 		return result;
 	}
 

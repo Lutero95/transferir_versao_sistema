@@ -19,8 +19,8 @@ public class PacienteDAO {
 	private Connection con = null;
 	private PreparedStatement ps = null;
 
-	public Boolean cadastrar(PacienteBean paciente, Integer codmunicipio, Integer codbairro)
-			throws ProjetoException {
+	public Boolean cadastrar(PacienteBean paciente, Integer codmunicipio,
+			Integer codbairro) throws ProjetoException {
 		boolean cadastrou = false;
 		conexao = ConnectionFactory.getConnection();
 
@@ -40,7 +40,7 @@ public class PacienteDAO {
 					codmunicipio = set.getInt(1);
 				}
 			}
-			
+
 			if (codbairro == 0) {
 				String sql2 = "INSERT INTO hosp.bairros(descbairro, codmunicipio) "
 						+ " VALUES (?, ?) returning id_bairro;";
@@ -56,7 +56,7 @@ public class PacienteDAO {
 					codbairro = set.getInt(1);
 				}
 			}
-			
+
 			String sql = "insert into hosp.pacientes (dtacadastro, nome, dtanascimento, estcivil, sexo, sangue, "
 					+ "pai, mae, conjuge,codraca, cep, uf, cidade, bairro, logradouro, numero, complemento, referencia, telres, telcel, teltrab, telorelhao, rg, oe, dtaexpedicaorg, cpf, cns, protreab, "
 					+ "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, contribuinte, id_escolaridade, id_escola, id_profissao, trabalha, localtrabalha, codparentesco, "
@@ -337,7 +337,7 @@ public class PacienteDAO {
 			} else {
 				stmt.setBoolean(57, false);
 			}
-			
+
 			stmt.setInt(58, codbairro);
 
 			stmt.execute();
@@ -364,22 +364,21 @@ public class PacienteDAO {
 		conexao = ConnectionFactory.getConnection();
 
 		try {
-			// if (codmunicipio == 0) {
-			// String sql1 =
-			// "INSERT INTO hosp.municipio(descmunicipio, codfederal) "
-			// + " VALUES (?, ?) returning id_municipio;";
-			//
-			// PreparedStatement ps1 = conexao.prepareStatement(sql1);
-			//
-			// ps1.setString(1, paciente.getEndereco().getMunicipio()
-			// .toUpperCase());
-			// ps1.setInt(2, paciente.getEndereco().getCodibge());
-			//
-			// ResultSet set = ps1.executeQuery();
-			// while (set.next()) {
-			// codmunicipio = set.getInt("id_municipio");
-			// }
-			// }
+			if (codmunicipio == 0) {
+				String sql1 = "INSERT INTO hosp.municipio(descmunicipio, codfederal) "
+						+ " VALUES (?, ?) returning id_municipio;";
+
+				PreparedStatement ps1 = conexao.prepareStatement(sql1);
+
+				ps1.setString(1, paciente.getEndereco().getMunicipio()
+						.toUpperCase());
+				ps1.setInt(2, paciente.getEndereco().getCodibge());
+
+				ResultSet set = ps1.executeQuery();
+				while (set.next()) {
+					codmunicipio = set.getInt("id_municipio");
+				}
+			}
 			String sql = "update hosp.pacientes set nome = ?, dtanascimento = ?, estcivil = ?, sexo = ? , sangue = ?, pai = ? "
 					+ ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, cidade = ?, bairro = ?, logradouro = ?, numero = ?"
 					+ ", complemento = ?, referencia = ?, telres = ?, telcel = ?, teltrab = ?, telorelhao = ?"

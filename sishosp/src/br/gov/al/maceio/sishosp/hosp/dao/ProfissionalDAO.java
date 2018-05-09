@@ -227,7 +227,7 @@ public class ProfissionalDAO {
 		List<ProfissionalBean> lista = new ArrayList<>();
 		String sql = "select h.id_medico,h.id_medico ||'-'|| h.descmedico as descmedico, h.codespecialidade, h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, h.codprocedimentopadrao2, h.codempresa"
 				+ " from hosp.medicos h left join hosp.profissional_grupo g on (g.codprofissional = h.id_medico)"
-				+ " where upper(id_medico ||' - '|| descmedico) LIKE ? and g.codgrupo = ? order by descmedico";
+				+ " where upper(id_medico ||' - '|| descmedico) LIKE ? and g.codgrupo = ? and h.ativo is true order by descmedico";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
