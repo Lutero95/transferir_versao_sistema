@@ -99,15 +99,15 @@ public class FuncionarioController implements Serializable {
 		rendDlgSetores = false;
 	}
 
-	public boolean adm() {
-
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
-
-		return user_session.isAdministrador();
-
-	}
+//	public boolean adm() {
+//
+//		FuncionarioBean user_session = (FuncionarioBean) FacesContext
+//				.getCurrentInstance().getExternalContext().getSessionMap()
+//				.get("obj_usuario");
+//
+//		return user_session.isAdministrador();
+//
+//	}
 
 	// **FIM controle de usuário -----------------------
 	public void validateSenha(FacesContext context, UIComponent toValidate,
@@ -230,7 +230,7 @@ public class FuncionarioController implements Serializable {
 					.getSessionMap().put("perms_usuario", permissoes);
 
 			HttpSession session = SessionUtil.getSession();
-			session.setAttribute("User", usuarioLogado.getLogin());
+			session.setAttribute("User", usuarioLogado.getCpf());
 
 			recoverDataFromSession();
 

@@ -58,14 +58,7 @@ public class FuncionarioDAO {
 				ub.setIdPerfil(rs.getInt("idperfil"));
 				ub.setDescPerfil(rs.getString("descperfil"));
 
-				if (rs.getRow() == 1) {
-					setoresUsuario = setoresUsuario + ub.getDescSetor() + " ";
-				} else if (count == 2 && count != rs.getRow()) {
-					setoresUsuario = setoresUsuario + ", " + ub.getDescSetor()
-							+ ", ";
-				} else if (count == rs.getRow()) {
-					setoresUsuario = setoresUsuario + ", " + ub.getDescSetor();
-				}
+				
 				count++;
 			}
 
@@ -285,7 +278,7 @@ public class FuncionarioDAO {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = null;
 			stmt = conexao.prepareStatement(sql);
-			stmt.setString(1, usuario.getLogin());
+			stmt.setString(1, usuario.getCpf());
 			stmt.setString(2, usuario.getSenha());
 			ResultSet rs = stmt.executeQuery();
 
@@ -381,18 +374,17 @@ public class FuncionarioDAO {
 	public Boolean alterar(FuncionarioBean usuario) throws ProjetoException {
 		boolean cadastrou = false;
 		String sql = "update acl.funcionario set descfuncionario = ?, cpf = ?, email = ?, "
-				+ "login = ?, senha = ?, id_perfil = ?, ativo = ? where id_funcionario = ?";
+				+ "senha = ?, id_perfil = ?, ativo = ? where id_funcionario = ?";
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setString(1, usuario.getNome());
 			stmt.setString(2, usuario.getCpf().replaceAll("[^0-9]", ""));
 			stmt.setString(3, usuario.getEmail());
-			stmt.setString(4, usuario.getLogin());
-			stmt.setString(5, usuario.getSenha());
-			stmt.setInt(6, usuario.getIdPerfil());
-			stmt.setString(7, usuario.getAtivo());
-			stmt.setLong(8, usuario.getCodigo());
+			stmt.setString(4, usuario.getSenha());
+			stmt.setInt(5, usuario.getIdPerfil());
+			stmt.setString(6, usuario.getAtivo());
+			stmt.setLong(7, usuario.getCodigo());
 			stmt.executeUpdate();
 
 			FuncionarioBean u = usuario;
@@ -445,7 +437,7 @@ public class FuncionarioDAO {
 			throws ProjetoException {
 		boolean cadastrou = false;
 		String sql = " update acl.funcionarios set descfuncionario = ?, cpf = ?, email = ?, "
-				+ " login = ?, senha = ?, id_perfil = ?, ativo = ? where id_funcionario = ? ";
+				+ "senha = ?, id_perfil = ?, ativo = ? where id_funcionario = ? ";
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -453,11 +445,10 @@ public class FuncionarioDAO {
 			stmt.setString(1, usuario.getNome());
 			stmt.setString(2, usuario.getCpf().replaceAll("[^0-9]", ""));
 			stmt.setString(3, usuario.getEmail());
-			stmt.setString(4, usuario.getLogin());
-			stmt.setString(5, usuario.getSenha());
-			stmt.setInt(6, usuario.getIdPerfil());
-			stmt.setString(7, usuario.getAtivo());
-			stmt.setLong(8, usuario.getCodigo());
+			stmt.setString(4, usuario.getSenha());
+			stmt.setInt(5, usuario.getIdPerfil());
+			stmt.setString(6, usuario.getAtivo());
+			stmt.setLong(7, usuario.getCodigo());
 
 			stmt.executeUpdate();
 			FuncionarioBean u = usuario;
