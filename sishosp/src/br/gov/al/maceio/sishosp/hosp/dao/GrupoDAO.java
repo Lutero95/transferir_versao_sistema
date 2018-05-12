@@ -10,7 +10,7 @@ import java.util.List;
 
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.acl.model.UsuarioBean;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
@@ -109,7 +109,7 @@ public class GrupoDAO {
 				+ "left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)  "
 				+ "where p.id_programa = ?";
 
-		UsuarioBean user_session = (UsuarioBean) FacesContext
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
 		try {

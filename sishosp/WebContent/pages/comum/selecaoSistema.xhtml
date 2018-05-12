@@ -16,16 +16,16 @@
 			<p:panelGrid columns="2" styleClass="semBorda"
 				style="margin-top: 60px">
 				<h:outputText value="Usuário Online: " />
-				<h:outputText value="#{MBUsuarios.usuarioLogado.nome}"
+				<h:outputText value="#{MBFuncionarios.usuarioLogado.nome}"
 					style="font-weight: bold;" />
 
 				<h:outputText value="Perfil: " />
-				<h:outputText value="#{MBUsuarios.usuarioLogado.descPerfil}"
+				<h:outputText value="#{MBFuncionarios.usuarioLogado.descPerfil}"
 					style="font-weight: bold;" />
 
 
 				<p:commandButton value="SAIR" icon="ui-icon-power"
-					style="width:100px !important" action="#{MBUsuarios.logout()}" />
+					style="width:100px !important" action="#{MBFuncionarios.logout()}" />
 
 				<h:inputHidden />
 			</p:panelGrid>
@@ -34,21 +34,21 @@
 		<div class="sistemas">
 			<h:form id="formSIS">
 				<p:outputPanel autoUpdate="true">
-					<ui:repeat var="sis" value="#{MBUsuarios.sistemasUsuarioLogado}"
+					<ui:repeat var="sis" value="#{MBFuncionarios.sistemasUsuarioLogado}"
 						varStatus="status">
 
 						<div class="col-md-3" style="margin-top: 20px">
 							<div class="thumbnail sistemas-opc">
 								<h:commandLink
-									actionListener="#{MBUsuarios.recSistemaLogado(sis)}"
-									action="#{MBUsuarios.redirecionar(sis.url)}">
+									actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
+									action="#{MBFuncionarios.redirecionar(sis.url)}">
 									<p:graphicImage value="#{sis.imagem}" />
 								</h:commandLink>
 								<div class="panel-body">
 									<center>
 										<h:commandLink
-											actionListener="#{MBUsuarios.recSistemaLogado(sis)}"
-											action="#{MBUsuarios.redirecionar(sis.url)}">
+											actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
+											action="#{MBFuncionarios.redirecionar(sis.url)}">
 											<p:outputLabel value="#{sis.descricao}" escape="true" />
 										</h:commandLink>
 									</center>
@@ -60,8 +60,8 @@
 								<center>
 									<p:commandButton value="Acesse"
 										style="font-size: 20px !important;" styleClass="acesse"
-										actionListener="#{MBUsuarios.recSistemaLogado(sis)}"
-										action="#{MBUsuarios.redirecionar(sis.url)}" />
+										actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
+										action="#{MBFuncionarios.redirecionar(sis.url)}" />
 								</center>
 							</div>
 						</div>

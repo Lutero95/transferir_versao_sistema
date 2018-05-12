@@ -29,8 +29,8 @@ import javax.servlet.http.HttpSession;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.acl.dao.IUsuarioDAO;
-import br.gov.al.maceio.sishosp.acl.dao.UsuarioDAO;
-import br.gov.al.maceio.sishosp.acl.model.UsuarioBean;
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 
 import javax.faces.component.EditableValueHolder;
 
@@ -40,13 +40,13 @@ import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
 
-@ManagedBean(name = "MBUsuarios")
+@ManagedBean(name = "MBFuncionarios")
 @SessionScoped
-public class UsuarioController implements Serializable {
+public class FuncionarioController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private UsuarioBean usuario;
-	private UsuarioBean novousuario, editausuario;
+	private FuncionarioBean usuario;
+	private FuncionarioBean novousuario, editausuario;
 	private UIData id_tupla;
 	private Object objeto1, menuAdm, nomeUserLogado, permissaoInteressado;
 	private Object nomeSecretaria, nomeSetor;
@@ -56,7 +56,7 @@ public class UsuarioController implements Serializable {
 	private String visibleExpirationMsg;
 
 	// Sessão
-	private UsuarioBean usuarioLogado;
+	private FuncionarioBean usuarioLogado;
 	private Sistema sistemaLogado;
 
 	private List<Sistema> sistemasUsuarioLogado;
@@ -81,14 +81,14 @@ public class UsuarioController implements Serializable {
 	// SETORES
 	private Boolean rendDlgSetores;
 
-	public UsuarioController() {
-		usuario = new UsuarioBean();
-		novousuario = new UsuarioBean();
-		editausuario = new UsuarioBean();
+	public FuncionarioController() {
+		usuario = new FuncionarioBean();
+		novousuario = new FuncionarioBean();
+		editausuario = new FuncionarioBean();
 		visibleExpirationMsg = "N";
 
 		// ACL
-		usuarioLogado = new UsuarioBean();
+		usuarioLogado = new FuncionarioBean();
 		permsUsuarioLogado = new ArrayList<>();
 		sistemasUsuarioLogado = new ArrayList<>();
 		sistemaLogado = new Sistema();
@@ -101,7 +101,7 @@ public class UsuarioController implements Serializable {
 
 	public boolean adm() {
 
-		UsuarioBean user_session = (UsuarioBean) FacesContext
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
 
@@ -147,7 +147,7 @@ public class UsuarioController implements Serializable {
 	}
 
 	public String login() throws ProjetoException {
-		UsuarioDAO udao = new UsuarioDAO();
+		FuncionarioDAO udao = new FuncionarioDAO();
 
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.put("expired", "N");
@@ -261,7 +261,7 @@ public class UsuarioController implements Serializable {
 	}
 
 	public void recoverDataFromSession() {
-		usuarioLogado = (UsuarioBean) FacesContext.getCurrentInstance()
+		usuarioLogado = (FuncionarioBean) FacesContext.getCurrentInstance()
 				.getExternalContext().getSessionMap().get("obj_usuario");
 
 		sistemasUsuarioLogado = (List<Sistema>) FacesContext
@@ -466,7 +466,7 @@ public class UsuarioController implements Serializable {
 		// Gerar menu sair.
 		DefaultMenuItem item4 = new DefaultMenuItem();
 		item4.setValue("Sair");
-		item4.setCommand("#{MBUsuarios.logout()}");
+		item4.setCommand("#{MBFuncionarios.logout()}");
 		menuModel.addElement(item4);
 	}
 
@@ -496,11 +496,11 @@ public class UsuarioController implements Serializable {
 		return "/pages/comum/login.faces?faces-redirect=true";
 	}
 
-	public UsuarioBean getUsuario() {
+	public FuncionarioBean getUsuario() {
 		return usuario;
 	}
 
-	public void setUsuario(UsuarioBean usuario) {
+	public void setUsuario(FuncionarioBean usuario) {
 		this.usuario = usuario;
 	}
 
@@ -547,8 +547,8 @@ public class UsuarioController implements Serializable {
 	}
 
 	public void getCodUser(ActionEvent e) {
-		editausuario = new UsuarioBean();
-		this.editausuario = (UsuarioBean) id_tupla.getRowData();
+		editausuario = new FuncionarioBean();
+		this.editausuario = (FuncionarioBean) id_tupla.getRowData();
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.put("obj_cod_user", editausuario);
 	}
@@ -575,19 +575,19 @@ public class UsuarioController implements Serializable {
 		this.permissaoInteressado = permissaoInteressado;
 	}
 
-	public UsuarioBean getFuncionario() {
+	public FuncionarioBean getFuncionario() {
 		return usuario;
 	}
 
-	public UsuarioBean getNovoUsuario() {
+	public FuncionarioBean getNovoUsuario() {
 		return novousuario;
 	}
 
-	public UsuarioBean getEditausuario() {
+	public FuncionarioBean getEditausuario() {
 		return editausuario;
 	}
 
-	public void setEditausuario(UsuarioBean editausuario) {
+	public void setEditausuario(FuncionarioBean editausuario) {
 		this.editausuario = editausuario;
 	}
 
@@ -624,11 +624,11 @@ public class UsuarioController implements Serializable {
 	}
 
 	// ACL
-	public UsuarioBean getUsuarioLogado() {
+	public FuncionarioBean getUsuarioLogado() {
 		return usuarioLogado;
 	}
 
-	public void setUsuarioLogado(UsuarioBean usuarioLogado) {
+	public void setUsuarioLogado(FuncionarioBean usuarioLogado) {
 		this.usuarioLogado = usuarioLogado;
 	}
 

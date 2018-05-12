@@ -14,7 +14,7 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
 
-import br.gov.al.maceio.sishosp.acl.model.UsuarioBean;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
@@ -38,7 +38,7 @@ public class LaudoController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Integer abaAtiva = 0;
-	private UsuarioBean usuario;
+	private FuncionarioBean usuario;
 	private LaudoBean laudo;
 	private PacienteBean paciente;
 	private GrupoBean grupo;
@@ -643,11 +643,11 @@ public class LaudoController implements Serializable {
 		this.campoBuscaData = campoBuscaData;
 	}
 
-	public UsuarioBean getUsuario() {
+	public FuncionarioBean getUsuario() {
 		return usuario;
 	}
 
-	public void setUsuario(UsuarioBean usuario) {
+	public void setUsuario(FuncionarioBean usuario) {
 		this.usuario = usuario;
 	}
 

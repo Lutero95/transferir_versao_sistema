@@ -142,7 +142,7 @@
                             disabled="true" />
                     </p:panelGrid>
                     
-                    <p:dataTable value="#{MBUsuarios.permsUsuarioLogado}" paginator="true" 
+                    <p:dataTable value="#{MBFuncionarios.permsUsuarioLogado}" paginator="true" 
                         paginatorPosition="bottom" rows="15" var="tab">
 
                         <p:column headerText="ID" width="5%">
@@ -175,7 +175,7 @@
                         
                         <p:column headerText="ATIVO(A)" width="5%">
                             <center>
-                                <p:graphicImage value="#{MBUsuarios.verificarBolTab(tab.menu.ativo, tab.menu.tipo)}" />
+                                <p:graphicImage value="#{MBFuncionarios.verificarBolTab(tab.menu.ativo, tab.menu.tipo)}" />
                             </center>
                         </p:column>
                     </p:dataTable>
@@ -184,7 +184,7 @@
                 
                     <h:form>
                         <p:commandButton value="Clique e descubra..." 
-                            rendered="#{MBUsuarios.verificarPermComp('FC-21', MBUsuarios.sistemaLogado.id) == true}" 
+                            rendered="#{MBFuncionarios.verificarPermComp('FC-21', MBFuncionarios.sistemaLogado.id) == true}" 
                             onclick="PF('dlgEE').show();" />        
                     </h:form>
                 </p:panel>              

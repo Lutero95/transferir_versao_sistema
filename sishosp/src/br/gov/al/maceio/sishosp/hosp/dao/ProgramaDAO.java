@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.acl.model.UsuarioBean;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -109,7 +109,7 @@ public class ProgramaDAO {
 				+ "from hosp.programa left join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
 				// + "where codusuario = ? "
 				+ "order by descprograma";
-		UsuarioBean user_session = (UsuarioBean) FacesContext
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
 
@@ -146,7 +146,7 @@ public class ProgramaDAO {
 			throws ProjetoException {
 		PreparedStatement ps = null;
 		con = ConnectionFactory.getConnection();
-		UsuarioBean user_session = (UsuarioBean) FacesContext
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
 
@@ -187,7 +187,7 @@ public class ProgramaDAO {
 			throws ProjetoException {
 		PreparedStatement ps = null;
 		con = ConnectionFactory.getConnection();
-		UsuarioBean user_session = (UsuarioBean) FacesContext
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
 		String sql = "select id_programa, descprograma, codfederal from hosp.programa "
@@ -236,7 +236,7 @@ public class ProgramaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			UsuarioBean user_session = (UsuarioBean) FacesContext
+			FuncionarioBean user_session = (FuncionarioBean) FacesContext
 					.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("obj_usuario");
 			// stm.setInt(1, user_session.getCodigo());
@@ -279,7 +279,7 @@ public class ProgramaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			UsuarioBean user_session = (UsuarioBean) FacesContext
+			FuncionarioBean user_session = (FuncionarioBean) FacesContext
 					.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("obj_usuario");
 
@@ -319,7 +319,7 @@ public class ProgramaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			UsuarioBean user_session = (UsuarioBean) FacesContext
+			FuncionarioBean user_session = (FuncionarioBean) FacesContext
 					.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("obj_usuario");
 

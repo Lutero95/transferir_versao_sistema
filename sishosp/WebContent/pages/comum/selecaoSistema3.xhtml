@@ -12,17 +12,17 @@
             <p:panelGrid columns="2" styleClass="semBorda">
                 <h:outputText value="Usuário Online: " />
                 <!-- 
-                <h:outputText value="#{MBUsuarios.pegandoNome()}" />
+                <h:outputText value="#{MBFuncionarios.pegandoNome()}" />
                  -->
 
                 <h:outputText value="Perfil: " />
-                <h:outputText value="#{MBUsuarios.usuarioLogado.descPerfil}" />
+                <h:outputText value="#{MBFuncionarios.usuarioLogado.descPerfil}" />
 
                 <h:outputText value="Empresa: " />
              
             
                 <p:commandButton value="SAIR" icon="ui-icon-power" 
-                    style="width:auto !important" action="#{MBUsuarios.logout()}" />
+                    style="width:auto !important" action="#{MBFuncionarios.logout()}" />
                 <h:inputHidden />
             </p:panelGrid>
             </h:form>
@@ -30,7 +30,7 @@
             <div class="sistemas">
                 <h:form id="formSIS">
                     <p:outputPanel autoUpdate="true">
-                        <ui:repeat var="sis" value="#{MBUsuarios.sistemasUsuarioLogado}" 
+                        <ui:repeat var="sis" value="#{MBFuncionarios.sistemasUsuarioLogado}" 
                             varStatus="status">
                             
                             <div class="col-md-3">
@@ -48,8 +48,8 @@
                                     <p:commandButton value="Acesse" 
                                         style="font-size: 20px !important;" 
                                         styleClass="acesse" 
-                                        actionListener="#{MBUsuarios.recSistemaLogado(sis)}" 
-                                        action="#{MBUsuarios.redirecionar(sis.url)}" />
+                                        actionListener="#{MBFuncionarios.recSistemaLogado(sis)}" 
+                                        action="#{MBFuncionarios.redirecionar(sis.url)}" />
                                 </div>
                             </div>
                             

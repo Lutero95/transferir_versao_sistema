@@ -42,7 +42,7 @@
 					<h:panelGrid columns="1" cellpadding="3">
 
 						<b:inputText mask="999-999-999-99" style="padding:10px;"
-							required="true" value="#{MBUsuarios.usuario.cpf}"
+							required="true" value="#{MBFuncionarios.usuario.cpf}"
 							placeholder="Digite o CPF" render-label="true"
 							requiredMessage="CPF obrigatório" />
 						<b:message for="@previous" />
@@ -50,7 +50,7 @@
 						<b:inputSecret style="padding:10px;margin-top:10px"
 							required="true" placeholder="Digite a Senha"
 							requiredMessage="Senha obrigatório"
-							value="#{MBUsuarios.usuario.senha}"></b:inputSecret>
+							value="#{MBFuncionarios.usuario.senha}"></b:inputSecret>
 						<b:message for="@previous" />
 
 					</h:panelGrid>
@@ -59,7 +59,7 @@
 				<center>
 					<b:commandButton value="Entrar"
 						style="width: 180px;margin-top:10px"
-						styleClass="btnLogin" action="#{MBUsuarios.login}"
+						styleClass="btnLogin" action="#{MBFuncionarios.login}"
 						update="@form"></b:commandButton>
 
 				</center>
@@ -80,7 +80,7 @@
 							<div class="alert alert-info" role="alert">A sessão
 								expirou! Faça login novamente.</div>
 							<p:commandButton value="OK" style="font-size:14px;"
-								action="#{MBUsuarios.fecharDlgExpired()}" process="@this" />
+								action="#{MBFuncionarios.fecharDlgExpired()}" process="@this" />
 						</h:panelGrid>
 					</h:form>
 				</p:dialog>
