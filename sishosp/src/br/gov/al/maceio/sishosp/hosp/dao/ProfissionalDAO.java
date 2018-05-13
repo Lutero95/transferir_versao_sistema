@@ -270,6 +270,7 @@ public class ProfissionalDAO {
 	}
 
 	public List<ProfissionalBean> listarProfissional() throws ProjetoException {
+		System.out.println("ok2");
 		List<ProfissionalBean> listaProf = new ArrayList<ProfissionalBean>();
 		String sql = "select distinct id_medico, descmedico, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, codprocedimentopadrao2, codempresa"
 				+ " from hosp.medicos order by descmedico";

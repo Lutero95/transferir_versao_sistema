@@ -27,7 +27,9 @@ public class FuncionarioBean implements Serializable {
 	private String email;
 	private String cpf;
 	private boolean primeiroAcesso;
-
+	private Boolean realizaAtendimento;
+	private String cns;
+	
 	// LISTAS
 	private List<ProgramaBean> programa;
 	private List<ProgramaBean> programaNovo;
@@ -352,6 +354,22 @@ public class FuncionarioBean implements Serializable {
 
 	public void removeGrupoLista() {
 		this.grupo.remove(this.grupoRmv);
+	}
+
+	public Boolean getRealizaAtendimento() {
+		return realizaAtendimento;
+	}
+
+	public void setRealizaAtendimento(Boolean realizaAtendimento) {
+		this.realizaAtendimento = realizaAtendimento;
+	}
+
+	public String getCns() {
+		return cns;
+	}
+
+	public void setCns(String cns) {
+		this.cns = cns;
 	}
 
 }

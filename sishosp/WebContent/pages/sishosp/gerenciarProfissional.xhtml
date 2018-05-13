@@ -14,20 +14,20 @@
 	<ui:define name="body">
 		<div class="panel-body">
 			<div class="sub-header">
-				<h4>Gerenciamento de Profissional</h4>
+				<h4>Gerenciamento de Funcionários</h4>
 				<hr />
 			</div>
 			<h:form id="frmmensagem">
 				<f:metadata>
 					<f:viewAction
-						action="#{ProfissionalController.ListarTodosProfissionais()}" />
+						action="#{MBFuncionarios.ListarTodosProfissionais()}" />
 				</f:metadata>
 
 				<b:commandButton id="btninc" value="Novo" size="sm"
-					action="#{ProfissionalController.redirectInsert()}"
+					action="#{MBFuncionarios.redirectInsert()}"
 					icon="glyphicon-plus" look="primary">
 					<f:setPropertyActionListener value="1"
-						target="#{ProfissionalController.tipo}" />
+						target="#{MBFuncionarios.tipo}" />
 					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 				</b:commandButton>
 				<br />
@@ -38,7 +38,7 @@
 				</center>
 
 				<b:dataTable id="dt" var="tab"
-					value="#{ProfissionalController.listaProfissional}" lang="es"
+					value="#{MBFuncionarios.listaProfissional}" lang="es"
 					display="Nenhum Profissional">
 
 					<h:column>
@@ -46,7 +46,7 @@
                         Nome
                     </f:facet>
 
-						<h:outputText value="#{tab.descricaoProf}" />
+						<h:outputText value="#{tab.nome}" />
 					</h:column>
 
 					<h:column>
@@ -81,12 +81,12 @@
                     </f:facet>
 
 						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{ProfissionalController.redirectEdit()}">
+							action="#{MBFuncionarios.redirectEdit()}">
 							<f:setPropertyActionListener value="#{tab}"
-								target="#{ProfissionalController.profissional}" />
+								target="#{MBFuncionarios.profissional}" />
 
 							<f:setPropertyActionListener value="2"
-								target="#{ProfissionalController.tipo}" />
+								target="#{MBFuncionarios.tipo}" />
 						</b:commandButton>
 
 						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
@@ -94,7 +94,7 @@
 							oncomplete="PF('dialogAtencao').show()">
 
 							<f:setPropertyActionListener value="#{tab}"
-								target="#{ProfissionalController.profissional}" />
+								target="#{MBFuncionarios.profissional}" />
 						</b:commandButton>
 
 					</h:column>
@@ -114,8 +114,8 @@
 				<center>
 					<p:separator />
 					<b:commandButton look="success" value="Sim"
-						action="#{ProfissionalController.excluirProfissional()}"
-						ajax="true" icon="glyphicon-ok" update="frmmensagem" />
+						action="#{MBFuncionarios.excluirProfissional()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem" />
 
 					<b:commandButton value="Não"
 						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"

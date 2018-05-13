@@ -2,7 +2,15 @@ package br.gov.al.maceio.sishosp.acl.dao;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.acl.model.Menu;
 import br.gov.al.maceio.sishosp.acl.model.Permissao;
 import br.gov.al.maceio.sishosp.acl.model.Permissoes;
@@ -23,6 +31,13 @@ import javax.faces.context.FacesContext;
 public class FuncionarioDAO {
 
 	private Connection conexao = null;
+	private Connection con = null;
+	private PreparedStatement ps = null;
+	private EspecialidadeDAO espDao = new EspecialidadeDAO();
+	private ProgramaDAO progDao = new ProgramaDAO();
+	private CboDAO cDao = new CboDAO();
+	private GrupoDAO gDao = new GrupoDAO();
+	private ProcedimentoDAO procDao = new ProcedimentoDAO();
 
 	public FuncionarioBean autenticarUsuario(FuncionarioBean usuario)
 			throws ProjetoException {
@@ -58,7 +73,6 @@ public class FuncionarioDAO {
 				ub.setIdPerfil(rs.getInt("idperfil"));
 				ub.setDescPerfil(rs.getString("descperfil"));
 
-				
 				count++;
 			}
 
@@ -878,5 +892,651 @@ public class FuncionarioDAO {
 		}
 		return isExist;
 	}
+
+	// INÍCIO PROFISSIONALDAO
+
+	public boolean gravarProfissional(FuncionarioBean prof,
+			ArrayList<ProgramaBean> lista) throws SQLException,
+			ProjetoException {
+
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext
+				.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("obj_usuario");
+
+		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
+				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_date, false); returning id_funcionario;";
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+
+			ps.setString(1, prof.getNome().toUpperCase());
+
+			ps.setString(2, prof.getCpf());
+
+			ps.setString(3, prof.getSenha());
+
+			ps.setInt(4, user_session.getCodigo());
+
+			if (prof.getEspecialidade() != null) {
+				ps.setInt(5, prof.getEspecialidade().getCodEspecialidade());
+			} else {
+				ps.setInt(5, 0);
+			}
+
+			ps.setString(6, prof.getCns().toUpperCase());
+
+			if (prof.getCbo() != null) {
+				ps.setInt(7, prof.getCbo().getCodCbo());
+			} else {
+				ps.setInt(7, 0);
+			}
+
+			if (prof.getProc1() != null) {
+				ps.setInt(8, prof.getProc1().getIdProc());
+			} else {
+				ps.setInt(8, 0);
+			}
+
+			ps.setString(9, prof.getAtivo());
+
+			ps.setBoolean(10, prof.getRealizaAtendimento());
+
+			ResultSet rs = ps.executeQuery();
+
+			int idProf = 0;
+			if (rs.next()) {
+				idProf = rs.getInt("id_funcionario");
+			}
+
+			for (int i = 0; i < lista.size(); i++) {
+				String sql2 = "INSERT INTO hosp.profissional_programa_grupo(codprofissional, codprograma, codgrupo) VALUES (?, ?, ?);";
+				ps = con.prepareStatement(sql2);
+
+				ps.setInt(1, idProf);
+				ps.setInt(2, lista.get(i).getIdPrograma());
+				ps.setInt(3, lista.get(i).getGrupoBean().getIdGrupo());
+
+				ps.executeUpdate();
+			}
+
+			con.commit();
+
+			return true;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+	}
+
+	// RETIREI, SEM USO
+	public void insereTabProfProg(FuncionarioBean prof, int idProf, int gamb)
+			throws SQLException, ProjetoException {
+		String sql = "insert into hosp.profissional_programa (codprograma, codprofissional)"
+				+ " values (?, ?);";
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+
+			if (gamb == 0) {
+				for (ProgramaBean p : prof.getPrograma()) {
+					ps.setInt(1, p.getIdPrograma());
+					ps.setInt(2, idProf);
+
+					ps.execute();
+					con.commit();
+				}
+			} else if (gamb == 1) {
+				for (ProgramaBean p : prof.getProgramaNovo()) {
+					ps.setInt(1, p.getIdPrograma());
+					ps.setInt(2, idProf);
+
+					ps.execute();
+					con.commit();
+				}
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				// con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+
+	// RETIREI, SEM USO
+	public void insereTabProfGrupo(FuncionarioBean prof, int idProf, int gamb)
+			throws SQLException, ProjetoException {
+		String sql = "insert into hosp.profissional_grupo (codgrupo, codprofissional)"
+				+ " values (?, ?);";
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+
+			if (gamb == 0) {
+				for (GrupoBean g : prof.getGrupo()) {
+					ps.setInt(1, g.getIdGrupo());
+					ps.setInt(2, idProf);
+
+					ps.execute();
+					con.commit();
+				}
+			} else if (gamb == 1) {
+				for (GrupoBean g : prof.getGrupoNovo()) {
+					ps.setInt(1, g.getIdGrupo());
+					ps.setInt(2, idProf);
+
+					ps.execute();
+					con.commit();
+				}
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				// con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+
+	public List<FuncionarioBean> listarProfissionalBusca(String descricaoBusca,
+			Integer tipoBuscar) throws ProjetoException {
+		List<FuncionarioBean> lista = new ArrayList<>();
+		String sql = "select id_funcionario ,id_funcionario ||'-'|| descfuncionario as descdescfuncionariomedico, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, "
+				+ " from acl.funcionarios ";
+		if (tipoBuscar == 1) {
+			sql += " where upper(id_funcionario ||' - '|| descfuncionario) LIKE ? and realiza_atendimento is true order by descfuncionario";
+		}
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				FuncionarioBean prof = new FuncionarioBean();
+				prof.setId(rs.getLong("id_funcionario"));
+				prof.setNome(rs.getString("descfuncionario"));
+				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
+						.getInt("codespecialidade")));
+				prof.setCns(rs.getString("cns"));
+				prof.setAtivo(rs.getString("ativo"));
+				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+				prof.setProc1(procDao.listarProcedimentoPorId(rs
+						.getInt("codprocedimentopadrao")));
+				prof.setPrograma(listarProgProf(rs.getInt("id_medico")));
+				prof.setGrupo(listarProgGrupo(rs.getInt("id_medico")));
+
+				lista.add(prof);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+
+	public List<FuncionarioBean> listarProfissionalBuscaPorGrupo(
+			String descricaoBusca, Integer codgrupo) throws ProjetoException {
+		List<FuncionarioBean> lista = new ArrayList<>();
+		String sql = "select h.id_funcionario, h.id_funcionario ||'-'|| h.descfuncionario as descfuncionario, h.codespecialidade, "
+				+ " h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, "
+				+ " from acl.funcionarios h left join hosp.profissional_grupo g on (g.codprofissional = h.id_funcionario)"
+				+ " where upper(id_funcionario ||' - '|| descfuncionario) LIKE ? and g.codgrupo = ? and h.ativo = 'S' "
+				+ " and realiza_atendimento is true order by descfuncionario";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
+			stm.setInt(2, codgrupo);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				FuncionarioBean prof = new FuncionarioBean();
+				prof.setId(rs.getLong("id_funcionario"));
+				prof.setNome(rs.getString("descfuncionario"));
+				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
+						.getInt("codespecialidade")));
+				prof.setCns(rs.getString("cns"));
+				prof.setAtivo(rs.getString("ativo"));
+				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+				prof.setProc1(procDao.listarProcedimentoPorId(rs
+						.getInt("codprocedimentopadrao")));
+				prof.setPrograma(listarProgProf(rs.getInt("id_medico")));
+				prof.setGrupo(listarProgGrupo(rs.getInt("id_medico")));
+
+				lista.add(prof);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+
+	public List<FuncionarioBean> listarProfissional() throws ProjetoException {
+		List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
+		String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao "
+				+ " from acl.funcionarios order by descfuncionario";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				FuncionarioBean prof = new FuncionarioBean();
+				prof.setId(rs.getLong("id_funcionario"));
+				prof.setNome(rs.getString("descfuncionario"));
+				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
+						.getInt("codespecialidade")));
+				prof.setCns(rs.getString("cns"));
+				prof.setAtivo(rs.getString("ativo"));
+				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+				prof.setProc1(procDao.listarProcedimentoPorId(rs
+						.getInt("codprocedimentopadrao")));
+
+				listaProf.add(prof);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return listaProf;
+	}
+
+	public List<FuncionarioBean> listarProfissionalPorGrupo(Integer codgrupo)
+			throws ProjetoException {
+		List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
+		String sql = "select m.id_funcionario, m.descfuncionario, m.codespecialidade, e.descespecialidade, m.cns from acl.funcionarios m"
+				+ " left join hosp.profissional_grupo p on (m.id_funcionario = p.codprofissional)"
+				+ " left join hosp.especialidade e on (e.id_especialidade = m.codespecialidade)"
+				+ " where m.ativo = 'S' and realiza_atendimento is true and p.codgrupo = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, codgrupo);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				FuncionarioBean prof = new FuncionarioBean();
+				prof.setId(rs.getLong("id_funcionario"));
+				prof.setNome(rs.getString("descfuncionario"));
+				prof.getEspecialidade().setCodEspecialidade(
+						rs.getInt("codespecialidade"));
+				prof.getEspecialidade().setDescEspecialidade(
+						rs.getString("descespecialidade"));
+				prof.setCns(rs.getString("cns"));
+
+				listaProf.add(prof);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return listaProf;
+	}
+
+	public boolean excluirProfissional(FuncionarioBean profissional)
+			throws ProjetoException {
+		String sql = "delete from acl.funcionarios where id_funcionario = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, profissional.getId());
+			stmt.execute();
+			con.commit();
+			excluirTabProfProg(profissional);
+			excluirTabProfGrupo(profissional);
+			return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	// RETIREI, SEM USO
+	public void excluirTabProfProg(FuncionarioBean profissional)
+			throws ProjetoException {
+		String sql = "delete from hosp.profissional_programa where codprofissional = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, profissional.getId());
+			stmt.execute();
+			con.commit();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				// con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	// RETIREI, SEM USO
+	public void excluirTabProfGrupo(FuncionarioBean profissional)
+			throws ProjetoException {
+		String sql = "delete from hosp.profissional_grupo where codprofissional = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, profissional.getId());
+			stmt.execute();
+			con.commit();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				// con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	public boolean alterarProfissional(FuncionarioBean profissional,
+			ArrayList<ProgramaBean> lista) throws ProjetoException {
+
+		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
+				+ " codcbo = ?, codprocedimentopadrao = ? "
+				+ " where id_funcionario = ?";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+
+			stmt.setString(1, profissional.getNome().toUpperCase());
+
+			stmt.setInt(2, profissional.getEspecialidade()
+					.getCodEspecialidade());
+
+			stmt.setString(3, profissional.getCns().toUpperCase());
+
+			stmt.setString(4, profissional.getAtivo());
+
+			if (profissional.getCbo() != null) {
+				stmt.setInt(5, profissional.getCbo().getCodCbo());
+			} else {
+				stmt.setInt(5, 0);
+			}
+
+			if (profissional.getProc1() != null) {
+				stmt.setInt(6, profissional.getProc1().getIdProc());
+			} else {
+				stmt.setInt(6, 0);
+			}
+
+			stmt.setLong(7, profissional.getId());
+			stmt.executeUpdate();
+
+			String sql2 = "delete from hosp.profissional_programa_grupo where codprofissional = ?";
+			stmt = con.prepareStatement(sql2);
+			stmt.setLong(1, profissional.getId());
+			stmt.executeUpdate();
+
+			for (int i = 0; i < lista.size(); i++) {
+				String sql3 = "INSERT INTO hosp.profissional_programa_grupo(codprofissional, codprograma, codgrupo) VALUES (?, ?, ?);";
+				stmt = con.prepareStatement(sql3);
+
+				stmt.setLong(1, profissional.getId());
+				stmt.setInt(2, lista.get(i).getIdPrograma());
+				stmt.setInt(3, lista.get(i).getGrupoBean().getIdGrupo());
+
+				stmt.executeUpdate();
+			}
+
+			con.commit();
+
+			return true;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	public FuncionarioBean buscarProfissionalPorId(Integer id)
+			throws SQLException, ProjetoException {
+		FuncionarioBean prof = null;
+
+		String sql = "select id_funcionario, descfuncionario, codespecialidade, "
+				+ " cns, ativo, codcbo, codprocedimentopadrao "
+				+ " from acl.funcionarios where id_funcionario = ? order by descfuncionario";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				prof = new FuncionarioBean();
+				prof.setId(rs.getLong("id_funcionario"));
+				prof.setNome(rs.getString("descfuncionario"));
+				prof.setPrograma(listarProgProf(rs.getInt("id_medico")));
+				prof.setGrupo(listarProgGrupo(rs.getInt("id_medico")));
+				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
+						.getInt("codespecialidade")));
+				prof.setCns(rs.getString("cns"));
+				prof.setAtivo(rs.getString("ativo"));
+				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+				prof.setProc1(procDao.listarProcedimentoPorId(rs
+						.getInt("codprocedimentopadrao")));
+
+			}
+
+			return prof;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+	}
+
+	public List<FuncionarioBean> listarProfissionaisPorEquipe(int id)
+			throws ProjetoException {
+
+		List<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
+		String sql = "select medico from hosp.equipe_medico where equipe = ? order by medico";
+		FuncionarioDAO pDao = new FuncionarioDAO();
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				lista.add(pDao.buscarProfissionalPorId(rs.getInt("medico")));
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+
+	public List<ProgramaBean> listarProgProf(int idProf)
+			throws ProjetoException {
+		List<ProgramaBean> lista = new ArrayList<ProgramaBean>();
+		String sql = "select codprograma from hosp.profissional_programa where codprofissional = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idProf);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				lista.add(progDao.listarProgramaPorId(rs.getInt("codprograma")));
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+
+	public List<GrupoBean> listarProgGrupo(int idProf) throws ProjetoException {
+		List<GrupoBean> lista = new ArrayList<GrupoBean>();
+		String sql = "select codgrupo from hosp.profissional_grupo where codprofissional = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idProf);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				lista.add(gDao.listarGrupoPorId(rs.getInt("codgrupo")));
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+
+	public List<FuncionarioBean> listarProfissionalPorGrupo(int idGrupo)
+			throws ProjetoException {
+		List<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
+		String sql = "select codprofissional from hosp.profissional_grupo where codgrupo = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idGrupo);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				lista.add(buscarProfissionalPorId(rs.getInt("codprofissional")));
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+
+	public ArrayList<ProgramaBean> carregaProfissionalProgramaEGrupos(int idProf)
+			throws ProjetoException {
+		ArrayList<ProgramaBean> lista = new ArrayList<ProgramaBean>();
+
+		String sql = "select ppg.codprograma, p.descprograma, ppg.codgrupo, g.descgrupo "
+				+ "from hosp.profissional_programa_grupo ppg "
+				+ "left join hosp.programa p on (p.id_programa = ppg.codprograma) "
+				+ "left join hosp.grupo g on (g.id_grupo = ppg.codgrupo)"
+				+ "where codprofissional = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, idProf);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				ProgramaBean p = new ProgramaBean();
+
+				p.setIdPrograma(rs.getInt("codprograma"));
+				p.setDescPrograma(rs.getString("descprograma"));
+				p.getGrupoBean().setIdGrupo(rs.getInt("codgrupo"));
+				p.getGrupoBean().setDescGrupo(rs.getString("descgrupo"));
+
+				lista.add(p);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		return lista;
+	}
+
+	// FINAL PROFISSIONALDAO
 
 }
