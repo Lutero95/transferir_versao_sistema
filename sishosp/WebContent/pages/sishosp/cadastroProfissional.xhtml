@@ -25,13 +25,29 @@
 
 				<p:tabView style="height:auto; width:auto" id="tbv">
 					<p:tab title="DADOS PESSOAIS">
+
+						<b:row>
+							<b:column span="2">
+								<h:outputLabel value="Realiza Atendimento" />
+							</b:column>
+
+							<b:column span="2">
+								<p:selectBooleanCheckbox label="" itemLabel=""
+									value="#{MBFuncionarios.profissional.realizaAtendimento}">
+									<p:ajax listener="#{MBFuncionarios.rendermedico}"
+										update="frmCadProfi:tbv"></p:ajax>
+								</p:selectBooleanCheckbox>
+							</b:column>
+						</b:row>
+
+						<br></br>
+
 						<b:row>
 							<b:column span="1">
 								<h:outputLabel for="nome" value="Nome" style="margin-top:10px" />
 							</b:column>
 							<b:column span="4">
-								<h:inputText
-									value="#{MBFuncionarios.profissional.descricaoProf}"
+								<h:inputText value="#{MBFuncionarios.profissional.nome}"
 									required="true" requiredMessage="Informe o Nome"
 									validatorMessage="Nome deve conter entre 2 e 30 caracteres."
 									class="form-control">
@@ -44,7 +60,7 @@
 
 							<b:column span="2">
 								<p:inputMask mask="999.999.999-99"
-									value="#{PacienteController.paciente.cpf}" class="form-control"
+									value="#{MBFuncionarios.profissional.cpf}" class="form-control"
 									id="cpf" required="true"
 									requiredMessage="É necessário que você informe o CPF">
 									<stella:validateCPF formatted="true" />
@@ -60,28 +76,30 @@
 								<h:outputLabel value="Senha" style="margin-top:10px" />
 							</b:column>
 							<b:column span="3">
-								<b:inputSecret style="margin-left:15px"
-									required="true" placeholder="Digite a Senha"
+								<b:inputSecret style="margin-left:15px" required="true"
+									placeholder="Digite a Senha"
 									requiredMessage="Senha obrigatório"
-									value="#{MBFuncionarios.usuario.senha}"></b:inputSecret>
+									value="#{MBFuncionarios.profissional.senha}"></b:inputSecret>
 							</b:column>
 
 							<b:column span="1">
-								<h:outputLabel value="Ativo" style="margin-top:10px;margin-left:50px" />
+								<h:outputLabel value="Ativo"
+									style="margin-top:10px;margin-left:50px" />
 							</b:column>
 							<b:column span="2">
 								<h:selectOneMenu style="width:75px;margin-top:5px"
 									styleClass="form-control"
 									value="#{MBFuncionarios.profissional.ativo}">
-									<f:selectItem itemLabel="SIM" itemValue="true" />
-									<f:selectItem itemLabel="NÃO" itemValue="false" />
+									<f:selectItem itemLabel="SIM" itemValue="S" />
+									<f:selectItem itemLabel="NÃO" itemValue="N" />
 								</h:selectOneMenu>
 							</b:column>
 						</b:row>
 
 					</p:tab>
 
-					<p:tab title="DADOS DO MÉDICO">
+					<p:tab title="DADOS DO MÉDICO"
+						rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
 						<div class="form-group">
 							<h:outputLabel value="Especialidade"
 								styleClass="col-sm-1 control-label" />
@@ -154,38 +172,22 @@
 									style="margin-left:-20px;" />
 							</div>
 
-							<h:outputLabel value="Procedimento 2"
-								styleClass="col-sm-1 control-label" />
+							<h:outputLabel value="CNS" styleClass="col-sm-1 control-label" />
 							<div class="col-sm-4">
 								<p:outputPanel id="outProcP2">
-									<p:autoComplete value="#{MBFuncionarios.profissional.proc2}"
-										size="60" converter="conProcedimento" id="descProc2"
-										completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-										effect="fade" var="theme" forceSelection="true"
-										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.nomeProc}"></p:autoComplete>
+									<h:inputText value="#{MBFuncionarios.profissional.cns}"
+										required="true" requiredMessage="CNS obrigátorio!"
+										class="form-control" />
+
 								</p:outputPanel>
 							</div>
-							<div class="col-sm-1">
-								<p:commandButton id="btBusProc2" icon="ui-icon-search"
-									onclick="PF('dlgConsulProc2').show();" immediate="true"
-									actionListener="#{ProcedimentoController.listarProcedimentos()}"
-									style="margin-left:-20px;" />
-							</div>
+
 
 						</div>
 
 
 
 						<div class="form-group">
-
-							<h:outputLabel value="CNS" styleClass="col-sm-1 control-label" />
-							<div class="col-sm-2">
-								<h:inputText value="#{MBFuncionarios.profissional.cns}"
-									required="true" requiredMessage="CNS obrigátorio!"
-									class="form-control" />
-
-							</div>
 
 							<div class="col-sm-5" style="margin-top: 20px">
 								<p:commandButton onclick="PF('dlgConsuGrupos').show();"
@@ -231,7 +233,7 @@
 					<b:messages value="Error" id="msgError"></b:messages>
 				</center>
 
-
+				<br></br>
 
 				<center>
 					<b:commandButton action="#{MBFuncionarios.gravarProfissional()}"
@@ -274,7 +276,7 @@
 							<f:facet name="header">
                         Adicionar
                     	</f:facet>
-							<p:commandButton update=":frmCadProfi" icon="ui-icon-check"
+							<p:commandButton update=":frmCadProfi:tbv" icon="ui-icon-check"
 								title="Selecionar"
 								onclick="PF('dlgConsulEspecialidade').hide();">
 								<f:setPropertyActionListener value="#{espec}"

@@ -602,13 +602,13 @@ public class AgendaDAO {
 			Date dataAgendaFinal) throws ProjetoException {
 		List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
-		String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome, p.cns, a.codmedico, m.descmedico, "
+		String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome, p.cns, a.codmedico, m.descfuncionario, "
 				+ " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, "
 				+ " a.codequipe, e.descequipe "
 				+ " FROM  hosp.atendimentos a "
 				+ " left join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)"
 				+ " left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
-				+ " left join hosp.medicos m on (m.id_medico = a.codmedico) "
+				+ " left join acl.funcionarios m on (m.id_funcionario = a.codmedico) "
 				+ " left join hosp.equipe e on (e.id_equipe = a.codequipe) "
 				+ " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)";
 		try {
@@ -634,7 +634,7 @@ public class AgendaDAO {
 				agenda.getProfissional().setIdProfissional(
 						rs.getInt("codmedico"));
 				agenda.getProfissional().setDescricaoProf(
-						rs.getString("descmedico"));
+						rs.getString("descfuncionario"));
 				agenda.setDataAtendimento(rs.getDate("dtaatende"));
 				agenda.setDataMarcacao(rs.getDate("dtamarcacao"));
 				agenda.getTipoAt().setIdTipo(rs.getInt("codtipoatendimento"));

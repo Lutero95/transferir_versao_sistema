@@ -1056,7 +1056,7 @@ public class FuncionarioDAO {
 	public List<FuncionarioBean> listarProfissionalBusca(String descricaoBusca,
 			Integer tipoBuscar) throws ProjetoException {
 		List<FuncionarioBean> lista = new ArrayList<>();
-		String sql = "select id_funcionario ,id_funcionario ||'-'|| descfuncionario as descdescfuncionariomedico, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, "
+		String sql = "select id_funcionario ,id_funcionario ||'-'|| descfuncionario as descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, "
 				+ " from acl.funcionarios ";
 		if (tipoBuscar == 1) {
 			sql += " where upper(id_funcionario ||' - '|| descfuncionario) LIKE ? and realiza_atendimento is true order by descfuncionario";
@@ -1078,8 +1078,8 @@ public class FuncionarioDAO {
 				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
 				prof.setProc1(procDao.listarProcedimentoPorId(rs
 						.getInt("codprocedimentopadrao")));
-				prof.setPrograma(listarProgProf(rs.getInt("id_medico")));
-				prof.setGrupo(listarProgGrupo(rs.getInt("id_medico")));
+				prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
+				prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
 
 				lista.add(prof);
 			}
@@ -1125,8 +1125,8 @@ public class FuncionarioDAO {
 				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
 				prof.setProc1(procDao.listarProcedimentoPorId(rs
 						.getInt("codprocedimentopadrao")));
-				prof.setPrograma(listarProgProf(rs.getInt("id_medico")));
-				prof.setGrupo(listarProgGrupo(rs.getInt("id_medico")));
+				prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
+				prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
 
 				lista.add(prof);
 			}
@@ -1146,7 +1146,7 @@ public class FuncionarioDAO {
 
 	public List<FuncionarioBean> listarProfissional() throws ProjetoException {
 		List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
-		String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao "
+		String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, cpf, senha, realiza_atendimento "
 				+ " from acl.funcionarios order by descfuncionario";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1156,6 +1156,9 @@ public class FuncionarioDAO {
 			while (rs.next()) {
 				FuncionarioBean prof = new FuncionarioBean();
 				prof.setId(rs.getLong("id_funcionario"));
+				prof.setCpf(rs.getString("cpf"));
+				prof.setSenha(rs.getString("senha"));
+				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
 				prof.setNome(rs.getString("descfuncionario"));
 				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
 						.getInt("codespecialidade")));
@@ -1298,26 +1301,47 @@ public class FuncionarioDAO {
 
 			stmt.setString(1, profissional.getNome().toUpperCase());
 
-			stmt.setInt(2, profissional.getEspecialidade()
-					.getCodEspecialidade());
+			if (profissional.getEspecialidade() != null) {
+				if (profissional.getEspecialidade().getCodEspecialidade() != null) {
+					stmt.setInt(2, profissional.getEspecialidade()
+							.getCodEspecialidade());
+				} else {
+					stmt.setInt(2, 0);
+				}
+			} else {
+				stmt.setInt(2, 0);
+			}
 
-			stmt.setString(3, profissional.getCns().toUpperCase());
+			if (profissional.getCns() != null) {
+				stmt.setString(3, profissional.getCns().toUpperCase());
+			} else {
+				stmt.setString(3, "");
+			}
 
 			stmt.setString(4, profissional.getAtivo());
 
 			if (profissional.getCbo() != null) {
-				stmt.setInt(5, profissional.getCbo().getCodCbo());
+				if (profissional.getCbo().getCodCbo() != null) {
+					stmt.setInt(5, profissional.getCbo().getCodCbo());
+				} else {
+					stmt.setInt(5, 0);
+				}
 			} else {
 				stmt.setInt(5, 0);
 			}
 
 			if (profissional.getProc1() != null) {
-				stmt.setInt(6, profissional.getProc1().getIdProc());
+				if (profissional.getProc1().getCodProc() != null) {
+					stmt.setInt(6, profissional.getProc1().getIdProc());
+				} else {
+					stmt.setInt(6, 0);
+				}
 			} else {
 				stmt.setInt(6, 0);
 			}
 
 			stmt.setLong(7, profissional.getId());
+
 			stmt.executeUpdate();
 
 			String sql2 = "delete from hosp.profissional_programa_grupo where codprofissional = ?";
@@ -1354,9 +1378,9 @@ public class FuncionarioDAO {
 			throws SQLException, ProjetoException {
 		FuncionarioBean prof = null;
 
-		String sql = "select id_funcionario, descfuncionario, codespecialidade, "
-				+ " cns, ativo, codcbo, codprocedimentopadrao "
-				+ " from acl.funcionarios where id_funcionario = ? order by descfuncionario";
+		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
+				+ " cpf, senha, realiza_atendimento "
+				+ " from acl.funcionarios where id_funcionario = ? and ativo = 'S' order by descfuncionario";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1368,8 +1392,58 @@ public class FuncionarioDAO {
 				prof = new FuncionarioBean();
 				prof.setId(rs.getLong("id_funcionario"));
 				prof.setNome(rs.getString("descfuncionario"));
-				prof.setPrograma(listarProgProf(rs.getInt("id_medico")));
-				prof.setGrupo(listarProgGrupo(rs.getInt("id_medico")));
+				prof.setCpf(rs.getString("cpf"));
+				prof.setSenha(rs.getString("senha"));
+				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
+				prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
+				prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
+				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
+						.getInt("codespecialidade")));
+				prof.setCns(rs.getString("cns"));
+				prof.setAtivo(rs.getString("ativo"));
+				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+				prof.setProc1(procDao.listarProcedimentoPorId(rs
+						.getInt("codprocedimentopadrao")));
+
+			}
+
+			return prof;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+	}
+
+	public FuncionarioBean buscarProfissionalRealizaAtendimentoPorId(Integer id)
+			throws SQLException, ProjetoException {
+		FuncionarioBean prof = null;
+
+		String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
+				+ " cpf, senha, realiza_atendimento "
+				+ " from acl.funcionarios where id_funcionario = ? and ativo = 'S' and realiza_atendimento is true order by descfuncionario";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				prof = new FuncionarioBean();
+				prof.setId(rs.getLong("id_funcionario"));
+				prof.setNome(rs.getString("descfuncionario"));
+				prof.setCpf(rs.getString("cpf"));
+				prof.setSenha(rs.getString("senha"));
+				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
+				prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
+				prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
 				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
 						.getInt("codespecialidade")));
 				prof.setCns(rs.getString("cns"));
