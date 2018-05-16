@@ -17,17 +17,17 @@ import org.primefaces.event.UnselectEvent;
 
 import com.lowagie.text.pdf.AcroFields.Item;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ConfigAgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 @ManagedBean(name = "ConfigAgendaController")
@@ -38,21 +38,21 @@ public class ConfigAgendaController implements Serializable {
 
 	private ConfigAgendaParte1Bean confParte1;
 	private ConfigAgendaParte2Bean confParte2;
-	private ProfissionalBean prof;
+	private FuncionarioBean prof;
 	private EquipeBean equipe;
 
 	private List<ConfigAgendaParte2Bean> listaTipos;
 	private List<ConfigAgendaParte2Bean> listaTiposEditar;
 	private List<ConfigAgendaParte1Bean> listaHorarios;
 	private List<ConfigAgendaParte1Bean> listaHorariosEquipe;
-	private List<ProfissionalBean> listaProfissionais;
+	private List<FuncionarioBean> listaProfissionais;
 	private List<EquipeBean> listaEquipes;
 
 	private List<GrupoBean> listaGruposProgramas;
 	private List<TipoAtendimentoBean> listaTipoAtendimentosGrupo;
 
 	private ConfigAgendaDAO cDao = new ConfigAgendaDAO();
-	private ProfissionalDAO pDao = new ProfissionalDAO();
+	private FuncionarioDAO pDao = new FuncionarioDAO();
 	private EquipeDAO eDao = new EquipeDAO();
 
 	private String nomeBusca;
@@ -66,7 +66,7 @@ public class ConfigAgendaController implements Serializable {
 	public ConfigAgendaController() {
 		this.confParte1 = new ConfigAgendaParte1Bean();
 		this.confParte2 = new ConfigAgendaParte2Bean();
-		this.prof = new ProfissionalBean();
+		this.prof = new FuncionarioBean();
 		this.equipe = new EquipeBean();
 		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
 		this.listaTiposEditar = new ArrayList<ConfigAgendaParte2Bean>();
@@ -494,7 +494,7 @@ public class ConfigAgendaController implements Serializable {
 					"PF('dialogAtencao').hide();");
 		}
 		this.listaHorarios = cDao.listarHorariosComFiltros(confParte1,
-				prof.getIdProfissional());
+				prof.getId());
 	}
 
 	public void excluirConfigEquipe() throws ProjetoException {
@@ -519,7 +519,7 @@ public class ConfigAgendaController implements Serializable {
 
 	public void selectProfissional() throws ProjetoException {
 		this.listaHorarios = cDao.listarHorariosPorIDProfissional(prof
-				.getIdProfissional());
+				.getId());
 	}
 
 	public void selectEquipeOnRow() throws ProjetoException {
@@ -529,7 +529,7 @@ public class ConfigAgendaController implements Serializable {
 
 	public void selectProfissionalComFiltros() throws ProjetoException {
 		this.listaHorarios = cDao.listarHorariosComFiltros(confParte1,
-				prof.getIdProfissional());
+				prof.getId());
 	}
 
 	public void selectProfissionalConsConfAgenda() throws ProjetoException {
@@ -547,9 +547,9 @@ public class ConfigAgendaController implements Serializable {
 	}
 
 	public void onRowSelect(SelectEvent event) throws ProjetoException {
-		ProfissionalBean prof = (ProfissionalBean) event.getObject();
+		FuncionarioBean prof = (FuncionarioBean) event.getObject();
 		this.listaHorarios = cDao.listarHorariosPorIDProfissional(prof
-				.getIdProfissional());
+				.getId());
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
@@ -613,10 +613,10 @@ public class ConfigAgendaController implements Serializable {
 		} else {
 			if (this.confParte1.getProfissional() == null) {
 			}
-			if (this.confParte1.getProfissional().getIdProfissional() != null) {
+			if (this.confParte1.getProfissional().getId() != null) {
 				this.listaHorarios = cDao
 						.listarHorariosPorIDProfissional(this.confParte1
-								.getProfissional().getIdProfissional());
+								.getProfissional().getId());
 			}
 		}
 		return listaHorarios;
@@ -653,7 +653,7 @@ public class ConfigAgendaController implements Serializable {
 		this.listaHorariosEquipe = listaHorariosEquipe;
 	}
 
-	public List<ProfissionalBean> getListaProfissionais()
+	public List<FuncionarioBean> getListaProfissionais()
 			throws ProjetoException {
 		if (this.listaProfissionais == null) {
 			this.listaProfissionais = pDao.listarProfissional();
@@ -661,7 +661,7 @@ public class ConfigAgendaController implements Serializable {
 		return listaProfissionais;
 	}
 
-	public void setListaProfissionais(List<ProfissionalBean> listaProfissionais) {
+	public void setListaProfissionais(List<FuncionarioBean> listaProfissionais) {
 		this.listaProfissionais = listaProfissionais;
 	}
 
@@ -723,11 +723,11 @@ public class ConfigAgendaController implements Serializable {
 		this.listaTiposEditar = listaTiposEditar;
 	}
 
-	public ProfissionalBean getProf() {
+	public FuncionarioBean getProf() {
 		return prof;
 	}
 
-	public void setProf(ProfissionalBean prof) {
+	public void setProf(FuncionarioBean prof) {
 		this.prof = prof;
 	}
 

@@ -9,8 +9,6 @@ import javax.faces.convert.FacesConverter;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
 @FacesConverter(value = "conFuncionario")
 public class FuncionarioConverter implements Converter {

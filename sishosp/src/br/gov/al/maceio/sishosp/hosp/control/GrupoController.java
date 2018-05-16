@@ -14,13 +14,13 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 @ManagedBean(name = "GrupoController")
@@ -40,7 +40,7 @@ public class GrupoController implements Serializable {
 	private String cabecalho;
 	private ProgramaBean programaSelecionado;
 	private EquipeBean equipeSelecionado;
-	private ProfissionalBean profissionalSelecionado;
+	private FuncionarioBean profissionalSelecionado;
 	private Integer abaAtiva = 0;
 
 	GrupoDAO gDao = new GrupoDAO();
@@ -54,7 +54,7 @@ public class GrupoController implements Serializable {
 		this.cabecalho = "";
 		this.programaSelecionado = new ProgramaBean();
 		this.equipeSelecionado = new EquipeBean();
-		this.profissionalSelecionado = new ProfissionalBean();
+		this.profissionalSelecionado = new FuncionarioBean();
 		buscarlistaGrupos = new ArrayList<>();
 		buscarlistaGrupos = null;
 	}
@@ -240,7 +240,7 @@ public class GrupoController implements Serializable {
 		// atualizaLista2(equipeSelecionado);
 
 		// if(profissional ID == TRUE){}
-		this.profissionalSelecionado = (ProfissionalBean) event.getObject();
+		this.profissionalSelecionado = (FuncionarioBean) event.getObject();
 		// atualizaLista3(profissionalSelecionado);
 	}
 

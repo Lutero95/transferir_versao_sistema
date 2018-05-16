@@ -9,15 +9,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
 public class BloqueioDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
-	ProfissionalDAO pDao = new ProfissionalDAO();
+	FuncionarioDAO pDao = new FuncionarioDAO();
 
 	public boolean gravarBloqueio(BloqueioBean bloqueio) throws SQLException,
 			ProjetoException {
@@ -33,7 +34,7 @@ public class BloqueioDAO {
 			Date dataFim = bloqueio.getDataFim();
 			do {
 				if (dataInicio.after(dataFim) == false) {
-					ps.setInt(1, bloqueio.getProf().getIdProfissional());
+					ps.setLong(1, bloqueio.getProf().getId());
 					ps.setDate(2, new java.sql.Date(dataInicio.getTime()));
 					ps.setString(3, bloqueio.getTurno().toUpperCase());
 					ps.setString(4, bloqueio.getDescBloqueio().toUpperCase());
@@ -74,8 +75,8 @@ public class BloqueioDAO {
 			while (rs.next()) {
 				BloqueioBean bloqueio = new BloqueioBean();
 				bloqueio.setIdBloqueio(rs.getInt("id_bloqueioagenda"));
-				bloqueio.getProf().setIdProfissional(rs.getInt("codmedico"));
-				bloqueio.getProf().setDescricaoProf(rs.getString("descfuncionario"));
+				bloqueio.getProf().setId(rs.getLong("codmedico"));
+				bloqueio.getProf().setNome(rs.getString("descfuncionario"));
 				bloqueio.setDataInicio(rs.getDate("dataagenda"));
 				bloqueio.setTurno(rs.getString("turno"));
 				bloqueio.setDescBloqueio(rs.getString("descricao"));
@@ -110,8 +111,8 @@ public class BloqueioDAO {
 				bloqueio.setIdBloqueio(rs.getInt("id_bloqueioagenda"));
 				bloqueio.setDescBloqueio(rs.getString("descricao"));
 				bloqueio.setDataInicio(rs.getDate("dataagenda"));
-				bloqueio.getProf().setIdProfissional(rs.getInt("codmedico"));
-				bloqueio.getProf().setDescricaoProf(rs.getString("descfuncionario"));
+				bloqueio.getProf().setId(rs.getLong("codmedico"));
+				bloqueio.getProf().setNome(rs.getString("descfuncionario"));
 			}
 
 		} catch (SQLException ex) {
@@ -128,14 +129,14 @@ public class BloqueioDAO {
 	}
 
 	public List<BloqueioBean> listarBloqueioPorProfissional(
-			ProfissionalBean prof) throws ProjetoException {
+			FuncionarioBean prof) throws ProjetoException {
 		List<BloqueioBean> lista = new ArrayList<>();
 		String sql = "select id_bloqueioagenda, codmedico, dataagenda, turno, descricao, codempresa "
 				+ "from hosp.bloqueio_agenda where codmedico = ? order by id_bloqueioagenda";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, prof.getIdProfissional());
+			stm.setLong(1, prof.getId());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -172,7 +173,7 @@ public class BloqueioDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
 
-			stmt.setInt(1, bloqueio.getProf().getIdProfissional());
+			stmt.setLong(1, bloqueio.getProf().getId());
 			stmt.setDate(2, new java.sql.Date(bloqueio.getDataInicio()
 					.getTime()));
 			stmt.setString(3, bloqueio.getTurno().toUpperCase());
@@ -214,7 +215,7 @@ public class BloqueioDAO {
 	}
 
 	public List<BloqueioBean> verificarBloqueioProfissional(
-			ProfissionalBean prof, Date dataAtendimento, String turno)
+			FuncionarioBean prof, Date dataAtendimento, String turno)
 			throws ProjetoException {
 		List<BloqueioBean> lista = new ArrayList<>();
 		String sql = "select id_bloqueioagenda, codmedico, dataagenda, turno, descricao, codempresa "
@@ -223,7 +224,7 @@ public class BloqueioDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, prof.getIdProfissional());
+			stm.setLong(1, prof.getId());
 			stm.setDate(2, new java.sql.Date(dataAtendimento.getTime()));
 			stm.setString(3, turno.toUpperCase());
 			ResultSet rs = stm.executeQuery();

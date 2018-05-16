@@ -10,12 +10,12 @@ import java.util.List;
 
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 public class GrupoDAO {
@@ -76,7 +76,7 @@ public class GrupoDAO {
 		String sql = "select eg.codequipe, e.descequipe from hosp.equipe_grupo eg"
 				+ " join hosp.equipe e on e.id_equipe = eg.codequipe"
 				+ " where eg.id_grupo=?";
-		ProfissionalDAO pDao = new ProfissionalDAO();
+		
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);

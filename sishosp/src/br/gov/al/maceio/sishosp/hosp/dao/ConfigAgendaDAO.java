@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
@@ -18,7 +19,7 @@ import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 public class ConfigAgendaDAO {
 
 	Connection con = null;
-	ProfissionalDAO pDao = new ProfissionalDAO();
+	FuncionarioDAO pDao = new FuncionarioDAO();
 	EquipeDAO eDao = new EquipeDAO();
 
 	// SEM USO, RETIREI
@@ -143,7 +144,7 @@ public class ConfigAgendaDAO {
 					confParte1.setAno(c1.get(Calendar.YEAR));
 
 				}
-				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				ps2.setLong(1, confParte1.getProfissional().getId());
 				ps2.setInt(3, confParte1.getQtdMax());
 				ps2.setString(5, "M");
 				ps2.setInt(6, confParte1.getMes());
@@ -172,7 +173,7 @@ public class ConfigAgendaDAO {
 					confParte1.setMes(c1.get(Calendar.MONTH) + 1);
 					confParte1.setAno(c1.get(Calendar.YEAR));
 				}
-				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				ps2.setLong(1, confParte1.getProfissional().getId());
 				ps2.setInt(3, confParte1.getQtdMax());
 				ps2.setString(5, "T");
 				ps2.setInt(6, confParte1.getMes());
@@ -202,7 +203,7 @@ public class ConfigAgendaDAO {
 					confParte1.setAno(c1.get(Calendar.YEAR));
 
 				}
-				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				ps2.setLong(1, confParte1.getProfissional().getId());
 				ps2.setInt(3, confParte1.getQtdMax());
 				ps2.setString(5, confParte1.getTurno());
 				ps2.setInt(6, confParte1.getMes());
@@ -332,7 +333,7 @@ public class ConfigAgendaDAO {
 	}
 
 	public List<ConfigAgendaParte1Bean> listarHorariosComFiltros(
-			ConfigAgendaParte1Bean config, int codmedico)
+			ConfigAgendaParte1Bean config, Long codmedico)
 			throws ProjetoException {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 		String sql = "SELECT id_configagenda, codmedico, diasemana, qtdmax, dataagenda, turno, mes, ano, codempresa "
@@ -362,7 +363,7 @@ public class ConfigAgendaDAO {
 			PreparedStatement stm = con.prepareStatement(sql);
 			int i = 1;
 
-			stm.setInt(i, codmedico);
+			stm.setLong(i, codmedico);
 
 			if (config != null) {
 				if (config.getAno() != null) {
@@ -537,7 +538,7 @@ public class ConfigAgendaDAO {
 		return lista;
 	}
 
-	public List<ConfigAgendaParte1Bean> listarHorariosPorIDProfissional(int id)
+	public List<ConfigAgendaParte1Bean> listarHorariosPorIDProfissional(Long id)
 			throws ProjetoException {
 		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
 		String sql = "SELECT id_configagenda, codmedico, diasemana, qtdmax, dataagenda, turno, mes, ano, codempresa "
@@ -545,7 +546,7 @@ public class ConfigAgendaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, id);
+			stm.setLong(1, id);
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -857,7 +858,7 @@ public class ConfigAgendaDAO {
 			List<ConfigAgendaParte2Bean> listaTiposEditar)
 			throws ProjetoException {
 
-		if (confParte1.getProfissional().getIdProfissional() == null
+		if (confParte1.getProfissional().getId() == null
 				|| confParte1.getQtdMax() == null
 				|| confParte1.getAno() == null) {
 			return false;
@@ -904,7 +905,7 @@ public class ConfigAgendaDAO {
 					ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 							.getTime()));
 				}
-				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				ps2.setLong(1, confParte1.getProfissional().getId());
 				ps2.setInt(3, confParte1.getQtdMax());
 				ps2.setString(5, "M");
 				ps2.setInt(6, confParte1.getMes());
@@ -940,7 +941,7 @@ public class ConfigAgendaDAO {
 					ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 							.getTime()));
 				}
-				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				ps2.setLong(1, confParte1.getProfissional().getId());
 				ps2.setInt(3, confParte1.getQtdMax());
 				ps2.setString(5, "T");
 				ps2.setInt(6, confParte1.getMes());
@@ -976,7 +977,7 @@ public class ConfigAgendaDAO {
 					ps2.setDate(4, new Date(confParte1.getDataEspecifica()
 							.getTime()));
 				}
-				ps2.setInt(1, confParte1.getProfissional().getIdProfissional());
+				ps2.setLong(1, confParte1.getProfissional().getId());
 				ps2.setInt(3, confParte1.getQtdMax());
 				ps2.setString(5, confParte1.getTurno());
 				ps2.setInt(6, confParte1.getMes());

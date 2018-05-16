@@ -133,7 +133,7 @@
 							<h:outputLabel value="Profissional Atendimento: " />
 							<p:outputPanel>
 								<p:autoComplete value="#{AgendaController.agenda.profissional}"
-									size="60" converter="conProfissional"
+									size="60" converter="conFuncionario"
 									completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"

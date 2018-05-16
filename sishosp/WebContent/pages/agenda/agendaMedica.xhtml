@@ -156,11 +156,11 @@
 					<p:outputPanel id="outProf"
 						rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
 						<p:autoComplete value="#{AgendaController.agenda.profissional}"
-							size="40" converter="conProfissional"
+							size="40" converter="conFuncionario"
 							completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descricaoProf}">
+							itemLabel="#{theme.nome}">
 							<p:ajax event="itemSelect" update=":formAgendaMedica" />
 						</p:autoComplete>
 					</p:outputPanel>

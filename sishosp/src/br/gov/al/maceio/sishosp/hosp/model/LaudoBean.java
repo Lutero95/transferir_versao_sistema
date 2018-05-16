@@ -3,6 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+
 public class LaudoBean implements Serializable {
 
 	private Integer id_apac;
@@ -50,7 +52,7 @@ public class LaudoBean implements Serializable {
 	private PacienteBean paciente;
 	private ProgramaBean programa;
 	private ProfissaoBean profissao;
-	private ProfissionalBean profissional;
+	private FuncionarioBean profissional;
 	private GrupoBean grupo;
 	private ProcedimentoBean procedimento;
 	private FornecedorBean fornecedor;
@@ -77,7 +79,6 @@ public class LaudoBean implements Serializable {
 		// paciente = new PacienteBean();
 		// programa = new ProgramaBean();
 		// profissao = new ProfissaoBean();
-		// profissional = new ProfissionalBean();
 		// grupo = new GrupoBean();
 		// procedimento = new ProcedimentoBean();
 		// fornecedor = new FornecedorBean();
@@ -347,11 +348,11 @@ public class LaudoBean implements Serializable {
 		this.profissao = profissao;
 	}
 
-	public ProfissionalBean getProfissional() {
+	public FuncionarioBean getProfissional() {
 		return profissional;
 	}
 
-	public void setProfissional(ProfissionalBean profissional) {
+	public void setProfissional(FuncionarioBean profissional) {
 		this.profissional = profissional;
 	}
 

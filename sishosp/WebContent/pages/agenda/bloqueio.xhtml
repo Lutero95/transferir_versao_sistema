@@ -25,7 +25,7 @@
 					<p:outputPanel id="outProfi">
 						<p:autoComplete id="acpro"
 							value="#{BloqueioController.bloqueio.prof}" size="60"
-							converter="conProfissional"
+							converter="conFuncionario"
 							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"

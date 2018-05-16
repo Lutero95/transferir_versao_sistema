@@ -7,6 +7,8 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+
 public class EquipeBean implements Serializable {
 
 	private Integer codEquipe;
@@ -14,16 +16,16 @@ public class EquipeBean implements Serializable {
 	private Integer codEmpresa;
 
 	// LISTAS
-	private List<ProfissionalBean> profissionais;
-	private List<ProfissionalBean> profissionaisNovo;
+	private List<FuncionarioBean> profissionais;
+	private List<FuncionarioBean> profissionaisNovo;
 
 	// HERDADO
-	private ProfissionalBean profAdd;
+	private FuncionarioBean profAdd;
 
 	public EquipeBean() {
-		this.profissionais = new ArrayList<ProfissionalBean>();
-		this.profissionaisNovo = new ArrayList<ProfissionalBean>();
-		this.profAdd = new ProfissionalBean();
+		this.profissionais = new ArrayList<FuncionarioBean>();
+		this.profissionaisNovo = new ArrayList<FuncionarioBean>();
+		this.profAdd = new FuncionarioBean();
 
 	}
 
@@ -51,28 +53,28 @@ public class EquipeBean implements Serializable {
 		this.codEmpresa = codEmpresa;
 	}
 
-	public List<ProfissionalBean> getProfissionais() {
+	public List<FuncionarioBean> getProfissionais() {
 		return profissionais;
 	}
 
-	public void setProfissionais(List<ProfissionalBean> profissionais) {
+	public void setProfissionais(List<FuncionarioBean> profissionais) {
 		this.profissionais = profissionais;
 	}
 
-	public List<ProfissionalBean> getProfissionaisNovo() {
+	public List<FuncionarioBean> getProfissionaisNovo() {
 		this.profissionaisNovo = this.profissionais;
 		return profissionaisNovo;
 	}
 
-	public void setProfissionaisNovo(List<ProfissionalBean> profissionaisNovo) {
+	public void setProfissionaisNovo(List<FuncionarioBean> profissionaisNovo) {
 		this.profissionaisNovo = profissionaisNovo;
 	}
 
-	public ProfissionalBean getProfAdd() {
+	public FuncionarioBean getProfAdd() {
 		return profAdd;
 	}
 
-	public void setProfAdd(ProfissionalBean profAdd) {
+	public void setProfAdd(FuncionarioBean profAdd) {
 		this.profAdd = profAdd;
 	}
 
@@ -84,8 +86,8 @@ public class EquipeBean implements Serializable {
 		} else {
 
 			for (int i = 0; i < profissionais.size(); i++) {
-				if (profissionais.get(i).getIdProfissional() == profAdd
-						.getIdProfissional()) {
+				if (profissionais.get(i).getId() == profAdd
+						.getId()) {
 					existe = true;
 				}
 			}

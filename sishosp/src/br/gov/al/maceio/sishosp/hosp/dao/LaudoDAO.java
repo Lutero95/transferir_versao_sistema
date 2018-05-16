@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -21,7 +22,7 @@ public class LaudoDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 	private Connection conexao = null;
-	private ProfissionalDAO profDao = new ProfissionalDAO();
+	private FuncionarioDAO profDao = new FuncionarioDAO();
 	private ProgramaDAO progDao = new ProgramaDAO();
 	private ProcedimentoDAO procDao = new ProcedimentoDAO();
 	private PacienteDAO pacieDao = new PacienteDAO();
@@ -51,7 +52,7 @@ public class LaudoDAO {
 			stmt.setInt(2, laudo.getPrograma().getIdPrograma());
 			stmt.setInt(3, laudo.getGrupo().getIdGrupo());
 			stmt.setInt(4, laudo.getEquipe().getCodEquipe());
-			stmt.setInt(5, laudo.getProfissional().getIdProfissional());
+			stmt.setLong(5, laudo.getProfissional().getId());
 			stmt.setInt(6, laudo.getProcedimento().getIdProc());
 			// stmt.setString(6,
 			// laudo.getPaciente().getCns().toUpperCase().trim());
@@ -144,7 +145,7 @@ public class LaudoDAO {
 			stmt.setInt(2, laudo.getPrograma().getIdPrograma());
 			stmt.setInt(3, laudo.getGrupo().getIdGrupo());
 			stmt.setInt(4, laudo.getEquipe().getCodEquipe());
-			stmt.setInt(5, laudo.getProfissional().getIdProfissional());
+			stmt.setLong(5, laudo.getProfissional().getId());
 			stmt.setInt(6, laudo.getProcedimento().getIdProc());
 			// stmt.setString(6,
 			// laudo.getPaciente().getCns().toUpperCase().trim());
@@ -269,7 +270,7 @@ public class LaudoDAO {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setLong(1, laudo.getPaciente().getId_paciente());
-			stmt.setInt(2, laudo.getProfissional().getIdProfissional());
+			stmt.setLong(2, laudo.getProfissional().getId());
 			stmt.setInt(3, laudo.getProcedimento().getIdProc());
 			// stmt.setString(6,
 			// laudo.getPaciente().getCns().toUpperCase().trim());
@@ -301,7 +302,7 @@ public class LaudoDAO {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setLong(1, laudo.getPaciente().getId_paciente());
-			stmt.setInt(2, laudo.getProfissional().getIdProfissional());
+			stmt.setLong(2, laudo.getProfissional().getId());
 			stmt.setInt(3, laudo.getProcedimento().getIdProc());
 			// stmt.setString(6,
 			// laudo.getPaciente().getCns().toUpperCase().trim());

@@ -11,12 +11,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 public class AgendaDAO {
@@ -54,18 +55,18 @@ public class AgendaDAO {
 	}
 
 	public List<BloqueioBean> verificarBloqueioProfissional(
-			ProfissionalBean prof, Date dataAtendimento, String turno)
+			FuncionarioBean prof, Date dataAtendimento, String turno)
 			throws ProjetoException {
 
 		List<BloqueioBean> lista = new ArrayList<>();
-		ProfissionalDAO pDao = new ProfissionalDAO();
+		FuncionarioDAO pDao = new FuncionarioDAO();
 		String sql = "select id_bloqueioagenda, codmedico, dataagenda, turno, descricao, codempresa "
 				+ " from hosp.bloqueio_agenda "
 				+ " where codmedico = ? and  dataagenda = ? and turno = ? order by id_bloqueioagenda";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, prof.getIdProfissional());
+			stm.setLong(1, prof.getId());
 			stm.setDate(2, new java.sql.Date(dataAtendimento.getTime()));
 			stm.setString(3, turno.toUpperCase());
 			ResultSet rs = stm.executeQuery();
@@ -103,9 +104,9 @@ public class AgendaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
-			if (agenda.getProfissional().getIdProfissional() != null) {
+			if (agenda.getProfissional().getId() != null) {
 				stm = con.prepareStatement(sqlPro);
-				stm.setInt(1, agenda.getProfissional().getIdProfissional());
+				stm.setLong(1, agenda.getProfissional().getId());
 			} else if (agenda.getEquipe().getCodEquipe() != null) {
 				stm = con.prepareStatement(sqlEqui);
 				stm.setInt(1, agenda.getEquipe().getCodEquipe());
@@ -138,9 +139,9 @@ public class AgendaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
-			if (agenda.getProfissional().getIdProfissional() != null) {
+			if (agenda.getProfissional().getId() != null) {
 				stm = con.prepareStatement(sqlPro);
-				stm.setInt(1, agenda.getProfissional().getIdProfissional());
+				stm.setLong(1, agenda.getProfissional().getId());
 			} else if (agenda.getEquipe().getCodEquipe() != null) {
 				stm = con.prepareStatement(sqlEqui);
 				stm.setInt(1, agenda.getEquipe().getCodEquipe());
@@ -175,9 +176,9 @@ public class AgendaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
-			if (agenda.getProfissional().getIdProfissional() != null) {
+			if (agenda.getProfissional().getId() != null) {
 				stm = con.prepareStatement(sqlPro);
-				stm.setInt(1, agenda.getProfissional().getIdProfissional());
+				stm.setLong(1, agenda.getProfissional().getId());
 			} else if (agenda.getEquipe().getCodEquipe() != null) {
 				stm = con.prepareStatement(sqlEqui);
 				stm.setInt(1, agenda.getEquipe().getCodEquipe());
@@ -249,9 +250,9 @@ public class AgendaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
-			if (agenda.getProfissional().getIdProfissional() != null) {
+			if (agenda.getProfissional().getId() != null) {
 				stm = con.prepareStatement(sqlPro);
-				stm.setInt(1, agenda.getProfissional().getIdProfissional());
+				stm.setLong(1, agenda.getProfissional().getId());
 			} else if (agenda.getEquipe().getCodEquipe() != null) {
 				stm = con.prepareStatement(sqlEqui);
 				stm.setInt(1, agenda.getEquipe().getCodEquipe());
@@ -293,8 +294,8 @@ public class AgendaDAO {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, agenda.getPaciente().getId_paciente());
-			if (agenda.getProfissional().getIdProfissional() != null) {
-				ps.setInt(2, agenda.getProfissional().getIdProfissional());
+			if (agenda.getProfissional().getId() != null) {
+				ps.setLong(2, agenda.getProfissional().getId());
 			} else {
 				ps.setInt(2, 0);
 			}
@@ -328,14 +329,14 @@ public class AgendaDAO {
 			String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
 					+ " cbo) VALUES  (?, ?, ?)";
 			ps = con.prepareStatement(sql2);
-			if (agenda.getProfissional().getIdProfissional() != null) {
-				ps.setInt(1, agenda.getProfissional().getIdProfissional());
+			if (agenda.getProfissional().getId() != null) {
+				ps.setLong(1, agenda.getProfissional().getId());
 				ps.setInt(2, idAgend);
 				ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
 			} else if (agenda.getEquipe().getCodEquipe() != null) {
-				for (ProfissionalBean prof : agenda.getEquipe()
+				for (FuncionarioBean prof : agenda.getEquipe()
 						.getProfissionais()) {
-					ps.setInt(1, prof.getIdProfissional());
+					ps.setLong(1, prof.getId());
 					ps.setInt(2, idAgend);
 					ps.setInt(3, prof.getCbo().getCodCbo());
 				}
@@ -430,8 +431,8 @@ public class AgendaDAO {
 
 				ps = con2.prepareStatement(sql);
 				ps.setInt(1, agenda.getPaciente().getId_paciente());
-				if (agenda.getProfissional().getIdProfissional() != null) {
-					ps.setInt(2, agenda.getProfissional().getIdProfissional());
+				if (agenda.getProfissional().getId() != null) {
+					ps.setLong(2, agenda.getProfissional().getId());
 				} else {
 					ps.setInt(2, 0);
 				}
@@ -464,14 +465,14 @@ public class AgendaDAO {
 				String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
 						+ " cbo) VALUES  (?, ?, ?)";
 				ps = con.prepareStatement(sql2);
-				if (agenda.getProfissional().getIdProfissional() != null) {
-					ps.setInt(1, agenda.getProfissional().getIdProfissional());
+				if (agenda.getProfissional().getId() != null) {
+					ps.setLong(1, agenda.getProfissional().getId());
 					ps.setInt(2, idAgend);
 					ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
 				} else if (agenda.getEquipe().getCodEquipe() != null) {
-					for (ProfissionalBean prof : agenda.getEquipe()
+					for (FuncionarioBean prof : agenda.getEquipe()
 							.getProfissionais()) {
-						ps.setInt(1, prof.getIdProfissional());
+						ps.setLong(1, prof.getId());
 						ps.setInt(2, idAgend);
 						ps.setInt(3, prof.getCbo().getCodCbo());
 					}
@@ -506,14 +507,14 @@ public class AgendaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			if (agenda.getProfissional().getIdProfissional() != null) {
-				ps.setInt(1, agenda.getProfissional().getIdProfissional());
+			if (agenda.getProfissional().getId() != null) {
+				ps.setLong(1, agenda.getProfissional().getId());
 				ps.setInt(2, idAgendamento);
 				ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
 			} else if (agenda.getEquipe().getCodEquipe() != null) {
-				for (ProfissionalBean prof : agenda.getEquipe()
+				for (FuncionarioBean prof : agenda.getEquipe()
 						.getProfissionais()) {
-					ps.setInt(1, prof.getIdProfissional());
+					ps.setLong(1, prof.getId());
 					ps.setInt(2, idAgendamento);
 					ps.setInt(3, prof.getCbo().getCodCbo());
 				}
@@ -537,7 +538,7 @@ public class AgendaDAO {
 			throws ProjetoException {
 		List<AgendaBean> lista = new ArrayList<AgendaBean>();
 		PacienteDAO pDao = new PacienteDAO();
-		ProfissionalDAO mDao = new ProfissionalDAO();
+		FuncionarioDAO mDao = new FuncionarioDAO();
 		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 		EquipeDAO eDao = new EquipeDAO();
 
@@ -555,9 +556,9 @@ public class AgendaDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
 
-			if (ag.getProfissional().getIdProfissional() != null) {
+			if (ag.getProfissional().getId() != null) {
 				stm = con.prepareStatement(sqlProf);
-				stm.setInt(2, ag.getProfissional().getIdProfissional());
+				stm.setLong(2, ag.getProfissional().getId());
 			} else if (ag.getEquipe().getCodEquipe() != null) {
 				stm = con.prepareStatement(sqlEqui);
 				stm.setInt(2, ag.getEquipe().getCodEquipe());
@@ -631,9 +632,8 @@ public class AgendaDAO {
 				agenda.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				agenda.getPaciente().setNome(rs.getString("nome"));
 				agenda.getPaciente().setCns(rs.getString("cns"));
-				agenda.getProfissional().setIdProfissional(
-						rs.getInt("codmedico"));
-				agenda.getProfissional().setDescricaoProf(
+				agenda.getProfissional().setId(rs.getLong("codmedico"));
+				agenda.getProfissional().setNome(
 						rs.getString("descfuncionario"));
 				agenda.setDataAtendimento(rs.getDate("dtaatende"));
 				agenda.setDataMarcacao(rs.getDate("dtamarcacao"));
@@ -712,9 +712,9 @@ public class AgendaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
-			if (agenda.getProfissional().getIdProfissional() != null) {
+			if (agenda.getProfissional().getId() != null) {
 				stm = con.prepareStatement(sqlPro);
-				stm.setInt(1, agenda.getProfissional().getIdProfissional());
+				stm.setLong(1, agenda.getProfissional().getId());
 			} else if (agenda.getEquipe().getCodEquipe() != null) {
 				stm = con.prepareStatement(sqlEqui);
 				stm.setInt(1, agenda.getEquipe().getCodEquipe());
@@ -746,9 +746,9 @@ public class AgendaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
-			if (agenda.getProfissional().getIdProfissional() != null) {
+			if (agenda.getProfissional().getId() != null) {
 				stm = con.prepareStatement(sqlPro);
-				stm.setInt(1, agenda.getProfissional().getIdProfissional());
+				stm.setLong(1, agenda.getProfissional().getId());
 			} else if (agenda.getEquipe().getCodEquipe() != null) {
 				stm = con.prepareStatement(sqlEqui);
 				stm.setInt(1, agenda.getEquipe().getCodEquipe());
@@ -783,7 +783,7 @@ public class AgendaDAO {
 
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setInt(1, agenda.getProfissional().getIdProfissional());
+			stmt.setLong(1, agenda.getProfissional().getId());
 			stmt.setInt(2, agenda.getProfissional().getCbo().getCodCbo());
 			stmt.setInt(3, agenda.getProfissional().getProc1().getCodProc());
 			stmt.setString(4, situacaoConf.toUpperCase());

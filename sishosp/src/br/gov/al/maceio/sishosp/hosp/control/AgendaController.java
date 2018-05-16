@@ -17,11 +17,12 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
@@ -29,7 +30,6 @@ import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
@@ -45,7 +45,7 @@ public class AgendaController implements Serializable {
 	private Date dataAtendimentoFinalC;
 	private String cnsC;
 	private Integer protuarioC;
-	private ProfissionalDAO pDao = new ProfissionalDAO();
+	private FuncionarioDAO pDao = new FuncionarioDAO();
 	private TipoAtendimentoBean tipoC;
 	private ProgramaBean programaSelecionado;
 	private List<AgendaBean> listaNovosAgendamentos;
@@ -53,7 +53,7 @@ public class AgendaController implements Serializable {
 	private List<GrupoBean> listaGruposProgramas;
 	private GrupoBean grupoSelecionado;
 	private List<AgendaBean> listaConsulta;
-	private List<ProfissionalBean> listaProfissional;
+	private List<FuncionarioBean> listaProfissional;
 	private boolean habilitarDetalhes;
 	private List<TipoAtendimentoBean> listaTipos;
 	private List<TipoAtendimentoBean> listaTiposPorGrupo;
@@ -74,7 +74,7 @@ public class AgendaController implements Serializable {
 		listaTipos = new ArrayList<TipoAtendimentoBean>();
 		programaSelecionado = new ProgramaBean();
 		this.listaNovosAgendamentos = new ArrayList<AgendaBean>();
-		this.listaProfissional = new ArrayList<ProfissionalBean>();
+		this.listaProfissional = new ArrayList<FuncionarioBean>();
 		this.listaAgendamentosData = new ArrayList<AgendaBean>();
 		this.listaConsulta = new ArrayList<AgendaBean>();
 		this.dataAtendimentoC = null;
@@ -108,7 +108,7 @@ public class AgendaController implements Serializable {
 			FeriadoBean feriado = aDao.verificarFeriado(this.agenda
 					.getDataAtendimento());
 			List<BloqueioBean> bloqueio = new ArrayList<BloqueioBean>();
-			if (this.agenda.getProfissional().getIdProfissional() != null) {
+			if (this.agenda.getProfissional().getId() != null) {
 				bloqueio = aDao.verificarBloqueioProfissional(
 						this.agenda.getProfissional(),
 						this.agenda.getDataAtendimento(),
@@ -388,7 +388,7 @@ public class AgendaController implements Serializable {
 		this.agenda.setPrograma(null);
 		this.agenda.setGrupo(null);
 		this.agenda.setTipoAt(null);
-		this.agenda.setProfissional(new ProfissionalBean());
+		this.agenda.setProfissional(new FuncionarioBean());
 		this.agenda.setEquipe(new EquipeBean());
 		this.agenda.setObservacao(new String());
 		this.agenda.setDataAtendimento(null);
@@ -399,7 +399,7 @@ public class AgendaController implements Serializable {
 	public void limparNaBuscaPrograma() {
 		this.agenda.setGrupo(null);
 		this.agenda.setTipoAt(null);
-		this.agenda.setProfissional(new ProfissionalBean());
+		this.agenda.setProfissional(new FuncionarioBean());
 		this.agenda.setEquipe(new EquipeBean());
 		this.agenda.setObservacao(new String());
 		this.agenda.setDataAtendimento(null);
@@ -409,7 +409,7 @@ public class AgendaController implements Serializable {
 
 	public void limparNaBuscaGrupo() {
 		this.agenda.setTipoAt(null);
-		this.agenda.setProfissional(new ProfissionalBean());
+		this.agenda.setProfissional(new FuncionarioBean());
 		this.agenda.setEquipe(new EquipeBean());
 		this.agenda.setObservacao(new String());
 		this.agenda.setDataAtendimento(null);
@@ -418,7 +418,7 @@ public class AgendaController implements Serializable {
 	}
 
 	public void limparNaBuscaTipo() {
-		this.agenda.setProfissional(new ProfissionalBean());
+		this.agenda.setProfissional(new FuncionarioBean());
 		this.agenda.setEquipe(new EquipeBean());
 		this.agenda.setObservacao(new String());
 		this.agenda.setDataAtendimento(null);
@@ -520,18 +520,18 @@ public class AgendaController implements Serializable {
 		return listaEquipePorTipoAtendimento;
 	}
 
-	public List<ProfissionalBean> listaProfissionalPorGrupoAutoComplete(
+	public List<FuncionarioBean> listaProfissionalPorGrupoAutoComplete(
 			String query) throws ProjetoException {
-		List<ProfissionalBean> result = pDao.listarProfissionalBuscaPorGrupo(
+		List<FuncionarioBean> result = pDao.listarProfissionalBuscaPorGrupo(
 				query, agenda.getGrupo().getIdGrupo());
 		return result;
 	}
 
-	public List<ProfissionalBean> listaProfissionalPorGrupo()
+	public List<FuncionarioBean> listaProfissionalPorGrupo()
 			throws ProjetoException {
 		if (agenda.getGrupo() != null) {
 			if (agenda.getGrupo().getIdGrupo() != null) {
-				List<ProfissionalBean> result = pDao
+				List<FuncionarioBean> result = pDao
 						.listarProfissionalPorGrupo(agenda.getGrupo()
 								.getIdGrupo());
 				return result;
@@ -626,7 +626,7 @@ public class AgendaController implements Serializable {
 	/**
 	 * @return the listaProfissional
 	 */
-	public List<ProfissionalBean> getListaProfissional() {
+	public List<FuncionarioBean> getListaProfissional() {
 		return listaProfissional;
 	}
 
@@ -634,7 +634,7 @@ public class AgendaController implements Serializable {
 	 * @param listaProfissional
 	 *            the listaProfissional to set
 	 */
-	public void setListaProfissional(List<ProfissionalBean> listaProfissional) {
+	public void setListaProfissional(List<FuncionarioBean> listaProfissional) {
 		this.listaProfissional = listaProfissional;
 	}
 

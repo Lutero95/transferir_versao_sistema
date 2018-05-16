@@ -3,6 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+
 public class AgendaBean implements Serializable {
 
 	private Integer idAgenda;
@@ -23,7 +25,7 @@ public class AgendaBean implements Serializable {
 	private GrupoBean grupo;
 	private ProgramaBean programa;
 	private TipoAtendimentoBean tipoAt;
-	private ProfissionalBean profissional;
+	private FuncionarioBean profissional;
 	private EquipeBean equipe;
 
 	public AgendaBean() {
@@ -32,7 +34,7 @@ public class AgendaBean implements Serializable {
 		this.grupo = new GrupoBean();
 		this.programa = new ProgramaBean();
 		this.tipoAt = new TipoAtendimentoBean();
-		this.profissional = new ProfissionalBean();
+		this.profissional = new FuncionarioBean();
 		this.equipe = new EquipeBean();
 		this.prontoGravar = false;
 		this.turno = new String();
@@ -95,11 +97,11 @@ public class AgendaBean implements Serializable {
 		this.tipoAt = tipoAt;
 	}
 
-	public ProfissionalBean getProfissional() {
+	public FuncionarioBean getProfissional() {
 		return profissional;
 	}
 
-	public void setProfissional(ProfissionalBean profissional) {
+	public void setProfissional(FuncionarioBean profissional) {
 		this.profissional = profissional;
 	}
 

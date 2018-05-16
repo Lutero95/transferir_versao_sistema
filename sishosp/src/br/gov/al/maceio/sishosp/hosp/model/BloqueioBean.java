@@ -3,6 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+
 public class BloqueioBean implements Serializable {
 
 	private Integer idBloqueio;
@@ -13,10 +15,10 @@ public class BloqueioBean implements Serializable {
 	private Integer codEmpresa;
 
 	// HERDADO
-	private ProfissionalBean prof;
+	private FuncionarioBean prof;
 
 	public BloqueioBean() {
-		this.prof = new ProfissionalBean();
+		this.prof = new FuncionarioBean();
 		this.dataInicio = null;
 		this.dataFim = null;
 		this.descBloqueio = new String();
@@ -30,11 +32,11 @@ public class BloqueioBean implements Serializable {
 		this.idBloqueio = idBloqueio;
 	}
 
-	public ProfissionalBean getProf() {
+	public FuncionarioBean getProf() {
 		return prof;
 	}
 
-	public void setProf(ProfissionalBean prof) {
+	public void setProf(FuncionarioBean prof) {
 		this.prof = prof;
 	}
 

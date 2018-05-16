@@ -24,10 +24,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
@@ -39,7 +39,7 @@ public class RelatoriosController implements Serializable {
 	private ProgramaBean programa;
 	private GrupoBean grupo;
 	private TipoAtendimentoBean tipo;
-	private ProfissionalBean prof;
+	private FuncionarioBean prof;
 	private List<GrupoBean> listaGrupos;
 	private List<TipoAtendimentoBean> listaTipos;
 
@@ -61,7 +61,7 @@ public class RelatoriosController implements Serializable {
 		this.programa = new ProgramaBean();
 		this.grupo = new GrupoBean();
 		this.tipo = new TipoAtendimentoBean();
-		this.prof = new ProfissionalBean();
+		this.prof = new FuncionarioBean();
 		this.listaGrupos = new ArrayList<GrupoBean>();
 		this.listaTipos = new ArrayList<TipoAtendimentoBean>();
 		this.dataInicial = null;
@@ -79,7 +79,7 @@ public class RelatoriosController implements Serializable {
 		this.programa = new ProgramaBean();
 		this.grupo = new GrupoBean();
 		this.tipo = new TipoAtendimentoBean();
-		this.prof = new ProfissionalBean();
+		this.prof = new FuncionarioBean();
 		this.dataInicial = null;
 		this.dataFinal = null;
 		this.tipoExameAuditivo = new String("TODOS");
@@ -225,7 +225,7 @@ public class RelatoriosController implements Serializable {
 		if (this.prof == null) {
 			map.put("cod_medico", null);
 		} else {
-			map.put("cod_medico", this.prof.getIdProfissional());
+			map.put("cod_medico", this.prof.getId());
 		}
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
@@ -258,7 +258,7 @@ public class RelatoriosController implements Serializable {
 		if (this.prof == null) {
 			map.put("cod_medico", null);
 		} else {
-			map.put("cod_medico", this.prof.getIdProfissional());
+			map.put("cod_medico", this.prof.getId());
 		}
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
@@ -456,7 +456,7 @@ public class RelatoriosController implements Serializable {
 		if (this.prof == null)
 			map.put("cod_medico", null);
 		else
-			map.put("cod_medico", this.prof.getIdProfissional());
+			map.put("cod_medico", this.prof.getId());
 
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
@@ -638,11 +638,11 @@ public class RelatoriosController implements Serializable {
 		this.tipo = tipo;
 	}
 
-	public ProfissionalBean getProf() {
+	public FuncionarioBean getProf() {
 		return prof;
 	}
 
-	public void setProf(ProfissionalBean prof) {
+	public void setProf(FuncionarioBean prof) {
 		this.prof = prof;
 	}
 

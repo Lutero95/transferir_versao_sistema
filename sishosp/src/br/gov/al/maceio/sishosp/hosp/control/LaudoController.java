@@ -28,7 +28,6 @@ import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
@@ -44,7 +43,7 @@ public class LaudoController implements Serializable {
 	private GrupoBean grupo;
 	private ProgramaBean programa;
 	private TipoAtendimentoBean tipoAt;
-	private ProfissionalBean profissional;
+	private FuncionarioBean profissional;
 	private EquipeBean equipe;
 	private ProcedimentoBean procedimento;
 	private FornecedorBean fornecedor;
@@ -327,7 +326,7 @@ public class LaudoController implements Serializable {
 		paciente = new PacienteBean();
 		grupo = new GrupoBean();
 		programa = new ProgramaBean();
-		profissional = new ProfissionalBean();
+		profissional = new FuncionarioBean();
 		equipe = new EquipeBean();
 		procedimento = new ProcedimentoBean();
 		this.buscalistaProgramas = null;
@@ -514,11 +513,11 @@ public class LaudoController implements Serializable {
 		this.tipoAt = tipoAt;
 	}
 
-	public ProfissionalBean getProfissional() {
+	public FuncionarioBean getProfissional() {
 		return profissional;
 	}
 
-	public void setProfissional(ProfissionalBean profissional) {
+	public void setProfissional(FuncionarioBean profissional) {
 		this.profissional = profissional;
 	}
 

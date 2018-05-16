@@ -30,7 +30,6 @@ import javax.servlet.http.HttpSession;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.ProfissionalDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.acl.dao.IUsuarioDAO;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;

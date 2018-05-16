@@ -252,7 +252,7 @@
 					<h:outputLabel value="Profissional:" />
 					<p:outputPanel id="outProfAP">
 						<p:autoComplete value="#{RelatoriosController.prof}" size="60"
-							converter="conProfissional"
+							converter="conFuncionario"
 							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
@@ -704,7 +704,7 @@
 					<h:outputLabel value="Profissional:" />
 					<p:outputPanel id="outProfAP">
 						<p:autoComplete value="#{RelatoriosController.prof}" size="60"
-							converter="conProfissional"
+							converter="conFuncionario"
 							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
@@ -851,7 +851,7 @@
 					<h:outputLabel value="Profissional:" />
 					<p:outputPanel id="outProfAtP">
 						<p:autoComplete value="#{RelatoriosController.prof}" size="60"
-							converter="conProfissional"
+							converter="conFuncionario"
 							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"

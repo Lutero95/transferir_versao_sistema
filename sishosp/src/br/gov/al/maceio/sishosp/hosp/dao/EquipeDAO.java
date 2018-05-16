@@ -7,16 +7,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProfissionalBean;
 
 public class EquipeDAO {
 
 	Connection con = null;
 	PreparedStatement ps = null;
-	ProfissionalDAO pDao = new ProfissionalDAO();
+	FuncionarioDAO pDao = new FuncionarioDAO();
 
 	public boolean gravarEquipe(EquipeBean equipe) throws SQLException,
 			ProjetoException {
@@ -54,16 +55,16 @@ public class EquipeDAO {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			if (gamb == 0) {
-				for (ProfissionalBean prof : equipe.getProfissionais()) {
+				for (FuncionarioBean prof : equipe.getProfissionais()) {
 					ps.setInt(1, idEquipe);
-					ps.setInt(2, prof.getIdProfissional());
+					ps.setLong(2, prof.getId());
 					ps.execute();
 					con.commit();
 				}
 			} else if (gamb == 1) {
-				for (ProfissionalBean prof : equipe.getProfissionaisNovo()) {
+				for (FuncionarioBean prof : equipe.getProfissionaisNovo()) {
 					ps.setInt(1, idEquipe);
-					ps.setInt(2, prof.getIdProfissional());
+					ps.setLong(2, prof.getId());
 					ps.execute();
 					con.commit();
 				}
