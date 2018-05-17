@@ -253,10 +253,10 @@
 					<p:outputPanel id="outProfAP">
 						<p:autoComplete value="#{RelatoriosController.prof}" size="60"
 							converter="conFuncionario"
-							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descricaoProf}">
+							itemLabel="#{theme.nome}">
 						</p:autoComplete>
 						<p:commandButton id="btBusProfAP" value="Buscar"
 							onclick="PF('dlgConsuProfOP').show();" />
@@ -705,10 +705,10 @@
 					<p:outputPanel id="outProfAP">
 						<p:autoComplete value="#{RelatoriosController.prof}" size="60"
 							converter="conFuncionario"
-							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descricaoProf}">
+							itemLabel="#{theme.nome}">
 						</p:autoComplete>
 						<p:commandButton id="btBusProfAP" value="Buscar"
 							onclick="PF('dlgConsuProfOP').show();" />
@@ -852,10 +852,10 @@
 					<p:outputPanel id="outProfAtP">
 						<p:autoComplete value="#{RelatoriosController.prof}" size="60"
 							converter="conFuncionario"
-							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descricaoProf}">
+							itemLabel="#{theme.nome}">
 						</p:autoComplete>
 						<p:commandButton value="Buscar"
 							onclick="PF('dlgConsuProfOP').show();" />
@@ -976,14 +976,14 @@
 	<p:dialog header="Consulta Profissionais" widgetVar="dlgConsuProfOP"
 		modal="true" width="550px">
 		<h:form id="formConsuProfOP">
-			<p:dataTable value="#{ProfissionalController.listaProfissional}"
+			<p:dataTable value="#{MBFuncionarios.listaProfissional}"
 				id="dtTipoAt" resizableColumns="true" var="profi"
 				emptyMessage="Não existe nenhum tipo cadastrado!">
 				<p:column headerText="CÓD.">
 					<p:outputLabel value="#{profi.idProfissional}" />
 				</p:column>
 				<p:column headerText="Profissional">
-					<p:outputLabel value="#{profi.descricaoProf}" />
+					<p:outputLabel value="#{profi.nome}" />
 				</p:column>
 				<p:column headerText="Especialidade">
 					<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />

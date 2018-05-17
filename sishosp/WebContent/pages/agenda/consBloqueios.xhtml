@@ -40,7 +40,7 @@
 							<f:facet name="header">
                         Médico
                     </f:facet>
-							<h:outputText value="#{bloqueio.prof.descricaoProf}" />
+							<h:outputText value="#{bloqueio.prof.nome}" />
 						</h:column>
 
 
@@ -98,14 +98,12 @@
 			modal="true" width="550px">
 			<h:form id="formConsultProf">
 				<p:dataTable
-					value="#{ProfissionalController.listarProfissionaisConfigAgenda()}"
+					value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
 					id="dtTipoAt" resizableColumns="true" var="profi"
 					emptyMessage="Não existe nenhum tipo cadastrado!">
-					<p:column headerText="Código">
-						<p:outputLabel value="#{profi.idProfissional}" />
-					</p:column>
+					
 					<p:column headerText="Profissional">
-						<p:outputLabel value="#{profi.descricaoProf}" />
+						<p:outputLabel value="#{profi.nome}" />
 					</p:column>
 					<p:column headerText="Especialidade">
 						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />

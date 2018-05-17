@@ -42,10 +42,10 @@
 						<p:outputPanel id="outProfissional">
 							  <p:autoComplete value="#{LaudoController.laudo.profissional}" size="60"
 							  converter="conFuncionario"
-							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descricaoProf}">
+							itemLabel="#{theme.nome}">
 							<p:ajax event="itemSelect" update=":formLaudo:outProce, :formLaudo:btBusProce" />
 						</p:autoComplete>
 						</p:outputPanel>
@@ -242,14 +242,14 @@
 			<p:dialog header="Consulta Profissional" widgetVar="dlgConsuProf"
 				modal="true" width="550px">
 				<h:form id="formConsuProf">
-					<p:dataTable value="#{ProfissionalController.listaProfissional}"
+					<p:dataTable value="#{MBFuncionarios.listaProfissional}"
 						id="dtProfissional" resizableColumns="true" var="profissional"
 						emptyMessage="Não existe nenhum profissional cadastrado!">
 						<p:column headerText="CÓD.">
 							<p:outputLabel value="#{profissional.idProfissional}" />
 						</p:column>
 						<p:column headerText="Profissional">
-							<p:outputLabel value="#{profissional.descricaoProf}" />
+							<p:outputLabel value="#{profissional.nome}" />
 						</p:column>
 						<p:column headerText="Especialidade">
 							<p:outputLabel

@@ -26,7 +26,7 @@ public class TipoAtendimentoBean implements Serializable {
 		this.grupo = new ArrayList<GrupoBean>();
 		this.grupoNovo = new ArrayList<GrupoBean>();
 		this.descTipoAt = new String();
-		this.equipe = false;
+		//this.equipe = false;
 		this.primeiroAt = false;
 		this.grupoParaAdd = new GrupoBean();
 		this.idTipo = null;

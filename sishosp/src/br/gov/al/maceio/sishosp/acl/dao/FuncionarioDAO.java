@@ -1100,7 +1100,7 @@ public class FuncionarioDAO {
 			String descricaoBusca, Integer codgrupo) throws ProjetoException {
 		List<FuncionarioBean> lista = new ArrayList<>();
 		String sql = "select h.id_funcionario, h.id_funcionario ||'-'|| h.descfuncionario as descfuncionario, h.codespecialidade, "
-				+ " h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, "
+				+ " h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao "
 				+ " from acl.funcionarios h left join hosp.profissional_grupo g on (g.codprofissional = h.id_funcionario)"
 				+ " where upper(id_funcionario ||' - '|| descfuncionario) LIKE ? and g.codgrupo = ? and h.ativo = 'S' "
 				+ " and realiza_atendimento is true order by descfuncionario";

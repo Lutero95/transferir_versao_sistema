@@ -52,17 +52,17 @@
 								<p:autoComplete id="acpro"
 									value="#{ConfigAgendaController.confParte1.profissional}"
 									size="60" converter="conFuncionario"
-									completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+									completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descricaoProf}">
+									itemLabel="#{theme.nome}">
 									<p:ajax event="itemSelect"
 										update=":formConfiAgenda:tbview:outProf" />
 								</p:autoComplete>
 
 							</p:outputPanel>
 							<p:commandButton value="Buscar" icon="ui-icon-search"
-								action="#{ProfissionalController.listarProfissionais}"
+								action="#{MBFuncionarios.listarProfissionais}"
 								process="@this" update="formConsultProf"
 								oncomplete="PF('dlgConsultaProf').show();" />
 						</p:panelGrid>
@@ -361,7 +361,7 @@
 			<h:form id="formConsultProf">
 				<p:outputPanel>
 					<b:dataTable
-						value="#{ProfissionalController.listarProfissionaisConfigAgenda()}"
+						value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
 						id="dtTipoAt" resizableColumns="true" var="profi" lang="pt-br"
 						display="Nenhum Profissional">
 
@@ -369,7 +369,7 @@
 							<f:facet name="header">
                         Profissional
                     	</f:facet>
-							<p:outputLabel value="#{profi.descricaoProf}" />
+							<p:outputLabel value="#{profi.nome}" />
 						</h:column>
 
 						<h:column>

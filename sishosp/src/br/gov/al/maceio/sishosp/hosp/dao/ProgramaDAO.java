@@ -323,7 +323,7 @@ public class ProgramaDAO {
 					.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("obj_usuario");
 
-			stm.setInt(1, user_session.getCodigo());
+			stm.setLong(1, user_session.getId());
 
 			ResultSet rs = stm.executeQuery();
 

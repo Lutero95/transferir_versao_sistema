@@ -26,15 +26,15 @@
 						<p:autoComplete id="acpro"
 							value="#{BloqueioController.bloqueio.prof}" size="60"
 							converter="conFuncionario"
-							completeMethod="#{ProfissionalController.listaProfissionalAutoComplete}"
+							completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descricaoProf}">
+							itemLabel="#{theme.nome}">
 							<p:ajax event="itemSelect" update="formBloqueio" />
 						</p:autoComplete>
 					</p:outputPanel>
 					<p:commandButton value="Buscar" icon="ui-icon-search"
-						action="#{ProfissionalController.listarProfissionais}"
+						action="#{MBFuncionarios.listarProfissionais}"
 						process="@this" update="formConsultProf"
 						oncomplete="PF('dlgConsultProfi').show();" />
 
@@ -92,7 +92,7 @@
 			modal="true">
 			<h:form id="formConsultProf">
 				<b:dataTable
-					value="#{ProfissionalController.listarProfissionaisConfigAgenda()}"
+					value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
 					id="dtTipoAt" var="profi" lang="pt-br"
 					display="Nenhuma Profissional">
 
@@ -100,7 +100,7 @@
 						<f:facet name="header">
                         Profissional
                     </f:facet>
-						<p:outputLabel value="#{profi.descricaoProf}" />
+						<p:outputLabel value="#{profi.nome}" />
 					</h:column>
 
 					<h:column>
