@@ -18,6 +18,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
+import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
@@ -87,6 +88,46 @@ public class AtendimentoDAO {
 				System.exit(1);
 			}
 		}
+	}
+
+	public AtendimentoBean listarAtendimentoProfissionalPorId(int id)
+			throws ProjetoException {
+
+		AtendimentoBean at = new AtendimentoBean();
+		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, f.codprocedimentopadrao, pr.nome as procedimento "
+				+ "from hosp.atendimentos a "
+				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
+				+ "left join acl.funcionarios f on (f.id_funcionario = a.codmedico) "
+				+ "left join hosp.proc pr on (pr.id = f.codprocedimentopadrao) "
+				+ "where a.id_atendimento = ?";
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+			while (rs.next()) {
+				at.setId(rs.getInt("id_atendimento"));
+				at.setDataAtendimentoInicio(rs.getDate("dtaatende"));
+				at.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+				at.getPaciente().setNome(rs.getString("nome"));
+				at.getProcedimento().setIdProc(
+						rs.getInt("codprocedimentopadrao"));
+				at.getProcedimento().setNomeProc(rs.getString("procedimento"));
+				at.getFuncionario().setId(rs.getLong("codmedico"));
+				at.getFuncionario().setNome(rs.getString("descfuncionario"));
+			}
+
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return at;
 	}
 
 }

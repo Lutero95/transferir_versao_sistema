@@ -11,6 +11,7 @@ public class AtendimentoBean implements Serializable {
 	private Date dataAtendimentoInicio;
 	private Date dataAtendimentoFinal;
 	private String turno;
+	private String status;
 	private String situacao;
 	private String ehEquipe;
 
@@ -24,7 +25,7 @@ public class AtendimentoBean implements Serializable {
 
 	public AtendimentoBean() {
 		this.paciente = new PacienteBean();
-		this.procedimento = null;
+		this.procedimento = new ProcedimentoBean();
 		this.programa = new ProgramaBean();
 		this.tipoAt = new TipoAtendimentoBean();
 		this.funcionario = new FuncionarioBean();
@@ -125,6 +126,14 @@ public class AtendimentoBean implements Serializable {
 
 	public void setEquipe(EquipeBean equipe) {
 		this.equipe = equipe;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

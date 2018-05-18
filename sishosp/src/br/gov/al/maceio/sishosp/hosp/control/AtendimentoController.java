@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -22,6 +24,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
@@ -44,10 +47,13 @@ public class AtendimentoController implements Serializable {
 	private AtendimentoBean atendimento;
 	private List<AtendimentoBean> listAtendimentos;
 	AtendimentoDAO aDao = new AtendimentoDAO();
+	private FuncionarioBean funcionario;
+	private FuncionarioDAO fDao = new FuncionarioDAO();
 
 	public AtendimentoController() {
 		this.atendimento = new AtendimentoBean();
 		listAtendimentos = new ArrayList<AtendimentoBean>();
+		funcionario = new FuncionarioBean();
 	}
 
 	public void limparDados() {
@@ -63,6 +69,35 @@ public class AtendimentoController implements Serializable {
 			return;
 		}
 		listarAtendimentos();
+	}
+
+	public String redirectAtendimento() {
+		if (atendimento.getEhEquipe().equals("Sim")) {
+			return "atendimentoEquipe?faces-redirect=true&amp;id="
+					+ this.atendimento.getId();
+		} else {
+			return "atendimentoProfissional?faces-redirect=true&amp;id="
+					+ this.atendimento.getId();
+		}
+	}
+
+	public void getCarregaAtendimentoProfissional() throws ProjetoException,
+			SQLException {
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext
+				.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("obj_usuario");
+
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			aDao = new AtendimentoDAO();
+
+			Integer valor = Integer.valueOf(user_session.getId().toString());
+			this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
+			this.funcionario = fDao.buscarProfissionalPorId(valor);
+		}
 	}
 
 	public void listarAtendimentos() throws ProjetoException {
@@ -83,6 +118,14 @@ public class AtendimentoController implements Serializable {
 
 	public void setListAtendimentos(List<AtendimentoBean> listAtendimentos) {
 		this.listAtendimentos = listAtendimentos;
+	}
+
+	public FuncionarioBean getFuncionario() {
+		return funcionario;
+	}
+
+	public void setFuncionario(FuncionarioBean funcionario) {
+		this.funcionario = funcionario;
 	}
 
 }

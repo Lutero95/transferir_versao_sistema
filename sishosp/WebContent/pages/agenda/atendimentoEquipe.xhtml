@@ -14,7 +14,7 @@
 		<h:form id="formConsAge">
 			<div class="panel-body">
 				<div class="sub-header">
-					<h4>Atendimentos</h4>
+					<h4>Atendimento Equipe</h4>
 					<hr />
 				</div>
 			</div>
@@ -39,7 +39,7 @@
 
 				<b:commandButton value="Buscar" icon="glyphicon-search"
 					action="#{AtendimentoController.consultarAtendimentos()}"
-					update="dtAtendimentos, msgError"></b:commandButton>
+					update="dtAtendimentos"></b:commandButton>
 
 			</p:panelGrid>
 			<br />
@@ -123,11 +123,11 @@
 
 				<h:column>
 					<f:facet name="header">
-                        Atendimento
+                        Ação
                     </f:facet>
 					<b:commandButton tooltip="Atendimento" icon="glyphicon-edit"
-						size="sm" action="#{AtendimentoController.redirectAtendimento()}">
-						<f:setPropertyActionListener value="#{atendimento}"
+						size="sm" action="#{AtendimentoController.redirectAtendimemto()}">
+						<f:setPropertyActionListener value="#{tab}"
 							target="#{AtendimentoController.atendimento}" />
 					</b:commandButton>
 				</h:column>
@@ -144,7 +144,7 @@
 				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
 					size="sm" immediate="true" look="info" update=":formConsAge"
 					actionListener="#{AgendaController.limparDados()}"
-					action="/pages/comum/selecaoSistema2.faces?faces-redirect=true">
+					action="/pages/agenda/atendimento.faces?faces-redirect=true">
 				</b:commandButton>
 
 

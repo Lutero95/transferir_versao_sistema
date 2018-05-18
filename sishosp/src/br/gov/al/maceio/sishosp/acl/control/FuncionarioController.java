@@ -251,7 +251,7 @@ public class FuncionarioController implements Serializable {
 					.getSessionMap().put("perms_usuario", permissoes);
 
 			HttpSession session = SessionUtil.getSession();
-			session.setAttribute("User", usuarioLogado.getCpf());
+			session.setAttribute("User", usuarioLogado.getId());
 
 			recoverDataFromSession();
 
