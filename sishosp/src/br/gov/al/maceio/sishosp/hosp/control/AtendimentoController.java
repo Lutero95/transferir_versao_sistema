@@ -27,6 +27,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
@@ -97,6 +98,38 @@ public class AtendimentoController implements Serializable {
 			Integer valor = Integer.valueOf(user_session.getId().toString());
 			this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
 			this.funcionario = fDao.buscarProfissionalPorId(valor);
+		}
+	}
+
+	public void realizarAtendimentoProfissional() throws ProjetoException {
+		boolean alterou = aDao.realizaAtendimentoProfissional(funcionario,
+				atendimento);
+
+		if (alterou == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Atendimento realizado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o atendimento!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		}
+	}
+
+	public void limparAtendimentoProfissional() throws ProjetoException {
+
+		boolean alterou = aDao.limpaAtendimentoProfissional(atendimento);
+
+		if (alterou == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Atendimento limpo com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o atendimento!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
 		}
 	}
 

@@ -61,8 +61,7 @@
 			<b:row>
 
 				<b:column span="2">
-					<h:outputLabel value="Profissional"
-						rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
+					<h:outputLabel value="Profissional" />
 				</b:column>
 
 				<b:column span="4">
@@ -107,7 +106,7 @@
 				</b:column>
 
 				<b:column span="2">
-					<b:commandButton action="#{PacienteController.alterarPaciente()}"
+					<b:commandButton oncomplete="PF('dialogAtencao').show();"
 						icon="glyphicons-cleaning" size="sm" value="Limpar" look="success" />
 				</b:column>
 
@@ -122,21 +121,48 @@
 
 			<center>
 
-				<b:commandButton action="#{PacienteController.gravarPaciente()}"
+				<b:commandButton
+					action="#{AtendimentoController.realizarAtendimentoProfissional()}"
 					icon="glyphicon-ok" size="sm" look="success" value="Gravar"
-					style="float:left" />
+					update="msgError" style="float:left" />
 
 				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					size="sm" immediate="true" look="info" update=":formConsAge"
-					actionListener="#{AgendaController.limparDados()}"
-					style="float:rigth"
+					style="float:rigth" size="sm" immediate="true" look="info"
 					action="/pages/agenda/atendimento.faces?faces-redirect=true">
 				</b:commandButton>
-
 
 			</center>
 
 		</h:form>
+
+		<p:dialog widgetVar="dialogAtencao" modal="true"
+			header="Limpar Atendimento" resizable="false">
+
+			<h:form id="dlglimpar">
+				<h:panelGrid columns="1">
+
+					<div class="alert alert-warning" role="alert">Deseja limpar o
+						atendimento?</div>
+
+				</h:panelGrid>
+
+				<center>
+
+					<p:separator />
+
+					<b:commandButton look="success" value="Sim"
+						action="#{AtendimentoController.limparAtendimentoProfissional()}"
+						ajax="true" icon="glyphicon-ok" update=":formConsAge:msgError" />
+
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;" />
+
+				</center>
+
+
+			</h:form>
+		</p:dialog>
 
 	</ui:define>
 </ui:composition>

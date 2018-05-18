@@ -1055,7 +1055,7 @@ public class FuncionarioDAO {
 	public List<FuncionarioBean> listarProfissionalBusca(String descricaoBusca,
 			Integer tipoBuscar) throws ProjetoException {
 		List<FuncionarioBean> lista = new ArrayList<>();
-		String sql = "select id_funcionario ,id_funcionario ||'-'|| descfuncionario as descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao, "
+		String sql = "select id_funcionario ,id_funcionario ||'-'|| descfuncionario as descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao "
 				+ " from acl.funcionarios ";
 		if (tipoBuscar == 1) {
 			sql += " where upper(id_funcionario ||' - '|| descfuncionario) LIKE ? and realiza_atendimento is true order by descfuncionario";

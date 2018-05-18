@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 public class AtendimentoDAO {
@@ -128,6 +130,72 @@ public class AtendimentoDAO {
 			}
 		}
 		return at;
+	}
+
+	public Boolean realizaAtendimentoProfissional(FuncionarioBean funcionario,
+			AtendimentoBean atendimento) throws ProjetoException {
+		boolean alterou = false;
+		con = ConnectionFactory.getConnection();
+		try {
+
+			String sql = "update hosp.atendimentos1 set codprofissionalatendimento = ?, codprocedimento = ?, dtaatendido = current_timestamp, situacao = ? "
+					+ " where id_atendimento = ?";
+
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, funcionario.getId());
+			stmt.setInt(2, atendimento.getProcedimento().getIdProc());
+			stmt.setString(3, atendimento.getStatus());
+			stmt.setInt(4, atendimento.getId());
+
+			stmt.executeUpdate();
+
+			con.commit();
+
+			alterou = true;
+
+			return alterou;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	public Boolean limpaAtendimentoProfissional(AtendimentoBean atendimento)
+			throws ProjetoException {
+		boolean alterou = false;
+		con = ConnectionFactory.getConnection();
+		try {
+
+			String sql = "update hosp.atendimentos1 set dtaatendido = null, situacao = ? "
+					+ " where id_atendimento = ?";
+
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, "");
+			stmt.setInt(2, atendimento.getId());
+
+			stmt.executeUpdate();
+
+			con.commit();
+
+			alterou = true;
+
+			return alterou;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
 	}
 
 }
