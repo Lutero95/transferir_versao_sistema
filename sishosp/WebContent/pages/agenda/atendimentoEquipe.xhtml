@@ -10,6 +10,10 @@
 <ui:composition template="../../template/template.xhtml">
 
 	<ui:define name="body">
+		<f:metadata>
+			<f:viewAction
+				action="#{AtendimentoController.getCarregaAtendimentoEquipe()}" />
+		</f:metadata>
 
 		<h:form id="formConsAge">
 			<div class="panel-body">
@@ -19,121 +23,52 @@
 				</div>
 			</div>
 
-			<p:panelGrid columns="5" styleClass="semBorda">
-				<p:outputPanel>
-					<h:outputLabel value="Data de Atendimento:" />
-					<br />
-					<p:calendar locale="pt" showOn="button" navigator="true"
-						mask="true" pattern="dd/MM/yyyy"
-						value="#{AtendimentoController.atendimento.dataAtendimentoInicio}" />
 
-					<p:outputLabel id="outdataa">
-						<h:outputLabel value="à" />
-					</p:outputLabel>
+			<p:dataTable
+				value="#{AtendimentoController.listarAtendimentosEquipe()}"
+				id="dtAtendimentos" var="atendimento" editable="true"
+				editMode="cell" emptyMessage="Sem registros.">
 
-					<p:calendar locale="pt" showOn="button" navigator="true"
-						mask="true" pattern="dd/MM/yyyy"
-						value="#{AtendimentoController.atendimento.dataAtendimentoFinal}" />
+				<p:ajax event="cellEdit"
+					listener="#{AtendimentoController.onCellEdit}" />
 
-				</p:outputPanel>
+				<p:column headerText="CNS">
+					<h:outputText value="#{atendimento.funcionario.cns}"
+						style="font-weight:bold;"></h:outputText>
+				</p:column>
 
-				<b:commandButton value="Buscar" icon="glyphicon-search"
-					action="#{AtendimentoController.consultarAtendimentos()}"
-					update="dtAtendimentos"></b:commandButton>
+				<p:column headerText="Profissional">
+					<h:outputText value="#{atendimento.funcionario.nome}"
+						style="font-weight:bold;"></h:outputText>
+				</p:column>
 
-			</p:panelGrid>
-			<br />
-			<b:dataTable resizableColumns="true" id="dtAtendimentos"
-				emptyMessage="Sem registros." scrollable="true" paginator="true"
-				rows="15" var="atendimento"
-				value="#{AtendimentoController.listAtendimentos}">
+				<p:column headerText="CBO">
+					<h:outputText value="#{atendimento.cbo.descCbo}"
+						style="font-weight:bold;"></h:outputText>
+				</p:column>
 
-				<h:column>
-					<f:facet name="header">
-                        Data
-                    </f:facet>
-					<h:outputLabel value="#{atendimento.dataAtendimentoInicio}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputLabel>
-				</h:column>
+				<p:column headerText="Status">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{atendimento.status}"></h:outputText>
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu value="#{atendimento.status}"
+								style="width:130px;">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItem itemLabel="Atendido" itemValue="A" />
+								<f:selectItem itemLabel="Profissional faltou" itemValue="PF" />
+								<p:ajax listener="#{salaController.gravarLocacao()}"
+									update=":formConsAge"></p:ajax>
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
 
-				<h:column>
-					<f:facet name="header">
-                        Paciente
-                    </f:facet>
-					<p:outputLabel value="#{atendimento.paciente.nome}" />
-				</h:column>
+			</p:dataTable>
 
-				<h:column>
-					<f:facet name="header">
-                        CNS
-                    </f:facet>
-					<p:outputLabel value="#{atendimento.paciente.cns}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">
-                        Turno
-                    </f:facet>
-					<h:outputLabel value="MANHÃ" rendered="#{atendimento.turno == 'M'}" />
-					<h:outputLabel value="TARDE" rendered="#{atendimento.turno == 'T'}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">
-                        Profissional
-                    </f:facet>
-					<p:outputLabel value="#{atendimento.funcionario.nome}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">
-                        Programa
-                    </f:facet>
-					<p:outputLabel value="#{atendimento.programa.descPrograma}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">
-                        Tipo de Atendimento
-                    </f:facet>
-					<p:outputLabel value="#{atendimento.tipoAt.descTipoAt}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">
-                        Nome Equipe
-                    </f:facet>
-					<p:outputLabel value="#{atendimento.equipe.descEquipe}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">
-                        Equipe
-                    </f:facet>
-					<p:outputLabel value="#{atendimento.ehEquipe}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">
-                        Situação
-                    </f:facet>
-					<p:outputLabel value="#{atendimento.situacao}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">
-                        Ação
-                    </f:facet>
-					<b:commandButton tooltip="Atendimento" icon="glyphicon-edit"
-						size="sm" action="#{AtendimentoController.redirectAtendimemto()}">
-						<f:setPropertyActionListener value="#{tab}"
-							target="#{AtendimentoController.atendimento}" />
-					</b:commandButton>
-				</h:column>
-
-			</b:dataTable>
-
+			<br></br>
+			<br></br>
 
 			<center>
 				<b:messages value="Error" id="msgError"></b:messages>

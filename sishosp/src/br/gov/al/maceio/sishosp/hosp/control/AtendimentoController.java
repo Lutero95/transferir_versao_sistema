@@ -17,6 +17,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -47,6 +48,7 @@ public class AtendimentoController implements Serializable {
 
 	private AtendimentoBean atendimento;
 	private List<AtendimentoBean> listAtendimentos;
+	private List<AtendimentoBean> listAtendimentosEquipe;
 	AtendimentoDAO aDao = new AtendimentoDAO();
 	private FuncionarioBean funcionario;
 	private FuncionarioDAO fDao = new FuncionarioDAO();
@@ -54,6 +56,7 @@ public class AtendimentoController implements Serializable {
 	public AtendimentoController() {
 		this.atendimento = new AtendimentoBean();
 		listAtendimentos = new ArrayList<AtendimentoBean>();
+		listAtendimentosEquipe = new ArrayList<AtendimentoBean>();
 		funcionario = new FuncionarioBean();
 	}
 
@@ -72,7 +75,7 @@ public class AtendimentoController implements Serializable {
 		listarAtendimentos();
 	}
 
-	public String redirectAtendimento() {
+	public String redirectAtendimento() throws ProjetoException {
 		if (atendimento.getEhEquipe().equals("Sim")) {
 			return "atendimentoEquipe?faces-redirect=true&amp;id="
 					+ this.atendimento.getId();
@@ -101,7 +104,29 @@ public class AtendimentoController implements Serializable {
 		}
 	}
 
-	public void realizarAtendimentoProfissional() throws ProjetoException {
+	public void getCarregaAtendimentoEquipe() throws ProjetoException,
+			SQLException {
+
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			aDao = new AtendimentoDAO();
+			this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
+		}
+	}
+
+	public void realizarAtendimentoProfissional() throws ProjetoException,
+			SQLException {
+		if (funcionario == null) {
+			FuncionarioBean user_session = (FuncionarioBean) FacesContext
+					.getCurrentInstance().getExternalContext().getSessionMap()
+					.get("obj_usuario");
+			Integer valor = Integer.valueOf(user_session.getId().toString());
+			this.funcionario = fDao.buscarProfissionalPorId(valor);
+		}
+
 		boolean alterou = aDao.realizaAtendimentoProfissional(funcionario,
 				atendimento);
 
@@ -137,6 +162,24 @@ public class AtendimentoController implements Serializable {
 		this.listAtendimentos = aDao.carregaAtendimentos(atendimento);
 	}
 
+	public List<AtendimentoBean> listarAtendimentosEquipe()
+			throws ProjetoException {
+		return this.listAtendimentosEquipe = aDao.carregaAtendimentosEquipe(atendimento.getId());
+	}
+	
+	public void onCellEdit(CellEditEvent event) {
+
+		Object oldValue = event.getOldValue();
+		Object newValue = event.getNewValue();
+
+		if (newValue != null && !newValue.equals(oldValue)) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Clique em SALVAR para que a alteração seja gravada!",
+					"Old: " + oldValue + ", New:" + newValue);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}
+
 	public AtendimentoBean getAtendimento() {
 		return atendimento;
 	}
@@ -159,6 +202,15 @@ public class AtendimentoController implements Serializable {
 
 	public void setFuncionario(FuncionarioBean funcionario) {
 		this.funcionario = funcionario;
+	}
+
+	public List<AtendimentoBean> getListAtendimentosEquipe() {
+		return listAtendimentosEquipe;
+	}
+
+	public void setListAtendimentosEquipe(
+			List<AtendimentoBean> listAtendimentosEquipe) {
+		this.listAtendimentosEquipe = listAtendimentosEquipe;
 	}
 
 }

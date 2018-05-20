@@ -8,6 +8,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 public class AtendimentoBean implements Serializable {
 
 	private Integer id;
+	private Integer id1;
 	private Date dataAtendimentoInicio;
 	private Date dataAtendimentoFinal;
 	private String turno;
@@ -22,6 +23,7 @@ public class AtendimentoBean implements Serializable {
 	private TipoAtendimentoBean tipoAt;
 	private FuncionarioBean funcionario;
 	private EquipeBean equipe;
+	private CboBean cbo;
 
 	public AtendimentoBean() {
 		this.paciente = new PacienteBean();
@@ -30,6 +32,7 @@ public class AtendimentoBean implements Serializable {
 		this.tipoAt = new TipoAtendimentoBean();
 		this.funcionario = new FuncionarioBean();
 		this.equipe = new EquipeBean();
+		this.cbo = new CboBean();
 	}
 
 	public Integer getId() {
@@ -134,6 +137,22 @@ public class AtendimentoBean implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public Integer getId1() {
+		return id1;
+	}
+
+	public void setId1(Integer id1) {
+		this.id1 = id1;
+	}
+
+	public CboBean getCbo() {
+		return cbo;
+	}
+
+	public void setCbo(CboBean cbo) {
+		this.cbo = cbo;
 	}
 
 }

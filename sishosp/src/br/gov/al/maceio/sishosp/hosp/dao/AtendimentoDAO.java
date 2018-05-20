@@ -96,7 +96,8 @@ public class AtendimentoDAO {
 			throws ProjetoException {
 
 		AtendimentoBean at = new AtendimentoBean();
-		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, f.codprocedimentopadrao, pr.nome as procedimento "
+		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, f.codprocedimentopadrao, "
+				+ "pr.nome as procedimento, a.situacao "
 				+ "from hosp.atendimentos a "
 				+ "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
 				+ "left join acl.funcionarios f on (f.id_funcionario = a.codmedico) "
@@ -117,6 +118,7 @@ public class AtendimentoDAO {
 				at.getProcedimento().setNomeProc(rs.getString("procedimento"));
 				at.getFuncionario().setId(rs.getLong("codmedico"));
 				at.getFuncionario().setNome(rs.getString("descfuncionario"));
+				at.setSituacao(rs.getString("situacao"));
 			}
 
 		} catch (SQLException ex) {
@@ -148,6 +150,14 @@ public class AtendimentoDAO {
 			stmt.setInt(4, atendimento.getId());
 
 			stmt.executeUpdate();
+
+			String sql2 = "update hosp.atendimentos set situacao = 'F' "
+					+ " where id_atendimento = ?";
+
+			PreparedStatement stmt2 = con.prepareStatement(sql2);
+			stmt2.setInt(1, atendimento.getId());
+
+			stmt2.executeUpdate();
 
 			con.commit();
 
@@ -194,6 +204,58 @@ public class AtendimentoDAO {
 				con.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
+			}
+		}
+	}
+
+	public List<AtendimentoBean> carregaAtendimentosEquipe(Integer id)
+			throws ProjetoException {
+
+		String sql = "select a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns,"
+				+ " f.codcbo, c.descricao, a1.situacao, a1.codprocedimento, pr.nome as procedimento"
+				+ " from hosp.atendimentos1 a1"
+				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
+				+ " left join hosp.cbo c on (f.codcbo = c.id)"
+				+ " left join hosp.proc pr on (a1.codprocedimento = pr.id)"
+				+ " where a1.id_atendimento = ?"
+				+ " order by a1.id_atendimentos1";
+
+		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				AtendimentoBean at = new AtendimentoBean();
+				at.setId(rs.getInt("id_atendimento"));
+				at.setId1(rs.getInt("id_atendimentos1"));
+				at.getFuncionario().setId(
+						rs.getLong("codprofissionalatendimento"));
+				at.getFuncionario().setNome(rs.getString("descfuncionario"));
+				at.getFuncionario().setCns(rs.getString("cns"));
+				at.getCbo().setCodCbo(rs.getInt("codcbo"));
+				at.getCbo().setDescCbo(rs.getString("descricao"));
+				at.setStatus(rs.getString("situacao"));
+				at.getProcedimento().setCodProc(rs.getInt("codprocedimento"));
+				at.getProcedimento().setNomeProc(rs.getString("procedimento"));
+
+				lista.add(at);
+			}
+
+			return lista;
+
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
 			}
 		}
 	}
