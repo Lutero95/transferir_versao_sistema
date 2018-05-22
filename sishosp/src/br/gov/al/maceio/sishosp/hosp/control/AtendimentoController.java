@@ -52,6 +52,7 @@ public class AtendimentoController implements Serializable {
 	AtendimentoDAO aDao = new AtendimentoDAO();
 	private FuncionarioBean funcionario;
 	private FuncionarioDAO fDao = new FuncionarioDAO();
+	private String origem = "";
 
 	public AtendimentoController() {
 		this.atendimento = new AtendimentoBean();
@@ -164,9 +165,63 @@ public class AtendimentoController implements Serializable {
 
 	public List<AtendimentoBean> listarAtendimentosEquipe()
 			throws ProjetoException {
-		return this.listAtendimentosEquipe = aDao.carregaAtendimentosEquipe(atendimento.getId());
+		System.out.println("ok");
+		if (funcionario != null) {
+			return this.listAtendimentosEquipe = aDao
+					.carregaAtendimentosEquipe(atendimento.getId());
+		} else {
+			listAtendimentosEquipe = aDao
+					.carregaAtendimentosEquipeProfissional(atendimento.getId1());
+
+			for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+				if (listAtendimentos.get(i).getId1() == atendimento.getId1()) {
+					listarAtendimentosEquipe().get(i).getFuncionario()
+							.setId(funcionario.getId());
+					listarAtendimentosEquipe().get(i).getFuncionario()
+							.setNome(funcionario.getNome());
+					listarAtendimentosEquipe().get(i).getFuncionario()
+							.setCns(funcionario.getCns());
+				}
+			}
+
+			return this.listAtendimentosEquipe = aDao
+					.carregaAtendimentosEquipeProfissional(atendimento.getId1());
+		}
+	}
+
+	public List<AtendimentoBean> listarAtendimentosEquipe2()
+			throws ProjetoException {
+		System.out.println("ok2");
+		
+		System.out.println("FUNCIONARIO: "+funcionario.getId());
+		System.out.println("FUNCIONARIO: "+funcionario.getNome());
+		System.out.println("ATENDIMENTOS1: "+atendimento.getId1());
+		
+		listAtendimentosEquipe = aDao
+				.carregaAtendimentosEquipeProfissional(atendimento.getId1());
+
+		for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+			if (listAtendimentos.get(i).getId1() == atendimento.getId1()) {
+				listarAtendimentosEquipe().get(i).getFuncionario()
+						.setId(funcionario.getId());
+				listarAtendimentosEquipe().get(i).getFuncionario()
+						.setNome(funcionario.getNome());
+				listarAtendimentosEquipe().get(i).getFuncionario()
+						.setCns(funcionario.getCns());
+			}
+		}
+
+		return this.listAtendimentosEquipe = aDao
+				.carregaAtendimentosEquipeProfissional(atendimento.getId1());
+
 	}
 	
+	public void abrirDialog(){
+		System.out.println("ATENDIMENTOS1: "+atendimento.getId1());
+		RequestContext.getCurrentInstance().execute(
+				"PF('dlgConsultProfi').show();");
+	}
+
 	public void onCellEdit(CellEditEvent event) {
 
 		Object oldValue = event.getOldValue();
@@ -178,6 +233,13 @@ public class AtendimentoController implements Serializable {
 					"Old: " + oldValue + ", New:" + newValue);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+	}
+
+	public List<AtendimentoBean> alterarTabelaEquipe() throws ProjetoException {
+		System.out.println("Atendimento: " + atendimento.getId1());
+		return this.listAtendimentosEquipe = aDao
+				.carregaAtendimentosEquipeProfissional(atendimento.getId1());
+
 	}
 
 	public AtendimentoBean getAtendimento() {

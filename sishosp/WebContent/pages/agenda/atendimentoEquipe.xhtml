@@ -38,8 +38,18 @@
 				</p:column>
 
 				<p:column headerText="Profissional">
-					<h:outputText value="#{atendimento.funcionario.nome}"
-						style="font-weight:bold;"></h:outputText>
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{atendimento.funcionario.nome}"></h:outputText>
+						</f:facet>
+						<f:facet name="input">
+							<p:commandButton value="Atendimento" icon="glyphicon-edit" process="@this"
+								size="sm" action="#AtendimentoController.abrirDialog()">
+								<f:setPropertyActionListener value="#{atendimento}"
+									target="#{AtendimentoController.atendimento}" />
+							</p:commandButton>
+						</f:facet>
+					</p:cellEditor>
 				</p:column>
 
 				<p:column headerText="CBO">
@@ -54,12 +64,10 @@
 						</f:facet>
 						<f:facet name="input">
 							<p:selectOneMenu value="#{atendimento.status}"
-								style="width:130px;">
+								style="width:250px;">
 								<f:selectItem itemLabel="Selecione" itemValue="" />
 								<f:selectItem itemLabel="Atendido" itemValue="A" />
 								<f:selectItem itemLabel="Profissional faltou" itemValue="PF" />
-								<p:ajax listener="#{salaController.gravarLocacao()}"
-									update=":formConsAge"></p:ajax>
 							</p:selectOneMenu>
 						</f:facet>
 					</p:cellEditor>
@@ -86,6 +94,45 @@
 			</center>
 
 		</h:form>
+
+		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultProfi"
+			modal="true">
+			<h:form id="formConsultProf">
+				<b:dataTable
+					value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+					id="dtTipoAt" var="profi" lang="pt-br"
+					display="Nenhuma Profissional">
+
+					<h:column>
+						<f:facet name="header">
+                        Profissional
+                    </f:facet>
+						<p:outputLabel value="#{profi.nome}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Especialidade
+                    </f:facet>
+						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							process="@this"
+							action="#{AtendimentoController.listarAtendimentosEquipe2()}"
+							update=":formConsAge">
+							<f:setPropertyActionListener value="#{profi}"
+								target="#{AtendimentoController.funcionario}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
 
 	</ui:define>
 </ui:composition>

@@ -259,5 +259,57 @@ public class AtendimentoDAO {
 			}
 		}
 	}
+	
+	public List<AtendimentoBean> carregaAtendimentosEquipeProfissional(Integer id)
+			throws ProjetoException {
+
+		String sql = "select a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns,"
+				+ " f.codcbo, c.descricao, a1.situacao, a1.codprocedimento, pr.nome as procedimento"
+				+ " from hosp.atendimentos1 a1"
+				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
+				+ " left join hosp.cbo c on (f.codcbo = c.id)"
+				+ " left join hosp.proc pr on (a1.codprocedimento = pr.id)"
+				+ " where a1.id_atendimentos1 = ?"
+				+ " order by a1.id_atendimentos1";
+
+		ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, id);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				AtendimentoBean at = new AtendimentoBean();
+				at.setId(rs.getInt("id_atendimento"));
+				at.setId1(rs.getInt("id_atendimentos1"));
+				at.getFuncionario().setId(
+						rs.getLong("codprofissionalatendimento"));
+				at.getFuncionario().setNome(rs.getString("descfuncionario"));
+				at.getFuncionario().setCns(rs.getString("cns"));
+				at.getCbo().setCodCbo(rs.getInt("codcbo"));
+				at.getCbo().setDescCbo(rs.getString("descricao"));
+				at.setStatus(rs.getString("situacao"));
+				at.getProcedimento().setCodProc(rs.getInt("codprocedimento"));
+				at.getProcedimento().setNomeProc(rs.getString("procedimento"));
+
+				lista.add(at);
+			}
+
+			return lista;
+
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
 
 }
