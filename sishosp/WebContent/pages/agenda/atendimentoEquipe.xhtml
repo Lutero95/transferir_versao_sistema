@@ -38,23 +38,38 @@
 				</p:column>
 
 				<p:column headerText="Profissional">
-					<p:cellEditor>
-						<f:facet name="output">
-							<h:outputText value="#{atendimento.funcionario.nome}"></h:outputText>
-						</f:facet>
-						<f:facet name="input">
-							<p:commandButton value="Atendimento" icon="glyphicon-edit" process="@this"
-								size="sm" action="#AtendimentoController.abrirDialog()">
-								<f:setPropertyActionListener value="#{atendimento}"
-									target="#{AtendimentoController.atendimento}" />
-							</p:commandButton>
-						</f:facet>
-					</p:cellEditor>
+					<h:outputText value="#{atendimento.funcionario.nome}"
+						style="font-weight:bold;"></h:outputText>
+				</p:column>
+
+				<p:column headerText="Ação">
+					<center>
+						<p:commandButton value="Alterar Profissional"
+							onclick="PF('dlgConsultProfi').show()">
+							<f:setPropertyActionListener value="#{atendimento}"
+								target="#{AtendimentoController.atendimentoLista}" />
+						</p:commandButton>
+					</center>
 				</p:column>
 
 				<p:column headerText="CBO">
 					<h:outputText value="#{atendimento.cbo.descCbo}"
 						style="font-weight:bold;"></h:outputText>
+				</p:column>
+
+				<p:column headerText="Procedimento">
+					<h:outputText value="#{atendimento.procedimento.nomeProc}"
+						style="font-weight:bold;"></h:outputText>
+				</p:column>
+
+				<p:column headerText="Ação">
+					<center>
+						<p:commandButton value="Alterar Procedimento"
+							update=":formConsulProc1" onclick="PF('dlgConsulProc1').show()">
+							<f:setPropertyActionListener value="#{atendimento}"
+								target="#{AtendimentoController.atendimentoLista}" />
+						</p:commandButton>
+					</center>
 				</p:column>
 
 				<p:column headerText="Status">
@@ -123,7 +138,7 @@
                     </f:facet>
 						<p:commandButton icon="ui-icon-check" title="Selecionar"
 							process="@this"
-							action="#{AtendimentoController.listarAtendimentosEquipe2()}"
+							action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
 							update=":formConsAge">
 							<f:setPropertyActionListener value="#{profi}"
 								target="#{AtendimentoController.funcionario}" />
@@ -131,6 +146,38 @@
 					</h:column>
 
 				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consultar Procedimento" widgetVar="dlgConsulProc1"
+			modal="true">
+			<h:form id="formConsulProc1">
+				<p:outputPanel autoUpdate="true">
+					<b:dataTable value="#{AtendimentoController.listarProcedimentos()}"
+						var="proc" lang="pt-br" display="Nenhum Procedimento">
+
+						<h:column>
+							<f:facet name="header">
+                        Descrição
+                    	</f:facet>
+							<p:outputLabel value="#{proc.nomeProc}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                        Adicionar
+                    	</f:facet>
+							<p:commandButton update=":formConsAge" icon="ui-icon-check"
+								action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
+								title="Selecionar" onclick="PF('dlgConsulProc1').hide();">
+								<f:setPropertyActionListener value="#{proc}"
+									target="#{AtendimentoController.procedimento}" />
+							</p:commandButton>
+						</h:column>
+
+
+					</b:dataTable>
+				</p:outputPanel>
 			</h:form>
 		</p:dialog>
 

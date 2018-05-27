@@ -29,6 +29,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
@@ -37,6 +38,7 @@ import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
@@ -50,15 +52,21 @@ public class AtendimentoController implements Serializable {
 	private List<AtendimentoBean> listAtendimentos;
 	private List<AtendimentoBean> listAtendimentosEquipe;
 	AtendimentoDAO aDao = new AtendimentoDAO();
+	ProcedimentoDAO pDao = new ProcedimentoDAO();
 	private FuncionarioBean funcionario;
 	private FuncionarioDAO fDao = new FuncionarioDAO();
-	private String origem = "";
+	private ProcedimentoBean procedimento;
+	private List<ProcedimentoBean> listaProcedimentos;
+	private AtendimentoBean atendimentoLista;
 
 	public AtendimentoController() {
 		this.atendimento = new AtendimentoBean();
+		this.atendimentoLista = null;
 		listAtendimentos = new ArrayList<AtendimentoBean>();
 		listAtendimentosEquipe = new ArrayList<AtendimentoBean>();
-		funcionario = new FuncionarioBean();
+		funcionario = null;
+		procedimento = new ProcedimentoBean();
+		listaProcedimentos = new ArrayList<ProcedimentoBean>();
 	}
 
 	public void limparDados() {
@@ -162,41 +170,51 @@ public class AtendimentoController implements Serializable {
 	public void listarAtendimentos() throws ProjetoException {
 		this.listAtendimentos = aDao.carregaAtendimentos(atendimento);
 	}
+	
+	public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException{
+		listarAtendimentosEquipe();
+	}
 
 	public List<AtendimentoBean> listarAtendimentosEquipe()
 			throws ProjetoException {
-		System.out.println("ok");
-		if (funcionario != null) {
-			return this.listAtendimentosEquipe = aDao
-					.carregaAtendimentosEquipe(atendimento.getId());
-		} else {
-			listAtendimentosEquipe = aDao
-					.carregaAtendimentosEquipeProfissional(atendimento.getId1());
 
+		if (atendimentoLista != null) {
+			System.out.println("ID1: " + atendimentoLista.getId1());
+			System.out.println("Procedimento: " + procedimento.getNomeProc());
 			for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-				if (listAtendimentos.get(i).getId1() == atendimento.getId1()) {
-					listarAtendimentosEquipe().get(i).getFuncionario()
-							.setId(funcionario.getId());
-					listarAtendimentosEquipe().get(i).getFuncionario()
-							.setNome(funcionario.getNome());
-					listarAtendimentosEquipe().get(i).getFuncionario()
-							.setCns(funcionario.getCns());
+				System.out.println("LISTA: "
+						+ listAtendimentosEquipe.get(i).getProcedimento()
+								.getNomeProc());
+				if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
+						.getId1()) {
+					listAtendimentosEquipe.get(i).setProcedimento(procedimento);
+				}
+			}
+		}
+		if (funcionario != null) {
+			System.out.println("ID1: " + atendimentoLista.getId1());
+			System.out.println("Funcionario: " + funcionario.getNome());
+			for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+				System.out.println("LISTA: "
+						+ listAtendimentosEquipe.get(i).getFuncionario()
+								.getNome());
+				if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
+						.getId1()) {
+					listAtendimentosEquipe.get(i).setFuncionario(funcionario);
 				}
 			}
 
-			return this.listAtendimentosEquipe = aDao
-					.carregaAtendimentosEquipeProfissional(atendimento.getId1());
+		} else {
+			this.listAtendimentosEquipe = aDao
+					.carregaAtendimentosEquipe(atendimento.getId());
 		}
+		return this.listAtendimentosEquipe;
+
 	}
 
 	public List<AtendimentoBean> listarAtendimentosEquipe2()
 			throws ProjetoException {
-		System.out.println("ok2");
-		
-		System.out.println("FUNCIONARIO: "+funcionario.getId());
-		System.out.println("FUNCIONARIO: "+funcionario.getNome());
-		System.out.println("ATENDIMENTOS1: "+atendimento.getId1());
-		
+
 		listAtendimentosEquipe = aDao
 				.carregaAtendimentosEquipeProfissional(atendimento.getId1());
 
@@ -215,12 +233,6 @@ public class AtendimentoController implements Serializable {
 				.carregaAtendimentosEquipeProfissional(atendimento.getId1());
 
 	}
-	
-	public void abrirDialog(){
-		System.out.println("ATENDIMENTOS1: "+atendimento.getId1());
-		RequestContext.getCurrentInstance().execute(
-				"PF('dlgConsultProfi').show();");
-	}
 
 	public void onCellEdit(CellEditEvent event) {
 
@@ -236,9 +248,13 @@ public class AtendimentoController implements Serializable {
 	}
 
 	public List<AtendimentoBean> alterarTabelaEquipe() throws ProjetoException {
-		System.out.println("Atendimento: " + atendimento.getId1());
 		return this.listAtendimentosEquipe = aDao
 				.carregaAtendimentosEquipeProfissional(atendimento.getId1());
+
+	}
+
+	public List<ProcedimentoBean> listarProcedimentos() throws ProjetoException {
+		return this.listaProcedimentos = pDao.listarProcedimento();
 
 	}
 
@@ -273,6 +289,22 @@ public class AtendimentoController implements Serializable {
 	public void setListAtendimentosEquipe(
 			List<AtendimentoBean> listAtendimentosEquipe) {
 		this.listAtendimentosEquipe = listAtendimentosEquipe;
+	}
+
+	public ProcedimentoBean getProcedimento() {
+		return procedimento;
+	}
+
+	public void setProcedimento(ProcedimentoBean procedimento) {
+		this.procedimento = procedimento;
+	}
+
+	public AtendimentoBean getAtendimentoLista() {
+		return atendimentoLista;
+	}
+
+	public void setAtendimentoLista(AtendimentoBean atendimentoLista) {
+		this.atendimentoLista = atendimentoLista;
 	}
 
 }

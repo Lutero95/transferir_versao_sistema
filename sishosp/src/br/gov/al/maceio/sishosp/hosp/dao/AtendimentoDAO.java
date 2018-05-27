@@ -259,9 +259,9 @@ public class AtendimentoDAO {
 			}
 		}
 	}
-	
-	public List<AtendimentoBean> carregaAtendimentosEquipeProfissional(Integer id)
-			throws ProjetoException {
+
+	public List<AtendimentoBean> carregaAtendimentosEquipeProfissional(
+			Integer id) throws ProjetoException {
 
 		String sql = "select a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns,"
 				+ " f.codcbo, c.descricao, a1.situacao, a1.codprocedimento, pr.nome as procedimento"

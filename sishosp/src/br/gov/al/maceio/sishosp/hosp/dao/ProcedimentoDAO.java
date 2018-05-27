@@ -76,6 +76,7 @@ public class ProcedimentoDAO {
 				lista.add(proc);
 			}
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
