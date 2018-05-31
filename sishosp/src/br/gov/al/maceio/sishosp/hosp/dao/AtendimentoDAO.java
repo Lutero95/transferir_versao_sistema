@@ -176,6 +176,49 @@ public class AtendimentoDAO {
 		}
 	}
 
+	public Boolean realizaAtendimentoEquipe(List<AtendimentoBean> lista)
+			throws ProjetoException {
+		boolean alterou = false;
+		con = ConnectionFactory.getConnection();
+		try {
+
+			for (int i = 0; i < lista.size(); i++) {
+
+				String sql = "delete from hosp.atendimentos1 where id_atendimento = ?";
+				con = ConnectionFactory.getConnection();
+				PreparedStatement stmt = con.prepareStatement(sql);
+				stmt.setLong(1, lista.get(i).getId());
+				stmt.execute();
+
+				String sql2 = "INSERT INTO hosp.atendimentos1(dtaatendido, codprofissionalatendimento, id_atendimento, "
+						+ " cbo, codprocedimento, situacao) VALUES (current_timestamp, ?, ?, ?, ?, ?);";
+
+				PreparedStatement stmt2 = con.prepareStatement(sql2);
+				stmt2.setLong(1, lista.get(i).getFuncionario().getId());
+				stmt2.setInt(2, lista.get(i).getId());
+				stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
+				stmt2.setInt(4, lista.get(i).getProcedimento().getCodProc());
+				stmt2.setString(5, lista.get(i).getStatus());
+				stmt2.executeUpdate();
+
+			}
+			con.commit();
+
+			alterou = true;
+
+			return alterou;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
 	public Boolean limpaAtendimentoProfissional(AtendimentoBean atendimento)
 			throws ProjetoException {
 		boolean alterou = false;
@@ -216,7 +259,7 @@ public class AtendimentoDAO {
 				+ " from hosp.atendimentos1 a1"
 				+ " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
 				+ " left join hosp.cbo c on (f.codcbo = c.id)"
-				+ " left join hosp.proc pr on (a1.codprocedimento = pr.id)"
+				+ " left join hosp.proc pr on (a1.codprocedimento = pr.codproc)"
 				+ " where a1.id_atendimento = ?"
 				+ " order by a1.id_atendimentos1";
 

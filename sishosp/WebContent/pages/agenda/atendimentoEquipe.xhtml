@@ -75,14 +75,23 @@
 				<p:column headerText="Status">
 					<p:cellEditor>
 						<f:facet name="output">
-							<h:outputText value="#{atendimento.status}"></h:outputText>
+							<h:outputLabel value="Atendido"
+								rendered="#{atendimento.status == 'A'}" />
+							<h:outputLabel value="Profissional Faltou"
+								rendered="#{atendimento.status == 'PF'}" />
+							<h:outputLabel value="Selecione"
+								rendered="#{atendimento.status == ''}" />
+
 						</f:facet>
 						<f:facet name="input">
 							<p:selectOneMenu value="#{atendimento.status}"
 								style="width:250px;">
 								<f:selectItem itemLabel="Selecione" itemValue="" />
 								<f:selectItem itemLabel="Atendido" itemValue="A" />
-								<f:selectItem itemLabel="Profissional faltou" itemValue="PF" />
+								<f:selectItem itemLabel="Profissional Faltou" itemValue="PF" />
+								<p:ajax
+									listener="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
+									update=":formConsAge"></p:ajax>
 							</p:selectOneMenu>
 						</f:facet>
 					</p:cellEditor>
@@ -99,9 +108,15 @@
 
 			<center>
 
+				<b:commandButton
+					action="#{AtendimentoController.realizarAtendimentoEquipe()}"
+					icon="glyphicon-ok" size="sm" look="success" value="Gravar"
+					update="msgError" style="float:left" />
+
 				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
 					size="sm" immediate="true" look="info" update=":formConsAge"
 					actionListener="#{AgendaController.limparDados()}"
+					style="float:right"
 					action="/pages/agenda/atendimento.faces?faces-redirect=true">
 				</b:commandButton>
 
@@ -136,10 +151,9 @@
 						<f:facet name="header">
                         Adicionar
                     </f:facet>
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							process="@this"
+						<p:commandButton update=":formConsAge" icon="ui-icon-check"
 							action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
-							update=":formConsAge">
+							title="Selecionar" onclick="PF('formConsultProf').hide();">
 							<f:setPropertyActionListener value="#{profi}"
 								target="#{AtendimentoController.funcionario}" />
 						</p:commandButton>

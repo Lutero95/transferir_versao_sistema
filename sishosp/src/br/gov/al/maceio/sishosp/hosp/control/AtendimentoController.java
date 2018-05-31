@@ -25,6 +25,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
@@ -35,6 +36,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
+import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -170,37 +172,54 @@ public class AtendimentoController implements Serializable {
 	public void listarAtendimentos() throws ProjetoException {
 		this.listAtendimentos = aDao.carregaAtendimentos(atendimento);
 	}
-	
-	public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException{
+
+	public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {
 		listarAtendimentosEquipe();
 	}
 
 	public List<AtendimentoBean> listarAtendimentosEquipe()
 			throws ProjetoException {
 
-		if (atendimentoLista != null) {
-			System.out.println("ID1: " + atendimentoLista.getId1());
-			System.out.println("Procedimento: " + procedimento.getNomeProc());
-			for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-				System.out.println("LISTA: "
-						+ listAtendimentosEquipe.get(i).getProcedimento()
-								.getNomeProc());
-				if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
-						.getId1()) {
-					listAtendimentosEquipe.get(i).setProcedimento(procedimento);
+		if (atendimento.getStatus() != null) {
+			if (!atendimento.getStatus().equals("")) {
+				System.out.println("STATUS: " + atendimento.getStatus());
+				for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+
+					if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
+							.getId1()) {
+						listAtendimentosEquipe.get(i).setStatus(
+								atendimento.getStatus());
+						;
+					}
 				}
 			}
 		}
+
+		if (procedimento.getIdProc() != null) {
+			if (procedimento.getIdProc() > 0) {
+
+				for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+
+					if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
+							.getId1()) {
+						listAtendimentosEquipe.get(i).setProcedimento(
+								procedimento);
+					}
+				}
+			}
+		}
+
 		if (funcionario != null) {
-			System.out.println("ID1: " + atendimentoLista.getId1());
-			System.out.println("Funcionario: " + funcionario.getNome());
+
+			CboDAO cDao = new CboDAO();
+			CboBean cbo = cDao.listarCboPorId(funcionario.getCbo().getCodCbo());
+
 			for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-				System.out.println("LISTA: "
-						+ listAtendimentosEquipe.get(i).getFuncionario()
-								.getNome());
+
 				if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
 						.getId1()) {
 					listAtendimentosEquipe.get(i).setFuncionario(funcionario);
+					listAtendimentosEquipe.get(i).setCbo(cbo);
 				}
 			}
 
@@ -256,6 +275,22 @@ public class AtendimentoController implements Serializable {
 	public List<ProcedimentoBean> listarProcedimentos() throws ProjetoException {
 		return this.listaProcedimentos = pDao.listarProcedimento();
 
+	}
+
+	public void realizarAtendimentoEquipe() throws ProjetoException,
+			SQLException {
+		boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe);
+
+		if (alterou == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Atendimento realizado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o atendimento!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		}
 	}
 
 	public AtendimentoBean getAtendimento() {
