@@ -337,9 +337,9 @@ public class LaudoController implements Serializable {
 
 	public void calcularDias() {
 		try {
-			if (laudo.getProrrogar() != null) {
-				Integer dias = this.laudo.getProrrogar();
-				Date dataFim = this.laudo.getDtasolicitacao();
+			if (laudo.getPeriodo() != null) {
+				Integer dias = this.laudo.getPeriodo();
+				Date dataFim = this.laudo.getData_solicitacao();
 
 				Calendar cl = Calendar.getInstance();
 				cl.setTime(dataFim);
@@ -347,13 +347,13 @@ public class LaudoController implements Serializable {
 
 				Date dataFinal = cl.getTime();
 
-				this.laudo.setDtafim(dataFinal);
+				//this.laudo.setDtafim(dataFinal);
 			}
 		} catch (Exception ex) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 					"Informe a Data de autorização.", "Aviso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			this.laudo.setProrrogar(null);
+			//this.laudo.setProrrogar(null);
 		}
 
 	}
@@ -364,7 +364,7 @@ public class LaudoController implements Serializable {
 
 	public String redirectEdit() {
 		return "cadastroLaudo?faces-redirect=true&amp;id_apac="
-				+ this.laudo.getId_apac() + "&amp;tipo2=" + tipo2;
+				+ this.laudo.getId() + "&amp;tipo2=" + tipo2;
 	}
 
 	public void getEditLaudo() throws ProjetoException {
@@ -415,23 +415,23 @@ public class LaudoController implements Serializable {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void calcularDiasCalendario() {
-		if (laudo.getDtasolicitacao() != null) {
-			Date dataDoUsuario = this.laudo.getDtasolicitacao();
-
-			// Atrav�s do Calendar, trabalhamos a data informada e adicionamos 1
-			// dia nela
-			Calendar c = Calendar.getInstance();
-			c.setTime(dataDoUsuario);
-			c.add(Calendar.MONTH, getLaudo().getProcedimento()
-					.getValidade_laudo());
-			c.add(Calendar.DAY_OF_MONTH, -1);
-			// Obtemos a data alterada
-			dataDoUsuario = c.getTime();
-
-			this.laudo.setDtavencimento(dataDoUsuario);
-		}
-	}
+//	public void calcularDiasCalendario() {
+//		if (laudo.getDtasolicitacao() != null) {
+//			Date dataDoUsuario = this.laudo.getDtasolicitacao();
+//
+//			// Atrav�s do Calendar, trabalhamos a data informada e adicionamos 1
+//			// dia nela
+//			Calendar c = Calendar.getInstance();
+//			c.setTime(dataDoUsuario);
+//			c.add(Calendar.MONTH, getLaudo().getProcedimento()
+//					.getValidade_laudo());
+//			c.add(Calendar.DAY_OF_MONTH, -1);
+//			// Obtemos a data alterada
+//			dataDoUsuario = c.getTime();
+//
+//			this.laudo.setDtavencimento(dataDoUsuario);
+//		}
+//	}
 
 	public Integer getAbaAtiva() {
 		return abaAtiva;
@@ -538,10 +538,10 @@ public class LaudoController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo2 == 1) {
-			cabecalho = "CADASTRO DE APAC/BPI";
-		} else if (this.tipo2 == 2) {
-			cabecalho = "ALTERAR APAC/BPI";
+		if (this.tipo2 == 2) {
+			cabecalho = "ALTERAR LAUDO";
+		} else {
+			cabecalho = "CADASTRO DE LAUDO";
 		}
 		return cabecalho;
 	}

@@ -32,6 +32,6 @@ public class LaudoConverter implements Converter {
 			Object value) {
 		if (value == null || value.equals(""))
 			return null;
-		return String.valueOf(((LaudoBean) value).getDtautorizacao());
+		return String.valueOf(((LaudoBean) value).getId());
 	}
 }
