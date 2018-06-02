@@ -50,6 +50,7 @@ public class LaudoController implements Serializable {
 	private CidBean cid;
 	private EquipamentoBean equipamento;
 	private String cabecalho;
+	private Integer mes_inicio;
 
 	// LISTAS
 	private List<LaudoBean> listaLaudo;
@@ -83,6 +84,7 @@ public class LaudoController implements Serializable {
 		programa = new ProgramaBean();
 		grupo = new GrupoBean();
 		this.tipoAt = null;// new TipoAtendimentoBean();
+		mes_inicio = 0;
 
 		// BUSCA
 		tipo = "";
@@ -347,13 +349,13 @@ public class LaudoController implements Serializable {
 
 				Date dataFinal = cl.getTime();
 
-				//this.laudo.setDtafim(dataFinal);
+				// this.laudo.setDtafim(dataFinal);
 			}
 		} catch (Exception ex) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 					"Informe a Data de autorização.", "Aviso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			//this.laudo.setProrrogar(null);
+			// this.laudo.setProrrogar(null);
 		}
 
 	}
@@ -415,23 +417,57 @@ public class LaudoController implements Serializable {
 	}
 
 	@SuppressWarnings("deprecation")
-//	public void calcularDiasCalendario() {
-//		if (laudo.getDtasolicitacao() != null) {
-//			Date dataDoUsuario = this.laudo.getDtasolicitacao();
-//
-//			// Atrav�s do Calendar, trabalhamos a data informada e adicionamos 1
-//			// dia nela
-//			Calendar c = Calendar.getInstance();
-//			c.setTime(dataDoUsuario);
-//			c.add(Calendar.MONTH, getLaudo().getProcedimento()
-//					.getValidade_laudo());
-//			c.add(Calendar.DAY_OF_MONTH, -1);
-//			// Obtemos a data alterada
-//			dataDoUsuario = c.getTime();
-//
-//			this.laudo.setDtavencimento(dataDoUsuario);
-//		}
-//	}
+	// public void calcularDiasCalendario() {
+	// if (laudo.getDtasolicitacao() != null) {
+	// Date dataDoUsuario = this.laudo.getDtasolicitacao();
+	//
+	// // Atrav�s do Calendar, trabalhamos a data informada e adicionamos 1
+	// // dia nela
+	// Calendar c = Calendar.getInstance();
+	// c.setTime(dataDoUsuario);
+	// c.add(Calendar.MONTH, getLaudo().getProcedimento()
+	// .getValidade_laudo());
+	// c.add(Calendar.DAY_OF_MONTH, -1);
+	// // Obtemos a data alterada
+	// dataDoUsuario = c.getTime();
+	//
+	// this.laudo.setDtavencimento(dataDoUsuario);
+	// }
+	// }
+	public void calcularPeriodoLaudo() {
+		//laudo.setMes_final(mes_inicio);
+		System.out.println("MES INICIO OK: "+mes_inicio);
+		System.out.println("MES INICIO: "+laudo.getMes_inicio());
+		System.out.println("ANO INICIO: "+laudo.getAno_inicio());
+
+		if (laudo.getPeriodo() != null) {
+
+			int periodo = laudo.getPeriodo() / 30;
+			int mes = 0;
+			int ano = 0;
+
+			if (laudo.getMes_inicio() + periodo > 12) {
+				mes = laudo.getMes_inicio() + periodo - 12;
+				ano = ano + 1;
+			} else {
+				mes = laudo.getMes_inicio() + periodo;
+				ano = laudo.getAno_inicio();
+			}
+
+			laudo.setMes_final(mes);
+			laudo.setAno_final(ano);
+			System.out.println("MES FINAL: "+laudo.getMes_final());
+			System.out.println("ANO FINAL: "+laudo.getAno_final());
+
+		}
+
+		else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Informe o período do Laudo.", "Aviso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+	}
 
 	public Integer getAbaAtiva() {
 		return abaAtiva;
@@ -720,6 +756,14 @@ public class LaudoController implements Serializable {
 
 	public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
 		this.listaGruposProgramas = listaGruposProgramas;
+	}
+
+	public Integer getMes_inicio() {
+		return mes_inicio;
+	}
+
+	public void setMes_inicio(Integer mes_inicio) {
+		this.mes_inicio = mes_inicio;
 	}
 
 }

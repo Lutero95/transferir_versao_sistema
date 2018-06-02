@@ -10,149 +10,152 @@
 
 	<ui:define name="body">
 
-		<div class="col-md-8">
+		<h:form id="formLaudo">
 
-			<h:form id="formLaudo">
+			<div class="panel-body">
+				<div class="sub-header">
+					<h:outputText value="#{LaudoController.cabecalho}"
+						styleClass="cadcabecalho"></h:outputText>
+					<hr />
+				</div>
 
-				<div class="panel-body">
-					<div class="sub-header">
-						<h:outputText value="#{LaudoController.cabecalho}"
-							styleClass="cadcabecalho"></h:outputText>
-						<hr />
-					</div>
+				<b:row>
+					<b:column span="1">
+						<h:outputLabel value="Paciente:" style="margin-top:5px" />
+					</b:column>
 
-					<b:row>
-						<b:column span="1">
-							<h:outputLabel value="Paciente:" style="margin-top:5px" />
-						</b:column>
+					<b:column span="3">
+						<p:outputPanel id="outPac1">
+							<p:autoComplete value="#{LaudoController.laudo.paciente}"
+								size="40" converter="conPaciente" required="true"
+								requiredMessage="Escolha um paciente!"
+								completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nome}">
+								<p:ajax event="itemSelect"
+									update=":formLaudo:outPac1, :formLaudo:outPac2, :formLaudo:outPac3" />
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
 
-						<b:column span="5">
-							<p:outputPanel id="outPac1">
-								<p:autoComplete value="#{LaudoController.laudo.paciente}"
-									size="40" converter="conPaciente" required="true"
-									requiredMessage="Escolha um paciente!"
-									completeMethod="#{PacienteController.listaPacienteAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nome}">
-								</p:autoComplete>
-							</p:outputPanel>
-						</b:column>
+					<b:column span="1">
+						<p:commandButton id="btBusPa" icon="ui-icon-search"
+							onclick="PF('dlgConsuPac').show();" />
+					</b:column>
 
-						<b:column span="1">
-							<p:commandButton id="btBusPa" icon="ui-icon-search"
-								onclick="PF('dlgConsuPac').show();" />
-						</b:column>
+					<b:column span="1">
+						<h:outputLabel value="CNS:" style="margin-top:5px" />
+					</b:column>
 
-						<b:column span="1">
-							<h:outputLabel value="CNS:" style="margin-top:5px" />
-						</b:column>
+					<b:column span="2">
+						<p:outputPanel id="outPac2">
+							<p:outputLabel value="#{LaudoController.laudo.paciente.cns}"
+								style="margin-top:5px" />
+						</p:outputPanel>
+					</b:column>
 
-						<b:column span="2">
-							<p:outputPanel id="outPac2">
-								<p:outputLabel value="#{LaudoController.laudo.paciente.cns}"
-									style="margin-top:5px" />
-							</p:outputPanel>
-						</b:column>
+					<b:column span="1">
+						<h:outputLabel value="CPF:" style="margin-top:5px" />
+					</b:column>
 
-						<b:column span="1">
-							<h:outputLabel value="CPF:" style="margin-top:5px" />
-						</b:column>
+					<b:column span="1">
+						<p:outputPanel id="outPac3">
+							<p:outputLabel value="#{LaudoController.laudo.paciente.cpf}"
+								style="margin-top:5px" />
+						</p:outputPanel>
+					</b:column>
 
-						<b:column span="1">
-							<p:outputPanel id="outPac3">
-								<p:outputLabel value="#{LaudoController.laudo.paciente.cpf}"
-									style="margin-top:5px" />
-							</p:outputPanel>
-						</b:column>
+				</b:row>
 
-					</b:row>
+				<br></br>
 
-					<br></br>
+				<b:row>
 
-					<b:row>
+					<b:column span="1">
+						<h:outputLabel value="Recuso:" />
+					</b:column>
 
-						<b:column span="1">
-							<h:outputLabel value="Recuso:" />
-						</b:column>
+					<b:column span="2">
+						<p:selectOneRadio id="recuso" required="true"
+							layout="pageDirection" requiredMessage="Escolha o recuso!"
+							value="#{LaudoController.laudo.recuso}">
+							<f:selectItem itemLabel="Faec" itemValue="faes" />
+							<f:selectItem itemLabel="Mac" itemValue="mac" />
+						</p:selectOneRadio>
+					</b:column>
 
-						<b:column span="2">
-							<p:selectOneRadio id="recuso" required="true"
-								layout="pageDirection" requiredMessage="Escolha o recuso!"
-								value="#{LaudoController.laudo.recuso}">
-								<f:selectItem itemLabel="Faec" itemValue="faes" />
-								<f:selectItem itemLabel="Mac" itemValue="mac" />
-							</p:selectOneRadio>
-						</b:column>
+					<b:column span="2">
+						<h:outputLabel value="Data para Solicitação:" />
+					</b:column>
 
-						<b:column span="2">
-							<h:outputLabel value="Data para Solicitação:" />
-						</b:column>
+					<b:column span="2">
+						<p:calendar id="dataAte" locale="pt" required="true" size="10"
+							requiredMessage="É necessário informar a data de solitação"
+							value="#{LaudoController.laudo.data_solicitacao}" mask="true"
+							pattern="dd/MM/yyyy" />
+					</b:column>
 
-						<b:column span="3">
-							<p:calendar id="dataAte" locale="pt" required="true" size="10"
-								requiredMessage="E necessario informar a data de solitação"
-								value="#{LaudoController.laudo.data_solicitacao}" mask="true"
-								pattern="dd/MM/yyyy" />
-						</b:column>
+					<b:column span="1">
+						<h:outputLabel value="Período:" />
+					</b:column>
 
-						<b:column span="2">
-							<h:outputLabel value="Prorrogar:" />
-						</b:column>
+					<b:column span="2">
+						<p:selectOneRadio id="prorrogar" required="true"
+							layout="pageDirection" requiredMessage="Período é necessário!"
+							value="#{LaudoController.laudo.periodo}">
+							<f:selectItem itemLabel="30 dias" itemValue="30" />
+							<f:selectItem itemLabel="90 dias" itemValue="90" />
+						</p:selectOneRadio>
+					</b:column>
 
-						<b:column span="2">
-							<p:selectOneRadio id="prorrogar" required="true"
-								layout="pageDirection" requiredMessage="Prorrogar e necessario"
-								value="#{LaudoController.laudo.periodo}">
-								<f:selectItem itemLabel="30 dias" itemValue="30" />
-								<f:selectItem itemLabel="90 dias" itemValue="90" />
-								<p:ajax event="change" update=":formLaudo:msgError"
-									process="@this,dataAte"
-									listener="#{LaudoController.calcularDias}" />
-							</p:selectOneRadio>
-						</b:column>
+				</b:row>
 
-					</b:row>
+				<br></br>
 
-					<br></br>
+				<b:row>
 
-					<b:row>
+					<b:column span="1">
+						<h:outputLabel value="Mês Início:" />
+					</b:column>
 
-						<b:column span="1">
-							<h:outputLabel value="Mês Início:" />
-						</b:column>
+					<b:column span="2">
+						<p:selectOneMenu style="width:120px" required="true"
+							requiredMessage="Escolha o mês início!"
+							value="#{LaudoController.laudo.mes_inicio}">
+							<f:selectItem itemLabel="Janeiro" itemValue="1" />
+							<f:selectItem itemLabel="Fevereiro" itemValue="2" />
+							<f:selectItem itemLabel="Março" itemValue="3" />
+							<f:selectItem itemLabel="Abril" itemValue="4" />
+							<f:selectItem itemLabel="Maio" itemValue="5" />
+							<f:selectItem itemLabel="Junho" itemValue="6" />
+							<f:selectItem itemLabel="Julho" itemValue="7" />
+							<f:selectItem itemLabel="Agosto" itemValue="8" />
+							<f:selectItem itemLabel="Setembro" itemValue="9" />
+							<f:selectItem itemLabel="Outubro" itemValue="10" />
+							<f:selectItem itemLabel="Novembro" itemValue="11" />
+							<f:selectItem itemLabel="Dezembro" itemValue="12" />
+						</p:selectOneMenu>
+					</b:column>
 
-						<b:column span="3">
-							<p:selectOneMenu style="width:120px"
-								value="#{LaudoController.laudo.mes_inicio}">
-								<f:selectItem itemLabel="Janeiro" itemValue="1" />
-								<f:selectItem itemLabel="Fevereiro" itemValue="2" />
-								<f:selectItem itemLabel="Março" itemValue="3" />
-								<f:selectItem itemLabel="Abril" itemValue="4" />
-								<f:selectItem itemLabel="Maio" itemValue="5" />
-								<f:selectItem itemLabel="Junho" itemValue="6" />
-								<f:selectItem itemLabel="Julho" itemValue="7" />
-								<f:selectItem itemLabel="Agosto" itemValue="8" />
-								<f:selectItem itemLabel="Setembro" itemValue="9" />
-								<f:selectItem itemLabel="Outubro" itemValue="10" />
-								<f:selectItem itemLabel="Novembro" itemValue="11" />
-								<f:selectItem itemLabel="Dezembro" itemValue="12" />
-							</p:selectOneMenu>
-						</b:column>
+					<b:column span="1">
+						<h:outputLabel value="Ano Início:" />
+					</b:column>
 
-						<b:column span="1">
-							<h:outputLabel value="Ano Início:" />
-						</b:column>
+					<b:column span="2">
+						<h:inputText value="#{LaudoController.laudo.ano_inicio}"
+							required="true" requiredMessage="Escolha o ano início!">
+							<p:ajax listener="#{LaudoController.calcularPeriodoLaudo()}"
+								update="outAnoFim, outMesFim" global="false" event="blur"></p:ajax>
+						</h:inputText>
+					</b:column>
 
-						<b:column span="3">
-							<h:inputText value="#{LaudoController.laudo.ano_inicio}" />
-						</b:column>
+					<b:column span="1">
+						<h:outputLabel value="Mês Fim:" style="margin-top:5px" />
+					</b:column>
 
-						<b:column span="1">
-							<h:outputLabel value="Mês Fim:" style="margin-top:5px" />
-						</b:column>
-
-						<b:column span="3">
+					<b:column span="2">
+						<p:outputPanel id="outMesFim">
 							<h:outputLabel value="Janeiro"
 								rendered="#{LaudoController.laudo.mes_final == 1}" />
 							<h:outputLabel value="Fevereiro"
@@ -177,217 +180,225 @@
 								rendered="#{LaudoController.laudo.mes_final == 11}" />
 							<h:outputLabel value="Dezembro"
 								rendered="#{LaudoController.laudo.mes_final == 12}" />
-						</b:column>
+						</p:outputPanel>
+					</b:column>
 
-					</b:row>
+					<b:column span="1">
+						<h:outputLabel value="Ano Fim:" style="margin-top:5px" />
+					</b:column>
 
-					<br></br> <br></br>
+					<b:column span="2">
+						<p:outputPanel id="outAnoFim">
+							<p:outputLabel value="#{LaudoController.laudo.ano_final}"
+								style="margin-top:5px" />
+						</p:outputPanel>
+					</b:column>
 
-					<b:row>
+				</b:row>
 
-						<b:column span="2">
-							<h:outputLabel value="Procedimento Primário:" style="color:blue" />
-						</b:column>
+				<br></br> <br></br>
 
-						<b:column span="3">
+				<b:row>
 
-							<p:outputPanel id="outProcP1">
-								<p:autoComplete
-									value="#{LaudoController.laudo.procedimento_primario}"
-									size="25" converter="conProcedimento" id="descProcP1"
-									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nomeProc}">
-								</p:autoComplete>
-							</p:outputPanel>
-						</b:column>
+					<b:column span="2">
+						<h:outputLabel value="Procedimento Primário:" style="color:blue" />
+					</b:column>
 
-						<b:column span="1">
-							<p:commandButton id="btBusProcP1" icon="ui-icon-search"
-								onclick="PF('dlgConsulProcPrimario').show();" immediate="true"
-								actionListener="#{ProcedimentoController.listarProcedimentos()}" />
-						</b:column>
+					<b:column span="3">
 
-						<b:column span="2">
-							<h:outputLabel value="Procedimento Secundário 1:" />
-						</b:column>
+						<p:outputPanel id="outProcP1">
+							<p:autoComplete
+								value="#{LaudoController.laudo.procedimento_primario}" size="40"
+								converter="conProcedimento" id="descProcP1" required="true"
+								requiredMessage="Escolha o procedimento primário!"
+								completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nomeProc}">
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
 
-						<b:column span="3">
+					<b:column span="1">
+						<p:commandButton id="btBusProcP1" icon="ui-icon-search"
+							onclick="PF('dlgConsulProcPrimario').show();" immediate="true"
+							actionListener="#{ProcedimentoController.listarProcedimentos()}" />
+					</b:column>
 
-							<p:outputPanel id="outProcS1">
-								<p:autoComplete
-									value="#{LaudoController.laudo.procedimento_secundario1}"
-									size="25" converter="conProcedimento" id="descProcS1"
-									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nomeProc}">
-								</p:autoComplete>
-							</p:outputPanel>
-						</b:column>
+					<b:column span="2">
+						<h:outputLabel value="Procedimento Secundário 1:" />
+					</b:column>
 
-						<b:column span="1">
-							<p:commandButton id="btBusProcS1" icon="ui-icon-search"
-								onclick="PF('dlgConsulProcSecundario1').show();"
-								immediate="true"
-								actionListener="#{ProcedimentoController.listarProcedimentos()}" />
-						</b:column>
+					<b:column span="3">
 
-					</b:row>
+						<p:outputPanel id="outProcS1">
+							<p:autoComplete
+								value="#{LaudoController.laudo.procedimento_secundario1}"
+								size="40" converter="conProcedimento" id="descProcS1"
+								completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nomeProc}">
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
 
-					<br></br> <br></br>
+					<b:column span="1">
+						<p:commandButton id="btBusProcS1" icon="ui-icon-search"
+							onclick="PF('dlgConsulProcSecundario1').show();" immediate="true"
+							actionListener="#{ProcedimentoController.listarProcedimentos()}" />
+					</b:column>
 
-					<b:row>
+				</b:row>
 
-						<b:column span="2">
-							<h:outputLabel value="Procedimento Secundário 2:" />
-						</b:column>
+				<br></br> <br></br>
 
-						<b:column span="3">
+				<b:row>
 
-							<p:outputPanel id="outProcS2">
-								<p:autoComplete
-									value="#{LaudoController.laudo.procedimento_secundario2}"
-									size="25" converter="conProcedimento" id="descProcS2"
-									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nomeProc}">
-								</p:autoComplete>
-							</p:outputPanel>
-						</b:column>
+					<b:column span="2">
+						<h:outputLabel value="Procedimento Secundário 2:" />
+					</b:column>
 
-						<b:column span="1">
-							<p:commandButton id="btBusProcS2" icon="ui-icon-search"
-								onclick="PF('dlgConsulProcSecundario2').show();"
-								immediate="true"
-								actionListener="#{ProcedimentoController.listarProcedimentos()}" />
-						</b:column>
+					<b:column span="3">
 
-						<b:column span="2">
-							<h:outputLabel value="Procedimento Secundário 3:" />
-						</b:column>
+						<p:outputPanel id="outProcS2">
+							<p:autoComplete
+								value="#{LaudoController.laudo.procedimento_secundario2}"
+								size="40" converter="conProcedimento" id="descProcS2"
+								completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nomeProc}">
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
 
-						<b:column span="3">
+					<b:column span="1">
+						<p:commandButton id="btBusProcS2" icon="ui-icon-search"
+							onclick="PF('dlgConsulProcSecundario2').show();" immediate="true"
+							actionListener="#{ProcedimentoController.listarProcedimentos()}" />
+					</b:column>
 
-							<p:outputPanel id="outProcS3">
-								<p:autoComplete
-									value="#{LaudoController.laudo.procedimento_secundario3}"
-									size="25" converter="conProcedimento" id="descProcS3"
-									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nomeProc}">
-								</p:autoComplete>
-							</p:outputPanel>
-						</b:column>
+					<b:column span="2">
+						<h:outputLabel value="Procedimento Secundário 3:" />
+					</b:column>
 
-						<b:column span="1">
-							<p:commandButton id="btBusProcS3" icon="ui-icon-search"
-								onclick="PF('dlgConsulProcSecundario3').show();"
-								immediate="true"
-								actionListener="#{ProcedimentoController.listarProcedimentos()}" />
-						</b:column>
+					<b:column span="3">
 
-					</b:row>
+						<p:outputPanel id="outProcS3">
+							<p:autoComplete
+								value="#{LaudoController.laudo.procedimento_secundario3}"
+								size="40" converter="conProcedimento" id="descProcS3"
+								completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nomeProc}">
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
 
-					<br></br> <br></br>
+					<b:column span="1">
+						<p:commandButton id="btBusProcS3" icon="ui-icon-search"
+							onclick="PF('dlgConsulProcSecundario3').show();" immediate="true"
+							actionListener="#{ProcedimentoController.listarProcedimentos()}" />
+					</b:column>
 
-					<b:row>
+				</b:row>
 
-						<b:column span="2">
-							<h:outputLabel value="Procedimento Secundário 4:" />
-						</b:column>
+				<br></br> <br></br>
 
-						<b:column span="3">
+				<b:row>
 
-							<p:outputPanel id="outProcS4">
-								<p:autoComplete
-									value="#{LaudoController.laudo.procedimento_secundario4}"
-									size="25" converter="conProcedimento" id="descProcS4"
-									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nomeProc}">
-								</p:autoComplete>
-							</p:outputPanel>
-						</b:column>
+					<b:column span="2">
+						<h:outputLabel value="Procedimento Secundário 4:" />
+					</b:column>
 
-						<b:column span="1">
-							<p:commandButton id="btBusProcS4" icon="ui-icon-search"
-								onclick="PF('dlgConsulProcSecundario4').show();"
-								immediate="true"
-								actionListener="#{ProcedimentoController.listarProcedimentos()}" />
-						</b:column>
+					<b:column span="3">
 
-						<b:column span="2">
-							<h:outputLabel value="Procedimento Secundário 5:" />
-						</b:column>
+						<p:outputPanel id="outProcS4">
+							<p:autoComplete
+								value="#{LaudoController.laudo.procedimento_secundario4}"
+								size="40" converter="conProcedimento" id="descProcS4"
+								completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nomeProc}">
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
 
-						<b:column span="3">
+					<b:column span="1">
+						<p:commandButton id="btBusProcS4" icon="ui-icon-search"
+							onclick="PF('dlgConsulProcSecundario4').show();" immediate="true"
+							actionListener="#{ProcedimentoController.listarProcedimentos()}" />
+					</b:column>
 
-							<p:outputPanel id="outProcS5">
-								<p:autoComplete
-									value="#{LaudoController.laudo.procedimento_secundario5}"
-									size="25" converter="conProcedimento" id="descProcS5"
-									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nomeProc}">
-								</p:autoComplete>
-							</p:outputPanel>
-						</b:column>
+					<b:column span="2">
+						<h:outputLabel value="Procedimento Secundário 5:" />
+					</b:column>
 
-						<b:column span="1">
-							<p:commandButton id="btBusProcS5" icon="ui-icon-search"
-								onclick="PF('dlgConsulProcSecundario5').show();"
-								immediate="true"
-								actionListener="#{ProcedimentoController.listarProcedimentos()}" />
-						</b:column>
+					<b:column span="3">
 
-					</b:row>
+						<p:outputPanel id="outProcS5">
+							<p:autoComplete
+								value="#{LaudoController.laudo.procedimento_secundario5}"
+								size="40" converter="conProcedimento" id="descProcS5"
+								completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nomeProc}">
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
 
-					<br></br>
+					<b:column span="1">
+						<p:commandButton id="btBusProcS5" icon="ui-icon-search"
+							onclick="PF('dlgConsulProcSecundario5').show();" immediate="true"
+							actionListener="#{ProcedimentoController.listarProcedimentos()}" />
+					</b:column>
 
-					<b:row>
+				</b:row>
 
-						<b:column span="2">
-							<h:outputLabel value="Observação:" />
-						</b:column>
+				<br></br>
 
-						<b:column span="4">
-							<h:inputTextarea value="#{LaudoController.laudo.obs}"
-								scrollHeight="40" required="true" rows="6" cols="89"
-								style="height:80px;width:300px"></h:inputTextarea>
-						</b:column>
+				<b:row>
 
-					</b:row>
+					<b:column span="2">
+						<h:outputLabel value="Observação:" />
+					</b:column>
 
-					<center>
-						<b:messages value="Error" id="msgError"></b:messages>
-					</center>
+					<b:column span="4">
+						<h:inputTextarea value="#{LaudoController.laudo.obs}"
+							scrollHeight="40" required="true" rows="6" cols="89"
+							style="height:80px;width:300px"></h:inputTextarea>
+					</b:column>
 
-					<br></br> <br></br>
+				</b:row>
 
-					<center>
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
 
-						<b:commandButton action="#{GrupoController.gravarGrupo()}"
-							icon="glyphicon-ok" size="sm" look="success" value="Incluir"
-							style="float:left" rendered="#{LaudoController.tipo2 == 1}" />
+				<br></br> <br></br>
 
-						<b:commandButton action="#{GrupoController.alterarGrupo()}"
-							icon="glyphicon-ok" size="sm" value="Alterar" look="success"
-							style="float:left" rendered="#{LaudoController.tipo2  == 2}" />
+				<center>
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-							style="float:right" size="sm" immediate="true" look="info"
-							action="/pages/sishosp/gerenciarLaudoDigita.faces?faces-redirect=true"></b:commandButton>
+					<b:commandButton action="#{GrupoController.gravarGrupo()}"
+						icon="glyphicon-ok" size="sm" look="success" value="Incluir"
+						style="float:left" />
 
-					</center>
-				</div>
-			</h:form>
-		</div>
+					<b:commandButton action="#{GrupoController.alterarGrupo()}"
+						icon="glyphicon-ok" size="sm" value="Alterar" look="success"
+						style="float:left" rendered="#{LaudoController.tipo2  == 2}" />
+
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="float:right" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarLaudoDigita.faces?faces-redirect=true"></b:commandButton>
+
+				</center>
+			</div>
+		</h:form>
+
 
 
 		<p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"

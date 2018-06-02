@@ -38,18 +38,13 @@
 				</p:column>
 
 				<p:column headerText="Profissional">
+					<p:commandButton icon="ui-icon-search"
+						onclick="PF('dlgConsultProfi').show()">
+						<f:setPropertyActionListener value="#{atendimento}"
+							target="#{AtendimentoController.atendimentoLista}" />
+					</p:commandButton>
 					<h:outputText value="#{atendimento.funcionario.nome}"
 						style="font-weight:bold;"></h:outputText>
-				</p:column>
-
-				<p:column headerText="Ação">
-					<center>
-						<p:commandButton value="Alterar Profissional"
-							onclick="PF('dlgConsultProfi').show()">
-							<f:setPropertyActionListener value="#{atendimento}"
-								target="#{AtendimentoController.atendimentoLista}" />
-						</p:commandButton>
-					</center>
 				</p:column>
 
 				<p:column headerText="CBO">
@@ -58,18 +53,13 @@
 				</p:column>
 
 				<p:column headerText="Procedimento">
+					<p:commandButton icon="ui-icon-search" update=":formConsulProc1"
+						onclick="PF('dlgConsulProc1').show()">
+						<f:setPropertyActionListener value="#{atendimento}"
+							target="#{AtendimentoController.atendimentoLista}" />
+					</p:commandButton>
 					<h:outputText value="#{atendimento.procedimento.nomeProc}"
 						style="font-weight:bold;"></h:outputText>
-				</p:column>
-
-				<p:column headerText="Ação">
-					<center>
-						<p:commandButton value="Alterar Procedimento"
-							update=":formConsulProc1" onclick="PF('dlgConsulProc1').show()">
-							<f:setPropertyActionListener value="#{atendimento}"
-								target="#{AtendimentoController.atendimentoLista}" />
-						</p:commandButton>
-					</center>
 				</p:column>
 
 				<p:column headerText="Status">
@@ -85,7 +75,7 @@
 						</f:facet>
 						<f:facet name="input">
 							<p:selectOneMenu value="#{atendimento.status}"
-								style="width:250px;">
+								style="width:150px;">
 								<f:selectItem itemLabel="Selecione" itemValue="" />
 								<f:selectItem itemLabel="Atendido" itemValue="A" />
 								<f:selectItem itemLabel="Profissional Faltou" itemValue="PF" />
