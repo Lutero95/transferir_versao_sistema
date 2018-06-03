@@ -361,11 +361,12 @@ public class LaudoController implements Serializable {
 	}
 
 	public String redirectInsert() {
-		return "cadastroLaudo?faces-redirect=true&amp;tipo2=" + this.tipo2;
+		System.out.println("tipo2: "+tipo2);
+		return "cadastroLaudoDigita?faces-redirect=true&amp;tipo2=" + this.tipo2;
 	}
 
 	public String redirectEdit() {
-		return "cadastroLaudo?faces-redirect=true&amp;id_apac="
+		return "cadastroLaudo?faces-redirect=true&amp;id="
 				+ this.laudo.getId() + "&amp;tipo2=" + tipo2;
 	}
 
@@ -435,11 +436,12 @@ public class LaudoController implements Serializable {
 	// }
 	// }
 	public void calcularPeriodoLaudo() {
-		//laudo.setMes_final(mes_inicio);
-		System.out.println("MES INICIO OK: "+mes_inicio);
+		laudo.setMes_inicio(11);
+		laudo.setPeriodo(90);
+		// System.out.println("MES INICIO OK: "+mes_inicio);
 		System.out.println("MES INICIO: "+laudo.getMes_inicio());
-		System.out.println("ANO INICIO: "+laudo.getAno_inicio());
-
+		System.out.println("ANO INICIO: " + laudo.getAno_inicio());
+		System.out.println("PERIODO: "+laudo.getPeriodo());
 		if (laudo.getPeriodo() != null) {
 
 			int periodo = laudo.getPeriodo() / 30;
@@ -448,7 +450,7 @@ public class LaudoController implements Serializable {
 
 			if (laudo.getMes_inicio() + periodo > 12) {
 				mes = laudo.getMes_inicio() + periodo - 12;
-				ano = ano + 1;
+				ano = laudo.getAno_inicio() + 1;
 			} else {
 				mes = laudo.getMes_inicio() + periodo;
 				ano = laudo.getAno_inicio();
@@ -456,8 +458,8 @@ public class LaudoController implements Serializable {
 
 			laudo.setMes_final(mes);
 			laudo.setAno_final(ano);
-			System.out.println("MES FINAL: "+laudo.getMes_final());
-			System.out.println("ANO FINAL: "+laudo.getAno_final());
+			System.out.println("MES FINAL: " + laudo.getMes_final());
+			System.out.println("ANO FINAL: " + laudo.getAno_final());
 
 		}
 
@@ -466,6 +468,13 @@ public class LaudoController implements Serializable {
 					"Informe o período do Laudo.", "Aviso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+
+	}
+
+	public void listarLaudo() throws ProjetoException {
+
+		LaudoDAO fdao = new LaudoDAO();
+		listaLaudo = fdao.listaLaudos();
 
 	}
 
@@ -575,9 +584,9 @@ public class LaudoController implements Serializable {
 
 	public String getCabecalho() {
 		if (this.tipo2 == 2) {
-			cabecalho = "ALTERAR LAUDO";
+			cabecalho = "Alterar Laudo";
 		} else {
-			cabecalho = "CADASTRO DE LAUDO";
+			cabecalho = "Cadastro de Laudo";
 		}
 		return cabecalho;
 	}
@@ -635,7 +644,8 @@ public class LaudoController implements Serializable {
 		if (listaLaudoDigita == null) {
 
 			LaudoDAO fdao = new LaudoDAO();
-			listaLaudoDigita = fdao.listaLaudosDigita();
+			listaLaudoDigita = fdao.listaLaudos();
+
 		}
 		return listaLaudoDigita;
 	}

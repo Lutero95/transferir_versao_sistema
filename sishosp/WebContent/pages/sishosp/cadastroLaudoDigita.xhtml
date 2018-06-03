@@ -120,7 +120,7 @@
 					</b:column>
 
 					<b:column span="2">
-						<p:selectOneMenu style="width:120px" required="true"
+						<!--  <h:selectOneMenu style="width:120px" required="true"
 							requiredMessage="Escolha o mês início!"
 							value="#{LaudoController.laudo.mes_inicio}">
 							<f:selectItem itemLabel="Janeiro" itemValue="1" />
@@ -135,7 +135,10 @@
 							<f:selectItem itemLabel="Outubro" itemValue="10" />
 							<f:selectItem itemLabel="Novembro" itemValue="11" />
 							<f:selectItem itemLabel="Dezembro" itemValue="12" />
-						</p:selectOneMenu>
+						</h:selectOneMenu>
+						-->
+						<h:inputText value="#{LaudoController.mes_inicio}" required="true"
+							requiredMessage="Escolha o ano início!" />
 					</b:column>
 
 					<b:column span="1">
@@ -363,6 +366,64 @@
 
 				<b:row>
 
+					<b:column span="1">
+						<h:outputLabel value="CID 1:" />
+					</b:column>
+
+					<b:column span="3">
+
+						<p:outputPanel id="outCid1">
+							<p:autoComplete value="#{LaudoController.laudo.cid1}" size="40"
+								converter="conCid" id="descCid1"
+								completeMethod="#{CidController.listaCidAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descCid}">
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
+
+
+					<b:column span="1">
+						<h:outputLabel value="CID 2:" />
+					</b:column>
+
+					<b:column span="3">
+
+						<p:outputPanel id="outCid2">
+							<p:autoComplete value="#{LaudoController.laudo.cid2}" size="40"
+								converter="conCid" id="descCid2"
+								completeMethod="#{CidController.listaCidAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descCid}">
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
+
+					<b:column span="1">
+						<h:outputLabel value="CID 3:" />
+					</b:column>
+
+					<b:column span="3">
+
+						<p:outputPanel id="outCid3">
+							<p:autoComplete value="#{LaudoController.laudo.cid3}" size="40"
+								converter="conCid" id="descCid3"
+								completeMethod="#{CidController.listaCidAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descCid}">
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
+
+				</b:row>
+
+				<br></br>
+
+				<b:row>
+
 					<b:column span="2">
 						<h:outputLabel value="Observação:" />
 					</b:column>
@@ -383,9 +444,9 @@
 
 				<center>
 
-					<b:commandButton action="#{GrupoController.gravarGrupo()}"
+					<b:commandButton action="#{LaudoController.gravarLaudo()}"
 						icon="glyphicon-ok" size="sm" look="success" value="Incluir"
-						style="float:left" />
+						style="float:left" rendered="#{LaudoController.tipo2  == 1}" />
 
 					<b:commandButton action="#{GrupoController.alterarGrupo()}"
 						icon="glyphicon-ok" size="sm" value="Alterar" look="success"

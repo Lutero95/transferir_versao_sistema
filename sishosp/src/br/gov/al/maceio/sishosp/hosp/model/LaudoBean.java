@@ -41,11 +41,6 @@ public class LaudoBean implements Serializable {
 		cid2 = new CidBean();
 		cid3 = new CidBean();
 	}
-	
-	public LaudoBean(Integer mes_inicio){
-		this.mes_inicio = mes_inicio;
-		
-	}
 
 	public Integer getId() {
 		return id;
