@@ -13,18 +13,20 @@ public class ConnectionFactory {
 
     public static Connection getConnection() throws ProjetoException {
 
+    	//LOCAL
         String url = "jdbc:postgresql://localhost:5432/sishosp";
         String usuario = "postgres";
         String senha  = "post";	
       
         //String senha = "engetron";
      
-    /*
-        String url = "jdbc:postgresql://postgres-beautyclinic.jelasticlw.com.br/beautycl_banco";
-        String usuario = "webadmin";
-        String senha = "JWoarnjpxB";
-      
-      */  try {
+        /*
+     	//NUVEM
+    	String url = "jdbc:postgresql://localhost:5432/airmobco_ehosp";
+        String usuario = "airmobco_data";
+        String senha = "ehosp2018$$";
+         */
+        try {
             Class.forName("org.postgresql.Driver");
             Connection con;
             con = DriverManager.getConnection(url, usuario, senha);
