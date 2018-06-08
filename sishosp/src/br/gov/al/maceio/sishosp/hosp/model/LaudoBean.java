@@ -7,193 +7,103 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 
 public class LaudoBean implements Serializable {
 
-	private Integer id_apac;
-	private String apac;
-	private Integer codmedico;
-	private String unidade;
-	private String cid10_1;
-	private String cid10_2;
-	private String cid10_3;
-	private Integer mesvenc;
-	private Integer anovenc;
-	private Date dtasolicitacao;
-	private String assinaturas;
-	private String situacao;
-	private String tipo;
+	private Integer id;
+	private String recuso;
+	private Date data_solicitacao;
+	private Integer mes_inicio;
+	private Integer ano_inicio;
+	private Integer mes_final;
+	private Integer ano_final;
+	private Integer periodo;
 	private String obs;
-	private Integer codproc;
-	private String modelo;
-	private Integer codfornecedor;
-	private Double valor;
-	private Integer qtd;
-	private String nota;
-	private Date dtautorizacao;
-	private Date dtavencimento;
-	private String sta;
-	private Integer codequipamento;
-	private String categoria;
-	private String recurso;
-	private Integer codgrupo;
-	private Integer codempresa;
-	private String desceApac;
-	private Integer codLaudoBpi;
-	private String descBpi;
-	private String numeroAutorizacao;
-
-	// LAUDO DIGITA
-	private Integer diasConceder;
-	private Integer codLaudoDigita;
-	private Date dtainicio;
-	private Date dtafim;
-	private Integer Prorrogar;
-	private boolean laudo;
 
 	// HERDADOS
 	private PacienteBean paciente;
-	private ProgramaBean programa;
-	private ProfissaoBean profissao;
-	private FuncionarioBean profissional;
-	private GrupoBean grupo;
-	private ProcedimentoBean procedimento;
-	private FornecedorBean fornecedor;
-	private CidBean cid;
-	private EquipamentoBean equipamento;
-	private EquipeBean equipe;
-	private ProgramaBean programaBuscar;
+	private ProcedimentoBean procedimento_primario;
+	private ProcedimentoBean procedimento_secundario1;
+	private ProcedimentoBean procedimento_secundario2;
+	private ProcedimentoBean procedimento_secundario3;
+	private ProcedimentoBean procedimento_secundario4;
+	private ProcedimentoBean procedimento_secundario5;
+	private CidBean cid1;
+	private CidBean cid2;
+	private CidBean cid3;
 
 	public LaudoBean() {
-
-		this.procedimento = null;
-		this.grupo = null;
-		this.programa = null;
-		this.profissional = null;
-		situacao = "P";
-		// this.fornecedor = null;
-		this.cid = null;
-		this.paciente = null;
-		this.dtautorizacao = null;
-		fornecedor = new FornecedorBean();
-		equipamento = new EquipamentoBean();
-		this.equipe = null;
-		this.programaBuscar = new ProgramaBean();
-		// paciente = new PacienteBean();
-		// programa = new ProgramaBean();
-		// profissao = new ProfissaoBean();
-		// grupo = new GrupoBean();
-		// procedimento = new ProcedimentoBean();
-		// fornecedor = new FornecedorBean();
+		paciente = new PacienteBean();
+		procedimento_primario = new ProcedimentoBean();
+		procedimento_secundario1 = new ProcedimentoBean();
+		procedimento_secundario2 = new ProcedimentoBean();
+		procedimento_secundario3 = new ProcedimentoBean();
+		procedimento_secundario4 = new ProcedimentoBean();
+		procedimento_secundario5 = new ProcedimentoBean();
+		cid1 = new CidBean();
+		cid2 = new CidBean();
+		cid3 = new CidBean();
 	}
 
-	public String getDesceApac() {
-		return desceApac;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setDesceApac(String desceApac) {
-		this.desceApac = desceApac;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public Integer getCodLaudoBpi() {
-		return codLaudoBpi;
+	public String getRecuso() {
+		return recuso;
 	}
 
-	public void setCodLaudoBpi(Integer codLaudoBpi) {
-		this.codLaudoBpi = codLaudoBpi;
+	public void setRecuso(String recuso) {
+		this.recuso = recuso;
 	}
 
-	public String getDescBpi() {
-		return descBpi;
+	public Date getData_solicitacao() {
+		return data_solicitacao;
 	}
 
-	public void setDescBpi(String descBpi) {
-		this.descBpi = descBpi;
+	public void setData_solicitacao(Date data_solicitacao) {
+		this.data_solicitacao = data_solicitacao;
 	}
 
-	public Integer getId_apac() {
-		return id_apac;
+	public Integer getMes_inicio() {
+		return mes_inicio;
 	}
 
-	public void setId_apac(Integer id_apac) {
-		this.id_apac = id_apac;
+	public void setMes_inicio(Integer mes_inicio) {
+		this.mes_inicio = mes_inicio;
 	}
 
-	public String getApac() {
-		return apac;
+	public Integer getAno_inicio() {
+		return ano_inicio;
 	}
 
-	public void setApac(String apac) {
-		this.apac = apac;
+	public void setAno_inicio(Integer ano_inicio) {
+		this.ano_inicio = ano_inicio;
 	}
 
-	public String getUnidade() {
-		return unidade;
+	public Integer getMes_final() {
+		return mes_final;
 	}
 
-	public void setUnidade(String unidade) {
-		this.unidade = unidade;
+	public void setMes_final(Integer mes_final) {
+		this.mes_final = mes_final;
 	}
 
-	public String getCid10_1() {
-		return cid10_1;
+	public Integer getAno_final() {
+		return ano_final;
 	}
 
-	public void setCid10_1(String cid10_1) {
-		this.cid10_1 = cid10_1;
+	public void setAno_final(Integer ano_final) {
+		this.ano_final = ano_final;
 	}
 
-	public String getCid10_2() {
-		return cid10_2;
+	public Integer getPeriodo() {
+		return periodo;
 	}
 
-	public void setCid10_2(String cid10_2) {
-		this.cid10_2 = cid10_2;
-	}
-
-	public String getCid10_3() {
-		return cid10_3;
-	}
-
-	public void setCid10_3(String cid10_3) {
-		this.cid10_3 = cid10_3;
-	}
-
-	public Integer getMesvenc() {
-		return mesvenc;
-	}
-
-	public void setMesvenc(Integer mesvenc) {
-		this.mesvenc = mesvenc;
-	}
-
-	public Integer getAnovenc() {
-		return anovenc;
-	}
-
-	public void setAnovenc(Integer anovenc) {
-		this.anovenc = anovenc;
-	}
-
-	public String getAssinaturas() {
-		return assinaturas;
-	}
-
-	public void setAssinaturas(String assinaturas) {
-		this.assinaturas = assinaturas;
-	}
-
-	public String getSituacao() {
-		return situacao;
-	}
-
-	public void setSituacao(String situacao) {
-		this.situacao = situacao;
-	}
-
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
+	public void setPeriodo(Integer periodo) {
+		this.periodo = periodo;
 	}
 
 	public String getObs() {
@@ -204,110 +114,6 @@ public class LaudoBean implements Serializable {
 		this.obs = obs;
 	}
 
-	public Integer getCodproc() {
-		return codproc;
-	}
-
-	public void setCodproc(Integer codproc) {
-		this.codproc = codproc;
-	}
-
-	public String getModelo() {
-		return modelo;
-	}
-
-	public void setModelo(String modelo) {
-		this.modelo = modelo;
-	}
-
-	public Integer getCodfornecedor() {
-		return codfornecedor;
-	}
-
-	public void setCodfornecedor(Integer codfornecedor) {
-		this.codfornecedor = codfornecedor;
-	}
-
-	public Double getValor() {
-		return valor;
-	}
-
-	public void setValor(Double valor) {
-		this.valor = valor;
-	}
-
-	public Integer getQtd() {
-		return qtd;
-	}
-
-	public void setQtd(Integer qtd) {
-		this.qtd = qtd;
-	}
-
-	public String getNota() {
-		return nota;
-	}
-
-	public void setNota(String nota) {
-		this.nota = nota;
-	}
-
-	public String getSta() {
-		return sta;
-	}
-
-	public void setSta(String sta) {
-		this.sta = sta;
-	}
-
-	public Integer getCodequipamento() {
-		return codequipamento;
-	}
-
-	public void setCodequipamento(Integer codequipamento) {
-		this.codequipamento = codequipamento;
-	}
-
-	public String getCategoria() {
-		return categoria;
-	}
-
-	public void setCategoria(String categoria) {
-		this.categoria = categoria;
-	}
-
-	public String getRecurso() {
-		return recurso;
-	}
-
-	public void setRecurso(String recurso) {
-		this.recurso = recurso;
-	}
-
-	public Integer getCodgrupo() {
-		return codgrupo;
-	}
-
-	public void setCodgrupo(Integer codgrupo) {
-		this.codgrupo = codgrupo;
-	}
-
-	public Integer getCodempresa() {
-		return codempresa;
-	}
-
-	public void setCodempresa(Integer codempresa) {
-		this.codempresa = codempresa;
-	}
-
-	public Integer getCodmedico() {
-		return codmedico;
-	}
-
-	public void setCodmedico(Integer codmedico) {
-		this.codmedico = codmedico;
-	}
-
 	public PacienteBean getPaciente() {
 		return paciente;
 	}
@@ -316,164 +122,81 @@ public class LaudoBean implements Serializable {
 		this.paciente = paciente;
 	}
 
-	public Date getDtasolicitacao() {
-		return dtasolicitacao;
+	public ProcedimentoBean getProcedimento_primario() {
+		return procedimento_primario;
 	}
 
-	public void setDtasolicitacao(Date dtasolicitacao) {
-		this.dtasolicitacao = dtasolicitacao;
+	public void setProcedimento_primario(ProcedimentoBean procedimento_primario) {
+		this.procedimento_primario = procedimento_primario;
 	}
 
-	public Date getDtautorizacao() {
-		return dtautorizacao;
+	public ProcedimentoBean getProcedimento_secundario1() {
+		return procedimento_secundario1;
 	}
 
-	public void setDtautorizacao(Date dtautorizacao) {
-		this.dtautorizacao = dtautorizacao;
+	public void setProcedimento_secundario1(
+			ProcedimentoBean procedimento_secundario1) {
+		this.procedimento_secundario1 = procedimento_secundario1;
 	}
 
-	public ProgramaBean getPrograma() {
-		return programa;
+	public ProcedimentoBean getProcedimento_secundario2() {
+		return procedimento_secundario2;
 	}
 
-	public void setPrograma(ProgramaBean programa) {
-		this.programa = programa;
+	public void setProcedimento_secundario2(
+			ProcedimentoBean procedimento_secundario2) {
+		this.procedimento_secundario2 = procedimento_secundario2;
 	}
 
-	public ProfissaoBean getProfissao() {
-		return profissao;
+	public ProcedimentoBean getProcedimento_secundario3() {
+		return procedimento_secundario3;
 	}
 
-	public void setProfissao(ProfissaoBean profissao) {
-		this.profissao = profissao;
+	public void setProcedimento_secundario3(
+			ProcedimentoBean procedimento_secundario3) {
+		this.procedimento_secundario3 = procedimento_secundario3;
 	}
 
-	public FuncionarioBean getProfissional() {
-		return profissional;
+	public ProcedimentoBean getProcedimento_secundario4() {
+		return procedimento_secundario4;
 	}
 
-	public void setProfissional(FuncionarioBean profissional) {
-		this.profissional = profissional;
+	public void setProcedimento_secundario4(
+			ProcedimentoBean procedimento_secundario4) {
+		this.procedimento_secundario4 = procedimento_secundario4;
 	}
 
-	public GrupoBean getGrupo() {
-		return grupo;
+	public ProcedimentoBean getProcedimento_secundario5() {
+		return procedimento_secundario5;
 	}
 
-	public void setGrupo(GrupoBean grupo) {
-		this.grupo = grupo;
+	public void setProcedimento_secundario5(
+			ProcedimentoBean procedimento_secundario5) {
+		this.procedimento_secundario5 = procedimento_secundario5;
 	}
 
-	public ProcedimentoBean getProcedimento() {
-		return procedimento;
+	public CidBean getCid1() {
+		return cid1;
 	}
 
-	public void setProcedimento(ProcedimentoBean procedimento) {
-		this.procedimento = procedimento;
+	public void setCid1(CidBean cid1) {
+		this.cid1 = cid1;
 	}
 
-	public FornecedorBean getFornecedor() {
-		return fornecedor;
+	public CidBean getCid2() {
+		return cid2;
 	}
 
-	public void setFornecedor(FornecedorBean fornecedor) {
-		this.fornecedor = fornecedor;
+	public void setCid2(CidBean cid2) {
+		this.cid2 = cid2;
 	}
 
-	public Date getDtavencimento() {
-		return dtavencimento;
+	public CidBean getCid3() {
+		return cid3;
 	}
 
-	public void setDtavencimento(Date dtavencimento) {
-		this.dtavencimento = dtavencimento;
-	}
-
-	public CidBean getCid() {
-		return cid;
-	}
-
-	public void setCid(CidBean cid) {
-		this.cid = cid;
-	}
-
-	public EquipamentoBean getEquipamento() {
-		return equipamento;
-	}
-
-	public void setEquipamento(EquipamentoBean equipamento) {
-		this.equipamento = equipamento;
-	}
-
-	public String getNumeroAutorizacao() {
-		return numeroAutorizacao;
-	}
-
-	public void setNumeroAutorizacao(String numeroAutorizacao) {
-		this.numeroAutorizacao = numeroAutorizacao;
-	}
-
-	public EquipeBean getEquipe() {
-		return equipe;
-	}
-
-	public void setEquipe(EquipeBean equipe) {
-		this.equipe = equipe;
-	}
-
-	public Integer getProrrogar() {
-		return Prorrogar;
-	}
-
-	public void setProrrogar(Integer prorrogar) {
-		Prorrogar = prorrogar;
-	}
-
-	public Date getDtainicio() {
-		return dtainicio;
-	}
-
-	public void setDtainicio(Date dtainicio) {
-		this.dtainicio = dtainicio;
-	}
-
-	public Date getDtafim() {
-		return dtafim;
-	}
-
-	public void setDtafim(Date dtafim) {
-		this.dtafim = dtafim;
-	}
-
-	public Integer getCodLaudoDigita() {
-		return codLaudoDigita;
-	}
-
-	public void setCodLaudoDigita(Integer codLaudoDigita) {
-		this.codLaudoDigita = codLaudoDigita;
-	}
-
-	public Integer getDiasConceder() {
-		return diasConceder;
-	}
-
-	public void setDiasConceder(Integer diasConceder) {
-		this.diasConceder = diasConceder;
-	}
-
-	public ProgramaBean getProgramaBuscar() {
-		return programaBuscar;
-	}
-
-	public void setProgramaBuscar(ProgramaBean programaBuscar) {
-		this.programaBuscar = programaBuscar;
-	}
-
-	public boolean isLaudo() {
-		return laudo;
-	}
-
-	public void setLaudo(boolean laudo) {
-		this.laudo = laudo;
+	public void setCid3(CidBean cid3) {
+		this.cid3 = cid3;
 	}
 
 }

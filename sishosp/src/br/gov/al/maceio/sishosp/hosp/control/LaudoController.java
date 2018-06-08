@@ -50,6 +50,7 @@ public class LaudoController implements Serializable {
 	private CidBean cid;
 	private EquipamentoBean equipamento;
 	private String cabecalho;
+	private Integer mes_inicio;
 
 	// LISTAS
 	private List<LaudoBean> listaLaudo;
@@ -83,6 +84,7 @@ public class LaudoController implements Serializable {
 		programa = new ProgramaBean();
 		grupo = new GrupoBean();
 		this.tipoAt = null;// new TipoAtendimentoBean();
+		mes_inicio = 0;
 
 		// BUSCA
 		tipo = "";
@@ -337,9 +339,9 @@ public class LaudoController implements Serializable {
 
 	public void calcularDias() {
 		try {
-			if (laudo.getProrrogar() != null) {
-				Integer dias = this.laudo.getProrrogar();
-				Date dataFim = this.laudo.getDtasolicitacao();
+			if (laudo.getPeriodo() != null) {
+				Integer dias = this.laudo.getPeriodo();
+				Date dataFim = this.laudo.getData_solicitacao();
 
 				Calendar cl = Calendar.getInstance();
 				cl.setTime(dataFim);
@@ -347,24 +349,25 @@ public class LaudoController implements Serializable {
 
 				Date dataFinal = cl.getTime();
 
-				this.laudo.setDtafim(dataFinal);
+				// this.laudo.setDtafim(dataFinal);
 			}
 		} catch (Exception ex) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 					"Informe a Data de autorização.", "Aviso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			this.laudo.setProrrogar(null);
+			// this.laudo.setProrrogar(null);
 		}
 
 	}
 
 	public String redirectInsert() {
-		return "cadastroLaudo?faces-redirect=true&amp;tipo2=" + this.tipo2;
+		System.out.println("tipo2: "+tipo2);
+		return "cadastroLaudoDigita?faces-redirect=true&amp;tipo2=" + this.tipo2;
 	}
 
 	public String redirectEdit() {
-		return "cadastroLaudo?faces-redirect=true&amp;id_apac="
-				+ this.laudo.getId_apac() + "&amp;tipo2=" + tipo2;
+		return "cadastroLaudo?faces-redirect=true&amp;id="
+				+ this.laudo.getId() + "&amp;tipo2=" + tipo2;
 	}
 
 	public void getEditLaudo() throws ProjetoException {
@@ -415,22 +418,64 @@ public class LaudoController implements Serializable {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void calcularDiasCalendario() {
-		if (laudo.getDtasolicitacao() != null) {
-			Date dataDoUsuario = this.laudo.getDtasolicitacao();
+	// public void calcularDiasCalendario() {
+	// if (laudo.getDtasolicitacao() != null) {
+	// Date dataDoUsuario = this.laudo.getDtasolicitacao();
+	//
+	// // Atrav�s do Calendar, trabalhamos a data informada e adicionamos 1
+	// // dia nela
+	// Calendar c = Calendar.getInstance();
+	// c.setTime(dataDoUsuario);
+	// c.add(Calendar.MONTH, getLaudo().getProcedimento()
+	// .getValidade_laudo());
+	// c.add(Calendar.DAY_OF_MONTH, -1);
+	// // Obtemos a data alterada
+	// dataDoUsuario = c.getTime();
+	//
+	// this.laudo.setDtavencimento(dataDoUsuario);
+	// }
+	// }
+	public void calcularPeriodoLaudo() {
+		laudo.setMes_inicio(11);
+		laudo.setPeriodo(90);
+		// System.out.println("MES INICIO OK: "+mes_inicio);
+		System.out.println("MES INICIO: "+laudo.getMes_inicio());
+		System.out.println("ANO INICIO: " + laudo.getAno_inicio());
+		System.out.println("PERIODO: "+laudo.getPeriodo());
+		if (laudo.getPeriodo() != null) {
 
-			// Atrav�s do Calendar, trabalhamos a data informada e adicionamos 1
-			// dia nela
-			Calendar c = Calendar.getInstance();
-			c.setTime(dataDoUsuario);
-			c.add(Calendar.MONTH, getLaudo().getProcedimento()
-					.getValidade_laudo());
-			c.add(Calendar.DAY_OF_MONTH, -1);
-			// Obtemos a data alterada
-			dataDoUsuario = c.getTime();
+			int periodo = laudo.getPeriodo() / 30;
+			int mes = 0;
+			int ano = 0;
 
-			this.laudo.setDtavencimento(dataDoUsuario);
+			if (laudo.getMes_inicio() + periodo > 12) {
+				mes = laudo.getMes_inicio() + periodo - 12;
+				ano = laudo.getAno_inicio() + 1;
+			} else {
+				mes = laudo.getMes_inicio() + periodo;
+				ano = laudo.getAno_inicio();
+			}
+
+			laudo.setMes_final(mes);
+			laudo.setAno_final(ano);
+			System.out.println("MES FINAL: " + laudo.getMes_final());
+			System.out.println("ANO FINAL: " + laudo.getAno_final());
+
 		}
+
+		else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Informe o período do Laudo.", "Aviso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+	}
+
+	public void listarLaudo() throws ProjetoException {
+
+		LaudoDAO fdao = new LaudoDAO();
+		listaLaudo = fdao.listaLaudos();
+
 	}
 
 	public Integer getAbaAtiva() {
@@ -538,10 +583,10 @@ public class LaudoController implements Serializable {
 	}
 
 	public String getCabecalho() {
-		if (this.tipo2 == 1) {
-			cabecalho = "CADASTRO DE APAC/BPI";
-		} else if (this.tipo2 == 2) {
-			cabecalho = "ALTERAR APAC/BPI";
+		if (this.tipo2 == 2) {
+			cabecalho = "Alterar Laudo";
+		} else {
+			cabecalho = "Cadastro de Laudo";
 		}
 		return cabecalho;
 	}
@@ -599,7 +644,8 @@ public class LaudoController implements Serializable {
 		if (listaLaudoDigita == null) {
 
 			LaudoDAO fdao = new LaudoDAO();
-			listaLaudoDigita = fdao.listaLaudosDigita();
+			listaLaudoDigita = fdao.listaLaudos();
+
 		}
 		return listaLaudoDigita;
 	}
@@ -720,6 +766,14 @@ public class LaudoController implements Serializable {
 
 	public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
 		this.listaGruposProgramas = listaGruposProgramas;
+	}
+
+	public Integer getMes_inicio() {
+		return mes_inicio;
+	}
+
+	public void setMes_inicio(Integer mes_inicio) {
+		this.mes_inicio = mes_inicio;
 	}
 
 }

@@ -32,9 +32,21 @@ public class AtendimentoDAO {
 			throws ProjetoException {
 
 		String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
-				+ " a.codprograma, pr.descprograma, situacao, a.codtipoatendimento, t.desctipoatendimento,"
+				+ " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
 				+ " a.codequipe, e.descequipe,"
-				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe"
+				+ " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
+
+				+ " case when "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and situacao is null) =  "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento) "
+				+ " then 'Atendimento Não Informado' "
+				+ " when "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento and situacao is not null) = "
+				+ " (select count(*) from hosp.atendimentos1 a1 where a1.id_atendimento = a.id_atendimento) "
+				+ " then 'Atendimento Informado' "
+				+ " else 'Atendimento Informado Parcialmente' "
+				+ " end as situacao "
+
 				+ " from hosp.atendimentos a"
 				+ " left join hosp.pacientes p on (p.id_paciente = a.codpaciente)"
 				+ " left join acl.funcionarios f on (f.id_funcionario = a.codmedico)"
