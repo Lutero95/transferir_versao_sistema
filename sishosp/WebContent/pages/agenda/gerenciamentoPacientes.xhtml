@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/template.xhtml">
+
+	<ui:define name="body">
+
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Pacientes</h4>
+				<hr />
+			</div>
+		</div>
+		<h:form id="formGerenPaci">
+
+			<b:row>
+
+				<b:column span="1">
+					<h:outputLabel for="prog" value="Programa" />
+				</b:column>
+
+				<b:column span="3">
+					<p:outputPanel id="outProg">
+						<p:autoComplete value="#{GerenciarPacienteController.gerenciarpaciente.programa}"
+							size="40" converter="conPrograma"
+							completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descPrograma}">
+							<p:ajax event="itemSelect"
+								listener="#{AgendaController.selectPrograma}"
+								update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo, 
+							:formGerenPaci:btBusGr, :formGerenPaci:outGrupo" />
+
+						</p:autoComplete>
+					</p:outputPanel>
+				</b:column>
+
+				<b:column span="1">
+					<p:commandButton id="btBusPr"
+						styleClass="btn btn-primary text-center"
+						style="height:25px" icon="ui-icon-search"
+						action="#{AgendaController.limparNaBuscaPrograma()}"
+						update=":formConsuProg" onclick="PF('dlgConsuProg').show();" />
+				</b:column>
+
+			</b:row>
+
+			<br></br>
+
+			<b:row>
+
+				<b:column span="1">
+					<h:outputLabel for="grupo" value="Grupo" />
+				</b:column>
+
+				<b:column span="3">
+					<p:outputPanel id="outGrupo">
+						<p:autoComplete value="#{GerenciarPacienteController.gerenciarpaciente.grupo}" size="40"
+							converter="conGrupo"
+							disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
+							completeMethod="#{AgendaController.listaGrupoAutoComplete}"
+							effect="fade" var="theme" forceSelection="true"
+							minQueryLength="1" itemValue="#{theme}"
+							itemLabel="#{theme.descGrupo}">
+							<p:ajax event="itemSelect"
+								listener="#{AgendaController.selectGrupo}"
+								update=":formGerenPaci:outGrupo" />
+
+						</p:autoComplete>
+					</p:outputPanel>
+				</b:column>
+
+				<b:column span="1">
+					<p:commandButton id="btBusGr"
+						styleClass="btn btn-primary text-center" style="height:25px"
+						icon="ui-icon-search"
+						disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
+						action="#{AgendaController.limparNaBuscaGrupo()}"
+						update=":formGerenPaci" onclick="PF('dlgConsuGrop').show();" />
+				</b:column>
+
+			</b:row>
+
+			<br></br>
+
+			<b:row>
+
+				<p:outputPanel>
+					<b:column span="1">
+						<h:outputLabel for="situacao" value="Situacao" />
+					</b:column>
+					<b:column span="2">
+						<p:selectOneRadio value="#{AgendaController.agenda.turno}">
+							<f:selectItem itemLabel="Todos" itemValue="T" />
+							<f:selectItem itemLabel="Ativos" itemValue="A" />
+							<f:selectItem itemLabel="Desligados" itemValue="D" />
+						</p:selectOneRadio>
+					</b:column>
+				</p:outputPanel>
+			</b:row>
+
+			<br></br>
+
+			<b:row>
+
+				<b:column span="2">
+					<b:commandButton value="Inserir" style="margin-top:5px;"
+						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
+						action="#{AgendaController.preparaConfirmar()}" />
+				</b:column>
+
+				<b:column span="2">
+					<b:commandButton value="Renovar" style="margin-top:5px;"
+						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
+						action="#{AgendaController.preparaConfirmar()}" />
+				</b:column>
+
+				<b:column span="2">
+					<b:commandButton value="Desligar" style="margin-top:5px;"
+						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
+						action="#{AgendaController.preparaConfirmar()}" />
+				</b:column>
+
+			</b:row>
+
+
+			<p:panelGrid columns="1" styleClass="semBorda"
+				style="margin-top:25px">
+				<h:outputLabel value="Novo(s) Agendamento(s)" />
+				<p:dataTable id="dtNovosAg" resizableColumns="true"
+					value="#{AgendaController.listaNovosAgendamentos}" var="agend"
+					emptyMessage="Sem registros.">
+					<p:column headerText="Data">
+						<h:outputLabel value="#{agend.dataAtendimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputLabel>
+					</p:column>
+
+					<p:column headerText="Turno">
+						<h:outputLabel value="Manhã" rendered="#{agend.turno == 'M'}" />
+						<h:outputLabel value="Tarde" rendered="#{agend.turno == 'T'}" />
+					</p:column>
+
+					<p:column headerText="Cód. Tipo Atend.">
+						<h:outputLabel value="#{agend.tipoAt.idTipo}" />
+					</p:column>
+
+					<p:column headerText="Tipo de Atendimento">
+						<h:outputLabel value="#{agend.tipoAt.descTipoAt}" />
+					</p:column>
+
+					<p:column headerText="Observação">
+
+						<h:outputLabel value="#{agend.observacao}" />
+					</p:column>
+				</p:dataTable>
+
+			</p:panelGrid>
+
+			<center>
+				<b:messages value="Error" id="msgFeriado"></b:messages>
+			</center>
+
+			<br></br>
+
+			<center>
+
+				<b:commandButton value="Gravar" look="success" size="sm" id="b1"
+					icon="glyphicon-ok" action="#{AgendaController.gravarAgenda()}"
+					update=":formGerenPaci" style="float:left" />
+
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					size="sm" immediate="true" look="info" style="float:right"
+					update=":formGerenPaci"
+					actionListener="#{AgendaController.limparDados()}"
+					action="/pages/comum/selecaoSistema2.xhtml?faces-redirect=true">
+				</b:commandButton>
+
+			</center>
+		</h:form>
+
+		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+			modal="true">
+			<h:form id="formConsuProg">
+				<b:dataTable value="#{ProgramaController.listaProgramasUsuario()}"
+					var="prog" lang="pt-br" display="Nenhum Programa">
+
+					<h:column>
+						<f:facet name="header">
+                        Programa
+                    </f:facet>
+						<p:outputLabel value="#{prog.descPrograma}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                       Adicionar
+                    </f:facet>
+						<p:commandButton
+							update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo, 
+							:formGerenPaci:btBusGr, :formGerenPaci:outGrupo"
+							icon="ui-icon-check" title="Selecionar"
+							action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
+							onclick="PF('dlgConsuProg').hide();">
+							<f:setPropertyActionListener value="#{prog}"
+								target="#{AgendaController.agenda.programa}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+			modal="true">
+			<h:form id="formConsuGrop">
+				<b:dataTable value="#{AgendaController.listaGruposPorPrograma()}"
+					id="dtGrupo" var="grupo" lang="pt-br" display="Nenhum Grupo">
+
+					<h:column>
+						<f:facet name="header">
+                        Grupo
+                    </f:facet>
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Quantidade Frequência
+                    </f:facet>
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
+						<p:commandButton update=":formGerenPaci:outGrupo"
+							icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConsuGrop').hide();"
+							action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{AgendaController.agenda.grupo}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>
