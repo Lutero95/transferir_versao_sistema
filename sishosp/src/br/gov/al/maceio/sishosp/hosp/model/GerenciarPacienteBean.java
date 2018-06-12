@@ -10,6 +10,8 @@ public class GerenciarPacienteBean implements Serializable {
 	private Integer id;
 	private String status;
 	private Date data_operacao;
+	private Date data_solicitacao;
+	private Date data_cadastro;
 	private String observacao;
 	private String motivo_desligamento;
 	private String tipo;
@@ -125,6 +127,22 @@ public class GerenciarPacienteBean implements Serializable {
 
 	public void setLaudo(LaudoBean laudo) {
 		this.laudo = laudo;
+	}
+
+	public Date getData_solicitacao() {
+		return data_solicitacao;
+	}
+
+	public void setData_solicitacao(Date data_solicitacao) {
+		this.data_solicitacao = data_solicitacao;
+	}
+
+	public Date getData_cadastro() {
+		return data_cadastro;
+	}
+
+	public void setData_cadastro(Date data_cadastro) {
+		this.data_cadastro = data_cadastro;
 	}
 
 }

@@ -27,7 +27,8 @@
 
 				<b:column span="3">
 					<p:outputPanel id="outProg">
-						<p:autoComplete value="#{GerenciarPacienteController.gerenciarpaciente.programa}"
+						<p:autoComplete
+							value="#{GerenciarPacienteController.gerenciarpaciente.programa}"
 							size="40" converter="conPrograma"
 							completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
 							effect="fade" var="theme" forceSelection="true"
@@ -44,8 +45,8 @@
 
 				<b:column span="1">
 					<p:commandButton id="btBusPr"
-						styleClass="btn btn-primary text-center"
-						style="height:25px" icon="ui-icon-search"
+						styleClass="btn btn-primary text-center" style="height:25px"
+						icon="ui-icon-search"
 						action="#{AgendaController.limparNaBuscaPrograma()}"
 						update=":formConsuProg" onclick="PF('dlgConsuProg').show();" />
 				</b:column>
@@ -62,8 +63,9 @@
 
 				<b:column span="3">
 					<p:outputPanel id="outGrupo">
-						<p:autoComplete value="#{GerenciarPacienteController.gerenciarpaciente.grupo}" size="40"
-							converter="conGrupo"
+						<p:autoComplete					
+							value="#{GerenciarPacienteController.gerenciarpaciente.grupo}"
+							size="40" converter="conGrupo"
 							disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
 							completeMethod="#{AgendaController.listaGrupoAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
@@ -97,13 +99,24 @@
 						<h:outputLabel for="situacao" value="Situacao" />
 					</b:column>
 					<b:column span="2">
-						<p:selectOneRadio value="#{AgendaController.agenda.turno}">
+						<p:selectOneRadio value="#{GerenciarPacienteController.gerenciarpaciente.status}">
 							<f:selectItem itemLabel="Todos" itemValue="T" />
 							<f:selectItem itemLabel="Ativos" itemValue="A" />
 							<f:selectItem itemLabel="Desligados" itemValue="D" />
 						</p:selectOneRadio>
 					</b:column>
 				</p:outputPanel>
+			</b:row>
+			<br></br>
+
+			<b:row>
+
+				<b:column span="2">
+
+					<b:commandButton value="Buscar" icon="glyphicon-search"
+						action="#{AtendimentoController.consultarAtendimentos()}"
+						update=""></b:commandButton>
+				</b:column>
 			</b:row>
 
 			<br></br>
@@ -112,6 +125,12 @@
 
 				<b:column span="2">
 					<b:commandButton value="Inserir" style="margin-top:5px;"
+						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
+						action="#{AgendaController.preparaConfirmar()}" />
+				</b:column>
+
+				<b:column span="2">
+					<b:commandButton value="Alterar" style="margin-top:5px;"
 						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
 						action="#{AgendaController.preparaConfirmar()}" />
 				</b:column>
@@ -130,60 +149,70 @@
 
 			</b:row>
 
-
-			<p:panelGrid columns="1" styleClass="semBorda"
-				style="margin-top:25px">
-				<h:outputLabel value="Novo(s) Agendamento(s)" />
-				<p:dataTable id="dtNovosAg" resizableColumns="true"
-					value="#{AgendaController.listaNovosAgendamentos}" var="agend"
-					emptyMessage="Sem registros.">
-					<p:column headerText="Data">
-						<h:outputLabel value="#{agend.dataAtendimento}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputLabel>
-					</p:column>
-
-					<p:column headerText="Turno">
-						<h:outputLabel value="Manhã" rendered="#{agend.turno == 'M'}" />
-						<h:outputLabel value="Tarde" rendered="#{agend.turno == 'T'}" />
-					</p:column>
-
-					<p:column headerText="Cód. Tipo Atend.">
-						<h:outputLabel value="#{agend.tipoAt.idTipo}" />
-					</p:column>
-
-					<p:column headerText="Tipo de Atendimento">
-						<h:outputLabel value="#{agend.tipoAt.descTipoAt}" />
-					</p:column>
-
-					<p:column headerText="Observação">
-
-						<h:outputLabel value="#{agend.observacao}" />
-					</p:column>
-				</p:dataTable>
-
-			</p:panelGrid>
+			<br></br>
+			<br></br>
 
 			<center>
 				<b:messages value="Error" id="msgFeriado"></b:messages>
 			</center>
 
-			<br></br>
+			<b:dataTable id="dtNovosAg" searching="false"
+				value="#{GerenciarPacienteController.carregarPacientesInstituicao()}"
+				var="pacie" lang="pt-br" display="Nenhum Paciente">
 
-			<center>
+				<h:column>
+					<f:facet name="header">
+                        Paciente
+                    </f:facet>
+					<p:outputLabel value="#{pacie.paciente.nome}" />
+				</h:column>
 
-				<b:commandButton value="Gravar" look="success" size="sm" id="b1"
-					icon="glyphicon-ok" action="#{AgendaController.gravarAgenda()}"
-					update=":formGerenPaci" style="float:left" />
+				<h:column>
+					<f:facet name="header">
+                        CNS
+                    </f:facet>
+					<p:outputLabel value="#{pacie.paciente.cns}" />
+				</h:column>
 
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					size="sm" immediate="true" look="info" style="float:right"
-					update=":formGerenPaci"
-					actionListener="#{AgendaController.limparDados()}"
-					action="/pages/comum/selecaoSistema2.xhtml?faces-redirect=true">
-				</b:commandButton>
+				<h:column>
+					<f:facet name="header">
+                        Programa
+                    </f:facet>
+					<p:outputLabel value="#{pacie.paciente.cns}" />
+				</h:column>
 
-			</center>
+				<h:column>
+					<f:facet name="header">
+                        Grupo
+                    </f:facet>
+					<p:outputLabel value="#{pacie.grupo.descGrupo}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+                        Equipe
+                    </f:facet>
+					<p:outputLabel value="#{pacie.equipe.descEquipamento}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+                        Profissional
+                    </f:facet>
+					<p:outputLabel value="#{pacie.funcionario.nome}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+                        Situação
+                    </f:facet>
+					<p:outputLabel value="#{pacie.status}" />
+				</h:column>
+
+			</b:dataTable>
+
+
+
 		</h:form>
 
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
@@ -210,7 +239,7 @@
 							action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
 							onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
-								target="#{AgendaController.agenda.programa}" />
+								target="#{GerenciarPacienteController.gerenciarpaciente.programa}" />
 						</p:commandButton>
 					</h:column>
 

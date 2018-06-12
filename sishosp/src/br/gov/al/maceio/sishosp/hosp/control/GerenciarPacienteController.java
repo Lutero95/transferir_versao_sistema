@@ -39,10 +39,25 @@ public class GerenciarPacienteController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private GerenciarPacienteBean gerenciarpaciente;
+	private List<GerenciarPacienteBean> listaPacientes;
 	private GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
 
 	public GerenciarPacienteController() {
 		gerenciarpaciente = new GerenciarPacienteBean();
+		listaPacientes = null;
+	}
+
+	public List<GerenciarPacienteBean> carregarPacientesInstituicao()
+			throws ProjetoException {
+		System.out.println("LISTAR PACIENTES: "+listaPacientes);
+		if (listaPacientes == null) {
+			listaPacientes = gDao.carregarPacientesInstituicao();
+		}
+//		else {
+//			listaPacientes = gDao
+//					.carregarPacientesInstituicaoBusca(gerenciarpaciente);
+//		}
+		return listaPacientes;
 	}
 
 	public GerenciarPacienteBean getGerenciarpaciente() {
