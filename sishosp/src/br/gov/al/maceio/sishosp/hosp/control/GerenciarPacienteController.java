@@ -41,23 +41,65 @@ public class GerenciarPacienteController implements Serializable {
 	private GerenciarPacienteBean gerenciarpaciente;
 	private List<GerenciarPacienteBean> listaPacientes;
 	private GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
+	private String busca = "N";
+	private Boolean apenasLeitura;
 
 	public GerenciarPacienteController() {
 		gerenciarpaciente = new GerenciarPacienteBean();
-		listaPacientes = null;
+		gerenciarpaciente.setPrograma(null);
+		gerenciarpaciente.setStatus("T");
+		listaPacientes = new ArrayList<GerenciarPacienteBean>();
+		apenasLeitura = false;
 	}
 
-	public List<GerenciarPacienteBean> carregarPacientesInstituicao()
+	public void buscarPacientesInstituicao() throws ProjetoException {
+		busca = "S";
+		carregarPacientesInstituicao();
+		apenasLeitura = true;
+
+	}
+
+	public void limparBusca() throws ProjetoException {
+		apenasLeitura = false;
+	}
+
+	public List<GrupoBean> listaGrupoAutoComplete(String query)
 			throws ProjetoException {
-		System.out.println("LISTAR PACIENTES: "+listaPacientes);
-		if (listaPacientes == null) {
-			listaPacientes = gDao.carregarPacientesInstituicao();
+
+		GrupoDAO gDao = new GrupoDAO();
+
+		if (gerenciarpaciente.getPrograma().getIdPrograma() != null) {
+			return gDao.listarGruposAutoComplete(query,
+					this.gerenciarpaciente.getPrograma());
+		} else {
+			return null;
 		}
-//		else {
-//			listaPacientes = gDao
-//					.carregarPacientesInstituicaoBusca(gerenciarpaciente);
-//		}
-		return listaPacientes;
+
+	}
+
+	public List<GrupoBean> listaGrupoLista() throws ProjetoException {
+
+		GrupoDAO gDao = new GrupoDAO();
+		if (gerenciarpaciente.getPrograma() != null) {
+			if (gerenciarpaciente.getPrograma().getIdPrograma() != null) {
+				return gDao.listarGruposPorPrograma(this.gerenciarpaciente
+						.getPrograma().getIdPrograma());
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
+
+	}
+
+	public void carregarPacientesInstituicao() throws ProjetoException {
+		if (busca.equals("N")) {
+			listaPacientes = gDao.carregarPacientesInstituicao();
+		} else {
+			listaPacientes = gDao
+					.carregarPacientesInstituicaoBusca(gerenciarpaciente);
+		}
 	}
 
 	public GerenciarPacienteBean getGerenciarpaciente() {
@@ -66,6 +108,22 @@ public class GerenciarPacienteController implements Serializable {
 
 	public void setGerenciarpaciente(GerenciarPacienteBean gerenciarpaciente) {
 		this.gerenciarpaciente = gerenciarpaciente;
+	}
+
+	public List<GerenciarPacienteBean> getListaPacientes() {
+		return listaPacientes;
+	}
+
+	public void setListaPacientes(List<GerenciarPacienteBean> listaPacientes) {
+		this.listaPacientes = listaPacientes;
+	}
+
+	public Boolean getApenasLeitura() {
+		return apenasLeitura;
+	}
+
+	public void setApenasLeitura(Boolean apenasLeitura) {
+		this.apenasLeitura = apenasLeitura;
 	}
 
 }

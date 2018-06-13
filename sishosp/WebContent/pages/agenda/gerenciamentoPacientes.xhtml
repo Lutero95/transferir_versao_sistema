@@ -9,6 +9,11 @@
 
 <ui:composition template="../../template/template.xhtml">
 
+	<f:metadata>
+		<f:viewAction
+			action="#{GerenciarPacienteController.carregarPacientesInstituicao()}" />
+	</f:metadata>
+
 	<ui:define name="body">
 
 		<div class="panel-body">
@@ -27,7 +32,9 @@
 
 				<b:column span="3">
 					<p:outputPanel id="outProg">
-						<p:autoComplete
+						<p:autoComplete required="true"
+							requiredMessage="Escolha um programa!"
+							readonly="#{GerenciarPacienteController.apenasLeitura}"
 							value="#{GerenciarPacienteController.gerenciarpaciente.programa}"
 							size="40" converter="conPrograma"
 							completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
@@ -35,7 +42,6 @@
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descPrograma}">
 							<p:ajax event="itemSelect"
-								listener="#{AgendaController.selectPrograma}"
 								update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo, 
 							:formGerenPaci:btBusGr, :formGerenPaci:outGrupo" />
 
@@ -45,6 +51,7 @@
 
 				<b:column span="1">
 					<p:commandButton id="btBusPr"
+						disabled="#{GerenciarPacienteController.apenasLeitura}"
 						styleClass="btn btn-primary text-center" style="height:25px"
 						icon="ui-icon-search"
 						action="#{AgendaController.limparNaBuscaPrograma()}"
@@ -63,17 +70,17 @@
 
 				<b:column span="3">
 					<p:outputPanel id="outGrupo">
-						<p:autoComplete					
+						<p:autoComplete required="true"
+							requiredMessage="Escolha um grupo!"
 							value="#{GerenciarPacienteController.gerenciarpaciente.grupo}"
 							size="40" converter="conGrupo"
+							readonly="#{GerenciarPacienteController.apenasLeitura}"
 							disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
-							completeMethod="#{AgendaController.listaGrupoAutoComplete}"
+							completeMethod="#{GerenciarPacienteController.listaGrupoAutoComplete}"
 							effect="fade" var="theme" forceSelection="true"
 							minQueryLength="1" itemValue="#{theme}"
 							itemLabel="#{theme.descGrupo}">
-							<p:ajax event="itemSelect"
-								listener="#{AgendaController.selectGrupo}"
-								update=":formGerenPaci:outGrupo" />
+							<p:ajax event="itemSelect" update=":formGerenPaci:outGrupo" />
 
 						</p:autoComplete>
 					</p:outputPanel>
@@ -81,10 +88,10 @@
 
 				<b:column span="1">
 					<p:commandButton id="btBusGr"
+						readonly="#{GerenciarPacienteController.apenasLeitura}"
 						styleClass="btn btn-primary text-center" style="height:25px"
 						icon="ui-icon-search"
 						disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
-						action="#{AgendaController.limparNaBuscaGrupo()}"
 						update=":formGerenPaci" onclick="PF('dlgConsuGrop').show();" />
 				</b:column>
 
@@ -99,7 +106,9 @@
 						<h:outputLabel for="situacao" value="Situacao" />
 					</b:column>
 					<b:column span="2">
-						<p:selectOneRadio value="#{GerenciarPacienteController.gerenciarpaciente.status}">
+						<p:selectOneRadio required="true"
+							requiredMessage="Escolha a situação!"
+							value="#{GerenciarPacienteController.gerenciarpaciente.status}">
 							<f:selectItem itemLabel="Todos" itemValue="T" />
 							<f:selectItem itemLabel="Ativos" itemValue="A" />
 							<f:selectItem itemLabel="Desligados" itemValue="D" />
@@ -114,9 +123,19 @@
 				<b:column span="2">
 
 					<b:commandButton value="Buscar" icon="glyphicon-search"
-						action="#{AtendimentoController.consultarAtendimentos()}"
-						update=""></b:commandButton>
+						action="#{GerenciarPacienteController.buscarPacientesInstituicao()}"
+						update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, msgFeriado, dtNovosAg"></b:commandButton>
+
 				</b:column>
+
+				<b:column span="2">
+
+					<b:commandButton value="Limpar" icon="glyphicon-trash"
+						action="#{GerenciarPacienteController.limparBusca()}"
+						update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, msgFeriado, dtNovosAg"></b:commandButton>
+
+				</b:column>
+
 			</b:row>
 
 			<br></br>
@@ -125,25 +144,29 @@
 
 				<b:column span="2">
 					<b:commandButton value="Inserir" style="margin-top:5px;"
-						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
+						immediate="true" update=":formGerenPaci, msgFeriado"
+						icon="glyphicon-ok"
 						action="#{AgendaController.preparaConfirmar()}" />
 				</b:column>
 
 				<b:column span="2">
 					<b:commandButton value="Alterar" style="margin-top:5px;"
-						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
+						immediate="true" update=":formGerenPaci, msgFeriado"
+						icon="glyphicon-ok"
 						action="#{AgendaController.preparaConfirmar()}" />
 				</b:column>
 
 				<b:column span="2">
 					<b:commandButton value="Renovar" style="margin-top:5px;"
-						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
+						immediate="true" update=":formGerenPaci, msgFeriado"
+						icon="glyphicon-ok"
 						action="#{AgendaController.preparaConfirmar()}" />
 				</b:column>
 
 				<b:column span="2">
 					<b:commandButton value="Desligar" style="margin-top:5px;"
-						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
+						immediate="true" update=":formGerenPaci, msgFeriado"
+						icon="glyphicon-ok"
 						action="#{AgendaController.preparaConfirmar()}" />
 				</b:column>
 
@@ -157,8 +180,8 @@
 			</center>
 
 			<b:dataTable id="dtNovosAg" searching="false"
-				value="#{GerenciarPacienteController.carregarPacientesInstituicao()}"
-				var="pacie" lang="pt-br" display="Nenhum Paciente">
+				value="#{GerenciarPacienteController.listaPacientes}" var="pacie"
+				lang="pt-br" display="Nenhum Paciente">
 
 				<h:column>
 					<f:facet name="header">
@@ -236,7 +259,6 @@
 							update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo, 
 							:formGerenPaci:btBusGr, :formGerenPaci:outGrupo"
 							icon="ui-icon-check" title="Selecionar"
-							action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
 							onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
 								target="#{GerenciarPacienteController.gerenciarpaciente.programa}" />
@@ -250,7 +272,7 @@
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
 			modal="true">
 			<h:form id="formConsuGrop">
-				<b:dataTable value="#{AgendaController.listaGruposPorPrograma()}"
+				<b:dataTable value="#{GerenciarPacienteController.listaGrupoLista()}"
 					id="dtGrupo" var="grupo" lang="pt-br" display="Nenhum Grupo">
 
 					<h:column>
@@ -273,10 +295,9 @@
                     </f:facet>
 						<p:commandButton update=":formGerenPaci:outGrupo"
 							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsuGrop').hide();"
-							action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}">
+							onclick="PF('dlgConsuGrop').hide();">
 							<f:setPropertyActionListener value="#{grupo}"
-								target="#{AgendaController.agenda.grupo}" />
+								target="#{GerenciarPacienteController.gerenciarpaciente.grupo}" />
 						</p:commandButton>
 					</h:column>
 

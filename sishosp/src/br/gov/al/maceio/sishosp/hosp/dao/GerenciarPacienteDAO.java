@@ -82,7 +82,6 @@ public class GerenciarPacienteDAO {
 	public List<GerenciarPacienteBean> carregarPacientesInstituicaoBusca(
 			GerenciarPacienteBean gerenciar) throws ProjetoException {
 
-		int i = 0;
 		String sql = "select p.id, p.codprograma, p.codgrupo, g.descgrupo, p.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
 				+ " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro "
 				+ " from hosp.paciente_instituicao p "
@@ -94,12 +93,10 @@ public class GerenciarPacienteDAO {
 
 		if (gerenciar.getStatus().equals("A")) {
 			sql = sql + " and status = 'A'";
-			i++;
 		}
 
 		if (gerenciar.getStatus().equals("D")) {
 			sql = sql + " and status = 'D'";
-			i++;
 		}
 
 		List<GerenciarPacienteBean> lista = new ArrayList<>();
@@ -110,10 +107,6 @@ public class GerenciarPacienteDAO {
 
 			stmt.setInt(1, gerenciar.getPrograma().getIdPrograma());
 			stmt.setInt(2, gerenciar.getGrupo().getIdGrupo());
-
-			if (i == 1) {
-				stmt.setString(3, gerenciar.getStatus());
-			}
 
 			ResultSet rs = stmt.executeQuery();
 
