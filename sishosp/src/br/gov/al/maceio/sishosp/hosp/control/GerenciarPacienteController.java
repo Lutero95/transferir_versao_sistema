@@ -12,7 +12,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import net.bootsfaces.component.row.RowBeanInfo;
+
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -39,6 +42,7 @@ public class GerenciarPacienteController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private GerenciarPacienteBean gerenciarpaciente;
+	private GerenciarPacienteBean rowBean;
 	private List<GerenciarPacienteBean> listaPacientes;
 	private GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
 	private String busca = "N";
@@ -50,6 +54,7 @@ public class GerenciarPacienteController implements Serializable {
 		gerenciarpaciente.setStatus("T");
 		listaPacientes = new ArrayList<GerenciarPacienteBean>();
 		apenasLeitura = false;
+		rowBean = new GerenciarPacienteBean();
 	}
 
 	public void buscarPacientesInstituicao() throws ProjetoException {
@@ -102,6 +107,11 @@ public class GerenciarPacienteController implements Serializable {
 		}
 	}
 
+	public void onRowSelect(SelectEvent event) throws ProjetoException {
+		//IMPLEMENTAR ALGO SE PRECISAR
+		//System.out.println("rowbean: " + rowBean.getStatus());
+	}
+
 	public GerenciarPacienteBean getGerenciarpaciente() {
 		return gerenciarpaciente;
 	}
@@ -124,6 +134,22 @@ public class GerenciarPacienteController implements Serializable {
 
 	public void setApenasLeitura(Boolean apenasLeitura) {
 		this.apenasLeitura = apenasLeitura;
+	}
+
+	public String getBusca() {
+		return busca;
+	}
+
+	public void setBusca(String busca) {
+		this.busca = busca;
+	}
+
+	public GerenciarPacienteBean getRowBean() {
+		return rowBean;
+	}
+
+	public void setRowBean(GerenciarPacienteBean rowBean) {
+		this.rowBean = rowBean;
 	}
 
 }

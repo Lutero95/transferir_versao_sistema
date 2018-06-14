@@ -124,7 +124,7 @@
 
 					<b:commandButton value="Buscar" icon="glyphicon-search"
 						action="#{GerenciarPacienteController.buscarPacientesInstituicao()}"
-						update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, msgFeriado, dtNovosAg"></b:commandButton>
+						update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, msgFeriado, dtNovosAg, btnInserir"></b:commandButton>
 
 				</b:column>
 
@@ -144,29 +144,34 @@
 
 				<b:column span="2">
 					<b:commandButton value="Inserir" style="margin-top:5px;"
-						immediate="true" update=":formGerenPaci, msgFeriado"
+						id="btnInserir" immediate="true"
+						update=":formGerenPaci, msgFeriado"
+						disabled="#{GerenciarPacienteController.busca == 'N'}"
 						icon="glyphicon-ok"
 						action="#{AgendaController.preparaConfirmar()}" />
 				</b:column>
 
 				<b:column span="2">
 					<b:commandButton value="Alterar" style="margin-top:5px;"
-						immediate="true" update=":formGerenPaci, msgFeriado"
-						icon="glyphicon-ok"
+						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
+						id="btnAlterar" immediate="true"
+						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
 						action="#{AgendaController.preparaConfirmar()}" />
 				</b:column>
 
 				<b:column span="2">
 					<b:commandButton value="Renovar" style="margin-top:5px;"
-						immediate="true" update=":formGerenPaci, msgFeriado"
-						icon="glyphicon-ok"
+						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
+						id="btnRenovar" immediate="true"
+						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
 						action="#{AgendaController.preparaConfirmar()}" />
 				</b:column>
 
 				<b:column span="2">
 					<b:commandButton value="Desligar" style="margin-top:5px;"
-						immediate="true" update=":formGerenPaci, msgFeriado"
-						icon="glyphicon-ok"
+						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
+						id="btnDesligar" immediate="true"
+						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
 						action="#{AgendaController.preparaConfirmar()}" />
 				</b:column>
 
@@ -179,60 +184,67 @@
 				<b:messages value="Error" id="msgFeriado"></b:messages>
 			</center>
 
-			<b:dataTable id="dtNovosAg" searching="false"
+			<p:dataTable id="dtNovosAg"
 				value="#{GerenciarPacienteController.listaPacientes}" var="pacie"
-				lang="pt-br" display="Nenhum Paciente">
+				emptyMessage="Nenhuma Desistência" selectionMode="single"
+				selection="#{GerenciarPacienteController.rowBean}"
+				rowKey="#{pacie.id}" scrollable="true" scrollHeight="140">
 
-				<h:column>
+				<p:ajax event="rowSelect"
+					listener="#{GerenciarPacienteController.onRowSelect}"
+					update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnDesligar" />
+
+
+				<p:column width="10%">
 					<f:facet name="header">
-                        Paciente
-                    </f:facet>
-					<p:outputLabel value="#{pacie.paciente.nome}" />
-				</h:column>
+						<h:outputText style="font-size: 14px;" value="Paciente" />
+					</f:facet>
+					<h:outputText value="#{pacie.paciente.nome}"></h:outputText>
+				</p:column>
 
-				<h:column>
+				<p:column width="10%">
 					<f:facet name="header">
-                        CNS
-                    </f:facet>
-					<p:outputLabel value="#{pacie.paciente.cns}" />
-				</h:column>
+						<h:outputText style="font-size: 14px;" value="CNS" />
+					</f:facet>
+					<h:outputText value="#{pacie.paciente.cns}"></h:outputText>
+				</p:column>
 
-				<h:column>
+				<p:column width="10%">
 					<f:facet name="header">
-                        Programa
-                    </f:facet>
-					<p:outputLabel value="#{pacie.paciente.cns}" />
-				</h:column>
+						<h:outputText style="font-size: 14px;" value="Programa" />
+					</f:facet>
+					<h:outputText value="#{pacie.paciente.cns}"></h:outputText>
+				</p:column>
 
-				<h:column>
+				<p:column width="10%">
 					<f:facet name="header">
-                        Grupo
-                    </f:facet>
-					<p:outputLabel value="#{pacie.grupo.descGrupo}" />
-				</h:column>
+						<h:outputText style="font-size: 14px;" value="Grupo" />
+					</f:facet>
+					<h:outputText value="#{pacie.grupo.descGrupo}"></h:outputText>
+				</p:column>
 
-				<h:column>
+				<p:column width="10%">
 					<f:facet name="header">
-                        Equipe
-                    </f:facet>
-					<p:outputLabel value="#{pacie.equipe.descEquipamento}" />
-				</h:column>
+						<h:outputText style="font-size: 14px;" value="Equipe" />
+					</f:facet>
+					<h:outputText value="#{pacie.equipe.descEquipamento}"></h:outputText>
+				</p:column>
 
-				<h:column>
+				<p:column width="10%">
 					<f:facet name="header">
-                        Profissional
-                    </f:facet>
-					<p:outputLabel value="#{pacie.funcionario.nome}" />
-				</h:column>
+						<h:outputText style="font-size: 14px;" value="Profissional" />
+					</f:facet>
+					<h:outputText value="#{pacie.funcionario.nome}"></h:outputText>
+				</p:column>
 
-				<h:column>
+				<p:column width="10%">
 					<f:facet name="header">
-                        Situação
-                    </f:facet>
-					<p:outputLabel value="#{pacie.status}" />
-				</h:column>
+						<h:outputText style="font-size: 14px;" value="Situação" />
+					</f:facet>
+					<h:outputText value="#{pacie.status}"></h:outputText>
+				</p:column>
 
-			</b:dataTable>
+			</p:dataTable>
 
 
 
@@ -272,7 +284,8 @@
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
 			modal="true">
 			<h:form id="formConsuGrop">
-				<b:dataTable value="#{GerenciarPacienteController.listaGrupoLista()}"
+				<b:dataTable
+					value="#{GerenciarPacienteController.listaGrupoLista()}"
 					id="dtGrupo" var="grupo" lang="pt-br" display="Nenhum Grupo">
 
 					<h:column>
