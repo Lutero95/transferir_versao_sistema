@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/template.xhtml">
+
+	<ui:define name="body">
+
+
+		<h:form id="formInsercao">
+
+			<div class="panel-body">
+				<div class="sub-header">
+					<h4>Inserção de Paciente</h4>
+					<hr />
+				</div>
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel value="Laudo:" style="margin-top:5px" />
+					</b:column>
+
+					<b:column span="3">
+						<p:commandButton icon="ui-icon-search" update=":formConsuLaudo"
+							oncomplete="PF('dlgConsuLaudo').show();" />
+					</b:column>
+
+				</b:row>
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel value="Paciente:" style="margin-top:5px" />
+					</b:column>
+
+					<b:column span="3">
+						<h:outputLabel
+							value="#{InsercaoController.insercao.laudo.paciente.nome}"
+							style="margin-top:5px" />
+					</b:column>
+
+					<b:column span="1">
+						<h:outputLabel value="Procedimento:" style="margin-top:5px" />
+					</b:column>
+
+					<b:column span="3">
+						<h:outputLabel
+							value="#{InsercaoController.insercao.laudo.procedimento_primario.nomeProc}"
+							style="margin-top:5px" />
+					</b:column>
+
+				</b:row>
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel value="CID:" style="margin-top:5px" />
+					</b:column>
+
+					<b:column span="3">
+						<h:outputLabel
+							value="#{InsercaoController.insercao.laudo.cid1.descCid}"
+							style="margin-top:5px" />
+					</b:column>
+
+					<b:column span="1">
+						<h:outputLabel value="Vigência Inicial:" style="margin-top:5px" />
+					</b:column>
+
+					<b:column span="3">
+						<h:outputLabel
+							value="#{InsercaoController.insercao.laudo.vigencia_inicial}"
+							style="margin-top:5px" />
+					</b:column>
+
+					<b:column span="1">
+						<h:outputLabel value="Vigência Final" style="margin-top:5px" />
+					</b:column>
+
+					<b:column span="3">
+						<h:outputLabel
+							value="#{InsercaoController.insercao.laudo.vigencia_final}"
+							style="margin-top:5px" />
+					</b:column>
+
+				</b:row>
+
+
+
+				<p:panelGrid columns="6" styleClass="semBorda">
+					<h:outputLabel value="Período: " />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						pattern="dd/MM/yyyy"
+						value="#{BloqueioController.bloqueio.dataInicio}" />
+					<h:outputLabel value=" a " />
+					<p:calendar locale="pt" navigator="true" mask="true"
+						pattern="dd/MM/yyyy"
+						value="#{BloqueioController.bloqueio.dataFim}" />
+
+					<h:outputLabel value="Turno: " />
+					<p:selectOneMenu value="#{BloqueioController.bloqueio.turno}">
+						<f:selectItem itemLabel="MANHÃ" itemValue="M" />
+						<f:selectItem itemLabel="TARDE" itemValue="T" />
+						<f:selectItem itemLabel="AMBOS" itemValue="A" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<h:outputLabel value="Observação do bloqueio: " />
+					<p:inputTextarea rows="5" cols="50" maxlength="100"
+						value="#{BloqueioController.bloqueio.descBloqueio}"
+						autoResize="false" />
+				</p:panelGrid>
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<br></br>
+
+				<center>
+
+					<b:commandButton value="Gravar" look="success" size="sm" id="b1"
+						icon="glyphicon-ok" update=":formInsercao:msgError"
+						style="float:left" action="#{BloqueioController.gravarBloqueio()}" />
+
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" look="info" style="float:right"
+						actionListener="#{ConfigAgendaController.limparDados()}"
+						action="/pages/agenda/consBloqueios.xhtml?faces-redirect=true">
+					</b:commandButton>
+
+				</center>
+
+			</div>
+		</h:form>
+
+		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
+			modal="true">
+			<h:form id="formConsuLaudo">
+				<b:dataTable value="#{InsercaoController.listarLaudosVigentes()}"
+					id="dtLaudo" var="insercao" lang="pt-br" display="Nenhum Laudo">
+
+					<h:column>
+						<f:facet name="header">
+                        Paciente
+                    </f:facet>
+						<p:outputLabel value="#{insercao.laudo.paciente.nome}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        CNS
+                    </f:facet>
+						<p:outputLabel value="#{insercao.laudo.paciente.cns}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                        Adicionar
+                    </f:facet>
+						<p:commandButton update=":formInsercao" icon="ui-icon-check"
+							title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
+							action="#{InsercaoController.carregarLaudoPaciente()}">
+							<f:setPropertyActionListener value="#{insercao}"
+								target="#{InsercaoController.insercao}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

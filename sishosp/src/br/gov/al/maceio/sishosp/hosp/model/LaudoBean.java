@@ -16,6 +16,8 @@ public class LaudoBean implements Serializable {
 	private Integer ano_final;
 	private Integer periodo;
 	private String obs;
+	private Date vigencia_inicial;
+	private Date vigencia_final;
 
 	// HERDADOS
 	private PacienteBean paciente;
@@ -197,6 +199,22 @@ public class LaudoBean implements Serializable {
 
 	public void setCid3(CidBean cid3) {
 		this.cid3 = cid3;
+	}
+
+	public Date getVigencia_inicial() {
+		return vigencia_inicial;
+	}
+
+	public void setVigencia_inicial(Date vigencia_inicial) {
+		this.vigencia_inicial = vigencia_inicial;
+	}
+
+	public Date getVigencia_final() {
+		return vigencia_final;
+	}
+
+	public void setVigencia_final(Date vigencia_final) {
+		this.vigencia_final = vigencia_final;
 	}
 
 }
