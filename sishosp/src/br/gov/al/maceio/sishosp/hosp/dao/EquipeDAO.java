@@ -180,6 +180,38 @@ public class EquipeDAO {
 		return lista;
 	}
 
+	public List<EquipeBean> listarEquipeAutoComplete(String descricao)
+			throws ProjetoException {
+		List<EquipeBean> lista = new ArrayList<>();
+		String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe from hosp.equipe e "
+				+ " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where descequipe like ? order by descequipe ";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				EquipeBean equipe = new EquipeBean();
+				equipe.setCodEquipe(rs.getInt("id_equipe"));
+				equipe.setDescEquipe(rs.getString("descequipe"));
+
+				lista.add(equipe);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
+	}
+
 	public List<EquipeBean> listarEquipePorGrupo(Integer codgrupo)
 			throws ProjetoException {
 		List<EquipeBean> lista = new ArrayList<>();
@@ -309,5 +341,41 @@ public class EquipeDAO {
 			}
 		}
 
+	}
+
+	public ArrayList<FuncionarioBean> listarProfissionaisDaEquipe(Integer codequipe)
+			throws ProjetoException {
+		ArrayList<FuncionarioBean> lista = new ArrayList<>();
+		String sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade "
+				+ "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
+				+ "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
+				+ " where equipe = ? order by f.descfuncionario ";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, codequipe);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				FuncionarioBean func = new FuncionarioBean();
+				func.setId(rs.getLong("medico"));
+				func.setNome(rs.getString("descfuncionario"));
+				func.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+				func.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+
+				lista.add(func);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
 	}
 }

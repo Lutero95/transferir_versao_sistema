@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 
@@ -10,13 +11,17 @@ public class InsercaoPacienteBean implements Serializable {
 
 	// HERDADOS
 	private LaudoBean laudo;
+	private GrupoBean grupo;
+	private ProgramaBean programa;
 	private EquipeBean equipe;
-	private ArrayList<ProfissaoBean> listaProfissionais;
+	private ArrayList<String> diasSemana;
 
 	public InsercaoPacienteBean() {
 		laudo = new LaudoBean();
+		grupo = new GrupoBean();
+		programa = new ProgramaBean();
 		equipe = new EquipeBean();
-		listaProfissionais = new ArrayList<ProfissaoBean>();
+		diasSemana = new ArrayList<String>();
 	}
 
 	public LaudoBean getLaudo() {
@@ -35,13 +40,28 @@ public class InsercaoPacienteBean implements Serializable {
 		this.equipe = equipe;
 	}
 
-	public ArrayList<ProfissaoBean> getListaProfissionais() {
-		return listaProfissionais;
+	public GrupoBean getGrupo() {
+		return grupo;
 	}
 
-	public void setListaProfissionais(
-			ArrayList<ProfissaoBean> listaProfissionais) {
-		this.listaProfissionais = listaProfissionais;
+	public void setGrupo(GrupoBean grupo) {
+		this.grupo = grupo;
+	}
+
+	public ProgramaBean getPrograma() {
+		return programa;
+	}
+
+	public void setPrograma(ProgramaBean programa) {
+		this.programa = programa;
+	}
+
+	public ArrayList<String> getDiasSemana() {
+		return diasSemana;
+	}
+
+	public void setDiasSemana(ArrayList<String> diasSemana) {
+		this.diasSemana = diasSemana;
 	}
 
 }

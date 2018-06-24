@@ -29,6 +29,7 @@ public class FuncionarioBean implements Serializable {
 	private boolean primeiroAcesso;
 	private Boolean realizaAtendimento;
 	private String cns;
+	private String diasSemana;
 	
 	// LISTAS
 	private List<ProgramaBean> programa;
@@ -370,6 +371,14 @@ public class FuncionarioBean implements Serializable {
 
 	public void setCns(String cns) {
 		this.cns = cns;
+	}
+
+	public String getDiasSemana() {
+		return diasSemana;
+	}
+
+	public void setDiasSemana(String diasSemana) {
+		this.diasSemana = diasSemana;
 	}
 
 }

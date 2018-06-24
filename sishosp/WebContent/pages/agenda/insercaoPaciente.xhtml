@@ -9,14 +9,13 @@
 
 	<ui:define name="body">
 
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Inserção de Paciente</h4>
+				<hr />
+			</div>
 
-		<h:form id="formInsercao">
-
-			<div class="panel-body">
-				<div class="sub-header">
-					<h4>Inserção de Paciente</h4>
-					<hr />
-				</div>
+			<h:form id="formInsercao">
 
 				<b:row>
 
@@ -34,7 +33,7 @@
 				<b:row>
 
 					<b:column span="1">
-						<h:outputLabel value="Paciente:" style="margin-top:5px" />
+						<p:outputLabel value="Paciente:" style="margin-top:5px" />
 					</b:column>
 
 					<b:column span="3">
@@ -44,7 +43,7 @@
 					</b:column>
 
 					<b:column span="1">
-						<h:outputLabel value="Procedimento:" style="margin-top:5px" />
+						<p:outputLabel value="Procedimento:" style="margin-top:5px" />
 					</b:column>
 
 					<b:column span="3">
@@ -58,7 +57,7 @@
 				<b:row>
 
 					<b:column span="1">
-						<h:outputLabel value="CID:" style="margin-top:5px" />
+						<p:outputLabel value="CID:" style="margin-top:5px" />
 					</b:column>
 
 					<b:column span="3">
@@ -68,53 +67,191 @@
 					</b:column>
 
 					<b:column span="1">
-						<h:outputLabel value="Vigência Inicial:" style="margin-top:5px" />
+						<p:outputLabel value="Vigência Inicial:" style="margin-top:5px" />
 					</b:column>
 
 					<b:column span="3">
 						<h:outputLabel
 							value="#{InsercaoController.insercao.laudo.vigencia_inicial}"
-							style="margin-top:5px" />
+							style="margin-top:5px">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputLabel>
 					</b:column>
 
 					<b:column span="1">
-						<h:outputLabel value="Vigência Final" style="margin-top:5px" />
+						<p:outputLabel value="Vigência Final:" style="margin-top:5px" />
 					</b:column>
 
 					<b:column span="3">
 						<h:outputLabel
 							value="#{InsercaoController.insercao.laudo.vigencia_final}"
-							style="margin-top:5px" />
+							style="margin-top:5px">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputLabel>
 					</b:column>
 
 				</b:row>
 
+				<br></br>
+
+			</h:form>
+
+			<h:form id="formInsercao2">
+
+				<b:row>
+
+					<p:selectOneRadio id="console" style="margin-top:0px"
+						value="#{InsercaoController.tipo}" required="true"
+						requiredMessage="Informe o tipo de Pessoa">
+						<f:selectItem itemLabel="Por Equipe" itemValue="E" />
+						<f:selectItem itemLabel="Por Profissional" itemValue="P" />
+						<p:ajax update="outEquipe" event="click" />
+					</p:selectOneRadio>
+
+				</b:row>
+
+				<br></br>
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="prog" value="Programa:"
+							rendered="#{InsercaoController.tipo == 'E'}" />
+					</b:column>
+
+					<b:column span="3">
+						<p:outputPanel id="outProg">
+							<p:autoComplete value="#{InsercaoController.insercao.programa}"
+								rendered="#{InsercaoController.tipo == 'E'}" size="40"
+								converter="conPrograma"
+								completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descPrograma}">
+								<p:ajax event="itemSelect"
+									listener="#{AgendaController.selectPrograma}" update="" />
+
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
+
+				</b:row>
+
+				<br></br>
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="grupo" value="Grupo"
+							rendered="#{InsercaoController.tipo == 'E'}" />
+					</b:column>
+
+					<b:column span="3">
+						<p:outputPanel id="outGrupo">
+							<p:autoComplete value="#{InsercaoController.insercao.grupo}"
+								rendered="#{InsercaoController.tipo == 'E'}" size="40"
+								converter="conGrupo"
+								disabled="#{InsercaoController.insercao.programa==null}"
+								completeMethod="#{InsercaoController.listaGrupoAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descGrupo}">
+								<p:ajax event="itemSelect"
+									listener="#{AgendaController.selectGrupo}" update="" />
+
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
+
+				</b:row>
+
+				<br></br>
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="prog" value="Equipe:"
+							rendered="#{InsercaoController.tipo == 'E'}" />
+					</b:column>
+
+					<b:column span="3">
+						<p:outputPanel id="outEquipe"
+							rendered="#{InsercaoController.tipo == 'E'}">
+							<p:autoComplete value="#{InsercaoController.insercao.equipe}"
+								size="40" converter="conEquipe"
+								disabled="#{InsercaoController.insercao.grupo==null}"
+								completeMethod="#{InsercaoController.listaEquipeAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descEquipe}">
+								<p:ajax event="itemSelect" update="" />
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
+
+					<b:column span="1">
+						<p:commandButton icon="ui-icon-search" update="dtEquipe"
+							action="#{InsercaoController.listarProfissionaisEquipe()}" />
+					</b:column>
+
+				</b:row>
+
+				<br></br>
+				<br></br>
+
+				<b:row>
+
+					<b:column span="5">
+						<p:dataTable id="dtEquipe" resizableColumns="true"
+							rendered="#{InsercaoController.tipo == 'E'}"
+							value="#{InsercaoController.listaProfissionaisEquipe}" var="func"
+							emptyMessage="Sem registros.">
+
+							<p:column headerText="Profissional">
+								<h:outputLabel value="#{func.nome}" />
+							</p:column>
+
+							<p:column headerText="Especialidade">
+								<h:outputLabel value="#{func.especialidade.descEspecialidade}" />
+							</p:column>
+
+							<p:column headerText="Adicionar">
+								<p:commandButton update="" icon="ui-icon-check"
+									title="Selecionar" onclick="PF('dlgDiasAtendimento').show();">
+									<f:setPropertyActionListener value="#{func}"
+										target="#{InsercaoController.funcionario}" />
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+					</b:column>
+
+					<b:column span="1">
+					</b:column>
 
 
-				<p:panelGrid columns="6" styleClass="semBorda">
-					<h:outputLabel value="Período: " />
-					<p:calendar locale="pt" navigator="true" mask="true"
-						pattern="dd/MM/yyyy"
-						value="#{BloqueioController.bloqueio.dataInicio}" />
-					<h:outputLabel value=" a " />
-					<p:calendar locale="pt" navigator="true" mask="true"
-						pattern="dd/MM/yyyy"
-						value="#{BloqueioController.bloqueio.dataFim}" />
+					<b:column span="6">
+						<p:dataTable id="dtAdicionados" resizableColumns="true"
+							rendered="#{InsercaoController.tipo == 'E'}"
+							value="#{InsercaoController.listaProfissionaisAdicionados}"
+							var="func" emptyMessage="Sem registros.">
 
-					<h:outputLabel value="Turno: " />
-					<p:selectOneMenu value="#{BloqueioController.bloqueio.turno}">
-						<f:selectItem itemLabel="MANHÃ" itemValue="M" />
-						<f:selectItem itemLabel="TARDE" itemValue="T" />
-						<f:selectItem itemLabel="AMBOS" itemValue="A" />
-					</p:selectOneMenu>
-				</p:panelGrid>
+							<p:column headerText="Profissional">
+								<h:outputLabel value="#{func.nome}" />
+							</p:column>
 
-				<p:panelGrid columns="2" styleClass="semBorda">
-					<h:outputLabel value="Observação do bloqueio: " />
-					<p:inputTextarea rows="5" cols="50" maxlength="100"
-						value="#{BloqueioController.bloqueio.descBloqueio}"
-						autoResize="false" />
-				</p:panelGrid>
+							<p:column headerText="Especialidade">
+								<h:outputLabel value="#{func.especialidade.descEspecialidade}" />
+							</p:column>
+
+							<p:column headerText="Dias Atendimento">
+								<h:outputLabel value="#{func.diasSemana}" />
+							</p:column>
+
+						</p:dataTable>
+					</b:column>
+
+				</b:row>
 
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>
@@ -135,9 +272,10 @@
 					</b:commandButton>
 
 				</center>
+			</h:form>
 
-			</div>
-		</h:form>
+		</div>
+
 
 		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
 			modal="true">
@@ -172,6 +310,31 @@
 					</h:column>
 
 				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
+			modal="true">
+			<h:form id="formDiasAtendimento">
+				<p:selectManyCheckbox layout="grid" columns="7"
+					value="#{InsercaoController.insercao.diasSemana}">
+					<f:selectItem itemLabel="Domingo" itemValue="1" />
+					<f:selectItem itemLabel="Segunda" itemValue="2" />
+					<f:selectItem itemLabel="Terça" itemValue="3" />
+					<f:selectItem itemLabel="Quarta" itemValue="4" />
+					<f:selectItem itemLabel="Quinta" itemValue="5" />
+					<f:selectItem itemLabel="Sexta" itemValue="6" />
+					<f:selectItem itemLabel="Sábado" itemValue="7" />
+				</p:selectManyCheckbox>
+
+				<br></br>
+				<br></br>
+
+				<center>
+					<b:commandButton value="Adicionar" look="success" size="sm" id="b2"
+						icon="glyphicon-ok" update=":formInsercao2:dtAdicionados"
+						action="#{InsercaoController.adicionarFuncionario()}" />
+				</center>
 			</h:form>
 		</p:dialog>
 
