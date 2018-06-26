@@ -190,7 +190,8 @@
 					</b:column>
 
 					<b:column span="1">
-						<p:commandButton icon="ui-icon-search" update="dtEquipe"
+						<p:commandButton icon="ui-icon-search"
+							update="dtEquipe, :formInsercao2:msgError"
 							action="#{InsercaoController.listarProfissionaisEquipe()}" />
 					</b:column>
 
@@ -216,11 +217,13 @@
 							</p:column>
 
 							<p:column headerText="Adicionar">
-								<p:commandButton update="" icon="ui-icon-check"
-									title="Selecionar" onclick="PF('dlgDiasAtendimento').show();">
-									<f:setPropertyActionListener value="#{func}"
-										target="#{InsercaoController.funcionario}" />
-								</p:commandButton>
+								<center>
+									<p:commandButton update="" icon="ui-icon-check" actionListener=""
+										title="Selecionar" onclick="PF('dlgDiasAtendimento').show();">
+										<f:setPropertyActionListener value="#{func}"
+											target="#{InsercaoController.funcionario}" />
+									</p:commandButton>
+								</center>
 							</p:column>
 
 						</p:dataTable>
@@ -253,6 +256,23 @@
 
 				</b:row>
 
+				<br></br>
+				<br></br>
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="obs" value="Observação" />
+					</b:column>
+
+					<b:column span="7">
+						<b:inputTextarea id="obs" rows="1"
+							value="#{InsercaoController.insercao.observacao}"
+							autoResize="false" />
+					</b:column>
+
+				</b:row>
+
 				<center>
 					<b:messages value="Error" id="msgError"></b:messages>
 				</center>
@@ -262,13 +282,13 @@
 				<center>
 
 					<b:commandButton value="Gravar" look="success" size="sm" id="b1"
-						icon="glyphicon-ok" update=":formInsercao:msgError"
-						style="float:left" action="#{BloqueioController.gravarBloqueio()}" />
+						icon="glyphicon-ok" update=":formInsercao2:msgError"
+						style="float:left"
+						action="#{InsercaoController.gravarInsercaoEquipe()}" />
 
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						size="sm" immediate="true" look="info" style="float:right"
-						actionListener="#{ConfigAgendaController.limparDados()}"
-						action="/pages/agenda/consBloqueios.xhtml?faces-redirect=true">
+						action="/pages/agenda/gerenciamentoPacientes.xhtml?faces-redirect=true">
 					</b:commandButton>
 
 				</center>
@@ -316,7 +336,8 @@
 		<p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
 			modal="true">
 			<h:form id="formDiasAtendimento">
-				<p:selectManyCheckbox layout="grid" columns="7"
+				<p:selectManyCheckbox layout="grid" columns="7" required="true"
+					requiredMessage="Escolha ao menos um dia da semana!"
 					value="#{InsercaoController.insercao.diasSemana}">
 					<f:selectItem itemLabel="Domingo" itemValue="1" />
 					<f:selectItem itemLabel="Segunda" itemValue="2" />

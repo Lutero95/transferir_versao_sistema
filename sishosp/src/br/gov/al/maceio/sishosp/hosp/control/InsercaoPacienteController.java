@@ -49,6 +49,10 @@ public class InsercaoPacienteController implements Serializable {
 	public void limparDados() {
 		this.insercao = new InsercaoPacienteBean();
 	}
+	
+	public void limparDias() {
+		insercao.setDiasSemana(null);
+	}
 
 	public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
 			throws ProjetoException {
@@ -61,37 +65,78 @@ public class InsercaoPacienteController implements Serializable {
 		insercao = iDao.carregarLaudoPaciente(id);
 
 	}
+	
+	//ADICIONAR VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL E COLOCAR O DIA DA SEMANA PARA O FUNCIONÁRIO E NÃO PARA A INSERÇÃO
+//	public void validarAdicionarFuncionario(){
+//		Boolean existe = false;
+//		if (insercao.getDiasSemana().size() == 0) {
+//			this.profissionais.add(this.profAdd);
+//
+//		} else {
+//
+//			for (int i = 0; i < profissionais.size(); i++) {
+//				if (profissionais.get(i).getId() == profAdd
+//						.getId()) {
+//					existe = true;
+//				}
+//			}
+//			if (existe == false) {
+//				this.profissionais.add(this.profAdd);
+//			} else {
+//				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+//						"Esse profissional já foi adicionado!", "Sucesso");
+//				FacesContext.getCurrentInstance().addMessage(null, msg);
+//			}
+//
+//		}
+//	}
 
 	public void adicionarFuncionario() {
 		String dias = "";
-		for(int i=0; i<insercao.getDiasSemana().size(); i++){
-			System.out.println("Dia: "+insercao.getDiasSemana().get(i));
-			if (insercao.getDiasSemana().get(i).equals("1")){
-				dias = dias+"Domingo";
+		
+		for (int i = 0; i < insercao.getDiasSemana().size(); i++) {
+			if (insercao.getDiasSemana().get(i).equals("1")) {
+				dias = dias + "Domingo";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")){
-				dias = dias+", Segunda";
+			if (insercao.getDiasSemana().get(i).equals("1")) {
+				dias = dias + ", Segunda";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")){
-				dias = dias+", Terça";
+			if (insercao.getDiasSemana().get(i).equals("1")) {
+				dias = dias + ", Terça";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")){
-				dias = dias+", Quarta";
+			if (insercao.getDiasSemana().get(i).equals("1")) {
+				dias = dias + ", Quarta";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")){
-				dias = dias+", Quinta";
+			if (insercao.getDiasSemana().get(i).equals("1")) {
+				dias = dias + ", Quinta";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")){
-				dias = dias+", Sexta";
+			if (insercao.getDiasSemana().get(i).equals("1")) {
+				dias = dias + ", Sexta";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")){
-				dias = dias+", Sábado";
+			if (insercao.getDiasSemana().get(i).equals("1")) {
+				dias = dias + ", Sábado";
 			}
 		}
 		funcionario.setDiasSemana(dias);
 		listaProfissionaisAdicionados.add(funcionario);
-		RequestContext.getCurrentInstance()
-		.execute("PF('dlgDiasAtendimento').hide();");
+		RequestContext.getCurrentInstance().execute(
+				"PF('dlgDiasAtendimento').hide();");
+	}
+
+	public void gravarInsercaoEquipe() throws ProjetoException, SQLException {
+		boolean cadastrou = iDao.gravarInsercaoEquipe(insercao,
+				listaProfissionaisAdicionados);
+
+		if (cadastrou == true) {
+			limparDados();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Inserção de Equipe cadastrada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
 	}
 
 	// AUTOCOMPLETE INÍCIO
@@ -105,16 +150,22 @@ public class InsercaoPacienteController implements Serializable {
 	}
 
 	public void listarProfissionaisEquipe() throws ProjetoException {
-
-		if (insercao.getEquipe() != null) {
-			if (insercao.getEquipe().getCodEquipe() != null) {
-				listaProfissionaisEquipe = eDao
-						.listarProfissionaisDaEquipe(insercao.getEquipe()
-								.getCodEquipe());
+		if (insercao.getLaudo().getId() != null) {
+			if (insercao.getEquipe() != null) {
+				if (insercao.getEquipe().getCodEquipe() != null) {
+					listaProfissionaisEquipe = eDao
+							.listarProfissionaisDaEquipe(insercao.getEquipe()
+									.getCodEquipe());
+				}
+			} else {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, "Escolha uma equipe!",
+						"Bloqueio");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha uma equipe!", "Bloqueio");
+					"Carregue um laudo primeiro!", "Bloqueio");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}

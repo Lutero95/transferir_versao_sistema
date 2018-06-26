@@ -13,15 +13,13 @@ import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 
 public class InsercaoPacienteDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
-	FuncionarioDAO pDao = new FuncionarioDAO();
-
-	// INSERÇÃO INÍCIO
 
 	public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
 			throws ProjetoException {
@@ -133,40 +131,45 @@ public class InsercaoPacienteDAO {
 		return insercao;
 	}
 
-	// INSERÇÃO FINAL
+	public boolean gravarInsercaoEquipe(InsercaoPacienteBean insercao,
+			List<FuncionarioBean> lista) throws ProjetoException {
 
-	public boolean gravarBloqueio(BloqueioBean bloqueio) throws SQLException,
-			ProjetoException {
-
-		Calendar calendarData = Calendar.getInstance();
-		boolean condicao = true;
-		String sql = "insert into hosp.bloqueio_agenda (codmedico, dataagenda, turno, descricao, codempresa) "
-				+ " values (?, ?, ?, ?, ?);";
+		String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codpaciente, codequipe, status, codlaudo, observacao) "
+				+ " values (?, ?, ?, ?, ?, ?, ?) RETURNING id;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			Date dataInicio = bloqueio.getDataInicio();
-			Date dataFim = bloqueio.getDataFim();
-			do {
-				if (dataInicio.after(dataFim) == false) {
-					ps.setLong(1, bloqueio.getProf().getId());
-					ps.setDate(2, new java.sql.Date(dataInicio.getTime()));
-					ps.setString(3, bloqueio.getTurno().toUpperCase());
-					ps.setString(4, bloqueio.getDescBloqueio().toUpperCase());
-					ps.setInt(5, 0); // COD EMPRESA ?
-					ps.execute();
-					con.commit();
-					condicao = true;
-					calendarData.setTime(dataInicio);
-					calendarData.add(Calendar.DATE, 1);
-					dataInicio = calendarData.getTime();
-				} else {
-					condicao = false;
+			ps.setInt(1, insercao.getPrograma().getIdPrograma());
+			ps.setInt(2, insercao.getGrupo().getIdGrupo());
+			ps.setInt(3, insercao.getLaudo().getPaciente().getId_paciente());
+			ps.setInt(4, insercao.getEquipe().getCodEquipe());
+			ps.setString(5, "A");
+			ps.setInt(6, insercao.getLaudo().getId());
+			ps.setString(7, insercao.getObservacao());
+
+			ResultSet rs = ps.executeQuery();
+			int id = 0;
+			if (rs.next()) {
+				id = rs.getInt("id");
+			}
+
+			String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
+			ps = con.prepareStatement(sql2);
+
+			for (int i = 0; i < lista.size(); i++) {
+				ps.setLong(1, id);
+				ps.setLong(2, lista.get(i).getId());
+				for (int j = 0; j < insercao.getDiasSemana().size(); j++) {
+					ps.setInt(3,
+							Integer.parseInt(insercao.getDiasSemana().get(j)));
+					ps.executeUpdate();
 				}
-			} while (condicao);
+			}
 			con.commit();
+
 			return true;
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -178,130 +181,4 @@ public class InsercaoPacienteDAO {
 		}
 	}
 
-	public List<BloqueioBean> listarBloqueioPorProfissional(FuncionarioBean prof)
-			throws ProjetoException {
-		List<BloqueioBean> lista = new ArrayList<>();
-		String sql = "select id_bloqueioagenda, codmedico, dataagenda, turno, descricao, codempresa "
-				+ "from hosp.bloqueio_agenda where codmedico = ? order by id_bloqueioagenda";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setLong(1, prof.getId());
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				BloqueioBean bloqueio = new BloqueioBean();
-				bloqueio.setIdBloqueio(rs.getInt("id_bloqueioagenda"));
-				bloqueio.setProf(pDao.buscarProfissionalPorId(rs
-						.getInt("codmedico")));
-				bloqueio.setDataInicio(rs.getDate("dataagenda"));
-				bloqueio.setTurno(rs.getString("turno"));
-				bloqueio.setDescBloqueio(rs.getString("descricao"));
-				bloqueio.setCodEmpresa(rs.getInt("codempresa"));
-
-				lista.add(bloqueio);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-
-		return lista;
-	}
-
-	public Boolean alterarBloqueio(BloqueioBean bloqueio)
-			throws ProjetoException {
-		String sql = "update hosp.bloqueio_agenda set codmedico = ?, dataagenda = ?,turno = ?, descricao = ?"
-				+ " where id_bloqueioagenda = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);
-
-			stmt.setLong(1, bloqueio.getProf().getId());
-			stmt.setDate(2, new java.sql.Date(bloqueio.getDataInicio()
-					.getTime()));
-			stmt.setString(3, bloqueio.getTurno().toUpperCase());
-			stmt.setString(4, bloqueio.getDescBloqueio().toUpperCase());
-			stmt.setInt(5, bloqueio.getIdBloqueio());
-			stmt.executeUpdate();
-			con.commit();
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
-
-	public Boolean excluirBloqueio(BloqueioBean bloqueio)
-			throws ProjetoException {
-		String sql = "delete from hosp.bloqueio_agenda where id_bloqueioagenda = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, bloqueio.getIdBloqueio());
-			stmt.execute();
-			con.commit();
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
-
-	public List<BloqueioBean> verificarBloqueioProfissional(
-			FuncionarioBean prof, Date dataAtendimento, String turno)
-			throws ProjetoException {
-		List<BloqueioBean> lista = new ArrayList<>();
-		String sql = "select id_bloqueioagenda, codmedico, dataagenda, turno, descricao, codempresa "
-				+ " from hosp.bloqueio_agenda "
-				+ " where codmedico = ? and  dataagenda = ? and turno = ? order by id_bloqueioagenda";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setLong(1, prof.getId());
-			stm.setDate(2, new java.sql.Date(dataAtendimento.getTime()));
-			stm.setString(3, turno.toUpperCase());
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				BloqueioBean bloqueio = new BloqueioBean();
-				bloqueio.setIdBloqueio(rs.getInt("id_bloqueioagenda"));
-				bloqueio.setProf(pDao.buscarProfissionalPorId(rs
-						.getInt("codmedico")));
-				bloqueio.setDataInicio(rs.getDate("dataagenda"));
-				bloqueio.setTurno(rs.getString("turno"));
-				bloqueio.setDescBloqueio(rs.getString("descricao"));
-				bloqueio.setCodEmpresa(rs.getInt("codempresa"));
-
-				lista.add(bloqueio);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-
-		return lista;
-	}
 }

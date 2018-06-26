@@ -15,6 +15,7 @@ public class InsercaoPacienteBean implements Serializable {
 	private ProgramaBean programa;
 	private EquipeBean equipe;
 	private ArrayList<String> diasSemana;
+	private String observacao;
 
 	public InsercaoPacienteBean() {
 		laudo = new LaudoBean();
@@ -62,6 +63,14 @@ public class InsercaoPacienteBean implements Serializable {
 
 	public void setDiasSemana(ArrayList<String> diasSemana) {
 		this.diasSemana = diasSemana;
+	}
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
 	}
 
 }
