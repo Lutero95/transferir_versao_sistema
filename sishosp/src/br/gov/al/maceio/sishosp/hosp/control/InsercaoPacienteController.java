@@ -13,6 +13,8 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionalidadeDAO;
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
@@ -49,7 +51,7 @@ public class InsercaoPacienteController implements Serializable {
 	public void limparDados() {
 		this.insercao = new InsercaoPacienteBean();
 	}
-	
+
 	public void limparDias() {
 		insercao.setDiasSemana(null);
 	}
@@ -65,35 +67,36 @@ public class InsercaoPacienteController implements Serializable {
 		insercao = iDao.carregarLaudoPaciente(id);
 
 	}
-	
-	//ADICIONAR VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL E COLOCAR O DIA DA SEMANA PARA O FUNCIONÁRIO E NÃO PARA A INSERÇÃO
-//	public void validarAdicionarFuncionario(){
-//		Boolean existe = false;
-//		if (insercao.getDiasSemana().size() == 0) {
-//			this.profissionais.add(this.profAdd);
-//
-//		} else {
-//
-//			for (int i = 0; i < profissionais.size(); i++) {
-//				if (profissionais.get(i).getId() == profAdd
-//						.getId()) {
-//					existe = true;
-//				}
-//			}
-//			if (existe == false) {
-//				this.profissionais.add(this.profAdd);
-//			} else {
-//				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-//						"Esse profissional já foi adicionado!", "Sucesso");
-//				FacesContext.getCurrentInstance().addMessage(null, msg);
-//			}
-//
-//		}
-//	}
+
+	// ADICIONAR VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL E COLOCAR O DIA DA
+	// SEMANA PARA O FUNCIONÁRIO E NÃO PARA A INSERÇÃO
+	// public void validarAdicionarFuncionario(){
+	// Boolean existe = false;
+	// if (insercao.getDiasSemana().size() == 0) {
+	// this.profissionais.add(this.profAdd);
+	//
+	// } else {
+	//
+	// for (int i = 0; i < profissionais.size(); i++) {
+	// if (profissionais.get(i).getId() == profAdd
+	// .getId()) {
+	// existe = true;
+	// }
+	// }
+	// if (existe == false) {
+	// this.profissionais.add(this.profAdd);
+	// } else {
+	// FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+	// "Esse profissional já foi adicionado!", "Sucesso");
+	// FacesContext.getCurrentInstance().addMessage(null, msg);
+	// }
+	//
+	// }
+	// }
 
 	public void adicionarFuncionario() {
 		String dias = "";
-		
+
 		for (int i = 0; i < insercao.getDiasSemana().size(); i++) {
 			if (insercao.getDiasSemana().get(i).equals("1")) {
 				dias = dias + "Domingo";
@@ -123,18 +126,34 @@ public class InsercaoPacienteController implements Serializable {
 				"PF('dlgDiasAtendimento').hide();");
 	}
 
-	public void gravarInsercaoEquipe() throws ProjetoException, SQLException {
-		boolean cadastrou = iDao.gravarInsercaoEquipe(insercao,
-				listaProfissionaisAdicionados);
+	public void gravarInsercaoPaciente() throws ProjetoException, SQLException {
 
-		if (cadastrou == true) {
-			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Inserção de Equipe cadastrada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+		if (insercao.getLaudo().getId() != null) {
+
+			Boolean cadastrou = null;
+			if (tipo.equals("E")) {
+				cadastrou = iDao.gravarInsercaoEquipe(insercao,
+						listaProfissionaisAdicionados);
+			}
+			if (tipo.equals("P")) {
+				cadastrou = iDao.gravarInsercaoProfissional(insercao,
+						listaProfissionaisAdicionados);
+			}
+
+			if (cadastrou == true) {
+				limparDados();
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Inserção de Equipe cadastrada com sucesso!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Ocorreu um erro durante o cadastro!", "Erro");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
+					"Carregue um laudo primeiro!", "Bloqueio");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
@@ -182,6 +201,13 @@ public class InsercaoPacienteController implements Serializable {
 			return null;
 		}
 
+	}
+
+	public List<FuncionarioBean> listaProfissionalAutoComplete(String query)
+			throws ProjetoException {
+		FuncionarioDAO fDao = new FuncionarioDAO();
+		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
+		return result;
 	}
 
 	// AUTOCOMPLETE FIM

@@ -181,4 +181,50 @@ public class InsercaoPacienteDAO {
 		}
 	}
 
+	public boolean gravarInsercaoProfissional(InsercaoPacienteBean insercao,
+			List<FuncionarioBean> lista) throws ProjetoException {
+
+		String sql = "insert into hosp.paciente_instituicao (codprofissional, status, codlaudo, observacao, data_solicitacao) "
+				+ " values (?, ?, ?, ?, ?) RETURNING id;";
+		try {
+			con = ConnectionFactory.getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setLong(1, insercao.getFuncionario().getId());
+			ps.setString(2, "A");
+			ps.setInt(3, insercao.getLaudo().getId());
+			ps.setString(4, insercao.getObservacao());
+			ps.setDate(5, new java.sql.Date(insercao.getData_solicitacao()
+					.getTime()));
+
+			ResultSet rs = ps.executeQuery();
+			int id = 0;
+			if (rs.next()) {
+				id = rs.getInt("id");
+			}
+
+			String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
+			ps = con.prepareStatement(sql2);
+
+			for (int i = 0; i < insercao.getDiasSemana().size(); i++) {
+				ps.setLong(1, id);
+				ps.setLong(2, insercao.getFuncionario().getId());
+				ps.setInt(3, Integer.parseInt(insercao.getDiasSemana().get(i)));
+				ps.executeUpdate();
+
+			}
+			con.commit();
+
+			return true;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
 }

@@ -105,7 +105,9 @@
 						requiredMessage="Informe o tipo de Pessoa">
 						<f:selectItem itemLabel="Por Equipe" itemValue="E" />
 						<f:selectItem itemLabel="Por Profissional" itemValue="P" />
-						<p:ajax update="outEquipe" event="click" />
+						<p:ajax
+							update="outProg, outEquipe, outGrupo, outProf, outTabelas, outDias, outDetalhes"
+							event="click" />
 					</p:selectOneRadio>
 
 				</b:row>
@@ -114,13 +116,25 @@
 
 				<b:row>
 
-					<b:column span="1">
-						<h:outputLabel for="prog" value="Programa:"
-							rendered="#{InsercaoController.tipo == 'E'}" />
-					</b:column>
+					<p:calendar style="margin-left:15px"
+						value="#{InsercaoController.insercao.data_solicitacao}"
+						id="dtagen" locale="pt" navigator="true" mask="true"
+						showOn="button" pattern="dd/MM/yyyy">
+					</p:calendar>
 
-					<b:column span="3">
-						<p:outputPanel id="outProg">
+				</b:row>
+
+				<br></br>
+
+				<b:row>
+					<p:outputPanel id="outProg">
+						<b:column span="1">
+							<h:outputLabel for="prog" value="Programa:" id="prog"
+								rendered="#{InsercaoController.tipo == 'E'}" />
+						</b:column>
+
+						<b:column span="3">
+
 							<p:autoComplete value="#{InsercaoController.insercao.programa}"
 								rendered="#{InsercaoController.tipo == 'E'}" size="40"
 								converter="conPrograma"
@@ -132,22 +146,23 @@
 									listener="#{AgendaController.selectPrograma}" update="" />
 
 							</p:autoComplete>
-						</p:outputPanel>
-					</b:column>
+
+						</b:column>
+					</p:outputPanel>
 
 				</b:row>
 
 				<br></br>
 
 				<b:row>
+					<p:outputPanel id="outGrupo">
+						<b:column span="1">
+							<h:outputLabel for="grupo" value="Grupo" id="grupo"
+								rendered="#{InsercaoController.tipo == 'E'}" />
+						</b:column>
 
-					<b:column span="1">
-						<h:outputLabel for="grupo" value="Grupo"
-							rendered="#{InsercaoController.tipo == 'E'}" />
-					</b:column>
+						<b:column span="3">
 
-					<b:column span="3">
-						<p:outputPanel id="outGrupo">
 							<p:autoComplete value="#{InsercaoController.insercao.grupo}"
 								rendered="#{InsercaoController.tipo == 'E'}" size="40"
 								converter="conGrupo"
@@ -160,25 +175,26 @@
 									listener="#{AgendaController.selectGrupo}" update="" />
 
 							</p:autoComplete>
-						</p:outputPanel>
-					</b:column>
+
+						</b:column>
+					</p:outputPanel>
 
 				</b:row>
 
 				<br></br>
 
 				<b:row>
+					<p:outputPanel id="outEquipe">
+						<b:column span="1">
+							<h:outputLabel for="equipe" value="Equipe:" id="equipe"
+								rendered="#{InsercaoController.tipo == 'E'}" />
+						</b:column>
 
-					<b:column span="1">
-						<h:outputLabel for="prog" value="Equipe:"
-							rendered="#{InsercaoController.tipo == 'E'}" />
-					</b:column>
+						<b:column span="3">
 
-					<b:column span="3">
-						<p:outputPanel id="outEquipe"
-							rendered="#{InsercaoController.tipo == 'E'}">
 							<p:autoComplete value="#{InsercaoController.insercao.equipe}"
 								size="40" converter="conEquipe"
+								rendered="#{InsercaoController.tipo == 'E'}"
 								disabled="#{InsercaoController.insercao.grupo==null}"
 								completeMethod="#{InsercaoController.listaEquipeAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
@@ -186,14 +202,92 @@
 								itemLabel="#{theme.descEquipe}">
 								<p:ajax event="itemSelect" update="" />
 							</p:autoComplete>
-						</p:outputPanel>
-					</b:column>
 
-					<b:column span="1">
-						<p:commandButton icon="ui-icon-search"
-							update="dtEquipe, :formInsercao2:msgError"
-							action="#{InsercaoController.listarProfissionaisEquipe()}" />
-					</b:column>
+						</b:column>
+
+
+						<b:column span="1">
+							<p:commandButton icon="ui-icon-search"
+								update="dtEquipe, :formInsercao2:msgError"
+								rendered="#{InsercaoController.tipo == 'E'}"
+								action="#{InsercaoController.listarProfissionaisEquipe()}" />
+						</b:column>
+					</p:outputPanel>
+
+				</b:row>
+
+				<br></br>
+
+				<b:row>
+					<p:outputPanel id="outProf">
+						<b:column span="1">
+							<h:outputLabel value="Profissional" id="prof"
+								rendered="#{InsercaoController.tipo == 'P'}" />
+						</b:column>
+
+						<b:column span="3">
+
+							<p:autoComplete rendered="#{InsercaoController.tipo == 'P'}"
+								value="#{InsercaoController.insercao.funcionario}" size="40"
+								converter="conFuncionario"
+								completeMethod="#{InsercaoController.listaProfissionalAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.nome}">
+								<p:ajax event="itemSelect" update="outDetalhes" />
+							</p:autoComplete>
+
+						</b:column>
+					</p:outputPanel>
+				</b:row>
+
+				<br></br>
+
+				<b:row>
+					<p:outputPanel id="outDetalhes">
+						<b:column span="1">
+							<p:outputLabel value="Especialidade:" style="margin-top:5px"
+								rendered="#{InsercaoController.tipo == 'P'}" />
+						</b:column>
+
+						<b:column span="3">
+							<h:outputLabel
+								value="#{InsercaoController.insercao.funcionario.especialidade.descEspecialidade}"
+								style="margin-top:5px"
+								rendered="#{InsercaoController.tipo == 'P'}" />
+						</b:column>
+
+						<b:column span="1">
+							<p:outputLabel value="CNS:" style="margin-top:5px"
+								rendered="#{InsercaoController.tipo == 'P'}" />
+						</b:column>
+
+						<b:column span="3">
+							<h:outputLabel
+								value="#{InsercaoController.insercao.funcionario.cns}"
+								style="margin-top:5px"
+								rendered="#{InsercaoController.tipo == 'P'}" />
+						</b:column>
+					</p:outputPanel>
+				</b:row>
+
+				<br></br>
+
+				<b:row>
+					<p:outputPanel id="outDias">
+						<p:selectManyCheckbox layout="grid" columns="7" required="true"
+							rendered="#{InsercaoController.tipo == 'P'}"
+							requiredMessage="Escolha ao menos um dia da semana!"
+							value="#{InsercaoController.insercao.diasSemana}">
+							<f:selectItem itemLabel="Domingo" itemValue="1" />
+							<f:selectItem itemLabel="Segunda" itemValue="2" />
+							<f:selectItem itemLabel="Terça" itemValue="3" />
+							<f:selectItem itemLabel="Quarta" itemValue="4" />
+							<f:selectItem itemLabel="Quinta" itemValue="5" />
+							<f:selectItem itemLabel="Sexta" itemValue="6" />
+							<f:selectItem itemLabel="Sábado" itemValue="7" />
+						</p:selectManyCheckbox>
+					</p:outputPanel>
 
 				</b:row>
 
@@ -201,58 +295,59 @@
 				<br></br>
 
 				<b:row>
+					<p:outputPanel id="outTabelas">
+						<b:column span="5">
+							<p:dataTable id="dtEquipe" resizableColumns="true"
+								rendered="#{InsercaoController.tipo == 'E'}"
+								value="#{InsercaoController.listaProfissionaisEquipe}"
+								var="func" emptyMessage="Sem registros.">
 
-					<b:column span="5">
-						<p:dataTable id="dtEquipe" resizableColumns="true"
-							rendered="#{InsercaoController.tipo == 'E'}"
-							value="#{InsercaoController.listaProfissionaisEquipe}" var="func"
-							emptyMessage="Sem registros.">
+								<p:column headerText="Profissional">
+									<h:outputLabel value="#{func.nome}" />
+								</p:column>
 
-							<p:column headerText="Profissional">
-								<h:outputLabel value="#{func.nome}" />
-							</p:column>
+								<p:column headerText="Especialidade">
+									<h:outputLabel value="#{func.especialidade.descEspecialidade}" />
+								</p:column>
 
-							<p:column headerText="Especialidade">
-								<h:outputLabel value="#{func.especialidade.descEspecialidade}" />
-							</p:column>
+								<p:column headerText="Adicionar">
+									<center>
+										<p:commandButton update="" icon="ui-icon-check"
+											title="Selecionar" onclick="PF('dlgDiasAtendimento').show();">
+											<f:setPropertyActionListener value="#{func}"
+												target="#{InsercaoController.funcionario}" />
+										</p:commandButton>
+									</center>
+								</p:column>
 
-							<p:column headerText="Adicionar">
-								<center>
-									<p:commandButton update="" icon="ui-icon-check" actionListener=""
-										title="Selecionar" onclick="PF('dlgDiasAtendimento').show();">
-										<f:setPropertyActionListener value="#{func}"
-											target="#{InsercaoController.funcionario}" />
-									</p:commandButton>
-								</center>
-							</p:column>
+							</p:dataTable>
+						</b:column>
 
-						</p:dataTable>
-					</b:column>
-
-					<b:column span="1">
-					</b:column>
+						<b:column span="1">
+						</b:column>
 
 
-					<b:column span="6">
-						<p:dataTable id="dtAdicionados" resizableColumns="true"
-							rendered="#{InsercaoController.tipo == 'E'}"
-							value="#{InsercaoController.listaProfissionaisAdicionados}"
-							var="func" emptyMessage="Sem registros.">
+						<b:column span="6">
+							<p:dataTable id="dtAdicionados" resizableColumns="true"
+								rendered="#{InsercaoController.tipo == 'E'}"
+								value="#{InsercaoController.listaProfissionaisAdicionados}"
+								var="func" emptyMessage="Sem registros.">
 
-							<p:column headerText="Profissional">
-								<h:outputLabel value="#{func.nome}" />
-							</p:column>
+								<p:column headerText="Profissional">
+									<h:outputLabel value="#{func.nome}" />
+								</p:column>
 
-							<p:column headerText="Especialidade">
-								<h:outputLabel value="#{func.especialidade.descEspecialidade}" />
-							</p:column>
+								<p:column headerText="Especialidade">
+									<h:outputLabel value="#{func.especialidade.descEspecialidade}" />
+								</p:column>
 
-							<p:column headerText="Dias Atendimento">
-								<h:outputLabel value="#{func.diasSemana}" />
-							</p:column>
+								<p:column headerText="Dias Atendimento">
+									<h:outputLabel value="#{func.diasSemana}" />
+								</p:column>
 
-						</p:dataTable>
-					</b:column>
+							</p:dataTable>
+						</b:column>
+					</p:outputPanel>
 
 				</b:row>
 
@@ -284,7 +379,7 @@
 					<b:commandButton value="Gravar" look="success" size="sm" id="b1"
 						icon="glyphicon-ok" update=":formInsercao2:msgError"
 						style="float:left"
-						action="#{InsercaoController.gravarInsercaoEquipe()}" />
+						action="#{InsercaoController.gravarInsercaoPaciente()}" />
 
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						size="sm" immediate="true" look="info" style="float:right"
