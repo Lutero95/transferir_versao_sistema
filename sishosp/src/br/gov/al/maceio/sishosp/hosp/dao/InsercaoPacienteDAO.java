@@ -159,9 +159,11 @@ public class InsercaoPacienteDAO {
 			for (int i = 0; i < lista.size(); i++) {
 				ps.setLong(1, id);
 				ps.setLong(2, lista.get(i).getId());
-				for (int j = 0; j < insercao.getDiasSemana().size(); j++) {
-					ps.setInt(3,
-							Integer.parseInt(insercao.getDiasSemana().get(j)));
+				for (int j = 0; j < lista.get(i).getListDiasSemana().size(); j++) {
+					ps.setInt(
+							3,
+							Integer.parseInt(lista.get(i).getListDiasSemana()
+									.get(j)));
 					ps.executeUpdate();
 				}
 			}
@@ -205,10 +207,14 @@ public class InsercaoPacienteDAO {
 			String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
 			ps = con.prepareStatement(sql2);
 
-			for (int i = 0; i < insercao.getDiasSemana().size(); i++) {
+			for (int i = 0; i < insercao.getFuncionario().getListDiasSemana()
+					.size(); i++) {
 				ps.setLong(1, id);
 				ps.setLong(2, insercao.getFuncionario().getId());
-				ps.setInt(3, Integer.parseInt(insercao.getDiasSemana().get(i)));
+				ps.setInt(
+						3,
+						Integer.parseInt(insercao.getFuncionario()
+								.getListDiasSemana().get(i)));
 				ps.executeUpdate();
 
 			}

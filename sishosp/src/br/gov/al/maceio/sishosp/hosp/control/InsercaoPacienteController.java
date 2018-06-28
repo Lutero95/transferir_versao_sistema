@@ -53,7 +53,7 @@ public class InsercaoPacienteController implements Serializable {
 	}
 
 	public void limparDias() {
-		insercao.setDiasSemana(null);
+		funcionario.setListDiasSemana(null);
 	}
 
 	public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
@@ -68,60 +68,64 @@ public class InsercaoPacienteController implements Serializable {
 
 	}
 
-	// ADICIONAR VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL E COLOCAR O DIA DA
-	// SEMANA PARA O FUNCIONÁRIO E NÃO PARA A INSERÇÃO
-	// public void validarAdicionarFuncionario(){
-	// Boolean existe = false;
-	// if (insercao.getDiasSemana().size() == 0) {
-	// this.profissionais.add(this.profAdd);
-	//
-	// } else {
-	//
-	// for (int i = 0; i < profissionais.size(); i++) {
-	// if (profissionais.get(i).getId() == profAdd
-	// .getId()) {
-	// existe = true;
-	// }
-	// }
-	// if (existe == false) {
-	// this.profissionais.add(this.profAdd);
-	// } else {
-	// FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-	// "Esse profissional já foi adicionado!", "Sucesso");
-	// FacesContext.getCurrentInstance().addMessage(null, msg);
-	// }
-	//
-	// }
-	// }
+	// VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL
+	public void validarAdicionarFuncionario() {
+		Boolean existe = false;
+		if (listaProfissionaisAdicionados.size() == 0) {
+			adicionarFuncionario();
+		} else {
+
+			for (int i = 0; i < listaProfissionaisAdicionados.size(); i++) {
+				if (listaProfissionaisAdicionados.get(i).getId() == funcionario
+						.getId()) {
+					existe = true;
+				}
+			}
+			if (existe == false) {
+				adicionarFuncionario();
+			} else {
+
+				RequestContext.getCurrentInstance().execute(
+						"PF('dlgDiasAtendimento').hide();");
+
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Esse profissional já foi adicionado!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+
+		}
+	}
 
 	public void adicionarFuncionario() {
 		String dias = "";
 
-		for (int i = 0; i < insercao.getDiasSemana().size(); i++) {
-			if (insercao.getDiasSemana().get(i).equals("1")) {
+		for (int i = 0; i < funcionario.getListDiasSemana().size(); i++) {
+			if (funcionario.getListDiasSemana().get(i).equals("1")) {
 				dias = dias + "Domingo";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")) {
+			if (funcionario.getListDiasSemana().get(i).equals("2")) {
 				dias = dias + ", Segunda";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")) {
+			if (funcionario.getListDiasSemana().get(i).equals("3")) {
 				dias = dias + ", Terça";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")) {
+			if (funcionario.getListDiasSemana().get(i).equals("4")) {
 				dias = dias + ", Quarta";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")) {
+			if (funcionario.getListDiasSemana().get(i).equals("5")) {
 				dias = dias + ", Quinta";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")) {
+			if (funcionario.getListDiasSemana().get(i).equals("6")) {
 				dias = dias + ", Sexta";
 			}
-			if (insercao.getDiasSemana().get(i).equals("1")) {
+			if (funcionario.getListDiasSemana().get(i).equals("7")) {
 				dias = dias + ", Sábado";
 			}
 		}
 		funcionario.setDiasSemana(dias);
 		listaProfissionaisAdicionados.add(funcionario);
+
 		RequestContext.getCurrentInstance().execute(
 				"PF('dlgDiasAtendimento').hide();");
 	}
