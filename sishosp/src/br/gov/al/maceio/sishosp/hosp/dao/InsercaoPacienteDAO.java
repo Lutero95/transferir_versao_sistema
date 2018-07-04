@@ -233,4 +233,38 @@ public class InsercaoPacienteDAO {
 			}
 		}
 	}
+
+	public Date dataFinalLaudo(int id) throws ProjetoException {
+
+		Date data = null;
+
+		String sql = "select (SELECT * FROM fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal "
+				+ " from hosp.laudo l where l.id_laudo = ?";
+
+		try {
+			con = ConnectionFactory.getConnection();
+
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			stm.setInt(1, id);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				data = rs.getDate("datafinal");
+			}
+
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return data;
+	}
+	
 }

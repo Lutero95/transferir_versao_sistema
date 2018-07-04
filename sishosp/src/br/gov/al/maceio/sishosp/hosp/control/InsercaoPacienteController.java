@@ -2,7 +2,11 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +25,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -128,6 +133,44 @@ public class InsercaoPacienteController implements Serializable {
 
 		RequestContext.getCurrentInstance().execute(
 				"PF('dlgDiasAtendimento').hide();");
+	}
+
+	//MÉTODO INACABADO, AINDA EM CONSTRUÇÃO
+	public void verAgendaIntervalo() throws ProjetoException {
+
+		ArrayList<InsercaoPacienteBean> lista = new ArrayList<InsercaoPacienteBean>();
+
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		df.setLenient(false);
+		Date d1 = insercao.getData_solicitacao();
+		Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+		Long dt = (d2.getTime() - d1.getTime());
+
+		dt = (dt / 86400000L);
+		for (int i = 0; i < dt; i++) {
+			Calendar c = Calendar.getInstance();
+			c.setTime(insercao.getData_solicitacao());
+			int diaSemana = c.get(Calendar.DAY_OF_WEEK);
+
+			if (i > 0) {
+				c.add(Calendar.DAY_OF_MONTH, 1);
+			}
+
+			if (tipo.equals("P")) {
+				for (int j = 0; j < insercao.getFuncionario()
+						.getListDiasSemana().size(); j++) {
+					if (diaSemana == Integer.parseInt(insercao.getFuncionario()
+							.getListDiasSemana().get(j))) {
+						lista.get(j).getAgenda().setPaciente(insercao.getLaudo().getPaciente());
+						lista.get(j).getAgenda().setDataMarcacao(d1);
+						lista.add(insercao);
+					}
+				}
+
+			}
+
+		}
+
 	}
 
 	public void gravarInsercaoPaciente() throws ProjetoException, SQLException {

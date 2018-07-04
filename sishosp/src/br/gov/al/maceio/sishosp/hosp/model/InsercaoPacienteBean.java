@@ -17,6 +17,7 @@ public class InsercaoPacienteBean implements Serializable {
 	private String observacao;
 	private Date data_solicitacao;
 	private FuncionarioBean funcionario;
+	private AgendaBean agenda;
 
 	public InsercaoPacienteBean() {
 		laudo = new LaudoBean();
@@ -24,6 +25,7 @@ public class InsercaoPacienteBean implements Serializable {
 		programa = new ProgramaBean();
 		equipe = new EquipeBean();
 		funcionario = new FuncionarioBean();
+		agenda = new AgendaBean();
 	}
 
 	public LaudoBean getLaudo() {
@@ -80,6 +82,14 @@ public class InsercaoPacienteBean implements Serializable {
 
 	public void setFuncionario(FuncionarioBean funcionario) {
 		this.funcionario = funcionario;
+	}
+
+	public AgendaBean getAgenda() {
+		return agenda;
+	}
+
+	public void setAgenda(AgendaBean agenda) {
+		this.agenda = agenda;
 	}
 
 }
