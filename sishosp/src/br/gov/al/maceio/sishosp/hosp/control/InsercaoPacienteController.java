@@ -135,7 +135,7 @@ public class InsercaoPacienteController implements Serializable {
 				"PF('dlgDiasAtendimento').hide();");
 	}
 
-	//MÉTODO INACABADO, AINDA EM CONSTRUÇÃO
+
 	public void verAgendaIntervalo() throws ProjetoException {
 
 		ArrayList<InsercaoPacienteBean> lista = new ArrayList<InsercaoPacienteBean>();
@@ -147,28 +147,47 @@ public class InsercaoPacienteController implements Serializable {
 		Long dt = (d2.getTime() - d1.getTime());
 
 		dt = (dt / 86400000L);
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(insercao.getData_solicitacao());
+		
+		
 		for (int i = 0; i < dt; i++) {
-			Calendar c = Calendar.getInstance();
-			c.setTime(insercao.getData_solicitacao());
+			
 			int diaSemana = c.get(Calendar.DAY_OF_WEEK);
 
 			if (i > 0) {
 				c.add(Calendar.DAY_OF_MONTH, 1);
 			}
-
+			
+//			System.out.println("I: "+i);
+//			System.out.println("Data: "+c.getTime());
+//			System.out.println("Dia: "+diaSemana);
+			
 			if (tipo.equals("P")) {
-				for (int j = 0; j < insercao.getFuncionario()
-						.getListDiasSemana().size(); j++) {
-					if (diaSemana == Integer.parseInt(insercao.getFuncionario()
-							.getListDiasSemana().get(j))) {
-						lista.get(j).getAgenda().setPaciente(insercao.getLaudo().getPaciente());
-						lista.get(j).getAgenda().setDataMarcacao(d1);
-						lista.add(insercao);
+				for (int j = 0; j < insercao.getFuncionario().getListDiasSemana().size(); j++) {
+					
+//					System.out.println("Lista: "+insercao.getFuncionario().getListDiasSemana().get(j));
+					
+					if (diaSemana == Integer.parseInt(insercao.getFuncionario().getListDiasSemana().get(j))) {
+						
+						InsercaoPacienteBean ins = new InsercaoPacienteBean();
+//						System.out.println("Igual!");
+						
+						ins.getAgenda().setPaciente(insercao.getLaudo().getPaciente());
+						ins.getAgenda().setDataMarcacao(c.getTime());
+//						System.out.println("Agenda: "+ins.getAgenda().getDataMarcacao());
+						lista.add(ins);
+					
 					}
 				}
 
 			}
 
+		}
+		
+		for(int k=0; k<lista.size(); k++){
+			System.out.println("========================LISTA FINAL:  "+lista.get(k).getAgenda().getDataMarcacao());
 		}
 
 	}
