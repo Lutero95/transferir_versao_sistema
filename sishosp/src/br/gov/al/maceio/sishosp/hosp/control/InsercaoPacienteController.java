@@ -25,11 +25,13 @@ import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 @ManagedBean(name = "InsercaoController")
 @ViewScoped
@@ -44,6 +46,7 @@ public class InsercaoPacienteController implements Serializable {
 	private ArrayList<FuncionarioBean> listaProfissionaisAdicionados;
 	private String tipo;
 	private FuncionarioBean funcionario;
+	private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
 
 	public InsercaoPacienteController() {
 		this.insercao = new InsercaoPacienteBean();
@@ -51,6 +54,7 @@ public class InsercaoPacienteController implements Serializable {
 		this.tipo = "E";
 		funcionario = new FuncionarioBean();
 		listaProfissionaisAdicionados = new ArrayList<FuncionarioBean>();
+		listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
 	}
 
 	public void limparDados() {
@@ -135,10 +139,7 @@ public class InsercaoPacienteController implements Serializable {
 				"PF('dlgDiasAtendimento').hide();");
 	}
 
-
-	public void verAgendaIntervalo() throws ProjetoException {
-
-		ArrayList<InsercaoPacienteBean> lista = new ArrayList<InsercaoPacienteBean>();
+	public void gerarListaAgendamentos() throws ProjetoException {
 
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
@@ -147,47 +148,39 @@ public class InsercaoPacienteController implements Serializable {
 		Long dt = (d2.getTime() - d1.getTime());
 
 		dt = (dt / 86400000L);
-		
+
 		Calendar c = Calendar.getInstance();
 		c.setTime(insercao.getData_solicitacao());
-		
-		
+
 		for (int i = 0; i < dt; i++) {
-			
-			int diaSemana = c.get(Calendar.DAY_OF_WEEK);
 
 			if (i > 0) {
 				c.add(Calendar.DAY_OF_MONTH, 1);
 			}
-			
-//			System.out.println("I: "+i);
-//			System.out.println("Data: "+c.getTime());
-//			System.out.println("Dia: "+diaSemana);
-			
+
+			int diaSemana = c.get(Calendar.DAY_OF_WEEK);
+
 			if (tipo.equals("P")) {
-				for (int j = 0; j < insercao.getFuncionario().getListDiasSemana().size(); j++) {
-					
-//					System.out.println("Lista: "+insercao.getFuncionario().getListDiasSemana().get(j));
-					
-					if (diaSemana == Integer.parseInt(insercao.getFuncionario().getListDiasSemana().get(j))) {
-						
+				for (int j = 0; j < insercao.getFuncionario()
+						.getListDiasSemana().size(); j++) {
+
+					if (diaSemana == Integer.parseInt(insercao.getFuncionario()
+							.getListDiasSemana().get(j))) {
+
 						InsercaoPacienteBean ins = new InsercaoPacienteBean();
-//						System.out.println("Igual!");
-						
-						ins.getAgenda().setPaciente(insercao.getLaudo().getPaciente());
+
+						ins.getAgenda().setPaciente(
+								insercao.getLaudo().getPaciente());
+
 						ins.getAgenda().setDataMarcacao(c.getTime());
-//						System.out.println("Agenda: "+ins.getAgenda().getDataMarcacao());
-						lista.add(ins);
-					
+
+						listAgendamentoProfissional.add(ins);
+
 					}
 				}
 
 			}
 
-		}
-		
-		for(int k=0; k<lista.size(); k++){
-			System.out.println("========================LISTA FINAL:  "+lista.get(k).getAgenda().getDataMarcacao());
 		}
 
 	}
@@ -202,8 +195,12 @@ public class InsercaoPacienteController implements Serializable {
 						listaProfissionaisAdicionados);
 			}
 			if (tipo.equals("P")) {
+
+				gerarListaAgendamentos();
+
 				cadastrou = iDao.gravarInsercaoProfissional(insercao,
-						listaProfissionaisAdicionados);
+						listaProfissionaisAdicionados,
+						listAgendamentoProfissional);
 			}
 
 			if (cadastrou == true) {
@@ -274,6 +271,13 @@ public class InsercaoPacienteController implements Serializable {
 		FuncionarioDAO fDao = new FuncionarioDAO();
 		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
 		return result;
+	}
+
+	public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
+			throws ProjetoException {
+		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+		return tDao.listarTipoAtBusca(query, 1);
+
 	}
 
 	// AUTOCOMPLETE FIM

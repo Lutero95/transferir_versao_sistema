@@ -184,7 +184,9 @@ public class InsercaoPacienteDAO {
 	}
 
 	public boolean gravarInsercaoProfissional(InsercaoPacienteBean insercao,
-			List<FuncionarioBean> lista) throws ProjetoException {
+			List<FuncionarioBean> lista,
+			ArrayList<InsercaoPacienteBean> listaAgendamento)
+			throws ProjetoException {
 
 		String sql = "insert into hosp.paciente_instituicao (codprofissional, status, codlaudo, observacao, data_solicitacao) "
 				+ " values (?, ?, ?, ?, ?) RETURNING id;";
@@ -218,7 +220,67 @@ public class InsercaoPacienteDAO {
 				ps.executeUpdate();
 
 			}
+
+			gravarAgenda(insercao, listaAgendamento, con);
+
 			con.commit();
+
+			return true;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+
+	public boolean gravarAgenda(InsercaoPacienteBean insercao,
+			List<InsercaoPacienteBean> listaNovosAgendamentos, Connection cone)
+			throws ProjetoException {
+
+		ResultSet rs = null;
+
+		String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, observacao, ativo)"
+				+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S') RETURNING id_atendimento;";
+		try {
+			cone = ConnectionFactory.getConnection();
+			ps = cone.prepareStatement(sql);
+
+			for (int i = 0; i < listaNovosAgendamentos.size(); i++) {
+
+				ps.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
+				ps.setLong(2, listaNovosAgendamentos.get(i).getFuncionario()
+						.getId());
+				ps.setDate(3, new java.sql.Date(listaNovosAgendamentos.get(i)
+						.getAgenda().getDataAtendimento().getTime()));
+				ps.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
+				ps.setString(5, insercao.getAgenda().getTurno());
+				ps.setString(6, insercao.getObservacao());
+
+				rs = ps.executeQuery();
+
+			}
+
+			int idAgend = 0;
+			if (rs.next()) {
+				idAgend = rs.getInt("id_atendimento");
+			}
+
+			String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+
+			ps = cone.prepareStatement(sql2);
+
+			ps.setLong(1, insercao.getFuncionario().getId());
+			ps.setInt(2, idAgend);
+			ps.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
+
+			ps.executeUpdate();
+			cone.commit();
 
 			return true;
 		} catch (SQLException ex) {
@@ -266,5 +328,5 @@ public class InsercaoPacienteDAO {
 		}
 		return data;
 	}
-	
+
 }
