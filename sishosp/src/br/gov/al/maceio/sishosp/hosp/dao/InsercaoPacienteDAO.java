@@ -207,21 +207,56 @@ public class InsercaoPacienteDAO {
 			}
 
 			String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
-			ps = con.prepareStatement(sql2);
+			PreparedStatement ps2 = null;
+			ps2 = con.prepareStatement(sql2);
 
 			for (int i = 0; i < insercao.getFuncionario().getListDiasSemana()
 					.size(); i++) {
-				ps.setLong(1, id);
-				ps.setLong(2, insercao.getFuncionario().getId());
-				ps.setInt(
+				ps2.setLong(1, id);
+				ps2.setLong(2, insercao.getFuncionario().getId());
+				ps2.setInt(
 						3,
 						Integer.parseInt(insercao.getFuncionario()
 								.getListDiasSemana().get(i)));
-				ps.executeUpdate();
+				ps2.executeUpdate();
 
 			}
 
-			gravarAgenda(insercao, listaAgendamento, con);
+			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, observacao, ativo)"
+					+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S') RETURNING id_atendimento;";
+			
+			PreparedStatement ps3 = null;
+			ps3 = con.prepareStatement(sql3);
+
+			for (int i = 0; i < listaAgendamento.size(); i++) {
+
+				ps3.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
+				ps3.setLong(2, insercao.getFuncionario().getId());
+				ps3.setDate(3, new java.sql.Date(listaAgendamento.get(i)
+						.getAgenda().getDataMarcacao().getTime()));
+				ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
+				ps3.setString(5, insercao.getAgenda().getTurno());
+				ps3.setString(6, insercao.getObservacao());
+
+				rs = ps3.executeQuery();
+
+				int idAgend = 0;
+				if (rs.next()) {
+					idAgend = rs.getInt("id_atendimento");
+				}
+
+				String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+				
+				PreparedStatement ps4 = null;
+				ps4 = con.prepareStatement(sql4);
+
+				ps4.setLong(1, insercao.getFuncionario().getId());
+				ps4.setInt(2, idAgend);
+				ps4.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
+
+				ps4.executeUpdate();
+
+			}
 
 			con.commit();
 
@@ -239,6 +274,7 @@ public class InsercaoPacienteDAO {
 		}
 	}
 
+	// SEM USO, RETIRAR
 	public boolean gravarAgenda(InsercaoPacienteBean insercao,
 			List<InsercaoPacienteBean> listaNovosAgendamentos, Connection cone)
 			throws ProjetoException {
@@ -254,32 +290,30 @@ public class InsercaoPacienteDAO {
 			for (int i = 0; i < listaNovosAgendamentos.size(); i++) {
 
 				ps.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
-				ps.setLong(2, listaNovosAgendamentos.get(i).getFuncionario()
-						.getId());
+				ps.setLong(2, insercao.getFuncionario().getId());
 				ps.setDate(3, new java.sql.Date(listaNovosAgendamentos.get(i)
-						.getAgenda().getDataAtendimento().getTime()));
+						.getAgenda().getDataMarcacao().getTime()));
 				ps.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
 				ps.setString(5, insercao.getAgenda().getTurno());
 				ps.setString(6, insercao.getObservacao());
 
 				rs = ps.executeQuery();
 
+				int idAgend = 0;
+				if (rs.next()) {
+					idAgend = rs.getInt("id_atendimento");
+				}
+
+				String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+
+				ps = cone.prepareStatement(sql2);
+
+				ps.setLong(1, insercao.getFuncionario().getId());
+				ps.setInt(2, idAgend);
+				ps.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
+
+				ps.executeUpdate();
 			}
-
-			int idAgend = 0;
-			if (rs.next()) {
-				idAgend = rs.getInt("id_atendimento");
-			}
-
-			String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
-
-			ps = cone.prepareStatement(sql2);
-
-			ps.setLong(1, insercao.getFuncionario().getId());
-			ps.setInt(2, idAgend);
-			ps.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
-
-			ps.executeUpdate();
 			cone.commit();
 
 			return true;
