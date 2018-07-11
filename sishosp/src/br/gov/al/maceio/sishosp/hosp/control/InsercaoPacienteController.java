@@ -139,7 +139,7 @@ public class InsercaoPacienteController implements Serializable {
 				"PF('dlgDiasAtendimento').hide();");
 	}
 
-	public void gerarListaAgendamentos() throws ProjetoException {
+	public void gerarListaAgendamentosProfissional() throws ProjetoException {
 
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
@@ -184,6 +184,54 @@ public class InsercaoPacienteController implements Serializable {
 		}
 
 	}
+	
+	public void gerarListaAgendamentosEquipe() throws ProjetoException {
+
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		df.setLenient(false);
+		Date d1 = insercao.getData_solicitacao();
+		Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+		Long dt = (d2.getTime() - d1.getTime());
+
+		dt = (dt / 86400000L);
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(insercao.getData_solicitacao());
+
+		for (int i = 0; i < dt; i++) {
+
+			if (i > 0) {
+				c.add(Calendar.DAY_OF_MONTH, 1);
+			}
+
+			int diaSemana = c.get(Calendar.DAY_OF_WEEK);
+
+			if (tipo.equals("E")) {
+				for (int j = 0; j < listaProfissionaisAdicionados.size(); j++) {
+					for (int h = 0; h < listaProfissionaisAdicionados.size(); h++) {
+					
+					if (diaSemana == Integer.parseInt(listaProfissionaisAdicionados.get(j).getListDiasSemana().get(h))) {
+
+						InsercaoPacienteBean ins = new InsercaoPacienteBean();
+
+						ins.getAgenda().setPaciente(
+								insercao.getLaudo().getPaciente());
+
+						ins.getAgenda().setDataMarcacao(c.getTime());
+						
+						ins.getAgenda().setProfissional(listaProfissionaisAdicionados.get(j));
+
+						listAgendamentoProfissional.add(ins);
+
+						}
+					}
+				}
+
+			}
+
+		}
+		
+	}
 
 	public void gravarInsercaoPaciente() throws ProjetoException, SQLException {
 
@@ -191,15 +239,17 @@ public class InsercaoPacienteController implements Serializable {
 
 			Boolean cadastrou = null;
 			if (tipo.equals("E")) {
+				
+				gerarListaAgendamentosEquipe();
+				
 				cadastrou = iDao.gravarInsercaoEquipe(insercao,
-						listaProfissionaisAdicionados);
+						listaProfissionaisAdicionados, listAgendamentoProfissional);
 			}
 			if (tipo.equals("P")) {
 
-				gerarListaAgendamentos();
+				gerarListaAgendamentosProfissional();
 
 				cadastrou = iDao.gravarInsercaoProfissional(insercao,
-						listaProfissionaisAdicionados,
 						listAgendamentoProfissional);
 			}
 

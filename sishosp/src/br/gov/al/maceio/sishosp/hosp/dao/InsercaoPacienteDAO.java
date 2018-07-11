@@ -132,7 +132,7 @@ public class InsercaoPacienteDAO {
 	}
 
 	public boolean gravarInsercaoEquipe(InsercaoPacienteBean insercao,
-			List<FuncionarioBean> lista) throws ProjetoException {
+			List<FuncionarioBean> lista, ArrayList<InsercaoPacienteBean> listaAgendamento) throws ProjetoException {
 
 		String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codpaciente, codequipe, status, codlaudo, observacao) "
 				+ " values (?, ?, ?, ?, ?, ?, ?) RETURNING id;";
@@ -167,6 +167,43 @@ public class InsercaoPacienteDAO {
 					ps.executeUpdate();
 				}
 			}
+			
+			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, observacao, ativo)"
+					+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S') RETURNING id_atendimento;";
+			
+			PreparedStatement ps3 = null;
+			ps3 = con.prepareStatement(sql3);
+
+			for (int i = 0; i < listaAgendamento.size(); i++) {
+
+				ps3.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
+				ps3.setLong(2, listaAgendamento.get(i).getAgenda().getProfissional().getId());
+				ps3.setDate(3, new java.sql.Date(listaAgendamento.get(i)
+						.getAgenda().getDataMarcacao().getTime()));
+				ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
+				ps3.setString(5, insercao.getAgenda().getTurno());
+				ps3.setString(6, insercao.getObservacao());
+
+				rs = ps3.executeQuery();
+
+				int idAgend = 0;
+				if (rs.next()) {
+					idAgend = rs.getInt("id_atendimento");
+				}
+
+				String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+				
+				PreparedStatement ps4 = null;
+				ps4 = con.prepareStatement(sql4);
+
+				ps4.setLong(1, listaAgendamento.get(i).getAgenda().getProfissional().getId());
+				ps4.setInt(2, idAgend);
+				ps4.setInt(3, listaAgendamento.get(i).getAgenda().getProfissional().getCbo().getCodCbo());
+
+				ps4.executeUpdate();
+
+			}
+			
 			con.commit();
 
 			return true;
@@ -184,7 +221,6 @@ public class InsercaoPacienteDAO {
 	}
 
 	public boolean gravarInsercaoProfissional(InsercaoPacienteBean insercao,
-			List<FuncionarioBean> lista,
 			ArrayList<InsercaoPacienteBean> listaAgendamento)
 			throws ProjetoException {
 
