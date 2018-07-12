@@ -12,6 +12,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
@@ -145,6 +146,53 @@ public class GerenciarPacienteDAO {
 			}
 		}
 		return lista;
+	}
+
+	public Boolean desligarPaciente(GerenciarPacienteBean row, GerenciarPacienteBean gerenciar)
+			throws ProjetoException {
+		
+		Boolean retorno = false;
+		
+		String sql = "update hosp.paciente_instituicao set status = 'D' "
+				+ " where codlaudo = ?";
+		try {
+			PreparedStatement stmt = conexao.prepareStatement(sql);
+
+			stmt.setInt(1, row.getLaudo().getId());
+			stmt.executeUpdate();
+
+			String sql2 = "INSERT INTO hosp.motivo_desligamento (id_laudo, justificativa) VALUES  (?, ?)";
+			stmt = conexao.prepareStatement(sql2);
+			stmt.setInt(1, row.getLaudo().getId());
+			stmt.setString(2, gerenciar.getJustificativa_desligamento());
+			stmt.executeUpdate();
+			
+			String sql3 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo) "
+					+ " VALUES  (?, current_date, ?, ?)";
+			stmt = conexao.prepareStatement(sql3);
+			stmt.setLong(1, row.getPaciente().getId_paciente());
+			stmt.setString(2, gerenciar.getJustificativa_desligamento());
+			stmt.setString(3, "D");
+
+			stmt.executeUpdate();
+
+			conexao.commit();
+			
+			retorno = true;
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		
+		return retorno;
+		
 	}
 
 }

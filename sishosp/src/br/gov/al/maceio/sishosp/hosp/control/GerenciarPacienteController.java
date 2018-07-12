@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -98,6 +99,14 @@ public class GerenciarPacienteController implements Serializable {
 
 	}
 
+	public void inicioDesligar() {
+		RequestContext.getCurrentInstance().execute("PF('dlgDeslPac').show();");
+	}
+
+	public void fecharDialogDesligamento() {
+		RequestContext.getCurrentInstance().execute("PF('dlgDeslPac').hide();");
+	}
+
 	public void carregarPacientesInstituicao() throws ProjetoException {
 		if (busca.equals("N")) {
 			listaPacientes = gDao.carregarPacientesInstituicao();
@@ -108,8 +117,26 @@ public class GerenciarPacienteController implements Serializable {
 	}
 
 	public void onRowSelect(SelectEvent event) throws ProjetoException {
-		//IMPLEMENTAR ALGO SE PRECISAR
-		//System.out.println("rowbean: " + rowBean.getStatus());
+		// IMPLEMENTAR ALGO SE PRECISAR
+		// System.out.println("rowbean: " + rowBean.getStatus());
+	}
+
+	public void desligarPaciente() throws ProjetoException, SQLException {
+
+		Boolean cadastrou = false;
+
+		cadastrou = gDao.desligarPaciente(rowBean, gerenciarpaciente);
+
+		if (cadastrou == true) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Paciente desligado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o desligamento!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
 	}
 
 	public GerenciarPacienteBean getGerenciarpaciente() {

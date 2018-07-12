@@ -15,6 +15,7 @@ public class GerenciarPacienteBean implements Serializable {
 	private String observacao;
 	private String motivo_desligamento;
 	private String tipo;
+	private String justificativa_desligamento;
 
 	// HERDADOS
 	private GrupoBean grupo;
@@ -143,6 +144,14 @@ public class GerenciarPacienteBean implements Serializable {
 
 	public void setData_cadastro(Date data_cadastro) {
 		this.data_cadastro = data_cadastro;
+	}
+
+	public String getJustificativa_desligamento() {
+		return justificativa_desligamento;
+	}
+
+	public void setJustificativa_desligamento(String justificativa_desligamento) {
+		this.justificativa_desligamento = justificativa_desligamento;
 	}
 
 }

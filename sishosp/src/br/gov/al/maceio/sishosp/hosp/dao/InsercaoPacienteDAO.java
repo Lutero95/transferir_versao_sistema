@@ -204,6 +204,18 @@ public class InsercaoPacienteDAO {
 
 			}
 			
+			String sql5 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
+					+ " VALUES  (?, current_date, ?, ?)";
+			
+			PreparedStatement ps5 = null;
+			ps5 = con.prepareStatement(sql5);
+
+			ps5.setLong(1, insercao.getLaudo().getPaciente().getId_paciente());
+			ps5.setString(2, insercao.getObservacao());
+			ps5.setString(3, "I");
+			
+			ps5.executeUpdate();
+			
 			con.commit();
 
 			return true;
@@ -293,6 +305,18 @@ public class InsercaoPacienteDAO {
 				ps4.executeUpdate();
 
 			}
+			
+			String sql5 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
+					+ " VALUES  (?, current_date, ?, ?)";
+			
+			PreparedStatement ps5 = null;
+			ps5 = con.prepareStatement(sql5);
+
+			ps5.setLong(1, insercao.getLaudo().getPaciente().getId_paciente());
+			ps5.setString(2, insercao.getObservacao());
+			ps5.setString(3, "I");
+
+			ps5.executeUpdate();
 
 			con.commit();
 

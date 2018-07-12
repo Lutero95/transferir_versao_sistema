@@ -103,7 +103,7 @@
 
 				<p:outputPanel>
 					<b:column span="1">
-						<h:outputLabel for="situacao" value="Situacao" />
+						<h:outputLabel for="situacao" value="Situação" />
 					</b:column>
 					<b:column span="2">
 						<p:selectOneRadio required="true"
@@ -172,7 +172,7 @@
 						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 						id="btnDesligar" immediate="true"
 						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
-						action="#{AgendaController.preparaConfirmar()}" />
+						action="#{GerenciarPacienteController.inicioDesligar()}" />
 				</b:column>
 
 			</b:row>
@@ -194,6 +194,12 @@
 					listener="#{GerenciarPacienteController.onRowSelect}"
 					update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnDesligar" />
 
+				<p:column width="10%">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="ID" />
+					</f:facet>
+					<h:outputText value="#{pacie.laudo.id}"></h:outputText>
+				</p:column>
 
 				<p:column width="10%">
 					<f:facet name="header">
@@ -315,6 +321,48 @@
 					</h:column>
 
 				</b:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Desligar Paciente" widgetVar="dlgDeslPac"
+			width="300" height="200" modal="true">
+			<h:form id="formDeslPac">
+
+				<b:row>
+
+					<b:column span="2">
+						<h:outputLabel for="obs" value="Observação" />
+					</b:column>
+
+				</b:row>
+
+				<b:row>
+
+					<b:column span="12">
+						<b:inputTextarea id="obs" rows="2"
+							value="#{GerenciarPacienteController.gerenciarpaciente.justificativa_desligamento}"
+							autoResize="false" />
+					</b:column>
+
+				</b:row>
+
+				<br></br>
+				<br></br>
+
+				<center>
+
+					<b:commandButton value="Desligar" look="success" size="sm" id="b1"
+						icon="glyphicon-ok" update=":formGerenPaci:msgFeriado"
+						style="float:left"
+						action="#{GerenciarPacienteController.desligarPaciente()}" />
+
+					<b:commandButton value="Fechar" icon="glyphicons-remove" size="sm"
+						immediate="true" look="info" style="float:right"
+						action="#{GerenciarPaciente.fecharDialogDesligamento()}">
+					</b:commandButton>
+
+				</center>
+
 			</h:form>
 		</p:dialog>
 
