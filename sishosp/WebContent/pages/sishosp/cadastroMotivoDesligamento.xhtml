@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/template.xhtml">
+	<f:metadata>
+		<f:viewAction action="#{MotivoController.getEditMotivo()}" />
+	</f:metadata>
+
+	<ui:define name="body">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{MotivoController.cabecalho}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
+			<h:form class="form-horizontal" id="formCADU">
+
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel for="inputname" value="Descrição"
+							style="margin-top:10px" />
+					</b:column>
+
+					<b:column span="5">
+						<h:inputText
+							value="#{MotivoController.motivo.motivo_desligamento}"
+							class="form-control" id="inputname"
+							pt:placeholder="Digite aqui o Motivo do desligamento" required="true"
+							requiredMessage="é necessário que você informe o motivo">
+							<f:validateLength minimum="2" maximum="40" />
+
+						</h:inputText>
+					</b:column>
+				</b:row>
+
+				<br></br>
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<center>
+
+					<b:commandButton
+						action="#{MotivoController.gravarMotivo()}"
+						icon="glyphicon-ok" size="sm" look="success" style="float:left"
+						update=":formCADU" value="Incluir"
+						rendered="#{MotivoController.tipo == 1}" />
+
+					<b:commandButton
+						action="#{MotivoController.alterarMotivo()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+						look="success" style="float:left"
+						rendered="#{MotivoController.tipo  == 2}" />
+
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="float:right" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarMotivoDesligamento.faces?faces-redirect=true">
+					</b:commandButton>
+				</center>
+
+			</h:form>
+		</div>
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -156,23 +156,19 @@ public class GerenciarPacienteDAO {
 		String sql = "update hosp.paciente_instituicao set status = 'D' "
 				+ " where codlaudo = ?";
 		try {
+			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 
 			stmt.setInt(1, row.getLaudo().getId());
 			stmt.executeUpdate();
-
-			String sql2 = "INSERT INTO hosp.motivo_desligamento (id_laudo, justificativa) VALUES  (?, ?)";
-			stmt = conexao.prepareStatement(sql2);
-			stmt.setInt(1, row.getLaudo().getId());
-			stmt.setString(2, gerenciar.getJustificativa_desligamento());
-			stmt.executeUpdate();
 			
-			String sql3 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo) "
-					+ " VALUES  (?, current_date, ?, ?)";
-			stmt = conexao.prepareStatement(sql3);
+			String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao) "
+					+ " VALUES  (?, current_date, ?, ?, ?)";
+			stmt = conexao.prepareStatement(sql2);
 			stmt.setLong(1, row.getPaciente().getId_paciente());
-			stmt.setString(2, gerenciar.getJustificativa_desligamento());
+			stmt.setInt(2, gerenciar.getMotivo_desligamento());
 			stmt.setString(3, "D");
+			stmt.setString(4, gerenciar.getObservacao());
 
 			stmt.executeUpdate();
 

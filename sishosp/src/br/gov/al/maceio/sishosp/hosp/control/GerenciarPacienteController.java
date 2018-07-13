@@ -128,6 +128,12 @@ public class GerenciarPacienteController implements Serializable {
 		cadastrou = gDao.desligarPaciente(rowBean, gerenciarpaciente);
 
 		if (cadastrou == true) {
+
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlgDeslPac').hide();");
+
+			listaPacientes = gDao.carregarPacientesInstituicao();
+
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Paciente desligado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);

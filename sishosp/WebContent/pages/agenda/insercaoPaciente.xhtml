@@ -116,11 +116,19 @@
 
 				<b:row>
 
-					<p:calendar style="margin-left:15px"
-						value="#{InsercaoController.insercao.data_solicitacao}"
-						id="dtagen" locale="pt" navigator="true" mask="true"
-						showOn="button" pattern="dd/MM/yyyy">
-					</p:calendar>
+					<b:column span="1">
+						<h:outputLabel for="datas" value="Data de Solicitação:"
+							id="datasoli" />
+					</b:column>
+
+					<b:column span="3">
+						<p:calendar
+							value="#{InsercaoController.insercao.data_solicitacao}"
+							id="dtagen" locale="pt" navigator="true" mask="true"
+							showOn="button" pattern="dd/MM/yyyy">
+						</p:calendar>
+
+					</b:column>
 
 				</b:row>
 

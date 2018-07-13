@@ -325,7 +325,7 @@
 		</p:dialog>
 
 		<p:dialog header="Desligar Paciente" widgetVar="dlgDeslPac"
-			width="300" height="200" modal="true">
+			width="450" height="300" modal="true">
 			<h:form id="formDeslPac">
 
 				<b:row>
@@ -340,8 +340,37 @@
 
 					<b:column span="12">
 						<b:inputTextarea id="obs" rows="2"
-							value="#{GerenciarPacienteController.gerenciarpaciente.justificativa_desligamento}"
+							value="#{GerenciarPacienteController.gerenciarpaciente.observacao}"
 							autoResize="false" />
+					</b:column>
+
+				</b:row>
+
+				<br></br>
+
+				<b:row>
+
+					<b:column span="3">
+						<h:outputLabel for="obs" value="Motivo:" style="margin-top:10px" />
+					</b:column>
+
+				</b:row>
+
+				<b:row>
+
+					<b:column span="9">
+
+						<p:outputPanel id="inMot">
+							<b:selectOneMenu filter="true"
+								value="#{GerenciarPacienteController.gerenciarpaciente.motivo_desligamento}"
+								style="width:120px;margin-left:10px">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems itemValue="#{x.id_motivo}"
+									itemLabel="#{x.motivo_desligamento}"
+									value="#{MotivoController.listaMotivos}" var="x"></f:selectItems>
+							</b:selectOneMenu>
+						</p:outputPanel>
+
 					</b:column>
 
 				</b:row>
@@ -352,7 +381,8 @@
 				<center>
 
 					<b:commandButton value="Desligar" look="success" size="sm" id="b1"
-						icon="glyphicon-ok" update=":formGerenPaci:msgFeriado"
+						icon="glyphicon-ok"
+						update=":formGerenPaci:msgFeriado, formGerenPaci:dtNovosAg"
 						style="float:left"
 						action="#{GerenciarPacienteController.desligarPaciente()}" />
 

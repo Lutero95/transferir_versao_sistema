@@ -13,9 +13,8 @@ public class GerenciarPacienteBean implements Serializable {
 	private Date data_solicitacao;
 	private Date data_cadastro;
 	private String observacao;
-	private String motivo_desligamento;
 	private String tipo;
-	private String justificativa_desligamento;
+	private Integer motivo_desligamento;
 
 	// HERDADOS
 	private GrupoBean grupo;
@@ -64,14 +63,6 @@ public class GerenciarPacienteBean implements Serializable {
 
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
-	}
-
-	public String getMotivo_desligamento() {
-		return motivo_desligamento;
-	}
-
-	public void setMotivo_desligamento(String motivo_desligamento) {
-		this.motivo_desligamento = motivo_desligamento;
 	}
 
 	public String getTipo() {
@@ -146,12 +137,12 @@ public class GerenciarPacienteBean implements Serializable {
 		this.data_cadastro = data_cadastro;
 	}
 
-	public String getJustificativa_desligamento() {
-		return justificativa_desligamento;
+	public Integer getMotivo_desligamento() {
+		return motivo_desligamento;
 	}
 
-	public void setJustificativa_desligamento(String justificativa_desligamento) {
-		this.justificativa_desligamento = justificativa_desligamento;
+	public void setMotivo_desligamento(Integer motivo_desligamento) {
+		this.motivo_desligamento = motivo_desligamento;
 	}
 
 }
