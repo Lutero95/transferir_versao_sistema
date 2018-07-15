@@ -21,6 +21,7 @@ import org.primefaces.event.SelectEvent;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
@@ -31,6 +32,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
@@ -48,6 +50,8 @@ public class GerenciarPacienteController implements Serializable {
 	private GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
 	private String busca = "N";
 	private Boolean apenasLeitura;
+	private InsercaoPacienteBean insercao;
+	private String tipo;
 
 	public GerenciarPacienteController() {
 		gerenciarpaciente = new GerenciarPacienteBean();
@@ -56,6 +60,8 @@ public class GerenciarPacienteController implements Serializable {
 		listaPacientes = new ArrayList<GerenciarPacienteBean>();
 		apenasLeitura = false;
 		rowBean = new GerenciarPacienteBean();
+		insercao = new InsercaoPacienteBean();
+		tipo = "";
 	}
 
 	public void buscarPacientesInstituicao() throws ProjetoException {
@@ -145,6 +151,33 @@ public class GerenciarPacienteController implements Serializable {
 
 	}
 
+	public String redirectRenovacao() {
+		return "renovacaoPaciente?faces-redirect=true&amp;id="
+				+ this.rowBean.getId();
+	}
+
+	public void carregaRenovacao() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			this.insercao = gDao.carregarPacientesInstituicaoRenovacao(id);
+			if(insercao.getEquipe().getCodEquipe() != null && insercao.getEquipe().getCodEquipe() > 0){
+				tipo = "E";
+			}
+			if(insercao.getFuncionario().getId() != null && insercao.getFuncionario().getId() > 0){
+				tipo = "P";
+			}
+			// carregar as listas
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+	}
+
 	public GerenciarPacienteBean getGerenciarpaciente() {
 		return gerenciarpaciente;
 	}
@@ -183,6 +216,22 @@ public class GerenciarPacienteController implements Serializable {
 
 	public void setRowBean(GerenciarPacienteBean rowBean) {
 		this.rowBean = rowBean;
+	}
+
+	public InsercaoPacienteBean getInsercao() {
+		return insercao;
+	}
+
+	public void setInsercao(InsercaoPacienteBean insercao) {
+		this.insercao = insercao;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 }

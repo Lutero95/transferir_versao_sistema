@@ -164,7 +164,7 @@
 						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 						id="btnRenovar" immediate="true"
 						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
-						action="#{AgendaController.preparaConfirmar()}" />
+						action="#{GerenciarPacienteController.redirectRenovacao()}" />
 				</b:column>
 
 				<b:column span="2">

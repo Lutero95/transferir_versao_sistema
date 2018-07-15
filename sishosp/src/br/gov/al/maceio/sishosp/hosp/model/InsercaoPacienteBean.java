@@ -10,6 +10,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 public class InsercaoPacienteBean implements Serializable {
 
 	// HERDADOS
+	private Integer id;
 	private LaudoBean laudo;
 	private GrupoBean grupo;
 	private ProgramaBean programa;
@@ -90,6 +91,14 @@ public class InsercaoPacienteBean implements Serializable {
 
 	public void setAgenda(AgendaBean agenda) {
 		this.agenda = agenda;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

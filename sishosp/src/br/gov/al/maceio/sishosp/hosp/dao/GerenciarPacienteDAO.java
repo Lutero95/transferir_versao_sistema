@@ -15,6 +15,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
@@ -148,11 +149,11 @@ public class GerenciarPacienteDAO {
 		return lista;
 	}
 
-	public Boolean desligarPaciente(GerenciarPacienteBean row, GerenciarPacienteBean gerenciar)
-			throws ProjetoException {
-		
+	public Boolean desligarPaciente(GerenciarPacienteBean row,
+			GerenciarPacienteBean gerenciar) throws ProjetoException {
+
 		Boolean retorno = false;
-		
+
 		String sql = "update hosp.paciente_instituicao set status = 'D' "
 				+ " where codlaudo = ?";
 		try {
@@ -161,7 +162,7 @@ public class GerenciarPacienteDAO {
 
 			stmt.setInt(1, row.getLaudo().getId());
 			stmt.executeUpdate();
-			
+
 			String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao) "
 					+ " VALUES  (?, current_date, ?, ?, ?)";
 			stmt = conexao.prepareStatement(sql2);
@@ -173,9 +174,9 @@ public class GerenciarPacienteDAO {
 			stmt.executeUpdate();
 
 			conexao.commit();
-			
+
 			retorno = true;
-			
+
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
@@ -186,9 +187,51 @@ public class GerenciarPacienteDAO {
 				e2.printStackTrace();
 			}
 		}
-		
+
 		return retorno;
-		
+
+	}
+
+	public InsercaoPacienteBean carregarPacientesInstituicaoRenovacao(Integer id)
+			throws ProjetoException {
+
+		String sql = "select id, codprograma, codgrupo, codpaciente, codequipe, codprofissional, observacao from hosp.paciente_instituicao where id = ?";
+
+		List<GerenciarPacienteBean> lista = new ArrayList<>();
+		InsercaoPacienteBean ip = new InsercaoPacienteBean();
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement stmt = conexao.prepareStatement(sql);
+
+			stmt.setInt(1, id);
+
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				ip = new InsercaoPacienteBean();
+
+				ip.setId(rs.getInt("id"));
+				ip.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+				ip.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+				ip.getLaudo().getPaciente()
+						.setId_paciente(rs.getInt("codpaciente"));
+				ip.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+				ip.getFuncionario().setId(rs.getLong("codprofissional"));
+				ip.setObservacao(rs.getString("observacao"));
+			}
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			// throw new RuntimeException(ex); //
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return ip;
 	}
 
 }

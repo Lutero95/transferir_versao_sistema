@@ -76,6 +76,14 @@ public class InsercaoPacienteController implements Serializable {
 		insercao = iDao.carregarLaudoPaciente(id);
 
 	}
+	
+	
+	public void carregarLaudoPacienteRenovacao() throws ProjetoException {
+		int id = insercao.getLaudo().getId();
+		limparDados();
+		insercao = iDao.carregarLaudoPaciente(id);
+
+	}
 
 	// VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL
 	public void validarAdicionarFuncionario() {
