@@ -24,6 +24,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
@@ -52,6 +53,9 @@ public class GerenciarPacienteController implements Serializable {
 	private Boolean apenasLeitura;
 	private InsercaoPacienteBean insercao;
 	private String tipo;
+	private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
+	private InsercaoPacienteDAO iDao;
+	private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
 
 	public GerenciarPacienteController() {
 		gerenciarpaciente = new GerenciarPacienteBean();
@@ -62,6 +66,9 @@ public class GerenciarPacienteController implements Serializable {
 		rowBean = new GerenciarPacienteBean();
 		insercao = new InsercaoPacienteBean();
 		tipo = "";
+		listaLaudosVigentes = new ArrayList<InsercaoPacienteBean>();
+		iDao = new InsercaoPacienteDAO();
+		listaDiasProfissional = new ArrayList<GerenciarPacienteBean>();
 	}
 
 	public void buscarPacientesInstituicao() throws ProjetoException {
@@ -165,6 +172,8 @@ public class GerenciarPacienteController implements Serializable {
 			this.insercao = gDao.carregarPacientesInstituicaoRenovacao(id);
 			if(insercao.getEquipe().getCodEquipe() != null && insercao.getEquipe().getCodEquipe() > 0){
 				tipo = "E";
+				listaDiasProfissional = gDao.listarDiasAtendimentoProfissional(id);
+				System.out.println("Tamanho: "+listaDiasProfissional.size());
 			}
 			if(insercao.getFuncionario().getId() != null && insercao.getFuncionario().getId() > 0){
 				tipo = "P";
@@ -175,6 +184,18 @@ public class GerenciarPacienteController implements Serializable {
 					"Ocorreu um erro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+
+	}
+	
+	
+	public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
+			throws ProjetoException {
+		return iDao.listarLaudosVigentes();
+	}
+	
+	public void carregarLaudoPaciente() throws ProjetoException {
+		int id = insercao.getLaudo().getId();
+		insercao = iDao.carregarLaudoPaciente(id);
 
 	}
 
@@ -232,6 +253,24 @@ public class GerenciarPacienteController implements Serializable {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public ArrayList<InsercaoPacienteBean> getListaLaudosVigentes() {
+		return listaLaudosVigentes;
+	}
+
+	public void setListaLaudosVigentes(
+			ArrayList<InsercaoPacienteBean> listaLaudosVigentes) {
+		this.listaLaudosVigentes = listaLaudosVigentes;
+	}
+
+	public ArrayList<GerenciarPacienteBean> getListaDiasProfissional() {
+		return listaDiasProfissional;
+	}
+
+	public void setListaDiasProfissional(
+			ArrayList<GerenciarPacienteBean> listaDiasProfissional) {
+		this.listaDiasProfissional = listaDiasProfissional;
 	}
 
 }

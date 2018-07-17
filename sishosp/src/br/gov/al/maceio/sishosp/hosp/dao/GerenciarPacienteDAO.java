@@ -195,7 +195,14 @@ public class GerenciarPacienteDAO {
 	public InsercaoPacienteBean carregarPacientesInstituicaoRenovacao(Integer id)
 			throws ProjetoException {
 
-		String sql = "select id, codprograma, codgrupo, codpaciente, codequipe, codprofissional, observacao from hosp.paciente_instituicao where id = ?";
+		String sql = "select pi.id, pi.codprograma, p.descprograma, pi.codgrupo, g.descgrupo, pi.codpaciente, pi.codequipe, e.descequipe, "
+				+ " pi.codprofissional, f.descfuncionario, pi.observacao "
+				+ " from hosp.paciente_instituicao pi "
+				+ " left join hosp.programa p on (p.id_programa = pi.codprograma) "
+				+ " left join hosp.grupo g on (pi.codgrupo = g.id_grupo) "
+				+ " left join hosp.equipe e on (pi.codequipe = e.id_equipe) "
+				+ " left join acl.funcionarios f on (pi.codprofissional = f.id_funcionario) "
+				+ " where id = ?";
 
 		List<GerenciarPacienteBean> lista = new ArrayList<>();
 		InsercaoPacienteBean ip = new InsercaoPacienteBean();
@@ -212,11 +219,15 @@ public class GerenciarPacienteDAO {
 
 				ip.setId(rs.getInt("id"));
 				ip.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+				ip.getPrograma().setDescPrograma(rs.getString("descprograma"));
 				ip.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+				ip.getGrupo().setDescGrupo(rs.getString("descgrupo"));
 				ip.getLaudo().getPaciente()
 						.setId_paciente(rs.getInt("codpaciente"));
 				ip.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+				ip.getEquipe().setDescEquipe(rs.getString("descequipe"));
 				ip.getFuncionario().setId(rs.getLong("codprofissional"));
+				ip.getFuncionario().setNome(rs.getString("descfuncionario"));
 				ip.setObservacao(rs.getString("observacao"));
 			}
 
@@ -232,6 +243,50 @@ public class GerenciarPacienteDAO {
 			}
 		}
 		return ip;
+	}
+
+	public ArrayList<GerenciarPacienteBean> listarDiasAtendimentoProfissional(Integer id)
+			throws ProjetoException {
+
+		ArrayList<GerenciarPacienteBean> lista = new ArrayList<>();
+System.out.println("id: "+id);
+		String sql = "select distinct(p.id_profissional), f.descfuncionario, p.id_paciente_instituicao, "
+				+ " case when dia_semana = 1 then 'Domingo' when dia_semana = 2 then 'Segunda' "
+				+ " when dia_semana = 3 then 'Terça' when dia_semana = 4 then 'Quarta' "
+				+ " when dia_semana = 5 then 'Quinta' when dia_semana = 6 then 'Sexta' when dia_semana = 7 then 'Sábado' "
+				+ " end as dia from hosp.profissional_dia_atendimento p "
+				+ " left join acl.funcionarios f on (f.id_funcionario = p.id_profissional) "
+				+ " where p.id_paciente_instituicao = ? "
+				+ " order by id_profissional";
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			
+			stm.setInt(1, id);
+			
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				GerenciarPacienteBean ge = new GerenciarPacienteBean();
+				ge.getFuncionario().setNome(rs.getString("descfuncionario"));
+				ge.getFuncionario().setId(rs.getLong("id_profissional"));
+				ge.setId(rs.getInt("id_paciente_instituicao"));
+				ge.getFuncionario().setDiasSemana(rs.getString("dia"));
+				
+				lista.add(ge);
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
 	}
 
 }
