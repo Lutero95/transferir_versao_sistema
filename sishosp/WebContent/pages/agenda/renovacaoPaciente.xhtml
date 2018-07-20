@@ -291,15 +291,15 @@
 							<p:dataTable id="dtAdicionados" resizableColumns="true"
 								rendered="#{GerenciarPacienteController.tipo == 'E'}"
 								value="#{GerenciarPacienteController.listaDiasProfissional}"
-								var="funcionario" emptyMessage="Sem registros.">
+								var="gerenciamento" emptyMessage="Sem registros.">
 
 								<p:column headerText="Profissional">
-									<h:outputLabel value="#{funcionario.nome}" />
+									<h:outputLabel value="#{gerenciamento.funcionario.nome}" />
 								</p:column>
 
 
 								<p:column headerText="Dias Atendimento">
-									<h:outputLabel value="#{funcionario.diasSemana}" />
+									<h:outputLabel value="#{gerenciamento.funcionario.diasSemana}" />
 								</p:column>
 
 							</p:dataTable>
@@ -348,7 +348,7 @@
 				<b:row>
 
 					<b:column span="1">
-						<h:outputLabel for="tipoAt" value="Tipo Atendimento" />
+						<h:outputLabel for="tipoAt" value="Tipo de Atendimento" />
 					</b:column>
 
 					<b:column span="3">
@@ -378,7 +378,7 @@
 					<b:commandButton value="Gravar" look="success" size="sm" id="b1"
 						icon="glyphicon-ok" update=":formInsercao2:msgError"
 						style="float:left"
-						action="#{InsercaoPacienteController.gravarInsercaoPaciente()}" />
+						action="#{GerenciamentoPacienteController.gravarInsercaoPaciente()}" />
 
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						size="sm" immediate="true" look="info" style="float:right"

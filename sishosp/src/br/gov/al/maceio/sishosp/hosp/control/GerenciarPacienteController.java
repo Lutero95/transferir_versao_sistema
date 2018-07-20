@@ -2,6 +2,8 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -56,6 +58,7 @@ public class GerenciarPacienteController implements Serializable {
 	private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
 	private InsercaoPacienteDAO iDao;
 	private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
+	private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
 
 	public GerenciarPacienteController() {
 		gerenciarpaciente = new GerenciarPacienteBean();
@@ -69,6 +72,7 @@ public class GerenciarPacienteController implements Serializable {
 		listaLaudosVigentes = new ArrayList<InsercaoPacienteBean>();
 		iDao = new InsercaoPacienteDAO();
 		listaDiasProfissional = new ArrayList<GerenciarPacienteBean>();
+		listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
 	}
 
 	public void buscarPacientesInstituicao() throws ProjetoException {
@@ -163,6 +167,9 @@ public class GerenciarPacienteController implements Serializable {
 				+ this.rowBean.getId();
 	}
 
+	
+	//RENOVAÇÃO INÍCIO
+	
 	public void carregaRenovacao() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
@@ -173,7 +180,6 @@ public class GerenciarPacienteController implements Serializable {
 			if(insercao.getEquipe().getCodEquipe() != null && insercao.getEquipe().getCodEquipe() > 0){
 				tipo = "E";
 				listaDiasProfissional = gDao.listarDiasAtendimentoProfissional(id);
-				System.out.println("Tamanho: "+listaDiasProfissional.size());
 			}
 			if(insercao.getFuncionario().getId() != null && insercao.getFuncionario().getId() > 0){
 				tipo = "P";
@@ -187,6 +193,139 @@ public class GerenciarPacienteController implements Serializable {
 
 	}
 	
+	public void gerarListaAgendamentosEquipe() throws ProjetoException {
+
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		df.setLenient(false);
+		Date d1 = insercao.getData_solicitacao();
+		Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+		Long dt = (d2.getTime() - d1.getTime());
+
+		dt = (dt / 86400000L);
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(insercao.getData_solicitacao());
+
+		for (int i = 0; i < dt; i++) {
+
+			if (i > 0) {
+				c.add(Calendar.DAY_OF_MONTH, 1);
+			}
+
+			int diaSemana = c.get(Calendar.DAY_OF_WEEK);
+
+			if (tipo.equals("E")) {
+				for (int j = 0; j < listaDiasProfissional.size(); j++) {
+					for (int h = 0; h < listaDiasProfissional.size(); h++) {
+					
+					if (diaSemana == Integer.parseInt(listaDiasProfissional.get(j).getFuncionario().getListDiasSemana().get(h))) {
+
+						InsercaoPacienteBean ins = new InsercaoPacienteBean();
+
+						ins.getAgenda().setPaciente(
+								insercao.getLaudo().getPaciente());
+
+						ins.getAgenda().setDataMarcacao(c.getTime());
+						
+						ins.getAgenda().setProfissional(listaDiasProfissional.get(j).getFuncionario());
+
+						listAgendamentoProfissional.add(ins);
+
+						}
+					}
+				}
+
+			}
+
+		}
+		
+	}
+	
+	
+	public void gerarListaAgendamentosProfissional() throws ProjetoException {
+
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		df.setLenient(false);
+		Date d1 = insercao.getData_solicitacao();
+		Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+		Long dt = (d2.getTime() - d1.getTime());
+
+		dt = (dt / 86400000L);
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(insercao.getData_solicitacao());
+
+		for (int i = 0; i < dt; i++) {
+
+			if (i > 0) {
+				c.add(Calendar.DAY_OF_MONTH, 1);
+			}
+
+			int diaSemana = c.get(Calendar.DAY_OF_WEEK);
+
+			if (tipo.equals("P")) {
+				for (int j = 0; j < insercao.getFuncionario()
+						.getListDiasSemana().size(); j++) {
+
+					if (diaSemana == Integer.parseInt(insercao.getFuncionario()
+							.getListDiasSemana().get(j))) {
+
+						InsercaoPacienteBean ins = new InsercaoPacienteBean();
+
+						ins.getAgenda().setPaciente(
+								insercao.getLaudo().getPaciente());
+
+						ins.getAgenda().setDataMarcacao(c.getTime());
+
+						listAgendamentoProfissional.add(ins);
+
+					}
+				}
+
+			}
+
+		}
+
+	}
+	
+	public void gravarRenovacaoPaciente() throws ProjetoException, SQLException {
+
+		if (insercao.getLaudo().getId() != null) {
+
+			Boolean cadastrou = null;
+			if (tipo.equals("E")) {
+				
+				gerarListaAgendamentosEquipe();
+				
+				cadastrou = gDao.gravarRenovacaoEquipe(insercao,
+						listAgendamentoProfissional, listAgendamentoProfissional);
+			}
+			if (tipo.equals("P")) {
+
+				gerarListaAgendamentosProfissional();
+
+				cadastrou = gDao.gravarInsercaoProfissional(insercao,
+						listAgendamentoProfissional);
+			}
+
+			if (cadastrou == true) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Inserção de Equipe cadastrada com sucesso!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Ocorreu um erro durante o cadastro!", "Erro");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Carregue um laudo primeiro!", "Bloqueio");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}	
+	
+	//RENOVAÇÃO FINAL
 	
 	public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
 			throws ProjetoException {
