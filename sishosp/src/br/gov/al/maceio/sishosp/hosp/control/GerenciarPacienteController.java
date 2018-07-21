@@ -54,11 +54,13 @@ public class GerenciarPacienteController implements Serializable {
 	private String busca = "N";
 	private Boolean apenasLeitura;
 	private InsercaoPacienteBean insercao;
+	private InsercaoPacienteBean insercaoParaLaudo;
 	private String tipo;
 	private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
 	private InsercaoPacienteDAO iDao;
 	private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
 	private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
+	private Integer id_paciente_insituicao;
 
 	public GerenciarPacienteController() {
 		gerenciarpaciente = new GerenciarPacienteBean();
@@ -68,6 +70,7 @@ public class GerenciarPacienteController implements Serializable {
 		apenasLeitura = false;
 		rowBean = new GerenciarPacienteBean();
 		insercao = new InsercaoPacienteBean();
+		insercaoParaLaudo = new InsercaoPacienteBean();
 		tipo = "";
 		listaLaudosVigentes = new ArrayList<InsercaoPacienteBean>();
 		iDao = new InsercaoPacienteDAO();
@@ -176,6 +179,7 @@ public class GerenciarPacienteController implements Serializable {
 				.getRequestParameterMap();
 		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
+			id_paciente_insituicao = id;
 			this.insercao = gDao.carregarPacientesInstituicaoRenovacao(id);
 			if(insercao.getEquipe().getCodEquipe() != null && insercao.getEquipe().getCodEquipe() > 0){
 				tipo = "E";
@@ -184,6 +188,7 @@ public class GerenciarPacienteController implements Serializable {
 			if(insercao.getFuncionario().getId() != null && insercao.getFuncionario().getId() > 0){
 				tipo = "P";
 			}
+			System.out.println("ID1: "+insercao.getId());
 			// carregar as listas
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -198,7 +203,7 @@ public class GerenciarPacienteController implements Serializable {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
 		Date d1 = insercao.getData_solicitacao();
-		Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+		Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
 		Long dt = (d2.getTime() - d1.getTime());
 
 		dt = (dt / 86400000L);
@@ -216,9 +221,9 @@ public class GerenciarPacienteController implements Serializable {
 
 			if (tipo.equals("E")) {
 				for (int j = 0; j < listaDiasProfissional.size(); j++) {
-					for (int h = 0; h < listaDiasProfissional.size(); h++) {
 					
-					if (diaSemana == Integer.parseInt(listaDiasProfissional.get(j).getFuncionario().getListDiasSemana().get(h))) {
+					
+					if (diaSemana == listaDiasProfissional.get(j).getFuncionario().getDiaSemana()) {
 
 						InsercaoPacienteBean ins = new InsercaoPacienteBean();
 
@@ -231,7 +236,6 @@ public class GerenciarPacienteController implements Serializable {
 
 						listAgendamentoProfissional.add(ins);
 
-						}
 					}
 				}
 
@@ -240,7 +244,6 @@ public class GerenciarPacienteController implements Serializable {
 		}
 		
 	}
-	
 	
 	public void gerarListaAgendamentosProfissional() throws ProjetoException {
 
@@ -290,15 +293,15 @@ public class GerenciarPacienteController implements Serializable {
 	
 	public void gravarRenovacaoPaciente() throws ProjetoException, SQLException {
 
-		if (insercao.getLaudo().getId() != null) {
+		if (insercaoParaLaudo.getLaudo().getId() != null) {
 
 			Boolean cadastrou = null;
 			if (tipo.equals("E")) {
 				
 				gerarListaAgendamentosEquipe();
-				
-				cadastrou = gDao.gravarRenovacaoEquipe(insercao,
-						listAgendamentoProfissional, listAgendamentoProfissional);
+				System.out.println("ID: "+insercao.getId());
+				cadastrou = gDao.gravarRenovacaoEquipe(insercao, insercaoParaLaudo,
+						listAgendamentoProfissional);
 			}
 			if (tipo.equals("P")) {
 
@@ -333,8 +336,8 @@ public class GerenciarPacienteController implements Serializable {
 	}
 	
 	public void carregarLaudoPaciente() throws ProjetoException {
-		int id = insercao.getLaudo().getId();
-		insercao = iDao.carregarLaudoPaciente(id);
+		insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo().getId());
+		insercao = gDao.carregarPacientesInstituicaoRenovacao(id_paciente_insituicao);
 
 	}
 
@@ -410,6 +413,14 @@ public class GerenciarPacienteController implements Serializable {
 	public void setListaDiasProfissional(
 			ArrayList<GerenciarPacienteBean> listaDiasProfissional) {
 		this.listaDiasProfissional = listaDiasProfissional;
+	}
+
+	public InsercaoPacienteBean getInsercaoParaLaudo() {
+		return insercaoParaLaudo;
+	}
+
+	public void setInsercaoParaLaudo(InsercaoPacienteBean insercaoParaLaudo) {
+		this.insercaoParaLaudo = insercaoParaLaudo;
 	}
 
 }

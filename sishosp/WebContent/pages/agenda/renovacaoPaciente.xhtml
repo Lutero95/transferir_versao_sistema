@@ -43,7 +43,7 @@
 
 					<b:column span="3">
 						<h:outputLabel
-							value="#{GerenciarPacienteController.insercao.laudo.paciente.nome}"
+							value="#{GerenciarPacienteController.insercaoParaLaudo.laudo.paciente.nome}"
 							style="margin-top:5px" />
 					</b:column>
 
@@ -53,7 +53,7 @@
 
 					<b:column span="3">
 						<h:outputLabel
-							value="#{GerenciarPacienteController.insercao.laudo.procedimento_primario.nomeProc}"
+							value="#{GerenciarPacienteController.insercaoParaLaudo.laudo.procedimento_primario.nomeProc}"
 							style="margin-top:5px" />
 					</b:column>
 
@@ -67,7 +67,7 @@
 
 					<b:column span="3">
 						<h:outputLabel
-							value="#{GerenciarPacienteController.insercao.laudo.cid1.descCid}"
+							value="#{GerenciarPacienteController.insercaoParaLaudo.laudo.cid1.descCid}"
 							style="margin-top:5px" />
 					</b:column>
 
@@ -77,7 +77,7 @@
 
 					<b:column span="3">
 						<h:outputLabel
-							value="#{GerenciarPacienteController.insercao.laudo.vigencia_inicial}"
+							value="#{GerenciarPacienteController.insercaoParaLaudo.laudo.vigencia_inicial}"
 							style="margin-top:5px">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputLabel>
@@ -89,7 +89,7 @@
 
 					<b:column span="3">
 						<h:outputLabel
-							value="#{GerenciarPacienteController.insercao.laudo.vigencia_final}"
+							value="#{GerenciarPacienteController.insercaoParaLaudo.laudo.vigencia_final}"
 							style="margin-top:5px">
 							<f:convertDateTime pattern="dd/MM/yyyy" />
 						</h:outputLabel>
@@ -378,7 +378,7 @@
 					<b:commandButton value="Gravar" look="success" size="sm" id="b1"
 						icon="glyphicon-ok" update=":formInsercao2:msgError"
 						style="float:left"
-						action="#{GerenciamentoPacienteController.gravarInsercaoPaciente()}" />
+						action="#{GerenciarPacienteController.gravarRenovacaoPaciente()}" />
 
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						size="sm" immediate="true" look="info" style="float:right"

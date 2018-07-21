@@ -192,6 +192,8 @@ public class GerenciarPacienteDAO {
 		return retorno;
 
 	}
+	
+	//RENOVAÇÃO
 
 	public InsercaoPacienteBean carregarPacientesInstituicaoRenovacao(Integer id)
 			throws ProjetoException {
@@ -256,7 +258,7 @@ public class GerenciarPacienteDAO {
 
 		ArrayList<GerenciarPacienteBean> lista = new ArrayList<>();
 
-		String sql = "select distinct(p.id_profissional), f.descfuncionario, p.id_paciente_instituicao, "
+		String sql = "select distinct(p.id_profissional), f.descfuncionario, f.codcbo, p.id_paciente_instituicao, dia_semana, "
 				+ " case when dia_semana = 1 then 'Domingo' when dia_semana = 2 then 'Segunda' "
 				+ " when dia_semana = 3 then 'Terça' when dia_semana = 4 then 'Quarta' "
 				+ " when dia_semana = 5 then 'Quinta' when dia_semana = 6 then 'Sexta' when dia_semana = 7 then 'Sábado' "
@@ -278,6 +280,8 @@ public class GerenciarPacienteDAO {
 				ge.getFuncionario().setId(rs.getLong("id_profissional"));
 				ge.setId(rs.getInt("id_paciente_instituicao"));
 				ge.getFuncionario().setDiasSemana(rs.getString("dia"));
+				ge.getFuncionario().setDiaSemana(rs.getInt("dia_semana"));
+				ge.getFuncionario().getCbo().setCodCbo(rs.getInt("codcbo"));
 				
 				lista.add(ge);
 			}
@@ -295,10 +299,9 @@ public class GerenciarPacienteDAO {
 		return lista;
 	}
 	
-	//RENOVAÇÃO
 	
-	public boolean gravarRenovacaoEquipe(InsercaoPacienteBean insercao,
-			List<InsercaoPacienteBean> lista, ArrayList<InsercaoPacienteBean> listaAgendamento) throws ProjetoException {
+	public boolean gravarRenovacaoEquipe(InsercaoPacienteBean insercao, InsercaoPacienteBean insercaoParaLaudo,
+			List<InsercaoPacienteBean> lista) throws ProjetoException {
 		
 		ResultSet rs = null;
 		String sql = "update hosp.paciente_instituicao set status = 'CR' where id = ?";
@@ -315,7 +318,7 @@ public class GerenciarPacienteDAO {
 
 			for (int i = 0; i < lista.size(); i++) {
 				ps.setLong(1, insercao.getId());
-				ps.setLong(2, lista.get(i).getId());
+				ps.setLong(2, lista.get(i).getAgenda().getProfissional().getId());
 				for (int j = 0; j < lista.get(i).getFuncionario().getListDiasSemana().size(); j++) {
 					ps.setInt(
 							3,
@@ -332,11 +335,11 @@ public class GerenciarPacienteDAO {
 			PreparedStatement ps3 = null;
 			ps3 = conexao.prepareStatement(sql3);
 
-			for (int i = 0; i < listaAgendamento.size(); i++) {
+			for (int i = 0; i < lista.size(); i++) {
 
-				ps3.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
-				ps3.setLong(2, listaAgendamento.get(i).getAgenda().getProfissional().getId());
-				ps3.setDate(3, new java.sql.Date(listaAgendamento.get(i)
+				ps3.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
+				ps3.setLong(2, lista.get(i).getAgenda().getProfissional().getId());
+				ps3.setDate(3, new java.sql.Date(lista.get(i)
 						.getAgenda().getDataMarcacao().getTime()));
 				ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
 				ps3.setString(5, insercao.getAgenda().getTurno());
@@ -355,9 +358,9 @@ public class GerenciarPacienteDAO {
 				PreparedStatement ps4 = null;
 				ps4 = conexao.prepareStatement(sql4);
 
-				ps4.setLong(1, listaAgendamento.get(i).getAgenda().getProfissional().getId());
+				ps4.setLong(1, lista.get(i).getAgenda().getProfissional().getId());
 				ps4.setInt(2, idAgend);
-				ps4.setInt(3, listaAgendamento.get(i).getAgenda().getProfissional().getCbo().getCodCbo());
+				ps4.setInt(3, lista.get(i).getAgenda().getProfissional().getCbo().getCodCbo());
 
 				ps4.executeUpdate();
 
@@ -369,7 +372,7 @@ public class GerenciarPacienteDAO {
 			PreparedStatement ps5 = null;
 			ps5 = conexao.prepareStatement(sql5);
 
-			ps5.setLong(1, insercao.getLaudo().getPaciente().getId_paciente());
+			ps5.setLong(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
 			ps5.setString(2, insercao.getObservacao());
 			ps5.setString(3, "R");
 			

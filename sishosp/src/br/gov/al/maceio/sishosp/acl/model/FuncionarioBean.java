@@ -31,6 +31,7 @@ public class FuncionarioBean implements Serializable {
 	private String cns;
 	private String diasSemana;
 	private ArrayList<String> listDiasSemana;
+	private Integer diaSemana;
 	
 	// LISTAS
 	private List<ProgramaBean> programa;
@@ -389,6 +390,14 @@ public class FuncionarioBean implements Serializable {
 
 	public void setListDiasSemana(ArrayList<String> listDiasSemana) {
 		this.listDiasSemana = listDiasSemana;
+	}
+
+	public Integer getDiaSemana() {
+		return diaSemana;
+	}
+
+	public void setDiaSemana(Integer diaSemana) {
+		this.diaSemana = diaSemana;
 	}
 
 }
