@@ -54,13 +54,10 @@ public class GerenciarPacienteController implements Serializable {
 	private String busca = "N";
 	private Boolean apenasLeitura;
 	private InsercaoPacienteBean insercao;
-	private InsercaoPacienteBean insercaoParaLaudo;
 	private String tipo;
 	private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
 	private InsercaoPacienteDAO iDao;
 	private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
-	private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
-	private Integer id_paciente_insituicao;
 
 	public GerenciarPacienteController() {
 		gerenciarpaciente = new GerenciarPacienteBean();
@@ -70,12 +67,10 @@ public class GerenciarPacienteController implements Serializable {
 		apenasLeitura = false;
 		rowBean = new GerenciarPacienteBean();
 		insercao = new InsercaoPacienteBean();
-		insercaoParaLaudo = new InsercaoPacienteBean();
 		tipo = "";
 		listaLaudosVigentes = new ArrayList<InsercaoPacienteBean>();
 		iDao = new InsercaoPacienteDAO();
 		listaDiasProfissional = new ArrayList<GerenciarPacienteBean>();
-		listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
 	}
 
 	public void buscarPacientesInstituicao() throws ProjetoException {
@@ -138,7 +133,6 @@ public class GerenciarPacienteController implements Serializable {
 
 	public void onRowSelect(SelectEvent event) throws ProjetoException {
 		// IMPLEMENTAR ALGO SE PRECISAR
-		// System.out.println("rowbean: " + rowBean.getStatus());
 	}
 
 	public void desligarPaciente() throws ProjetoException, SQLException {
@@ -170,174 +164,14 @@ public class GerenciarPacienteController implements Serializable {
 				+ this.rowBean.getId();
 	}
 
-	
-	//RENOVAÇÃO INÍCIO
-	
-	public void carregaRenovacao() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			id_paciente_insituicao = id;
-			this.insercao = gDao.carregarPacientesInstituicaoRenovacao(id);
-			if(insercao.getEquipe().getCodEquipe() != null && insercao.getEquipe().getCodEquipe() > 0){
-				tipo = "E";
-				listaDiasProfissional = gDao.listarDiasAtendimentoProfissional(id);
-			}
-			if(insercao.getFuncionario().getId() != null && insercao.getFuncionario().getId() > 0){
-				tipo = "P";
-			}
-			System.out.println("ID1: "+insercao.getId());
-			// carregar as listas
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-	}
-	
-	public void gerarListaAgendamentosEquipe() throws ProjetoException {
-
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		df.setLenient(false);
-		Date d1 = insercao.getData_solicitacao();
-		Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
-		Long dt = (d2.getTime() - d1.getTime());
-
-		dt = (dt / 86400000L);
-
-		Calendar c = Calendar.getInstance();
-		c.setTime(insercao.getData_solicitacao());
-
-		for (int i = 0; i < dt; i++) {
-
-			if (i > 0) {
-				c.add(Calendar.DAY_OF_MONTH, 1);
-			}
-
-			int diaSemana = c.get(Calendar.DAY_OF_WEEK);
-
-			if (tipo.equals("E")) {
-				for (int j = 0; j < listaDiasProfissional.size(); j++) {
-					
-					
-					if (diaSemana == listaDiasProfissional.get(j).getFuncionario().getDiaSemana()) {
-
-						InsercaoPacienteBean ins = new InsercaoPacienteBean();
-
-						ins.getAgenda().setPaciente(
-								insercao.getLaudo().getPaciente());
-
-						ins.getAgenda().setDataMarcacao(c.getTime());
-						
-						ins.getAgenda().setProfissional(listaDiasProfissional.get(j).getFuncionario());
-
-						listAgendamentoProfissional.add(ins);
-
-					}
-				}
-
-			}
-
-		}
-		
-	}
-	
-	public void gerarListaAgendamentosProfissional() throws ProjetoException {
-
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		df.setLenient(false);
-		Date d1 = insercao.getData_solicitacao();
-		Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
-		Long dt = (d2.getTime() - d1.getTime());
-
-		dt = (dt / 86400000L);
-
-		Calendar c = Calendar.getInstance();
-		c.setTime(insercao.getData_solicitacao());
-
-		for (int i = 0; i < dt; i++) {
-
-			if (i > 0) {
-				c.add(Calendar.DAY_OF_MONTH, 1);
-			}
-
-			int diaSemana = c.get(Calendar.DAY_OF_WEEK);
-
-			if (tipo.equals("P")) {
-				for (int j = 0; j < insercao.getFuncionario()
-						.getListDiasSemana().size(); j++) {
-
-					if (diaSemana == Integer.parseInt(insercao.getFuncionario()
-							.getListDiasSemana().get(j))) {
-
-						InsercaoPacienteBean ins = new InsercaoPacienteBean();
-
-						ins.getAgenda().setPaciente(
-								insercao.getLaudo().getPaciente());
-
-						ins.getAgenda().setDataMarcacao(c.getTime());
-
-						listAgendamentoProfissional.add(ins);
-
-					}
-				}
-
-			}
-
-		}
-
-	}
-	
-	public void gravarRenovacaoPaciente() throws ProjetoException, SQLException {
-
-		if (insercaoParaLaudo.getLaudo().getId() != null) {
-
-			Boolean cadastrou = null;
-			if (tipo.equals("E")) {
-				
-				gerarListaAgendamentosEquipe();
-				System.out.println("ID: "+insercao.getId());
-				cadastrou = gDao.gravarRenovacaoEquipe(insercao, insercaoParaLaudo,
-						listAgendamentoProfissional);
-			}
-			if (tipo.equals("P")) {
-
-				gerarListaAgendamentosProfissional();
-
-				cadastrou = gDao.gravarInsercaoProfissional(insercao,
-						listAgendamentoProfissional);
-			}
-
-			if (cadastrou == true) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Inserção de Equipe cadastrada com sucesso!", "Sucesso");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			} else {
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Ocorreu um erro durante o cadastro!", "Erro");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			}
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Carregue um laudo primeiro!", "Bloqueio");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-	}	
-	
-	//RENOVAÇÃO FINAL
-	
 	public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
 			throws ProjetoException {
 		return iDao.listarLaudosVigentes();
 	}
 	
 	public void carregarLaudoPaciente() throws ProjetoException {
-		insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo().getId());
-		insercao = gDao.carregarPacientesInstituicaoRenovacao(id_paciente_insituicao);
+		int id = insercao.getLaudo().getId();
+		insercao = iDao.carregarLaudoPaciente(id);
 
 	}
 
@@ -415,12 +249,5 @@ public class GerenciarPacienteController implements Serializable {
 		this.listaDiasProfissional = listaDiasProfissional;
 	}
 
-	public InsercaoPacienteBean getInsercaoParaLaudo() {
-		return insercaoParaLaudo;
-	}
-
-	public void setInsercaoParaLaudo(InsercaoPacienteBean insercaoParaLaudo) {
-		this.insercaoParaLaudo = insercaoParaLaudo;
-	}
 
 }
