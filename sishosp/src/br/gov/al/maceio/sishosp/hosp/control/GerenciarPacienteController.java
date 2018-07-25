@@ -163,6 +163,11 @@ public class GerenciarPacienteController implements Serializable {
 		return "renovacaoPaciente?faces-redirect=true&amp;id="
 				+ this.rowBean.getId();
 	}
+	
+	public String redirectAlteracao() {
+		return "alteracaoPaciente?faces-redirect=true&amp;id="
+				+ this.rowBean.getId();
+	}
 
 	public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
 			throws ProjetoException {
