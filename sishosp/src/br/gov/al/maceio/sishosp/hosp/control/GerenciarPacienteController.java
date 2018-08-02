@@ -131,17 +131,14 @@ public class GerenciarPacienteController implements Serializable {
 		}
 	}
 
-	public void onRowSelect(SelectEvent event) throws ProjetoException {
-		// IMPLEMENTAR ALGO SE PRECISAR
-	}
 
-	public void desligarPaciente() throws ProjetoException, SQLException {
+	public void desligarPaciente() throws ProjetoException {
 
 		Boolean cadastrou = false;
 
 		cadastrou = gDao.desligarPaciente(rowBean, gerenciarpaciente);
 
-		if (cadastrou == true) {
+		if (cadastrou) {
 
 			RequestContext.getCurrentInstance().execute(
 					"PF('dlgDeslPac').hide();");

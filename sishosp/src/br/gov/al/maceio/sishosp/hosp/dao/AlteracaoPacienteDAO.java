@@ -30,7 +30,7 @@ public class AlteracaoPacienteDAO {
 			throws ProjetoException {
 
 		String sql = "select pi.id, pi.codprograma, p.descprograma, pi.codgrupo, g.descgrupo, pi.codpaciente, pi.codequipe, e.descequipe, a.turno, "
-				+ " pi.codprofissional, f.descfuncionario, pi.observacao, a.codtipoatendimento, t.desctipoatendimento "
+				+ " pi.codprofissional, f.descfuncionario, pi.observacao, a.codtipoatendimento, t.desctipoatendimento, pi.codlaudo, pi.data_solicitacao "
 				+ " from hosp.paciente_instituicao pi "
 				+ " left join hosp.programa p on (p.id_programa = pi.codprograma) "
 				+ " left join hosp.grupo g on (pi.codgrupo = g.id_grupo) "
@@ -70,6 +70,8 @@ public class AlteracaoPacienteDAO {
 				ip.getAgenda().getTipoAt()
 						.setDescTipoAt(rs.getString("desctipoatendimento"));
 				ip.getAgenda().setTurno(rs.getString("turno"));
+				ip.getLaudo().setId(rs.getInt("codlaudo"));
+				ip.setData_solicitacao(rs.getDate("data_solicitacao"));
 
 			}
 

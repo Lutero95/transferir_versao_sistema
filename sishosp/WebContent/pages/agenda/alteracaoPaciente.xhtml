@@ -9,7 +9,7 @@
 
 	<f:metadata>
 		<f:viewAction
-			action="#{AlteracaoPacienteController.carregaRenovacao()}" />
+			action="#{AlteracaoPacienteController.carregaAlteracao()}" />
 	</f:metadata>
 
 	<ui:define name="body">
@@ -21,19 +21,6 @@
 			</div>
 
 			<h:form id="formInsercao">
-
-				<b:row>
-
-					<b:column span="1">
-						<h:outputLabel value="Laudo:" style="margin-top:5px" />
-					</b:column>
-
-					<b:column span="3">
-						<p:commandButton icon="ui-icon-search" update=":formConsuLaudo"
-							oncomplete="PF('dlgConsuLaudo').show();" />
-					</b:column>
-
-				</b:row>
 
 				<b:row>
 
@@ -132,7 +119,9 @@
 
 						<b:column span="3">
 
-							<p:autoComplete value="#{AlteracaoPacienteController.insercao.programa}" readonly="true"
+							<p:autoComplete
+								value="#{AlteracaoPacienteController.insercao.programa}"
+								readonly="true"
 								rendered="#{AlteracaoPacienteController.tipo == 'E'}" size="40"
 								converter="conPrograma"
 								completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
@@ -160,7 +149,9 @@
 
 						<b:column span="3">
 
-							<p:autoComplete value="#{AlteracaoPacienteController.insercao.grupo}" readonly="true"
+							<p:autoComplete
+								value="#{AlteracaoPacienteController.insercao.grupo}"
+								readonly="true"
 								rendered="#{AlteracaoPacienteController.tipo == 'E'}" size="40"
 								converter="conGrupo"
 								disabled="#{AlteracaoPacienteController.insercao.programa==null}"
@@ -189,8 +180,9 @@
 
 						<b:column span="3">
 
-							<p:autoComplete value="#{AlteracaoPacienteController.insercao.equipe}" readonly="true"
-								size="40" converter="conEquipe"
+							<p:autoComplete
+								value="#{AlteracaoPacienteController.insercao.equipe}"
+								readonly="true" size="40" converter="conEquipe"
 								rendered="#{AlteracaoPacienteController.tipo == 'E'}"
 								disabled="#{AlteracaoPacienteController.insercao.grupo==null}"
 								completeMethod="#{InsercaoPacienteController.listaEquipeAutoComplete}"
@@ -217,10 +209,11 @@
 
 						<b:column span="3">
 
-							<p:autoComplete rendered="#{AlteracaoPacienteController.tipo == 'P'}"
-								value="#{AlteracaoPacienteController.insercao.funcionario}" size="40"
-								converter="conFuncionario"
-								completeMethod="#{InsercaoPacienteController.listaProfissionalAutoComplete}"
+							<p:autoComplete
+								rendered="#{AlteracaoPacienteController.tipo == 'P'}"
+								value="#{AlteracaoPacienteController.insercao.funcionario}"
+								size="40" converter="conFuncionario"
+								completeMethod="#{AlteracaoPacienteController.listaProfissionalAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
 								minQueryLength="1" itemValue="#{theme}"
 								itemLabel="#{theme.nome}">
@@ -267,7 +260,7 @@
 					<p:outputPanel id="outDias">
 						<p:selectManyCheckbox layout="grid" columns="7" required="true"
 							rendered="#{AlteracaoPacienteController.tipo == 'P'}"
-							requiredMessage="Escolha ao menos um dia da semana!" 
+							requiredMessage="Escolha ao menos um dia da semana!"
 							value="#{AlteracaoPacienteController.insercao.funcionario.listDiasSemana}">
 							<f:selectItem itemLabel="Domingo" itemValue="1" />
 							<f:selectItem itemLabel="Segunda" itemValue="2" />
@@ -284,9 +277,9 @@
 				<br></br>
 				<br></br>
 
-<b:row>
+				<b:row>
 					<p:outputPanel id="outTabelas">
-						
+
 						<b:column span="12">
 							<p:dataTable id="dtAdicionados" resizableColumns="true"
 								rendered="#{AlteracaoPacienteController.tipo == 'E'}"
@@ -318,7 +311,7 @@
 					</b:column>
 
 					<b:column span="7">
-						<b:inputTextarea id="obs" rows="1"
+						<b:inputTextarea id="obs" rows="1" readonly="true"
 							value="#{AlteracaoPacienteController.insercao.observacao}"
 							autoResize="false" />
 					</b:column>
@@ -354,8 +347,8 @@
 					<b:column span="3">
 						<p:outputPanel id="outTipoAt">
 							<p:autoComplete
-								value="#{AlteracaoPacienteController.insercao.agenda.tipoAt}" size="40" readonly="true"
-								converter="conTipoAtendimento"
+								value="#{AlteracaoPacienteController.insercao.agenda.tipoAt}"
+								size="40" readonly="true" converter="conTipoAtendimento"
 								completeMethod="#{InsercaoPacienteController.listaTipoAtAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
 								minQueryLength="1" itemValue="#{theme}"
@@ -389,43 +382,6 @@
 			</h:form>
 
 		</div>
-
-
-		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
-			modal="true">
-			<h:form id="formConsuLaudo">
-				<b:dataTable value="#{AlteracaoPacienteController.listarLaudosVigentes()}"
-					id="dtLaudo" var="insercao" lang="pt-br" display="Nenhum Laudo">
-
-					<h:column>
-						<f:facet name="header">
-                        Paciente
-                    </f:facet>
-						<p:outputLabel value="#{insercao.laudo.paciente.nome}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-                        CNS
-                    </f:facet>
-						<p:outputLabel value="#{insercao.laudo.paciente.cns}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-                        Adicionar
-                    </f:facet>
-						<p:commandButton update=":formInsercao" icon="ui-icon-check"
-							title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
-							action="#{AlteracaoPacienteController.carregarLaudoPaciente()}">
-							<f:setPropertyActionListener value="#{insercao}"
-								target="#{AlteracaoPacienteController.insercao}" />
-						</p:commandButton>
-					</h:column>
-
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
 
 	</ui:define>
 </ui:composition>

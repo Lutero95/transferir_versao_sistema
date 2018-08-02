@@ -156,7 +156,7 @@
 						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 						id="btnAlterar" immediate="true"
 						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
-						action="#{GerenciarPacienteController.redirectAlteracao()}" />
+						action="#{GerenciarPacienteController.redirectAlteracao()}" />	
 				</b:column>
 
 				<b:column span="2">
@@ -191,7 +191,6 @@
 				rowKey="#{pacie.id}" scrollable="true" scrollHeight="140">
 
 				<p:ajax event="rowSelect"
-					listener="#{GerenciarPacienteController.onRowSelect}"
 					update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnDesligar" />
 
 				<p:column width="10%">

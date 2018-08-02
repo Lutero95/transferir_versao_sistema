@@ -20,6 +20,7 @@ import net.bootsfaces.component.row.RowBeanInfo;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.AlteracaoPacienteDAO;
@@ -67,7 +68,7 @@ public class AlteracaoPacienteController implements Serializable {
 		listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
 	}
 
-	public void carregaRenovacao() throws ProjetoException {
+	public void carregaAlteracao() throws ProjetoException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Map<String, String> params = facesContext.getExternalContext()
 				.getRequestParameterMap();
@@ -75,6 +76,7 @@ public class AlteracaoPacienteController implements Serializable {
 			Integer id = Integer.parseInt(params.get("id"));
 			id_paciente_insituicao = id;
 			this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
+			carregarLaudoPaciente();
 			if (insercao.getEquipe().getCodEquipe() != null
 					&& insercao.getEquipe().getCodEquipe() > 0) {
 				tipo = "E";
@@ -238,6 +240,13 @@ public class AlteracaoPacienteController implements Serializable {
 		insercao = aDao
 				.carregarPacientesInstituicaoAlteracao(id_paciente_insituicao);
 
+	}
+	
+	public List<FuncionarioBean> listaProfissionalAutoComplete(String query)
+			throws ProjetoException {
+		FuncionarioDAO fDao = new FuncionarioDAO();
+		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
+		return result;
 	}
 
 	public InsercaoPacienteBean getInsercao() {
