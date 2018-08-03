@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -29,7 +30,7 @@ public class AlteracaoPacienteDAO {
 	public InsercaoPacienteBean carregarPacientesInstituicaoAlteracao(Integer id)
 			throws ProjetoException {
 
-		String sql = "select pi.id, pi.codprograma, p.descprograma, pi.codgrupo, g.descgrupo, pi.codpaciente, pi.codequipe, e.descequipe, a.turno, "
+		String sql = "select pi.id, pi.codprograma, p.descprograma, pi.codgrupo, g.descgrupo, pi.codpaciente, pi.codequipe, e.descequipe, a.turno, a.situacao "
 				+ " pi.codprofissional, f.descfuncionario, pi.observacao, a.codtipoatendimento, t.desctipoatendimento, pi.codlaudo, pi.data_solicitacao "
 				+ " from hosp.paciente_instituicao pi "
 				+ " left join hosp.programa p on (p.id_programa = pi.codprograma) "
@@ -70,6 +71,7 @@ public class AlteracaoPacienteDAO {
 				ip.getAgenda().getTipoAt()
 						.setDescTipoAt(rs.getString("desctipoatendimento"));
 				ip.getAgenda().setTurno(rs.getString("turno"));
+				ip.getAgenda().setSituacao(rs.getString("situacao"));
 				ip.getLaudo().setId(rs.getInt("codlaudo"));
 				ip.setData_solicitacao(rs.getDate("data_solicitacao"));
 
@@ -271,84 +273,108 @@ public class AlteracaoPacienteDAO {
 
 	public boolean gravarAlteracaoProfissional(InsercaoPacienteBean insercao,
 			InsercaoPacienteBean insercaoParaLaudo,
-			ArrayList<InsercaoPacienteBean> listaAgendamento)
-			throws ProjetoException {
+			ArrayList<InsercaoPacienteBean> listaAgendamento,
+			Integer id_paciente) throws ProjetoException {
 
 		ResultSet rs = null;
+		ArrayList<Integer> lista = new ArrayList<Integer>();
 
-		String sql = "update hosp.paciente_instituicao set status = 'CR' where id = ?";
 		try {
 			conexao = ConnectionFactory.getConnection();
-			ps = conexao.prepareStatement(sql);
-			ps.setInt(1, insercao.getId());
+			String sql2 = "select id_atendimento from hosp.atendimentos where situacao = 'A' and id_paciente_instituicao = ?";
 
-			ps.executeUpdate();
-
-			String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
 			PreparedStatement ps2 = null;
 			ps2 = conexao.prepareStatement(sql2);
+			ps2.setLong(1, id_paciente);
+			ps2.execute();
 
-			for (int i = 0; i < insercao.getFuncionario().getListDiasSemana()
-					.size(); i++) {
-				ps2.setLong(1, insercao.getId());
-				ps2.setLong(2, insercao.getFuncionario().getId());
-				ps2.setInt(
-						3,
-						Integer.parseInt(insercao.getFuncionario()
-								.getListDiasSemana().get(i)));
-				ps2.executeUpdate();
+			rs = ps2.executeQuery();
 
+			while (rs.next()) {
+				lista.add(rs.getInt("id_atendimento"));
 			}
 
-			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, observacao, ativo)"
-					+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S') RETURNING id_atendimento;";
+			String sql3 = "delete from hosp.atendimentos where situacao = 'A' and id_paciente_instituicao = ?";
 
 			PreparedStatement ps3 = null;
 			ps3 = conexao.prepareStatement(sql3);
+			ps3.setLong(1, id_paciente);
+			ps3.execute();
+
+			for (int i = 0; i < lista.size(); i++) {
+				String sql4 = "delete from hosp.atendimentos1 where id_atendimento = ?";
+
+				PreparedStatement ps4 = null;
+				ps4 = conexao.prepareStatement(sql4);
+				ps4.setLong(1, lista.get(i));
+				ps4.execute();
+			}
+
+			String sql5 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
+			PreparedStatement ps5 = null;
+			ps5 = conexao.prepareStatement(sql5);
+
+			for (int i = 0; i < insercao.getFuncionario().getListDiasSemana()
+					.size(); i++) {
+				ps5.setLong(1, insercao.getId());
+				ps5.setLong(2, insercao.getFuncionario().getId());
+				ps5.setInt(
+						3,
+						Integer.parseInt(insercao.getFuncionario()
+								.getListDiasSemana().get(i)));
+				ps5.executeUpdate();
+
+			}
+
+			String sql6 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, observacao, ativo)"
+					+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S') RETURNING id_atendimento;";
+
+			PreparedStatement ps6 = null;
+			ps6 = conexao.prepareStatement(sql6);
 
 			for (int i = 0; i < listaAgendamento.size(); i++) {
 
-				ps3.setInt(1, insercaoParaLaudo.getLaudo().getPaciente()
+				ps6.setInt(1, insercaoParaLaudo.getLaudo().getPaciente()
 						.getId_paciente());
-				ps3.setLong(2, insercao.getFuncionario().getId());
-				ps3.setDate(3, new java.sql.Date(listaAgendamento.get(i)
+				ps6.setLong(2, insercao.getFuncionario().getId());
+				ps6.setDate(3, new java.sql.Date(listaAgendamento.get(i)
 						.getAgenda().getDataMarcacao().getTime()));
-				ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
-				ps3.setString(5, insercao.getAgenda().getTurno());
-				ps3.setString(6, insercao.getObservacao());
+				ps6.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
+				ps6.setString(5, insercao.getAgenda().getTurno());
+				ps6.setString(6, insercao.getObservacao());
 
-				rs = ps3.executeQuery();
+				rs = ps6.executeQuery();
 
 				int idAgend = 0;
 				if (rs.next()) {
 					idAgend = rs.getInt("id_atendimento");
 				}
 
-				String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+				String sql7 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
 
-				PreparedStatement ps4 = null;
-				ps4 = conexao.prepareStatement(sql4);
+				PreparedStatement ps7 = null;
+				ps7 = conexao.prepareStatement(sql7);
 
-				ps4.setLong(1, insercao.getFuncionario().getId());
-				ps4.setInt(2, idAgend);
-				ps4.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
+				ps7.setLong(1, insercao.getFuncionario().getId());
+				ps7.setInt(2, idAgend);
+				ps7.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
 
-				ps4.executeUpdate();
+				ps7.executeUpdate();
 
 			}
 
-			String sql5 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
+			String sql8 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
 					+ " VALUES  (?, current_date, ?, ?)";
 
-			PreparedStatement ps5 = null;
-			ps5 = conexao.prepareStatement(sql5);
+			PreparedStatement ps8 = null;
+			ps8 = conexao.prepareStatement(sql8);
 
-			ps5.setLong(1, insercaoParaLaudo.getLaudo().getPaciente()
+			ps8.setLong(1, insercaoParaLaudo.getLaudo().getPaciente()
 					.getId_paciente());
-			ps5.setString(2, insercao.getObservacao());
-			ps5.setString(3, "R");
+			ps8.setString(2, insercao.getObservacao());
+			ps8.setString(3, "A");
 
-			ps5.executeUpdate();
+			ps8.executeUpdate();
 
 			conexao.commit();
 
@@ -364,6 +390,44 @@ public class AlteracaoPacienteDAO {
 				System.exit(1);
 			}
 		}
+	}
+
+	public ArrayList<AgendaBean> listaAtendimentos(Integer id)
+			throws ProjetoException {
+
+		ArrayList<AgendaBean> lista = new ArrayList<>();
+
+		String sql = "select id_atendimento, codpaciente, situacao, dtaatende from hosp.atendimentos "
+				+ "where id_paciente_instituicao = ? and situacao = 'F' order by id_atendimento desc limit 1";
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement stm = conexao.prepareStatement(sql);
+
+			stm.setInt(1, id);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				AgendaBean ge = new AgendaBean();
+				ge.setIdAgenda(rs.getInt("id_atendimento"));
+				ge.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+				ge.setSituacao(rs.getString("situacao"));
+				ge.setDataAtendimento(rs.getDate("dtaatende"));
+
+				lista.add(ge);
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
 	}
 
 }

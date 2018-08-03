@@ -148,16 +148,36 @@ public class AlteracaoPacienteController implements Serializable {
 
 	public void gerarListaAgendamentosProfissional() throws ProjetoException {
 
+		Boolean temAtendimento = false;
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
 		Date d1 = insercao.getData_solicitacao();
+
+		if (aDao.listaAtendimentos(id_paciente_insituicao).size() > 0) {
+			for (int i = 0; i < aDao.listaAtendimentos(id_paciente_insituicao)
+					.size(); i++) {
+				d1 = aDao.listaAtendimentos(id_paciente_insituicao).get(i)
+						.getDataAtendimento();
+				insercao.setData_solicitacao(d1);
+				temAtendimento = true;
+			}
+		}
+
 		Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
 		Long dt = (d2.getTime() - d1.getTime());
 
 		dt = (dt / 86400000L);
 
 		Calendar c = Calendar.getInstance();
-		c.setTime(insercao.getData_solicitacao());
+
+		//INICIA O ATENDIMENTO 1 DIA APÓS O ÚLTIMO
+		if (temAtendimento) {
+			c.setTime(insercao.getData_solicitacao());
+			c.add(Calendar.DAY_OF_MONTH, 1);
+		} 
+		else {
+			c.setTime(insercao.getData_solicitacao());
+		}
 
 		for (int i = 0; i < dt; i++) {
 
@@ -192,39 +212,31 @@ public class AlteracaoPacienteController implements Serializable {
 
 	}
 
-	public void gravarRenovacaoPaciente() throws ProjetoException, SQLException {
+	public void gravarAlteracaoPaciente() throws ProjetoException {
 
-		if (insercaoParaLaudo.getLaudo().getId() != null) {
+		Boolean cadastrou = null;
+		if (tipo.equals("E")) {
 
-			Boolean cadastrou = null;
-			if (tipo.equals("E")) {
+			gerarListaAgendamentosEquipe();
 
-				gerarListaAgendamentosEquipe();
+			cadastrou = aDao.gravarAlteracaoEquipe(insercao, insercaoParaLaudo,
+					listAgendamentoProfissional);
+		}
+		if (tipo.equals("P")) {
 
-				cadastrou = aDao.gravarAlteracaoEquipe(insercao,
-						insercaoParaLaudo, listAgendamentoProfissional);
-			}
-			if (tipo.equals("P")) {
+			gerarListaAgendamentosProfissional();
 
-				gerarListaAgendamentosProfissional();
+			cadastrou = aDao.gravarAlteracaoProfissional(insercao,
+					insercaoParaLaudo, listAgendamentoProfissional);
+		}
 
-				cadastrou = aDao.gravarAlteracaoProfissional(insercao,
-						insercaoParaLaudo, listAgendamentoProfissional);
-			}
-
-			if (cadastrou == true) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Inserção de Equipe cadastrada com sucesso!", "Sucesso");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			} else {
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Ocorreu um erro durante o cadastro!", "Erro");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			}
+		if (cadastrou) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Inserção de Equipe cadastrada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Carregue um laudo primeiro!", "Bloqueio");
+					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
@@ -241,7 +253,7 @@ public class AlteracaoPacienteController implements Serializable {
 				.carregarPacientesInstituicaoAlteracao(id_paciente_insituicao);
 
 	}
-	
+
 	public List<FuncionarioBean> listaProfissionalAutoComplete(String query)
 			throws ProjetoException {
 		FuncionarioDAO fDao = new FuncionarioDAO();
