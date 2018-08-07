@@ -181,17 +181,24 @@
 						<b:column span="3">
 
 							<p:autoComplete
-								value="#{AlteracaoPacienteController.insercao.equipe}"
-								readonly="true" size="40" converter="conEquipe"
+								value="#{AlteracaoPacienteController.insercao.equipe}" size="40"
+								converter="conEquipe"
 								rendered="#{AlteracaoPacienteController.tipo == 'E'}"
 								disabled="#{AlteracaoPacienteController.insercao.grupo==null}"
-								completeMethod="#{InsercaoPacienteController.listaEquipeAutoComplete}"
+								completeMethod="#{AlteracaoPacienteController.listaEquipeAutoComplete}"
 								effect="fade" var="theme" forceSelection="true"
 								minQueryLength="1" itemValue="#{theme}"
 								itemLabel="#{theme.descEquipe}">
 								<p:ajax event="itemSelect" update="" />
 							</p:autoComplete>
 
+						</b:column>
+
+						<b:column span="1">
+							<p:commandButton icon="ui-icon-search"
+								update="dtEquipe, :formInsercao2:msgError"
+								rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+								action="#{AlteracaoPacienteController.listarProfissionaisEquipe()}" />
 						</b:column>
 
 					</p:outputPanel>
@@ -261,7 +268,7 @@
 						<p:selectManyCheckbox layout="grid" columns="7" required="true"
 							rendered="#{AlteracaoPacienteController.tipo == 'P'}"
 							requiredMessage="Escolha ao menos um dia da semana!"
-							value="#{AlteracaoPacienteController.insercao.funcionario.listDiasSemana}">
+							value="#{AlteracaoPacienteController.funcionario.listDiasSemana}">
 							<f:selectItem itemLabel="Domingo" itemValue="1" />
 							<f:selectItem itemLabel="Segunda" itemValue="2" />
 							<f:selectItem itemLabel="Terça" itemValue="3" />
@@ -279,29 +286,67 @@
 
 				<b:row>
 					<p:outputPanel id="outTabelas">
-
-						<b:column span="12">
-							<p:dataTable id="dtAdicionados" resizableColumns="true"
+						<b:column span="5">
+							<p:dataTable id="dtEquipe" resizableColumns="true"
 								rendered="#{AlteracaoPacienteController.tipo == 'E'}"
-								value="#{AlteracaoPacienteController.listaDiasProfissional}"
-								var="gerenciamento" emptyMessage="Sem registros.">
+								value="#{AlteracaoPacienteController.listaProfissionaisEquipe}"
+								var="func" emptyMessage="Sem registros.">
 
 								<p:column headerText="Profissional">
-									<h:outputLabel value="#{gerenciamento.funcionario.nome}" />
+									<h:outputLabel value="#{func.nome}" />
 								</p:column>
 
+								<p:column headerText="Especialidade">
+									<h:outputLabel value="#{func.especialidade.descEspecialidade}" />
+								</p:column>
 
-								<p:column headerText="Dias Atendimento">
-									<h:outputLabel value="#{gerenciamento.funcionario.diasSemana}" />
+								<p:column headerText="Adicionar">
+									<center>
+										<p:commandButton icon="ui-icon-check"
+											action="#{AlteracaoPacienteController.limparDias()}"
+											title="Selecionar" onclick="PF('dlgDiasAtendimento').show();"
+											update=":formDiasAtendimento">
+											<f:setPropertyActionListener value="#{func}"
+												target="#{AlteracaoPacienteController.funcionario}" />
+										</p:commandButton>
+									</center>
 								</p:column>
 
 							</p:dataTable>
 						</b:column>
+
+						<b:column span="1">
+						</b:column>
+
+						<b:column span="6">
+							<p:dataTable id="dtAdicionados" resizableColumns="true"
+								rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+								value="#{AlteracaoPacienteController.listaProfissionaisAdicionados}"
+								var="funcionario" emptyMessage="Sem registros.">
+
+								<p:column headerText="Profissional">
+									<h:outputLabel value="#{funcionario.nome}" />
+								</p:column>
+
+								<p:column headerText="Especialidade">
+									<h:outputLabel
+										value="#{funcionario.especialidade.descEspecialidade}" />
+								</p:column>
+
+								<p:column headerText="Dias Atendimento">
+									<h:outputLabel value="#{funcionario.diasSemana}" />
+								</p:column>
+
+							</p:dataTable>
+						</b:column>
+
 					</p:outputPanel>
 
 				</b:row>
 
+
 				<br></br>
+
 				<br></br>
 
 				<b:row>
@@ -380,6 +425,33 @@
 
 				</center>
 			</h:form>
+
+			<p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
+				modal="true">
+				<h:form id="formDiasAtendimento">
+					<p:selectManyCheckbox layout="grid" columns="7" required="true"
+						requiredMessage="Escolha ao menos um dia da semana!"
+						value="#{AlteracaoPacienteController.funcionario.listDiasSemana}">
+						<f:selectItem itemLabel="Domingo" itemValue="1" />
+						<f:selectItem itemLabel="Segunda" itemValue="2" />
+						<f:selectItem itemLabel="Terça" itemValue="3" />
+						<f:selectItem itemLabel="Quarta" itemValue="4" />
+						<f:selectItem itemLabel="Quinta" itemValue="5" />
+						<f:selectItem itemLabel="Sexta" itemValue="6" />
+						<f:selectItem itemLabel="Sábado" itemValue="7" />
+					</p:selectManyCheckbox>
+
+					<br></br>
+					<br></br>
+
+					<center>
+						<b:commandButton value="Adicionar" look="success" size="sm"
+							id="b2" icon="glyphicon-ok"
+							update=":formInsercao2:dtAdicionados, :formInsercao2:msgError"
+							action="#{AlteracaoPacienteController.validarAdicionarFuncionario()}" />
+					</center>
+				</h:form>
+			</p:dialog>
 
 		</div>
 
