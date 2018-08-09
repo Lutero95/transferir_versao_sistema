@@ -213,7 +213,7 @@ public class AlteracaoPacienteDAO {
 			PreparedStatement ps5 = null;
 			ps5 = conexao.prepareStatement(sql5);
 
-			for (int i = 0; i < lista.size(); i++) {
+			for (int i = 0; i < listaP.size(); i++) {
 				ps5.setLong(1, insercao.getId());
 				ps5.setLong(2, listaP.get(i).getAgenda().getProfissional()
 						.getId());
@@ -233,7 +233,7 @@ public class AlteracaoPacienteDAO {
 			PreparedStatement ps6 = null;
 			ps6 = conexao.prepareStatement(sql6);
 
-			for (int i = 0; i < lista.size(); i++) {
+			for (int i = 0; i < listaP.size(); i++) {
 
 				ps6.setInt(1, insercaoParaLaudo.getLaudo().getPaciente()
 						.getId_paciente());
@@ -244,7 +244,7 @@ public class AlteracaoPacienteDAO {
 				ps6.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
 				ps6.setString(5, insercao.getAgenda().getTurno());
 				ps6.setString(6, insercao.getObservacao());
-				ps6.setInt(7, insercao.getId());
+				ps6.setInt(7, id_paciente);
 
 				rs = ps6.executeQuery();
 

@@ -113,8 +113,10 @@ public class AlteracaoPacienteController implements Serializable {
 		Date d1 = insercao.getData_solicitacao();
 
 		if (aDao.listaAtendimentos(id_paciente_insituicao).size() > 0) {
+
 			for (int i = 0; i < aDao.listaAtendimentos(id_paciente_insituicao)
 					.size(); i++) {
+
 				d1 = aDao.listaAtendimentos(id_paciente_insituicao).get(i)
 						.getDataAtendimento();
 				insercao.setData_solicitacao(d1);
@@ -131,43 +133,48 @@ public class AlteracaoPacienteController implements Serializable {
 
 		// INICIA O ATENDIMENTO 1 DIA APÓS O ÚLTIMO
 		if (temAtendimento) {
+
 			c.setTime(insercao.getData_solicitacao());
 			c.add(Calendar.DAY_OF_MONTH, 1);
 		} else {
+
 			c.setTime(insercao.getData_solicitacao());
 		}
 
 		for (int i = 0; i < dt; i++) {
 
 			if (i > 0) {
+
 				c.add(Calendar.DAY_OF_MONTH, 1);
 			}
 
 			int diaSemana = c.get(Calendar.DAY_OF_WEEK);
 
 			if (tipo.equals("E")) {
-				for (int j = 0; j < listaDiasProfissional.size(); j++) {
+				for (int j = 0; j < listaProfissionaisAdicionados.size(); j++) {
+					for (int h = 0; h < listaProfissionaisAdicionados.size(); h++) {
 
-					if (diaSemana == listaDiasProfissional.get(j)
-							.getFuncionario().getDiaSemana()) {
+						if (diaSemana == Integer
+								.parseInt(listaProfissionaisAdicionados.get(j)
+										.getListDiasSemana().get(h))) {
 
-						InsercaoPacienteBean ins = new InsercaoPacienteBean();
+							InsercaoPacienteBean ins = new InsercaoPacienteBean();
 
-						ins.getAgenda().setPaciente(
-								insercao.getLaudo().getPaciente());
+							ins.getAgenda().setPaciente(
+									insercao.getLaudo().getPaciente());
 
-						ins.getAgenda().setDataMarcacao(c.getTime());
+							ins.getAgenda().setDataMarcacao(c.getTime());
 
-						ins.getAgenda().setProfissional(
-								listaDiasProfissional.get(j).getFuncionario());
+							ins.getAgenda().setProfissional(
+									listaProfissionaisAdicionados.get(j));
 
-						listAgendamentoProfissional.add(ins);
+							listAgendamentoProfissional.add(ins);
 
+						}
 					}
+
 				}
-
 			}
-
 		}
 
 	}
@@ -179,7 +186,9 @@ public class AlteracaoPacienteController implements Serializable {
 		df.setLenient(false);
 		Date d1 = insercao.getData_solicitacao();
 
-		if (aDao.listaAtendimentos(id_paciente_insituicao).size() > 0 && aDao.listaAtendimentos(id_paciente_insituicao).get(0).getDataAtendimento() != null) {
+		if (aDao.listaAtendimentos(id_paciente_insituicao).size() > 0
+				&& aDao.listaAtendimentos(id_paciente_insituicao).get(0)
+						.getDataAtendimento() != null) {
 			for (int i = 0; i < aDao.listaAtendimentos(id_paciente_insituicao)
 					.size(); i++) {
 				d1 = aDao.listaAtendimentos(id_paciente_insituicao).get(i)
@@ -188,15 +197,15 @@ public class AlteracaoPacienteController implements Serializable {
 				temAtendimento = true;
 			}
 		}
-		
+
 		Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
-		
+
 		Long dt = (d2.getTime() - d1.getTime());
 
 		dt = (dt / 86400000L);
-		
+
 		Calendar c = Calendar.getInstance();
-		
+
 		// INICIA O ATENDIMENTO 1 DIA APÓS O ÚLTIMO
 		if (temAtendimento) {
 			c.setTime(insercao.getData_solicitacao());
@@ -204,7 +213,7 @@ public class AlteracaoPacienteController implements Serializable {
 		} else {
 			c.setTime(insercao.getData_solicitacao());
 		}
-		
+
 		for (int i = 0; i < dt; i++) {
 			if (i > 0) {
 				c.add(Calendar.DAY_OF_MONTH, 1);
@@ -214,7 +223,8 @@ public class AlteracaoPacienteController implements Serializable {
 
 			if (tipo.equals("P")) {
 				for (int j = 0; j < funcionario.getListDiasSemana().size(); j++) {
-					if (diaSemana == Integer.parseInt(funcionario.getListDiasSemana().get(j))) {
+					if (diaSemana == Integer.parseInt(funcionario
+							.getListDiasSemana().get(j))) {
 
 						InsercaoPacienteBean ins = new InsercaoPacienteBean();
 
@@ -241,27 +251,26 @@ public class AlteracaoPacienteController implements Serializable {
 			gerarListaAgendamentosEquipe();
 
 			cadastrou = aDao.gravarAlteracaoEquipe(insercao, insercaoParaLaudo,
-					listAgendamentoProfissional, insercaoParaLaudo.getAgenda().getPaciente()
-					.getId_paciente());
+					listAgendamentoProfissional, id_paciente_insituicao);
 		}
 		if (tipo.equals("P")) {
 
 			gerarListaAgendamentosProfissional();
 
-//			cadastrou = aDao.gravarAlteracaoProfissional(insercao,
-//					insercaoParaLaudo, listAgendamentoProfissional,
-//					id_paciente_insituicao);
+			cadastrou = aDao.gravarAlteracaoProfissional(insercao,
+					insercaoParaLaudo, listAgendamentoProfissional,
+					id_paciente_insituicao);
 		}
 
-//		if (cadastrou) {
-//			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-//					"Inserção de Equipe cadastrada com sucesso!", "Sucesso");
-//			FacesContext.getCurrentInstance().addMessage(null, msg);
-//		} else {
-//			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-//					"Ocorreu um erro durante o cadastro!", "Erro");
-//			FacesContext.getCurrentInstance().addMessage(null, msg);
-//		}
+		if (cadastrou) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Inserção de Equipe cadastrada com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o cadastro!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
 	}
 
 	public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
