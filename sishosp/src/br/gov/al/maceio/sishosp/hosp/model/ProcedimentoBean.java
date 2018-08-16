@@ -15,6 +15,7 @@ public class ProcedimentoBean implements Serializable {
 	private Integer codEmpresa;
 	private boolean gera_laudo_digita;
 	private Integer validade_laudo;
+	private EquipamentoBean equipamento;
 
 	public ProcedimentoBean() {
 		super();
@@ -27,6 +28,7 @@ public class ProcedimentoBean implements Serializable {
 		this.tipoExameAuditivo = new String();
 		this.utilizaEquipamento = false;
 		this.codEmpresa = null;
+		equipamento = new EquipamentoBean();
 	}
 
 	public Integer getIdProc() {
@@ -124,6 +126,14 @@ public class ProcedimentoBean implements Serializable {
 				+ ", auditivo=" + auditivo + ", tipoExameAuditivo="
 				+ tipoExameAuditivo + ", utilizaEquipamento="
 				+ utilizaEquipamento + ", codEmpresa=" + codEmpresa + "]";
+	}
+
+	public EquipamentoBean getEquipamento() {
+		return equipamento;
+	}
+
+	public void setEquipamento(EquipamentoBean equipamento) {
+		this.equipamento = equipamento;
 	}
 
 }

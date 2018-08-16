@@ -10,6 +10,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 
 public class EquipamentoDAO {
 	private Connection conexao = null;
@@ -177,6 +178,37 @@ public class EquipamentoDAO {
 			}
 
 		}
+	}
+	
+	public List<EquipamentoBean> listarEquipamentoAutoComplete(String descricao)
+			throws ProjetoException {
+		List<EquipamentoBean> lista = new ArrayList<>();
+		String sql = "select id, desctipoaparelho from hosp.tipoaparelho where desctipoaparelho like ? order by desctipoaparelho";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				EquipamentoBean equipamento = new EquipamentoBean();
+				equipamento.setId_equipamento(rs.getInt("id"));
+				equipamento.setDescEquipamento(rs.getString("desctipoaparelho"));
+
+				lista.add(equipamento);
+			}
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
 	}
 
 }

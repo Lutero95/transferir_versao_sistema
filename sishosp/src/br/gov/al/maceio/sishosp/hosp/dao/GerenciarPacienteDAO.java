@@ -30,8 +30,10 @@ public class GerenciarPacienteDAO {
 			throws ProjetoException {
 
 		String sql = "select p.id, p.codprograma, p.codgrupo, g.descgrupo, p.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
-				+ " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro "
+				+ " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento "
 				+ " from hosp.paciente_instituicao p "
+				+ " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
+				+ " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
 				+ " left join hosp.pacientes pa on (p.codpaciente = pa.id_paciente) "
 				+ " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
 				+ " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
@@ -64,6 +66,7 @@ public class GerenciarPacienteDAO {
 				gp.setData_solicitacao(rs.getDate("data_solicitacao"));
 				gp.setObservacao(rs.getString("observacao"));
 				gp.setData_cadastro(rs.getDate("data_cadastro"));
+				gp.getLaudo().getProcedimento_primario().setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
 
 				lista.add(gp);
 
@@ -86,8 +89,10 @@ public class GerenciarPacienteDAO {
 			GerenciarPacienteBean gerenciar) throws ProjetoException {
 
 		String sql = "select p.id, p.codprograma, p.codgrupo, g.descgrupo, p.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
-				+ " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro "
+				+ " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento "
 				+ " from hosp.paciente_instituicao p "
+				+ " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
+				+ " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
 				+ " left join hosp.pacientes pa on (p.codpaciente = pa.id_paciente) "
 				+ " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
 				+ " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
@@ -132,6 +137,7 @@ public class GerenciarPacienteDAO {
 				gp.setData_solicitacao(rs.getDate("data_solicitacao"));
 				gp.setObservacao(rs.getString("observacao"));
 				gp.setData_cadastro(rs.getDate("data_cadastro"));
+				gp.getLaudo().getProcedimento_primario().setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
 
 				lista.add(gp);
 
@@ -171,6 +177,48 @@ public class GerenciarPacienteDAO {
 			stmt.setInt(2, gerenciar.getMotivo_desligamento());
 			stmt.setString(3, "D");
 			stmt.setString(4, gerenciar.getObservacao());
+
+			stmt.executeUpdate();
+
+			conexao.commit();
+
+			retorno = true;
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+
+		return retorno;
+
+	}
+	
+	public Boolean encaminharPaciente(GerenciarPacienteBean row,
+			GerenciarPacienteBean gerenciar) throws ProjetoException {
+
+		Boolean retorno = false;
+
+		String sql = "update hosp.paciente_instituicao set status = 'D' "
+				+ " where codlaudo = ?";
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement stmt = conexao.prepareStatement(sql);
+
+			stmt.setInt(1, row.getLaudo().getId());
+			stmt.executeUpdate();
+
+			String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao) "
+					+ " VALUES  (?, current_date, (select motivo_padrao_desligamento_opm from hosp.parametro), ?, ?)";
+			stmt = conexao.prepareStatement(sql2);
+			stmt.setLong(1, row.getPaciente().getId_paciente());
+			stmt.setString(2, "D");
+			stmt.setString(3, gerenciar.getObservacao());
 
 			stmt.executeUpdate();
 

@@ -17,6 +17,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EncaminhadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipamentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 
 @ManagedBean(name = "EquipamentoController")
 @ViewScoped
@@ -124,6 +125,15 @@ public class EquipamentoController implements Serializable {
 
 		}
 
+	}
+
+	public List<EquipamentoBean> listaEquipamentoAutoComplete(String query)
+			throws ProjetoException {
+		EquipamentoDAO cDao = new EquipamentoDAO();
+		List<EquipamentoBean> result = cDao
+				.listarEquipamentoAutoComplete(query);
+
+		return result;
 	}
 
 	public EquipamentoBean getEquipamento() {

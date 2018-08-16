@@ -155,6 +155,27 @@ public class GerenciarPacienteController implements Serializable {
 		}
 
 	}
+	
+	public void gerarEncaminhamento() throws ProjetoException {
+
+		Boolean cadastrou = false;
+
+		cadastrou = gDao.encaminharPaciente(rowBean, gerenciarpaciente);
+
+		if (cadastrou) {
+
+			listaPacientes = gDao.carregarPacientesInstituicao();
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Encaminhamento gerado com sucesso!", "Sucesso");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um erro durante o encaminhamento!", "Erro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+	}
 
 	public String redirectRenovacao() {
 		return "renovacaoPaciente?faces-redirect=true&amp;id="

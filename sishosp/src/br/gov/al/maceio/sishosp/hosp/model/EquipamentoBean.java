@@ -8,7 +8,6 @@ public class EquipamentoBean implements Serializable {
 	private String descEquipamento;
 
 	public EquipamentoBean() {
-
 	}
 
 	public Integer getId_equipamento() {
