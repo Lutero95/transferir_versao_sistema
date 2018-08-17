@@ -124,7 +124,7 @@
 
 					<b:commandButton value="Buscar" icon="glyphicon-search"
 						action="#{GerenciarPacienteController.buscarPacientesInstituicao()}"
-						update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, msgFeriado, dtNovosAg, btnInserir"></b:commandButton>
+						update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:msgFeriado, :frmEquipamentos:dtNovosAg, btnInserir"></b:commandButton>
 
 				</b:column>
 
@@ -132,7 +132,7 @@
 
 					<b:commandButton value="Limpar" icon="glyphicon-trash"
 						action="#{GerenciarPacienteController.limparBusca()}"
-						update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, msgFeriado, dtNovosAg"></b:commandButton>
+						update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:msgFeriado, :frmEquipamentos:dtNovosAg"></b:commandButton>
 
 				</b:column>
 
@@ -145,7 +145,7 @@
 				<b:column span="2">
 					<b:commandButton value="Inserir" style="margin-top:5px;"
 						id="btnInserir" immediate="true"
-						update=":formGerenPaci, msgFeriado"
+						update=":formGerenPaci, :frmEquipamentos:msgFeriado"
 						disabled="#{GerenciarPacienteController.busca == 'N'}"
 						icon="glyphicon-ok"
 						action="/pages/agenda/insercaoPaciente.xhtml?faces-redirect=true" />
@@ -155,7 +155,7 @@
 					<b:commandButton value="Alterar" style="margin-top:5px;"
 						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 						id="btnAlterar" immediate="true"
-						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
+						update=":formGerenPaci, :frmEquipamentos:msgFeriado" icon="glyphicon-ok"
 						action="#{GerenciarPacienteController.redirectAlteracao()}" />
 				</b:column>
 
@@ -163,7 +163,7 @@
 					<b:commandButton value="Renovar" style="margin-top:5px;"
 						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 						id="btnRenovar" immediate="true"
-						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
+						update=":formGerenPaci, :frmEquipamentos:msgFeriado" icon="glyphicon-ok"
 						action="#{GerenciarPacienteController.redirectRenovacao()}" />
 				</b:column>
 
@@ -171,11 +171,15 @@
 					<b:commandButton value="Desligar" style="margin-top:5px;"
 						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 						id="btnDesligar" immediate="true"
-						update=":formGerenPaci, msgFeriado" icon="glyphicon-ok"
+						update=":formGerenPaci, :frmEquipamentos:msgFeriado" icon="glyphicon-ok"
 						action="#{GerenciarPacienteController.inicioDesligar()}" />
 				</b:column>
 
 			</b:row>
+			
+			</h:form>
+			
+			<h:form id="frmEquipamentos">
 
 			<b:row>
 				<br></br>
@@ -209,7 +213,9 @@
 						<p:commandButton icon="ui-icon-check"
 							rendered="#{GerenciarPacienteController.rowBean.status == 'A' 
 							and GerenciarPacienteController.rowBean.laudo.procedimento_primario.utilizaEquipamento == true}"
-							value="Gerar Encaminhamento" action="#{GerenciarPacienteController.gerarEncaminhamento()}">
+							value="Gerar Encaminhamento"
+							action="#{GerenciarPacienteController.gerarEncaminhamento()}"
+							update="msgFeriado, dtNovosAg">
 						</p:commandButton>
 
 					</b:column>
@@ -231,7 +237,7 @@
 				rowKey="#{pacie.id}" scrollable="true" scrollHeight="140">
 
 				<p:ajax event="rowSelect"
-					update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnDesligar :formGerenPaci:outEquipamento" />
+					update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnDesligar :frmEquipamentos:outEquipamento" />
 
 				<p:column width="10%">
 					<f:facet name="header">
@@ -421,7 +427,7 @@
 
 					<b:commandButton value="Desligar" look="success" size="sm" id="b1"
 						icon="glyphicon-ok"
-						update=":formGerenPaci:msgFeriado, formGerenPaci:dtNovosAg"
+						update="frmEquipamentos:msgFeriado, :frmEquipamentos:dtNovosAg"
 						style="float:left"
 						action="#{GerenciarPacienteController.desligarPaciente()}" />
 

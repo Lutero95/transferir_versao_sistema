@@ -389,7 +389,7 @@ public class LaudoDAO {
 
 	public ArrayList<LaudoBean> listaLaudos() throws ProjetoException {
 
-		String sql = "select id_laudo, l.codpaciente, p.nome, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
+		String sql = "select id_laudo, l.recuso, l.codpaciente, p.nome, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
 				+ " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, l.codprocedimento_secundario2, "
 				+ " l.codprocedimento_secundario3, l.codprocedimento_secundario4, l.codprocedimento_secundario5, l.cid1, l.cid2, l.cid3, l.obs "
 				+ " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
