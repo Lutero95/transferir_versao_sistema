@@ -68,31 +68,7 @@
 						</b:commandButton>
 
 					</h:column>
-
-
-					<p:column headerText="Ações" width="15%">
-						<center>
-							<p:splitButton icon="confirmar">
-								<p:menuitem value="Alterar" icon="alterar-dados"
-									action="/pages/sishosp/cadastroLaudoDigita.faces?faces-redirect=true">
-									<f:setPropertyActionListener value="#{tab}"
-										target="#{LaudoController.laudo}" />
-
-
-
-									<f:setPropertyActionListener value="A"
-										target="#{LaudoController.tipo}" />
-								</p:menuitem>
-
-								<p:menuitem value="Excluir" icon="trash"
-									onclick="PF('dialogAtencao').show()">
-
-									<f:setPropertyActionListener value="#{tab.id}"
-										target="#{LaudoController.laudo.id}" />
-								</p:menuitem>
-							</p:splitButton>
-						</center>
-					</p:column>
+					
 				</b:dataTable>
 			</h:form>
 		</div>
