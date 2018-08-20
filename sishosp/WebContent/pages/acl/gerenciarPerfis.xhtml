@@ -80,230 +80,210 @@
                 </p:panel>
             </h:form>
 
-            <p:dialog widgetVar="dlgCadPerfil" resizable="false"
-                modal="true" header="Cadatrar Perfil" width="970px" height="648px">
-                    
-                <h:form id="formCP" style="font-size:12px;">                   
-                    <p:panel id="pnlCP">                     
-                        
-                        <p:panelGrid styleClass="semBorda" style="margin-top:3px; margin-bottom:10px;">
-                            <p:row>
-                                <p:column>
-                                    <p:outputLabel value="Descrição: ">
-                                        <font color="#FF0000">*</font>
-                                    </p:outputLabel>
-                                </p:column>
+            <p:dialog responsive="true"    widgetVar="dlgCadPerfil" resizable="false" modal="true"
+			header="Cadastrar Perfil" width="970px" height="510px">
 
-                                <p:column>
-                                    <h:inputText id="urlpag" size="50" required="true"
-                                        value="#{perfilMB.perfil.descricao}" 
-                                        requiredMessage="Informe a descrição." /> 
-                                </p:column>                             
-                            </p:row>
-                        </p:panelGrid>
-                        
-                        <p:tabView activeIndex="0" style="height:390px">
-                            
-                            <p:tab title="Associar Menus">
-                                <p:panelGrid styleClass="semBorda" columns="2" >                                    
-                                    <p:pickList id="pickMenu" value="#{perfilMB.listaMenusDual}" var="menu" 
-                                        itemLabel="#{menuMB.verificarTipoRel(menu.descricao, menu.tipo)} - #{menu.descSistema} (#{menu.siglaSistema})" 
-                                        itemValue="#{menu}" showCheckbox="true" 
-                                        showSourceFilter="true" showTargetFilter="true" 
-                                        filterMatchMode="contains" converter="conPickListMenu">
+			<h:form id="formCP" style="font-size:12px;">
+				<p:panel id="pnlCP">
 
-                                        <f:facet name="sourceCaption">Menus não associadas</f:facet>  
-                                        <f:facet name="targetCaption">Menus associadas</f:facet>
+					<p:panelGrid styleClass="semBorda"
+						style="margin-top:3px; margin-bottom:10px;">
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Descrição: ">									
+								</p:outputLabel>
+							</p:column>
 
-                                        <p:ajax event="transfer" listener="#{perfilMB.onTransferMenu}" />
-                                    </p:pickList>
-                                </p:panelGrid>
-                            </p:tab>
-                            
-                            <p:tab title="Associar Funções">
-                                <p:panelGrid styleClass="semBorda" columns="2" >                                    
-                                    <p:pickList id="pickFuncao" value="#{perfilMB.listaFuncoesDual}" var="funcao" 
-                                        itemLabel="#{funcao.descricao} - #{funcao.descSistema} (#{funcao.siglaSistema})" 
-                                        itemValue="#{funcao}" showCheckbox="true" 
-                                        showSourceFilter="true" showTargetFilter="true" 
-                                        filterMatchMode="contains" converter="conPickListFuncao">
+							<p:column>
+								<p:inputText id="urlpag" size="50" required="true"
+									value="#{perfilMB.perfil.descricao}"
+									requiredMessage="Informe a descrição." />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
 
-                                        <f:facet name="sourceCaption">Funções não associadas</f:facet>  
-                                        <f:facet name="targetCaption">Funções associadas</f:facet>
+					<p:tabView activeIndex="0" style="height:340px">
 
-                                        <p:ajax event="transfer" listener="#{perfilMB.onTransferFuncao}" />
-                                    </p:pickList>
-                                </p:panelGrid>
-                            </p:tab>
-                            
-                        </p:tabView>
-                        
-                        <p:panel header="Opções de Pré-visualização do Menu">
-                            <p:panelGrid styleClass="semBorda">
-                                <p:row>
-                                    <p:column>
-                                        <p:outputLabel value="Sistema: " />
-                                    </p:column>
-                                    
-                                    <p:column>
-                                        <p:selectOneMenu value="#{perfilMB.sisSelecionadoPreMenu}">
-                                            <f:selectItems value="#{perfilMB.listaSistemasPreMenu}" 
-                                                var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
-                                        </p:selectOneMenu>
-                                    </p:column>   
-                                    
-                                    <p:column>
-                                        <p:commandButton value="Previsualizar" icon="ui-icon-check" 
-                                            style="width:110px;" actionListener="#{perfilMB.gerarPreMenuPerfil('CM')}" 
-                                            update="pnlCP, :form:tabela, :form:growl" />
-                                    </p:column>
-                                </p:row>
-                            </p:panelGrid>
-                        </p:panel>
-                        
-                        <center>
-                            <p:separator />
-                            <p:panelGrid columns="2" styleClass="semBorda">
-                                <p:outputLabel>
-                                    <font color="#FF0000">(*)</font>
-                                </p:outputLabel>
-                                <p:outputLabel value="Preenchimento Obrigatório" />                         
-                            </p:panelGrid>
-                            
-                            <p:panelGrid columns="2" styleClass="semBorda">                                
-                                <p:commandButton value="Gravar" icon="ui-icon-check" 
-                                    style="width:100px;" actionListener="#{perfilMB.cadastrarPerfil()}" 
-                                    update="pnlCP, :form:tabela, :form:growl"/>
-                                
-                                <p:commandButton value="Cancelar" icon="ui-icon-close" 
-                                    style="width:100px;" onclick="PF('dlgCadPerfil').hide();" 
-                                    process="@this" />
-                            </p:panelGrid>
-                        </center>
-                    </p:panel>
-                </h:form>
-            </p:dialog>
+						<p:tab title="Associar Menus">
+							<p:panelGrid styleClass="semBorda" columns="2">
+								<p:pickList id="pickMenu" value="#{perfilMB.listaMenusDual}"
+									var="menu"
+									itemLabel="#{menuMB.verificarTipoRel(menu.descricao, menu.tipo)} - #{menu.descSistema} (#{menu.siglaSistema})"
+									itemValue="#{menu}" showCheckbox="true" showSourceFilter="true"
+									showTargetFilter="true" filterMatchMode="contains"
+									converter="conPickListMenu">
+
+									<f:facet name="sourceCaption">Menus não associadas</f:facet>
+									<f:facet name="targetCaption">Menus associadas</f:facet>
+
+									<p:ajax event="transfer" listener="#{perfilMB.onTransferMenu}" />
+								</p:pickList>
+							</p:panelGrid>
+						</p:tab>
+
+						<p:tab title="Associar Funções">
+							<p:panelGrid styleClass="semBorda" columns="2">
+								<p:pickList id="pickFuncao" value="#{perfilMB.listaFuncoesDual}"
+									var="funcao"
+									itemLabel="#{funcao.descricao} - #{funcao.descSistema} (#{funcao.siglaSistema})"
+									itemValue="#{funcao}" showCheckbox="true"
+									showSourceFilter="true" showTargetFilter="true"
+									filterMatchMode="contains" converter="conPickListFuncao">
+
+									<f:facet name="sourceCaption">Funções não associadas</f:facet>
+									<f:facet name="targetCaption">Funções associadas</f:facet>
+
+									<p:ajax event="transfer"
+										listener="#{perfilMB.onTransferFuncao}" />
+								</p:pickList>
+							</p:panelGrid>
+						</p:tab>
+
+					</p:tabView>
+
+					<p:panel header="Opções de Pré-visualização do Menu">
+						<p:panelGrid styleClass="semBorda">
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Sistema: " />
+								</p:column>
+
+								<p:column>
+									<p:selectOneMenu value="#{perfilMB.sisSelecionadoPreMenu}">
+										<f:selectItems value="#{perfilMB.listaSistemasPreMenu}"
+											var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
+									</p:selectOneMenu>
+								</p:column>
+
+								<p:column>
+									<p:commandButton value="Previsualizar" icon="ui-icon-check"
+										style="width:110px;"
+										actionListener="#{perfilMB.gerarPreMenuPerfil('CM')}"
+										update="pnlCP, :form:tabela, :form:growl" />
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:panel>
+
+					<center>
+
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:commandButton value="Gravar" icon="ui-icon-check"
+								style="width:100px;"
+								actionListener="#{perfilMB.cadastrarPerfil()}"
+								update="pnlCP, :form:tabela, :form:growl" />
+
+							<p:commandButton value="Cancelar" icon="ui-icon-close"
+								style="width:100px;" onclick="PF('dlgCadPerfil').hide();"
+								process="@this" />
+						</p:panelGrid>
+					</center>
+				</p:panel>
+			</h:form>
+		</p:dialog>
             
-            <p:dialog widgetVar="dlgAltPerfil" resizable="false"
-                modal="true" header="Alterar Perfil" width="970px" height="448px">
-                    
-                <h:form id="formAP">                   
-                    <p:panel id="pnlAP">               
-                        
-                        <p:panelGrid styleClass="semBorda" style="margin-top:3px; margin-bottom:10px;">
-                            <p:row>
-                                <p:column>
-                                    <p:outputLabel value="Descrição: ">
-                                        <font color="#FF0000">*</font>
-                                    </p:outputLabel>
-                                </p:column>
+           <p:dialog responsive="true"    widgetVar="dlgAltPerfil" resizable="false" modal="true"
+			header="Alterar Perfil" width="970px" height="510px">
 
-                                <p:column>
-                                    <h:inputText id="urlpag" size="50" required="true"
-                                        value="#{perfilMB.perfil.descricao}" 
-                                        requiredMessage="Informe a descrição." /> 
-                                </p:column>                             
-                            </p:row>
-                        </p:panelGrid>
-                        
-                        <p:tabView activeIndex="0" style="height:390px">
-                            
-                            <p:tab title="Associar Menus">
-                                <p:panelGrid styleClass="semBorda" columns="2" >                                    
-                                    <p:pickList id="pickMenu" value="#{perfilMB.listaMenusDualEdit}" var="menu" 
-                                        itemLabel="#{menu.descricao} - #{menu.descSistema} (#{menu.siglaSistema})" 
-                                        itemValue="#{menu}" showCheckbox="true" 
-                                        showSourceFilter="true" showTargetFilter="true" 
-                                        filterMatchMode="contains" converter="conPickListMenu">
+			<h:form id="formAP">
+				<p:panel id="pnlAP">
 
-                                        <f:facet name="sourceCaption">Menus não associadas</f:facet>  
-                                        <f:facet name="targetCaption">Menus associadas</f:facet>
+					<p:panelGrid styleClass="semBorda"
+						style="margin-top:3px; margin-bottom:10px;">
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Descrição: ">
+								</p:outputLabel>
+							</p:column>
 
-                                        <p:ajax event="transfer" listener="#{perfilMB.onTransferMenuAlt}" />
-                                    </p:pickList>
-                                </p:panelGrid>
-                            </p:tab>
-                            
-                            <p:tab title="Associar Funções">
-                                <p:panelGrid styleClass="semBorda" columns="2" >                                    
-                                    <p:pickList id="pickFuncao" value="#{perfilMB.listaFuncoesDualEdit}" var="funcao" 
-                                        itemLabel="#{funcao.descricao} - #{funcao.descSistema} (#{funcao.siglaSistema})" 
-                                        itemValue="#{funcao}" showCheckbox="true" 
-                                        showSourceFilter="true" showTargetFilter="true" 
-                                        filterMatchMode="contains" converter="conPickListFuncao">
+							<p:column>
+								<p:inputText id="urlpag" size="50" required="true"
+									value="#{perfilMB.perfil.descricao}"
+									requiredMessage="Informe a descrição." />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
 
-                                        <f:facet name="sourceCaption">Funções não associadas</f:facet>  
-                                        <f:facet name="targetCaption">Funções associadas</f:facet>
+					<p:tabView activeIndex="0" style="height:340px">
 
-                                        <p:ajax event="transfer" listener="#{perfilMB.onTransferFuncaoAlt}" />
-                                    </p:pickList>
-                                </p:panelGrid>
-                            </p:tab>
-                            
-                                  <p:tab title="Associar Funcionalidades">
-                                <p:panelGrid styleClass="semBorda" columns="2" >                                    
-                                    <p:pickList id="pickFuncionalidade" value="#{perfilMB.listaFuncionalidadesDualEdit}" 
-                                        var="funcionalidade" 
-                                        itemLabel="#{funcionalidade.descricao} - #{funcionalidade.descSistema} (#{funcionalidade.siglaSistema})" 
-                                        itemValue="#{funcionalidade}" showCheckbox="true" 
-                                        showSourceFilter="true" showTargetFilter="true" 
-                                        filterMatchMode="contains" converter="conPickListFuncionalidade">
+						<p:tab title="Associar Menus">
+							<p:panelGrid styleClass="semBorda" columns="2">
+								<p:pickList id="pickMenu" value="#{perfilMB.listaMenusDualEdit}"
+									var="menu"
+									itemLabel="#{menu.descricao} - #{menu.descSistema} (#{menu.siglaSistema})"
+									itemValue="#{menu}" showCheckbox="true" showSourceFilter="true"
+									showTargetFilter="true" filterMatchMode="contains"
+									converter="conPickListMenu">
 
-                                        <f:facet name="sourceCaption">Funcionalidades não associadas</f:facet>  
-                                        <f:facet name="targetCaption">Funcionalidades associadas</f:facet>
+									<f:facet name="sourceCaption">Menus não associadas</f:facet>
+									<f:facet name="targetCaption">Menus associadas</f:facet>
 
-                                        <p:ajax event="transfer" listener="#{perfilMB.onTransferFuncionalidadeAlt}" />
-                                    </p:pickList>
-                                </p:panelGrid>
-                            </p:tab>
-                            
-                        </p:tabView>
-                        
-                        <p:panel header="Opções de Pré-visualização do Menu">
-                            <p:panelGrid styleClass="semBorda">
-                                <p:row>
-                                    <p:column>
-                                        <p:outputLabel value="Sistema: " />
-                                    </p:column>
-                                    
-                                    <p:column>
-                                        <p:selectOneMenu value="#{perfilMB.sisSelecionadoPreMenu}">
-                                            <f:selectItems value="#{perfilMB.listaSistemasPreMenu}" 
-                                                var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
-                                        </p:selectOneMenu>
-                                    </p:column>
-                                    
-                                    <p:column>
-                                        <p:commandButton value="Previsualizar" icon="ui-icon-check" 
-                                            style="width:110px;" action="#{perfilMB.gerarPreMenuPerfil('AM')}" 
-                                            update="pnlAP, :form:tabela, :form:growl" />
-                                    </p:column>
-                                </p:row>
-                            </p:panelGrid>
-                        </p:panel>
-                        
-                        <center>
-                            <p:separator />
-                            <p:panelGrid columns="2" styleClass="semBorda">
-                                <p:outputLabel>
-                                    <font color="#FF0000">(*)</font>
-                                </p:outputLabel>
-                                <p:outputLabel value="Preenchimento Obrigatório" />                         
-                            </p:panelGrid>
+									<p:ajax event="transfer"
+										listener="#{perfilMB.onTransferMenuAlt}" />
+								</p:pickList>
+							</p:panelGrid>
+						</p:tab>
 
-                            <p:panelGrid columns="3" styleClass="semBorda">
-                                <p:commandButton value="Gravar" icon="ui-icon-check" 
-                                    style="width:100px;" actionListener="#{perfilMB.alterarPerfil()}" 
-                                    update="pnlAP, :form:tabela, :form:growl" />
-                                
-                                <p:commandButton value="Cancelar" icon="ui-icon-close" 
-                                    style="width:100px;" onclick="PF('dlgAltPerfil').hide();" 
-                                    process="@this" />
-                            </p:panelGrid>
-                        </center>
-                    </p:panel>
-                </h:form>
-            </p:dialog>
+						<p:tab title="Associar Funções">
+							<p:panelGrid styleClass="semBorda" columns="2">
+								<p:pickList id="pickFuncao"
+									value="#{perfilMB.listaFuncoesDualEdit}" var="funcao"
+									itemLabel="#{funcao.descricao} - #{funcao.descSistema} (#{funcao.siglaSistema})"
+									itemValue="#{funcao}" showCheckbox="true"
+									showSourceFilter="true" showTargetFilter="true"
+									filterMatchMode="contains" converter="conPickListFuncao">
+
+									<f:facet name="sourceCaption">Funções não associadas</f:facet>
+									<f:facet name="targetCaption">Funções associadas</f:facet>
+
+									<p:ajax event="transfer"
+										listener="#{perfilMB.onTransferFuncaoAlt}" />
+								</p:pickList>
+							</p:panelGrid>
+						</p:tab>
+
+					</p:tabView>
+
+					<p:panel header="Opções de Pré-visualização do Menu">
+						<p:panelGrid styleClass="semBorda">
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Sistema: " />
+								</p:column>
+
+								<p:column>
+									<p:selectOneMenu value="#{perfilMB.sisSelecionadoPreMenu}">
+										<f:selectItems value="#{perfilMB.listaSistemasPreMenu}"
+											var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
+									</p:selectOneMenu>
+								</p:column>
+
+								<p:column>
+									<p:commandButton value="Previsualizar" icon="ui-icon-check"
+										style="width:110px;"
+										action="#{perfilMB.gerarPreMenuPerfil('AM')}"
+										update="pnlAP, :form:tabela, :form:growl" />
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:panel>
+
+					<center>
+
+						<p:panelGrid columns="3" styleClass="semBorda" style="margin-top: 5px">
+							<p:commandButton value="Gravar" icon="ui-icon-check"
+								style="width:100px;"
+								actionListener="#{perfilMB.alterarPerfil()}"
+								update="pnlAP, :form:tabela, :form:growl" />
+
+							<p:commandButton value="Cancelar" icon="ui-icon-close"
+								style="width:100px;" onclick="PF('dlgAltPerfil').hide();"
+								process="@this" />
+						</p:panelGrid>
+					</center>
+				</p:panel>
+			</h:form>
+		</p:dialog>
             
             <p:dialog widgetVar="dlgMenuPreview" resizable="false"
                 modal="true" header="Menu Preview" width="800px" height="320px">

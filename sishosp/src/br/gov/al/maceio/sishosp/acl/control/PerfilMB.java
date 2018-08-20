@@ -153,13 +153,9 @@ public class PerfilMB implements Serializable {
 		List<Long> permissoes = new ArrayList<>();
 		List<Menu> listaMenusAux = listaMenusDualEdit.getTarget();
 		List<Funcao> listaFuncoesAux = listaFuncoesDualEdit.getTarget();
-		List<Funcionalidade> listaFuncionalidadesAux = listaFuncionalidadesDualEdit
-				.getTarget();
 
 		if ((listaMenusAux != null && listaMenusAux.size() > 0)
-				|| (listaFuncoesAux != null && listaFuncoesAux.size() > 0)
-				|| (listaFuncionalidadesAux != null && listaFuncionalidadesAux
-						.size() > 0)) {
+				|| (listaFuncoesAux != null && listaFuncoesAux.size() > 0)) {
 
 			MenuMB mmb = new MenuMB();
 			List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
@@ -172,9 +168,6 @@ public class PerfilMB implements Serializable {
 				permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
 			}
 
-			for (Funcionalidade fu : listaFuncionalidadesAux) {
-				permissoes.add(pmdao.recIdPermissoesFuncionalidade(fu.getId()));
-			}
 			perfil.setListaPermissoes(permissoes);
 
 			PerfilDAO pdao = new PerfilDAO();
