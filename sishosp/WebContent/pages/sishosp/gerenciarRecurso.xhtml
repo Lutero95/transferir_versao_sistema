@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+<f:metadata>
+	<f:viewAction action="#{RecursoController.buscarRecurso()}" />
+
+</f:metadata>
+
+<ui:composition template="../../template/template.xhtml">
+
+	<ui:define name="body">
+
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Recurso</h4>
+				<hr />
+			</div>
+
+			<h:form id="frmmensagem">
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{RecursoController.redirectInsert()}" icon="glyphicon-plus"
+					look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{RecursoController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
+				
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<b:dataTable id="tabela" value="#{RecursoController.listaRecursos}"
+					lang="es" var="tab">
+
+					<h:column>
+						<f:facet name="header">
+                        Descrição
+                    </f:facet>
+						<h:outputText value="#{tab.descRecurso}" />
+					</h:column>
+
+
+
+					<h:column>
+						<f:facet name="header">
+                        Ação
+                    </f:facet>
+
+
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{RecursoController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{RecursoController.recurso}" />
+
+							<f:setPropertyActionListener value="2"
+								target="#{RecursoController.tipo}" />
+						</b:commandButton>
+
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogAtencao').show()">
+
+							<f:setPropertyActionListener value="#{tab.idRecurso}"
+								target="#{RecursoController.recurso.idRecurso}" />
+						</b:commandButton>
+
+
+					</h:column>
+
+				</b:dataTable>
+
+			</h:form>
+
+		</div>
+
+		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
+			resizable="false">
+
+			<h:form id="dlgexcluir">
+
+
+
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					este Recurso?</div>
+
+				<p:separator />
+
+
+
+				<center>
+					<b:commandButton look="success" value="Sim"
+						action="#{RecursoController.excluirRecurso()}" ajax="true"
+						icon="glyphicon-ok" update="frmmensagem" />
+
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;" />
+
+
+
+
+
+				</center>
+
+
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>
+</html>

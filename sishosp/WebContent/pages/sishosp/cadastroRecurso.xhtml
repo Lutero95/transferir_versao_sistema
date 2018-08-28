@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/template.xhtml">
+
+	<ui:define name="body">
+		<f:metadata>
+			<f:viewAction action="#{RecursoController.getEditRecurso()}" />
+		</f:metadata>
+
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{RecursoController.cabecalho}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
+
+			<h:form class="form-horizontal" id="formCADU">
+
+				<p:outputPanel>
+					<b:row>
+
+						<b:column span="1">
+							<h:outputLabel for="inputname" value="Descrição"
+								style="margin-top:10px" />
+						</b:column>
+
+						<b:column span="5">
+
+							<b:inputText value="#{RecursoController.recurso.descRecurso}"
+								class="form-control" id="inputname" required="true"
+								validatorMessage="Nome deve conter entre 2 e 30 caracteres."
+								requiredMessage="É necessário que você informe seu nome.">
+								<f:validateLength minimum="2" maximum="40" />
+
+							</b:inputText>
+						</b:column>
+
+					</b:row>
+
+
+				</p:outputPanel>
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<center>
+					<b:commandButton action="#{RecursoController.gravarRecurso()}"
+						icon="glyphicon-ok" size="sm" look="success"
+						update=":formCADU, msgError" value="Incluir" style="float:left"
+						rendered="#{RecursoController.tipo == 1}" />
+
+					<b:commandButton action="#{RecursoController.alterarRecurso()}"
+						icon="glyphicon-ok" size="sm" update=":formCADU, msgError"
+						value="Alterar" look="success" style="float:left"
+						rendered="#{RecursoController.tipo  == 2}" />
+
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						style="float:right" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarRecurso.faces?faces-redirect=true">
+					</b:commandButton>
+
+				</center>
+			</h:form>
+
+		</div>
+
+
+	</ui:define>
+</ui:composition>
+</html>
