@@ -180,7 +180,7 @@ public class MenuDAO {
 
 		String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
 				+ "me.ativo, me.diretorio, me.desc_pagina, me.extensao, me.id_rotina, "
-				+ "me.action_rel, me.onclick_rel, diretorio, desc_pagina, extensao, ro.descricao as rot_desc from "
+				+ "me.action_rel, me.onclick_rel, diretorio, desc_pagina, extensao from "
 				+ "acl.menu me  where "
 				+ "upper(me.descricao) like ? order by me.ativo desc, me.descricao, me.tipo";
 
