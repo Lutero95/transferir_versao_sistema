@@ -24,7 +24,7 @@ public class CidConverter implements Converter {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Cid não válido", ""));
+					FacesMessage.SEVERITY_ERROR, "CID não válido", ""));
 		}
 	}
 

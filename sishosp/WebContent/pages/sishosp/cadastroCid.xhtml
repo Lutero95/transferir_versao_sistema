@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/template.xhtml">
+	<f:metadata>
+		<f:viewAction action="#{CidController.getEditCid()}" />
+	</f:metadata>
+	<ui:define name="body">
+
+		<div class="panel-body">
+			<div class="sub-header">
+				<h:outputText value="#{CidController.cabecalho}"
+					styleClass="cadcabecalho"></h:outputText>
+				<hr />
+			</div>
+
+			<h:form id="formCADU">
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel value="CID" style="margin-top:10px" />
+
+					</b:column>
+
+					<b:column span="5">
+						<b:inputText value="#{CidController.cid.cid}"
+							class="form-control" required="true" id="incod"
+							requiredMessage="Código obrigatório!" />
+						<b:message for="@previous" />
+					</b:column>
+
+				</b:row>
+
+
+				<b:row>
+					<b:column span="1">
+						<h:outputLabel value="Descrição" style="margin-top:10px" />
+					</b:column>
+
+					<b:column span="5">
+						<b:inputText value="#{CidController.cid.descCid}"
+							class="form-control" required="true" id="indesc"
+							requiredMessage="Descrição obrigatória!"
+							validatorMessage="CID deve conter entre 2 e 30 caracteres.">
+							<f:validateLength minimum="2" maximum="40" />
+						</b:inputText>
+					</b:column>
+				</b:row>
+
+				<br></br>
+
+				<center>
+					<b:messages value="Error" id="msgError"></b:messages>
+				</center>
+
+				<b:commandButton action="#{CidController.gravarCid()}"
+					icon="glyphicon-ok" size="sm" look="success" style="float:left"
+					update=":formCADU :formCADU:indesc" value="Incluir"
+					rendered="#{CidController.tipo == 1}" />
+
+				<b:commandButton action="#{CidController.alterarCid()}"
+					icon="glyphicon-ok" size="sm" look="success" style="float:left"
+					update=":formCADU :formCADU:indesc" value="Alterar"
+					rendered="#{CidController.tipo  == 2}" />
+
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					size="sm" immediate="true" look="info" style="float:right"
+					action="/pages/sishosp/gerenciarCid.faces?faces-redirect=true">
+				</b:commandButton>
+
+
+			</h:form>
+
+		</div>
+
+	</ui:define>
+</ui:composition>
+</html>

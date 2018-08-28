@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -25,7 +26,7 @@ public class CidController implements Serializable {
 	private List<CidBean> listaCids;
 	private Integer tipoBuscar;
 	private String descricaoBusca;
-	private String tipo;
+	private int tipo;
 	private String cabecalho;
 
 	private Integer abaAtiva = 0;
@@ -37,7 +38,6 @@ public class CidController implements Serializable {
 		this.listaCids = new ArrayList<>();
 		this.listaCids = null;
 		this.descricaoBusca = new String();
-		this.tipo = new String();
 		this.cabecalho = "";
 	}
 
@@ -46,6 +46,32 @@ public class CidController implements Serializable {
 		this.listaCids = new ArrayList<>();
 		this.descricaoBusca = new String();
 		listaCids = gDao.listarCid();
+	}
+
+	public String redirectEdit() {
+		return "cadastroCid?faces-redirect=true&amp;id=" + this.cid.getIdCid()
+				+ "&amp;tipo=" + tipo;
+	}
+
+	public String redirectInsert() {
+		return "cadastroCid?faces-redirect=true&amp;tipo=" + tipo;
+	}
+
+	public void getEditCid() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo = Integer.parseInt(params.get("tipo"));
+
+			this.cid = gDao.buscaCidPorId(id);
+		} else {
+
+			tipo = Integer.parseInt(params.get("tipo"));
+
+		}
+
 	}
 
 	public void gravarCid() throws ProjetoException, SQLException {
@@ -68,7 +94,7 @@ public class CidController implements Serializable {
 		boolean alterou = gDao.alterarCid(cid);
 		if (alterou == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Grupo alterado com sucesso!", "Sucesso");
+					"Cid alterado com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -83,7 +109,7 @@ public class CidController implements Serializable {
 		boolean ok = gDao.excluirCid(cid);
 		if (ok == true) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Grupo excluído com sucesso!", "Sucesso");
+					"Cid excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
@@ -96,6 +122,29 @@ public class CidController implements Serializable {
 					"PF('dialogAtencao').hide();");
 		}
 		listaCids = gDao.listarCid();
+	}
+
+	public List<CidBean> listaCidAutoComplete(String query)
+			throws ProjetoException {
+		List<CidBean> result = gDao.listarCidsBusca(query, 1);
+		return result;
+	}
+
+	public void buscarCid() throws ProjetoException {
+		listaCids = gDao.listarCid();
+	}
+
+	public String getCabecalho() {
+		if (this.tipo == 1) {
+			cabecalho = "Inclusão de CID";
+		} else if (this.tipo == 2) {
+			cabecalho = "Alteração de CID";
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
 	}
 
 	public CidBean getCid() {
@@ -133,14 +182,6 @@ public class CidController implements Serializable {
 		this.descricaoBusca = descricaoBusca;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
 	public Integer getAbaAtiva() {
 		return abaAtiva;
 	}
@@ -157,24 +198,12 @@ public class CidController implements Serializable {
 		this.gDao = gDao;
 	}
 
-	public void setCabecalho(String cabecalho) {
-		this.cabecalho = cabecalho;
+	public int getTipo() {
+		return tipo;
 	}
 
-	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
-			cabecalho = "CADASTRO DE CID";
-		} else if (this.tipo.equals("A")) {
-			cabecalho = "ALTERAR CID";
-		}
-		return cabecalho;
-	}
-
-	public List<CidBean> listaCidAutoComplete(String query)
-			throws ProjetoException {
-		CidDAO cDao = new CidDAO();
-		List<CidBean> result = cDao.listarCidsBusca(query, 1);
-		return result;
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 
 }

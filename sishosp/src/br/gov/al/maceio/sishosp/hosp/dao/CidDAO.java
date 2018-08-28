@@ -18,11 +18,12 @@ public class CidDAO {
 
 	public boolean gravarCid(CidBean cid) throws SQLException, ProjetoException {
 
-		String sql = "insert into hosp.cid (desccid) values (?);";
+		String sql = "insert into hosp.cid (desccid, cid) values (?,?);";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, cid.getDescCid().toUpperCase());
+			ps.setString(2, cid.getCid().toUpperCase());
 			ps.execute();
 			con.commit();
 			return true;
@@ -40,7 +41,7 @@ public class CidDAO {
 
 	public List<CidBean> listarCid() throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select cod, desccid from hosp.cid order by cod";
+		String sql = "select cod, desccid, cid from hosp.cid order by cod";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -50,6 +51,7 @@ public class CidDAO {
 				CidBean cid = new CidBean();
 				cid.setIdCid(rs.getInt("cod"));
 				cid.setDescCid(rs.getString("desccid"));
+				cid.setCid(rs.getString("cid"));
 
 				lista.add(cid);
 			}
@@ -69,7 +71,7 @@ public class CidDAO {
 	public List<CidBean> listarCidBusca(String descricao, Integer tipo)
 			throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select cod, desccid from hosp.cid ";
+		String sql = "select cod, desccid, cid from hosp.cid ";
 		if (tipo == 1) {
 			sql += " where desccid LIKE ?  order by cod";
 		}
@@ -83,6 +85,7 @@ public class CidDAO {
 				CidBean cid = new CidBean();
 				cid.setIdCid(rs.getInt("cod"));
 				cid.setDescCid(rs.getString("desccid"));
+				cid.setCid(rs.getString("cid"));
 
 				lista.add(cid);
 			}
@@ -101,12 +104,13 @@ public class CidDAO {
 	}
 
 	public Boolean alterarCid(CidBean cid) throws ProjetoException {
-		String sql = "update hosp.cid set desccid = ? where cod = ?";
+		String sql = "update hosp.cid set desccid = ?, cid = ? where cod = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, cid.getDescCid().toUpperCase());
-			stmt.setInt(2, cid.getIdCid());
+			stmt.setString(2, cid.getCid().toUpperCase());
+			stmt.setInt(3, cid.getIdCid());
 			stmt.executeUpdate();
 			con.commit();
 			return true;
@@ -141,17 +145,19 @@ public class CidDAO {
 		}
 	}
 
-	public CidBean buscaCidPorId(Integer i) throws ProjetoException {
-		String sql = "select cod, desccid from hosp.cid where cod = ?";
+	public CidBean buscaCidPorId(Integer id) throws ProjetoException {
+		con = ConnectionFactory.getConnection();
+		String sql = "select cod, desccid, cid from hosp.cid where cod = ?";
 		try {
 
 			ps = con.prepareStatement(sql);
-			ps.setInt(1, i);
+			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			CidBean g = new CidBean();
 			while (rs.next()) {
 				g.setIdCid(rs.getInt("cod"));
 				g.setDescCid(rs.getString("desccid"));
+				g.setCid(rs.getString("cid"));
 
 			}
 
@@ -175,7 +181,7 @@ public class CidDAO {
 	public List<CidBean> listarCidsBusca(String descricao, Integer tipo)
 			throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select cod, desccid from hosp.cid ";
+		String sql = "select cod, desccid, cid from hosp.cid ";
 		if (tipo == 1) {
 			sql += " where desccid LIKE ?";
 		}
@@ -189,6 +195,7 @@ public class CidDAO {
 				CidBean c = new CidBean();
 				c.setIdCid(rs.getInt("cod"));
 				c.setDescCid(rs.getString("desccid"));
+				c.setCid(rs.getString("cid"));
 
 				lista.add(c);
 			}

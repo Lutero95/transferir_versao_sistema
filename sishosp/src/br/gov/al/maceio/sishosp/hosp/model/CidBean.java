@@ -6,16 +6,7 @@ public class CidBean implements Serializable {
 
 	private Integer idCid;
 	private String descCid;
-
-	public CidBean() {
-
-	}
-
-	public CidBean(Integer idCid, String descCid) {
-		this.idCid = idCid;
-		this.descCid = descCid;
-
-	}
+	private String cid;
 
 	public Integer getIdCid() {
 		return idCid;
@@ -31,6 +22,14 @@ public class CidBean implements Serializable {
 
 	public void setDescCid(String descCid) {
 		this.descCid = descCid;
+	}
+
+	public String getCid() {
+		return cid;
+	}
+
+	public void setCid(String cid) {
+		this.cid = cid;
 	}
 
 }
