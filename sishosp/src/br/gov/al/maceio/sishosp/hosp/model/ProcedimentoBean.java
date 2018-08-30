@@ -7,8 +7,6 @@ public class ProcedimentoBean implements Serializable {
 	private Integer idProc;
 	private Integer codProc;
 	private String nomeProc;
-	private Boolean apac;
-	private Boolean bpi;
 	private Boolean auditivo;
 	private String tipoExameAuditivo;
 	private Boolean utilizaEquipamento;
@@ -22,8 +20,6 @@ public class ProcedimentoBean implements Serializable {
 		this.idProc = null;
 		this.codProc = null;
 		this.nomeProc = new String();
-		this.apac = null;
-		this.bpi = null;
 		this.auditivo = false;
 		this.tipoExameAuditivo = new String();
 		this.utilizaEquipamento = false;
@@ -53,22 +49,6 @@ public class ProcedimentoBean implements Serializable {
 
 	public void setNomeProc(String nomeProc) {
 		this.nomeProc = nomeProc;
-	}
-
-	public Boolean getApac() {
-		return apac;
-	}
-
-	public void setApac(Boolean apac) {
-		this.apac = apac;
-	}
-
-	public Boolean getBpi() {
-		return bpi;
-	}
-
-	public void setBpi(Boolean bpi) {
-		this.bpi = bpi;
 	}
 
 	public Boolean getAuditivo() {
@@ -117,15 +97,6 @@ public class ProcedimentoBean implements Serializable {
 
 	public void setGera_laudo_digita(boolean gera_laudo_digita) {
 		this.gera_laudo_digita = gera_laudo_digita;
-	}
-
-	@Override
-	public String toString() {
-		return "ProcedimentoBean [idProc=" + idProc + ", codProc=" + codProc
-				+ ", nomeProc=" + nomeProc + ", apac=" + apac + ", bpi=" + bpi
-				+ ", auditivo=" + auditivo + ", tipoExameAuditivo="
-				+ tipoExameAuditivo + ", utilizaEquipamento="
-				+ utilizaEquipamento + ", codEmpresa=" + codEmpresa + "]";
 	}
 
 	public EquipamentoBean getEquipamento() {

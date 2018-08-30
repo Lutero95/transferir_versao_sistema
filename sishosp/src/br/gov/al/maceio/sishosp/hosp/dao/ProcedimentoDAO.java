@@ -19,28 +19,26 @@ public class ProcedimentoDAO {
 	public boolean gravarProcedimento(ProcedimentoBean proc)
 			throws SQLException, ProjetoException {
 
-		String sql = "INSERT INTO hosp.proc (codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo)"
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo)"
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?);";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 
 			ps.setInt(1, proc.getCodProc());
 			ps.setString(2, proc.getNomeProc().toUpperCase());
-			ps.setBoolean(3, proc.getApac());
-			ps.setBoolean(4, proc.getBpi());
-			ps.setBoolean(5, proc.getAuditivo());
-			ps.setString(6, proc.getTipoExameAuditivo().toUpperCase());
-			ps.setBoolean(7, proc.getUtilizaEquipamento());
+			ps.setBoolean(3, proc.getAuditivo());
+			ps.setString(4, proc.getTipoExameAuditivo().toUpperCase());
+			ps.setBoolean(5, proc.getUtilizaEquipamento());
 			if (proc.isGera_laudo_digita() == false) {
-				ps.setNull(8, Types.BOOLEAN);
+				ps.setNull(6, Types.BOOLEAN);
 			} else {
-				ps.setBoolean(8, proc.isGera_laudo_digita());
+				ps.setBoolean(6, proc.isGera_laudo_digita());
 			}
 			if (proc.isGera_laudo_digita() == false) {
-				ps.setNull(9, Types.INTEGER);
+				ps.setNull(7, Types.INTEGER);
 			} else {
-				ps.setInt(9, proc.getValidade_laudo());
+				ps.setInt(7, proc.getValidade_laudo());
 			}
 
 			ps.execute();
@@ -54,7 +52,7 @@ public class ProcedimentoDAO {
 
 	public List<ProcedimentoBean> listarProcedimento() throws ProjetoException {
 		List<ProcedimentoBean> lista = new ArrayList<>();
-		String sql = "select id, codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo "
+		String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo "
 				+ " from hosp.proc order by nome";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -66,8 +64,6 @@ public class ProcedimentoDAO {
 				proc.setIdProc(rs.getInt("id"));
 				proc.setCodProc(rs.getInt("codproc"));
 				proc.setNomeProc(rs.getString("nome"));
-				proc.setApac(rs.getBoolean("apac"));
-				proc.setBpi(rs.getBoolean("bpi"));
 				proc.setAuditivo(rs.getBoolean("auditivo"));
 				proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
 				proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
@@ -92,7 +88,7 @@ public class ProcedimentoDAO {
 	public ProcedimentoBean listarProcedimentoPorId(int id)
 			throws ProjetoException {
 		ProcedimentoBean proc = new ProcedimentoBean();
-		String sql = "select id, codproc, nome, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo "
+		String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo "
 				+ "from hosp.proc where id = ? order by nome";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -104,8 +100,6 @@ public class ProcedimentoDAO {
 				proc.setIdProc(rs.getInt("id"));
 				proc.setCodProc(rs.getInt("codproc"));
 				proc.setNomeProc(rs.getString("nome"));
-				proc.setApac(rs.getBoolean("apac"));
-				proc.setBpi(rs.getBoolean("bpi"));
 				proc.setAuditivo(rs.getBoolean("auditivo"));
 				proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
 				proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
@@ -134,23 +128,21 @@ public class ProcedimentoDAO {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, proc.getNomeProc().toUpperCase());
-			stmt.setBoolean(2, proc.getApac());
-			stmt.setBoolean(3, proc.getBpi());
-			stmt.setBoolean(4, proc.getAuditivo());
-			stmt.setString(5, proc.getTipoExameAuditivo().toUpperCase());
-			stmt.setBoolean(6, proc.getUtilizaEquipamento());
+			stmt.setBoolean(2, proc.getAuditivo());
+			stmt.setString(3, proc.getTipoExameAuditivo().toUpperCase());
+			stmt.setBoolean(4, proc.getUtilizaEquipamento());
 			if (proc.isGera_laudo_digita() == false) {
-				stmt.setNull(7, Types.BOOLEAN);
+				stmt.setNull(5, Types.BOOLEAN);
 			} else {
-				stmt.setBoolean(7, proc.isGera_laudo_digita());
+				stmt.setBoolean(5, proc.isGera_laudo_digita());
 			}
 			if (proc.isGera_laudo_digita() == false) {
-				stmt.setNull(8, Types.INTEGER);
+				stmt.setNull(6, Types.INTEGER);
 			} else {
-				stmt.setInt(8, proc.getValidade_laudo());
+				stmt.setInt(6, proc.getValidade_laudo());
 			}
-			stmt.setInt(9, proc.getCodProc());
-			stmt.setInt(10, proc.getIdProc());
+			stmt.setInt(7, proc.getCodProc());
+			stmt.setInt(8, proc.getIdProc());
 			stmt.executeUpdate();
 			con.commit();
 			return true;
@@ -191,7 +183,7 @@ public class ProcedimentoDAO {
 			String descricaoBusca, Integer tipoBuscar) throws ProjetoException {
 
 		List<ProcedimentoBean> lista = new ArrayList<>();
-		String sql = "select id,codproc  ||' - '|| nome as nome ,codproc, apac, bpi, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo "
+		String sql = "select id,codproc  ||' - '|| nome as nome ,codproc, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo "
 				+ "from hosp.proc ";
 		if (tipoBuscar == 1) {
 			sql += " where upper(codproc ||' - '|| nome) LIKE ? order by nome";
@@ -207,8 +199,6 @@ public class ProcedimentoDAO {
 				proc.setIdProc(rs.getInt("id"));
 				proc.setNomeProc(rs.getString("nome"));
 				proc.setCodProc(rs.getInt("codproc"));
-				proc.setApac(rs.getBoolean("apac"));
-				proc.setBpi(rs.getBoolean("bpi"));
 				proc.setAuditivo(rs.getBoolean("auditivo"));
 				proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
 				proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
