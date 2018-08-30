@@ -26,7 +26,7 @@
 				<b:row>
 
 					<b:column span="1">
-						<h:outputLabel value="Descrição" style="margin-top:10px" />
+						<h:outputLabel value="Descrição:" style="margin-top:10px" />
 					</b:column>
 
 					<b:column span="5">
@@ -46,7 +46,7 @@
 
 					<b:column span="1">
 
-						<h:outputLabel value="Código" style="margin-top:10px" />
+						<h:outputLabel value="Código:" style="margin-top:10px" />
 
 					</b:column>
 
@@ -58,8 +58,90 @@
 
 				</b:row>
 
+				<b:row>
+
+					<b:column span="1">
+
+						<h:outputLabel value="Idade Mínima:" style="margin-top:10px" />
+
+					</b:column>
+
+					<b:column span="2">
+
+						<b:inputText value="#{ProcedimentoController.proc.idadeMinima}"
+							required="true" requiredMessage="Informe a idade mínima" />
+					</b:column>
+
+					<b:column span="1">
+
+						<h:outputLabel value="Idade Máxima:" style="margin-top:10px" />
+
+					</b:column>
+
+					<b:column span="2">
+
+						<b:inputText value="#{ProcedimentoController.proc.idadeMaxima}"
+							required="true" requiredMessage="Informe a idade máxima" />
+					</b:column>
+
+				</b:row>
+
 				<br></br>
 
+				<b:row>
+
+					<b:column span="1">
+
+						<h:outputLabel value="Quantidade Máxima:" style="margin-top:10px" />
+
+					</b:column>
+
+					<b:column span="2">
+
+						<b:inputText value="#{ProcedimentoController.proc.qtdMaxima}"
+							required="true"
+							requiredMessage="Informe a idade quantidade máxima em meses" />
+					</b:column>
+
+					<b:column span="1">
+
+						<h:outputLabel value="Prazo mínimo:" style="margin-top:10px" />
+
+					</b:column>
+
+					<b:column span="2">
+
+						<b:inputText
+							value="#{ProcedimentoController.proc.prazoMinimoNovaExecucao}"
+							required="true"
+							requiredMessage="Informe o prazo mínimo para nova execução" />
+					</b:column>
+
+				</b:row>
+
+				<br></br>
+
+				<b:row>
+
+					<b:column span="1">
+
+						<h:outputLabel value="Sexo para procedimento:"/>
+
+					</b:column>
+
+					<b:column span="2">
+						<p:selectOneRadio value="#{ProcedimentoController.proc.sexo}"
+							required="true"
+							requiredMessage="Escolha o sexo que será permitido esse procedimento">
+							<f:selectItem itemLabel="Masculino" itemValue="M" />
+							<f:selectItem itemLabel="Feminino" itemValue="F" />
+							<f:selectItem itemLabel="Ambos" itemValue="A" />
+						</p:selectOneRadio>
+					</b:column>
+
+				</b:row>
+
+				<br></br>
 
 				<b:row>
 

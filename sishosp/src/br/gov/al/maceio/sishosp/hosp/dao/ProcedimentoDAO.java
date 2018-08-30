@@ -19,8 +19,9 @@ public class ProcedimentoDAO {
 	public boolean gravarProcedimento(ProcedimentoBean proc)
 			throws SQLException, ProjetoException {
 
-		String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo)"
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
+				+ "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo)"
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -40,7 +41,12 @@ public class ProcedimentoDAO {
 			} else {
 				ps.setInt(7, proc.getValidade_laudo());
 			}
-
+			ps.setInt(8, proc.getIdadeMinima());
+			ps.setInt(9, proc.getIdadeMaxima());
+			ps.setInt(10, proc.getQtdMaxima());
+			ps.setInt(11, proc.getPrazoMinimoNovaExecucao());
+			ps.setString(12, proc.getSexo());
+			
 			ps.execute();
 			con.commit();
 			con.close();
@@ -52,7 +58,8 @@ public class ProcedimentoDAO {
 
 	public List<ProcedimentoBean> listarProcedimento() throws ProjetoException {
 		List<ProcedimentoBean> lista = new ArrayList<>();
-		String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo "
+		String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
+				+ " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
 				+ " from hosp.proc order by nome";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -69,6 +76,12 @@ public class ProcedimentoDAO {
 				proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
 				proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
 				proc.setValidade_laudo(rs.getInt("validade_laudo"));
+				proc.setIdadeMinima(rs.getInt("idade_minima"));
+				proc.setIdadeMaxima(rs.getInt("idade_maxima"));
+				proc.setQtdMaxima(rs.getInt("qtd_maxima"));
+				proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
+				proc.setSexo(rs.getString("sexo"));
+				
 				lista.add(proc);
 			}
 		} catch (SQLException ex) {
@@ -88,7 +101,8 @@ public class ProcedimentoDAO {
 	public ProcedimentoBean listarProcedimentoPorId(int id)
 			throws ProjetoException {
 		ProcedimentoBean proc = new ProcedimentoBean();
-		String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo "
+		String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
+				+ " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
 				+ "from hosp.proc where id = ? order by nome";
 		try {
 			con = ConnectionFactory.getConnection();
@@ -105,6 +119,11 @@ public class ProcedimentoDAO {
 				proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
 				proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
 				proc.setValidade_laudo(rs.getInt("validade_laudo"));
+				proc.setIdadeMinima(rs.getInt("idade_minima"));
+				proc.setIdadeMaxima(rs.getInt("idade_maxima"));
+				proc.setQtdMaxima(rs.getInt("qtd_maxima"));
+				proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
+				proc.setSexo(rs.getString("sexo"));
 			}
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -121,9 +140,10 @@ public class ProcedimentoDAO {
 
 	public boolean alterarProcedimento(ProcedimentoBean proc)
 			throws ProjetoException {
-		String sql = "update hosp.proc set nome = ?, apac = ?, bpi = ?, auditivo = ?, "
-				+ " tipo_exame_auditivo = ?, utiliza_equipamento = ?, gera_laudo_digita = ?, validade_laudo = ?, codproc = ? "
-				+ " where id = ?";
+		String sql = "update hosp.proc set nome = ?, auditivo = ?, tipo_exame_auditivo = ?, utiliza_equipamento = ?, "
+				+ "gera_laudo_digita = ?, validade_laudo = ?, codproc = ?, idade_minima = ?, idade_maxima = ?, qtd_maxima = ?, "
+				+ "prazo_minimo_nova_execucao = ?, sexo = ? "
+				+ "where id = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
@@ -142,7 +162,13 @@ public class ProcedimentoDAO {
 				stmt.setInt(6, proc.getValidade_laudo());
 			}
 			stmt.setInt(7, proc.getCodProc());
-			stmt.setInt(8, proc.getIdProc());
+			stmt.setInt(8, proc.getIdadeMinima());
+			stmt.setInt(9, proc.getIdadeMaxima());
+			stmt.setInt(10, proc.getQtdMaxima());
+			stmt.setInt(11, proc.getPrazoMinimoNovaExecucao());
+			stmt.setString(12, proc.getSexo());
+			stmt.setInt(13, proc.getIdProc());
+			
 			stmt.executeUpdate();
 			con.commit();
 			return true;
@@ -183,7 +209,8 @@ public class ProcedimentoDAO {
 			String descricaoBusca, Integer tipoBuscar) throws ProjetoException {
 
 		List<ProcedimentoBean> lista = new ArrayList<>();
-		String sql = "select id,codproc  ||' - '|| nome as nome ,codproc, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo "
+		String sql = "select id,codproc  ||' - '|| nome as nome ,codproc, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
+				+ "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo  "
 				+ "from hosp.proc ";
 		if (tipoBuscar == 1) {
 			sql += " where upper(codproc ||' - '|| nome) LIKE ? order by nome";
@@ -204,6 +231,12 @@ public class ProcedimentoDAO {
 				proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
 				proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
 				proc.setValidade_laudo(rs.getInt("validade_laudo"));
+				proc.setIdadeMinima(rs.getInt("idade_minima"));
+				proc.setIdadeMaxima(rs.getInt("idade_maxima"));
+				proc.setQtdMaxima(rs.getInt("qtd_maxima"));
+				proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
+				proc.setSexo(rs.getString("sexo"));
+				
 				lista.add(proc);
 			}
 		} catch (SQLException ex) {

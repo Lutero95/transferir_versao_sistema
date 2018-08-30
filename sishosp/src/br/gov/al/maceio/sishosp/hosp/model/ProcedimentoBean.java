@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class ProcedimentoBean implements Serializable {
 
@@ -13,7 +14,18 @@ public class ProcedimentoBean implements Serializable {
 	private Integer codEmpresa;
 	private boolean gera_laudo_digita;
 	private Integer validade_laudo;
+	private Integer idadeMinima;
+	private Integer idadeMaxima;
+	private Integer qtdMaxima;
+	private Integer prazoMinimoNovaExecucao;
+	private String sexo;
+
+	// HERDADOS
 	private EquipamentoBean equipamento;
+
+	// LISTAS
+	private ArrayList<CidBean> listaCid;
+	private ArrayList<CboBean> listaCbo;
 
 	public ProcedimentoBean() {
 		super();
@@ -24,7 +36,15 @@ public class ProcedimentoBean implements Serializable {
 		this.tipoExameAuditivo = new String();
 		this.utilizaEquipamento = false;
 		this.codEmpresa = null;
+		this.idadeMinima = null;
+		this.idadeMaxima = null;
+		this.qtdMaxima = null;
+		this.prazoMinimoNovaExecucao = null;
+		this.sexo = new String();
 		equipamento = new EquipamentoBean();
+		listaCid = null;
+		listaCbo = null;
+
 	}
 
 	public Integer getIdProc() {
@@ -105,6 +125,62 @@ public class ProcedimentoBean implements Serializable {
 
 	public void setEquipamento(EquipamentoBean equipamento) {
 		this.equipamento = equipamento;
+	}
+
+	public Integer getIdadeMinima() {
+		return idadeMinima;
+	}
+
+	public void setIdadeMinima(Integer idadeMinima) {
+		this.idadeMinima = idadeMinima;
+	}
+
+	public Integer getIdadeMaxima() {
+		return idadeMaxima;
+	}
+
+	public void setIdadeMaxima(Integer idadeMaxima) {
+		this.idadeMaxima = idadeMaxima;
+	}
+
+	public Integer getQtdMaxima() {
+		return qtdMaxima;
+	}
+
+	public void setQtdMaxima(Integer qtdMaxima) {
+		this.qtdMaxima = qtdMaxima;
+	}
+
+	public Integer getPrazoMinimoNovaExecucao() {
+		return prazoMinimoNovaExecucao;
+	}
+
+	public void setPrazoMinimoNovaExecucao(Integer prazoMinimoNovaExecucao) {
+		this.prazoMinimoNovaExecucao = prazoMinimoNovaExecucao;
+	}
+
+	public String getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
+	}
+
+	public ArrayList<CidBean> getListaCid() {
+		return listaCid;
+	}
+
+	public void setListaCid(ArrayList<CidBean> listaCid) {
+		this.listaCid = listaCid;
+	}
+
+	public ArrayList<CboBean> getListaCbo() {
+		return listaCbo;
+	}
+
+	public void setListaCbo(ArrayList<CboBean> listaCbo) {
+		this.listaCbo = listaCbo;
 	}
 
 }
