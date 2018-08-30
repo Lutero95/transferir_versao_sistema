@@ -1,34 +1,19 @@
 package br.gov.al.maceio.sishosp.acl.control;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import br.gov.al.maceio.sishosp.acl.dao.PessoaDAO;
+import br.gov.al.maceio.sishosp.acl.model.PessoaBean;
+import br.gov.al.maceio.sishosp.acl.model.UsuarioPosseBean;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.WebServiceCep;
+import org.primefaces.component.api.UIData;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-
-import org.primefaces.component.api.UIData;
-import org.primefaces.context.RequestContext;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.WebServiceCep;
-import br.gov.al.maceio.sishosp.acl.dao.PessoaDAO;
-import br.gov.al.maceio.sishosp.acl.model.PessoaBean;
-import br.gov.al.maceio.sishosp.acl.model.UsuarioPosseBean;
-
-import javax.faces.component.EditableValueHolder;
-import javax.servlet.ServletContext;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @ManagedBean(name = "MBPessoa")
 @ViewScoped
