@@ -42,8 +42,8 @@ public class ProcedimentoBean implements Serializable {
 		this.prazoMinimoNovaExecucao = null;
 		this.sexo = new String();
 		equipamento = new EquipamentoBean();
-		listaCid = null;
-		listaCbo = null;
+		listaCid = new ArrayList<CidBean>();
+		listaCbo = new ArrayList<CboBean>();
 
 	}
 

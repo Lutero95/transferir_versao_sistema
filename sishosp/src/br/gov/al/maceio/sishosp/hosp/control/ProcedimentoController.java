@@ -15,6 +15,8 @@ import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.model.CboBean;
+import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 @ManagedBean(name = "ProcedimentoController")
@@ -31,12 +33,16 @@ public class ProcedimentoController implements Serializable {
 	private String descricaoBusca;
 	private int tipo;
 	private String cabecalho;
+	private CidBean cid;
+	private CboBean cbo;
 	ProcedimentoDAO pDao = new ProcedimentoDAO();
 
 	public ProcedimentoController() {
 		this.proc = new ProcedimentoBean();
 		this.listaProcedimentos = null;
 		this.descricaoBusca = new String();
+		cid = new CidBean();
+		cbo = new CboBean();
 	}
 
 	public void limparDados() throws ProjetoException {
@@ -116,6 +122,24 @@ public class ProcedimentoController implements Serializable {
 					"PF('dialogAtencao').hide();");
 		}
 		listaProcedimentos = pDao.listarProcedimento();
+	}
+	
+	public void addCid(){
+		proc.getListaCid().add(cid);
+		System.out.println("Tamanho: "+proc.getListaCid().size()+" "+proc.getListaCid().get(0).getDescCid());
+	}
+	
+	public void removerCid(){
+		proc.getListaCid().remove(cid);
+	}
+	
+	public void addCbo(){
+		proc.getListaCbo().add(cbo);
+		System.out.println("Tamanho: "+proc.getListaCbo().size()+" "+proc.getListaCbo().get(0).getDescCbo());
+	}
+	
+	public void removerCbo(){
+		proc.getListaCbo().remove(cbo);
 	}
 
 	public String getCabecalho() {
@@ -204,5 +228,21 @@ public class ProcedimentoController implements Serializable {
 
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
+	}
+
+	public CidBean getCid() {
+		return cid;
+	}
+
+	public void setCid(CidBean cid) {
+		this.cid = cid;
+	}
+
+	public CboBean getCbo() {
+		return cbo;
+	}
+
+	public void setCbo(CboBean cbo) {
+		this.cbo = cbo;
 	}
 }

@@ -125,7 +125,7 @@
 
 					<b:column span="1">
 
-						<h:outputLabel value="Sexo para procedimento:"/>
+						<h:outputLabel value="Sexo para procedimento:" />
 
 					</b:column>
 
@@ -231,6 +231,126 @@
 							</p:selectOneMenu>
 						</b:column>
 					</p:outputPanel>
+
+				</b:row>
+				
+				<br></br>
+
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel value="CID:" />
+					</b:column>
+
+					<b:column span="3">
+
+						<p:outputPanel id="outCid1">
+							<p:autoComplete value="#{ProcedimentoController.cid}" size="40"
+								converter="conCid" id="descCid"
+								completeMethod="#{CidController.listaCidAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descCid}">
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
+					
+					<b:column span="1">
+						<p:commandButton size="sm" immediate="true"
+							action="#{ProcedimentoController.addCid()}"
+							tooltip="Adicionar Cid" icon="ui-icon-plus"
+							update="tabelaCid" />
+					</b:column>
+					
+					<b:column span="5">
+
+						<p:dataTable emptyMessage="Nenhum Cid"
+							styleClass="table table-hover" id="tabelaCid"
+							value="#{ProcedimentoController.proc.listaCid}" var="tab"
+							paginator="true" paginatorPosition="bottom" rows="12"
+							resizableColumns="true">
+
+							<p:column headerText="Cód." style="font-weight:bold;width:20%;">
+								<h:outputText value="#{tab.idCid}" />
+							</p:column>
+
+							<p:column headerText="Cid" style="font-weight:bold;">
+								<h:outputText value="#{tab.descCid}" />
+							</p:column>
+
+							<p:column headerText="Ação">
+								<center>
+									<p:commandButton process="@this"
+										action="#{ProcedimentoController.removerCid()}"
+										icon="ui-icon-trash" update="tabelaCid">
+										<f:setPropertyActionListener value="#{tab}"
+											target="#{ProcedimentoController.cid}" />
+									</p:commandButton>
+								</center>
+							</p:column>
+
+						</p:dataTable>
+						
+						</b:column>
+
+				</b:row>
+				
+				<b:row>
+
+					<b:column span="1">
+						<h:outputLabel value="CBO:" />
+					</b:column>
+
+					<b:column span="3">
+
+						<p:outputPanel id="outCbo">
+							<p:autoComplete value="#{ProcedimentoController.cbo}" size="40"
+								converter="conCbo" id="descCbo"
+								completeMethod="#{CboController.listaCboAutoComplete}"
+								effect="fade" var="theme" forceSelection="true"
+								minQueryLength="1" itemValue="#{theme}"
+								itemLabel="#{theme.descCbo}">
+							</p:autoComplete>
+						</p:outputPanel>
+					</b:column>
+					
+					<b:column span="1">
+						<p:commandButton size="sm" immediate="true"
+							action="#{ProcedimentoController.addCbo()}"
+							tooltip="Adicionar CBO" icon="ui-icon-plus"
+							update="tabelaCbo" />
+					</b:column>
+					
+					<b:column span="5">
+
+						<p:dataTable emptyMessage="Nenhum CBO"
+							styleClass="table table-hover" id="tabelaCbo"
+							value="#{ProcedimentoController.proc.listaCbo}" var="tab"
+							paginator="true" paginatorPosition="bottom" rows="12"
+							resizableColumns="true">
+
+							<p:column headerText="Cód." style="font-weight:bold;width:20%;">
+								<h:outputText value="#{tab.codCbo}" />
+							</p:column>
+
+							<p:column headerText="Cid" style="font-weight:bold;">
+								<h:outputText value="#{tab.descCbo}" />
+							</p:column>
+
+							<p:column headerText="Ação">
+								<center>
+									<p:commandButton process="@this"
+										action="#{ProcedimentoController.removerCbo()}"
+										icon="ui-icon-trash" update="tabelaCbo">
+										<f:setPropertyActionListener value="#{tab}"
+											target="#{ProcedimentoController.cbo}" />
+									</p:commandButton>
+								</center>
+							</p:column>
+
+						</p:dataTable>
+						
+						</b:column>
 
 				</b:row>
 

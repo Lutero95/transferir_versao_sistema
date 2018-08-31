@@ -163,7 +163,7 @@ public class CidDAO {
 
 			return g;
 		} catch (Exception sqle) {
-
+			sqle.printStackTrace();
 			throw new ProjetoException(sqle);
 
 		} finally {
