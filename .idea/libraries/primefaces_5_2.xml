@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="primefaces-5.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/sishosp/WebContent/WEB-INF/lib/primefaces-5.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

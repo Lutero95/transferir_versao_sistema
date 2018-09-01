@@ -14,26 +14,28 @@ import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 @FacesConverter(value = "conCbo")
 public class CBOConverter implements Converter {
-	CboDAO c = new CboDAO();
+    CboDAO c = new CboDAO();
 
-	public Object getAsObject(FacesContext contet, UIComponent component,
-			String value) {
-		if (value.equals("null") || value.equals("") || value == null)
-			return null;
-		try {
-			int id = Integer.parseInt(value);
-			return c.listarCboPorId(id);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ConverterException(new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "CBO não válido", ""));
-		}
-	}
+    public Object getAsObject(FacesContext contet, UIComponent component,
+                              String value) {
+        //if (value.equals("null") || value.equals("") || value == null)
+        if (value == null || value.equals("null")) {
+            value = "0";
+        }
+        try {
+            int id = Integer.parseInt(value);
+            return c.listarCboPorId(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ConverterException(new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR, "CBO não válido", ""));
+        }
+    }
 
-	public String getAsString(FacesContext contet, UIComponent component,
-			Object value) {
-		if (value == null || value.equals(""))
-			return null;
-		return String.valueOf(((CboBean) value).getCodCbo());
-	}
+    public String getAsString(FacesContext contet, UIComponent component,
+                              Object value) {
+        if (value == null || value.equals(""))
+            return null;
+        return String.valueOf(((CboBean) value).getCodCbo());
+    }
 }

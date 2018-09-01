@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="org-netbeans-core">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/sishosp/WebContent/WEB-INF/lib/org-netbeans-core.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

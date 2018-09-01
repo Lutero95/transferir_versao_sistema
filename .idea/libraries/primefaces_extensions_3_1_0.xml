@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="primefaces-extensions-3.1.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/sishosp/WebContent/WEB-INF/lib/primefaces-extensions-3.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

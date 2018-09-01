@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="iText-2.1.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/sishosp/WebContent/WEB-INF/lib/iText-2.1.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

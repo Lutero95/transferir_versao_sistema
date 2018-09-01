@@ -23,226 +23,262 @@ import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 @ViewScoped
 public class ProcedimentoController implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private ProcedimentoBean proc;
-	private List<ProcedimentoBean> listaProcedimentos;
-	private Integer tipoBuscar;
-	private String descricaoBusca;
-	private int tipo;
-	private String cabecalho;
-	private CidBean cid;
-	private CboBean cbo;
-	ProcedimentoDAO pDao = new ProcedimentoDAO();
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private ProcedimentoBean proc;
+    private List<ProcedimentoBean> listaProcedimentos;
+    private Integer tipoBuscar;
+    private String descricaoBusca;
+    private int tipo;
+    private String cabecalho;
+    private CidBean cid;
+    private CboBean cbo;
+    ProcedimentoDAO pDao = new ProcedimentoDAO();
 
-	public ProcedimentoController() {
-		this.proc = new ProcedimentoBean();
-		this.listaProcedimentos = null;
-		this.descricaoBusca = new String();
-		cid = new CidBean();
-		cbo = new CboBean();
-	}
+    public ProcedimentoController() {
+        this.proc = new ProcedimentoBean();
+        this.listaProcedimentos = null;
+        this.descricaoBusca = new String();
+        cid = new CidBean();
+        cbo = new CboBean();
+    }
 
-	public void limparDados() throws ProjetoException {
-		proc = new ProcedimentoBean();
-		listaProcedimentos = new ArrayList<ProcedimentoBean>();
-		this.descricaoBusca = new String();
-		listaProcedimentos = pDao.listarProcedimento();
-	}
+    public void limparDados() throws ProjetoException {
+        proc = new ProcedimentoBean();
+        listaProcedimentos = new ArrayList<ProcedimentoBean>();
+        this.descricaoBusca = new String();
+        listaProcedimentos = pDao.listarProcedimento();
+        cid = new CidBean();
+        cbo = new CboBean();
+    }
 
-	public void buscarProcedimento() throws ProjetoException {
-		this.listaProcedimentos = pDao.listarProcedimentoBusca(descricaoBusca,
-				tipoBuscar);
-	}
+    public void buscarProcedimento() throws ProjetoException {
+        this.listaProcedimentos = pDao.listarProcedimentoBusca(descricaoBusca,
+                tipoBuscar);
+    }
 
-	public void gravarProcedimento() throws ProjetoException, SQLException {
+    public void gravarProcedimento() throws ProjetoException, SQLException {
 
-		if (this.proc.getCodProc() == null || this.proc.getNomeProc() == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Código e descrição obrigatórios!", "Campos Obrigatórios.");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
+        if (this.proc.getCodProc() == null || this.proc.getNomeProc() == null) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Código e descrição obrigatórios!", "Campos Obrigatórios.");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
 
-		boolean cadastrou = pDao.gravarProcedimento(proc);
+        boolean cadastrou = pDao.gravarProcedimento(proc);
 
-		if (cadastrou == true) {
-			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Procedimento cadastrado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-	}
+        if (cadastrou == true) {
+            limparDados();
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Procedimento cadastrado com sucesso!", "Sucesso");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Ocorreu um erro durante o cadastro!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
 
-	public void alterarProcedimento() throws ProjetoException {
-		if (this.proc.getCodProc() == null || this.proc.getNomeProc() == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Código e descrição obrigatórios!", "Campos Obrigatórios.");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			// return "";
-		}
+    public void alterarProcedimento() throws ProjetoException {
+        if (this.proc.getCodProc() == null || this.proc.getNomeProc() == null) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Código e descrição obrigatórios!", "Campos Obrigatórios.");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            // return "";
+        }
 
-		boolean alterou = pDao.alterarProcedimento(proc);
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Procedimento alterado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaProcedimentos = pDao.listarProcedimento();
-			// return
-			// "/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true";
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			// return "";
-		}
+        boolean alterou = pDao.alterarProcedimento(proc);
+        if (alterou == true) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Procedimento alterado com sucesso!", "Sucesso");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            listaProcedimentos = pDao.listarProcedimento();
+            // return
+            // "/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true";
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Ocorreu um erro durante o cadastro!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            // return "";
+        }
 
-	}
+    }
 
-	public void excluirProcedimento() throws ProjetoException {
-		boolean ok = pDao.excluirProcedimento(proc);
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Procedimento excluído com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+    public void excluirProcedimento() throws ProjetoException {
+        boolean ok = pDao.excluirProcedimento(proc);
+        if (ok == true) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Procedimento excluído com sucesso!", "Sucesso");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            RequestContext.getCurrentInstance().execute(
+                    "PF('dialogAtencao').hide();");
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Ocorreu um erro durante a exclusao!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		listaProcedimentos = pDao.listarProcedimento();
-	}
-	
-	public void addCid(){
-		proc.getListaCid().add(cid);
-		System.out.println("Tamanho: "+proc.getListaCid().size()+" "+proc.getListaCid().get(0).getDescCid());
-	}
-	
-	public void removerCid(){
-		proc.getListaCid().remove(cid);
-	}
-	
-	public void addCbo(){
-		proc.getListaCbo().add(cbo);
-		System.out.println("Tamanho: "+proc.getListaCbo().size()+" "+proc.getListaCbo().get(0).getDescCbo());
-	}
-	
-	public void removerCbo(){
-		proc.getListaCbo().remove(cbo);
-	}
+            RequestContext.getCurrentInstance().execute(
+                    "PF('dialogAtencao').hide();");
+        }
+        listaProcedimentos = pDao.listarProcedimento();
+    }
 
-	public String getCabecalho() {
-		if (this.tipo == 1) {
-			cabecalho = "Inclusão de Procedimento";
-		} else if (this.tipo == 2) {
-			cabecalho = "Alteração de Procedimento";
-		}
-		return cabecalho;
-	}
+    public void addCid() {
+        boolean existe = false;
+        if (proc.getListaCid().size() == 0) {
+            proc.getListaCid().add(cid);
+        } else {
+            for (int i = 0; i < proc.getListaCid().size(); i++) {
+                if (proc.getListaCid().get(i).getIdCid() == cid.getIdCid()) {
+                    existe = true;
+                }
+            }
+            if (existe == false) {
+                this.proc.getListaCid().add(this.cid);
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Essa CID já foi adicionado!", "Erro");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+        }
+        cid = new CidBean();
+    }
 
-	public void setCabecalho(String cabecalho) {
-		this.cabecalho = cabecalho;
-	}
+    public void removerCid() {
+        proc.getListaCid().remove(cid);
+    }
 
-	public List<ProcedimentoBean> listaProcedimentoAutoComplete(String query)
-			throws ProjetoException {
-		List<ProcedimentoBean> result = pDao.listarProcedimentoBusca(query, 1);
-		return result;
-	}
+    public void addCbo() {
+        boolean existe = false;
+        if (proc.getListaCbo().size() == 0) {
+            proc.getListaCbo().add(cbo);
+        } else {
+            for (int i = 0; i < proc.getListaCbo().size(); i++) {
+                if (proc.getListaCbo().get(i).getCodCbo() == cbo.getCodCbo()) {
+                    existe = true;
+                }
+            }
+            if (existe == false) {
+                this.proc.getListaCbo().add(this.cbo);
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Essa CBO já foi adicionado!", "Erro");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+        }
+        cbo = new CboBean();
+    }
 
-	public String redirectInsert() {
-		return "cadastroProcedimento?faces-redirect=true&amp;tipo=" + this.tipo;
-	}
+    public void removerCbo() {
+        proc.getListaCbo().remove(cbo);
+    }
 
-	public String redirectEdit() {
-		return "cadastroProcedimento?faces-redirect=true&amp;id="
-				+ this.proc.getIdProc() + "&amp;tipo=" + tipo;
-	}
+    public String getCabecalho() {
+        if (this.tipo == 1) {
+            cabecalho = "Inclusão de Procedimento";
+        } else if (this.tipo == 2) {
+            cabecalho = "Alteração de Procedimento";
+        }
+        return cabecalho;
+    }
 
-	public void getEditProcedimento() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			tipo = Integer.parseInt(params.get("tipo"));
-			this.proc = pDao.listarProcedimentoPorId(id);
-		} else {
-			tipo = Integer.parseInt(params.get("tipo"));
+    public void setCabecalho(String cabecalho) {
+        this.cabecalho = cabecalho;
+    }
 
-		}
+    public List<ProcedimentoBean> listaProcedimentoAutoComplete(String query)
+            throws ProjetoException {
+        List<ProcedimentoBean> result = pDao.listarProcedimentoBusca(query, 1);
+        return result;
+    }
 
-	}
+    public String redirectInsert() {
+        return "cadastroProcedimento?faces-redirect=true&amp;tipo=" + this.tipo;
+    }
 
-	public List<ProcedimentoBean> getListaProcedimentos() {
-		return listaProcedimentos;
-	}
+    public String redirectEdit() {
+        return "cadastroProcedimento?faces-redirect=true&amp;id="
+                + this.proc.getIdProc() + "&amp;tipo=" + tipo;
+    }
 
-	public ProcedimentoBean getProc() {
-		return proc;
-	}
+    public void getEditProcedimento() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            tipo = Integer.parseInt(params.get("tipo"));
+            this.proc = pDao.listarProcedimentoPorId(id);
+            proc.setListaCid(pDao.listarCid(id));
+            proc.setListaCbo(pDao.listarCbo(id));
+        } else {
+            tipo = Integer.parseInt(params.get("tipo"));
 
-	public void setProc(ProcedimentoBean proc) {
-		this.proc = proc;
-	}
+        }
 
-	public void listarProcedimentos() throws ProjetoException {
-		this.listaProcedimentos = pDao.listarProcedimento();
+    }
 
-	}
+    public List<ProcedimentoBean> getListaProcedimentos() {
+        return listaProcedimentos;
+    }
 
-	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
-		this.listaProcedimentos = listaProcedimentos;
-	}
+    public ProcedimentoBean getProc() {
+        return proc;
+    }
 
-	public Integer getTipoBuscar() {
-		return tipoBuscar;
-	}
+    public void setProc(ProcedimentoBean proc) {
+        this.proc = proc;
+    }
 
-	public void setTipoBuscar(Integer tipoBuscar) {
-		this.tipoBuscar = tipoBuscar;
-	}
+    public void listarProcedimentos() throws ProjetoException {
+        this.listaProcedimentos = pDao.listarProcedimento();
 
-	public String getDescricaoBusca() {
-		return descricaoBusca;
-	}
+    }
 
-	public void setDescricaoBusca(String descricaoBusca) {
-		this.descricaoBusca = descricaoBusca;
-	}
+    public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
+        this.listaProcedimentos = listaProcedimentos;
+    }
 
-	public int getTipo() {
-		return tipo;
-	}
+    public Integer getTipoBuscar() {
+        return tipoBuscar;
+    }
 
-	public void setTipo(int tipo) {
-		this.tipo = tipo;
-	}
+    public void setTipoBuscar(Integer tipoBuscar) {
+        this.tipoBuscar = tipoBuscar;
+    }
 
-	public CidBean getCid() {
-		return cid;
-	}
+    public String getDescricaoBusca() {
+        return descricaoBusca;
+    }
 
-	public void setCid(CidBean cid) {
-		this.cid = cid;
-	}
+    public void setDescricaoBusca(String descricaoBusca) {
+        this.descricaoBusca = descricaoBusca;
+    }
 
-	public CboBean getCbo() {
-		return cbo;
-	}
+    public int getTipo() {
+        return tipo;
+    }
 
-	public void setCbo(CboBean cbo) {
-		this.cbo = cbo;
-	}
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
+
+    public CidBean getCid() {
+        return cid;
+    }
+
+    public void setCid(CidBean cid) {
+        this.cid = cid;
+    }
+
+    public CboBean getCbo() {
+        return cbo;
+    }
+
+    public void setCbo(CboBean cbo) {
+        this.cbo = cbo;
+    }
 }

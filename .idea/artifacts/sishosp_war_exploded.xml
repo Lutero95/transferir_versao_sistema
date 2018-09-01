@@ -1,0 +1,59 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="sishosp:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/sishosp_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="sishosp/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="sishosp" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="BootsFaces-OSP-1.2.0-dist" />
+          <element id="library" level="project" name="bootstrap-1.0.8" />
+          <element id="library" level="project" name="bridj-0.7.0" />
+          <element id="library" level="project" name="caelum-stella-core-2.0-beta1" />
+          <element id="library" level="project" name="caelum-stella-faces-2.0-beta1" />
+          <element id="library" level="project" name="common-annotations" />
+          <element id="library" level="project" name="commons-beanutils" />
+          <element id="library" level="project" name="commons-collections-3.2.1" />
+          <element id="library" level="project" name="commons-collections" />
+          <element id="library" level="project" name="commons-digester" />
+          <element id="library" level="project" name="commons-io-2.3" />
+          <element id="library" level="project" name="commons-fileupload-1.2.2" />
+          <element id="library" level="project" name="commons-lang3-3.1" />
+          <element id="library" level="project" name="commons-logging-1.0.4" />
+          <element id="library" level="project" name="commons-logging" />
+          <element id="library" level="project" name="core-3.2.0" />
+          <element id="library" level="project" name="dom4j-1.6.1" />
+          <element id="library" level="project" name="gson-2.2.4" />
+          <element id="library" level="project" name="iText-2.1.4" />
+          <element id="library" level="project" name="jackson-annotations-2.0.2" />
+          <element id="library" level="project" name="jackson-core-2.0.2" />
+          <element id="library" level="project" name="jackson-core-2.2.3" />
+          <element id="library" level="project" name="jackson-core-asl-1.9.2" />
+          <element id="library" level="project" name="jackson-databind-2.0.2" />
+          <element id="library" level="project" name="jackson-jaxrs-1.9.2" />
+          <element id="library" level="project" name="jasperreports-5.5.0" />
+          <element id="library" level="project" name="jackson-mapper-asl-1.9.2" />
+          <element id="library" level="project" name="jackson-xc-1.9.2" />
+          <element id="library" level="project" name="jasperreports-fonts-5.5.0" />
+          <element id="library" level="project" name="javax.faces-2.2.12" />
+          <element id="library" level="project" name="jstl-api-1.2" />
+          <element id="library" level="project" name="jstl-impl-1.2" />
+          <element id="library" level="project" name="jstl" />
+          <element id="library" level="project" name="log4j-1.2.17" />
+          <element id="library" level="project" name="org-netbeans-core" />
+          <element id="library" level="project" name="pepper-grinder-1.0.10" />
+          <element id="library" level="project" name="postgresql-8.3-604.jdbc4" />
+          <element id="library" level="project" name="primefaces-5.2" />
+          <element id="library" level="project" name="primefaces-extensions-3.1.0" />
+          <element id="library" level="project" name="slf4j-api-1.7.13" />
+          <element id="library" level="project" name="slf4j-simple-1.7.13" />
+          <element id="library" level="project" name="smoothness-1.0.10" />
+          <element id="library" level="project" name="standard" />
+          <element id="library" level="project" name="servlet-api" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
