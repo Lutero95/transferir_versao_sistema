@@ -18,8 +18,9 @@ public class RecursoConverter implements Converter {
 
 	public Object getAsObject(FacesContext contet, UIComponent component,
 			String value) {
-		if (value.equals("null") || value.equals("") || value == null)
-			return null;
+		if (value == null || value.equals("null")) {
+			value = "0";
+		}
 		try {
 			int id = Integer.parseInt(value);
 			return rDao.buscaRecursoCodigo(id);

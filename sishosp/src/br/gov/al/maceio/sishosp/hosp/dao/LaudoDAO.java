@@ -42,7 +42,7 @@ public class LaudoDAO {
 		 */
 
 		String sql = "insert into hosp.laudo "
-				+ "(codpaciente, recuso, data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
+				+ "(codpaciente, id_recurso, data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
 				+ "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5 "
 				+ "cid1, cid2, cid3, obs ) "
 				+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -51,7 +51,7 @@ public class LaudoDAO {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
 			stmt.setLong(1, laudo.getPaciente().getId_paciente());
-			stmt.setString(2, laudo.getRecuso());
+			stmt.setInt(2, laudo.getRecurso().getIdRecurso());
 			stmt.setDate(3, new java.sql.Date(laudo.getData_solicitacao()
 					.getTime()));
 			stmt.setInt(4, laudo.getMes_inicio());
@@ -164,11 +164,12 @@ public class LaudoDAO {
 
 	public ArrayList<LaudoBean> listaLaudos() throws ProjetoException {
 
-		String sql = "select id_laudo, l.recuso, l.codpaciente, p.nome, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
+		String sql = "select id_laudo, l.id_recurso, r.descrecurso, l.codpaciente, p.nome, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
 				+ " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, l.codprocedimento_secundario2, "
 				+ " l.codprocedimento_secundario3, l.codprocedimento_secundario4, l.codprocedimento_secundario5, l.cid1, l.cid2, l.cid3, l.obs "
 				+ " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
-				+ " left join hosp.proc pr on (pr.codproc = l.codprocedimento_primario) order by id_laudo";
+				+ " left join hosp.proc pr on (pr.codproc = l.codprocedimento_primario) "
+				+ " left join hosp.recurso r on (l.id_recurso = r.id) order by id_laudo";
 
 		ArrayList<LaudoBean> lista = new ArrayList();
 
@@ -183,7 +184,8 @@ public class LaudoDAO {
 				l.setId(rs.getInt("id_laudo"));
 				l.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				l.getPaciente().setNome(rs.getString("nome"));
-				l.setRecuso(rs.getString("recuso"));
+				l.getRecurso().setIdRecurso(rs.getInt("id_recurso"));
+				l.getRecurso().setDescRecurso(rs.getString("descrecurso"));
 				l.setData_solicitacao(rs.getDate("data_solicitacao"));
 				l.setMes_inicio(rs.getInt("mes_inicio"));
 				l.setAno_inicio(rs.getInt("ano_inicio"));
@@ -205,6 +207,7 @@ public class LaudoDAO {
 				lista.add(l);
 			}
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {

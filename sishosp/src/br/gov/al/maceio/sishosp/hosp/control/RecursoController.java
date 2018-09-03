@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,6 +131,10 @@ public class RecursoController implements Serializable {
 		listaRecursos = rdao.listaRecursos();
 	}
 
+	public ArrayList<RecursoBean> listarRecurso() throws ProjetoException {
+		return listaRecursos = rdao.listaRecursos();
+	}
+
 	public String getCabecalho() {
 		if (this.tipo == 1) {
 			cabecalho = "Inclusão de Recurso";
@@ -137,6 +142,11 @@ public class RecursoController implements Serializable {
 			cabecalho = "Alteração de Recurso";
 		}
 		return cabecalho;
+	}
+
+	public List<RecursoBean> listaRecursoAutoComplete(String query)
+			throws ProjetoException {
+		return rdao.buscaRecursoAutoComplete(query);
 	}
 
 	public void setCabecalho(String cabecalho) {
