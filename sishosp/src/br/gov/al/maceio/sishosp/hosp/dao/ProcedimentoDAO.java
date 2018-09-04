@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.RecursoBean;
 
 public class ProcedimentoDAO {
     Connection con = null;
@@ -69,6 +70,14 @@ public class ProcedimentoDAO {
             for (int i = 0; i < proc.getListaCid().size(); i++) {
                 ps.setInt(1, idProc);
                 ps.setInt(2, proc.getListaCid().get(i).getIdCid());
+                ps.execute();
+            }
+
+            sql = "INSERT INTO hosp.proc_recurso (id_proc, id_recurso) VALUES (?, ?);";
+            ps = con.prepareStatement(sql);
+            for (int i = 0; i < proc.getListaRecurso().size(); i++) {
+                ps.setInt(1, idProc);
+                ps.setInt(2, proc.getListaRecurso().get(i).getIdRecurso());
                 ps.execute();
             }
 
@@ -205,6 +214,11 @@ public class ProcedimentoDAO {
             stmt.setLong(1, proc.getIdProc());
             stmt.execute();
 
+            sql = "delete from hosp.proc_recurso where id_proc = ?";
+            stmt = con.prepareStatement(sql);
+            stmt.setLong(1, proc.getIdProc());
+            stmt.execute();
+
             sql = "INSERT INTO hosp.proc_cbo (id_proc, id_cbo) VALUES (?, ?);";
             ps = con.prepareStatement(sql);
             for (int i = 0; i < proc.getListaCbo().size(); i++) {
@@ -220,6 +234,15 @@ public class ProcedimentoDAO {
                 ps.setInt(2, proc.getListaCid().get(i).getIdCid());
                 ps.execute();
             }
+
+            sql = "INSERT INTO hosp.proc_recurso (id_proc, id_recurso) VALUES (?, ?);";
+            ps = con.prepareStatement(sql);
+            for (int i = 0; i < proc.getListaRecurso().size(); i++) {
+                ps.setInt(1, proc.getIdProc());
+                ps.setInt(2, proc.getListaRecurso().get(i).getIdRecurso());
+                ps.execute();
+            }
+
             con.commit();
             return true;
         } catch (SQLException ex) {

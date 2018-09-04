@@ -134,9 +134,9 @@
                         <p:selectOneRadio value="#{ProcedimentoController.proc.sexo}"
                                           required="true"
                                           requiredMessage="Escolha o sexo que será permitido esse procedimento">
+                            <f:selectItem itemLabel="Ambos" itemValue="A"/>
                             <f:selectItem itemLabel="Masculino" itemValue="M"/>
                             <f:selectItem itemLabel="Feminino" itemValue="F"/>
-                            <f:selectItem itemLabel="Ambos" itemValue="A"/>
                         </p:selectOneRadio>
                     </b:column>
 
@@ -354,6 +354,68 @@
                                                      icon="ui-icon-trash" update="tabelaCbo">
                                         <f:setPropertyActionListener value="#{tab}"
                                                                      target="#{ProcedimentoController.cbo}"/>
+                                    </p:commandButton>
+                                </center>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </b:column>
+
+                </b:row>
+
+                <br></br>
+
+                <b:row>
+
+                    <b:column span="1">
+                        <h:outputLabel value="Recurso:"/>
+                    </b:column>
+
+                    <b:column span="3">
+
+                        <p:outputPanel id="outRecurso">
+                            <p:autoComplete value="#{ProcedimentoController.recurso}" size="40"
+                                            converter="conRecurso" id="descRecurso"
+                                            completeMethod="#{RecursoController.listaRecursoAutoComplete}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.descRecurso}">
+                                <p:ajax event="itemSelect" update=""/>
+                            </p:autoComplete>
+                        </p:outputPanel>
+                    </b:column>
+
+                    <b:column span="1">
+                        <p:commandButton size="sm" immediate="true"
+                                         action="#{ProcedimentoController.addRecurso()}"
+                                         tooltip="Adicionar Recurso" icon="ui-icon-plus"
+                                         update="tabelaRecurso, outRecurso, :frmCadProc:msgError"/>
+                    </b:column>
+
+                    <b:column span="5">
+
+                        <p:dataTable emptyMessage="Nenhum Recurso"
+                                     styleClass="table table-hover" id="tabelaRecurso"
+                                     value="#{ProcedimentoController.proc.listaRecurso}" var="tab"
+                                     paginator="true" paginatorPosition="bottom" rows="12"
+                                     resizableColumns="true">
+
+                            <p:column headerText="Cód." style="font-weight:bold;width:20%;">
+                                <h:outputText value="#{tab.idRecurso}"/>
+                            </p:column>
+
+                            <p:column headerText="Recurso" style="font-weight:bold;">
+                                <h:outputText value="#{tab.descRecurso}"/>
+                            </p:column>
+
+                            <p:column headerText="Ação">
+                                <center>
+                                    <p:commandButton process="@this"
+                                                     action="#{ProcedimentoController.removerRecurso()}"
+                                                     icon="ui-icon-trash" update="tabelaRecurso">
+                                        <f:setPropertyActionListener value="#{tab}"
+                                                                     target="#{ProcedimentoController.recurso}"/>
                                     </p:commandButton>
                                 </center>
                             </p:column>

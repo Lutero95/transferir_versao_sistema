@@ -11,6 +11,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.hosp.dao.RecursoDAO;
+import br.gov.al.maceio.sishosp.hosp.model.RecursoBean;
 import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -35,6 +37,7 @@ public class ProcedimentoController implements Serializable {
     private String cabecalho;
     private CidBean cid;
     private CboBean cbo;
+    private RecursoBean recurso;
     ProcedimentoDAO pDao = new ProcedimentoDAO();
 
     public ProcedimentoController() {
@@ -43,6 +46,7 @@ public class ProcedimentoController implements Serializable {
         this.descricaoBusca = new String();
         cid = new CidBean();
         cbo = new CboBean();
+        recurso = new RecursoBean();
     }
 
     public void limparDados() throws ProjetoException {
@@ -52,6 +56,7 @@ public class ProcedimentoController implements Serializable {
         listaProcedimentos = pDao.listarProcedimento();
         cid = new CidBean();
         cbo = new CboBean();
+        recurso = new RecursoBean();
     }
 
     public void buscarProcedimento() throws ProjetoException {
@@ -185,6 +190,31 @@ public class ProcedimentoController implements Serializable {
         return cabecalho;
     }
 
+    public void addRecurso() {
+        boolean existe = false;
+        if (proc.getListaRecurso().size() == 0) {
+            proc.getListaRecurso().add(recurso);
+        } else {
+            for (int i = 0; i < proc.getListaRecurso().size(); i++) {
+                if (proc.getListaRecurso().get(i).getIdRecurso() == recurso.getIdRecurso()) {
+                    existe = true;
+                }
+            }
+            if (existe == false) {
+                this.proc.getListaRecurso().add(this.recurso);
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Esse Recurso já foi adicionado!", "Erro");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+        }
+        recurso = new RecursoBean();
+    }
+
+    public void removerRecurso() {
+        proc.getListaRecurso().remove(recurso);
+    }
+
     public void setCabecalho(String cabecalho) {
         this.cabecalho = cabecalho;
     }
@@ -214,6 +244,8 @@ public class ProcedimentoController implements Serializable {
             this.proc = pDao.listarProcedimentoPorId(id);
             proc.setListaCid(pDao.listarCid(id));
             proc.setListaCbo(pDao.listarCbo(id));
+            RecursoDAO rDao = new RecursoDAO();
+            proc.setListaRecurso(rDao.listaRecursosPorProcedimento(id));
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
 
@@ -280,5 +312,13 @@ public class ProcedimentoController implements Serializable {
 
     public void setCbo(CboBean cbo) {
         this.cbo = cbo;
+    }
+
+    public RecursoBean getRecurso() {
+        return recurso;
+    }
+
+    public void setRecurso(RecursoBean recurso) {
+        this.recurso = recurso;
     }
 }
