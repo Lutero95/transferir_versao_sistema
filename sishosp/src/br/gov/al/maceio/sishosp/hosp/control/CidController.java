@@ -124,7 +124,7 @@ public class CidController implements Serializable {
 		listaCids = gDao.listarCid();
 	}
 
-	public List<CidBean> listaCidAutoComplete(String query)
+	public List<CidBean> listaCidAutoComplete(Integer id_proc, String query)
 			throws ProjetoException {
 		List<CidBean> result = gDao.listarCidsBusca(query, 1);
 		return result;

@@ -121,6 +121,42 @@ public class RecursoDAO {
 
 				lista.add(r);
 			}
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return lista;
+	}
+
+	public ArrayList<RecursoBean> listaRecursosPorProcedimento(Integer id_proc) throws ProjetoException {
+
+		String sql = "select r.id, r.descrecurso from hosp.recurso r left join hosp.proc_recurso p on (r.id = p.id_recurso) " +
+				"where p.id_proc = ? order by descrecurso";
+
+		ArrayList<RecursoBean> lista = new ArrayList();
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			stm.setInt(1, id_proc);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				RecursoBean r = new RecursoBean();
+
+				r.setIdRecurso(rs.getInt("id"));
+				r.setDescRecurso(rs.getString("descrecurso"));
+
+				lista.add(r);
+			}
 			
 		} catch (SQLException ex) {
 			ex.printStackTrace();

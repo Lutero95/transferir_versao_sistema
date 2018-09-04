@@ -131,8 +131,13 @@ public class RecursoController implements Serializable {
 		listaRecursos = rdao.listaRecursos();
 	}
 
-	public ArrayList<RecursoBean> listarRecurso() throws ProjetoException {
-		return listaRecursos = rdao.listaRecursos();
+	public ArrayList<RecursoBean> listarRecurso(Integer id_proc) throws ProjetoException {
+		if(id_proc != null) {
+			return listaRecursos = rdao.listaRecursosPorProcedimento(id_proc);
+		}
+		else{
+			return null;
+		}
 	}
 
 	public String getCabecalho() {

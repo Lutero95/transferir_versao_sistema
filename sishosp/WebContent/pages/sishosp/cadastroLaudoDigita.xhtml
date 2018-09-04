@@ -10,6 +10,9 @@
 <ui:composition template="../../template/template.xhtml">
 
     <ui:define name="body">
+        <f:metadata>
+            <f:viewAction action="#{LaudoController.getEditLaudo}" />
+        </f:metadata>
 
         <h:form id="formLaudo">
 
@@ -206,6 +209,8 @@
                                     effect="fade" var="theme" forceSelection="true"
                                     minQueryLength="1" itemValue="#{theme}"
                                     itemLabel="#{theme.nomeProc}">
+                                <p:ajax event="itemSelect"
+                                        update=":formLaudo:outRecurso, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3"></p:ajax>
                             </p:autoComplete>
                         </p:outputPanel>
                     </b:column>
@@ -223,12 +228,14 @@
                     <b:column span="3">
 
                         <p:outputPanel id="outRecurso">
-                            <p:selectOneMenu value="#{LaudoController.laudo.recurso.idRecurso}" style="width:120px"
+                            <p:selectOneMenu disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
+                                             value="#{LaudoController.laudo.recurso.idRecurso}" style="width:120px"
                                              required="true" requiredMessage="Informe o diretório da página.">
 
-                                <f:selectItem itemLabel="Selecione" itemValue="" />
-                                <f:selectItems value="#{RecursoController.listarRecurso()}" var="dir"
-                                               itemLabel="#{dir.descRecurso}" itemValue="#{dir.idRecurso}" />
+                                <f:selectItems
+                                        value="#{RecursoController.listarRecurso(LaudoController.laudo.procedimento_primario.idProc)}"
+                                        var="dir"
+                                        itemLabel="#{dir.descRecurso}" itemValue="#{dir.idRecurso}"/>
                             </p:selectOneMenu>
 
                         </p:outputPanel>
@@ -385,9 +392,10 @@
                     <b:column span="3">
 
                         <p:outputPanel id="outCid1">
-                            <p:autoComplete value="#{LaudoController.laudo.cid1}" size="40"
+                            <p:autoComplete disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
+                                            value="#{LaudoController.laudo.cid1}" size="40"
                                             converter="conCid" id="descCid1"
-                                            completeMethod="#{CidController.listaCidAutoComplete}"
+                                            completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descCid}">
@@ -403,9 +411,10 @@
                     <b:column span="3">
 
                         <p:outputPanel id="outCid2">
-                            <p:autoComplete value="#{LaudoController.laudo.cid2}" size="40"
+                            <p:autoComplete disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
+                                            value="#{LaudoController.laudo.cid2}" size="40"
                                             converter="conCid" id="descCid2"
-                                            completeMethod="#{CidController.listaCidAutoComplete}"
+                                            completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descCid}">
@@ -420,9 +429,10 @@
                     <b:column span="3">
 
                         <p:outputPanel id="outCid3">
-                            <p:autoComplete value="#{LaudoController.laudo.cid3}" size="40"
+                            <p:autoComplete disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
+                                            value="#{LaudoController.laudo.cid3}" size="40"
                                             converter="conCid" id="descCid3"
-                                            completeMethod="#{CidController.listaCidAutoComplete}"
+                                            completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descCid}">
