@@ -1,110 +1,118 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:viewAction action="#{LaudoController.listarLaudo()}" />
-	</f:metadata>
+    <f:metadata>
+        <f:viewAction action="#{LaudoController.listarLaudo()}"/>
+    </f:metadata>
 
-	<ui:define name="body">
-		<div class="panel-body">
-			<div class="sub-header">
-				<h4>Gerenciamento de Laudo</h4>
-				<hr />
-			</div>
-			<h:form id="frmmensagem">
+    <ui:define name="body">
+        <div class="panel-body">
+            <div class="sub-header">
+                <h4>Gerenciamento de Laudo</h4>
+                <hr/>
+            </div>
+            <h:form id="frmmensagem">
 
-					<b:commandButton id="btninc" value="Novo" size="sm"
-					action="#{LaudoController.redirectInsert()}" icon="glyphicon-plus"
-					look="primary">
-					<f:setPropertyActionListener value="1"
-						target="#{LaudoController.tipo2}" />
-					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
-				
-				<br />
-				<br />
+                <b:commandButton id="btninc" value="Novo" size="sm"
+                                 action="#{LaudoController.redirectInsert()}" icon="glyphicon-plus"
+                                 look="primary">
+                    <f:setPropertyActionListener value="1"
+                                                 target="#{LaudoController.tipo}"/>
+                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
+                </b:commandButton>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+                <br/>
+                <br/>
 
-
-
-				<b:dataTable id="tabela" value="#{LaudoController.listaLaudoDigita}"
-					var="tab" display="Nenhum Laudo">
-
-					<h:column>
-						<f:facet name="header">
-                        Paciente
-                    </f:facet>
-						<h:outputText value="#{tab.paciente.nome}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-                        Ação
-                    </f:facet>
-
-						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{GrupoController.redirectEdit()}">
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{GrupoController.grupo}" />
-
-							<f:setPropertyActionListener value="2"
-								target="#{GrupoController.tipo}" />
-						</b:commandButton>
-
-						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px"
-							oncomplete="PF('dialogAtencao').show()">
-
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{GrupoController.grupo}" />
-						</b:commandButton>
-
-					</h:column>
-					
-				</b:dataTable>
-			</h:form>
-		</div>
-
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
-			resizable="false">
-
-			<h:form id="dlgexcluir">
-				<h:panelGrid columns="1">
+                <center>
+                    <b:messages value="Error" id="msgError"></b:messages>
+                </center>
 
 
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						este Laudo?</div>
+                <b:dataTable id="tabela" value="#{LaudoController.listaLaudoDigita}"
+                             var="tab" display="Nenhum Laudo">
 
-				</h:panelGrid>
+                    <h:column>
+                        <f:facet name="header">
+                            Número
+                        </f:facet>
+                        <h:outputText value="#{tab.id}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Paciente
+                        </f:facet>
+                        <h:outputText value="#{tab.paciente.nome}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Ação
+                        </f:facet>
+
+                        <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+                                         action="#{LaudoController.redirectEdit()}">
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{LaudoController.laudo}"/>
+
+                            <f:setPropertyActionListener value="2"
+                                                         target="#{LaudoController.tipo}"/>
+                        </b:commandButton>
+
+                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+                                         size="sm" ajax="true" style="margin-left:10px"
+                                         oncomplete="PF('dialogAtencao').show()">
+
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{LaudoController.laudo}"/>
+                        </b:commandButton>
+
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </div>
+
+        <p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
+                  resizable="false">
+
+            <h:form id="dlgexcluir">
+                <h:panelGrid columns="1">
 
 
+                    <div class="alert alert-warning" role="alert">Deseja excluir
+                        este Laudo?
+                    </div>
 
-				<center>
-
-					<p:commandButton value="Sim"
-						action="#{LaudoController.excluirLaudoDigita()}"
-						icon="ui-icon-check" style="font-size:14px;"
-						update=":frmmensagem:tabela">
-					</p:commandButton>
-
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
-
-				</center>
+                </h:panelGrid>
 
 
-			</h:form>
-		</p:dialog>
+                <center>
+
+                    <b:commandButton look="success" value="Sim"
+                                     action="#{LaudoController.excluirLaudo()}"
+                                     ajax="true"
+                                     icon="glyphicon-ok" update="frmmensagem">
+                    </b:commandButton>
+
+                    <b:commandButton value="Não"
+                                     oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;" />
+
+                </center>
 
 
-	</ui:define>
+            </h:form>
+        </p:dialog>
+
+
+    </ui:define>
 </ui:composition>
 </html>

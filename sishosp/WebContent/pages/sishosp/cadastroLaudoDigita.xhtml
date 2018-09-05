@@ -11,7 +11,7 @@
 
     <ui:define name="body">
         <f:metadata>
-            <f:viewAction action="#{LaudoController.getEditLaudo}" />
+            <f:viewAction action="#{LaudoController.getEditLaudo}"/>
         </f:metadata>
 
         <h:form id="formLaudo">
@@ -97,6 +97,8 @@
                                           value="#{LaudoController.laudo.periodo}">
                             <f:selectItem itemLabel="30 dias" itemValue="30"/>
                             <f:selectItem itemLabel="90 dias" itemValue="90"/>
+                            <p:ajax listener="#{LaudoController.calcularPeriodoLaudo()}"
+                                    update="outAnoFim, outMesFim" global="false" event="change"></p:ajax>
                         </p:selectOneRadio>
                     </b:column>
 
@@ -128,8 +130,11 @@
                             <f:selectItem itemLabel="Dezembro" itemValue="12" />
                         </h:selectOneMenu>
                         -->
-                        <h:inputText value="#{LaudoController.mes_inicio}" required="true"
-                                     requiredMessage="Escolha o ano início!"/>
+                        <h:inputText value="#{LaudoController.laudo.mes_inicio}" required="true"
+                                     requiredMessage="Escolha o ano início!">
+                            <p:ajax listener="#{LaudoController.calcularPeriodoLaudo()}"
+                                    update="outAnoFim, outMesFim" global="false" event="blur"></p:ajax>
+                        </h:inputText>
                     </b:column>
 
                     <b:column span="1">
@@ -468,11 +473,11 @@
 
                     <b:commandButton action="#{LaudoController.gravarLaudo()}"
                                      icon="glyphicon-ok" size="sm" look="success" value="Incluir"
-                                     style="float:left" rendered="#{LaudoController.tipo2  == 1}"/>
+                                     style="float:left" rendered="#{LaudoController.tipo  == 1}"/>
 
-                    <b:commandButton action="#{GrupoController.alterarGrupo()}"
+                    <b:commandButton action="#{LaudoController.alterarLaudo()}"
                                      icon="glyphicon-ok" size="sm" value="Alterar" look="success"
-                                     style="float:left" rendered="#{LaudoController.tipo2  == 2}"/>
+                                     style="float:left" rendered="#{LaudoController.tipo  == 2}"/>
 
                     <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                      style="float:right" size="sm" immediate="true" look="info"

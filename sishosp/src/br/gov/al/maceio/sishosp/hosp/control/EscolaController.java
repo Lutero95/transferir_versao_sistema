@@ -127,9 +127,9 @@ public class EscolaController implements Serializable {
 	public void excluirEscola() throws ProjetoException {
 		EscolaDAO udao = new EscolaDAO();
 
-		boolean excluio = udao.excluir(escola);
+		boolean excluiu = udao.excluir(escola);
 
-		if (excluio == true) {
+		if (excluiu == true) {
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Escola excluída com sucesso!", "Sucesso");
