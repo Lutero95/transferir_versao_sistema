@@ -133,7 +133,6 @@ public class LaudoController implements Serializable {
         boolean alterou = lDao.alterarLaudo(laudo);
 
         if (alterou == true) {
-            limparDados();
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Laudo Alterado com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
