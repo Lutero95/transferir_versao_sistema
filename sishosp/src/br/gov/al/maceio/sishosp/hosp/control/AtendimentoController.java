@@ -279,6 +279,8 @@ public class AtendimentoController implements Serializable {
 
 	public void realizarAtendimentoEquipe() throws ProjetoException,
 			SQLException {
+		boolean verificou = aDao.verificarSeCboEhDoProfissional(listAtendimentosEquipe);
+		/*
 		boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe);
 
 		if (alterou == true) {
@@ -290,7 +292,7 @@ public class AtendimentoController implements Serializable {
 					"Ocorreu um erro durante o atendimento!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-		}
+		} */
 	}
 
 	public AtendimentoBean getAtendimento() {
