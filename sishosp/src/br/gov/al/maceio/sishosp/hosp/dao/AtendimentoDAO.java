@@ -369,7 +369,7 @@ public class AtendimentoDAO {
         }
     }
 
-    public Boolean verificarSeCboEhDoProfissional(List<AtendimentoBean> lista)
+    public Boolean verificarSeCboEhDoProfissionalPorEquipe(List<AtendimentoBean> lista)
             throws ProjetoException {
 
         Integer valor = 0;
@@ -396,6 +396,39 @@ public class AtendimentoDAO {
             if (lista.size() == listaAux.size()) {
                 retorno = true;
             }
+
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return retorno;
+    }
+
+    public Boolean verificarSeCboEhDoProfissionalPorProfissional(Long idProfissional, Integer idProcedimento)
+            throws ProjetoException {
+
+        Integer valor = 0;
+        Boolean retorno = false;
+
+        String sql = "select p.id_cbo from hosp.proc_cbo p left join acl.funcionarios f on (p.id_proc = ?) left join hosp.cbo c on (c.id = p.id_cbo)"
+                + " where p.id_proc = f.codprocedimentopadrao and c.id = p.id_cbo and f.id_funcionario = ?";
+        try {
+            con = ConnectionFactory.getConnection();
+                PreparedStatement stm = con.prepareStatement(sql);
+                stm.setInt(1, idProcedimento);
+                stm.setLong(2, idProfissional);
+
+                ResultSet rs = stm.executeQuery();
+
+                while (rs.next()) {
+                   retorno = true;
+                }
 
         } catch (SQLException ex) {
             throw new RuntimeException(ex);

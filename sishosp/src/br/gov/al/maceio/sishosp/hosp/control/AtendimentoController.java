@@ -138,18 +138,28 @@ public class AtendimentoController implements Serializable {
 			this.funcionario = fDao.buscarProfissionalPorId(valor);
 		}
 
-		boolean alterou = aDao.realizaAtendimentoProfissional(funcionario,
-				atendimento);
+		boolean verificou = aDao.verificarSeCboEhDoProfissionalPorProfissional(atendimento.getFuncionario().getId(), atendimento.getProcedimento().getIdProc());
 
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Atendimento realizado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
+		if(verificou) {
+
+			boolean alterou = aDao.realizaAtendimentoProfissional(funcionario,
+					atendimento);
+
+			if (alterou == true) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Atendimento realizado com sucesso!", "Sucesso");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Ocorreu um erro durante o atendimento!", "Erro");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			}
+		}
+		else{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o atendimento!", "Erro");
+					"Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
 		}
 	}
 
@@ -279,7 +289,7 @@ public class AtendimentoController implements Serializable {
 
 	public void realizarAtendimentoEquipe() throws ProjetoException,
 			SQLException {
-		boolean verificou = aDao.verificarSeCboEhDoProfissional(listAtendimentosEquipe);
+		boolean verificou = aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
 		/*
 		boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe);
 

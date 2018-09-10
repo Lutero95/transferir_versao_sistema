@@ -43,7 +43,7 @@
 
 				<b:column span="4">
 					<p:outputPanel id="outProcP1">
-						<p:autoComplete
+						<p:autoComplete required="true" requiredMessage="Escolha o procedimento!"
 							value="#{AtendimentoController.atendimento.procedimento}"
 							size="60" converter="conProcedimento" id="descProc1"
 							completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
@@ -76,7 +76,7 @@
 
 				<b:column span="4">
 					<p:outputPanel id="outProfi">
-						<p:autoComplete id="acpro"
+						<p:autoComplete id="acpro" required="true" requiredMessage="Escolha o atendente"
 							value="#{AtendimentoController.funcionario}" size="60"
 							converter="conFuncionario"
 							completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
@@ -97,7 +97,7 @@
 				</b:column>
 
 				<b:column span="4">
-					<b:selectOneMenu
+					<b:selectOneMenu required="true" requiredMessage="Escolha um status!"
 						value="#{AtendimentoController.atendimento.status}" id="status">
 						<f:selectItem itemLabel="Selecione" itemValue="" />
 						<f:selectItem itemLabel="Atendido" itemValue="A" />
@@ -106,7 +106,7 @@
 				</b:column>
 
 				<b:column span="2">
-					<b:commandButton oncomplete="PF('dialogAtencao').show();"
+					<b:commandButton oncomplete="PF('dialogAtencao').show();" rendered="false"
 						icon="glyphicons-cleaning" size="sm" value="Limpar" look="success" />
 				</b:column>
 
@@ -127,7 +127,7 @@
 					update="msgError" style="float:left" />
 
 				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					style="float:rigth" size="sm" immediate="true" look="info"
+                    style="float:right" size="sm" immediate="true" look="info"
 					action="/pages/agenda/atendimento.faces?faces-redirect=true">
 				</b:commandButton>
 
