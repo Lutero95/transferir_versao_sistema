@@ -48,310 +48,312 @@ import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 @ViewScoped
 public class AtendimentoController implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private AtendimentoBean atendimento;
-	private List<AtendimentoBean> listAtendimentos;
-	private List<AtendimentoBean> listAtendimentosEquipe;
-	AtendimentoDAO aDao = new AtendimentoDAO();
-	ProcedimentoDAO pDao = new ProcedimentoDAO();
-	private FuncionarioBean funcionario;
-	private FuncionarioDAO fDao = new FuncionarioDAO();
-	private ProcedimentoBean procedimento;
-	private List<ProcedimentoBean> listaProcedimentos;
-	private AtendimentoBean atendimentoLista;
+    private AtendimentoBean atendimento;
+    private List<AtendimentoBean> listAtendimentos;
+    private List<AtendimentoBean> listAtendimentosEquipe;
+    private AtendimentoDAO aDao = new AtendimentoDAO();
+    private ProcedimentoDAO pDao = new ProcedimentoDAO();
+    private FuncionarioBean funcionario;
+    private FuncionarioDAO fDao = new FuncionarioDAO();
+    private ProcedimentoBean procedimento;
+    private List<ProcedimentoBean> listaProcedimentos;
+    private AtendimentoBean atendimentoLista;
 
-	public AtendimentoController() {
-		this.atendimento = new AtendimentoBean();
-		this.atendimentoLista = null;
-		listAtendimentos = new ArrayList<AtendimentoBean>();
-		listAtendimentosEquipe = new ArrayList<AtendimentoBean>();
-		funcionario = null;
-		procedimento = new ProcedimentoBean();
-		listaProcedimentos = new ArrayList<ProcedimentoBean>();
-	}
+    public AtendimentoController() {
+        this.atendimento = new AtendimentoBean();
+        this.atendimentoLista = null;
+        listAtendimentos = new ArrayList<AtendimentoBean>();
+        listAtendimentosEquipe = new ArrayList<AtendimentoBean>();
+        funcionario = null;
+        procedimento = new ProcedimentoBean();
+        listaProcedimentos = new ArrayList<ProcedimentoBean>();
+    }
 
-	public void limparDados() {
+    public void consultarAtendimentos() throws ProjetoException {
+        if (this.atendimento.getDataAtendimentoInicio() == null
+                || this.atendimento.getDataAtendimentoFinal() == null) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Selecione as datas para filtrar os atendimentos!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+        listarAtendimentos();
+    }
 
-	}
+    public String redirectAtendimento() throws ProjetoException {
+        if (atendimento.getEhEquipe().equals("Sim")) {
+            return "atendimentoEquipe?faces-redirect=true&amp;id="
+                    + this.atendimento.getId();
+        } else {
+            return "atendimentoProfissional?faces-redirect=true&amp;id="
+                    + this.atendimento.getId();
+        }
+    }
 
-	public void consultarAtendimentos() throws ProjetoException {
-		if (this.atendimento.getDataAtendimentoInicio() == null
-				|| this.atendimento.getDataAtendimentoFinal() == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Selecione as datas para filtrar os atendimentos!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-		listarAtendimentos();
-	}
+    public void getCarregaAtendimentoProfissional() throws ProjetoException,
+            SQLException {
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext
+                .getCurrentInstance().getExternalContext().getSessionMap()
+                .get("obj_usuario");
 
-	public String redirectAtendimento() throws ProjetoException {
-		if (atendimento.getEhEquipe().equals("Sim")) {
-			return "atendimentoEquipe?faces-redirect=true&amp;id="
-					+ this.atendimento.getId();
-		} else {
-			return "atendimentoProfissional?faces-redirect=true&amp;id="
-					+ this.atendimento.getId();
-		}
-	}
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            aDao = new AtendimentoDAO();
 
-	public void getCarregaAtendimentoProfissional() throws ProjetoException,
-			SQLException {
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("obj_usuario");
+            Integer valor = Integer.valueOf(user_session.getId().toString());
+            this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
+            this.funcionario = fDao.buscarProfissionalPorId(valor);
+        }
+    }
 
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			aDao = new AtendimentoDAO();
+    public void getCarregaAtendimentoEquipe() throws ProjetoException,
+            SQLException {
 
-			Integer valor = Integer.valueOf(user_session.getId().toString());
-			this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
-			this.funcionario = fDao.buscarProfissionalPorId(valor);
-		}
-	}
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            aDao = new AtendimentoDAO();
+            this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
+        }
+    }
 
-	public void getCarregaAtendimentoEquipe() throws ProjetoException,
-			SQLException {
+    public void realizarAtendimentoProfissional() throws ProjetoException,
+            SQLException {
+        if (funcionario == null) {
+            FuncionarioBean user_session = (FuncionarioBean) FacesContext
+                    .getCurrentInstance().getExternalContext().getSessionMap()
+                    .get("obj_usuario");
+            Integer valor = Integer.valueOf(user_session.getId().toString());
+            this.funcionario = fDao.buscarProfissionalPorId(valor);
+        }
 
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			aDao = new AtendimentoDAO();
-			this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
-		}
-	}
+        boolean verificou = aDao.verificarSeCboEhDoProfissionalPorProfissional(atendimento.getFuncionario().getId(), atendimento.getProcedimento().getIdProc());
 
-	public void realizarAtendimentoProfissional() throws ProjetoException,
-			SQLException {
-		if (funcionario == null) {
-			FuncionarioBean user_session = (FuncionarioBean) FacesContext
-					.getCurrentInstance().getExternalContext().getSessionMap()
-					.get("obj_usuario");
-			Integer valor = Integer.valueOf(user_session.getId().toString());
-			this.funcionario = fDao.buscarProfissionalPorId(valor);
-		}
+        if (verificou) {
 
-		boolean verificou = aDao.verificarSeCboEhDoProfissionalPorProfissional(atendimento.getFuncionario().getId(), atendimento.getProcedimento().getIdProc());
+            boolean alterou = aDao.realizaAtendimentoProfissional(funcionario,
+                    atendimento);
 
-		if(verificou) {
+            if (alterou == true) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Atendimento realizado com sucesso!", "Sucesso");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Ocorreu um erro durante o atendimento!", "Erro");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			boolean alterou = aDao.realizaAtendimentoProfissional(funcionario,
-					atendimento);
+            }
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
 
-			if (alterou == true) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Atendimento realizado com sucesso!", "Sucesso");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			} else {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"Ocorreu um erro durante o atendimento!", "Erro");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
+    public void limparAtendimentoProfissional() throws ProjetoException {
 
-			}
-		}
-		else{
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-	}
+        boolean alterou = aDao.limpaAtendimentoProfissional(atendimento);
 
-	public void limparAtendimentoProfissional() throws ProjetoException {
+        if (alterou == true) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Atendimento limpo com sucesso!", "Sucesso");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Ocorreu um erro durante o atendimento!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
 
-		boolean alterou = aDao.limpaAtendimentoProfissional(atendimento);
+        }
+    }
 
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Atendimento limpo com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o atendimento!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+    public void listarAtendimentos() throws ProjetoException {
+        this.listAtendimentos = aDao.carregaAtendimentos(atendimento);
+    }
 
-		}
-	}
+    public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {
+        listarAtendimentosEquipe();
+        RequestContext.getCurrentInstance().execute("PF('dlgConsultProfi').hide();");
+        RequestContext.getCurrentInstance().execute("PF('dlgConsulProc1').hide();");
+    }
 
-	public void listarAtendimentos() throws ProjetoException {
-		this.listAtendimentos = aDao.carregaAtendimentos(atendimento);
-	}
+    public List<AtendimentoBean> listarAtendimentosEquipe()
+            throws ProjetoException {
 
-	public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {
-		listarAtendimentosEquipe();
-	}
+        if (atendimento.getStatus() != null) {
+            if (!atendimento.getStatus().equals("")) {
 
-	public List<AtendimentoBean> listarAtendimentosEquipe()
-			throws ProjetoException {
+                for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
 
-		if (atendimento.getStatus() != null) {
-			if (!atendimento.getStatus().equals("")) {
-				System.out.println("STATUS: " + atendimento.getStatus());
-				for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+                    if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
+                            .getId1()) {
+                        listAtendimentosEquipe.get(i).setStatus(
+                                atendimento.getStatus());
+                        ;
+                    }
+                }
+            }
+        }
 
-					if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
-							.getId1()) {
-						listAtendimentosEquipe.get(i).setStatus(
-								atendimento.getStatus());
-						;
-					}
-				}
-			}
-		}
+        if (procedimento.getIdProc() != null) {
+            if (procedimento.getIdProc() > 0) {
 
-		if (procedimento.getIdProc() != null) {
-			if (procedimento.getIdProc() > 0) {
+                for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
 
-				for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+                    if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
+                            .getId1()) {
+                        listAtendimentosEquipe.get(i).setProcedimento(
+                                procedimento);
+                    }
+                }
+            }
+        }
 
-					if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
-							.getId1()) {
-						listAtendimentosEquipe.get(i).setProcedimento(
-								procedimento);
-					}
-				}
-			}
-		}
+        if (funcionario != null) {
 
-		if (funcionario != null) {
+            CboDAO cDao = new CboDAO();
+            CboBean cbo = cDao.listarCboPorId(funcionario.getCbo().getCodCbo());
 
-			CboDAO cDao = new CboDAO();
-			CboBean cbo = cDao.listarCboPorId(funcionario.getCbo().getCodCbo());
+            for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
 
-			for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+                if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
+                        .getId1()) {
+                    listAtendimentosEquipe.get(i).setFuncionario(funcionario);
+                    listAtendimentosEquipe.get(i).setCbo(cbo);
+                }
+            }
 
-				if (listAtendimentosEquipe.get(i).getId1() == atendimentoLista
-						.getId1()) {
-					listAtendimentosEquipe.get(i).setFuncionario(funcionario);
-					listAtendimentosEquipe.get(i).setCbo(cbo);
-				}
-			}
+        } else {
+            this.listAtendimentosEquipe = aDao
+                    .carregaAtendimentosEquipe(atendimento.getId());
+        }
+        return this.listAtendimentosEquipe;
 
-		} else {
-			this.listAtendimentosEquipe = aDao
-					.carregaAtendimentosEquipe(atendimento.getId());
-		}
-		return this.listAtendimentosEquipe;
+    }
 
-	}
+    public List<AtendimentoBean> listarAtendimentosEquipe2()
+            throws ProjetoException {
 
-	public List<AtendimentoBean> listarAtendimentosEquipe2()
-			throws ProjetoException {
+        listAtendimentosEquipe = aDao
+                .carregaAtendimentosEquipeProfissional(atendimento.getId1());
 
-		listAtendimentosEquipe = aDao
-				.carregaAtendimentosEquipeProfissional(atendimento.getId1());
+        for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+            if (listAtendimentos.get(i).getId1() == atendimento.getId1()) {
+                listarAtendimentosEquipe().get(i).getFuncionario()
+                        .setId(funcionario.getId());
+                listarAtendimentosEquipe().get(i).getFuncionario()
+                        .setNome(funcionario.getNome());
+                listarAtendimentosEquipe().get(i).getFuncionario()
+                        .setCns(funcionario.getCns());
+            }
+        }
 
-		for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
-			if (listAtendimentos.get(i).getId1() == atendimento.getId1()) {
-				listarAtendimentosEquipe().get(i).getFuncionario()
-						.setId(funcionario.getId());
-				listarAtendimentosEquipe().get(i).getFuncionario()
-						.setNome(funcionario.getNome());
-				listarAtendimentosEquipe().get(i).getFuncionario()
-						.setCns(funcionario.getCns());
-			}
-		}
+        return this.listAtendimentosEquipe = aDao
+                .carregaAtendimentosEquipeProfissional(atendimento.getId1());
 
-		return this.listAtendimentosEquipe = aDao
-				.carregaAtendimentosEquipeProfissional(atendimento.getId1());
+    }
 
-	}
+    public void onCellEdit(CellEditEvent event) {
 
-	public void onCellEdit(CellEditEvent event) {
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
 
-		Object oldValue = event.getOldValue();
-		Object newValue = event.getNewValue();
+        if (newValue != null && !newValue.equals(oldValue)) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Clique em SALVAR para que a alteração seja gravada!",
+                    "Old: " + oldValue + ", New:" + newValue);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
 
-		if (newValue != null && !newValue.equals(oldValue)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Clique em SALVAR para que a alteração seja gravada!",
-					"Old: " + oldValue + ", New:" + newValue);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-	}
+    public List<AtendimentoBean> alterarTabelaEquipe() throws ProjetoException {
+        return this.listAtendimentosEquipe = aDao
+                .carregaAtendimentosEquipeProfissional(atendimento.getId1());
 
-	public List<AtendimentoBean> alterarTabelaEquipe() throws ProjetoException {
-		return this.listAtendimentosEquipe = aDao
-				.carregaAtendimentosEquipeProfissional(atendimento.getId1());
+    }
 
-	}
+    public List<ProcedimentoBean> listarProcedimentos() throws ProjetoException {
+        return this.listaProcedimentos = pDao.listarProcedimento();
 
-	public List<ProcedimentoBean> listarProcedimentos() throws ProjetoException {
-		return this.listaProcedimentos = pDao.listarProcedimento();
+    }
 
-	}
+    public void realizarAtendimentoEquipe() throws ProjetoException{
+        boolean verificou = aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
 
-	public void realizarAtendimentoEquipe() throws ProjetoException,
-			SQLException {
-		boolean verificou = aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
-		/*
-		boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe);
+        if (verificou) {
+            boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe);
+            if (alterou == true) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Atendimento realizado com sucesso!", "Sucesso");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Ocorreu um erro durante o atendimento!", "Erro");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
 
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Atendimento realizado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o atendimento!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
 
-		} */
-	}
 
-	public AtendimentoBean getAtendimento() {
-		return atendimento;
-	}
+    public AtendimentoBean getAtendimento() {
+        return atendimento;
+    }
 
-	public void setAtendimento(AtendimentoBean atendimento) {
-		this.atendimento = atendimento;
-	}
+    public void setAtendimento(AtendimentoBean atendimento) {
+        this.atendimento = atendimento;
+    }
 
-	public List<AtendimentoBean> getListAtendimentos() {
-		return listAtendimentos;
-	}
+    public List<AtendimentoBean> getListAtendimentos() {
+        return listAtendimentos;
+    }
 
-	public void setListAtendimentos(List<AtendimentoBean> listAtendimentos) {
-		this.listAtendimentos = listAtendimentos;
-	}
+    public void setListAtendimentos(List<AtendimentoBean> listAtendimentos) {
+        this.listAtendimentos = listAtendimentos;
+    }
 
-	public FuncionarioBean getFuncionario() {
-		return funcionario;
-	}
+    public FuncionarioBean getFuncionario() {
+        return funcionario;
+    }
 
-	public void setFuncionario(FuncionarioBean funcionario) {
-		this.funcionario = funcionario;
-	}
+    public void setFuncionario(FuncionarioBean funcionario) {
+        this.funcionario = funcionario;
+    }
 
-	public List<AtendimentoBean> getListAtendimentosEquipe() {
-		return listAtendimentosEquipe;
-	}
+    public List<AtendimentoBean> getListAtendimentosEquipe() {
+        return listAtendimentosEquipe;
+    }
 
-	public void setListAtendimentosEquipe(
-			List<AtendimentoBean> listAtendimentosEquipe) {
-		this.listAtendimentosEquipe = listAtendimentosEquipe;
-	}
+    public void setListAtendimentosEquipe(
+            List<AtendimentoBean> listAtendimentosEquipe) {
+        this.listAtendimentosEquipe = listAtendimentosEquipe;
+    }
 
-	public ProcedimentoBean getProcedimento() {
-		return procedimento;
-	}
+    public ProcedimentoBean getProcedimento() {
+        return procedimento;
+    }
 
-	public void setProcedimento(ProcedimentoBean procedimento) {
-		this.procedimento = procedimento;
-	}
+    public void setProcedimento(ProcedimentoBean procedimento) {
+        this.procedimento = procedimento;
+    }
 
-	public AtendimentoBean getAtendimentoLista() {
-		return atendimentoLista;
-	}
+    public AtendimentoBean getAtendimentoLista() {
+        return atendimentoLista;
+    }
 
-	public void setAtendimentoLista(AtendimentoBean atendimentoLista) {
-		this.atendimentoLista = atendimentoLista;
-	}
+    public void setAtendimentoLista(AtendimentoBean atendimentoLista) {
+        this.atendimentoLista = atendimentoLista;
+    }
 
 }

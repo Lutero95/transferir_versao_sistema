@@ -105,9 +105,8 @@
 
 				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
 					size="sm" immediate="true" look="info" update=":formConsAge"
-					actionListener="#{AgendaController.limparDados()}"
 					style="float:right"
-					action="/pages/agenda/atendimento.faces?faces-redirect=true">
+					action="/pages/sishosp/atendimento.faces?faces-redirect=true">
 				</b:commandButton>
 
 
@@ -143,7 +142,7 @@
                     </f:facet>
 						<p:commandButton update=":formConsAge" icon="ui-icon-check"
 							action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
-							title="Selecionar" onclick="PF('formConsultProf').hide();">
+							title="Selecionar">
 							<f:setPropertyActionListener value="#{profi}"
 								target="#{AtendimentoController.funcionario}" />
 						</p:commandButton>
@@ -172,8 +171,8 @@
                         Adicionar
                     	</f:facet>
 							<p:commandButton update=":formConsAge" icon="ui-icon-check"
-								action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
-								title="Selecionar" onclick="PF('dlgConsulProc1').hide();">
+											 action="#{AtendimentoController.chamarMetodoTabelaAtendimentoEquipe()}"
+											 title="Selecionar">
 								<f:setPropertyActionListener value="#{proc}"
 									target="#{AtendimentoController.procedimento}" />
 							</p:commandButton>
