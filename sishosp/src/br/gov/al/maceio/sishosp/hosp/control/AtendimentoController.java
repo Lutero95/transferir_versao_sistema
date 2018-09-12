@@ -60,6 +60,7 @@ public class AtendimentoController implements Serializable {
     private ProcedimentoBean procedimento;
     private List<ProcedimentoBean> listaProcedimentos;
     private AtendimentoBean atendimentoLista;
+    private Boolean primeiraVez;
 
     public AtendimentoController() {
         this.atendimento = new AtendimentoBean();
@@ -69,6 +70,8 @@ public class AtendimentoController implements Serializable {
         funcionario = null;
         procedimento = new ProcedimentoBean();
         listaProcedimentos = new ArrayList<ProcedimentoBean>();
+        primeiraVez = true;
+
     }
 
     public void consultarAtendimentos() throws ProjetoException {
@@ -179,7 +182,13 @@ public class AtendimentoController implements Serializable {
     }
 
     public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {
+        primeiraVez = false;
         listarAtendimentosEquipe();
+
+        atendimento = new AtendimentoBean();
+        procedimento = new ProcedimentoBean();
+        funcionario = null;
+
         RequestContext.getCurrentInstance().execute("PF('dlgConsultProfi').hide();");
         RequestContext.getCurrentInstance().execute("PF('dlgConsulProc1').hide();");
     }
@@ -231,8 +240,10 @@ public class AtendimentoController implements Serializable {
             }
 
         } else {
-            this.listAtendimentosEquipe = aDao
-                    .carregaAtendimentosEquipe(atendimento.getId());
+            if(primeiraVez) {
+                this.listAtendimentosEquipe = aDao
+                        .carregaAtendimentosEquipe(atendimento.getId());
+            }
         }
         return this.listAtendimentosEquipe;
 
@@ -284,7 +295,7 @@ public class AtendimentoController implements Serializable {
 
     }
 
-    public void realizarAtendimentoEquipe() throws ProjetoException{
+    public void realizarAtendimentoEquipe() throws ProjetoException {
         boolean verificou = aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
 
         if (verificou) {
