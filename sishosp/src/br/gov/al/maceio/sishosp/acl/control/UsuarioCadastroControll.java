@@ -247,13 +247,13 @@ public class UsuarioCadastroControll implements Serializable {
 			boolean alterou = false;
 
 			if (listaPerms.size() > 0) {
-				usuarioEdit.setIdPerfil(Integer.parseInt(perfilSelecionado));
+				usuarioEdit.getPerfil().setId(Long.parseLong(perfilSelecionado));
 				usuarioEdit.setListaIdSistemas(listaSis);
 				usuarioEdit.setListaIdPermissoes(listaPerms);
 				alterou = udao.alterar(usuarioEdit);
 
 			} else {
-				usuarioEdit.setIdPerfil(Integer.parseInt(perfilSelecionado));
+				usuarioEdit.getPerfil().setId(Long.parseLong(perfilSelecionado));
 				usuarioEdit.setListaIdSistemas(listaSis);
 				alterou = udao.alterarSemPerm(usuarioEdit);
 			}
@@ -860,8 +860,7 @@ public class UsuarioCadastroControll implements Serializable {
 	public List<Menu> getListaMenusSource() throws ProjetoException {
 		if (listaMenusSource == null) {
 			MenuDAO mdao = new MenuDAO();
-			listaMenusSource = mdao.listarMenuItemSourcerUser(Integer
-					.parseInt(perfilSelecionado));
+			listaMenusSource = mdao.listarMenuItemSourcerUser((long)1);
 		}
 		return listaMenusSource;
 	}

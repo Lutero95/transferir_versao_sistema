@@ -31,6 +31,7 @@ import javax.servlet.http.HttpSession;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.IUsuarioDAO;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
@@ -38,6 +39,8 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import javax.faces.component.EditableValueHolder;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.TransferEvent;
+import org.primefaces.model.DualListModel;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
@@ -87,6 +90,14 @@ public class FuncionarioController implements Serializable {
 	private String versaoSisAux;
 	private boolean ativoSisAux;
 
+	private DualListModel<Menu> listaMenusDual;
+	private List<Menu> listaMenusSource;
+	private List<Menu> listaMenusTarget;
+
+	private DualListModel<Menu> listaMenusDualEdit;
+	private List<Menu> listaMenusSourceEdit;
+	private List<Menu> listaMenusTargetEdit;
+
 	private String setoresUsuarioLogado;
 
 	// Menu
@@ -116,6 +127,18 @@ public class FuncionarioController implements Serializable {
 		listaMenus = new ArrayList<>();
 		menuModel = new DefaultMenuModel();
 		listaPerms = new ArrayList<>();
+
+		listaMenusDual = null;
+		listaMenusSource = new ArrayList<>();
+		listaMenusTarget = new ArrayList<>();
+
+		listaMenusDualEdit = null;
+		listaMenusSourceEdit = new ArrayList<>();
+		listaMenusTargetEdit = new ArrayList<>();
+
+		listaMenusDualEdit = null;
+		listaMenusSourceEdit = null;
+		listaMenusTargetEdit = null;
 
 		rendDlgSetores = false;
 	}
@@ -739,6 +762,27 @@ public class FuncionarioController implements Serializable {
 
 	}
 
+
+	public void onTransferMenu(TransferEvent event) {
+		StringBuilder builder = new StringBuilder();
+
+		for (Object item : event.getItems()) {
+			builder.append(((Menu) item).getId());
+			if (listaMenusTarget.contains(item)) {
+				listaMenusTarget.remove(item);
+			} else {
+				listaMenusTarget.add((Menu) item);
+			}
+		}
+	}
+
+	public void limparDualCad() {
+		listaMenusDual = null;
+		listaMenusTarget = null;
+		listaMenusTarget = new ArrayList<>();
+
+	}
+
 	public FuncionarioBean getProfissional() {
 		return profissional;
 	}
@@ -1045,6 +1089,40 @@ public class FuncionarioController implements Serializable {
 
 	public void setRendDlgSetores(Boolean rendDlgSetores) {
 		this.rendDlgSetores = rendDlgSetores;
+	}
+
+	public DualListModel<Menu> getListaMenusDual() throws ProjetoException {
+		if (listaMenusDual == null) {
+			listaMenusSource = null;
+			listaMenusTarget = new ArrayList<>();
+			getListaMenusSource();
+			listaMenusDual = new DualListModel<>(listaMenusSource, listaMenusTarget);
+		}
+		return listaMenusDual;
+	}
+
+	public void setListaMenusDual(DualListModel<Menu> listaMenusDual) {
+		this.listaMenusDual = listaMenusDual;
+	}
+
+	public List<Menu> getListaMenusSource() throws ProjetoException {
+		if (listaMenusSource == null) {
+			MenuDAO mdao = new MenuDAO();
+			listaMenusSource = mdao.listarMenuItemSourcerUser(profissional.getPerfil().getId());
+		}
+		return listaMenusSource;
+	}
+
+	public void setListaMenusSource(List<Menu> listaMenusSource) {
+		this.listaMenusSource = listaMenusSource;
+	}
+
+	public List<Menu> getListaMenusTarget() {
+		return listaMenusTarget;
+	}
+
+	public void setListaMenusTarget(List<Menu> listaMenusTarget) {
+		this.listaMenusTarget = listaMenusTarget;
 	}
 
 }

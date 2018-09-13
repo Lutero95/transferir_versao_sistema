@@ -69,8 +69,8 @@ public class FuncionarioDAO {
 				// ACL
 				ub.setId(rs.getLong("id_funcionario"));
 				ub.setUsuarioAtivo(rs.getBoolean("usuarioativo"));
-				ub.setIdPerfil(rs.getInt("idperfil"));
-				ub.setDescPerfil(rs.getString("descperfil"));
+				ub.getPerfil().setId(rs.getLong("idperfil"));
+				ub.getPerfil().setDescricao(rs.getString("descperfil"));
 
 				count++;
 			}
@@ -303,8 +303,8 @@ public class FuncionarioDAO {
 				u.setEmail(rs.getString("email"));
 				u.setSenha(rs.getString("senha"));
 				u.setAtivo(rs.getString("ativo"));
-				u.setIdPerfil(rs.getInt("id_perfil"));
-				u.setDescPerfil(rs.getString("descricao"));
+				u.getPerfil().setId(rs.getLong("id_perfil"));
+				u.getPerfil().setDescricao(rs.getString("descricao"));
 			}
 			rs.close();
 			stmt.close();
@@ -395,7 +395,7 @@ public class FuncionarioDAO {
 			stmt.setString(2, usuario.getCpf().replaceAll("[^0-9]", ""));
 			stmt.setString(3, usuario.getEmail());
 			stmt.setString(4, usuario.getSenha());
-			stmt.setInt(5, usuario.getIdPerfil());
+			stmt.setLong(5, usuario.getPerfil().getId());
 			stmt.setString(6, usuario.getAtivo());
 			stmt.setLong(7, usuario.getCodigo());
 			stmt.executeUpdate();
@@ -459,7 +459,7 @@ public class FuncionarioDAO {
 			stmt.setString(2, usuario.getCpf().replaceAll("[^0-9]", ""));
 			stmt.setString(3, usuario.getEmail());
 			stmt.setString(4, usuario.getSenha());
-			stmt.setInt(5, usuario.getIdPerfil());
+			stmt.setLong(5, usuario.getPerfil().getId());
 			stmt.setString(6, usuario.getAtivo());
 			stmt.setLong(7, usuario.getCodigo());
 
@@ -547,7 +547,7 @@ public class FuncionarioDAO {
 				n.setAtivo(rs.getString("ativo"));
 				n.setEmail(rs.getString("email"));
 				n.setCpf(rs.getString("cpf"));
-				n.setIdPerfil(rs.getInt("id_perfil"));
+				n.getPerfil().setId(rs.getLong("id_perfil"));
 
 				lista.add(n);
 			}
@@ -903,8 +903,8 @@ public class FuncionarioDAO {
 				.get("obj_usuario");
 
 		String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
-				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso) "
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_date, false); returning id_funcionario;";
+				+ " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil) "
+				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_date, false, ?); returning id_funcionario;";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -917,7 +917,7 @@ public class FuncionarioDAO {
 
 			ps.setInt(4, user_session.getCodigo());
 
-			if (prof.getEspecialidade() != null) {
+			if (prof.getEspecialidade().getCodEspecialidade() > 0) {
 				ps.setInt(5, prof.getEspecialidade().getCodEspecialidade());
 			} else {
 				ps.setInt(5, 0);
@@ -940,6 +940,8 @@ public class FuncionarioDAO {
 			ps.setString(9, prof.getAtivo());
 
 			ps.setBoolean(10, prof.getRealizaAtendimento());
+
+			ps.setLong(11, prof.getPerfil().getId());
 
 			ResultSet rs = ps.executeQuery();
 
