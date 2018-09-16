@@ -549,22 +549,14 @@ public class FuncionarioController implements Serializable {
 	}
 
 	public void gravarProfissional() throws SQLException, ProjetoException {
-		/*
-		 * if (this.profissional.getCbo().getCodCbo() == null ||
-		 * this.profissional.getCns().isEmpty() ||
-		 * this.profissional.getDescricaoProf().isEmpty() ||
-		 * this.profissional.getEspecialidade().getCodEspecialidade() == null) {
-		 * FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-		 * "CBO, CNS, especialidade e descri��o obrigat�rios!",
-		 * "Campos obrigat�rios!");
-		 * FacesContext.getCurrentInstance().addMessage(null, msg); return; }
-		 */
 
-		if (listaGruposEProgramasProfissional.size() == 0) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Deve ser informado pelo menos um Programa e um Grupo!",
-					"Campos obrigatórios!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+		if(profissional.getRealizaAtendimento()) {
+			if (listaGruposEProgramasProfissional.size() == 0) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Deve ser informado pelo menos um Programa e um Grupo!",
+						"Campos obrigatórios!");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
 		}
 
 		boolean cadastrou = pDao.gravarProfissional(profissional,
@@ -642,22 +634,10 @@ public class FuncionarioController implements Serializable {
 
 	}
 
-	public void buscarProfissional() throws ProjetoException {
-		if (this.tipoBuscar == 0) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha uma opção de busca válida!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			this.listaProfissional = pDao.listarProfissionalBusca(
-					descricaoBusca, tipoBuscar);
-		}
-	}
-
 	public void listarProfissionais() throws ProjetoException {
 		FuncionarioDAO prDao = new FuncionarioDAO();
 		listaProfissional = prDao.listarProfissional();
 
-		// return listaProfissional;
 	}
 
 	public List<FuncionarioBean> listarProfissionaisConfigAgenda()

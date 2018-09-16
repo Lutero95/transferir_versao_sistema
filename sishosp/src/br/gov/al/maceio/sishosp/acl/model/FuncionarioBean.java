@@ -73,8 +73,8 @@ public class FuncionarioBean implements Serializable {
         this.grupoAdd = new GrupoBean();
         this.progRmv = new ProgramaBean();
         this.grupoRmv = new GrupoBean();
+        this.perfil = new Perfil();
         listDiasSemana = new ArrayList<String>();
-        perfil = new Perfil();
     }
 
     public Integer getCodigo() {
