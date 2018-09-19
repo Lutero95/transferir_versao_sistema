@@ -310,7 +310,7 @@ public class FuncaoDAO {
 		return lista;
 	}
 
-	public List<Funcao> listarFuncaoItemSourcerUser(Integer idPerfil)
+	public List<Funcao> listarFuncaoItemSourcerUser(Long idPerfil)
 			throws ProjetoException {
 
 		String sql = "select fu.id, fu.descricao, fu.codigo, fu.ativa, si.id as id_sis, si.descricao as desc_sis, si.sigla as sigla_sis from acl.permissao "
@@ -329,7 +329,7 @@ public class FuncaoDAO {
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setInt(1, idPerfil);
+			stmt.setLong(1, idPerfil);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {

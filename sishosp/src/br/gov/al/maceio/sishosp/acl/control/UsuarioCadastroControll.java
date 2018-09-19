@@ -877,6 +877,7 @@ public class UsuarioCadastroControll implements Serializable {
 		this.listaMenusTarget = listaMenusTarget;
 	}
 
+	/*
 	public DualListModel<Funcao> getListaFuncoesDual()
 			throws NumberFormatException, ProjetoException {
 		if (listaFuncoesDual == null) {
@@ -888,7 +889,9 @@ public class UsuarioCadastroControll implements Serializable {
 		}
 		return listaFuncoesDual;
 	}
+	*/
 
+	/*
 	public void setListaFuncoesDual(DualListModel<Funcao> listaFuncoesDual) {
 		this.listaFuncoesDual = listaFuncoesDual;
 	}
@@ -898,10 +901,10 @@ public class UsuarioCadastroControll implements Serializable {
 		if (listaFuncoesSource == null) {
 			FuncaoDAO fdao = new FuncaoDAO();
 			listaFuncoesSource = fdao.listarFuncaoItemSourcerUser(Integer
-					.parseInt(perfilSelecionado));
+					.parseInt(1);
 		}
 		return listaFuncoesSource;
-	}
+	}*/
 
 	public void setListaFuncoesSource(List<Funcao> listaFuncoesSource) {
 		this.listaFuncoesSource = listaFuncoesSource;

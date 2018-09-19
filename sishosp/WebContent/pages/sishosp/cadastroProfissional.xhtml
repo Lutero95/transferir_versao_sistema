@@ -114,7 +114,7 @@
                                     <f:selectItem itemLabel="Selecione"/>
                                     <f:selectItems value="#{perfilMB.listaPerfil}" var="perf"
                                                    itemLabel="#{perf.descricao}" itemValue="#{perf.id}"/>
-                                    <p:ajax event="change" listener="#{MBFuncionarios.limparDualCad()}" update="tbv:outComPerm, tbv:outSemPerm"/>
+                                    <p:ajax event="change" listener="#{MBFuncionarios.limparDualCad()}" update=""/>
                                 </p:selectOneMenu>
                             </b:column>
                         </b:row>
@@ -253,33 +253,57 @@
                     </p:tab>
 
 
-                    <p:tab id="tabMenu" title="Menus Extras">
+                    <p:tab title="Permissões Extras">
 
-                        <p:outputPanel id="outSemPerm" autoUpdate="true" rendered="#{MBFuncionarios.profissional.perfil.id == 0}">
-                        <center>
-                            <p:outputLabel
-                                    value="Selecione um perfil para exibir os menus que não estão associados."
-                                    style="font-size:18px !important;"
-                                     />
-                        </center>
-                        </p:outputPanel>
+                        <p:outputPanel autoUpdate="true">
+                            <center>
+                                <p:outputLabel
+                                        value="Selecione um perfil para exibir as permissões que não estão associadas."
+                                        style="font-size:18px !important;"
+                                        rendered="#{MBFuncionarios.profissional.perfil.id == 0}" />
+                            </center>
 
-                        <p:outputPanel id="outComPerm" autoUpdate="true" rendered="#{MBFuncionarios.profissional.perfil.id != 0}">
-                        <p:panelGrid styleClass="semBorda" columns="2">
-                            <p:pickList id="pickMenu"
-                                        value="#{MBFuncionarios.listaMenusDual}" var="menu"
-                                        itemLabel="#{menuMB.verificarTipoRel(menu.descricao, menu.tipo)} - #{menu.descSistema} (#{menu.siglaSistema})"
-                                        itemValue="#{menu}" showCheckbox="true"
-                                        showSourceFilter="true" showTargetFilter="true"
-                                        filterMatchMode="contains" converter="conPickListMenu">
+                            <p:tabView id="tabvPerms"
+                                       rendered="#{MBFuncionarios.profissional.perfil.id != 0}">
 
-                                <f:facet name="sourceCaption">Menus não associadas</f:facet>
-                                <f:facet name="targetCaption">Menus associadas</f:facet>
+                                <p:tab title="Associar Menus">
+                                    <p:panelGrid styleClass="semBorda" columns="2">
+                                        <p:pickList id="pickMenu"
+                                                    value="#{MBFuncionarios.listaMenusDual}" var="menu"
+                                                    itemLabel="#{menuMB.verificarTipoRel(menu.descricao, menu.tipo)} - #{menu.descSistema} (#{menu.siglaSistema})"
+                                                    itemValue="#{menu}" showCheckbox="true"
+                                                    showSourceFilter="true" showTargetFilter="true"
+                                                    filterMatchMode="contains" converter="conPickListMenu">
 
-                                <p:ajax event="transfer"
-                                        listener="#{MBFuncionarios.onTransferMenu}"/>
-                            </p:pickList>
-                        </p:panelGrid>
+                                            <f:facet name="sourceCaption">Menus não associadas</f:facet>
+                                            <f:facet name="targetCaption">Menus associadas</f:facet>
+
+                                            <p:ajax event="transfer"
+                                                    listener="#{MBFuncionarios.onTransferMenu}" />
+                                        </p:pickList>
+                                    </p:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="Associar Funções">
+                                    <p:panelGrid styleClass="semBorda" columns="2">
+                                        <p:pickList id="pickFuncao"
+                                                    value="#{MBFuncionarios.listaFuncoesDual}"
+                                                    var="funcao"
+                                                    itemLabel="#{funcao.descricao} - #{funcao.descSistema} (#{funcao.siglaSistema})"
+                                                    itemValue="#{funcao}" showCheckbox="true"
+                                                    showSourceFilter="true" showTargetFilter="true"
+                                                    filterMatchMode="contains" converter="conPickListFuncao">
+
+                                            <f:facet name="sourceCaption">Funções não associadas</f:facet>
+                                            <f:facet name="targetCaption">Funções associadas</f:facet>
+
+                                            <p:ajax event="transfer"
+                                                    listener="#{MBFuncionarios.onTransferFuncao}" />
+                                        </p:pickList>
+                                    </p:panelGrid>
+                                </p:tab>
+
+                            </p:tabView>
                         </p:outputPanel>
                     </p:tab>
 
