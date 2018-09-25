@@ -977,6 +977,31 @@ public class FuncionarioDAO {
                 ps.executeUpdate();
             }
 
+            // ACL
+            String sql3 = "insert into acl.perm_sistema (id_usuario, id_sistema) values (?, ?)";
+            PreparedStatement stmt;
+            stmt = conexao.prepareStatement(sql3);
+            for (Integer idSistema : prof.getListaIdSistemas())
+
+            {
+
+                stmt.setLong(1, prof.getId());
+                stmt.setInt(2, idSistema);
+                stmt.execute();
+
+            }
+
+            String sql4 = "insert into acl.perm_usuario (id_usuario, id_permissao) values (?, ?)";
+
+            stmt = conexao.prepareStatement(sql4);
+            for (Long idPermissao : prof.getListaIdPermissoes()) {
+
+                stmt.setLong(1, prof.getId());
+                stmt.setLong(2, idPermissao);
+                stmt.execute();
+
+            }
+
             con.commit();
 
             return true;

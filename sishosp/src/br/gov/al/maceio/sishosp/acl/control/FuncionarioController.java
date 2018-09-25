@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.acl.control;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
+import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
 import br.gov.al.maceio.sishosp.acl.model.*;
 
 import java.io.IOException;
@@ -444,6 +445,36 @@ public class FuncionarioController implements Serializable {
             }
         }
 
+        List<Long> permissoes = new ArrayList<>();
+        List<Menu> listaMenusAux = listaMenusDual.getTarget();
+        List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
+
+        MenuDAO mdao = new MenuDAO();
+        List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
+
+        MenuMB mmb = new MenuMB();
+        List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
+
+        for (Menu mp : menusPerfil) {
+            for (Menu mf : listaFiltrada) {
+                if (mp.getCodigo().equals(mf.getCodigo())) {
+                    listaFiltrada.remove(mf);
+                }
+            }
+        }
+
+        PermissaoDAO pmdao = new PermissaoDAO();
+        for (Menu m : listaFiltrada) {
+            permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
+        }
+
+        for (Funcao f : listaFuncoesAux) {
+            permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
+        }
+
+        profissional.setListaIdPermissoes(permissoes);
+
+
         boolean cadastrou = pDao.gravarProfissional(profissional,
                 listaGruposEProgramasProfissional);
 
@@ -499,6 +530,37 @@ public class FuncionarioController implements Serializable {
                     "Campos obrigatórios!");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
+
+        List<Long> permissoes = new ArrayList<>();
+        List<Menu> listaMenusAux = listaMenusDual.getTarget();
+        List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
+
+        MenuDAO mdao = new MenuDAO();
+        List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
+
+        MenuMB mmb = new MenuMB();
+        List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
+
+        List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
+
+        for (Menu mp : menusPerfil) {
+            for (Menu mf : listaFiltradaaux) {
+                if (mp.getCodigo().equals(mf.getCodigo())) {
+                    listaFiltradaaux.remove(mf);
+                }
+            }
+        }
+        listaFiltrada = listaFiltradaaux;
+        PermissaoDAO pmdao = new PermissaoDAO();
+        for (Menu m : listaFiltradaaux) {
+            permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
+        }
+
+        for (Funcao f : listaFuncoesAux) {
+            permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
+        }
+
+        profissional.setListaIdPermissoes(permissoes);
 
         boolean alterou = pDao.alterarProfissional(profissional,
                 listaGruposEProgramasProfissional);

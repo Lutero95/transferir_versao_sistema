@@ -234,32 +234,35 @@ public class MenuMB implements Serializable {
 		}
 	}
 
-	public List<Menu> filtrarListaMenu(List<Menu> lista)
-			throws ProjetoException {
+	public List<Menu> filtrarListaMenu(List<Menu> lista) throws ProjetoException {
+
 		List<Menu> listaMenusAux = lista;
 		List<Menu> listaVerificada = new ArrayList<>();
 
 		MenuDAO mdao = new MenuDAO();
 		List<Menu> listaMenusPI = mdao.listarMenuPaiSubmenuComSis();
-		for (Menu mp : listaMenusAux) {
-			for (Menu mn1 : listaMenusPI) {
+
+		for(Menu mp : listaMenusAux) {
+			for(Menu mn1 : listaMenusPI) {
 				Menu menuAux = new Menu();
-				if (mp.getIndice().equals(mn1.getCodigo())
-						&& mp.getIdSistema().equals(mn1.getIdSistema())) {
-					if (!listaVerificada.contains(mn1)) {
-						listaVerificada.add(mn1);
-					}
-					listaVerificada.add(mp);
+				if(mp.getIndice()!=null){
+					if(mp.getIndice().equals(mn1.getCodigo())
+							&& mp.getIdSistema().equals(mn1.getIdSistema())) {
 
-					menuAux = mn1;
-					if (menuAux.getIndice() != null) {
-						for (Menu mn2 : listaMenusPI) {
-							if (menuAux.getIndice().equals(mn2.getCodigo())
-									&& menuAux.getIdSistema().equals(
-											mn2.getIdSistema())) {
+						if(!listaVerificada.contains(mn1)) {
+							listaVerificada.add(mn1);
+						}
+						listaVerificada.add(mp);
 
-								if (!listaVerificada.contains(mn2)) {
-									listaVerificada.add(mn2);
+						menuAux = mn1;
+						if(menuAux.getIndice() != null) {
+							for(Menu mn2 : listaMenusPI) {
+								if(menuAux.getIndice().equals(mn2.getCodigo())
+										&& menuAux.getIdSistema().equals(mn2.getIdSistema())) {
+
+									if(!listaVerificada.contains(mn2)) {
+										listaVerificada.add(mn2);
+									}
 								}
 							}
 						}

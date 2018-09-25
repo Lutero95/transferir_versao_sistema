@@ -954,8 +954,7 @@ public class UsuarioCadastroControll implements Serializable {
 			ProjetoException {
 		if (listaMenusTargetEdit == null) {
 			MenuDAO mdao = new MenuDAO();
-			listaMenusTargetEdit = mdao.listarMenuItemTargetEditUser(Integer
-					.parseInt(usuarioSelecionado));
+			listaMenusTargetEdit = mdao.listarMenuItemTargetEditUser((long) 1);
 		}
 		return listaMenusTargetEdit;
 	}
