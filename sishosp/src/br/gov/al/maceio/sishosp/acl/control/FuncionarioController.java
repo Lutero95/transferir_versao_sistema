@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -21,6 +22,7 @@ import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
@@ -546,7 +548,7 @@ public class FuncionarioController implements Serializable {
         for (Menu mp : menusPerfil) {
             for (Menu mf : listaFiltradaaux) {
                 if (mp.getCodigo().equals(mf.getCodigo())) {
-                    listaFiltradaaux.remove(mf);
+                	listaFiltrada.remove(mf);
                 }
             }
         }
@@ -703,6 +705,20 @@ public class FuncionarioController implements Serializable {
         }
     }
 
+    
+	public void onTransferFuncao(TransferEvent event) {
+		StringBuilder builder = new StringBuilder();
+
+		for (Object item : event.getItems()) {
+			builder.append(((Funcao) item).getId());
+			if (listaFuncoesTarget.contains(item)) {
+				listaFuncoesTarget.remove(item);
+			} else {
+				listaFuncoesTarget.add((Funcao) item);
+			}
+		}
+	}
+	
     public void limparDualCad() {
         listaMenusDual = null;
         listaMenusTarget = null;
