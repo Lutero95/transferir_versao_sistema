@@ -111,7 +111,7 @@
                                         required="true" requiredMessage="Selecione um perfil."
                                         style="width:230px;">
 
-                                    <f:selectItem itemLabel="Selecione"/>
+                                    <f:selectItem itemLabel="Selecione" itemValue="0"/>
                                     <f:selectItems value="#{perfilMB.listaPerfil}" var="perf"
                                                    itemLabel="#{perf.descricao}" itemValue="#{perf.id}"/>
                                     <p:ajax event="change" listener="#{MBFuncionarios.limparDualCad()}" update=""/>
@@ -253,18 +253,18 @@
                     </p:tab>
 
 
-                    <p:tab title="Permissões Extras">
+                    <p:tab title="Permissões Extras" >
 
                         <p:outputPanel autoUpdate="true">
                             <center>
                                 <p:outputLabel
                                         value="Selecione um perfil para exibir as permissões que não estão associadas."
                                         style="font-size:18px !important;"
-                                        rendered="#{MBFuncionarios.profissional.perfil.id == 0}" />
+                                        rendered="#{MBFuncionarios.renderizarPermissoes == false}" />
                             </center>
 
                             <p:tabView id="tabvPerms"
-                                       rendered="#{MBFuncionarios.profissional.perfil.id != 0}">
+                                       rendered="#{MBFuncionarios.renderizarPermissoes == true}">
 
                                 <p:tab title="Associar Menus">
                                     <p:panelGrid styleClass="semBorda" columns="2">

@@ -894,7 +894,7 @@ public class FuncionarioDAO {
 
     // INÍCIO PROFISSIONALDAO
 
-    public boolean gravarProfissional(FuncionarioBean prof,
+    public boolean gravarProfissional(FuncionarioBean profissional,
                                       ArrayList<ProgramaBean> lista) throws SQLException,
             ProjetoException {
 
@@ -909,17 +909,17 @@ public class FuncionarioDAO {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
 
-            ps.setString(1, prof.getNome().toUpperCase());
+            ps.setString(1, profissional.getNome().toUpperCase());
 
-            ps.setString(2, prof.getCpf());
+            ps.setString(2, profissional.getCpf());
 
-            ps.setString(3, prof.getSenha());
+            ps.setString(3, profissional.getSenha());
 
             ps.setInt(4, user_session.getCodigo());
 
-            if (prof.getEspecialidade() != null) {
-                if (prof.getEspecialidade().getCodEspecialidade() != null) {
-                    ps.setInt(5, prof.getEspecialidade().getCodEspecialidade());
+            if (profissional.getEspecialidade() != null) {
+                if (profissional.getEspecialidade().getCodEspecialidade() != null) {
+                    ps.setInt(5, profissional.getEspecialidade().getCodEspecialidade());
                 } else {
                     ps.setNull(5, Types.INTEGER);
                 }
@@ -927,37 +927,37 @@ public class FuncionarioDAO {
                 ps.setNull(5, Types.INTEGER);
             }
 
-            if (prof.getCns() == null) {
+            if (profissional.getCns() == null) {
                 ps.setNull(6, Types.NULL);
             } else {
-                ps.setString(6, prof.getCns().toUpperCase());
+                ps.setString(6, profissional.getCns().toUpperCase());
             }
 
-            if (prof.getCbo() != null) {
-                if (prof.getCbo().getCodCbo() == null) {
+            if (profissional.getCbo() != null) {
+                if (profissional.getCbo().getCodCbo() == null) {
                     ps.setNull(7, Types.NULL);
                 } else {
-                    ps.setInt(7, prof.getCbo().getCodCbo());
+                    ps.setInt(7, profissional.getCbo().getCodCbo());
                 }
             } else {
                 ps.setNull(7, Types.NULL);
             }
 
-            if (prof.getProc1() != null) {
-                if (prof.getProc1().getIdProc() == null) {
+            if (profissional.getProc1() != null) {
+                if (profissional.getProc1().getIdProc() == null) {
                     ps.setNull(8, Types.NULL);
                 } else {
-                    ps.setInt(8, prof.getProc1().getIdProc());
+                    ps.setInt(8, profissional.getProc1().getIdProc());
                 }
             } else {
                 ps.setNull(8, Types.NULL);
             }
 
-            ps.setString(9, prof.getAtivo());
+            ps.setString(9, profissional.getAtivo());
 
-            ps.setBoolean(10, prof.getRealizaAtendimento());
+            ps.setBoolean(10, profissional.getRealizaAtendimento());
 
-            ps.setLong(11, prof.getPerfil().getId());
+            ps.setLong(11, profissional.getPerfil().getId());
 
             ResultSet rs = ps.executeQuery();
 
@@ -977,29 +977,13 @@ public class FuncionarioDAO {
                 ps.executeUpdate();
             }
 
-            // ACL
-            String sql3 = "insert into acl.perm_sistema (id_usuario, id_sistema) values (?, ?)";
-            PreparedStatement stmt;
-            stmt = conexao.prepareStatement(sql3);
-            for (Integer idSistema : prof.getListaIdSistemas())
-
-            {
-
-                stmt.setLong(1, prof.getId());
-                stmt.setInt(2, idSistema);
-                stmt.execute();
-
-            }
-
-            String sql4 = "insert into acl.perm_usuario (id_usuario, id_permissao) values (?, ?)";
-
-            stmt = conexao.prepareStatement(sql4);
-            for (Long idPermissao : prof.getListaIdPermissoes()) {
-
-                stmt.setLong(1, prof.getId());
-                stmt.setLong(2, idPermissao);
-                stmt.execute();
-
+            String sql3 = "insert into acl.perm_usuario (id_usuario, id_permissao) values (?, ?)";
+            List<Long> listaPerm = profissional.getListaIdPermissoes();
+            ps = con.prepareStatement(sql3);
+            for (Long idPerm : listaPerm) {
+                ps.setLong(1, idProf);
+                ps.setLong(2, idPerm);
+                ps.execute();
             }
 
             con.commit();
@@ -1404,6 +1388,21 @@ public class FuncionarioDAO {
                 stmt.setInt(3, lista.get(i).getGrupoBean().getIdGrupo());
 
                 stmt.executeUpdate();
+            }
+
+
+            String sql3 = "delete from acl.perm_usuario where id_usuario = ?";
+            ps = con.prepareStatement(sql3);
+            ps.setLong(1, profissional.getId());
+            ps.execute();
+
+            String sql4 = "insert into acl.perm_usuario (id_usuario, id_permissao) values (?, ?)";
+            List<Long> listaPerm = profissional.getListaIdPermissoes();
+            ps = con.prepareStatement(sql4);
+            for (Long idPerm : listaPerm) {
+                ps.setLong(1, profissional.getId());
+                ps.setLong(2, idPerm);
+                ps.execute();
             }
 
             con.commit();

@@ -62,6 +62,8 @@ public class FuncionarioController implements Serializable {
     private List<Funcao> listaFuncoesSource;
     private List<Funcao> listaFuncoesTarget;
 
+    private Boolean renderizarPermissoes;
+
     // Menu
     private MenuModel menuModel;
 
@@ -546,13 +548,12 @@ public class FuncionarioController implements Serializable {
         List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
 
         for (Menu mp : menusPerfil) {
-            for (Menu mf : listaFiltradaaux) {
+            for (Menu mf : listaFiltrada) {
                 if (mp.getCodigo().equals(mf.getCodigo())) {
                 	listaFiltrada.remove(mf);
                 }
             }
         }
-        listaFiltrada = listaFiltradaaux;
         PermissaoDAO pmdao = new PermissaoDAO();
         for (Menu m : listaFiltradaaux) {
             permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
@@ -572,13 +573,12 @@ public class FuncionarioController implements Serializable {
                     "Funcionário alterado com sucesso!", "Sucesso");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             this.listaProfissional = pDao.listarProfissional();
-            // return
-            // "/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true";
+
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Ocorreu um erro durante o cadastro!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            // return "";
+
         }
 
     }
@@ -684,6 +684,12 @@ public class FuncionarioController implements Serializable {
             this.profissional = pDao.buscarProfissionalPorId(id);
             listaGruposEProgramasProfissional = pDao
                     .carregaProfissionalProgramaEGrupos(id);
+            if(profissional.getPerfil().getId() > 0){
+                renderizarPermissoes = true;
+            }
+            else{
+                renderizarPermissoes = false;
+            }
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
 
@@ -720,6 +726,14 @@ public class FuncionarioController implements Serializable {
 	}
 	
     public void limparDualCad() {
+
+        if(profissional.getPerfil().getId() > 0){
+            renderizarPermissoes = true;
+        }
+        else{
+            renderizarPermissoes = false;
+        }
+
         listaMenusDual = null;
         listaMenusTarget = null;
         listaMenusTarget = new ArrayList<>();
@@ -896,4 +910,11 @@ public class FuncionarioController implements Serializable {
         this.listaMenusTarget = listaMenusTarget;
     }
 
+    public Boolean getRenderizarPermissoes() {
+        return renderizarPermissoes;
+    }
+
+    public void setRenderizarPermissoes(Boolean renderizarPermissoes) {
+        this.renderizarPermissoes = renderizarPermissoes;
+    }
 }
