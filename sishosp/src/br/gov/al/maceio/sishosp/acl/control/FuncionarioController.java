@@ -554,8 +554,10 @@ public class FuncionarioController implements Serializable {
                 }
             }
         }
+        listaFiltrada = listaFiltradaaux;
+
         PermissaoDAO pmdao = new PermissaoDAO();
-        for (Menu m : listaFiltradaaux) {
+        for (Menu m : listaFiltrada) {
             permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
         }
 
