@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
@@ -35,7 +35,7 @@
                 </center>
 
 
-                <b:dataTable id="tabela" value="#{LaudoController.listaLaudoDigita}"
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela" value="#{LaudoController.listaLaudoDigita}"
                              var="tab" display="Nenhum Laudo">
 
                     <h:column>

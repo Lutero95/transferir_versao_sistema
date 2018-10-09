@@ -2,12 +2,10 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:p="http://primefaces.org/ui"
       xmlns:stella="http://stella.caelum.com.br/faces2"
-      xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
@@ -341,9 +339,9 @@
                   widgetVar="dlgConsulEspecialidade">
             <h:form id="formConsulEspec">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable value="#{EspecialidadeController.listaEspecialidade}"
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{EspecialidadeController.listaEspecialidade}"
                                  page-length="5" page-length-menu="5,10,20" var="espec"
-                                 lang="pt-br" display="Nenhuma Especialidade">
+                                 display="Nenhuma Especialidade">
 
                         <h:column>
                             <f:facet name="header">
@@ -372,8 +370,8 @@
         <p:dialog header="Consultar C.B.O." widgetVar="dlgConsulCbo"
                   modal="true">
             <h:form id="formConsulCbo">
-                <b:dataTable value="#{CboController.listarCbo}" var="cbo"
-                             page-length="5" page-length-menu="5,10,20" lang="pt-br"
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{CboController.listarCbo}" var="cbo"
+                             page-length="5" page-length-menu="5,10,20"
                              display="Nenhum C.B.O.">
 
                     <h:column>
@@ -402,8 +400,8 @@
                   modal="true">
             <h:form id="formConsulProc1">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" lang="pt-br" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc" display="Nenhum Procedimento">
 
                         <h:column>
                             <f:facet name="header">
@@ -433,8 +431,8 @@
                   modal="true">
             <h:form id="formConsulProc2">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" lang="pt-br" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc" display="Nenhum Procedimento">
 
                         <h:column>
                             <f:facet name="header">
@@ -464,8 +462,8 @@
                   modal="true">
             <h:form id="formConsuGrops">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable value="#{GrupoController.listarProgramasEGrupos()}"
-                                 id="dtGrupos" var="programa" lang="pt-br"
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{GrupoController.listarProgramasEGrupos()}"
+                                 id="dtGrupos" var="programa"
                                  display="Nenhum Profissional">
 
 

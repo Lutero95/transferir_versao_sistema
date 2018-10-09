@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
@@ -498,8 +498,8 @@
                 </div>
 
 
-                <b:dataTable id="dt" var="pacie"
-                             value="#{PacienteController.listarPacienteAgenda()}" lang="pt-br"
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="pacie"
+                             value="#{PacienteController.listarPacienteAgenda()}"
                              display="Nenhum Paciente">
 
                     <h:column>
@@ -548,8 +548,8 @@
                   widgetVar="dlgConsulProcPrimario" modal="true">
             <h:form id="formConsulProcPrimario">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" lang="pt-br" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc" display="Nenhum Procedimento">
 
                         <h:column>
                             <f:facet name="header">
@@ -578,8 +578,8 @@
                   widgetVar="dlgConsulProcSecundario1" modal="true">
             <h:form id="formConsulProcSecundario1">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" lang="pt-br" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc" display="Nenhum Procedimento">
 
                         <h:column>
                             <f:facet name="header">
@@ -608,8 +608,8 @@
                   widgetVar="dlgConsulProcSecundario2" modal="true">
             <h:form id="formConsulProcSecundario2">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" lang="pt-br" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc" display="Nenhum Procedimento">
 
                         <h:column>
                             <f:facet name="header">
@@ -638,8 +638,8 @@
                   widgetVar="dlgConsulProcSecundario3" modal="true">
             <h:form id="formConsulProcSecundario3">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" lang="pt-br" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc" display="Nenhum Procedimento">
 
                         <h:column>
                             <f:facet name="header">
@@ -668,8 +668,8 @@
                   widgetVar="dlgConsulProcSecundario4" modal="true">
             <h:form id="formConsulProcSecundario4">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" lang="pt-br" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc" display="Nenhum Procedimento">
 
                         <h:column>
                             <f:facet name="header">
@@ -698,8 +698,8 @@
                   widgetVar="dlgConsulProcSecundario5" modal="true">
             <h:form id="formConsulProcSecundario5">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" lang="pt-br" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc" display="Nenhum Procedimento">
 
                         <h:column>
                             <f:facet name="header">

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
@@ -1017,8 +1017,8 @@
 			<h:form id="buscaescola">
 				<center>
 					<p:outputPanel id="outinter">
-						<b:dataTable value="#{PacienteController.listaEscolas}"
-							var="busca" id="tableescola" lang="pt-br"
+						<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{PacienteController.listaEscolas}"
+							var="busca" id="tableescola"
 							display="Nenhuma Equipe">
 
 							<h:column>
@@ -1059,8 +1059,8 @@
 
 				<center>
 					<p:outputPanel id="outinter2">
-						<b:dataTable value="#{PacienteController.listaEscolaridade}"
-							var="busca" id="tableescolaridade" lang="pt-br"
+						<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{PacienteController.listaEscolaridade}"
+							var="busca" id="tableescolaridade"
 							display="Nenhuma Escolaridade">
 
 							<h:column>
@@ -1102,8 +1102,8 @@
 
 				<center>
 					<p:outputPanel id="outinter3">
-						<b:dataTable value="#{PacienteController.listaProfissao}"
-							var="busca" id="tableprofissao" lang="pt-br"
+						<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{PacienteController.listaProfissao}"
+							var="busca" id="tableprofissao"
 							display="Nenhuma Profissão">
 
 
@@ -1146,8 +1146,8 @@
 
 				<center>
 					<p:outputPanel id="outinter4">
-						<b:dataTable value="#{PacienteController.listaEncaminhado}"
-							var="busca" id="tableencaminhado" lang="pt-br"
+						<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{PacienteController.listaEncaminhado}"
+							var="busca" id="tableencaminhado"
 							display="Nenhum Tipo de Encaminhamento">
 
 							<h:column>
@@ -1188,8 +1188,8 @@
 
 				<center>
 					<p:outputPanel id="outinter5">
-						<b:dataTable value="#{PacienteController.listaTransporte}"
-							var="busca" id="tabletransporte" lang="pt-br"
+						<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{PacienteController.listaTransporte}"
+							var="busca" id="tabletransporte"
 							display="Nenhuma Forma de Transporte">
 
 							<h:column>

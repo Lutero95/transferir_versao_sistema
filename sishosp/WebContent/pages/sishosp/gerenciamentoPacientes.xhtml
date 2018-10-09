@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
@@ -304,8 +304,8 @@
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
 			modal="true">
 			<h:form id="formConsuProg">
-				<b:dataTable value="#{ProgramaController.listaProgramasUsuario()}"
-					var="prog" lang="pt-br" display="Nenhum Programa">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProgramaController.listaProgramasUsuario()}"
+					var="prog" display="Nenhum Programa">
 
 					<h:column>
 						<f:facet name="header">
@@ -335,9 +335,9 @@
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
 			modal="true">
 			<h:form id="formConsuGrop">
-				<b:dataTable
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					value="#{GerenciarPacienteController.listaGrupoLista()}"
-					id="dtGrupo" var="grupo" lang="pt-br" display="Nenhum Grupo">
+					id="dtGrupo" var="grupo" display="Nenhum Grupo">
 
 					<h:column>
 						<f:facet name="header">
