@@ -1,83 +1,83 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:viewAction action="#{CboController.getEditCbo()}" />
-	</f:metadata>
-	<ui:define name="body">
+    <f:metadata>
+        <f:viewAction action="#{CboController.getEditCbo()}"/>
+    </f:metadata>
+    <ui:define name="body">
 
-		<div class="panel-body">
-			<div class="sub-header">
-				<h:outputText value="#{CboController.cabecalho}"
-					styleClass="cadcabecalho"></h:outputText>
-				<hr />
-			</div>
+        <div class="panel-body">
+            <div class="sub-header">
+                <h:outputText value="#{CboController.cabecalho}"
+                              styleClass="cadcabecalho"></h:outputText>
+                <hr/>
+            </div>
 
-			<h:form id="formCADU">
+            <h:form id="frmPrincipal">
 
-				<b:row>
+                <b:row>
 
-					<b:column span="1">
-						<h:outputLabel value="Código" style="margin-top:10px" />
+                    <b:column span="1">
+                        <h:outputLabel value="Código" style="margin-top:10px"/>
 
-					</b:column>
+                    </b:column>
 
-					<b:column span="5">
-						<b:inputText value="#{CboController.cbo.codigo}"
-							class="form-control" required="true" id="incod"
-							requiredMessage="Código obrigatório!" />
-						<b:message for="@previous" />
-					</b:column>
+                    <b:column span="5">
+                        <b:inputText value="#{CboController.cbo.codigo}"
+                                     class="form-control" required="true" id="incCod"
+                                     requiredMessage="Código: Campo obrigatório!"/>
+                    </b:column>
 
-				</b:row>
-
-
-				<b:row>
-					<b:column span="1">
-						<h:outputLabel value="Descrição" style="margin-top:10px" />
-					</b:column>
-
-					<b:column span="5">
-						<b:inputText value="#{CboController.cbo.descCbo}"
-							class="form-control" required="true" id="indesc"
-							requiredMessage="Descrição obrigatória!"
-							validatorMessage="CBO deve conter entre 2 e 30 caracteres.">
-							<f:validateLength minimum="2" maximum="40" />
-						</b:inputText>
-					</b:column>
-				</b:row>
-
-				<br></br>
-
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
-
-				<b:commandButton action="#{CboController.gravarCbo()}"
-					icon="glyphicon-ok" size="sm" look="success" style="float:left"
-					update=":formCADU :formCADU:indesc" value="Incluir"
-					rendered="#{CboController.tipo == 1}" />
-
-				<b:commandButton action="#{CboController.alterarCbo()}"
-					icon="glyphicon-ok" size="sm" look="success" style="float:left"
-					update=":formCADU :formCADU:indesc" value="Alterar"
-					rendered="#{CboController.tipo  == 2}" />
-
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					size="sm" immediate="true" look="info" style="float:right"
-					action="/pages/sishosp/gerenciarCbo.faces?faces-redirect=true">
-				</b:commandButton>
+                </b:row>
 
 
-			</h:form>
+                <b:row>
+                    <b:column span="1">
+                        <h:outputLabel value="Descrição" style="margin-top:10px"/>
+                    </b:column>
 
-		</div>
+                    <b:column span="5">
+                        <b:inputText value="#{CboController.cbo.descCbo}"
+                                     class="form-control" required="true" id="incDesc"
+                                     requiredMessage="Descrição: Campo obrigatório!"
+                                     validatorMessage="Descrição deve conter entre 2 e 100 caracteres.">
+                            <f:validateLength minimum="2" maximum="100"/>
+                        </b:inputText>
+                    </b:column>
+                </b:row>
 
-	</ui:define>
+                <br></br>
+
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
+
+                <b:commandButton action="#{CboController.gravarCbo()}"
+                                 icon="glyphicon-ok" size="sm" look="success" style="float:left"
+                                 update=":frmPrincipal :frmPrincipal:incDesc" value="Incluir"
+                                 rendered="#{CboController.tipo == 1}"/>
+
+                <b:commandButton action="#{CboController.alterarCbo()}"
+                                 icon="glyphicon-ok" size="sm" look="success" style="float:left"
+                                 update=":frmPrincipal :frmPrincipal:incDesc" value="Alterar"
+                                 rendered="#{CboController.tipo  == 2}"/>
+
+                <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                 size="sm" immediate="true" look="info" style="float:right"
+                                 action="/pages/sishosp/gerenciarCbo.faces?faces-redirect=true">
+                </b:commandButton>
+
+            </h:form>
+
+        </div>
+
+    </ui:define>
 </ui:composition>
+
 </html>

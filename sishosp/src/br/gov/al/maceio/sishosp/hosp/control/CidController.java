@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
@@ -52,11 +53,11 @@ public class CidController implements Serializable {
 	}
 
 	public String redirectEdit() {
-		return ENDERECO_CADASTRO+ENDERECO_ID+this.cid.getIdCid()+ENDERECO_TIPO+tipo;
+		return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.cid.getIdCid(), ENDERECO_TIPO, tipo);
 	}
 
 	public String redirectInsert() {
-	    return ENDERECO_CADASTRO+ENDERECO_TIPO+tipo;
+	    return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
 	}
 
 	public void getEditCid() throws ProjetoException {

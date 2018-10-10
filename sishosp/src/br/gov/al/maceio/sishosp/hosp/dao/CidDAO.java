@@ -36,7 +36,6 @@ public class CidDAO {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
             return retorno;
         }
@@ -66,7 +65,6 @@ public class CidDAO {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
         return lista;
@@ -101,7 +99,6 @@ public class CidDAO {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
 
@@ -170,10 +167,10 @@ public class CidDAO {
                 g.setIdCid(rs.getInt("cod"));
                 g.setDescCid(rs.getString("desccid"));
                 g.setCid(rs.getString("cid"));
-
             }
 
             return g;
+
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ProjetoException(ex);
@@ -182,7 +179,6 @@ public class CidDAO {
                 con.close();
             } catch (Exception sqlc) {
                 sqlc.printStackTrace();
-                System.exit(1);
             }
         }
     }
@@ -213,7 +209,6 @@ public class CidDAO {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
 
@@ -249,7 +244,6 @@ public class CidDAO {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
 
