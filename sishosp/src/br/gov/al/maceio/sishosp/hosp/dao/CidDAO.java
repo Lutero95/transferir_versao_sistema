@@ -16,9 +16,10 @@ public class CidDAO {
     Connection con = null;
     PreparedStatement ps = null;
 
-    public boolean gravarCid(CidBean cid) throws SQLException, ProjetoException {
-
+    public boolean gravarCid(CidBean cid) {
+        Boolean retorno = false;
         String sql = "insert into hosp.cid (desccid, cid) values (?,?);";
+
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -26,8 +27,9 @@ public class CidDAO {
             ps.setString(2, cid.getCid().toUpperCase());
             ps.execute();
             con.commit();
-            return true;
+            retorno = true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -36,6 +38,7 @@ public class CidDAO {
                 ex.printStackTrace();
                 System.exit(1);
             }
+            return retorno;
         }
     }
 
@@ -56,6 +59,7 @@ public class CidDAO {
                 lista.add(cid);
             }
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -90,6 +94,7 @@ public class CidDAO {
                 lista.add(cid);
             }
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -103,7 +108,8 @@ public class CidDAO {
         return lista;
     }
 
-    public Boolean alterarCid(CidBean cid) throws ProjetoException {
+    public Boolean alterarCid(CidBean cid) {
+        Boolean retorno = false;
         String sql = "update hosp.cid set desccid = ?, cid = ? where cod = ?";
         try {
             con = ConnectionFactory.getConnection();
@@ -113,8 +119,9 @@ public class CidDAO {
             stmt.setInt(3, cid.getIdCid());
             stmt.executeUpdate();
             con.commit();
-            return true;
+            retorno = true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -122,19 +129,23 @@ public class CidDAO {
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
+            return retorno;
         }
     }
 
-    public Boolean excluirCid(CidBean cid) throws ProjetoException {
+    public Boolean excluirCid(CidBean cid) {
+        Boolean retorno = false;
         String sql = "delete from hosp.cid where cod = ?";
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setLong(1, cid.getIdCid());
             stmt.execute();
             con.commit();
-            return true;
+            retorno = true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -142,6 +153,7 @@ public class CidDAO {
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
+            return retorno;
         }
     }
 
@@ -162,29 +174,24 @@ public class CidDAO {
             }
 
             return g;
-        } catch (Exception sqle) {
-            sqle.printStackTrace();
-            throw new ProjetoException(sqle);
-
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ProjetoException(ex);
         } finally {
             try {
                 con.close();
             } catch (Exception sqlc) {
                 sqlc.printStackTrace();
                 System.exit(1);
-                // TODO: handle exception
             }
-
         }
     }
 
-    public List<CidBean> listarCidsBusca(String descricao, Integer tipo)
+    public List<CidBean> listarCidsBusca(String descricao)
             throws ProjetoException {
         List<CidBean> lista = new ArrayList<>();
-        String sql = "select cod, desccid, cid from hosp.cid ";
-        if (tipo == 1) {
-            sql += " where desccid LIKE ?";
-        }
+        String sql = "select cod, desccid, cid from hosp.cid where desccid LIKE ?";
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);

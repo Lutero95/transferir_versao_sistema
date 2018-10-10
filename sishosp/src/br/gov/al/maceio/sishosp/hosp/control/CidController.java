@@ -6,13 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
-
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.CidDAO;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
@@ -28,10 +26,15 @@ public class CidController implements Serializable {
 	private String descricaoBusca;
 	private int tipo;
 	private String cabecalho;
-
 	private Integer abaAtiva = 0;
+	private CidDAO gDao = new CidDAO();
 
-	CidDAO gDao = new CidDAO();
+	//CONSTANTES
+	private static final String ENDERECO_CADASTRO = "cadastroCid?faces-redirect=true";
+	private static final String ENDERECO_TIPO = "&amp;tipo=";
+	private static final String ENDERECO_ID = "&amp;id=";
+	private static final String CABECALHO_INCLUSAO = "Inclusão de CID";
+    private static final String CABECALHO_ALTERACAO = "Alteração de CID";
 
 	public CidController() {
 		this.cid = new CidBean();
@@ -49,12 +52,11 @@ public class CidController implements Serializable {
 	}
 
 	public String redirectEdit() {
-		return "cadastroCid?faces-redirect=true&amp;id=" + this.cid.getIdCid()
-				+ "&amp;tipo=" + tipo;
+		return ENDERECO_CADASTRO+ENDERECO_ID+this.cid.getIdCid()+ENDERECO_TIPO+tipo;
 	}
 
 	public String redirectInsert() {
-		return "cadastroCid?faces-redirect=true&amp;tipo=" + tipo;
+	    return ENDERECO_CADASTRO+ENDERECO_TIPO+tipo;
 	}
 
 	public void getEditCid() throws ProjetoException {
@@ -80,26 +82,18 @@ public class CidController implements Serializable {
 
 		if (cadastrou == true) {
 			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cid cadastrado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			JSFUtil.adicionarMensagemSucesso("CID cadastrado com sucesso!", "Sucesso");
 		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
 		}
 	}
 
 	public void alterarCid() throws ProjetoException {
 		boolean alterou = gDao.alterarCid(cid);
 		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cid alterado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+            JSFUtil.adicionarMensagemSucesso("CID alterado com sucesso!", "Sucesso");
 		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 		}
 		listaCids = gDao.listarCid();
 
@@ -108,25 +102,18 @@ public class CidController implements Serializable {
 	public void excluirCid() throws ProjetoException {
 		boolean ok = gDao.excluirCid(cid);
 		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cid excluído com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
+            JSFUtil.adicionarMensagemSucesso("CID excluído com sucesso!", "Sucesso");
+			JSFUtil.fecharDialog("dialogExclusao");
 		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
 		}
 		listaCids = gDao.listarCid();
 	}
 
-	public List<CidBean> listaCidAutoComplete(Integer id_proc, String query)
+	public List<CidBean> listaCidAutoComplete(String query)
 			throws ProjetoException {
-		List<CidBean> result = gDao.listarCidsBusca(query, 1);
+		List<CidBean> result = gDao.listarCidsBusca(query);
 		return result;
 	}
 
@@ -134,11 +121,18 @@ public class CidController implements Serializable {
 		listaCids = gDao.listarCid();
 	}
 
+	public List<CidBean> listarCids() throws ProjetoException {
+        if (listaCids == null) {
+            listaCids = gDao.listarCid();
+        }
+        return listaCids;
+    }
+
 	public String getCabecalho() {
 		if (this.tipo == 1) {
-			cabecalho = "Inclusão de CID";
+			cabecalho = CABECALHO_INCLUSAO;
 		} else if (this.tipo == 2) {
-			cabecalho = "Alteração de CID";
+			cabecalho = CABECALHO_ALTERACAO;
 		}
 		return cabecalho;
 	}
@@ -155,18 +149,15 @@ public class CidController implements Serializable {
 		this.cid = cid;
 	}
 
-	public List<CidBean> getListaCids() throws ProjetoException {
-		if (listaCids == null) {
-			listaCids = gDao.listarCid();
-		}
-		return listaCids;
-	}
+    public List<CidBean> getListaCids() {
+        return listaCids;
+    }
 
-	public void setListaCids(List<CidBean> listaCids) {
-		this.listaCids = listaCids;
-	}
+    public void setListaCids(List<CidBean> listaCids) {
+        this.listaCids = listaCids;
+    }
 
-	public Integer getTipoBuscar() {
+    public Integer getTipoBuscar() {
 		return tipoBuscar;
 	}
 
