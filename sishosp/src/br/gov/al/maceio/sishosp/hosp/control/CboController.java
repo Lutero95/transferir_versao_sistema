@@ -108,7 +108,7 @@ public class CboController implements Serializable {
         listaCbo = cDao.listarCbo();
     }
 
-    public List<CboBean> listarCids() throws ProjetoException {
+    public List<CboBean> listarCbos() throws ProjetoException {
         if (listaCbo == null) {
             listaCbo = cDao.listarCbo();
         }
@@ -123,7 +123,7 @@ public class CboController implements Serializable {
         this.cbo = cbo;
     }
 
-    public void listarCbo() throws ProjetoException {
+    public void buscarCbo() throws ProjetoException {
         listaCbo = cDao.listarCbo();
 
     }

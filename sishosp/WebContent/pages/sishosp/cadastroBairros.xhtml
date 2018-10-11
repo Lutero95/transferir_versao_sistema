@@ -1,155 +1,152 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
 
-	<ui:define name="body">
-		<f:metadata>
-			<f:viewAction action="#{EnderecoController.getEditBairro()}" />
-		</f:metadata>
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewAction action="#{EnderecoController.getEditBairro()}"/>
+        </f:metadata>
 
-		<div class="panel-body">
-			<div class="sub-header">
-				<h:outputText value="#{EnderecoController.cabecalhoBairro}"
-					styleClass="cadcabecalho"></h:outputText>
-				<hr />
-			</div>
+        <div class="panel-body">
+            <div class="sub-header">
+                <h:outputText value="#{EnderecoController.cabecalhoBairro}"
+                              styleClass="cadcabecalho"></h:outputText>
+                <hr/>
+            </div>
 
-			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarBairros.faces?faces-redirect=true"></p:commandButton>
-			</h:form>
+            <h:form class="form-horizontal" id="frmPrincipal">
 
-			<h:form class="form-horizontal" id="formCADU">
+                <b:row>
 
+                    <b:column span="2">
+                        <h:outputLabel for="inputbairro" value="Bairro"
+                                       style="margin-top:10px"/>
 
-				<b:row>
+                    </b:column>
 
-					<b:column span="2">
-						<h:outputLabel for="inputname" value="Bairro"
-							style="margin-top:10px" />
+                    <b:column span="5">
 
-					</b:column>
+                        <b:inputText value="#{EnderecoController.bairro}"
+                                     class="form-control" id="inputbairro" required="true"
+                                     validatorMessage="Bairro deve conter entre 2 e 50 caracteres."
+                                     requiredMessage="Bairro: Campo obrigatório!">
+                            <f:validateLength minimum="2" maximum="50"/>
 
-					<b:column span="5">
+                        </b:inputText>
 
-						<h:inputText value="#{EnderecoController.bairro}"
-							class="form-control" id="inputname" required="true"
-							validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-							requiredMessage="é necessário que você informe o bairro">
-							<f:validateLength minimum="2" maximum="40" />
+                    </b:column>
 
-						</h:inputText>
+                </b:row>
 
-					</b:column>
+                <br></br>
 
-				</b:row>
+                <b:row>
 
-				<br></br>
+                    <b:column span="2">
+                        <h:outputLabel for="inputMunicipio" value="Município"
+                                       style="margin-top:10px"/>
+                    </b:column>
 
-				<b:row>
+                    <b:column span="5">
 
-					<b:column span="2">
-						<h:outputLabel for="inputcod" value="Município"
-							style="margin-top:10px"/>
-					</b:column>
+                        <p:autoComplete id="inputMunicipio" required="true" style="margin-top:8px ;margin-left:-15px"
+                                        requiredMessage="Município: Campo obrigatório!"
+                                        pt:placeholder="Digite aqui para buscar município..."
+                                        completeMethod="#{EnderecoController.listaMunicipioAutoComplete}"
+                                        size="82" value="#{EnderecoController.endereco}" effect="fade"
+                                        var="theme" forceSelection="true" minQueryLength="1"
+                                        itemValue="#{theme}" itemLabel="#{theme.municipio}"
+                                        converter="conMunicipio">
+                        </p:autoComplete>
+                    </b:column>
 
-					<b:column span="3">
+                    <b:column span="2">
+                        <p:commandButton onclick="PF('dlgbuscamunicipios').show();" style="margin-top:8px;margin-left:5px;"
+                                         icon="ui-icon-search" process="@this" update=":frmBuscaMunicipios"/>
+                    </b:column>
 
-						<p:autoComplete id="municipio" required="true"
-							requiredMessage="Município é obrigatório"
-							completeMethod="#{EnderecoController.listaMunicipioAutoComplete}"
-							size="40" value="#{EnderecoController.endereco}" effect="fade"
-							var="theme" forceSelection="true" minQueryLength="1"
-							itemValue="#{theme}" itemLabel="#{theme.municipio}"
-							converter="conMunicipio">
-						</p:autoComplete>
-					</b:column>
+                </b:row>
 
-					<b:column span="1">
-						<p:commandButton onclick="PF('dlgbuscamunicipios').show();"
-							icon="ui-icon-search" process="@this" update=":buscamunicipios"/>
-					</b:column>
+                <br></br>
 
-				</b:row>
+                <div align="center">
+                    <b:messages value="Error" id="msgError"></b:messages>
+                </div>
 
-				<br></br>
+                <br></br>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+                <div align="center">
+                    <b:commandButton action="#{EnderecoController.gravarBairros()}"
+                                     icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
+                                     value="Incluir" style="float:left"
+                                     rendered="#{EnderecoController.tipo == 1}"/>
 
-				<center>
-					<b:commandButton action="#{EnderecoController.gravarBairros()}"
-						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
-						value="Incluir" style="float:left"
-						rendered="#{EnderecoController.tipo == 1}" />
+                    <b:commandButton action="#{EnderecoController.alterarBairros()}"
+                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
+                                     look="success" style="float:left"
+                                     rendered="#{EnderecoController.tipo  == 2}"/>
 
-					<b:commandButton action="#{EnderecoController.alterarBairros()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
-						look="success" style="float:left"
-						rendered="#{EnderecoController.tipo  == 2}" />
+                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                     style="float:right" size="sm" immediate="true" look="info"
+                                     action="/pages/sishosp/gerenciarBairros.faces?faces-redirect=true">
+                    </b:commandButton>
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="float:right" size="sm" immediate="true" look="info"
-						action="/pages/sishosp/gerenciarBairros.faces?faces-redirect=true">
-					</b:commandButton>
+                </div>
 
+            </h:form>
 
-				</center>
+        </div>
 
+        <p:dialog style="font-size: 12px;" widgetVar="dlgbuscamunicipios"
+                  modal="true" resizable="false">
 
-			</h:form>
+            <f:facet name="header">
+                <h:panelGroup>
+                    <h:outputText id="outPutConsultarMunicipios" value="Consultar Municípios"></h:outputText>
+                </h:panelGroup>
+            </f:facet>
+            <h:form id="frmBuscaMunicipios">
+                <div align="center">
+                    <p:outputPanel id="outinter">
+                        <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                     value="#{EnderecoController.listarMunicipiosCadastro()}"
+                                     var="busca" id="tableescola"
+                                     display="Nenhum Municipio">
 
-		</div>
+                            <h:column>
+                                <f:facet name="header">
+                                    Escola
+                                </f:facet>
+                                <p:outputLabel value="#{busca.municipio}"/>
+                            </h:column>
 
-		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscamunicipios"
-			modal="true" resizable="false">
+                            <h:column>
+                                <f:facet name="header">
+                                    Adicionar
+                                </f:facet>
+                                <p:commandButton oncomplete="PF('dlgbuscamunicipios').hide()"
+                                                 icon="ui-icon-check" id="confirmar"
+                                                 update=":frmPrincipal:inputMunicipio">
+                                    <f:setPropertyActionListener value="#{busca}"
+                                                                 target="#{EnderecoController.endereco}"/>
+                                    <p:tooltip for="confirmar" value="Selecionar Município"></p:tooltip>
+                                </p:commandButton>
+                            </h:column>
 
-			<f:facet name="header">
-				<h:panelGroup>
-					<h:outputText id="n27" value="Consultar Municípios"></h:outputText>
-				</h:panelGroup>
-			</f:facet>
-			<h:form id="buscamunicipios">
-				<center>
-					<p:outputPanel id="outinter">
-						<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{EnderecoController.listarMunicipiosCadastro()}"
-							var="busca" id="tableescola"
-							display="Nenhum Municipio">
+                        </b:dataTable>
+                    </p:outputPanel>
+                </div>
+            </h:form>
+        </p:dialog>
 
-							<h:column>
-								<f:facet name="header">
-                       		 Escola
-                    		</f:facet>
-								<p:outputLabel value="#{busca.municipio}" />
-							</h:column>
-
-							<h:column>
-								<f:facet name="header">
-                       		 Adicionar
-                    		</f:facet>
-								<p:commandButton oncomplete="PF('dlgbuscamunicipios').hide()"
-									icon="ui-icon-check" id="confirmar"
-									update=":formCADU:municipio">
-									<f:setPropertyActionListener value="#{busca}"
-										target="#{EnderecoController.endereco}" />
-									<p:tooltip for="confirmar" value="Selecionar Município"></p:tooltip>
-								</p:commandButton>
-							</h:column>
-
-						</b:dataTable>
-					</p:outputPanel>
-				</center>
-			</h:form>
-		</p:dialog>
-
-	</ui:define>
+    </ui:define>
 </ui:composition>
+
 </html>

@@ -10,7 +10,7 @@
 <ui:composition template="../../template/template.xhtml">
 
     <f:metadata>
-        <f:viewAction action="#{CboController.listarCbo}"/>
+        <f:viewAction action="#{CboController.buscarCbo}"/>
     </f:metadata>
 
     <ui:define name="body">
@@ -38,7 +38,7 @@
                 </div>
 
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-                             value="#{CboController.listarCids()}"
+                             value="#{CboController.listarCbos()}"
                              display="Nenhum CBO">
 
                     <h:column>

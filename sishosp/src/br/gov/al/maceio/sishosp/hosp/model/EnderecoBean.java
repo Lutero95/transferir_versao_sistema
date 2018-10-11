@@ -26,13 +26,7 @@ public class EnderecoBean implements Serializable {
 	private String telefoneorelhao;
 	private Date dataCadastro;
 	private Date dataAlteracao;
-
-	// LISTA
 	private List<Integer> listaEstado;
-
-	public EnderecoBean() {
-
-	}
 
 	public Long getId() {
 		return id;
@@ -82,6 +76,46 @@ public class EnderecoBean implements Serializable {
 		this.logradouro = logradouro;
 	}
 
+	public Integer getCodbairro() {
+		return codbairro;
+	}
+
+	public void setCodbairro(Integer codbairro) {
+		this.codbairro = codbairro;
+	}
+
+	public Integer getCodmunicipio() {
+		return codmunicipio;
+	}
+
+	public void setCodmunicipio(Integer codmunicipio) {
+		this.codmunicipio = codmunicipio;
+	}
+
+	public Integer getCodibge() {
+		return codibge;
+	}
+
+	public void setCodibge(Integer codibge) {
+		this.codibge = codibge;
+	}
+
+	public Integer getCodfederal() {
+		return codfederal;
+	}
+
+	public void setCodfederal(Integer codfederal) {
+		this.codfederal = codfederal;
+	}
+
+	public Integer getCodmacregiao() {
+		return codmacregiao;
+	}
+
+	public void setCodmacregiao(Integer codmacregiao) {
+		this.codmacregiao = codmacregiao;
+	}
+
 	public String getComplemento() {
 		return complemento;
 	}
@@ -104,30 +138,6 @@ public class EnderecoBean implements Serializable {
 
 	public void setBairro(String bairro) {
 		this.bairro = bairro;
-	}
-
-	public Date getDataCadastro() {
-		return dataCadastro;
-	}
-
-	public void setDataCadastro(Date dataCadastro) {
-		this.dataCadastro = dataCadastro;
-	}
-
-	public Date getDataAlteracao() {
-		return dataAlteracao;
-	}
-
-	public void setDataAlteracao(Date dataAlteracao) {
-		this.dataAlteracao = dataAlteracao;
-	}
-
-	public List<Integer> getListaEstado() {
-		return listaEstado;
-	}
-
-	public void setListaEstado(List<Integer> listaEstado) {
-		this.listaEstado = listaEstado;
 	}
 
 	public String getTelefoneres() {
@@ -162,44 +172,27 @@ public class EnderecoBean implements Serializable {
 		this.telefoneorelhao = telefoneorelhao;
 	}
 
-	public Integer getCodbairro() {
-		return codbairro;
+	public Date getDataCadastro() {
+		return dataCadastro;
 	}
 
-	public void setCodbairro(Integer codbairro) {
-		this.codbairro = codbairro;
+	public void setDataCadastro(Date dataCadastro) {
+		this.dataCadastro = dataCadastro;
 	}
 
-	public Integer getCodmunicipio() {
-		return codmunicipio;
+	public Date getDataAlteracao() {
+		return dataAlteracao;
 	}
 
-	public void setCodmunicipio(Integer codmunicipio) {
-		this.codmunicipio = codmunicipio;
+	public void setDataAlteracao(Date dataAlteracao) {
+		this.dataAlteracao = dataAlteracao;
 	}
 
-	public Integer getCodfederal() {
-		return codfederal;
+	public List<Integer> getListaEstado() {
+		return listaEstado;
 	}
 
-	public void setCodfederal(Integer codfederal) {
-		this.codfederal = codfederal;
+	public void setListaEstado(List<Integer> listaEstado) {
+		this.listaEstado = listaEstado;
 	}
-
-	public Integer getCodmacregiao() {
-		return codmacregiao;
-	}
-
-	public void setCodmacregiao(Integer codmacregiao) {
-		this.codmacregiao = codmacregiao;
-	}
-
-	public Integer getCodibge() {
-		return codibge;
-	}
-
-	public void setCodibge(Integer codibge) {
-		this.codibge = codibge;
-	}
-
 }

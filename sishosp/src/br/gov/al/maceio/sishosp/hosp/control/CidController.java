@@ -1,7 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +76,7 @@ public class CidController implements Serializable {
 
 	}
 
-	public void gravarCid() throws ProjetoException, SQLException {
+	public void gravarCid() throws ProjetoException {
 
 		boolean cadastrou = gDao.gravarCid(cid);
 
