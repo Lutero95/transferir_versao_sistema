@@ -22,11 +22,9 @@ public class CidController implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private CidBean cid;
 	private List<CidBean> listaCids;
-	private Integer tipoBuscar;
-	private String descricaoBusca;
 	private int tipo;
 	private String cabecalho;
-	private CidDAO gDao = new CidDAO();
+	private CidDAO cDao = new CidDAO();
 
 	//CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroCid?faces-redirect=true";
@@ -39,15 +37,13 @@ public class CidController implements Serializable {
 		this.cid = new CidBean();
 		this.listaCids = new ArrayList<>();
 		this.listaCids = null;
-		this.descricaoBusca = new String();
 		this.cabecalho = "";
 	}
 
 	public void limparDados() throws ProjetoException {
 		this.cid = new CidBean();
 		this.listaCids = new ArrayList<>();
-		this.descricaoBusca = new String();
-		listaCids = gDao.listarCid();
+		listaCids = cDao.listarCid();
 	}
 
 	public String redirectEdit() {
@@ -66,7 +62,7 @@ public class CidController implements Serializable {
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
 
-			this.cid = gDao.buscaCidPorId(id);
+			this.cid = cDao.buscaCidPorId(id);
 		} else {
 
 			tipo = Integer.parseInt(params.get("tipo"));
@@ -77,7 +73,7 @@ public class CidController implements Serializable {
 
 	public void gravarCid() throws ProjetoException {
 
-		boolean cadastrou = gDao.gravarCid(cid);
+		boolean cadastrou = cDao.gravarCid(cid);
 
 		if (cadastrou == true) {
 			limparDados();
@@ -88,18 +84,18 @@ public class CidController implements Serializable {
 	}
 
 	public void alterarCid() throws ProjetoException {
-		boolean alterou = gDao.alterarCid(cid);
+		boolean alterou = cDao.alterarCid(cid);
 		if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("CID alterado com sucesso!", "Sucesso");
 		} else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 		}
-		listaCids = gDao.listarCid();
+		listaCids = cDao.listarCid();
 
 	}
 
 	public void excluirCid() throws ProjetoException {
-		boolean ok = gDao.excluirCid(cid);
+		boolean ok = cDao.excluirCid(cid);
 		if (ok == true) {
             JSFUtil.adicionarMensagemSucesso("CID excluído com sucesso!", "Sucesso");
 			JSFUtil.fecharDialog("dialogExclusao");
@@ -107,22 +103,22 @@ public class CidController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
 		}
-		listaCids = gDao.listarCid();
+		listaCids = cDao.listarCid();
 	}
 
 	public List<CidBean> listaCidAutoComplete(String query)
 			throws ProjetoException {
-		List<CidBean> result = gDao.listarCidsBusca(query);
+		List<CidBean> result = cDao.listarCidsBusca(query);
 		return result;
 	}
 
 	public void buscarCid() throws ProjetoException {
-		listaCids = gDao.listarCid();
+		listaCids = cDao.listarCid();
 	}
 
 	public List<CidBean> listarCids() throws ProjetoException {
         if (listaCids == null) {
-            listaCids = gDao.listarCid();
+            listaCids = cDao.listarCid();
         }
         return listaCids;
     }
@@ -156,28 +152,12 @@ public class CidController implements Serializable {
         this.listaCids = listaCids;
     }
 
-    public Integer getTipoBuscar() {
-		return tipoBuscar;
+	public CidDAO getcDao() {
+		return cDao;
 	}
 
-	public void setTipoBuscar(Integer tipoBuscar) {
-		this.tipoBuscar = tipoBuscar;
-	}
-
-	public String getDescricaoBusca() {
-		return descricaoBusca;
-	}
-
-	public void setDescricaoBusca(String descricaoBusca) {
-		this.descricaoBusca = descricaoBusca;
-	}
-
-	public CidDAO getgDao() {
-		return gDao;
-	}
-
-	public void setgDao(CidDAO gDao) {
-		this.gDao = gDao;
+	public void setcDao(CidDAO cDao) {
+		this.cDao = cDao;
 	}
 
 	public int getTipo() {

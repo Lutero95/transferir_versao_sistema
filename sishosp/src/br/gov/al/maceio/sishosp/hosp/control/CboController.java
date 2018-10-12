@@ -22,8 +22,6 @@ public class CboController implements Serializable {
     private static final long serialVersionUID = 1L;
     private CboBean cbo;
     private List<CboBean> listaCbo, listaCboFiltrada;
-    private Integer tipoBuscar;
-    private String descricaoBusca;
     private int tipo;
     private String cabecalho;
     private CboDAO cDao = new CboDAO();
@@ -37,7 +35,6 @@ public class CboController implements Serializable {
 
     public CboController() {
         this.cbo = new CboBean();
-        this.descricaoBusca = new String();
     }
 
     public String redirectEdit() {
@@ -135,22 +132,6 @@ public class CboController implements Serializable {
 
     public void setListaCbo(List<CboBean> listaCbo) {
         this.listaCbo = listaCbo;
-    }
-
-    public Integer getTipoBuscar() {
-        return tipoBuscar;
-    }
-
-    public void setTipoBuscar(Integer tipoBuscar) {
-        this.tipoBuscar = tipoBuscar;
-    }
-
-    public String getDescricaoBusca() {
-        return descricaoBusca;
-    }
-
-    public void setDescricaoBusca(String descricaoBusca) {
-        this.descricaoBusca = descricaoBusca;
     }
 
     public String getCabecalho() {

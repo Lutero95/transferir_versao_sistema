@@ -70,41 +70,6 @@ public class CidDAO {
         return lista;
     }
 
-    public List<CidBean> listarCidBusca(String descricao, Integer tipo)
-            throws ProjetoException {
-        List<CidBean> lista = new ArrayList<>();
-        String sql = "select cod, desccid, cid from hosp.cid ";
-        if (tipo == 1) {
-            sql += " where desccid LIKE ?  order by cod";
-        }
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            stm.setString(1, "%" + descricao.toUpperCase() + "%");
-            ResultSet rs = stm.executeQuery();
-
-            while (rs.next()) {
-                CidBean cid = new CidBean();
-                cid.setIdCid(rs.getInt("cod"));
-                cid.setDescCid(rs.getString("desccid"));
-                cid.setCid(rs.getString("cid"));
-
-                lista.add(cid);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        return lista;
-    }
-
     public Boolean alterarCid(CidBean cid) {
         Boolean retorno = false;
         String sql = "update hosp.cid set desccid = ?, cid = ? where cod = ?";
