@@ -33,7 +33,7 @@
 				</div>
 
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-					value="#{EquipamentoController.listaEquipamentos}">
+					value="#{EquipamentoController.listarEquipamentos()}">
 
 					<h:column>
 						<f:facet name="header">
@@ -80,13 +80,13 @@
 				<div align="center">
 
 					<p:separator />
-					<b:commandButton look="success" value="Sim"
+					<b:commandButton look="success" value="Sim" style="float:left;"
 						action="#{EquipamentoController.excluirEquipamento()}" ajax="true"
 						icon="glyphicon-ok" update="frmPrincipal" />
 
 					<b:commandButton value="Não"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;" />
+						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
 
 				</div>
 
