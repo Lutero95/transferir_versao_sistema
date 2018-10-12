@@ -22,7 +22,6 @@ import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EscolaridadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FormaTransporteDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProfissaoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RacaDAO;
@@ -34,7 +33,6 @@ import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProfissaoBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
@@ -42,9 +40,7 @@ import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 @ManagedBean(name = "PacienteController")
 @ViewScoped
 public class PacienteController implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Integer abaAtiva = 0;
 	private Integer SelecionadoRaca;
@@ -244,30 +240,16 @@ public class PacienteController implements Serializable {
 		}
 	}
 
-	public void getEditRaca() throws ProjetoException, SQLException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			tipo = Integer.parseInt(params.get("tipo"));
-			PacienteDAO cDao = new PacienteDAO();
-			this.raca = cDao.listarRacaPorID(id);
-		} else {
-			tipo = Integer.parseInt(params.get("tipo"));
-
-		}
-
-	}
-
 	public void gravarPaciente() throws ProjetoException {
 		PacienteDAO udao = new PacienteDAO();
 		EnderecoDAO edao = new EnderecoDAO();
 
+		if(paciente.getCns() != null){
 		if (validaCns(paciente.getCns()) == false) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"CNS com números inválidos!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
 		} else {
 
 			if (escolaSuggestion != null)
@@ -297,12 +279,15 @@ public class PacienteController implements Serializable {
 			else
 				paciente.getFormatransporte().setCodformatransporte(null);
 
-			int codmunicipio = edao.municipioExiste(paciente);
-			int codbairro = edao.bairroExiste(paciente, codmunicipio);
-			System.out.println("Codbairro: " + codbairro);
+			boolean cadastrou = false;
 
-			boolean cadastrou = udao.cadastrar(paciente, codmunicipio,
+			if(paciente.getEndereco().getCodibge() != null) {
+				int codmunicipio = edao.municipioExiste(paciente);
+				int codbairro = edao.bairroExiste(paciente, codmunicipio);
+
+			 cadastrou = udao.cadastrar(paciente, codmunicipio,
 					codbairro);
+			}
 
 			if (cadastrou == true) {
 				limparDados();
@@ -450,29 +435,6 @@ public class PacienteController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			// return "";
 			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-		}
-
-	}
-
-	public void excluirRaca() throws ProjetoException {
-		RacaDAO udao = new RacaDAO();
-
-		boolean excluio = udao.excluir(raca);
-
-		if (excluio == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cor/Raça excluída com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listarRaca();
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
 		}
 
 	}
@@ -844,26 +806,6 @@ public class PacienteController implements Serializable {
 
 	}
 
-	public void buscarRacas() throws ProjetoException {
-
-		List<RacaBean> listaAux = null;
-		listaRaca = new ArrayList<>();
-
-		RacaDAO adao = new RacaDAO();
-
-		listaAux = adao.buscarTipoRaca(campoBuscaRaca, tipoBuscaRaca);
-
-		if (listaAux != null && listaAux.size() > 0) {
-			// listaAss = null;
-			listaRaca = listaAux;
-		} else {
-			// listaAss = null;
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-					"Nenhuma Raça encontrada.", "Aviso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-	}
 
 	public List<PacienteBean> listarPacienteAgenda() throws ProjetoException {
 		PacienteDAO pDao = new PacienteDAO();
@@ -1070,11 +1012,6 @@ public class PacienteController implements Serializable {
 
 	public void setListaTransporte(List<FormaTransporteBean> listaTransporte) {
 		this.listaTransporte = listaTransporte;
-	}
-
-	public void listarRaca() throws ProjetoException {
-		PacienteDAO fdao = new PacienteDAO();
-		listaRaca = fdao.listaCor();
 	}
 
 	public void setListaRaca(List<RacaBean> listaRaca) {
@@ -1591,14 +1528,6 @@ public class PacienteController implements Serializable {
 
 	public List<PacienteBean> getListaPacientes() {
 		return listaPacientes;
-	}
-
-	public List<RacaBean> getListaRaca() throws ProjetoException {
-		if (listaRaca == null) {
-			PacienteDAO fdao = new PacienteDAO();
-			listaRaca = fdao.listaCor();
-		}
-		return listaRaca;
 	}
 
 	public List<PacienteBean> getListaPacientesParaAgenda() {

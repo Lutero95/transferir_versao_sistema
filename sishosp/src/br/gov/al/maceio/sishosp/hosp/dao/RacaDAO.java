@@ -9,166 +9,224 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.RacaBean;
 
 public class RacaDAO {
-	private Connection conexao = null;
+    private Connection conexao = null;
 
-	@SuppressWarnings("deprecation")
-	public Boolean cadastrar(RacaBean raca) throws ProjetoException {
-		boolean cadastrou = false;
+    @SuppressWarnings("deprecation")
+    public Boolean cadastrar(RacaBean raca) throws ProjetoException {
+        boolean cadastrou = false;
 
-		/*
-		 * PacienteBean user_session = (PacienteBean) FacesContext
-		 * .getCurrentInstance().getExternalContext().getSessionMap()
-		 * .get("obj_paciente");
-		 */
+        /*
+         * PacienteBean user_session = (PacienteBean) FacesContext
+         * .getCurrentInstance().getExternalContext().getSessionMap()
+         * .get("obj_paciente");
+         */
 
-		String sql = "insert into hosp.raca (descraca) values (?)";
+        String sql = "insert into hosp.raca (descraca) values (?)";
 
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setString(1, raca.getDescRaca().toUpperCase().trim());
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, raca.getDescRaca().toUpperCase().trim());
 
-			// ResultSet rs = stmt.executeQuery();
-			/*
-			 * if(rs.next()) { PacienteBean p = paciente; String idRetorno =
-			 * null; idRetorno = String.valueOf(rs.getLong("id_paciente"));
-			 * p.setId_paciente(Long.parseLong(idRetorno));
-			 */
-			stmt.execute();
-			conexao.commit();
-			cadastrou = true;
-			conexao.close();
+            // ResultSet rs = stmt.executeQuery();
+            /*
+             * if(rs.next()) { PacienteBean p = paciente; String idRetorno =
+             * null; idRetorno = String.valueOf(rs.getLong("id_paciente"));
+             * p.setId_paciente(Long.parseLong(idRetorno));
+             */
+            stmt.execute();
+            conexao.commit();
+            cadastrou = true;
+            conexao.close();
 
-			return cadastrou;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+            return cadastrou;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-	public Boolean alterar(RacaBean raca) throws ProjetoException {
-		boolean alterou = false;
-		String sql = "update hosp.raca set descraca = ? where id_raca = ?";
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setString(1, raca.getDescRaca().toUpperCase());
-			stmt.setInt(2, raca.getCodRaca());
-			stmt.executeUpdate();
+    public Boolean alterar(RacaBean raca) throws ProjetoException {
+        boolean alterou = false;
+        String sql = "update hosp.raca set descraca = ? where id_raca = ?";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, raca.getDescRaca().toUpperCase());
+            stmt.setInt(2, raca.getCodRaca());
+            stmt.executeUpdate();
 
-			conexao.commit();
+            conexao.commit();
 
-			alterou = true;
+            alterou = true;
 
-			return alterou;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+            return alterou;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
 
-	public Boolean excluir(RacaBean raca) throws ProjetoException {
-		boolean excluir = false;
-		String sql = "delete from hosp.raca where id_raca = ?";
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setInt(1, raca.getCodRaca());
-			stmt.executeUpdate();
+    public Boolean excluir(RacaBean raca) throws ProjetoException {
+        boolean excluir = false;
+        String sql = "delete from hosp.raca where id_raca = ?";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, raca.getCodRaca());
+            stmt.executeUpdate();
 
-			conexao.commit();
+            conexao.commit();
 
-			excluir = true;
+            excluir = true;
 
-			return excluir;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+            return excluir;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
 
-	public ArrayList<RacaBean> listaCor() throws ProjetoException {
+    public ArrayList<RacaBean> listaCor() throws ProjetoException {
 
-		String sql = "select  id_raca, descraca from hosp.raca order by descraca";
+        String sql = "select  id_raca, descraca from hosp.raca order by descraca";
 
-		ArrayList<RacaBean> lista = new ArrayList();
+        ArrayList<RacaBean> lista = new ArrayList();
 
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stm = conexao.prepareStatement(sql);
-			ResultSet rs = stm.executeQuery();
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
 
-			while (rs.next()) {
-				RacaBean p = new RacaBean();
-				p.setCodRaca(rs.getInt("id_raca"));
-				p.setDescRaca(rs.getString("descraca").toUpperCase());
+            while (rs.next()) {
+                RacaBean p = new RacaBean();
+                p.setCodRaca(rs.getInt("id_raca"));
+                p.setDescRaca(rs.getString("descraca").toUpperCase());
 
-				lista.add(p);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+                lista.add(p);
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return lista;
+    }
 
-	public List<RacaBean> buscarTipoRaca(String valor, Integer tipo)
-			throws ProjetoException {
+    public List<RacaBean> buscarTipoRaca(String valor)
+            throws ProjetoException {
 
-		String sql = "select raca.id_raca, raca.descraca from hosp.raca where";
+        String sql = "select raca.id_raca, raca.descraca from hosp.raca where raca.descraca like ? order by raca.descraca ";
 
-		if (tipo == 1) {
-			sql += " raca.descraca like ? order by raca.descraca ";
-		}
-		List<RacaBean> lista = new ArrayList<>();
+        List<RacaBean> lista = new ArrayList<>();
 
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			if (tipo == 1) {
-				stmt.setString(1, "%" + valor.toUpperCase() + "%");
-			}
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
 
-			ResultSet rs = stmt.executeQuery();
+            stmt.setString(1, "%" + valor.toUpperCase() + "%");
 
-			while (rs.next()) {
-				RacaBean p = new RacaBean();
+            ResultSet rs = stmt.executeQuery();
 
-				p.setCodRaca(rs.getInt("id_raca"));
-				p.setDescRaca(rs.getString("descraca").toUpperCase());
+            while (rs.next()) {
+                RacaBean p = new RacaBean();
 
-				lista.add(p);
+                p.setCodRaca(rs.getInt("id_raca"));
+                p.setDescRaca(rs.getString("descraca").toUpperCase());
 
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			// throw new RuntimeException(ex); //
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+                lista.add(p);
+
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            // throw new RuntimeException(ex); //
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return lista;
+    }
+
+    public ArrayList<RacaBean> listaRaca() throws ProjetoException {
+
+        String sql = "select  id_raca, descraca from hosp.raca order by descraca";
+
+        ArrayList<RacaBean> lista = new ArrayList<RacaBean>();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                RacaBean p = new RacaBean();
+                p.setCodRaca(rs.getInt("id_raca"));
+                p.setDescRaca(rs.getString("descraca").toUpperCase());
+
+                lista.add(p);
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return lista;
+    }
+
+    public RacaBean listarRacaPorID(int id) throws ProjetoException {
+        PacienteBean p = new PacienteBean();
+        String sql = "select  id_raca, descraca from hosp.raca where id_raca = ? order by descraca";
+
+        ArrayList<RacaBean> lista = new ArrayList<RacaBean>();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            RacaBean raca = new RacaBean();
+            while (rs.next()) {
+                raca.setCodRaca(rs.getInt("id_raca"));
+                raca.setDescRaca(rs.getString("descraca").toUpperCase());
+            }
+            return raca;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+
+    }
 }

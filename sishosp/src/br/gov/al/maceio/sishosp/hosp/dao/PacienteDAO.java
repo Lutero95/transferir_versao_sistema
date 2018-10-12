@@ -643,37 +643,6 @@ public class PacienteDAO {
 		return lista;
 	}
 
-	public ArrayList<RacaBean> listaCor() throws ProjetoException {
-
-		String sql = "select  id_raca, descraca from hosp.raca order by descraca";
-
-		ArrayList<RacaBean> lista = new ArrayList<RacaBean>();
-
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stm = conexao.prepareStatement(sql);
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				RacaBean p = new RacaBean();
-				p.setCodRaca(rs.getInt("id_raca"));
-				p.setDescRaca(rs.getString("descraca").toUpperCase());
-
-				lista.add(p);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
-
 	public ArrayList<EscolaBean> listaEscolas() throws ProjetoException {
 
 		String sql = "select * from hosp.escola order by descescola";
@@ -1109,36 +1078,6 @@ public class PacienteDAO {
 		} finally {
 			try {
 				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-
-	}
-
-	public RacaBean listarRacaPorID(int id) throws SQLException,
-			ProjetoException {
-		PacienteBean p = new PacienteBean();
-		String sql = "select  id_raca, descraca from hosp.raca order by descraca";
-
-		ArrayList<RacaBean> lista = new ArrayList<RacaBean>();
-
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stm = conexao.prepareStatement(sql);
-			ResultSet rs = stm.executeQuery();
-			RacaBean raca = new RacaBean();
-			while (rs.next()) {
-				raca.setCodRaca(rs.getInt("id_raca"));
-				raca.setDescRaca(rs.getString("descraca").toUpperCase());
-			}
-			return raca;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				System.exit(1);
