@@ -26,7 +26,6 @@ public class CidController implements Serializable {
 	private String descricaoBusca;
 	private int tipo;
 	private String cabecalho;
-	private Integer abaAtiva = 0;
 	private CidDAO gDao = new CidDAO();
 
 	//CONSTANTES
@@ -171,14 +170,6 @@ public class CidController implements Serializable {
 
 	public void setDescricaoBusca(String descricaoBusca) {
 		this.descricaoBusca = descricaoBusca;
-	}
-
-	public Integer getAbaAtiva() {
-		return abaAtiva;
-	}
-
-	public void setAbaAtiva(Integer abaAtiva) {
-		this.abaAtiva = abaAtiva;
 	}
 
 	public CidDAO getgDao() {

@@ -3,10 +3,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:stella="http://stella.caelum.com.br/faces2"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
@@ -19,7 +16,7 @@
 				<hr />
 			</div>
 			
-			<h:form id="frmmensagem">
+			<h:form id="frmPrincipal">
 
 				<b:commandButton id="btninc" value="Novo" size="sm"
 					action="#{EquipamentoController.redirectInsert()}"
@@ -31,13 +28,12 @@
 				<br />
 				<br />
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+				<div align="center">
+					<b:messages value="Error" id="msgPagina"></b:messages>
+				</div>
 
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-					value="#{EquipamentoController.listaEquipamentos}"
-					display="Nenhum Tipo de Atendimento">
+					value="#{EquipamentoController.listaEquipamentos}">
 
 					<h:column>
 						<f:facet name="header">
@@ -62,7 +58,7 @@
 
 						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
 							size="sm" ajax="true" style="margin-left:10px"
-							oncomplete="PF('dialogAtencao').show()">
+							oncomplete="PF('dialogExclusao').show()">
 
 							<f:setPropertyActionListener value="#{tab}"
 								target="#{EquipamentoController.equipamento}" />
@@ -74,28 +70,29 @@
 
 			</h:form>
 		</div>
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
+		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
 			resizable="false">
 
-			<h:form id="dlgexcluir">
+			<h:form id="frmExcluir">
 				<div class="alert alert-warning" role="alert">Deseja excluir
 					esse Equipamento?</div>
-				<center>
+
+				<div align="center">
 
 					<p:separator />
 					<b:commandButton look="success" value="Sim"
 						action="#{EquipamentoController.excluirEquipamento()}" ajax="true"
-						icon="glyphicon-ok" update="frmmensagem" />
+						icon="glyphicon-ok" update="frmPrincipal" />
 
 					<b:commandButton value="Não"
-						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
+						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" style="margin-left:5px;" />
 
-				</center>
-
+				</div>
 
 			</h:form>
 		</p:dialog>
 	</ui:define>
 </ui:composition>
+
 </html>
