@@ -8,6 +8,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 
 public class EquipeBean implements Serializable {
 
@@ -94,9 +95,7 @@ public class EquipeBean implements Serializable {
 			if (existe == false) {
 				this.profissionais.add(this.profAdd);
 			} else {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Esse profissional já foi adicionado!", "Sucesso");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
+				JSFUtil.adicionarMensagemAdvertencia("Esse profissional já foi adicionado!", "Advertência");
 			}
 
 		}

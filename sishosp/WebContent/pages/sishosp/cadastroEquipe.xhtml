@@ -1,155 +1,155 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:viewAction action="#{EquipeController.getEditEquipe()}" />
+    <f:metadata>
+        <f:viewAction action="#{EquipeController.getEditEquipe()}"/>
 
-	</f:metadata>
+    </f:metadata>
 
-	<ui:define name="body">
+    <ui:define name="body">
 
-		<div class="panel-body">
-			<div class="sub-header">
-				<h:outputText value="#{EquipeController.cabecalho}"
-					styleClass="cadcabecalho"></h:outputText>
-				<hr />
-			</div>
+        <div class="panel-body">
+            <div class="sub-header">
+                <h:outputText value="#{EquipeController.cabecalho}"
+                              styleClass="cadcabecalho"></h:outputText>
+                <hr/>
+            </div>
 
-			<h:form class="form-horizontal" id="formCADU">
+            <h:form class="form-horizontal" id="frmPrincipal">
 
+                <b:row>
 
-				<b:row>
+                    <b:column span="2">
+                        <h:outputLabel for="inputname" value="Descrição"
+                                       style="margin-top:10px"/>
+                    </b:column>
 
-					<b:column span="1">
-						<h:outputLabel for="inputname" value="Descrição"
-							style="margin-top:10px" />
-					</b:column>
+                    <b:column span="10">
+                        <h:inputText value="#{EquipeController.equipe.descEquipe}"
+                                     class="form-control" id="inputname" required="true"
+                                     requiredMessage="Descrição: Campo obrigatório!"
+                                     validatorMessage="Equipe deve conter entre 2 e 100 caracteres.">
+                            <f:validateLength minimum="2" maximum="100"/>
+                        </h:inputText>
+                    </b:column>
+                </b:row>
 
-					<b:column span="5">
-						<h:inputText value="#{EquipeController.equipe.descEquipe}"
-							class="form-control" id="inputname" required="true"
-							requiredMessage="Descrição Obrigatória!"
-							validatorMessage="Equipe deve conter entre 2 e 30 caracteres.">
-							<f:validateLength minimum="2" maximum="40" />
-						</h:inputText>
-					</b:column>
-				</b:row>
+                <br></br>
 
-				<br></br>
+                <b:row>
+                    <b:column span="2">
+                        <h:outputLabel value="Profissionais" style="margin-top:10px"/>
+                    </b:column>
 
-				<b:row>
-					<b:column span="1">
-						<h:outputLabel value="Profissionais" style="margin-top:10px" />
-					</b:column>
+                    <b:column span="1">
+                        <b:commandButton process="@this" size="sm"
+                                         action="#{MBFuncionarios.ListarTodosProfissionais()}"
+                                         tooltip="Incluir Profissional" icon="glyphicon-plus"
+                                         oncomplete="PF('dlgConsuProfE').show();" update="formConsuProfE"/>
+                    </b:column>
 
-					<b:column span="1">
-						<b:commandButton process="@this" size="sm"
-							action="#{MBFuncionarios.ListarTodosProfissionais()}"
-							tooltip="Incluir Profissional" icon="glyphicon-plus"
-							oncomplete="PF('dlgConsuProfE').show();" update="formConsuProfE" />
-					</b:column>
+                    <b:column span="9">
+                        <p:dataTable emptyMessage="Nenhum Profissional na Equipe"
+                                     styleClass="table table-hover" id="tabela"
+                                     value="#{EquipeController.equipe.profissionais}" var="tab"
+                                     paginator="true" paginatorPosition="bottom" rows="12"
+                                     resizableColumns="false">
 
-					<b:column span="5">
-						<p:dataTable emptyMessage="Nenhum Profissional na Equipe"
-							styleClass="table table-hover" id="tabela"
-							value="#{EquipeController.equipe.profissionais}" var="tab"
-							paginator="true" paginatorPosition="bottom" rows="12"
-							resizableColumns="false">
+                            <p:column headerText="Nome" style="font-weight:bold;" width="80%">
+                                <h:outputText value="#{tab.nome}"/>
+                            </p:column>
 
+                            <p:column headerText="Ação">
+                                <div align="center">
+                                    <p:commandButton process="@this"
+                                                     action="#{EquipeController.equipe.removeProfList()}"
+                                                     icon="ui-icon-trash" update=":frmPrincipal">
+                                        <f:setPropertyActionListener value="#{tab}"
+                                                                     target="#{EquipeController.equipe.profAdd}"/>
+                                    </p:commandButton>
+                                </div>
+                            </p:column>
 
-
-							<p:column headerText="Nome" style="font-weight:bold;" width="80%">
-								<h:outputText value="#{tab.nome}" />
-							</p:column>
-
-							<p:column headerText="Ação">
-								<center>
-									<p:commandButton process="@this"
-										action="#{EquipeController.equipe.removeProfList()}"
-										icon="ui-icon-trash" update=":formCADU">
-										<f:setPropertyActionListener value="#{tab}"
-											target="#{EquipeController.equipe.profAdd}" />
-									</p:commandButton>
-								</center>
-							</p:column>
-
-						</p:dataTable>
+                        </p:dataTable>
 
 
-					</b:column>
+                    </b:column>
 
 
-				</b:row>
+                </b:row>
 
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
 
-				<center>
-					<b:commandButton action="#{EquipeController.gravarEquipe()}"
-						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
-						value="Incluir" style="float:left"
-						rendered="#{EquipeController.tipo == 1}" />
+                <div align="center">
+                    <b:commandButton action="#{EquipeController.gravarEquipe()}"
+                                     icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
+                                     value="Incluir" style="float:left"
+                                     rendered="#{EquipeController.tipo == 1}"/>
 
-					<b:commandButton action="#{EquipeController.alterarEquipe()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
-						look="success" style="float:left"
-						rendered="#{EquipeController.tipo  == 2}" />
+                    <b:commandButton action="#{EquipeController.alterarEquipe()}"
+                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
+                                     look="success" style="float:left"
+                                     rendered="#{EquipeController.tipo  == 2}"/>
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						size="sm" immediate="true" look="info" style="float:right"
-						action="/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true">
-					</b:commandButton>
+                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                     size="sm" immediate="true" look="info" style="float:right"
+                                     action="/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true">
+                    </b:commandButton>
 
-				</center>
-			</h:form>
-		</div>
+                </div>
+            </h:form>
+        </div>
 
-		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProfE"
-			modal="true">
-			<h:form id="formConsuProfE">
+        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProfE"
+                  modal="true">
+            <h:form id="formConsuProfE">
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{MBFuncionarios.listaProfissional}"
-					id="dtTipoAt" var="profi" display="Nenhum Profissional">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{MBFuncionarios.listaProfissional}"
+                             id="dtTipoAt" var="profi">
 
-					<h:column>
-						<f:facet name="header">
-                        Profissional
-                    </f:facet>
-						<p:outputLabel value="#{profi.nome}" />
-					</h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Profissional
+                        </f:facet>
+                        <p:outputLabel value="#{profi.nome}"/>
+                    </h:column>
 
-					<h:column>
-						<f:facet name="header">
-                        Especialidade
-                    </f:facet>
-						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
-					</h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Especialidade
+                        </f:facet>
+                        <p:outputLabel value="#{profi.especialidade.descEspecialidade}"/>
+                    </h:column>
 
-					<h:column>
-						<f:facet name="header">
-                        Adicionar
-                    </f:facet>
-						<p:commandButton process="@this"
-							update=":formCADU:tabela, :formCADU:msgError"
-							icon="ui-icon-check" title="Selecionar"
-							action="#{EquipeController.equipe.addProfList()}"
-							onclick="PF('dlgConsuProfE').hide();">
-							<f:setPropertyActionListener value="#{profi}"
-								target="#{EquipeController.equipe.profAdd}" />
-						</p:commandButton>
-					</h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton process="@this"
+                                         update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
+                                         icon="ui-icon-check" title="Selecionar"
+                                         action="#{EquipeController.equipe.addProfList()}"
+                                         onclick="PF('dlgConsuProfE').hide();">
+                            <f:setPropertyActionListener value="#{profi}"
+                                                         target="#{EquipeController.equipe.profAdd}"/>
+                        </p:commandButton>
+                    </h:column>
 
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
-	</ui:define>
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
 </ui:composition>
+
 </html>

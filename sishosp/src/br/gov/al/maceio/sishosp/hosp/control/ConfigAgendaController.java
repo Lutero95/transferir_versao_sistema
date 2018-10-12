@@ -168,7 +168,7 @@ public class ConfigAgendaController implements Serializable {
 					"Escolha uma opção de busca válida!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
-			this.listaEquipes = eDao.listarEquipeBusca(nomeBusca, tipoBusca);
+			this.listaEquipes = eDao.listarEquipeBusca(nomeBusca);
 			this.listaHorariosEquipe = null;
 		}
 	}

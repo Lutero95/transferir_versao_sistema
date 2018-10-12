@@ -15,368 +15,347 @@ import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 
 public class EquipeDAO {
 
-	Connection con = null;
-	PreparedStatement ps = null;
-	FuncionarioDAO pDao = new FuncionarioDAO();
+    Connection con = null;
+    PreparedStatement ps = null;
+    FuncionarioDAO pDao = new FuncionarioDAO();
 
-	public boolean gravarEquipe(EquipeBean equipe) throws SQLException,
-			ProjetoException {
+    public boolean gravarEquipe(EquipeBean equipe) {
+        Boolean retorno = false;
+        String sql = "insert into hosp.equipe (descequipe) values (?) RETURNING id_equipe;";
 
-		String sql = "insert into hosp.equipe (descequipe) values (?) RETURNING id_equipe;";
-		try {
-			con = ConnectionFactory.getConnection();
-			ps = con.prepareStatement(sql);
-			ps.setString(1, equipe.getDescEquipe().toUpperCase());
-			ResultSet rs = ps.executeQuery();
-			con.commit();
-			int idEquipe = 0;
-			if (rs.next()) {
-				idEquipe = rs.getInt("id_equipe");
-				insereEquipeProfissional(idEquipe, equipe, 0);
+        try {
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, equipe.getDescEquipe().toUpperCase());
+            ResultSet rs = ps.executeQuery();
 
-			}
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-	}
+            if (rs.next()) {
+                retorno = insereEquipeProfissional(rs.getInt("id_equipe"), equipe);
+            }
 
-	public void insereEquipeProfissional(int idEquipe, EquipeBean equipe,
-			int gamb) throws ProjetoException {
-		String sql = "insert into hosp.equipe_medico (equipe, medico) values(?,?);";
-		try {
-			con = ConnectionFactory.getConnection();
-			ps = con.prepareStatement(sql);
-			if (gamb == 0) {
-				for (FuncionarioBean prof : equipe.getProfissionais()) {
-					ps.setInt(1, idEquipe);
-					ps.setLong(2, prof.getId());
-					ps.execute();
-					con.commit();
-				}
-			} else if (gamb == 1) {
-				for (FuncionarioBean prof : equipe.getProfissionaisNovo()) {
-					ps.setInt(1, idEquipe);
-					ps.setLong(2, prof.getId());
-					ps.execute();
-					con.commit();
-				}
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-	}
+            if (retorno) {
+                con.commit();
+            }
 
-	public List<EquipeBean> listarEquipe() throws ProjetoException {
-		List<EquipeBean> lista = new ArrayList<>();
-		String sql = "select id_equipe, descequipe, codempresa from hosp.equipe order by descequipe";
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			ResultSet rs = stm.executeQuery();
+    public Boolean insereEquipeProfissional(int idEquipe, EquipeBean equipe) {
+        Boolean retorno = false;
+        String sql = "insert into hosp.equipe_medico (equipe, medico) values(?,?);";
 
-			while (rs.next()) {
-				EquipeBean equipe = new EquipeBean();
-				equipe.setCodEquipe(rs.getInt("id_equipe"));
-				equipe.setDescEquipe(rs.getString("descequipe"));
-				equipe.setCodEmpresa(rs.getInt("codempresa"));
-				equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
-						.getInt("id_equipe")));
-				lista.add(equipe);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+        try {
+            ps = con.prepareStatement(sql);
+            for (FuncionarioBean prof : equipe.getProfissionais()) {
+                ps.setInt(1, idEquipe);
+                ps.setLong(2, prof.getId());
+                ps.execute();
+            }
+            retorno = true;
 
-	public List<EquipeBean> listarEquipeBusca(String descricao, Integer tipo)
-			throws ProjetoException {
-		List<EquipeBean> lista = new ArrayList<>();
-		String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, codempresa from hosp.equipe ";
-		if (tipo == 1) {
-			sql += " where upper(id_equipe ||'-'|| descequipe) LIKE ? order by descequipe";
-		}
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setString(1, "%" + descricao.toUpperCase() + "%");
-			ResultSet rs = stm.executeQuery();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-			while (rs.next()) {
-				EquipeBean equipe = new EquipeBean();
-				equipe.setCodEquipe(rs.getInt("id_equipe"));
-				equipe.setDescEquipe(rs.getString("descequipe"));
-				equipe.setCodEmpresa(rs.getInt("codempresa"));
-				equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
-						.getInt("id_equipe")));
-				lista.add(equipe);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+    public List<EquipeBean> listarEquipe() throws ProjetoException {
+        List<EquipeBean> lista = new ArrayList<>();
+        String sql = "select id_equipe, descequipe, codempresa from hosp.equipe order by descequipe";
 
-	public List<EquipeBean> listarEquipePorGrupoAutoComplete(String descricao,
-			Integer codgrupo) throws ProjetoException {
-		List<EquipeBean> lista = new ArrayList<>();
-		String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe from hosp.equipe e "
-				+ " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where eg.id_grupo = ? and descequipe like ? order by descequipe ";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
 
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, codgrupo);
-			stm.setString(2, "%" + descricao.toUpperCase() + "%");
-			ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                EquipeBean equipe = new EquipeBean();
+                equipe.setCodEquipe(rs.getInt("id_equipe"));
+                equipe.setDescEquipe(rs.getString("descequipe"));
+                equipe.setCodEmpresa(rs.getInt("codempresa"));
+                equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
+                        .getInt("id_equipe")));
+                lista.add(equipe);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 
-			while (rs.next()) {
-				EquipeBean equipe = new EquipeBean();
-				equipe.setCodEquipe(rs.getInt("id_equipe"));
-				equipe.setDescEquipe(rs.getString("descequipe"));
+    public List<EquipeBean> listarEquipeBusca(String descricao)
+            throws ProjetoException {
+        List<EquipeBean> lista = new ArrayList<>();
+        String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, codempresa from hosp.equipe where upper(id_equipe ||'-'|| descequipe) LIKE ? order by descequipe";
 
-				lista.add(equipe);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setString(1, "%" + descricao.toUpperCase() + "%");
+            ResultSet rs = stm.executeQuery();
 
-	public List<EquipeBean> listarEquipeAutoComplete(String descricao)
-			throws ProjetoException {
-		List<EquipeBean> lista = new ArrayList<>();
-		String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe from hosp.equipe e "
-				+ " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where descequipe like ? order by descequipe ";
+            while (rs.next()) {
+                EquipeBean equipe = new EquipeBean();
+                equipe.setCodEquipe(rs.getInt("id_equipe"));
+                equipe.setDescEquipe(rs.getString("descequipe"));
+                equipe.setCodEmpresa(rs.getInt("codempresa"));
+                equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
+                        .getInt("id_equipe")));
+                lista.add(equipe);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setString(1, "%" + descricao.toUpperCase() + "%");
-			ResultSet rs = stm.executeQuery();
+    public List<EquipeBean> listarEquipePorGrupoAutoComplete(String descricao,
+                                                             Integer codgrupo) throws ProjetoException {
+        List<EquipeBean> lista = new ArrayList<>();
+        String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe from hosp.equipe e "
+                + " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where eg.id_grupo = ? and descequipe like ? order by descequipe ";
 
-			while (rs.next()) {
-				EquipeBean equipe = new EquipeBean();
-				equipe.setCodEquipe(rs.getInt("id_equipe"));
-				equipe.setDescEquipe(rs.getString("descequipe"));
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codgrupo);
+            stm.setString(2, "%" + descricao.toUpperCase() + "%");
+            ResultSet rs = stm.executeQuery();
 
-				lista.add(equipe);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+            while (rs.next()) {
+                EquipeBean equipe = new EquipeBean();
+                equipe.setCodEquipe(rs.getInt("id_equipe"));
+                equipe.setDescEquipe(rs.getString("descequipe"));
 
-	public List<EquipeBean> listarEquipePorGrupo(Integer codgrupo)
-			throws ProjetoException {
-		List<EquipeBean> lista = new ArrayList<>();
-		String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe from hosp.equipe e "
-				+ " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where eg.id_grupo = ? order by descequipe ";
+                lista.add(equipe);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, codgrupo);
-			ResultSet rs = stm.executeQuery();
+    public List<EquipeBean> listarEquipePorGrupo(Integer codgrupo)
+            throws ProjetoException {
+        List<EquipeBean> lista = new ArrayList<>();
+        String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe from hosp.equipe e "
+                + " left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) where eg.id_grupo = ? order by descequipe ";
 
-			while (rs.next()) {
-				EquipeBean equipe = new EquipeBean();
-				equipe.setCodEquipe(rs.getInt("id_equipe"));
-				equipe.setDescEquipe(rs.getString("descequipe"));
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codgrupo);
+            ResultSet rs = stm.executeQuery();
 
-				lista.add(equipe);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+            while (rs.next()) {
+                EquipeBean equipe = new EquipeBean();
+                equipe.setCodEquipe(rs.getInt("id_equipe"));
+                equipe.setDescEquipe(rs.getString("descequipe"));
 
-	public boolean alterarEquipe(EquipeBean equipe) throws ProjetoException {
-		String sql = "update hosp.equipe set descequipe = ? where id_equipe = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, equipe.getDescEquipe().toUpperCase());
-			stmt.setInt(2, equipe.getCodEquipe());
-			stmt.executeUpdate();
-			con.commit();
-			excluirTabEquipeProf(equipe.getCodEquipe());
-			insereEquipeProfissional(equipe.getCodEquipe(), equipe, 1);
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+                lista.add(equipe);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 
-	public boolean excluirEquipe(EquipeBean equipe) throws ProjetoException {
-		String sql = "delete from hosp.equipe where id_equipe = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, equipe.getCodEquipe());
-			stmt.execute();
-			con.commit();
-			excluirTabEquipeProf(equipe.getCodEquipe());
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+    public Boolean alterarEquipe(EquipeBean equipe) {
+        Boolean retorno = false;
+        String sql = "update hosp.equipe set descequipe = ? where id_equipe = ?";
+        ps = null;
+        try {
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, equipe.getDescEquipe().toUpperCase());
+            ps.setInt(2, equipe.getCodEquipe());
+            ps.executeUpdate();
 
-	public void excluirTabEquipeProf(int id) throws ProjetoException {
-		String sql = "delete from hosp.equipe_medico where equipe = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, id);
-			stmt.execute();
-			con.commit();
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				// con.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+            retorno = excluirTabEquipeProf(equipe.getCodEquipe());
 
-	public EquipeBean buscarEquipePorID(Integer id) throws SQLException,
-			ProjetoException {
-		EquipeBean equipe = null;
+            if (retorno) {
+                retorno = insereEquipeProfissional(equipe.getCodEquipe(), equipe);
+            }
 
-		String sql = "select id_equipe, descequipe, codempresa"
-				+ " from hosp.equipe where id_equipe = ?";
+            if (retorno) {
+                con.commit();
+            }
 
-		try {
-			con = ConnectionFactory.getConnection();
-			ps = con.prepareStatement(sql);
-			ps.setInt(1, id);
-			ResultSet rs = ps.executeQuery();
+            return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-			while (rs.next()) {
-				equipe = new EquipeBean();
-				equipe.setCodEquipe(rs.getInt("id_equipe"));
-				equipe.setDescEquipe(rs.getString("descequipe"));
-				equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
-						.getInt("id_equipe")));
-				equipe.setCodEmpresa(0);// COD EMPRESA ?
-			}
+    public Boolean excluirTabEquipeProf(int id) {
+        Boolean retorno = false;
+        String sql = "delete from hosp.equipe_medico where equipe = ?";
 
-			return equipe;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, id);
+            ps.execute();
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-	}
+    public Boolean excluirEquipe(EquipeBean equipe) throws ProjetoException {
+        con = ConnectionFactory.getConnection();
+        Boolean retorno = excluirTabEquipeProf(equipe.getCodEquipe());
+        String sql = "delete from hosp.equipe where id_equipe = ?";
 
-	public ArrayList<FuncionarioBean> listarProfissionaisDaEquipe(Integer codequipe)
-			throws ProjetoException {
-		ArrayList<FuncionarioBean> lista = new ArrayList<>();
-		String sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo "
-				+ "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
-				+ "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
-				+ " where equipe = ? order by f.descfuncionario ";
+        try {
 
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, codequipe);
-			ResultSet rs = stm.executeQuery();
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setLong(1, equipe.getCodEquipe());
+            stmt.execute();
 
-			while (rs.next()) {
-				FuncionarioBean func = new FuncionarioBean();
-				func.setId(rs.getLong("medico"));
-				func.setNome(rs.getString("descfuncionario"));
-				func.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
-				func.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-				func.getCbo().setCodCbo(rs.getInt("codcbo"));
+            if (retorno) {
+                con.commit();
+            }
 
-				lista.add(func);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public EquipeBean buscarEquipePorID(Integer id) throws ProjetoException {
+        EquipeBean equipe = null;
+
+        String sql = "select id_equipe, descequipe, codempresa from hosp.equipe where id_equipe = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                equipe = new EquipeBean();
+                equipe.setCodEquipe(rs.getInt("id_equipe"));
+                equipe.setDescEquipe(rs.getString("descequipe"));
+                equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
+                        .getInt("id_equipe")));
+                equipe.setCodEmpresa(0);// COD EMPRESA ?
+            }
+
+            return equipe;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public ArrayList<FuncionarioBean> listarProfissionaisDaEquipe(Integer codequipe)
+            throws ProjetoException {
+        ArrayList<FuncionarioBean> lista = new ArrayList<>();
+        String sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo "
+                + "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
+                + "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
+                + " where equipe = ? order by f.descfuncionario ";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codequipe);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                FuncionarioBean func = new FuncionarioBean();
+                func.setId(rs.getLong("medico"));
+                func.setNome(rs.getString("descfuncionario"));
+                func.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+                func.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+                func.getCbo().setCodCbo(rs.getInt("codcbo"));
+
+                lista.add(func);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
 }

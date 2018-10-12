@@ -1,101 +1,99 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:viewAction action="#{EquipeController.ListarTodasEquipes}" />
-	</f:metadata>
-	<ui:define name="body">
-		<div class="panel-body">
-			<div class="sub-header">
-				<h4>Gerenciamento de Equipe</h4>
-				<hr />
-			</div>
+    <f:metadata>
+        <f:viewAction action="#{EquipeController.ListarTodasEquipes}"/>
+    </f:metadata>
+    <ui:define name="body">
+        <div class="panel-body">
+            <div class="sub-header">
+                <h4>Gerenciamento de Equipe</h4>
+                <hr/>
+            </div>
 
-			<h:form id="frmmensagem">
-				<b:commandButton id="btninc" value="Novo" size="sm"
-					action="#{EquipeController.redirectInsert()}" icon="glyphicon-plus"
-					look="primary">
-					<f:setPropertyActionListener value="1"
-						target="#{EquipeController.tipo}" />
-					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
-				<br />
-				<br />
+            <h:form id="frmPrincipal">
+                <b:commandButton id="btninc" value="Novo" size="sm"
+                                 action="#{EquipeController.redirectInsert()}" icon="glyphicon-plus"
+                                 look="primary">
+                    <f:setPropertyActionListener value="1"
+                                                 target="#{EquipeController.tipo}"/>
+                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
+                </b:commandButton>
+                <br/>
+                <br/>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela" value="#{EquipeController.listaEquipe}"
-					var="tab">
-					<h:column>
-						<f:facet name="header">
-                        Descrição
-                    </f:facet>
-						<h:outputText value="#{tab.descEquipe}" />
-					</h:column>
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela"
+                             value="#{EquipeController.listaEquipe}"
+                             var="tab">
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
+                        <h:outputText value="#{tab.descEquipe}"/>
+                    </h:column>
 
+                    <h:column>
+                        <f:facet name="header">
+                            Ação
+                        </f:facet>
 
-					<h:column>
-						<f:facet name="header">
-                        Ação
-                    </f:facet>
+                        <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+                                         action="#{EquipeController.redirectEdit()}">
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{EquipeController.equipe}"/>
 
+                            <f:setPropertyActionListener value="2"
+                                                         target="#{EquipeController.tipo}"/>
+                        </b:commandButton>
 
-						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{EquipeController.redirectEdit()}">
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{EquipeController.equipe}" />
+                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+                                         size="sm" ajax="true" style="margin-left:10px"
+                                         oncomplete="PF('dialogExclusao').show()">
 
-							<f:setPropertyActionListener value="2"
-								target="#{EquipeController.tipo}" />
-						</b:commandButton>
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{EquipeController.equipe}"/>
+                        </b:commandButton>
 
-						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px"
-							oncomplete="PF('dialogAtencao').show()">
+                    </h:column>
+                </b:dataTable>
+            </h:form>
+        </div>
 
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{EquipeController.equipe}" />
-						</b:commandButton>
+        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+                  resizable="false">
 
+            <h:form id="frmExcluir">
 
-					</h:column>
-				</b:dataTable>
-			</h:form>
-		</div>
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
-			resizable="false">
+                <div class="alert alert-warning" role="alert">Deseja excluir
+                    esta equipe?
+                </div>
 
-			<h:form id="dlgexcluir">
+                <p:separator/>
 
-				<div class="alert alert-warning" role="alert">Deseja excluir
-					esta equipe?</div>
+                <div align="center">
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{EquipeController.excluirEquipe()}" ajax="true"
+                                     icon="glyphicon-ok" update="frmPrincipal"/>
 
-				<p:separator />
-				<center>
-					<b:commandButton look="success" value="Sim"
-						action="#{EquipeController.excluirEquipe()}" ajax="true"
-						icon="glyphicon-ok" update="frmmensagem" />
+                    <b:commandButton value="Não"
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
 
-					<b:commandButton value="Não"
-						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;" />
+                </div>
+            </h:form>
+        </p:dialog>
 
-
-
-
-
-				</center>
-			</h:form>
-		</p:dialog>
-
-
-	</ui:define>
+    </ui:define>
 </ui:composition>
+
 </html>

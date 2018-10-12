@@ -1,7 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,6 @@ public class EquipamentoController implements Serializable {
         listaEquipamentos = new ArrayList<>();
         listaEquipamentos = null;
         this.cabecalho = "";
-
     }
 
     public String redirectEdit() {
@@ -58,7 +56,7 @@ public class EquipamentoController implements Serializable {
         listaEquipamentos = new ArrayList<>();
     }
 
-    public void gravarEquipamento() throws ProjetoException, SQLException {
+    public void gravarEquipamento(){
         boolean cadastrou = eDao.gravarEquipamento(equipamento);
 
         if (cadastrou == true) {
@@ -69,7 +67,7 @@ public class EquipamentoController implements Serializable {
         }
     }
 
-    public void alterarEquipamento() throws ProjetoException, SQLException {
+    public void alterarEquipamento() throws ProjetoException {
         boolean alterou = eDao.alterarEquipamento(equipamento);
 
         if (alterou == true) {
@@ -81,7 +79,7 @@ public class EquipamentoController implements Serializable {
 
     }
 
-    public void excluirEquipamento() throws ProjetoException, SQLException {
+    public void excluirEquipamento() throws ProjetoException {
         boolean excluiu = eDao.excluirEquipamento(equipamento);
 
         if (excluiu == true) {
@@ -94,7 +92,7 @@ public class EquipamentoController implements Serializable {
         listaEquipamentos = eDao.listarEquipamentos();
     }
 
-    public void getEditEquipamento() throws ProjetoException {
+    public void getEditEquipamento() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -110,14 +108,13 @@ public class EquipamentoController implements Serializable {
     }
 
     public List<EquipamentoBean> listarEquipamentos()
-            throws ProjetoException, SQLException {
+            throws ProjetoException{
         listaEquipamentos = eDao.listarEquipamentos();
 
         return listaEquipamentos;
     }
 
-    public List<EquipamentoBean> listaEquipamentoAutoComplete(String query)
-            throws ProjetoException {
+    public List<EquipamentoBean> listaEquipamentoAutoComplete(String query){
         List<EquipamentoBean> result = eDao.listarEquipamentoAutoComplete(query);
 
         return result;

@@ -37,4 +37,8 @@ public final class JSFUtil {
 		getRequestContext().execute("PF('" + dialog + "').hide();");
 	}
 
+	public static void atualizarComponente(String componente){
+		RequestContext.getCurrentInstance().update(componente);
+	}
+
 }
