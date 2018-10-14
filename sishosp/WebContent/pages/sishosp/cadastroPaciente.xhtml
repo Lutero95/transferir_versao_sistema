@@ -25,8 +25,7 @@
                     <hr/>
                 </div>
 
-                <p:tabView activeIndex="#{PacienteController.abaAtiva}"
-                           style="height:auto; width:auto" id="tbv">
+                <p:tabView style="height:auto; width:auto" id="tbv">
 
                     <p:tab title="Dados Pessoais">
 
@@ -53,7 +52,7 @@
 
                             <b:column span="2">
                                 <p:calendar requiredMessage="Nascimento: Campo obrigatório!"
-                                            required="false"
+                                            required="true"
                                             value="#{PacienteController.paciente.dtanascimento}"/>
                             </b:column>
 
@@ -238,7 +237,8 @@
                                              requiredMessage="CEP: Campo obrigatório!">
 
                                     <p:ajax listener="#{PacienteController.encontraCEP}"
-                                            update="inputbairro, inputbairro2, inputrua, estado, opmun1, opmun2, opbai1, opbai2, municipio, municipio2"
+                                            update="inputbairro, inputbairro2, inputrua, estado, opmun1, opmun2, opbai1, opbai2,
+                                            municipio, municipio2, frmPrincipal:msgPagina"
                                             global="false" event="blur"></p:ajax>
                                 </p:inputMask>
                             </b:column>
@@ -471,6 +471,8 @@
                                 <h:inputText value="#{PacienteController.paciente.cns}"
                                              class="form-control" id="cns"
                                              validatorMessage="CNS deve conter entre 15 digitos.">
+                                    <p:ajax listener="#{PacienteController.validaCns(PacienteController.paciente.cns)}"
+                                            global="false" event="blur" update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:cns"/>
                                 </h:inputText>
                             </b:column>
 
@@ -530,10 +532,11 @@
                             </b:column>
 
                             <b:column span="2">
-                                <b:inputText value="#{PacienteController.paciente.pis}"
-                                             class="form-control" id="pis">
-                                    <stella:validateNIT formatted="false"/>
-                                </b:inputText>
+                                <h:inputText value="#{PacienteController.paciente.pis}"
+                                             class="form-control" id="pis" required="false">
+                                    <p:ajax listener="#{PacienteController.validaPIS(PacienteController.paciente.pis)}"
+                                            global="false" event="blur" update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:pis"/>
+                                </h:inputText>
                             </b:column>
 
                             <b:column span="1">

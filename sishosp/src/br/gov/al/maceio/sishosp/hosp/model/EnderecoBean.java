@@ -27,6 +27,7 @@ public class EnderecoBean implements Serializable {
 	private Date dataCadastro;
 	private Date dataAlteracao;
 	private List<Integer> listaEstado;
+	private Boolean cepValido;
 
 	public Long getId() {
 		return id;
@@ -194,5 +195,13 @@ public class EnderecoBean implements Serializable {
 
 	public void setListaEstado(List<Integer> listaEstado) {
 		this.listaEstado = listaEstado;
+	}
+
+	public Boolean getCepValido() {
+		return cepValido;
+	}
+
+	public void setCepValido(Boolean cepValido) {
+		this.cepValido = cepValido;
 	}
 }

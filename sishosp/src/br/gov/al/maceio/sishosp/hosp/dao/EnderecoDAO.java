@@ -427,7 +427,6 @@ public class EnderecoDAO {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
         return cod;

@@ -89,6 +89,7 @@ public class PacienteBean implements Serializable {
 		formatransporte = new FormaTransporteBean();
 		encaminhado = new EncaminhadoBean();
 		profissao = new ProfissaoBean();
+		deficiencia = "N";
 
 	}
 
