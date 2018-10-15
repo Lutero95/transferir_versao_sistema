@@ -84,7 +84,7 @@
 
                             <b:column span="3">
                                 <b:selectOneMenu required="true" disable="true"
-                                                 style="margin-left:15px" requiredMessage="Sexo: Campo obrigatório"
+                                                 style="margin-left:15px" requiredMessage="Sexo: Campo obrigatório!"
                                                  id="sexo" value="#{PacienteController.paciente.sexo}">
                                     <f:selectItem itemLabel="Selecione" itemValue=""/>
                                     <f:selectItem itemLabel="Masculino" itemValue="M"/>
@@ -265,7 +265,7 @@
                         <b:row>
 
                             <b:column span="1">
-                                <h:outputLabel for="inputcomplemento" value="Complemento"
+                                <h:outputLabel for="inputcomplemento" value="Complem."
                                                style="margin-top:10px"/>
                             </b:column>
 
@@ -991,7 +991,7 @@
                                 <f:facet name="header">
                                     Adicionar
                                 </f:facet>
-                                <p:commandButton oncomplete="PF('dlgbuscaescola').hide()"
+                                <p:commandButton oncomplete="PF('dlgbuscaescola').hide()" process="@this"
                                                  icon="ui-icon-check" id="confirmar"
                                                  update=":frmPrincipal:tbv:escolacomplete2">
                                     <f:setPropertyActionListener value="#{busca}"

@@ -17,7 +17,6 @@ import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.event.SelectEvent;
 
-import br.gov.al.maceio.sishosp.comum.util.CepWebService;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 @ManagedBean(name = "PacienteController")
