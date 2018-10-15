@@ -152,14 +152,6 @@ public class CidController implements Serializable {
         this.listaCids = listaCids;
     }
 
-	public CidDAO getcDao() {
-		return cDao;
-	}
-
-	public void setcDao(CidDAO cDao) {
-		this.cDao = cDao;
-	}
-
 	public int getTipo() {
 		return tipo;
 	}

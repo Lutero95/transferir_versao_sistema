@@ -13,14 +13,14 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.RecursoBean;
 
 public class ProcedimentoDAO {
     Connection con = null;
     PreparedStatement ps = null;
 
-    public boolean gravarProcedimento(ProcedimentoBean proc)
-            throws SQLException, ProjetoException {
+    public boolean gravarProcedimento(ProcedimentoBean proc) {
+
+        Boolean retorno = false;
 
         String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
                 + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo)"
@@ -82,41 +82,7 @@ public class ProcedimentoDAO {
             }
 
             con.commit();
-            con.close();
-            return true;
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    public List<ProcedimentoBean> listarProcedimento() throws ProjetoException {
-        List<ProcedimentoBean> lista = new ArrayList<>();
-        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
-                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + " from hosp.proc order by nome";
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            ResultSet rs = stm.executeQuery();
-
-            while (rs.next()) {
-                ProcedimentoBean proc = new ProcedimentoBean();
-                proc.setIdProc(rs.getInt("id"));
-                proc.setCodProc(rs.getInt("codproc"));
-                proc.setNomeProc(rs.getString("nome"));
-                proc.setAuditivo(rs.getBoolean("auditivo"));
-                proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
-                proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
-                proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
-                proc.setValidade_laudo(rs.getInt("validade_laudo"));
-                proc.setIdadeMinima(rs.getInt("idade_minima"));
-                proc.setIdadeMaxima(rs.getInt("idade_maxima"));
-                proc.setQtdMaxima(rs.getInt("qtd_maxima"));
-                proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
-                proc.setSexo(rs.getString("sexo"));
-
-                lista.add(proc);
-            }
+            retorno = true;
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
@@ -125,54 +91,15 @@ public class ProcedimentoDAO {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
+            return retorno;
         }
-        return lista;
     }
 
-    public ProcedimentoBean listarProcedimentoPorId(int id)
-            throws ProjetoException {
-        ProcedimentoBean proc = new ProcedimentoBean();
-        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
-                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + "from hosp.proc where id = ? order by nome";
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, id);
-            ResultSet rs = stm.executeQuery();
-            while (rs.next()) {
-                proc = new ProcedimentoBean();
-                proc.setIdProc(rs.getInt("id"));
-                proc.setCodProc(rs.getInt("codproc"));
-                proc.setNomeProc(rs.getString("nome"));
-                proc.setAuditivo(rs.getBoolean("auditivo"));
-                proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
-                proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
-                proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
-                proc.setValidade_laudo(rs.getInt("validade_laudo"));
-                proc.setIdadeMinima(rs.getInt("idade_minima"));
-                proc.setIdadeMaxima(rs.getInt("idade_maxima"));
-                proc.setQtdMaxima(rs.getInt("qtd_maxima"));
-                proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
-                proc.setSexo(rs.getString("sexo"));
-            }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
-        }
-        return proc;
-    }
+    public boolean alterarProcedimento(ProcedimentoBean proc) {
 
-    public boolean alterarProcedimento(ProcedimentoBean proc)
-            throws ProjetoException {
+        Boolean retorno = false;
+
         String sql = "update hosp.proc set nome = ?, auditivo = ?, tipo_exame_auditivo = ?, utiliza_equipamento = ?, "
                 + "gera_laudo_digita = ?, validade_laudo = ?, codproc = ?, idade_minima = ?, idade_maxima = ?, qtd_maxima = ?, "
                 + "prazo_minimo_nova_execucao = ?, sexo = ? "
@@ -244,26 +171,34 @@ public class ProcedimentoDAO {
             }
 
             con.commit();
-            return true;
+            retorno = true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
-            } catch (Exception e2) {
-                e2.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+            return retorno;
         }
     }
 
-    public boolean excluirProcedimento(ProcedimentoBean proc)
-            throws ProjetoException {
+    public boolean excluirProcedimento(ProcedimentoBean proc){
+
+        Boolean retorno = false;
 
         try {
             con = ConnectionFactory.getConnection();
 
             String sql = "delete from hosp.proc_cbo where id_proc = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setLong(1, proc.getIdProc());
+            stmt.execute();
+
+            sql = "delete from hosp.proc_recurso where id_proc = ?";
+            stmt = con.prepareStatement(sql);
             stmt.setLong(1, proc.getIdProc());
             stmt.execute();
 
@@ -278,18 +213,101 @@ public class ProcedimentoDAO {
             stmt.execute();
 
             con.commit();
-            return true;
+            retorno = true;
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
-            } catch (Exception e2) {
-                e2.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+            return retorno;
         }
     }
+
+    public List<ProcedimentoBean> listarProcedimento() throws ProjetoException {
+        List<ProcedimentoBean> lista = new ArrayList<>();
+        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
+                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
+                + " from hosp.proc order by nome";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProcedimentoBean proc = new ProcedimentoBean();
+                proc.setIdProc(rs.getInt("id"));
+                proc.setCodProc(rs.getInt("codproc"));
+                proc.setNomeProc(rs.getString("nome"));
+                proc.setAuditivo(rs.getBoolean("auditivo"));
+                proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
+                proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+                proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
+                proc.setValidade_laudo(rs.getInt("validade_laudo"));
+                proc.setIdadeMinima(rs.getInt("idade_minima"));
+                proc.setIdadeMaxima(rs.getInt("idade_maxima"));
+                proc.setQtdMaxima(rs.getInt("qtd_maxima"));
+                proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
+                proc.setSexo(rs.getString("sexo"));
+
+                lista.add(proc);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
+    public ProcedimentoBean listarProcedimentoPorId(int id)
+            throws ProjetoException {
+        ProcedimentoBean proc = new ProcedimentoBean();
+        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
+                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
+                + "from hosp.proc where id = ? order by nome";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                proc = new ProcedimentoBean();
+                proc.setIdProc(rs.getInt("id"));
+                proc.setCodProc(rs.getInt("codproc"));
+                proc.setNomeProc(rs.getString("nome"));
+                proc.setAuditivo(rs.getBoolean("auditivo"));
+                proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
+                proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+                proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
+                proc.setValidade_laudo(rs.getInt("validade_laudo"));
+                proc.setIdadeMinima(rs.getInt("idade_minima"));
+                proc.setIdadeMaxima(rs.getInt("idade_maxima"));
+                proc.setQtdMaxima(rs.getInt("qtd_maxima"));
+                proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
+                proc.setSexo(rs.getString("sexo"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return proc;
+    }
+
 
     public List<ProcedimentoBean> listarProcedimentoBusca(
             String descricaoBusca, Integer tipoBuscar) throws ProjetoException {
@@ -326,16 +344,15 @@ public class ProcedimentoDAO {
                 lista.add(proc);
             }
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
-
         return lista;
     }
 
@@ -360,16 +377,15 @@ public class ProcedimentoDAO {
                 lista.add(cid);
             }
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
-
         return lista;
     }
 
@@ -393,16 +409,16 @@ public class ProcedimentoDAO {
                 lista.add(cbo);
             }
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
-
         return lista;
     }
+
 }

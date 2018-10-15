@@ -4,9 +4,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
@@ -26,16 +24,16 @@
 
                 <b:row>
 
-                    <b:column span="1">
+                    <b:column span="2">
                         <h:outputLabel value="Descrição:" style="margin-top:10px"/>
                     </b:column>
 
-                    <b:column span="5">
+                    <b:column span="10">
                         <b:inputText value="#{ProcedimentoController.proc.nomeProc}"
-                                     required="true" requiredMessage="Informe a Descrição"
-                                     validatorMessage="Descrição deve conter entre 2 e 30 caracteres."
+                                     required="true" requiredMessage="Descrição: Campo obrigatório!"
+                                     validatorMessage="Descrição deve conter entre 2 e 80 caracteres."
                                      id="incod">
-                            <f:validateLength minimum="2" maximum="40"/>
+                            <f:validateLength minimum="2" maximum="80"/>
                         </b:inputText>
                     </b:column>
 
@@ -45,44 +43,44 @@
 
                 <b:row>
 
-                    <b:column span="1">
+                    <b:column span="2">
 
                         <h:outputLabel value="Código:" style="margin-top:10px"/>
 
                     </b:column>
 
-                    <b:column span="5">
+                    <b:column span="10">
 
                         <b:inputText value="#{ProcedimentoController.proc.codProc}"
-                                     required="true" requiredMessage="Informe o Código"/>
+                                     required="true" requiredMessage="Código: Campo obrigatório!"/>
                     </b:column>
 
                 </b:row>
 
                 <b:row>
 
-                    <b:column span="1">
+                    <b:column span="2">
 
                         <h:outputLabel value="Idade Mínima:" style="margin-top:10px"/>
 
                     </b:column>
 
-                    <b:column span="2">
+                    <b:column span="4">
 
                         <b:inputText value="#{ProcedimentoController.proc.idadeMinima}"
-                                     required="true" requiredMessage="Informe a idade mínima"/>
+                                     required="true" requiredMessage="Idade mínima: Campo obrigatório!"/>
                     </b:column>
 
-                    <b:column span="1">
+                    <b:column span="2">
 
                         <h:outputLabel value="Idade Máxima:" style="margin-top:10px"/>
 
                     </b:column>
 
-                    <b:column span="2">
+                    <b:column span="4">
 
                         <b:inputText value="#{ProcedimentoController.proc.idadeMaxima}"
-                                     required="true" requiredMessage="Informe a idade máxima"/>
+                                     required="true" requiredMessage="Idade máxima: Campo obrigatório!"/>
                     </b:column>
 
                 </b:row>
@@ -91,31 +89,31 @@
 
                 <b:row>
 
-                    <b:column span="1">
+                    <b:column span="2">
 
                         <h:outputLabel value="Quantidade Máxima:" style="margin-top:10px"/>
 
                     </b:column>
 
-                    <b:column span="2">
+                    <b:column span="4">
 
                         <b:inputText value="#{ProcedimentoController.proc.qtdMaxima}"
                                      required="true"
-                                     requiredMessage="Informe a idade quantidade máxima em meses"/>
+                                     requiredMessage="Quantidade máxima em meses: Campo obrigatório!"/>
                     </b:column>
 
-                    <b:column span="1">
+                    <b:column span="2">
 
                         <h:outputLabel value="Prazo mínimo:" style="margin-top:10px"/>
 
                     </b:column>
 
-                    <b:column span="2">
+                    <b:column span="4">
 
                         <b:inputText
                                 value="#{ProcedimentoController.proc.prazoMinimoNovaExecucao}"
                                 required="true"
-                                requiredMessage="Informe o prazo mínimo para nova execução"/>
+                                requiredMessage="Prazo mínimo para nova execução: Campo obrigatório!"/>
                     </b:column>
 
                 </b:row>
@@ -133,7 +131,7 @@
                     <b:column span="2">
                         <p:selectOneRadio value="#{ProcedimentoController.proc.sexo}"
                                           required="true"
-                                          requiredMessage="Escolha o sexo que será permitido esse procedimento">
+                                          requiredMessage="Sexo que será permitido esse procedimento: Campo obrigatório!">
                             <f:selectItem itemLabel="Ambos" itemValue="A"/>
                             <f:selectItem itemLabel="Masculino" itemValue="M"/>
                             <f:selectItem itemLabel="Feminino" itemValue="F"/>
@@ -215,7 +213,7 @@
                                              rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"
                                              value="#{ProcedimentoController.proc.validade_laudo}"
                                              style="width:200px;" required="true"
-                                             requiredMessage="Informe a Validade">
+                                             requiredMessage="Validade: Campo obrigatório!">
                                 <f:selectItem itemLabel="Informe a Validade" itemValue=""/>
                                 <f:selectItem itemLabel="1" itemValue="1"/>
                                 <f:selectItem itemLabel="2" itemValue="2"/>
@@ -239,7 +237,7 @@
 
                 <b:row>
 
-                    <b:column span="1">
+                    <b:column span="2">
                         <h:outputLabel value="CID:"/>
                     </b:column>
 
@@ -260,11 +258,11 @@
 
                     </b:column>
 
-                    <b:column span="1">
+                    <b:column span="2">
                         <p:commandButton size="sm" immediate="true"
                                          action="#{ProcedimentoController.addCid()}"
                                          tooltip="Adicionar Cid" icon="ui-icon-plus"
-                                         update="tabelaCid, outCid1, :frmCadProc:msgError"/>
+                                         update="tabelaCid, outCid1, :frmCadProc:msgPagina"/>
                     </b:column>
 
                     <b:column span="5">
@@ -306,7 +304,7 @@
 
                 <b:row>
 
-                    <b:column span="1">
+                    <b:column span="2">
                         <h:outputLabel value="CBO:"/>
                     </b:column>
 
@@ -324,11 +322,11 @@
                         </p:outputPanel>
                     </b:column>
 
-                    <b:column span="1">
+                    <b:column span="2">
                         <p:commandButton size="sm" immediate="true"
                                          action="#{ProcedimentoController.addCbo()}"
                                          tooltip="Adicionar CBO" icon="ui-icon-plus"
-                                         update="tabelaCbo, outCbo, :frmCadProc:msgError"/>
+                                         update="tabelaCbo, outCbo, :frmCadProc:msgPagina"/>
                     </b:column>
 
                     <b:column span="5">
@@ -368,7 +366,7 @@
 
                 <b:row>
 
-                    <b:column span="1">
+                    <b:column span="2">
                         <h:outputLabel value="Recurso:"/>
                     </b:column>
 
@@ -386,11 +384,11 @@
                         </p:outputPanel>
                     </b:column>
 
-                    <b:column span="1">
+                    <b:column span="2">
                         <p:commandButton size="sm" immediate="true"
                                          action="#{ProcedimentoController.addRecurso()}"
                                          tooltip="Adicionar Recurso" icon="ui-icon-plus"
-                                         update="tabelaRecurso, outRecurso, :frmCadProc:msgError"/>
+                                         update="tabelaRecurso, outRecurso, :frmCadProc:msgPagina"/>
                     </b:column>
 
                     <b:column span="5">
@@ -430,11 +428,11 @@
 
             <br></br>
 
-            <center>
-                <b:messages value="Error" id="msgError"></b:messages>
-            </center>
+           <div align="center">
+                <b:messages value="Error" id="msgPagina"></b:messages>
+           </div>
 
-            <center>
+            <div align="center">
 
                 <b:commandButton
                         action="#{ProcedimentoController.gravarProcedimento()}"
@@ -453,10 +451,10 @@
                                  action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true">
                 </b:commandButton>
 
-            </center>
+            </div>
         </h:form>
-
 
     </ui:define>
 </ui:composition>
+
 </html>
