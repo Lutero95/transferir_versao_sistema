@@ -1,111 +1,106 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:stella="http://stella.caelum.com.br/faces2"
-	xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:viewAction action="#{EscolaridadeController.listarEscolaridade()}" />
+    <f:metadata>
+        <f:viewAction action="#{EscolaridadeController.buscarEscolaridades()}"/>
 
-	</f:metadata>
-	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="panel-body">
-			<div class="sub-header">
-				<h4>Gerenciamento de Escolaridade</h4>
-				<hr />
-			</div>
-			<h:form id="frmmensagem">
-				<b:commandButton id="btninc" value="Novo" size="sm"
-					action="#{EscolaridadeController.redirectInsert()}"
-					icon="glyphicon-plus" look="primary">
-					<f:setPropertyActionListener value="1"
-						target="#{EscolaridadeController.tipo}" />
-					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
-				<br />
-				<br />
+    </f:metadata>
+    <ui:define name="body">
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+        <div class="panel-body">
+            <div class="sub-header">
+                <h4>Gerenciamento de Escolaridade</h4>
+                <hr/>
+            </div>
+            <h:form id="frmPrincipal">
+                <b:commandButton id="btninc" value="Novo" size="sm"
+                                 action="#{EscolaridadeController.redirectInsert()}"
+                                 icon="glyphicon-plus" look="primary">
+                    <f:setPropertyActionListener value="1"
+                                                 target="#{EscolaridadeController.tipo}"/>
+                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
+                </b:commandButton>
+                <br/>
+                <br/>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-					value="#{EscolaridadeController.listaEscolaridade}"
-					display="Nenhuma Escolaridade">
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
-					<h:column>
-						<f:facet name="header">
-                        Descrição
-                    </f:facet>
-						<h:outputText value="#{tab.descescolaridade}" />
-					</h:column>
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
+                             value="#{EscolaridadeController.listarEscolaridades()}">
 
-					<h:column>
-						<f:facet name="header">
-                        Ação
-                    </f:facet>
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
+                        <h:outputText value="#{tab.descescolaridade}"/>
+                    </h:column>
 
-						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{EscolaridadeController.redirectEdit()}">
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{EscolaridadeController.escolaridade}" />
+                    <h:column>
+                        <f:facet name="header">
+                            Ação
+                        </f:facet>
 
-							<f:setPropertyActionListener value="2"
-								target="#{EscolaridadeController.tipo}" />
-						</b:commandButton>
+                        <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+                                         action="#{EscolaridadeController.redirectEdit()}">
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{EscolaridadeController.escolaridade}"/>
 
-						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px"
-							oncomplete="PF('dialogAtencao').show()">
+                            <f:setPropertyActionListener value="2"
+                                                         target="#{EscolaridadeController.tipo}"/>
+                        </b:commandButton>
 
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{EscolaridadeController.escolaridade}" />
-						</b:commandButton>
+                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+                                         size="sm" ajax="true" style="margin-left:10px"
+                                         oncomplete="PF('dialogExclusao').show()">
 
-					</h:column>
-				</b:dataTable>
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{EscolaridadeController.escolaridade}"/>
+                        </b:commandButton>
 
-			</h:form>
-		</div>
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
-			resizable="false">
+                    </h:column>
+                </b:dataTable>
 
-			<h:form id="dlgexcluir">
-				<h:panelGrid columns="1">
+            </h:form>
+        </div>
+        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+                  resizable="false">
 
-
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						esta Escolaridade?</div>
-
-				</h:panelGrid>
+            <h:form id="frmExcluir">
+                <h:panelGrid columns="1">
 
 
+                    <div class="alert alert-warning" role="alert">Deseja excluir
+                        esta Escolaridade?
+                    </div>
 
-				<center>
+                </h:panelGrid>
 
-					<p:separator />
-					<b:commandButton look="success" value="Sim"
-						action="#{EscolaridadeController.excluirEscolaridade()}"
-						ajax="true" icon="glyphicon-ok" update="frmmensagem" />
+                <div align="center">
 
-					<b:commandButton value="Não"
-						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;" />
+                    <p:separator/>
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{EscolaridadeController.excluirEscolaridade()}"
+                                     ajax="true" icon="glyphicon-ok" update="frmPrincipal"/>
 
+                    <b:commandButton value="Não"
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
 
+                </div>
 
-				</center>
+            </h:form>
+        </p:dialog>
 
-
-			</h:form>
-		</p:dialog>
-
-
-	</ui:define>
+    </ui:define>
 </ui:composition>
+
 </html>
