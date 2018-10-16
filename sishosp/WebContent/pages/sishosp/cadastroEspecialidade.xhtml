@@ -1,74 +1,75 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:viewAction
-			action="#{EspecialidadeController.getEditEspecialidade()}" />
-	</f:metadata>
-	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
+    <f:metadata>
+        <f:viewAction
+                action="#{EspecialidadeController.getEditEspecialidade()}"/>
+    </f:metadata>
+    <ui:define name="body">
 
-		<h:form class="form-horizontal" id="formCADU">
+        <h:form class="form-horizontal" id="frmPrincipal">
 
-			<div class="panel-body">
-				<div class="sub-header">
-					<h:outputText value="#{EspecialidadeController.cabecalho}"
-						styleClass="cadcabecalho"></h:outputText>
-					<hr />
-				</div>
-
-
-				<b:row>
-
-					<b:column span="1">
-						<h:outputLabel for="inputname" value="Descrição"
-							style="margin-top:10px" />
-					</b:column>
-
-					<b:column span="5">
-						<h:inputText
-							value="#{EspecialidadeController.espec.descEspecialidade}"
-							class="form-control" id="inputname" required="true"
-							validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-							requiredMessage="Descrição obrigatória!">
-							<f:validateLength minimum="2" maximum="40" />
-						</h:inputText>
-					</b:column>
-				</b:row>
-
-				<br></br>
-
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
-
-				<center>
-					<b:commandButton
-						action="#{EspecialidadeController.gravarEspecialidade()}"
-						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
-						value="Incluir" style="float:left"
-						rendered="#{EspecialidadeController.tipo == 1}" />
-
-					<b:commandButton
-						action="#{EspecialidadeController.alterarEspecialidade()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
-						look="success" style="float:left"
-						rendered="#{EspecialidadeController.tipo  == 2}" />
-
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="float:right" size="sm" immediate="true" look="info"
-						action="/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true">
-					</b:commandButton>
-				</center>
-			</div>
-		</h:form>
+            <div class="panel-body">
+                <div class="sub-header">
+                    <h:outputText value="#{EspecialidadeController.cabecalho}"
+                                  styleClass="cadcabecalho"></h:outputText>
+                    <hr/>
+                </div>
 
 
-	</ui:define>
+                <b:row>
+
+                    <b:column span="1">
+                        <h:outputLabel for="inputname" value="Descrição"
+                                       style="margin-top:10px"/>
+                    </b:column>
+
+                    <b:column span="11">
+                        <h:inputText
+                                value="#{EspecialidadeController.espec.descEspecialidade}"
+                                class="form-control" id="inputname" required="true"
+                                validatorMessage="Descrição deve conter entre 2 e 60 caracteres."
+                                requiredMessage="Descrição: Campo obrigatório!">
+                            <f:validateLength minimum="2" maximum="60"/>
+                        </h:inputText>
+                    </b:column>
+                </b:row>
+
+                <br></br>
+                <br></br>
+
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
+
+                <div align="center">
+                    <b:commandButton
+                            action="#{EspecialidadeController.gravarEspecialidade()}"
+                            icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
+                            value="Incluir" style="float:left"
+                            rendered="#{EspecialidadeController.tipo == 1}"/>
+
+                    <b:commandButton
+                            action="#{EspecialidadeController.alterarEspecialidade()}"
+                            icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
+                            look="success" style="float:left"
+                            rendered="#{EspecialidadeController.tipo  == 2}"/>
+
+                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                     style="float:right" size="sm" immediate="true" look="info"
+                                     action="/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true">
+                    </b:commandButton>
+                </div>
+            </div>
+        </h:form>
+
+    </ui:define>
 </ui:composition>
+
 </html>

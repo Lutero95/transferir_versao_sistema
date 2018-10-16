@@ -5,221 +5,155 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.EscolaridadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 @ManagedBean(name = "EspecialidadeController")
 @ViewScoped
 public class EspecialidadeController implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private EspecialidadeBean espec;
-	private List<EspecialidadeBean> listaEspecialidade;
-	private Integer tipoBuscar;
-	private String descricaoBusca;
-	private int tipo;
-	private Integer abaAtiva = 0;
-	private String cabecalho;
+    private static final long serialVersionUID = 1L;
+    private EspecialidadeBean espec;
+    private List<EspecialidadeBean> listaEspecialidade;
+    private int tipo;
+    private String cabecalho;
+    private EspecialidadeDAO eDao = new EspecialidadeDAO();
 
-	EspecialidadeDAO eDao = new EspecialidadeDAO();
+    //CONSTANTES
+    private static final String ENDERECO_CADASTRO = "cadastroEspecialidade?faces-redirect=true";
+    private static final String ENDERECO_TIPO = "&amp;tipo=";
+    private static final String ENDERECO_ID = "&amp;id=";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de Especialidade";
+    private static final String CABECALHO_ALTERACAO = "Alteração de Especialidade";
 
-	public EspecialidadeController() {
-		this.espec = new EspecialidadeBean();
-		this.listaEspecialidade = null;
-		this.descricaoBusca = new String();
-		this.descricaoBusca = new String();
-	}
+    public EspecialidadeController() {
+        this.espec = new EspecialidadeBean();
+        this.listaEspecialidade = null;
+    }
 
-	public void limparDados() throws ProjetoException {
-		espec = new EspecialidadeBean();
-		this.descricaoBusca = new String();
-		this.tipoBuscar = 1;
-		this.listaEspecialidade = eDao.listarEspecialidades();
-	}
+    public String redirectEdit() {
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.espec.getCodEspecialidade(), ENDERECO_TIPO, tipo);
+    }
 
-	public String redirectEdit() {
-		return "cadastroEspecialidade?faces-redirect=true&amp;id="
-				+ this.espec.getCodEspecialidade() + "&amp;tipo=" + tipo;
-	}
+    public String redirectInsert() {
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
+    }
 
-	public String redirectInsert() {
-		FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.put("tipo", tipo);
-		int tipoesc2 = (int) FacesContext.getCurrentInstance()
-				.getExternalContext().getSessionMap().get("tipo");
+    public void getEditEspecialidade() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            tipo = Integer.parseInt(params.get("tipo"));
 
-		return "cadastroEspecialidade?faces-redirect=true&amp;tipo=" + tipo;
-	}
+            this.espec = eDao.listarEspecialidadePorId((id));
+        } else {
 
-	public void buscarEspecialidades() throws ProjetoException {
-		this.listaEspecialidade = eDao.listarEspecialidadesBusca(
-				descricaoBusca, tipoBuscar);
-	}
+            tipo = Integer.parseInt(params.get("tipo"));
 
-	public void alterarEspecialidade() throws ProjetoException {
-		boolean alterou = eDao.alterarEspecialidade(espec);
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Especialidade alterada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			this.listaEspecialidade = eDao.listarEspecialidades();
-			// return
-			// "/pages/sishosp/gerenciarEspecialidade.faces?faces-redirect=true";
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			this.listaEspecialidade = eDao.listarEspecialidades();
-			// return "";
-		}
-	}
+        }
 
-	public void excluirEspecialidade() throws ProjetoException {
-		boolean ok = eDao.excluirEspecialidade(espec);
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Especialidade excluída com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		this.listaEspecialidade = eDao.listarEspecialidades();
-	}
+    public void limparDados() throws ProjetoException {
+        espec = new EspecialidadeBean();
+        this.listaEspecialidade = eDao.listarEspecialidades();
+    }
 
-	public void getEditEspecialidade() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			tipo = Integer.parseInt(params.get("tipo"));
+    public void gravarEspecialidade() throws ProjetoException, SQLException {
 
-			EspecialidadeDAO udao = new EspecialidadeDAO();
-			this.espec = udao.listarEspecialidadePorId((id));
-		} else {
+        boolean cadastrou = eDao.gravarEspecialidade(espec);
 
-			tipo = Integer.parseInt(params.get("tipo"));
+        if (cadastrou == true) {
+            limparDados();
+            JSFUtil.adicionarMensagemSucesso("Especialidade cadastrado com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+        }
+    }
 
-		}
+    public void alterarEspecialidade() throws ProjetoException {
+        boolean alterou = eDao.alterarEspecialidade(espec);
+        if (alterou == true) {
+            JSFUtil.adicionarMensagemSucesso("Especialidade alterada com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+        }
+    }
 
-	}
+    public void excluirEspecialidade() throws ProjetoException {
+        boolean excluiu = eDao.excluirEspecialidade(espec);
+        if (excluiu == true) {
+            JSFUtil.adicionarMensagemSucesso("Especialidade excluída com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
+        }
+        this.listaEspecialidade = eDao.listarEspecialidades();
+    }
 
-	public List<EspecialidadeBean> listaEspecialidadeAutoComplete(String query)
-			throws ProjetoException {
-		List<EspecialidadeBean> result = eDao.listarEspecialidadesBusca(query,
-				1);
-		return result;
-	}
+    public void listarTodasEspecialidades() throws ProjetoException {
+        this.listaEspecialidade = eDao.listarEspecialidades();
+    }
 
-	public EspecialidadeBean getEspec() {
-		return espec;
-	}
+    public List<EspecialidadeBean> listarEspecialidades()
+            throws ProjetoException {
+        this.listaEspecialidade = eDao.listarEspecialidades();
+        return listaEspecialidade;
+    }
 
-	public void setEspec(EspecialidadeBean espec) {
-		this.espec = espec;
-	}
+    public List<EspecialidadeBean> listaEspecialidadeAutoComplete(String query)
+            throws ProjetoException {
+        List<EspecialidadeBean> result = eDao.listarEspecialidadesBusca(query,
+                1);
+        return result;
+    }
 
-	public Integer getTipoBuscar() {
-		return tipoBuscar;
-	}
+    public String getCabecalho() {
+        if (this.tipo == 1) {
+            cabecalho = CABECALHO_INCLUSAO;
+        } else if (this.tipo == 2) {
+            cabecalho = CABECALHO_ALTERACAO;
+        }
+        return cabecalho;
+    }
 
-	public void setTipoBuscar(Integer tipoBuscar) {
-		this.tipoBuscar = tipoBuscar;
-	}
+    public void setCabecalho(String cabecalho) {
+        this.cabecalho = cabecalho;
+    }
 
-	public String getDescricaoBusca() {
-		return descricaoBusca;
-	}
 
-	public void setDescricaoBusca(String descricaoBusca) {
-		this.descricaoBusca = descricaoBusca;
-	}
+    public int getTipo() {
+        return tipo;
+    }
 
-	public Integer getAbaAtiva() {
-		return abaAtiva;
-	}
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
 
-	public void setAbaAtiva(Integer abaAtiva) {
-		this.abaAtiva = abaAtiva;
-	}
+    public List<EspecialidadeBean> getListaEspecialidade() {
+        return listaEspecialidade;
+    }
 
-	public void getListarTodasEspecialidades() throws ProjetoException {
-		this.listaEspecialidade = eDao.listarEspecialidades();
+    public EspecialidadeBean getEspec() {
+        return espec;
+    }
 
-	}
+    public void setEspec(EspecialidadeBean espec) {
+        this.espec = espec;
+    }
 
-	public void gravarEspecialidade() throws ProjetoException, SQLException {
-
-		boolean cadastrou = eDao.gravarEspecialidade(espec);
-
-		if (cadastrou == true) {
-			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Especialidade cadastrada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			// return
-			// "gerenciarEspecialidade?faces-redirect=true&amp;tipo="+tipo+"&amp;sucesso=Especialidade cadastrada com sucesso!";
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			// return "";
-		}
-	}
-
-	public String getCabecalho() {
-		if (this.tipo == 1) {
-			cabecalho = "Inclusão de Especialidade";
-		} else if (this.tipo == 2) {
-			cabecalho = "Alterar Especialidade";
-		}
-		return cabecalho;
-	}
-
-	public void setCabecalho(String cabecalho) {
-		this.cabecalho = cabecalho;
-	}
-
-	/**
-	 * @return the tipo
-	 */
-	public int getTipo() {
-		return tipo;
-	}
-
-	/**
-	 * @param tipo
-	 *            the tipo to set
-	 */
-	public void setTipo(int tipo) {
-		this.tipo = tipo;
-	}
-
-	public List<EspecialidadeBean> getListaEspecialidade() {
-		return listaEspecialidade;
-	}
-
-	public void setListaEspecialidade(List<EspecialidadeBean> listaEspecialidade) {
-		this.listaEspecialidade = listaEspecialidade;
-	}
+    public void setListaEspecialidade(List<EspecialidadeBean> listaEspecialidade) {
+        this.listaEspecialidade = listaEspecialidade;
+    }
 }

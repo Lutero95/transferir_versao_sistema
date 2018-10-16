@@ -1,100 +1,103 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:event type="preRenderView"
-			listener="#{EspecialidadeController.getListarTodasEspecialidades()}" />
-	</f:metadata>
-	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="panel-body">
-			<div class="sub-header">
-				<h4>Gerenciamento de Especialidade</h4>
-				<hr />
-			</div>
-			<h:form id="frmmensagem">
+    <f:metadata>
+        <f:event type="preRenderView"
+                 listener="#{EspecialidadeController.listarTodasEspecialidades()}"/>
+    </f:metadata>
+    <ui:define name="body">
+
+        <div class="panel-body">
+            <div class="sub-header">
+                <h4>Gerenciamento de Especialidade</h4>
+                <hr/>
+            </div>
+            <h:form id="frmPrincipal">
 
 
-				<b:commandButton id="btninc" value="Novo" size="sm"
-					action="#{EspecialidadeController.redirectInsert()}"
-					icon="glyphicon-plus" look="primary">
-					<f:setPropertyActionListener value="1"
-						target="#{EspecialidadeController.tipo}" />
-					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
-				<br />
-				<br />
+                <b:commandButton id="btninc" value="Novo" size="sm"
+                                 action="#{EspecialidadeController.redirectInsert()}"
+                                 icon="glyphicon-plus" look="primary">
+                    <f:setPropertyActionListener value="1"
+                                                 target="#{EspecialidadeController.tipo}"/>
+                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
+                </b:commandButton>
+                <br/>
+                <br/>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-					value="#{EspecialidadeController.listaEspecialidade}"
-					display="Nenhuma Especialidade">
-					<h:column>
-						<f:facet name="header">
-                        Descrição
-                    </f:facet>
-						<h:outputText value="#{tab.descEspecialidade}" />
-					</h:column>
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
+                             value="#{EspecialidadeController.listarEspecialidades()}">
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
+                        <h:outputText value="#{tab.descEspecialidade}"/>
+                    </h:column>
 
-					<h:column>
-						<f:facet name="header">
-                        Ação
-                    </f:facet>
+                    <h:column>
+                        <f:facet name="header">
+                            Ação
+                        </f:facet>
 
-						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{EspecialidadeController.redirectEdit()}">
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{EspecialidadeController.espec}" />
+                        <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+                                         action="#{EspecialidadeController.redirectEdit()}">
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{EspecialidadeController.espec}"/>
 
-							<f:setPropertyActionListener value="2"
-								target="#{EspecialidadeController.tipo}" />
-						</b:commandButton>
+                            <f:setPropertyActionListener value="2"
+                                                         target="#{EspecialidadeController.tipo}"/>
+                        </b:commandButton>
 
-						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px"
-							oncomplete="PF('dialogAtencao').show()">
+                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+                                         size="sm" ajax="true" style="margin-left:10px"
+                                         oncomplete="PF('dialogExclusao').show()">
 
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{EspecialidadeController.espec}" />
-						</b:commandButton>
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{EspecialidadeController.espec}"/>
+                        </b:commandButton>
 
-					</h:column>
+                    </h:column>
 
-				</b:dataTable>
-			</h:form>
-		</div>
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
-			resizable="false">
+                </b:dataTable>
+            </h:form>
+        </div>
+        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+                  resizable="false">
 
-			<h:form id="dlgexcluir">
-				<h:panelGrid columns="1">
+            <h:form id="frmExcluir">
+                <h:panelGrid columns="1">
 
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						essa especialidade?</div>
+                    <div class="alert alert-warning" role="alert">Deseja excluir
+                        essa especialidade?
+                    </div>
 
-				</h:panelGrid>
-				<center>
+                </h:panelGrid>
 
-					<p:separator />
-					<b:commandButton look="success" value="Sim"
-						action="#{EspecialidadeController.excluirEspecialidade()}"
-						ajax="true" icon="glyphicon-ok" update="frmmensagem" />
+                <div align="center">
+                    <p:separator/>
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{EspecialidadeController.excluirEspecialidade()}"
+                                     ajax="true" icon="glyphicon-ok" update="frmPrincipal"/>
 
-					<b:commandButton value="Não"
-						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;" />
+                    <b:commandButton value="Não"
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
 
-				</center>
-			</h:form>
-		</p:dialog>
-	</ui:define>
+                </div>
+
+            </h:form>
+        </p:dialog>
+    </ui:define>
 </ui:composition>
+
 </html>
