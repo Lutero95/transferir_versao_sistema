@@ -71,6 +71,12 @@ public class EquipeController implements Serializable {
 		this.listaEquipe = eDao.listarEquipe();
 	}
 
+	public List<EquipeBean> listarEquipes() throws ProjetoException {
+		this.listaEquipe = eDao.listarEquipe();
+
+		return listaEquipe;
+	}
+
 	public void gravarEquipe() throws ProjetoException {
 		if (this.equipe.getProfissionais().isEmpty()) {
 			JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um profissional na equipe!", "Advertência");

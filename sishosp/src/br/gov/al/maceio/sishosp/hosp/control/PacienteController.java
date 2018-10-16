@@ -15,6 +15,7 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.model.*;
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -121,6 +122,16 @@ public class PacienteController implements Serializable {
 
         }
 
+    }
+
+    public void buscarPacientes() throws ProjetoException {
+        listaPacientes = pDao.listaPacientes();
+    }
+
+    public List<PacienteBean> listarPacientes() throws ProjetoException {
+        listaPacientes = pDao.listaPacientes();
+
+        return listaPacientes;
     }
 
     public void encontraCEP() {
@@ -632,10 +643,6 @@ public class PacienteController implements Serializable {
 
     public void setEncaminhado(EncaminhadoBean encaminhado) {
         this.encaminhado = encaminhado;
-    }
-
-    public void listarPacientes() throws ProjetoException {
-        listaPacientes = pDao.listaPacientes();
     }
 
     public void setListaPacientes(List<PacienteBean> listaPacientes) {

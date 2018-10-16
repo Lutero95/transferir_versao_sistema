@@ -213,6 +213,16 @@ public class ProcedimentoController implements Serializable {
         return result;
     }
 
+    public void buscarProcedimentos() throws ProjetoException {
+        this.listaProcedimentos = pDao.listarProcedimento();
+
+    }
+
+    public List<ProcedimentoBean> listarProcedimentos() throws ProjetoException {
+        this.listaProcedimentos = pDao.listarProcedimento();
+        return listaProcedimentos;
+    }
+
     public List<ProcedimentoBean> getListaProcedimentos() {
         return listaProcedimentos;
     }
@@ -223,11 +233,6 @@ public class ProcedimentoController implements Serializable {
 
     public void setProc(ProcedimentoBean proc) {
         this.proc = proc;
-    }
-
-    public void listarProcedimentos() throws ProjetoException {
-        this.listaProcedimentos = pDao.listarProcedimento();
-
     }
 
     public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {

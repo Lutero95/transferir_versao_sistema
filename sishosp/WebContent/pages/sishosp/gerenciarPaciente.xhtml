@@ -18,7 +18,7 @@
             </div>
             <h:form id="frmPrincipal">
                 <f:metadata>
-                    <f:viewAction action="#{PacienteController.listarPacientes()}"/>
+                    <f:viewAction action="#{PacienteController.buscarPacientes()}"/>
                 </f:metadata>
 
                 <b:commandButton id="btninc" value="Novo" size="sm"
@@ -36,7 +36,7 @@
                 </div>
 
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabelapacientes" var="tab"
-                             value="#{PacienteController.listaPacientes}">
+                             value="#{PacienteController.listarPacientes()}">
 
                     <h:column>
                         <f:facet name="header">

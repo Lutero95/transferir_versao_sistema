@@ -9,7 +9,7 @@
 
 <ui:composition template="../../template/template.xhtml">
     <f:metadata>
-        <f:viewAction action="#{ProcedimentoController.listarProcedimentos()}"/>
+        <f:viewAction action="#{ProcedimentoController.buscarProcedimentos()}"/>
     </f:metadata>
     <ui:define name="body">
 
@@ -35,7 +35,7 @@
                 </div>
 
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-                             value="#{ProcedimentoController.listaProcedimentos}">
+                             value="#{ProcedimentoController.listarProcedimentos()}">
                     <h:column>
                         <f:facet name="header">
                             Descrição
