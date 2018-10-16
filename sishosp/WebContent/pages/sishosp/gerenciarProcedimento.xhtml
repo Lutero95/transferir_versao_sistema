@@ -19,7 +19,7 @@
                 <hr/>
             </div>
 
-            <h:form id="frmmensagem">
+            <h:form id="frmPrincipal">
                 <b:commandButton id="btninc" value="Novo" size="sm"
                                  action="#{ProcedimentoController.redirectInsert()}"
                                  icon="glyphicon-plus" look="primary">
@@ -86,7 +86,7 @@
                     <p:separator/>
                     <b:commandButton look="success" value="Sim" style="float:left;"
                                      action="#{ProcedimentoController.excluirProcedimento()}"
-                                     ajax="true" icon="glyphicon-ok" update="frmmensagem"/>
+                                     ajax="true" icon="glyphicon-ok" update="frmPrincipal"/>
 
                     <b:commandButton value="Não"
                                      oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
