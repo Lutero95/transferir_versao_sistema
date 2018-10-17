@@ -12,256 +12,190 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.FormaTransporteBean;
 
 public class FormaTransporteDAO {
-	private Connection conexao = null;
+    private Connection conexao = null;
 
-	public Boolean cadastrar(FormaTransporteBean transporte)
-			throws ProjetoException {
-		boolean cadastrou = false;
+    public Boolean cadastrar(FormaTransporteBean transporte) {
+        boolean retorno = false;
 
-		/*
-		 * PacienteBean user_session = (PacienteBean) FacesContext
-		 * .getCurrentInstance().getExternalContext().getSessionMap()
-		 * .get("obj_paciente");
-		 */
+        String sql = "insert into hosp.formatransporte (descformatransporte)"
+                + " values (?)";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, transporte.getDescformatransporte().toUpperCase()
+                    .trim());
 
-		String sql = "insert into hosp.formatransporte (descformatransporte)"
-				+ " values (?)";
-		// returning id_paciente
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setString(1, transporte.getDescformatransporte().toUpperCase()
-					.trim());
-			// stmt.setString(2, paciente.getCpf().replaceAll("[^0-9]", ""));
-			// stmt.setBoolean(3, true);
-			// stmt.setInt(3, paciente.getIdpessoa());
-			/*
-			 * ResultSet rs = stmt.executeQuery(); if(rs.next()) { PacienteBean
-			 * p = paciente; String idRetorno = null; idRetorno =
-			 * String.valueOf(rs.getLong("id_usuario"));
-			 * p.setId_paciente(Long.parseLong(idRetorno));
-			 * 
-			 * }
-			 */
-			stmt.execute();
-			conexao.commit();
-			cadastrou = true;
-			conexao.close();
+            stmt.execute();
+            conexao.commit();
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-			return cadastrou;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+    public Boolean alterar(FormaTransporteBean transporte) {
+        boolean retorno = false;
+        String sql = "update hosp.formatransporte set descformatransporte = ? where id_formatransporte = ?";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, transporte.getDescformatransporte().toUpperCase());
+            stmt.setInt(2, transporte.getCodformatransporte());
+            stmt.executeUpdate();
 
-	public Boolean alterar(FormaTransporteBean transporte)
-			throws ProjetoException {
-		boolean alterou = false;
-		String sql = "update hosp.formatransporte set descformatransporte = ? where id_formatransporte = ?";
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setString(1, transporte.getDescformatransporte().toUpperCase());
-			stmt.setInt(2, transporte.getCodformatransporte());
-			stmt.executeUpdate();
+            conexao.commit();
 
-			conexao.commit();
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-			alterou = true;
+    public Boolean excluir(FormaTransporteBean transporte) {
+        boolean retorno = false;
+        String sql = "delete from hosp.formatransporte where id_formatransporte = ?";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, transporte.getCodformatransporte());
+            stmt.executeUpdate();
 
-			return alterou;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+            conexao.commit();
 
-	public Boolean excluir(FormaTransporteBean transporte)
-			throws ProjetoException {
-		boolean excluir = false;
-		String sql = "delete from hosp.formatransporte where id_formatransporte = ?";
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setInt(1, transporte.getCodformatransporte());
-			stmt.executeUpdate();
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-			conexao.commit();
+    public ArrayList<FormaTransporteBean> listaTransportes()
+            throws ProjetoException {
 
-			excluir = true;
+        String sql = "select * from hosp.formatransporte order by descformatransporte";
 
-			return excluir;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+        ArrayList<FormaTransporteBean> lista = new ArrayList();
 
-	public ArrayList<FormaTransporteBean> listaTransportes()
-			throws ProjetoException {
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
 
-		String sql = "select * from hosp.formatransporte order by descformatransporte";
+            while (rs.next()) {
+                FormaTransporteBean p = new FormaTransporteBean();
 
-		ArrayList<FormaTransporteBean> lista = new ArrayList();
+                p.setCodformatransporte(rs.getInt("id_formatransporte"));
+                p.setDescformatransporte(rs.getString("descformatransporte")
+                        .toUpperCase());
 
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stm = conexao.prepareStatement(sql);
-			ResultSet rs = stm.executeQuery();
+                lista.add(p);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 
-			while (rs.next()) {
-				FormaTransporteBean p = new FormaTransporteBean();
+    public FormaTransporteBean buscatransportecodigo(Integer i)
+            throws ProjetoException {
+        PreparedStatement ps = null;
+        conexao = ConnectionFactory.getConnection();
 
-				p.setCodformatransporte(rs.getInt("id_formatransporte"));
-				p.setDescformatransporte(rs.getString("descformatransporte")
-						.toUpperCase());
+        try {
 
-				lista.add(p);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+            String sql = "select id_formatransporte, descformatransporte from hosp.formatransporte where id_formatransporte=? order by descformatransporte";
 
-	public FormaTransporteBean buscatransportecodigo(Integer i)
-			throws ProjetoException {
-		PreparedStatement ps = null;
-		conexao = ConnectionFactory.getConnection();
+            ps = conexao.prepareStatement(sql);
+            ps.setInt(1, i);
+            ResultSet rs = ps.executeQuery();
 
-		try {
+            FormaTransporteBean transporte = new FormaTransporteBean();
+            while (rs.next()) {
 
-			String sql = "select id_formatransporte, descformatransporte from hosp.formatransporte where id_formatransporte=? order by descformatransporte";
+                transporte.setCodformatransporte(rs.getInt(1));
+                transporte.setDescformatransporte(rs.getString(2));
 
-			ps = conexao.prepareStatement(sql);
-			ps.setInt(1, i);
-			ResultSet rs = ps.executeQuery();
+            }
+            return transporte;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
-			FormaTransporteBean transporte = new FormaTransporteBean();
-			while (rs.next()) {
+    public List<FormaTransporteBean> buscatransporte(String s)
+            throws ProjetoException {
+        PreparedStatement ps = null;
+        conexao = ConnectionFactory.getConnection();
 
-				transporte.setCodformatransporte(rs.getInt(1));
-				transporte.setDescformatransporte(rs.getString(2));
+        try {
+            List<FormaTransporteBean> listatransportes = new ArrayList<FormaTransporteBean>();
+            String sql = "select id_formatransporte,id_formatransporte ||'-'|| descformatransporte descformatransporte from hosp.formatransporte "
+                    + " where upper(id_formatransporte ||'-'|| descformatransporte) like ? order by descformatransporte";
 
-			}
-			return transporte;
-		} catch (Exception sqle) {
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, "%" + s.toUpperCase() + "%");
+            ResultSet rs = ps.executeQuery();
 
-			throw new ProjetoException(sqle);
+            List<FormaTransporteBean> colecao = new ArrayList<FormaTransporteBean>();
 
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception sqlc) {
-				sqlc.printStackTrace();
-				System.exit(1);
-				// TODO: handle exception
-			}
+            while (rs.next()) {
 
-		}
-	}
+                FormaTransporteBean transporte = new FormaTransporteBean();
+                transporte.setCodformatransporte(rs
+                        .getInt("id_formatransporte"));
+                transporte.setDescformatransporte(rs
+                        .getString("descformatransporte"));
+                colecao.add(transporte);
 
-	public List<FormaTransporteBean> buscatransporte(String s)
-			throws ProjetoException {
-		PreparedStatement ps = null;
-		conexao = ConnectionFactory.getConnection();
-
-		try {
-			List<FormaTransporteBean> listatransportes = new ArrayList<FormaTransporteBean>();
-			String sql = "select id_formatransporte,id_formatransporte ||'-'|| descformatransporte descformatransporte from hosp.formatransporte "
-					+ " where upper(id_formatransporte ||'-'|| descformatransporte) like ? order by descformatransporte";
-
-			ps = conexao.prepareStatement(sql);
-			ps.setString(1, "%" + s.toUpperCase() + "%");
-			ResultSet rs = ps.executeQuery();
-
-			List<FormaTransporteBean> colecao = new ArrayList<FormaTransporteBean>();
-
-			while (rs.next()) {
-
-				FormaTransporteBean transporte = new FormaTransporteBean();
-				transporte.setCodformatransporte(rs
-						.getInt("id_formatransporte"));
-				transporte.setDescformatransporte(rs
-						.getString("descformatransporte"));
-				colecao.add(transporte);
-
-			}
-			return colecao;
-		} catch (Exception sqle) {
-
-			throw new ProjetoException(sqle);
-
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception sqlc) {
-				sqlc.printStackTrace();
-				System.exit(1);
-				// TODO: handle exception
-			}
-
-		}
-	}
-
-	public List<FormaTransporteBean> buscarTipoTransporte(String valor,
-			Integer tipo) throws ProjetoException {
-
-		String sql = "select formatransporte.id_formatransporte, formatransporte.descformatransporte from hosp.formatransporte where";
-
-		if (tipo == 1) {
-			sql += " formatransporte.descformatransporte like ? order by formatransporte.descformatransporte ";
-		}
-		List<FormaTransporteBean> lista = new ArrayList<>();
-
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			if (tipo == 1) {
-				stmt.setString(1, "%" + valor.toUpperCase() + "%");
-			}
-
-			ResultSet rs = stmt.executeQuery();
-
-			while (rs.next()) {
-				FormaTransporteBean p = new FormaTransporteBean();
-
-				p.setCodformatransporte(rs.getInt("id_formatransporte"));
-				p.setDescformatransporte(rs.getString("descformatransporte")
-						.toUpperCase());
-
-				lista.add(p);
-
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			// throw new RuntimeException(ex); //
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+            }
+            return colecao;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
 }
