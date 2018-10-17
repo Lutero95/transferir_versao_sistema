@@ -1,7 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +20,6 @@ public class CidController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private CidBean cid;
-	private List<CidBean> listaCids;
 	private int tipo;
 	private String cabecalho;
 	private CidDAO cDao = new CidDAO();
@@ -35,15 +33,11 @@ public class CidController implements Serializable {
 
 	public CidController() {
 		this.cid = new CidBean();
-		this.listaCids = new ArrayList<>();
-		this.listaCids = null;
 		this.cabecalho = "";
 	}
 
-	public void limparDados() throws ProjetoException {
+	public void limparDados() {
 		this.cid = new CidBean();
-		this.listaCids = new ArrayList<>();
-		listaCids = cDao.listarCid();
 	}
 
 	public String redirectEdit() {
@@ -71,7 +65,7 @@ public class CidController implements Serializable {
 
 	}
 
-	public void gravarCid() throws ProjetoException {
+	public void gravarCid() {
 
 		boolean cadastrou = cDao.gravarCid(cid);
 
@@ -83,19 +77,19 @@ public class CidController implements Serializable {
 		}
 	}
 
-	public void alterarCid() throws ProjetoException {
+	public void alterarCid() {
 		boolean alterou = cDao.alterarCid(cid);
+
 		if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("CID alterado com sucesso!", "Sucesso");
 		} else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 		}
-		listaCids = cDao.listarCid();
-
 	}
 
-	public void excluirCid() throws ProjetoException {
+	public void excluirCid() {
 		boolean ok = cDao.excluirCid(cid);
+
 		if (ok == true) {
             JSFUtil.adicionarMensagemSucesso("CID excluído com sucesso!", "Sucesso");
 			JSFUtil.fecharDialog("dialogExclusao");
@@ -103,7 +97,6 @@ public class CidController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
 		}
-		listaCids = cDao.listarCid();
 	}
 
 	public List<CidBean> listaCidAutoComplete(String query)
@@ -112,15 +105,8 @@ public class CidController implements Serializable {
 		return result;
 	}
 
-	public void buscarCid() throws ProjetoException {
-		listaCids = cDao.listarCid();
-	}
-
 	public List<CidBean> listarCids() throws ProjetoException {
-        if (listaCids == null) {
-            listaCids = cDao.listarCid();
-        }
-        return listaCids;
+		return cDao.listarCid();
     }
 
 	public String getCabecalho() {
@@ -143,14 +129,6 @@ public class CidController implements Serializable {
 	public void setCid(CidBean cid) {
 		this.cid = cid;
 	}
-
-    public List<CidBean> getListaCids() {
-        return listaCids;
-    }
-
-    public void setListaCids(List<CidBean> listaCids) {
-        this.listaCids = listaCids;
-    }
 
 	public int getTipo() {
 		return tipo;

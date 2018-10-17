@@ -9,10 +9,6 @@
 
 <ui:composition template="../../template/template.xhtml">
 
-    <f:metadata>
-        <f:viewAction action="#{CidController.buscarCid()}"/>
-    </f:metadata>
-
     <ui:define name="body">
 
         <div class="panel-body">
@@ -75,7 +71,7 @@
                         <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
                                          size="sm" ajax="true" style="margin-left:10px"
                                          oncomplete="PF('dialogExclusao').show()">
-g
+
                             <f:setPropertyActionListener value="#{tab}"
                                                          target="#{CidController.cid}"/>
                         </b:commandButton>

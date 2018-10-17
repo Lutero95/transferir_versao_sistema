@@ -29,7 +29,7 @@ public class EnderecoController implements Serializable {
     private String cabecalhoBairro;
     private String bairro;
     private Integer codbairro;
-    private List<EnderecoBean> listaMunicipios, listaBairros;
+    private List<EnderecoBean> listaMunicipios;
     private EnderecoDAO eDao = new EnderecoDAO();
 
     //CONSTANTES
@@ -43,8 +43,6 @@ public class EnderecoController implements Serializable {
         this.endereco = new EnderecoBean();
         listaMunicipios = new ArrayList<>();
         listaMunicipios = null;
-        listaBairros = new ArrayList<>();
-        listaBairros = null;
     }
 
     public void limparDados() {
@@ -82,7 +80,7 @@ public class EnderecoController implements Serializable {
 
     }
 
-    public void gravarBairros(){
+    public void gravarBairros() {
         // foi criado bairro e codbairro porque não estava indo pelos atributos
         // do objeto endereco
         endereco.setBairro(bairro);
@@ -106,7 +104,6 @@ public class EnderecoController implements Serializable {
         endereco.setCodbairro(codbairro);
 
         boolean alterou = eDao.alterarBairros(endereco);
-        listaBairros = null;
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Bairro alterado com sucesso!", "Sucesso");
         } else {
@@ -130,15 +127,8 @@ public class EnderecoController implements Serializable {
 
     }
 
-    public void buscarBairros() throws ProjetoException {
-        listaBairros = eDao.listaBairros();
-
-    }
-
     public List<EnderecoBean> listarBairros() throws ProjetoException {
-        listaBairros = eDao.listaBairros();
-
-        return listaBairros;
+        return eDao.listaBairros();
     }
 
 
@@ -261,24 +251,12 @@ public class EnderecoController implements Serializable {
 
     //GETTERS E SETTERS
 
-
     public EnderecoBean getEndereco() {
         return endereco;
     }
 
     public void setEndereco(EnderecoBean endereco) {
         this.endereco = endereco;
-    }
-
-    public List<EnderecoBean> getListaBairros() throws ProjetoException {
-        if (listaBairros == null) {
-            listaBairros = eDao.listaBairros();
-        }
-        return listaBairros;
-    }
-
-    public void setListaBairros(List<EnderecoBean> listaBairros) {
-        this.listaBairros = listaBairros;
     }
 
     public String getCabecalho() {

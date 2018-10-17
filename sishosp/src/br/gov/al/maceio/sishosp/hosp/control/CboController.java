@@ -21,7 +21,6 @@ public class CboController implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private CboBean cbo;
-    private List<CboBean> listaCbo, listaCboFiltrada;
     private int tipo;
     private String cabecalho;
     private CboDAO cDao = new CboDAO();
@@ -96,19 +95,15 @@ public class CboController implements Serializable {
         if (excluiu == true) {
             JSFUtil.adicionarMensagemSucesso("CBO excluído com sucesso!", "Sucesso");
             JSFUtil.fecharDialog("dlgExclusao");
-            getListarCbo();
+            listarCbos();
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão", "Erro");
             JSFUtil.fecharDialog("dlgExclusao");
         }
-        listaCbo = cDao.listarCbo();
     }
 
     public List<CboBean> listarCbos() throws ProjetoException {
-        if (listaCbo == null) {
-            listaCbo = cDao.listarCbo();
-        }
-        return listaCbo;
+        return cDao.listarCbo();
     }
 
     public CboBean getCbo() {
@@ -117,21 +112,6 @@ public class CboController implements Serializable {
 
     public void setCbo(CboBean cbo) {
         this.cbo = cbo;
-    }
-
-    public void buscarCbo() throws ProjetoException {
-        listaCbo = cDao.listarCbo();
-
-    }
-
-    public List<CboBean> getListarCbo() throws ProjetoException {
-        listaCbo = cDao.listarCbo();
-
-        return listaCbo;
-    }
-
-    public void setListaCbo(List<CboBean> listaCbo) {
-        this.listaCbo = listaCbo;
     }
 
     public String getCabecalho() {
@@ -153,18 +133,6 @@ public class CboController implements Serializable {
 
     public void setTipo(int tipo) {
         this.tipo = tipo;
-    }
-
-    public List<CboBean> getListaCbo() {
-        return listaCbo;
-    }
-
-    public List<CboBean> getListaCboFiltrada() {
-        return listaCboFiltrada;
-    }
-
-    public void setListaCboFiltrada(List<CboBean> listaCboFiltrada) {
-        this.listaCboFiltrada = listaCboFiltrada;
     }
 
 }
