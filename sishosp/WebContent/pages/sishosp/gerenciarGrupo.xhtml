@@ -1,100 +1,99 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:viewAction action="#{GrupoController.getListaTodosGrupos()}" />
-	</f:metadata>
-	<ui:define name="body">
-		<!-- INICIO DO FORMULARIO -->
-		<div class="panel-body">
-			<div class="sub-header">
-				<h4>Gerenciamento de Grupo</h4>
-				<hr />
-			</div>
 
-			<h:form id="frmmensagem">
-				<b:commandButton id="btninc" value="Novo" size="sm"
-					action="#{GrupoController.redirectInsert()}" icon="glyphicon-plus"
-					look="primary">
-					<f:setPropertyActionListener value="1"
-						target="#{GrupoController.tipo}" />
-					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
-				<br />
-				<br />
+    <ui:define name="body">
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+        <div class="panel-body">
+            <div class="sub-header">
+                <h4>Gerenciamento de Grupo</h4>
+                <hr/>
+            </div>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-					value="#{GrupoController.listaGrupos}"
-					display="Nenhum Grupo">
-					<h:column>
-						<f:facet name="header">
-                        Descrição
-                    </f:facet>
+            <h:form id="frmPrincipal">
+                <b:commandButton id="btninc" value="Novo" size="sm"
+                                 action="#{GrupoController.redirectInsert()}" icon="glyphicon-plus"
+                                 look="primary">
+                    <f:setPropertyActionListener value="1"
+                                                 target="#{GrupoController.tipo}"/>
+                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
+                </b:commandButton>
+                <br/>
+                <br/>
 
-						<h:outputText value="#{tab.descGrupo}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">
-                        Ação
-                    </f:facet>
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
-						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{GrupoController.redirectEdit()}">
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{GrupoController.grupo}" />
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
+                             value="#{GrupoController.listarGrupos()}">
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
 
-							<f:setPropertyActionListener value="2"
-								target="#{GrupoController.tipo}" />
-						</b:commandButton>
+                        <h:outputText value="#{tab.descGrupo}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Ação
+                        </f:facet>
 
-						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px"
-							oncomplete="PF('dialogAtencao').show()">
+                        <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+                                         action="#{GrupoController.redirectEdit()}">
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{GrupoController.grupo}"/>
 
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{GrupoController.grupo}" />
-						</b:commandButton>
+                            <f:setPropertyActionListener value="2"
+                                                         target="#{GrupoController.tipo}"/>
+                        </b:commandButton>
 
-					</h:column>
+                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+                                         size="sm" ajax="true" style="margin-left:10px"
+                                         oncomplete="PF('dialogExclusao').show()">
 
-				</b:dataTable>
-			</h:form>
-		</div>
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{GrupoController.grupo}"/>
+                        </b:commandButton>
 
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
-			resizable="false">
+                    </h:column>
 
-			<h:form id="dlgexcluir">
-				<h:panelGrid columns="1">
+                </b:dataTable>
+            </h:form>
+        </div>
 
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						esse grupo?</div>
+        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+                  resizable="false">
 
-				</h:panelGrid>
-				<center>
-					<p:separator />
-					<b:commandButton look="success" value="Sim"
-						action="#{GrupoController.excluirGrupo()}" ajax="true"
-						icon="glyphicon-ok" update="frmmensagem" />
+            <h:form id="frmExcluir">
+                <h:panelGrid columns="1">
 
-					<b:commandButton value="Não"
-						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;" />
+                    <div class="alert alert-warning" role="alert">Deseja excluir
+                        esse grupo?
+                    </div>
 
-				</center>
-			</h:form>
-		</p:dialog>
+                </h:panelGrid>
+                <div align="center">
+                    <p:separator/>
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{GrupoController.excluirGrupo()}" ajax="true"
+                                     icon="glyphicon-ok" update="frmPrincipal"/>
 
+                    <b:commandButton value="Não"
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
 
-	</ui:define>
+                </div>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
 </ui:composition>
+
 </html>

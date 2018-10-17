@@ -1,25 +1,20 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
-import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
@@ -27,241 +22,190 @@ import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 @ViewScoped
 public class GrupoController implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	private GrupoBean grupo;
-	private ProgramaBean prog;
-	private List<GrupoBean> listaGrupos;
-	private List<GrupoBean> buscarlistaGrupos;
-	private List<GrupoBean> listaGruposProgramas;
-	private List<ProgramaBean> listaProgramasEGrupos;
-	private Integer tipoBuscar;
-	private String descricaoBusca;
-	private int tipo;
-	private String cabecalho;
-	private ProgramaBean programaSelecionado;
-	private EquipeBean equipeSelecionado;
-	private FuncionarioBean profissionalSelecionado;
-	private Integer abaAtiva = 0;
+    private static final long serialVersionUID = 1L;
+    private GrupoBean grupo;
+    private ProgramaBean prog;
+    private List<GrupoBean> listaGrupos;
+    private List<GrupoBean> listaGruposProgramas;
+    private List<ProgramaBean> listaProgramasEGrupos;
+    private int tipo;
+    private String cabecalho;
+    private ProgramaBean programaSelecionado;
+    private GrupoDAO gDao = new GrupoDAO();
 
-	GrupoDAO gDao = new GrupoDAO();
+    //CONSTANTES
+    private static final String ENDERECO_CADASTRO = "cadastroGrupo?faces-redirect=true";
+    private static final String ENDERECO_TIPO = "&amp;tipo=";
+    private static final String ENDERECO_ID = "&amp;id=";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de Grupo";
+    private static final String CABECALHO_ALTERACAO = "Alteração de Grupo";
 
-	public GrupoController() {
-		this.grupo = new GrupoBean();
-		this.listaGrupos = null;
-		this.listaGruposProgramas = new ArrayList<>();
-		this.listaProgramasEGrupos = new ArrayList<ProgramaBean>();
-		this.descricaoBusca = new String();
-		this.cabecalho = "";
-		this.programaSelecionado = new ProgramaBean();
-		this.equipeSelecionado = new EquipeBean();
-		this.profissionalSelecionado = new FuncionarioBean();
-		buscarlistaGrupos = new ArrayList<>();
-		buscarlistaGrupos = null;
-	}
+    public GrupoController() {
+        this.grupo = new GrupoBean();
+        this.listaGrupos = null;
+        this.listaGruposProgramas = new ArrayList<>();
+        this.listaProgramasEGrupos = new ArrayList<ProgramaBean>();
+        this.cabecalho = "";
+        this.programaSelecionado = new ProgramaBean();
+    }
 
-	public void limparDados() throws ProjetoException {
-		this.grupo = new GrupoBean();
-		this.listaGrupos = new ArrayList<>();
-		this.listaGruposProgramas = new ArrayList<>();
-		this.descricaoBusca = new String();
-		listaGrupos = gDao.listarGrupos();
-		this.programaSelecionado = new ProgramaBean();
-	}
+    public void limparDados() throws ProjetoException {
+        this.grupo = new GrupoBean();
+        this.listaGrupos = new ArrayList<>();
+        this.listaGruposProgramas = new ArrayList<>();
+        listaGrupos = gDao.listarGrupos();
+        this.programaSelecionado = new ProgramaBean();
+    }
 
-	public String redirectEdit() {
-		return "cadastroGrupo?faces-redirect=true&amp;id="
-				+ this.grupo.getIdGrupo() + "&amp;tipo=" + tipo;
-	}
+    public String redirectEdit() {
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.grupo.getIdGrupo(), ENDERECO_TIPO, tipo);
+    }
 
-	public String redirectInsert() {
-		return "cadastroGrupo?faces-redirect=true&amp;tipo=" + tipo;
-	}
+    public String redirectInsert() {
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
+    }
 
-	public void getEditGrupo() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			tipo = Integer.parseInt(params.get("tipo"));
 
-			GrupoDAO udao = new GrupoDAO();
-			this.grupo = udao.listarGrupoPorId(id);
-		} else {
+    public void getEditGrupo() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            tipo = Integer.parseInt(params.get("tipo"));
 
-			tipo = Integer.parseInt(params.get("tipo"));
+            this.grupo = gDao.listarGrupoPorId(id);
+        } else {
 
-		}
+            tipo = Integer.parseInt(params.get("tipo"));
 
-	}
+        }
 
-	public void gravarGrupo() throws ProjetoException, SQLException {
+    }
 
-		boolean cadastrou = gDao.gravarGrupo(grupo);
+    public void gravarGrupo() throws ProjetoException {
 
-		if (cadastrou == true) {
-			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Grupo cadastrado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
+        if (grupo.getEquipes().isEmpty()) {
+            JSFUtil.adicionarMensagemAdvertencia("Escolha ao menos 1 equipe!", "Advertência");
+        } else {
+            boolean cadastrou = gDao.gravarGrupo(grupo);
 
-	}
+            if (cadastrou == true) {
+                limparDados();
+                JSFUtil.adicionarMensagemSucesso("Grupo cadastrado com sucesso!", "Sucesso");
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+            }
+        }
 
-	public void alterarGrupo() throws ProjetoException {
-		boolean alterou = gDao.alterarGrupo(grupo);
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Grupo alterado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaGrupos = gDao.listarGrupos();
-			// return "/pages/sishosp/cadastrarGrupo.faces?faces-redirect=true";
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			// return "";
-		}
+    }
 
-	}
+    public void alterarGrupo() {
+        if (grupo.getEquipes().isEmpty()) {
+            JSFUtil.adicionarMensagemAdvertencia("Escolha ao menos 1 equipe!", "Advertência");
+        } else {
+            boolean alterou = gDao.alterarGrupo(grupo);
+            if (alterou == true) {
+                JSFUtil.adicionarMensagemSucesso("Grupo alterado com sucesso!", "Sucesso");
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+            }
+        }
+    }
 
-	public void excluirGrupo() throws ProjetoException {
-		boolean ok = gDao.excluirGrupo(grupo);
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Grupo excluído com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+    public void excluirGrupo() throws ProjetoException {
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		listaGrupos = gDao.listarGrupos();
-	}
+        boolean excluiu = gDao.excluirGrupo(grupo);
+        if (excluiu == true) {
+            JSFUtil.adicionarMensagemSucesso("Grupo excluído com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
+        }
+        listaGrupos = gDao.listarGrupos();
+    }
 
-	public List<ProgramaBean> listarProgramasEGrupos() throws ProjetoException {
-		ProgramaDAO pDao = new ProgramaDAO();
-		listaProgramasEGrupos = pDao.listarProgramasEGrupos();
+    public void listaTodosGrupos() throws ProjetoException {
+        listaGrupos = gDao.listarGrupos();
 
-		return listaProgramasEGrupos;
-	}
+    }
 
-	public GrupoBean getGrupo() {
-		return grupo;
-	}
+    public List<GrupoBean> listarGrupos() throws ProjetoException {
+        return gDao.listarGrupos();
+    }
 
-	public void setGrupo(GrupoBean grupo) {
-		this.grupo = grupo;
-	}
+    public List<ProgramaBean> listarProgramasEGrupos() throws ProjetoException {
+        ProgramaDAO pDao = new ProgramaDAO();
+        listaProgramasEGrupos = pDao.listarProgramasEGrupos();
 
-	public void getListaTodosGrupos() throws ProjetoException {
-		listaGrupos = gDao.listarGrupos();
+        return listaProgramasEGrupos;
+    }
 
-	}
+    public GrupoBean getGrupo() {
+        return grupo;
+    }
 
-	public void setListaGrupos(List<GrupoBean> listaGrupos) {
-		this.listaGrupos = listaGrupos;
-	}
+    public void setGrupo(GrupoBean grupo) {
+        this.grupo = grupo;
+    }
 
-	public List<GrupoBean> getListaGruposProgramas() {
-		return listaGruposProgramas;
-	}
+    public void setListaGrupos(List<GrupoBean> listaGrupos) {
+        this.listaGrupos = listaGrupos;
+    }
 
-	public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
-		this.listaGruposProgramas = listaGruposProgramas;
-	}
+    public List<GrupoBean> getListaGruposProgramas() {
+        return listaGruposProgramas;
+    }
 
-	public void buscarGrupo() throws ProjetoException {
-		this.listaGrupos = gDao.listarGruposBusca(descricaoBusca, tipoBuscar);
-	}
+    public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
+        this.listaGruposProgramas = listaGruposProgramas;
+    }
 
-	public Integer getTipoBuscar() {
-		return tipoBuscar;
-	}
+    public String getCabecalho() {
+        if (this.tipo == 1) {
+            cabecalho = CABECALHO_INCLUSAO;
+        } else if (this.tipo == 2) {
+            cabecalho = CABECALHO_ALTERACAO;
+        }
+        return cabecalho;
+    }
 
-	public void setTipoBuscar(Integer tipoBuscar) {
-		this.tipoBuscar = tipoBuscar;
-	}
+    public List<GrupoBean> listaGrupoAutoComplete(String query)
+            throws ProjetoException {
 
-	public String getDescricaoBusca() {
-		return descricaoBusca;
-	}
+        if (programaSelecionado.getIdPrograma() != null) {
+            return gDao.listarGruposAutoComplete(query,
+                    this.programaSelecionado);
+        } else {
+            return null;
+        }
 
-	public void setDescricaoBusca(String descricaoBusca) {
-		this.descricaoBusca = descricaoBusca;
-	}
+    }
 
-	public Integer getAbaAtiva() {
-		return abaAtiva;
-	}
+    public List<GrupoBean> listaGrupoAutoComplete2(String query)
+            throws ProjetoException {
+        return gDao.listarGruposAutoComplete2(query);
+    }
 
-	public void setAbaAtiva(Integer abaAtiva) {
-		this.abaAtiva = abaAtiva;
-	}
+    public int getTipo() {
+        return tipo;
+    }
 
-	public String getCabecalho() {
-		if (this.tipo == 1) {
-			cabecalho = "Inclusão de Grupo";
-		} else if (this.tipo == 2) {
-			cabecalho = "Alteração de Grupo";
-		}
-		return cabecalho;
-	}
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
 
-	public List<GrupoBean> listaGrupoAutoComplete(String query)
-			throws ProjetoException {
+    public List<GrupoBean> getListaGrupos() {
+        return listaGrupos;
+    }
 
-		if (programaSelecionado.getIdPrograma() != null) {
-			return gDao.listarGruposAutoComplete(query,
-					this.programaSelecionado);
-		} else {
-			return null;
-		}
+    public ProgramaBean getProg() {
+        return prog;
+    }
 
-	}
-
-	public List<GrupoBean> listaGrupoAutoComplete2(String query)
-			throws ProjetoException {
-		return gDao.listarGruposAutoComplete2(query);
-	}
-
-	public void selectEqupProf(SelectEvent event) {
-		// if(equipe ID == TRUE){}
-		this.equipeSelecionado = (EquipeBean) event.getObject();
-		// atualizaLista2(equipeSelecionado);
-
-		// if(profissional ID == TRUE){}
-		this.profissionalSelecionado = (FuncionarioBean) event.getObject();
-		// atualizaLista3(profissionalSelecionado);
-	}
-
-	public int getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(int tipo) {
-		this.tipo = tipo;
-	}
-
-	public List<GrupoBean> getListaGrupos() {
-		return listaGrupos;
-	}
-
-	public ProgramaBean getProg() {
-		return prog;
-	}
-
-	public void setProg(ProgramaBean prog) {
-		this.prog = prog;
-	}
+    public void setProg(ProgramaBean prog) {
+        this.prog = prog;
+    }
 
 }

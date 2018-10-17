@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
@@ -23,10 +22,10 @@ public class GrupoDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarGrupo(GrupoBean grupo) throws SQLException,
-			ProjetoException {
-
+	public boolean gravarGrupo(GrupoBean grupo)  {
+		Boolean retorno = false;
 		String sql = "insert into hosp.grupo (descgrupo, qtdfrequencia, auditivo, inserção_pac_institut) values (?, ?, ?, ?) RETURNING id_grupo;";
+
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
@@ -56,21 +55,102 @@ public class GrupoDAO {
 			}
 
 			con.commit();
-			return true;
+			retorno = true;
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				System.exit(1);
 			}
+			return retorno;
+		}
+	}
+
+	public Boolean alterarGrupo(GrupoBean grupo) {
+		Boolean retorno = false;
+		String sql = "update hosp.grupo set descgrupo = ?, qtdfrequencia = ?, auditivo = ?, inserção_pac_institut = ? where id_grupo = ?";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, grupo.getDescGrupo().toUpperCase());
+			stmt.setDouble(2, grupo.getQtdFrequencia());
+			stmt.setBoolean(3, grupo.isAuditivo());
+			if (grupo.isInserção_pac_institut() == false) {
+				stmt.setNull(4, Types.BOOLEAN);
+			} else {
+				stmt.setBoolean(4, grupo.isInserção_pac_institut());
+			}
+			stmt.setInt(5, grupo.getIdGrupo());
+			stmt.executeUpdate();
+
+			String sql2 = "delete from  hosp.equipe_grupo where id_grupo=?";
+			PreparedStatement ps2 = null;
+			ps2 = con.prepareStatement(sql2);
+			ps2.setInt(1, grupo.getIdGrupo());
+			ps2.execute();
+
+			String sql3 = "insert into hosp.equipe_grupo (id_grupo, codequipe) values(?,?);";
+			PreparedStatement ps3 = null;
+
+			for (EquipeBean eq : grupo.getEquipes()) {
+				ps3 = null;
+				ps3 = con.prepareStatement(sql3);
+				ps3.setInt(1, grupo.getIdGrupo());
+				ps3.setInt(2, eq.getCodEquipe());
+				ps3.execute();
+			}
+
+			con.commit();
+			retorno = true;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			return retorno;
+		}
+	}
+
+	public Boolean excluirGrupo(GrupoBean grupo) {
+		Boolean retorno = false;
+		String sqlGrupo = "delete from hosp.grupo where id_grupo = ?";
+		String sqlEquipe = "delete from hosp.equipe_grupo where id_grupo = ?";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stmt = con.prepareStatement(sqlEquipe);
+			stmt.setLong(1, grupo.getIdGrupo());
+			stmt.execute();
+
+			stmt = con.prepareStatement(sqlGrupo);
+			stmt.setLong(1, grupo.getIdGrupo());
+			stmt.execute();
+
+			con.commit();
+			retorno = true;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			return retorno;
 		}
 	}
 
 	public List<EquipeBean> listarEquipesDoGrupo(int id)
-			throws ProjetoException, SQLException {
+			throws ProjetoException {
 
 		List<EquipeBean> lista = new ArrayList<EquipeBean>();
 		String sql = "select eg.codequipe, e.descequipe from hosp.equipe_grupo eg"
@@ -89,16 +169,15 @@ public class GrupoDAO {
 				lista.add(equipe);
 			}
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
-			} catch (Exception ex) {
 				con.close();
+			} catch (Exception ex) {
 				ex.printStackTrace();
-				System.exit(1);
 			}
 		}
-
 		return lista;
 	}
 
@@ -131,16 +210,15 @@ public class GrupoDAO {
 			}
 
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				System.exit(1);
 			}
 		}
-
 		return lista;
 	}
 
@@ -168,16 +246,15 @@ public class GrupoDAO {
 			}
 
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				System.exit(1);
 			}
 		}
-
 		return lista;
 	}
 
@@ -200,54 +277,18 @@ public class GrupoDAO {
 				lista.add(grupo);
 			}
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				System.exit(1);
 			}
 		}
 		return lista;
 	}
 
-	public List<GrupoBean> listarGruposBusca(String descricao, Integer tipo)
-			throws ProjetoException {
-		List<GrupoBean> lista = new ArrayList<>();
-		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, inserção_pac_institut from hosp.grupo ";
-		if (tipo == 1) {
-			sql += " where descgrupo LIKE ?  order by descgrupo";
-		}
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setString(1, "%" + descricao.toUpperCase() + "%");
-			ResultSet rs = stm.executeQuery();
-
-			while (rs.next()) {
-				GrupoBean grupo = new GrupoBean();
-				grupo.setIdGrupo(rs.getInt("id_grupo"));
-				grupo.setDescGrupo(rs.getString("descgrupo"));
-				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
-				grupo.setAuditivo(rs.getBoolean("auditivo"));
-				grupo.setInserção_pac_institut(rs
-						.getBoolean("inserção_pac_institut"));
-				lista.add(grupo);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-
-		return lista;
-	}
 
 	public List<GrupoBean> listarGruposDoPrograma(Integer codprograma)
 			throws ProjetoException {
@@ -268,16 +309,15 @@ public class GrupoDAO {
 				lista.add(grupo);
 			}
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				System.exit(1);
 			}
 		}
-
 		return lista;
 	}
 
@@ -314,78 +354,12 @@ public class GrupoDAO {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				System.exit(1);
 			}
 		}
-
 		return lista;
 	}
 
-	public Boolean alterarGrupo(GrupoBean grupo) throws ProjetoException {
-		String sql = "update hosp.grupo set descgrupo = ?, qtdfrequencia = ?, auditivo = ?, inserção_pac_institut = ? where id_grupo = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, grupo.getDescGrupo().toUpperCase());
-			stmt.setDouble(2, grupo.getQtdFrequencia());
-			stmt.setBoolean(3, grupo.isAuditivo());
-			if (grupo.isInserção_pac_institut() == false) {
-				stmt.setNull(4, Types.BOOLEAN);
-			} else {
-				stmt.setBoolean(4, grupo.isInserção_pac_institut());
-			}
-			stmt.setInt(5, grupo.getIdGrupo());
-			stmt.executeUpdate();
 
-			String sql2 = "delete from  hosp.equipe_grupo where id_grupo=?";
-			PreparedStatement ps2 = null;
-			ps2 = con.prepareStatement(sql2);
-			ps2.setInt(1, grupo.getIdGrupo());
-			ps2.execute();
-
-			String sql3 = "insert into hosp.equipe_grupo (id_grupo, codequipe) values(?,?);";
-			PreparedStatement ps3 = null;
-
-			for (EquipeBean eq : grupo.getEquipes()) {
-				ps3 = null;
-				ps3 = con.prepareStatement(sql3);
-				ps3.setInt(1, grupo.getIdGrupo());
-				ps3.setInt(2, eq.getCodEquipe());
-				ps3.execute();
-			}
-
-			con.commit();
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
-
-	public Boolean excluirGrupo(GrupoBean grupo) throws ProjetoException {
-		String sql = "delete from hosp.grupo where id_grupo = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, grupo.getIdGrupo());
-			stmt.execute();
-			con.commit();
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
 
 	public GrupoBean listarGrupoPorId(int id) throws ProjetoException {
 
@@ -408,13 +382,13 @@ public class GrupoDAO {
 			}
 
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				System.exit(1);
 			}
 		}
 		return grupo;
@@ -444,13 +418,13 @@ public class GrupoDAO {
 				lista.add(grupo);
 			}
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
 			try {
 				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				System.exit(1);
 			}
 		}
 		return lista;

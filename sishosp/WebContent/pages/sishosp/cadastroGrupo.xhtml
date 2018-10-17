@@ -1,205 +1,207 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:viewAction action="#{GrupoController.getEditGrupo()}" />
-	</f:metadata>
-	<ui:define name="body">
+    <f:metadata>
+        <f:viewAction action="#{GrupoController.getEditGrupo()}"/>
+    </f:metadata>
+    <ui:define name="body">
 
 
-		<h:form class="form-horizontal" id="formCADU">
+        <h:form class="form-horizontal" id="frmPrincipal">
 
-			<div class="panel-body">
-				<div class="sub-header">
-					<h:outputText value="#{GrupoController.cabecalho}"
-						styleClass="cadcabecalho"></h:outputText>
-					<hr />
-				</div>
+            <div class="panel-body">
+                <div class="sub-header">
+                    <h:outputText value="#{GrupoController.cabecalho}"
+                                  styleClass="cadcabecalho"></h:outputText>
+                    <hr/>
+                </div>
 
-				<b:row>
+                <b:row>
 
-					<b:column span="2">
-						<h:outputLabel for="inputdesc" value="Descrição "
-							style="margin-top:10px" />
+                    <b:column span="2">
+                        <h:outputLabel for="inputdesc" value="Descrição "
+                                       style="margin-top:10px"/>
 
-					</b:column>
+                    </b:column>
 
-					<b:column span="5">
-						<h:inputText value="#{GrupoController.grupo.descGrupo}"
-							class="form-control" id="inputdesc" required="true"
-							validatorMessage="Descrição deve conter entre 2 e 30 caracteres."
-							requiredMessage="Descrição obrigatória!">
-							<f:validateLength minimum="2" maximum="40" />
-						</h:inputText>
+                    <b:column span="9">
+                        <h:inputText value="#{GrupoController.grupo.descGrupo}"
+                                     class="form-control" id="inputdesc" required="true"
+                                     validatorMessage="Descrição deve conter entre 2 e 50 caracteres."
+                                     requiredMessage="Descrição: Campo obrigatório!">
+                            <f:validateLength minimum="2" maximum="50"/>
+                        </h:inputText>
 
-					</b:column>
+                    </b:column>
 
-				</b:row>
+                </b:row>
 
-				<br></br>
+                <br></br>
 
-				<b:row>
+                <b:row>
 
-					<b:column span="2">
-						<h:outputLabel for="inputqtd" value="Quantidade de Frequência: "
-							style="margin-top:5px" />
-					</b:column>
+                    <b:column span="2">
+                        <h:outputLabel for="inputqtd" value="Quantidade de Frequência: "
+                                       style="margin-top:5px"/>
+                    </b:column>
 
-					<b:column span="5">
-						<p:spinner id="inputqtd"
-							value="#{GrupoController.grupo.qtdFrequencia}" min="1" />
-					</b:column>
+                    <b:column span="5">
+                        <p:spinner id="inputqtd"
+                                   value="#{GrupoController.grupo.qtdFrequencia}" min="1"/>
+                    </b:column>
 
-				</b:row>
+                </b:row>
 
-				<br></br>
+                <br></br>
 
-				<b:row>
+                <b:row>
 
-					<b:column span="2">
-						<h:outputLabel value="Auditivo " style="margin-top:5px" />
+                    <b:column span="2">
+                        <h:outputLabel value="Auditivo " style="margin-top:5px"/>
 
-					</b:column>
+                    </b:column>
 
-					<b:column span="5">
+                    <b:column span="5">
 
-						<p:selectBooleanCheckbox value="#{GrupoController.grupo.auditivo}">
-						</p:selectBooleanCheckbox>
-					</b:column>
+                        <p:selectBooleanCheckbox value="#{GrupoController.grupo.auditivo}">
+                        </p:selectBooleanCheckbox>
+                    </b:column>
 
-				</b:row>
-
-
-				<b:row>
-
-					<b:column span="2">
-						<h:outputLabel value="Inserção Temporária de Pacientes "
-							style="margin-top:5px" />
-
-					</b:column>
-
-					<b:column span="5">
-						<p:selectBooleanCheckbox
-							value="#{GrupoController.grupo.inserção_pac_institut}">
-						</p:selectBooleanCheckbox>
-					</b:column>
-
-				</b:row>
-
-				<br></br>
-
-				<b:row>
-
-					<b:column span="1">
-						<h:outputLabel value="Equipe: "
-							styleClass="col-sm-3 control-label" />
-					</b:column>
-					<b:column span="1">
-						<b:commandButton process="@this" size="sm"
-							action="#{EquipeController.ListarTodasEquipes()	}"
-							tooltip="Incluir Profissional" icon="glyphicon-plus"
-							oncomplete="PF('dlgConsultEquipes').show();"
-							update="formConsuEquipe" />
-					</b:column>
-
-					<b:column span="5">
-
-						<p:dataTable emptyMessage="Nenhuma Equipe"
-							styleClass="table table-hover" id="tabela"
-							value="#{GrupoController.grupo.equipes}" var="tab"
-							paginator="true" paginatorPosition="bottom" rows="12"
-							resizableColumns="true">
-
-							<p:column headerText="Cód." style="font-weight:bold;width:20%;">
-								<h:outputText value="#{tab.codEquipe}" />
-							</p:column>
-
-							<p:column headerText="Equipe" style="font-weight:bold;">
-								<h:outputText value="#{tab.descEquipe}" />
-							</p:column>
-
-							<p:column headerText="Ação">
-								<center>
-									<p:commandButton process="@this"
-										action="#{GrupoController.grupo.rmvEquipe()}"
-										icon="ui-icon-trash" update=":formCADU:tabela">
-										<f:setPropertyActionListener value="#{tab}"
-											target="#{GrupoController.grupo.equipeAdd}" />
-									</p:commandButton>
-								</center>
-							</p:column>
-
-						</p:dataTable>
-					</b:column>
-
-				</b:row>
-
-				<br></br>
-
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
-
-				<center>
-
-					<b:commandButton action="#{GrupoController.gravarGrupo()}"
-						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
-						value="Incluir" style="float:left"
-						rendered="#{GrupoController.tipo == 1}" />
-
-					<b:commandButton action="#{GrupoController.alterarGrupo()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
-						look="success" style="float:left"
-						rendered="#{GrupoController.tipo  == 2}" />
-
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="float:right" size="sm" immediate="true" look="info"
-						action="/pages/sishosp/gerenciarGrupo.faces?faces-redirect=true">
-					</b:commandButton>
+                </b:row>
 
 
-				</center>
+                <b:row>
 
-			</div>
+                    <b:column span="2">
+                        <h:outputLabel value="Inserção Temporária de Pacientes "
+                                       style="margin-top:5px"/>
 
-		</h:form>
-		<p:dialog header="Consultar Equipes" widgetVar="dlgConsultEquipes"
-			modal="true">
-			<h:form id="formConsuEquipe">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{EquipeController.listaEquipe}" id="dtEquipe"
-					var="equipe" display="Nenhuma Equipe">
+                    </b:column>
 
-					<h:column>
-						<f:facet name="header">
-                        Equipe
-                    </f:facet>
-						<p:outputLabel value="#{equipe.descEquipe}" />
-					</h:column>
+                    <b:column span="5">
+                        <p:selectBooleanCheckbox
+                                value="#{GrupoController.grupo.inserção_pac_institut}">
+                        </p:selectBooleanCheckbox>
+                    </b:column>
 
-					<h:column>
-						<f:facet name="header">
-                        Adicionar
-                    </f:facet>
-						<p:commandButton update=":formCADU:tabela, :formCADU:msgError"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsultEquipes').hide();"
-							action="#{GrupoController.grupo.addEquipe()}">
-							<f:setPropertyActionListener value="#{equipe}"
-								target="#{GrupoController.grupo.equipeAdd}" />
-						</p:commandButton>
-					</h:column>
+                </b:row>
 
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
+                <br></br>
+
+                <b:row>
+
+                    <b:column span="1">
+                        <h:outputLabel value="Equipe: "
+                                       styleClass="col-sm-3 control-label"/>
+                    </b:column>
+                    <b:column span="1">
+                        <b:commandButton process="@this" size="sm"
+                                         action="#{EquipeController.ListarTodasEquipes()	}"
+                                         tooltip="Incluir Profissional" icon="glyphicon-plus"
+                                         oncomplete="PF('dlgConsultEquipes').show();"
+                                         update="formConsuEquipe"/>
+                    </b:column>
+
+                    <b:column span="5">
+
+                        <p:dataTable emptyMessage="Nenhuma Equipe"
+                                     styleClass="table table-hover" id="tabela"
+                                     value="#{GrupoController.grupo.equipes}" var="tab"
+                                     paginator="true" paginatorPosition="bottom" rows="12"
+                                     resizableColumns="true">
+
+                            <p:column headerText="Código" style="font-weight:bold;width:20%;">
+                                <h:outputText value="#{tab.codEquipe}"/>
+                            </p:column>
+
+                            <p:column headerText="Equipe" style="font-weight:bold;">
+                                <h:outputText value="#{tab.descEquipe}"/>
+                            </p:column>
+
+                            <p:column headerText="Ação">
+                               <div align="center">
+                                    <p:commandButton process="@this"
+                                                     action="#{GrupoController.grupo.rmvEquipe()}"
+                                                     icon="ui-icon-trash" update=":frmPrincipal:tabela">
+                                        <f:setPropertyActionListener value="#{tab}"
+                                                                     target="#{GrupoController.grupo.equipeAdd}"/>
+                                    </p:commandButton>
+                               </div>
+                            </p:column>
+
+                        </p:dataTable>
+                    </b:column>
+
+                </b:row>
+
+                <br></br>
+
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
+
+                <div align="center">
+
+                    <b:commandButton action="#{GrupoController.gravarGrupo()}"
+                                     icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
+                                     value="Incluir" style="float:left"
+                                     rendered="#{GrupoController.tipo == 1}"/>
+
+                    <b:commandButton action="#{GrupoController.alterarGrupo()}"
+                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
+                                     look="success" style="float:left"
+                                     rendered="#{GrupoController.tipo  == 2}"/>
+
+                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                     style="float:right" size="sm" immediate="true" look="info"
+                                     action="/pages/sishosp/gerenciarGrupo.faces?faces-redirect=true">
+                    </b:commandButton>
 
 
-	</ui:define>
+                </div>
+
+            </div>
+
+        </h:form>
+        <p:dialog header="Consultar Equipes" widgetVar="dlgConsultEquipes" position="center"
+                  modal="true">
+            <h:form id="formConsuEquipe">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{EquipeController.listaEquipe}"
+                             id="dtEquipe"
+                             var="equipe" display="Nenhuma Equipe">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Equipe
+                        </f:facet>
+                        <p:outputLabel value="#{equipe.descEquipe}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
+                                         icon="ui-icon-check" title="Selecionar"
+                                         onclick="PF('dlgConsultEquipes').hide();"
+                                         action="#{GrupoController.grupo.addEquipe()}">
+                            <f:setPropertyActionListener value="#{equipe}"
+                                                         target="#{GrupoController.grupo.equipeAdd}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
 </ui:composition>
+
 </html>
