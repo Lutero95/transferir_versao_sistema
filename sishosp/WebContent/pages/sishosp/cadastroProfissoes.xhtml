@@ -3,9 +3,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
@@ -15,7 +13,7 @@
 	<ui:define name="body">
 
 
-		<h:form class="form-horizontal" id="formCADU">
+		<h:form class="form-horizontal" id="frmPrincipal">
 
 			<div class="panel-body">
 				<div class="sub-header">
@@ -33,36 +31,37 @@
 
 					</b:column>
 
-					<b:column span="5">
+					<b:column span="11">
 
-						<h:inputText
+						<b:inputText
 							value="#{ProfissaoController.profissao.descprofissao}"
-							class="form-control" id="inputname"
-							pt:placeholder="Digite aqui a descrição" required="true"
-							requiredMessage="é necessário que você informe sua profissão.">
+							class="form-control" id="inputname" required="true"
+							requiredMessage="Descrição: Campo obrigatório!"
+							validatorMessage="Descrição deve conter entre 2 e 40 caracteres.">
 							<f:validateLength minimum="2" maximum="40" />
 
-						</h:inputText>
+						</b:inputText>
 
 					</b:column>
 
 				</b:row>
 
 				<br></br>
+				<br></br>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+				<div align="center">
+					<b:messages value="Error" id="msgPagina"></b:messages>
+				</div>
 
-				<center>
+				<div align="center">
 
 					<b:commandButton action="#{ProfissaoController.gravarProfissao()}"
-						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
+						icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
 						value="Incluir" style="float:left"
 						rendered="#{ProfissaoController.tipo == 1}" />
 
 					<b:commandButton action="#{ProfissaoController.alterarProfissao()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
+						icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
 						style="float:left" look="success"
 						rendered="#{ProfissaoController.tipo  == 2}" />
 
@@ -70,7 +69,8 @@
 						style="float:right" size="sm" immediate="true" look="info"
 						action="/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true">
 					</b:commandButton>
-				</center>
+
+				</div>
 
 			</div>
 		</h:form>
@@ -79,4 +79,5 @@
 
 	</ui:define>
 </ui:composition>
+
 </html>
