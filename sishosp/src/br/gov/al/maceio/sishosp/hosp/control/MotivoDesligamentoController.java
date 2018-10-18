@@ -2,16 +2,15 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.MotivoDesligamentoDAO;
@@ -21,174 +20,118 @@ import br.gov.al.maceio.sishosp.hosp.model.MotivoDesligamentoBean;
 @ViewScoped
 public class MotivoDesligamentoController implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	private MotivoDesligamentoBean motivo;
-	private List<MotivoDesligamentoBean> listaMotivos;
-	private Integer tipoBuscar;
-	private String descricaoBusca;
-	private int tipo;
-	private String cabecalho;
+    private static final long serialVersionUID = 1L;
+    private MotivoDesligamentoBean motivo;
+    private int tipo;
+    private String cabecalho;
+    private MotivoDesligamentoDAO pDao = new MotivoDesligamentoDAO();
 
-	private Integer abaAtiva = 0;
+    //CONSTANTES
+    private static final String ENDERECO_CADASTRO = "cadastroMotivoDesligamento?faces-redirect=true";
+    private static final String ENDERECO_TIPO = "&amp;tipo=";
+    private static final String ENDERECO_ID = "&amp;id=";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de Motivo de Desligamento";
+    private static final String CABECALHO_ALTERACAO = "Alteração de Motivo de Desligamento";
 
-	public MotivoDesligamentoController() {
-		motivo = new MotivoDesligamentoBean();
-		listaMotivos = new ArrayList<>();
-		listaMotivos = null;
-		this.descricaoBusca = new String();
-		this.cabecalho = "";
+    public MotivoDesligamentoController() {
+        motivo = new MotivoDesligamentoBean();
+        this.cabecalho = "";
 
-	}
+    }
 
-	public String redirectEdit() {
-		return "cadastroMotivoDesligamento?faces-redirect=true&amp;id="
-				+ this.motivo.getId_motivo() + "&amp;tipo=" + tipo;
-	}
+    public String redirectEdit() {
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.motivo.getId_motivo(), ENDERECO_TIPO, tipo);
+    }
 
-	public String redirectInsert() {
-		return "cadastroMotivoDesligamento?faces-redirect=true&amp;tipo=" + tipo;
-	}
+    public String redirectInsert() {
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
+    }
 
-	public void limparDados() {
-		motivo = new MotivoDesligamentoBean();
-		listaMotivos = new ArrayList<>();
-		this.descricaoBusca = new String();
+    public void getEditMotivo() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            tipo = Integer.parseInt(params.get("tipo"));
+            this.motivo = pDao.buscaMotivoPorId(id);
+        } else {
+            tipo = Integer.parseInt(params.get("tipo"));
 
-	}
+        }
 
-	public void gravarMotivo() throws ProjetoException, SQLException {
-		MotivoDesligamentoDAO gDao = new MotivoDesligamentoDAO();
-		boolean cadastrou = gDao.gravarMotivo(motivo);
+    }
 
-		if (cadastrou == true) {
-			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Motivo de Desligamento cadastrado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-	}
+    public void limparDados() {
+        motivo = new MotivoDesligamentoBean();
+    }
 
-	public void alterarMotivo() throws ProjetoException, SQLException {
-		MotivoDesligamentoDAO gDao = new MotivoDesligamentoDAO();
-		boolean alterou = gDao.alterarMotivo(motivo);
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Motivo de Desligamento alterado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-		listaMotivos = gDao.listarMotivos();
+    public List<MotivoDesligamentoBean> listarMotivos() throws SQLException,
+            ProjetoException {
+        return pDao.listarMotivos();
+    }
 
-	}
+    public void gravarMotivo() throws ProjetoException, SQLException {
+        boolean cadastrou = pDao.gravarMotivo(motivo);
 
-	public void excluirMotivo() throws ProjetoException, SQLException {
-		MotivoDesligamentoDAO gDao = new MotivoDesligamentoDAO();
-		boolean ok = gDao.excluirMotivo(motivo);
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Motivo de Desligamento excluído com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+        if (cadastrou == true) {
+            limparDados();
+            JSFUtil.adicionarMensagemSucesso("Motivo de Desligamento cadastrado com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+        }
+    }
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		listaMotivos = gDao.listarMotivos();
-	}
+    public void alterarMotivo() throws ProjetoException, SQLException {
 
-	public void getEditMotivo() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			tipo = Integer.parseInt(params.get("tipo"));
-			MotivoDesligamentoDAO cDao = new MotivoDesligamentoDAO();
-			this.motivo = cDao.buscaMotivoPorId(id);
-		} else {
-			tipo = Integer.parseInt(params.get("tipo"));
+        boolean alterou = pDao.alterarMotivo(motivo);
+        if (alterou == true) {
+            JSFUtil.adicionarMensagemSucesso("Motivo de Desligamento alterado com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+        }
+    }
 
-		}
+    public void excluirMotivo() throws ProjetoException, SQLException {
 
-	}
+        boolean excluiu = pDao.excluirMotivo(motivo);
+        if (excluiu == true) {
+            JSFUtil.adicionarMensagemSucesso("Motivo de Desligamento excluído com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
+        }
+        listarMotivos();
+    }
 
-	public MotivoDesligamentoBean getMotivo() {
-		return motivo;
-	}
+    public MotivoDesligamentoBean getMotivo() {
+        return motivo;
+    }
 
-	public void setMotivo(MotivoDesligamentoBean motivo) {
-		this.motivo = motivo;
-	}
+    public void setMotivo(MotivoDesligamentoBean motivo) {
+        this.motivo = motivo;
+    }
 
-	public Integer getTipoBuscar() {
-		return tipoBuscar;
-	}
+    public int getTipo() {
+        return tipo;
+    }
 
-	public void setTipoBuscar(Integer tipoBuscar) {
-		this.tipoBuscar = tipoBuscar;
-	}
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
 
-	public String getDescricaoBusca() {
-		return descricaoBusca;
-	}
+    public void setCabecalho(String cabecalho) {
+        this.cabecalho = cabecalho;
+    }
 
-	public void setDescricaoBusca(String descricaoBusca) {
-		this.descricaoBusca = descricaoBusca;
-	}
-
-	public Integer getAbaAtiva() {
-		return abaAtiva;
-	}
-
-	public void setAbaAtiva(Integer abaAtiva) {
-		this.abaAtiva = abaAtiva;
-	}
-
-	public int getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(int tipo) {
-		this.tipo = tipo;
-	}
-
-	public void setCabecalho(String cabecalho) {
-		this.cabecalho = cabecalho;
-	}
-
-	public String getCabecalho() {
-		if (this.tipo == 1) {
-			cabecalho = "Inclusão de Motivo de Desligamento";
-		} else if (this.tipo == 2) {
-			cabecalho = "Alteração de Motivo de Desligamento";
-		}
-		return cabecalho;
-	}
-
-	public List<MotivoDesligamentoBean> getListaMotivos() throws SQLException,
-			ProjetoException {
-		if (listaMotivos == null) {
-
-			MotivoDesligamentoDAO fdao = new MotivoDesligamentoDAO();
-			listaMotivos = fdao.listarMotivos();
-		}
-		return listaMotivos;
-	}
-
-	public void setListaMotivos(List<MotivoDesligamentoBean> listaMotivos) {
-		this.listaMotivos = listaMotivos;
-	}
+    public String getCabecalho() {
+        if (this.tipo == 1) {
+            cabecalho = CABECALHO_INCLUSAO;
+        } else if (this.tipo == 2) {
+            cabecalho = CABECALHO_ALTERACAO;
+        }
+        return cabecalho;
+    }
 
 }
