@@ -5,14 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
-import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
@@ -34,10 +32,15 @@ public class EnderecoController implements Serializable {
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO_BAIRRO = "cadastroBairros?faces-redirect=true";
-    private static final String ENDERECO_TIPO_BAIRRO = "&amp;tipo=";
-    private static final String ENDERECO_ID = "&amp;id=";
     private static final String CABECALHO_INCLUSAO_BAIRRO = "Inclusão de Bairro";
     private static final String CABECALHO_ALTERACAO_BAIRRO = "Alteração de Bairro";
+
+    private static final String ENDERECO_CADASTRO_MUNICIPIO = "cadastroMunicipios?faces-redirect=true";
+    private static final String CABECALHO_INCLUSAO_MUNICIPIO = "Inclusão de Município";
+    private static final String CABECALHO_ALTERACAO_MUNICIPIO = "Alteração de Município";
+
+    private static final String ENDERECO_TIPO = "&amp;tipo=";
+    private static final String ENDERECO_ID = "&amp;id=";
 
     public EnderecoController() {
         this.endereco = new EnderecoBean();
@@ -54,11 +57,11 @@ public class EnderecoController implements Serializable {
     //BAIRRO
 
     public String redirectEditBairro() {
-        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO_BAIRRO, ENDERECO_ID, this.endereco.getCodbairro(), ENDERECO_TIPO_BAIRRO, tipo);
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO_BAIRRO, ENDERECO_ID, this.endereco.getCodbairro(), ENDERECO_TIPO, tipo);
     }
 
     public String redirectInsertBairro() {
-        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO_BAIRRO, ENDERECO_TIPO_BAIRRO, tipo);
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO_BAIRRO, ENDERECO_TIPO, tipo);
     }
 
     public void getEditBairro() throws ProjetoException {
@@ -134,14 +137,14 @@ public class EnderecoController implements Serializable {
 
     //MUNICÍPIO
 
-    public String redirectEdit() {
-        return "cadastroMunicipios?faces-redirect=true&amp;id="
-                + this.endereco.getCodmunicipio() + "&amp;tipo=" + tipo;
+    public String redirectEditMunicipio() {
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO_MUNICIPIO, ENDERECO_ID, this.endereco.getCodmunicipio(), ENDERECO_TIPO, tipo);
     }
 
-    public String redirectInsert() {
-        return "cadastroMunicipios?faces-redirect=true&amp;tipo=" + tipo;
+    public String redirectInsertMunicipio() {
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO_MUNICIPIO, ENDERECO_TIPO, tipo);
     }
+
 
     public void getEditMunicipio() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -155,75 +158,46 @@ public class EnderecoController implements Serializable {
             tipo = Integer.parseInt(params.get("tipo"));
 
         }
-
     }
 
-    public void gravarMunicipios() throws ProjetoException {
+    public void gravarMunicipios() {
 
         boolean cadastrou = eDao.cadastrarMunicipio(endereco);
 
         if (cadastrou == true) {
             limparDados();
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Município cadastrado com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-
-            listaMunicipios = null;
-
+            JSFUtil.adicionarMensagemSucesso("Município cadastrado com sucesso!", "Sucesso");
         } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }
 
     }
 
-    public void alterarMunicipios() throws ProjetoException {
+    public void alterarMunicipios() {
 
         boolean alterou = eDao.alterarMunicipio(endereco);
-        listaMunicipios = null;
         if (alterou == true) {
-            // limparDados();
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Município alterado com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            // return
-            // "/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true";
-            // RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+            JSFUtil.adicionarMensagemSucesso("Município alterado com sucesso!", "Sucesso");
         } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            // return "";
-            // RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
         }
 
     }
 
 
-    public void excluirMunicipios() throws ProjetoException {
+    public void excluirMunicipios() {
 
-        boolean excluio = eDao.excluirMunicipio(endereco);
+        boolean excluiu = eDao.excluirMunicipio(endereco);
 
-        if (excluio == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Município excluído com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            listarMunicipios();
-            RequestContext.getCurrentInstance().execute(
-                    "PF('dialogAtencao').hide();");
+        if (excluiu == true) {
+            JSFUtil.adicionarMensagemSucesso("Município excluído com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
         } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-
-            RequestContext.getCurrentInstance().execute(
-                    "PF('dialogAtencao').hide();");
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
         }
 
     }
-
 
     public List<EnderecoBean> listaMunicipioAutoComplete(String query)
             throws ProjetoException {
@@ -261,9 +235,9 @@ public class EnderecoController implements Serializable {
 
     public String getCabecalho() {
         if (this.tipo == 1) {
-            cabecalho = "Inclusão de Município";
+            cabecalho = CABECALHO_INCLUSAO_MUNICIPIO;
         } else if (this.tipo == 2) {
-            cabecalho = "Alteração de Município";
+            cabecalho = CABECALHO_ALTERACAO_MUNICIPIO;
         }
         return cabecalho;
     }

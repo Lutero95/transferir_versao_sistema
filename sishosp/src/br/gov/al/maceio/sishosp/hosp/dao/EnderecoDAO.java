@@ -19,7 +19,7 @@ public class EnderecoDAO {
 
     //BAIRRO
 
-    public Boolean cadastrarBairros(EnderecoBean endereco){
+    public Boolean cadastrarBairros(EnderecoBean endereco) {
 
         Boolean retorno = false;
 
@@ -50,7 +50,7 @@ public class EnderecoDAO {
         }
     }
 
-    public Boolean alterarBairros(EnderecoBean endereco){
+    public Boolean alterarBairros(EnderecoBean endereco) {
 
         Boolean retorno = false;
 
@@ -80,7 +80,7 @@ public class EnderecoDAO {
         }
     }
 
-    public Boolean excluirBairros(EnderecoBean endereco){
+    public Boolean excluirBairros(EnderecoBean endereco) {
         Boolean retorno = false;
         String sql = "delete from hosp.bairros where id_bairro = ?";
         try {
@@ -244,10 +244,8 @@ public class EnderecoDAO {
 
     //MUNICÍPIO
 
-    @SuppressWarnings("deprecation")
-    public Boolean cadastrarMunicipio(EnderecoBean endereco)
-            throws ProjetoException {
-        boolean cadastrou = false;
+    public Boolean cadastrarMunicipio(EnderecoBean endereco) {
+        boolean retorno = false;
 
         String sql = "insert into hosp.municipio (descmunicipio,codfederal,codmacregiao) "
                 + " values (?, ?, ?)";
@@ -262,18 +260,23 @@ public class EnderecoDAO {
 
             stmt.execute();
             conexao.commit();
-            cadastrou = true;
-            conexao.close();
+            retorno = true;
 
-            return cadastrou;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
         }
     }
 
-    public Boolean alterarMunicipio(EnderecoBean endereco)
-            throws ProjetoException {
-        boolean alterou = false;
+    public Boolean alterarMunicipio(EnderecoBean endereco) {
+        boolean retorno = false;
         String sql = "update hosp.municipio set descmunicipio = ?, codfederal = ? , codmacregiao = ? where id_municipio = ?";
         try {
             conexao = ConnectionFactory.getConnection();
@@ -293,24 +296,24 @@ public class EnderecoDAO {
 
             conexao.commit();
 
-            alterou = true;
+            retorno = true;
 
-            return alterou;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 conexao.close();
-            } catch (Exception e2) {
-                e2.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+            return retorno;
         }
     }
 
 
-    public Boolean excluirMunicipio(EnderecoBean endereco)
-            throws ProjetoException {
-        boolean excluir = false;
+    public Boolean excluirMunicipio(EnderecoBean endereco) {
+        boolean retorno = false;
         String sql = "delete from hosp.municipio where id_municipio = ?";
         try {
             conexao = ConnectionFactory.getConnection();
@@ -320,17 +323,18 @@ public class EnderecoDAO {
 
             conexao.commit();
 
-            excluir = true;
+            retorno = true;
 
-            return excluir;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 conexao.close();
-            } catch (Exception e2) {
-                e2.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+            return retorno;
         }
     }
 
@@ -362,9 +366,9 @@ public class EnderecoDAO {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
+
         return lista;
     }
 
@@ -394,9 +398,9 @@ public class EnderecoDAO {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
+
         return end;
     }
 
@@ -420,7 +424,6 @@ public class EnderecoDAO {
             }
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -429,6 +432,7 @@ public class EnderecoDAO {
                 ex.printStackTrace();
             }
         }
+
         return cod;
     }
 
@@ -455,20 +459,16 @@ public class EnderecoDAO {
 
             }
             return lista;
-        } catch (Exception sqle) {
-
-            throw new ProjetoException(sqle);
-
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
         } finally {
             try {
                 conexao.close();
-            } catch (Exception sqlc) {
-                sqlc.printStackTrace();
-                System.exit(1);
-                // TODO: handle exception
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-
         }
+
     }
 
 }

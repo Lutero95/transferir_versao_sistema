@@ -1,122 +1,116 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
 
-	<ui:define name="body">
-		<f:metadata>
-			<f:viewAction action="#{EnderecoController.getEditMunicipio()}" />
-		</f:metadata>
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewAction action="#{EnderecoController.getEditMunicipio()}"/>
+        </f:metadata>
 
-		<div class="panel-body">
-			<div class="sub-header">
-				<h:outputText value="#{EnderecoController.cabecalho}"
-					styleClass="cadcabecalho"></h:outputText>
-				<hr />
-			</div>
+        <div class="panel-body">
+            <div class="sub-header">
+                <h:outputText value="#{EnderecoController.cabecalho}"
+                              styleClass="cadcabecalho"></h:outputText>
+                <hr/>
+            </div>
 
-			<h:form>
-				<p:commandButton value="Voltar"
-					style="position:relative; right:18%; width:100px; " icon="btvoltar"
-					action="/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true"></p:commandButton>
-			</h:form>
-
-			<h:form class="form-horizontal" id="formCADU">
+            <h:form class="form-horizontal" id="frmPrincipal">
 
 
-				<b:row>
+                <b:row>
 
-					<b:column span="2">
-						<h:outputLabel for="inputname" value="Município"
-							style="margin-top:10px" />
+                    <b:column span="2">
+                        <h:outputLabel for="inputname" value="Município"
+                                       style="margin-top:10px"/>
 
-					</b:column>
+                    </b:column>
 
-					<b:column span="5">
+                    <b:column span="10">
 
-						<h:inputText value="#{EnderecoController.endereco.municipio}"
-							class="form-control" id="inputname" required="false"
-							validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-							requiredMessage="é necessário que você informe seu nome.">
-							<f:validateLength minimum="2" maximum="40" />
+                        <b:inputText value="#{EnderecoController.endereco.municipio}"
+                                     class="form-control" id="inputname" required="false"
+                                     validatorMessage="Nome deve conter entre 2 e 40 caracteres."
+                                     requiredMessage="Município: Campo obrigatório!">
+                            <f:validateLength minimum="2" maximum="40"/>
 
-						</h:inputText>
+                        </b:inputText>
 
-					</b:column>
+                    </b:column>
 
-				</b:row>
+                </b:row>
 
-				<br></br>
+                <br></br>
 
-				<b:row>
+                <b:row>
 
-					<b:column span="2">
-						<h:outputLabel for="inputcod" value="Código IBGE"
-							style="margin-top:10px" />
-					</b:column>
+                    <b:column span="2">
+                        <h:outputLabel for="inputcod" value="Código IBGE"
+                                       style="margin-top:10px"/>
+                    </b:column>
 
-					<b:column span="5">
+                    <b:column span="10">
 
-						<h:inputText class="form-control"
-							value="#{EnderecoController.endereco.codfederal}"
-							style="width: 300px" />
-					</b:column>
+                        <b:inputText class="form-control" id="inputcod"
+                                     value="#{EnderecoController.endereco.codfederal}"/>
+                    </b:column>
 
-				</b:row>
+                </b:row>
 
-				<br></br>
+                <br></br>
 
-				<b:row>
+                <!--
+                <b:row>
 
-					<b:column span="2">
-						<h:outputLabel for="inputcod" value="Código Macroregião"
-							style="margin-top:10px" />
+                    <b:column span="2">
+                        <h:outputLabel for="inputcod" value="Código Macrorregião"
+                                       style="margin-top:10px"/>
 
-					</b:column>
+                    </b:column>
 
-					<b:column span="5">
+                    <b:column span="10">
 
-						<h:inputText class="form-control"
-							value="#{EnderecoController.endereco.codmacregiao}"
-							style="width: 300px" />
-					</b:column>
+                        <b:inputText class="form-control"
+                                     value="#{EnderecoController.endereco.codmacregiao}"/>
+                    </b:column>
 
-				</b:row>
+                </b:row>
 
-				<br></br>
+                <br></br>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+                -->
 
-				<center>
-					<b:commandButton action="#{EnderecoController.gravarMunicipios()}"
-						icon="glyphicon-ok" size="sm" look="success" update=":formCADU"
-						value="Incluir" style="float:left"
-						rendered="#{EnderecoController.tipo == 1}" />
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
-					<b:commandButton action="#{EnderecoController.alterarMunicipios()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
-						look="success" style="float:left"
-						rendered="#{EnderecoController.tipo  == 2}" />
+                <div align="center">
+                    <b:commandButton action="#{EnderecoController.gravarMunicipios()}"
+                                     icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
+                                     value="Incluir" style="float:left"
+                                     rendered="#{EnderecoController.tipo == 1}"/>
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="float:right" size="sm" immediate="true" look="info"
-						action="/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true">
-					</b:commandButton>
+                    <b:commandButton action="#{EnderecoController.alterarMunicipios()}"
+                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
+                                     look="success" style="float:left"
+                                     rendered="#{EnderecoController.tipo  == 2}"/>
 
+                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                     style="float:right" size="sm" immediate="true" look="info"
+                                     action="/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true">
+                    </b:commandButton>
 
-				</center>
+                </div>
 
+            </h:form>
 
-			</h:form>
-
-		</div>
-	</ui:define>
+        </div>
+    </ui:define>
 </ui:composition>
+
 </html>
