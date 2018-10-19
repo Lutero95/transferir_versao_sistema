@@ -9,244 +9,231 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.EscolaBean;
 import br.gov.al.maceio.sishosp.hosp.model.RecursoBean;
 
 public class RecursoDAO {
-	private Connection conexao = null;
+    private Connection conexao = null;
 
-	public Boolean cadastrar(RecursoBean recurso) throws ProjetoException {
-		boolean cadastrou = false;
+    public Boolean cadastrar(RecursoBean recurso) {
+        boolean retorno = false;
 
-		String sql = "insert into hosp.recurso (descrecurso) values (?)";
+        String sql = "insert into hosp.recurso (descrecurso) values (?)";
 
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setString(1, recurso.getDescRecurso().toUpperCase().trim());
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, recurso.getDescRecurso().toUpperCase().trim());
 
-			stmt.execute();
-			conexao.commit();
-			cadastrou = true;
+            stmt.execute();
+            conexao.commit();
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-			return cadastrou;
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+    public Boolean alterar(RecursoBean recurso) {
 
-	public Boolean alterar(RecursoBean recurso) throws ProjetoException {
+        boolean retorno = false;
 
-		boolean alterou = false;
+        String sql = "update hosp.recurso set descrecurso = ? where id = ?";
 
-		String sql = "update hosp.recurso set descrecurso = ? where id = ?";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
 
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, recurso.getDescRecurso().toUpperCase());
+            stmt.setInt(2, recurso.getIdRecurso());
+            stmt.executeUpdate();
 
-			stmt.setString(1, recurso.getDescRecurso().toUpperCase());
-			stmt.setInt(2, recurso.getIdRecurso());
-			stmt.executeUpdate();
+            conexao.commit();
 
-			conexao.commit();
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-			alterou = true;
+    public Boolean excluir(RecursoBean recurso) {
 
-			return alterou;
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+        boolean retorno = false;
 
-	public Boolean excluir(RecursoBean recurso) throws ProjetoException {
+        String sql = "delete from hosp.recurso where id = ?";
 
-		boolean excluir = false;
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, recurso.getIdRecurso());
+            stmt.executeUpdate();
 
-		String sql = "delete from hosp.recurso where id = ?";
+            conexao.commit();
 
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setInt(1, recurso.getIdRecurso());
-			stmt.executeUpdate();
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-			conexao.commit();
+    public ArrayList<RecursoBean> listaRecursos() throws ProjetoException {
 
-			excluir = true;
+        String sql = "select id, descrecurso from hosp.recurso order by descrecurso";
 
-			return excluir;
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+        ArrayList<RecursoBean> lista = new ArrayList();
 
-	public ArrayList<RecursoBean> listaRecursos() throws ProjetoException {
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
 
-		String sql = "select id, descrecurso from hosp.recurso order by descrecurso";
+            while (rs.next()) {
+                RecursoBean r = new RecursoBean();
 
-		ArrayList<RecursoBean> lista = new ArrayList();
+                r.setIdRecurso(rs.getInt("id"));
+                r.setDescRecurso(rs.getString("descrecurso"));
 
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stm = conexao.prepareStatement(sql);
-			ResultSet rs = stm.executeQuery();
+                lista.add(r);
+            }
 
-			while (rs.next()) {
-				RecursoBean r = new RecursoBean();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 
-				r.setIdRecurso(rs.getInt("id"));
-				r.setDescRecurso(rs.getString("descrecurso"));
+    public ArrayList<RecursoBean> listaRecursosPorProcedimento(Integer id_proc) throws ProjetoException {
 
-				lista.add(r);
-			}
+        String sql = "select r.id, r.descrecurso from hosp.recurso r left join hosp.proc_recurso p on (r.id = p.id_recurso) " +
+                "where p.id_proc = ? order by descrecurso";
 
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+        ArrayList<RecursoBean> lista = new ArrayList();
 
-	public ArrayList<RecursoBean> listaRecursosPorProcedimento(Integer id_proc) throws ProjetoException {
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, id_proc);
+            ResultSet rs = stm.executeQuery();
 
-		String sql = "select r.id, r.descrecurso from hosp.recurso r left join hosp.proc_recurso p on (r.id = p.id_recurso) " +
-				"where p.id_proc = ? order by descrecurso";
+            while (rs.next()) {
+                RecursoBean r = new RecursoBean();
 
-		ArrayList<RecursoBean> lista = new ArrayList();
+                r.setIdRecurso(rs.getInt("id"));
+                r.setDescRecurso(rs.getString("descrecurso"));
 
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stm = conexao.prepareStatement(sql);
-			stm.setInt(1, id_proc);
-			ResultSet rs = stm.executeQuery();
+                lista.add(r);
+            }
 
-			while (rs.next()) {
-				RecursoBean r = new RecursoBean();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 
-				r.setIdRecurso(rs.getInt("id"));
-				r.setDescRecurso(rs.getString("descrecurso"));
+    public RecursoBean buscaRecursoCodigo(Integer id) throws ProjetoException {
+        PreparedStatement ps = null;
+        conexao = ConnectionFactory.getConnection();
 
-				lista.add(r);
-			}
-			
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+        try {
 
-	public RecursoBean buscaRecursoCodigo(Integer id) throws ProjetoException {
-		PreparedStatement ps = null;
-		conexao = ConnectionFactory.getConnection();
+            String sql = "select id, descrecurso from hosp.recurso where id = ? order by descrecurso";
 
-		try {
+            ps = conexao.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
 
-			String sql = "select id, descrecurso from hosp.recurso where id = ? order by descrecurso";
+            RecursoBean recurso = new RecursoBean();
+            while (rs.next()) {
 
-			ps = conexao.prepareStatement(sql);
-			ps.setInt(1, id);
-			ResultSet rs = ps.executeQuery();
+                recurso.setIdRecurso(rs.getInt("id"));
+                recurso.setDescRecurso(rs.getString("descrecurso"));
 
-			RecursoBean recurso = new RecursoBean();
-			while (rs.next()) {
+            }
+            return recurso;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
-				recurso.setIdRecurso(rs.getInt("id"));
-				recurso.setDescRecurso(rs.getString("descrecurso"));
+    public List<RecursoBean> buscaRecursoAutoComplete(String s)
+            throws ProjetoException {
+        PreparedStatement ps = null;
+        conexao = ConnectionFactory.getConnection();
 
-			}
-			return recurso;
-		} catch (Exception sqle) {
-			sqle.printStackTrace();
-			throw new ProjetoException(sqle);
+        try {
+            List<RecursoBean> listaRecursos = new ArrayList<RecursoBean>();
+            String sql = "select id , descrecurso from hosp.recurso "
+                    + " where upper(descrecurso) like ? order by descrecurso";
 
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception sqlc) {
-				sqlc.printStackTrace();
-				System.exit(1);
-			}
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, "%" + s.toUpperCase() + "%");
+            ResultSet rs = ps.executeQuery();
 
-		}
-	}
+            List<RecursoBean> colecao = new ArrayList<RecursoBean>();
 
-	public List<RecursoBean> buscaRecursoAutoComplete(String s)
-			throws ProjetoException {
-		PreparedStatement ps = null;
-		conexao = ConnectionFactory.getConnection();
+            while (rs.next()) {
 
-		try {
-			List<RecursoBean> listaRecursos = new ArrayList<RecursoBean>();
-			String sql = "select id , descrecurso from hosp.recurso "
-					+ " where upper(descrecurso) like ? order by descrecurso";
+                RecursoBean recurso = new RecursoBean();
+                recurso.setIdRecurso(rs.getInt("id"));
+                recurso.setDescRecurso(rs.getString("descrecurso"));
 
-			ps = conexao.prepareStatement(sql);
-			ps.setString(1, "%" + s.toUpperCase() + "%");
-			ResultSet rs = ps.executeQuery();
+                colecao.add(recurso);
 
-			List<RecursoBean> colecao = new ArrayList<RecursoBean>();
-
-			while (rs.next()) {
-
-				RecursoBean recurso = new RecursoBean();
-				recurso.setIdRecurso(rs.getInt("id"));
-				recurso.setDescRecurso(rs.getString("descrecurso"));
-
-				colecao.add(recurso);
-
-			}
-			return colecao;
-		} catch (Exception sqle) {
-
-			throw new ProjetoException(sqle);
-
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception sqlc) {
-				sqlc.printStackTrace();
-				System.exit(1);
-				// TODO: handle exception
-			}
-
-		}
-	}
+            }
+            return colecao;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
 }

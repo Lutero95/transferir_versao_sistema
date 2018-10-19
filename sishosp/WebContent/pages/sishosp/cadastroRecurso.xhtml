@@ -19,7 +19,7 @@
 				<hr />
 			</div>
 
-			<h:form class="form-horizontal" id="formCADU">
+			<h:form class="form-horizontal" id="frmPrincipal">
 
 				<p:outputPanel>
 					<b:row>
@@ -29,13 +29,13 @@
 								style="margin-top:10px" />
 						</b:column>
 
-						<b:column span="5">
+						<b:column span="11">
 
 							<b:inputText value="#{RecursoController.recurso.descRecurso}"
 								class="form-control" id="inputname" required="true"
-								validatorMessage="Nome deve conter entre 2 e 30 caracteres."
-								requiredMessage="É necessário que você informe seu nome.">
-								<f:validateLength minimum="2" maximum="40" />
+								validatorMessage="Descrição deve conter entre 2 e 50 caracteres."
+								requiredMessage="Descrição: Campo obrigatório!">
+								<f:validateLength minimum="2" maximum="50" />
 
 							</b:inputText>
 						</b:column>
@@ -45,18 +45,21 @@
 
 				</p:outputPanel>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+				<div align="center">
+					<b:messages value="Error" id="msgPagina"></b:messages>
+				</div>
 
-				<center>
+				<br></br>
+				<br></br>
+
+				<div align="center">
 					<b:commandButton action="#{RecursoController.gravarRecurso()}"
 						icon="glyphicon-ok" size="sm" look="success"
-						update=":formCADU, msgError" value="Incluir" style="float:left"
+						update=":frmPrincipal, msgPagina" value="Incluir" style="float:left"
 						rendered="#{RecursoController.tipo == 1}" />
 
 					<b:commandButton action="#{RecursoController.alterarRecurso()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU, msgError"
+						icon="glyphicon-ok" size="sm" update=":frmPrincipal, msgPagina"
 						value="Alterar" look="success" style="float:left"
 						rendered="#{RecursoController.tipo  == 2}" />
 
@@ -65,11 +68,11 @@
 						action="/pages/sishosp/gerenciarRecurso.faces?faces-redirect=true">
 					</b:commandButton>
 
-				</center>
+				</div>
+
 			</h:form>
 
 		</div>
-
 
 	</ui:define>
 </ui:composition>
