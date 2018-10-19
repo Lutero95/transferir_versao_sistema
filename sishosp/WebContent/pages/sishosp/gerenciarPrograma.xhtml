@@ -1,94 +1,99 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
 
-	<ui:define name="body">
-		<div class="panel-body">
-			<div class="sub-header">
-				<h4>Gerenciamento de Programa</h4>
-				<hr />
-			</div>
+    <ui:define name="body">
+        <div class="panel-body">
+            <div class="sub-header">
+                <h4>Gerenciamento de Programa</h4>
+                <hr/>
+            </div>
 
-			<h:form id="frmmensagem">
+            <h:form id="frmPrincipal">
 
-				<b:commandButton id="btninc" value="Novo" size="sm"
-					action="#{ProgramaController.redirectInsert()}"
-					icon="glyphicon-plus" look="primary">
-					<f:setPropertyActionListener value="1"
-						target="#{ProgramaController.tipo}" />
-					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
-				<br />
-				<br />
+                <b:commandButton id="btninc" value="Novo" size="sm"
+                                 action="#{ProgramaController.redirectInsert()}"
+                                 icon="glyphicon-plus" look="primary">
+                    <f:setPropertyActionListener value="1"
+                                                 target="#{ProgramaController.tipo}"/>
+                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
+                </b:commandButton>
+                <br/>
+                <br/>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-					value="#{ProgramaController.listaProgramas}"
-					display="Nenhum Programa">
-					<h:column>
-						<f:facet name="header">
-                        Descrição
-                    </f:facet>
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
+                             value="#{ProgramaController.listarProgramas()}"
+                             display="Nenhum Programa">
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
 
-						<h:outputText value="#{tab.descPrograma}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">
-                        Ação
-                    </f:facet>
+                        <h:outputText value="#{tab.descPrograma}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Ação
+                        </f:facet>
 
-						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{ProgramaController.redirectEdit()}">
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{ProgramaController.prog}" />
+                        <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+                                         action="#{ProgramaController.redirectEdit()}">
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{ProgramaController.prog}"/>
 
-							<f:setPropertyActionListener value="2"
-								target="#{ProgramaController.tipo}" />
-						</b:commandButton>
+                            <f:setPropertyActionListener value="2"
+                                                         target="#{ProgramaController.tipo}"/>
+                        </b:commandButton>
 
-						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px"
-							oncomplete="PF('dialogAtencao').show()">
+                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+                                         size="sm" ajax="true" style="margin-left:10px"
+                                         oncomplete="PF('dialogExclusao').show()">
 
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{ProgramaController.prog}" />
-						</b:commandButton>
+                            <f:setPropertyActionListener value="#{tab}"
+                                                         target="#{ProgramaController.prog}"/>
+                        </b:commandButton>
 
-					</h:column>
-				</b:dataTable>
+                    </h:column>
+                </b:dataTable>
 
-			</h:form>
-		</div>
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
-			resizable="false">
+            </h:form>
+        </div>
 
-			<h:form id="dlgexcluir">
-				<div class="alert alert-warning" role="alert">Deseja excluir
-					esse programa?</div>
+        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+                  resizable="false">
+
+            <h:form id="frmExcluir">
+                <div class="alert alert-warning" role="alert">Deseja excluir
+                    esse programa?
+                </div>
 
 
-				<center>
-					<p:separator />
-					<b:commandButton look="success" value="Sim"
-						action="#{ProgramaController.excluirPrograma()}" ajax="true"
-						icon="glyphicon-ok" update="frmmensagem" />
+                <div align="center">
+                    <p:separator/>
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{ProgramaController.excluirPrograma()}" ajax="true"
+                                     icon="glyphicon-ok" update="frmPrincipal"/>
 
-					<b:commandButton value="Não"
-						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;" />
+                    <b:commandButton value="Não"
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
 
-				</center>
-			</h:form>
-		</p:dialog>
-	</ui:define>
+                </div>
+
+            </h:form>
+
+        </p:dialog>
+    </ui:define>
 </ui:composition>
+
 </html>

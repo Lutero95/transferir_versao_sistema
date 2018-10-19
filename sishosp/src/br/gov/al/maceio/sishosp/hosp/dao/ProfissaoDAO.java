@@ -67,7 +67,7 @@ public class ProfissaoDAO {
         }
     }
 
-    public Boolean excluir(ProfissaoBean profissao) throws ProjetoException {
+    public Boolean excluir(ProfissaoBean profissao) {
         boolean retorno = false;
         String sql = "delete from hosp.profissao where id_profissao = ?";
         try {
