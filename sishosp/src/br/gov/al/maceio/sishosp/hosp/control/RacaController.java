@@ -10,7 +10,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +21,6 @@ public class RacaController implements Serializable {
 	private String cabecalho;
 	private RacaBean raca;
 	private int tipo;
-	private List<RacaBean> listaRaca;
 	private RacaDAO rDao = new RacaDAO();
 
 	//CONSTANTES
@@ -34,14 +32,11 @@ public class RacaController implements Serializable {
 
 	public RacaController() {
 		raca = new RacaBean();
-		listaRaca = new ArrayList<>();
-		listaRaca = null;
 		this.cabecalho = "";
 	}
 
 	public void limparDados() {
 		this.raca = new RacaBean();
-		this.listaRaca = new ArrayList<>();
 	}
 
 	public String redirectEdit() {
@@ -68,7 +63,7 @@ public class RacaController implements Serializable {
 
 	}
 
-	public void gravarRaca() throws ProjetoException {
+	public void gravarRaca() {
 		boolean cadastrou = rDao.cadastrar(raca);
 
 		if (cadastrou == true) {
@@ -81,7 +76,7 @@ public class RacaController implements Serializable {
 
 	}
 
-	public void alterarRaca() throws ProjetoException {
+	public void alterarRaca() {
 
 		boolean alterou = rDao.alterar(raca);
 
@@ -104,17 +99,12 @@ public class RacaController implements Serializable {
 			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
 			JSFUtil.fecharDialog("dialogExclusao");
 		}
+		listaRacas();
 
-	}
-
-	public void listarRaca() throws ProjetoException {
-		listaRaca = rDao.listaCor();
 	}
 
 	public List<RacaBean> listaRacas() throws ProjetoException {
-			listaRaca = rDao.listaCor();
-
-		return listaRaca;
+			return rDao.listaCor();
 	}
 
 	public RacaBean getRaca() {
