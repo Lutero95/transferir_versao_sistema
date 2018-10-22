@@ -1,5 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,9 +104,7 @@ public class TipoAtendimentoBean implements Serializable {
 			if (existe == false) {
 				this.grupo.add(grupoParaAdd);
 			} else {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Esse grupo já foi adicionado!", "Sucesso");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
+				JSFUtil.adicionarMensagemAdvertencia("Esse grupo já foi adicionado!", "Advertência");
 			}
 		}
 	}

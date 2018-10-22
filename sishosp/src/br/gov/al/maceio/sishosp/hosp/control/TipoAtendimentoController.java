@@ -5,13 +5,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
@@ -22,207 +21,146 @@ import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 @ViewScoped
 public class TipoAtendimentoController implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	private TipoAtendimentoBean tipo;
-	private List<TipoAtendimentoBean> listaTipos;
-	private Integer tipoBuscar;
-	private String descricaoBusca;
-	private int tipoS;
-	private GrupoBean grupoSelecionado;
-	private String cabecalho;
+    private static final long serialVersionUID = 1L;
+    private TipoAtendimentoBean tipoAtendimento;
+    private List<TipoAtendimentoBean> listaTipos;
+    private int tipo;
+    private GrupoBean grupoSelecionado;
+    private String cabecalho;
+    private TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 
-	private Integer abaAtiva = 0;
+    //CONSTANTES
+    private static final String ENDERECO_CADASTRO = "cadastroTipoAtendimento?faces-redirect=true";
+    private static final String ENDERECO_TIPO = "&amp;tipo=";
+    private static final String ENDERECO_ID = "&amp;id=";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de Tipo de Atendimento";
+    private static final String CABECALHO_ALTERACAO = "Alteração de Tipo de Atendimento";
 
-	TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+    public TipoAtendimentoController() {
+        this.tipoAtendimento = new TipoAtendimentoBean();
+        this.listaTipos = null;
+        this.grupoSelecionado = new GrupoBean();
+    }
 
-	public TipoAtendimentoController() {
-		this.tipo = new TipoAtendimentoBean();
-		this.listaTipos = null;
-		this.descricaoBusca = new String();
-		this.grupoSelecionado = new GrupoBean();
-	}
+    public void limparDados() throws ProjetoException {
+        this.tipoAtendimento = new TipoAtendimentoBean();
+        this.listaTipos = null;
+        this.listaTipos = tDao.listarTipoAt();
+        this.grupoSelecionado = new GrupoBean();
+    }
 
-	public void limparDados() throws ProjetoException {
-		this.tipo = new TipoAtendimentoBean();
-		this.listaTipos = null;
-		this.descricaoBusca = new String();
-		this.listaTipos = tDao.listarTipoAt();
-		this.grupoSelecionado = new GrupoBean();
-	}
+    public String redirectEdit() {
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.tipoAtendimento.getIdTipo(), ENDERECO_TIPO, tipo);
+    }
 
-	public void gravarTipo() throws ProjetoException, SQLException {
-		if (this.tipo.getGrupo().isEmpty()) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário no mínimo informar um grupo!",
-					"Campos obrigatórios!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-		boolean cadastrou = tDao.gravarTipoAt(tipo);
+    public String redirectInsert() {
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
+    }
 
-		if (cadastrou == true) {
-			// limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Tipo de Atendimento cadastrado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-		listaTipos = tDao.listarTipoAt();
-	}
+    public void getEditTipoAtend() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
 
-	public String redirectEdit() {
-		return "cadastroTipoAtendimento?faces-redirect=true&amp;id="
-				+ this.tipo.getIdTipo() + "&amp;tipo=" + tipoS;
-	}
+            tipo = Integer.parseInt(params.get("tipo"));
+            this.tipoAtendimento = tDao.listarTipoPorId(id);
+        } else {
+            tipo = Integer.parseInt(params.get("tipo"));
 
-	public String redirectInsert() {
-		return "cadastroTipoAtendimento?faces-redirect=true&amp;tipo=" + tipoS;
-	}
+        }
 
-	public void getEditTipoAtend() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			TipoAtendimentoDAO cDao = new TipoAtendimentoDAO();
-			tipoS = Integer.parseInt(params.get("tipo"));
-			this.tipo = cDao.listarTipoPorId(id);
-		} else {
-			tipoS = Integer.parseInt(params.get("tipo"));
+    }
 
-		}
+    public void gravarTipo() throws ProjetoException {
+        if (this.tipoAtendimento.getGrupo().isEmpty()) {
+            JSFUtil.adicionarMensagemAdvertencia("É necessário no mínimo informar um grupo!", "Campos obrigatórios!");
+        } else {
+            boolean cadastrou = tDao.gravarTipoAt(tipoAtendimento);
 
-	}
+            if (cadastrou == true) {
+                JSFUtil.adicionarMensagemSucesso("Tipo de Atendimento cadastrado com sucesso!", "Sucesso");
+                limparDados();
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+            }
+        }
+    }
 
-	public void alterarTipo() throws ProjetoException {
-		if (this.tipo.getGrupo().isEmpty()) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"É necessário no mínimo informar um grupo!",
-					"Campos obrigatórios!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			// return "";
-		}
-		boolean alterou = tDao.alterarTipo(this.tipo);
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Tipo de atendimento alterado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaTipos = tDao.listarTipoAt();
-			// return
-			// "/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true";
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			// return "";
-		}
+    public void alterarTipo() throws ProjetoException {
+        if (this.tipoAtendimento.getGrupo().isEmpty()) {
+            JSFUtil.adicionarMensagemAdvertencia("É necessário no mínimo informar um grupo!", "Campos obrigatórios!");
+        } else {
+            boolean alterou = tDao.alterarTipo(this.tipoAtendimento);
+            if (alterou == true) {
+                JSFUtil.adicionarMensagemSucesso("Tipo de Atendimento alterado com sucesso!", "Sucesso");
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+            }
+        }
 
-	}
+    }
 
-	public void excluirTipo() throws ProjetoException {
-		boolean ok = tDao.excluirTipo(this.tipo);
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Tipo de Atendimento excluído com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+    public void excluirTipo() throws ProjetoException {
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		listaTipos = tDao.listarTipoAt();
-	}
+        boolean excluiu = tDao.excluirTipo(this.tipoAtendimento);
 
-	public TipoAtendimentoBean getTipo() {
-		return tipo;
-	}
+        if (excluiu == true) {
+            JSFUtil.adicionarMensagemSucesso("Tipo de Atendimento excluído com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
+        }
+        listarTipos();
+    }
 
-	public void setTipo(TipoAtendimentoBean tipo) {
-		this.tipo = tipo;
-	}
+    public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
+            throws ProjetoException {
+        return tDao.listarTipoAtAutoComplete(query, this.grupoSelecionado);
+    }
 
-	public List<TipoAtendimentoBean> listarTipos() throws ProjetoException {
-		return listaTipos = tDao.listarTipoAt();
+    public List<TipoAtendimentoBean> listarTipos() throws ProjetoException {
+        return listaTipos = tDao.listarTipoAt();
 
-	}
+    }
 
-	public void buscarTipoAt() throws ProjetoException {
-		this.listaTipos = tDao.listarTipoAtBusca(descricaoBusca, tipoBuscar);
-	}
+    public TipoAtendimentoBean getTipoAtendimento() {
+        return tipoAtendimento;
+    }
 
-	public void listarTodosTipos() throws ProjetoException {
-		this.listaTipos = tDao.listarTipoAt();
-	}
+    public void setTipoAtendimento(TipoAtendimentoBean tipoAtendimento) {
+        this.tipoAtendimento = tipoAtendimento;
+    }
 
-	public void setListaTipos(List<TipoAtendimentoBean> listaTipos) {
-		this.listaTipos = listaTipos;
-	}
+    public String getCabecalho() {
+        if (this.tipo == 1) {
+            cabecalho = CABECALHO_INCLUSAO;
+        } else if (this.tipo == 2) {
+            cabecalho = CABECALHO_ALTERACAO;
+        }
+        return cabecalho;
+    }
 
-	public Integer getTipoBuscar() {
-		return tipoBuscar;
-	}
+    public void setCabecalho(String cabecalho) {
+        this.cabecalho = cabecalho;
+    }
 
-	public void setTipoBuscar(Integer tipoBuscar) {
-		this.tipoBuscar = tipoBuscar;
-	}
 
-	public String getDescricaoBusca() {
-		return descricaoBusca;
-	}
+    public List<TipoAtendimentoBean> getListaTipos() {
+        return listaTipos;
+    }
 
-	public void setDescricaoBusca(String descricaoBusca) {
-		this.descricaoBusca = descricaoBusca;
-	}
+    public void setListaTipos(List<TipoAtendimentoBean> listaTipos) {
+        this.listaTipos = listaTipos;
+    }
 
-	public Integer getAbaAtiva() {
-		return abaAtiva;
-	}
+    public int getTipo() {
+        return tipo;
+    }
 
-	public void setAbaAtiva(Integer abaAtiva) {
-		this.abaAtiva = abaAtiva;
-	}
-
-	public String getCabecalho() {
-		if (this.tipoS == 1) {
-			cabecalho = "Inclusão de tipo de Atendimento";
-		} else if (this.tipoS == 2) {
-			cabecalho = "Alteração de tipo de Atendimento";
-		}
-		return cabecalho;
-	}
-
-	public void setCabecalho(String cabecalho) {
-		this.cabecalho = cabecalho;
-	}
-
-	public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
-			throws ProjetoException {
-		return tDao.listarTipoAtAutoComplete(query, this.grupoSelecionado);
-	}
-
-	public List<TipoAtendimentoBean> listaTipoAtAutoCompleteTodos(String query)
-			throws ProjetoException {
-		return tDao.listarTipoAtBusca(query, 1);
-	}
-
-	public List<TipoAtendimentoBean> getListaTipos() {
-		return listaTipos;
-	}
-
-	public int getTipoS() {
-		return tipoS;
-	}
-
-	public void setTipoS(int tipoS) {
-		this.tipoS = tipoS;
-	}
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
 };

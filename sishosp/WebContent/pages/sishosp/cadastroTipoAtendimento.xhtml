@@ -1,199 +1,198 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:viewAction action="#{TipoAtendimentoController.getEditTipoAtend()}" />
-	</f:metadata>
+    <f:metadata>
+        <f:viewAction action="#{TipoAtendimentoController.getEditTipoAtend()}"/>
+    </f:metadata>
 
-	<ui:define name="body">
-		<div class="panel-body">
-			<div class="sub-header">
-				<h:outputText value="#{TipoAtendimentoController.cabecalho}"
-					styleClass="cadcabecalho"></h:outputText>
-				<hr />
-			</div>
+    <ui:define name="body">
+        <div class="panel-body">
+            <div class="sub-header">
+                <h:outputText value="#{TipoAtendimentoController.cabecalho}"
+                              styleClass="cadcabecalho"></h:outputText>
+                <hr/>
+            </div>
 
+            <h:form class="form-horizontal" id="frmPrincipal">
 
-			<h:form class="form-horizontal" id="formCADU">
+                <b:row>
 
+                    <b:column span="2">
+                        <h:outputLabel for="inputdesc" value="Descrição"
+                                       style="margin-top:10px"/>
 
-				<b:row>
+                    </b:column>
 
-					<b:column span="1">
-						<h:outputLabel for="inputdesc" value="Descrição"
-							style="margin-top:10px" />
+                    <b:column span="10">
 
-					</b:column>
+                        <b:inputText value="#{TipoAtendimentoController.tipoAtendimento.descTipoAt}"
+                                     id="inputdesc" required="true"
+                                     requiredMessage="Descrição: Campo obrigatório!"
+                                     validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">
+                            <f:validateLength minimum="2" maximum="50"/>
+                        </b:inputText>
 
-					<b:column span="5">
+                    </b:column>
 
-						<b:inputText value="#{TipoAtendimentoController.tipo.descTipoAt}"
-							id="inputdesc" required="true"
-							requiredMessage="Descrição obrigatória!" />
+                </b:row>
 
-					</b:column>
+                <b:row>
 
-				</b:row>
+                    <b:column span="1">
+                        <h:outputLabel value="Grupos "
+                                       style="margin-top:10px"/>
 
+                    </b:column>
 
+                    <b:column span="1">
+                        <b:commandButton process="@this" size="sm"
+                                         actionListener="#{GrupoController.listaTodosGrupos()}"
+                                         tooltip="Incluir Grupo" icon="glyphicon-plus"
+                                         oncomplete="PF('dlgConsuGrupo').show();" update="formConsuGrop"/>
+                    </b:column>
 
+                    <b:column span="10">
+                        <p:dataTable emptyMessage="Sem Dados"
+                                     styleClass="table table-hover" id="tabela"
+                                     style="margin-top:10px;"
+                                     value="#{TipoAtendimentoController.tipoAtendimento.grupo}" var="tab"
+                                     paginator="true" paginatorPosition="bottom" rows="12"
+                                     resizableColumns="true">
 
-				<b:row>
+                            <p:column headerText="Cód." style="font-weight:bold;width:20%;">
+                                <h:outputText value="#{tab.idGrupo}"/>
+                            </p:column>
 
-					<b:column span="1">
-						<h:outputLabel for="inputg" value="Grupos "
-							style="margin-top:10px" />
+                            <p:column headerText="Nome" style="font-weight:bold;">
+                                <h:outputText value="#{tab.descGrupo}"/>
+                            </p:column>
 
-					</b:column>
+                            <p:column headerText="Ação">
+                                <div align="center">
+                                    <p:commandButton process="@this"
+                                                     action="#{TipoAtendimentoController.tipoAtendimento.rmvGrupoLista()}"
+                                                     icon="ui-icon-trash" update=":frmPrincipal:tabela">
+                                        <f:setPropertyActionListener value="#{tab}"
+                                                                     target="#{TipoAtendimentoController.tipoAtendimento.grupoParaAdd}"/>
+                                    </p:commandButton>
+                                </div>
+                            </p:column>
 
-					<div class="col-sm-5">
-						<p:commandButton style="color:black"
-							styleClass="btn btn-primary col-sm-3 text-center" value="Incluir"
-							process="@this"
-							actionListener="#{GrupoController.listaTodosGrupos()}"
-							onclick="PF('dlgConsuGrupo').show();" icon="ui-icon-plus" />
-					</div>
-				</b:row>
-				<br />
-				<br />
+                        </p:dataTable>
+                    </b:column>
+                </b:row>
 
-				<b:row>
+                <b:row>
 
-					<b:column span="5">
-						<p:dataTable emptyMessage="Sem Dados"
-							styleClass="table table-hover" id="tabela"
-							style="margin-top:10px;"
-							value="#{TipoAtendimentoController.tipo.grupo}" var="tab"
-							paginator="true" paginatorPosition="bottom" rows="12"
-							resizableColumns="true">
+                    <b:column span="2">
+                        <h:outputLabel value="Primeiro Atendimento: "/>
 
-							<p:column headerText="Cód." style="font-weight:bold;width:20%;">
-								<h:outputText value="#{tab.idGrupo}" />
-							</p:column>
+                    </b:column>
 
-							<p:column headerText="Nome" style="font-weight:bold;">
-								<h:outputText value="#{tab.descGrupo}" />
-							</p:column>
+                    <b:column span="1">
 
-							<p:column headerText="Ação">
-								<center>
-									<p:commandButton process="@this"
-										action="#{TipoAtendimentoController.tipo.rmvGrupoLista()}"
-										icon="ui-icon-trash" update=":formCADU:tabela">
-										<f:setPropertyActionListener value="#{tab}"
-											target="#{TipoAtendimentoController.tipo.grupoParaAdd}" />
-									</p:commandButton>
-								</center>
-							</p:column>
+                        <p:selectBooleanCheckbox
+                                value="#{TipoAtendimentoController.tipoAtendimento.primeiroAt}">
+                        </p:selectBooleanCheckbox>
+                    </b:column>
+                </b:row>
 
-						</p:dataTable>
-					</b:column>
-				</b:row>
+                <b:row>
+                    <b:column span="2">
+                        <h:outputLabel value="Equipe: "/>
+                    </b:column>
 
-				<b:row>
+                    <b:column span="1">
+                        <p:selectBooleanCheckbox
+                                value="#{TipoAtendimentoController.tipoAtendimento.equipe}">
+                        </p:selectBooleanCheckbox>
+                    </b:column>
+                </b:row>
 
-					<b:column span="1">
-						<h:outputLabel for="inputg" value="Primeiro Atendimento: " />
+                <br></br>
 
-					</b:column>
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
-					<b:column span="1">
+                <br></br>
+                <br></br>
 
-						<p:selectBooleanCheckbox
-							value="#{TipoAtendimentoController.tipo.primeiroAt}">
-						</p:selectBooleanCheckbox>
-					</b:column>
-				</b:row>
+                <div align="center">
 
-				<b:row>
-					<b:column span="1">
-						<h:outputLabel for="inputg" value="Equipe: " />
-					</b:column>
+                    <b:commandButton action="#{TipoAtendimentoController.gravarTipo()}"
+                                     icon="glyphicon-ok" size="sm" look="success" style="float:left"
+                                     update=":frmPrincipal" value="Incluir"
+                                     rendered="#{TipoAtendimentoController.tipo == 1}"/>
 
-					<b:column span="1">
-						<p:selectBooleanCheckbox
-							value="#{TipoAtendimentoController.tipo.equipe}">
-						</p:selectBooleanCheckbox>
-					</b:column>
-				</b:row>
+                    <b:commandButton
+                            action="#{TipoAtendimentoController.alterarTipo()}"
+                            icon="glyphicon-ok" size="sm" style="float:left"
+                            update=":frmPrincipal" value="Alterar" look="success"
+                            rendered="#{TipoAtendimentoController.tipo  == 2}"/>
 
-				<br></br>
+                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                     style="float:right" size="sm" immediate="true" look="info"
+                                     action="/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true">
+                    </b:commandButton>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+                </div>
 
-				<center>
+            </h:form>
 
-					<b:commandButton action="#{TipoAtendimentoController.gravarTipo()}"
-						icon="glyphicon-ok" size="sm" look="success" style="float:left"
-						update=":formCADU" value="Incluir"
-						rendered="#{TipoAtendimentoController.tipoS == 1}" />
+        </div>
 
-					<b:commandButton
-						action="#{TipoAtendimentoController.alterarTipo()}"
-						icon="glyphicon-ok" size="sm" style="float:left"
-						update=":formCADU" value="Alterar" look="success"
-						rendered="#{TipoAtendimentoController.tipoS  == 2}" />
-
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="float:right" size="sm" immediate="true" look="info"
-						action="/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true">
-					</b:commandButton>
-
-				</center>
-			</h:form>
-
-		</div>
-
-		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupo"
-			modal="true">
-			<h:form id="formConsuGrop">
-				<p:outputPanel autoUpdate="true">
-					<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{GrupoController.listaGrupos}" id="dtGrupo"
-						 display="Nenhum Grupo" var="grupo">
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupo"
+                  modal="true">
+            <h:form id="formConsuGrop">
+                <p:outputPanel autoUpdate="true">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{GrupoController.listaGrupos}"
+                                 id="dtGrupo"
+                                 display="Nenhum Grupo" var="grupo">
 
 
+                        <h:column>
+                            <f:facet name="header">
+                                Grupo
+                            </f:facet>
+                            <p:outputLabel value="#{grupo.descGrupo}"/>
+                        </h:column>
 
-						<h:column>
-							<f:facet name="header">
-                        Grupo
-                    	</f:facet>
-							<p:outputLabel value="#{grupo.descGrupo}" />
-						</h:column>
 
+                        <h:column>
+                            <f:facet name="header">
+                                Quantidade Frequência
+                            </f:facet>
+                            <p:outputLabel value="#{grupo.qtdFrequencia}"/>
+                        </h:column>
 
-						<h:column>
-							<f:facet name="header">
-                        Quantidade Frequência
-                    	</f:facet>
-							<p:outputLabel value="#{grupo.qtdFrequencia}" />
-						</h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                Adicionar
+                            </f:facet>
+                            <p:commandButton process="@this"
+                                             update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
+                                             icon="ui-icon-check" title="Selecionar"
+                                             onclick="PF('dlgConsuGrupo').hide();"
+                                             action="#{TipoAtendimentoController.tipoAtendimento.addGrupoLista()}">
+                                <f:setPropertyActionListener value="#{grupo}"
+                                                             target="#{TipoAtendimentoController.tipoAtendimento.grupoParaAdd}"/>
+                            </p:commandButton>
+                        </h:column>
 
-						<h:column>
-							<f:facet name="header">
-                        Adicionar
-                    	</f:facet>
-							<p:commandButton process="@this"
-								update=":formCADU:tabela, :formCADU:msgError"
-								icon="ui-icon-check" title="Selecionar"
-								onclick="PF('dlgConsuGrupo').hide();"
-								action="#{TipoAtendimentoController.tipo.addGrupoLista()}">
-								<f:setPropertyActionListener value="#{grupo}"
-									target="#{TipoAtendimentoController.tipo.grupoParaAdd}" />
-							</p:commandButton>
-						</h:column>
+                    </b:dataTable>
+                </p:outputPanel>
+            </h:form>
 
-					</b:dataTable>
-				</p:outputPanel>
-			</h:form>
-		</p:dialog>
-	</ui:define>
+        </p:dialog>
+
+    </ui:define>
 </ui:composition>
+
 </html>
