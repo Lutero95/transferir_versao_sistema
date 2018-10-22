@@ -1,82 +1,82 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:viewAction
-			action="#{EncaminhadoController.getEditTipoEncaminhamento()}" />
-	</f:metadata>
+    <f:metadata>
+        <f:viewAction
+                action="#{EncaminhadoController.getEditTipoEncaminhamento()}"/>
+    </f:metadata>
 
-	<ui:define name="body">
+    <ui:define name="body">
 
-		<div class="panel-body">
-			<div class="sub-header">
-				<h:outputText value="#{EncaminhadoController.cabecalho}"
-					styleClass="cadcabecalho"></h:outputText>
-				<hr />
-			</div>
-			<h:form class="form-horizontal" id="formCADU">
+        <div class="panel-body">
+            <div class="sub-header">
+                <h:outputText value="#{EncaminhadoController.cabecalho}"
+                              styleClass="cadcabecalho"></h:outputText>
+                <hr/>
+            </div>
+            <h:form class="form-horizontal" id="frmPrincipal">
 
+                <b:row>
 
-				<b:row>
+                    <b:column span="1">
+                        <h:outputLabel for="inputname" value="Descrição"
+                                       style="margin-top:10px"/>
 
-					<b:column span="1">
-						<h:outputLabel for="inputname" value="Descrição"
-							style="margin-top:10px" />
+                    </b:column>
 
-					</b:column>
+                    <b:column span="11">
 
-					<b:column span="5">
+                        <b:inputText
+                                value="#{EncaminhadoController.encaminhado.descencaminhado}"
+                                class="form-control" id="inputname" required="true"
+                                requiredMessage="Descrição: Campo obrigatório!"
+                                validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">
+                            <f:validateLength minimum="2" maximum="50"/>
 
-						<h:inputText
-							value="#{EncaminhadoController.encaminhado.descencaminhado}"
-							class="form-control" id="inputname"
-							pt:placeholder="Digite aqui seu encaminhamento" required="true"
-							requiredMessage="é necessário que você informe seu encaminhamento.">
-							<f:validateLength minimum="2" maximum="40" />
+                        </b:inputText>
+                    </b:column>
 
-						</h:inputText>
-					</b:column>
+                </b:row>
 
-				</b:row>
+                <br></br>
+                <br></br>
 
-				<br></br>
-				<br></br>
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+                <div align="center">
 
-				<center>
+                    <b:commandButton
+                            action="#{EncaminhadoController.gravarEncaminhado()}"
+                            icon="glyphicon-ok" size="sm" look="success" style="float:left"
+                            update=":frmPrincipal" value="Incluir"
+                            rendered="#{EncaminhadoController.tipo == 1}"/>
 
-					<b:commandButton
-						action="#{EncaminhadoController.gravarEncaminhado()}"
-						icon="glyphicon-ok" size="sm" look="success" style="float:left"
-						update=":formCADU" value="Incluir"
-						rendered="#{EncaminhadoController.tipo == 1}" />
+                    <b:commandButton
+                            action="#{EncaminhadoController.alterarEncaminhado()}"
+                            icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
+                            look="success" style="float:left"
+                            rendered="#{EncaminhadoController.tipo  == 2}"/>
 
-					<b:commandButton
-						action="#{EncaminhadoController.alterarEncaminhado()}"
-						icon="glyphicon-ok" size="sm" update=":formCADU" value="Alterar"
-						look="success" style="float:left"
-						rendered="#{EncaminhadoController.tipo  == 2}" />
+                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                     style="float:right" size="sm" immediate="true" look="info"
+                                     action="/pages/sishosp/gerenciarTipoEncaminhamento.faces?faces-redirect=true">
+                    </b:commandButton>
+                </div>
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="float:right" size="sm" immediate="true" look="info"
-						action="/pages/sishosp/gerenciarTipoEncaminhamento.faces?faces-redirect=true">
-					</b:commandButton>
-				</center>
+            </h:form>
+        </div>
 
-			</h:form>
-		</div>
-
-	</ui:define>
+    </ui:define>
 </ui:composition>
+
 </html>

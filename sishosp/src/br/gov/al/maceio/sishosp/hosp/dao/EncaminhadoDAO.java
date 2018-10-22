@@ -12,252 +12,189 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
 
 public class EncaminhadoDAO {
-	private Connection conexao = null;
+    private Connection conexao = null;
 
-	public Boolean cadastrar(EncaminhadoBean encaminhado)
-			throws ProjetoException {
-		boolean cadastrou = false;
+    public Boolean cadastrar(EncaminhadoBean encaminhado) {
+        boolean retorno = false;
 
-		/*
-		 * PacienteBean user_session = (PacienteBean) FacesContext
-		 * .getCurrentInstance().getExternalContext().getSessionMap()
-		 * .get("obj_paciente");
-		 */
+        String sql = "insert into hosp.encaminhado (descencaminhado) values (?)";
 
-		String sql = "insert into hosp.encaminhado (descencaminhado)"
-				+ " values (?)";
-		// returning id_paciente
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setString(1, encaminhado.getDescencaminhado().toUpperCase()
-					.trim());
-			// stmt.setString(2, paciente.getCpf().replaceAll("[^0-9]", ""));
-			// stmt.setBoolean(3, true);
-			// stmt.setInt(3, paciente.getIdpessoa());
-			/*
-			 * ResultSet rs = stmt.executeQuery(); if(rs.next()) { PacienteBean
-			 * p = paciente; String idRetorno = null; idRetorno =
-			 * String.valueOf(rs.getLong("id_usuario"));
-			 * p.setId_paciente(Long.parseLong(idRetorno));
-			 * 
-			 * }
-			 */
-			stmt.execute();
-			conexao.commit();
-			cadastrou = true;
-			conexao.close();
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, encaminhado.getDescencaminhado().toUpperCase().trim());
 
-			return cadastrou;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+            stmt.execute();
+            conexao.commit();
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-	public Boolean alterar(EncaminhadoBean encaminhado) throws ProjetoException {
-		boolean alterou = false;
-		String sql = "update hosp.encaminhado set descencaminhado = ? where id_encaminhado = ?";
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setString(1, encaminhado.getDescencaminhado().toUpperCase());
-			stmt.setInt(2, encaminhado.getCodencaminhado());
-			stmt.executeUpdate();
+    public Boolean alterar(EncaminhadoBean encaminhado) {
 
-			conexao.commit();
+        boolean retorno = false;
+        String sql = "update hosp.encaminhado set descencaminhado = ? where id_encaminhado = ?";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, encaminhado.getDescencaminhado().toUpperCase());
+            stmt.setInt(2, encaminhado.getCodencaminhado());
+            stmt.executeUpdate();
 
-			alterou = true;
+            conexao.commit();
 
-			return alterou;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-	public Boolean excluir(EncaminhadoBean encaminhado) throws ProjetoException {
-		boolean excluir = false;
-		String sql = "delete from hosp.encaminhado where id_encaminhado = ?";
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setInt(1, encaminhado.getCodencaminhado());
-			stmt.executeUpdate();
+    public Boolean excluir(EncaminhadoBean encaminhado) {
 
-			conexao.commit();
+        boolean retorno = false;
+        String sql = "delete from hosp.encaminhado where id_encaminhado = ?";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, encaminhado.getCodencaminhado());
+            stmt.executeUpdate();
 
-			excluir = true;
+            conexao.commit();
 
-			return excluir;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-	public ArrayList<EncaminhadoBean> listaEncaminhados()
-			throws ProjetoException {
+    public ArrayList<EncaminhadoBean> listaEncaminhados()
+            throws ProjetoException {
 
-		String sql = "select * from hosp.encaminhado order by descencaminhado";
+        String sql = "select * from hosp.encaminhado order by descencaminhado";
 
-		ArrayList<EncaminhadoBean> lista = new ArrayList();
+        ArrayList<EncaminhadoBean> lista = new ArrayList();
 
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stm = conexao.prepareStatement(sql);
-			ResultSet rs = stm.executeQuery();
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
 
-			while (rs.next()) {
-				EncaminhadoBean p = new EncaminhadoBean();
+            while (rs.next()) {
+                EncaminhadoBean p = new EncaminhadoBean();
 
-				p.setCodencaminhado(rs.getInt("id_encaminhado"));
-				p.setDescencaminhado(rs.getString("descencaminhado")
-						.toUpperCase());
+                p.setCodencaminhado(rs.getInt("id_encaminhado"));
+                p.setDescencaminhado(rs.getString("descencaminhado")
+                        .toUpperCase());
 
-				lista.add(p);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+                lista.add(p);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 
-	public EncaminhadoBean buscaencaminhadocodigo(Integer i)
-			throws ProjetoException {
-		PreparedStatement ps = null;
-		conexao = ConnectionFactory.getConnection();
+    public EncaminhadoBean buscaencaminhadocodigo(Integer i)
+            throws ProjetoException {
+        PreparedStatement ps = null;
+        conexao = ConnectionFactory.getConnection();
 
-		try {
+        try {
 
-			String sql = "select id_encaminhado, descencaminhado from hosp.encaminhado where id_encaminhado = ? order by descencaminhado";
+            String sql = "select id_encaminhado, descencaminhado from hosp.encaminhado where id_encaminhado = ? order by descencaminhado";
 
-			ps = conexao.prepareStatement(sql);
-			ps.setInt(1, i);
-			ResultSet rs = ps.executeQuery();
+            ps = conexao.prepareStatement(sql);
+            ps.setInt(1, i);
+            ResultSet rs = ps.executeQuery();
 
-			EncaminhadoBean encaminhado = new EncaminhadoBean();
-			while (rs.next()) {
+            EncaminhadoBean encaminhado = new EncaminhadoBean();
+            while (rs.next()) {
 
-				encaminhado.setCodencaminhado(rs.getInt(1));
-				encaminhado.setDescencaminhado(rs.getString(2));
+                encaminhado.setCodencaminhado(rs.getInt(1));
+                encaminhado.setDescencaminhado(rs.getString(2));
 
-			}
-			return encaminhado;
-		} catch (Exception sqle) {
+            }
+            return encaminhado;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
-			throw new ProjetoException(sqle);
+    public List<EncaminhadoBean> buscaencaminhado(String s)
+            throws ProjetoException {
+        PreparedStatement ps = null;
+        conexao = ConnectionFactory.getConnection();
 
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception sqlc) {
-				sqlc.printStackTrace();
-				System.exit(1);
-				// TODO: handle exception
-			}
+        try {
+            List<EncaminhadoBean> listaencaminhados = new ArrayList<EncaminhadoBean>();
+            String sql = "select id_encaminhado,id_encaminhado ||'-'|| descencaminhado descencaminhado from hosp.encaminhado "
+                    + " where upper(id_encaminhado ||'-'|| descencaminhado) like ? order by descencaminhado";
 
-		}
-	}
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, "%" + s.toUpperCase() + "%");
+            ResultSet rs = ps.executeQuery();
 
-	public List<EncaminhadoBean> buscaencaminhado(String s)
-			throws ProjetoException {
-		PreparedStatement ps = null;
-		conexao = ConnectionFactory.getConnection();
+            List<EncaminhadoBean> colecao = new ArrayList<EncaminhadoBean>();
 
-		try {
-			List<EncaminhadoBean> listaencaminhados = new ArrayList<EncaminhadoBean>();
-			String sql = "select id_encaminhado,id_encaminhado ||'-'|| descencaminhado descencaminhado from hosp.encaminhado "
-					+ " where upper(id_encaminhado ||'-'|| descencaminhado) like ? order by descencaminhado";
+            while (rs.next()) {
 
-			ps = conexao.prepareStatement(sql);
-			ps.setString(1, "%" + s.toUpperCase() + "%");
-			ResultSet rs = ps.executeQuery();
+                EncaminhadoBean encaminhado = new EncaminhadoBean();
+                encaminhado.setCodencaminhado(rs.getInt("id_encaminhado"));
+                encaminhado.setDescencaminhado(rs.getString("descencaminhado"));
+                colecao.add(encaminhado);
 
-			List<EncaminhadoBean> colecao = new ArrayList<EncaminhadoBean>();
-
-			while (rs.next()) {
-
-				EncaminhadoBean encaminhado = new EncaminhadoBean();
-				encaminhado.setCodencaminhado(rs.getInt("id_encaminhado"));
-				encaminhado.setDescencaminhado(rs.getString("descencaminhado"));
-				colecao.add(encaminhado);
-
-			}
-			return colecao;
-		} catch (Exception sqle) {
-
-			throw new ProjetoException(sqle);
-
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception sqlc) {
-				sqlc.printStackTrace();
-				System.exit(1);
-				// TODO: handle exception
-			}
-
-		}
-	}
-
-	public List<EncaminhadoBean> buscarTipoEncaminhado(String valor,
-			Integer tipo) throws ProjetoException {
-
-		String sql = "select encaminhado.id_encaminhado, encaminhado.descencaminhado from hosp.encaminhado where";
-
-		if (tipo == 1) {
-			sql += " encaminhado.descencaminhado like ? order by encaminhado.descencaminhado ";
-		}
-		List<EncaminhadoBean> lista = new ArrayList<>();
-
-		try {
-			conexao = ConnectionFactory.getConnection();
-			PreparedStatement stmt = conexao.prepareStatement(sql);
-			if (tipo == 1) {
-				stmt.setString(1, "%" + valor.toUpperCase() + "%");
-			}
-
-			ResultSet rs = stmt.executeQuery();
-
-			while (rs.next()) {
-				EncaminhadoBean p = new EncaminhadoBean();
-
-				p.setCodencaminhado(rs.getInt("id_encaminhado"));
-				p.setDescencaminhado(rs.getString("descencaminhado")
-						.toUpperCase());
-
-				lista.add(p);
-
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			// throw new RuntimeException(ex); //
-		} finally {
-			try {
-				conexao.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+            }
+            return colecao;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
 }

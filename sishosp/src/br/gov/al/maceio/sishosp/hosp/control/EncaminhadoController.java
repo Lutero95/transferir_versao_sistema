@@ -1,16 +1,15 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EncaminhadoDAO;
@@ -19,230 +18,119 @@ import br.gov.al.maceio.sishosp.hosp.model.EncaminhadoBean;
 @ManagedBean(name = "EncaminhadoController")
 @ViewScoped
 public class EncaminhadoController implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private Integer abaAtiva = 0;
-	private EncaminhadoBean encaminhado;
-	// BUSCAS
-	private int tipo;
-	private Integer tipoBuscaEncaminhado;
-	private String campoBuscaEncaminhado;
-	private String statusEncaminhado;
-	private String cabecalho;
 
-	private List<EncaminhadoBean> listaEncaminhado;
+    private static final long serialVersionUID = 1L;
+    private EncaminhadoBean encaminhado;
+    private int tipo;
+    private String cabecalho;
+    private EncaminhadoDAO eDao = new EncaminhadoDAO();
 
-	public EncaminhadoController() {
-		encaminhado = new EncaminhadoBean();
-		// BUSCA
-		tipoBuscaEncaminhado = 1;
-		campoBuscaEncaminhado = "";
-		statusEncaminhado = "P";
+    //CONSTANTES
+    private static final String ENDERECO_CADASTRO = "cadastroTipoEncaminhamento?faces-redirect=true";
+    private static final String ENDERECO_TIPO = "&amp;tipo=";
+    private static final String ENDERECO_ID = "&amp;id=";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de Tipo de Encaminhamento";
+    private static final String CABECALHO_ALTERACAO = "Alteração de Encaminhamento";
 
-		listaEncaminhado = new ArrayList<>();
-		listaEncaminhado = null;
-	}
+    public EncaminhadoController() {
+        encaminhado = new EncaminhadoBean();
+    }
 
-	public String redirectEdit() {
-		return "cadastroTipoEncaminhamento?faces-redirect=true&amp;id="
-				+ this.encaminhado.getCodencaminhado() + "&amp;tipo=" + tipo;
-	}
+    public void limparDados() {
+        encaminhado = new EncaminhadoBean();
+    }
 
-	public String redirectInsert() {
-		return "cadastroTipoEncaminhamento?faces-redirect=true&amp;tipo="
-				+ tipo;
-	}
+    public String redirectEdit() {
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.encaminhado.getCodencaminhado(), ENDERECO_TIPO, tipo);
+    }
 
-	public void getEditTipoEncaminhamento() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			tipo = Integer.parseInt(params.get("tipo"));
-			EncaminhadoDAO cDao = new EncaminhadoDAO();
-			this.encaminhado = cDao.buscaencaminhadocodigo(id);
-		} else {
-			tipo = Integer.parseInt(params.get("tipo"));
+    public String redirectInsert() {
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
+    }
 
-		}
+    public void getEditTipoEncaminhamento() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            tipo = Integer.parseInt(params.get("tipo"));
+            this.encaminhado = eDao.buscaencaminhadocodigo(id);
+        } else {
+            tipo = Integer.parseInt(params.get("tipo"));
 
-	}
+        }
 
-	public void gravarEncaminhado() throws ProjetoException {
-		EncaminhadoDAO udao = new EncaminhadoDAO();
-		boolean cadastrou = udao.cadastrar(encaminhado);
+    }
 
-		if (cadastrou == true) {
-			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Encaminhamento cadastrado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaEncaminhado = null;
+    public void gravarEncaminhado() {
 
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+        boolean cadastrou = eDao.cadastrar(encaminhado);
 
-		}
+        if (cadastrou == true) {
+            JSFUtil.adicionarMensagemSucesso("Tipo de Encaminhamento cadastrado com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+        }
 
-	}
+    }
 
-	public void alterarEncaminhado() throws ProjetoException {
+    public void alterarEncaminhado() {
 
-		EncaminhadoDAO rdao = new EncaminhadoDAO();
-		boolean alterou = rdao.alterar(encaminhado);
+        boolean alterou = eDao.alterar(encaminhado);
 
-		if (alterou == true) {
-			// limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Encaminhamento alterado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			// return
-			// "/pages/sishosp/gerenciarTipoEncaminhamento.faces?faces-redirect=true";
-			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			// return "";
-			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-		}
+        if (alterou == true) {
+            JSFUtil.adicionarMensagemSucesso("Tipo de Encaminhamento alterado com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 
-	}
+        }
+    }
 
-	public void excluirEncaminhado() throws ProjetoException {
-		EncaminhadoDAO udao = new EncaminhadoDAO();
+    public void excluirEncaminhado() {
 
-		boolean excluio = udao.excluir(encaminhado);
+        boolean excluiu = eDao.excluir(encaminhado);
 
-		if (excluio == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Encaminhamento excluído com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaEncaminhado = null;
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+        if (excluiu == true) {
+            JSFUtil.adicionarMensagemSucesso("Tipo de Encaminhamento excluído com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
+        }
+    }
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-	}
+    public List<EncaminhadoBean> listarTiposDeEncaminhamento() throws ProjetoException {
+        return eDao.listaEncaminhados();
+    }
 
-	public void buscarEncaminhados() throws ProjetoException {
+    public EncaminhadoBean getEncaminhado() {
+        return encaminhado;
+    }
 
-		List<EncaminhadoBean> listaAux = null;
-		listaEncaminhado = new ArrayList<>();
+    public void setEncaminhado(EncaminhadoBean encaminhado) {
+        this.encaminhado = encaminhado;
+    }
 
-		EncaminhadoDAO adao = new EncaminhadoDAO();
+    public String getCabecalho() {
+        if (this.tipo == 1) {
+            cabecalho = CABECALHO_INCLUSAO;
+        } else if (this.tipo == 2) {
+            cabecalho = CABECALHO_ALTERACAO;
+        }
+        return cabecalho;
+    }
 
-		listaAux = adao.buscarTipoEncaminhado(campoBuscaEncaminhado,
-				tipoBuscaEncaminhado);
+    public void setCabecalho(String cabecalho) {
+        this.cabecalho = cabecalho;
+    }
 
-		if (listaAux != null && listaAux.size() > 0) {
-			// listaAss = null;
-			listaEncaminhado = listaAux;
-		} else {
-			// listaAss = null;
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-					"Nenhum Encaminhado encontrado.", "Aviso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
+    public int getTipo() {
+        return tipo;
+    }
 
-	}
-
-	public void limparBuscaDados() {
-		tipoBuscaEncaminhado = 1;
-		campoBuscaEncaminhado = "";
-		statusEncaminhado = "P";
-		listaEncaminhado = null;
-	}
-
-	public void limparDados() {
-
-		encaminhado = new EncaminhadoBean();
-	}
-
-	public EncaminhadoBean getEncaminhado() {
-		return encaminhado;
-	}
-
-	public void setEncaminhado(EncaminhadoBean encaminhado) {
-		this.encaminhado = encaminhado;
-	}
-
-	public Integer getAbaAtiva() {
-		return abaAtiva;
-	}
-
-	public void setAbaAtiva(Integer abaAtiva) {
-		this.abaAtiva = abaAtiva;
-	}
-
-	public Integer getTipoBuscaEncaminhado() {
-		return tipoBuscaEncaminhado;
-	}
-
-	public void setTipoBuscaEncaminhado(Integer tipoBuscaEncaminhado) {
-		this.tipoBuscaEncaminhado = tipoBuscaEncaminhado;
-	}
-
-	public String getCampoBuscaEncaminhado() {
-		return campoBuscaEncaminhado;
-	}
-
-	public void setCampoBuscaEncaminhado(String campoBuscaEncaminhado) {
-		this.campoBuscaEncaminhado = campoBuscaEncaminhado;
-	}
-
-	public String getStatusEncaminhado() {
-		return statusEncaminhado;
-	}
-
-	public void setStatusEncaminhado(String statusEncaminhado) {
-		this.statusEncaminhado = statusEncaminhado;
-	}
-
-	public List<EncaminhadoBean> getListaEncaminhado() throws ProjetoException {
-		if (listaEncaminhado == null) {
-
-			EncaminhadoDAO fdao = new EncaminhadoDAO();
-			listaEncaminhado = fdao.listaEncaminhados();
-
-		}
-		return listaEncaminhado;
-	}
-
-	public void setListaEncaminhado(List<EncaminhadoBean> listaEncaminhado) {
-		this.listaEncaminhado = listaEncaminhado;
-	}
-
-	public String getCabecalho() {
-		if (this.tipo == 1) {
-			cabecalho = "Inclusão de Tipo de Encaminhamento";
-		} else if (this.tipo == 2) {
-			cabecalho = "Alteração de Tipo de Encaminhamento";
-		}
-		return cabecalho;
-	}
-
-	public void setCabecalho(String cabecalho) {
-		this.cabecalho = cabecalho;
-	}
-
-	public int getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(int tipo) {
-		this.tipo = tipo;
-	}
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
 
 }
