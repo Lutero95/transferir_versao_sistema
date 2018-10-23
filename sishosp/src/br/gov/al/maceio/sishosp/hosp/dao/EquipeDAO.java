@@ -89,8 +89,6 @@ public class EquipeDAO {
                 equipe.setCodEquipe(rs.getInt("id_equipe"));
                 equipe.setDescEquipe(rs.getString("descequipe"));
                 equipe.setCodEmpresa(rs.getInt("codempresa"));
-                equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
-                        .getInt("id_equipe")));
                 lista.add(equipe);
             }
         } catch (SQLException ex) {

@@ -29,7 +29,6 @@ import javax.faces.context.FacesContext;
 
 public class FuncionarioDAO {
 
-    private Connection conexao = null;
     private Connection con = null;
     private PreparedStatement ps = null;
     private EspecialidadeDAO espDao = new EspecialidadeDAO();
@@ -53,8 +52,8 @@ public class FuncionarioDAO {
         String setoresUsuario = "";
 
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement pstmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
             pstmt.setString(2, usuario.getSenha().toUpperCase());
             pstmt.setString(3, usuario.getAtivo());
@@ -84,7 +83,7 @@ public class FuncionarioDAO {
             throw new ProjetoException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception ex) {
                 // TODO: handle exception
                 ex.printStackTrace();
@@ -99,8 +98,8 @@ public class FuncionarioDAO {
         String sql = "select ativo from acl.funcionarios where cpf = ? and senha = ?";
 
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement pstmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
             pstmt.setString(2, usuario.getSenha().toUpperCase());
             ResultSet rs = pstmt.executeQuery();
@@ -116,7 +115,7 @@ public class FuncionarioDAO {
             throw new ProjetoException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception ex) {
                 // TODO: handle exception
                 ex.printStackTrace();
@@ -135,10 +134,10 @@ public class FuncionarioDAO {
 
         List<Sistema> listaSistemas = new ArrayList<>();
 
-        Connection conexao = null;
+        Connection con = null;
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setLong(1, usuario.getCodigo());
             ResultSet rs = stmt.executeQuery();
 
@@ -157,7 +156,7 @@ public class FuncionarioDAO {
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.exit(1);
@@ -217,10 +216,10 @@ public class FuncionarioDAO {
 
         List<Permissoes> lista = new ArrayList<>();
 
-        Connection conexao = null;
+        Connection con = null;
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setLong(1, u.getCodigo());
             stmt.setLong(2, u.getCodigo());
             stmt.setLong(3, u.getCodigo());
@@ -268,7 +267,7 @@ public class FuncionarioDAO {
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.exit(1);
@@ -288,9 +287,9 @@ public class FuncionarioDAO {
         FuncionarioBean u = null;
 
         try {
-            conexao = ConnectionFactory.getConnection();
+            con = ConnectionFactory.getConnection();
             PreparedStatement stmt = null;
-            stmt = conexao.prepareStatement(sql);
+            stmt = con.prepareStatement(sql);
             stmt.setString(1, usuario.getCpf());
             stmt.setString(2, usuario.getSenha());
             ResultSet rs = stmt.executeQuery();
@@ -308,7 +307,7 @@ public class FuncionarioDAO {
             }
             rs.close();
             stmt.close();
-            conexao.close();
+            con.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -324,16 +323,16 @@ public class FuncionarioDAO {
         List<Integer> listaId = usuario.getListaIdSistemas();
 
         try {
-            // conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            // con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             for (Integer idSistema : listaId) {
                 stmt.setLong(1, usuario.getId());
                 stmt.setInt(2, idSistema);
                 stmt.execute();
             }
-            // conexao.commit();
+            // con.commit();
             // stmt.close();
-            // conexao.close();
+            // con.close();
 
             associou = true;
         } catch (SQLException ex) {
@@ -358,16 +357,16 @@ public class FuncionarioDAO {
 
         List<Long> listaId = usuario.getListaIdPermissoes();
         try {
-            // conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            // con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             for (Long idPermissao : listaId) {
                 stmt.setLong(1, usuario.getId());
                 stmt.setLong(2, idPermissao);
                 stmt.execute();
             }
-            // conexao.commit();
+            // con.commit();
             // stmt.close();
-            // conexao.close();
+            // con.close();
 
             associou = true;
         } catch (SQLException ex) {
@@ -389,8 +388,8 @@ public class FuncionarioDAO {
         String sql = "update acl.funcionario set descfuncionario = ?, cpf = ?, email = ?, "
                 + "senha = ?, id_perfil = ?, ativo = ? where id_funcionario = ?";
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getCpf().replaceAll("[^0-9]", ""));
             stmt.setString(3, usuario.getEmail());
@@ -403,13 +402,13 @@ public class FuncionarioDAO {
             FuncionarioBean u = usuario;
 
             sql = "delete from acl.perm_sistema where id_usuario = ?";
-            stmt = conexao.prepareStatement(sql);
+            stmt = con.prepareStatement(sql);
             stmt.setLong(1, usuario.getCodigo());
             stmt.execute();
 
             sql = "insert into acl.perm_sistema (id_usuario, id_sistema) values (?, ?)";
             List<Integer> listaId = usuario.getListaIdSistemas();
-            stmt = conexao.prepareStatement(sql);
+            stmt = con.prepareStatement(sql);
             for (Integer idSistema : listaId) {
                 stmt.setLong(1, usuario.getCodigo());
                 stmt.setInt(2, idSistema);
@@ -417,20 +416,20 @@ public class FuncionarioDAO {
             }
 
             sql = "delete from acl.perm_usuario where id_usuario = ?";
-            stmt = conexao.prepareStatement(sql);
+            stmt = con.prepareStatement(sql);
             stmt.setLong(1, usuario.getCodigo());
             stmt.execute();
 
             sql = "insert into acl.perm_usuario (id_usuario, id_permissao) values (?, ?)";
             List<Long> listaPerm = usuario.getListaIdPermissoes();
-            stmt = conexao.prepareStatement(sql);
+            stmt = con.prepareStatement(sql);
             for (Long idPerm : listaPerm) {
                 stmt.setLong(1, usuario.getCodigo());
                 stmt.setLong(2, idPerm);
                 stmt.execute();
             }
 
-            conexao.commit();
+            con.commit();
 
             cadastrou = true;
 
@@ -453,8 +452,8 @@ public class FuncionarioDAO {
                 + "senha = ?, id_perfil = ?, ativo = ? where id_funcionario = ? ";
 
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getCpf().replaceAll("[^0-9]", ""));
             stmt.setString(3, usuario.getEmail());
@@ -474,7 +473,7 @@ public class FuncionarioDAO {
                 List<Integer> listaId = usuario.getListaIdSistemas();
                 PreparedStatement stmt2;
                 try {
-                    stmt2 = conexao.prepareStatement(sql);
+                    stmt2 = con.prepareStatement(sql);
                     stmt2.setLong(1, usuario.getCodigo());
                     stmt2.execute();
                 } catch (SQLException ex) {
@@ -483,7 +482,7 @@ public class FuncionarioDAO {
                 }
                 if (!usuario.getListaIdSistemas().isEmpty()) {
                     try {
-                        stmt2 = conexao.prepareStatement(sql2);
+                        stmt2 = con.prepareStatement(sql2);
                         for (Integer idSistema : listaId) {
                             stmt2.setLong(1, usuario.getCodigo());
                             stmt2.setInt(2, idSistema);
@@ -500,7 +499,7 @@ public class FuncionarioDAO {
             if (associouSis == true) {
                 sql = "delete from acl.perm_usuario where id_usuario = ?";
                 try {
-                    PreparedStatement stmt3 = conexao.prepareStatement(sql);
+                    PreparedStatement stmt3 = con.prepareStatement(sql);
                     stmt3.setLong(1, usuario.getCodigo());
                     stmt3.execute();
                     associouPerm = true;
@@ -510,15 +509,15 @@ public class FuncionarioDAO {
             }
 
             cadastrou = true;
-            conexao.commit();
+            con.commit();
             stmt.close();
-            conexao.close();
+            con.close();
             return cadastrou;
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception e2) {
                 // TODO: handle exception
                 e2.printStackTrace();
@@ -534,8 +533,8 @@ public class FuncionarioDAO {
         ArrayList<FuncionarioBean> lista = new ArrayList();
 
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stm = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -555,7 +554,7 @@ public class FuncionarioDAO {
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.exit(1);
@@ -572,8 +571,8 @@ public class FuncionarioDAO {
         List<Sistema> listaSistemas = new ArrayList<>();
 
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -584,12 +583,12 @@ public class FuncionarioDAO {
             }
             rs.close();
             stmt.close();
-            conexao.close();
+            con.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception e2) {
                 // TODO: handle exception
                 e2.printStackTrace();
@@ -610,8 +609,8 @@ public class FuncionarioDAO {
         List<Sistema> listaSistemas = new ArrayList<>();
 
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -623,12 +622,12 @@ public class FuncionarioDAO {
             }
             rs.close();
             stmt.close();
-            conexao.close();
+            con.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception e2) {
                 // TODO: handle exception
                 e2.printStackTrace();
@@ -648,8 +647,8 @@ public class FuncionarioDAO {
         List<Sistema> listaSistemas = new ArrayList<>();
 
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -661,12 +660,12 @@ public class FuncionarioDAO {
             }
             rs.close();
             stmt.close();
-            conexao.close();
+            con.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception e2) {
                 // TODO: handle exception
                 e2.printStackTrace();
@@ -688,8 +687,8 @@ public class FuncionarioDAO {
         ArrayList<Permissao> lista = new ArrayList<>();
 
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -701,12 +700,12 @@ public class FuncionarioDAO {
             }
             rs.close();
             stmt.close();
-            conexao.close();
+            con.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception e2) {
                 // TODO: handle exception
                 e2.printStackTrace();
@@ -732,8 +731,8 @@ public class FuncionarioDAO {
         ArrayList<Permissao> lista = new ArrayList<>();
 
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, idPefil);
             stmt.setInt(2, idUsuario);
             ResultSet rs = stmt.executeQuery();
@@ -746,12 +745,12 @@ public class FuncionarioDAO {
             }
             rs.close();
             stmt.close();
-            conexao.close();
+            con.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception e2) {
                 // TODO: handle exception
                 e2.printStackTrace();
@@ -772,8 +771,8 @@ public class FuncionarioDAO {
         ArrayList<Permissao> lista = new ArrayList<>();
 
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -785,12 +784,12 @@ public class FuncionarioDAO {
             }
             rs.close();
             stmt.close();
-            conexao.close();
+            con.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception e2) {
                 // TODO: handle exception
                 e2.printStackTrace();
@@ -806,21 +805,21 @@ public class FuncionarioDAO {
         String sql = "update acl.funcionarios set senha = ? where id_funcionario = ?";
 
         try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, usuario.getSenha());
             stmt.setLong(2, usuario.getCodigo());
             stmt.executeUpdate();
-            conexao.commit();
+            con.commit();
             stmt.close();
-            conexao.close();
+            con.close();
 
             return true;
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+                con.close();
             } catch (Exception e2) {
                 // TODO: handle exception
                 e2.printStackTrace();
