@@ -106,6 +106,7 @@ public class EscolaridadeController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
+        listarEscolaridades();
     }
 
     public List<EscolaridadeBean> listarEscolaridades() throws ProjetoException {

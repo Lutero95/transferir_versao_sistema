@@ -95,7 +95,7 @@ public class FeriadoController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
-        this.listaFeriados = fDao.listarFeriado();
+       listarFeriados();
     }
 
     public List<FeriadoBean> listarFeriados() throws ProjetoException {

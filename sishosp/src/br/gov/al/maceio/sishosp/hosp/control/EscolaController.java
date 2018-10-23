@@ -89,7 +89,7 @@ public class EscolaController implements Serializable {
 
     }
 
-    public void excluirEscola() {
+    public void excluirEscola() throws ProjetoException {
 
         boolean excluiu = eDao.excluir(escola);
 
@@ -100,6 +100,7 @@ public class EscolaController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
+        listarEscolas();
     }
 
     public void limparDados() {

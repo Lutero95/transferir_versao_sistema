@@ -1,7 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +21,6 @@ public class EquipamentoController implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private EquipamentoBean equipamento;
-    private List<EquipamentoBean> listaEquipamentos;
-    private Integer tipoBuscar;
     private int tipo;
     private String cabecalho;
     private EquipamentoDAO eDao = new EquipamentoDAO();
@@ -37,8 +34,6 @@ public class EquipamentoController implements Serializable {
 
     public EquipamentoController() {
         equipamento = new EquipamentoBean();
-        listaEquipamentos = new ArrayList<>();
-        listaEquipamentos = null;
         this.cabecalho = "";
     }
 
@@ -53,10 +48,9 @@ public class EquipamentoController implements Serializable {
 
     public void limparDados() {
         equipamento = new EquipamentoBean();
-        listaEquipamentos = new ArrayList<>();
     }
 
-    public void gravarEquipamento(){
+    public void gravarEquipamento() {
         boolean cadastrou = eDao.gravarEquipamento(equipamento);
 
         if (cadastrou == true) {
@@ -75,8 +69,6 @@ public class EquipamentoController implements Serializable {
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
         }
-        listaEquipamentos = eDao.listarEquipamentos();
-
     }
 
     public void excluirEquipamento() throws ProjetoException {
@@ -89,7 +81,7 @@ public class EquipamentoController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
-        listaEquipamentos = eDao.listarEquipamentos();
+        listarEquipamentos();
     }
 
     public void getEditEquipamento() {
@@ -108,13 +100,11 @@ public class EquipamentoController implements Serializable {
     }
 
     public List<EquipamentoBean> listarEquipamentos()
-            throws ProjetoException{
-        listaEquipamentos = eDao.listarEquipamentos();
-
-        return listaEquipamentos;
+            throws ProjetoException {
+        return eDao.listarEquipamentos();
     }
 
-    public List<EquipamentoBean> listaEquipamentoAutoComplete(String query){
+    public List<EquipamentoBean> listaEquipamentoAutoComplete(String query) {
         List<EquipamentoBean> result = eDao.listarEquipamentoAutoComplete(query);
 
         return result;
@@ -126,14 +116,6 @@ public class EquipamentoController implements Serializable {
 
     public void setEquipamento(EquipamentoBean equipamento) {
         this.equipamento = equipamento;
-    }
-
-    public Integer getTipoBuscar() {
-        return tipoBuscar;
-    }
-
-    public void setTipoBuscar(Integer tipoBuscar) {
-        this.tipoBuscar = tipoBuscar;
     }
 
     public int getTipo() {
@@ -157,11 +139,4 @@ public class EquipamentoController implements Serializable {
         return cabecalho;
     }
 
-    public List<EquipamentoBean> getListaEquipamentos() {
-        return listaEquipamentos;
-    }
-
-    public void setListaEquipamentos(List<EquipamentoBean> listaEquipamentos) {
-        this.listaEquipamentos = listaEquipamentos;
-    }
 }

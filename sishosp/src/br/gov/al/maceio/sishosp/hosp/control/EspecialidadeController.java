@@ -69,7 +69,7 @@ public class EspecialidadeController implements Serializable {
         this.listaEspecialidade = eDao.listarEspecialidades();
     }
 
-    public void gravarEspecialidade() throws ProjetoException, SQLException {
+    public void gravarEspecialidade() throws ProjetoException {
 
         boolean cadastrou = eDao.gravarEspecialidade(espec);
 
@@ -81,7 +81,7 @@ public class EspecialidadeController implements Serializable {
         }
     }
 
-    public void alterarEspecialidade() throws ProjetoException {
+    public void alterarEspecialidade() {
         boolean alterou = eDao.alterarEspecialidade(espec);
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Especialidade alterada com sucesso!", "Sucesso");
@@ -99,7 +99,7 @@ public class EspecialidadeController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
-        this.listaEspecialidade = eDao.listarEspecialidades();
+        listarEspecialidades();
     }
 
     public void listarTodasEspecialidades() throws ProjetoException {

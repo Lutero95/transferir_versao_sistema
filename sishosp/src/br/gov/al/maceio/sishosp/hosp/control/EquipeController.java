@@ -95,7 +95,7 @@ public class EquipeController implements Serializable {
 		}
 	}
 
-	public void alterarEquipe() throws ProjetoException {
+	public void alterarEquipe() {
 
 		if (this.equipe.getProfissionais().isEmpty()) {
 			JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um profissional na equipe!", "Advertência");
@@ -108,7 +108,6 @@ public class EquipeController implements Serializable {
 			if (alterou == true) {
 				JSFUtil.adicionarMensagemSucesso("Equipe alterada com sucesso!", "Sucesso");
 				JSFUtil.atualizarComponente("msgPagina");
-				this.listaEquipe = eDao.listarEquipe();
 			} else {
 				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 			}
@@ -126,7 +125,7 @@ public class EquipeController implements Serializable {
 			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 			JSFUtil.fecharDialog("dialogExclusao");
 		}
-		this.listaEquipe = eDao.listarEquipe();
+		listarEquipes();
 	}
 
 	public List<EquipeBean> listaEquipeAutoComplete(String query)

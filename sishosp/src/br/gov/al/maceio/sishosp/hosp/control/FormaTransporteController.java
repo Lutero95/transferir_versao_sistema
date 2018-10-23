@@ -98,6 +98,7 @@ public class FormaTransporteController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
+        listarTransporte();
     }
 
     public  List<FormaTransporteBean> listarTransporte() throws ProjetoException {
