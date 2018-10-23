@@ -11,6 +11,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.util.CEPUtil;
+import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
@@ -137,7 +138,7 @@ public class PacienteController implements Serializable {
     public void encontraCEP() {
         paciente.setEndereco(CEPUtil.encontraCEP(paciente.getEndereco().getCep()));
 
-        if(paciente.getEndereco().getCepValido()) {
+        if (paciente.getEndereco().getCepValido()) {
             cidadeDoCep = true;
         } else {
             cidadeDoCep = false;
@@ -483,60 +484,17 @@ public class PacienteController implements Serializable {
     }
 
     public void validaCns(String s) {
-        Boolean retorno = false;
-
-        if (s.matches("[1-2]\\d{10}00[0-1]\\d") || s.matches("[7-9]\\d{14}")) {
-            if (somaPonderadaCns(s) % 11 == 0) {
-                retorno = true;
-            }
-        }
-        if (!retorno) {
+        if (!DocumentosUtil.validaCns(s)) {
             JSFUtil.adicionarMensagemAdvertencia("Esse número de CNS não é valido", "Advertência");
             paciente.setCns("");
         }
-
     }
 
-    private int somaPonderadaCns(String s) {
-        char[] cs = s.toCharArray();
-        int soma = 0;
-        for (int i = 0; i < cs.length; i++) {
-            soma += Character.digit(cs[i], 10) * (15 - i);
-        }
-        return soma;
-    }
 
     public void validaPIS(String pis) {
-        if (!pis.equals("")) {
-            int liTamanho = 0;
-            StringBuffer lsAux = null;
-            StringBuffer lsMultiplicador = new StringBuffer("3298765432");
-            int liTotalizador = 0;
-            int liResto = 0;
-            int liMultiplicando = 0;
-            int liMultiplicador = 0;
-            boolean lbRetorno = true;
-            int liDigito = 99;
-            lsAux = new StringBuffer().append(pis);
-            liTamanho = lsAux.length();
-            if (liTamanho != 11) {
-                lbRetorno = false;
-            }
-            if (lbRetorno) {
-                for (int i = 0; i < 10; i++) {
-                    liMultiplicando = Integer.parseInt(lsAux.substring(i, i + 1));
-                    liMultiplicador = Integer.parseInt(lsMultiplicador.substring(i, i + 1));
-                    liTotalizador += liMultiplicando * liMultiplicador;
-                }
-                liResto = 11 - liTotalizador % 11;
-                liResto = liResto == 10 || liResto == 11 ? 0 : liResto;
-                liDigito = Integer.parseInt("" + lsAux.charAt(10));
-                lbRetorno = liResto == liDigito;
-            }
-            if (!lbRetorno) {
-                JSFUtil.adicionarMensagemAdvertencia("Esse número do PIS não é valido", "Advertência");
-                paciente.setPis("");
-            }
+        if (!DocumentosUtil.validaPIS(pis)) {
+            JSFUtil.adicionarMensagemAdvertencia("Esse número do PIS não é valido", "Advertência");
+            paciente.setPis("");
         }
     }
 
