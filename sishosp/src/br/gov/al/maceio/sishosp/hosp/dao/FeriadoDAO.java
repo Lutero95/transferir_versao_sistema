@@ -91,7 +91,7 @@ public class FeriadoDAO {
 
 	public List<FeriadoBean> listarFeriado() throws ProjetoException {
 		List<FeriadoBean> lista = new ArrayList<>();
-		String sql = "select codferiado, descferiado, dataferiado from hosp.feriado order by codferiado ";
+		String sql = "select codferiado, descferiado, dataferiado from hosp.feriado order by descferiado ";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
