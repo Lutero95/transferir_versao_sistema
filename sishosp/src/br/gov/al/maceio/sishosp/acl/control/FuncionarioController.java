@@ -11,19 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.menu.DefaultMenuItem;
@@ -39,12 +40,12 @@ public class FuncionarioController implements Serializable {
     private FuncionarioBean usuario;
     private FuncionarioBean profissional;
     private List<FuncionarioBean> listaProfissional;
-    private FuncionarioDAO pDao = new FuncionarioDAO();
     private String cabecalho;
     private int tipo;
     private ArrayList<ProgramaBean> listaGruposEProgramasProfissional;
+    private FuncionarioDAO fDao = new FuncionarioDAO();
 
-    // Sessão
+    // SESSÃO
     private FuncionarioBean usuarioLogado;
     private Sistema sistemaLogado;
 
@@ -64,8 +65,15 @@ public class FuncionarioController implements Serializable {
 
     private Boolean renderizarPermissoes;
 
-    // Menu
+    // MENU
     private MenuModel menuModel;
+
+    //CONSTANTES
+    private static final String ENDERECO_CADASTRO = "cadastroProfissional?faces-redirect=true";
+    private static final String ENDERECO_TIPO = "&amp;tipo=";
+    private static final String ENDERECO_ID = "&amp;id=";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de Profissional";
+    private static final String CABECALHO_ALTERACAO = "Alteração de Profissional";
 
     public FuncionarioController() {
 
@@ -73,7 +81,6 @@ public class FuncionarioController implements Serializable {
         listaProfissional = new ArrayList<FuncionarioBean>();
         this.profissional = new FuncionarioBean();
         this.listaGruposEProgramasProfissional = new ArrayList<ProgramaBean>();
-
         usuario = new FuncionarioBean();
 
         // ACL
@@ -109,20 +116,17 @@ public class FuncionarioController implements Serializable {
     }
 
     public String login() throws ProjetoException {
-        FuncionarioDAO udao = new FuncionarioDAO();
 
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
                 .put("expired", "N");
 
-        usuario.setAtivo(udao.usuarioAtivo(usuario));
+        usuario.setAtivo(fDao.usuarioAtivo(usuario));
 
-        usuarioLogado = udao.autenticarUsuario(usuario);
+        usuarioLogado = fDao.autenticarUsuario(usuario);
 
         if (usuarioLogado == null) {
-
-            FacesMessage msg = new FacesMessage("Usuário ou senha inválido!");
-            FacesContext.getCurrentInstance().addMessage("Error", msg);
-            RequestContext.getCurrentInstance().update("msgError");
+            JSFUtil.adicionarMensagemErro("Usuário ou senha inválido!!", "Erro");
+            JSFUtil.atualizarComponente("msgPagina");
             return null;
 
         } else {
@@ -132,13 +136,13 @@ public class FuncionarioController implements Serializable {
 
             // ACL =============================================================
 
-            List<Sistema> sistemas = udao
+            List<Sistema> sistemas = fDao
                     .carregarSistemasUsuario(usuarioLogado);
 
             FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().put("perms_usuario_sis", sistemas);
 
-            List<Permissoes> permissoes = udao
+            List<Permissoes> permissoes = fDao
                     .carregarPermissoes(usuarioLogado);
 
             sistemaLogado.setDescricao("Sem Sistema");
@@ -434,18 +438,15 @@ public class FuncionarioController implements Serializable {
     // PROFISSIONAL INÍCIO
     public void limparDados() throws ProjetoException {
         this.profissional = new FuncionarioBean();
-        this.listaProfissional = pDao.listarProfissional();
+        this.listaProfissional = fDao.listarProfissional();
         this.listaGruposEProgramasProfissional = new ArrayList<ProgramaBean>();
     }
 
-    public void gravarProfissional() throws SQLException, ProjetoException {
+    public void gravarProfissional() throws ProjetoException, SQLException {
 
         if (profissional.getRealizaAtendimento()) {
             if (listaGruposEProgramasProfissional.size() == 0) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Deve ser informado pelo menos um Programa e um Grupo!",
-                        "Campos obrigatórios!");
-                FacesContext.getCurrentInstance().addMessage(null, msg);
+                JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatórios!");
             }
         }
 
@@ -479,60 +480,41 @@ public class FuncionarioController implements Serializable {
         profissional.setListaIdPermissoes(permissoes);
 
 
-        boolean cadastrou = pDao.gravarProfissional(profissional,
+        boolean cadastrou = fDao.gravarProfissional(profissional,
                 listaGruposEProgramasProfissional);
 
         if (cadastrou == true) {
             limparDados();
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Profissional cadastrado com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            JSFUtil.adicionarMensagemSucesso("Profissional cadastrado com sucesso!", "Sucesso");
         } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }
-        this.listaProfissional = pDao.listarProfissional();
+        this.listaProfissional = fDao.listarProfissional();
     }
 
     public void excluirProfissional() throws ProjetoException {
-        boolean ok = pDao.excluirProfissional(profissional);
-        if (ok == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Funcionário excluído com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            RequestContext.getCurrentInstance().execute(
-                    "PF('dialogAtencao').hide();");
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante a exclusao!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
 
-            RequestContext.getCurrentInstance().execute(
-                    "PF('dialogAtencao').hide();");
+        boolean excluiu = fDao.excluirProfissional(profissional);
+        if (excluiu == true) {
+            JSFUtil.adicionarMensagemSucesso("Profissional excluído com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
         }
-        this.listaProfissional = pDao.listarProfissional();
+        this.listaProfissional = fDao.listarProfissional();
     }
 
     public void alterarProfissional() throws ProjetoException {
         if (this.profissional.getCbo() == null
-                // || this.profissional.getCns().isEmpty()
                 || this.profissional.getNome().isEmpty()
-            // || this.profissional.getEspecialidade() == null
         ) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "CBO, CNS, especialidade e descrição obrigatórios!",
-                    "Campos obrigatórios!");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            // return "";
+            JSFUtil.adicionarMensagemAdvertencia("CBO, CNS, especialidade e descrição obrigatórios!", "Campos obrigatórios!");
         }
 
         if (profissional.getRealizaAtendimento() == true
                 && listaGruposEProgramasProfissional.size() == 0) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Deve ser informado pelo menos um Programa e um Grupo!",
-                    "Campos obrigatórios!");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatórios!");
         }
 
         List<Long> permissoes = new ArrayList<>();
@@ -567,34 +549,37 @@ public class FuncionarioController implements Serializable {
 
         profissional.setListaIdPermissoes(permissoes);
 
-        boolean alterou = pDao.alterarProfissional(profissional,
+        boolean alterou = fDao.alterarProfissional(profissional,
                 listaGruposEProgramasProfissional);
 
         if (alterou == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Funcionário alterado com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            this.listaProfissional = pDao.listarProfissional();
+            JSFUtil.adicionarMensagemSucesso("Funcionário alterado com sucesso!", "Sucesso");
 
         } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
         }
 
     }
 
+    public void validaCns(String s) {
+        if (!DocumentosUtil.validaCns(s)) {
+            JSFUtil.adicionarMensagemAdvertencia("Esse número de CNS não é valido", "Advertência");
+            profissional.setCns("");
+        }
+    }
+
     public void listarProfissionais() throws ProjetoException {
-        FuncionarioDAO prDao = new FuncionarioDAO();
-        listaProfissional = prDao.listarProfissional();
+        listaProfissional = fDao.listarProfissional();
+    }
+
+    public List<FuncionarioBean> listarProfissional() throws ProjetoException {
+        return fDao.listarProfissional();
 
     }
 
     public List<FuncionarioBean> listarProfissionaisConfigAgenda()
             throws ProjetoException {
-        FuncionarioDAO prDao = new FuncionarioDAO();
-        listaProfissional = prDao.listarProfissional();
+        listaProfissional = fDao.listarProfissional();
 
         return listaProfissional;
     }
@@ -615,10 +600,7 @@ public class FuncionarioController implements Serializable {
                 }
             }
             if (existe == true) {
-                FacesMessage msg = new FacesMessage(
-                        FacesMessage.SEVERITY_ERROR,
-                        "Esse grupo já foi adicionado!", "Erro");
-                FacesContext.getCurrentInstance().addMessage(null, msg);
+                JSFUtil.adicionarMensagemAdvertencia("Esse grupo já foi adicionado!", "Advertência");
             } else {
                 listaGruposEProgramasProfissional
                         .add(profissional.getProgAdd());
@@ -634,22 +616,25 @@ public class FuncionarioController implements Serializable {
 
     public String getCabecalho() {
         if (this.tipo == 1) {
-            cabecalho = "Cadastro de Funcionário";
+            cabecalho = CABECALHO_INCLUSAO;
         } else if (this.tipo == 2) {
-            cabecalho = "Alterar Funcionário";
+            cabecalho = CABECALHO_ALTERACAO;
         }
         return cabecalho;
     }
+
+    public String redirectEdit() {
+        long num = this.profissional.getId();
+        int codigo = (int) num;
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, codigo , ENDERECO_TIPO, tipo);
+    }
+
 
     public String redirectInsert() throws ProjetoException {
         limparDados();
         return "cadastroProfissional?faces-redirect=true&amp;tipo=" + this.tipo;
     }
 
-    public String redirectEdit() {
-        return "cadastroProfissional?faces-redirect=true&amp;id="
-                + this.profissional.getId() + "&amp;tipo=" + tipo;
-    }
 
     public void setCabecalho(String cabecalho) {
         this.cabecalho = cabecalho;
@@ -657,7 +642,7 @@ public class FuncionarioController implements Serializable {
 
     public List<FuncionarioBean> listaProfissionalAutoComplete(String query)
             throws ProjetoException {
-        List<FuncionarioBean> result = pDao.listarProfissionalBusca(query, 1);
+        List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
         return result;
     }
 
@@ -683,8 +668,8 @@ public class FuncionarioController implements Serializable {
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
-            this.profissional = pDao.buscarProfissionalPorId(id);
-            listaGruposEProgramasProfissional = pDao
+            this.profissional = fDao.buscarProfissionalPorId(id);
+            listaGruposEProgramasProfissional = fDao
                     .carregaProfissionalProgramaEGrupos(id);
             if(profissional.getPerfil().getId() > 0){
                 renderizarPermissoes = true;
@@ -763,7 +748,7 @@ public class FuncionarioController implements Serializable {
     }
 
     public void ListarTodosProfissionais() throws ProjetoException {
-        listaProfissional = pDao.listarProfissional();
+        listaProfissional = fDao.listarProfissional();
 
     }
 
