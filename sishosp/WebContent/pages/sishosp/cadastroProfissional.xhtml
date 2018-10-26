@@ -75,7 +75,7 @@
                                 <h:outputLabel value="Senha" style="margin-top:10px"/>
                             </b:column>
                             <b:column span="3">
-                                <b:inputSecret style="margin-left:15px" required="true"
+                                <b:inputSecret required="true"
                                                requiredMessage="Senha: Campo obrigatório!"
                                                value="#{MBFuncionarios.profissional.senha}"></b:inputSecret>
                             </b:column>
@@ -84,7 +84,7 @@
                                 <h:outputLabel value="Ativo"
                                                style="margin-top:10px;margin-left:50px"/>
                             </b:column>
-                            <b:column span="2">
+                            <b:column span="3">
                                 <h:selectOneMenu style="width:105px;margin-top:5px"
                                                  styleClass="form-control"
                                                  value="#{MBFuncionarios.profissional.ativo}">
@@ -92,23 +92,19 @@
                                     <f:selectItem itemLabel="NÃO" itemValue="N"/>
                                 </h:selectOneMenu>
                             </b:column>
-                        </b:row>
 
-                        <br></br>
-
-                        <b:row>
                             <b:column span="1">
                                 <h:outputLabel value="Perfil"
                                                style="margin-top:5px"/>
                             </b:column>
 
-                            <b:column span="2">
+                            <b:column span="3">
                                 <p:selectOneMenu
                                         value="#{MBFuncionarios.profissional.perfil.id}"
                                         required="true" requiredMessage="Perfil: Campo obrigatório!"
                                         style="width:230px;">
 
-                                    <f:selectItem itemLabel="Selecione" itemValue="0"/>
+                                    <f:selectItem itemLabel="Selecione"/>
                                     <f:selectItems value="#{perfilMB.listaPerfil}" var="perf"
                                                    itemLabel="#{perf.descricao}" itemValue="#{perf.id}"/>
                                     <p:ajax event="change" listener="#{MBFuncionarios.limparDualCad()}" update=""/>
@@ -119,16 +115,21 @@
 
                     </p:tab>
 
-                    <p:tab title="Dados para Atendimento" id="tbv"
+                    <p:tab title="Dados para Atendimento"
                            rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
-                        <div class="form-group">
-                            <h:outputLabel value="Especialidade"
-                                           styleClass="col-sm-1 control-label"/>
-                            <div class="col-sm-4">
+
+                        <b:row>
+
+                            <b:column span="1">
+                                <h:outputLabel value="Especialidade"/>
+                            </b:column>
+
+
+                            <b:column span="4">
                                 <p:outputPanel id="outEspeci">
 
                                     <p:autoComplete
-                                            value="#{MBFuncionarios.profissional.especialidade}" size="60"
+                                            value="#{MBFuncionarios.profissional.especialidade}" size="50"
                                             converter="conEspecialidade" id="descE"
                                             completeMethod="#{EspecialidadeController.listaEspecialidadeAutoComplete}"
                                             effect="fade" var="theme" forceSelection="true"
@@ -138,21 +139,27 @@
                                     </p:autoComplete>
 
                                 </p:outputPanel>
-                            </div>
-                            <div class="col-sm-1">
+
+                            </b:column>
+
+
+                            <b:column span="1">
                                 <p:commandButton id="btBusEsp" icon="ui-icon-search"
                                                  style="margin-left:-20px;" update=":formConsulEspec"
                                                  onclick="PF('dlgConsulEspecialidade').show();" immediate="true"
                                                  actionListener="#{EspecialidadeController.getListarTodasEspecialidades()}"/>
 
-                            </div>
+                            </b:column>
 
-                            <h:outputLabel value="C.B.O." styleClass="col-sm-1 control-label"/>
-                            <div class="col-sm-4">
+                            <b:column span="1">
+                                <h:outputLabel value="C.B.O."/>
+                            </b:column>
+
+                            <b:column span="4">
                                 <p:outputPanel id="outCboP">
 
                                     <p:autoComplete value="#{MBFuncionarios.profissional.cbo}"
-                                                    size="60" converter="conCbo" id="descCbo"
+                                                    size="50" converter="conCbo" id="descCbo"
                                                     completeMethod="#{CboController.listaCboAutoComplete}"
                                                     effect="fade" var="theme" forceSelection="true"
                                                     minQueryLength="1" itemValue="#{theme}" required="true"
@@ -161,64 +168,76 @@
                                     </p:autoComplete>
 
                                 </p:outputPanel>
-                            </div>
-                            <div class="col-sm-1">
+                            </b:column>
+
+                            <b:column span="1">
                                 <p:commandButton id="btBusCbo" icon="ui-icon-search"
                                                  style="margin-left:-20px;" immediate="true"
                                                  onclick="PF('dlgConsulCbo').show();"/>
 
-                            </div>
+                            </b:column>
 
-                        </div>
+                        </b:row>
 
-                        <div class="form-group">
-                            <h:outputLabel value="Procedimento"
-                                           styleClass="col-sm-1 control-label"/>
-                            <div class="col-sm-4">
+                        <br></br>
+
+                        <b:row>
+
+                            <b:column span="1">
+                                <h:outputLabel value="Procedimento"/>
+                            </b:column>
+
+                            <b:column span="4">
                                 <p:outputPanel id="outProcP1">
                                     <p:autoComplete value="#{MBFuncionarios.profissional.proc1}"
-                                                    size="60" converter="conProcedimento" id="descProc1"
+                                                    size="50" converter="conProcedimento" id="descProc1"
                                                     completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
                                                     effect="fade" var="theme" forceSelection="true"
                                                     minQueryLength="1" itemValue="#{theme}"
                                                     itemLabel="#{theme.nomeProc}">
                                     </p:autoComplete>
                                 </p:outputPanel>
-                            </div>
-                            <div class="col-sm-1">
+                            </b:column>
 
+                            <b:column span="1">
                                 <p:commandButton id="btBusProc1" icon="ui-icon-search"
                                                  onclick="PF('dlgConsulProc1').show();" immediate="true"
                                                  actionListener="#{ProcedimentoController.listarProcedimentos()}"
                                                  style="margin-left:-20px;"/>
-                            </div>
+                            </b:column>
 
-                            <h:outputLabel value="CNS" styleClass="col-sm-1 control-label"/>
-                            <div class="col-sm-4">
+                            <b:column span="1">
+                                <h:outputLabel value="CNS"/>
+                            </b:column>
+
+                            <b:column span="5">
                                 <p:outputPanel id="outProcP2">
-                                    <h:inputText value="#{MBFuncionarios.profissional.cns}"
-                                                 required="true" requiredMessage="CNS: Campo obrigátorio!"
-                                                 class="form-control">
+                                    <p:inputText value="#{MBFuncionarios.profissional.cns}" class="form-control"
+                                                 required="true" requiredMessage="CNS: Campo obrigátorio!">
                                         <p:ajax listener="#{MBFuncionarios.validaCns(MBFuncionarios.profissional.cns)}"
-                                                global="false" event="blur" update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:outProcP2"/>
-                                    </h:inputText>
+                                                global="false" event="blur" immediate="true"
+                                                update=":frmPrincipal:msgPagina"/>
+                                    </p:inputText>
 
                                 </p:outputPanel>
-                            </div>
+                            </b:column>
+
+                        </b:row>
+
+                        <b:row>
+
+                            <b:column span="1">
+                                <h:outputLabel value="Grupo"/>
+                            </b:column>
+
+                            <b:column span="1">
+                                <p:commandButton process="@this" size="sm" immediate="true"
+                                                 tooltip="Incluir Profissional" icon="ui-icon-plus"
+                                                 oncomplete="PF('dlgConsuGrupos').show();"/>
+                            </b:column>
 
 
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <div class="col-sm-5" style="margin-top: 20px">
-                                <p:commandButton onclick="PF('dlgConsuGrupos').show();"
-                                                 value="Incluir Grupo" styleClass="btn btn-primary text-center"
-                                                 style="color:black;" icon="ui-icon-plus" process="@this"/>
-
-                                <br/> <br/>
-
+                            <b:column span="10">
                                 <p:dataTable style="width: 480px"
                                              emptyMessage="Nenhum Programa/Grupo" id="tabelagrupo"
                                              value="#{MBFuncionarios.listaGruposEProgramasProfissional}"
@@ -234,34 +253,34 @@
                                     </p:column>
 
                                     <p:column headerText="Ação">
-                                        <center>
+                                        <div align="center">
                                             <p:commandButton immediate="true"
                                                              action="#{MBFuncionarios.removeListaGruposEProgramasProfissional()}"
-                                                             icon="ui-icon-trash" update=":frmPrincipal">
+                                                             icon="ui-icon-trash" update="tabelagrupo">
                                                 <f:setPropertyActionListener value="#{programa}"
                                                                              target="#{MBFuncionarios.profissional.progAdd}"/>
                                             </p:commandButton>
-                                        </center>
+                                        </div>
                                     </p:column>
                                 </p:dataTable>
 
 
-                            </div>
+                            </b:column>
 
+                        </b:row>
 
-                        </div>
                     </p:tab>
 
 
                     <p:tab title="Permissões Extras">
 
                         <p:outputPanel autoUpdate="true">
-                            <center>
+                            <div align="center">
                                 <p:outputLabel
                                         value="Selecione um perfil para exibir as permissões que não estão associadas."
                                         style="font-size:18px !important;"
                                         rendered="#{MBFuncionarios.renderizarPermissoes == false}"/>
-                            </center>
+                            </div>
 
                             <p:tabView id="tabvPerms"
                                        rendered="#{MBFuncionarios.renderizarPermissoes == true}">
@@ -316,7 +335,7 @@
                 <br></br>
 
                 <div align="center">
-                    <b:commandButton action="#{MBFuncionarios.gravarProfissional()}"
+                    <b:commandButton action="#{MBFuncionarios.gravarProfissional()}" process="@this"
                                      icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
                                      style="float:left" value="Incluir"
                                      rendered="#{MBFuncionarios.tipo == 1}"/>

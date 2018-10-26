@@ -1,7 +1,5 @@
 package br.gov.al.maceio.sishosp.acl.model;
 
-import br.gov.al.maceio.sishosp.acl.model.PermissoesBean;
-import br.gov.al.maceio.sishosp.acl.model.SecretariaBean;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;

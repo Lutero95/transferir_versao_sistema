@@ -442,54 +442,54 @@ public class FuncionarioController implements Serializable {
         this.listaGruposEProgramasProfissional = new ArrayList<ProgramaBean>();
     }
 
-    public void gravarProfissional() throws ProjetoException, SQLException {
+    public void gravarProfissional() throws ProjetoException {
 
-        if (profissional.getRealizaAtendimento()) {
-            if (listaGruposEProgramasProfissional.size() == 0) {
+        if (profissional.getRealizaAtendimento() && listaGruposEProgramasProfissional.isEmpty()) {
                 JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatórios!");
-            }
         }
 
-        List<Long> permissoes = new ArrayList<>();
-        List<Menu> listaMenusAux = listaMenusDual.getTarget();
-        List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
+        else {
+            List<Long> permissoes = new ArrayList<>();
+            List<Menu> listaMenusAux = listaMenusDual.getTarget();
+            List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
 
-        MenuDAO mdao = new MenuDAO();
-        List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
+            MenuDAO mdao = new MenuDAO();
+            List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
 
-        MenuMB mmb = new MenuMB();
-        List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
+            MenuMB mmb = new MenuMB();
+            List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
 
-        for (Menu mp : menusPerfil) {
-            for (Menu mf : listaFiltrada) {
-                if (mp.getCodigo().equals(mf.getCodigo())) {
-                    listaFiltrada.remove(mf);
+            for (Menu mp : menusPerfil) {
+                for (Menu mf : listaFiltrada) {
+                    if (mp.getCodigo().equals(mf.getCodigo())) {
+                        listaFiltrada.remove(mf);
+                    }
                 }
             }
+
+            PermissaoDAO pmdao = new PermissaoDAO();
+            for (Menu m : listaFiltrada) {
+                permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
+            }
+
+            for (Funcao f : listaFuncoesAux) {
+                permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
+            }
+
+            profissional.setListaIdPermissoes(permissoes);
+
+
+            boolean cadastrou = fDao.gravarProfissional(profissional,
+                    listaGruposEProgramasProfissional);
+
+            if (cadastrou == true) {
+                limparDados();
+                JSFUtil.adicionarMensagemSucesso("Profissional cadastrado com sucesso!", "Sucesso");
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+            }
+            this.listaProfissional = fDao.listarProfissional();
         }
-
-        PermissaoDAO pmdao = new PermissaoDAO();
-        for (Menu m : listaFiltrada) {
-            permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
-        }
-
-        for (Funcao f : listaFuncoesAux) {
-            permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
-        }
-
-        profissional.setListaIdPermissoes(permissoes);
-
-
-        boolean cadastrou = fDao.gravarProfissional(profissional,
-                listaGruposEProgramasProfissional);
-
-        if (cadastrou == true) {
-            limparDados();
-            JSFUtil.adicionarMensagemSucesso("Profissional cadastrado com sucesso!", "Sucesso");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-        }
-        this.listaProfissional = fDao.listarProfissional();
     }
 
     public void excluirProfissional() throws ProjetoException {
@@ -506,59 +506,55 @@ public class FuncionarioController implements Serializable {
     }
 
     public void alterarProfissional() throws ProjetoException {
-        if (this.profissional.getCbo() == null
-                || this.profissional.getNome().isEmpty()
-        ) {
-            JSFUtil.adicionarMensagemAdvertencia("CBO, CNS, especialidade e descrição obrigatórios!", "Campos obrigatórios!");
-        }
 
         if (profissional.getRealizaAtendimento() == true
                 && listaGruposEProgramasProfissional.size() == 0) {
             JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatórios!");
         }
 
-        List<Long> permissoes = new ArrayList<>();
-        List<Menu> listaMenusAux = listaMenusDual.getTarget();
-        List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
+        else {
+            List<Long> permissoes = new ArrayList<>();
+            List<Menu> listaMenusAux = listaMenusDual.getTarget();
+            List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
 
-        MenuDAO mdao = new MenuDAO();
-        List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
+            MenuDAO mdao = new MenuDAO();
+            List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
 
-        MenuMB mmb = new MenuMB();
-        List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
+            MenuMB mmb = new MenuMB();
+            List<Menu> listaFiltrada = mmb.filtrarListaMenu(listaMenusAux);
 
-        List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
+            List<Menu> listaFiltradaaux = mmb.filtrarListaMenu(listaMenusAux);
 
-        for (Menu mp : menusPerfil) {
-            for (Menu mf : listaFiltrada) {
-                if (mp.getCodigo().equals(mf.getCodigo())) {
-                	listaFiltrada.remove(mf);
+            for (Menu mp : menusPerfil) {
+                for (Menu mf : listaFiltrada) {
+                    if (mp.getCodigo().equals(mf.getCodigo())) {
+                        listaFiltrada.remove(mf);
+                    }
                 }
             }
+            listaFiltrada = listaFiltradaaux;
+
+            PermissaoDAO pmdao = new PermissaoDAO();
+            for (Menu m : listaFiltrada) {
+                permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
+            }
+
+            for (Funcao f : listaFuncoesAux) {
+                permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
+            }
+
+            profissional.setListaIdPermissoes(permissoes);
+
+            boolean alterou = fDao.alterarProfissional(profissional,
+                    listaGruposEProgramasProfissional);
+
+            if (alterou == true) {
+                JSFUtil.adicionarMensagemSucesso("Funcionário alterado com sucesso!", "Sucesso");
+
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+            }
         }
-        listaFiltrada = listaFiltradaaux;
-
-        PermissaoDAO pmdao = new PermissaoDAO();
-        for (Menu m : listaFiltrada) {
-            permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
-        }
-
-        for (Funcao f : listaFuncoesAux) {
-            permissoes.add(pmdao.recIdPermissoesFuncao(f.getId()));
-        }
-
-        profissional.setListaIdPermissoes(permissoes);
-
-        boolean alterou = fDao.alterarProfissional(profissional,
-                listaGruposEProgramasProfissional);
-
-        if (alterou == true) {
-            JSFUtil.adicionarMensagemSucesso("Funcionário alterado com sucesso!", "Sucesso");
-
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
-        }
-
     }
 
     public void validaCns(String s) {
@@ -586,7 +582,7 @@ public class FuncionarioController implements Serializable {
 
     public void addListaGruposEProgramasProfissional() {
         Boolean existe = false;
-        if (listaGruposEProgramasProfissional.size() >= 1) {
+        if (!listaGruposEProgramasProfissional.isEmpty()) {
 
             for (int i = 0; i < listaGruposEProgramasProfissional.size(); i++) {
 
@@ -661,7 +657,7 @@ public class FuncionarioController implements Serializable {
         return listaProfissional;
     }
 
-    public void getEditProfissional() throws ProjetoException, SQLException {
+    public void getEditProfissional() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
