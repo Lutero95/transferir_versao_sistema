@@ -6,34 +6,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 public class LaudoDAO {
 
-    Connection con = null;
     PreparedStatement ps = null;
     private Connection conexao = null;
-    private FuncionarioDAO profDao = new FuncionarioDAO();
-    private ProgramaDAO progDao = new ProgramaDAO();
-    private ProcedimentoDAO procDao = new ProcedimentoDAO();
-    private PacienteDAO pacieDao = new PacienteDAO();
-    private GrupoDAO grupoDao = new GrupoDAO();
-    private FornecedorDAO forneDao = new FornecedorDAO();
-    private EquipeDAO equipeDao = new EquipeDAO();
-    private CidDAO cidDao = new CidDAO();
-    private EquipamentoDAO equipamentoDao = new EquipamentoDAO();
 
-    public Boolean cadastrarLaudo(LaudoBean laudo) throws ProjetoException {
-        boolean cadastrou = false;
+    public Boolean cadastrarLaudo(LaudoBean laudo) {
+        boolean retorno = false;
 
         String sql = "insert into hosp.laudo "
                 + "(codpaciente, id_recurso, data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
@@ -147,17 +131,22 @@ public class LaudoDAO {
 
             stmt.execute();
             conexao.commit();
-            cadastrou = true;
-            conexao.close();
-
-            return cadastrou;
+            retorno = true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
         }
     }
 
-    public Boolean alterarLaudo(LaudoBean laudo) throws ProjetoException {
-        boolean alterou = false;
+    public Boolean alterarLaudo(LaudoBean laudo) {
+        boolean retorno = false;
         String sql = "update hosp.laudo set codpaciente = ?, id_recurso = ?, data_solicitacao = ?, mes_inicio = ?, ano_inicio = ?, mes_final = ?, ano_final = ?, " +
                 "periodo = ?, codprocedimento_primario = ?, codprocedimento_secundario1 = ?, codprocedimento_secundario2 = ?, codprocedimento_secundario3 = ?, " +
                 "codprocedimento_secundario4 = ?, codprocedimento_secundario5 = ?, cid1 = ?, cid2 = ?, cid3 = ?, obs = ? where id_laudo = ?";
@@ -271,22 +260,22 @@ public class LaudoDAO {
 
             conexao.commit();
 
-            alterou = true;
-
-            return alterou;
+            retorno = true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 conexao.close();
-            } catch (Exception e2) {
-                e2.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+            return retorno;
         }
     }
 
-    public Boolean excluirLaudo(LaudoBean laudo) throws ProjetoException {
-        boolean alterou = false;
+    public Boolean excluirLaudo(LaudoBean laudo) {
+        boolean retorno = false;
         String sql = "update hosp.laudo set ativo = false where id_laudo = ?";
 
         try {
@@ -299,17 +288,17 @@ public class LaudoDAO {
 
             conexao.commit();
 
-            alterou = true;
-
-            return alterou;
+            retorno = true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 conexao.close();
-            } catch (Exception e2) {
-                e2.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+            return retorno;
         }
     }
 
@@ -365,7 +354,6 @@ public class LaudoDAO {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
         return lista;
@@ -442,7 +430,6 @@ public class LaudoDAO {
                 conexao.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                System.exit(1);
             }
         }
         return l;

@@ -180,7 +180,7 @@ public class CidDAO {
         return lista;
     }
 
-    public List<CidBean> listarCidsBuscaPorProcedimento(String descricao, Integer id_proc)
+    public List<CidBean> listarCidsBuscaPorProcedimentoAutoComplete(String descricao, Integer id_proc)
             throws ProjetoException {
         List<CidBean> lista = new ArrayList<>();
         String sql = "select c.cod, c.desccid, c.cid from hosp.cid c left join hosp.proc_cid p on (p.id_cid = c.cod) " +
@@ -191,6 +191,40 @@ public class CidDAO {
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1, id_proc);
             stm.setString(2, "%" + descricao.toUpperCase() + "%");
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                CidBean c = new CidBean();
+                c.setIdCid(rs.getInt("cod"));
+                c.setDescCid(rs.getString("desccid"));
+                c.setCid(rs.getString("cid"));
+
+                lista.add(c);
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return lista;
+    }
+
+    public List<CidBean> listarCidsBuscaPorProcedimento(Integer id_proc)
+            throws ProjetoException {
+        List<CidBean> lista = new ArrayList<>();
+        String sql = "select c.cod, c.desccid, c.cid from hosp.cid c left join hosp.proc_cid p on (p.id_cid = c.cod) " +
+                " where p.id_proc = ? order by c.desccid";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, id_proc);
 
             ResultSet rs = stm.executeQuery();
 

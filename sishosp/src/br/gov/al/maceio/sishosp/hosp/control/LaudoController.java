@@ -2,31 +2,21 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
-import org.primefaces.context.RequestContext;
 
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
-import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
-import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
-import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
+
 
 @ManagedBean(name = "LaudoController")
 @ViewScoped
@@ -36,29 +26,30 @@ public class LaudoController implements Serializable {
     private LaudoBean laudo;
     private String cabecalho;
     private int tipo;
-
     private List<LaudoBean> listaLaudo;
-    private List<LaudoBean> listaLaudoDigita;
-
     private LaudoDAO lDao = new LaudoDAO();
+    private CidDAO cDao = new CidDAO();
+
+    //CONSTANTES
+    private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
+    private static final String ENDERECO_TIPO = "&amp;tipo=";
+    private static final String ENDERECO_ID = "&amp;id=";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de Laudo";
+    private static final String CABECALHO_ALTERACAO = "Alteração de Laudo";
 
     public LaudoController() {
         laudo = new LaudoBean();
         this.cabecalho = "";
         listaLaudo = new ArrayList<>();
         listaLaudo = null;
-        listaLaudoDigita = new ArrayList<>();
-        listaLaudoDigita = null;
-
-    }
-
-    public String redirectInsert() {
-        return "cadastroLaudoDigita?faces-redirect=true&amp;tipo=" + this.tipo;
     }
 
     public String redirectEdit() {
-        return "cadastroLaudoDigita?faces-redirect=true&amp;id="
-                + this.laudo.getId() + "&amp;tipo=" + tipo;
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.laudo.getId(), ENDERECO_TIPO, tipo);
+    }
+
+    public String redirectInsert() {
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
     }
 
     public void getEditLaudo() throws ProjetoException {
@@ -103,84 +94,64 @@ public class LaudoController implements Serializable {
 
 
         } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-                    "Informe o período do Laudo.", "Aviso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            JSFUtil.adicionarMensagemAdvertencia("Informe o período do Laudo!", "Advertência");
         }
 
     }
 
-    public void gravarLaudo() throws ProjetoException {
+    public void gravarLaudo() {
         boolean cadastrou = lDao.cadastrarLaudo(laudo);
 
         if (cadastrou == true) {
             limparDados();
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Laudo cadastrado com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaLaudo = null;
-
+            JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
         } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }
 
     }
 
-    public void alterarLaudo() throws ProjetoException {
+    public void alterarLaudo() {
         boolean alterou = lDao.alterarLaudo(laudo);
 
         if (alterou == true) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Laudo Alterado com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaLaudo = null;
-
+            JSFUtil.adicionarMensagemSucesso("Laudo alterado com sucesso!", "Sucesso");
         } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
         }
 
     }
 
-    public void excluirLaudo() throws ProjetoException {
+    public void excluirLaudo() {
         boolean excluiu = lDao.excluirLaudo(laudo);
 
         if (excluiu == true) {
-            limparDados();
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Laudo Excluído com sucesso!", "Sucesso");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            listaLaudoDigita = null;
-            getListaLaudoDigita();
-            RequestContext.getCurrentInstance().execute(
-                    "PF('dialogAtencao').hide();");
-
+            JSFUtil.adicionarMensagemSucesso("Laudo excluído com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
         } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocorreu um erro durante o cadastro!", "Erro");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
         }
 
     }
 
-    public void listarLaudo() throws ProjetoException {
-
-        LaudoDAO fdao = new LaudoDAO();
-        listaLaudo = fdao.listaLaudos();
-
+    public List<LaudoBean> listarLaudo() throws ProjetoException {
+        return lDao.listaLaudos();
     }
 
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query)
             throws ProjetoException {
-        CidDAO gDao = new CidDAO();
-        List<CidBean> result = gDao.listarCidsBuscaPorProcedimento(query, laudo.getProcedimento_primario().getIdProc());
+        List<CidBean> result = cDao.listarCidsBuscaPorProcedimentoAutoComplete(query, laudo.getProcedimento_primario().getIdProc());
         return result;
+    }
+
+    public List<CidBean> listarCidsPorProcedimento() throws ProjetoException {
+        if (laudo.getProcedimento_primario().getIdProc() != null) {
+            return cDao.listarCidsBuscaPorProcedimento(laudo.getProcedimento_primario().getIdProc());
+        }
+        else{
+            return null;
+        }
     }
 
 
@@ -194,9 +165,9 @@ public class LaudoController implements Serializable {
 
     public String getCabecalho() {
         if (this.tipo == 2) {
-            cabecalho = "Alterar Laudo";
+            cabecalho = CABECALHO_ALTERACAO;
         } else {
-            cabecalho = "Cadastro de Laudo";
+            cabecalho = CABECALHO_INCLUSAO;
         }
         return cabecalho;
     }
@@ -207,25 +178,13 @@ public class LaudoController implements Serializable {
 
     public List<LaudoBean> getListaLaudo() throws ProjetoException {
         if (listaLaudo == null) {
-
-            LaudoDAO fdao = new LaudoDAO();
-            listaLaudo = fdao.listaLaudos();
+            listaLaudo = lDao.listaLaudos();
         }
         return listaLaudo;
     }
 
     public void setListaLaudo(List<LaudoBean> listaLaudo) {
         this.listaLaudo = listaLaudo;
-    }
-
-    public List<LaudoBean> getListaLaudoDigita() throws ProjetoException {
-        if (listaLaudoDigita == null) {
-
-            LaudoDAO fdao = new LaudoDAO();
-            listaLaudoDigita = fdao.listaLaudos();
-
-        }
-        return listaLaudoDigita;
     }
 
     public int getTipo() {

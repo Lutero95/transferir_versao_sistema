@@ -7,9 +7,6 @@
       xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="../../template/template.xhtml">
-    <f:metadata>
-        <f:viewAction action="#{LaudoController.listarLaudo()}"/>
-    </f:metadata>
 
     <ui:define name="body">
         <div class="panel-body">
@@ -17,7 +14,7 @@
                 <h4>Gerenciamento de Laudo</h4>
                 <hr/>
             </div>
-            <h:form id="frmmensagem">
+            <h:form id="frmPrincipal">
 
                 <b:commandButton id="btninc" value="Novo" size="sm"
                                  action="#{LaudoController.redirectInsert()}" icon="glyphicon-plus"
@@ -30,13 +27,14 @@
                 <br/>
                 <br/>
 
-                <center>
-                    <b:messages value="Error" id="msgError"></b:messages>
-                </center>
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
 
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela" value="#{LaudoController.listaLaudoDigita}"
-                             var="tab" display="Nenhum Laudo">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela"
+                             value="#{LaudoController.listarLaudo()}"
+                             var="tab">
 
                     <h:column>
                         <f:facet name="header">
@@ -68,7 +66,7 @@
 
                         <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
                                          size="sm" ajax="true" style="margin-left:10px"
-                                         oncomplete="PF('dialogAtencao').show()">
+                                         oncomplete="PF('dialogExclusao').show()">
 
                             <f:setPropertyActionListener value="#{tab}"
                                                          target="#{LaudoController.laudo}"/>
@@ -80,7 +78,7 @@
             </h:form>
         </div>
 
-        <p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
+        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
                   resizable="false">
 
             <h:form id="dlgexcluir">
@@ -94,25 +92,25 @@
                 </h:panelGrid>
 
 
-                <center>
+                <div align="center">
 
-                    <b:commandButton look="success" value="Sim"
+                    <b:commandButton look="success" value="Sim" style="float:left;"
                                      action="#{LaudoController.excluirLaudo()}"
                                      ajax="true"
-                                     icon="glyphicon-ok" update="frmmensagem">
+                                     icon="glyphicon-ok" update="frmPrincipal">
                     </b:commandButton>
 
                     <b:commandButton value="Não"
-                                     oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
-                                     icon="glyphicon-remove" style="margin-left:5px;" />
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
 
-                </center>
+                </div>
 
 
             </h:form>
         </p:dialog>
 
-
     </ui:define>
 </ui:composition>
+
 </html>

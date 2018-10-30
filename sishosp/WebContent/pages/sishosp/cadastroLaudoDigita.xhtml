@@ -4,7 +4,6 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
@@ -28,7 +27,7 @@
                         <h:outputLabel value="Paciente:" style="margin-top:5px"/>
                     </b:column>
 
-                    <b:column span="3">
+                    <b:column span="4">
                         <p:outputPanel id="outPac1">
                             <p:autoComplete value="#{LaudoController.laudo.paciente}"
                                             size="40" converter="conPaciente" required="true"
@@ -63,7 +62,7 @@
                         <h:outputLabel value="CPF:" style="margin-top:5px"/>
                     </b:column>
 
-                    <b:column span="1">
+                    <b:column span="2">
                         <p:outputPanel id="outPac3">
                             <p:outputLabel value="#{LaudoController.laudo.paciente.cpf}"
                                            style="margin-top:5px"/>
@@ -80,18 +79,18 @@
                         <h:outputLabel value="Data para Solicitação:"/>
                     </b:column>
 
-                    <b:column span="2">
+                    <b:column span="4">
                         <p:calendar id="dataAte" locale="pt" required="true" size="10"
                                     requiredMessage="É necessário informar a data de solitação"
                                     value="#{LaudoController.laudo.data_solicitacao}" mask="true"
                                     pattern="dd/MM/yyyy"/>
                     </b:column>
 
-                    <b:column span="1">
+                    <b:column span="2">
                         <h:outputLabel value="Período:"/>
                     </b:column>
 
-                    <b:column span="2">
+                    <b:column span="4">
                         <p:selectOneRadio id="prorrogar" required="true"
                                           layout="pageDirection" requiredMessage="Período é necessário!"
                                           value="#{LaudoController.laudo.periodo}">
@@ -113,23 +112,6 @@
                     </b:column>
 
                     <b:column span="2">
-                        <!--  <h:selectOneMenu style="width:120px" required="true"
-                            requiredMessage="Escolha o mês início!"
-                            value="#{LaudoController.laudo.mes_inicio}">
-                            <f:selectItem itemLabel="Janeiro" itemValue="1" />
-                            <f:selectItem itemLabel="Fevereiro" itemValue="2" />
-                            <f:selectItem itemLabel="Março" itemValue="3" />
-                            <f:selectItem itemLabel="Abril" itemValue="4" />
-                            <f:selectItem itemLabel="Maio" itemValue="5" />
-                            <f:selectItem itemLabel="Junho" itemValue="6" />
-                            <f:selectItem itemLabel="Julho" itemValue="7" />
-                            <f:selectItem itemLabel="Agosto" itemValue="8" />
-                            <f:selectItem itemLabel="Setembro" itemValue="9" />
-                            <f:selectItem itemLabel="Outubro" itemValue="10" />
-                            <f:selectItem itemLabel="Novembro" itemValue="11" />
-                            <f:selectItem itemLabel="Dezembro" itemValue="12" />
-                        </h:selectOneMenu>
-                        -->
                         <h:inputText value="#{LaudoController.laudo.mes_inicio}" required="true"
                                      requiredMessage="Escolha o ano início!">
                             <p:ajax listener="#{LaudoController.calcularPeriodoLaudo()}"
@@ -215,7 +197,7 @@
                                     minQueryLength="1" itemValue="#{theme}"
                                     itemLabel="#{theme.nomeProc}">
                                 <p:ajax event="itemSelect"
-                                        update=":formLaudo:outRecurso, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3"></p:ajax>
+                                        update=":formLaudo:outRecurso, :formLaudo:outCid1, :formLaudo:outCidBtn1, :formLaudo:outCid2, :formLaudo:outCidBtn2, :formLaudo:outCid3, :formLaudo:outCidBtn3"></p:ajax>
                             </p:autoComplete>
                         </p:outputPanel>
                     </b:column>
@@ -230,11 +212,11 @@
                         <h:outputLabel value="Recurso:"/>
                     </b:column>
 
-                    <b:column span="3">
+                    <b:column span="4">
 
                         <p:outputPanel id="outRecurso">
                             <p:selectOneMenu disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
-                                             value="#{LaudoController.laudo.recurso.idRecurso}" style="width:120px"
+                                             value="#{LaudoController.laudo.recurso.idRecurso}" style="width:150px"
                                              required="true" requiredMessage="Informe o diretório da página.">
 
                                 <f:selectItems
@@ -394,11 +376,11 @@
                         <h:outputLabel value="CID 1:"/>
                     </b:column>
 
-                    <b:column span="3">
+                    <b:column span="2">
 
                         <p:outputPanel id="outCid1">
                             <p:autoComplete disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
-                                            value="#{LaudoController.laudo.cid1}" size="40"
+                                            value="#{LaudoController.laudo.cid1}" size="25"
                                             converter="conCid" id="descCid1"
                                             completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                             effect="fade" var="theme" forceSelection="true"
@@ -408,16 +390,24 @@
                         </p:outputPanel>
                     </b:column>
 
+                    <b:column span="1">
+                        <p:outputPanel id="outCidBtn1">
+                            <p:commandButton id="btBusCid1" icon="ui-icon-search"
+                                             disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
+                                             onclick="PF('dlgConsulCid1').show();"/>
+                        </p:outputPanel>
+                    </b:column>
+
 
                     <b:column span="1">
                         <h:outputLabel value="CID 2:"/>
                     </b:column>
 
-                    <b:column span="3">
+                    <b:column span="2">
 
                         <p:outputPanel id="outCid2">
                             <p:autoComplete disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
-                                            value="#{LaudoController.laudo.cid2}" size="40"
+                                            value="#{LaudoController.laudo.cid2}" size="25"
                                             converter="conCid" id="descCid2"
                                             completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                             effect="fade" var="theme" forceSelection="true"
@@ -428,20 +418,36 @@
                     </b:column>
 
                     <b:column span="1">
+                        <p:outputPanel id="outCidBtn2">
+                            <p:commandButton id="btBusCid2" icon="ui-icon-search"
+                                             disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
+                                             onclick="PF('dlgConsulCid2').show();"/>
+                        </p:outputPanel>
+                    </b:column>
+
+                    <b:column span="1">
                         <h:outputLabel value="CID 3:"/>
                     </b:column>
 
-                    <b:column span="3">
+                    <b:column span="2">
 
                         <p:outputPanel id="outCid3">
                             <p:autoComplete disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
-                                            value="#{LaudoController.laudo.cid3}" size="40"
+                                            value="#{LaudoController.laudo.cid3}" size="25"
                                             converter="conCid" id="descCid3"
                                             completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                             effect="fade" var="theme" forceSelection="true"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descCid}">
                             </p:autoComplete>
+                        </p:outputPanel>
+                    </b:column>
+
+                    <b:column span="1">
+                        <p:outputPanel id="outCidBtn3">
+                            <p:commandButton id="btBusCid3" icon="ui-icon-search"
+                                             disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
+                                             onclick="PF('dlgConsulCid3').show();"/>
                         </p:outputPanel>
                     </b:column>
 
@@ -455,21 +461,21 @@
                         <h:outputLabel value="Observação:"/>
                     </b:column>
 
-                    <b:column span="4">
+                    <b:column span="10">
                         <h:inputTextarea value="#{LaudoController.laudo.obs}"
                                          scrollHeight="40" required="true" rows="6" cols="89"
-                                         style="height:80px;width:300px"></h:inputTextarea>
+                                         style="height:80px;width:600px"></h:inputTextarea>
                     </b:column>
 
                 </b:row>
 
-                <center>
-                    <b:messages value="Error" id="msgError"></b:messages>
-                </center>
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
                 <br></br> <br></br>
 
-                <center>
+                <div align="center">
 
                     <b:commandButton action="#{LaudoController.gravarLaudo()}"
                                      icon="glyphicon-ok" size="sm" look="success" value="Incluir"
@@ -483,7 +489,7 @@
                                      style="float:right" size="sm" immediate="true" look="info"
                                      action="/pages/sishosp/gerenciarLaudoDigita.faces?faces-redirect=true"></b:commandButton>
 
-                </center>
+                </div>
             </div>
         </h:form>
 
@@ -499,8 +505,7 @@
 
 
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="pacie"
-                             value="#{PacienteController.listarPacienteAgenda()}"
-                             display="Nenhum Paciente">
+                             value="#{PacienteController.listarPacienteAgenda()}">
 
                     <h:column>
                         <f:facet name="header">
@@ -548,8 +553,9 @@
                   widgetVar="dlgConsulProcPrimario" modal="true">
             <h:form id="formConsulProcPrimario">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc">
 
                         <h:column>
                             <f:facet name="header">
@@ -562,9 +568,10 @@
                             <f:facet name="header">
                                 Adicionar
                             </f:facet>
-                            <p:commandButton update=":formLaudo:outProcP1"
-                                             icon="ui-icon-check" title="Selecionar"
-                                             onclick="PF('dlgConsulProcPrimario').hide();">
+                            <p:commandButton
+                                    update=":formLaudo:outProcP1, :formLaudo:outCid1, :formLaudo:outCidBtn1, :formLaudo:outCid2, :formLaudo:outCidBtn2, :formLaudo:outCid3, :formLaudo:outCidBtn3"
+                                    icon="ui-icon-check" title="Selecionar"
+                                    onclick="PF('dlgConsulProcPrimario').hide();">
                                 <f:setPropertyActionListener value="#{proc}"
                                                              target="#{LaudoController.laudo.procedimento_primario}"/>
                             </p:commandButton>
@@ -578,8 +585,9 @@
                   widgetVar="dlgConsulProcSecundario1" modal="true">
             <h:form id="formConsulProcSecundario1">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc">
 
                         <h:column>
                             <f:facet name="header">
@@ -608,8 +616,9 @@
                   widgetVar="dlgConsulProcSecundario2" modal="true">
             <h:form id="formConsulProcSecundario2">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc">
 
                         <h:column>
                             <f:facet name="header">
@@ -638,8 +647,9 @@
                   widgetVar="dlgConsulProcSecundario3" modal="true">
             <h:form id="formConsulProcSecundario3">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc">
 
                         <h:column>
                             <f:facet name="header">
@@ -668,8 +678,9 @@
                   widgetVar="dlgConsulProcSecundario4" modal="true">
             <h:form id="formConsulProcSecundario4">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc">
 
                         <h:column>
                             <f:facet name="header">
@@ -698,8 +709,9 @@
                   widgetVar="dlgConsulProcSecundario5" modal="true">
             <h:form id="formConsulProcSecundario5">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" display="Nenhum Procedimento">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{ProcedimentoController.listaProcedimentos}"
+                                 var="proc">
 
                         <h:column>
                             <f:facet name="header">
@@ -724,6 +736,139 @@
             </h:form>
         </p:dialog>
 
+        <p:dialog header="Consultar CID 1"
+                  widgetVar="dlgConsulCid1" modal="true">
+            <h:form id="formConsulCid1">
+                <p:outputPanel autoUpdate="true">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{LaudoController.listarCidsPorProcedimento()}" var="tab">
+
+                        <h:column>
+                            <f:facet name="header">
+                                Descrição
+                            </f:facet>
+
+                            <h:outputText value="#{tab.descCid}"/>
+                        </h:column>
+
+
+                        <h:column>
+                            <f:facet name="header">
+                                CID
+                            </f:facet>
+
+                            <h:outputText value="#{tab.cid}"/>
+                        </h:column>
+
+
+                        <h:column>
+                            <f:facet name="header">
+                                Ação
+                            </f:facet>
+
+                            <p:commandButton tooltip="Selecionar" icon="ui-icon-check" size="sm"
+                                             onclick="PF('dlgConsulCid1').hide();"
+                                             update=":formLaudo:outCid1">
+                                <f:setPropertyActionListener value="#{tab}"
+                                                             target="#{LaudoController.laudo.cid1}"/>
+                            </p:commandButton>
+
+                        </h:column>
+
+                    </b:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar CID 2"
+                  widgetVar="dlgConsulCid2" modal="true">
+            <h:form id="formConsulCid2">
+                <p:outputPanel autoUpdate="true">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{LaudoController.listarCidsPorProcedimento()}" var="tab">
+
+                        <h:column>
+                            <f:facet name="header">
+                                Descrição
+                            </f:facet>
+
+                            <h:outputText value="#{tab.descCid}"/>
+                        </h:column>
+
+
+                        <h:column>
+                            <f:facet name="header">
+                                CID
+                            </f:facet>
+
+                            <h:outputText value="#{tab.cid}"/>
+                        </h:column>
+
+
+                        <h:column>
+                            <f:facet name="header">
+                                Ação
+                            </f:facet>
+
+                            <p:commandButton tooltip="Selecionar" icon="ui-icon-check" size="sm"
+                                             onclick="PF('dlgConsulCid2').hide();"
+                                             update=":formLaudo:outCid2">
+                                <f:setPropertyActionListener value="#{tab}"
+                                                             target="#{LaudoController.laudo.cid2}"/>
+                            </p:commandButton>
+
+                        </h:column>
+
+                    </b:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar CID 3"
+                  widgetVar="dlgConsulCid3" modal="true">
+            <h:form id="formConsulCid3">
+                <p:outputPanel autoUpdate="true">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{LaudoController.listarCidsPorProcedimento()}" var="tab">
+
+                        <h:column>
+                            <f:facet name="header">
+                                Descrição
+                            </f:facet>
+
+                            <h:outputText value="#{tab.descCid}"/>
+                        </h:column>
+
+
+                        <h:column>
+                            <f:facet name="header">
+                                CID
+                            </f:facet>
+
+                            <h:outputText value="#{tab.cid}"/>
+                        </h:column>
+
+
+                        <h:column>
+                            <f:facet name="header">
+                                Ação
+                            </f:facet>
+
+                            <p:commandButton tooltip="Selecionar" icon="ui-icon-check" size="sm"
+                                             onclick="PF('dlgConsulCid3').hide();"
+                                             update=":formLaudo:outCid3">
+                                <f:setPropertyActionListener value="#{tab}"
+                                                             target="#{LaudoController.laudo.cid3}"/>
+                            </p:commandButton>
+
+                        </h:column>
+
+                    </b:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
     </ui:define>
 </ui:composition>
+
 </html>
