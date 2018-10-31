@@ -424,7 +424,7 @@
                 <p:outputPanel autoUpdate="true">
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                                  value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" display="Nenhum Procedimento">
+                                 var="proc">
 
                         <h:column>
                             <f:facet name="header">
@@ -456,7 +456,7 @@
                 <p:outputPanel autoUpdate="true">
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                                  value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" display="Nenhum Procedimento">
+                                 var="proc" >
 
                         <h:column>
                             <f:facet name="header">
@@ -488,8 +488,7 @@
                 <p:outputPanel autoUpdate="true">
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                                  value="#{GrupoController.listarProgramasEGrupos()}"
-                                 id="dtGrupos" var="programa"
-                                 display="Nenhum Profissional">
+                                 id="dtGrupos" var="programa" >
 
 
                         <h:column>

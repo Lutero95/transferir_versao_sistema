@@ -497,7 +497,6 @@
         <p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
                   modal="true" width="750px" height="400px">
             <h:form id="formConsuPac">
-                <p:growl id="msgC"/>
 
                 <div class="form-group row">
                     <div class="col-sm-2"></div>
@@ -525,7 +524,7 @@
 
                     <h:column>
                         <f:facet name="header">
-                            Cpf
+                            CPF
                         </f:facet>
                         <p:outputLabel value="#{pacie.cpf}"/>
                     </h:column>
@@ -537,7 +536,7 @@
                         <p:commandButton
                                 update=":formLaudo:outPac1, :formLaudo:outPac2, :formLaudo:outPac3"
                                 icon="ui-icon-check" title="Selecionar"
-                                onclick="PF('dlgConsuPac').hide();">
+                                oncomplete="PF('dlgConsuPac').hide();">
                             <f:setPropertyActionListener value="#{pacie}"
                                                          target="#{LaudoController.laudo.paciente}"/>
                         </p:commandButton>

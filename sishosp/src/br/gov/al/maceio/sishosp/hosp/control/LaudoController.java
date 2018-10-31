@@ -38,7 +38,7 @@ public class LaudoController implements Serializable {
     private static final String CABECALHO_ALTERACAO = "Alteração de Laudo";
 
     public LaudoController() {
-        laudo = new LaudoBean();
+        this.laudo = new LaudoBean();
         this.cabecalho = "";
         listaLaudo = new ArrayList<>();
         listaLaudo = null;

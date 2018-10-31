@@ -8,6 +8,13 @@ public class CidBean implements Serializable {
 	private String descCid;
 	private String cid;
 
+	public CidBean() {
+		super();
+		this.idCid = null;
+		this.descCid = new String();
+		this.cid = new String();
+	}
+
 	public Integer getIdCid() {
 		return idCid;
 	}

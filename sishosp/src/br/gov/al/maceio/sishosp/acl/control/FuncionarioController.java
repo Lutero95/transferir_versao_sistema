@@ -6,7 +6,6 @@ import br.gov.al.maceio.sishosp.acl.model.*;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
