@@ -5,12 +5,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
@@ -20,124 +20,91 @@ import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 @ViewScoped
 public class BloqueioController implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	private BloqueioBean bloqueio;
-	private List<BloqueioBean> listaBloqueios;
-	private BloqueioDAO bDao = new BloqueioDAO();
+    private static final long serialVersionUID = 1L;
+    private BloqueioBean bloqueio;
+    private BloqueioDAO bDao = new BloqueioDAO();
 
-	private String tipo;
+    //CONSTANTES
+    private static final String ENDERECO_CADASTRO = "bloqueio?faces-redirect=true";
+    private static final String ENDERECO_ALTERACAO = "editarBloqueio?faces-redirect=true";
+    private static final String ENDERECO_ID = "&amp;id=";
 
-	public BloqueioController() {
-		this.bloqueio = new BloqueioBean();
-		this.listaBloqueios = null;
-		this.tipo = new String();
-	}
+    public BloqueioController() {
+        this.bloqueio = new BloqueioBean();
+    }
 
-	public void limparDados() {
-		this.bloqueio = new BloqueioBean();
-		this.listaBloqueios = null;
-	}
-	
-	public String redirectInsert() {
-		return "bloqueio?faces-redirect=true";
-	}
+    public void limparDados() {
+        this.bloqueio = new BloqueioBean();
+    }
 
-	public String redirectEdit() {
-		return "editarBloqueio?faces-redirect=true&amp;id="
-				+ this.bloqueio.getIdBloqueio();
-	}
+    public String redirectEdit() {
+        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_ALTERACAO, ENDERECO_ID, this.bloqueio.getIdBloqueio());
+    }
 
-	public void getEditBloqueio() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("id") != null) {
-			Integer id = Integer.parseInt(params.get("id"));
-			this.bloqueio = bDao.listarBloqueioPorId(id);
-		} else {
-		}
+    public String redirectInsert() {
+        return RedirecionarUtil.redirectInsertSemTipo(ENDERECO_CADASTRO);
+    }
 
-	}
 
-	public void gravarBloqueio() throws ProjetoException, SQLException {
-		boolean cadastrou = bDao.gravarBloqueio(bloqueio);
+    public void getEditBloqueio() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            this.bloqueio = bDao.listarBloqueioPorId(id);
+        } else {
+        }
 
-		if (cadastrou == true) {
-			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Bloqueio cadastrado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-	}
+    }
 
-	public void alterarBloqueio() throws ProjetoException {
-		boolean alterou = bDao.alterarBloqueio(bloqueio);
-		if (alterou == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Bloqueio alterado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-		this.listaBloqueios = bDao.listarBloqueio();
+    public void gravarBloqueio() {
 
-	}
+        boolean cadastrou = bDao.gravarBloqueio(bloqueio);
 
-	public void excluirBloqueio() throws ProjetoException {
-		boolean ok = bDao.excluirBloqueio(bloqueio);
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Bloqueio excluído com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+        if (cadastrou == true) {
+            limparDados();
+            JSFUtil.adicionarMensagemSucesso("Bloqueio cadastrado com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+        }
+    }
 
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		this.listaBloqueios = bDao.listarBloqueio();
-	}
+    public void alterarBloqueio() {
 
-	public void atualizarListaBloqueio() throws ProjetoException {
-		this.listaBloqueios = bDao.listarBloqueioPorProfissional(bloqueio
-				.getProf());
-	}
+        boolean alterou = bDao.alterarBloqueio(bloqueio);
 
-	public BloqueioBean getBloqueio() {
-		return bloqueio;
-	}
+        if (alterou == true) {
+            JSFUtil.adicionarMensagemSucesso("Bloqueio alterado com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+        }
+    }
 
-	public void setBloqueio(BloqueioBean bloqueio) {
-		this.bloqueio = bloqueio;
-	}
+    public void excluirBloqueio() throws ProjetoException {
 
-	public List<BloqueioBean> getListaBloqueios() throws ProjetoException {
-		if (this.listaBloqueios == null) {
-			this.listaBloqueios = bDao.listarBloqueio();
-		}
-		return listaBloqueios;
-	}
+        boolean excluiu = bDao.excluirBloqueio(bloqueio);
 
-	public void setListaBloqueios(List<BloqueioBean> listaBloqueios) {
-		this.listaBloqueios = listaBloqueios;
-	}
+        if (excluiu == true) {
+            JSFUtil.adicionarMensagemSucesso("Bloqueio excluído com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
+        }
+        listarBloqueios();
+    }
 
-	public String getTipo() {
-		return tipo;
-	}
+    public List<BloqueioBean> listarBloqueios() throws ProjetoException {
+        return bDao.listarBloqueio();
+    }
 
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
+    public BloqueioBean getBloqueio() {
+        return bloqueio;
+    }
+
+    public void setBloqueio(BloqueioBean bloqueio) {
+        this.bloqueio = bloqueio;
+    }
 
 }

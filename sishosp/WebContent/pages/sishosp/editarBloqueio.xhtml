@@ -1,124 +1,158 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
-	<f:metadata>
-		<f:viewAction action="#{BloqueioController.getEditBloqueio()}" />
-	</f:metadata>
+    <f:metadata>
+        <f:viewAction action="#{BloqueioController.getEditBloqueio()}"/>
+    </f:metadata>
 
-	<ui:define name="body">
+    <ui:define name="body">
 
-		<h:form id="formEdtBloq">
-			<div class="panel-body">
-				<div class="sub-header">
-					<h4>Editar Bloqueio por Profissional</h4>
-					<hr />
-				</div>
+        <h:form id="formEdtBloq">
+            <div class="panel-body">
+                <div class="sub-header">
+                    <h4>Editar Bloqueio por Profissional</h4>
+                    <hr/>
+                </div>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
-				<p:panelGrid columns="3" styleClass="semBorda">
-					<h:outputLabel value="Profissional: " />
-					<p:outputPanel id="outProfi">
-						<p:autoComplete id="acpro"
-							value="#{BloqueioController.bloqueio.prof}" size="60"
-							converter="conFuncionario"
-							completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.nome}">
-							<p:ajax event="itemSelect" update="formEdtBloq" />
-						</p:autoComplete>
-					</p:outputPanel>
-					<p:commandButton value="Buscar" icon="ui-icon-search"
-						action="#{MBFuncionarios.listarProfissionais}"
-						process="@this" update="formConsultProf"
-						oncomplete="PF('dlgConProf').show();" />
+                <b:row>
+                    <b:column span="2">
+                        <h:outputLabel value="Profissional: "/>
+                    </b:column>
 
-				</p:panelGrid>
+                    <b:column span="7">
+                        <p:outputPanel id="outProfi">
+                            <p:autoComplete id="acpro"
+                                            value="#{BloqueioController.bloqueio.prof}" size="110"
+                                            converter="conFuncionario"
+                                            completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.nome}">
+                                <p:ajax event="itemSelect" update="formEdtBloq"/>
+                            </p:autoComplete>
+                        </p:outputPanel>
+                    </b:column>
 
-				<p:panelGrid columns="6" styleClass="semBorda">
-					<h:outputLabel value="Data: " />
-					<p:calendar locale="pt" navigator="true" mask="true"
-						pattern="dd/MM/yyyy"
-						value="#{BloqueioController.bloqueio.dataInicio}" />
+                    <b:column span="3">
+                        <p:commandButton icon="ui-icon-search"
+                                         action="#{MBFuncionarios.listarProfissionais}"
+                                         process="@this" update="formConsultProf"
+                                         oncomplete="PF('dlgConProf').show();"/>
+                    </b:column>
 
-					<h:outputLabel value="Turno: " />
-					<p:selectOneMenu value="#{BloqueioController.bloqueio.turno}">
-						<f:selectItem itemLabel="Manhã" itemValue="M" />
-						<f:selectItem itemLabel="Tarde" itemValue="T" />
-					</p:selectOneMenu>
-				</p:panelGrid>
+                </b:row>
 
-				<p:panelGrid columns="2" styleClass="semBorda">
-					<h:outputLabel value="Observação do bloqueio: " />
-					<p:inputTextarea rows="5" cols="50" maxlength="100"
-						value="#{BloqueioController.bloqueio.descBloqueio}" />
-				</p:panelGrid>
+                <br></br>
 
-				<br></br>
+                <b:row>
 
-				<center>
+                    <b:column span="2">
+                        <h:outputLabel value="Data: "/>
+                    </b:column>
 
-					<b:commandButton action="#{BloqueioController.alterarBloqueio()}"
-						icon="glyphicon-ok" update=":formEdtBloq:msgError, :formEdtBloq"
-						style="float:left" value="Alterar" look="success" size="sm" />
+                    <b:column span="4">
+                        <p:calendar locale="pt" navigator="true" mask="true"
+                                    pattern="dd/MM/yyyy"
+                                    value="#{BloqueioController.bloqueio.dataInicio}"/>
+                    </b:column>
 
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						size="sm" immediate="true" look="info" style="float:right"
-						update=":formEdtBloq:msgError, :formEdtBloq"
-						actionListener="#{ConfigAgendaController.limparDados()}"
-						action="/pages/agenda/consBloqueios.xhtml?faces-redirect=true">
-					</b:commandButton>
+                    <b:column span="2">
+                        <h:outputLabel value="Turno: "/>
+                    </b:column>
 
-				</center>
+                    <b:column span="4">
+                        <p:selectOneMenu value="#{BloqueioController.bloqueio.turno}">
+                            <f:selectItem itemLabel="Manhã" itemValue="M"/>
+                            <f:selectItem itemLabel="Tarde" itemValue="T"/>
+                        </p:selectOneMenu>
+                    </b:column>
 
-			</div>
-			<p:dialog header="Consultar Profissionais" widgetVar="dlgConProf"
-				modal="true">
-				<h:form id="formConsultProf">
-					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
-						id="dtTipoAt" var="profi"
-						display="Nenhuma Profissional">
+                </b:row>
 
-						<h:column>
-							<f:facet name="header">
-                        Profissional
-                    	</f:facet>
-							<p:outputLabel value="#{profi.nome}" />
-						</h:column>
+                <br></br>
 
-						<h:column>
-							<f:facet name="header">
-                        Especialidade
-                    	</f:facet>
-							<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
-						</h:column>
+                <b:row>
 
-						<h:column>
-							<f:facet name="header">
-                        Adicionar
-                    	</f:facet>
-							<p:commandButton icon="ui-icon-check" title="Selecionar"
-								onclick="PF('dlgConProf').hide();"
-								update=":formEdtBloq:outProfi">
-								<f:setPropertyActionListener value="#{profi}"
-									target="#{BloqueioController.bloqueio.prof}" />
-							</p:commandButton>
-						</h:column>
+                    <b:column span="2">
+                        <h:outputLabel value="Observação do bloqueio: "/>
+                    </b:column>
 
-					</b:dataTable>
-				</h:form>
-			</p:dialog>
-		</h:form>
+                    <b:column span="10">
+                        <p:inputTextarea rows="5" cols="120" maxlength="100"
+                                         value="#{BloqueioController.bloqueio.descBloqueio}"/>
+                    </b:column>
 
-	</ui:define>
+                </b:row>
+
+                <br></br><br></br>
+
+                <div align="center">
+
+                    <b:commandButton action="#{BloqueioController.alterarBloqueio()}"
+                                     icon="glyphicon-ok" update=":formEdtBloq:msgPagina, :formEdtBloq"
+                                     style="float:left" value="Alterar" look="success" size="sm"/>
+
+                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                     size="sm" immediate="true" look="info" style="float:right"
+                                     update=":formEdtBloq:msgPagina, :formEdtBloq"
+                                     actionListener="#{ConfigAgendaController.limparDados()}"
+                                     action="/pages/sishosp/consBloqueios.xhtml?faces-redirect=true">
+                    </b:commandButton>
+
+                </div>
+
+            </div>
+            <p:dialog header="Consultar Profissionais" widgetVar="dlgConProf"
+                      modal="true">
+                <h:form id="formConsultProf">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+                                 id="dtTipoAt" var="profi"
+                                 display="Nenhuma Profissional">
+
+                        <h:column>
+                            <f:facet name="header">
+                                Profissional
+                            </f:facet>
+                            <p:outputLabel value="#{profi.nome}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Especialidade
+                            </f:facet>
+                            <p:outputLabel value="#{profi.especialidade.descEspecialidade}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Adicionar
+                            </f:facet>
+                            <p:commandButton icon="ui-icon-check" title="Selecionar"
+                                             onclick="PF('dlgConProf').hide();"
+                                             update=":formEdtBloq:outProfi">
+                                <f:setPropertyActionListener value="#{profi}"
+                                                             target="#{BloqueioController.bloqueio.prof}"/>
+                            </p:commandButton>
+                        </h:column>
+
+                    </b:dataTable>
+                </h:form>
+            </p:dialog>
+        </h:form>
+
+    </ui:define>
+
 </ui:composition>
+
 </html>

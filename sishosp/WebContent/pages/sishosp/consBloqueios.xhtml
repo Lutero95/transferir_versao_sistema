@@ -1,148 +1,149 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
 
-	<ui:define name="body">
+    <ui:define name="body">
 
 
-		<h:form id="formConsulBloqueio">
+        <h:form id="formConsulBloqueio">
 
-			<div class="panel-body">
-				<div class="sub-header">
-					<h4>Consulta de Bloqueio por Profissional</h4>
-					<hr />
-				</div>
+            <div class="panel-body">
+                <div class="sub-header">
+                    <h4>Consulta de Bloqueio por Profissional</h4>
+                    <hr/>
+                </div>
 
-				<b:commandButton id="btninc" value="Novo" size="sm"
-					action="#{BloqueioController.redirectInsert()}"
-					icon="glyphicon-plus" look="primary">
-					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
+                <b:commandButton id="btninc" value="Novo" size="sm"
+                                 action="#{BloqueioController.redirectInsert()}"
+                                 icon="glyphicon-plus" look="primary">
+                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
+                </b:commandButton>
 
-				<center>
-					<b:messages value="Error" id="msgError"></b:messages>
-				</center>
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
 
-				<br></br> <br></br>
+                <br></br> <br></br>
 
-				<p:outputPanel id="outBloq">
+                <p:outputPanel id="outBloq">
 
-					<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dtBloqueios"
-						value="#{BloqueioController.listaBloqueios}" var="bloqueio"
-						 display="Nenhum Bloqueio">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dtBloqueios"
+                                 value="#{BloqueioController.listarBloqueios()}" var="bloqueio">
 
-						<h:column>
-							<f:facet name="header">
-                        Médico
-                    </f:facet>
-							<h:outputText value="#{bloqueio.prof.nome}" />
-						</h:column>
-
-
-						<h:column>
-							<f:facet name="header">
-                        Data
-                    </f:facet>
-							<h:outputText value="#{bloqueio.dataInicio}">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputText>
-						</h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                Médico
+                            </f:facet>
+                            <h:outputText value="#{bloqueio.prof.nome}"/>
+                        </h:column>
 
 
-						<h:column>
-							<f:facet name="header">
-                        Turno
-                    </f:facet>
-							<h:outputText value="Manhã" rendered="#{bloqueio.turno == 'M'}" />
-							<h:outputText value="Tarde" rendered="#{bloqueio.turno == 'T'}" />
-						</h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                Data
+                            </f:facet>
+                            <h:outputText value="#{bloqueio.dataInicio}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </h:column>
 
 
-						<h:column>
-							<f:facet name="header">
-                        Ação
-                    </f:facet>
-							<b:commandButton tooltip="Confirmar" icon="glyphicon-edit"
-								size="sm" action="#{BloqueioController.redirectEdit()}">
-								<f:setPropertyActionListener value="#{bloqueio}"
-									target="#{BloqueioController.bloqueio}" />
-
-								<f:setPropertyActionListener value="A"
-									target="#{BloqueioController.tipo}" />
-							</b:commandButton>
-
-							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-								size="sm" ajax="true" style="margin-left:10px"
-								oncomplete="PF('dialogAtencao').show()">
-
-								<f:setPropertyActionListener value="#{bloqueio}"
-									target="#{BloqueioController.bloqueio}" />
-							</b:commandButton>
-
-						</h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                Turno
+                            </f:facet>
+                            <h:outputText value="Manhã" rendered="#{bloqueio.turno == 'M'}"/>
+                            <h:outputText value="Tarde" rendered="#{bloqueio.turno == 'T'}"/>
+                        </h:column>
 
 
-					</b:dataTable>
-				</p:outputPanel>
+                        <h:column>
+                            <f:facet name="header">
+                                Ação
+                            </f:facet>
+                            <b:commandButton tooltip="Editar" icon="glyphicon-edit"
+                                             size="sm" action="#{BloqueioController.redirectEdit()}">
+                                <f:setPropertyActionListener value="#{bloqueio}"
+                                                             target="#{BloqueioController.bloqueio}"/>
+                            </b:commandButton>
 
-			</div>
+                            <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+                                             size="sm" ajax="true" style="margin-left:10px"
+                                             oncomplete="PF('dialogExclusao').show()">
 
-		</h:form>
+                                <f:setPropertyActionListener value="#{bloqueio}"
+                                                             target="#{BloqueioController.bloqueio}"/>
+                            </b:commandButton>
 
-		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsultProfi"
-			modal="true" width="550px">
-			<h:form id="formConsultProf">
-				<p:dataTable
-					value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
-					id="dtTipoAt" resizableColumns="true" var="profi"
-					emptyMessage="Não existe nenhum tipo cadastrado!">
-					
-					<p:column headerText="Profissional">
-						<p:outputLabel value="#{profi.nome}" />
-					</p:column>
-					<p:column headerText="Especialidade">
-						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
-					</p:column>
+                        </h:column>
 
-					<p:column style="width:50px;text-align: center">
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsultProfi').hide();"
-							update=":formConsulBloqueio">
-							<f:setPropertyActionListener value="#{profi}"
-								target="#{BloqueioController.bloqueio.prof}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
 
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
-			resizable="false">
-			<h:form id="dlgexcluir">
-				<h:panelGrid columns="1">
+                    </b:dataTable>
+                </p:outputPanel>
 
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						essa configuração?</div>
+            </div>
 
-				</h:panelGrid>
-				<center>
-					<p:commandButton value="Sim"
-						action="#{BloqueioController.excluirBloqueio()}"
-						icon="ui-icon-check" style="font-size:14px;"
-						update=":formConsulBloqueio:msgError, :formConsulBloqueio:outBloq">
-					</p:commandButton>
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
-						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+        </h:form>
 
-				</center>
-			</h:form>
-		</p:dialog>
+        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsultProfi"
+                  modal="true" width="550px">
+            <h:form id="formConsultProf">
+                <p:dataTable
+                        value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+                        id="dtTipoAt" resizableColumns="true" var="profi"
+                        emptyMessage="Não existe nenhum tipo cadastrado!">
 
-	</ui:define>
+                    <p:column headerText="Profissional">
+                        <p:outputLabel value="#{profi.nome}"/>
+                    </p:column>
+                    <p:column headerText="Especialidade">
+                        <p:outputLabel value="#{profi.especialidade.descEspecialidade}"/>
+                    </p:column>
+
+                    <p:column style="width:50px;text-align: center">
+                        <p:commandButton icon="ui-icon-check" title="Selecionar"
+                                         onclick="PF('dlgConsultProfi').hide();"
+                                         update=":formConsulBloqueio">
+                            <f:setPropertyActionListener value="#{profi}"
+                                                         target="#{BloqueioController.bloqueio.prof}"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+                  resizable="false">
+            <h:form id="dlgexcluir">
+                <h:panelGrid columns="1">
+
+                    <div class="alert alert-warning" role="alert">Deseja excluir
+                        esse bloqueio?
+                    </div>
+
+                </h:panelGrid>
+                <div align="center">
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{BloqueioController.excluirBloqueio()}"
+                                     icon="glyphicon-ok" ajax="true"
+                                     update=":formConsulBloqueio:msgPagina, :formConsulBloqueio:outBloq">
+                    </b:commandButton>
+                    <b:commandButton value="Não"
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
+
+                </div>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
 </ui:composition>
+
 </html>

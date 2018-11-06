@@ -10,4 +10,11 @@ public final class RedirecionarUtil {
 		return ENDERECO_CADASTRO+ENDERECO_TIPO+tipo;
 	}
 
+	public static String redirectEditSemTipo(String ENDERECO_CADASTRO, String ENDERECO_ID, Integer idObjeto) {
+		return ENDERECO_CADASTRO+ENDERECO_ID+idObjeto;
+	}
+
+	public static String redirectInsertSemTipo(String ENDERECO_CADASTRO) {
+		return ENDERECO_CADASTRO;
+	}
 }
