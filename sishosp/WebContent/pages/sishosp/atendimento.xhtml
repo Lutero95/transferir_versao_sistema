@@ -1,156 +1,157 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
 
-	<ui:define name="body">
+    <ui:define name="body">
 
-		<h:form id="formConsAge">
-			<div class="panel-body">
-				<div class="sub-header">
-					<h4>Atendimentos</h4>
-					<hr />
-				</div>
-			</div>
+        <h:form id="formConsAge">
+            <div class="panel-body">
+                <div class="sub-header">
+                    <h4>Atendimentos</h4>
+                    <hr/>
+                </div>
+            </div>
 
-			<p:panelGrid columns="5" styleClass="semBorda">
-				<p:outputPanel>
-					<h:outputLabel value="Data de Atendimento:" />
-					<br />
-					<p:calendar locale="pt" showOn="button" navigator="true"
-						mask="true" pattern="dd/MM/yyyy"
-						value="#{AtendimentoController.atendimento.dataAtendimentoInicio}" />
+            <p:panelGrid columns="5" styleClass="semBorda">
+                <p:outputPanel>
+                    <h:outputLabel value="Data de Atendimento:"/>
 
-					<p:outputLabel id="outdataa">
-						<h:outputLabel value="à" />
-					</p:outputLabel>
+                    <p:calendar locale="pt" showOn="button" navigator="true"
+                                mask="true" pattern="dd/MM/yyyy" style="margin-left: 20px"
+                                value="#{AtendimentoController.atendimento.dataAtendimentoInicio}"/>
 
-					<p:calendar locale="pt" showOn="button" navigator="true"
-						mask="true" pattern="dd/MM/yyyy"
-						value="#{AtendimentoController.atendimento.dataAtendimentoFinal}" />
+                    <p:outputLabel id="outdataa">
+                        <h:outputLabel value="à" style="margin-left: 20px"/>
+                    </p:outputLabel>
 
-				</p:outputPanel>
+                    <p:calendar locale="pt" showOn="button" navigator="true"
+                                mask="true" pattern="dd/MM/yyyy" style="margin-left: 20px"
+                                value="#{AtendimentoController.atendimento.dataAtendimentoFinal}"/>
 
-				<b:commandButton value="Buscar" icon="glyphicon-search"
-					action="#{AtendimentoController.consultarAtendimentos()}"
-					update="dtAtendimentos, msgError"></b:commandButton>
+                </p:outputPanel>
 
-			</p:panelGrid>
-			<br />
-			<b:dataTable customLangUrl="#{resource['pt-br.json']}" resizableColumns="true" id="dtAtendimentos"
-				emptyMessage="Sem registros." scrollable="true" paginator="true"
-				rows="15" var="atendimento"
-				value="#{AtendimentoController.listAtendimentos}">
+                <b:commandButton value="Buscar" icon="glyphicon-search"
+                                 action="#{AtendimentoController.consultarAtendimentos()}"
+                                 update="dtAtendimentos, msgPagina"></b:commandButton>
 
-				<h:column>
-					<f:facet name="header">
+            </p:panelGrid>
+            <br/>
+            <b:dataTable customLangUrl="#{resource['pt-br.json']}" resizableColumns="true" id="dtAtendimentos"
+                         emptyMessage="Sem registros." scrollable="true" paginator="true"
+                         rows="15" var="atendimento"
+                         value="#{AtendimentoController.listAtendimentos}">
+
+                <h:column>
+                    <f:facet name="header">
                         Data
                     </f:facet>
-					<h:outputLabel value="#{atendimento.dataAtendimentoInicio}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputLabel>
-				</h:column>
+                    <h:outputLabel value="#{atendimento.dataAtendimentoInicio}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </h:column>
 
-				<h:column>
-					<f:facet name="header">
+                <h:column>
+                    <f:facet name="header">
                         Paciente
                     </f:facet>
-					<p:outputLabel value="#{atendimento.paciente.nome}" />
-				</h:column>
+                    <p:outputLabel value="#{atendimento.paciente.nome}"/>
+                </h:column>
 
-				<h:column>
-					<f:facet name="header">
+                <h:column>
+                    <f:facet name="header">
                         CNS
                     </f:facet>
-					<p:outputLabel value="#{atendimento.paciente.cns}" />
-				</h:column>
+                    <p:outputLabel value="#{atendimento.paciente.cns}"/>
+                </h:column>
 
-				<h:column>
-					<f:facet name="header">
+                <h:column>
+                    <f:facet name="header">
                         Turno
                     </f:facet>
-					<h:outputLabel value="MANHÃ" rendered="#{atendimento.turno == 'M'}" />
-					<h:outputLabel value="TARDE" rendered="#{atendimento.turno == 'T'}" />
-				</h:column>
+                    <h:outputLabel value="MANHÃ" rendered="#{atendimento.turno == 'M'}"/>
+                    <h:outputLabel value="TARDE" rendered="#{atendimento.turno == 'T'}"/>
+                </h:column>
 
-				<h:column>
-					<f:facet name="header">
+                <h:column>
+                    <f:facet name="header">
                         Profissional
                     </f:facet>
-					<p:outputLabel value="#{atendimento.funcionario.nome}" />
-				</h:column>
+                    <p:outputLabel value="#{atendimento.funcionario.nome}"/>
+                </h:column>
 
-				<h:column>
-					<f:facet name="header">
+                <h:column>
+                    <f:facet name="header">
                         Programa
                     </f:facet>
-					<p:outputLabel value="#{atendimento.programa.descPrograma}" />
-				</h:column>
+                    <p:outputLabel value="#{atendimento.programa.descPrograma}"/>
+                </h:column>
 
-				<h:column>
-					<f:facet name="header">
+                <h:column>
+                    <f:facet name="header">
                         Tipo de Atendimento
                     </f:facet>
-					<p:outputLabel value="#{atendimento.tipoAt.descTipoAt}" />
-				</h:column>
+                    <p:outputLabel value="#{atendimento.tipoAt.descTipoAt}"/>
+                </h:column>
 
-				<h:column>
-					<f:facet name="header">
+                <h:column>
+                    <f:facet name="header">
                         Nome Equipe
                     </f:facet>
-					<p:outputLabel value="#{atendimento.equipe.descEquipe}" />
-				</h:column>
+                    <p:outputLabel value="#{atendimento.equipe.descEquipe}"/>
+                </h:column>
 
-				<h:column>
-					<f:facet name="header">
+                <h:column>
+                    <f:facet name="header">
                         Equipe
                     </f:facet>
-					<p:outputLabel value="#{atendimento.ehEquipe}" />
-				</h:column>
+                    <p:outputLabel value="#{atendimento.ehEquipe}"/>
+                </h:column>
 
-				<h:column>
-					<f:facet name="header">
+                <h:column>
+                    <f:facet name="header">
                         Situação
                     </f:facet>
-					<p:outputLabel value="#{atendimento.situacao}" />
-				</h:column>
+                    <p:outputLabel value="#{atendimento.situacao}"/>
+                </h:column>
 
-				<h:column>
-					<f:facet name="header">
+                <h:column>
+                    <f:facet name="header">
                         Atendimento
                     </f:facet>
-					<b:commandButton tooltip="Atendimento" icon="glyphicon-edit"
-						size="sm" action="#{AtendimentoController.redirectAtendimento()}">
-						<f:setPropertyActionListener value="#{atendimento}"
-							target="#{AtendimentoController.atendimento}" />
-					</b:commandButton>
-				</h:column>
+                    <b:commandButton tooltip="Atendimento" icon="glyphicon-edit"
+                                     size="sm" action="#{AtendimentoController.redirectAtendimento()}">
+                        <f:setPropertyActionListener value="#{atendimento}"
+                                                     target="#{AtendimentoController.atendimento}"/>
+                    </b:commandButton>
+                </h:column>
 
-			</b:dataTable>
-
-
-			<center>
-				<b:messages value="Error" id="msgError"></b:messages>
-			</center>
-
-			<center>
-
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					size="sm" immediate="true" look="info" update=":formConsAge"
-					action="/pages/comum/selecaoSistema2.faces?faces-redirect=true">
-				</b:commandButton>
+            </b:dataTable>
 
 
-			</center>
+            <div align="center">
+                <b:messages value="Error" id="msgPagina"></b:messages>
+            </div>
 
-		</h:form>
+            <div align="center">
 
-	</ui:define>
+                <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                 size="sm" immediate="true" look="info" update=":formConsAge"
+                                 action="/pages/comum/selecaoSistema2.faces?faces-redirect=true">
+                </b:commandButton>
+
+            </div>
+
+        </h:form>
+
+    </ui:define>
+
 </ui:composition>
+
 </html>
