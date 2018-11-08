@@ -160,7 +160,7 @@ public class AtendimentoDAO {
                 stmt2.setLong(1, lista.get(i).getFuncionario().getId());
                 stmt2.setInt(2, lista.get(i).getId());
                 stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
-                stmt2.setInt(4, lista.get(i).getProcedimento().getCodProc());
+                stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
                 stmt2.setString(5, lista.get(i).getStatus());
                 stmt2.executeUpdate();
 

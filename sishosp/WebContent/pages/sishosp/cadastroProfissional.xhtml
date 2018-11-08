@@ -212,12 +212,12 @@
 
                             <b:column span="5">
                                 <p:outputPanel id="outProcP2">
-                                    <p:inputText value="#{MBFuncionarios.profissional.cns}" class="form-control"
+                                    <b:inputText value="#{MBFuncionarios.profissional.cns}" class="form-control"
                                                  required="true" requiredMessage="CNS: Campo obrigátorio!">
                                         <p:ajax listener="#{MBFuncionarios.validaCns(MBFuncionarios.profissional.cns)}"
                                                 global="false" event="blur" immediate="true"
                                                 update=":frmPrincipal:msgPagina"/>
-                                    </p:inputText>
+                                    </b:inputText>
 
                                 </p:outputPanel>
                             </b:column>

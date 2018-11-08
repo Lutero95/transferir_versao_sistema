@@ -1,169 +1,172 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
 
-	<ui:define name="body">
-		<f:metadata>
-			<f:viewAction
-				action="#{AtendimentoController.getCarregaAtendimentoProfissional()}" />
-		</f:metadata>
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewAction
+                    action="#{AtendimentoController.getCarregaAtendimentoProfissional()}"/>
+        </f:metadata>
 
-		<h:form id="formConsAge">
-			<div class="panel-body">
-				<div class="sub-header">
-					<h4>Atendimento Profissional</h4>
-					<hr />
-				</div>
-			</div>
+        <h:form id="formConsAge">
+            <div class="panel-body">
+                <div class="sub-header">
+                    <h4>Atendimento Profissional</h4>
+                    <hr/>
+                </div>
+            </div>
 
-			<b:row>
+            <b:row>
 
-				<b:column span="2">
-					<h:outputLabel for="inputpaciente" value="Paciente"
-						style="margin-top:10px" />
-				</b:column>
+                <b:column span="2">
+                    <h:outputLabel value="Paciente"
+                                   style="margin-top:10px"/>
+                </b:column>
 
-				<b:column span="4">
-					<h:inputText
-						value="#{AtendimentoController.atendimento.paciente.nome}"
-						readonly="true" class="form-control" id="inputname"></h:inputText>
-				</b:column>
+                <b:column span="4">
+                    <b:inputText
+                            value="#{AtendimentoController.atendimento.paciente.nome}"
+                            readonly="true" class="form-control" id="inputname"></b:inputText>
+                </b:column>
 
-				<b:column span="2">
-					<h:outputLabel for="inputpaciente" value="Procedimento"
-						style="margin-top:10px" />
-				</b:column>
+                <b:column span="2">
+                    <h:outputLabel value="Procedimento"
+                                   style="margin-top:10px"/>
+                </b:column>
 
-				<b:column span="4">
-					<p:outputPanel id="outProcP1">
-						<p:autoComplete required="true" requiredMessage="Escolha o procedimento!"
-							value="#{AtendimentoController.atendimento.procedimento}"
-							size="60" converter="conProcedimento" id="descProc1"
-							completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.nomeProc}">
-						</p:autoComplete>
-					</p:outputPanel>
-				</b:column>
+                <b:column span="4">
+                    <p:outputPanel id="outProcP1">
+                        <p:autoComplete required="true" requiredMessage="Escolha o procedimento!"
+                                        value="#{AtendimentoController.atendimento.procedimento}"
+                                        size="60" converter="conProcedimento" id="descProc1"
+                                        completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.nomeProc}">
+                        </p:autoComplete>
+                    </p:outputPanel>
+                </b:column>
 
-			</b:row>
+            </b:row>
 
-			<br />
+            <br/>
 
-			<b:row>
+            <b:row>
 
-				<b:column span="2">
-					<h:outputLabel value="Profissional" />
-				</b:column>
+                <b:column span="2">
+                    <h:outputLabel value="Profissional"/>
+                </b:column>
 
-				<b:column span="4">
-					<h:inputText
-						value="#{AtendimentoController.atendimento.funcionario.nome}"
-						readonly="true" class="form-control" id="inputnamefunc"></h:inputText>
-				</b:column>
+                <b:column span="4">
+                    <b:inputText
+                            value="#{AtendimentoController.atendimento.funcionario.nome}"
+                            readonly="true" class="form-control" id="inputnamefunc"></b:inputText>
+                </b:column>
 
-				<b:column span="2">
-					<h:outputLabel value="Atendimento" />
-				</b:column>
+                <b:column span="2">
+                    <h:outputLabel value="Atendimento"/>
+                </b:column>
 
-				<b:column span="4">
-					<p:outputPanel id="outProfi">
-						<p:autoComplete id="acpro" required="true" requiredMessage="Escolha o atendente"
-							value="#{AtendimentoController.funcionario}" size="60"
-							converter="conFuncionario"
-							completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
-						</p:autoComplete>
-					</p:outputPanel>
-				</b:column>
+                <b:column span="4">
+                    <p:outputPanel id="outProfi">
+                        <p:autoComplete id="acpro" required="true" requiredMessage="Escolha o atendente"
+                                        value="#{AtendimentoController.funcionario}" size="60"
+                                        converter="conFuncionario"
+                                        completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
+                        </p:autoComplete>
+                    </p:outputPanel>
+                </b:column>
 
-			</b:row>
+            </b:row>
 
-			<br />
+            <br/>
 
-			<b:row>
+            <b:row>
 
-				<b:column span="2">
-					<h:outputLabel value="Status" />
-				</b:column>
+                <b:column span="2">
+                    <h:outputLabel value="Status"/>
+                </b:column>
 
-				<b:column span="4">
-					<b:selectOneMenu required="true" requiredMessage="Escolha um status!"
-						value="#{AtendimentoController.atendimento.status}" id="status">
-						<f:selectItem itemLabel="Selecione" itemValue="" />
-						<f:selectItem itemLabel="Atendido" itemValue="A" />
-						<f:selectItem itemLabel="Profissional faltou" itemValue="PF" />
-					</b:selectOneMenu>
-				</b:column>
+                <b:column span="4">
+                    <b:selectOneMenu required="true" requiredMessage="Escolha um status!"
+                                     value="#{AtendimentoController.atendimento.status}" id="status">
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>
+                        <f:selectItem itemLabel="Atendido" itemValue="A"/>
+                        <f:selectItem itemLabel="Profissional faltou" itemValue="PF"/>
+                    </b:selectOneMenu>
+                </b:column>
 
-				<b:column span="2">
-					<b:commandButton oncomplete="PF('dialogAtencao').show();" rendered="false"
-						icon="glyphicons-cleaning" size="sm" value="Limpar" look="success" />
-				</b:column>
+                <b:column span="2">
+                    <b:commandButton oncomplete="PF('dialogExclusao').show();" rendered="false"
+                                     icon="glyphicons-cleaning" size="sm" value="Limpar" look="success"/>
+                </b:column>
 
-			</b:row>
+            </b:row>
 
-			<br />
-			<br />
+            <br/>
+            <br/>
 
-			<center>
-				<b:messages value="Error" id="msgError"></b:messages>
-			</center>
+            <div align="center">
+                <b:messages value="Error" id="msgPagina"></b:messages>
+            </div>
 
-			<center>
+            <div align="center">
 
-				<b:commandButton
-					action="#{AtendimentoController.realizarAtendimentoProfissional()}"
-					icon="glyphicon-ok" size="sm" look="success" value="Gravar"
-					update="msgError" style="float:left" />
+                <b:commandButton
+                        action="#{AtendimentoController.realizarAtendimentoProfissional()}"
+                        icon="glyphicon-ok" size="sm" look="success" value="Gravar"
+                        update="msgPagina" style="float:left"/>
 
-				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                    style="float:right" size="sm" immediate="true" look="info"
-					action="/pages/agenda/atendimento.faces?faces-redirect=true">
-				</b:commandButton>
+                <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                 style="float:right" size="sm" immediate="true" look="info"
+                                 action="/pages/sishosp/atendimento.faces?faces-redirect=true">
+                </b:commandButton>
 
-			</center>
+            </div>
 
-		</h:form>
+        </h:form>
 
-		<p:dialog widgetVar="dialogAtencao" modal="true"
-			header="Limpar Atendimento" resizable="false">
+        <p:dialog widgetVar="dialogExclusao" modal="true"
+                  header="Limpar Atendimento" resizable="false">
 
-			<h:form id="dlglimpar">
-				<h:panelGrid columns="1">
+            <h:form id="dlglimpar">
+                <h:panelGrid columns="1">
 
-					<div class="alert alert-warning" role="alert">Deseja limpar o
-						atendimento?</div>
+                    <div class="alert alert-warning" role="alert">Deseja limpar o
+                        atendimento?
+                    </div>
 
-				</h:panelGrid>
+                </h:panelGrid>
 
-				<center>
+                <div align="center">
 
-					<p:separator />
+                    <p:separator/>
 
-					<b:commandButton look="success" value="Sim"
-						action="#{AtendimentoController.limparAtendimentoProfissional()}"
-						ajax="true" icon="glyphicon-ok" update=":formConsAge:msgError" />
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{AtendimentoController.limparAtendimentoProfissional()}"
+                                     ajax="true" icon="glyphicon-ok" update=":formConsAge:msgPagina"/>
 
-					<b:commandButton value="Não"
-						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;" />
+                    <b:commandButton value="Não"
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
 
-				</center>
+                </div>
 
+            </h:form>
 
-			</h:form>
-		</p:dialog>
+        </p:dialog>
 
-	</ui:define>
+    </ui:define>
+
 </ui:composition>
+
 </html>

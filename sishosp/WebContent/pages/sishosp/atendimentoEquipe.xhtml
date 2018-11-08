@@ -4,7 +4,6 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
@@ -23,7 +22,7 @@
 				</div>
 			</div>
 
-		<p:outputPanel autoUpdate="true">
+		<p:outputPanel autoUpdate="false">
 			<p:dataTable
 				value="#{AtendimentoController.listarAtendimentosEquipe()}"
 				id="dtAtendimentos" var="atendimento" editable="true"
