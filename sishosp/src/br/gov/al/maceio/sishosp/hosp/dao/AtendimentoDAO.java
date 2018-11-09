@@ -20,7 +20,7 @@ public class AtendimentoDAO {
 
         Boolean retorno = false;
         ArrayList<Integer> listaAux = new ArrayList<>();
-
+        int valor = 0;
 
         try {
 
@@ -36,16 +36,16 @@ public class AtendimentoDAO {
 
                 ResultSet rs = stm.executeQuery();
 
+                valor = 0;
+
                 while (rs.next()) {
+                    valor = rs.getInt("id_cbo");
 
-                    if (listaAux.size() == 0) {
+                    if (valor > 0) {
                         listaAux.add(lista.get(i).getProcedimento().getIdProc());
                     }
-                    if (!listaAux.contains(lista.get(i).getProcedimento().getIdProc())) {
-                        listaAux.add(lista.get(i).getProcedimento().getIdProc());
-                    }
+
                 }
-
 
             }
 
@@ -147,10 +147,10 @@ public class AtendimentoDAO {
 
             for (int i = 0; i < lista.size(); i++) {
 
-                String sql = "delete from hosp.atendimentos1 where id_atendimento = ?";
-                con = ConnectionFactory.getConnection();
+                String sql = "delete from hosp.atendimentos1 where id_atendimentos1 = ?";
+
                 PreparedStatement stmt = con.prepareStatement(sql);
-                stmt.setLong(1, lista.get(i).getId());
+                stmt.setLong(1, lista.get(i).getId1());
                 stmt.execute();
 
                 String sql2 = "INSERT INTO hosp.atendimentos1(dtaatendido, codprofissionalatendimento, id_atendimento, "

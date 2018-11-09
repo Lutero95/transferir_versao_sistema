@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -220,10 +219,8 @@ public class AtendimentoController implements Serializable {
         Object newValue = event.getNewValue();
 
         if (newValue != null && !newValue.equals(oldValue)) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Clique em SALVAR para que a alteração seja gravada!",
+            JSFUtil.adicionarMensagemAdvertencia("Clique em SALVAR para que a alteração seja gravada!",
                     "Old: " + oldValue + ", New:" + newValue);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
 
@@ -237,7 +234,7 @@ public class AtendimentoController implements Serializable {
 
         if (verificou) {
             boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe);
-            if (alterou == true) {
+            if (alterou) {
                 JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
