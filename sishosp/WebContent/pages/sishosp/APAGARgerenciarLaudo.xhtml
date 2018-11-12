@@ -109,7 +109,7 @@
 						styleClass="btn btn-sm btn-success"
 						actionListener="#{LaudoController.limparDados()}">
 						<f:setPropertyActionListener value="1"
-							target="#{LaudoController.tipo2}" />
+							target="#{LaudoController.tipo}" />
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 					</p:commandButton>
 
@@ -181,7 +181,7 @@
 										target="#{LaudoController.laudo}" />
 
 									<f:setPropertyActionListener value="2"
-										target="#{LaudoController.tipo2}" />
+										target="#{LaudoController.tipo}" />
 								</p:menuitem>
 
 								<p:menuitem value="Excluir" icon="trash"

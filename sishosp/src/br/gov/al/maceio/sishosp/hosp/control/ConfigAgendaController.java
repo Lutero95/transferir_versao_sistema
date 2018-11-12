@@ -6,16 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.event.UnselectEvent;
-
-import com.lowagie.text.pdf.AcroFields.Item;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
@@ -34,709 +30,535 @@ import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 @ViewScoped
 public class ConfigAgendaController implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
-	private ConfigAgendaParte1Bean confParte1;
-	private ConfigAgendaParte2Bean confParte2;
-	private FuncionarioBean prof;
-	private EquipeBean equipe;
-
-	private List<ConfigAgendaParte2Bean> listaTipos;
-	private List<ConfigAgendaParte2Bean> listaTiposEditar;
-	private List<ConfigAgendaParte1Bean> listaHorarios;
-	private List<ConfigAgendaParte1Bean> listaHorariosEquipe;
-	private List<FuncionarioBean> listaProfissionais;
-	private List<EquipeBean> listaEquipes;
-
-	private List<GrupoBean> listaGruposProgramas;
-	private List<TipoAtendimentoBean> listaTipoAtendimentosGrupo;
-
-	private ConfigAgendaDAO cDao = new ConfigAgendaDAO();
-	private FuncionarioDAO pDao = new FuncionarioDAO();
-	private EquipeDAO eDao = new EquipeDAO();
-
-	private String nomeBusca;
-	private Integer tipoBusca;
-
-	private String tipo;
-	private int tipo2;
-
-	private String opcao;
-
-	public ConfigAgendaController() {
-		this.confParte1 = new ConfigAgendaParte1Bean();
-		this.confParte2 = new ConfigAgendaParte2Bean();
-		this.prof = new FuncionarioBean();
-		this.equipe = new EquipeBean();
-		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
-		this.listaTiposEditar = new ArrayList<ConfigAgendaParte2Bean>();
-		this.listaHorarios = null;
-		this.listaHorariosEquipe = null;
-		this.listaProfissionais = null;
-		this.listaEquipes = null;
-		this.tipo = new String();
-		this.opcao = new String("2");
-		this.nomeBusca = "";
-		this.listaGruposProgramas = new ArrayList<>();
-		this.listaTipoAtendimentosGrupo = new ArrayList<>();
-
-	}
-
-	public void limparDados() {
-		this.confParte1 = new ConfigAgendaParte1Bean();
-		this.confParte2 = new ConfigAgendaParte2Bean();
-		this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
-		this.listaTiposEditar = new ArrayList<ConfigAgendaParte2Bean>();
-		this.listaHorarios = null;
-		this.listaHorariosEquipe = null;
-		this.listaProfissionais = null;
-		this.listaEquipes = null;
-		this.nomeBusca = "";
-		this.tipo = "";
-		this.opcao = new String("1");
-	}
-
-	public String redirectInsert() {
-		return "configuracaoAgenda?faces-redirect=true";
-	}
-
-	public String redirectInsertEquipe() {
-		return "configuracaoAgendaEquipe?faces-redirect=true";
-	}
-
-	// errado =
-	// action="/pages/agenda/editarConfAgenda.xhtml?faces-redirect=true">
-	public String redirectEdit() {
-		return "editarConfAgenda?faces-redirect=true&amp;codconfigagenda="
-				+ this.confParte1.getIdConfiAgenda() + "&amp;tipo2=" + tipo2;
-
-	}
-
-	public String redirectEditEquipe() {
-		return "editarConfAgendaEquipe?faces-redirect=true&amp;codconfigagenda="
-				+ this.confParte1.getIdConfiAgenda() + "&amp;tipo2=" + tipo2;
-
-	}
-
-	public void getEditAgenda() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("codconfigagenda") != null) {
-			Integer id = Integer.parseInt(params.get("codconfigagenda"));
-			tipo2 = Integer.parseInt(params.get("tipo2"));
-
-			this.confParte1 = cDao.listarHorariosPorIDProfissional2(id);
-		} else {
-			tipo2 = Integer.parseInt(params.get("tipo2"));
-
-		}
-
-	}
-
-	public void getEditAgendaEquipe() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("codconfigagenda") != null) {
-			Integer id = Integer.parseInt(params.get("codconfigagenda"));
-			tipo2 = Integer.parseInt(params.get("tipo2"));
-
-			this.confParte1 = cDao.listarHorariosPorIDEquipe2(id);
-		} else {
-			tipo2 = Integer.parseInt(params.get("tipo2"));
-
-		}
-
-	}
-
-	public void buscarProfissional() throws ProjetoException {
-		if (this.tipoBusca == 0) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha uma opção de busca válida!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			this.listaProfissionais = pDao.listarProfissionalBusca(nomeBusca,
-					tipoBusca);
-			this.listaHorarios = null;
-		}
-	}
-
-	public void buscarEquipe() throws ProjetoException {
-		if (this.tipoBusca == 0) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha uma opção de busca válida!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			this.listaEquipes = eDao.listarEquipeBusca(nomeBusca);
-			this.listaHorariosEquipe = null;
-		}
-	}
-
-	public void addNaLista() {
-		// if (confParte2.getPrograma() == null){
-		// FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-		// "Insirar o Programa", "Erro");
-		// FacesContext.getCurrentInstance().addMessage(null, msg);
-		// }
-		// else{
-		// ConfigAgendaController.confParte1.qtdMax
-		// confParte1.setQtdMax(confParte2.getQtd());
-		if (confParte2.getQtd() == null
-				// || confParte2.getTipoAt().getDescTipoAt() == null
-				|| confParte2.getPrograma().getDescPrograma() == null
-				|| confParte2.getGrupo().getDescGrupo() == null) {
-			this.confParte2 = new ConfigAgendaParte2Bean();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Insira os dados corretamente!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			this.listaTipos.add(confParte2);
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Dados inseridos na tabela!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-		this.confParte2 = new ConfigAgendaParte2Bean();
-		// }
-	}
-
-	public void addNaListaEditar() {
-		if (confParte2.getQtd() == null
-				// || confParte2.getTipoAt().getDescTipoAt() == null
-				|| confParte2.getPrograma().getDescPrograma() == null
-				|| confParte2.getGrupo().getDescGrupo() == null) {
-			this.confParte2 = new ConfigAgendaParte2Bean();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Insira os dados corretamente!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			this.listaTiposEditar.add(confParte2);
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Dados inseridos na tabela!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-		this.confParte2 = new ConfigAgendaParte2Bean();
-		// }
-	}
-
-	public void removeNaLista() {
-		this.listaTipos.remove(confParte2);
-
-	}
-
-	public void removeNaListaEditar() {
-		this.listaTiposEditar.remove(confParte2);
-
-	}
-
-	// GRUPOBEAN
-	public List<GrupoBean> selectGrupo() throws ProjetoException {
-		GrupoDAO gDao = new GrupoDAO();
-		if (confParte2.getPrograma() != null) {
-			listaGruposProgramas = gDao.listarGruposPorPrograma(confParte2
-					.getPrograma().getIdPrograma());
-		}
-		return listaGruposProgramas;
-	}
-
-	public List<GrupoBean> listaGrupoAutoComplete(String query)
-			throws ProjetoException {
-		GrupoDAO gDao = new GrupoDAO();
-		if (confParte2.getPrograma() != null) {
-			return gDao.listarGruposAutoComplete(query,
-					confParte2.getPrograma());
-		} else {
-			return null;
-		}
-
-	}
-
-	// FINAL GRUPOBEAN
-
-	// TIPOATENDIMENTOBEAN
-	public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
-			throws ProjetoException {
-		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
-		if (confParte2.getGrupo() != null) {
-			return tDao.listarTipoAtAutoComplete(query, confParte2.getGrupo());
-		} else {
-			return null;
-		}
-	}
-
-	public List<TipoAtendimentoBean> selectTipoAtendimento()
-			throws ProjetoException {
-		TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
-		if (confParte2.getGrupo() != null) {
-			listaTipoAtendimentosGrupo = tDao.listarTipoAtPorGrupo(confParte2
-					.getGrupo().getIdGrupo());
-		}
-		return listaTipoAtendimentosGrupo;
-	}
-
-	// FINAL TIPOATENDIMENTOBEAN
-
-	// EQUIPEBEAN
-	public List<EquipeBean> listaEquipeAutoComplete(String query)
-			throws ProjetoException {
-		int grupoId = 0;
-		if (confParte2.getGrupo() == null) {
-			grupoId = cDao.carregarGrupoDaEquipe(confParte1.getIdConfiAgenda());
-		}
-		List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
-				grupoId);
-		return result;
-	}
-
-	public List<EquipeBean> selectEquipe() throws ProjetoException {
-		EquipeDAO eDao = new EquipeDAO();
-		
-		if (confParte2.getGrupo() != null) {
-			this.listaEquipes = eDao.listarEquipePorGrupo(confParte2.getGrupo()
-					.getIdGrupo());
-		}
-		else{
-			int grupoId = cDao.carregarGrupoDaEquipe(confParte1.getIdConfiAgenda());
-			this.listaEquipes = eDao.listarEquipePorGrupo(grupoId);
-		}
-		return listaEquipes;
-
-	}
-
-	// FINAL EQUIPEBEAN
-
-	public void gravarConfigAgenda() throws SQLException, ProjetoException {
-		boolean ok = false;
-		int somatorio = 0;
-		for (ConfigAgendaParte2Bean conf : listaTipos) {
-			somatorio += conf.getQtd();
-		}
-
-		if (confParte1.getQtdMax() != null) {
-			if (somatorio != confParte1.getQtdMax()) {
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Quantidade máxima está divergente!", "Erro");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				ok = false;
-				return;
-			}
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Quantidade máxima obrigatória!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-
-		if (listaTipos.size() == 0) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Adicione na lista!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-		if (confParte1.getProfissional() == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha um profissional!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-
-		if (this.opcao.equals("1")
-				&& this.confParte1.getDataEspecifica() == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha uma data específica!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-
-		if (this.opcao.equals("2")
-				&& this.confParte1.getDiasSemana().size() == 0) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Escolha no mínimo um dia da semana!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-
-		if (this.opcao.equals("2") && this.confParte1.getAno() == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ano é ebrigatório!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-
-		if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
-			for (String dia : confParte1.getDiasSemana()) {
-				ok = cDao.gravaTurno(confParte1, listaTipos, dia);
-			}
-		} else {// ESCOLHEU DATA ESPECIFICA
-			ok = cDao.gravaTurno(confParte1, listaTipos, null);
-		}
-
-		// ok = cDao.gravarConfigAgenda(confParte1, confParte2, listaTipos);
-
-		if (ok) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração gravada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Insira os dados corretamente!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		limparDados();
-	}
-
-	public void gravarConfigAgendaEquipe() throws SQLException,
-			ProjetoException {
-		boolean ok = false;
-
-		if (this.opcao.equals("1")) {
-			this.confParte1.setAno(0);
-			this.confParte1.setMes(0);
-		}
-
-		ok = cDao.gravarConfigAgendaEquipe(confParte1, confParte2, listaTipos);
-
-		if (ok) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração gravada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Insira os dados corretamente!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		limparDados();
-	}
-
-	public void alterarConfigAgenda() throws SQLException, ProjetoException {
-		boolean ok = false;
-		int somatorio = 0;
-
-		for (ConfigAgendaParte2Bean conf : listaTiposEditar) {
-			somatorio += conf.getQtd();
-		}
-
-		if (confParte1.getQtdMax() != null) {
-			if (somatorio != confParte1.getQtdMax()) {
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Quantidade máxima está divergente!", "Erro");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				ok = false;
-				return;
-			}
-		}
-
-		ok = cDao.alterarTurno(confParte1, listaTiposEditar);
-
-		// ok = cDao.alterarConfigAgenda(confParte1, confParte2,
-		// listaTiposEditar);
-
-		if (ok) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração alterada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Insira os dados corretamente!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		// limparDados();
-	}
-
-	public void alterarConfigAgendaEquipe() throws SQLException,
-			ProjetoException {
-		boolean ok = false;
-
-		if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
-			for (String dia : confParte1.getDiasSemana()) {
-				ok = cDao.alterarTurnoEquipe(confParte1, listaTiposEditar, dia);
-			}
-		} else {// ESCOLHEU DATA ESPECIFICA
-			ok = cDao.alterarTurnoEquipe(confParte1, listaTiposEditar, null);
-		}
-
-		// ok = cDao.alterarConfigAgendaEquipe(confParte1,
-		// confParte2,listaTiposEditar);
-
-		if (ok) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração alterada com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Insira os dados corretamente!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		// limparDados();
-	}
-
-	public void excluirConfig() throws ProjetoException {
-		boolean ok = cDao.excluirConfig(confParte1);
-
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração excluída com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		this.listaHorarios = cDao.listarHorariosComFiltros(confParte1,
-				prof.getId());
-	}
-
-	public void excluirConfigEquipe() throws ProjetoException {
-		boolean ok = cDao.excluirConfigEquipe(confParte1);
-
-		if (ok == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Configuração excluida com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-		this.listaHorariosEquipe = cDao.listarHorariosEquipe();
-	}
-
-	public void selectProfissional() throws ProjetoException {
-		this.listaHorarios = cDao.listarHorariosPorIDProfissional(prof
-				.getId());
-	}
-
-	public void selectEquipeOnRow() throws ProjetoException {
-		this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe
-				.getCodEquipe());
-	}
-
-	public void selectProfissionalComFiltros() throws ProjetoException {
-		this.listaHorarios = cDao.listarHorariosComFiltros(confParte1,
-				prof.getId());
-	}
-
-	public void selectProfissionalConsConfAgenda() throws ProjetoException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Map<String, String> params = facesContext.getExternalContext()
-				.getRequestParameterMap();
-		if (params.get("codconfigagenda") != null) {
-			Integer id = Integer.parseInt(params.get("codconfigagenda"));
-
-			this.confParte1 = cDao.listarHorariosPorIDProfissional2(id);
-		} else {
-
-		}
-
-	}
-
-	public void onRowSelect(SelectEvent event) throws ProjetoException {
-		FuncionarioBean prof = (FuncionarioBean) event.getObject();
-		this.listaHorarios = cDao.listarHorariosPorIDProfissional(prof
-				.getId());
-	}
-
-	public void onRowUnselect(UnselectEvent event) {
-		this.listaHorarios = null;
-	}
-
-	public void onRowSelectEquipe(SelectEvent event) throws ProjetoException {
-		EquipeBean equipe = (EquipeBean) event.getObject();
-		this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe
-				.getCodEquipe());
-	}
-
-	public void selectEquipeComFiltros() throws ProjetoException {
-		this.listaHorariosEquipe = cDao.listarHorariosComFiltrosEquipe(
-				confParte1, equipe.getCodEquipe());
-	}
-
-	public void onRowUnselectEquipe(UnselectEvent event) {
-		this.listaHorariosEquipe = null;
-	}
-
-	public void limparBuscaPrograma() {
-		// this.confParte2.setPrograma(null);
-		this.confParte2.setGrupo(null);
-		this.confParte2.setTipoAt(null);
-	}
-
-	public void limparBuscaGrupo() {
-		// this.confParte2.setGrupo(null);
-		this.confParte2.setTipoAt(null);
-	}
-
-	public ConfigAgendaParte1Bean getConfParte1() {
-		return confParte1;
-	}
-
-	public void setConfParte1(ConfigAgendaParte1Bean confParte1) {
-		this.confParte1 = confParte1;
-	}
-
-	public ConfigAgendaParte2Bean getConfParte2() {
-		return confParte2;
-	}
-
-	public void setConfParte2(ConfigAgendaParte2Bean confParte2) {
-		this.confParte2 = confParte2;
-	}
-
-	public List<ConfigAgendaParte2Bean> getListaTipos() {
-		return listaTipos;
-	}
-
-	public void setListaTipos(List<ConfigAgendaParte2Bean> listaTipos) {
-		this.listaTipos = listaTipos;
-	}
-
-	public List<ConfigAgendaParte1Bean> getListaHorarios()
-			throws ProjetoException {
-		if (listaHorarios == null) {
-			return listaHorarios;
-		} else {
-			if (this.confParte1.getProfissional() == null) {
-			}
-			if (this.confParte1.getProfissional().getId() != null) {
-				this.listaHorarios = cDao
-						.listarHorariosPorIDProfissional(this.confParte1
-								.getProfissional().getId());
-			}
-		}
-		return listaHorarios;
-	}
-
-	public void setListaHorarios(List<ConfigAgendaParte1Bean> listaHorarios) {
-		this.listaHorarios = listaHorarios;
-	}
-
-	public List<ConfigAgendaParte1Bean> getListaHorariosEquipe()
-			throws ProjetoException {
-		if (listaHorariosEquipe == null) {
-			return listaHorariosEquipe;
-		} else {
-			if (this.confParte1.getEquipe().getCodEquipe() != null) {
-				this.listaHorariosEquipe = cDao
-						.listarHorariosPorIDEquipe(this.confParte1.getEquipe()
-								.getCodEquipe());
-			}
-		}
-		return listaHorariosEquipe;
-	}
-
-	public int getTipo2() {
-		return tipo2;
-	}
-
-	public void setTipo2(int tipo2) {
-		this.tipo2 = tipo2;
-	}
-
-	public void setListaHorariosEquipe(
-			List<ConfigAgendaParte1Bean> listaHorariosEquipe) {
-		this.listaHorariosEquipe = listaHorariosEquipe;
-	}
-
-	public List<FuncionarioBean> getListaProfissionais()
-			throws ProjetoException {
-		if (this.listaProfissionais == null) {
-			this.listaProfissionais = pDao.listarProfissional();
-		}
-		return listaProfissionais;
-	}
-
-	public void setListaProfissionais(List<FuncionarioBean> listaProfissionais) {
-		this.listaProfissionais = listaProfissionais;
-	}
-
-	public List<EquipeBean> getListaEquipes() throws ProjetoException {
-		if (this.listaEquipes == null) {
-			this.listaEquipes = eDao.listarEquipe();
-		}
-		return listaEquipes;
-	}
-
-	public void setListaEquipes(List<EquipeBean> listaEquipes) {
-		this.listaEquipes = listaEquipes;
-	}
-
-	public String getNomeBusca() {
-		return nomeBusca;
-	}
-
-	public void setNomeBusca(String nomeBusca) {
-		this.nomeBusca = nomeBusca;
-	}
-
-	public Integer getTipoBusca() {
-		return tipoBusca;
-	}
-
-	public void setTipoBusca(Integer tipoBusca) {
-		this.tipoBusca = tipoBusca;
-	}
-
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
-	public String getOpcao() {
-		return opcao;
-	}
-
-	public void setOpcao(String opcao) {
-		this.opcao = opcao;
-	}
-
-	public List<ConfigAgendaParte2Bean> getListaTiposEditar()
-			throws ProjetoException {
-		/*
-		 * if (this.confParte1.getIdConfiAgenda() != null &&
-		 * !edicao.equals("S")) { this.listaTiposEditar =
-		 * cDao.listarTiposAgendPorId(this.confParte1 .getIdConfiAgenda()); }
-		 */
-		return listaTiposEditar;
-	}
-
-	public void setListaTiposEditar(
-			List<ConfigAgendaParte2Bean> listaTiposEditar) {
-		this.listaTiposEditar = listaTiposEditar;
-	}
-
-	public FuncionarioBean getProf() {
-		return prof;
-	}
-
-	public void setProf(FuncionarioBean prof) {
-		this.prof = prof;
-	}
-
-	public EquipeBean getEquipe() {
-		return equipe;
-	}
-
-	public void setEquipe(EquipeBean equipe) {
-		this.equipe = equipe;
-	}
+    private static final long serialVersionUID = 1L;
+
+    private ConfigAgendaParte1Bean confParte1;
+    private ConfigAgendaParte2Bean confParte2;
+    private FuncionarioBean prof;
+    private EquipeBean equipe;
+    private int tipo;
+    private String opcao;
+
+    private List<ConfigAgendaParte2Bean> listaTipos;
+    private List<ConfigAgendaParte2Bean> listaTiposEditar;
+    private List<ConfigAgendaParte1Bean> listaHorarios;
+    private List<ConfigAgendaParte1Bean> listaHorariosEquipe;
+    private List<FuncionarioBean> listaProfissionais;
+    private List<EquipeBean> listaEquipes;
+
+    private List<GrupoBean> listaGruposProgramas;
+    private List<TipoAtendimentoBean> listaTipoAtendimentosGrupo;
+
+    private ConfigAgendaDAO cDao = new ConfigAgendaDAO();
+    private FuncionarioDAO fDao = new FuncionarioDAO();
+    private EquipeDAO eDao = new EquipeDAO();
+
+    //CONSTANTES
+    private static final String ENDERECO_CADASTRO = "configuracaoAgenda?faces-redirect=true";
+    private static final String ENDERECO_CADASTRO_EQUIPE = "configuracaoAgendaEquipe?faces-redirect=true";
+    private static final String ENDERECO_EDITAR = "editarConfAgenda?faces-redirect=true";
+    private static final String ENDERECO_EDITAR_EQUIPE = "editarConfAgendaEquipe?faces-redirect=true";
+    private static final String ENDERECO_TIPO = "&amp;tipo=";
+    private static final String ENDERECO_ID = "&amp;codconfigagenda=";
+
+    public ConfigAgendaController() {
+        this.confParte1 = new ConfigAgendaParte1Bean();
+        this.confParte2 = new ConfigAgendaParte2Bean();
+        this.prof = new FuncionarioBean();
+        this.equipe = new EquipeBean();
+        this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
+        this.listaTiposEditar = new ArrayList<ConfigAgendaParte2Bean>();
+        this.listaHorarios = null;
+        this.listaHorariosEquipe = null;
+        this.listaProfissionais = null;
+        this.listaEquipes = null;
+        this.opcao = new String("2");
+        this.listaGruposProgramas = new ArrayList<>();
+        this.listaTipoAtendimentosGrupo = new ArrayList<>();
+
+    }
+
+    public void limparDados() {
+        this.confParte1 = new ConfigAgendaParte1Bean();
+        this.confParte2 = new ConfigAgendaParte2Bean();
+        this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
+        this.listaTiposEditar = new ArrayList<ConfigAgendaParte2Bean>();
+        this.listaHorarios = null;
+        this.listaHorariosEquipe = null;
+        this.listaProfissionais = null;
+        this.listaEquipes = null;
+        this.opcao = new String("1");
+    }
+
+    public String redirectEdit() {
+        return RedirecionarUtil.redirectEdit(ENDERECO_EDITAR, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
+    }
+
+    public String redirectInsert() {
+        return RedirecionarUtil.redirectPagina(ENDERECO_CADASTRO);
+    }
+
+    public String redirectInsertEquipe() {
+        return RedirecionarUtil.redirectPagina(ENDERECO_CADASTRO_EQUIPE);
+    }
+
+    public String redirectEditEquipe() {
+        return RedirecionarUtil.redirectEdit(ENDERECO_EDITAR_EQUIPE, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
+    }
+
+    public void getEditAgenda() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("codconfigagenda") != null) {
+            Integer id = Integer.parseInt(params.get("codconfigagenda"));
+            tipo = Integer.parseInt(params.get("tipo"));
+
+            this.confParte1 = cDao.listarHorariosPorIDProfissional2(id);
+        } else {
+            tipo = Integer.parseInt(params.get("tipo"));
+
+        }
+
+    }
+
+    public void getEditAgendaEquipe() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("codconfigagenda") != null) {
+            Integer id = Integer.parseInt(params.get("codconfigagenda"));
+            tipo = Integer.parseInt(params.get("tipo"));
+
+            this.confParte1 = cDao.listarHorariosPorIDEquipe2(id);
+        } else {
+            tipo = Integer.parseInt(params.get("tipo"));
+
+        }
+
+    }
+
+    public void addNaLista() {
+        if (confParte2.getQtd() == null
+                || confParte2.getPrograma().getDescPrograma() == null
+                || confParte2.getGrupo().getDescGrupo() == null) {
+            this.confParte2 = new ConfigAgendaParte2Bean();
+            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+        } else {
+            this.listaTipos.add(confParte2);
+            JSFUtil.adicionarMensagemSucesso("Dados inseridos na tabela!", "Sucesso");
+        }
+        this.confParte2 = new ConfigAgendaParte2Bean();
+    }
+
+    public void addNaListaEditar() {
+        if (confParte2.getQtd() == null
+                || confParte2.getPrograma().getDescPrograma() == null
+                || confParte2.getGrupo().getDescGrupo() == null) {
+            this.confParte2 = new ConfigAgendaParte2Bean();
+            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+        } else {
+            this.listaTiposEditar.add(confParte2);
+            JSFUtil.adicionarMensagemSucesso("Dados inseridos na tabela!", "Sucesso");
+        }
+        this.confParte2 = new ConfigAgendaParte2Bean();
+    }
+
+    public void removeNaLista() {
+        this.listaTipos.remove(confParte2);
+
+    }
+
+    public void removeNaListaEditar() {
+        this.listaTiposEditar.remove(confParte2);
+
+    }
+
+    // GRUPOBEAN
+
+    public List<GrupoBean> selectGrupo() throws ProjetoException {
+        GrupoDAO gDao = new GrupoDAO();
+        if (confParte2.getPrograma() != null) {
+            listaGruposProgramas = gDao.listarGruposPorPrograma(confParte2
+                    .getPrograma().getIdPrograma());
+        }
+        return listaGruposProgramas;
+    }
+
+    public List<GrupoBean> listaGrupoAutoComplete(String query)
+            throws ProjetoException {
+        GrupoDAO gDao = new GrupoDAO();
+        if (confParte2.getPrograma() != null) {
+            return gDao.listarGruposAutoComplete(query,
+                    confParte2.getPrograma());
+        } else {
+            return null;
+        }
+
+    }
+
+    // FINAL GRUPOBEAN
+
+    // TIPOATENDIMENTOBEAN
+
+    public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
+            throws ProjetoException {
+        TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+        if (confParte2.getGrupo() != null) {
+            return tDao.listarTipoAtAutoComplete(query, confParte2.getGrupo());
+        } else {
+            return null;
+        }
+    }
+
+    public List<TipoAtendimentoBean> selectTipoAtendimento()
+            throws ProjetoException {
+        TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+        if (confParte2.getGrupo() != null) {
+            listaTipoAtendimentosGrupo = tDao.listarTipoAtPorGrupo(confParte2
+                    .getGrupo().getIdGrupo());
+        }
+        return listaTipoAtendimentosGrupo;
+    }
+
+    // FINAL TIPOATENDIMENTOBEAN
+
+    // EQUIPEBEAN
+
+    public List<EquipeBean> listaEquipeAutoComplete(String query)
+            throws ProjetoException {
+        int grupoId = 0;
+        if (confParte2.getGrupo() == null) {
+            grupoId = cDao.carregarGrupoDaEquipe(confParte1.getIdConfiAgenda());
+        }
+        List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
+                grupoId);
+        return result;
+    }
+
+    public List<EquipeBean> selectEquipe() throws ProjetoException {
+        EquipeDAO eDao = new EquipeDAO();
+
+        if (confParte2.getGrupo() != null) {
+            this.listaEquipes = eDao.listarEquipePorGrupo(confParte2.getGrupo()
+                    .getIdGrupo());
+        } else {
+            int grupoId = cDao.carregarGrupoDaEquipe(confParte1.getIdConfiAgenda());
+            this.listaEquipes = eDao.listarEquipePorGrupo(grupoId);
+        }
+        return listaEquipes;
+
+    }
+
+    // FINAL EQUIPEBEAN
+
+    public void gravarConfigAgenda() {
+        boolean ok = false;
+        int somatorio = 0;
+        for (ConfigAgendaParte2Bean conf : listaTipos) {
+            somatorio += conf.getQtd();
+        }
+
+        if (confParte1.getQtdMax() != null) {
+            if (somatorio != confParte1.getQtdMax()) {
+                JSFUtil.adicionarMensagemAdvertencia("Quantidade máxima está divergente!", "Advertência");
+                ok = false;
+                return;
+            }
+        } else {
+            JSFUtil.adicionarMensagemErro("Quantidade máxima: Campo obrigatório!", "Erro");
+            return;
+        }
+
+        if (listaTipos.size() == 0) {
+            JSFUtil.adicionarMensagemErro("Adicione na lista!", "Erro");
+            return;
+        }
+        if (confParte1.getProfissional() == null) {
+            JSFUtil.adicionarMensagemErro("Escolha um profissional!", "Erro");
+            return;
+        }
+
+        if (this.opcao.equals("1")
+                && this.confParte1.getDataEspecifica() == null) {
+            JSFUtil.adicionarMensagemErro("Escolha uma data específica!", "Erro");
+            return;
+        }
+
+        if (this.opcao.equals("2")
+                && this.confParte1.getDiasSemana().size() == 0) {
+            JSFUtil.adicionarMensagemErro("Escolha no mínimo um dia da semana!", "Erro");
+            return;
+        }
+
+        if (this.opcao.equals("2") && this.confParte1.getAno() == null) {
+            JSFUtil.adicionarMensagemErro("Ano: Campo obrigatório!", "Erro");
+            return;
+        }
+
+        if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
+            for (String dia : confParte1.getDiasSemana()) {
+                ok = cDao.gravaTurno(confParte1, listaTipos, dia);
+            }
+        } else {// ESCOLHEU DATA ESPECIFICA
+            ok = cDao.gravaTurno(confParte1, listaTipos, null);
+        }
+
+        if (ok) {
+            JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+        }
+
+        limparDados();
+    }
+
+    public void gravarConfigAgendaEquipe() {
+        boolean gravou = false;
+
+        if (this.opcao.equals("1")) {
+            this.confParte1.setAno(0);
+            this.confParte1.setMes(0);
+        }
+
+        gravou = cDao.gravarConfigAgendaEquipe(confParte1, confParte2, listaTipos);
+
+        if (gravou) {
+            JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+        }
+
+        limparDados();
+    }
+
+    public void alterarConfigAgenda() {
+        boolean alterou = false;
+        int somatorio = 0;
+
+        for (ConfigAgendaParte2Bean conf : listaTiposEditar) {
+            somatorio += conf.getQtd();
+        }
+
+        if (confParte1.getQtdMax() != null) {
+            if (somatorio != confParte1.getQtdMax()) {
+                JSFUtil.adicionarMensagemAdvertencia("Quantidade máxima está divergente!", "Advertência");
+                alterou = false;
+                return;
+            }
+        }
+
+        alterou = cDao.alterarTurno(confParte1, listaTiposEditar);
+
+        if (alterou) {
+            JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+        }
+
+    }
+
+    public void alterarConfigAgendaEquipe() throws SQLException,
+            ProjetoException {
+        boolean alterou = false;
+
+        if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
+            for (String dia : confParte1.getDiasSemana()) {
+                alterou = cDao.alterarTurnoEquipe(confParte1, listaTiposEditar, dia);
+            }
+        } else {// ESCOLHEU DATA ESPECIFICA
+            alterou = cDao.alterarTurnoEquipe(confParte1, listaTiposEditar, null);
+        }
+
+        if (alterou) {
+            JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+        }
+
+    }
+
+    public void excluirConfig() throws ProjetoException {
+        boolean excluiu = cDao.excluirConfig(confParte1);
+
+        if (excluiu == true) {
+            JSFUtil.adicionarMensagemSucesso("Configuração excluída com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
+        }
+        this.listaHorarios = cDao.listarHorariosComFiltros(confParte1,
+                prof.getId());
+    }
+
+    public void excluirConfigEquipe() throws ProjetoException {
+        boolean excluiu = cDao.excluirConfigEquipe(confParte1);
+
+        if (excluiu == true) {
+            JSFUtil.adicionarMensagemSucesso("Configuração excluída com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dialogExclusao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+            JSFUtil.fecharDialog("dialogExclusao");
+        }
+        this.listaHorariosEquipe = cDao.listarHorariosEquipe();
+    }
+
+    public void selectProfissional() throws ProjetoException {
+        this.listaHorarios = cDao.listarHorariosPorIDProfissional(prof
+                .getId());
+    }
+
+    public void selectEquipeOnRow() throws ProjetoException {
+        this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe
+                .getCodEquipe());
+    }
+
+    public void selectProfissionalComFiltros() throws ProjetoException {
+        this.listaHorarios = cDao.listarHorariosComFiltros(confParte1,
+                prof.getId());
+    }
+
+    public void selectEquipeComFiltros() throws ProjetoException {
+        this.listaHorariosEquipe = cDao.listarHorariosComFiltrosEquipe(
+                confParte1, equipe.getCodEquipe());
+    }
+
+    public void limparBuscaPrograma() {
+        this.confParte2.setGrupo(null);
+        this.confParte2.setTipoAt(null);
+    }
+
+    public void limparBuscaGrupo() {
+        this.confParte2.setTipoAt(null);
+    }
+
+    public ConfigAgendaParte1Bean getConfParte1() {
+        return confParte1;
+    }
+
+    public void setConfParte1(ConfigAgendaParte1Bean confParte1) {
+        this.confParte1 = confParte1;
+    }
+
+    public ConfigAgendaParte2Bean getConfParte2() {
+        return confParte2;
+    }
+
+    public void setConfParte2(ConfigAgendaParte2Bean confParte2) {
+        this.confParte2 = confParte2;
+    }
+
+    public List<ConfigAgendaParte2Bean> getListaTipos() {
+        return listaTipos;
+    }
+
+    public void setListaTipos(List<ConfigAgendaParte2Bean> listaTipos) {
+        this.listaTipos = listaTipos;
+    }
+
+    public List<ConfigAgendaParte1Bean> getListaHorarios()
+            throws ProjetoException {
+        if (listaHorarios == null) {
+            return listaHorarios;
+        } else {
+            if (this.confParte1.getProfissional() == null) {
+            }
+            if (this.confParte1.getProfissional().getId() != null) {
+                this.listaHorarios = cDao
+                        .listarHorariosPorIDProfissional(this.confParte1
+                                .getProfissional().getId());
+            }
+        }
+        return listaHorarios;
+    }
+
+    public void setListaHorarios(List<ConfigAgendaParte1Bean> listaHorarios) {
+        this.listaHorarios = listaHorarios;
+    }
+
+    public List<ConfigAgendaParte1Bean> getListaHorariosEquipe()
+            throws ProjetoException {
+        if (listaHorariosEquipe == null) {
+            return listaHorariosEquipe;
+        } else {
+            if (this.confParte1.getEquipe().getCodEquipe() != null) {
+                this.listaHorariosEquipe = cDao
+                        .listarHorariosPorIDEquipe(this.confParte1.getEquipe()
+                                .getCodEquipe());
+            }
+        }
+        return listaHorariosEquipe;
+    }
+
+    public int getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setListaHorariosEquipe(
+            List<ConfigAgendaParte1Bean> listaHorariosEquipe) {
+        this.listaHorariosEquipe = listaHorariosEquipe;
+    }
+
+    public List<FuncionarioBean> getListaProfissionais()
+            throws ProjetoException {
+        if (this.listaProfissionais == null) {
+            this.listaProfissionais = fDao.listarProfissional();
+        }
+        return listaProfissionais;
+    }
+
+    public void setListaProfissionais(List<FuncionarioBean> listaProfissionais) {
+        this.listaProfissionais = listaProfissionais;
+    }
+
+    public List<EquipeBean> getListaEquipes() throws ProjetoException {
+        if (this.listaEquipes == null) {
+            this.listaEquipes = eDao.listarEquipe();
+        }
+        return listaEquipes;
+    }
+
+    public void setListaEquipes(List<EquipeBean> listaEquipes) {
+        this.listaEquipes = listaEquipes;
+    }
+
+    public String getOpcao() {
+        return opcao;
+    }
+
+    public void setOpcao(String opcao) {
+        this.opcao = opcao;
+    }
+
+    public List<ConfigAgendaParte2Bean> getListaTiposEditar() {
+        return listaTiposEditar;
+    }
+
+    public void setListaTiposEditar(
+            List<ConfigAgendaParte2Bean> listaTiposEditar) {
+        this.listaTiposEditar = listaTiposEditar;
+    }
+
+    public FuncionarioBean getProf() {
+        return prof;
+    }
+
+    public void setProf(FuncionarioBean prof) {
+        this.prof = prof;
+    }
+
+    public EquipeBean getEquipe() {
+        return equipe;
+    }
+
+    public void setEquipe(EquipeBean equipe) {
+        this.equipe = equipe;
+    }
 
 }

@@ -389,12 +389,12 @@
 							<p:commandButton value="Gravar" icon="confirmar"
 								update=":formLaudo:message,:formLaudo" style="margin-left:15px;"
 								action="#{LaudoController.gravarLaudo()}"
-								rendered="#{LaudoController.tipo2 == 1}" />
+								rendered="#{LaudoController.tipo == 1}" />
 
 							<p:commandButton action="#{LaudoController.alterarLaudo()}"
 								icon="alterar-dados" style="margin-left:15px;"
 								update=":formLaudo:message,:formLaudo" value="Alterar"
-								rendered="#{LaudoController.tipo2 == 2}" />
+								rendered="#{LaudoController.tipo == 2}" />
 
 							<p:commandButton value="Limpar" icon="limpar"
 								style="margin-left:15px;"

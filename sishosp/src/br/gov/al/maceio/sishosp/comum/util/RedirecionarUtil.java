@@ -17,4 +17,9 @@ public final class RedirecionarUtil {
 	public static String redirectInsertSemTipo(String ENDERECO_CADASTRO) {
 		return ENDERECO_CADASTRO;
 	}
+
+	public static String redirectPagina(String PAGINA) {
+		return PAGINA;
+	}
+
 }

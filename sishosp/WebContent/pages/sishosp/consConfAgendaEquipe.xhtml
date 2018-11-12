@@ -175,11 +175,11 @@
 										target="#{ConfigAgendaController.confParte1}" />
 
 									<f:setPropertyActionListener value="2"
-										target="#{ConfigAgendaController.tipo2}" />
+										target="#{ConfigAgendaController.tipo}" />
 								</p:commandButton>
 
 								<p:commandButton icon="ui-icon-closethick"
-									onclick="PF('dialogAtencao').show()">
+									onclick="PF('dialogExclusao').show()">
 
 									<f:setPropertyActionListener value="#{config}"
 										target="#{ConfigAgendaController.confParte1}" />
@@ -191,7 +191,7 @@
 				</p:outputPanel>
 			</div>
 		</h:form>
-		<p:dialog widgetVar="dialogAtencao" modal="true" header="Atenção"
+		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
 			resizable="false">
 			<h:form id="dlgexcluir">
 				<h:panelGrid columns="1">
@@ -206,7 +206,7 @@
 						icon="ui-icon-check" style="font-size:14px;"
 						update=":formConsConfAgenda:msgError:, :formConsConfAgenda:dtHorarios">
 					</p:commandButton>
-					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
+					<p:commandButton value="Não" onclick="PF('dialogExclusao').hide();"
 						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
 
 				</center>
