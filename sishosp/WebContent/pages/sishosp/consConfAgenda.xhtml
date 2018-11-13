@@ -24,10 +24,6 @@
                 </b:commandButton>
 
 
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
-
                 <br></br>
                 <br></br>
 
@@ -204,27 +200,30 @@
                     </p:dataTable>
                 </p:outputPanel>
             </div>
+
+            <div align="center">
+                <b:messages value="Error" id="msgPagina"></b:messages>
+            </div>
+
         </h:form>
 
         <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
                   resizable="false">
+
             <h:form id="dlgexcluir">
-                <h:panelGrid columns="1">
-
-                    <div class="alert alert-warning" role="alert">Deseja excluir
-                        essa configuração?
-                    </div>
-
-                </h:panelGrid>
+                <div class="alert alert-warning" role="alert">Deseja excluir
+                    essa configuração?
+                </div>
                 <div align="center">
-                    <p:commandButton value="Sim"
-                                     action="#{ConfigAgendaController.excluirConfig()}"
-                                     icon="ui-icon-check" style="font-size:14px;"
-                                     update=":formConsConfAgenda:msgPagina, :formConsConfAgenda:dtHorarios">
-                    </p:commandButton>
-                    <p:commandButton value="Não" onclick="PF('dialogExclusao').hide();"
-                                     icon="ui-icon-closethick"
-                                     style="font-size:14px;margin-left:5px;"></p:commandButton>
+                    <p:separator/>
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{ConfigAgendaController.excluirConfig()}" ajax="true"
+                                     icon="glyphicon-ok"
+                                     update=":formConsConfAgenda:msgPagina, :formConsConfAgenda:dtHorarios"/>
+
+                    <b:commandButton value="Não"
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
                 </div>
             </h:form>
         </p:dialog>

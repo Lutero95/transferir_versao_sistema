@@ -114,7 +114,7 @@ public class ConfigAgendaController implements Serializable {
             Integer id = Integer.parseInt(params.get("codconfigagenda"));
             tipo = Integer.parseInt(params.get("tipo"));
 
-            this.confParte1 = cDao.listarHorariosPorIDProfissional2(id);
+            this.confParte1 = cDao.listarHorariosPorIDProfissionalEdit(id);
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
 
@@ -253,7 +253,7 @@ public class ConfigAgendaController implements Serializable {
     // FINAL EQUIPEBEAN
 
     public void gravarConfigAgenda() {
-        boolean ok = false;
+        boolean cadastrou = false;
         int somatorio = 0;
         for (ConfigAgendaParte2Bean conf : listaTipos) {
             somatorio += conf.getQtd();
@@ -262,7 +262,7 @@ public class ConfigAgendaController implements Serializable {
         if (confParte1.getQtdMax() != null) {
             if (somatorio != confParte1.getQtdMax()) {
                 JSFUtil.adicionarMensagemAdvertencia("Quantidade máxima está divergente!", "Advertência");
-                ok = false;
+                cadastrou = false;
                 return;
             }
         } else {
@@ -298,13 +298,13 @@ public class ConfigAgendaController implements Serializable {
 
         if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
             for (String dia : confParte1.getDiasSemana()) {
-                ok = cDao.gravaTurno(confParte1, listaTipos, dia);
+                cadastrou = cDao.gravaTurno(confParte1, listaTipos, dia);
             }
         } else {// ESCOLHEU DATA ESPECIFICA
-            ok = cDao.gravaTurno(confParte1, listaTipos, null);
+            cadastrou = cDao.gravaTurno(confParte1, listaTipos, null);
         }
 
-        if (ok) {
+        if (cadastrou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
@@ -334,11 +334,15 @@ public class ConfigAgendaController implements Serializable {
 
     public void alterarConfigAgenda() {
         boolean alterou = false;
+
+        //SEM USO POR ENQUANTO
+        /*
         int somatorio = 0;
 
         for (ConfigAgendaParte2Bean conf : listaTiposEditar) {
             somatorio += conf.getQtd();
         }
+
 
         if (confParte1.getQtdMax() != null) {
             if (somatorio != confParte1.getQtdMax()) {
@@ -347,6 +351,7 @@ public class ConfigAgendaController implements Serializable {
                 return;
             }
         }
+        */
 
         alterou = cDao.alterarTurno(confParte1, listaTiposEditar);
 

@@ -161,7 +161,7 @@
                 <b:row>
 
                     <b:column span="2">
-                        <h:outputLabel value="Quantidade Máxima:"/>
+                        <h:outputLabel value="Turno:"/>
                     </b:column>
 
                     <b:column span="4">
@@ -172,172 +172,186 @@
                         </p:selectOneMenu>
                     </b:column>
 
-                    <b:column span="2">
-                        <h:outputLabel value="Quantidade Máxima:"/>
-                    </b:column>
-
-                    <b:column span="4">
-                        <h:inputText style="width: 40px"
-                                     value="#{ConfigAgendaController.confParte1.qtdMax}"/>
-                    </b:column>
-
                 </b:row>
 
                 <br></br>
 
-                <b:row>
+                <!-- SEM USO POR ENQUANTO - INÍCIO -->
+                <p:outputPanel id="semUso" rendered="false">
+                    <b:row>
 
-                    <b:column span="2">
-                        <h:outputLabel value="Programa: "/>
-                    </b:column>
+                        <b:column span="2">
+                            <h:outputLabel value="Quantidade Máxima:"/>
+                        </b:column>
 
-                    <b:column span="4">
-                        <p:outputPanel id="outProg">
-                            <p:autoComplete
-                                    value="#{ConfigAgendaController.confParte2.programa}" size="60"
-                                    converter="conPrograma"
-                                    completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
-                                    effect="fade" var="theme" forceSelection="true"
-                                    minQueryLength="1" itemValue="#{theme}"
-                                    itemLabel="#{theme.descPrograma}">
-                                <p:ajax event="itemSelect"
-                                        listener="#{ConfigAgendaController.selectGrupo}"
-                                        update=":formEditConfAgenda, :formConsuGrop:dtGrupo"/>
-                            </p:autoComplete>
-                        </p:outputPanel>
-                    </b:column>
+                        <b:column span="4">
+                            <h:inputText style="width: 40px"
+                                         value="#{ConfigAgendaController.confParte1.qtdMax}"/>
+                        </b:column>
 
-                    <b:column span="2">
-                        <p:commandButton icon="ui-icon-search"
-                                         immediate="true"
-                                         action="#{ConfigAgendaController.limparBuscaPrograma()}"
-                                         onclick="PF('dlgConsuProg').show();"/>
-                    </b:column>
+                    </b:row>
 
-                </b:row>
+                    <br></br>
 
-                <br></br>
+                    <b:row>
 
-                <b:row>
+                        <b:column span="2">
+                            <h:outputLabel value="Programa: "/>
+                        </b:column>
 
-                    <b:column span="2">
-                        <h:outputLabel value="Grupo: "/>
-                    </b:column>
+                        <b:column span="4">
+                            <p:outputPanel id="outProg">
+                                <p:autoComplete
+                                        value="#{ConfigAgendaController.confParte2.programa}" size="60"
+                                        converter="conPrograma"
+                                        completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descPrograma}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{ConfigAgendaController.selectGrupo}"
+                                            update=":formEditConfAgenda, :formConsuGrop:dtGrupo"/>
+                                </p:autoComplete>
+                            </p:outputPanel>
+                        </b:column>
 
-                    <b:column span="4">
-                        <p:outputPanel id="outGrupo">
-                            <p:autoComplete value="#{ConfigAgendaController.confParte2.grupo}"
-                                            size="60" converter="conGrupo"
-                                            disabled="#{ConfigAgendaController.confParte2.programa==null}"
-                                            completeMethod="#{ConfigAgendaController.listaGrupoAutoComplete}"
-                                            effect="fade" var="theme" forceSelection="true"
-                                            minQueryLength="1" itemValue="#{theme}"
-                                            itemLabel="#{theme.descGrupo}">
-                                <p:ajax event="itemSelect"
-                                        listener="#{ConfigAgendaController.selectTipoAtendimento}"
-                                        update=":formEditConfAgenda, :formConsuTipoAt:dtTipoAt"/>
-                            </p:autoComplete>
-                        </p:outputPanel>
-                    </b:column>
+                        <b:column span="2">
+                            <p:commandButton icon="ui-icon-search"
+                                             immediate="true"
+                                             action="#{ConfigAgendaController.limparBuscaPrograma()}"
+                                             onclick="PF('dlgConsuProg').show();"/>
+                        </b:column>
 
-                    <b:column span="2">
-                        <p:commandButton id="btBusGr" process="@this"
-                                         icon="ui-icon-search"
-                                         disabled="#{ConfigAgendaController.confParte2.programa==null}"
-                                         action="#{ConfigAgendaController.limparBuscaGrupo()}"
-                                         update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();"/>
-                    </b:column>
+                    </b:row>
 
-                </b:row>
+                    <br></br>
 
-                <br></br>
+                    <b:row>
 
-                <b:row>
+                        <b:column span="2">
+                            <h:outputLabel value="Grupo: "/>
+                        </b:column>
 
-                    <b:column span="2">
-                        <h:outputLabel value="Tipo de Atendimento:"/>
-                    </b:column>
-
-                    <b:column span="4">
-                        <p:outputPanel id="outTipoAt">
-                            <p:autoComplete
-                                    value="#{ConfigAgendaController.confParte2.tipoAt}" size="60"
-                                    converter="conTipoAtendimento"
-                                    disabled="#{ConfigAgendaController.confParte2.programa==null}"
-                                    completeMethod="#{ConfigAgendaController.listaTipoAtAutoComplete}"
-                                    effect="fade" var="theme" forceSelection="true"
-                                    minQueryLength="1" itemValue="#{theme}"
-                                    itemLabel="#{theme.descTipoAt}">
-                                <p:ajax event="itemSelect" update=":formEditConfAgenda"/>
-                            </p:autoComplete>
-                        </p:outputPanel>
-                    </b:column>
-
-                    <b:column span="1">
-                        <p:commandButton id="btBusTi" process="@this"
-                                         icon="ui-icon-search"
-                                         action="#{ConfigAgendaController.limparBuscaGrupo()}"
-                                         disabled="#{ConfigAgendaController.confParte2.programa==null}"
-                                         update="formConsuTipoAt" onclick="PF('dlgConsuTipoAt').show();"/>
-                    </b:column>
-
-                    <b:column span="1">
-                        <h:outputLabel value="Quantidade:"/>
-                    </b:column>
-
-                    <b:column span="2">
-                        <b:inputText value="#{ConfigAgendaController.confParte2.qtd}"
-                                     style="width: 70px;margin-bottom:14px" required="true"
-                                     requiredMessage="Informe a Quantidade"/>
-                    </b:column>
-
-                    <b:column span="2">
-                        <b:commandButton value="Incluir" icon="glyphicon-plus"
-                                         action="#{ConfigAgendaController.addNaListaEditar()}" id="b5"
-                                         update=":formEditConfAgenda"/>
-                    </b:column>
-                </b:row>
-
-                <br></br>
+                        <b:column span="4">
+                            <p:outputPanel id="outGrupo">
+                                <p:autoComplete value="#{ConfigAgendaController.confParte2.grupo}"
+                                                size="60" converter="conGrupo"
+                                                disabled="#{ConfigAgendaController.confParte2.programa==null}"
+                                                completeMethod="#{ConfigAgendaController.listaGrupoAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descGrupo}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{ConfigAgendaController.selectTipoAtendimento}"
+                                            update=":formEditConfAgenda, :formConsuTipoAt:dtTipoAt"/>
+                                </p:autoComplete>
+                            </p:outputPanel>
+                        </b:column>
 
 
-                <b:row>
+                        <b:column span="2">
+                            <p:commandButton id="btBusGr" process="@this"
+                                             icon="ui-icon-search"
+                                             disabled="#{ConfigAgendaController.confParte2.programa==null}"
+                                             action="#{ConfigAgendaController.limparBuscaGrupo()}"
+                                             update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();"/>
+                        </b:column>
 
-                    <b:column span="12">
-                        <h:outputLabel value="Configuração dos Tipos de Atendimento"/>
-                    </b:column>
-                </b:row>
+                    </b:row>
 
-                <br></br>
 
-                <b:row>
-                    <p:dataTable value="#{ConfigAgendaController.listaTiposEditar}"
-                                 id="dtConfi" resizableColumns="true" var="tipo"
-                                 emptyMessage="Sem dados...">
-                        <p:column headerText="Programa">
-                            <p:outputLabel value="#{tipo.programa.descPrograma}"/>
-                        </p:column>
+                    <br></br>
 
-                        <p:column headerText="Tipo de Atendimento">
-                            <p:outputLabel value="#{tipo.tipoAt.descTipoAt}"/>
-                        </p:column>
+                    <b:row>
 
-                        <p:column headerText="Quantidade">
-                            <p:outputLabel value="#{tipo.qtd}"/>
-                        </p:column>
+                        <b:column span="2">
+                            <h:outputLabel value="Tipo de Atendimento:"/>
+                        </b:column>
 
-                        <p:column headerText="Ação">
-                            <p:commandButton process="@this"
-                                             action="#{ConfigAgendaController.removeNaListaEditar()}"
-                                             icon="ui-icon-trash" update="dtConfi">
-                                <f:setPropertyActionListener value="#{tipo}"
-                                                             target="#{ConfigAgendaController.confParte2}"/>
-                            </p:commandButton>
-                        </p:column>
+                        <b:column span="4">
+                            <p:outputPanel id="outTipoAt">
+                                <p:autoComplete
+                                        value="#{ConfigAgendaController.confParte2.tipoAt}" size="60"
+                                        converter="conTipoAtendimento"
+                                        disabled="#{ConfigAgendaController.confParte2.programa==null}"
+                                        completeMethod="#{ConfigAgendaController.listaTipoAtAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descTipoAt}">
+                                    <p:ajax event="itemSelect" update=":formEditConfAgenda"/>
+                                </p:autoComplete>
+                            </p:outputPanel>
+                        </b:column>
 
-                    </p:dataTable>
+                        <b:column span="1">
+                            <p:commandButton id="btBusTi" process="@this"
+                                             icon="ui-icon-search"
+                                             action="#{ConfigAgendaController.limparBuscaGrupo()}"
+                                             disabled="#{ConfigAgendaController.confParte2.programa==null}"
+                                             update="formConsuTipoAt" onclick="PF('dlgConsuTipoAt').show();"/>
+                        </b:column>
 
-                </b:row>
+                        <b:column span="1">
+                            <h:outputLabel value="Quantidade:"/>
+                        </b:column>
+
+                        <b:column span="2">
+                            <b:inputText value="#{ConfigAgendaController.confParte2.qtd}"
+                                         style="width: 70px;margin-bottom:14px" required="true"
+                                         requiredMessage="Informe a Quantidade"/>
+                        </b:column>
+
+                        <b:column span="2">
+                            <b:commandButton value="Incluir" icon="glyphicon-plus"
+                                             action="#{ConfigAgendaController.addNaListaEditar()}" id="b5"
+                                             update=":formEditConfAgenda"/>
+                        </b:column>
+                    </b:row>
+
+                    <br></br>
+
+
+                    <b:row>
+
+                        <b:column span="12">
+                            <h:outputLabel value="Configuração dos Tipos de Atendimento"/>
+                        </b:column>
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+                        <p:dataTable value="#{ConfigAgendaController.listaTiposEditar}"
+                                     id="dtConfi" resizableColumns="true" var="tipo"
+                                     emptyMessage="Sem dados...">
+                            <p:column headerText="Programa">
+                                <p:outputLabel value="#{tipo.programa.descPrograma}"/>
+                            </p:column>
+
+                            <p:column headerText="Tipo de Atendimento">
+                                <p:outputLabel value="#{tipo.tipoAt.descTipoAt}"/>
+                            </p:column>
+
+                            <p:column headerText="Quantidade">
+                                <p:outputLabel value="#{tipo.qtd}"/>
+                            </p:column>
+
+                            <p:column headerText="Ação">
+                                <p:commandButton process="@this"
+                                                 action="#{ConfigAgendaController.removeNaListaEditar()}"
+                                                 icon="ui-icon-trash" update="dtConfi">
+                                    <f:setPropertyActionListener value="#{tipo}"
+                                                                 target="#{ConfigAgendaController.confParte2}"/>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </b:row>
+
+                </p:outputPanel>
+
+                <!-- SEM USO POR ENQUANTO - FINAL -->
 
                 <br></br> <br></br>
 
@@ -349,7 +363,6 @@
 
                     <b:commandButton
                             action="#{ConfigAgendaController.alterarConfigAgenda()}"
-                            immediate="true"
                             update=":formEditConfAgenda:msgPagina, :formEditConfAgenda"
                             icon="glyphicon-ok" style="float:left" value="Alterar"
                             look="success" size="sm"/>
