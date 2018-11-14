@@ -20,6 +20,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.ConfigAgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.OpcaoConfiguracaoAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
@@ -37,7 +38,6 @@ public class ConfigAgendaController implements Serializable {
     private FuncionarioBean prof;
     private EquipeBean equipe;
     private int tipo;
-    private String opcao;
 
     private List<ConfigAgendaParte2Bean> listaTipos;
     private List<ConfigAgendaParte2Bean> listaTiposEditar;
@@ -72,7 +72,6 @@ public class ConfigAgendaController implements Serializable {
         this.listaHorariosEquipe = null;
         this.listaProfissionais = null;
         this.listaEquipes = null;
-        this.opcao = new String("2");
         this.listaGruposProgramas = new ArrayList<>();
         this.listaTipoAtendimentosGrupo = new ArrayList<>();
 
@@ -87,7 +86,6 @@ public class ConfigAgendaController implements Serializable {
         this.listaHorariosEquipe = null;
         this.listaProfissionais = null;
         this.listaEquipes = null;
-        this.opcao = new String("1");
     }
 
     public String redirectEdit() {
@@ -130,7 +128,7 @@ public class ConfigAgendaController implements Serializable {
             Integer id = Integer.parseInt(params.get("codconfigagenda"));
             tipo = Integer.parseInt(params.get("tipo"));
 
-            this.confParte1 = cDao.listarHorariosPorIDEquipe2(id);
+            this.confParte1 = cDao.listarHorariosPorIDEquipeEdit(id);
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
 
@@ -279,19 +277,19 @@ public class ConfigAgendaController implements Serializable {
             return;
         }
 
-        if (this.opcao.equals("1")
+        if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())
                 && this.confParte1.getDataEspecifica() == null) {
             JSFUtil.adicionarMensagemErro("Escolha uma data específica!", "Erro");
             return;
         }
 
-        if (this.opcao.equals("2")
+        if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())
                 && this.confParte1.getDiasSemana().size() == 0) {
             JSFUtil.adicionarMensagemErro("Escolha no mínimo um dia da semana!", "Erro");
             return;
         }
 
-        if (this.opcao.equals("2") && this.confParte1.getAno() == null) {
+        if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla()) && this.confParte1.getAno() == null) {
             JSFUtil.adicionarMensagemErro("Ano: Campo obrigatório!", "Erro");
             return;
         }
@@ -316,7 +314,7 @@ public class ConfigAgendaController implements Serializable {
     public void gravarConfigAgendaEquipe() {
         boolean gravou = false;
 
-        if (this.opcao.equals("1")) {
+        if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
             this.confParte1.setAno(0);
             this.confParte1.setMes(0);
         }
@@ -367,13 +365,7 @@ public class ConfigAgendaController implements Serializable {
             ProjetoException {
         boolean alterou = false;
 
-        if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
-            for (String dia : confParte1.getDiasSemana()) {
-                alterou = cDao.alterarTurnoEquipe(confParte1, listaTiposEditar, dia);
-            }
-        } else {// ESCOLHEU DATA ESPECIFICA
-            alterou = cDao.alterarTurnoEquipe(confParte1, listaTiposEditar, null);
-        }
+        alterou = cDao.alterarTurnoEquipe(confParte1);
 
         if (alterou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
@@ -531,14 +523,6 @@ public class ConfigAgendaController implements Serializable {
 
     public void setListaEquipes(List<EquipeBean> listaEquipes) {
         this.listaEquipes = listaEquipes;
-    }
-
-    public String getOpcao() {
-        return opcao;
-    }
-
-    public void setOpcao(String opcao) {
-        this.opcao = opcao;
     }
 
     public List<ConfigAgendaParte2Bean> getListaTiposEditar() {

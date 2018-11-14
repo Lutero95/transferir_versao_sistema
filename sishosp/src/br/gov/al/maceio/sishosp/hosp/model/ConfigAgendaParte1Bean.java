@@ -19,6 +19,7 @@ public class ConfigAgendaParte1Bean implements Serializable {
 	private String turno;
 	private Integer qtdMax;
 	private Integer diaDaSemana;
+	private String opcao;
 
 	public ConfigAgendaParte1Bean() {
 		this.profissional = new FuncionarioBean();
@@ -29,7 +30,7 @@ public class ConfigAgendaParte1Bean implements Serializable {
 	public ConfigAgendaParte1Bean(Integer mes, Integer ano,
 			FuncionarioBean profissional, List<String> diasSemana,
 			Date dataEspecifica, String turno, Integer qtdMax,
-			Integer idConfiAgenda, Integer diaDaSemana) {
+			Integer idConfiAgenda, Integer diaDaSemana, String opcao) {
 		this.mes = mes;
 		this.ano = ano;
 		this.profissional = profissional;
@@ -39,6 +40,7 @@ public class ConfigAgendaParte1Bean implements Serializable {
 		this.qtdMax = qtdMax;
 		this.idConfiAgenda = idConfiAgenda;
 		this.diaDaSemana = diaDaSemana;
+		this.opcao = opcao;
 	}
 
 	public Integer getMes() {
@@ -120,5 +122,12 @@ public class ConfigAgendaParte1Bean implements Serializable {
 	public void setEquipe(EquipeBean equipe) {
 		this.equipe = equipe;
 	}
-	
+
+	public String getOpcao() {
+		return opcao;
+	}
+
+	public void setOpcao(String opcao) {
+		this.opcao = opcao;
+	}
 }
