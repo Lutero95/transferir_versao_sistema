@@ -20,27 +20,26 @@ public class ConfigAgendaDAO {
 
     Connection con = null;
 
-    public boolean gravarConfigAgendaEquipe(ConfigAgendaParte1Bean confParte1,
-                                            ConfigAgendaParte2Bean confParte2,
-                                            List<ConfigAgendaParte2Bean> listaTipos) {
+    public boolean gravarConfigAgendaEquipe(ConfigAgendaParte1Bean confParte1) {
 
         Boolean retorno = false;
 
-        if (confParte1.getEquipe().getCodEquipe() == null
-                || confParte1.getQtdMax() == null
-                || confParte1.getAno() == null) {
-            return false;
-        }
         try {
-            if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
+            con = ConnectionFactory.getConnection();
+
+            if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
                 for (String dia : confParte1.getDiasSemana()) {
-                    gravaTurnoEquipe(confParte1, listaTipos, dia);
+                    retorno = gravaTurnoEquipe(confParte1, dia, con);
                 }
-            } else {// ESCOLHEU DATA ESPECIFICA
-                gravaTurnoEquipe(confParte1, listaTipos, null);
+            }
+            if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
+                retorno = gravaTurnoEquipe(confParte1, null, con);
             }
 
-            retorno = true;
+            if (retorno == true) {
+                con.commit();
+            }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
@@ -212,83 +211,83 @@ public class ConfigAgendaDAO {
         }
     }
 
-    public void gravaTurnoEquipe(ConfigAgendaParte1Bean confParte1,
-                                 List<ConfigAgendaParte2Bean> listaTipos, String dia)
-            throws SQLException, ProjetoException {
+    public Boolean gravaTurnoEquipe(ConfigAgendaParte1Bean confParte1, String dia, Connection conn)
+            throws SQLException {
 
+        Boolean retorno = false;
         String sql = "INSERT INTO hosp.config_agenda_equipe(codequipe, diasemana, qtdmax, dataagenda, turno, mes, ano, codempresa, id_configagenda) "
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, DEFAULT) RETURNING id_configagenda;";
-        con = ConnectionFactory.getConnection();
-        PreparedStatement ps2 = con.prepareStatement(sql);
 
-        ResultSet rs2 = null;
+        PreparedStatement ps = conn.prepareStatement(sql);
+
+        ResultSet rs = null;
 
         try {
             if (confParte1.getTurno().equals("A")) {
                 if (dia != null) {
-                    ps2.setInt(2, Integer.parseInt(dia));
-                    ps2.setDate(4, null);
+                    ps.setInt(2, Integer.parseInt(dia));
+                    ps.setDate(4, null);
                 } else {
-                    ps2.setInt(2, 0);
-                    ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+                    ps.setInt(2, 0);
+                    ps.setDate(4, new Date(confParte1.getDataEspecifica()
                             .getTime()));
                 }
-                ps2.setInt(1, confParte1.getEquipe().getCodEquipe());
-                ps2.setInt(3, confParte1.getQtdMax());
-                ps2.setString(5, "M");
-                ps2.setInt(6, confParte1.getMes());
-                ps2.setInt(7, confParte1.getAno());
-                ps2.setInt(8, 0);// COD EMPRESA ?
-                rs2 = ps2.executeQuery();
-                con.commit();
+                ps.setInt(1, confParte1.getEquipe().getCodEquipe());
+                ps.setInt(3, confParte1.getQtdMax());
+                ps.setString(5, "M");
+                ps.setInt(6, confParte1.getMes());
+                ps.setInt(7, confParte1.getAno());
+                ps.setInt(8, 0);// COD EMPRESA ?
+                rs = ps.executeQuery();
 
-                ps2 = con.prepareStatement(sql);
-                if (dia != null) {
-                    ps2.setInt(2, Integer.parseInt(dia));
-                    ps2.setDate(4, null);
-                } else {
-                    ps2.setInt(2, 0);
-                    ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+                ps = conn.prepareStatement(sql);
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
+                    ps.setInt(2, Integer.parseInt(dia));
+                    ps.setDate(4, null);
+                }
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
+                    ps.setInt(2, 0);
+                    ps.setDate(4, new Date(confParte1.getDataEspecifica()
                             .getTime()));
                 }
-                ps2.setInt(1, confParte1.getEquipe().getCodEquipe());
-                ps2.setInt(3, confParte1.getQtdMax());
-                ps2.setString(5, "T");
-                ps2.setInt(6, confParte1.getMes());
-                ps2.setInt(7, confParte1.getAno());
-                ps2.setInt(8, 0);// COD EMPRESA ?
-                rs2 = ps2.executeQuery();
-                con.commit();
+
+                ps.setInt(1, confParte1.getEquipe().getCodEquipe());
+                ps.setInt(3, confParte1.getQtdMax());
+                ps.setString(5, "T");
+                ps.setInt(6, confParte1.getMes());
+                ps.setInt(7, confParte1.getAno());
+                ps.setInt(8, 0);// COD EMPRESA ?
+                rs = ps.executeQuery();
 
             } else {
                 if (dia != null) {
-                    ps2.setInt(2, Integer.parseInt(dia));
-                    ps2.setDate(4, null);
+                    ps.setInt(2, Integer.parseInt(dia));
+                    ps.setDate(4, null);
                 } else {
-                    ps2.setInt(2, 0);
-                    ps2.setDate(4, new Date(confParte1.getDataEspecifica()
+                    ps.setInt(2, 0);
+                    ps.setDate(4, new Date(confParte1.getDataEspecifica()
                             .getTime()));
                 }
-                ps2.setInt(1, confParte1.getEquipe().getCodEquipe());
-                ps2.setInt(3, confParte1.getQtdMax());
-                ps2.setString(5, confParte1.getTurno());
-                ps2.setInt(6, confParte1.getMes());
-                ps2.setInt(7, confParte1.getAno());
-                ps2.setInt(8, 0);// COD EMPRESA ?
-                rs2 = ps2.executeQuery();
-                con.commit();
+                ps.setInt(1, confParte1.getEquipe().getCodEquipe());
+                ps.setInt(3, confParte1.getQtdMax());
+                ps.setString(5, confParte1.getTurno());
+                ps.setInt(6, confParte1.getMes());
+                ps.setInt(7, confParte1.getAno());
+                ps.setInt(8, 0);// COD EMPRESA ?
+                rs = ps.executeQuery();
             }
+            retorno = true;
         } catch (
                 SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
-                con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        return retorno;
     }
 
 

@@ -248,6 +248,18 @@ public class ConfigAgendaController implements Serializable {
 
     }
 
+    public List<EquipeBean> selectEquipeInsercao() throws ProjetoException {
+        EquipeDAO eDao = new EquipeDAO();
+
+        if (confParte2.getGrupo() != null) {
+            this.listaEquipes = eDao.listarEquipePorGrupo(confParte2.getGrupo()
+                    .getIdGrupo());
+        }
+
+        return listaEquipes;
+
+    }
+
     // FINAL EQUIPEBEAN
 
     public void gravarConfigAgenda() {
@@ -319,7 +331,7 @@ public class ConfigAgendaController implements Serializable {
             this.confParte1.setMes(0);
         }
 
-        gravou = cDao.gravarConfigAgendaEquipe(confParte1, confParte2, listaTipos);
+        gravou = cDao.gravarConfigAgendaEquipe(confParte1);
 
         if (gravou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
