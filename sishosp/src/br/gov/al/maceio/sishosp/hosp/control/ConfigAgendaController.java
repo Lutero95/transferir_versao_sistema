@@ -229,6 +229,9 @@ public class ConfigAgendaController implements Serializable {
         if (confParte2.getGrupo() == null) {
             grupoId = cDao.carregarGrupoDaEquipe(confParte1.getIdConfiAgenda());
         }
+        else{
+            grupoId = confParte2.getGrupo().getIdGrupo();
+        }
         List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
                 grupoId);
         return result;
@@ -331,7 +334,7 @@ public class ConfigAgendaController implements Serializable {
             this.confParte1.setMes(0);
         }
 
-        gravou = cDao.gravarConfigAgendaEquipe(confParte1);
+        gravou = cDao.gravarConfigAgendaEquipe(confParte1, confParte2);
 
         if (gravou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");

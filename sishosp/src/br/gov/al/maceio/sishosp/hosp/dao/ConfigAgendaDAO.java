@@ -20,7 +20,7 @@ public class ConfigAgendaDAO {
 
     Connection con = null;
 
-    public boolean gravarConfigAgendaEquipe(ConfigAgendaParte1Bean confParte1) {
+    public boolean gravarConfigAgendaEquipe(ConfigAgendaParte1Bean confParte1, ConfigAgendaParte2Bean confParte2) {
 
         Boolean retorno = false;
 
@@ -29,11 +29,11 @@ public class ConfigAgendaDAO {
 
             if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
                 for (String dia : confParte1.getDiasSemana()) {
-                    retorno = gravaTurnoEquipe(confParte1, dia, con);
+                    retorno = gravaTurnoEquipe(confParte1, confParte2, dia, con);
                 }
             }
             if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-                retorno = gravaTurnoEquipe(confParte1, null, con);
+                retorno = gravaTurnoEquipe(confParte1, confParte2, null, con);
             }
 
             if (retorno == true) {
@@ -101,11 +101,12 @@ public class ConfigAgendaDAO {
 
             //SE FOR AMBOS OS TURNOS - INÍCIO
             if (confParte1.getTurno().equals("A")) {
-                if (dia != null) {
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
                     ps.setInt(2, Integer.parseInt(dia));
 
                     ps.setDate(4, null);
-                } else {
+                }
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
                     ps.setDate(4, new Date(confParte1.getDataEspecifica()
                             .getTime()));
 
@@ -137,10 +138,11 @@ public class ConfigAgendaDAO {
 
                 ps = con.prepareStatement(sql);
 
-                if (dia != null) {
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
                     ps.setInt(2, Integer.parseInt(dia));
                     ps.setDate(4, null);
-                } else {
+                }
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
                     ps.setInt(2, 0);
                     Calendar c1 = DataUtil.retornarDataCalendar(confParte1.getDataEspecifica());
                     c1.setTime(confParte1.getDataEspecifica());
@@ -165,10 +167,11 @@ public class ConfigAgendaDAO {
 
                 //SE FOR TURNO ÚNICO - INÍCIO
             } else {
-                if (dia != null) {
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
                     ps.setInt(2, Integer.parseInt(dia));
                     ps.setDate(4, null);
-                } else {
+                }
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
                     ps.setDate(4, new Date(confParte1.getDataEspecifica()
                             .getTime()));
 
@@ -211,12 +214,13 @@ public class ConfigAgendaDAO {
         }
     }
 
-    public Boolean gravaTurnoEquipe(ConfigAgendaParte1Bean confParte1, String dia, Connection conn)
+    public Boolean gravaTurnoEquipe(ConfigAgendaParte1Bean confParte1, ConfigAgendaParte2Bean confParte2, String dia, Connection conn)
             throws SQLException {
 
         Boolean retorno = false;
-        String sql = "INSERT INTO hosp.config_agenda_equipe(codequipe, diasemana, qtdmax, dataagenda, turno, mes, ano, codempresa, id_configagenda) "
-                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, DEFAULT) RETURNING id_configagenda;";
+        String sql = "INSERT INTO hosp.config_agenda_equipe(codequipe, diasemana, qtdmax, dataagenda, turno, mes, ano, " +
+                "codempresa, id_configagenda, opcao, codprograma, codgrupo) "
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, DEFAULT, ?, ?, ?) RETURNING id_configagenda;";
 
         PreparedStatement ps = conn.prepareStatement(sql);
 
@@ -224,10 +228,11 @@ public class ConfigAgendaDAO {
 
         try {
             if (confParte1.getTurno().equals("A")) {
-                if (dia != null) {
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
                     ps.setInt(2, Integer.parseInt(dia));
                     ps.setDate(4, null);
-                } else {
+                }
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
                     ps.setInt(2, 0);
                     ps.setDate(4, new Date(confParte1.getDataEspecifica()
                             .getTime()));
@@ -238,6 +243,9 @@ public class ConfigAgendaDAO {
                 ps.setInt(6, confParte1.getMes());
                 ps.setInt(7, confParte1.getAno());
                 ps.setInt(8, 0);// COD EMPRESA ?
+                ps.setString(9, confParte1.getOpcao());
+                ps.setInt(10, confParte2.getPrograma().getIdPrograma());
+                ps.setInt(11, confParte2.getGrupo().getIdGrupo());
                 rs = ps.executeQuery();
 
                 ps = conn.prepareStatement(sql);
@@ -257,13 +265,17 @@ public class ConfigAgendaDAO {
                 ps.setInt(6, confParte1.getMes());
                 ps.setInt(7, confParte1.getAno());
                 ps.setInt(8, 0);// COD EMPRESA ?
+                ps.setString(9, confParte1.getOpcao());
+                ps.setInt(10, confParte2.getPrograma().getIdPrograma());
+                ps.setInt(11, confParte2.getGrupo().getIdGrupo());
                 rs = ps.executeQuery();
 
             } else {
-                if (dia != null) {
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
                     ps.setInt(2, Integer.parseInt(dia));
                     ps.setDate(4, null);
-                } else {
+                }
+                if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
                     ps.setInt(2, 0);
                     ps.setDate(4, new Date(confParte1.getDataEspecifica()
                             .getTime()));
@@ -274,6 +286,9 @@ public class ConfigAgendaDAO {
                 ps.setInt(6, confParte1.getMes());
                 ps.setInt(7, confParte1.getAno());
                 ps.setInt(8, 0);// COD EMPRESA ?
+                ps.setString(9, confParte1.getOpcao());
+                ps.setInt(10, confParte2.getPrograma().getIdPrograma());
+                ps.setInt(11, confParte2.getGrupo().getIdGrupo());
                 rs = ps.executeQuery();
             }
             retorno = true;
