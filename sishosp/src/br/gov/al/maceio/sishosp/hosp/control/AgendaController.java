@@ -12,6 +12,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -79,7 +80,7 @@ public class AgendaController implements Serializable {
         this.situacao = new String();
         listaTiposPorGrupo = new ArrayList<TipoAtendimentoBean>();
         listaEquipePorTipoAtendimento = new ArrayList<EquipeBean>();
-        tipoData = "U";
+        tipoData = TipoDataAgenda.DATA_UNICA.getSigla();
         temLotado = false;
         listaHorariosOcupados = new ArrayList<AgendaBean>();
     }
@@ -157,16 +158,16 @@ public class AgendaController implements Serializable {
                 || this.agenda.getGrupo() == null
                 || this.agenda.getTipoAt() == null
                 || this.agenda.getDataAtendimento() == null
-                || (tipoData.equals("I") && this.agenda
+                || (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla()) && this.agenda
                 .getDataAtendimentoFinal() == null)
                 || (this.agenda.getProfissional() == null && this.agenda
                 .getEquipe() == null)) {
             JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
         } else {
-            if (tipoData.equals("U")) {
+            if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
                 addListaNovosAgendamentos();
             }
-            if (tipoData.equals("I")) {
+            if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
                 verAgendaIntervalo();
             }
         }
@@ -272,7 +273,7 @@ public class AgendaController implements Serializable {
         this.listaAgendamentosData = aDao.listarAgendamentosData(this.agenda);
     }
 
-    public void gravarAgenda() throws ProjetoException {
+    public void gravarAgenda() {
         // verificar se existe algum campo nao preenchido
         if (this.agenda.getPaciente() == null
                 || this.agenda.getPrograma() == null
@@ -302,7 +303,7 @@ public class AgendaController implements Serializable {
 
         boolean cadastrou = false;
 
-        if (tipoData.equals("U")) {
+        if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
             cadastrou = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos);
         }
 
@@ -325,7 +326,7 @@ public class AgendaController implements Serializable {
     }
 
     //SEM USO NO MOMENTO
-    public void excluirAgendamento() throws ProjetoException {
+    public void excluirAgendamento() {
         boolean excluiu = aDao.excluirAgendamento(this.agenda);
         if (excluiu) {
             limparDados();

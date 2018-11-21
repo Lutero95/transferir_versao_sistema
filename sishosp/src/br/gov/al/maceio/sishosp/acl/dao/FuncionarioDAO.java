@@ -917,14 +917,22 @@ public class FuncionarioDAO {
     public List<FuncionarioBean> listarProfissionalBuscaPorGrupo(
             String descricaoBusca, Integer codgrupo) throws ProjetoException {
         List<FuncionarioBean> lista = new ArrayList<>();
-        String sql = "select h.id_funcionario, h.id_funcionario ||'-'|| h.descfuncionario as descfuncionario, h.codespecialidade, "
-                + " h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao "
-                + " from acl.funcionarios h left join hosp.profissional_grupo g on (g.codprofissional = h.id_funcionario)"
-                + " where upper(id_funcionario ||' - '|| descfuncionario) LIKE ? and g.codgrupo = ? and h.ativo = 'S' "
-                + " and realiza_atendimento is true order by descfuncionario";
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT h.id_funcionario, h.id_funcionario ||'-'|| h.descfuncionario AS descfuncionario, h.codespecialidade, ");
+        sql.append("h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, e.descespecialidade, c.descricao AS desccbo, p.nome AS descproc ");
+        sql.append("FROM acl.funcionarios h ");
+        sql.append("LEFT JOIN hosp.profissional_grupo g ON (g.codprofissional = h.id_funcionario) ");
+        sql.append("LEFT JOIN hosp.especialidade e ON (e.id_especialidade = h.codespecialidade) ");
+        sql.append("LEFT JOIN hosp.cbo c ON (c.id = h.codcbo) ");
+        sql.append("LEFT JOIN hosp.proc p ON (p.id = h.codprocedimentopadrao) ");
+        sql.append("WHERE UPPER(id_funcionario ||' - '|| descfuncionario) LIKE ? AND g.codgrupo = ? AND h.ativo = 'S' ");
+        sql.append("AND realiza_atendimento IS TRUE ORDER BY descfuncionario ");
+
         try {
             con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
+            PreparedStatement stm = con.prepareStatement(sql.toString());
 
             stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
             stm.setInt(2, codgrupo);
@@ -935,13 +943,15 @@ public class FuncionarioDAO {
                 FuncionarioBean prof = new FuncionarioBean();
                 prof.setId(rs.getLong("id_funcionario"));
                 prof.setNome(rs.getString("descfuncionario"));
-                prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
-                        .getInt("codespecialidade")));
+                prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+                prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
                 prof.setCns(rs.getString("cns"));
                 prof.setAtivo(rs.getString("ativo"));
-                prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
-                prof.setProc1(procDao.listarProcedimentoPorId(rs
-                        .getInt("codprocedimentopadrao")));
+                prof.getCbo().setCodCbo(rs.getInt("codcbo"));
+                prof.getCbo().setDescCbo(rs.getString("desccbo"));
+                prof.getProc1().setIdProc(rs
+                        .getInt("codprocedimentopadrao"));
+                prof.getProc1().setNomeProc(rs.getString("descproc"));
                 prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
                 prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
 

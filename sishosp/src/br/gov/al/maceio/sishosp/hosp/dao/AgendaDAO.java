@@ -404,30 +404,42 @@ public class AgendaDAO {
     public List<AgendaBean> listarAgendamentosData(AgendaBean ag)
             throws ProjetoException {
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
-        PacienteDAO pDao = new PacienteDAO();
-        FuncionarioDAO mDao = new FuncionarioDAO();
-        TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
-        EquipeDAO eDao = new EquipeDAO();
 
-        String sqlProf = "SELECT id_atendimento, codpaciente, codmedico, codprograma,"
-                + " codconvenio, dtaatende, horaatende, situacao, codatendente,"
-                + " dtamarcacao, codtipoatendimento, turno, codequipe, observacao, ativo, codempresa"
-                + " FROM  hosp.atendimentos "
-                + " WHERE dtaatende = ? and codmedico = ? and turno = ?;";
-        String sqlEqui = "SELECT id_atendimento, codpaciente, codmedico, codprograma,"
-                + " codconvenio, dtaatende, horaatende, situacao, codatendente,"
-                + " dtamarcacao, codtipoatendimento, turno, codequipe, observacao, ativo, codempresa"
-                + " FROM  hosp.atendimentos "
-                + " WHERE dtaatende = ? and codequipe = ? and turno = ?;";
+        StringBuilder sqlProf = new StringBuilder();
+
+        sqlProf.append("SELECT a.id_atendimento, a.codpaciente, a.codmedico, a.codprograma, ");
+        sqlProf.append("a.codconvenio, a.dtaatende, a.horaatende, a.situacao, a.codatendente, ");
+        sqlProf.append("a.dtamarcacao, a.codtipoatendimento, a.turno, a.codequipe, a.observacao, a.ativo, a.codempresa, ");
+        sqlProf.append("f.descfuncionario, p.nome, t.desctipoatendimento, e.descequipe ");
+        sqlProf.append("FROM hosp.atendimentos a ");
+        sqlProf.append("LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a.codmedico) ");
+        sqlProf.append("LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) ");
+        sqlProf.append("LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) ");
+        sqlProf.append("LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) ");
+        sqlProf.append("WHERE a.dtaatende = ? AND a.codmedico = ? AND a.turno = ?");
+
+        StringBuilder sqlEqui = new StringBuilder();
+
+        sqlEqui.append("SELECT a.id_atendimento, a.codpaciente, a.codmedico, a.codprograma, ");
+        sqlEqui.append("a.codconvenio, a.dtaatende, a.horaatende, a.situacao, a.codatendente, ");
+        sqlEqui.append("a.dtamarcacao, a.codtipoatendimento, a.turno, a.codequipe, a.observacao, a.ativo, a.codempresa, ");
+        sqlEqui.append("f.descfuncionario, p.nome, t.desctipoatendimento, e.descequipe ");
+        sqlEqui.append("FROM hosp.atendimentos a ");
+        sqlEqui.append("LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a.codmedico) ");
+        sqlEqui.append("LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) ");
+        sqlEqui.append("LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) ");
+        sqlEqui.append("LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) ");
+        sqlEqui.append("WHERE dtaatende = ? AND codequipe = ? AND turno = ?");
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
 
             if (ag.getProfissional().getId() != null) {
-                stm = con.prepareStatement(sqlProf);
+                stm = con.prepareStatement(sqlProf.toString());
                 stm.setLong(2, ag.getProfissional().getId());
             } else if (ag.getEquipe().getCodEquipe() != null) {
-                stm = con.prepareStatement(sqlEqui);
+                stm = con.prepareStatement(sqlEqui.toString());
                 stm.setInt(2, ag.getEquipe().getCodEquipe());
             }
 
@@ -438,17 +450,20 @@ public class AgendaDAO {
             while (rs.next()) {
                 AgendaBean agenda = new AgendaBean();
                 agenda.setIdAgenda(rs.getInt("id_atendimento"));
-                agenda.setPaciente(pDao.listarPacientePorID(rs
-                        .getInt("codpaciente")));
-                agenda.setProfissional(mDao.buscarProfissionalPorId(rs
-                        .getInt("codmedico")));
+                agenda.getPaciente().setId_paciente(rs
+                        .getInt("codpaciente"));
+                agenda.getPaciente().setNome(rs.getString("nome"));
+                agenda.getProfissional().setId(rs
+                        .getLong("codmedico"));
+                agenda.getProfissional().setNome(rs.getString("descfuncionario"));
                 agenda.setDataAtendimento(rs.getDate("dtaatende"));
                 agenda.setSituacao(rs.getString("situacao"));
                 agenda.setDataMarcacao(rs.getDate("dtamarcacao"));
-                agenda.setTipoAt(tDao.listarTipoPorId(rs
-                        .getInt("codtipoatendimento")));
+                agenda.getTipoAt().setIdTipo(rs.getInt("codtipoatendimento"));
+                agenda.getTipoAt().setDescTipoAt(rs.getString("desctipoatendimento"));
                 agenda.setTurno(rs.getString("turno"));
-                agenda.setEquipe(eDao.buscarEquipePorID(rs.getInt("codequipe")));
+                agenda.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+                agenda.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 agenda.setObservacao(rs.getString("observacao"));
                 agenda.setAtivo(rs.getString("ativo"));
                 lista.add(agenda);
