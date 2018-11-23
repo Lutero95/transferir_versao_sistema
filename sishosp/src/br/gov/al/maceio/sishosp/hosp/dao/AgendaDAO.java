@@ -1,9 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,65 +23,65 @@ public class AgendaDAO {
                                 List<AgendaBean> listaNovosAgendamentos) {
         Boolean retorno = false;
         String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
-                + " codconvenio, dtaatende, horaatende, situacao, codatendente, dtamarcacao, codtipoatendimento,"
+                + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
                 + " turno, codequipe, observacao, ativo, codempresa, codgrupo)"
                 + " VALUES "
                 + "(?, ?, ?, ?, ?,"
                 + " ?, ?, ?, ?, ?,"
-                + " ?, ?, ?, ?, ?, ?) RETURNING id_atendimento;";
+                + " ?, ?, ?) RETURNING id_atendimento;";
         try {
             con = ConnectionFactory.getConnection();
-            ps = con.prepareStatement(sql);
-            ps.setInt(1, agenda.getPaciente().getId_paciente());
-            if (agenda.getProfissional().getId() != null) {
-                ps.setLong(2, agenda.getProfissional().getId());
-            } else {
-                ps.setInt(2, 0);
-            }
-            ps.setInt(3, agenda.getPrograma().getIdPrograma());// codprograma
-            ps.setInt(4, 0);// codconvenio
-            ps.setDate(5, new java.sql.Date(agenda.getDataAtendimento()
-                    .getTime()));
-            ps.setString(6, "");// horaatende
-            ps.setString(7, "A");// situacao
-            ps.setInt(8, 0);// codatendente
-            ps.setDate(9, new java.sql.Date(new Date().getTime()));
-            ps.setInt(10, agenda.getTipoAt().getIdTipo());
-            ps.setString(11, agenda.getTurno().toUpperCase());
-            if (agenda.getEquipe().getCodEquipe() != null) {
-                ps.setInt(12, agenda.getEquipe().getCodEquipe());
-            } else {
-                ps.setInt(12, 0);
-            }
-            ps.setString(13, agenda.getObservacao().toUpperCase());
-            ps.setString(14, "S");// ativo
-            ps.setInt(15, 0);// COD EMPRESA ?
-            ps.setInt(16, agenda.getGrupo().getIdGrupo());
 
-            ResultSet rs = ps.executeQuery();
+            for(int i=0; i<listaNovosAgendamentos.size(); i++) {
+                ps = con.prepareStatement(sql);
 
-            int idAgend = 0;
-            if (rs.next()) {
-                idAgend = rs.getInt("id_atendimento");
-            }
-            // RETIREI O CODPROCEDIMENTO
-            String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
-                    + " cbo) VALUES  (?, ?, ?)";
-            ps = con.prepareStatement(sql2);
-            if (agenda.getProfissional().getId() != null) {
-                ps.setLong(1, agenda.getProfissional().getId());
-                ps.setInt(2, idAgend);
-                ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
-            } else if (agenda.getEquipe().getCodEquipe() != null) {
-                for (FuncionarioBean prof : agenda.getEquipe()
-                        .getProfissionais()) {
-                    ps.setLong(1, prof.getId());
-                    ps.setInt(2, idAgend);
-                    ps.setInt(3, prof.getCbo().getCodCbo());
+                ps.setInt(1, agenda.getPaciente().getId_paciente());
+                if (agenda.getProfissional().getId() != null) {
+                    ps.setLong(2, agenda.getProfissional().getId());
+                } else {
+                    ps.setNull(2, Types.NULL);
                 }
-            }
+                ps.setInt(3, agenda.getPrograma().getIdPrograma());
+                ps.setDate(4, new java.sql.Date(listaNovosAgendamentos.get(i).getDataAtendimento().getTime()));
+                ps.setString(5, "A");
+                ps.setDate(6, new java.sql.Date(new Date().getTime()));
+                ps.setInt(7, agenda.getTipoAt().getIdTipo());
+                ps.setString(8, agenda.getTurno().toUpperCase());
+                if (agenda.getEquipe().getCodEquipe() != null) {
+                    ps.setInt(9, agenda.getEquipe().getCodEquipe());
+                } else {
+                    ps.setNull(9, Types.NULL);
+                }
+                ps.setString(10, agenda.getObservacao().toUpperCase());
+                ps.setString(11, "S");
+                ps.setInt(12, 0);
+                ps.setInt(13, agenda.getGrupo().getIdGrupo());
 
-            ps.executeUpdate();
+                ResultSet rs = ps.executeQuery();
+
+                int idAgend = 0;
+                if (rs.next()) {
+                    idAgend = rs.getInt("id_atendimento");
+                }
+
+                String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
+                        + " cbo) VALUES  (?, ?, ?)";
+                ps = con.prepareStatement(sql2);
+                if (agenda.getProfissional().getId() != null) {
+                    ps.setLong(1, agenda.getProfissional().getId());
+                    ps.setInt(2, idAgend);
+                    ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
+                } else if (agenda.getEquipe().getCodEquipe() != null) {
+                    for (FuncionarioBean prof : agenda.getEquipe()
+                            .getProfissionais()) {
+                        ps.setLong(1, prof.getId());
+                        ps.setInt(2, idAgend);
+                        ps.setInt(3, prof.getCbo().getCodCbo());
+                    }
+                }
+
+                ps.executeUpdate();
+            }
             con.commit();
 
             retorno = true;

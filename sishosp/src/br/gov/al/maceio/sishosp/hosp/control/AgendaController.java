@@ -303,9 +303,7 @@ public class AgendaController implements Serializable {
 
         boolean cadastrou = false;
 
-        if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
-            cadastrou = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos);
-        }
+        cadastrou = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos);
 
         if (cadastrou) {
             limparDados();

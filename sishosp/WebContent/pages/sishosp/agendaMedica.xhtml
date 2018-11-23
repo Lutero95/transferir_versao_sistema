@@ -230,8 +230,7 @@
                             <f:selectItem itemLabel="Manhã" itemValue="M"/>
                             <f:selectItem itemLabel="Tarde" itemValue="T"/>
                             <p:ajax event="change" process="@this dtagen"
-                                    update=":formAgendaMedica:msgPagina"
-                                    listener="#{AgendaController.verificaDisponibilidadeData()}"/>
+                                    update=":formAgendaMedica:msgPagina"/>
                         </p:selectOneMenu>
                     </b:column>
                 </p:outputPanel>
