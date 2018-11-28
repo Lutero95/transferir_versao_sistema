@@ -61,6 +61,7 @@ public class AgendaController implements Serializable {
     private AgendaDAO aDao = new AgendaDAO();
     private GrupoDAO gDao = new GrupoDAO();
     private EquipeDAO eDao = new EquipeDAO();
+    private Boolean agendamentosConfirmados;
 
     public AgendaController() {
         this.agenda = new AgendaBean();
@@ -83,6 +84,7 @@ public class AgendaController implements Serializable {
         tipoData = TipoDataAgenda.DATA_UNICA.getSigla();
         temLotado = false;
         listaHorariosOcupados = new ArrayList<AgendaBean>();
+        agendamentosConfirmados = false;
     }
 
     public void limparDados() {
@@ -170,6 +172,7 @@ public class AgendaController implements Serializable {
             if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
                 verAgendaIntervalo();
             }
+            agendamentosConfirmados = true;
         }
     }
 
@@ -198,7 +201,7 @@ public class AgendaController implements Serializable {
             Long dt = (d2.getTime() - d1.getTime());
 
             dt = (dt / 86400000L);
-            for (int i = 0; i < dt; i++) {
+            for (int i = 0; i <= dt; i++) {
                 temData = false;
                 Calendar c = Calendar.getInstance();
                 c.setTime(agenda.getDataAtendimento());
@@ -668,4 +671,11 @@ public class AgendaController implements Serializable {
         this.dataAtendimentoFinalC = dataAtendimentoFinalC;
     }
 
+    public Boolean getAgendamentosConfirmados() {
+        return agendamentosConfirmados;
+    }
+
+    public void setAgendamentosConfirmados(Boolean agendamentosConfirmados) {
+        this.agendamentosConfirmados = agendamentosConfirmados;
+    }
 }
