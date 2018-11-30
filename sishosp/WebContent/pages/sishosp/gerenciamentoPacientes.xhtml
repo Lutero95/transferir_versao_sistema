@@ -1,446 +1,438 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:b="http://bootsfaces.net/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
 
 <ui:composition template="../../template/template.xhtml">
 
-	<f:metadata>
-		<f:viewAction
-			action="#{GerenciarPacienteController.carregarPacientesInstituicao()}" />
-	</f:metadata>
+    <f:metadata>
+        <f:viewAction
+                action="#{GerenciarPacienteController.carregarPacientesInstituicao()}"/>
+    </f:metadata>
 
-	<ui:define name="body">
+    <ui:define name="body">
 
-		<div class="panel-body">
-			<div class="sub-header">
-				<h4>Gerenciamento de Pacientes</h4>
-				<hr />
-			</div>
-		</div>
-		<h:form id="formGerenPaci">
+        <div class="panel-body">
+            <div class="sub-header">
+                <h4>Gerenciamento de Pacientes</h4>
+                <hr/>
+            </div>
+        </div>
+        <h:form id="formGerenPaci">
 
-			<b:row>
+            <b:row>
 
-				<b:column span="1">
-					<h:outputLabel for="prog" value="Programa" />
-				</b:column>
+                <b:column span="1">
+                    <h:outputLabel value="Programa"/>
+                </b:column>
 
-				<b:column span="3">
-					<p:outputPanel id="outProg">
-						<p:autoComplete required="true"
-							requiredMessage="Escolha um programa!"
-							readonly="#{GerenciarPacienteController.apenasLeitura}"
-							value="#{GerenciarPacienteController.gerenciarpaciente.programa}"
-							size="40" converter="conPrograma"
-							completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descPrograma}">
-							<p:ajax event="itemSelect"
-								update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo, 
-							:formGerenPaci:btBusGr, :formGerenPaci:outGrupo" />
+                <b:column span="4">
+                    <p:outputPanel id="outProg">
+                        <p:autoComplete required="true"
+                                        requiredMessage="Escolha um programa!"
+                                        readonly="#{GerenciarPacienteController.apenasLeitura}"
+                                        value="#{GerenciarPacienteController.gerenciarpaciente.programa}"
+                                        size="60" converter="conPrograma"
+                                        completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descPrograma}">
+                            <p:ajax event="itemSelect"
+                                    update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo,
+							:formGerenPaci:btBusGr, :formGerenPaci:outGrupo"/>
 
-						</p:autoComplete>
-					</p:outputPanel>
-				</b:column>
+                        </p:autoComplete>
+                    </p:outputPanel>
+                </b:column>
 
-				<b:column span="1">
-					<p:commandButton id="btBusPr"
-						disabled="#{GerenciarPacienteController.apenasLeitura}"
-						styleClass="btn btn-primary text-center" style="height:25px"
-						icon="ui-icon-search"
-						action="#{AgendaController.limparNaBuscaPrograma()}"
-						update=":formConsuProg" onclick="PF('dlgConsuProg').show();" />
-				</b:column>
+                <b:column span="1">
+                    <p:commandButton id="btBusPr"
+                                     disabled="#{GerenciarPacienteController.apenasLeitura}"
+                                     style="height:25px"
+                                     icon="ui-icon-search"
+                                     action="#{AgendaController.limparNaBuscaPrograma()}"
+                                     update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
+                </b:column>
 
-			</b:row>
+                <b:column span="1">
+                    <h:outputLabel value="Grupo"/>
+                </b:column>
 
-			<br></br>
+                <b:column span="4">
+                    <p:outputPanel id="outGrupo">
+                        <p:autoComplete required="true"
+                                        requiredMessage="Escolha um grupo!"
+                                        value="#{GerenciarPacienteController.gerenciarpaciente.grupo}"
+                                        size="60" converter="conGrupo"
+                                        readonly="#{GerenciarPacienteController.apenasLeitura}"
+                                        disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
+                                        completeMethod="#{GerenciarPacienteController.listaGrupoAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descGrupo}">
+                            <p:ajax event="itemSelect" update=":formGerenPaci:outGrupo"/>
 
-			<b:row>
+                        </p:autoComplete>
+                    </p:outputPanel>
+                </b:column>
 
-				<b:column span="1">
-					<h:outputLabel for="grupo" value="Grupo" />
-				</b:column>
+                <b:column span="1">
+                    <p:commandButton id="btBusGr"
+                                     readonly="#{GerenciarPacienteController.apenasLeitura}"
+                                     style="height:25px"
+                                     icon="ui-icon-search"
+                                     disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
+                                     update=":formGerenPaci" onclick="PF('dlgConsuGrop').show();"/>
+                </b:column>
 
-				<b:column span="3">
-					<p:outputPanel id="outGrupo">
-						<p:autoComplete required="true"
-							requiredMessage="Escolha um grupo!"
-							value="#{GerenciarPacienteController.gerenciarpaciente.grupo}"
-							size="40" converter="conGrupo"
-							readonly="#{GerenciarPacienteController.apenasLeitura}"
-							disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
-							completeMethod="#{GerenciarPacienteController.listaGrupoAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descGrupo}">
-							<p:ajax event="itemSelect" update=":formGerenPaci:outGrupo" />
+            </b:row>
 
-						</p:autoComplete>
-					</p:outputPanel>
-				</b:column>
+            <br></br>
 
-				<b:column span="1">
-					<p:commandButton id="btBusGr"
-						readonly="#{GerenciarPacienteController.apenasLeitura}"
-						styleClass="btn btn-primary text-center" style="height:25px"
-						icon="ui-icon-search"
-						disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
-						update=":formGerenPaci" onclick="PF('dlgConsuGrop').show();" />
-				</b:column>
+            <b:row>
 
-			</b:row>
+                <p:outputPanel>
+                    <b:column span="1">
+                        <h:outputLabel value="Situação" style="margin-top: 10px"/>
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneRadio required="true" style="margin-top: 10px"
+                                          requiredMessage="Escolha a situação!"
+                                          value="#{GerenciarPacienteController.gerenciarpaciente.status}">
+                            <f:selectItem itemLabel="Todos" itemValue="T"/>
+                            <f:selectItem itemLabel="Ativos" itemValue="A"/>
+                            <f:selectItem itemLabel="Desligados" itemValue="D"/>
+                        </p:selectOneRadio>
+                    </b:column>
+                </p:outputPanel>
 
-			<br></br>
+                <b:column span="2">
 
-			<b:row>
+                    <b:commandButton value="Buscar" icon="glyphicon-search"
+                                     action="#{GerenciarPacienteController.buscarPacientesInstituicao()}"
+                                     update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:msgPagina, :frmEquipamentos:dtNovosAg, btnInserir"></b:commandButton>
 
-				<p:outputPanel>
-					<b:column span="1">
-						<h:outputLabel for="situacao" value="Situação" />
-					</b:column>
-					<b:column span="2">
-						<p:selectOneRadio required="true"
-							requiredMessage="Escolha a situação!"
-							value="#{GerenciarPacienteController.gerenciarpaciente.status}">
-							<f:selectItem itemLabel="Todos" itemValue="T" />
-							<f:selectItem itemLabel="Ativos" itemValue="A" />
-							<f:selectItem itemLabel="Desligados" itemValue="D" />
-						</p:selectOneRadio>
-					</b:column>
-				</p:outputPanel>
-			</b:row>
-			<br></br>
+                </b:column>
 
-			<b:row>
+                <b:column span="2">
 
-				<b:column span="2">
+                    <b:commandButton value="Limpar" icon="glyphicon-trash"
+                                     action="#{GerenciarPacienteController.limparBusca()}"
+                                     update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:msgPagina, :frmEquipamentos:dtNovosAg"></b:commandButton>
+                </b:column>
 
-					<b:commandButton value="Buscar" icon="glyphicon-search"
-						action="#{GerenciarPacienteController.buscarPacientesInstituicao()}"
-						update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:msgFeriado, :frmEquipamentos:dtNovosAg, btnInserir"></b:commandButton>
+            </b:row>
 
-				</b:column>
+            <br></br>
+            <br></br>
 
-				<b:column span="2">
+            <b:row>
 
-					<b:commandButton value="Limpar" icon="glyphicon-trash"
-						action="#{GerenciarPacienteController.limparBusca()}"
-						update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:msgFeriado, :frmEquipamentos:dtNovosAg"></b:commandButton>
+                <div align="center">
 
-				</b:column>
+                    <b:column span="3">
+                        <b:commandButton value="Inserir" style="margin-top:5px;"
+                                         id="btnInserir" immediate="true"
+                                         update=":formGerenPaci, :frmEquipamentos:msgPagina"
+                                         disabled="#{GerenciarPacienteController.busca == 'N'}"
+                                         icon="glyphicon-plus"
+                                         action="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true"/>
+                    </b:column>
 
-			</b:row>
+                    <b:column span="3">
+                        <b:commandButton value="Alterar" style="margin-top:5px;"
+                                         disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
+                                         id="btnAlterar" immediate="true"
+                                         update=":formGerenPaci, :frmEquipamentos:msgPagina" icon="glyphicon-pencil"
+                                         action="#{GerenciarPacienteController.redirectAlteracao()}"/>
+                    </b:column>
 
-			<br></br>
+                    <b:column span="3">
+                        <b:commandButton value="Renovar" style="margin-top:5px;"
+                                         disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
+                                         id="btnRenovar" immediate="true"
+                                         update=":formGerenPaci, :frmEquipamentos:msgPagina"
+                                         icon="glyphicon glyphicon-refresh"
+                                         action="#{GerenciarPacienteController.redirectRenovacao()}"/>
+                    </b:column>
 
-			<b:row>
+                    <b:column span="3">
+                        <b:commandButton value="Desligar" style="margin-top:5px;"
+                                         disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
+                                         id="btnDesligar" immediate="true"
+                                         update=":formGerenPaci, :frmEquipamentos:msgPagina"
+                                         icon="glyphicon glyphicon-remove"
+                                         action="#{GerenciarPacienteController.inicioDesligar()}"/>
+                    </b:column>
 
-				<b:column span="2">
-					<b:commandButton value="Inserir" style="margin-top:5px;"
-						id="btnInserir" immediate="true"
-						update=":formGerenPaci, :frmEquipamentos:msgFeriado"
-						disabled="#{GerenciarPacienteController.busca == 'N'}"
-						icon="glyphicon-ok"
-						action="/pages/agenda/insercaoPaciente.xhtml?faces-redirect=true" />
-				</b:column>
+                </div>
 
-				<b:column span="2">
-					<b:commandButton value="Alterar" style="margin-top:5px;"
-						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
-						id="btnAlterar" immediate="true"
-						update=":formGerenPaci, :frmEquipamentos:msgFeriado" icon="glyphicon-ok"
-						action="#{GerenciarPacienteController.redirectAlteracao()}" />
-				</b:column>
+            </b:row>
 
-				<b:column span="2">
-					<b:commandButton value="Renovar" style="margin-top:5px;"
-						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
-						id="btnRenovar" immediate="true"
-						update=":formGerenPaci, :frmEquipamentos:msgFeriado" icon="glyphicon-ok"
-						action="#{GerenciarPacienteController.redirectRenovacao()}" />
-				</b:column>
+        </h:form>
 
-				<b:column span="2">
-					<b:commandButton value="Desligar" style="margin-top:5px;"
-						disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
-						id="btnDesligar" immediate="true"
-						update=":formGerenPaci, :frmEquipamentos:msgFeriado" icon="glyphicon-ok"
-						action="#{GerenciarPacienteController.inicioDesligar()}" />
-				</b:column>
+        <h:form id="frmEquipamentos">
 
-			</b:row>
-			
-			</h:form>
-			
-			<h:form id="frmEquipamentos">
+            <b:row>
+                <br></br>
+                <p:outputPanel id="outEquipamento">
+                    <b:column span="1">
+                        <h:outputLabel id="idEquipamento" value="Equipamento:"
+                                       rendered="#{GerenciarPacienteController.rowBean.status == 'A'
+							and GerenciarPacienteController.rowBean.laudo.procedimento_primario.utilizaEquipamento == true}"/>
+                    </b:column>
 
-			<b:row>
-				<br></br>
-				<p:outputPanel id="outEquipamento">
-					<b:column span="1">
-						<h:outputLabel id="idEquipamento" for="prog" value="Equipamento:"
-							rendered="#{GerenciarPacienteController.rowBean.status == 'A' 
-							and GerenciarPacienteController.rowBean.laudo.procedimento_primario.utilizaEquipamento == true}" />
-					</b:column>
+                    <b:column span="3">
 
-					<b:column span="3">
-
-						<p:autoComplete required="true"
-							rendered="#{GerenciarPacienteController.rowBean.status == 'A' 
+                        <p:autoComplete required="true"
+                                        rendered="#{GerenciarPacienteController.rowBean.status == 'A'
 							and GerenciarPacienteController.rowBean.laudo.procedimento_primario.utilizaEquipamento == true}"
-							requiredMessage="Escolha um equipamento"
-							value="#{GerenciarPacienteController.gerenciarpaciente.laudo.procedimento_primario.equipamento}"
-							size="40" converter="conEquipamento"
-							completeMethod="#{EquipamentoController.listaEquipamentoAutoComplete}"
-							effect="fade" var="theme" forceSelection="true"
-							minQueryLength="1" itemValue="#{theme}"
-							itemLabel="#{theme.descEquipamento}">
-							<p:ajax event="itemSelect" update="" />
+                                        requiredMessage="Escolha um equipamento"
+                                        value="#{GerenciarPacienteController.gerenciarpaciente.laudo.procedimento_primario.equipamento}"
+                                        size="40" converter="conEquipamento"
+                                        completeMethod="#{EquipamentoController.listaEquipamentoAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descEquipamento}">
+                            <p:ajax event="itemSelect" update=""/>
 
-						</p:autoComplete>
+                        </p:autoComplete>
 
-					</b:column>
+                    </b:column>
 
-					<b:column span="2">
+                    <b:column span="4">
 
-						<p:commandButton icon="ui-icon-check"
-							rendered="#{GerenciarPacienteController.rowBean.status == 'A' 
+                        <p:commandButton icon="ui-icon-check"
+                                         rendered="#{GerenciarPacienteController.rowBean.status == 'A'
 							and GerenciarPacienteController.rowBean.laudo.procedimento_primario.utilizaEquipamento == true}"
-							value="Gerar Encaminhamento"
-							action="#{GerenciarPacienteController.gerarEncaminhamento()}"
-							update="msgFeriado, dtNovosAg">
-						</p:commandButton>
+                                         value="Gerar Encaminhamento"
+                                         action="#{GerenciarPacienteController.gerarEncaminhamento()}"
+                                         update="msgPagina, dtNovosAg">
+                        </p:commandButton>
 
-					</b:column>
+                    </b:column>
 
-				</p:outputPanel>
-			</b:row>
+                </p:outputPanel>
+            </b:row>
 
-			<br></br>
-			<br></br>
+            <br></br>
+            <br></br>
 
-			<center>
-				<b:messages value="Error" id="msgFeriado"></b:messages>
-			</center>
+            <div align="center">
+                <b:messages value="Error" id="msgPagina"></b:messages>
+            </div>
 
-			<p:dataTable id="dtNovosAg"
-				value="#{GerenciarPacienteController.listaPacientes}" var="pacie"
-				emptyMessage="Nenhuma Desistência" selectionMode="single"
-				selection="#{GerenciarPacienteController.rowBean}"
-				rowKey="#{pacie.id}" scrollable="true" scrollHeight="140">
+            <p:dataTable id="dtNovosAg"
+                         value="#{GerenciarPacienteController.listaPacientes}" var="pacie"
+                         emptyMessage="Nenhuma Desistência" selectionMode="single"
+                         selection="#{GerenciarPacienteController.rowBean}"
+                         rowKey="#{pacie.id}" scrollable="true" scrollHeight="140">
 
-				<p:ajax event="rowSelect"
-					update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnDesligar :frmEquipamentos:outEquipamento" />
+                <p:ajax event="rowSelect"
+                        update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnDesligar :frmEquipamentos:outEquipamento"/>
 
-				<p:column width="10%">
-					<f:facet name="header">
-						<h:outputText style="font-size: 14px;" value="ID" />
-					</f:facet>
-					<h:outputText value="#{pacie.laudo.id}"></h:outputText>
-				</p:column>
-
-				<p:column width="10%">
-					<f:facet name="header">
-						<h:outputText style="font-size: 14px;" value="Paciente" />
-					</f:facet>
-					<h:outputText value="#{pacie.paciente.nome}"></h:outputText>
-				</p:column>
-
-				<p:column width="10%">
-					<f:facet name="header">
-						<h:outputText style="font-size: 14px;" value="CNS" />
-					</f:facet>
-					<h:outputText value="#{pacie.paciente.cns}"></h:outputText>
-				</p:column>
-
-				<p:column width="10%">
-					<f:facet name="header">
-						<h:outputText style="font-size: 14px;" value="Programa" />
-					</f:facet>
-					<h:outputText value="#{pacie.paciente.cns}"></h:outputText>
-				</p:column>
-
-				<p:column width="10%">
-					<f:facet name="header">
-						<h:outputText style="font-size: 14px;" value="Grupo" />
-					</f:facet>
-					<h:outputText value="#{pacie.grupo.descGrupo}"></h:outputText>
-				</p:column>
-
-				<p:column width="10%">
-					<f:facet name="header">
-						<h:outputText style="font-size: 14px;" value="Equipe" />
-					</f:facet>
-					<h:outputText value="#{pacie.equipe.descEquipamento}"></h:outputText>
-				</p:column>
-
-				<p:column width="10%">
-					<f:facet name="header">
-						<h:outputText style="font-size: 14px;" value="Profissional" />
-					</f:facet>
-					<h:outputText value="#{pacie.funcionario.nome}"></h:outputText>
-				</p:column>
-
-				<p:column width="10%">
-					<f:facet name="header">
-						<h:outputText style="font-size: 14px;" value="Situação" />
-					</f:facet>
-					<h:outputText value="#{pacie.status}"></h:outputText>
-				</p:column>
-
-			</p:dataTable>
-
-
-
-		</h:form>
-
-		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
-			modal="true">
-			<h:form id="formConsuProg">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ProgramaController.listaProgramasUsuario()}"
-					var="prog" display="Nenhum Programa">
-
-					<h:column>
-						<f:facet name="header">
-                        Programa
+                <p:column width="5%">
+                    <f:facet name="header">
+                        <h:outputText style="font-size: 14px;" value="ID"/>
                     </f:facet>
-						<p:outputLabel value="#{prog.descPrograma}" />
-					</h:column>
+                    <h:outputText value="#{pacie.laudo.id}"></h:outputText>
+                </p:column>
 
-					<h:column>
-						<f:facet name="header">
-                       Adicionar
+                <p:column width="20%">
+                    <f:facet name="header">
+                        <h:outputText style="font-size: 14px;" value="Paciente"/>
                     </f:facet>
-						<p:commandButton
-							update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo, 
+                    <h:outputText value="#{pacie.paciente.nome}"></h:outputText>
+                </p:column>
+
+                <p:column width="10%">
+                    <f:facet name="header">
+                        <h:outputText style="font-size: 14px;" value="CNS"/>
+                    </f:facet>
+                    <h:outputText value="#{pacie.paciente.cns}"></h:outputText>
+                </p:column>
+
+                <p:column width="20%">
+                    <f:facet name="header">
+                        <h:outputText style="font-size: 14px;" value="Grupo"/>
+                    </f:facet>
+                    <h:outputText value="#{pacie.grupo.descGrupo}"></h:outputText>
+                </p:column>
+
+                <p:column width="15%">
+                    <f:facet name="header">
+                        <h:outputText style="font-size: 14px;" value="Equipe"/>
+                    </f:facet>
+                    <h:outputText value="#{pacie.equipe.descEquipamento}"></h:outputText>
+                </p:column>
+
+                <p:column width="20%">
+                    <f:facet name="header">
+                        <h:outputText style="font-size: 14px;" value="Profissional"/>
+                    </f:facet>
+                    <h:outputText value="#{pacie.funcionario.nome}"></h:outputText>
+                </p:column>
+
+                <p:column width="10%">
+                    <f:facet name="header">
+                        <h:outputText style="font-size: 14px;" value="Situação"/>
+                    </f:facet>
+                    <h:outputText value="Ativo" rendered="#{pacie.status == 'A'}"></h:outputText>
+                    <h:outputText value="Desligado" rendered="#{pacie.status == 'D'}"></h:outputText>
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+
+        <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+                  modal="true">
+            <h:form id="formConsuProg">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{ProgramaController.listaProgramasUsuario()}"
+                             var="prog" display="Nenhum Programa">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Programa
+                        </f:facet>
+                        <p:outputLabel value="#{prog.descPrograma}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formGerenPaci:outProg, :formConsuGrop:dtGrupo,
 							:formGerenPaci:btBusGr, :formGerenPaci:outGrupo"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsuProg').hide();">
-							<f:setPropertyActionListener value="#{prog}"
-								target="#{GerenciarPacienteController.gerenciarpaciente.programa}" />
-						</p:commandButton>
-					</h:column>
+                                icon="ui-icon-check" title="Selecionar"
+                                onclick="PF('dlgConsuProg').hide();">
+                            <f:setPropertyActionListener value="#{prog}"
+                                                         target="#{GerenciarPacienteController.gerenciarpaciente.programa}"/>
+                        </p:commandButton>
+                    </h:column>
 
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
 
-		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-			modal="true">
-			<h:form id="formConsuGrop">
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{GerenciarPacienteController.listaGrupoLista()}"
-					id="dtGrupo" var="grupo" display="Nenhum Grupo">
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+                  modal="true">
+            <h:form id="formConsuGrop">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{GerenciarPacienteController.listaGrupoLista()}"
+                             id="dtGrupo" var="grupo" display="Nenhum Grupo">
 
-					<h:column>
-						<f:facet name="header">
-                        Grupo
-                    </f:facet>
-						<p:outputLabel value="#{grupo.descGrupo}" />
-					</h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Grupo
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.descGrupo}"/>
+                    </h:column>
 
-					<h:column>
-						<f:facet name="header">
-                        Quantidade Frequência
-                    </f:facet>
-						<p:outputLabel value="#{grupo.qtdFrequencia}" />
-					</h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Quantidade Frequência
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.qtdFrequencia}"/>
+                    </h:column>
 
-					<h:column>
-						<f:facet name="header">
-                        Adicionar
-                    </f:facet>
-						<p:commandButton update=":formGerenPaci:outGrupo"
-							icon="ui-icon-check" title="Selecionar"
-							onclick="PF('dlgConsuGrop').hide();">
-							<f:setPropertyActionListener value="#{grupo}"
-								target="#{GerenciarPacienteController.gerenciarpaciente.grupo}" />
-						</p:commandButton>
-					</h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton update=":formGerenPaci:outGrupo"
+                                         icon="ui-icon-check" title="Selecionar"
+                                         onclick="PF('dlgConsuGrop').hide();">
+                            <f:setPropertyActionListener value="#{grupo}"
+                                                         target="#{GerenciarPacienteController.gerenciarpaciente.grupo}"/>
+                        </p:commandButton>
+                    </h:column>
 
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
 
-		<p:dialog header="Desligar Paciente" widgetVar="dlgDeslPac"
-			width="450" height="300" modal="true">
-			<h:form id="formDeslPac">
+        <p:dialog header="Desligar Paciente" widgetVar="dlgDeslPac"
+                  width="450" height="300" modal="true">
+            <h:form id="formDeslPac">
 
-				<b:row>
+                <b:row>
 
-					<b:column span="2">
-						<h:outputLabel for="obs" value="Observação" />
-					</b:column>
+                    <b:column span="2">
+                        <h:outputLabel for="obs" value="Observação"/>
+                    </b:column>
 
-				</b:row>
+                </b:row>
 
-				<b:row>
+                <b:row>
 
-					<b:column span="12">
-						<b:inputTextarea id="obs" rows="2"
-							value="#{GerenciarPacienteController.gerenciarpaciente.observacao}"
-							autoResize="false" />
-					</b:column>
+                    <b:column span="12">
+                        <b:inputTextarea id="obs" rows="2"
+                                         value="#{GerenciarPacienteController.gerenciarpaciente.observacao}"
+                                         autoResize="false"/>
+                    </b:column>
 
-				</b:row>
+                </b:row>
 
-				<br></br>
+                <br></br>
 
-				<b:row>
+                <b:row>
 
-					<b:column span="3">
-						<h:outputLabel for="obs" value="Motivo:" style="margin-top:10px" />
-					</b:column>
+                    <div align="center">
+                        <b:column span="12">
+                            <h:outputLabel for="obs" value="Motivo:" style="margin-top:10px"/>
+                        </b:column>
+                    </div>
+                </b:row>
 
-				</b:row>
+                <b:row>
 
-				<b:row>
+                    <b:column span="12">
+                        <div align="center">
+                            <p:outputPanel id="inMot">
+                                <b:selectOneMenu filter="true"
+                                                 value="#{GerenciarPacienteController.gerenciarpaciente.motivo_desligamento}"
+                                                 style="width:320px;margin-left:10px">
+                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                    <f:selectItems itemValue="#{x.id_motivo}"
+                                                   itemLabel="#{x.motivo_desligamento}"
+                                                   value="#{MotivoController.listarMotivos()}" var="x"></f:selectItems>
+                                </b:selectOneMenu>
+                            </p:outputPanel>
+                        </div>
+                    </b:column>
 
-					<b:column span="9">
+                </b:row>
 
-						<p:outputPanel id="inMot">
-							<b:selectOneMenu filter="true"
-								value="#{GerenciarPacienteController.gerenciarpaciente.motivo_desligamento}"
-								style="width:120px;margin-left:10px">
-								<f:selectItem itemLabel="Selecione" itemValue="" />
-								<f:selectItems itemValue="#{x.id_motivo}"
-									itemLabel="#{x.motivo_desligamento}"
-									value="#{MotivoController.listaMotivos}" var="x"></f:selectItems>
-							</b:selectOneMenu>
-						</p:outputPanel>
+                <br></br>
+                <br></br>
 
-					</b:column>
+                <div align="center">
 
-				</b:row>
+                    <b:commandButton value="Desligar" look="success" size="sm" id="b1"
+                                     icon="glyphicon-ok"
+                                     update="frmEquipamentos:msgPagina, :frmEquipamentos:dtNovosAg"
+                                     style="float:left"
+                                     action="#{GerenciarPacienteController.desligarPaciente()}"/>
 
-				<br></br>
-				<br></br>
+                    <b:commandButton value="Fechar" icon="glyphicon-remove" size="sm"
+                                     immediate="true" look="info" style="float:right"
+                                     onclick="PF('dlgDeslPac').hide();">
+                    </b:commandButton>
 
-				<center>
+                </div>
 
-					<b:commandButton value="Desligar" look="success" size="sm" id="b1"
-						icon="glyphicon-ok"
-						update="frmEquipamentos:msgFeriado, :frmEquipamentos:dtNovosAg"
-						style="float:left"
-						action="#{GerenciarPacienteController.desligarPaciente()}" />
+            </h:form>
+        </p:dialog>
 
-					<b:commandButton value="Fechar" icon="glyphicons-remove" size="sm"
-						immediate="true" look="info" style="float:right"
-						action="#{GerenciarPaciente.fecharDialogDesligamento()}">
-					</b:commandButton>
+    </ui:define>
 
-				</center>
-
-			</h:form>
-		</p:dialog>
-
-	</ui:define>
 </ui:composition>
+
 </html>
