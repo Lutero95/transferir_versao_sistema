@@ -128,7 +128,7 @@ public class AlteracaoPacienteController implements Serializable {
 
             int diaSemana = c.get(Calendar.DAY_OF_WEEK);
 
-            if (tipo.equals("E")) {
+            if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
                 for (int j = 0; j < listaProfissionaisAdicionados.size(); j++) {
                     for (int h = 0; h < listaProfissionaisAdicionados.size(); h++) {
 
@@ -199,7 +199,7 @@ public class AlteracaoPacienteController implements Serializable {
 
             int diaSemana = c.get(Calendar.DAY_OF_WEEK);
 
-            if (tipo.equals("P")) {
+            if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
                 for (int j = 0; j < funcionario.getListDiasSemana().size(); j++) {
                     if (diaSemana == Integer.parseInt(funcionario
                             .getListDiasSemana().get(j))) {
@@ -224,14 +224,14 @@ public class AlteracaoPacienteController implements Serializable {
     public void gravarAlteracaoPaciente() throws ProjetoException {
 
         Boolean cadastrou = null;
-        if (tipo.equals("E")) {
+        if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
             gerarListaAgendamentosEquipe();
 
             cadastrou = aDao.gravarAlteracaoEquipe(insercao, insercaoParaLaudo,
                     listAgendamentoProfissional, id_paciente_insituicao);
         }
-        if (tipo.equals("P")) {
+        if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
             gerarListaAgendamentosProfissional();
 
