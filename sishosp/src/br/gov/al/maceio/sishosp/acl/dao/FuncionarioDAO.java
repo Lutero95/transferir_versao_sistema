@@ -874,11 +874,17 @@ public class FuncionarioDAO {
     public List<FuncionarioBean> listarProfissionalBusca(String descricaoBusca,
                                                          Integer tipoBuscar) throws ProjetoException {
         List<FuncionarioBean> lista = new ArrayList<>();
-        String sql = "select id_funcionario ,id_funcionario ||'-'|| descfuncionario as descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao "
-                + " from acl.funcionarios ";
+        String sql = "SELECT f.id_funcionario, f.id_funcionario ||'-'|| f.descfuncionario AS descfuncionario, f.codespecialidade, e.descespecialidade, " +
+                     "f.cns, f.ativo, f.codcbo, c.descricao, f.codprocedimentopadrao, p. nome "+
+                     " FROM acl.funcionarios f " +
+                     "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) " +
+                     "LEFT JOIN hosp.proc p ON (f.codprocedimentopadrao = p.id) " +
+                     "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) ";
+
         if (tipoBuscar == 1) {
-            sql += " where upper(id_funcionario ||' - '|| descfuncionario) LIKE ? and realiza_atendimento is true order by descfuncionario";
+            sql += " where upper(f.id_funcionario ||' - '|| f.descfuncionario) LIKE ? and f.realiza_atendimento is true order by f.descfuncionario";
         }
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -889,13 +895,14 @@ public class FuncionarioDAO {
                 FuncionarioBean prof = new FuncionarioBean();
                 prof.setId(rs.getLong("id_funcionario"));
                 prof.setNome(rs.getString("descfuncionario"));
-                prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
-                        .getInt("codespecialidade")));
+                prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+                prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
                 prof.setCns(rs.getString("cns"));
                 prof.setAtivo(rs.getString("ativo"));
-                prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
-                prof.setProc1(procDao.listarProcedimentoPorId(rs
-                        .getInt("codprocedimentopadrao")));
+                prof.getCbo().setDescCbo(rs.getString("descricao"));
+                prof.getCbo().setCodCbo(rs.getInt("codcbo"));
+                prof.getProc1().setNomeProc(rs.getString("nome"));
+                prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
                 prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
                 prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
 
