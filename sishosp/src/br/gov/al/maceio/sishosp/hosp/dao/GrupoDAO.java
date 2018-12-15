@@ -24,7 +24,7 @@ public class GrupoDAO {
 
 	public boolean gravarGrupo(GrupoBean grupo)  {
 		Boolean retorno = false;
-		String sql = "insert into hosp.grupo (descgrupo, qtdfrequencia, auditivo, inserção_pac_institut) values (?, ?, ?, ?) RETURNING id_grupo;";
+		String sql = "insert into hosp.grupo (descgrupo, qtdfrequencia, auditivo, insercao_pac_institut) values (?, ?, ?, ?) RETURNING id_grupo;";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -32,10 +32,10 @@ public class GrupoDAO {
 			ps.setString(1, grupo.getDescGrupo().toUpperCase());
 			ps.setInt(2, grupo.getQtdFrequencia());
 			ps.setBoolean(3, grupo.isAuditivo());
-			if (grupo.isInserção_pac_institut() == false) {
+			if (grupo.isinsercao_pac_institut() == false) {
 				ps.setNull(4, Types.BOOLEAN);
 			} else {
-				ps.setBoolean(4, grupo.isInserção_pac_institut());
+				ps.setBoolean(4, grupo.isinsercao_pac_institut());
 			}
 			ResultSet rs = ps.executeQuery();
 
@@ -71,7 +71,7 @@ public class GrupoDAO {
 
 	public Boolean alterarGrupo(GrupoBean grupo) {
 		Boolean retorno = false;
-		String sql = "update hosp.grupo set descgrupo = ?, qtdfrequencia = ?, auditivo = ?, inserção_pac_institut = ? where id_grupo = ?";
+		String sql = "update hosp.grupo set descgrupo = ?, qtdfrequencia = ?, auditivo = ?, insercao_pac_institut = ? where id_grupo = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -79,10 +79,10 @@ public class GrupoDAO {
 			stmt.setString(1, grupo.getDescGrupo().toUpperCase());
 			stmt.setDouble(2, grupo.getQtdFrequencia());
 			stmt.setBoolean(3, grupo.isAuditivo());
-			if (grupo.isInserção_pac_institut() == false) {
+			if (grupo.isinsercao_pac_institut() == false) {
 				stmt.setNull(4, Types.BOOLEAN);
 			} else {
-				stmt.setBoolean(4, grupo.isInserção_pac_institut());
+				stmt.setBoolean(4, grupo.isinsercao_pac_institut());
 			}
 			stmt.setInt(5, grupo.getIdGrupo());
 			stmt.executeUpdate();
@@ -184,7 +184,7 @@ public class GrupoDAO {
 	public List<GrupoBean> listarGruposPorPrograma(int codPrograma)
 			throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<>();
-		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut from hosp.grupo g  "
+		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut from hosp.grupo g  "
 				+ "left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)  "
 				+ "where p.id_programa = ?";
 
@@ -204,8 +204,8 @@ public class GrupoDAO {
 				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
 				grupo.setAuditivo(rs.getBoolean("auditivo"));
 				grupo.setEquipeSim(rs.getBoolean("equipe"));
-				grupo.setInserção_pac_institut(rs
-						.getBoolean("inserção_pac_institut"));
+				grupo.setinsercao_pac_institut(rs
+						.getBoolean("insercao_pac_institut"));
 				lista.add(grupo);
 			}
 
@@ -225,7 +225,7 @@ public class GrupoDAO {
 	public List<GrupoBean> listarGruposPorTipoAtend(int idTipo)
 			throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<>();
-		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.inserção_pac_institut from hosp.grupo g, "
+		String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.insercao_pac_institut from hosp.grupo g, "
 				+ " hosp.tipoatendimento_grupo tg, hosp.tipoatendimento t"
 				+ " where t.id = ? and g.id_grupo = tg.codgrupo and t.id = tg.codtipoatendimento order by g.descgrupo";
 		try {
@@ -240,8 +240,8 @@ public class GrupoDAO {
 				grupo.setDescGrupo(rs.getString("descgrupo"));
 				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
 				grupo.setAuditivo(rs.getBoolean("auditivo"));
-				grupo.setInserção_pac_institut(rs
-						.getBoolean("inserção_pac_institut"));
+				grupo.setinsercao_pac_institut(rs
+						.getBoolean("insercao_pac_institut"));
 				lista.add(grupo);
 			}
 
@@ -260,7 +260,7 @@ public class GrupoDAO {
 
 	public List<GrupoBean> listarGrupos() throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<>();
-		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, inserção_pac_institut from hosp.grupo order by descgrupo";
+		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, insercao_pac_institut from hosp.grupo order by descgrupo";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -272,8 +272,8 @@ public class GrupoDAO {
 				grupo.setDescGrupo(rs.getString("descgrupo"));
 				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
 				grupo.setAuditivo(rs.getBoolean("auditivo"));
-				grupo.setInserção_pac_institut(rs
-						.getBoolean("inserção_pac_institut"));
+				grupo.setinsercao_pac_institut(rs
+						.getBoolean("insercao_pac_institut"));
 				lista.add(grupo);
 			}
 		} catch (SQLException ex) {
@@ -324,7 +324,7 @@ public class GrupoDAO {
 	public List<GrupoBean> listarGruposAutoComplete(String descricao,
 			ProgramaBean prog) throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<>();
-		String sql = "select g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.inserção_pac_institut  "
+		String sql = "select g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut  "
 				+ " from hosp.grupo g left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)"
 				+ " where p.id_programa = ? and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? order by descgrupo ";
 
@@ -342,8 +342,8 @@ public class GrupoDAO {
 				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
 				grupo.setAuditivo(rs.getBoolean("auditivo"));
 				grupo.setEquipeSim(rs.getBoolean("equipe"));
-				grupo.setInserção_pac_institut(rs
-						.getBoolean("inserção_pac_institut"));
+				grupo.setinsercao_pac_institut(rs
+						.getBoolean("insercao_pac_institut"));
 				lista.add(grupo);
 			}
 		} catch (SQLException ex) {
@@ -364,7 +364,7 @@ public class GrupoDAO {
 	public GrupoBean listarGrupoPorId(int id) throws ProjetoException {
 
 		GrupoBean grupo = new GrupoBean();
-		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, inserção_pac_institut from hosp.grupo where id_grupo = ?";
+		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, insercao_pac_institut from hosp.grupo where id_grupo = ?";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -376,8 +376,8 @@ public class GrupoDAO {
 				grupo.setDescGrupo(rs.getString("descgrupo"));
 				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
 				grupo.setAuditivo(rs.getBoolean("auditivo"));
-				grupo.setInserção_pac_institut(rs
-						.getBoolean("inserção_pac_institut"));
+				grupo.setinsercao_pac_institut(rs
+						.getBoolean("insercao_pac_institut"));
 				grupo.setEquipes(listarEquipesDoGrupo(rs.getInt("id_grupo")));
 			}
 
@@ -398,7 +398,7 @@ public class GrupoDAO {
 			throws ProjetoException {
 		List<GrupoBean> lista = new ArrayList<>();
 
-		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, inserção_pac_institut from hosp.grupo  "
+		String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, insercao_pac_institut from hosp.grupo  "
 				+ "where descgrupo LIKE ?  order by descgrupo";
 
 		try {
@@ -413,8 +413,8 @@ public class GrupoDAO {
 				grupo.setDescGrupo(rs.getString("descgrupo"));
 				grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
 				grupo.setAuditivo(rs.getBoolean("auditivo"));
-				grupo.setInserção_pac_institut(rs
-						.getBoolean("inserção_pac_institut"));
+				grupo.setinsercao_pac_institut(rs
+						.getBoolean("insercao_pac_institut"));
 				lista.add(grupo);
 			}
 		} catch (SQLException ex) {

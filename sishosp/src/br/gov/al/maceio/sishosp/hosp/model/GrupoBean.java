@@ -14,7 +14,7 @@ public class GrupoBean implements Serializable {
 	private Integer qtdFrequencia;
 	private boolean auditivo;
 	private boolean equipeSim;
-	private boolean inserção_pac_institut;
+	private boolean insercao_pac_institut;
 
 	// LISTAS
 	private List<EquipeBean> equipes;
@@ -117,12 +117,12 @@ public class GrupoBean implements Serializable {
 	}
 
 
-	public boolean isInserção_pac_institut() {
-		return inserção_pac_institut;
+	public boolean isinsercao_pac_institut() {
+		return insercao_pac_institut;
 	}
 
-	public void setInserção_pac_institut(boolean inserção_pac_institut) {
-		this.inserção_pac_institut = inserção_pac_institut;
+	public void setinsercao_pac_institut(boolean insercao_pac_institut) {
+		this.insercao_pac_institut = insercao_pac_institut;
 	}
 
 	public boolean isEquipeSim() {
