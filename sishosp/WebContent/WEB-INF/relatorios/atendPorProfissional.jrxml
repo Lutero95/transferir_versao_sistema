@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="atendPorProfissional" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6a641606-8fd0-4299-ae43-331d2e7befe4">
 	<property name="ireport.zoom" value="1.6105100000000008"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="EHosp"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="dt_inicial" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -16,32 +21,29 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select m.id_medico cod_medico, m.descmedico nome_medico, e.descespecialidade nome_espec, a.dtaatende dt_atend, count(*) agendado,
-COALESCE(atend.qtd,0) atend, coalesce(proffalta.qtd,0) proffalta,coalesce(pacfalta.qtd,0) pacfalta
+		<![CDATA[SELECT f.id_funcionario cod_medico, f.descfuncionario nome_medico, e.descespecialidade nome_espec, a.dtaatende dt_atend, count(*) agendado,
+COALESCE(atend.qtd,0) atend, COALESCE(proffalta.qtd,0) proffalta,COALESCE(pacfalta.qtd,0) pacfalta
+FROM hosp.atendimentos a
+LEFT JOIN (SELECT aa.dtaatende, count(*) qtd, aa.codmedico FROM hosp.atendimentos aa
+JOIN hosp.atendimentos1 a11 ON a11.id_atendimento = aa.id_atendimento
+WHERE aa.dtaatende BETWEEN $P{dt_inicial} AND $P{dt_final} AND a11.situacao='A' GROUP BY aa.dtaatende, aa.codmedico) atend ON (atend.codmedico = a.codmedico AND a.dtaatende = atend.dtaatende)
+LEFT JOIN (SELECT aa.dtaatende, count(*) qtd, aa.codmedico FROM hosp.atendimentos aa
+JOIN hosp.atendimentos1 a11 on a11.id_atendimento = aa.id_atendimento
+WHERE aa.dtaatende BETWEEN $P{dt_inicial} AND $P{dt_final} AND a11.situacao='PF' GROUP BY aa.dtaatende, aa.codmedico) proffalta ON (proffalta.codmedico = a.codmedico AND a.dtaatende = proffalta.dtaatende)
+LEFT JOIN (SELECT aa.dtaatende, count(*) qtd, aa.codmedico FROM hosp.atendimentos aa
+JOIN hosp.atendimentos1 a11 ON a11.id_atendimento = aa.id_atendimento
+WHERE aa.dtaatende BETWEEN $P{dt_inicial} AND $P{dt_final} AND a11.situacao IS NULL GROUP BY aa.dtaatende, aa.codmedico) pacfalta ON (pacfalta.codmedico = a.codmedico AND a.dtaatende = pacfalta.dtaatende)
+JOIN acl.funcionarios f ON f.id_funcionario = a.codmedico
+JOIN hosp.especialidade e ON f.id_funcionario = e.id_especialidade
 
-from hosp.atendimentos a
+WHERE a.dtaatende BETWEEN $P{dt_inicial} AND $P{dt_final}
+AND a.codprograma = $P{cod_programa}
 
-left join (select aa.dtaatende, count(*) qtd, aa.codmedico from hosp.atendimentos aa
-	join hosp.atendimentos1 a11 on a11.id_atendimento = aa.id_atendimento
-	where aa.dtaatende between $P{dt_inicial} and $P{dt_final} and a11.situacao='A' group by aa.dtaatende, aa.codmedico) atend on (atend.codmedico = a.codmedico and a.dtaatende = atend.dtaatende)
-left join (select aa.dtaatende, count(*) qtd, aa.codmedico from hosp.atendimentos aa
-	join hosp.atendimentos1 a11 on a11.id_atendimento = aa.id_atendimento
-	where aa.dtaatende between $P{dt_inicial} and $P{dt_final} and a11.situacao='MF' group by aa.dtaatende, aa.codmedico) proffalta on (proffalta.codmedico = a.codmedico and a.dtaatende = proffalta.dtaatende)
-left join (select aa.dtaatende, count(*) qtd, aa.codmedico from hosp.atendimentos aa
-	join hosp.atendimentos1 a11 on a11.id_atendimento = aa.id_atendimento
-	where aa.dtaatende between $P{dt_inicial} and $P{dt_final} and a11.situacao is null group by aa.dtaatende, aa.codmedico) pacfalta on (pacfalta.codmedico = a.codmedico and a.dtaatende = pacfalta.dtaatende)
-join hosp.medicos m on m.id_medico = a.codmedico
-join hosp.especialidade e on m.id_medico = e.id_especialidade
+AND(  ($P{cod_medico} IS NOT NULL AND f.id_funcionario = $P{cod_medico})
+OR ($P{cod_medico} IS NULL AND  f.id_funcionario > 0))
 
-where a.dtaatende between $P{dt_inicial} and $P{dt_final}
-and a.codprograma = $P{cod_programa}
-and a.codequipe = 0
-and(  ($P{cod_medico} is not null and  m.id_medico = $P{cod_medico})
-or   ($P{cod_medico} is null and  m.id_medico > 0))
-
-group by  m.id_medico,  m.descmedico, e.descespecialidade, a.dtaatende, COALESCE(atend.qtd,0) , coalesce(proffalta.qtd,0) ,coalesce(pacfalta.qtd,0)
-
-order by m.id_medico, a.dtaatende]]>
+GROUP BY f.id_funcionario, f.descfuncionario, e.descespecialidade, a.dtaatende, COALESCE(atend.qtd,0) , COALESCE(proffalta.qtd,0) ,COALESCE(pacfalta.qtd,0)
+ORDER BY f.id_funcionario, a.dtaatende]]>
 	</queryString>
 	<field name="cod_medico" class="java.lang.Integer"/>
 	<field name="nome_medico" class="java.lang.String"/>
@@ -135,28 +137,28 @@ order by m.id_medico, a.dtaatende]]>
 					<text><![CDATA[Data]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="143" y="46" width="91" height="20" uuid="97422d22-3312-49eb-8450-e6d74de046ac"/>
+					<reportElement x="85" y="46" width="120" height="20" uuid="97422d22-3312-49eb-8450-e6d74de046ac"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="12"/>
 					</textElement>
 					<text><![CDATA[Proc. Realizados]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="244" y="46" width="90" height="20" uuid="4376ee44-8187-408e-b65c-947455ccbe30"/>
+					<reportElement x="209" y="46" width="126" height="20" uuid="4376ee44-8187-408e-b65c-947455ccbe30"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="12"/>
 					</textElement>
 					<text><![CDATA[Faltas Pacientes]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="345" y="46" width="100" height="20" uuid="215c2c05-d906-43f4-adc7-5d70efc8d0a6"/>
+					<reportElement x="323" y="46" width="122" height="20" uuid="215c2c05-d906-43f4-adc7-5d70efc8d0a6"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="12"/>
 					</textElement>
 					<text><![CDATA[Faltas Profissional]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="455" y="46" width="100" height="20" uuid="337b8cff-3ffc-4b47-9614-5f69709d2714"/>
+					<reportElement x="445" y="46" width="110" height="20" uuid="337b8cff-3ffc-4b47-9614-5f69709d2714"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="12"/>
 					</textElement>
@@ -173,35 +175,35 @@ order by m.id_medico, a.dtaatende]]>
 					<reportElement x="0" y="4" width="555" height="20" uuid="144e3a31-6916-4766-9608-74bb85c7ee3e"/>
 				</rectangle>
 				<staticText>
-					<reportElement x="43" y="3" width="100" height="20" uuid="931d712a-acbc-4a90-982d-1c13172ceb5e"/>
+					<reportElement x="-1" y="3" width="100" height="20" uuid="931d712a-acbc-4a90-982d-1c13172ceb5e"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
 					<text><![CDATA[TOTAL]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="455" y="3" width="100" height="20" uuid="61ec1190-04f4-4169-a7fd-508b20746162"/>
+					<reportElement x="453" y="3" width="100" height="20" uuid="61ec1190-04f4-4169-a7fd-508b20746162"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{agendado_3}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="145" y="3" width="89" height="20" uuid="9c3e7de4-31f4-47f5-b0c7-1215d96f5bbc"/>
+					<reportElement x="101" y="3" width="89" height="20" uuid="9c3e7de4-31f4-47f5-b0c7-1215d96f5bbc"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{atend_3}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="345" y="3" width="100" height="20" uuid="15e9ca8a-fa95-4ade-95be-ea7303ef2fd4"/>
+					<reportElement x="336" y="3" width="100" height="20" uuid="15e9ca8a-fa95-4ade-95be-ea7303ef2fd4"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{proffalta_3}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="245" y="3" width="89" height="20" uuid="07c25c0c-3ad3-4a42-81e4-c73dad93ccde"/>
+					<reportElement x="220" y="3" width="89" height="20" uuid="07c25c0c-3ad3-4a42-81e4-c73dad93ccde"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
@@ -220,22 +222,22 @@ order by m.id_medico, a.dtaatende]]>
 					<textFieldExpression><![CDATA[$F{dt_atend}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="144" y="0" width="90" height="20" uuid="b7596f35-3a13-4c2a-a65f-b0411cef612c"/>
+					<reportElement x="100" y="0" width="90" height="20" uuid="b7596f35-3a13-4c2a-a65f-b0411cef612c"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{atend}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="245" y="0" width="89" height="20" uuid="3d3d52bb-1172-4409-a9d2-15e40153ed5c"/>
+					<reportElement x="220" y="0" width="89" height="20" uuid="3d3d52bb-1172-4409-a9d2-15e40153ed5c"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{pacfalta}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="345" y="0" width="100" height="20" uuid="272f2ecc-da2f-4eda-bf99-dc5cb05accdc"/>
+					<reportElement x="336" y="0" width="100" height="20" uuid="272f2ecc-da2f-4eda-bf99-dc5cb05accdc"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{proffalta}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="455" y="0" width="100" height="20" uuid="eb8458d7-66fb-465c-bb48-6b44833d0c6b"/>
+					<reportElement x="453" y="0" width="100" height="20" uuid="eb8458d7-66fb-465c-bb48-6b44833d0c6b"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{agendado}]]></textFieldExpression>
 				</textField>
