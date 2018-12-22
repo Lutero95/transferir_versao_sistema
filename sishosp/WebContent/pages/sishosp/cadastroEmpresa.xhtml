@@ -145,10 +145,12 @@
                     </b:column>
 
                     <b:column span="5">
-                        <b:inputText value="#{EmpresaController.empresa.estado}"
-                                     class="form-control" required="true"
-                                     requiredMessage="Estado: Campo obrigatório!">
-                        </b:inputText>
+                        <b:selectOneMenu size="10" required="true"
+                                         requiredMessage="Estado: Campo obrigatório!"
+                                         value="#{EmpresaController.empresa.estado}" >
+                        <f:selectItems value="#{EmpresaController.listaEstados}"></f:selectItems>
+                        </b:selectOneMenu>
+
                     </b:column>
 
                 </b:row>
@@ -235,6 +237,7 @@
 
                 </b:row>
 
+                <br></br>
                 <br></br>
 
                 <div align="center">

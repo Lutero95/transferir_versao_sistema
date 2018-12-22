@@ -74,7 +74,7 @@
                             <b:column span="1">
                                 <h:outputLabel value="Senha" style="margin-top:10px"/>
                             </b:column>
-                            <b:column span="3">
+                            <b:column span="5">
                                 <b:inputSecret required="true"
                                                requiredMessage="Senha: Campo obrigatório!"
                                                value="#{MBFuncionarios.profissional.senha}"></b:inputSecret>
@@ -84,7 +84,7 @@
                                 <h:outputLabel value="Ativo"
                                                style="margin-top:10px;margin-left:50px"/>
                             </b:column>
-                            <b:column span="3">
+                            <b:column span="5">
                                 <h:selectOneMenu style="width:105px;margin-top:5px"
                                                  styleClass="form-control"
                                                  value="#{MBFuncionarios.profissional.ativo}">
@@ -93,12 +93,18 @@
                                 </h:selectOneMenu>
                             </b:column>
 
+                        </b:row>
+
+                        <br></br>
+
+                        <b:row>
+
                             <b:column span="1">
                                 <h:outputLabel value="Perfil"
                                                style="margin-top:5px"/>
                             </b:column>
 
-                            <b:column span="3">
+                            <b:column span="5">
                                 <p:selectOneMenu
                                         value="#{MBFuncionarios.profissional.perfil.id}"
                                         required="true" requiredMessage="Perfil: Campo obrigatório!"
@@ -110,6 +116,24 @@
                                     <p:ajax event="change" listener="#{MBFuncionarios.limparDualCad()}" update=""/>
                                 </p:selectOneMenu>
                             </b:column>
+
+                            <b:column span="1">
+                                <h:outputLabel value="Empresa"
+                                               style="margin-top:5px"/>
+                            </b:column>
+
+                            <b:column span="5">
+                                <p:selectOneMenu
+                                        value="#{MBFuncionarios.profissional.empresa.codEmpresa}"
+                                        required="true" requiredMessage="Empresa: Campo obrigatório!"
+                                        style="width:230px;">
+
+                                    <f:selectItem itemLabel="Selecione"/>
+                                    <f:selectItems value="#{EmpresaController.listarEmpresa()}" var="emp"
+                                                   itemLabel="#{emp.nomeFantasia}" itemValue="#{emp.codEmpresa}"/>
+                                </p:selectOneMenu>
+                            </b:column>
+
                         </b:row>
 
 

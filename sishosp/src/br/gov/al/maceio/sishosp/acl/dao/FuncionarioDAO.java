@@ -39,7 +39,7 @@ public class FuncionarioDAO {
             throws ProjetoException {
 
         String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, "
-                + "pf.descricao as descperfil, case when us.ativo = 'S' "
+                + "pf.descricao as descperfil, cod_empresa, case when us.ativo = 'S' "
                 + "then true else false end as usuarioativo, "
                 + "pf.id as idperfil from acl.funcionarios us "
                 + "join acl.perfil pf on (pf.id = us.id_perfil) "
@@ -62,6 +62,7 @@ public class FuncionarioDAO {
                 ub.setNome(rs.getString("descfuncionario"));
                 ub.setSenha(rs.getString("senha"));
                 ub.setEmail(rs.getString("email"));
+                ub.getEmpresa().setCodEmpresa(rs.getInt("cod_empresa"));
 
                 // ACL
                 ub.setId(rs.getLong("id_funcionario"));
@@ -71,6 +72,9 @@ public class FuncionarioDAO {
 
                 count++;
             }
+
+            FacesContext.getCurrentInstance().getExternalContext()
+                    .getSessionMap().put("obj_funcionario", ub);
 
             FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().put("setores_usuario", setoresUsuario);
@@ -275,7 +279,7 @@ public class FuncionarioDAO {
     public Boolean alterar(FuncionarioBean usuario) {
         boolean retorno = false;
         String sql = "update acl.funcionario set descfuncionario = ?, cpf = ?, email = ?, "
-                + "senha = ?, id_perfil = ?, ativo = ? where id_funcionario = ?";
+                + "senha = ?, id_perfil = ?, ativo = ?, cod_empresa = ? where id_funcionario = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -285,7 +289,8 @@ public class FuncionarioDAO {
             stmt.setString(4, usuario.getSenha());
             stmt.setLong(5, usuario.getPerfil().getId());
             stmt.setString(6, usuario.getAtivo());
-            stmt.setLong(7, usuario.getCodigo());
+            stmt.setInt(7, usuario.getEmpresa().getCodEmpresa());
+            stmt.setLong(8, usuario.getCodigo());
             stmt.executeUpdate();
 
             FuncionarioBean u = usuario;
@@ -773,15 +778,15 @@ public class FuncionarioDAO {
                 .get("obj_usuario");
 
         String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
-                + " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil) "
-                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_date, false, ?) returning id_funcionario;";
+                + " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, cod_empresa) "
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_date, false, ?, ?) returning id_funcionario;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
 
             ps.setString(1, profissional.getNome().toUpperCase());
 
-            ps.setString(2, profissional.getCpf());
+            ps.setString(2, profissional.getCpf().replaceAll("[^0-9]", ""));
 
             ps.setString(3, profissional.getSenha());
 
@@ -828,6 +833,8 @@ public class FuncionarioDAO {
             ps.setBoolean(10, profissional.getRealizaAtendimento());
 
             ps.setLong(11, profissional.getPerfil().getId());
+
+            ps.setInt(12, profissional.getEmpresa().getCodEmpresa());
 
             ResultSet rs = ps.executeQuery();
 
@@ -1207,7 +1214,7 @@ public class FuncionarioDAO {
         FuncionarioBean prof = null;
 
         String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
-                + " cpf, senha, realiza_atendimento, id_perfil "
+                + " cpf, senha, realiza_atendimento, id_perfil, cod_empresa "
                 + " from acl.funcionarios where id_funcionario = ? and ativo = 'S' order by descfuncionario";
 
         try {
@@ -1233,6 +1240,7 @@ public class FuncionarioDAO {
                 prof.setProc1(procDao.listarProcedimentoPorId(rs
                         .getInt("codprocedimentopadrao")));
                 prof.getPerfil().setId(rs.getLong("id_perfil"));
+                prof.getEmpresa().setCodEmpresa(rs.getInt("cod_empresa"));
 
             }
             return prof;

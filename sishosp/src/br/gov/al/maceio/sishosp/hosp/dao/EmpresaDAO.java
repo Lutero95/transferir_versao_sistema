@@ -34,14 +34,15 @@ public class EmpresaDAO {
             ps.setString(7, empresa.getCep());
             ps.setString(8, empresa.getCidade());
             ps.setString(9, empresa.getEstado());
-            ps.setInt(10, empresa.getDdd1());
-            ps.setInt(11, empresa.getTelefone1());
-            ps.setInt(12, empresa.getDdd2());
-            ps.setInt(13, empresa.getTelefone2());
-            ps.setString(14, empresa.getEmail());
-            ps.setString(15, empresa.getSite());
-            ps.setBoolean(16, empresa.getMatriz());
-            ps.setString(17, empresa.getComplemento());
+            ps.setString(10, empresa.getComplemento());
+            ps.setInt(11, empresa.getDdd1());
+            ps.setInt(12, empresa.getTelefone1());
+            ps.setInt(13, empresa.getDdd2());
+            ps.setInt(14, empresa.getTelefone2());
+            ps.setString(15, empresa.getEmail());
+            ps.setString(16, empresa.getSite());
+            ps.setBoolean(17, empresa.getMatriz());
+
             ps.execute();
 
             con.commit();
@@ -65,7 +66,7 @@ public class EmpresaDAO {
         List<EmpresaBean> lista = new ArrayList<>();
         String sql = "SELECT cod_empresa, nome_principal, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
-                " email, site, matriz, ativo " +
+                " email, site, matriz, ativo, case when matriz is true then 'Matriz' else 'Filial' end as tipo " +
                 " FROM hosp.empresa where ativo is true;";
 
         try {
@@ -75,7 +76,7 @@ public class EmpresaDAO {
 
             while (rs.next()) {
                 EmpresaBean empresa = new EmpresaBean();
-                empresa.setCodEmpresa(rs.getInt("codempresa"));
+                empresa.setCodEmpresa(rs.getInt("cod_empresa"));
                 empresa.setNomeEmpresa(rs.getString("nome_principal"));
                 empresa.setNomeFantasia(rs.getString("nome_fantasia"));
                 empresa.setCnpj(rs.getString("cnpj"));
@@ -86,14 +87,15 @@ public class EmpresaDAO {
                 empresa.setCep(rs.getString("cep"));
                 empresa.setCidade(rs.getString("cidade"));
                 empresa.setEstado(rs.getString("estado"));
-                empresa.setDdd1(rs.getInt("ddd1"));
-                empresa.setTelefone1(rs.getInt("telefone1"));
-                empresa.setDdd2(rs.getInt("ddd2"));
-                empresa.setTelefone2(rs.getInt("telefone2"));
+                empresa.setDdd1(rs.getInt("ddd_1"));
+                empresa.setTelefone1(rs.getInt("telefone_1"));
+                empresa.setDdd2(rs.getInt("ddd_2"));
+                empresa.setTelefone2(rs.getInt("telefone_2"));
                 empresa.setEmail(rs.getString("email"));
                 empresa.setSite(rs.getString("site"));
                 empresa.setMatriz(rs.getBoolean("matriz"));
                 empresa.setAtivo(rs.getBoolean("ativo"));
+                empresa.setTipoString(rs.getString("tipo"));
 
                 lista.add(empresa);
             }
@@ -116,7 +118,7 @@ public class EmpresaDAO {
         String sql = "UPDATE hosp.empresa SET nome_principal=?, nome_fantasia=?, cnpj=?, rua=?, " +
                 " bairro=?, numero=?, cep=?, cidade=?, estado=?, ddd_1=?, telefone_1=?, " +
                 " ddd_2=?, telefone_2=?, email=?, site=?, matriz=?, complemento=? " +
-                " WHERE codempresa = ?;";
+                " WHERE cod_empresa = ?;";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
@@ -194,13 +196,13 @@ public class EmpresaDAO {
 
         try {
             con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
+            PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, id);
-            ResultSet rs = stm.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
 
-                empresa.setCodEmpresa(rs.getInt("codempresa"));
+                empresa.setCodEmpresa(rs.getInt("cod_empresa"));
                 empresa.setNomeEmpresa(rs.getString("nome_principal"));
                 empresa.setNomeFantasia(rs.getString("nome_fantasia"));
                 empresa.setCnpj(rs.getString("cnpj"));
@@ -211,10 +213,10 @@ public class EmpresaDAO {
                 empresa.setCep(rs.getString("cep"));
                 empresa.setCidade(rs.getString("cidade"));
                 empresa.setEstado(rs.getString("estado"));
-                empresa.setDdd1(rs.getInt("ddd1"));
-                empresa.setTelefone1(rs.getInt("telefone1"));
-                empresa.setDdd2(rs.getInt("ddd2"));
-                empresa.setTelefone2(rs.getInt("telefone2"));
+                empresa.setDdd1(rs.getInt("ddd_1"));
+                empresa.setTelefone1(rs.getInt("telefone_1"));
+                empresa.setDdd2(rs.getInt("ddd_2"));
+                empresa.setTelefone2(rs.getInt("telefone_2"));
                 empresa.setEmail(rs.getString("email"));
                 empresa.setSite(rs.getString("site"));
                 empresa.setMatriz(rs.getBoolean("matriz"));

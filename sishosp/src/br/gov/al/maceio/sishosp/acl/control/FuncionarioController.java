@@ -443,7 +443,7 @@ public class FuncionarioController implements Serializable {
 
     public void gravarProfissional() throws ProjetoException {
 
-        if (profissional.getRealizaAtendimento() && listaGruposEProgramasProfissional.isEmpty()) {
+        if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.isEmpty()) {
                 JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatórios!");
         }
 

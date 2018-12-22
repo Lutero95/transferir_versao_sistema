@@ -66,8 +66,7 @@
                             Tipo
                         </f:facet>
 
-                        <h:outputText rendered="#{tab.matriz == true}" value="#{Matriz}"/>
-                        <h:outputText rendered="#{tab.matriz != true}" value="#{Filial}"/>
+                        <h:outputText value="#{tab.tipoString}"/>
                     </h:column>
 
                     <h:column>
@@ -81,7 +80,7 @@
                                                          target="#{EmpresaController.empresa}"/>
 
                             <f:setPropertyActionListener value="2"
-                                                         target="#{EmpresaController.empresa}"/>
+                                                         target="#{EmpresaController.tipo}"/>
                         </b:commandButton>
 
                         <b:commandButton tooltip="Desativar" icon="glyphicon-trash"

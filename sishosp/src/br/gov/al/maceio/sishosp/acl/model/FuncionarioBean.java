@@ -1,10 +1,6 @@
 package br.gov.al.maceio.sishosp.acl.model;
 
-import br.gov.al.maceio.sishosp.hosp.model.CboBean;
-import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,6 +43,7 @@ public class FuncionarioBean implements Serializable {
     private ProgramaBean progRmv;
     private GrupoBean grupoRmv;
     private PermissoesBean permissao;
+    private EmpresaBean empresa;
 
     // ACL
     private Perfil perfil;
@@ -71,8 +68,10 @@ public class FuncionarioBean implements Serializable {
         this.grupoAdd = new GrupoBean();
         this.progRmv = new ProgramaBean();
         this.grupoRmv = new GrupoBean();
+        this.empresa = new EmpresaBean();
         this.perfil = new Perfil();
         listDiasSemana = new ArrayList<String>();
+        this.realizaAtendimento = false;
     }
 
     public Integer getCodigo() {
@@ -390,4 +389,11 @@ public class FuncionarioBean implements Serializable {
         this.perfil = perfil;
     }
 
+    public EmpresaBean getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(EmpresaBean empresa) {
+        this.empresa = empresa;
+    }
 }
