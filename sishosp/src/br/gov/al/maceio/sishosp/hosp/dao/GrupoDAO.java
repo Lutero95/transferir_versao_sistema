@@ -23,8 +23,12 @@ public class GrupoDAO {
 	PreparedStatement ps = null;
 
 	public boolean gravarGrupo(GrupoBean grupo)  {
+
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_funcionario");
+
 		Boolean retorno = false;
-		String sql = "insert into hosp.grupo (descgrupo, qtdfrequencia, auditivo, insercao_pac_institut) values (?, ?, ?, ?) RETURNING id_grupo;";
+		String sql = "insert into hosp.grupo (descgrupo, qtdfrequencia, auditivo, insercao_pac_institut, cod_empresa) values (?, ?, ?, ?, ?) RETURNING id_grupo;";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -37,6 +41,7 @@ public class GrupoDAO {
 			} else {
 				ps.setBoolean(4, grupo.isinsercao_pac_institut());
 			}
+			ps.setInt(5, user_session.getEmpresa().getCodEmpresa());
 			ResultSet rs = ps.executeQuery();
 
 			Integer idGrupo = 0;

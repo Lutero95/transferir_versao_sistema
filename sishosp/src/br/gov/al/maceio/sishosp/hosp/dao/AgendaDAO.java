@@ -15,16 +15,22 @@ import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
 
+import javax.faces.context.FacesContext;
+
 public class AgendaDAO {
     Connection con = null;
     PreparedStatement ps = null;
 
     public boolean gravarAgenda(AgendaBean agenda,
                                 List<AgendaBean> listaNovosAgendamentos) {
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         Boolean retorno = false;
         String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
                 + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
-                + " turno, codequipe, observacao, ativo, codempresa, codgrupo)"
+                + " turno, codequipe, observacao, ativo, cod_empresa, codgrupo)"
                 + " VALUES "
                 + "(?, ?, ?, ?, ?,"
                 + " ?, ?, ?, ?, ?,"
@@ -54,7 +60,7 @@ public class AgendaDAO {
                 }
                 ps.setString(10, agenda.getObservacao().toUpperCase());
                 ps.setString(11, "S");
-                ps.setInt(12, 0);
+                ps.setInt(12, user_session.getEmpresa().getCodEmpresa());
                 ps.setInt(13, agenda.getGrupo().getIdGrupo());
 
                 ResultSet rs = ps.executeQuery();
@@ -179,7 +185,7 @@ public class AgendaDAO {
 
         List<BloqueioBean> lista = new ArrayList<>();
         FuncionarioDAO pDao = new FuncionarioDAO();
-        String sql = "select id_bloqueioagenda, codmedico, dataagenda, turno, descricao, codempresa "
+        String sql = "select id_bloqueioagenda, codmedico, dataagenda, turno, descricao "
                 + " from hosp.bloqueio_agenda "
                 + " where codmedico = ? and  dataagenda = ? and turno = ? order by id_bloqueioagenda";
         try {
@@ -198,7 +204,6 @@ public class AgendaDAO {
                 bloqueio.setDataInicio(rs.getDate("dataagenda"));
                 bloqueio.setTurno(rs.getString("turno"));
                 bloqueio.setDescBloqueio(rs.getString("descricao"));
-                bloqueio.setCodEmpresa(rs.getInt("codempresa"));
 
                 lista.add(bloqueio);
             }
@@ -406,7 +411,7 @@ public class AgendaDAO {
 
         sqlProf.append("SELECT a.id_atendimento, a.codpaciente, a.codmedico, a.codprograma, ");
         sqlProf.append("a.codconvenio, a.dtaatende, a.horaatende, a.situacao, a.codatendente, ");
-        sqlProf.append("a.dtamarcacao, a.codtipoatendimento, a.turno, a.codequipe, a.observacao, a.ativo, a.codempresa, ");
+        sqlProf.append("a.dtamarcacao, a.codtipoatendimento, a.turno, a.codequipe, a.observacao, a.ativo, ");
         sqlProf.append("f.descfuncionario, p.nome, t.desctipoatendimento, e.descequipe ");
         sqlProf.append("FROM hosp.atendimentos a ");
         sqlProf.append("LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a.codmedico) ");
@@ -419,7 +424,7 @@ public class AgendaDAO {
 
         sqlEqui.append("SELECT a.id_atendimento, a.codpaciente, a.codmedico, a.codprograma, ");
         sqlEqui.append("a.codconvenio, a.dtaatende, a.horaatende, a.situacao, a.codatendente, ");
-        sqlEqui.append("a.dtamarcacao, a.codtipoatendimento, a.turno, a.codequipe, a.observacao, a.ativo, a.codempresa, ");
+        sqlEqui.append("a.dtamarcacao, a.codtipoatendimento, a.turno, a.codequipe, a.observacao, a.ativo, ");
         sqlEqui.append("f.descfuncionario, p.nome, t.desctipoatendimento, e.descequipe ");
         sqlEqui.append("FROM hosp.atendimentos a ");
         sqlEqui.append("LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a.codmedico) ");

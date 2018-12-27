@@ -7,9 +7,12 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
+
+import javax.faces.context.FacesContext;
 
 public class LaudoDAO {
 
@@ -17,13 +20,17 @@ public class LaudoDAO {
     private Connection conexao = null;
 
     public Boolean cadastrarLaudo(LaudoBean laudo) {
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         boolean retorno = false;
 
         String sql = "insert into hosp.laudo "
                 + "(codpaciente, id_recurso, data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
                 + "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, "
-                + "cid1, cid2, cid3, obs, ativo ) "
-                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true)";
+                + "cid1, cid2, cid3, obs, ativo, cod_empresa ) "
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?)";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -128,6 +135,8 @@ public class LaudoDAO {
             } else {
                 stmt.setString(18, laudo.getObs().toUpperCase().trim());
             }
+
+            stmt.setInt(19, user_session.getEmpresa().getCodEmpresa());
 
             stmt.execute();
             conexao.commit();

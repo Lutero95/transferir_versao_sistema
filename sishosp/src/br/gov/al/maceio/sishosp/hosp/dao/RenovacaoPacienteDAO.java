@@ -7,10 +7,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
+
+import javax.faces.context.FacesContext;
 
 public class RenovacaoPacienteDAO {
 
@@ -158,6 +161,9 @@ public class RenovacaoPacienteDAO {
                                          InsercaoPacienteBean insercaoParaLaudo,
                                          List<InsercaoPacienteBean> lista) {
 
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         Boolean retorno = false;
         ResultSet rs = null;
         String sql = "update hosp.paciente_instituicao set status = 'CR' where id = ?";
@@ -168,7 +174,7 @@ public class RenovacaoPacienteDAO {
 
             ps.executeUpdate();
 
-            String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
+            String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, cod_empresa) VALUES  (?, ?, ?, ?)";
             ps = conexao.prepareStatement(sql2);
 
             for (int i = 0; i < lista.size(); i++) {
@@ -181,13 +187,14 @@ public class RenovacaoPacienteDAO {
                             3,
                             Integer.parseInt(lista.get(i).getFuncionario()
                                     .getListDiasSemana().get(j)));
+                    ps.setInt(4, user_session.getEmpresa().getCodEmpresa());
                     ps.executeUpdate();
                 }
             }
 
             String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, "
-                    + " observacao, ativo, id_paciente_instituicao)"
-                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?) RETURNING id_atendimento;";
+                    + " observacao, ativo, id_paciente_instituicao, cod_empresa)"
+                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?) RETURNING id_atendimento;";
 
             PreparedStatement ps3 = null;
             ps3 = conexao.prepareStatement(sql3);
@@ -204,6 +211,7 @@ public class RenovacaoPacienteDAO {
                 ps3.setString(5, insercao.getAgenda().getTurno());
                 ps3.setString(6, insercao.getObservacao());
                 ps3.setInt(7, insercao.getId());
+                ps3.setInt(8, user_session.getEmpresa().getCodEmpresa());
 
                 rs = ps3.executeQuery();
 
@@ -260,6 +268,9 @@ public class RenovacaoPacienteDAO {
                                               InsercaoPacienteBean insercaoParaLaudo,
                                               ArrayList<InsercaoPacienteBean> listaAgendamento) {
 
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         Boolean retorno = false;
         ResultSet rs = null;
 
@@ -271,7 +282,7 @@ public class RenovacaoPacienteDAO {
 
             ps.executeUpdate();
 
-            String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
+            String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, cod_empresa) VALUES  (?, ?, ?, ?)";
             PreparedStatement ps2 = null;
             ps2 = conexao.prepareStatement(sql2);
 
@@ -283,12 +294,13 @@ public class RenovacaoPacienteDAO {
                         3,
                         Integer.parseInt(insercao.getFuncionario()
                                 .getListDiasSemana().get(i)));
+                ps2.setInt(4, user_session.getEmpresa().getCodEmpresa());
                 ps2.executeUpdate();
 
             }
 
-            String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, observacao, ativo)"
-                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S') RETURNING id_atendimento;";
+            String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, observacao, ativo, cod_empresa)"
+                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?) RETURNING id_atendimento;";
 
             PreparedStatement ps3 = null;
             ps3 = conexao.prepareStatement(sql3);
@@ -303,6 +315,7 @@ public class RenovacaoPacienteDAO {
                 ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
                 ps3.setString(5, insercao.getAgenda().getTurno());
                 ps3.setString(6, insercao.getObservacao());
+                ps3.setInt(7, user_session.getEmpresa().getCodEmpresa());
 
                 rs = ps3.executeQuery();
 

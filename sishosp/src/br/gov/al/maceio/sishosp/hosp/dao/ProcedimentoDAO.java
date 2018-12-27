@@ -14,7 +14,6 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
-import com.sun.org.apache.xpath.internal.functions.Function;
 
 import javax.faces.context.FacesContext;
 
@@ -24,11 +23,14 @@ public class ProcedimentoDAO {
 
     public boolean gravarProcedimento(ProcedimentoBean proc) {
 
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         Boolean retorno = false;
 
         String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
-                + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo)"
-                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
+                + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo, cod_empresa)"
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -53,6 +55,7 @@ public class ProcedimentoDAO {
             ps.setInt(10, proc.getQtdMaxima());
             ps.setInt(11, proc.getPrazoMinimoNovaExecucao());
             ps.setString(12, proc.getSexo());
+            ps.setInt(13, user_session.getEmpresa().getCodEmpresa());
 
             ResultSet rs = ps.executeQuery();
 

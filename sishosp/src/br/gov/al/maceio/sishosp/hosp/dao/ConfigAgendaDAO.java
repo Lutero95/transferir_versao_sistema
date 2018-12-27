@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoConfiguracaoAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
+
+import javax.faces.context.FacesContext;
 
 public class ConfigAgendaDAO {
 
@@ -57,8 +60,8 @@ public class ConfigAgendaDAO {
                                       ConfigAgendaParte1Bean conf1,
                                       List<ConfigAgendaParte2Bean> listaTipos, Connection con) {
         PreparedStatement ps1 = null;
-        String sql = "insert into hosp.tipo_atend_agenda (codconfigagenda, codprograma, codtipoatendimento, qtd, codempresa, codgrupo) "
-                + " values(?, ?, ?, ?, ?, ?);";
+        String sql = "insert into hosp.tipo_atend_agenda (codconfigagenda, codprograma, codtipoatendimento, qtd, codgrupo) "
+                + " values(?, ?, ?, ?, ?);";
         try {
 
             ps1 = con.prepareStatement(sql);
@@ -67,8 +70,7 @@ public class ConfigAgendaDAO {
                 ps1.setInt(2, conf.getPrograma().getIdPrograma());
                 ps1.setInt(3, conf.getTipoAt().getIdTipo());
                 ps1.setInt(4, conf.getQtd());
-                ps1.setInt(5, 0);// COD EMPRESA ?
-                ps1.setInt(6, conf.getGrupo().getIdGrupo());
+                ps1.setInt(5, conf.getGrupo().getIdGrupo());
                 ps1.execute();
             }
 
@@ -85,14 +87,18 @@ public class ConfigAgendaDAO {
 
     public Boolean gravaTurno(ConfigAgendaParte1Bean confParte1,
                               List<ConfigAgendaParte2Bean> listaTipos, String dia) {
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         boolean gravou = false;
         int idTipo1 = 0;
         int idTipo2 = 0;
         int idTipo3 = 0;
 
         try {
-            String sql = "INSERT INTO hosp.config_agenda(codmedico, diasemana, qtdmax, dataagenda, turno, mes, ano, id_configagenda) "
-                    + " VALUES (?, ?, ?, ?, ?, ?, ?, DEFAULT) RETURNING id_configagenda;";
+            String sql = "INSERT INTO hosp.config_agenda(codmedico, diasemana, qtdmax, dataagenda, turno, mes, ano, id_configagenda, cod_empresa) "
+                    + " VALUES (?, ?, ?, ?, ?, ?, ?, DEFAULT, ?) RETURNING id_configagenda;";
 
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
@@ -128,6 +134,8 @@ public class ConfigAgendaDAO {
                 ps.setInt(6, confParte1.getMes());
 
                 ps.setInt(7, confParte1.getAno());
+
+                ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
 
                 rs = ps.executeQuery();
 
@@ -188,6 +196,7 @@ public class ConfigAgendaDAO {
                 ps.setString(5, confParte1.getTurno());
                 ps.setInt(6, confParte1.getMes());
                 ps.setInt(7, confParte1.getAno());
+                ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
                 rs = ps.executeQuery();
 
                 if (rs.next()) {
@@ -217,9 +226,12 @@ public class ConfigAgendaDAO {
     public Boolean gravaTurnoEquipe(ConfigAgendaParte1Bean confParte1, ConfigAgendaParte2Bean confParte2, String dia, Connection conn)
             throws SQLException {
 
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         Boolean retorno = false;
         String sql = "INSERT INTO hosp.config_agenda_equipe(codequipe, diasemana, qtdmax, dataagenda, turno, mes, ano, " +
-                "codempresa, id_configagenda, opcao, codprograma, codgrupo) "
+                "cod_empresa, id_configagenda, opcao, codprograma, codgrupo) "
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, DEFAULT, ?, ?, ?) RETURNING id_configagenda;";
 
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -242,7 +254,7 @@ public class ConfigAgendaDAO {
                 ps.setString(5, "M");
                 ps.setInt(6, confParte1.getMes());
                 ps.setInt(7, confParte1.getAno());
-                ps.setInt(8, 0);// COD EMPRESA ?
+                ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
                 ps.setString(9, confParte1.getOpcao());
                 ps.setInt(10, confParte2.getPrograma().getIdPrograma());
                 ps.setInt(11, confParte2.getGrupo().getIdGrupo());
@@ -264,7 +276,7 @@ public class ConfigAgendaDAO {
                 ps.setString(5, "T");
                 ps.setInt(6, confParte1.getMes());
                 ps.setInt(7, confParte1.getAno());
-                ps.setInt(8, 0);// COD EMPRESA ?
+                ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
                 ps.setString(9, confParte1.getOpcao());
                 ps.setInt(10, confParte2.getPrograma().getIdPrograma());
                 ps.setInt(11, confParte2.getGrupo().getIdGrupo());
@@ -285,7 +297,7 @@ public class ConfigAgendaDAO {
                 ps.setString(5, confParte1.getTurno());
                 ps.setInt(6, confParte1.getMes());
                 ps.setInt(7, confParte1.getAno());
-                ps.setInt(8, 0);// COD EMPRESA ?
+                ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
                 ps.setString(9, confParte1.getOpcao());
                 ps.setInt(10, confParte2.getPrograma().getIdPrograma());
                 ps.setInt(11, confParte2.getGrupo().getIdGrupo());
@@ -311,7 +323,7 @@ public class ConfigAgendaDAO {
             throws ProjetoException {
 
         List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
-        String sql = "SELECT c.id_configagenda, c.codmedico, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, c.codempresa, " +
+        String sql = "SELECT c.id_configagenda, c.codmedico, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, " +
                 "f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao " +
                 "FROM hosp.config_agenda c " +
                 "left join acl.funcionarios f on (c.codmedico = f.id_funcionario) " +
@@ -402,7 +414,7 @@ public class ConfigAgendaDAO {
             ConfigAgendaParte1Bean config, int codequipe)
             throws ProjetoException {
         List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
-        String sql = "SELECT c.id_configagenda, c.codequipe, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, c.codempresa, e.descequipe, c.opcao  "
+        String sql = "SELECT c.id_configagenda, c.codequipe, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, e.descequipe, c.opcao  "
                 + "FROM hosp.config_agenda_equipe c " +
                 "LEFT JOIN hosp.equipe e ON (c.codequipe = e.id_equipe) " +
                 "where codequipe = ?";
@@ -488,7 +500,7 @@ public class ConfigAgendaDAO {
     public List<ConfigAgendaParte1Bean> listarHorariosEquipe()
             throws ProjetoException {
         List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
-        String sql = "SELECT c.id_configagenda, c.codequipe, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, c.codempresa, e.descequipe, c.opcao  "
+        String sql = "SELECT c.id_configagenda, c.codequipe, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, e.descequipe, c.opcao  "
                 + "FROM hosp.config_agenda_equipe c " +
                 "LEFT JOIN hosp.equipe e ON (c.codequipe = e.id_equipe) " +
                 "ORDER BY id_configagenda ";
@@ -529,7 +541,7 @@ public class ConfigAgendaDAO {
             throws ProjetoException {
 
         List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
-        String sql = "SELECT c.id_configagenda, c.codmedico, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, c.codempresa, " +
+        String sql = "SELECT c.id_configagenda, c.codmedico, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, " +
                 "f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao " +
                 "FROM hosp.config_agenda c " +
                 "left join acl.funcionarios f on (c.codmedico = f.id_funcionario) " +
@@ -554,7 +566,6 @@ public class ConfigAgendaDAO {
                 conf.setTurno(rs.getString("turno"));
                 conf.setMes(rs.getInt("mes"));
                 conf.setAno(rs.getInt("ano"));
-                // codempresa
                 lista.add(conf);
             }
         } catch (SQLException ex) {
@@ -603,7 +614,7 @@ public class ConfigAgendaDAO {
             throws ProjetoException {
 
         ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
-        String sql = "SELECT c.id_configagenda, c.codmedico, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, c.codempresa, c.opcao, " +
+        String sql = "SELECT c.id_configagenda, c.codmedico, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, c.opcao, " +
                 "f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao " +
                 "FROM hosp.config_agenda c " +
                 "left join acl.funcionarios f on (c.codmedico = f.id_funcionario) "
@@ -647,7 +658,7 @@ public class ConfigAgendaDAO {
             throws ProjetoException {
 
         ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
-        String sql = "SELECT c.id_configagenda, c.codequipe, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, c.codempresa, e.descequipe, c.opcao  "
+        String sql = "SELECT c.id_configagenda, c.codequipe, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, e.descequipe, c.opcao  "
                 + "FROM hosp.config_agenda_equipe c " +
                 "LEFT JOIN hosp.equipe e ON (c.codequipe = e.id_equipe) " +
                 "WHERE id_configagenda = ? ORDER BY id_configagenda";
@@ -686,7 +697,7 @@ public class ConfigAgendaDAO {
     public List<ConfigAgendaParte1Bean> listarHorariosPorIDEquipe(int id)
             throws ProjetoException {
         List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
-        String sql = "SELECT c.id_configagenda, c.codequipe, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, c.codempresa, e.descequipe, c.opcao " +
+        String sql = "SELECT c.id_configagenda, c.codequipe, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, e.descequipe, c.opcao " +
                 "FROM hosp.config_agenda_equipe c " +
                 "LEFT JOIN hosp.equipe e ON (c.codequipe = e.id_equipe) "
                 + "where codequipe = ? order by id_configagenda ";
@@ -797,7 +808,7 @@ public class ConfigAgendaDAO {
         Boolean retorno = false;
 
         try {
-            String sql = "UPDATE hosp.config_agenda SET codmedico = ?, diasemana = ?, qtdmax = ?, dataagenda = ?, turno = ?, mes = ?, ano = ?, codempresa = ? "
+            String sql = "UPDATE hosp.config_agenda SET codmedico = ?, diasemana = ?, qtdmax = ?, dataagenda = ?, turno = ?, mes = ?, ano = ? "
                     + " WHERE id_configagenda = ?;";
             con = ConnectionFactory.getConnection();
             PreparedStatement ps2 = con.prepareStatement(sql);
@@ -817,8 +828,7 @@ public class ConfigAgendaDAO {
                 ps2.setString(5, "M");
                 ps2.setInt(6, confParte1.getMes());
                 ps2.setInt(7, confParte1.getAno());
-                ps2.setInt(8, 0);// COD EMPRESA ?
-                ps2.setInt(9, confParte1.getIdConfiAgenda());
+                ps2.setInt(8, confParte1.getIdConfiAgenda());
                 ps2.executeUpdate();
 
                 String sql2 = "DELETE from hosp.tipo_atend_agenda where codconfigagenda = ?";

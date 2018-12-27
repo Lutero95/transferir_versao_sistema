@@ -9,9 +9,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
+
+import javax.faces.context.FacesContext;
 
 public class BloqueioDAO {
     Connection con = null;
@@ -19,9 +22,13 @@ public class BloqueioDAO {
 
     public boolean gravarBloqueio(BloqueioBean bloqueio) {
 
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         Calendar calendarData = Calendar.getInstance();
         boolean condicao = true;
-        String sql = "insert into hosp.bloqueio_agenda (codmedico, dataagenda, turno, descricao, codempresa) values (?, ?, ?, ?, ?);";
+        String sql = "insert into hosp.bloqueio_agenda (codmedico, dataagenda, turno, descricao, cod_empresa) values (?, ?, ?, ?, ?);";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -34,7 +41,7 @@ public class BloqueioDAO {
                     ps.setDate(2, new java.sql.Date(dataInicio.getTime()));
                     ps.setString(3, bloqueio.getTurno().toUpperCase());
                     ps.setString(4, bloqueio.getDescBloqueio().toUpperCase());
-                    ps.setInt(5, 0); // COD EMPRESA ?
+                    ps.setInt(5, user_session.getEmpresa().getCodEmpresa());
                     ps.execute();
                     con.commit();
                     condicao = true;
@@ -119,7 +126,7 @@ public class BloqueioDAO {
 
     public List<BloqueioBean> listarBloqueio() throws ProjetoException {
         List<BloqueioBean> lista = new ArrayList<>();
-        String sql = "select b.id_bloqueioagenda, b.codmedico, m.descfuncionario, b.dataagenda, b.turno, b.descricao, b.codempresa "
+        String sql = "select b.id_bloqueioagenda, b.codmedico, m.descfuncionario, b.dataagenda, b.turno, b.descricao "
                 + " from hosp.bloqueio_agenda b left join acl.funcionarios m on (b.codmedico = m.id_funcionario) order by b.id_bloqueioagenda";
         try {
             con = ConnectionFactory.getConnection();
@@ -134,7 +141,6 @@ public class BloqueioDAO {
                 bloqueio.setDataInicio(rs.getDate("dataagenda"));
                 bloqueio.setTurno(rs.getString("turno"));
                 bloqueio.setDescBloqueio(rs.getString("descricao"));
-                bloqueio.setCodEmpresa(rs.getInt("codempresa"));
                 lista.add(bloqueio);
             }
         } catch (SQLException ex) {

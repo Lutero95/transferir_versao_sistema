@@ -90,7 +90,7 @@ public class EspecialidadeDAO {
     public List<EspecialidadeBean> listarEspecialidades()
             throws ProjetoException {
         List<EspecialidadeBean> lista = new ArrayList<>();
-        String sql = "select id_especialidade, descespecialidade, codempresa from hosp.especialidade order by descespecialidade";
+        String sql = "select id_especialidade, descespecialidade from hosp.especialidade order by descespecialidade";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -100,7 +100,6 @@ public class EspecialidadeDAO {
                 EspecialidadeBean esp = new EspecialidadeBean();
                 esp.setCodEspecialidade(rs.getInt("id_especialidade"));
                 esp.setDescEspecialidade(rs.getString("descespecialidade"));
-                esp.setCodEmpresa(rs.getInt("codempresa"));
 
                 lista.add(esp);
             }
@@ -120,7 +119,7 @@ public class EspecialidadeDAO {
     public List<EspecialidadeBean> listarEspecialidadesBusca(String descricao,
                                                              Integer tipo) throws ProjetoException {
         List<EspecialidadeBean> lista = new ArrayList<>();
-        String sql = "select id_especialidade, descespecialidade, codempresa from hosp.especialidade ";
+        String sql = "select id_especialidade, descespecialidade from hosp.especialidade ";
         if (tipo == 1) {
             sql += " where descespecialidade LIKE ?";
         }
@@ -134,7 +133,6 @@ public class EspecialidadeDAO {
                 EspecialidadeBean esp = new EspecialidadeBean();
                 esp.setCodEspecialidade(rs.getInt("id_especialidade"));
                 esp.setDescEspecialidade(rs.getString("descespecialidade"));
-                esp.setCodEmpresa(rs.getInt("codempresa"));
 
                 lista.add(esp);
             }
@@ -155,7 +153,7 @@ public class EspecialidadeDAO {
             throws ProjetoException {
 
         EspecialidadeBean esp = new EspecialidadeBean();
-        String sql = "select id_especialidade, descespecialidade, codempresa from hosp.especialidade where id_especialidade = ?";
+        String sql = "select id_especialidade, descespecialidade from hosp.especialidade where id_especialidade = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);

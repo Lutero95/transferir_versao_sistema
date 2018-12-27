@@ -20,15 +20,19 @@ public class ProgramaDAO {
 
     public boolean gravarPrograma(ProgramaBean prog) {
 
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         Boolean retorno = false;
         PreparedStatement ps = null;
 
-        String sql = "insert into hosp.programa (descprograma, codfederal) values (?, ?) RETURNING id_programa;";
+        String sql = "insert into hosp.programa (descprograma, codfederal, cod_empresa) values (?, ?, ?) RETURNING id_programa;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, prog.getDescPrograma().toUpperCase());
             ps.setDouble(2, prog.getCodFederal());
+            ps.setInt(3, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = ps.executeQuery();
 
             int idProg = 0;

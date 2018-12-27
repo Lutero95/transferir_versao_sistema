@@ -13,6 +13,8 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 
+import javax.faces.context.FacesContext;
+
 public class EquipeDAO {
 
     Connection con = null;
@@ -20,13 +22,18 @@ public class EquipeDAO {
     FuncionarioDAO pDao = new FuncionarioDAO();
 
     public boolean gravarEquipe(EquipeBean equipe) {
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         Boolean retorno = false;
-        String sql = "insert into hosp.equipe (descequipe) values (?) RETURNING id_equipe;";
+        String sql = "insert into hosp.equipe (descequipe, cod_empresa) values (?, ?) RETURNING id_equipe;";
 
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, equipe.getDescEquipe().toUpperCase());
+            ps.setInt(2, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -77,7 +84,7 @@ public class EquipeDAO {
 
     public List<EquipeBean> listarEquipe() throws ProjetoException {
         List<EquipeBean> lista = new ArrayList<>();
-        String sql = "select id_equipe, descequipe, codempresa from hosp.equipe order by descequipe";
+        String sql = "select id_equipe, descequipe, cod_empresa from hosp.equipe order by descequipe";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -88,7 +95,7 @@ public class EquipeDAO {
                 EquipeBean equipe = new EquipeBean();
                 equipe.setCodEquipe(rs.getInt("id_equipe"));
                 equipe.setDescEquipe(rs.getString("descequipe"));
-                equipe.setCodEmpresa(rs.getInt("codempresa"));
+                equipe.setCodEmpresa(rs.getInt("cod_empresa"));
                 lista.add(equipe);
             }
         } catch (SQLException ex) {
@@ -107,7 +114,7 @@ public class EquipeDAO {
     public List<EquipeBean> listarEquipeBusca(String descricao)
             throws ProjetoException {
         List<EquipeBean> lista = new ArrayList<>();
-        String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, codempresa from hosp.equipe where upper(id_equipe ||'-'|| descequipe) LIKE ? order by descequipe";
+        String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, cod_empresa from hosp.equipe where upper(id_equipe ||'-'|| descequipe) LIKE ? order by descequipe";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -119,7 +126,7 @@ public class EquipeDAO {
                 EquipeBean equipe = new EquipeBean();
                 equipe.setCodEquipe(rs.getInt("id_equipe"));
                 equipe.setDescEquipe(rs.getString("descequipe"));
-                equipe.setCodEmpresa(rs.getInt("codempresa"));
+                equipe.setCodEmpresa(rs.getInt("cod_empresa"));
                 equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
                         .getInt("id_equipe")));
                 lista.add(equipe);
@@ -289,7 +296,7 @@ public class EquipeDAO {
     public EquipeBean buscarEquipePorID(Integer id) throws ProjetoException {
         EquipeBean equipe = null;
 
-        String sql = "select id_equipe, descequipe, codempresa from hosp.equipe where id_equipe = ?";
+        String sql = "select id_equipe, descequipe, cod_empresa from hosp.equipe where id_equipe = ?";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -303,7 +310,7 @@ public class EquipeDAO {
                 equipe.setDescEquipe(rs.getString("descequipe"));
                 equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
                         .getInt("id_equipe")));
-                equipe.setCodEmpresa(0);// COD EMPRESA ?
+                equipe.setCodEmpresa(rs.getInt("cod_empresa"));
             }
 
             return equipe;

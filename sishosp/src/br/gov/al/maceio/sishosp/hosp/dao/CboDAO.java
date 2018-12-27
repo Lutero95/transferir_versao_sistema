@@ -42,7 +42,7 @@ public class CboDAO {
 
     public List<CboBean> listarCbo() throws ProjetoException {
         List<CboBean> lista = new ArrayList<>();
-        String sql = "select id , descricao, codempresa, codigo from hosp.cbo order by descricao ";
+        String sql = "select id , descricao, codigo from hosp.cbo order by descricao ";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -52,7 +52,6 @@ public class CboDAO {
                 CboBean cbo = new CboBean();
                 cbo.setCodCbo(rs.getInt("id"));
                 cbo.setDescCbo(rs.getString("descricao"));
-                cbo.setCodEmpresa(rs.getInt("codempresa"));
                 cbo.setCodigo(rs.getString("codigo"));
                 lista.add(cbo);
             }
@@ -72,7 +71,7 @@ public class CboDAO {
     public CboBean listarCboPorId(int id) throws ProjetoException {
 
         CboBean cbo = new CboBean();
-        String sql = "select id , descricao, codempresa, codigo from hosp.cbo where id = ?";
+        String sql = "select id , descricao, codigo from hosp.cbo where id = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -82,7 +81,6 @@ public class CboDAO {
                 cbo = new CboBean();
                 cbo.setCodCbo(rs.getInt("id"));
                 cbo.setDescCbo(rs.getString("descricao"));
-                cbo.setCodEmpresa(rs.getInt("codempresa"));
                 cbo.setCodigo(rs.getString("codigo"));
             }
 
@@ -102,7 +100,7 @@ public class CboDAO {
     public List<CboBean> listarCboBusca(String descricao)
             throws ProjetoException {
         List<CboBean> lista = new ArrayList<>();
-        String sql = "select id , descricao, codempresa, codigo from hosp.cbo where descricao LIKE ? order by descricao";
+        String sql = "select id , descricao, codigo from hosp.cbo where descricao LIKE ? order by descricao";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -134,14 +132,13 @@ public class CboDAO {
 
     public Boolean alterarCbo(CboBean cbo) {
         Boolean retorno = false;
-        String sql = "update hosp.cbo set descricao = ?, codempresa = ?, codigo=? where id = ?";
+        String sql = "update hosp.cbo set descricao = ?, codigo=? where id = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, cbo.getDescCbo().toUpperCase());
-            stmt.setInt(2, 0);// COD EMPRESA ?
-            stmt.setString(3, cbo.getCodigo().toUpperCase());
-            stmt.setInt(4, cbo.getCodCbo());
+            stmt.setString(2, cbo.getCodigo().toUpperCase());
+            stmt.setInt(3, cbo.getCodCbo());
             stmt.executeUpdate();
             con.commit();
             retorno = true;

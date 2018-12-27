@@ -7,9 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
+
+import javax.faces.context.FacesContext;
 
 public class FornecedorDAO {
 
@@ -19,12 +22,16 @@ public class FornecedorDAO {
 	public boolean gravarFornecedor(FornecedorBean fornecedor)
 			throws SQLException, ProjetoException {
 
-		String sql = "insert into hosp.fornecedor (descfornecedor) values (?);";
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_funcionario");
+
+		String sql = "insert into hosp.fornecedor (descfornecedor, cod_empresa) values (?, ?);";
 		try {
 
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, fornecedor.getDescFornecedor().toUpperCase());
+			ps.setInt(2, user_session.getEmpresa().getCodEmpresa());
 
 			ps.execute();
 			con.commit();
