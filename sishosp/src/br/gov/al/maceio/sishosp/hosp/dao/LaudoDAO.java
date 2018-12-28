@@ -19,6 +19,10 @@ public class LaudoDAO {
     PreparedStatement ps = null;
     private Connection conexao = null;
 
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext
+            .getCurrentInstance().getExternalContext().getSessionMap()
+            .get("obj_usuario");
+
     public Boolean cadastrarLaudo(LaudoBean laudo) {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -318,13 +322,14 @@ public class LaudoDAO {
                 + " l.codprocedimento_secundario3, l.codprocedimento_secundario4, l.codprocedimento_secundario5, l.cid1, l.cid2, l.cid3, l.obs "
                 + " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
                 + " left join hosp.proc pr on (pr.codproc = l.codprocedimento_primario) "
-                + " left join hosp.recurso r on (l.id_recurso = r.id) where l.ativo is true order by id_laudo";
+                + " left join hosp.recurso r on (l.id_recurso = r.id) where l.ativo is true and l.cod_empresa = ? order by id_laudo";
 
         ArrayList<LaudoBean> lista = new ArrayList();
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

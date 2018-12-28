@@ -22,6 +22,8 @@ import javax.faces.context.FacesContext;
 public class ConfigAgendaDAO {
 
     Connection con = null;
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().get("obj_funcionario");
 
     public boolean gravarConfigAgendaEquipe(ConfigAgendaParte1Bean confParte1, ConfigAgendaParte2Bean confParte2) {
 
@@ -327,7 +329,7 @@ public class ConfigAgendaDAO {
                 "f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao " +
                 "FROM hosp.config_agenda c " +
                 "left join acl.funcionarios f on (c.codmedico = f.id_funcionario) " +
-                "where c.codmedico = ? ";
+                "where c.codmedico = ? AND c.cod_empresa = ? ";
 
         if (config != null) {
             if (config.getAno() != null) {
@@ -355,6 +357,7 @@ public class ConfigAgendaDAO {
             int i = 1;
 
             stm.setLong(i, codmedico);
+            stm.setInt(i+1, user_session.getEmpresa().getCodEmpresa());
 
             if (config != null) {
                 if (config.getAno() != null) {
@@ -417,7 +420,7 @@ public class ConfigAgendaDAO {
         String sql = "SELECT c.id_configagenda, c.codequipe, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, e.descequipe, c.opcao  "
                 + "FROM hosp.config_agenda_equipe c " +
                 "LEFT JOIN hosp.equipe e ON (c.codequipe = e.id_equipe) " +
-                "where codequipe = ?";
+                "where codequipe = ? and c.cod_empresa = ?";
         if (config != null) {
             if (config.getAno() != null) {
                 if (config.getAno() > 0) {
@@ -444,6 +447,7 @@ public class ConfigAgendaDAO {
             int i = 1;
 
             stm.setInt(i, codequipe);
+            stm.setInt(i+1, user_session.getEmpresa().getCodEmpresa());
 
             if (config != null) {
                 if (config.getAno() != null) {
@@ -503,10 +507,11 @@ public class ConfigAgendaDAO {
         String sql = "SELECT c.id_configagenda, c.codequipe, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, e.descequipe, c.opcao  "
                 + "FROM hosp.config_agenda_equipe c " +
                 "LEFT JOIN hosp.equipe e ON (c.codequipe = e.id_equipe) " +
-                "ORDER BY id_configagenda ";
+                "WHERE c.cod_empresa = ? ORDER BY id_configagenda ";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -863,8 +868,7 @@ public class ConfigAgendaDAO {
                 ps2.setString(5, "T");
                 ps2.setInt(6, confParte1.getMes());
                 ps2.setInt(7, confParte1.getAno());
-                ps2.setInt(8, 0);// COD EMPRESA ?
-                ps2.setInt(9, confParte1.getIdConfiAgenda());
+                ps2.setInt(8, confParte1.getIdConfiAgenda());
                 ps2.executeUpdate();
 
                 sql2 = "DELETE from hosp.tipo_atend_agenda where codconfigagenda = ?";
@@ -899,8 +903,7 @@ public class ConfigAgendaDAO {
                 ps2.setString(5, confParte1.getTurno());
                 ps2.setInt(6, confParte1.getMes());
                 ps2.setInt(7, confParte1.getAno());
-                ps2.setInt(8, 0);// COD EMPRESA ?
-                ps2.setInt(9, confParte1.getIdConfiAgenda());
+                ps2.setInt(8, confParte1.getIdConfiAgenda());
                 ps2.execute();
 
                 /*

@@ -21,6 +21,9 @@ public class AlteracaoPacienteDAO {
     PreparedStatement ps = null;
     private Connection conexao = null;
 
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().get("obj_funcionario");
+
     public InsercaoPacienteBean carregarPacientesInstituicaoAlteracao(Integer id)
             throws ProjetoException {
 
@@ -95,13 +98,14 @@ public class AlteracaoPacienteDAO {
                 + " when dia_semana = 5 then 'Quinta' when dia_semana = 6 then 'Sexta' when dia_semana = 7 then 'Sábado' "
                 + " end as dia from hosp.profissional_dia_atendimento p "
                 + " left join acl.funcionarios f on (f.id_funcionario = p.id_profissional) "
-                + " where p.id_paciente_instituicao = ? "
+                + " where p.id_paciente_instituicao = ? and p.cod_empresa = ? "
                 + " order by id_profissional";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
 
             stm.setInt(1, id);
+            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
 
             ResultSet rs = stm.executeQuery();
 
@@ -168,9 +172,6 @@ public class AlteracaoPacienteDAO {
         Boolean retorno = false;
         ResultSet rs = null;
         ArrayList<Integer> lista = new ArrayList<Integer>();
-
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
 
         try {
             conexao = ConnectionFactory.getConnection();

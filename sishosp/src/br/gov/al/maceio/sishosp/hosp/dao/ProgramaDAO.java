@@ -18,10 +18,10 @@ public class ProgramaDAO {
 
     Connection con = null;
 
-    public boolean gravarPrograma(ProgramaBean prog) {
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().get("obj_funcionario");
 
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
+    public boolean gravarPrograma(ProgramaBean prog) {
 
         Boolean retorno = false;
         PreparedStatement ps = null;
@@ -149,13 +149,14 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select id_programa, descprograma, codfederal "
                 + "from hosp.programa left join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
-                + "order by descprograma";
+                + "where cod_empresa = ? order by descprograma";
 
 
         GrupoDAO gDao = new GrupoDAO();
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
 
             ResultSet rs = stm.executeQuery();
 
@@ -189,12 +190,13 @@ public class ProgramaDAO {
 
         String sql = "select id_programa, descprograma, codfederal from hosp.programa "
                 + "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
-                // + "where codusuario = ? "
+                + "where programa.cod_empresa = ? "
                 + "order by descprograma";
         GrupoDAO gDao = new GrupoDAO();
         ArrayList<ProgramaBean> lista = new ArrayList();
         try {
             ps = con.prepareStatement(sql);
+            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
 
             ResultSet rs = ps.executeQuery();
 
@@ -228,13 +230,14 @@ public class ProgramaDAO {
 
 
         if (tipo == 1) {
-            sql += " and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma";
+            sql += " and upper(id_programa ||'-'|| descprograma) LIKE ? and cod_empresa = ? order by descprograma";
         }
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
 
             stm.setString(1, "%" + descricao.toUpperCase() + "%");
+            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
 
             ResultSet rs = stm.executeQuery();
 
@@ -272,9 +275,6 @@ public class ProgramaDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            FuncionarioBean user_session = (FuncionarioBean) FacesContext
-                    .getCurrentInstance().getExternalContext().getSessionMap()
-                    .get("obj_usuario");
 
             stm.setInt(1, user_session.getCodigo());
             stm.setString(2, "%" + descricao.toUpperCase() + "%");
@@ -379,12 +379,12 @@ public class ProgramaDAO {
                 + "from hosp.grupo_programa gp "
                 + "left join hosp.programa p on (gp.codprograma = p.id_programa) "
                 + "left join hosp.grupo g on (gp.codgrupo = g.id_grupo) "
-                + "order by p.descprograma";
+                + "where p.cod_empresa = ? order by p.descprograma";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            // stm.setInt(1, user_session.getCodigo());
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

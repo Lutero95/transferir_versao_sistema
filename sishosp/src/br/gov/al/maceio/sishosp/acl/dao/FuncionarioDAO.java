@@ -35,6 +35,9 @@ public class FuncionarioDAO {
     private GrupoDAO gDao = new GrupoDAO();
     private ProcedimentoDAO procDao = new ProcedimentoDAO();
 
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().get("obj_funcionario");
+
     public FuncionarioBean autenticarUsuario(FuncionarioBean usuario)
             throws ProjetoException {
 
@@ -416,13 +419,14 @@ public class FuncionarioDAO {
 
     public ArrayList<FuncionarioBean> buscaUsuarios() throws ProjetoException {
 
-        String sql = "select * from acl.funcionarios u order by ativo,descfuncionario";
+        String sql = "select * from acl.funcionarios u where cod_empresa = ? order by ativo,descfuncionario";
 
         ArrayList<FuncionarioBean> lista = new ArrayList();
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -773,9 +777,6 @@ public class FuncionarioDAO {
                                       ArrayList<ProgramaBean> lista) {
 
         Boolean retorno = false;
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext
-                .getCurrentInstance().getExternalContext().getSessionMap()
-                .get("obj_usuario");
 
         String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
                 + " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, cod_empresa) "
@@ -889,13 +890,15 @@ public class FuncionarioDAO {
                      "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) ";
 
         if (tipoBuscar == 1) {
-            sql += " where upper(f.id_funcionario ||' - '|| f.descfuncionario) LIKE ? and f.realiza_atendimento is true order by f.descfuncionario";
+            sql += " where upper(f.id_funcionario ||' - '|| f.descfuncionario) LIKE ? and f.realiza_atendimento is true and f.cod_empresa = ? " +
+                    "order by f.descfuncionario";
         }
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
+            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -985,13 +988,19 @@ public class FuncionarioDAO {
     }
 
     public List<FuncionarioBean> listarProfissional() throws ProjetoException {
+
         List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, " +
                 " codprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil "
-                + " from acl.funcionarios order by descfuncionario";
+                + " from acl.funcionarios where cod_empresa = ? order by descfuncionario";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

@@ -19,11 +19,12 @@ public class FornecedorDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
+	FuncionarioBean user_session = (FuncionarioBean) FacesContext
+			.getCurrentInstance().getExternalContext().getSessionMap()
+			.get("obj_usuario");
+
 	public boolean gravarFornecedor(FornecedorBean fornecedor)
 			throws SQLException, ProjetoException {
-
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_funcionario");
 
 		String sql = "insert into hosp.fornecedor (descfornecedor, cod_empresa) values (?, ?);";
 		try {
@@ -51,11 +52,12 @@ public class FornecedorDAO {
 
 	public List<FornecedorBean> listarFornecedores() throws ProjetoException {
 		List<FornecedorBean> lista = new ArrayList<>();
-		String sql = "select id_fornecedor, descfornecedor from hosp.fornecedor order by descfornecedor";
+		String sql = "select id_fornecedor, descfornecedor from hosp.fornecedor where cod_empresa = ? order by descfornecedor";
 		try {
 
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -83,12 +85,13 @@ public class FornecedorDAO {
 		List<FornecedorBean> lista = new ArrayList<>();
 		String sql = "select id_fornecedor, descfornecedor from hosp.fornecedor ";
 		if (tipo == 1) {
-			sql += " where descfornecedor LIKE ?  order by id_fornecedor";
+			sql += " where descfornecedor LIKE ? and cod_empresa = ?  order by id_fornecedor";
 		}
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -190,12 +193,13 @@ public class FornecedorDAO {
 		List<FornecedorBean> lista = new ArrayList<>();
 		String sql = "select id_fornecedor,id_fornecedor ||'-'|| descfornecedor as descfornecedor, valor from hosp.fornecedor ";
 		if (tipo == 1) {
-			sql += " where upper(id_fornecedor ||'-'|| descfornecedor) LIKE ?";
+			sql += " where upper(id_fornecedor ||'-'|| descfornecedor) LIKE ? and cod_empresa = ?";
 		}
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {

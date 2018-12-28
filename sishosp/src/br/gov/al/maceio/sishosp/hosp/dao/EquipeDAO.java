@@ -21,6 +21,10 @@ public class EquipeDAO {
     PreparedStatement ps = null;
     FuncionarioDAO pDao = new FuncionarioDAO();
 
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext
+            .getCurrentInstance().getExternalContext().getSessionMap()
+            .get("obj_usuario");
+
     public boolean gravarEquipe(EquipeBean equipe) {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -84,11 +88,12 @@ public class EquipeDAO {
 
     public List<EquipeBean> listarEquipe() throws ProjetoException {
         List<EquipeBean> lista = new ArrayList<>();
-        String sql = "select id_equipe, descequipe, cod_empresa from hosp.equipe order by descequipe";
+        String sql = "select id_equipe, descequipe, cod_empresa from hosp.equipe where cod_empresa = ? order by descequipe";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -114,12 +119,14 @@ public class EquipeDAO {
     public List<EquipeBean> listarEquipeBusca(String descricao)
             throws ProjetoException {
         List<EquipeBean> lista = new ArrayList<>();
-        String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, cod_empresa from hosp.equipe where upper(id_equipe ||'-'|| descequipe) LIKE ? order by descequipe";
+        String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, cod_empresa from hosp.equipe " +
+                "where upper(id_equipe ||'-'|| descequipe) LIKE ? and cod_empresa = ? order by descequipe";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setString(1, "%" + descricao.toUpperCase() + "%");
+            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

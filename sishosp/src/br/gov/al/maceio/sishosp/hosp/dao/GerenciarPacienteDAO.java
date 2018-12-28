@@ -7,14 +7,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
+
+import javax.faces.context.FacesContext;
 
 public class GerenciarPacienteDAO {
 
     PreparedStatement ps = null;
     private Connection conexao = null;
+
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext
+            .getCurrentInstance().getExternalContext().getSessionMap()
+            .get("obj_usuario");
 
     public List<GerenciarPacienteBean> carregarPacientesInstituicao()
             throws ProjetoException {
@@ -27,13 +34,15 @@ public class GerenciarPacienteDAO {
                 + " left join hosp.pacientes pa on (p.codpaciente = pa.id_paciente) "
                 + " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
-                + " left join hosp.grupo g on (g.id_grupo = p.codgrupo)";
+                + " left join hosp.grupo g on (g.id_grupo = p.codgrupo)"
+                + " where p.cod_empresa = ?";
 
         List<GerenciarPacienteBean> lista = new ArrayList<>();
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, user_session.getEmpresa().getCodEmpresa());
 
             ResultSet rs = stmt.executeQuery();
 

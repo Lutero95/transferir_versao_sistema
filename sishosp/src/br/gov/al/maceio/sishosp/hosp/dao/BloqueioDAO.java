@@ -19,12 +19,10 @@ import javax.faces.context.FacesContext;
 public class BloqueioDAO {
     Connection con = null;
     PreparedStatement ps = null;
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().get("obj_funcionario");
 
     public boolean gravarBloqueio(BloqueioBean bloqueio) {
-
-
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
 
         Calendar calendarData = Calendar.getInstance();
         boolean condicao = true;
@@ -127,10 +125,12 @@ public class BloqueioDAO {
     public List<BloqueioBean> listarBloqueio() throws ProjetoException {
         List<BloqueioBean> lista = new ArrayList<>();
         String sql = "select b.id_bloqueioagenda, b.codmedico, m.descfuncionario, b.dataagenda, b.turno, b.descricao "
-                + " from hosp.bloqueio_agenda b left join acl.funcionarios m on (b.codmedico = m.id_funcionario) order by b.id_bloqueioagenda";
+                + " from hosp.bloqueio_agenda b left join acl.funcionarios m on (b.codmedico = m.id_funcionario) " +
+                " where b.cod_empresa = ? order by b.id_bloqueioagenda";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

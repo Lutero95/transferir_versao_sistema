@@ -21,10 +21,10 @@ public class ProcedimentoDAO {
     Connection con = null;
     PreparedStatement ps = null;
 
-    public boolean gravarProcedimento(ProcedimentoBean proc) {
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().get("obj_funcionario");
 
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
+    public boolean gravarProcedimento(ProcedimentoBean proc) {
 
         Boolean retorno = false;
 
@@ -240,9 +240,6 @@ public class ProcedimentoDAO {
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
                 + " from hosp.proc where cod_empresa = ? order by nome";
 
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
-
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -329,12 +326,13 @@ public class ProcedimentoDAO {
                 + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo  "
                 + "from hosp.proc ";
         if (tipoBuscar == 1) {
-            sql += " where upper(codproc ||' - '|| nome) LIKE ? order by nome";
+            sql += " where upper(codproc ||' - '|| nome) LIKE ? and cod_empresa = ? order by nome";
         }
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
+            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

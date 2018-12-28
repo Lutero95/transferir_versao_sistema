@@ -17,10 +17,10 @@ import javax.faces.context.FacesContext;
 public class RecursoDAO {
     private Connection conexao = null;
 
-    public Boolean cadastrar(RecursoBean recurso) {
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().get("obj_funcionario");
 
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
+    public Boolean cadastrar(RecursoBean recurso) {
 
         boolean retorno = false;
 
@@ -108,13 +108,14 @@ public class RecursoDAO {
 
     public ArrayList<RecursoBean> listaRecursos() throws ProjetoException {
 
-        String sql = "select id, descrecurso from hosp.recurso order by descrecurso";
+        String sql = "select id, descrecurso from hosp.recurso where cod_empresa = ? order by descrecurso";
 
         ArrayList<RecursoBean> lista = new ArrayList();
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -214,10 +215,11 @@ public class RecursoDAO {
         try {
             List<RecursoBean> listaRecursos = new ArrayList<RecursoBean>();
             String sql = "select id , descrecurso from hosp.recurso "
-                    + " where upper(descrecurso) like ? order by descrecurso";
+                    + " where upper(descrecurso) like ? and cod_empresa = ? order by descrecurso";
 
             ps = conexao.prepareStatement(sql);
             ps.setString(1, "%" + s.toUpperCase() + "%");
+            ps.setInt(2, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = ps.executeQuery();
 
             List<RecursoBean> colecao = new ArrayList<RecursoBean>();

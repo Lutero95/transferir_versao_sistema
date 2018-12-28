@@ -12,9 +12,15 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
 
+import javax.faces.context.FacesContext;
+
 public class AtendimentoDAO {
     Connection con = null;
     PreparedStatement ps = null;
+
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext
+            .getCurrentInstance().getExternalContext().getSessionMap()
+            .get("obj_usuario");
 
     public Boolean verificarSeCboEhDoProfissionalPorEquipe(List<AtendimentoBean> lista) {
 
@@ -239,7 +245,7 @@ public class AtendimentoDAO {
                 + " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
                 + " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
                 + " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
-                + " where a.dtaatende >= ? and a.dtaatende <= ?"
+                + " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_empresa = ?"
                 + " order by a.dtaatende";
 
         ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
@@ -252,6 +258,7 @@ public class AtendimentoDAO {
             stm.setDate(2, new java.sql.Date(atendimento
                     .getDataAtendimentoFinal().getTime()));
             ResultSet rs = stm.executeQuery();
+            stm.setInt(3, user_session.getEmpresa().getCodEmpresa());
 
             while (rs.next()) {
                 AtendimentoBean at = new AtendimentoBean();
