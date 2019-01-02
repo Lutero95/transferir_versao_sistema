@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/template.xhtml">
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewAction action="#{ParentescoController.getEditParentesco()}"/>
+        </f:metadata>
+
+        <div class="panel-body">
+            <div class="sub-header">
+                <h:outputText value="#{ParentescoController.cabecalho}"
+                              styleClass="cadcabecalho"></h:outputText>
+                <hr/>
+            </div>
+
+            <h:form class="form-horizontal" id="frmPrincipal">
+
+                <p:outputPanel>
+                    <b:row>
+
+                        <b:column span="1">
+                            <h:outputLabel for="inputname" value="Descrição"
+                                           style="margin-top:10px"/>
+                        </b:column>
+
+                        <b:column span="11">
+
+                            <b:inputText value="#{ParentescoController.parentesco.descParentesco}"
+                                         class="form-control" id="inputname" required="true"
+                                         validatorMessage="Nome deve conter entre 2 e 50 caracteres."
+                                         requiredMessage="Descrição: Campo obrigatório!">
+                                <f:validateLength minimum="2" maximum="50"/>
+
+                            </b:inputText>
+                        </b:column>
+
+                    </b:row>
+
+
+                </p:outputPanel>
+
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
+
+                <div align="center">
+                    <b:commandButton action="#{ParentescoController.gravarParentesco()}"
+                                     icon="glyphicon-ok" size="sm" look="success"
+                                     update=":frmPrincipal, msgPagina" value="Incluir" style="float:left"
+                                     rendered="#{ParentescoController.tipo == 1}"/>
+
+                    <b:commandButton action="#{ParentescoController.alterarParentesco()}"
+                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal, msgPagina"
+                                     value="Alterar" look="success" style="float:left"
+                                     rendered="#{ParentescoController.tipo  == 2}"/>
+
+                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                     style="float:right" size="sm" immediate="true" look="info"
+                                     action="/pages/sishosp/gerenciarParentesco.faces?faces-redirect=true">
+                    </b:commandButton>
+
+                </div>
+            </h:form>
+
+        </div>
+
+    </ui:define>
+</ui:composition>
+
+</html>
