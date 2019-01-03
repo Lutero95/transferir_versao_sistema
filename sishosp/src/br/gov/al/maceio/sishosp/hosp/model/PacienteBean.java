@@ -24,6 +24,9 @@ public class PacienteBean implements Serializable {
     private String descRaca;
     private String deficiencia;
     private String tipoDeficiencia;
+    private Boolean necessitaNomeSocial;
+    private String motivoNomeSocial;
+    private String nomeSocial;
 
     // ENCAMINHADO ATRIBUTOS
     private Integer codEnchaminhado;
@@ -585,5 +588,29 @@ public class PacienteBean implements Serializable {
 
     public void setInstagram(String instagram) {
         this.instagram = instagram;
+    }
+
+    public Boolean getNecessitaNomeSocial() {
+        return necessitaNomeSocial;
+    }
+
+    public void setNecessitaNomeSocial(Boolean necessitaNomeSocial) {
+        this.necessitaNomeSocial = necessitaNomeSocial;
+    }
+
+    public String getMotivoNomeSocial() {
+        return motivoNomeSocial;
+    }
+
+    public void setMotivoNomeSocial(String motivoNomeSocial) {
+        this.motivoNomeSocial = motivoNomeSocial;
+    }
+
+    public String getNomeSocial() {
+        return nomeSocial;
+    }
+
+    public void setNomeSocial(String nomeSocial) {
+        this.nomeSocial = nomeSocial;
     }
 }

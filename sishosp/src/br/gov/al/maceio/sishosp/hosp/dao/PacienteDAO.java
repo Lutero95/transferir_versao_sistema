@@ -61,9 +61,10 @@ public class PacienteDAO {
                     + "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, contribuinte, id_escolaridade, id_escola, id_profissao, "
                     + "trabalha, localtrabalha, codparentesco, "
                     + "nomeresp, rgresp, cpfresp, dtanascimentoresp, id_encaminhado, id_formatransporte ,deficiencia, tipodeficiencia, codmunicipio, "
-                    + "deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, codbairro, email, facebook, instagram )"
+                    + "deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, codbairro, email, facebook, instagram, "
+                    + "nome_social, necessita_nome_social, motivo_nome_social)"
                     + " values (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ? , ? , "
-                    + "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?)";
+                    + "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, paciente.getNome().toUpperCase().trim());
@@ -358,6 +359,20 @@ public class PacienteDAO {
                 stmt.setString(61, paciente.getInstagram());
             }
 
+            if (paciente.getNomeSocial() == null) {
+                stmt.setNull(62, Types.CHAR);
+            } else {
+                stmt.setString(62, paciente.getNomeSocial());
+            }
+
+            stmt.setBoolean(63, paciente.getNecessitaNomeSocial());
+
+            if (paciente.getMotivoNomeSocial() == null) {
+                stmt.setNull(64, Types.CHAR);
+            } else {
+                stmt.setString(64, paciente.getMotivoNomeSocial());
+            }
+
             stmt.execute();
             conexao.commit();
             retorno = true;
@@ -406,7 +421,7 @@ public class PacienteDAO {
                     + ", codparentesco = ?, nomeresp = ?, rgresp = ?, cpfresp = ?, dtanascimentoresp = ?, id_encaminhado = ?"
                     + ", id_formatransporte = ?, deficiencia = ?, tipodeficiencia = ?, codmunicipio = ?"
                     + ", deficienciafisica = ?, deficienciamental = ?, deficienciaauditiva = ?, deficienciavisual = ?, deficienciamultipla = ?"
-                    + ", email = ?, facebook = ?, instagram = ? "
+                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, motivo_nome_social = ? "
                     + " where id_paciente = ?";
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -520,7 +535,21 @@ public class PacienteDAO {
 
             stmt.setString(60, paciente.getInstagram());
 
-            stmt.setLong(61, paciente.getId_paciente());
+            if (paciente.getNomeSocial() == null) {
+                stmt.setNull(61, Types.CHAR);
+            } else {
+                stmt.setString(61, paciente.getNomeSocial());
+            }
+
+            stmt.setBoolean(62, paciente.getNecessitaNomeSocial());
+
+            if (paciente.getMotivoNomeSocial() == null) {
+                stmt.setNull(63, Types.CHAR);
+            } else {
+                stmt.setString(63, paciente.getMotivoNomeSocial());
+            }
+
+            stmt.setLong(64, paciente.getId_paciente());
 
             stmt.executeUpdate();
 
@@ -580,7 +609,7 @@ public class PacienteDAO {
                 + "pacientes.nomeresp, pacientes.rgresp, pacientes.cpfresp, pacientes.dtanascimentoresp, pacientes.id_encaminhado, "
                 + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.tipodeficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
                 + "escolaridade.descescolaridade, escola.descescola, profissao.descprofissao, "
-                + "encaminhado.descencaminhado, formatransporte.descformatransporte "
+                + "encaminhado.descencaminhado, formatransporte.descformatransporte, pacientes.nome_social, pacientes.necessita_nome_social, pacientes.motivo_nome_social "
                 + "from hosp.pacientes left join hosp.escolaridade on pacientes.id_escolaridade=escolaridade.id_escolaridade "
                 + " left join hosp.escola on pacientes.id_escola=escola.id_escola "
                 + "left join hosp.profissao on pacientes.id_profissao=profissao.id_profissao "
@@ -667,6 +696,9 @@ public class PacienteDAO {
                 p.getFormatransporte().setDescformatransporte(
                         rs.getString("descformatransporte"));
                 p.getEndereco().setCodibge(rs.getInt("codfederal"));
+                p.setNomeSocial(rs.getString("nome_social"));
+                p.setMotivoNomeSocial(rs.getString("motivo_nome_social"));
+                p.setNecessitaNomeSocial(rs.getBoolean("necessita_nome_social"));
 
                 lista.add(p);
             }
@@ -696,7 +728,8 @@ public class PacienteDAO {
                 + "pacientes.trabalha, pacientes.localtrabalha, pacientes.codparentesco, "
                 + "pacientes.nomeresp, pacientes.rgresp, pacientes.cpfresp, pacientes.dtanascimentoresp, pacientes.id_encaminhado, "
                 + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.tipodeficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
-                + "escolaridade.descescolaridade, escola.descescola, profissao.descprofissao,"
+                + "escolaridade.descescolaridade, escola.descescola, profissao.descprofissao, "
+                + " pacientes.nome_social, pacientes.necessita_nome_social, pacientes.motivo_nome_social"
                 + " encaminhado.descencaminhado, formatransporte.descformatransporte "
                 + "from hosp.pacientes left join hosp.escolaridade on pacientes.id_escolaridade=escolaridade.id_escolaridade "
                 + " left join hosp.escola on pacientes.id_escola=escola.id_escola "
@@ -815,6 +848,9 @@ public class PacienteDAO {
                         rs.getString("descencaminhado"));
                 p.getFormatransporte().setDescformatransporte(
                         rs.getString("descformatransporte"));
+                p.setNomeSocial(rs.getString("nome_social"));
+                p.setMotivoNomeSocial(rs.getString("motivo_nome_social"));
+                p.setNecessitaNomeSocial(rs.getBoolean("necessita_nome_social"));
                 listaP.add(p);
             }
         } catch (SQLException ex) {
@@ -845,7 +881,8 @@ public class PacienteDAO {
                 + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.tipodeficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
                 + "escolaridade.descescolaridade, escola.descescola, profissao.descprofissao,"
                 + " encaminhado.descencaminhado, formatransporte.descformatransporte,"
-                + " deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla "
+                + " deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, "
+                + " pacientes.nome_social, pacientes.necessita_nome_social, pacientes.motivo_nome_social "
                 + "from hosp.pacientes left join hosp.escolaridade on pacientes.id_escolaridade=escolaridade.id_escolaridade "
                 + " left join hosp.escola on pacientes.id_escola=escola.id_escola "
                 + "left join hosp.profissao on pacientes.id_profissao=profissao.id_profissao "
@@ -934,6 +971,9 @@ public class PacienteDAO {
                 p.setDeficienciaVisual(rs.getBoolean("deficienciavisual"));
                 p.setDeficienciaMultipla(rs.getBoolean("deficienciamultipla"));
                 p.getEndereco().setCodibge(rs.getInt("codfederal"));
+                p.setNomeSocial(rs.getString("nome_social"));
+                p.setMotivoNomeSocial(rs.getString("motivo_nome_social"));
+                p.setNecessitaNomeSocial(rs.getBoolean("necessita_nome_social"));
 
             }
 
