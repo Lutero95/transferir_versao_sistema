@@ -61,9 +61,9 @@ public class PacienteDAO {
                     + "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, contribuinte, id_escolaridade, id_escola, id_profissao, "
                     + "trabalha, localtrabalha, codparentesco, "
                     + "nomeresp, rgresp, cpfresp, dtanascimentoresp, id_encaminhado, id_formatransporte ,deficiencia, tipodeficiencia, codmunicipio, "
-                    + "deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, codbairro)"
+                    + "deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, codbairro, email, facebook, instagram )"
                     + " values (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ? , ? , "
-                    + "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?)";
+                    + "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?)";
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, paciente.getNome().toUpperCase().trim());
@@ -340,6 +340,24 @@ public class PacienteDAO {
 
             stmt.setInt(58, codbairro);
 
+            if (paciente.getEmail() == null) {
+                stmt.setNull(59, Types.CHAR);
+            } else {
+                stmt.setString(59, paciente.getEmail());
+            }
+
+            if (paciente.getFacebook() == null) {
+                stmt.setNull(60, Types.CHAR);
+            } else {
+                stmt.setString(60, paciente.getFacebook());
+            }
+
+            if (paciente.getInstagram() == null) {
+                stmt.setNull(61, Types.CHAR);
+            } else {
+                stmt.setString(61, paciente.getInstagram());
+            }
+
             stmt.execute();
             conexao.commit();
             retorno = true;
@@ -387,7 +405,8 @@ public class PacienteDAO {
                     + ", contribuinte = ?, id_escolaridade = ?, id_escola = ?, id_profissao = ?, trabalha = ?, localtrabalha = ?"
                     + ", codparentesco = ?, nomeresp = ?, rgresp = ?, cpfresp = ?, dtanascimentoresp = ?, id_encaminhado = ?"
                     + ", id_formatransporte = ?, deficiencia = ?, tipodeficiencia = ?, codmunicipio = ?"
-                    + ", deficienciafisica = ?, deficienciamental = ?, deficienciaauditiva = ?, deficienciavisual = ?, deficienciamultipla = ? "
+                    + ", deficienciafisica = ?, deficienciamental = ?, deficienciaauditiva = ?, deficienciavisual = ?, deficienciamultipla = ?"
+                    + ", email = ?, facebook = ?, instagram = ? "
                     + " where id_paciente = ?";
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -495,7 +514,14 @@ public class PacienteDAO {
 
             stmt.setBoolean(57, paciente.getDeficienciaMultipla());
 
-            stmt.setLong(58, paciente.getId_paciente());
+            stmt.setString(58, paciente.getEmail());
+
+            stmt.setString(59, paciente.getFacebook());
+
+            stmt.setString(60, paciente.getInstagram());
+
+            stmt.setLong(61, paciente.getId_paciente());
+
             stmt.executeUpdate();
 
             conexao.commit();
@@ -552,8 +578,9 @@ public class PacienteDAO {
                 + "pacientes.folha, pacientes.dtaregistro, pacientes.contribuinte, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
                 + "pacientes.trabalha, pacientes.localtrabalha, pacientes.codparentesco, "
                 + "pacientes.nomeresp, pacientes.rgresp, pacientes.cpfresp, pacientes.dtanascimentoresp, pacientes.id_encaminhado, "
-                + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.tipodeficiencia, escolaridade.descescolaridade, escola.descescola, profissao.descprofissao,"
-                + " encaminhado.descencaminhado, formatransporte.descformatransporte "
+                + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.tipodeficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
+                + "escolaridade.descescolaridade, escola.descescola, profissao.descprofissao, "
+                + "encaminhado.descencaminhado, formatransporte.descformatransporte "
                 + "from hosp.pacientes left join hosp.escolaridade on pacientes.id_escolaridade=escolaridade.id_escolaridade "
                 + " left join hosp.escola on pacientes.id_escola=escola.id_escola "
                 + "left join hosp.profissao on pacientes.id_profissao=profissao.id_profissao "
@@ -629,6 +656,9 @@ public class PacienteDAO {
                         rs.getInt("id_formatransporte"));
                 p.setDeficiencia(rs.getString("deficiencia"));
                 p.setTipoDeficiencia(rs.getString("tipodeficiencia"));
+                p.setEmail(rs.getString("email"));
+                p.setFacebook(rs.getString("facebook"));
+                p.setInstagram(rs.getString("instagram"));
                 p.getEscola().setDescescola(rs.getString("descescola"));
                 p.getProfissao()
                         .setDescprofissao(rs.getString("descprofissao"));
@@ -665,7 +695,8 @@ public class PacienteDAO {
                 + "pacientes.folha, pacientes.dtaregistro, pacientes.contribuinte, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
                 + "pacientes.trabalha, pacientes.localtrabalha, pacientes.codparentesco, "
                 + "pacientes.nomeresp, pacientes.rgresp, pacientes.cpfresp, pacientes.dtanascimentoresp, pacientes.id_encaminhado, "
-                + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.tipodeficiencia, escolaridade.descescolaridade, escola.descescola, profissao.descprofissao,"
+                + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.tipodeficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
+                + "escolaridade.descescolaridade, escola.descescola, profissao.descprofissao,"
                 + " encaminhado.descencaminhado, formatransporte.descformatransporte "
                 + "from hosp.pacientes left join hosp.escolaridade on pacientes.id_escolaridade=escolaridade.id_escolaridade "
                 + " left join hosp.escola on pacientes.id_escola=escola.id_escola "
@@ -755,6 +786,9 @@ public class PacienteDAO {
                 p.setFolha(rs.getInt("folha"));
                 p.setDataExpedicao2(rs.getDate("dtaregistro"));
                 p.setAssociado(rs.getString("contribuinte"));
+                p.setEmail(rs.getString("email"));
+                p.setFacebook(rs.getString("facebook"));
+                p.setInstagram(rs.getString("instagram"));
                 p.getEscolaridade().setCodescolaridade(
                         rs.getInt("id_escolaridade"));
                 p.getEscolaridade().setDescescolaridade(
@@ -808,7 +842,8 @@ public class PacienteDAO {
                 + "pacientes.folha, pacientes.dtaregistro, pacientes.contribuinte, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
                 + "pacientes.trabalha, pacientes.localtrabalha, pacientes.codparentesco, "
                 + "pacientes.nomeresp, pacientes.rgresp, pacientes.cpfresp, pacientes.dtanascimentoresp, pacientes.id_encaminhado, "
-                + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.tipodeficiencia, escolaridade.descescolaridade, escola.descescola, profissao.descprofissao,"
+                + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.tipodeficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
+                + "escolaridade.descescolaridade, escola.descescola, profissao.descprofissao,"
                 + " encaminhado.descencaminhado, formatransporte.descformatransporte,"
                 + " deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla "
                 + "from hosp.pacientes left join hosp.escolaridade on pacientes.id_escolaridade=escolaridade.id_escolaridade "
@@ -864,6 +899,9 @@ public class PacienteDAO {
                 p.setFolha(rs.getInt("folha"));
                 p.setDataExpedicao2(rs.getDate("dtaregistro"));
                 p.setAssociado(rs.getString("contribuinte"));
+                p.setEmail(rs.getString("email"));
+                p.setFacebook(rs.getString("facebook"));
+                p.setInstagram(rs.getString("instagram"));
                 p.getEscolaridade().setCodescolaridade(
                         rs.getInt("id_escolaridade"));
                 p.getEscolaridade().setDescescolaridade(

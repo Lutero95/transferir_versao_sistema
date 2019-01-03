@@ -472,7 +472,8 @@
                                              class="form-control" id="cns"
                                              validatorMessage="CNS deve conter entre 15 digitos.">
                                     <p:ajax listener="#{PacienteController.validaCns(PacienteController.paciente.cns)}"
-                                            global="false" event="blur" update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:cns"/>
+                                            global="false" event="blur"
+                                            update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:cns"/>
                                 </h:inputText>
                             </b:column>
 
@@ -535,7 +536,8 @@
                                 <h:inputText value="#{PacienteController.paciente.pis}"
                                              class="form-control" id="pis" required="false">
                                     <p:ajax listener="#{PacienteController.validaPIS(PacienteController.paciente.pis)}"
-                                            global="false" event="blur" update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:pis"/>
+                                            global="false" event="blur"
+                                            update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:pis"/>
                                 </h:inputText>
                             </b:column>
 
@@ -930,6 +932,60 @@
                                                          value="#{PacienteController.paciente.deficienciaMultipla}"/>
 
                             </p:panel>
+
+                        </p:outputPanel>
+
+
+                    </p:tab>
+
+                    <p:tab title="Dados Internet">
+
+
+                        <p:outputPanel id="outDadosInternet" autoUpdate="true">
+                            <b:row>
+
+                                <b:column span="1">
+                                    <h:outputLabel value="E-mail"
+                                                   style="margin-top:10px"/>
+                                </b:column>
+
+                                <b:column span="6">
+                                    <b:inputText value="#{PacienteController.paciente.email}"
+                                                 class="form-control" id="inputemail">
+                                    </b:inputText>
+                                </b:column>
+
+                            </b:row>
+
+                            <b:row>
+
+                                <b:column span="1">
+                                    <h:outputLabel value="Facebook"
+                                                   style="margin-top:10px"/>
+                                </b:column>
+
+                                <b:column span="6">
+                                    <b:inputText value="#{PacienteController.paciente.facebook}"
+                                                 class="form-control" id="inputfacebook">
+                                    </b:inputText>
+                                </b:column>
+
+                            </b:row>
+
+                            <b:row>
+
+                                <b:column span="1">
+                                    <h:outputLabel value="Instagram"
+                                                   style="margin-top:10px"/>
+                                </b:column>
+
+                                <b:column span="6">
+                                    <b:inputText value="#{PacienteController.paciente.instagram}"
+                                                 class="form-control" id="inputinstagram">
+                                    </b:inputText>
+                                </b:column>
+
+                            </b:row>
 
                         </p:outputPanel>
 
