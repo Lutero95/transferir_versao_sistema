@@ -183,7 +183,6 @@ public class EnderecoDAO {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
             stm.setString(1, paciente.getEndereco().getBairro().replaceAll("[^a-zZ-Z1-9 ]", ""));
-            System.out.println("Teste: " + paciente.getEndereco().getBairro().replaceAll("[^a-zZ-Z1-9 ]", ""));
             stm.setInt(2, codMunicipio);
 
             ResultSet rs = stm.executeQuery();

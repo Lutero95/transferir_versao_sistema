@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -82,12 +83,15 @@ public class PacienteBean implements Serializable {
     private ProfissaoBean profissao;
     private EncaminhadoBean encaminhado;
     private FormaTransporteBean formatransporte;
+    private Telefone telefone;
 
     // LISTAS
     private List<Integer> listaCorRaca;
     private List<Integer> listaSangue;
+    private List<Telefone> listaTelefones;
 
     public PacienteBean() {
+        listaTelefones = new ArrayList<>();
         id_paciente = null;
         endereco = new EnderecoBean();
         escola = new EscolaBean();
@@ -98,6 +102,7 @@ public class PacienteBean implements Serializable {
         encaminhado = new EncaminhadoBean();
         profissao = new ProfissaoBean();
         deficiencia = "N";
+        telefone = new Telefone();
 
     }
 
@@ -612,5 +617,21 @@ public class PacienteBean implements Serializable {
 
     public void setNomeSocial(String nomeSocial) {
         this.nomeSocial = nomeSocial;
+    }
+
+    public List<Telefone> getListaTelefones() {
+        return listaTelefones;
+    }
+
+    public void setListaTelefones(List<Telefone> listaTelefones) {
+        this.listaTelefones = listaTelefones;
+    }
+
+    public Telefone getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(Telefone telefone) {
+        this.telefone = telefone;
     }
 }

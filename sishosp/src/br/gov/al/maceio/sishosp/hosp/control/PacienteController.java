@@ -41,6 +41,7 @@ public class PacienteController implements Serializable {
     PacienteDAO pDao = new PacienteDAO();
     EnderecoDAO eDao = new EnderecoDAO();
     EscolaDAO esDao = new EscolaDAO();
+    private Telefone telefone;
 
     // AUTO COMPLETE
     private EscolaBean escolaSuggestion;
@@ -78,6 +79,7 @@ public class PacienteController implements Serializable {
         cidadeDoCep = false;
         escolaSuggestion = new EscolaBean();
         transporteSuggestion = null;
+        telefone = new Telefone();
 
         // LISTAS
         listaPacientes = new ArrayList<>();
@@ -505,6 +507,19 @@ public class PacienteController implements Serializable {
         return result;
     }
 
+    public void addListaTelefone() {
+        paciente.getListaTelefones().add(telefone);
+        limparTelefone();
+    }
+
+    public void removeListaTelefone() {
+        this.paciente.getListaTelefones().remove(telefone);
+    }
+
+    public void limparTelefone(){
+        telefone = new Telefone();
+    }
+
     public PacienteBean getPaciente() {
         return paciente;
     }
@@ -745,5 +760,13 @@ public class PacienteController implements Serializable {
 
     public void setListaRaca(List<RacaBean> listaRaca) {
         this.listaRaca = listaRaca;
+    }
+
+    public Telefone getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(Telefone telefone) {
+        this.telefone = telefone;
     }
 }

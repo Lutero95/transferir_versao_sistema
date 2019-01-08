@@ -81,45 +81,50 @@
                         <b:row>
 
                             <p:outputPanel id="outNomeSocial">
-                            <b:column span="3">
-                                <p:selectBooleanCheckbox label="Necessita nome social" itemLabel="Necessita nome social"
-                                                         style="margin-left: 15px"
-                                                         value="#{PacienteController.paciente.necessitaNomeSocial}">
-                                    <p:ajax update="outNomeSocial" ></p:ajax>
-                                </p:selectBooleanCheckbox>
-                            </b:column>
+                                <b:column span="3">
+                                    <p:selectBooleanCheckbox label="Necessita nome social"
+                                                             itemLabel="Necessita nome social"
+                                                             style="margin-left: 15px"
+                                                             value="#{PacienteController.paciente.necessitaNomeSocial}">
+                                        <p:ajax update="outNomeSocial"></p:ajax>
+                                    </p:selectBooleanCheckbox>
+                                </b:column>
 
-                            <b:column span="1">
-                                <h:outputLabel for="inputnamesocial" value="Nome Social" id="idnomesociallabel"
-                                               rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
-                                               style="margin-top:10px"/>
-                            </b:column>
+                                <b:column span="1">
+                                    <h:outputLabel for="inputnamesocial" value="Nome Social" id="idnomesociallabel"
+                                                   rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
+                                                   style="margin-top:10px"/>
+                                </b:column>
 
-                            <b:column span="4">
-                                <b:inputText value="#{PacienteController.paciente.nomeSocial}"
-                                             rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
-                                             class="form-control" id="inputnamesocial"
-                                             required="true"
-                                             validatorMessage="Nome deve conter entre 2 e 60 caracteres."
-                                             requiredMessage="Nome: Campo obrigatório!">
-                                    <f:validateLength minimum="2" maximum="60"/>
-                                </b:inputText>
-                            </b:column>
+                                <b:column span="4">
+                                    <b:inputText value="#{PacienteController.paciente.nomeSocial}"
+                                                 rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
+                                                 class="form-control" id="inputnamesocial"
+                                                 required="true"
+                                                 validatorMessage="Nome deve conter entre 2 e 60 caracteres."
+                                                 requiredMessage="Nome: Campo obrigatório!">
+                                        <f:validateLength minimum="2" maximum="60"/>
+                                    </b:inputText>
+                                </b:column>
 
-                            <b:column span="1">
-                                <h:outputLabel value="Motivo" rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
-                                               style="margin-top:10px"/>
-                            </b:column>
+                                <b:column span="1">
+                                    <h:outputLabel value="Motivo"
+                                                   rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
+                                                   style="margin-top:10px"/>
+                                </b:column>
 
-                            <b:column span="3">
-                                <b:selectOneMenu required="true" rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
-                                                 style="margin-left:15px" requiredMessage="Motivo: Campo obrigatório!"
-                                                 id="motivo" value="#{PacienteController.paciente.motivoNomeSocial}">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                    <f:selectItem itemLabel="Transexual" itemValue="TS"/>
-                                    <f:selectItem itemLabel="Travesti" itemValue="TR"/>
-                                </b:selectOneMenu>
-                            </b:column>
+                                <b:column span="3">
+                                    <b:selectOneMenu required="true"
+                                                     rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
+                                                     style="margin-left:15px"
+                                                     requiredMessage="Motivo: Campo obrigatório!"
+                                                     id="motivo"
+                                                     value="#{PacienteController.paciente.motivoNomeSocial}">
+                                        <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                        <f:selectItem itemLabel="Transexual" itemValue="TS"/>
+                                        <f:selectItem itemLabel="Travesti" itemValue="TR"/>
+                                    </b:selectOneMenu>
+                                </b:column>
 
                             </p:outputPanel>
 
@@ -222,54 +227,58 @@
                                              class="form-control" id="conjuge">
                                 </b:inputText>
                             </b:column>
+
+                            <b:column span="3">
+                                <p:commandButton style="margin-top: 8px;margin-left: 30px" value="Adicionar Telefone"
+                                                 actionListener="#{PacienteController.limparTelefone}"
+                                                 onclick="PF('dlgTelefone').show();"
+                                                 icon="ui-icon-plus" update=":frmPrincipal:tbv:outTabelaTelefones">
+                                </p:commandButton>
+                            </b:column>
+
                         </b:row>
 
                         <br></br>
 
                         <b:row>
+                        <b:column span="12">
 
-                            <b:column span="1">
-                                <h:outputLabel for="phone1" value="Telefone 1"
-                                               style="margin-top:10px"/>
-                            </b:column>
+                            <p:outputPanel id="outTabelaTelefones">
+                            <p:dataTable emptyMessage="Nenhum telefone adicionado"
+                                         styleClass="table table-hover" id="tabela"
+                                         value="#{PacienteController.paciente.listaTelefones}" var="tab"
+                                         paginator="true" paginatorPosition="bottom" rows="5"
+                                         resizableColumns="false">
 
-                            <b:column span="2">
-                                <b:inputText id="phone1" class="form-control"
-                                             value="#{PacienteController.paciente.endereco.telefoneres}"/>
-                            </b:column>
+                                <p:column headerText="Telefone" style="font-weight:bold;" width="35%">
+                                    <h:outputText value="#{tab.telefone}"/>
+                                </p:column>
 
-                            <b:column span="1">
-                                <h:outputLabel for="phone2" value="Telefone 2"
-                                               style="margin-top:10px"/>
-                            </b:column>
+                                <p:column headerText="Responsável" style="font-weight:bold;" width="35%">
+                                    <h:outputText value="#{tab.responsavel}"/>
+                                </p:column>
 
-                            <b:column span="2">
-                                <b:inputText id="phone2" class="form-control"
-                                             value="#{PacienteController.paciente.endereco.telefonecel}"/>
-                            </b:column>
+                                <p:column headerText="Whatsapp" style="font-weight:bold;" width="20%">
+                                    <h:outputText value="Sim" rendered="#{tab.whatsapp == true}"/>
+                                    <h:outputText value="Não" rendered="#{tab.whatsapp != true}"/>
+                                </p:column>
 
-                            <b:column span="1">
-                                <h:outputLabel for="phone2" value="Telefone 3"
-                                               style="margin-top:10px"/>
-                            </b:column>
+                                <p:column headerText="Ação" width="10%">
+                                    <div align="center">
+                                        <p:commandButton process="@this"
+                                                         action="#{PacienteController.removeListaTelefone()}"
+                                                         icon="ui-icon-trash" update=":frmPrincipal:tbv:outTabelaTelefones">
+                                            <f:setPropertyActionListener value="#{tab}"
+                                                                         target="#{PacienteController.telefone}"/>
+                                        </p:commandButton>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                            </p:outputPanel>
 
-                            <b:column span="2">
-                                <b:inputText id="phone3" class="form-control"
-                                             value="#{PacienteController.paciente.endereco.telefonetrab}"/>
-                            </b:column>
-
-                            <b:column span="1">
-                                <h:outputLabel for="phone2" value="Telefone 4"
-                                               style="margin-top:10px"/>
-                            </b:column>
-
-                            <b:column span="2">
-                                <b:inputText id="phone4" class="form-control"
-                                             value="#{PacienteController.paciente.endereco.telefoneorelhao}"/>
-                            </b:column>
+                        </b:column>
 
                         </b:row>
-
 
                     </p:tab>
 
@@ -1341,6 +1350,85 @@
                         </p:dataTable>
                     </p:outputPanel>
                 </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog style="font-size: 12px;" widgetVar="dlgTelefone" header="Adicionar telefones"
+                  width="800px" height="200px" modal="true" resizable="false">
+
+            <h:form id="formTelefonesPaciente">
+                <p:outputPanel id="outTelefonePaciente">
+
+                <b:row>
+
+                    <b:column span="2">
+                        <h:outputLabel value="DDD"
+                                       style="margin-top:10px"/>
+                    </b:column>
+
+                    <b:column span="3">
+                        <b:inputText class="form-control" id="inputDdd" required="true" requiredMessage=" DDD: Campo obrigatório!"
+                                     value="#{PacienteController.telefone.ddd}"/>
+                    </b:column>
+
+                    <b:column span="2">
+                        <h:outputLabel value="Telefone"
+                                       style="margin-top:10px"/>
+                    </b:column>
+
+                    <b:column span="3">
+                        <b:inputText class="form-control" id="inputTelefone" required="true" requiredMessage=" Telefone: Campo obrigatório!"
+                                     value="#{PacienteController.telefone.telefone}"/>
+                    </b:column>
+
+                    <b:column span="2">
+                        <p:selectBooleanCheckbox label="Whatsapp" itemLabel="Whatsapp" id="inputWhatsapp"
+                                                 style="margin-top: 8px;margin-left: 7px"
+                                                 value="#{PacienteController.telefone.whatsapp}">
+                        </p:selectBooleanCheckbox>
+                    </b:column>
+
+                </b:row>
+
+                <br></br>
+
+                <b:row>
+
+                    <b:column span="2">
+                        <h:outputLabel value="Responsável"
+                                       style="margin-top:10px"/>
+                    </b:column>
+
+                    <b:column span="3">
+                        <b:inputText class="form-control" id="inputResponsavel" required="true" requiredMessage=" Responsável: Campo obrigatório!"
+                                     value="#{PacienteController.telefone.responsavel}"/>
+                    </b:column>
+
+                    <b:column span="2">
+                        <h:outputLabel value="Parentesco"
+                                       style="margin-top:10px"/>
+                    </b:column>
+
+                    <b:column span="3">
+                        <b:selectOneMenu id="inputParentesco" required="true" requiredMessage=" Parentesco: Campo obrigatório!"
+                                         value="#{PacienteController.telefone.parentesco.codParentesco}">
+                            <f:selectItem itemLabel="Selecione" itemValue=""/>
+                            <f:selectItems value="#{ParentescoController.listarParentescos()}"
+                                           var="sis" itemLabel="#{sis.descParentesco}"
+                                           itemValue="#{sis.codParentesco}"/>
+                        </b:selectOneMenu>
+                    </b:column>
+
+                    <b:column span="2">
+                        <p:commandButton style="margin-top: 8px" value="Adicionar"
+                                         action="#{PacienteController.addListaTelefone()}"
+                                         icon="ui-icon-plus" update=":frmPrincipal:tbv:outTabelaTelefones, outTelefonePaciente">
+                        </p:commandButton>
+                    </b:column>
+
+                </b:row>
+
+                </p:outputPanel>
             </h:form>
         </p:dialog>
 
