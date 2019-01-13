@@ -17,28 +17,12 @@ public class PacienteDAO {
     private Connection conexao = null;
     private PreparedStatement ps = null;
 
-    public Boolean cadastrar(PacienteBean paciente, Integer codmunicipio,
-                             Integer codbairro) throws ProjetoException {
+    public Boolean cadastrar(PacienteBean paciente, Integer codbairro) throws ProjetoException {
         boolean retorno = false;
         conexao = ConnectionFactory.getConnection();
         Integer idPaciente = null;
 
         try {
-            if (codmunicipio == 0) {
-                String sql1 = "INSERT INTO hosp.municipio(descmunicipio, codfederal) "
-                        + " VALUES (?, ?) returning id_municipio;";
-
-                PreparedStatement ps1 = conexao.prepareStatement(sql1);
-
-                ps1.setString(1, paciente.getEndereco().getMunicipio()
-                        .toUpperCase());
-                ps1.setInt(2, paciente.getEndereco().getCodibge());
-
-                ResultSet set = ps1.executeQuery();
-                while (set.next()) {
-                    codmunicipio = set.getInt(1);
-                }
-            }
 
             if (codbairro == 0) {
                 String sql2 = "INSERT INTO hosp.bairros(descbairro, codmunicipio) "
@@ -48,7 +32,7 @@ public class PacienteDAO {
 
                 ps2.setString(1, paciente.getEndereco().getBairro()
                         .toUpperCase());
-                ps2.setInt(2, codmunicipio);
+                ps2.setInt(2, paciente.getEndereco().getCodmunicipio());
 
                 ResultSet set = ps2.executeQuery();
                 while (set.next()) {
@@ -289,7 +273,7 @@ public class PacienteDAO {
                 stmt.setString(547, paciente.getTipoDeficiencia());
             }
 
-            stmt.setInt(48, codmunicipio);
+            stmt.setInt(48, paciente.getEndereco().getCodmunicipio());
 
             if (paciente.getDeficienciaFisica() != null) {
                 stmt.setBoolean(49, paciente.getDeficienciaFisica());
@@ -390,27 +374,13 @@ public class PacienteDAO {
         }
     }
 
-    public Boolean alterar(PacienteBean paciente, Integer codmunicipio)
+    public Boolean alterar(PacienteBean paciente)
             throws ProjetoException {
         boolean retorno = false;
         conexao = ConnectionFactory.getConnection();
 
         try {
-            if (codmunicipio == 0) {
-                String sql1 = "INSERT INTO hosp.municipio(descmunicipio, codfederal) "
-                        + " VALUES (?, ?) returning id_municipio;";
 
-                PreparedStatement ps1 = conexao.prepareStatement(sql1);
-
-                ps1.setString(1, paciente.getEndereco().getMunicipio()
-                        .toUpperCase());
-                ps1.setInt(2, paciente.getEndereco().getCodibge());
-
-                ResultSet set = ps1.executeQuery();
-                while (set.next()) {
-                    codmunicipio = set.getInt("id_municipio");
-                }
-            }
             String sql = "update hosp.pacientes set nome = ?, dtanascimento = ?, estcivil = ?, sexo = ? , sangue = ?, pai = ? "
                     + ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, cidade = ?, bairro = ?, logradouro = ?, numero = ?"
                     + ", complemento = ?, referencia = ? "
@@ -512,7 +482,7 @@ public class PacienteDAO {
                     .getCodformatransporte());
             stmt.setString(46, paciente.getDeficiencia());
             stmt.setString(47, paciente.getTipoDeficiencia());
-            stmt.setInt(48, codmunicipio);
+            stmt.setInt(48, paciente.getEndereco().getCodmunicipio());
 
             stmt.setBoolean(49, paciente.getDeficienciaFisica());
 
@@ -614,7 +584,7 @@ public class PacienteDAO {
     public ArrayList<PacienteBean> listaPacientes() throws ProjetoException {
 
         String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
-                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, pacientes.cidade, municipio.codfederal, pacientes.bairro, "
+                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, pacientes.cidade, municipio.codigo, pacientes.bairro, "
                 + "pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, "
                 + "pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
                 + "pacientes.protreab, "
@@ -706,7 +676,7 @@ public class PacienteDAO {
                         rs.getString("descencaminhado"));
                 p.getFormatransporte().setDescformatransporte(
                         rs.getString("descformatransporte"));
-                p.getEndereco().setCodibge(rs.getInt("codfederal"));
+                p.getEndereco().setCodIbge(rs.getInt("codigo"));
                 p.setNomeSocial(rs.getString("nome_social"));
                 p.setMotivoNomeSocial(rs.getString("motivo_nome_social"));
                 p.setNecessitaNomeSocial(rs.getBoolean("necessita_nome_social"));
@@ -877,7 +847,7 @@ public class PacienteDAO {
         PacienteBean p = new PacienteBean();
 
         String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
-                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, pacientes.cidade, municipio.codfederal, pacientes.bairro, "
+                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, pacientes.cidade, municipio.codigo, pacientes.bairro, "
                 + "pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, "
                 + "pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
                 + "pacientes.protreab, "
@@ -973,7 +943,7 @@ public class PacienteDAO {
                 p.setDeficienciaAuditiva(rs.getBoolean("deficienciaauditiva"));
                 p.setDeficienciaVisual(rs.getBoolean("deficienciavisual"));
                 p.setDeficienciaMultipla(rs.getBoolean("deficienciamultipla"));
-                p.getEndereco().setCodibge(rs.getInt("codfederal"));
+                p.getEndereco().setCodIbge(rs.getInt("codigo"));
                 p.setNomeSocial(rs.getString("nome_social"));
                 p.setMotivoNomeSocial(rs.getString("motivo_nome_social"));
                 p.setNecessitaNomeSocial(rs.getBoolean("necessita_nome_social"));

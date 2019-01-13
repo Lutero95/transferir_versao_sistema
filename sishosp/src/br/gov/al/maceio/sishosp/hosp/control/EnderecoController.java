@@ -42,10 +42,11 @@ public class EnderecoController implements Serializable {
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
 
-    public EnderecoController() {
+    public EnderecoController() throws ProjetoException {
         this.endereco = new EnderecoBean();
         listaMunicipios = new ArrayList<>();
         listaMunicipios = null;
+        endereco.setUf(eDao.retornarEstadoDaEmpresa());
     }
 
     public void limparDados() {
@@ -214,6 +215,13 @@ public class EnderecoController implements Serializable {
     public List<EnderecoBean> listarMunicipiosCadastro()
             throws ProjetoException {
         listaMunicipios = eDao.listaMunicipios();
+        return listaMunicipios;
+
+    }
+
+    public List<EnderecoBean> listarMunicipiosPorEstado()
+            throws ProjetoException {
+        listaMunicipios = eDao.listaMunicipiosPorEstado(endereco.getUf());
         return listaMunicipios;
 
     }

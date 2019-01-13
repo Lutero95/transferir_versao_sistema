@@ -179,12 +179,10 @@ public class PacienteController implements Serializable {
 
         boolean cadastrou = false;
 
-        if (paciente.getEndereco().getCodibge() != null) {
-            int codmunicipio = eDao.municipioExiste(paciente);
-            int codbairro = eDao.bairroExiste(paciente, codmunicipio);
+        if (paciente.getEndereco().getCodIbge() != null) {
+            int codbairro = eDao.bairroExiste(paciente, paciente.getEndereco().getCodmunicipio());
 
-            cadastrou = pDao.cadastrar(paciente, codmunicipio,
-                    codbairro);
+            cadastrou = pDao.cadastrar(paciente, codbairro);
         }
 
         if (cadastrou == true) {
@@ -237,8 +235,7 @@ public class PacienteController implements Serializable {
                     transporteSuggestion.getCodformatransporte());
         }
 
-        int codmunicipio = eDao.municipioExiste(paciente);
-        boolean alterou = pDao.alterar(paciente, codmunicipio);
+        boolean alterou = pDao.alterar(paciente);
 
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Paciente alterado com sucesso!", "Sucesso");

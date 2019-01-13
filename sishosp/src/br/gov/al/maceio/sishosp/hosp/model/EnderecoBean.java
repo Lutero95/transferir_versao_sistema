@@ -1,6 +1,10 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,8 +18,7 @@ public class EnderecoBean implements Serializable {
 	private String logradouro;
 	private Integer codbairro;
 	private Integer codmunicipio;
-	private Integer codibge;
-	private Integer codfederal;
+	private Integer codIbge;
 	private Integer codmacregiao;
 	private String complemento;
 	private String cep;
@@ -26,8 +29,41 @@ public class EnderecoBean implements Serializable {
 	private String telefoneorelhao;
 	private Date dataCadastro;
 	private Date dataAlteracao;
-	private List<Integer> listaEstado;
 	private Boolean cepValido;
+	private ArrayList<String> listaEstados;
+	private EnderecoDAO enderecoDAO = new EnderecoDAO();
+
+	public EnderecoBean() {
+		listaEstados = new ArrayList<>();
+		listaEstados.add("AC");
+		listaEstados.add("AL");
+		listaEstados.add("AM");
+		listaEstados.add("AP");
+		listaEstados.add("BA");
+		listaEstados.add("CE");
+		listaEstados.add("DF");
+		listaEstados.add("ES");
+		listaEstados.add("GO");
+		listaEstados.add("MA");
+		listaEstados.add("MG");
+		listaEstados.add("MS");
+		listaEstados.add("MT");
+		listaEstados.add("PA");
+		listaEstados.add("PB");
+		listaEstados.add("PE");
+		listaEstados.add("PI");
+		listaEstados.add("PR");
+		listaEstados.add("RJ");
+		listaEstados.add("RN");
+		listaEstados.add("RO");
+		listaEstados.add("RR");
+		listaEstados.add("RS");
+		listaEstados.add("SC");
+		listaEstados.add("SE");
+		listaEstados.add("SP");
+		listaEstados.add("TO");
+
+	}
 
 	public Long getId() {
 		return id;
@@ -93,20 +129,12 @@ public class EnderecoBean implements Serializable {
 		this.codmunicipio = codmunicipio;
 	}
 
-	public Integer getCodibge() {
-		return codibge;
+	public Integer getCodIbge() {
+		return codIbge;
 	}
 
-	public void setCodibge(Integer codibge) {
-		this.codibge = codibge;
-	}
-
-	public Integer getCodfederal() {
-		return codfederal;
-	}
-
-	public void setCodfederal(Integer codfederal) {
-		this.codfederal = codfederal;
+	public void setCodIbge(Integer codIbge) {
+		this.codIbge = codIbge;
 	}
 
 	public Integer getCodmacregiao() {
@@ -189,19 +217,19 @@ public class EnderecoBean implements Serializable {
 		this.dataAlteracao = dataAlteracao;
 	}
 
-	public List<Integer> getListaEstado() {
-		return listaEstado;
-	}
-
-	public void setListaEstado(List<Integer> listaEstado) {
-		this.listaEstado = listaEstado;
-	}
-
 	public Boolean getCepValido() {
 		return cepValido;
 	}
 
 	public void setCepValido(Boolean cepValido) {
 		this.cepValido = cepValido;
+	}
+
+	public ArrayList<String> getListaEstados() {
+		return listaEstados;
+	}
+
+	public void setListaEstados(ArrayList<String> listaEstados) {
+		this.listaEstados = listaEstados;
 	}
 }

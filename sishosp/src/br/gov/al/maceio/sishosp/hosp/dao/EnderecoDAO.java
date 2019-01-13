@@ -8,10 +8,13 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+
+import javax.faces.context.FacesContext;
 
 public class EnderecoDAO {
 
@@ -110,7 +113,7 @@ public class EnderecoDAO {
 
         EnderecoBean end = new EnderecoBean();
 
-        String sql = "select b.id_bairro, b.descbairro, b.codmunicipio, m.descmunicipio from hosp.bairros b "
+        String sql = "select b.id_bairro, b.descbairro, b.codmunicipio, m.nome, m.uf, m.id_municipio from hosp.bairros b "
                 + "left join hosp.municipio m on (b.codmunicipio = m.id_municipio) where id_bairro=? order by b.descbairro";
         try {
             conexao = ConnectionFactory.getConnection();
@@ -122,7 +125,9 @@ public class EnderecoDAO {
                 end.setCodbairro(rs.getInt("id_bairro"));
                 end.setBairro(rs.getString("descbairro"));
                 end.setCodmunicipio(rs.getInt("codmunicipio"));
-                end.setMunicipio(rs.getString("descmunicipio"));
+                end.setMunicipio(rs.getString("nome"));
+                end.setUf(rs.getString("uf"));
+                end.setCodmunicipio(rs.getInt("id_municipio"));
             }
 
         } catch (SQLException ex) {
@@ -140,7 +145,7 @@ public class EnderecoDAO {
 
     public ArrayList<EnderecoBean> listaBairros() throws ProjetoException {
 
-        String sql = "select b.id_bairro, b.descbairro, b.codmunicipio, m.descmunicipio from hosp.bairros b "
+        String sql = "select b.id_bairro, b.descbairro, b.codmunicipio, m.nome, m.uf, m.id_municipio from hosp.bairros b "
                 + "left join hosp.municipio m on (b.codmunicipio = m.id_municipio) order by b.descbairro";
 
         ArrayList<EnderecoBean> lista = new ArrayList();
@@ -156,7 +161,9 @@ public class EnderecoDAO {
                 end.setCodbairro(rs.getInt("id_bairro"));
                 end.setBairro(rs.getString("descbairro"));
                 end.setCodmunicipio(rs.getInt("codmunicipio"));
-                end.setMunicipio(rs.getString("descmunicipio"));
+                end.setMunicipio(rs.getString("nome"));
+                end.setUf(rs.getString("uf"));
+                end.setCodmunicipio(rs.getInt("id_municipio"));
 
                 lista.add(end);
             }
@@ -246,7 +253,7 @@ public class EnderecoDAO {
     public Boolean cadastrarMunicipio(EnderecoBean endereco) {
         boolean retorno = false;
 
-        String sql = "insert into hosp.municipio (descmunicipio,codfederal,codmacregiao) "
+        String sql = "insert into hosp.municipio (nome,codigo,uf) "
                 + " values (?, ?, ?)";
 
         try {
@@ -254,8 +261,8 @@ public class EnderecoDAO {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, endereco.getMunicipio().toUpperCase().trim());
-            stmt.setInt(2, endereco.getCodfederal());
-            stmt.setInt(3, endereco.getCodmacregiao());
+            stmt.setInt(2, endereco.getCodIbge());
+            stmt.setString(3, endereco.getUf());
 
             stmt.execute();
             conexao.commit();
@@ -276,20 +283,13 @@ public class EnderecoDAO {
 
     public Boolean alterarMunicipio(EnderecoBean endereco) {
         boolean retorno = false;
-        String sql = "update hosp.municipio set descmunicipio = ?, codfederal = ? , codmacregiao = ? where id_municipio = ?";
+        String sql = "update hosp.municipio set nome = ?, codigo = ? , uf = ? where id_municipio = ?";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, endereco.getMunicipio().toUpperCase());
-            if (endereco.getCodfederal() != null)
-                stmt.setInt(2, endereco.getCodfederal());
-            else
-                stmt.setNull(2, Types.OTHER);
-
-            if (endereco.getCodmacregiao() != null)
-                stmt.setInt(3, endereco.getCodmacregiao());
-            else
-                stmt.setNull(3, Types.OTHER);
+            stmt.setInt(2, endereco.getCodIbge());
+            stmt.setString(3, endereco.getUf());
             stmt.setInt(4, endereco.getCodmunicipio());
             stmt.executeUpdate();
 
@@ -339,7 +339,7 @@ public class EnderecoDAO {
 
     public ArrayList<EnderecoBean> listaMunicipios() throws ProjetoException {
 
-        String sql = "select * from hosp.municipio order by descmunicipio";
+        String sql = "select id_municipio, nome, codigo, uf from hosp.municipio order by nome";
 
         ArrayList<EnderecoBean> lista = new ArrayList();
 
@@ -352,9 +352,44 @@ public class EnderecoDAO {
                 EnderecoBean p = new EnderecoBean();
 
                 p.setCodmunicipio(rs.getInt("id_municipio"));
-                p.setMunicipio(rs.getString("descmunicipio").toUpperCase());
-                p.setCodfederal(rs.getInt("codfederal"));
-                p.setCodmacregiao(rs.getInt("codmacregiao"));
+                p.setMunicipio(rs.getString("nome").toUpperCase());
+                p.setCodIbge(rs.getInt("codigo"));
+                p.setUf(rs.getString("uf"));
+
+                lista.add(p);
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return lista;
+    }
+
+    public ArrayList<EnderecoBean> listaMunicipiosPorEstado(String uf) throws ProjetoException {
+
+        String sql = "select id_municipio, nome, codigo, uf from hosp.municipio where uf = ? order by nome";
+
+        ArrayList<EnderecoBean> lista = new ArrayList();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setString(1, uf);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                EnderecoBean p = new EnderecoBean();
+
+                p.setCodmunicipio(rs.getInt("id_municipio"));
+                p.setMunicipio(rs.getString("nome").toUpperCase());
+                p.setCodIbge(rs.getInt("codigo"));
+                p.setUf(rs.getString("uf"));
 
                 lista.add(p);
             }
@@ -375,7 +410,7 @@ public class EnderecoDAO {
     public EnderecoBean listarMunicipioPorId(int id) throws ProjetoException {
 
         EnderecoBean end = new EnderecoBean();
-        String sql = "select municipio.id_municipio, municipio.descmunicipio, codfederal, codmacregiao from hosp.municipio where id_municipio=?";
+        String sql = "select municipio.id_municipio, municipio.nome, codigo, uf from hosp.municipio where id_municipio=? order by nome";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
@@ -385,9 +420,9 @@ public class EnderecoDAO {
                 end = new EnderecoBean();
                 end.setId(rs.getLong("id_municipio"));
                 end.setCodmunicipio(rs.getInt("id_municipio"));
-                end.setMunicipio(rs.getString("descmunicipio"));
-                end.setCodfederal(rs.getInt("codfederal"));
-                end.setCodmacregiao(rs.getInt("codmacregiao"));
+                end.setMunicipio(rs.getString("nome"));
+                end.setCodIbge(rs.getInt("codigo"));
+                end.setUf(rs.getString("uf"));
             }
 
         } catch (SQLException ex) {
@@ -403,45 +438,12 @@ public class EnderecoDAO {
         return end;
     }
 
-    public Integer municipioExiste(PacienteBean paciente)
-            throws ProjetoException {
-
-        String sql = "select id_municipio from hosp.municipio where codfederal = ?";
-        int cod = 0;
-
-        try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stm = conexao.prepareStatement(sql);
-            stm.setInt(1, paciente.getEndereco().getCodibge());
-
-            ResultSet rs = stm.executeQuery();
-
-            while (rs.next()) {
-
-                cod = rs.getInt("id_municipio");
-
-            }
-
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                conexao.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        return cod;
-    }
-
-
     public List<EnderecoBean> buscaMunicipioAutoComplete(String str)
             throws ProjetoException {
         PreparedStatement ps = null;
         conexao = ConnectionFactory.getConnection();
         try {
-            String sql = " select id_municipio, descmunicipio from hosp.municipio where descmunicipio like ? order by descmunicipio";
+            String sql = " select id_municipio, nome, codigo from hosp.municipio where nome like ? order by nome";
 
             ps = conexao.prepareStatement(sql);
             ps.setString(1, "%" + str.toUpperCase() + "%");
@@ -452,12 +454,47 @@ public class EnderecoDAO {
             while (rs.next()) {
                 EnderecoBean e = new EnderecoBean();
                 e.setCodmunicipio(rs.getInt("id_municipio"));
-                e.setMunicipio(rs.getString("descmunicipio"));
+                e.setMunicipio(rs.getString("nome"));
+                e.setCodIbge(rs.getInt("codigo"));
 
                 lista.add(e);
 
             }
             return lista;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+    }
+
+    public String retornarEstadoDaEmpresa()
+            throws ProjetoException {
+
+        String uf = null;
+        PreparedStatement ps = null;
+        conexao = ConnectionFactory.getConnection();
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext
+                .getCurrentInstance().getExternalContext().getSessionMap()
+                .get("obj_usuario");
+        try {
+            String sql = " select estado from hosp.empresa where cod_empresa = ?";
+
+            ps = conexao.prepareStatement(sql);
+            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ResultSet rs = ps.executeQuery();
+
+
+            while (rs.next()) {
+              uf = rs.getString("estado");
+
+            }
+            return uf;
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {

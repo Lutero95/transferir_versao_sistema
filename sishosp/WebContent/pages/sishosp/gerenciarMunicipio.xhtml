@@ -35,19 +35,29 @@
 
                     <h:column>
                         <f:facet name="header">
-                            Descrição
+                            Município
                         </f:facet>
 
                         <h:outputText value="#{tab.municipio}"/>
                     </h:column>
                     <h:column>
                         <f:facet name="header">
-                            Cód. IBGE
+                            Código IBGE
                         </f:facet>
 
-                        <h:outputText value="#{tab.codfederal}"/>
+                        <h:outputText value="#{tab.codIbge}"/>
                     </h:column>
+
                     <h:column>
+                        <f:facet name="header">
+                            Estado
+                        </f:facet>
+
+                        <h:outputText value="#{tab.uf}"/>
+                    </h:column>
+
+                    <h:column>
+
                         <f:facet name="header">
                             Ação
                         </f:facet>

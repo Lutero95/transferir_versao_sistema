@@ -13,7 +13,7 @@ public final class CEPUtil {
             endereco.setUf(cepWebService.getEstado());
             endereco.setMunicipio(cepWebService.getCidade());
             endereco.setBairro(cepWebService.getBairro());
-            endereco.setCodibge(cepWebService.getResultado());
+            endereco.setCodIbge(cepWebService.getResultado());
             endereco.setCepValido(true);
 
         } else {

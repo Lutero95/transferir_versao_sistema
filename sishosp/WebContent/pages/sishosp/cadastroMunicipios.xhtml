@@ -57,33 +57,31 @@
                     <b:column span="10">
 
                         <b:inputText class="form-control" id="inputcod"
-                                     value="#{EnderecoController.endereco.codfederal}"/>
+                                     value="#{EnderecoController.endereco.codIbge}"/>
                     </b:column>
 
                 </b:row>
 
                 <br></br>
 
-                <!--
                 <b:row>
 
-                    <b:column span="2">
-                        <h:outputLabel for="inputcod" value="Código Macrorregião"
-                                       style="margin-top:10px"/>
+                <b:column span="2">
+                    <h:outputLabel value="Estado"
+                                   style="margin-top:10px"/>
+                </b:column>
 
-                    </b:column>
-
-                    <b:column span="10">
-
-                        <b:inputText class="form-control"
-                                     value="#{EnderecoController.endereco.codmacregiao}"/>
-                    </b:column>
+                <b:column span="2">
+                    <b:selectOneMenu required="true" requiredMessage="Estado: Campo obrigatório!"
+                                     value="#{EnderecoController.endereco.uf}" id="estado">
+                        <f:selectItem itemLabel="Selecione" itemValue=""/>
+                        <f:selectItems value="#{EnderecoController.endereco.listaEstados}"/>
+                    </b:selectOneMenu>
+                </b:column>
 
                 </b:row>
 
                 <br></br>
-
-                -->
 
                 <div align="center">
                     <b:messages value="Error" id="msgPagina"></b:messages>
