@@ -137,9 +137,10 @@ public class PacienteController implements Serializable {
         return listaPacientes;
     }
 
-    public void encontraCEP() {
+    public void encontraCEP() throws ProjetoException {
         paciente.setEndereco(CEPUtil.encontraCEP(paciente.getEndereco().getCep()));
-
+        EnderecoDAO enderecoDAO = new EnderecoDAO();
+        enderecoDAO.listaBairrosPorMunicipio(paciente.getEndereco().getCodmunicipio());
         if (paciente.getEndereco().getCepValido()) {
             cidadeDoCep = true;
         } else {

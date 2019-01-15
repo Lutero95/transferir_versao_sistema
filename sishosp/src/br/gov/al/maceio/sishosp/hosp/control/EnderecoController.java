@@ -135,6 +135,16 @@ public class EnderecoController implements Serializable {
         return eDao.listaBairros();
     }
 
+    public List<EnderecoBean> listarBairrosPorMunicipio(Integer codMunicipio) throws ProjetoException {
+        List<EnderecoBean> listaBairrosPorMunicpio = new ArrayList<>();
+        if(codMunicipio != null) {
+            listaBairrosPorMunicpio = eDao.listaBairrosPorMunicipio(codMunicipio);
+        }
+
+        return listaBairrosPorMunicpio;
+
+    }
+
 
     //MUNICÍPIO
 

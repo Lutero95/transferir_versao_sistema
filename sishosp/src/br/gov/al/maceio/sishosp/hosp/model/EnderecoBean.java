@@ -1,12 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class EnderecoBean implements Serializable {
 
@@ -30,8 +27,8 @@ public class EnderecoBean implements Serializable {
 	private Date dataCadastro;
 	private Date dataAlteracao;
 	private Boolean cepValido;
+	private Boolean bairroUnico;
 	private ArrayList<String> listaEstados;
-	private EnderecoDAO enderecoDAO = new EnderecoDAO();
 
 	public EnderecoBean() {
 		listaEstados = new ArrayList<>();
@@ -231,5 +228,13 @@ public class EnderecoBean implements Serializable {
 
 	public void setListaEstados(ArrayList<String> listaEstados) {
 		this.listaEstados = listaEstados;
+	}
+
+	public Boolean getBairroUnico() {
+		return bairroUnico;
+	}
+
+	public void setBairroUnico(Boolean bairroUnico) {
+		this.bairroUnico = bairroUnico;
 	}
 }

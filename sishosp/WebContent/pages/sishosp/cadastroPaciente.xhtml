@@ -297,8 +297,8 @@
                                              requiredMessage="CEP: Campo obrigatório!">
 
                                     <p:ajax listener="#{PacienteController.encontraCEP}"
-                                            update="inputbairro, inputbairro2, inputrua, estado, opmun1, opmun2, opbai1, opbai2,
-                                            municipio, municipio2, frmPrincipal:msgPagina"
+                                            update="opbai1, inputrua, estado, outMunicipios,
+                                            frmPrincipal:msgPagina"
                                             global="false" event="blur"></p:ajax>
                                 </p:inputMask>
                             </b:column>
@@ -337,121 +337,6 @@
                             </b:column>
 
                             <b:column span="1">
-                                <h:outputLabel for="numero" value="Número"
-                                               style="margin-top:10px"/>
-                            </b:column>
-
-                            <b:column span="2">
-                                <b:inputText
-                                        value="#{PacienteController.paciente.endereco.numero}"
-                                        class="form-control" id="numero">
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="1">
-                                <h:outputLabel for="inputbairro" value="Bairro"
-                                               style="margin-top:10px"/>
-                            </b:column>
-
-                            <b:column span="2">
-                                <p:outputPanel id="opbai1">
-                                    <b:inputText
-                                            rendered="#{PacienteController.cidadeDoCep == true}"
-                                            value="#{PacienteController.paciente.endereco.bairro}"
-                                            required="true" readonly="true"
-                                            requiredMessage="Bairro: Campo obrigatório!"
-                                            class="form-control" id="inputbairro">
-                                    </b:inputText>
-                                </p:outputPanel>
-
-                                <p:outputPanel id="opbai2">
-                                    <p:autoComplete id="inputbairro2" required="true"
-                                                    style="margin-top:10px"
-                                                    rendered="#{PacienteController.cidadeDoCep == false}"
-                                                    requiredMessage="Bairro: Campo obrigatório!"
-                                                    completeMethod="#{PacienteController.listaBairroAutoComplete}"
-                                                    size="25" value="#{PacienteController.paciente.endereco}"
-                                                    effect="fade" var="theme" forceSelection="true"
-                                                    minQueryLength="1" itemValue="#{theme}"
-                                                    itemLabel="#{theme.bairro}" converter="conBairro">
-                                    </p:autoComplete>
-                                </p:outputPanel>
-                            </b:column>
-
-                            <b:column span="1">
-                                <h:outputLabel for="municipio" value="Município"
-                                               style="margin-top:10px"/>
-                            </b:column>
-
-                            <b:column span="2">
-                                <p:outputPanel id="opmun1">
-                                    <b:inputText
-                                            rendered="#{PacienteController.cidadeDoCep == true}"
-                                            value="#{PacienteController.paciente.endereco.municipio}"
-                                            readonly="true"
-                                            class="form-control" id="municipio">
-                                    </b:inputText>
-                                </p:outputPanel>
-
-                                <p:outputPanel id="opmun2">
-                                    <p:autoComplete id="municipio2" required="true"
-                                                    style="margin-top:10px"
-                                                    rendered="#{PacienteController.cidadeDoCep == false}"
-                                                    requiredMessage="Município: Campo obrigatório!"
-                                                    completeMethod="#{EnderecoController.listaMunicipioAutoComplete}"
-                                                    size="40" value="#{PacienteController.paciente.endereco}"
-                                                    effect="fade" var="theme" forceSelection="true"
-                                                    minQueryLength="1" itemValue="#{theme}"
-                                                    itemLabel="#{theme.municipio}" converter="conMunicipio">
-                                    </p:autoComplete>
-                                </p:outputPanel>
-                            </b:column>
-                        </b:row>
-
-                        <br></br>
-
-                        <b:row>
-
-                            <b:column span="1">
-                                <h:outputLabel for="estado" value="Estado"
-                                               style="margin-top:10px"/>
-                            </b:column>
-
-                            <b:column span="2">
-                                <b:selectOneMenu style="margin-left:15px"
-                                                 value="#{PacienteController.paciente.endereco.uf}" id="estado">
-                                    <f:selectItem itemLabel="UF" itemValue=""/>
-                                    <f:selectItem itemLabel="AC" itemValue="AC"/>
-                                    <f:selectItem itemLabel="AL" itemValue="AL"/>
-                                    <f:selectItem itemLabel="AC" itemValue="AP"/>
-                                    <f:selectItem itemLabel="AM" itemValue="AM"/>
-                                    <f:selectItem itemLabel="BA" itemValue="BA"/>
-                                    <f:selectItem itemLabel="CE" itemValue="CE"/>
-                                    <f:selectItem itemLabel="AC" itemValue="DF"/>
-                                    <f:selectItem itemLabel="ES" itemValue="ES"/>
-                                    <f:selectItem itemLabel="GO" itemValue="GO"/>
-                                    <f:selectItem itemLabel="MA" itemValue="MA"/>
-                                    <f:selectItem itemLabel="MT" itemValue="MT"/>
-                                    <f:selectItem itemLabel="MS" itemValue="MS"/>
-                                    <f:selectItem itemLabel="MG" itemValue="MG"/>
-                                    <f:selectItem itemLabel="PA" itemValue="PA"/>
-                                    <f:selectItem itemLabel="PB" itemValue="PB"/>
-                                    <f:selectItem itemLabel="PR" itemValue="PR"/>
-                                    <f:selectItem itemLabel="PE" itemValue="PE"/>
-                                    <f:selectItem itemLabel="PI" itemValue="PI"/>
-                                    <f:selectItem itemLabel="RJ" itemValue="RJ"/>
-                                    <f:selectItem itemLabel="RN" itemValue="RN"/>
-                                    <f:selectItem itemLabel="RS" itemValue="RS"/>
-                                    <f:selectItem itemLabel="RO" itemValue="RO"/>
-                                    <f:selectItem itemLabel="RR" itemValue="RR"/>
-                                    <f:selectItem itemLabel="SC" itemValue="SC"/>
-                                    <f:selectItem itemLabel="SP" itemValue="SP"/>
-                                    <f:selectItem itemLabel="SE" itemValue="SE"/>
-                                    <f:selectItem itemLabel="TO" itemValue="TO"/>
-                                </b:selectOneMenu>
-                            </b:column>
-
-                            <b:column span="1">
                                 <h:outputLabel for="referencia" value="Referência"
                                                style="margin-top:10px;margin-left:10px"/>
                             </b:column>
@@ -463,7 +348,90 @@
                                 </b:inputText>
                             </b:column>
 
+                            <b:column span="1">
+                                <h:outputLabel for="numero" value="Número"
+                                               style="margin-top:10px"/>
+                            </b:column>
+
+                            <b:column span="2">
+                                <b:inputText
+                                        value="#{PacienteController.paciente.endereco.numero}"
+                                        class="form-control" id="numero">
+                                </b:inputText>
+                            </b:column>
+
                         </b:row>
+
+                        <br></br>
+
+                        <b:row>
+
+                            <b:column span="1">
+                                <h:outputLabel for="estado" value="Estado"
+                                               style="margin-top:10px"/>
+                            </b:column>
+
+                            <b:column span="3">
+                                <b:selectOneMenu required="true" requiredMessage="Estado: Campo obrigatório!"
+                                                 value="#{PacienteController.paciente.endereco.uf}" id="estado">
+                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                    <f:selectItems value="#{EnderecoController.endereco.listaEstados}"/>
+                                    <p:ajax listener="#{EnderecoController.listarMunicipiosPorEstado()}" update="outMunicipios"></p:ajax>
+                                </b:selectOneMenu>
+                            </b:column>
+
+                            <b:column span="1">
+                                <h:outputLabel value="Município"
+                                               style="margin-top:10px"/>
+                            </b:column>
+
+                            <b:column span="3">
+
+                                    <p:outputPanel id="outMunicipios">
+
+                                        <b:selectOneMenu required="true" requiredMessage="Município: Campo obrigatório!"
+                                                         value="#{PacienteController.paciente.endereco.codmunicipio}">
+                                            <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                            <f:selectItems value="#{EnderecoController.listarMunicipiosPorEstado()}"
+                                                           var="sis" itemLabel="#{sis.municipio}"
+                                                           itemValue="#{sis.codmunicipio}"/>
+                                        </b:selectOneMenu>
+                                    </p:outputPanel>
+
+                            </b:column>
+
+                            <b:column span="1">
+                                <h:outputLabel value="Bairro"
+                                               style="margin-top:10px"/>
+                            </b:column>
+
+                            <b:column span="3">
+
+                                <p:outputPanel id="opbai1">
+                                    <b:selectOneMenu required="true" requiredMessage="Município: Campo obrigatório!"
+                                                     disabled="#{PacienteController.paciente.endereco.bairroUnico == false}"
+                                                     value="#{PacienteController.paciente.endereco.codbairro}">
+                                        <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                        <f:selectItems value="#{EnderecoController.listarBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
+                                                       var="sis" itemLabel="#{sis.bairro}"
+                                                       itemValue="#{sis.codbairro}"/>
+                                    </b:selectOneMenu>
+                                </p:outputPanel>
+
+                                <p:outputPanel id="opbai2">
+                                    <b:selectOneMenu required="true" requiredMessage="Município: Campo obrigatório!"
+                                                     disabled="#{PacienteController.paciente.endereco.bairroUnico == false}"
+                                                     value="#{PacienteController.paciente.endereco.codbairro}">
+                                        <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                        <f:selectItems value="#{EnderecoController.listarBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
+                                                       var="sis" itemLabel="#{sis.bairro}"
+                                                       itemValue="#{sis.codbairro}"/>
+                                    </b:selectOneMenu>
+                                </p:outputPanel>
+
+                            </b:column>
+                        </b:row>
+
 
                     </p:tab>
 
