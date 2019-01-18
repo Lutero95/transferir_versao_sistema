@@ -11,6 +11,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.StringUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 
@@ -575,6 +576,37 @@ public class EnderecoDAO {
             }
         }
         return codCidade;
+    }
+
+    public Integer verificarSeBairroExiste(String nomeBairro)
+            throws ProjetoException {
+
+        Integer retorno = null;
+        PreparedStatement ps = null;
+        conexao = ConnectionFactory.getConnection();
+
+        try {
+            String sql = "select id_bairro from hosp.bairros where descbairro = ? ";
+
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, StringUtil.removeAcentos(nomeBairro.toUpperCase()));
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                retorno = rs.getInt("id_bairro");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
     }
 
 }

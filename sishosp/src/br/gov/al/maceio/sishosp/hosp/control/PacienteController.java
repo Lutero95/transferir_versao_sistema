@@ -42,6 +42,7 @@ public class PacienteController implements Serializable {
     EnderecoDAO eDao = new EnderecoDAO();
     EscolaDAO esDao = new EscolaDAO();
     private Telefone telefone;
+    private Boolean bairroExiste;
 
     // AUTO COMPLETE
     private EscolaBean escolaSuggestion;
@@ -99,6 +100,7 @@ public class PacienteController implements Serializable {
         listaPacientesAgenda = new ArrayList<PacienteBean>();
         listaRaca = new ArrayList<>();
         listaRaca = null;
+        bairroExiste = null;
     }
 
     public String redirectEdit() {
@@ -138,8 +140,21 @@ public class PacienteController implements Serializable {
     }
 
     public void encontraCEP() throws ProjetoException {
+        bairroExiste = false;
         paciente.setEndereco(CEPUtil.encontraCEP(paciente.getEndereco().getCep()));
         EnderecoDAO enderecoDAO = new EnderecoDAO();
+        paciente.getEndereco().setCodbairro(enderecoDAO.verificarSeBairroExiste(paciente.getEndereco().getBairro()));
+        if(paciente.getEndereco().getCodbairro() != null) {
+            if (paciente.getEndereco().getCodbairro() > 0) {
+                bairroExiste = true;
+            }
+            else{
+                bairroExiste = false;
+            }
+        }
+        else{
+            bairroExiste = false;
+        }
         enderecoDAO.listaBairrosPorMunicipio(paciente.getEndereco().getCodmunicipio());
         if (paciente.getEndereco().getCepValido()) {
             cidadeDoCep = true;
@@ -180,11 +195,8 @@ public class PacienteController implements Serializable {
 
         boolean cadastrou = false;
 
-        if (paciente.getEndereco().getCodIbge() != null) {
-            int codbairro = eDao.bairroExiste(paciente, paciente.getEndereco().getCodmunicipio());
+        cadastrou = pDao.cadastrar(paciente, bairroExiste);
 
-            cadastrou = pDao.cadastrar(paciente, codbairro);
-        }
 
         if (cadastrou == true) {
             limparDados();
@@ -766,5 +778,13 @@ public class PacienteController implements Serializable {
 
     public void setTelefone(Telefone telefone) {
         this.telefone = telefone;
+    }
+
+    public Boolean getBairroExiste() {
+        return bairroExiste;
+    }
+
+    public void setBairroExiste(Boolean bairroExiste) {
+        this.bairroExiste = bairroExiste;
     }
 }

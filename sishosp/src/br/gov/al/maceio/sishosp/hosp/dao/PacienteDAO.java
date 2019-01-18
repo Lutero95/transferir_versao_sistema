@@ -17,14 +17,14 @@ public class PacienteDAO {
     private Connection conexao = null;
     private PreparedStatement ps = null;
 
-    public Boolean cadastrar(PacienteBean paciente, Integer codbairro) throws ProjetoException {
+    public Boolean cadastrar(PacienteBean paciente, Boolean bairroExiste) throws ProjetoException {
         boolean retorno = false;
         conexao = ConnectionFactory.getConnection();
         Integer idPaciente = null;
 
         try {
 
-            if (codbairro == 0) {
+            if (!bairroExiste) {
                 String sql2 = "INSERT INTO hosp.bairros(descbairro, codmunicipio) "
                         + " VALUES (?, ?) returning id_bairro;";
 
@@ -36,13 +36,13 @@ public class PacienteDAO {
 
                 ResultSet set = ps2.executeQuery();
                 while (set.next()) {
-                    codbairro = set.getInt(1);
+                    paciente.getEndereco().setCodbairro(set.getInt(1));
                 }
 
             }
 
             String sql = "insert into hosp.pacientes (dtacadastro, nome, dtanascimento, estcivil, sexo, sangue, "
-                    + "pai, mae, conjuge,codraca, cep, uf, cidade, bairro, logradouro, numero, complemento, referencia, "
+                    + "pai, mae, conjuge,codraca, cep, uf, logradouro, numero, complemento, referencia, "
                     + "rg, oe, dtaexpedicaorg, cpf, cns, protreab, "
                     + "reservista, ctps, serie, pis, cartorio, regnascimento, livro, folha, dtaregistro, contribuinte, id_escolaridade, id_escola, id_profissao, "
                     + "trabalha, localtrabalha, codparentesco, "
@@ -50,7 +50,7 @@ public class PacienteDAO {
                     + "deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, codbairro, email, facebook, instagram, "
                     + "nome_social, necessita_nome_social, motivo_nome_social)"
                     + " values (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ? , ? , "
-                    + "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?) returning id_paciente";
+                    + "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?) returning id_paciente";
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, paciente.getNome().toUpperCase().trim());
@@ -98,245 +98,237 @@ public class PacienteDAO {
                 stmt.setString(11, paciente.getEndereco().getUf().toUpperCase()
                         .trim());
             }
-            if (paciente.getEndereco().getMunicipio() == null) {
-                stmt.setNull(12, Types.CHAR);
-            } else {
-                stmt.setString(12, paciente.getEndereco().getMunicipio()
-                        .toUpperCase().trim());
-            }
-            stmt.setString(13, paciente.getEndereco().getBairro().toUpperCase()
-                    .trim());
-            stmt.setString(14, paciente.getEndereco().getLogradouro()
+            stmt.setString(12, paciente.getEndereco().getLogradouro()
                     .toUpperCase().trim());
-            stmt.setString(15, paciente.getEndereco().getNumero().toUpperCase()
+            stmt.setString(13, paciente.getEndereco().getNumero().toUpperCase()
                     .trim());
             if (paciente.getEndereco().getComplemento() == null) {
-                stmt.setNull(16, Types.CHAR);
+                stmt.setNull(14, Types.CHAR);
             } else {
-                stmt.setString(16, paciente.getEndereco().getComplemento()
+                stmt.setString(14, paciente.getEndereco().getComplemento()
                         .toUpperCase().trim());
             }
             if (paciente.getEndereco().getReferencia() == null) {
-                stmt.setNull(17, Types.CHAR);
+                stmt.setNull(15, Types.CHAR);
             } else {
-                stmt.setString(17, paciente.getEndereco().getReferencia()
+                stmt.setString(15, paciente.getEndereco().getReferencia()
                         .toUpperCase().trim());
             }
             if (paciente.getRg() == null) {
-                stmt.setNull(18, Types.CHAR);
+                stmt.setNull(16, Types.CHAR);
             } else {
-                stmt.setString(18, paciente.getRg().toUpperCase().trim());
+                stmt.setString(16, paciente.getRg().toUpperCase().trim());
             }
             if (paciente.getOe() == null) {
-                stmt.setNull(19, Types.CHAR);
+                stmt.setNull(17, Types.CHAR);
             } else {
-                stmt.setString(19, paciente.getOe().toUpperCase().trim());
+                stmt.setString(17, paciente.getOe().toUpperCase().trim());
             }
             if (paciente.getDataExpedicao1() == null) {
-                stmt.setNull(20, Types.DATE);
+                stmt.setNull(18, Types.DATE);
             } else {
-                stmt.setDate(20, new java.sql.Date(paciente.getDataExpedicao1()
+                stmt.setDate(18, new java.sql.Date(paciente.getDataExpedicao1()
                         .getTime()));
             }
             if (paciente.getCpf() == null) {
-                stmt.setNull(21, Types.CHAR);
+                stmt.setNull(19, Types.CHAR);
             } else {
-                stmt.setString(21, paciente.getCpf().replaceAll("[^0-9]", ""));
+                stmt.setString(19, paciente.getCpf().replaceAll("[^0-9]", ""));
             }
-            stmt.setString(22, paciente.getCns().toUpperCase().trim());
+            stmt.setString(20, paciente.getCns().toUpperCase().trim());
             if (paciente.getProtant() == null) {
-                stmt.setNull(23, Types.INTEGER);
+                stmt.setNull(21, Types.INTEGER);
             } else {
-                stmt.setInt(23, paciente.getProtant());
+                stmt.setInt(21, paciente.getProtant());
             }
             if (paciente.getReservista() == null) {
-                stmt.setNull(24, Types.CHAR);
+                stmt.setNull(22, Types.CHAR);
             } else {
-                stmt.setString(24, paciente.getReservista().toUpperCase()
+                stmt.setString(22, paciente.getReservista().toUpperCase()
                         .trim());
             }
             if (paciente.getCtps() == null) {
-                stmt.setNull(25, Types.INTEGER);
+                stmt.setNull(23, Types.INTEGER);
             } else {
-                stmt.setInt(25, paciente.getCtps());
+                stmt.setInt(23, paciente.getCtps());
             }
             if (paciente.getSerie() == null) {
-                stmt.setNull(26, Types.INTEGER);
+                stmt.setNull(24, Types.INTEGER);
             } else {
-                stmt.setInt(26, paciente.getSerie());
+                stmt.setInt(24, paciente.getSerie());
             }
             if (paciente.getPis() == null) {
-                stmt.setNull(27, Types.CHAR);
+                stmt.setNull(25, Types.CHAR);
             } else {
-                stmt.setString(27, paciente.getPis().toUpperCase().trim());
+                stmt.setString(25, paciente.getPis().toUpperCase().trim());
             }
             if (paciente.getCartorio() == null) {
-                stmt.setNull(28, Types.CHAR);
+                stmt.setNull(26, Types.CHAR);
             } else {
-                stmt.setString(28, paciente.getCartorio().toUpperCase().trim());
+                stmt.setString(26, paciente.getCartorio().toUpperCase().trim());
             }
             if (paciente.getNumeroCartorio() == null) {
-                stmt.setNull(29, Types.CHAR);
+                stmt.setNull(27, Types.CHAR);
             } else {
-                stmt.setString(29, paciente.getNumeroCartorio().toUpperCase()
+                stmt.setString(27, paciente.getNumeroCartorio().toUpperCase()
                         .trim());
             }
             if (paciente.getLivro() == null) {
-                stmt.setNull(30, Types.CHAR);
+                stmt.setNull(28, Types.CHAR);
             } else {
-                stmt.setString(30, paciente.getLivro().toUpperCase().trim());
+                stmt.setString(28, paciente.getLivro().toUpperCase().trim());
             }
             if (paciente.getFolha() == null) {
-                stmt.setNull(31, Types.INTEGER);
+                stmt.setNull(29, Types.INTEGER);
             } else {
-                stmt.setInt(31, paciente.getFolha());
+                stmt.setInt(29, paciente.getFolha());
             }
             if (paciente.getDataExpedicao2() == null) {
-                stmt.setNull(32, Types.DATE);
+                stmt.setNull(30, Types.DATE);
             } else {
-                stmt.setDate(32, new java.sql.Date(paciente.getDataExpedicao2()
+                stmt.setDate(30, new java.sql.Date(paciente.getDataExpedicao2()
                         .getTime()));
             }
             if (paciente.getAssociado() == null) {
-                stmt.setNull(33, Types.CHAR);
+                stmt.setNull(31, Types.CHAR);
             } else {
-                stmt.setString(33, paciente.getAssociado().toUpperCase().trim());
+                stmt.setString(31, paciente.getAssociado().toUpperCase().trim());
             }
             if (paciente.getEscolaridade().getCodescolaridade() == null) {
-                stmt.setNull(34, Types.INTEGER);
+                stmt.setNull(32, Types.INTEGER);
             } else {
-                stmt.setInt(34, paciente.getEscolaridade().getCodescolaridade());
+                stmt.setInt(32, paciente.getEscolaridade().getCodescolaridade());
             }
             if (paciente.getEscola().getCodEscola() != null) {
-                stmt.setInt(35, paciente.getEscola().getCodEscola());
+                stmt.setInt(33, paciente.getEscola().getCodEscola());
             } else {
-                stmt.setNull(35, Types.NULL);
+                stmt.setNull(33, Types.NULL);
             }
             if (paciente.getProfissao().getCodprofissao() == null) {
-                stmt.setNull(36, Types.INTEGER);
+                stmt.setNull(34, Types.INTEGER);
             } else {
-                stmt.setInt(36, paciente.getProfissao().getCodprofissao());
+                stmt.setInt(34, paciente.getProfissao().getCodprofissao());
             }
             if (paciente.getTrabalha() == null) {
-                stmt.setNull(37, Types.CHAR);
+                stmt.setNull(35, Types.CHAR);
             } else {
-                stmt.setString(37, paciente.getTrabalha().toUpperCase().trim());
+                stmt.setString(35, paciente.getTrabalha().toUpperCase().trim());
             }
             if (paciente.getLocaltrabalha() == null) {
-                stmt.setNull(38, Types.CHAR);
+                stmt.setNull(36, Types.CHAR);
             } else {
-                stmt.setString(38, paciente.getLocaltrabalha().toUpperCase()
+                stmt.setString(36, paciente.getLocaltrabalha().toUpperCase()
                         .trim());
             }
             if (paciente.getCodparentesco() == null) {
-                stmt.setNull(39, Types.INTEGER);
+                stmt.setNull(37, Types.INTEGER);
             } else {
-                stmt.setInt(39, paciente.getCodparentesco());
+                stmt.setInt(37, paciente.getCodparentesco());
             }
             if (paciente.getNomeresp() == null) {
-                stmt.setNull(40, Types.CHAR);
+                stmt.setNull(38, Types.CHAR);
             } else {
-                stmt.setString(40, paciente.getNomeresp().toUpperCase().trim());
+                stmt.setString(38, paciente.getNomeresp().toUpperCase().trim());
             }
             if (paciente.getRgresp() == null) {
-                stmt.setNull(41, Types.CHAR);
+                stmt.setNull(39, Types.CHAR);
             } else {
-                stmt.setString(41, paciente.getRgresp().toUpperCase().trim());
+                stmt.setString(39, paciente.getRgresp().toUpperCase().trim());
             }
             if (paciente.getCpfresp() == null) {
-                stmt.setNull(42, Types.CHAR);
+                stmt.setNull(40, Types.CHAR);
             } else {
-                stmt.setString(42,
+                stmt.setString(40,
                         paciente.getCpfresp().replaceAll("[^0-9]", ""));
             }
             if (paciente.getDataNascimentoresp() == null) {
-                stmt.setNull(43, Types.DATE);
+                stmt.setNull(41, Types.DATE);
             } else {
-                stmt.setDate(43, new java.sql.Date(paciente
+                stmt.setDate(41, new java.sql.Date(paciente
                         .getDataNascimentoresp().getTime()));
             }
             if (paciente.getEncaminhado().getCodencaminhado() == null) {
-                stmt.setNull(44, Types.INTEGER);
+                stmt.setNull(42, Types.INTEGER);
             } else {
-                stmt.setInt(44, paciente.getEncaminhado().getCodencaminhado());
+                stmt.setInt(42, paciente.getEncaminhado().getCodencaminhado());
             }
             if (paciente.getFormatransporte().getCodformatransporte() == null) {
-                stmt.setNull(45, Types.INTEGER);
+                stmt.setNull(43, Types.INTEGER);
             } else {
-                stmt.setInt(45, paciente.getFormatransporte()
+                stmt.setInt(43, paciente.getFormatransporte()
                         .getCodformatransporte());
             }
-            stmt.setString(46, paciente.getDeficiencia().toUpperCase().trim());
+            stmt.setString(44, paciente.getDeficiencia().toUpperCase().trim());
             if (paciente.getTipoDeficiencia() == null) {
-                stmt.setNull(47, Types.CHAR);
+                stmt.setNull(45, Types.CHAR);
             } else {
-                stmt.setString(547, paciente.getTipoDeficiencia());
+                stmt.setString(45, paciente.getTipoDeficiencia());
             }
 
-            stmt.setInt(48, paciente.getEndereco().getCodmunicipio());
+            stmt.setInt(46, paciente.getEndereco().getCodmunicipio());
 
             if (paciente.getDeficienciaFisica() != null) {
-                stmt.setBoolean(49, paciente.getDeficienciaFisica());
+                stmt.setBoolean(47, paciente.getDeficienciaFisica());
+            } else {
+                stmt.setBoolean(47, false);
+            }
+
+            if (paciente.getDeficienciaMental() != null) {
+                stmt.setBoolean(48, paciente.getDeficienciaMental());
+            } else {
+                stmt.setBoolean(48, false);
+            }
+
+            if (paciente.getDeficienciaAuditiva() != null) {
+                stmt.setBoolean(49, paciente.getDeficienciaAuditiva());
             } else {
                 stmt.setBoolean(49, false);
             }
 
-            if (paciente.getDeficienciaMental() != null) {
-                stmt.setBoolean(50, paciente.getDeficienciaMental());
+            if (paciente.getDeficienciaVisual() != null) {
+                stmt.setBoolean(50, paciente.getDeficienciaVisual());
             } else {
                 stmt.setBoolean(50, false);
             }
 
-            if (paciente.getDeficienciaAuditiva() != null) {
-                stmt.setBoolean(51, paciente.getDeficienciaAuditiva());
+            if (paciente.getDeficienciaMultipla() != null) {
+                stmt.setBoolean(51, paciente.getDeficienciaMultipla());
             } else {
                 stmt.setBoolean(51, false);
             }
 
-            if (paciente.getDeficienciaVisual() != null) {
-                stmt.setBoolean(52, paciente.getDeficienciaVisual());
-            } else {
-                stmt.setBoolean(52, false);
-            }
-
-            if (paciente.getDeficienciaMultipla() != null) {
-                stmt.setBoolean(53, paciente.getDeficienciaMultipla());
-            } else {
-                stmt.setBoolean(53, false);
-            }
-
-            stmt.setInt(54, codbairro);
+            stmt.setInt(52, paciente.getEndereco().getCodbairro());
 
             if (paciente.getEmail() == null) {
-                stmt.setNull(55, Types.CHAR);
+                stmt.setNull(53, Types.CHAR);
             } else {
-                stmt.setString(55, paciente.getEmail());
+                stmt.setString(53, paciente.getEmail());
             }
 
             if (paciente.getFacebook() == null) {
-                stmt.setNull(56, Types.CHAR);
+                stmt.setNull(54, Types.CHAR);
             } else {
-                stmt.setString(56, paciente.getFacebook());
+                stmt.setString(54, paciente.getFacebook());
             }
 
             if (paciente.getInstagram() == null) {
-                stmt.setNull(57, Types.CHAR);
+                stmt.setNull(55, Types.CHAR);
             } else {
-                stmt.setString(57, paciente.getInstagram());
+                stmt.setString(55, paciente.getInstagram());
             }
 
             if (paciente.getNomeSocial() == null) {
-                stmt.setNull(58, Types.CHAR);
+                stmt.setNull(56, Types.CHAR);
             } else {
-                stmt.setString(58, paciente.getNomeSocial());
+                stmt.setString(56, paciente.getNomeSocial());
             }
 
-            stmt.setBoolean(59, paciente.getNecessitaNomeSocial());
+            stmt.setBoolean(57, paciente.getNecessitaNomeSocial());
 
             if (paciente.getMotivoNomeSocial() == null) {
-                stmt.setNull(60, Types.CHAR);
+                stmt.setNull(58, Types.CHAR);
             } else {
-                stmt.setString(60, paciente.getMotivoNomeSocial());
+                stmt.setString(58, paciente.getMotivoNomeSocial());
             }
 
             ResultSet set = stmt.executeQuery();
@@ -359,7 +351,6 @@ public class PacienteDAO {
 
             conexao.commit();
             retorno = true;
-            conexao.close();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -382,7 +373,7 @@ public class PacienteDAO {
         try {
 
             String sql = "update hosp.pacientes set nome = ?, dtanascimento = ?, estcivil = ?, sexo = ? , sangue = ?, pai = ? "
-                    + ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, cidade = ?, bairro = ?, logradouro = ?, numero = ?"
+                    + ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, logradouro = ?, numero = ?"
                     + ", complemento = ?, referencia = ? "
                     + ", rg = ?,  oe = ?, dtaexpedicaorg = ?, cpf = ?, cns = ?, protreab = ?"
                     + ", reservista = ?, ctps = ?, serie = ?, pis = ?, cartorio = ?, regnascimento = ?, livro = ?, folha = ?, dtaregistro = ?"
@@ -406,115 +397,113 @@ public class PacienteDAO {
             stmt.setInt(9, paciente.getCodRaca());
             stmt.setString(10, paciente.getEndereco().getCep());
             stmt.setString(11, paciente.getEndereco().getUf());
-            stmt.setString(12, paciente.getEndereco().getMunicipio());
-            stmt.setString(13, paciente.getEndereco().getBairro());
-            stmt.setString(14, paciente.getEndereco().getLogradouro());
-            stmt.setString(15, paciente.getEndereco().getNumero());
-            stmt.setString(16, paciente.getEndereco().getComplemento());
-            stmt.setString(17, paciente.getEndereco().getReferencia());
-            stmt.setString(18, paciente.getRg());
-            stmt.setString(19, paciente.getOe());
+            stmt.setString(12, paciente.getEndereco().getLogradouro());
+            stmt.setString(13, paciente.getEndereco().getNumero());
+            stmt.setString(14, paciente.getEndereco().getComplemento());
+            stmt.setString(15, paciente.getEndereco().getReferencia());
+            stmt.setString(16, paciente.getRg());
+            stmt.setString(17, paciente.getOe());
 
             if (paciente.getDataExpedicao1() != null) {
-                stmt.setDate(20, new java.sql.Date(paciente.getDataExpedicao1()
+                stmt.setDate(18, new java.sql.Date(paciente.getDataExpedicao1()
                         .getTime()));
             } else {
-                stmt.setNull(20, Types.DATE);
+                stmt.setNull(18, Types.DATE);
             }
 
-            stmt.setString(21, paciente.getCpf().replaceAll("[^0-9]", ""));
-            stmt.setString(22, paciente.getCns());
+            stmt.setString(19, paciente.getCpf().replaceAll("[^0-9]", ""));
+            stmt.setString(20, paciente.getCns());
 
             if (paciente.getProtant() == null) {
-                stmt.setNull(23, Types.INTEGER);
+                stmt.setNull(21, Types.INTEGER);
             } else {
-                stmt.setInt(23, paciente.getProtant());
+                stmt.setInt(21, paciente.getProtant());
             }
 
-            stmt.setString(24, paciente.getReservista());
-            stmt.setInt(25, paciente.getCtps());
-            stmt.setInt(26, paciente.getSerie());
-            stmt.setString(27, paciente.getPis());
-            stmt.setString(28, paciente.getCartorio());
-            stmt.setString(29, paciente.getNumeroCartorio());
-            stmt.setString(30, paciente.getLivro());
-            stmt.setInt(31, paciente.getFolha());
+            stmt.setString(22, paciente.getReservista());
+            stmt.setInt(23, paciente.getCtps());
+            stmt.setInt(24, paciente.getSerie());
+            stmt.setString(25, paciente.getPis());
+            stmt.setString(26, paciente.getCartorio());
+            stmt.setString(27, paciente.getNumeroCartorio());
+            stmt.setString(28, paciente.getLivro());
+            stmt.setInt(29, paciente.getFolha());
 
             if (paciente.getDataExpedicao2() != null) {
-                stmt.setDate(32, new java.sql.Date(paciente.getDataExpedicao2()
+                stmt.setDate(30, new java.sql.Date(paciente.getDataExpedicao2()
                         .getTime()));
             } else {
-                stmt.setNull(32, Types.DATE);
+                stmt.setNull(30, Types.DATE);
             }
 
-            stmt.setString(33, paciente.getAssociado().toUpperCase().trim());
-            stmt.setInt(34, paciente.getEscolaridade().getCodescolaridade());
-            stmt.setInt(35, paciente.getEscola().getCodEscola());
+            stmt.setString(31, paciente.getAssociado().toUpperCase().trim());
+            stmt.setInt(32, paciente.getEscolaridade().getCodescolaridade());
+            stmt.setInt(33, paciente.getEscola().getCodEscola());
 
             if (paciente.getProfissao().getCodprofissao() == null) {
-                stmt.setNull(36, Types.INTEGER);
+                stmt.setNull(34, Types.INTEGER);
             } else {
-                stmt.setInt(36, paciente.getProfissao().getCodprofissao());
+                stmt.setInt(34, paciente.getProfissao().getCodprofissao());
             }
 
-            stmt.setString(37, paciente.getTrabalha());
-            stmt.setString(38, paciente.getLocaltrabalha());
+            stmt.setString(35, paciente.getTrabalha());
+            stmt.setString(36, paciente.getLocaltrabalha());
 
             if (paciente.getCodparentesco() != null) {
-                stmt.setInt(39, paciente.getCodparentesco());
+                stmt.setInt(37, paciente.getCodparentesco());
             } else {
-                stmt.setNull(39, Types.INTEGER);
+                stmt.setNull(37, Types.INTEGER);
             }
 
-            stmt.setString(40, paciente.getNomeresp());
-            stmt.setString(41, paciente.getRgresp());
-            stmt.setString(42, paciente.getCpfresp().replaceAll("[^0-9]", ""));
+            stmt.setString(38, paciente.getNomeresp());
+            stmt.setString(39, paciente.getRgresp());
+            stmt.setString(40, paciente.getCpfresp().replaceAll("[^0-9]", ""));
 
             if (paciente.getDataNascimentoresp() != null) {
-                stmt.setDate(43, new java.sql.Date(paciente
+                stmt.setDate(41, new java.sql.Date(paciente
                         .getDataNascimentoresp().getTime()));
             } else {
-                stmt.setNull(43, Types.DATE);
+                stmt.setNull(41, Types.DATE);
             }
 
-            stmt.setInt(44, paciente.getEncaminhado().getCodencaminhado());
-            stmt.setInt(45, paciente.getFormatransporte()
+            stmt.setInt(42, paciente.getEncaminhado().getCodencaminhado());
+            stmt.setInt(43, paciente.getFormatransporte()
                     .getCodformatransporte());
-            stmt.setString(46, paciente.getDeficiencia());
-            stmt.setString(47, paciente.getTipoDeficiencia());
-            stmt.setInt(48, paciente.getEndereco().getCodmunicipio());
+            stmt.setString(44, paciente.getDeficiencia());
+            stmt.setString(45, paciente.getTipoDeficiencia());
+            stmt.setInt(46, paciente.getEndereco().getCodmunicipio());
 
-            stmt.setBoolean(49, paciente.getDeficienciaFisica());
+            stmt.setBoolean(47, paciente.getDeficienciaFisica());
 
-            stmt.setBoolean(50, paciente.getDeficienciaMental());
+            stmt.setBoolean(48, paciente.getDeficienciaMental());
 
-            stmt.setBoolean(51, paciente.getDeficienciaAuditiva());
+            stmt.setBoolean(49, paciente.getDeficienciaAuditiva());
 
-            stmt.setBoolean(52, paciente.getDeficienciaVisual());
+            stmt.setBoolean(50, paciente.getDeficienciaVisual());
 
-            stmt.setBoolean(53, paciente.getDeficienciaMultipla());
+            stmt.setBoolean(51, paciente.getDeficienciaMultipla());
 
-            stmt.setString(54, paciente.getEmail());
+            stmt.setString(52, paciente.getEmail());
 
-            stmt.setString(55, paciente.getFacebook());
+            stmt.setString(53, paciente.getFacebook());
 
-            stmt.setString(56, paciente.getInstagram());
+            stmt.setString(54, paciente.getInstagram());
 
             if (paciente.getNomeSocial() == null) {
-                stmt.setNull(57, Types.CHAR);
+                stmt.setNull(55, Types.CHAR);
             } else {
-                stmt.setString(57, paciente.getNomeSocial());
+                stmt.setString(55, paciente.getNomeSocial());
             }
 
-            stmt.setBoolean(58, paciente.getNecessitaNomeSocial());
+            stmt.setBoolean(56, paciente.getNecessitaNomeSocial());
 
             if (paciente.getMotivoNomeSocial() == null) {
-                stmt.setNull(59, Types.CHAR);
+                stmt.setNull(57, Types.CHAR);
             } else {
-                stmt.setString(59, paciente.getMotivoNomeSocial());
+                stmt.setString(57, paciente.getMotivoNomeSocial());
             }
 
-            stmt.setLong(60, paciente.getId_paciente());
+            stmt.setLong(58, paciente.getId_paciente());
 
             stmt.executeUpdate();
 
@@ -555,7 +544,7 @@ public class PacienteDAO {
         }
     }
 
-    public Boolean excluir(PacienteBean paciente) throws ProjetoException {
+    public Boolean excluir(PacienteBean paciente) {
         boolean retorno = false;
         String sql = "delete from hosp.pacientes where id_paciente = ?";
         try {
@@ -584,7 +573,7 @@ public class PacienteDAO {
     public ArrayList<PacienteBean> listaPacientes() throws ProjetoException {
 
         String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
-                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, pacientes.cidade, municipio.codigo, pacientes.bairro, "
+                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, municipio.codigo,  "
                 + "pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, "
                 + "pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
                 + "pacientes.protreab, "
@@ -625,8 +614,6 @@ public class PacienteDAO {
                 p.setCodRaca(rs.getInt("codraca"));
                 p.getEndereco().setCep(rs.getString("cep"));
                 p.getEndereco().setUf(rs.getString("uf"));
-                p.getEndereco().setMunicipio(rs.getString("cidade"));
-                p.getEndereco().setBairro(rs.getString("bairro"));
                 p.getEndereco().setLogradouro(rs.getString("logradouro"));
                 p.getEndereco().setNumero(rs.getString("numero"));
                 p.getEndereco().setComplemento(rs.getString("complemento"));
@@ -700,7 +687,7 @@ public class PacienteDAO {
             throws ProjetoException, SQLException {
 
         String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
-                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, pacientes.cidade, pacientes.bairro, "
+                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf,  "
                 + "pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, "
                 + "pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
                 + "pacientes.protreab, "
@@ -774,8 +761,6 @@ public class PacienteDAO {
                 p.setCodRaca(rs.getInt("codraca"));
                 p.getEndereco().setCep(rs.getString("cep"));
                 p.getEndereco().setUf(rs.getString("uf"));
-                p.getEndereco().setMunicipio(rs.getString("cidade"));
-                p.getEndereco().setBairro(rs.getString("bairro"));
                 p.getEndereco().setLogradouro(rs.getString("logradouro"));
                 p.getEndereco().setNumero(rs.getString("numero"));
                 p.getEndereco().setComplemento(rs.getString("complemento"));
@@ -847,7 +832,7 @@ public class PacienteDAO {
         PacienteBean p = new PacienteBean();
 
         String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
-                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, pacientes.cidade, municipio.codigo, pacientes.bairro, "
+                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, municipio.codigo, "
                 + "pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, "
                 + "pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
                 + "pacientes.protreab, "
@@ -887,8 +872,6 @@ public class PacienteDAO {
                 p.setCodRaca(rs.getInt("codraca"));
                 p.getEndereco().setCep(rs.getString("cep"));
                 p.getEndereco().setUf(rs.getString("uf"));
-                p.getEndereco().setMunicipio(rs.getString("cidade"));
-                p.getEndereco().setBairro(rs.getString("bairro"));
                 p.getEndereco().setLogradouro(rs.getString("logradouro"));
                 p.getEndereco().setNumero(rs.getString("numero"));
                 p.getEndereco().setComplemento(rs.getString("complemento"));

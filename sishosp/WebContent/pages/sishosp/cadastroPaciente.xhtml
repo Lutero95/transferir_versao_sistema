@@ -297,7 +297,7 @@
                                              requiredMessage="CEP: Campo obrigatório!">
 
                                     <p:ajax listener="#{PacienteController.encontraCEP}"
-                                            update="opbai1, inputrua, estado, outMunicipios,
+                                            update="outBairro, bairro1, bairro2, inputrua, estado, outMunicipios,
                                             frmPrincipal:msgPagina"
                                             global="false" event="blur"></p:ajax>
                                 </p:inputMask>
@@ -348,6 +348,12 @@
                                 </b:inputText>
                             </b:column>
 
+                        </b:row>
+
+                        <br></br>
+
+                        <b:row>
+
                             <b:column span="1">
                                 <h:outputLabel for="numero" value="Número"
                                                style="margin-top:10px"/>
@@ -359,12 +365,6 @@
                                         class="form-control" id="numero">
                                 </b:inputText>
                             </b:column>
-
-                        </b:row>
-
-                        <br></br>
-
-                        <b:row>
 
                             <b:column span="1">
                                 <h:outputLabel for="estado" value="Estado"
@@ -379,6 +379,12 @@
                                     <p:ajax listener="#{EnderecoController.listarMunicipiosPorEstado()}" update="outMunicipios"></p:ajax>
                                 </b:selectOneMenu>
                             </b:column>
+
+                        </b:row>
+
+                        <br></br>
+
+                        <b:row>
 
                             <b:column span="1">
                                 <h:outputLabel value="Município"
@@ -407,26 +413,16 @@
 
                             <b:column span="3">
 
-                                <p:outputPanel id="opbai1">
-                                    <b:selectOneMenu required="true" requiredMessage="Município: Campo obrigatório!"
-                                                     disabled="#{PacienteController.paciente.endereco.bairroUnico == false}"
+                                <p:outputPanel id="outBairro">
+                                    <b:selectOneMenu id="bairro1" rendered="#{PacienteController.paciente.endereco.bairroUnico == true}" required="true" requiredMessage="Bairro: Campo obrigatório!"
                                                      value="#{PacienteController.paciente.endereco.codbairro}">
                                         <f:selectItem itemLabel="Selecione" itemValue=""/>
                                         <f:selectItems value="#{EnderecoController.listarBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
                                                        var="sis" itemLabel="#{sis.bairro}"
                                                        itemValue="#{sis.codbairro}"/>
                                     </b:selectOneMenu>
-                                </p:outputPanel>
 
-                                <p:outputPanel id="opbai2">
-                                    <b:selectOneMenu required="true" requiredMessage="Município: Campo obrigatório!"
-                                                     disabled="#{PacienteController.paciente.endereco.bairroUnico == false}"
-                                                     value="#{PacienteController.paciente.endereco.codbairro}">
-                                        <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                        <f:selectItems value="#{EnderecoController.listarBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
-                                                       var="sis" itemLabel="#{sis.bairro}"
-                                                       itemValue="#{sis.codbairro}"/>
-                                    </b:selectOneMenu>
+                                   <p:outputLabel id="bairro2" style="margin-top: 10px" value="#{PacienteController.paciente.endereco.bairro}"></p:outputLabel>
                                 </p:outputPanel>
 
                             </b:column>
