@@ -16,6 +16,7 @@ public class TipoAtendimentoBean implements Serializable {
 	private boolean equipe;
 	private boolean primeiroAt;
 	private Integer codEmpresa;
+	private Integer intervaloMinimo;
 
 	// LISTAS
 	private List<GrupoBean> grupo;
@@ -122,4 +123,11 @@ public class TipoAtendimentoBean implements Serializable {
 		this.grupoNovo = grupoNovo;
 	}
 
+	public Integer getIntervaloMinimo() {
+		return intervaloMinimo;
+	}
+
+	public void setIntervaloMinimo(Integer intervaloMinimo) {
+		this.intervaloMinimo = intervaloMinimo;
+	}
 }

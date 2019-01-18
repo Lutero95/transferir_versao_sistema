@@ -20,14 +20,15 @@ public class TipoAtendimentoDAO {
     public boolean gravarTipoAt(TipoAtendimentoBean tipo) {
 
         Boolean retorno = false;
-        String sql = "insert into hosp.tipoatendimento (desctipoatendimento, primeiroatendimento, equipe_programa,  id) "
-                + " values (?, ?, ?, DEFAULT) RETURNING id;";
+        String sql = "insert into hosp.tipoatendimento (desctipoatendimento, primeiroatendimento, equipe_programa, id, intervalo_minimo) "
+                + " values (?, ?, ?, DEFAULT, ?) RETURNING id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, tipo.getDescTipoAt().toUpperCase());
             ps.setBoolean(2, tipo.isPrimeiroAt());
             ps.setBoolean(3, tipo.isEquipe());
+            ps.setInt(4, tipo.getIntervaloMinimo());
             ResultSet rs = ps.executeQuery();
             int idTipo = 0;
             if (rs.next()) {
@@ -56,14 +57,15 @@ public class TipoAtendimentoDAO {
     public boolean alterarTipo(TipoAtendimentoBean tipo) {
 
         Boolean retorno = false;
-        String sql = "update hosp.tipoatendimento set desctipoatendimento = ?, primeiroatendimento = ?, equipe_programa = ? where id = ?";
+        String sql = "update hosp.tipoatendimento set desctipoatendimento = ?, primeiroatendimento = ?, equipe_programa = ?, intervalo_minimo = ? where id = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, tipo.getDescTipoAt().toUpperCase());
             stmt.setBoolean(2, tipo.isPrimeiroAt());
             stmt.setBoolean(3, tipo.isEquipe());
-            stmt.setInt(4, tipo.getIdTipo());
+            stmt.setInt(4, tipo.getIntervaloMinimo());
+            stmt.setInt(5, tipo.getIdTipo());
             stmt.executeUpdate();
 
             retorno = excluirTipoGrupo(tipo.getIdTipo(), con);
@@ -177,7 +179,7 @@ public class TipoAtendimentoDAO {
     public List<TipoAtendimentoBean> listarTipoAtPorGrupo(int codGrupo)
             throws ProjetoException {
         List<TipoAtendimentoBean> lista = new ArrayList<>();
-        String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, "
+        String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.intervalo_minimo "
                 + " from hosp.tipoatendimento t left join hosp.tipoatendimento_grupo tg on (t.id = tg.codtipoatendimento) "
                 + " where tg.codgrupo = ? order by t.desctipoatendimento";
         try {
@@ -192,6 +194,7 @@ public class TipoAtendimentoDAO {
                 tipo.setDescTipoAt(rs.getString("desctipoatendimento"));
                 tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
+                tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
 
                 lista.add(tipo);
             }
@@ -210,8 +213,7 @@ public class TipoAtendimentoDAO {
 
     public List<TipoAtendimentoBean> listarTipoAt() throws ProjetoException {
         List<TipoAtendimentoBean> lista = new ArrayList<>();
-        String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa"
-                + " from hosp.tipoatendimento order by desctipoatendimento";
+        String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa, intervalo_minimo from hosp.tipoatendimento order by desctipoatendimento";
         GrupoDAO gDao = new GrupoDAO();
         try {
             con = ConnectionFactory.getConnection();
@@ -225,6 +227,7 @@ public class TipoAtendimentoDAO {
                 tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo.setGrupo(gDao.listarGruposPorTipoAtend(rs.getInt("id")));
+                tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
 
                 lista.add(tipo);
             }
@@ -244,7 +247,7 @@ public class TipoAtendimentoDAO {
     public List<TipoAtendimentoBean> listarTipoAtBusca(String descricao,
                                                        Integer tipo) throws ProjetoException {
         List<TipoAtendimentoBean> lista = new ArrayList<>();
-        String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa "
+        String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa, intervalo_minimo "
                 + " from hosp.tipoatendimento";
         if (tipo == 1) {
             sql += " where desctipoatendimento LIKE ?  order by desctipoatendimento";
@@ -257,10 +260,11 @@ public class TipoAtendimentoDAO {
 
             while (rs.next()) {
                 TipoAtendimentoBean tipo1 = new TipoAtendimentoBean();
-                tipo1.setIdTipo(rs.getInt(1));
-                tipo1.setDescTipoAt(rs.getString(2));
-                tipo1.setPrimeiroAt(rs.getBoolean(3));
-                tipo1.setEquipe(rs.getBoolean(4));
+                tipo1.setIdTipo(rs.getInt("id"));
+                tipo1.setDescTipoAt(rs.getString("desctipoatendimento"));
+                tipo1.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
+                tipo1.setEquipe(rs.getBoolean("equipe_programa"));
+                tipo1.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
 
                 lista.add(tipo1);
             }
@@ -285,7 +289,7 @@ public class TipoAtendimentoDAO {
         List<TipoAtendimentoBean> lista = new ArrayList<>();
 
         try {
-            String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa "
+            String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.intervalo_minimo "
                     + " from hosp.tipoatendimento t left join hosp.tipoatendimento_grupo tg on (t.id = tg.codtipoatendimento) "
                     + " where tg.codgrupo = ? and upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? order by t.desctipoatendimento";
 
@@ -301,6 +305,7 @@ public class TipoAtendimentoDAO {
                 tipo1.setDescTipoAt(rs.getString("desctipoatendimento"));
                 tipo1.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
                 tipo1.setEquipe(rs.getBoolean("primeiroatendimento"));
+                tipo1.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
 
                 lista.add(tipo1);
             }
@@ -318,7 +323,7 @@ public class TipoAtendimentoDAO {
     }
 
     public TipoAtendimentoBean listarTipoPorId(int id) throws ProjetoException {
-        String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa"
+        String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa, intervalo_minimo "
                 + " from hosp.tipoatendimento WHERE id = ?";
         try {
             con = ConnectionFactory.getConnection();
@@ -334,6 +339,7 @@ public class TipoAtendimentoDAO {
                 tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo.setGrupo(gDao.listarGruposPorTipoAtend(tipo.getIdTipo()));
+                tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
             }
             return tipo;
         } catch (SQLException ex) {
