@@ -615,4 +615,39 @@ public class AgendaDAO {
         }
     }
 
+    public Boolean retornarIntervaloUltimoAgendamento(Integer codPaciente, Integer codTipoAtendimento, Integer intervaloMinimo)
+            throws ProjetoException {
+
+        Boolean resultado = false;
+
+        String sql = "SELECT CASE WHEN dtamarcacao - CURRENT_DATE > concat(?,' minutes')::INTERVAL THEN TRUE ELSE FALSE END AS intervalo " +
+                "FROM hosp.atendimentos " +
+                "WHERE codpaciente = ? AND codtipoatendimento = ? " +
+                "ORDER BY id_atendimento DESC limit 1 ";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, intervaloMinimo);
+            stm.setInt(2, codPaciente);
+            stm.setInt(3, codTipoAtendimento);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+               resultado = rs.getBoolean("intervalo");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return resultado;
+    }
+
 }

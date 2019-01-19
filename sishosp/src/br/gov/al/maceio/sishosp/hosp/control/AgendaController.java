@@ -482,6 +482,19 @@ public class AgendaController implements Serializable {
             return null;
     }
 
+
+    public void validarTipoAtendimentoNaAgenda() throws ProjetoException {
+        if(agenda.getTipoAt().getIntervaloMinimo() > 0) {
+            Boolean intervalo = aDao.retornarIntervaloUltimoAgendamento(agenda.getPaciente().getId_paciente(), agenda.getTipoAt().getIdTipo(), agenda.getTipoAt().getIntervaloMinimo());
+
+            if (!intervalo) {
+                JSFUtil.adicionarMensagemErro("Paciente tem agendamento inferior ao mínimo para esse tipo de atendimento!", "Erro");
+
+                agenda.setTipoAt(null);
+            }
+        }
+    }
+
     public List<TipoAtendimentoBean> listaTipoAtendimentoPorGrupo()
             throws ProjetoException {
 

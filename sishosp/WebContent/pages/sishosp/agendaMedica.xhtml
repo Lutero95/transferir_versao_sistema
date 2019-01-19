@@ -127,7 +127,7 @@
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
                                         itemLabel="#{theme.descTipoAt}">
-                            <p:ajax event="itemSelect" update=":formAgendaMedica"/>
+                            <p:ajax event="itemSelect" update=":formAgendaMedica, msgPagina, outTipoAt" listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"/>
                             <!-- 	<p:ajax event="change" update=":formAgendaMedica"
                             listener="#{AgendaController.limparNaBuscaTipo()}" /> -->
                         </p:autoComplete>
