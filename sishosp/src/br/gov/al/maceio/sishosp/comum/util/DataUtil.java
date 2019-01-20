@@ -1,7 +1,11 @@
 package br.gov.al.maceio.sishosp.comum.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public final class DataUtil {
 
@@ -10,6 +14,16 @@ public final class DataUtil {
         c1.setTime(data);
 
         return c1;
+    }
+
+    public static String mesIhAnoAtual(){
+        Date data =  new Date();
+        Locale local = new Locale("pt","BR");
+        DateFormat dateFormat = new SimpleDateFormat("MMMM ' - ' yyyy",local);
+
+        String dataAtual = dateFormat.format(data);
+
+        return dataAtual;
     }
 
 }

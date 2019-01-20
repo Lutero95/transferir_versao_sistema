@@ -209,6 +209,64 @@
 
             <br></br>
 
+            <b:row rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
+                <b:column span="12">
+                    <div align="center">
+                       <p:panel header="#{AgendaController.dataAtual}"></p:panel>
+                    </div>
+                    <p:dataTable id="dtDiasAtendimentoEquipe" resizableColumns="true"
+                                 value="#{AgendaController.listaDiasDeAtendimentoAtuais()}" var="agend"
+                                 emptyMessage="Sem registros.">
+                        <p:column headerText="Equipe">
+                            <h:outputLabel value="#{agend.equipe.descEquipe}">
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Dia da Semana">
+                            <h:outputLabel value="#{agend.diaSemana}"/>
+                        </p:column>
+
+                        <p:column headerText="Turno">
+                            <h:outputLabel value="#{agend.turno}"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </b:column>
+            </b:row>
+
+            <br></br>
+
+            <b:row rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
+                <b:column span="12">
+                    <div align="center">
+                        <p:panel header="#{AgendaController.dataAtual}"></p:panel>
+                    </div>
+                    <p:dataTable id="dtDiasAtendimentoProfissional" resizableColumns="true"
+                                 value="#{AgendaController.listaDiasDeAtendimentoAtuais()}" var="agend"
+                                 emptyMessage="Sem registros.">
+                        <p:column headerText="Profissional">
+                            <h:outputLabel value="#{agend.profissional.nome}">
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Dia da Semana">
+                            <h:outputLabel value="#{agend.diaSemana}"/>
+                        </p:column>
+
+                        <p:column headerText="Turno">
+                            <h:outputLabel value="#{agend.turno}"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </b:column>
+            </b:row>
+
+            <br></br>
+            <br></br>
+            <br></br>
+
             <b:row>
 
                 <b:column span="2">

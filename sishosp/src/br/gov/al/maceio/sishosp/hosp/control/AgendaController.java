@@ -11,8 +11,10 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
+import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -22,13 +24,6 @@ import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
-import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
-import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
-import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
-import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 @ManagedBean(name = "AgendaController")
 @ViewScoped
@@ -62,6 +57,7 @@ public class AgendaController implements Serializable {
     private GrupoDAO gDao = new GrupoDAO();
     private EquipeDAO eDao = new EquipeDAO();
     private Boolean agendamentosConfirmados;
+    private String dataAtual;
 
     public AgendaController() {
         this.agenda = new AgendaBean();
@@ -85,6 +81,7 @@ public class AgendaController implements Serializable {
         temLotado = false;
         listaHorariosOcupados = new ArrayList<AgendaBean>();
         agendamentosConfirmados = false;
+        dataAtual = DataUtil.mesIhAnoAtual();
     }
 
     public void limparDados() {
@@ -484,7 +481,7 @@ public class AgendaController implements Serializable {
 
 
     public void validarTipoAtendimentoNaAgenda() throws ProjetoException {
-        if(agenda.getTipoAt().getIntervaloMinimo() > 0) {
+        if (agenda.getTipoAt().getIntervaloMinimo() > 0) {
             Boolean intervalo = aDao.retornarIntervaloUltimoAgendamento(agenda.getPaciente().getId_paciente(), agenda.getTipoAt().getIdTipo(), agenda.getTipoAt().getIntervaloMinimo());
 
             if (!intervalo) {
@@ -505,6 +502,22 @@ public class AgendaController implements Serializable {
             }
         }
         return listaTiposPorGrupo;
+    }
+
+    public List<ConfigAgendaParte1Bean> listaDiasDeAtendimentoAtuais() throws ProjetoException {
+        List<ConfigAgendaParte1Bean> listaConfigAgenda = new ArrayList<>();
+        if (agenda.getTipoAt() != null) {
+            if (agenda.getTipoAt().getIdTipo() != null) {
+                if (agenda.getProfissional().getId() != null) {
+                    listaConfigAgenda = aDao.retornarDiaAtendimentoProfissional(agenda.getProfissional().getId());
+                } else {
+                    if (agenda.getEquipe().getCodEquipe() != null) {
+                        listaConfigAgenda = aDao.retornarDiaAtendimentoEquipe(agenda.getEquipe().getCodEquipe());
+                    }
+                }
+            }
+        }
+        return listaConfigAgenda;
     }
 
     // LISTAS E AUTOCOMPLETES FINAL
@@ -691,4 +704,13 @@ public class AgendaController implements Serializable {
     public void setAgendamentosConfirmados(Boolean agendamentosConfirmados) {
         this.agendamentosConfirmados = agendamentosConfirmados;
     }
+
+    public String getDataAtual() {
+        return dataAtual;
+    }
+
+    public void setDataAtual(String dataAtual) {
+        this.dataAtual = dataAtual;
+    }
+
 }

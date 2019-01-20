@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
+import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
 
 import javax.faces.context.FacesContext;
@@ -38,7 +39,7 @@ public class AgendaDAO {
         try {
             con = ConnectionFactory.getConnection();
 
-            for(int i=0; i<listaNovosAgendamentos.size(); i++) {
+            for (int i = 0; i < listaNovosAgendamentos.size(); i++) {
                 ps = con.prepareStatement(sql);
 
                 ps.setInt(1, agenda.getPaciente().getId_paciente());
@@ -618,7 +619,7 @@ public class AgendaDAO {
     public Boolean retornarIntervaloUltimoAgendamento(Integer codPaciente, Integer codTipoAtendimento, Integer intervaloMinimo)
             throws ProjetoException {
 
-        Boolean resultado = false;
+        Boolean resultado = true;
 
         String sql = "SELECT CASE WHEN dtamarcacao - CURRENT_DATE > concat(?,' minutes')::INTERVAL THEN TRUE ELSE FALSE END AS intervalo " +
                 "FROM hosp.atendimentos " +
@@ -634,7 +635,7 @@ public class AgendaDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-               resultado = rs.getBoolean("intervalo");
+                resultado = rs.getBoolean("intervalo");
             }
 
         } catch (SQLException ex) {
@@ -648,6 +649,108 @@ public class AgendaDAO {
             }
         }
         return resultado;
+    }
+
+    public List<ConfigAgendaParte1Bean> retornarDiaAtendimentoProfissional(Long codProfissional) throws ProjetoException {
+        List<ConfigAgendaParte1Bean> lista = new ArrayList<ConfigAgendaParte1Bean>();
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT f.descfuncionario, ");
+        sql.append("CASE WHEN c.turno = 'M' THEN 'Manhã' ");
+        sql.append("WHEN c.turno = 'T' THEN 'Tarde' END AS turno, ");
+        sql.append("CASE WHEN c.diasemana = 1 THEN 'Domingo' ");
+        sql.append("WHEN c.diasemana = 2 THEN 'Segunda' ");
+        sql.append("WHEN c.diasemana = 3 THEN 'Terça' ");
+        sql.append("WHEN c.diasemana = 4 THEN 'Quarta' ");
+        sql.append("WHEN c.diasemana = 5 THEN 'Quinta' ");
+        sql.append("WHEN c.diasemana = 6 THEN 'Sexta' ");
+        sql.append("WHEN c.diasemana = 7 THEN 'Sábado' END AS dia ");
+        sql.append("FROM hosp.config_agenda c ");
+        sql.append("LEFT JOIN acl.funcionarios f ON (c.codmedico = f.id_funcionario) ");
+        sql.append("WHERE c.codmedico = ? AND ");
+        sql.append("c.mes = (SELECT DATE_PART('MONTH', CURRENT_TIMESTAMP)) AND c.ano = (SELECT DATE_PART('YEAR', CURRENT_TIMESTAMP)) ");
+        sql.append("ORDER BY f.descfuncionario, c.diasemana, c.turno");
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = null;
+            stm = con.prepareStatement(sql.toString());
+
+            stm.setLong(1, codProfissional);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ConfigAgendaParte1Bean configAgendaParte1Bean = new ConfigAgendaParte1Bean();
+                configAgendaParte1Bean.getProfissional().setNome(rs.getString("descfuncionario"));
+                configAgendaParte1Bean.setTurno(rs.getString("turno"));
+                configAgendaParte1Bean.setDiaSemana(rs.getString("dia"));
+
+                lista.add(configAgendaParte1Bean);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
+    public List<ConfigAgendaParte1Bean> retornarDiaAtendimentoEquipe(Integer codEquipe) throws ProjetoException {
+        List<ConfigAgendaParte1Bean> lista = new ArrayList<ConfigAgendaParte1Bean>();
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT e.descequipe, ");
+        sql.append("CASE WHEN c.turno = 'M' THEN 'Manhã' ");
+        sql.append("WHEN c.turno = 'T' THEN 'Tarde' END AS turno, ");
+        sql.append("CASE WHEN c.diasemana = 1 THEN 'Domingo' ");
+        sql.append("WHEN c.diasemana = 2 THEN 'Segunda' ");
+        sql.append("WHEN c.diasemana = 3 THEN 'Terça' ");
+        sql.append("WHEN c.diasemana = 4 THEN 'Quarta' ");
+        sql.append("WHEN c.diasemana = 5 THEN 'Quinta' ");
+        sql.append("WHEN c.diasemana = 6 THEN 'Sexta' ");
+        sql.append("WHEN c.diasemana = 7 THEN 'Sábado' END AS dia ");
+        sql.append("FROM hosp.config_agenda_equipe c ");
+        sql.append("LEFT JOIN hosp.equipe e ON (c.codequipe = e.id_equipe) ");
+        sql.append("WHERE c.codequipe = ? AND ");
+        sql.append("c.mes = (SELECT DATE_PART('MONTH', CURRENT_TIMESTAMP)) AND c.ano = (SELECT DATE_PART('YEAR', CURRENT_TIMESTAMP)) ");
+        sql.append("ORDER BY e.descequipe, c.diasemana, c.turno");
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = null;
+            stm = con.prepareStatement(sql.toString());
+
+            stm.setInt(1, codEquipe);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ConfigAgendaParte1Bean configAgendaParte1Bean = new ConfigAgendaParte1Bean();
+                configAgendaParte1Bean.getEquipe().setDescEquipe(rs.getString("descequipe"));
+                configAgendaParte1Bean.setTurno(rs.getString("turno"));
+                configAgendaParte1Bean.setDiaSemana(rs.getString("dia"));
+
+                lista.add(configAgendaParte1Bean);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
     }
 
 }
