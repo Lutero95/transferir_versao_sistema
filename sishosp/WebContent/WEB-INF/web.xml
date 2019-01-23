@@ -62,9 +62,16 @@
         <session-timeout>60000000</session-timeout>
     </session-config>
     
-    <context-param>
+      <context-param>
     <param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
     <param-value>true</param-value>
 </context-param>
+	
+	
+	<listener>
+    <listener-class>
+        br.gov.al.maceio.sishosp.comum.util.MyServletContextListener
+    </listener-class>
+</listener>
 
 </web-app>
