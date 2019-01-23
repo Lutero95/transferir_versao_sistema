@@ -98,7 +98,7 @@ public class AgendaController implements Serializable {
     }
 
     public void verificaDisponibilidadeData() throws ProjetoException {
-        if (!agenda.getTipoAt().isEquipe()) {
+        if (!agenda.getTipoAt().getEquipe()) {
             FeriadoBean feriado = aDao.verificarFeriado(this.agenda
                     .getDataAtendimento());
             List<BloqueioBean> bloqueio = new ArrayList<BloqueioBean>();

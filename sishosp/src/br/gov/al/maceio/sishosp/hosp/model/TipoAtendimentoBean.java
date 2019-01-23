@@ -13,7 +13,7 @@ public class TipoAtendimentoBean implements Serializable {
 
 	private Integer idTipo;
 	private String descTipoAt;
-	private boolean equipe;
+	private Boolean equipe;
 	private boolean primeiroAt;
 	private Integer codEmpresa;
 	private Integer intervaloMinimo;
@@ -29,7 +29,7 @@ public class TipoAtendimentoBean implements Serializable {
 		this.grupo = new ArrayList<GrupoBean>();
 		this.grupoNovo = new ArrayList<GrupoBean>();
 		this.descTipoAt = new String();
-		//this.equipe = false;
+		this.equipe = null;
 		this.primeiroAt = false;
 		this.grupoParaAdd = new GrupoBean();
 		this.idTipo = null;
@@ -50,14 +50,6 @@ public class TipoAtendimentoBean implements Serializable {
 
 	public void setDescTipoAt(String descTipoAt) {
 		this.descTipoAt = descTipoAt;
-	}
-
-	public boolean isEquipe() {
-		return equipe;
-	}
-
-	public void setEquipe(boolean equipe) {
-		this.equipe = equipe;
 	}
 
 	public boolean isPrimeiroAt() {
@@ -129,5 +121,13 @@ public class TipoAtendimentoBean implements Serializable {
 
 	public void setIntervaloMinimo(Integer intervaloMinimo) {
 		this.intervaloMinimo = intervaloMinimo;
+	}
+
+	public Boolean getEquipe() {
+		return equipe;
+	}
+
+	public void setEquipe(Boolean equipe) {
+		this.equipe = equipe;
 	}
 }

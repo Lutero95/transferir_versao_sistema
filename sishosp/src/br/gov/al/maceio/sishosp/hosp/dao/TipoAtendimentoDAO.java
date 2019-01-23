@@ -27,7 +27,7 @@ public class TipoAtendimentoDAO {
             ps = con.prepareStatement(sql);
             ps.setString(1, tipo.getDescTipoAt().toUpperCase());
             ps.setBoolean(2, tipo.isPrimeiroAt());
-            ps.setBoolean(3, tipo.isEquipe());
+            ps.setBoolean(3, tipo.getEquipe());
             ps.setInt(4, tipo.getIntervaloMinimo());
             ResultSet rs = ps.executeQuery();
             int idTipo = 0;
@@ -63,7 +63,7 @@ public class TipoAtendimentoDAO {
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, tipo.getDescTipoAt().toUpperCase());
             stmt.setBoolean(2, tipo.isPrimeiroAt());
-            stmt.setBoolean(3, tipo.isEquipe());
+            stmt.setBoolean(3, tipo.getEquipe());
             stmt.setInt(4, tipo.getIntervaloMinimo());
             stmt.setInt(5, tipo.getIdTipo());
             stmt.executeUpdate();

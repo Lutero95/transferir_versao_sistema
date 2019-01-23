@@ -27,7 +27,7 @@
                 <b:column span="3">
                     <p:outputPanel id="outPa">
                         <p:autoComplete value="#{AgendaController.agenda.paciente}"
-                                        size="40" converter="conPaciente"
+                                        size="40" converter="conPaciente" required="true" requiredMessage="Paciente: Campo obrigatório!"
                                         completeMethod="#{PacienteController.listaPacienteAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
@@ -42,7 +42,7 @@
                 </b:column>
 
                 <b:column span="1">
-                    <p:commandButton id="btBPa"
+                    <p:commandButton id="btBPa" immediate="true"
                                      action="#{AgendaController.limparNaBuscaPaciente()}"
                                      icon="ui-icon-search" style="height:25px" update=":formConsuPac"
                                      onclick="PF('dlgConsuPac').show();"/>
@@ -56,6 +56,7 @@
                     <p:outputPanel id="outProg">
                         <p:autoComplete value="#{AgendaController.agenda.programa}"
                                         size="40" converter="conPrograma"
+                                        required="true" requiredMessage="Programa: Campo obrigatório!"
                                         disabled="#{AgendaController.agenda.paciente==null}"
                                         completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
                                         effect="fade" var="theme" forceSelection="true"
@@ -71,7 +72,7 @@
                 </b:column>
 
                 <b:column span="1">
-                    <p:commandButton id="btBusPr"
+                    <p:commandButton id="btBusPr" immediate="true"
                                      disabled="#{AgendaController.agenda.paciente==null}"
                                      style="height:25px" icon="ui-icon-search"
                                      action="#{AgendaController.limparNaBuscaPrograma()}"
@@ -92,7 +93,8 @@
                     <p:outputPanel id="outGrupo">
                         <p:autoComplete value="#{AgendaController.agenda.grupo}" size="40"
                                         converter="conGrupo"
-                                        disabled="#{AgendaController.agenda.programa==null}"
+                                        required="true" requiredMessage="Grupo: Campo obrigatório!"
+                                        disabled="#{AgendaController.agenda.programa.idPrograma == null}"
                                         completeMethod="#{AgendaController.listaGrupoAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
@@ -107,9 +109,9 @@
                 </b:column>
 
                 <b:column span="1">
-                    <p:commandButton id="btBusGr" style="height:25px"
+                    <p:commandButton id="btBusGr" style="height:25px" immediate="true"
                                      icon="ui-icon-search"
-                                     disabled="#{AgendaController.agenda.programa==null}"
+                                     disabled="#{AgendaController.agenda.programa.idPrograma == null}"
                                      action="#{AgendaController.limparNaBuscaGrupo()}"
                                      update=":formAgendaMedica" onclick="PF('dlgConsuGrop').show();"/>
                 </b:column>
@@ -122,7 +124,8 @@
                     <p:outputPanel id="outTipoAt">
                         <p:autoComplete value="#{AgendaController.agenda.tipoAt}"
                                         size="40" converter="conTipoAtendimento"
-                                        disabled="#{AgendaController.agenda.grupo==null}"
+                                        required="true" requiredMessage="Tipo Atendimento: Campo obrigatório!"
+                                        disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
                                         completeMethod="#{AgendaController.listaTipoAtAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
@@ -135,9 +138,9 @@
                 </b:column>
 
                 <b:column span="1">
-                    <p:commandButton id="btBusTi" style="height:25px"
+                    <p:commandButton id="btBusTi" style="height:25px" immediate="true"
                                      icon="ui-icon-search"
-                                     disabled="#{AgendaController.agenda.grupo==null}"
+                                     disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
                                      action="#{AgendaController.limparNaBuscaTipo()}"
                                      update=":formAgendaMedica" onclick="PF('dlgConsuTipoAt').show();"/>
                 </b:column>
@@ -156,6 +159,7 @@
                                    rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
                         <p:autoComplete value="#{AgendaController.agenda.profissional}"
                                         size="40" converter="conFuncionario"
+                                        required="true" requiredMessage="Profissional: Campo obrigatório!"
                                         completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
@@ -166,7 +170,7 @@
                 </b:column>
 
                 <b:column span="1">
-                    <p:commandButton id="btBusProf" icon="ui-icon-search"
+                    <p:commandButton id="btBusProf" icon="ui-icon-search" immediate="true"
                                      style="height:25px;"
                                      disabled="#{AgendaController.agenda.tipoAt==null}"
                                      action="#{AgendaController.limparNaBuscaEquipeProf()}"
@@ -188,6 +192,7 @@
                                    rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
                         <p:autoComplete value="#{AgendaController.agenda.equipe}"
                                         size="40" converter="conEquipe"
+                                        required="true" requiredMessage="Equipe: Campo obrigatório!"
                                         completeMethod="#{AgendaController.listaEquipeAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
@@ -198,7 +203,7 @@
                 </b:column>
 
                 <b:column span="1">
-                    <p:commandButton id="btBusEqui"
+                    <p:commandButton id="btBusEqui" immediate="true"
                                      disabled="#{AgendaController.agenda.tipoAt==null}" icon="ui-icon-search"
                                      style="height:25px" onclick="PF('dlgConsuEquipe').show();"
                                      update=":formConsuEquipe"
@@ -405,7 +410,7 @@
                                  id="btnConfirmar"
                                  icon="glyphicon-ok" action="#{AgendaController.preparaConfirmar()}"/>
 
-                <b:commandButton value="Limpar Busca"
+                <b:commandButton value="Limpar Busca" immediate="true"
                                  style="margin-top:5px;margin-left:25px" icon="glyphicon-remove-sign"
                                  actionListener="#{AgendaController.limparDados()}"
                                  update=":formAgendaMedica"/>
