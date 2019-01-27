@@ -4,10 +4,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,11 +34,36 @@ public class EmpresaDAO {
             ps.setString(10, empresa.getComplemento());
             ps.setInt(11, empresa.getDdd1());
             ps.setInt(12, empresa.getTelefone1());
-            ps.setInt(13, empresa.getDdd2());
-            ps.setInt(14, empresa.getTelefone2());
-            ps.setString(15, empresa.getEmail());
-            ps.setString(16, empresa.getSite());
-            ps.setBoolean(17, empresa.getMatriz());
+            if(empresa.getDdd2() != null) {
+                ps.setInt(13, empresa.getDdd2());
+            }
+            else{
+                ps.setNull(13, Types.NULL);
+            }
+            if(empresa.getTelefone2() != null) {
+                ps.setInt(14, empresa.getTelefone2());
+            }
+            else{
+                ps.setNull(14, Types.NULL);
+            }
+            if(empresa.getEmail() != null) {
+                ps.setString(15, empresa.getEmail());
+            }
+            else{
+                ps.setNull(15, Types.NULL);
+            }
+            if(empresa.getSite() != null) {
+                ps.setString(16, empresa.getSite());
+            }
+            else{
+                ps.setNull(16, Types.NULL);
+            }
+            if(empresa.getMatriz() != null) {
+                ps.setBoolean(17, empresa.getMatriz());
+            }
+            else{
+                ps.setNull(17, Types.NULL);
+            }
 
             ps.execute();
 
