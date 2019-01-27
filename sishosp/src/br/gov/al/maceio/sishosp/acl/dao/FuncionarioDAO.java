@@ -35,9 +35,6 @@ public class FuncionarioDAO {
     private GrupoDAO gDao = new GrupoDAO();
     private ProcedimentoDAO procDao = new ProcedimentoDAO();
 
-    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-            .getSessionMap().get("obj_funcionario");
-
     public FuncionarioBean autenticarUsuario(FuncionarioBean usuario)
             throws ProjetoException {
 
@@ -419,6 +416,9 @@ public class FuncionarioDAO {
 
     public ArrayList<FuncionarioBean> buscaUsuarios() throws ProjetoException {
 
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         String sql = "select * from acl.funcionarios u where cod_empresa = ? order by ativo,descfuncionario";
 
         ArrayList<FuncionarioBean> lista = new ArrayList();
@@ -776,6 +776,9 @@ public class FuncionarioDAO {
     public boolean gravarProfissional(FuncionarioBean profissional,
                                       ArrayList<ProgramaBean> lista) {
 
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         Boolean retorno = false;
 
         String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
@@ -881,6 +884,10 @@ public class FuncionarioDAO {
 
     public List<FuncionarioBean> listarProfissionalBusca(String descricaoBusca,
                                                          Integer tipoBuscar) throws ProjetoException {
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         List<FuncionarioBean> lista = new ArrayList<>();
         String sql = "SELECT f.id_funcionario, f.id_funcionario ||'-'|| f.descfuncionario AS descfuncionario, f.codespecialidade, e.descespecialidade, " +
                      "f.cns, f.ativo, f.codcbo, c.descricao, f.codprocedimentopadrao, p. nome "+
