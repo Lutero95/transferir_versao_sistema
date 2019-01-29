@@ -1,0 +1,245 @@
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    //vertical-align: baseline;
+}
+
+/* HTML5 display-role reset para navegadores antigos */
+
+html {
+    height: 100%;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary {
+    display: block;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    line-height: 1;
+    font-size: 12px !important;
+    font-weight: normal !important;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* Fim CSS Reset */
+
+body {
+    color: #111;
+    background: #f1f1f7;
+    font-family: helvetica, arial, sans-serif;
+}
+
+/*------- Hearder ------------*/
+
+#header {
+    background: #004A77 !important;
+    height: auto;
+    margin-top: -55px;
+    width: 100%;
+    position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+}
+
+.navbar {
+	min-height: 55px;
+	margin-bottom: 20px;
+}
+
+.navbar-inverse {
+	background-image: -webkit-linear-gradient(#04519b, #044687 60%, #04519b);
+    background-image: -o-linear-gradient(#04519b, #044687 60%, #04519b);
+    background-image: linear-gradient(#04519b, #044687 60%, #04519b);
+    border-bottom: 1px solid #033769;
+    
+    /*background-image: -webkit-linear-gradient(#0c2b4c, #044687 60%, #0c2b4c);
+    background-image: -o-linear-gradient(#0c2b4c, #044687 60%, #0c2b4c);
+    background-image: linear-gradient(#0c2b4c, #044687 60%, #0c2b4c);*/
+} 
+
+
+.navbar-brand {
+    font-size: 25px;
+    font-family: monospace;
+    animation: cor_fonte 3s alternate infinite ease-in-out;
+}
+
+@keyframes cor_fonte {
+	from { filter: drop-shadow(0 0 0 var(--cor-neon));}
+	to {filter: drop-shadow( 0 0 10px var(--cor-neon)); }
+}
+
+.texto { 
+	--cor-neon: #fff;
+}
+
+.user-index {
+	cursor: default !important;
+}
+
+.navbar-inverse .navbar-nav > .user-index > a, 
+.navbar-inverse .navbar-nav > .user-index > a:hover, 
+.navbar-inverse .navbar-nav > .user-index > a:focus {
+    color: #fff;
+    background-color: transparent;
+}
+
+.navbar-nav > li > a {
+    line-height: 24px;
+}
+
+.navbar .navbar-nav > li > a, .navbar-brand {
+    transition: all 0.5s ease 0s;
+}
+
+@media (min-width:768px) {
+	.navbar-collapse.collapse {
+	    float: right !important;
+	}
+}
+
+/* -------- Body ----------- */
+
+#container {
+	padding-top: 10px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-top: 55px;
+    margin-right: auto;
+    margin-left: auto;    
+    display: block;
+    background-color: #fff;
+    width: 90%;
+    height: 100%;
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+#content {
+    margin: 0;
+    height: 100%;
+}
+
+/* #content {
+    background-color: #f8f8f8;
+    border-color: #e7e7e7;
+} */ 
+
+
+/* -------- Footer ----------- */
+
+#foot {
+    bottom: 0;
+    width: 100%;
+    /*background: #004A77 !important;*/
+    position: fixed;
+    background-image: -webkit-linear-gradient(#04519b, #044687 60%, #033769);
+    background-image: -o-linear-gradient(#04519b, #044687 60%, #033769);
+    background-image: linear-gradient(#04519b, #044687 60%, #033769);
+}
+
+#foot .connect {
+    float: left;
+    display: inline-block;
+    margin: 0 10px;
+    padding: 9px 0;
+}
+
+.foot-text {
+	/*text-align: center;*/
+	text-align: right;
+	margin: 4px 0 2px 0;
+}
+
+#foot p {
+    color: white;
+    font: 12px/15px Arial, Helvetica, sans-serif;
+    margin: 0 15px 0 0;
+    /*text-transform: uppercase;*/
+}
+
+#foot .connect a {
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    margin-right: 6px;
+}
+
+#foot .connect a.facebook {
+    background-position: 0 -112px;
+}
+
+#foot .connect a.twitter {
+    background-position: 0 -140px;
+}
+
+    
+/*--------- login page --------- */
+
+.img-circle {
+	width: 200px;
+	margin-top: 30px;
+	border-radius: 0;
+}
+
+.btnLogin {    
+	padding: 8px 48px;
+    font-size: 16px;
+    border-radius: 7px;
+    margin-top: 15px;
+}
+
+.texto-acesso {
+	color: #00577f;
+    font-size: 35px;
+    margin: 5px 0 15px 0;
+}
+
+.form-group {
+    margin-bottom: 0px;
+}
+
+.bf-message {
+    margin-top: 7px;
+    margin-bottom: 10px !important;
+}
+

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+	<ui:composition>
+	
+		<b:navBar brand="EHosp" brandHref="#" fixed="top" inverse="true" class="texto">
+
+			<p:outputPanel autoUpdate="true">
+
+				<h:form>
+					<b:navbarLinks>
+
+						<b:navLink icon-awesome="fa-file-text-o" rendered="#{MBFuncionarios.usuarioLogado != null}"
+							value="Teste" onclick="#" />
+
+
+						<b:navLink class="user-index"
+							value="#{MBFuncionarios.usuarioLogado.nome}" iconAwesome="user"
+							rendered="#{MBFuncionarios.usuarioLogado != null}"
+							style="cursor: default !important;" />
+
+						<b:navLink class="user-index"
+							value="Perfil: #{MBFuncionarios.usuarioLogado.perfil.descricao}"
+							rendered="#{MBFuncionarios.usuarioLogado != null}"
+							style="cursor: default !important;" />
+
+						<p:commandButton value="Sair" icon="ui-icon-power"
+							rendered="#{MBFuncionarios.usuarioLogado != null}"
+							style="width:100px !important; margin: 12px;"
+							action="#{MBFuncionarios.logout()}" />
+
+					</b:navbarLinks>
+
+				</h:form>
+
+			</p:outputPanel>
+
+		</b:navBar>
+
+	</ui:composition>
+</body>
+
+
+</html>

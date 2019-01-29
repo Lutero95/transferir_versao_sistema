@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	
+	<ui:insert name="title">
+		<title>EHospp</title>
+	</ui:insert>
+
+	<link rel="styleSheet" type="text/css" href="../../css/newStyle.css" />
+	<link rel="styleSheet" type="text/css" href="../../css/font-awesome.css" />
+	
+	<script src="../../js/jquery.maskmoney.js" type="text/javascript" />
+	
+	<script type="text/javascript">
+		PrimeFaces.locales['pt'] = {
+			closeText : 'Fechar',
+			prevText : 'Anterior',
+			nextText : 'Próximo',
+			currentText : 'Começo',
+			monthNames : [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio',
+					'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
+					'Novembro', 'Dezembro' ],
+			monthNamesShort : [ 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+					'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez' ],
+			dayNames : [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta',
+					'Sexta', 'Sábado' ],
+			dayNamesShort : [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb' ],
+			dayNamesMin : [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+			weekHeader : 'Semana',
+			firstDay : 0,
+			isRTL : false,
+			showMonthAfterYear : false,
+			yearSuffix : '',
+			timeOnlyTitle : 'Só Horas',
+			timeText : 'Tempo',
+			hourText : 'Hora',
+			minuteText : 'Minuto',
+			secondText : 'Segundo',
+			ampm : false,
+			month : 'Mês',
+			week : 'Semana',
+			day : 'Dia',
+			allDayText : 'Todo o Dia'
+		};
+	</script>
+	
+</h:head>
+
+<h:body>
+
+	<p:ajaxStatus onstart="PF('statusDialog').show();"
+		onsuccess="PF('statusDialog').hide();" />
+	<p:dialog id="myDialogId" styleClass="process_msg" modal="true"
+		showHeader="true" header="Processando..."
+		style="width:40px; height:20px; border:0;" resizable="false"
+		widgetVar="statusDialog" draggable="false" closable="false">
+		<center>
+			<p:graphicImage value="../../imgs/ajax_loading_bar.gif" />
+		</center>
+	</p:dialog>
+	
+	<div id="header">
+    <ui:insert name="header">
+			<ui:include src="/pages/comum/newMenu.xhtml" />
+	</ui:insert>
+	</div>
+
+	<div id="container">
+		<div id="content-body">
+		<p:messages for="home-msg" globalOnly="true" />
+			<ui:insert name="content">
+				<ui:insert name="content" />
+			</ui:insert>
+		</div>
+	</div>
+	
+	<div id="foot">
+        <div class="connect">
+        	<a href="#"
+               target="_blank"> <img src="../../imgs/facebook.png" /></a> 
+               <a href="#" target="_blank"> <img src="../../imgs/twitter.png"/></a>
+        </div>
+        <div class="foot-text">
+        	<p>© 2019 EHosp. Todos os direitos
+			reservados.</p>
+			<p>Versão: 1.1.1</p>
+		</div>
+    </div>
+
+</h:body>
+</html>
