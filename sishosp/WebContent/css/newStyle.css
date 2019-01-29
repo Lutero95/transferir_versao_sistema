@@ -95,10 +95,10 @@ body {
     background-image: linear-gradient(#0c2b4c, #044687 60%, #0c2b4c);*/
 } 
 
-
 .navbar-brand {
     font-size: 25px;
     font-family: monospace;
+    cursor: default !important;
     animation: cor_fonte 3s alternate infinite ease-in-out;
 }
 
@@ -130,6 +130,7 @@ body {
     transition: all 0.5s ease 0s;
 }
 
+/* Media Queries */
 @media (min-width:768px) {
 	.navbar-collapse.collapse {
 	    float: right !important;
@@ -216,8 +217,7 @@ body {
 /*--------- login page --------- */
 
 .img-circle {
-	width: 200px;
-	margin-top: 30px;
+	width: 220px;
 	border-radius: 0;
 }
 
@@ -242,4 +242,42 @@ body {
     margin-top: 7px;
     margin-bottom: 10px !important;
 }
+
+.login-area {
+	border-top: 10px solid #31a7e6;
+    margin: auto;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 3px 8px 0 #cccccc;
+    -moz-box-shadow: 0 3px 8px 0 #cccccc;
+    box-shadow: 0 3px 8px 0 #cccccc;
+    background: white;
+    height: auto;
+}
+
+.login-content {
+	width: 100%;
+	max-width: 700px;
+	margin: 65px auto 0 auto;
+}
+
+.login-form, 
+.login-form-password {
+    display: inline-block;
+    vertical-align: middle;
+    width: 50%;
+    padding: 35px 20px;
+    border-right: 1px solid #cccccc;
+    margin: auto;
+    float: left;
+}
+
+.pull-size {
+	border-right: 0;
+}
+
+.image-form {
+	padding: 35px 64px;
+}
+
 

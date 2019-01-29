@@ -8,25 +8,6 @@
 
 	<ui:define name="content">
 
-		<h:form>
-			<p:panelGrid columns="2" styleClass="semBorda"
-				style="margin-top: 60px">
-				<h:outputText value="Usuário Online: " />
-				<h:outputText value="#{MBFuncionarios.usuarioLogado.nome}"
-					style="font-weight: bold;" />
-
-				<h:outputText value="Perfil: " />
-				<h:outputText value="#{MBFuncionarios.usuarioLogado.perfil.descricao}"
-					style="font-weight: bold;" />
-
-
-				<p:commandButton value="SAIR" icon="ui-icon-power"
-					style="width:100px !important" action="#{MBFuncionarios.logout()}" />
-
-				<h:inputHidden />
-			</p:panelGrid>
-		</h:form>
-
 		<div class="sistemas">
 			<h:form id="formSIS">
 				<p:outputPanel autoUpdate="true">
