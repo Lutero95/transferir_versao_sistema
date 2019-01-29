@@ -26,12 +26,14 @@ public class FuncionarioBean implements Serializable {
     private String diasSemana;
     private ArrayList<String> listDiasSemana;
     private Integer diaSemana;
+    private EmpresaBean unidadeExtra;
 
     // LISTAS
     private List<ProgramaBean> programa;
     private List<ProgramaBean> programaNovo;
     private List<GrupoBean> grupo;
     private List<GrupoBean> grupoNovo;
+    private List<EmpresaBean> listaUnidades;
 
     // HERDADOS
     private EspecialidadeBean especialidade;
@@ -72,6 +74,8 @@ public class FuncionarioBean implements Serializable {
         this.perfil = new Perfil();
         listDiasSemana = new ArrayList<String>();
         this.realizaAtendimento = false;
+        listaUnidades = new ArrayList<>();
+        unidadeExtra = new EmpresaBean();
     }
 
     public Integer getCodigo() {
@@ -395,5 +399,21 @@ public class FuncionarioBean implements Serializable {
 
     public void setEmpresa(EmpresaBean empresa) {
         this.empresa = empresa;
+    }
+
+    public List<EmpresaBean> getListaUnidades() {
+        return listaUnidades;
+    }
+
+    public void setListaUnidades(List<EmpresaBean> listaUnidades) {
+        this.listaUnidades = listaUnidades;
+    }
+
+    public EmpresaBean getUnidadeExtra() {
+        return unidadeExtra;
+    }
+
+    public void setUnidadeExtra(EmpresaBean unidadeExtra) {
+        this.unidadeExtra = unidadeExtra;
     }
 }

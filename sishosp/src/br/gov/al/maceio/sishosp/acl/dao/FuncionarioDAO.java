@@ -7,6 +7,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
+import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.acl.model.Menu;
@@ -847,9 +848,19 @@ public class FuncionarioDAO {
                 idProf = rs.getInt("id_funcionario");
             }
 
-            for (int i = 0; i < lista.size(); i++) {
-                String sql2 = "INSERT INTO hosp.profissional_programa_grupo(codprofissional, codprograma, codgrupo) VALUES (?, ?, ?);";
+            for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
+                String sql2 = "INSERT INTO hosp.funcionario_unidades (cod_empresa, cod_funcionario) VALUES (?, ?);";
                 ps = con.prepareStatement(sql2);
+
+                ps.setInt(1, profissional.getListaUnidades().get(i).getCodEmpresa());
+                ps.setInt(2, idProf);
+
+                ps.executeUpdate();
+            }
+
+            for (int i = 0; i < lista.size(); i++) {
+                String sql3 = "INSERT INTO hosp.profissional_programa_grupo(codprofissional, codprograma, codgrupo) VALUES (?, ?, ?);";
+                ps = con.prepareStatement(sql3);
 
                 ps.setInt(1, idProf);
                 ps.setInt(2, lista.get(i).getIdPrograma());
@@ -858,9 +869,9 @@ public class FuncionarioDAO {
                 ps.executeUpdate();
             }
 
-            String sql3 = "insert into acl.perm_usuario (id_usuario, id_permissao) values (?, ?)";
+            String sql4 = "insert into acl.perm_usuario (id_usuario, id_permissao) values (?, ?)";
             List<Long> listaPerm = profissional.getListaIdPermissoes();
-            ps = con.prepareStatement(sql3);
+            ps = con.prepareStatement(sql4);
             for (Long idPerm : listaPerm) {
                 ps.setLong(1, idProf);
                 ps.setLong(2, idPerm);
@@ -1085,7 +1096,8 @@ public class FuncionarioDAO {
 
         String sql1 = "delete from hosp.profissional_programa_grupo where codprofissional = ?";
         String sql2 = "delete from acl.perm_usuario where id_usuario = ?";
-        String sql3 = "delete from acl.funcionarios where id_funcionario = ?";
+        String sql3 = "delete from hosp.funcionario_unidades where cod_funcionario = ?";
+        String sql4 = "delete from acl.funcionarios where id_funcionario = ?";
 
         try {
 
@@ -1100,6 +1112,10 @@ public class FuncionarioDAO {
             ps.execute();
 
             ps = con.prepareStatement(sql3);
+            ps.setLong(1, profissional.getId());
+            ps.execute();
+
+            ps = con.prepareStatement(sql4);
             ps.setLong(1, profissional.getId());
             ps.execute();
 
@@ -1178,14 +1194,29 @@ public class FuncionarioDAO {
 
             stmt.executeUpdate();
 
-            String sql2 = "delete from hosp.profissional_programa_grupo where codprofissional = ?";
+            String sql2 = "delete from hosp.funcionario_unidades where cod_funcionario = ?";
             stmt = con.prepareStatement(sql2);
             stmt.setLong(1, profissional.getId());
             stmt.executeUpdate();
 
-            for (int i = 0; i < lista.size(); i++) {
-                String sql3 = "INSERT INTO hosp.profissional_programa_grupo(codprofissional, codprograma, codgrupo) VALUES (?, ?, ?);";
+            for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
+                String sql3 = "INSERT INTO hosp.funcionario_unidades (cod_empresa, cod_funcionario) VALUES (?, ?);";
                 stmt = con.prepareStatement(sql3);
+
+                stmt.setInt(1, profissional.getListaUnidades().get(i).getCodEmpresa());
+                stmt.setLong(2, profissional.getId());
+
+                stmt.executeUpdate();
+            }
+
+            String sql4 = "delete from hosp.profissional_programa_grupo where codprofissional = ?";
+            stmt = con.prepareStatement(sql4);
+            stmt.setLong(1, profissional.getId());
+            stmt.executeUpdate();
+
+            for (int i = 0; i < lista.size(); i++) {
+                String sql5 = "INSERT INTO hosp.profissional_programa_grupo(codprofissional, codprograma, codgrupo) VALUES (?, ?, ?);";
+                stmt = con.prepareStatement(sql5);
 
                 stmt.setLong(1, profissional.getId());
                 stmt.setInt(2, lista.get(i).getIdPrograma());
@@ -1195,14 +1226,14 @@ public class FuncionarioDAO {
             }
 
 
-            String sql3 = "delete from acl.perm_usuario where id_usuario = ?";
-            ps = con.prepareStatement(sql3);
+            String sql6 = "delete from acl.perm_usuario where id_usuario = ?";
+            ps = con.prepareStatement(sql6);
             ps.setLong(1, profissional.getId());
             ps.execute();
 
-            String sql4 = "insert into acl.perm_usuario (id_usuario, id_permissao) values (?, ?)";
+            String sql7 = "insert into acl.perm_usuario (id_usuario, id_permissao) values (?, ?)";
             List<Long> listaPerm = profissional.getListaIdPermissoes();
-            ps = con.prepareStatement(sql4);
+            ps = con.prepareStatement(sql7);
             for (Long idPerm : listaPerm) {
                 ps.setLong(1, profissional.getId());
                 ps.setLong(2, idPerm);
@@ -1415,6 +1446,47 @@ public class FuncionarioDAO {
                 p.getGrupoBean().setDescGrupo(rs.getString("descgrupo"));
 
                 lista.add(p);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return lista;
+        }
+    }
+
+    public List<EmpresaBean> listarUnidadesUsuarioVisualiza(int idFuncionario) {
+
+        List<EmpresaBean> lista = new ArrayList<EmpresaBean>();
+        PreparedStatement stm = null;
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT f.cod_empresa, e.nome_principal, e.nome_fantasia ");
+        sql.append("FROM hosp.empresa e ");
+        sql.append("LEFT JOIN hosp.funcionario_unidades f ON (e.cod_empresa = f.cod_empresa) ");
+        sql.append("WHERE f.cod_funcionario = ? ");
+
+        try {
+
+            con = ConnectionFactory.getConnection();
+            stm = con.prepareStatement(sql.toString());
+
+            stm.setInt(1, idFuncionario);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                EmpresaBean empresaBean = new EmpresaBean();
+                empresaBean.setCodEmpresa(rs.getInt("cod_empresa"));
+                empresaBean.setNomeEmpresa(rs.getString("nome_principal"));
+                empresaBean.setNomeFantasia(rs.getString("nome_fantasia"));
+                lista.add(empresaBean);
+
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

@@ -118,7 +118,7 @@
                             </b:column>
 
                             <b:column span="1">
-                                <h:outputLabel value="Empresa"
+                                <h:outputLabel value="Empresa padrão"
                                                style="margin-top:5px"/>
                             </b:column>
 
@@ -283,6 +283,68 @@
                                                              icon="ui-icon-trash" update="tabelagrupo">
                                                 <f:setPropertyActionListener value="#{programa}"
                                                                              target="#{MBFuncionarios.profissional.progAdd}"/>
+                                            </p:commandButton>
+                                        </div>
+                                    </p:column>
+                                </p:dataTable>
+
+
+                            </b:column>
+
+                        </b:row>
+
+                    </p:tab>
+
+                    <p:tab title="Visualizar outras unidades">
+
+                        <br></br>
+
+                        <b:row>
+
+                            <b:column span="2">
+                                <h:outputLabel value="Unidade"
+                                               style="margin-top:5px"/>
+                            </b:column>
+
+                            <b:column span="4">
+                                <p:selectOneMenu id="unidadeExtra"
+                                        value="#{MBFuncionarios.profissional.unidadeExtra.codEmpresa}"
+                                        style="width:230px;">
+
+                                    <f:selectItem itemLabel="Selecione"/>
+                                    <f:selectItems value="#{EmpresaController.listarEmpresa()}" var="emp"
+                                                   itemLabel="#{emp.nomeFantasia}" itemValue="#{emp.codEmpresa}"/>
+                                </p:selectOneMenu>
+                            </b:column>
+
+                            <b:column span="3">
+                                <p:commandButton process="@this, unidadeExtra" value="Adicionar"
+                                                 action="#{MBFuncionarios.addUnidadeExtra()}"
+                                                 icon="ui-icon-plus" update="tabelaunidades, :frmPrincipal:msgPagina"></p:commandButton>
+                            </b:column>
+                        </b:row>
+
+                        <br></br>
+
+                        <b:row>
+                            <b:column span="12">
+                                <p:dataTable
+                                        emptyMessage="Nenhuma unidade adicionada" id="tabelaunidades"
+                                        value="#{MBFuncionarios.profissional.listaUnidades}"
+                                        var="empresa" scrollRows="3" scrollHeight="150"
+                                        scrollable="true">
+
+                                    <p:column headerText="Unidade">
+                                        <p:outputLabel value="#{empresa.nomeFantasia}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Ação">
+                                        <div align="center">
+                                            <p:commandButton immediate="true"
+                                                             action="#{MBFuncionarios.removerUnidadeExtra()}"
+                                                             icon="ui-icon-trash" update="tabelaunidades">
+                                                <f:setPropertyActionListener value="#{empresa}"
+                                                                             target="#{MBFuncionarios.empresaBean}"/>
                                             </p:commandButton>
                                         </div>
                                     </p:column>
@@ -480,7 +542,7 @@
                 <p:outputPanel autoUpdate="true">
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                                  value="#{ProcedimentoController.listaProcedimentos}"
-                                 var="proc" >
+                                 var="proc">
 
                         <h:column>
                             <f:facet name="header">
@@ -512,7 +574,7 @@
                 <p:outputPanel autoUpdate="true">
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                                  value="#{GrupoController.listarProgramasEGrupos()}"
-                                 id="dtGrupos" var="programa" >
+                                 id="dtGrupos" var="programa">
 
 
                         <h:column>

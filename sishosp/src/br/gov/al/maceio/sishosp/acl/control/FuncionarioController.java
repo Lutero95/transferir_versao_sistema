@@ -20,6 +20,8 @@ import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
+import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -43,6 +45,7 @@ public class FuncionarioController implements Serializable {
     private int tipo;
     private ArrayList<ProgramaBean> listaGruposEProgramasProfissional;
     private FuncionarioDAO fDao = new FuncionarioDAO();
+    private EmpresaBean empresaBean;
 
     // SESSÃO
     private FuncionarioBean usuarioLogado;
@@ -444,10 +447,8 @@ public class FuncionarioController implements Serializable {
     public void gravarProfissional() throws ProjetoException {
 
         if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.isEmpty()) {
-                JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatórios!");
-        }
-
-        else {
+            JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatórios!");
+        } else {
             List<Long> permissoes = new ArrayList<>();
             List<Menu> listaMenusAux = listaMenusDual.getTarget();
             List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
@@ -509,9 +510,7 @@ public class FuncionarioController implements Serializable {
         if (profissional.getRealizaAtendimento() == true
                 && listaGruposEProgramasProfissional.size() == 0) {
             JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatórios!");
-        }
-
-        else {
+        } else {
             List<Long> permissoes = new ArrayList<>();
             List<Menu> listaMenusAux = listaMenusDual.getTarget();
             List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
@@ -621,7 +620,7 @@ public class FuncionarioController implements Serializable {
     public String redirectEdit() {
         long num = this.profissional.getId();
         int codigo = (int) num;
-        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, codigo , ENDERECO_TIPO, tipo);
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, codigo, ENDERECO_TIPO, tipo);
     }
 
 
@@ -664,12 +663,12 @@ public class FuncionarioController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
             this.profissional = fDao.buscarProfissionalPorId(id);
+            profissional.setListaUnidades(fDao.listarUnidadesUsuarioVisualiza(id));
             listaGruposEProgramasProfissional = fDao
                     .carregaProfissionalProgramaEGrupos(id);
-            if(profissional.getPerfil().getId() > 0){
+            if (profissional.getPerfil().getId() > 0) {
                 renderizarPermissoes = true;
-            }
-            else{
+            } else {
                 renderizarPermissoes = false;
             }
         } else {
@@ -693,26 +692,25 @@ public class FuncionarioController implements Serializable {
         }
     }
 
-    
-	public void onTransferFuncao(TransferEvent event) {
-		StringBuilder builder = new StringBuilder();
 
-		for (Object item : event.getItems()) {
-			builder.append(((Funcao) item).getId());
-			if (listaFuncoesTarget.contains(item)) {
-				listaFuncoesTarget.remove(item);
-			} else {
-				listaFuncoesTarget.add((Funcao) item);
-			}
-		}
-	}
-	
+    public void onTransferFuncao(TransferEvent event) {
+        StringBuilder builder = new StringBuilder();
+
+        for (Object item : event.getItems()) {
+            builder.append(((Funcao) item).getId());
+            if (listaFuncoesTarget.contains(item)) {
+                listaFuncoesTarget.remove(item);
+            } else {
+                listaFuncoesTarget.add((Funcao) item);
+            }
+        }
+    }
+
     public void limparDualCad() {
 
-        if(profissional.getPerfil().getId() > 0){
+        if (profissional.getPerfil().getId() > 0) {
             renderizarPermissoes = true;
-        }
-        else{
+        } else {
             renderizarPermissoes = false;
         }
 
@@ -724,6 +722,37 @@ public class FuncionarioController implements Serializable {
         listaFuncoesTarget = null;
         listaFuncoesTarget = new ArrayList<>();
 
+    }
+
+    public void addUnidadeExtra() throws ProjetoException {
+        if (profissional.getUnidadeExtra().getCodEmpresa() != null) {
+            if (profissional.getListaUnidades().size() == 0) {
+                EmpresaDAO empresaDAO = new EmpresaDAO();
+                EmpresaBean empresaBean1 = empresaDAO.buscarEmpresaPorId(profissional.getUnidadeExtra().getCodEmpresa());
+                profissional.getListaUnidades().add(empresaBean1);
+            } else {
+                Boolean existe = false;
+                for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
+                    if (profissional.getListaUnidades().get(i).getCodEmpresa() == profissional.getUnidadeExtra().getCodEmpresa()) {
+                        existe = true;
+                    }
+                }
+                if(existe == false){
+                    EmpresaDAO empresaDAO = new EmpresaDAO();
+                    EmpresaBean empresaBean1 = empresaDAO.buscarEmpresaPorId(profissional.getUnidadeExtra().getCodEmpresa());
+                    profissional.getListaUnidades().add(empresaBean1);
+                }
+                else{
+                    JSFUtil.adicionarMensagemErro("Essa unidade já foi adicionada!", "Erro!");
+                }
+            }
+        } else {
+            JSFUtil.adicionarMensagemErro("Escolha uma unidade para adicionar", "Erro!");
+        }
+    }
+
+    public void removerUnidadeExtra() {
+        profissional.getListaUnidades().remove(empresaBean);
     }
 
     public FuncionarioBean getProfissional() {
@@ -898,5 +927,13 @@ public class FuncionarioController implements Serializable {
 
     public void setRenderizarPermissoes(Boolean renderizarPermissoes) {
         this.renderizarPermissoes = renderizarPermissoes;
+    }
+
+    public EmpresaBean getEmpresaBean() {
+        return empresaBean;
+    }
+
+    public void setEmpresaBean(EmpresaBean empresaBean) {
+        this.empresaBean = empresaBean;
     }
 }
