@@ -51,9 +51,12 @@
                             </b:column>
 
                             <b:column span="2">
-                                <p:calendar requiredMessage="Nascimento: Campo obrigatório!"
+                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+                                            yearRange="-111:+39" pages="1" showOn="button" size="12"
+                                            requiredMessage="Nascimento: Campo obrigatório!"
                                             required="true"
-                                            value="#{PacienteController.paciente.dtanascimento}"/>
+                                            value="#{PacienteController.paciente.dtanascimento}"
+                                            locale="pt"/>
                             </b:column>
 
                             <b:column span="1">
@@ -465,8 +468,10 @@
                             </b:column>
 
                             <b:column span="2">
-                                <p:calendar id="dtaexpedicao" style="margin-top:10px"
-                                            value="#{PacienteController.paciente.dataExpedicao1}"/>
+                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true" id="dtaexpedicao"
+                                            yearRange="-111:+39" pages="1" showOn="button" size="12"
+                                            value="#{PacienteController.paciente.dataExpedicao1}"
+                                            locale="pt"/>
                             </b:column>
 
                             <b:column span="1">
@@ -622,8 +627,11 @@
                             </b:column>
 
                             <b:column span="2">
-                                <p:calendar id="dtaexpedicao2"
-                                            value="#{PacienteController.paciente.dataExpedicao2}"/>
+                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+                                            yearRange="-111:+39" pages="1" showOn="button" size="12"
+                                            id="dtaexpedicao2"
+                                            value="#{PacienteController.paciente.dataExpedicao2}"
+                                            locale="pt"/>
                             </b:column>
                         </b:row>
 
@@ -772,12 +780,13 @@
                             </b:column>
 
                             <b:column span="3">
-                                <p:selectOneRadio style="width:70%;" id="options3"
-                                                  value="#{PacienteController.paciente.codparentesco}">
-                                    <f:selectItem itemLabel="Mãe" itemValue="1"/>
-                                    <f:selectItem itemLabel="Pai" itemValue="2"/>
-                                    <f:selectItem itemLabel="Outros" itemValue="3"/>
-                                </p:selectOneRadio>
+                                <b:selectOneMenu id="options3" required="false" requiredMessage=" Parentesco: Campo obrigatório!"
+                                                 value="#{PacienteController.paciente.codparentesco}">
+                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                    <f:selectItems value="#{ParentescoController.listarParentescos()}"
+                                                   var="sis" itemLabel="#{sis.descParentesco}"
+                                                   itemValue="#{sis.codParentesco}"/>
+                                </b:selectOneMenu>
                             </b:column>
                         </b:row>
 
@@ -826,11 +835,14 @@
 
                             <b:column span="2">
                                 <p:outputPanel>
-                                    <b:inputText mask="999.999.999-99" id="nome7" size="45"
-                                                 style="margin-left:15px" required="false"
-                                                 requiredMessage="O campo CPF é obrigatório."
+                                    <p:inputMask mask="999.999.999-99" id="nome7" size="45"
+                                                 style="margin-left:15px"
                                                  value="#{PacienteController.paciente.cpfresp}">
-                                    </b:inputText>
+                                        <p:ajax listener="#{PacienteController.validaCPF(PacienteController.paciente.cpfresp)}"
+                                                global="false" event="blur"
+                                                update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:nome7"/>
+                                    </p:inputMask>
+
                                 </p:outputPanel>
                             </b:column>
                         </b:row>
@@ -1331,7 +1343,7 @@
                     </b:column>
 
                     <b:column span="3">
-                        <b:inputText class="form-control" id="inputDdd" required="true" requiredMessage=" DDD: Campo obrigatório!"
+                        <b:inputText  mask="(99)" class="form-control" id="inputDdd" required="true" requiredMessage=" DDD: Campo obrigatório!"
                                      value="#{PacienteController.telefone.ddd}"/>
                     </b:column>
 

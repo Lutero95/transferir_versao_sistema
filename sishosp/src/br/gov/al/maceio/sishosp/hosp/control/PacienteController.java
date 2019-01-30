@@ -201,7 +201,7 @@ public class PacienteController implements Serializable {
         if (cadastrou == true) {
             limparDados();
             JSFUtil.adicionarMensagemSucesso("Paciente cadastrado com sucesso!", "Sucesso");
-
+            JSFUtil.selecionarTabEspecifica("tbv", "1");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }
@@ -507,6 +507,14 @@ public class PacienteController implements Serializable {
         if (!DocumentosUtil.validaPIS(pis)) {
             JSFUtil.adicionarMensagemAdvertencia("Esse número do PIS não é valido", "Advertência");
             paciente.setPis("");
+        }
+    }
+
+    public void validaCPF(String cpf) {
+        cpf = cpf.replaceAll("[^0-9]", "");
+        if (!DocumentosUtil.validaCPF(cpf)) {
+            JSFUtil.adicionarMensagemAdvertencia("Esse número de CPF não é valido", "Advertência");
+            paciente.setCpfresp("");
         }
     }
 

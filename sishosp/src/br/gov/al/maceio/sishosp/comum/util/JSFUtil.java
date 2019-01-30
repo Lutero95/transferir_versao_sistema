@@ -41,4 +41,8 @@ public final class JSFUtil {
 		RequestContext.getCurrentInstance().update(componente);
 	}
 
+	public static void selecionarTabEspecifica(String tab, String numero){
+		getRequestContext().execute("PF('" + tab + "').select(" + numero + ");");
+	}
+
 }
