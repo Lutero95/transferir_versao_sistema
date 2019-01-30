@@ -958,11 +958,11 @@ public class FuncionarioDAO {
         sql.append("SELECT h.id_funcionario, h.id_funcionario ||'-'|| h.descfuncionario AS descfuncionario, h.codespecialidade, ");
         sql.append("h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, e.descespecialidade, c.descricao AS desccbo, p.nome AS descproc ");
         sql.append("FROM acl.funcionarios h ");
-        sql.append("LEFT JOIN hosp.profissional_grupo g ON (g.codprofissional = h.id_funcionario) ");
+        sql.append("join hosp.profissional_programa_grupo ppg on (h.id_funcionario = ppg.codprofissional)");
         sql.append("LEFT JOIN hosp.especialidade e ON (e.id_especialidade = h.codespecialidade) ");
         sql.append("LEFT JOIN hosp.cbo c ON (c.id = h.codcbo) ");
         sql.append("LEFT JOIN hosp.proc p ON (p.id = h.codprocedimentopadrao) ");
-        sql.append("WHERE UPPER(id_funcionario ||' - '|| descfuncionario) LIKE ? AND g.codgrupo = ? AND h.ativo = 'S' ");
+        sql.append("WHERE UPPER(id_funcionario ||' - '|| descfuncionario) LIKE ? AND ppg.codgrupo = ? AND h.ativo = 'S' ");
         sql.append("AND realiza_atendimento IS TRUE ORDER BY descfuncionario ");
 
         try {
@@ -1056,9 +1056,9 @@ public class FuncionarioDAO {
             throws ProjetoException {
         List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
         String sql = "select m.id_funcionario, m.descfuncionario, m.codespecialidade, e.descespecialidade, m.cns from acl.funcionarios m"
-                + " left join hosp.profissional_grupo p on (m.id_funcionario = p.codprofissional)"
+                + " join hosp.profissional_programa_grupo ppg on (m.id_funcionario = ppg.codprofissional)"
                 + " left join hosp.especialidade e on (e.id_especialidade = m.codespecialidade)"
-                + " where m.ativo = 'S' and realiza_atendimento is true and p.codgrupo = ?";
+                + " where m.ativo = 'S' and realiza_atendimento is true and ppg.codgrupo = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -1378,7 +1378,7 @@ public class FuncionarioDAO {
 
     public List<ProgramaBean> listarProgProf(int idProf) {
         List<ProgramaBean> lista = new ArrayList<ProgramaBean>();
-        String sql = "select codprograma from hosp.profissional_programa where codprofissional = ?";
+        String sql = "select codprograma from hosp.profissional_programa_grupo where codprofissional = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -1402,7 +1402,7 @@ public class FuncionarioDAO {
 
     public List<GrupoBean> listarProgGrupo(int idProf) {
         List<GrupoBean> lista = new ArrayList<GrupoBean>();
-        String sql = "select codgrupo from hosp.profissional_grupo where codprofissional = ?";
+        String sql = "select codgrupo from hosp.profissional_programa_grupo where codprofissional = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);

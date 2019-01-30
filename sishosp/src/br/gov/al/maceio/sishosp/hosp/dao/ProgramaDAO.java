@@ -146,7 +146,7 @@ public class ProgramaDAO {
     public List<ProgramaBean> listarProgramas() throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select id_programa, descprograma "
-                + "from hosp.programa left join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
+                + "from hosp.programa left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
                 + "where cod_empresa = ? order by descprograma";
 
 
@@ -186,7 +186,7 @@ public class ProgramaDAO {
 
 
         String sql = "select id_programa, descprograma from hosp.programa "
-                + "join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
+                + "join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
                 + "where programa.cod_empresa = ? "
                 + "order by descprograma";
         GrupoDAO gDao = new GrupoDAO();
@@ -222,7 +222,7 @@ public class ProgramaDAO {
                                                    Integer tipo) throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma from hosp.programa "
-                + "left join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma ";
+                + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma ";
 
 
         if (tipo == 1) {
@@ -261,8 +261,8 @@ public class ProgramaDAO {
                                                           Integer tipo) throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma  from hosp.programa "
-                + "left join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
-                + "where codusuario = ?";
+                + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
+                + "where codprofissional = ?";
 
         if (tipo == 1) {
             sql += " and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma";
@@ -299,8 +299,8 @@ public class ProgramaDAO {
     public List<ProgramaBean> listarProgramasUsuario() throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma  from hosp.programa "
-                + "left join hosp.usuario_programa_grupo on programa.id_programa = usuario_programa_grupo.codprograma "
-                + "where codusuario = ? order by descprograma";
+                + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
+                + "where codprofissional = ? order by descprograma";
 
         try {
             con = ConnectionFactory.getConnection();
