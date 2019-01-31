@@ -139,11 +139,14 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void addNaLista() {
-        if (confParte2.getQtd() == null
-                || confParte2.getPrograma().getDescPrograma() == null
-                || confParte2.getGrupo().getDescGrupo() == null) {
-            this.confParte2 = new ConfigAgendaParte2Bean();
-            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+        if (confParte2.getQtd() == null) {
+            JSFUtil.adicionarMensagemErro("Insira a quantidade!", "Erro");
+        }
+        if (confParte2.getPrograma() == null) {
+            JSFUtil.adicionarMensagemErro("Insira o programa!", "Erro");
+        }
+        if (confParte2.getGrupo() == null) {
+            JSFUtil.adicionarMensagemErro("Insira o grupo!", "Erro");
         } else {
             this.listaTipos.add(confParte2);
             JSFUtil.adicionarMensagemSucesso("Dados inseridos na tabela!", "Sucesso");
@@ -230,8 +233,7 @@ public class ConfigAgendaController implements Serializable {
         int grupoId = 0;
         if (confParte2.getGrupo() == null) {
             grupoId = cDao.carregarGrupoDaEquipe(confParte1.getIdConfiAgenda());
-        }
-        else{
+        } else {
             grupoId = confParte2.getGrupo().getIdGrupo();
         }
         List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
@@ -274,24 +276,12 @@ public class ConfigAgendaController implements Serializable {
             somatorio += conf.getQtd();
         }
 
-        if (confParte1.getQtdMax() != null) {
+        if (confParte1.getQtdMax() != null && listaTipos.size() > 0) {
             if (somatorio != confParte1.getQtdMax()) {
                 JSFUtil.adicionarMensagemAdvertencia("Quantidade máxima está divergente!", "Advertência");
                 cadastrou = false;
                 return;
             }
-        } else {
-            JSFUtil.adicionarMensagemErro("Quantidade máxima: Campo obrigatório!", "Erro");
-            return;
-        }
-
-        if (listaTipos.size() == 0) {
-            JSFUtil.adicionarMensagemErro("Adicione na lista!", "Erro");
-            return;
-        }
-        if (confParte1.getProfissional() == null) {
-            JSFUtil.adicionarMensagemErro("Escolha um profissional!", "Erro");
-            return;
         }
 
         if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())
@@ -326,6 +316,7 @@ public class ConfigAgendaController implements Serializable {
         }
 
         limparDados();
+        JSFUtil.atualizarComponente("formConfiAgenda");
     }
 
     public void gravarConfigAgendaEquipe() {
@@ -567,80 +558,80 @@ public class ConfigAgendaController implements Serializable {
         this.equipe = equipe;
     }
 
-	public Integer getOpcao() {
-		return opcao;
-	}
+    public Integer getOpcao() {
+        return opcao;
+    }
 
-	public void setOpcao(Integer opcao) {
-		this.opcao = opcao;
-	}
+    public void setOpcao(Integer opcao) {
+        this.opcao = opcao;
+    }
 
-	public List<GrupoBean> getListaGruposProgramas() {
-		return listaGruposProgramas;
-	}
+    public List<GrupoBean> getListaGruposProgramas() {
+        return listaGruposProgramas;
+    }
 
-	public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
-		this.listaGruposProgramas = listaGruposProgramas;
-	}
+    public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
+        this.listaGruposProgramas = listaGruposProgramas;
+    }
 
-	public List<TipoAtendimentoBean> getListaTipoAtendimentosGrupo() {
-		return listaTipoAtendimentosGrupo;
-	}
+    public List<TipoAtendimentoBean> getListaTipoAtendimentosGrupo() {
+        return listaTipoAtendimentosGrupo;
+    }
 
-	public void setListaTipoAtendimentosGrupo(List<TipoAtendimentoBean> listaTipoAtendimentosGrupo) {
-		this.listaTipoAtendimentosGrupo = listaTipoAtendimentosGrupo;
-	}
+    public void setListaTipoAtendimentosGrupo(List<TipoAtendimentoBean> listaTipoAtendimentosGrupo) {
+        this.listaTipoAtendimentosGrupo = listaTipoAtendimentosGrupo;
+    }
 
-	public ConfigAgendaDAO getcDao() {
-		return cDao;
-	}
+    public ConfigAgendaDAO getcDao() {
+        return cDao;
+    }
 
-	public void setcDao(ConfigAgendaDAO cDao) {
-		this.cDao = cDao;
-	}
+    public void setcDao(ConfigAgendaDAO cDao) {
+        this.cDao = cDao;
+    }
 
-	public FuncionarioDAO getfDao() {
-		return fDao;
-	}
+    public FuncionarioDAO getfDao() {
+        return fDao;
+    }
 
-	public void setfDao(FuncionarioDAO fDao) {
-		this.fDao = fDao;
-	}
+    public void setfDao(FuncionarioDAO fDao) {
+        this.fDao = fDao;
+    }
 
-	public EquipeDAO geteDao() {
-		return eDao;
-	}
+    public EquipeDAO geteDao() {
+        return eDao;
+    }
 
-	public void seteDao(EquipeDAO eDao) {
-		this.eDao = eDao;
-	}
+    public void seteDao(EquipeDAO eDao) {
+        this.eDao = eDao;
+    }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
 
-	public static String getEnderecoCadastro() {
-		return ENDERECO_CADASTRO;
-	}
+    public static String getEnderecoCadastro() {
+        return ENDERECO_CADASTRO;
+    }
 
-	public static String getEnderecoCadastroEquipe() {
-		return ENDERECO_CADASTRO_EQUIPE;
-	}
+    public static String getEnderecoCadastroEquipe() {
+        return ENDERECO_CADASTRO_EQUIPE;
+    }
 
-	public static String getEnderecoEditar() {
-		return ENDERECO_EDITAR;
-	}
+    public static String getEnderecoEditar() {
+        return ENDERECO_EDITAR;
+    }
 
-	public static String getEnderecoEditarEquipe() {
-		return ENDERECO_EDITAR_EQUIPE;
-	}
+    public static String getEnderecoEditarEquipe() {
+        return ENDERECO_EDITAR_EQUIPE;
+    }
 
-	public static String getEnderecoTipo() {
-		return ENDERECO_TIPO;
-	}
+    public static String getEnderecoTipo() {
+        return ENDERECO_TIPO;
+    }
 
-	public static String getEnderecoId() {
-		return ENDERECO_ID;
-	}
+    public static String getEnderecoId() {
+        return ENDERECO_ID;
+    }
 
 }

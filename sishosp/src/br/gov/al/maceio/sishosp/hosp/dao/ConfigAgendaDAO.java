@@ -357,7 +357,8 @@ public class ConfigAgendaDAO {
             int i = 1;
 
             stm.setLong(i, codmedico);
-            stm.setInt(i+1, user_session.getEmpresa().getCodEmpresa());
+            i = i+1;
+            stm.setInt(i, user_session.getEmpresa().getCodEmpresa());
 
             if (config != null) {
                 if (config.getAno() != null) {

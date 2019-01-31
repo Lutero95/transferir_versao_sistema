@@ -53,7 +53,7 @@
                                 </b:column>
 
                                 <b:column span="4">
-                                    <b:inputText value="#{ConfigAgendaController.confParte1.ano}"
+                                    <b:inputText value="#{ConfigAgendaController.confParte1.ano}" required="true" requiredMessage="Ano: Campo obrigatório!"
                                                  rendered="#{ConfigAgendaController.opcao==2}"/>
                                 </b:column>
 
@@ -70,7 +70,7 @@
                                 <b:column span="4">
                                     <p:outputPanel id="outProf">
 
-                                        <p:autoComplete id="acpro"
+                                        <p:autoComplete id="acpro" required="true" requiredMessage="Profissional: Campo obrigatório!"
                                                         value="#{ConfigAgendaController.confParte1.profissional}"
                                                         size="60" converter="conFuncionario"
                                                         completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
@@ -105,7 +105,7 @@
                             </b:column>
 
                             <b:column span="10">
-                                <p:selectOneRadio value="#{ConfigAgendaController.opcao}">
+                                <p:selectOneRadio value="#{ConfigAgendaController.confParte1.opcao}">
                                     <f:selectItem itemLabel="Data Específica" itemValue="1"/>
                                     <f:selectItem itemLabel="Dias Semana" itemValue="2"/>
                                     <p:ajax update="panelDias, panelData, panelMesAno" event="change"/>
@@ -182,7 +182,7 @@
                             </b:column>
 
                             <b:column span="4">
-                                <b:inputText required="false" requiredMessage="Informe a quantidade máxima!"
+                                <b:inputText required="true" requiredMessage="Quantidade máxima: Campo obrigatório!"
                                              value="#{ConfigAgendaController.confParte1.qtdMax}"/>
 
                             </b:column>
@@ -295,12 +295,12 @@
 
                             <b:column span="2">
                                 <b:inputText value="#{ConfigAgendaController.confParte2.qtd}"
-                                             style="width: 70px;margin-bottom:25px" required="true"
+                                             style="width: 70px;margin-bottom:25px" required="false"
                                              requiredMessage="Informe a Quantidade"/>
                             </b:column>
 
                             <b:column span="2">
-                                <b:commandButton value="Incluir" icon="glyphicon-plus"
+                                <b:commandButton value="Incluir" icon="glyphicon-plus" immediate="true"
                                                  action="#{ConfigAgendaController.addNaLista()}" id="b5"
                                                  update=":formConfiAgenda"/>
                             </b:column>
@@ -349,13 +349,10 @@
 
 
             </div>
-        </h:form>
 
         <div align="center">
             <b:messages value="Error" id="msgPagina"></b:messages>
         </div>
-
-        <h:form>
 
             <div align="center">
 
