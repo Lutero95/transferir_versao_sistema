@@ -9,30 +9,35 @@
 	<ui:define name="content">
 
 		<div class="sistemas">
-			<h:form id="formSIS">
-				<p:outputPanel autoUpdate="true">
-					<ui:repeat var="sis" value="#{MBFuncionarios.sistemasUsuarioLogado}"
-						varStatus="status">
 
-						<div class="col-md-3" style="margin-top: 20px">
-							<div class="thumbnail sistemas-opc">
-								<h:commandLink
-									actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
-									action="#{MBFuncionarios.redirecionar(sis.url)}">
-									<p:graphicImage value="#{sis.imagem}" />
-								</h:commandLink>
-								<div class="panel-body">
-									<center>
-										<h:commandLink
-											actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
-											action="#{MBFuncionarios.redirecionar(sis.url)}">
-											<p:outputLabel value="#{sis.descricao}" escape="true" />
-										</h:commandLink>
-									</center>
+			<div class="row row-sistema">
+
+				<h:form id="formSIS">
+					<p:outputPanel autoUpdate="true">
+						<ui:repeat var="sis"
+							value="#{MBFuncionarios.sistemasUsuarioLogado}"
+							varStatus="status">
+
+							<b:column colXs="5" colSm="5" colMd="4" class="col img-sistemas">
+
+								<div class="thumbnail sistemas-opc fade">
+									<h:commandLink
+										actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
+										action="#{MBFuncionarios.redirecionar(sis.url)}">
+										<p:graphicImage value="#{sis.imagem}" />
+									</h:commandLink>
+									<div class="panel-body">
+										<center>
+											<h:commandLink
+												actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
+												action="#{MBFuncionarios.redirecionar(sis.url)}">
+												<p:outputLabel class="texto-descr" value="#{sis.descricao}" escape="true" />
+											</h:commandLink>
+										</center>
+									</div>
 								</div>
-							</div>
 
-							<div class="thumbnail sistemas-opc-bt">
+								<!-- 	<div class="thumbnail sistemas-opc-bt">
 
 								<center>
 									<p:commandButton value="Acesse"
@@ -40,14 +45,14 @@
 										actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
 										action="#{MBFuncionarios.redirecionar(sis.url)}" />
 								</center>
-							</div>
-						</div>
-
-					</ui:repeat>
-				</p:outputPanel>
-			</h:form>
-
+							</div> -->
+							</b:column>
+							
+						</ui:repeat>
+					</p:outputPanel>
+				</h:form>
+				
+			</div>
 		</div>
-
 	</ui:define>
 </ui:composition>

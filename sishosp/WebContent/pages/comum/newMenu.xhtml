@@ -11,15 +11,25 @@
 <body>
 	<ui:composition>
 	
-		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto">
+		<div class="navbar navbar-inverse navbar-fixed-top"
+				rendered="#{MBFuncionarios.usuarioLogado.codigo == null}">
+		    <div class="container">
+		        <div class="navbar-header">
+		            <a class="navbar-brand texto" href="#">EHosp</a>
+		        </div>
+		    </div>
+		</div>
+	
+		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto"
+				rendered="#{MBFuncionarios.usuarioLogado.codigo != null}">
 
 			<p:outputPanel autoUpdate="true">
 
 				<h:form>
 					<b:navbarLinks>
 
-						<b:navLink icon-awesome="fa-file-text-o" rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
-							value="Teste" onclick="#" />
+						<!--<b:navLink icon-awesome="fa-file-text-o" rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
+							value="Teste" onclick="#" />-->
 
 						<b:navLink class="user-index"
 							value="#{MBFuncionarios.usuarioLogado.nome}" iconAwesome="user"
@@ -31,9 +41,10 @@
 							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
 							style="cursor: default !important;" />
 
-						<p:commandButton value="Sair" icon="ui-icon-power"
+							
+						<b:commandButton value="Sair" iconAwesome="sign-out" 
+							look="primary" class="menu-sair"
 							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
-							style="width:100px !important; margin: 12px;"
 							action="#{MBFuncionarios.logout()}" />
 
 					</b:navbarLinks>
