@@ -257,9 +257,10 @@ public class AtendimentoDAO {
                     .getDataAtendimentoInicio().getTime()));
             stm.setDate(2, new java.sql.Date(atendimento
                     .getDataAtendimentoFinal().getTime()));
-            ResultSet rs = stm.executeQuery();
             stm.setInt(3, user_session.getEmpresa().getCodEmpresa());
 
+            ResultSet rs = stm.executeQuery();
+            
             while (rs.next()) {
                 AtendimentoBean at = new AtendimentoBean();
                 at.setId(rs.getInt("id_atendimento"));
