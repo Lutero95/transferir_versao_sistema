@@ -38,7 +38,6 @@ public class ConfigAgendaController implements Serializable {
     private FuncionarioBean prof;
     private EquipeBean equipe;
     private int tipo;
-    private Integer opcao;
 
     private List<ConfigAgendaParte2Bean> listaTipos;
     private List<ConfigAgendaParte2Bean> listaTiposEditar;
@@ -75,7 +74,6 @@ public class ConfigAgendaController implements Serializable {
         this.listaEquipes = null;
         this.listaGruposProgramas = new ArrayList<>();
         this.listaTipoAtendimentosGrupo = new ArrayList<>();
-        opcao = 2;
 
     }
 
@@ -141,11 +139,9 @@ public class ConfigAgendaController implements Serializable {
     public void addNaLista() {
         if (confParte2.getQtd() == null) {
             JSFUtil.adicionarMensagemErro("Insira a quantidade!", "Erro");
-        }
-        if (confParte2.getPrograma() == null) {
+        } else if (confParte2.getPrograma() == null) {
             JSFUtil.adicionarMensagemErro("Insira o programa!", "Erro");
-        }
-        if (confParte2.getGrupo() == null) {
+        } else if (confParte2.getGrupo() == null) {
             JSFUtil.adicionarMensagemErro("Insira o grupo!", "Erro");
         } else {
             this.listaTipos.add(confParte2);
@@ -269,7 +265,7 @@ public class ConfigAgendaController implements Serializable {
 
     // FINAL EQUIPEBEAN
 
-    public void gravarConfigAgenda() {
+    public void gravarConfigAgenda() throws ProjetoException, SQLException {
         boolean cadastrou = false;
         int somatorio = 0;
         for (ConfigAgendaParte2Bean conf : listaTipos) {
@@ -301,13 +297,9 @@ public class ConfigAgendaController implements Serializable {
             return;
         }
 
-        if (confParte1.getDiasSemana().size() > 0) {// ESCOLHEU DIAS SEMANA
-            for (String dia : confParte1.getDiasSemana()) {
-                cadastrou = cDao.gravaTurno(confParte1, listaTipos, dia);
-            }
-        } else {// ESCOLHEU DATA ESPECIFICA
-            cadastrou = cDao.gravaTurno(confParte1, listaTipos, null);
-        }
+
+        cadastrou = cDao.gravarTurnoInicio(confParte1, listaTipos);
+
 
         if (cadastrou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
@@ -556,14 +548,6 @@ public class ConfigAgendaController implements Serializable {
 
     public void setEquipe(EquipeBean equipe) {
         this.equipe = equipe;
-    }
-
-    public Integer getOpcao() {
-        return opcao;
-    }
-
-    public void setOpcao(Integer opcao) {
-        this.opcao = opcao;
     }
 
     public List<GrupoBean> getListaGruposProgramas() {

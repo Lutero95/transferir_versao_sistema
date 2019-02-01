@@ -189,7 +189,7 @@ public class GrupoDAO {
     public List<GrupoBean> listarGruposPorPrograma(int codPrograma)
             throws ProjetoException {
         List<GrupoBean> lista = new ArrayList<>();
-        String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut from hosp.grupo g  "
+        String sql = "select distinct g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut from hosp.grupo g  "
                 + "left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)  "
                 + "where p.id_programa = ?";
 
@@ -331,7 +331,7 @@ public class GrupoDAO {
     public List<GrupoBean> listarGruposAutoComplete(String descricao,
                                                     ProgramaBean prog) throws ProjetoException {
         List<GrupoBean> lista = new ArrayList<>();
-        String sql = "select g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut  "
+        String sql = "select distinct g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut  "
                 + " from hosp.grupo g left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)"
                 + " where p.id_programa = ? and g.cod_empresa = ? and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? order by descgrupo ";
 

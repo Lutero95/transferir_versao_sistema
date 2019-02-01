@@ -4,47 +4,48 @@ import java.io.Serializable;
 
 public class ConfigAgendaParte2Bean implements Serializable {
 
-	private ProgramaBean programa;
-	private GrupoBean grupo;
-	private TipoAtendimentoBean tipoAt;
-	private Integer qtd;
+    private ProgramaBean programa;
+    private GrupoBean grupo;
+    private TipoAtendimentoBean tipoAt;
+    private Integer qtd;
 
-	public ConfigAgendaParte2Bean() {
-		this.programa = null;
-		this.grupo = null;
-		this.tipoAt = null;
-	}
+    public ConfigAgendaParte2Bean() {
+        this.programa = null;
+        this.grupo = null;
+        this.tipoAt = null;
+        qtd = null;
+    }
 
-	public ProgramaBean getPrograma() {
-		return programa;
-	}
+    public ProgramaBean getPrograma() {
+        return programa;
+    }
 
-	public void setPrograma(ProgramaBean programa) {
-		this.programa = programa;
-	}
+    public void setPrograma(ProgramaBean programa) {
+        this.programa = programa;
+    }
 
-	public GrupoBean getGrupo() {
-		return grupo;
-	}
+    public GrupoBean getGrupo() {
+        return grupo;
+    }
 
-	public void setGrupo(GrupoBean grupo) {
-		this.grupo = grupo;
-	}
+    public void setGrupo(GrupoBean grupo) {
+        this.grupo = grupo;
+    }
 
-	public TipoAtendimentoBean getTipoAt() {
-		return tipoAt;
-	}
+    public TipoAtendimentoBean getTipoAt() {
+        return tipoAt;
+    }
 
-	public void setTipoAt(TipoAtendimentoBean tipoAt) {
-		this.tipoAt = tipoAt;
-	}
+    public void setTipoAt(TipoAtendimentoBean tipoAt) {
+        this.tipoAt = tipoAt;
+    }
 
-	public Integer getQtd() {
-		return qtd;
-	}
+    public Integer getQtd() {
+        return qtd;
+    }
 
-	public void setQtd(Integer qtd) {
-		this.qtd = qtd;
-	}
+    public void setQtd(Integer qtd) {
+        this.qtd = qtd;
+    }
 
 }
