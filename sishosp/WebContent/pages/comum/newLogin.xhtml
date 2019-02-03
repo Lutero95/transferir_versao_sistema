@@ -8,65 +8,67 @@
 
 	<ui:define name="content">
 
-	<section class="login-content">
-	<section class="login-area">
-			<div class="login-form image-form">
-				<img class="img-circle" src="../../imgs/EHOSP.png" alt="Ehosp" />
-			</div>
-			<div class="row">
-				<div class="login-form pull-size">
-					<b:form id="fmrLogin">
-
-						<center>
-							<h2 class="texto-acesso">Acesse sua conta</h2>
-
-							<h:panelGrid columns="1" cellpadding="3">
-
-								<b:inputText mask="999-999-999-99" style="padding:10px;"
-									required="true" value="#{MBFuncionarios.usuario.cpf}"
-									placeholder="Digite o CPF" render-label="true"
-									requiredMessage="CPF obrigatório" />
-								<b:message for="@previous" />
-
-								<b:inputSecret style="padding:10px;margin-top:10px"
-									required="true" placeholder="Digite a Senha"
-									requiredMessage="Senha obrigatório"
-									value="#{MBFuncionarios.usuario.senha}"></b:inputSecret>
-								<b:message for="@previous" />
-
-							</h:panelGrid>
-						</center>
-
-						<center>
-							<p:commandButton value="Entrar" styleClass="btnLogin ui-priority-primary btn-lg"
-								action="#{MBFuncionarios.login}" update="@form"></p:commandButton>
-
-						</center>
-
-					</b:form>
-
-					<center>
-						<b:messages value="Error" id="msgError" ></b:messages>
-					</center>
-
+		<section class="login-content">
+			<section class="login-area">
+				<div class="login-form image-form">
+					<img class="img-circle" src="../../imgs/EHOSP.png" alt="Ehosp" />
 				</div>
-				<div class="login-content">
-					<p:outputPanel id="outExpired" autoUpdate="false">
-						<p:dialog widgetVar="expiredSession" modal="true" header="Atenção"
-							showEffect="bounce" resizable="false" visible="false">
-							<h:form id="formEXP">
-								<h:panelGrid columns="1">
-									<div class="alert alert-info" role="alert">A sessão
-										expirou! Faça login novamente.</div>
-									<p:commandButton value="OK" style="font-size:14px;"
-										action="#{MBFuncionarios.fecharDlgExpired()}" process="@this" />
+				<div class="row">
+					<div class="login-form pull-size">
+						<b:form id="fmrLogin">
+
+							<center>
+								<h2 class="texto-acesso">Acesse sua conta</h2>
+
+								<h:panelGrid columns="1" cellpadding="3">
+
+									<b:inputText mask="999-999-999-99" style="padding:10px;"
+										required="true" value="#{MBFuncionarios.usuario.cpf}"
+										placeholder="Digite o CPF" render-label="true"
+										requiredMessage="CPF obrigatório" />
+									<b:message for="@previous" />
+
+									<b:inputSecret style="padding:10px;margin-top:10px"
+										required="true" placeholder="Digite a Senha"
+										requiredMessage="Senha obrigatório"
+										value="#{MBFuncionarios.usuario.senha}"></b:inputSecret>
+									<b:message for="@previous" />
+
 								</h:panelGrid>
-							</h:form>
-						</p:dialog>
-					</p:outputPanel>
+							</center>
+
+							<center>
+								<p:commandButton value="Entrar"
+									styleClass="btnLogin ui-priority-primary btn-lg"
+									action="#{MBFuncionarios.login}" update="@form"></p:commandButton>
+
+							</center>
+
+						</b:form>
+
+						<center>
+							<b:messages value="Error" id="msgError"></b:messages>
+						</center>
+
+					</div>
+					<div class="login-content">
+						<p:outputPanel id="outExpired" autoUpdate="false">
+							<p:dialog widgetVar="expiredSession" modal="true"
+								header="Atenção" showEffect="bounce" resizable="false"
+								visible="false">
+								<h:form id="formEXP">
+									<h:panelGrid columns="1">
+										<div class="alert alert-info" role="alert">A sessão
+											expirou! Faça login novamente.</div>
+										<p:commandButton value="OK" style="font-size:14px;"
+											action="#{MBFuncionarios.fecharDlgExpired()}" process="@this" />
+									</h:panelGrid>
+								</h:form>
+							</p:dialog>
+						</p:outputPanel>
+					</div>
 				</div>
-			</div>
-		</section>
+			</section>
 		</section>
 
 	</ui:define>

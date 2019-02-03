@@ -18,7 +18,8 @@
 							value="#{MBFuncionarios.sistemasUsuarioLogado}"
 							varStatus="status">
 
-							<b:column colXs="5" colSm="5" colMd="4" class="col img-sistemas">
+							<b:column colXs="4" colSm="4" colMd="4" colLg="3"
+								class="col img-sistemas">
 
 								<div class="thumbnail sistemas-opc fade">
 									<h:commandLink
@@ -31,27 +32,19 @@
 											<h:commandLink
 												actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
 												action="#{MBFuncionarios.redirecionar(sis.url)}">
-												<p:outputLabel class="texto-descr" value="#{sis.descricao}" escape="true" />
+												<p:outputLabel class="texto-descr" value="#{sis.descricao}"
+													escape="true" />
 											</h:commandLink>
 										</center>
 									</div>
 								</div>
 
-								<!-- 	<div class="thumbnail sistemas-opc-bt">
-
-								<center>
-									<p:commandButton value="Acesse"
-										style="font-size: 20px !important;" styleClass="acesse"
-										actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
-										action="#{MBFuncionarios.redirecionar(sis.url)}" />
-								</center>
-							</div> -->
 							</b:column>
-							
+
 						</ui:repeat>
 					</p:outputPanel>
 				</h:form>
-				
+
 			</div>
 		</div>
 	</ui:define>

@@ -1,22 +1,66 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
+
 <h:head>
-	<title>EHosp</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<!-- <link rel="stylesheet" type="text/css" href="../../css/datatable.css" /> -->
-	<!-- <link rel="stylesheet" type="text/css" href="../../css/font-awesome.css" /> -->
-	<!-- <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min.css" /> -->
-	<link rel="stylesheet" type="text/css" href="../../css/style.css" />
-	
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+
+	<ui:insert name="title">
+		<title>EHospp</title>
+	</ui:insert>
+
+	<link rel="shortcut icon" href="../../imgs/favicon.png" />
+
+	<link rel="styleSheet" type="text/css" href="../../css/newStyle.css" />
+	<link rel="styleSheet" type="text/css"
+		href="../../css/font-awesome.css" />
+
+	<script src="../../resources/js/jquery.maskmoney.js"
+		type="text/javascript" />
+
+	<script type="text/javascript">
+		PrimeFaces.locales['pt'] = {
+			closeText : 'Fechar',
+			prevText : 'Anterior',
+			nextText : 'Próximo',
+			currentText : 'Começo',
+			monthNames : [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio',
+					'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
+					'Novembro', 'Dezembro' ],
+			monthNamesShort : [ 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+					'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez' ],
+			dayNames : [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta',
+					'Sexta', 'Sábado' ],
+			dayNamesShort : [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb' ],
+			dayNamesMin : [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+			weekHeader : 'Semana',
+			firstDay : 0,
+			isRTL : false,
+			showMonthAfterYear : false,
+			yearSuffix : '',
+			timeOnlyTitle : 'Só Horas',
+			timeText : 'Tempo',
+			hourText : 'Hora',
+			minuteText : 'Minuto',
+			secondText : 'Segundo',
+			ampm : false,
+			month : 'Mês',
+			week : 'Semana',
+			day : 'Dia',
+			allDayText : 'Todo o Dia'
+		};
+	</script>
 
 </h:head>
-<h:body style="padding: 60px;">
+<h:body>
 	<p:ajaxStatus onstart="PF('statusDialog').show();"
 		onsuccess="PF('statusDialog').hide();" />
 	<p:dialog id="myDialogId" styleClass="process_msg" modal="true"
@@ -28,27 +72,35 @@
 		</center>
 	</p:dialog>
 
-	<b:navBar brand="EHosp" brandHref="#" fixed="top" inverse="true">
-		<h:form id="mainFormtempSist">
-			<ui:include src="/pages/comum/menu.xhtml" />
+	<div id="header">
+		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto">
+			<h:form id="mainFormtempSist">
+				<ui:include src="/pages/comum/menu.xhtml" />
 
-		</h:form>
+			</h:form>
 
-	</b:navBar>
-	<b:container>
+		</b:navBar>
+	</div>
 
+	<div id="container" class="clearfix">
+		<div id="content">
+			<p:messages for="home-msg" globalOnly="true" />
 
+			<ui:insert name="content" />
 
-		<ui:insert name="body" />
-		
+		</div>
+	</div>
 
-	</b:container>
-	
-	<footer >
-	<hr/>		
-			<p style="margin-left:30px"> EHosp </p>
-			<p class="small" style="margin-left:30px">Versão: 1.1.1</p>
-			</footer>
+	<div id="foot">
+		<div class="connect">
+			<a href="#" target="_blank"> <img src="../../imgs/facebook.png" /></a>
+			<a href="#" target="_blank"> <img src="../../imgs/twitter.png" /></a>
+		</div>
+		<div class="foot-text">
+			<p>© 2019 EHosp. Todos os direitos reservados.</p>
+			<p>Versão: 1.1.1</p>
+		</div>
+	</div>
 
 </h:body>
 </html>
