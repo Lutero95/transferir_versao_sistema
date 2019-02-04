@@ -4,7 +4,6 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:b="http://bootsfaces.net/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	
 	template="../../template/template.xhtml">
 
 	<ui:define name="content">
@@ -12,52 +11,53 @@
 		<h:form id="form">
 			<div class="sistemas-sel2">
 				<p:outputPanel autoUpdate="true">
-					<div class="container">
 
-						<div class="ui-grid ui-grid-responsive">
+					<div class="ui-grid ui-grid-responsive sis-sel1">
 
-							<div class="ui-grid-row" style="display: inline-block;">
+						<div class="ui-grid-row" style="display: inline-block;">
 
-								<div class="ui-grid-col-4">
-									<h:link
-										outcome="/pages/sishosp/cadastroPaciente.xhtml?faces-redirect=true">
-										<p:graphicImage class="img-sistema2 fade"
-											value="../../imgs/cadastro_paciente.png" alt="Dados Cadastrais" />
-									</h:link>
-									<h3 class="texto-h3">CADASTRO PACIENTE</h3>
-								</div>
-
-
-								<div class="ui-grid-col-4">
-									<h:link
-										outcome="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true">
-										<p:graphicImage width="165px" height="165px" class="fade"
-											value="../../imgs/insercao_paciente.png" alt="Dados Cadastrais" />
-									</h:link>
-									<h3 class="texto-h3">INSERÇÃO DE PACIENTES</h3>
-								</div>
+							<div class="ui-grid-col-4">
+								<h:link
+									outcome="/pages/sishosp/cadastroPaciente.xhtml?faces-redirect=true">
+									<p:graphicImage class="img-sistema1 fade"
+										value="../../imgs/cadastro_paciente.png"
+										alt="Dados Cadastrais" />
+								</h:link>
+								<h3 class="texto-h3">CADASTRO PACIENTE</h3>
+							</div>
 
 
-								<div class="ui-grid-col-4">
-									<h:link
-										outcome="/pages/sishosp/cadastroLaudoDigita.xhtml?faces-redirect=true">
-										<p:graphicImage width="165px" height="165px" class="fade"
-											value="../../imgs/laudos.png" alt="Dados Cadastrais" />
-									</h:link>
-									<h3 class="texto-h3">LAUDOS</h3>
+							<div class="ui-grid-col-4">
+								<h:link
+									outcome="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true">
+									<p:graphicImage class="img-sistema1 fade"
+										value="../../imgs/insercao_paciente.png"
+										alt="Dados Cadastrais" />
+								</h:link>
+								<h3 class="texto-h3">INSERÇÃO DE PACIENTES</h3>
+							</div>
 
-								</div>
+
+							<div class="ui-grid-col-4">
+								<h:link
+									outcome="/pages/sishosp/cadastroLaudoDigita.xhtml?faces-redirect=true">
+									<p:graphicImage class="img-sistema1 fade"
+										value="../../imgs/laudos.png" alt="Dados Cadastrais" />
+								</h:link>
+								<h3 class="texto-h3">LAUDOS</h3>
+
 							</div>
 						</div>
 					</div>
 
-					<div class="ui-grid ui-grid-responsive">
+
+					<div class="ui-grid ui-grid-responsive sis-sel2">
 
 						<div class="ui-grid-row" style="display: inline-block;">
 							<div class="ui-grid-col-4">
 								<h:link
 									outcome="/pages/sishosp/agendaMedica.xhtml?faces-redirect=true">
-									<p:graphicImage width="165px" height="165px" class="fade"
+									<p:graphicImage class="img-sistema2 fade"
 										value="../../imgs/agenda.png" alt="Dados Cadastrais" />
 								</h:link>
 								<h3 class="texto-h3">AGENDA</h3>
@@ -67,8 +67,9 @@
 							<div class="ui-grid-col-4">
 								<h:link
 									outcome="/pages/sishosp/consAgendamentos.xhtml?faces-redirect=true">
-									<p:graphicImage width="165px" height="165px" class="fade"
-										value="../../imgs/consulta_agendamento.png" alt="Dados Cadastrais" />
+									<p:graphicImage class="img-sistema2 fade"
+										value="../../imgs/consulta_agendamento.png"
+										alt="Dados Cadastrais" />
 								</h:link>
 								<h3 class="texto-h3">CONSULTAR AGENDAMENTOS</h3>
 							</div>
@@ -76,7 +77,7 @@
 							<div class="ui-grid-col-4">
 								<h:link
 									outcome="/pages/sishosp/atendimento.xhtml?faces-redirect=true">
-									<p:graphicImage width="165px" height="165px" class="fade"
+									<p:graphicImage class="img-sistema2 fade"
 										value="../../imgs/atendimentos.png" alt="Dados Cadastrais" />
 								</h:link>
 								<h3 class="texto-h3">ATENDIMENTOS</h3>

@@ -566,13 +566,133 @@ body {
 	}
 }
 
+/* ---------- Menu Sistema 2 -------------------- */
+
+.ui-menu.ui-widget {
+    background: transparent;
+    border: none;
+    margin-right: 0px !important;
+    padding: 0px 0;
+}
+
+.ui-widget .ui-widget {
+    font-size: 1.1em;
+}
+
+.ui-menu.ui-menubar {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.ui-menu .ui-menuitem {
+	margin: 0px 0;
+}
+
+.ui-menu.ui-widget li > .ui-menuitem-link {
+    padding: 1.3em 1.5em;
+}
+
+.ui-menu.ui-menubar .ui-menu-parent .ui-menu-child {
+    padding: 0px 0;
+}
+
+/* .ui-menu.ui-widget .ui-menuitem-link .ui-menuitem-text {
+    margin-left: 3.4em;
+} */
+
+.ui-menu .ui-menu-parent .ui-menu-child {
+    width: 18.5em;
+}
+
+.ui-menu.ui-widget li > .ui-menuitem-link.ui-state-hover {
+    color: #ffffff;
+    text-decoration: none;
+    background-color: #0088cc;
+    background-color: #004c98;
+    background-position: 0px;
+    background-image: -moz-linear-gradient(#04519b, #044687 60%, #033769);
+    background-image: -webkit-linear-gradient(#04519b, #044687 60%, #033769);
+    background-image: -o-linear-gradient(#04519b, #044687 60%, #033769);
+    background-image: linear-gradient(#04519b, #044687 60%, #033769);
+    background-repeat: repeat-x;
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
+}
+
+.menu-sistema>.ui-menu-list>.ui-menuitem>a>.ui-menuitem-text {
+	color: white !important;
+	font-size: 14px !important;
+	font-family: verdana;
+}
+
+.menu-sistema>.ui-menu-list>.ui-menuitem>a:hover {
+	background: rgba(0, 0, 0, 0.20) !important;
+	color: black !important;
+	font-size: 14px !important;
+	font-family: verdana;
+}
+
+.menu-sistema>.ui-menu-list>.ui-menuitem>a:focus {
+	background: rgba(0, 0, 0, 0.20) !important;
+	color: black !important;
+	font-size: 14px !important;
+	font-family: verdana;
+}
+
+.menu-sistema {
+	width:auto; 
+	float:right;
+}
+
+@media (max-width: 767px) {
+	.menu-sistema {
+		width:auto; 
+		float:left;
+	}
+	.ui-menu .ui-menuitem {
+	    float: none;
+	}
+	.ui-menu.ui-widget li > .ui-menuitem-link {
+    	padding: 1.5em 1em;
+    }
+    .navbar-collapse {
+    	padding-left: 0px;
+    }
+    .ui-menu .ui-menuitem-link {
+	    float: none;
+    }
+    .ui-menu.ui-menubar {
+	    width: 100%;
+	}
+	.ui-widget .ui-widget {
+    	font-size: 1em;
+	}
+	.ui-menu.ui-menubar .ui-menu-parent .ui-menu-child {
+    	padding: 0 0 5px 0;
+	}
+	.navbar-fixed-top .navbar-collapse, 
+	.navbar-fixed-bottom .navbar-collapse {
+    	max-height: 100%;
+    	margin-bottom: 10px;
+	}
+	.ui-menu.ui-menubar .ui-menu-parent 
+	.ui-menu-child {
+    	left: 0 !important;
+	}
+	.ui-menu .ui-menu-parent .ui-menu-child {
+    	width: 60%;
+	    position: static;
+	    float: none;
+	    margin-top: 0;
+	
+	}
+}
 
 /* ----------- Sistema Selecção 2 page --------- */
 
 
 .sistemas-sel2 {
 	font-size: 62.5%;
-   /* margin: 30px auto 20px auto;*/
+    margin: 30px auto 30px auto;
     padding-left: 1.315789474%;
     text-align: center;
     float: none;
@@ -598,6 +718,11 @@ body {
     font-size: 24px !important;
     font-family: arial !important;
     font-weight: normal !important;
+}
+
+.img-sistema1 {
+	width: 165px;
+	height: 165px;
 }
 
 .img-sistema2 {

@@ -1,21 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:b="http://bootsfaces.net/ui">
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-<ui:composition template="../../template/template.xhtml">
-
-	<ui:define name="body">
+	<ui:define name="content">
 
 		<div class="panel-body">
 			<div class="sub-header">
 				<h4>Gerenciamento de Equipamento</h4>
 				<hr />
 			</div>
-			
+
 			<h:form id="frmPrincipal">
 
 				<b:commandButton id="btninc" value="Novo" size="sm"
@@ -32,8 +30,8 @@
 					<b:messages value="Error" id="msgPagina"></b:messages>
 				</div>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-					value="#{EquipamentoController.listarEquipamentos()}">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
+					var="tab" value="#{EquipamentoController.listarEquipamentos()}">
 
 					<h:column>
 						<f:facet name="header">
@@ -94,5 +92,3 @@
 		</p:dialog>
 	</ui:define>
 </ui:composition>
-
-</html>

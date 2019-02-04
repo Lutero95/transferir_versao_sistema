@@ -1,108 +1,104 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:b="http://bootsfaces.net/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-<ui:composition template="../../template/template.xhtml">
+	<ui:define name="content">
 
-    <ui:define name="body">
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de CID</h4>
+				<hr />
+			</div>
 
-        <div class="panel-body">
-            <div class="sub-header">
-                <h4>Gerenciamento de CID</h4>
-                <hr/>
-            </div>
+			<h:form id="frmPrincipal">
 
-            <h:form id="frmPrincipal">
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{CidController.redirectInsert()}" icon="glyphicon-plus"
+					look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{CidController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
 
-                <b:commandButton id="btninc" value="Novo" size="sm"
-                                 action="#{CidController.redirectInsert()}" icon="glyphicon-plus"
-                                 look="primary">
-                    <f:setPropertyActionListener value="1"
-                                                 target="#{CidController.tipo}"/>
-                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
-                </b:commandButton>
-                <br/>
-                <br/>
+				<div align="center">
+					<b:messages value="Error" id="msgPagina"></b:messages>
+				</div>
 
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					id="dataTablePrincipal" var="tab"
+					value="#{CidController.listarCids()}">
 
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dataTablePrincipal" var="tab"
-                             value="#{CidController.listarCids()}">
-
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Descrição
                         </f:facet>
 
-                        <h:outputText value="#{tab.descCid}"/>
-                    </h:column>
+						<h:outputText value="#{tab.descCid}" />
+					</h:column>
 
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             CID
                         </f:facet>
 
-                        <h:outputText value="#{tab.cid}"/>
-                    </h:column>
+						<h:outputText value="#{tab.cid}" />
+					</h:column>
 
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Ação
                         </f:facet>
 
-                        <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-                                         action="#{CidController.redirectEdit()}">
-                            <f:setPropertyActionListener value="#{tab}"
-                                                         target="#{CidController.cid}"/>
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{CidController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{CidController.cid}" />
 
-                            <f:setPropertyActionListener value="2"
-                                                         target="#{CidController.tipo}"/>
-                        </b:commandButton>
+							<f:setPropertyActionListener value="2"
+								target="#{CidController.tipo}" />
+						</b:commandButton>
 
-                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-                                         size="sm" ajax="true" style="margin-left:10px"
-                                         oncomplete="PF('dialogExclusao').show()">
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogExclusao').show()">
 
-                            <f:setPropertyActionListener value="#{tab}"
-                                                         target="#{CidController.cid}"/>
-                        </b:commandButton>
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{CidController.cid}" />
+						</b:commandButton>
 
-                    </h:column>
-                </b:dataTable>
+					</h:column>
+				</b:dataTable>
 
-            </h:form>
+			</h:form>
 
-        </div>
+		</div>
 
-        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
-                  resizable="false">
+		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+			resizable="false">
 
-            <h:form id="frmExcluir">
-                <div class="alert alert-warning" role="alert">Deseja excluir
-                    este CID?
-                </div>
-                <div align="center">
-                    <p:separator/>
-                    <b:commandButton look="success" value="Sim" style="float:left;"
-                                     action="#{CidController.excluirCid()}" ajax="true"
-                                     icon="glyphicon-ok" update=":frmPrincipal"/>
+			<h:form id="frmExcluir">
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					este CID?</div>
+				<div align="center">
+					<p:separator />
+					<b:commandButton look="success" value="Sim" style="float:left;"
+						action="#{CidController.excluirCid()}" ajax="true"
+						icon="glyphicon-ok" update=":frmPrincipal" />
 
-                    <b:commandButton value="Não"
-                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
-                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
-                </div>
-            </h:form>
-        </p:dialog>
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
+				</div>
+			</h:form>
+		</p:dialog>
 
-    </ui:define>
+	</ui:define>
 </ui:composition>
-</html>
