@@ -648,8 +648,8 @@
                             <b:column span="2">
                                 <p:selectOneRadio
                                         value="#{PacienteController.paciente.associado}">
-                                    <f:selectItem itemLabel="Sim" itemValue="s"/>
-                                    <f:selectItem itemLabel="Não" itemValue="n"/>
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
                                 </p:selectOneRadio>
                             </b:column>
                         </b:row>
@@ -1343,7 +1343,7 @@
                     </b:column>
 
                     <b:column span="3">
-                        <b:inputText  mask="(99)" class="form-control" id="inputDdd" required="true" requiredMessage=" DDD: Campo obrigatório!"
+                        <b:inputText  mask="99" class="form-control" id="inputDdd" required="true" requiredMessage=" DDD: Campo obrigatório!"
                                      value="#{PacienteController.telefone.ddd}"/>
                     </b:column>
 

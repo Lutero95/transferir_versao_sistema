@@ -48,9 +48,9 @@ public class PacienteDAO {
                     + "trabalha, localtrabalha, codparentesco, "
                     + "nomeresp, rgresp, cpfresp, dtanascimentoresp, id_encaminhado, id_formatransporte ,deficiencia, codmunicipio, "
                     + "deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, codbairro, email, facebook, instagram, "
-                    + "nome_social, necessita_nome_social, motivo_nome_social)"
+                    + "nome_social, necessita_nome_social, motivo_nome_social, associado)"
                     + " values (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ? , ? , "
-                    + "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?) returning id_paciente";
+                    + "? , ? , ?, ?, ?, ? , ? , ?, ? , ?, ?, ?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?, ?) returning id_paciente";
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, paciente.getNome().toUpperCase().trim());
@@ -325,6 +325,12 @@ public class PacienteDAO {
             } else {
                 stmt.setString(57, paciente.getMotivoNomeSocial());
             }
+            
+            if (paciente.getAssociado() == null) {
+                stmt.setNull(58, Types.CHAR);
+            } else {
+                stmt.setString(58, paciente.getAssociado().trim().toUpperCase());
+            }
 
             ResultSet set = stmt.executeQuery();
             while (set.next()) {
@@ -376,7 +382,7 @@ public class PacienteDAO {
                     + ", codparentesco = ?, nomeresp = ?, rgresp = ?, cpfresp = ?, dtanascimentoresp = ?, id_encaminhado = ?"
                     + ", id_formatransporte = ?, deficiencia = ?, codmunicipio = ?"
                     + ", deficienciafisica = ?, deficienciamental = ?, deficienciaauditiva = ?, deficienciavisual = ?, deficienciamultipla = ?"
-                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, motivo_nome_social = ? "
+                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, motivo_nome_social = ?, associado=? "
                     + " where id_paciente = ?";
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -497,8 +503,14 @@ public class PacienteDAO {
             } else {
                 stmt.setString(56, paciente.getMotivoNomeSocial());
             }
+            
+            if (paciente.getMotivoNomeSocial() == null) {
+                stmt.setNull(57, Types.CHAR);
+            } else {
+                stmt.setString(57, paciente.getAssociado());
+            }
 
-            stmt.setLong(57, paciente.getId_paciente());
+            stmt.setLong(58, paciente.getId_paciente());
 
             stmt.executeUpdate();
 
@@ -837,7 +849,8 @@ public class PacienteDAO {
                 + "escolaridade.descescolaridade, escola.descescola, profissao.descprofissao,"
                 + " encaminhado.descencaminhado, formatransporte.descformatransporte,"
                 + " deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, "
-                + " pacientes.nome_social, pacientes.necessita_nome_social, pacientes.motivo_nome_social "
+                + " pacientes.nome_social, pacientes.necessita_nome_social, pacientes.motivo_nome_social, coalesce(pacientes.associado,'N') associado, "
+                +" pacientes.codmunicipio "
                 + "from hosp.pacientes left join hosp.escolaridade on pacientes.id_escolaridade=escolaridade.id_escolaridade "
                 + " left join hosp.escola on pacientes.id_escola=escola.id_escola "
                 + "left join hosp.profissao on pacientes.id_profissao=profissao.id_profissao "
@@ -923,6 +936,8 @@ public class PacienteDAO {
                 p.setMotivoNomeSocial(rs.getString("motivo_nome_social"));
                 p.setNecessitaNomeSocial(rs.getBoolean("necessita_nome_social"));
                 p.setListaTelefones(listarTelefonesDoPaciente(id));
+                p.setAssociado(rs.getString("associado"));
+                p.getEndereco().setCodmunicipio(rs.getInt("codmunicipio"));
 
             }
 
