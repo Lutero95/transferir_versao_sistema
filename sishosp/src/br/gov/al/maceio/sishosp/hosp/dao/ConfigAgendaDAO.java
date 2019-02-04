@@ -1,10 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -58,17 +54,17 @@ public class ConfigAgendaDAO {
         }
     }
 
-    public void insereTipoAtendAgenda(int codConf,
+    public void insereTipoAtendAgenda(int codConfigAgenda,
                                       ConfigAgendaParte1Bean conf1,
                                       List<ConfigAgendaParte2Bean> listaTipos, Connection con) {
         PreparedStatement ps1 = null;
-        String sql = "insert into hosp.tipo_atend_agenda (codconfigagenda, codprograma, codtipoatendimento, qtd, codgrupo) "
+        String sql = "insert into hosp.tipo_atend_agenda (cod_config_agenda, codprograma, codtipoatendimento, qtd, codgrupo) "
                 + " values(?, ?, ?, ?, ?);";
         try {
 
             ps1 = con.prepareStatement(sql);
             for (ConfigAgendaParte2Bean conf : listaTipos) {
-                ps1.setInt(1, codConf);
+                ps1.setInt(1, codConfigAgenda);
                 ps1.setInt(2, conf.getPrograma().getIdPrograma());
                 ps1.setInt(3, conf.getTipoAt().getIdTipo());
                 ps1.setInt(4, conf.getQtd());
@@ -87,152 +83,166 @@ public class ConfigAgendaDAO {
         }
     }
 
-    public Boolean gravarTurnoInicio(ConfigAgendaParte1Bean confParte1,
-                                  List<ConfigAgendaParte2Bean> listaTipos) throws ProjetoException, SQLException {
+    public Boolean gravarConfiguracaoAgendaProfissionalInicio(ConfigAgendaParte1Bean confParte1,
+                                     List<ConfigAgendaParte2Bean> listaTipos) throws ProjetoException, SQLException {
 
         Boolean retorno = false;
         con = ConnectionFactory.getConnection();
 
-        if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())){
-            for(int i=0; i<confParte1.getDiasSemana().size(); i++) {
-                retorno = gravaTurnoFinal(confParte1, listaTipos, confParte1.getDiasSemana().get(i), con);
+        Integer idConfiguracaoAgenda = gravaConfiguracaoAgendaProfissional(confParte1, listaTipos, con);
 
-                if(!retorno){
-                    return false;
+        if (idConfiguracaoAgenda != null) {
+
+            if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
+                for (int i = 0; i < confParte1.getDiasSemana().size(); i++) {
+                    retorno = gravaConfiguracaoAgendaProfissionalDias(confParte1, listaTipos, confParte1.getDiasSemana().get(i), con, idConfiguracaoAgenda);
+
+                    if (!retorno) {
+                        return false;
+                    }
                 }
             }
-        }
 
-        if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-            retorno = gravaTurnoFinal(confParte1, listaTipos, null, con);
-        }
+            if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
+                retorno = gravaConfiguracaoAgendaProfissionalDias(confParte1, listaTipos, null, con, idConfiguracaoAgenda);
+            }
 
-        if(retorno){
-            con.commit();
+            if (retorno) {
+                con.commit();
+            }
+
         }
 
         return retorno;
     }
 
-    public Boolean gravaTurnoFinal(ConfigAgendaParte1Bean confParte1,
-                              List<ConfigAgendaParte2Bean> listaTipos, String dia, Connection conAuxiliar) {
+    public Integer gravaConfiguracaoAgendaProfissional(ConfigAgendaParte1Bean confParte1,
+                                                       List<ConfigAgendaParte2Bean> listaTipos, Connection conAuxiliar) {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
 
-        boolean retorno = false;
-        int idTipo1 = 0;
-        int idTipo2 = 0;
-        int idTipo3 = 0;
+        Integer idConfigAgenda = null;
 
         try {
-            String sql = "INSERT INTO hosp.config_agenda(codmedico, diasemana, qtdmax, dataagenda, turno, mes, ano, id_configagenda, cod_empresa) "
-                    + " VALUES (?, ?, ?, ?, ?, ?, ?, DEFAULT, ?) RETURNING id_configagenda;";
+            String sql = "INSERT INTO hosp.config_agenda_profissional(codmedico, qtdmax, mes, ano, cod_empresa, opcao) "
+                    + " VALUES (?, ?, ?, ?, ?, ?) RETURNING id_configagenda;";
 
             PreparedStatement ps = conAuxiliar.prepareStatement(sql);
 
             ResultSet rs = null;
 
+            ps.setLong(1, confParte1.getProfissional().getId());
+
+            ps.setInt(2, confParte1.getQtdMax());
+
+            if (confParte1.getMes() != null) {
+                ps.setInt(3, confParte1.getMes());
+            } else {
+                ps.setNull(3, Types.NULL);
+            }
+
+            if (confParte1.getAno() != null) {
+                ps.setInt(4, confParte1.getAno());
+            } else {
+                ps.setNull(4, Types.NULL);
+            }
+
+            ps.setInt(5, user_session.getEmpresa().getCodEmpresa());
+
+            ps.setString(6, confParte1.getOpcao());
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                idConfigAgenda = rs.getInt("id_configagenda");
+                insereTipoAtendAgenda(idConfigAgenda, confParte1, listaTipos, conAuxiliar);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return idConfigAgenda;
+        }
+    }
+
+    public Boolean gravaConfiguracaoAgendaProfissionalDias(ConfigAgendaParte1Bean confParte1,
+                                   List<ConfigAgendaParte2Bean> listaTipos, String dia, Connection conAuxiliar, Integer idConfigAgenda) {
+
+        Boolean retorno = false;
+
+        try {
+            String sql2 = "INSERT INTO hosp.config_agenda_profissional_dias (dia, data_especifica, turno, id_config_agenda_profissional) "
+                    + " VALUES (?, ?, ?, ?);";
+
+            PreparedStatement ps2 = conAuxiliar.prepareStatement(sql2);
+
             //SE FOR AMBOS OS TURNOS - INÍCIO
             if (confParte1.getTurno().equals("A")) {
                 if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
-                    ps.setInt(2, Integer.parseInt(dia));
+                    ps2.setInt(1, Integer.parseInt(dia));
 
-                    ps.setDate(4, null);
+                    ps2.setDate(2, null);
                 }
                 if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-                    ps.setDate(4, new Date(confParte1.getDataEspecifica()
-                            .getTime()));
+                    ps2.setNull(1, Types.NULL);
 
-                    Calendar c1 = DataUtil.retornarDataCalendar(confParte1.getDataEspecifica());
-
-                    ps.setInt(2, 0);
-
-                    confParte1.setMes(c1.get(Calendar.MONTH) + 1);
-                    confParte1.setAno(c1.get(Calendar.YEAR));
+                    ps2.setDate(2, new Date(confParte1.getDataEspecifica().getTime()));
 
                 }
 
-                ps.setLong(1, confParte1.getProfissional().getId());
+                ps2.setString(3, "M");
 
-                ps.setInt(3, confParte1.getQtdMax());
+                ps2.setInt(4, idConfigAgenda);
 
-                ps.setString(5, "M");
+                ps2.execute();
 
-                ps.setInt(6, confParte1.getMes());
-
-                ps.setInt(7, confParte1.getAno());
-
-                ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
-
-                rs = ps.executeQuery();
-
-                if (rs.next()) {
-                    idTipo1 = rs.getInt("id_configagenda");
-                    insereTipoAtendAgenda(idTipo1, confParte1, listaTipos, conAuxiliar);
-                }
-
-                ps = con.prepareStatement(sql);
+                ps2 = con.prepareStatement(sql2);
 
                 if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
-                    ps.setInt(2, Integer.parseInt(dia));
-                    ps.setDate(4, null);
+                    ps2.setInt(1, Integer.parseInt(dia));
+
+                    ps2.setNull(2, Types.NULL);
                 }
                 if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-                    ps.setInt(2, 0);
-                    Calendar c1 = DataUtil.retornarDataCalendar(confParte1.getDataEspecifica());
-                    c1.setTime(confParte1.getDataEspecifica());
-                    ps.setDate(4, new Date(confParte1.getDataEspecifica()
-                            .getTime()));
-                    confParte1.setMes(c1.get(Calendar.MONTH) + 1);
-                    confParte1.setAno(c1.get(Calendar.YEAR));
-                }
-                ps.setLong(1, confParte1.getProfissional().getId());
-                ps.setInt(3, confParte1.getQtdMax());
-                ps.setString(5, "T");
-                ps.setInt(6, confParte1.getMes());
-                ps.setInt(7, confParte1.getAno());
-                ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
-                rs = ps.executeQuery();
+                    ps2.setNull(1, Types.NULL);
 
-                if (rs.next()) {
-                    idTipo2 = rs.getInt("id_configagenda");
-                    insereTipoAtendAgenda(idTipo2, confParte1, listaTipos, conAuxiliar);
+                    ps2.setDate(2, new Date(confParte1.getDataEspecifica().getTime()));
 
                 }
+
+                ps2.setString(3, "T");
+
+                ps2.setInt(4, idConfigAgenda);
+
+                ps2.execute();
+
                 //SE FOR AMBOS OS TURNOS - FINAL
 
                 //SE FOR TURNO ÚNICO - INÍCIO
             } else {
                 if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
-                    ps.setInt(2, Integer.parseInt(dia));
-                    ps.setDate(4, null);
+                    ps2.setInt(1, Integer.parseInt(dia));
+
+                    ps2.setDate(2, null);
                 }
                 if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-                    ps.setDate(4, new Date(confParte1.getDataEspecifica()
-                            .getTime()));
+                    ps2.setNull(1, Types.NULL);
 
-                    Calendar c1 = DataUtil.retornarDataCalendar(confParte1.getDataEspecifica());
-                    c1.setTime(confParte1.getDataEspecifica());
-
-                    ps.setInt(2, 0);
-                    confParte1.setMes(c1.get(Calendar.MONTH) + 1);
-                    confParte1.setAno(c1.get(Calendar.YEAR));
+                    ps2.setDate(2, new Date(confParte1.getDataEspecifica().getTime()));
 
                 }
-                ps.setLong(1, confParte1.getProfissional().getId());
-                ps.setInt(3, confParte1.getQtdMax());
-                ps.setString(5, confParte1.getTurno());
-                ps.setInt(6, confParte1.getMes());
-                ps.setInt(7, confParte1.getAno());
-                ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
-                rs = ps.executeQuery();
 
-                if (rs.next()) {
-                    idTipo3 = rs.getInt("id_configagenda");
-                    insereTipoAtendAgenda(idTipo3, confParte1, listaTipos, conAuxiliar);
+                ps2.setString(3, "M");
 
-                }
+                ps2.setInt(4, idConfigAgenda);
+
+                ps2.execute();
 
             }
             //SE FOR TURNO ÚNICO - FINAL
@@ -332,8 +342,7 @@ public class ConfigAgendaDAO {
                 rs = ps.executeQuery();
             }
             retorno = true;
-        } catch (
-                SQLException ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -351,11 +360,14 @@ public class ConfigAgendaDAO {
             throws ProjetoException {
 
         List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
-        String sql = "SELECT c.id_configagenda, c.codmedico, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, " +
+
+        String sql = "SELECT c.id_configagenda, c.codmedico, d.dia, c.qtdmax, d.data_especifica, d.turno, c.mes, c.ano, " +
                 "f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao " +
-                "FROM hosp.config_agenda c " +
-                "left join acl.funcionarios f on (c.codmedico = f.id_funcionario) " +
-                "where c.codmedico = ? AND c.cod_empresa = ? ";
+                "FROM hosp.config_agenda_profissional c " +
+                "LEFT JOIN hosp.config_agenda_profissional_dias d ON (c.id_configagenda = d.id_config_agenda_profissional) " +
+                "LEFT JOIN acl.funcionarios f ON (c.codmedico = f.id_funcionario) " +
+                "WHERE c.codmedico = ? AND c.cod_empresa = ?";
+
 
         if (config != null) {
             if (config.getAno() != null) {
@@ -365,7 +377,7 @@ public class ConfigAgendaDAO {
             }
             if (config.getTurno() != null) {
                 if (!config.getTurno().equals("")) {
-                    sql = sql + " and c.turno = ?";
+                    sql = sql + " and d.turno = ?";
                 }
             }
             if (config.getMes() != null) {
@@ -383,7 +395,7 @@ public class ConfigAgendaDAO {
             int i = 1;
 
             stm.setLong(i, codmedico);
-            i = i+1;
+            i = i + 1;
             stm.setInt(i, user_session.getEmpresa().getCodEmpresa());
 
             if (config != null) {
@@ -474,7 +486,7 @@ public class ConfigAgendaDAO {
             int i = 1;
 
             stm.setInt(i, codequipe);
-            stm.setInt(i+1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(i + 1, user_session.getEmpresa().getCodEmpresa());
 
             if (config != null) {
                 if (config.getAno() != null) {
@@ -573,11 +585,14 @@ public class ConfigAgendaDAO {
             throws ProjetoException {
 
         List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
-        String sql = "SELECT c.id_configagenda, c.codmedico, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, " +
+
+        String sql = "SELECT c.id_configagenda, c.codmedico, d.dia, c.qtdmax, d.dia, d.turno, c.mes, c.ano, " +
                 "f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao " +
-                "FROM hosp.config_agenda c " +
-                "left join acl.funcionarios f on (c.codmedico = f.id_funcionario) " +
-                "where c.codmedico = ? ";
+                "FROM hosp.config_agenda_profissional c " +
+                "LEFT JOIN hosp.config_agenda_profissional_dias d ON (c.id_configagenda = d.id_config_agenda_profissional) " +
+                "LEFT JOIN acl.funcionarios f ON (c.codmedico = f.id_funcionario) " +
+                "WHERE c.codmedico = ?";
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -646,11 +661,14 @@ public class ConfigAgendaDAO {
             throws ProjetoException {
 
         ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
-        String sql = "SELECT c.id_configagenda, c.codmedico, c.diasemana, c.qtdmax, c.dataagenda, c.turno, c.mes, c.ano, c.opcao, " +
+
+
+        String sql = "SELECT c.id_configagenda, c.codmedico, d.dia, c.qtdmax, d.dia, d.turno, c.mes, c.ano, " +
                 "f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao " +
-                "FROM hosp.config_agenda c " +
-                "left join acl.funcionarios f on (c.codmedico = f.id_funcionario) "
-                + "where id_configagenda = ? order by id_configagenda ";
+                "FROM hosp.config_agenda_profissional c " +
+                "LEFT JOIN hosp.config_agenda_profissional_dias d ON (c.id_configagenda = d.id_config_agenda_profissional)" +
+                "LEFT JOIN acl.funcionarios f ON (c.codmedico = f.id_funcionario) " +
+                "WHERE c.codmedico = ?";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -769,11 +787,12 @@ public class ConfigAgendaDAO {
 
     public boolean excluirConfig(ConfigAgendaParte1Bean confParte1)
             throws ProjetoException {
-        String sql = "delete from hosp.config_agenda where id_configagenda = ?";
+        String sql = "delete from hosp.config_agenda_profissional where id_configagenda = ?";
         try {
             con = ConnectionFactory.getConnection();
 
             excluirTabelaTipoAgenda(confParte1.getIdConfiAgenda(), con);
+            excluirTabelaDiasProfissional(confParte1.getIdConfiAgenda(), con);
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setLong(1, confParte1.getIdConfiAgenda());
@@ -817,6 +836,26 @@ public class ConfigAgendaDAO {
     public void excluirTabelaTipoAgenda(int id, Connection con) {
 
         String sql = "delete from hosp.tipo_atend_agenda where codconfigagenda = ?";
+        try {
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setLong(1, id);
+            stmt.execute();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public void excluirTabelaDiasProfissional(int id, Connection con) {
+
+        String sql = "delete from hosp.config_agenda_profissional_dias where id_config_agenda_profissional = ?";
         try {
 
             PreparedStatement stmt = con.prepareStatement(sql);

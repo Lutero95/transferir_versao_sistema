@@ -58,7 +58,7 @@
                     </b:column>
 
                     <b:column span="4">
-                        <p:selectOneRadio value="#{ConfigAgendaController.opcao}">
+                        <p:selectOneRadio value="#{ConfigAgendaController.confParte1.opcao}">
                             <f:selectItem itemLabel="Data Específica" itemValue="1"/>
                             <f:selectItem itemLabel="Dias Semana" itemValue="2"/>
                             <p:ajax update="panelDias, panelData, panelMesAno" event="change"/>
@@ -73,12 +73,12 @@
 
                         <b:column span="2">
                             <h:outputLabel value="Dia: "
-                                           rendered="#{ConfigAgendaController.opcao==2}"/>
+                                           rendered="#{ConfigAgendaController.confParte1.opcao==2}"/>
                         </b:column>
 
                         <b:column span="4">
                             <p:selectOneMenu style="width:100px"
-                                             rendered="#{ConfigAgendaController.opcao==2}" required="true"
+                                             rendered="#{ConfigAgendaController.confParte1.opcao==2}" required="true"
                                              requiredMessage="Informe algum dia."
                                              value="#{ConfigAgendaController.confParte1.diaDaSemana}">
                                 <f:selectItem itemLabel="Selecione" itemValue=""/>
@@ -102,13 +102,13 @@
 
                         <b:column span="2">
                             <h:outputLabel value="Data Específica: "
-                                           rendered="#{ConfigAgendaController.opcao==1}"/>
+                                           rendered="#{ConfigAgendaController.confParte1.opcao==1}"/>
                         </b:column>
 
                         <b:column span="4">
                             <p:calendar locale="pt" navigator="true" mask="true"
                                         required="true" requiredMessage="Informe a data específica."
-                                        pattern="dd/MM/yyyy" rendered="#{ConfigAgendaController.opcao==1}"
+                                        pattern="dd/MM/yyyy" rendered="#{ConfigAgendaController.confParte1.opcao==1}"
                                         value="#{ConfigAgendaController.confParte1.dataEspecifica}"/>
                         </b:column>
                     </p:outputPanel>
@@ -121,12 +121,12 @@
 
                         <b:column span="2">
                             <h:outputLabel value="Mês: "
-                                           rendered="#{ConfigAgendaController.opcao==2}"/>
+                                           rendered="#{ConfigAgendaController.confParte1.opcao==2}"/>
                         </b:column>
 
                         <b:column span="4">
                             <p:selectOneMenu style="width:120px"
-                                             rendered="#{ConfigAgendaController.opcao==2}"
+                                             rendered="#{ConfigAgendaController.confParte1.opcao==2}"
                                              value="#{ConfigAgendaController.confParte1.mes}">
                                 <f:selectItem itemLabel="Janeiro" itemValue="1"/>
                                 <f:selectItem itemLabel="Fevereiro" itemValue="2"/>
@@ -145,12 +145,12 @@
 
                         <b:column span="2">
                             <h:outputLabel value="Ano: "
-                                           rendered="#{ConfigAgendaController.opcao==2}"/>
+                                           rendered="#{ConfigAgendaController.confParte1.opcao==2}"/>
                         </b:column>
 
                         <b:column span="4">
                             <h:inputText value="#{ConfigAgendaController.confParte1.ano}"
-                                         rendered="#{ConfigAgendaController.opcao==2}"/>
+                                         rendered="#{ConfigAgendaController.confParte1.opcao==2}"/>
                         </b:column>
 
                     </p:outputPanel>

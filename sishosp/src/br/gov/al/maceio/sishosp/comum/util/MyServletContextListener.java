@@ -7,7 +7,6 @@ public class MyServletContextListener implements ServletContextListener {
 	}
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-		System.out.println("iniciou sem zero ");
 		System.getProperties().put("org.apache.el.parser.COERCE_TO_ZERO", "false");
 	}
 }

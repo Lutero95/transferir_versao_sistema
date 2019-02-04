@@ -56,7 +56,6 @@ public class ConfigAgendaController implements Serializable {
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "configuracaoAgenda?faces-redirect=true";
     private static final String ENDERECO_CADASTRO_EQUIPE = "configuracaoAgendaEquipe?faces-redirect=true";
-    private static final String ENDERECO_EDITAR = "editarConfAgenda?faces-redirect=true";
     private static final String ENDERECO_EDITAR_EQUIPE = "editarConfAgendaEquipe?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;codconfigagenda=";
@@ -89,11 +88,11 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public String redirectEdit() {
-        return RedirecionarUtil.redirectEdit(ENDERECO_EDITAR, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
     }
 
     public String redirectInsert() {
-        return RedirecionarUtil.redirectPagina(ENDERECO_CADASTRO);
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
     }
 
     public String redirectInsertEquipe() {
@@ -298,7 +297,7 @@ public class ConfigAgendaController implements Serializable {
         }
 
 
-        cadastrou = cDao.gravarTurnoInicio(confParte1, listaTipos);
+        cadastrou = cDao.gravarConfiguracaoAgendaProfissionalInicio(confParte1, listaTipos);
 
 
         if (cadastrou) {
@@ -564,58 +563,6 @@ public class ConfigAgendaController implements Serializable {
 
     public void setListaTipoAtendimentosGrupo(List<TipoAtendimentoBean> listaTipoAtendimentosGrupo) {
         this.listaTipoAtendimentosGrupo = listaTipoAtendimentosGrupo;
-    }
-
-    public ConfigAgendaDAO getcDao() {
-        return cDao;
-    }
-
-    public void setcDao(ConfigAgendaDAO cDao) {
-        this.cDao = cDao;
-    }
-
-    public FuncionarioDAO getfDao() {
-        return fDao;
-    }
-
-    public void setfDao(FuncionarioDAO fDao) {
-        this.fDao = fDao;
-    }
-
-    public EquipeDAO geteDao() {
-        return eDao;
-    }
-
-    public void seteDao(EquipeDAO eDao) {
-        this.eDao = eDao;
-    }
-
-    public static long getSerialversionuid() {
-        return serialVersionUID;
-    }
-
-    public static String getEnderecoCadastro() {
-        return ENDERECO_CADASTRO;
-    }
-
-    public static String getEnderecoCadastroEquipe() {
-        return ENDERECO_CADASTRO_EQUIPE;
-    }
-
-    public static String getEnderecoEditar() {
-        return ENDERECO_EDITAR;
-    }
-
-    public static String getEnderecoEditarEquipe() {
-        return ENDERECO_EDITAR_EQUIPE;
-    }
-
-    public static String getEnderecoTipo() {
-        return ENDERECO_TIPO;
-    }
-
-    public static String getEnderecoId() {
-        return ENDERECO_ID;
     }
 
 }
