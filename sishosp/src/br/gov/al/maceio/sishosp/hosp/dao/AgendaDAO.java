@@ -544,6 +544,43 @@ public class AgendaDAO {
         return lista;
     }
 
+    public int verQtdMaxAgendaGeral(AgendaBean agenda) throws ProjetoException {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(agenda.getDataAtendimento());
+        int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
+        int qtdMax = 0;
+        String sqlPro = "select qtdmax from hosp.config_agenda where codmedico = ? and diasemana = ? and turno = ?";
+        String sqlEqui = "select qtdmax from hosp.config_agenda_equipe where codequipe = ? and diasemana = ? and turno = ?";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = null;
+            if (agenda.getProfissional().getId() != null) {
+                stm = con.prepareStatement(sqlPro);
+                stm.setLong(1, agenda.getProfissional().getId());
+            } else if (agenda.getEquipe().getCodEquipe() != null) {
+                stm = con.prepareStatement(sqlEqui);
+                stm.setInt(1, agenda.getEquipe().getCodEquipe());
+            }
+            stm.setInt(2, diaSemana);
+            stm.setString(3, agenda.getTurno().toUpperCase());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                qtdMax = rs.getInt("qtdmax");
+            }
+            return qtdMax;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
     public int verQtdMaxAgendaEspec(AgendaBean agenda) throws ProjetoException {
         Calendar cal = Calendar.getInstance();
         cal.setTime(agenda.getDataAtendimento());

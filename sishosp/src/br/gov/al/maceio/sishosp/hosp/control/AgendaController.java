@@ -145,8 +145,8 @@ public class AgendaController implements Serializable {
                 this.agenda.setQtd(aDao.verQtdAgendadosEspec(this.agenda));
             } else {
                 listarAgendamentosData();
-                this.agenda.setMax(0);
-                this.agenda.setQtd(0);
+                this.agenda.setMax(aDao.verQtdMaxAgendaGeral(this.agenda));
+                this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
             }
         }
     }
@@ -163,13 +163,20 @@ public class AgendaController implements Serializable {
                 .getEquipe() == null)) {
             JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
         } else {
+        	if (agenda.getMax()==0) {
+        		
+        		JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");	
+        	}
+        	else
             if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
                 addListaNovosAgendamentos();
+                agendamentosConfirmados = true;
             }
             if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
                 verAgendaIntervalo();
+                agendamentosConfirmados = true;
             }
-            agendamentosConfirmados = true;
+            
         }
     }
 
