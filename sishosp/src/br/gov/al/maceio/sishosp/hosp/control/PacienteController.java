@@ -119,6 +119,12 @@ public class PacienteController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
             this.paciente = pDao.listarPacientePorID(id);
+            escolaridadeSuggestion = paciente.getEscolaridade();
+            escolaSuggestion = paciente.getEscola();
+            profissaoSuggestion = paciente.getProfissao();
+            encaminhadoSuggestion = paciente.getEncaminhado();
+            encaminhadoSuggestion = paciente.getEncaminhado();
+            transporteSuggestion = paciente.getFormatransporte();
             if (paciente.getEndereco().getCep() != null) {
                 cidadeDoCep = true;
             }
