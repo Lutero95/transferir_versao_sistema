@@ -1,87 +1,84 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-    <ui:composition template="../../template/templateacl.xhtml">
-        
-        <ui:define name="head">
-            <link rel="StyleSheet" type="text/css" href="../../css/picklist.css" />
-        </ui:define>
-        
-        <ui:define name="body">
 
-            <h:form id="form" onkeypress="
+	<ui:define name="content">
+
+		<h:form id="form"
+			onkeypress="
                 if (event.keyCode == 13) {
                     document.getElementById('form:botaoBusca').click();
                     return false;
-                }">                
-                
-                <p:growl id="growl" showDetail="false" />
-                
-                <p:panel id="pnlprincipal" header="Gerenciar Perfis">
-                    <p:panelGrid columns="4" styleClass="semBorda">
-                        
-                        <p:commandButton value="Novo Perfil" icon="ui-icon-plus" 
-                            style="margin-top:4px; margin-bottom:10px;" 
-                            actionListener="#{perfilMB.limparDados()}" 
-                            action="#{perfilMB.limparDualCad()}" 
-                            onclick="PF('dlgCadPerfil').show();" 
-                            update=":formCP:pnlCP" />
-                                               
-                        <h:inputText id="campoBusca" value="#{perfilMB.descPerfilBusca}" 
-                            style="margin-top:-6px;" maxlength="10" required="false" 
-                            requiredMessage="Infome a descrição para realizar uma busca.">
-                            <p:watermark value="Informe a descrição." for="campoBusca" />
-                        </h:inputText>
+                }">
 
-                        <p:commandButton id="botaoBusca" icon="ui-icon-search" 
-                            style="height:28px; margin-top:-6px; margin-left:-20px;" 
-                            actionListener="#{perfilMB.buscarPerfil()}" 
-                            update=":form:tabela, :form:growl" />
-                        
-                        <p:commandButton value="Limpar" icon="ui-icon-minus" 
-                            style="height:28px; margin-top:-6px;" 
-                            actionListener="#{perfilMB.limparBusca()}" 
-                            update=":form:campoBusca, :form:tabela" />
-                    </p:panelGrid>
+			<p:growl id="growl" showDetail="false" />
 
-                    <p:dataTable id="tabela" value="#{perfilMB.listaPerfil}" var="tab" 
-                        paginator="true" paginatorPosition="bottom" rows="15" 
-                        emptyMessage="Nenhum dado encontrado.">
-                        
-                        <p:column headerText="Descrição" style="text-align:left;">
-                            <p:outputLabel value="#{tab.descricao}" />
-                        </p:column>
-                        
-                        <p:column headerText="Ações" width="6%">
-                            <center>
-                                <p:commandButton icon="ui-icon-pencil"  
-                                    actionListener="#{perfilMB.limparDados()}"
-                                    action="#{perfilMB.limparDualEdit()}"
-                                    onclick="PF('dlgAltPerfil').show()" 
-                                    update=":formAP:pnlAP">
+			<p:panel id="pnlprincipal" header="Gerenciar Perfis">
+				<p:panelGrid columns="4" styleClass="semBorda">
 
-                                    <f:setPropertyActionListener value="#{tab}" target="#{perfilMB.perfil}" />
-                                    <f:setPropertyActionListener value="#{tab.id}" target="#{perfilMB.perfilSelecionado}" />
-                                </p:commandButton>
+					<p:commandButton value="Novo Perfil" icon="ui-icon-plus"
+						style="margin-top:4px; margin-bottom:10px;"
+						actionListener="#{perfilMB.limparDados()}"
+						action="#{perfilMB.limparDualCad()}"
+						onclick="PF('dlgCadPerfil').show();" update=":formCP:pnlCP" />
 
-                                <p:commandButton icon="ui-icon-trash" 
-                                    onclick="PF('dlgExcPerfil').show()">
+					<h:inputText id="campoBusca" value="#{perfilMB.descPerfilBusca}"
+						style="margin-top:-6px;" maxlength="10" required="false"
+						requiredMessage="Infome a descrição para realizar uma busca.">
+						<p:watermark value="Informe a descrição." for="campoBusca" />
+					</h:inputText>
 
-                                    <f:setPropertyActionListener value="#{tab}" target="#{perfilMB.perfil}" />
-                                </p:commandButton>  
-                            </center>
-                        </p:column>
-                    </p:dataTable>
-                </p:panel>
-            </h:form>
+					<p:commandButton id="botaoBusca" icon="ui-icon-search"
+						style="height:28px; margin-top:-6px; margin-left:-20px;"
+						actionListener="#{perfilMB.buscarPerfil()}"
+						update=":form:tabela, :form:growl" />
 
-            <p:dialog responsive="true"    widgetVar="dlgCadPerfil" resizable="false" modal="true"
-			header="Cadastrar Perfil" width="970px" height="510px">
+					<p:commandButton value="Limpar" icon="ui-icon-minus"
+						style="height:28px; margin-top:-6px;"
+						actionListener="#{perfilMB.limparBusca()}"
+						update=":form:campoBusca, :form:tabela" />
+				</p:panelGrid>
+
+				<p:dataTable id="tabela" value="#{perfilMB.listaPerfil}" var="tab"
+					paginator="true" paginatorPosition="bottom" rows="15"
+					emptyMessage="Nenhum dado encontrado.">
+
+					<p:column headerText="Descrição" style="text-align:left;">
+						<p:outputLabel value="#{tab.descricao}" />
+					</p:column>
+
+					<p:column headerText="Ações" width="6%">
+						<center>
+							<p:commandButton icon="ui-icon-pencil"
+								actionListener="#{perfilMB.limparDados()}"
+								action="#{perfilMB.limparDualEdit()}"
+								onclick="PF('dlgAltPerfil').show()" update=":formAP:pnlAP">
+
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{perfilMB.perfil}" />
+								<f:setPropertyActionListener value="#{tab.id}"
+									target="#{perfilMB.perfilSelecionado}" />
+							</p:commandButton>
+
+							<p:commandButton icon="ui-icon-trash"
+								onclick="PF('dlgExcPerfil').show()">
+
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{perfilMB.perfil}" />
+							</p:commandButton>
+						</center>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+
+		<p:dialog responsive="true" widgetVar="dlgCadPerfil" resizable="false"
+			modal="true" header="Cadastrar Perfil" width="970px" height="510px">
 
 			<h:form id="formCP" style="font-size:12px;">
 				<p:panel id="pnlCP">
@@ -90,7 +87,7 @@
 						style="margin-top:3px; margin-bottom:10px;">
 						<p:row>
 							<p:column>
-								<p:outputLabel value="Descrição: ">									
+								<p:outputLabel value="Descrição: ">
 								</p:outputLabel>
 							</p:column>
 
@@ -181,9 +178,9 @@
 				</p:panel>
 			</h:form>
 		</p:dialog>
-            
-           <p:dialog responsive="true"    widgetVar="dlgAltPerfil" resizable="false" modal="true"
-			header="Alterar Perfil" width="970px" height="510px">
+
+		<p:dialog responsive="true" widgetVar="dlgAltPerfil" resizable="false"
+			modal="true" header="Alterar Perfil" width="970px" height="510px">
 
 			<h:form id="formAP">
 				<p:panel id="pnlAP">
@@ -270,7 +267,8 @@
 
 					<center>
 
-						<p:panelGrid columns="3" styleClass="semBorda" style="margin-top: 5px">
+						<p:panelGrid columns="3" styleClass="semBorda"
+							style="margin-top: 5px">
 							<p:commandButton value="Gravar" icon="ui-icon-check"
 								style="width:100px;"
 								actionListener="#{perfilMB.alterarPerfil()}"
@@ -284,61 +282,62 @@
 				</p:panel>
 			</h:form>
 		</p:dialog>
-            
-            <p:dialog widgetVar="dlgMenuPreview" resizable="false"
-                modal="true" header="Menu Preview" width="800px" height="320px">
-                    
-                <h:form id="formMPW">                   
-                    <p:panel id="pnlMPW" style="height: 320px;">
-                        
-                        <p:outputPanel autoUpdate="true">
-                            <center>
-                                <p:panelGrid columns="1" styleClass="semBorda">
-                                    <p:outputLabel value="Sistema: #{perfilMB.sisPreMenu.descricao}" 
-                                        style="font-size:16px !important; font-weight:bold !important;" />
-                                </p:panelGrid>
-                            </center>
-                                                        
-                            <p:menubar styleClass="menu" model="#{perfilMB.menuModelPreview}" />
-                            
-                        </p:outputPanel>
-                        
-                        <center>                           
-                            <p:separator style="margin-top:170px;" />
-                            
-                            <p:commandButton value="Fechar" icon="ui-icon-close" 
-                                style="width:100px;" onclick="PF('dlgMenuPreview').hide();" 
-                                process="@this" />
-                        </center>
-                    </p:panel>
-                </h:form>
-            </p:dialog>
-            
-            <p:dialog widgetVar="dlgExcPerfil" resizable="false"
-                modal="true" header="Excluir Perfil" width="400px" height="auto">
-                    
-                <h:form id="formCEP">                   
-                    <p:panel id="pnlCEP">
-                        <center>
-                            <p:panelGrid columns="1" styleClass="semBorda">
-                                <p:outputLabel value="Deseja realmente excluir o perfil selecionado?" />
-                            </p:panelGrid>
-                            
-                            <p:separator />
-                            
-                            <p:panelGrid columns="2" styleClass="semBorda">
-                                <p:commandButton value="Sim" icon="ui-icon-check" 
-                                    style="width:100px;" actionListener="#{perfilMB.excluirPerfil()}" 
-                                    update=":form:tabela, :form:growl" />
-                                
-                                <p:commandButton value="Não" icon="ui-icon-close" 
-                                    style="width:100px;" onclick="PF('dlgExcPerfil').hide();" 
-                                    process="@this" />
-                            </p:panelGrid>                           
-                        </center>
-                    </p:panel>
-                </h:form>
-            </p:dialog>
-        </ui:define>
-    </ui:composition>
-</html>
+
+		<p:dialog widgetVar="dlgMenuPreview" resizable="false" modal="true"
+			header="Menu Preview" width="800px" height="320px">
+
+			<h:form id="formMPW">
+				<p:panel id="pnlMPW" style="height: 320px;">
+
+					<p:outputPanel autoUpdate="true">
+						<center>
+							<p:panelGrid columns="1" styleClass="semBorda">
+								<p:outputLabel value="Sistema: #{perfilMB.sisPreMenu.descricao}"
+									style="font-size:16px !important; font-weight:bold !important;" />
+							</p:panelGrid>
+						</center>
+
+						<p:menubar styleClass="menu" model="#{perfilMB.menuModelPreview}" />
+
+					</p:outputPanel>
+
+					<center>
+						<p:separator style="margin-top:170px;" />
+
+						<p:commandButton value="Fechar" icon="ui-icon-close"
+							style="width:100px;" onclick="PF('dlgMenuPreview').hide();"
+							process="@this" />
+					</center>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="dlgExcPerfil" resizable="false" modal="true"
+			header="Excluir Perfil" width="400px" height="auto">
+
+			<h:form id="formCEP">
+				<p:panel id="pnlCEP">
+					<center>
+						<p:panelGrid columns="1" styleClass="semBorda">
+							<p:outputLabel
+								value="Deseja realmente excluir o perfil selecionado?" />
+						</p:panelGrid>
+
+						<p:separator />
+
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:commandButton value="Sim" icon="ui-icon-check"
+								style="width:100px;"
+								actionListener="#{perfilMB.excluirPerfil()}"
+								update=":form:tabela, :form:growl" />
+
+							<p:commandButton value="Não" icon="ui-icon-close"
+								style="width:100px;" onclick="PF('dlgExcPerfil').hide();"
+								process="@this" />
+						</p:panelGrid>
+					</center>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

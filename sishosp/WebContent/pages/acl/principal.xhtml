@@ -1,16 +1,14 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:ui="http://java.sun.com/jsf/facelets">
-    
-    <ui:composition template="../../template/templateacl.xhtml">
-        
-        <ui:define name="body">
-            
-            <!--<div class="row" style="margin-top:20px;">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<!--<div class="row" style="margin-top:20px;">
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
@@ -103,115 +101,116 @@
                     </div>
                 </div>                
             </div>-->
-  
-            <h:form>                
-                <p:panel header="FUNÇÕES E MENUS DOS SISTEMAS">
-                    
-                    <p:panelGrid columns="10" styleClass="semBorda" style="margin-bottom:6px;">
-                        <p:outputLabel value="Exibir: " style="padding-top:5px;" />
-                        <p:selectOneMenu disabled="true">
-                            <f:selectItem itemLabel="Todos" itemValue="todos" />                           
-                            <f:selectItem itemLabel="Função" itemValue="funcao" />                           
-                            <f:selectItem itemLabel="Menu Item" itemValue="menuItem" />
-                            <f:selectItem itemLabel="Menu Pai" itemValue="menuPai" />
-                            <f:selectItem itemLabel="Submenu" itemValue="submenu" />                           
-                        </p:selectOneMenu>
-                        
-                        <p:outputLabel value="Status: " style="padding-top:5px;" />
-                        <p:selectOneMenu disabled="true">
-                            <f:selectItem itemLabel="Todos" itemValue="todos" />
-                            <f:selectItem itemLabel="Ativo" itemValue="true" />
-                            <f:selectItem itemLabel="Inativo" itemValue="false" />
-                        </p:selectOneMenu>
-                        
-                        <p:outputLabel value="Sistema: " style="padding-top:5px;" />
-                        <p:selectOneMenu disabled="true">
-                            <f:selectItem itemLabel="Todos" itemValue="todos" />
-                            <f:selectItems value="#{sistemaMB.listaSistemas}" var="sis" 
-                                itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
-                        </p:selectOneMenu>
-                        
-                        <h:inputText id="campoFiltro"   disabled="true">
-                            <p:watermark for="campoFiltro" value="Informe a descrição..." />
-                        </h:inputText>
-                        
-                        <p:commandButton value="Filtrar" icon="ui-icon-check" style="width:100px;" 
-                            disabled="true" />
-                        
-                        <p:commandButton value="Limpar" icon="ui-icon-minus" style="width:100px;" 
-                            disabled="true" />
-                    </p:panelGrid>
-                    
-                    <p:dataTable value="#{MBFuncionarios.permsUsuarioLogado}" paginator="true" 
-                        paginatorPosition="bottom" rows="15" var="tab">
 
-                        <p:column headerText="ID" width="5%">
-                            <p:outputLabel value="#{tab.idPermissao}" />
-                        </p:column>
+		<h:form>
+			<p:panel header="FUNÇÕES E MENUS DOS SISTEMAS">
 
-                        <p:column headerText="DESCRIÇÃO">
-                            <p:outputLabel value="#{tab.descPermissao}" />
-                        </p:column>
-                        
-                        <p:column headerText="TIPO">
-                            <p:outputLabel value="#{tab.menu.tipo}" />                    
-                        </p:column>
-                        
-                        <p:column headerText="URL">
-                            <p:outputLabel value="#{tab.menu.url}" />                    
-                        </p:column>
-                        
-                        <p:column headerText="CÓDIGO">
-                            <p:outputLabel value="#{tab.codigoFuncao}" />                    
-                        </p:column>
+				<p:panelGrid columns="10" styleClass="semBorda"
+					style="margin-bottom:6px;">
+					<p:outputLabel value="Exibir: " style="padding-top:5px;" />
+					<p:selectOneMenu disabled="true">
+						<f:selectItem itemLabel="Todos" itemValue="todos" />
+						<f:selectItem itemLabel="Função" itemValue="funcao" />
+						<f:selectItem itemLabel="Menu Item" itemValue="menuItem" />
+						<f:selectItem itemLabel="Menu Pai" itemValue="menuPai" />
+						<f:selectItem itemLabel="Submenu" itemValue="submenu" />
+					</p:selectOneMenu>
 
-                        <p:column headerText="SISTEMA">
-                            <p:outputLabel value="#{tab.descSistema}" />                    
-                        </p:column>
+					<p:outputLabel value="Status: " style="padding-top:5px;" />
+					<p:selectOneMenu disabled="true">
+						<f:selectItem itemLabel="Todos" itemValue="todos" />
+						<f:selectItem itemLabel="Ativo" itemValue="true" />
+						<f:selectItem itemLabel="Inativo" itemValue="false" />
+					</p:selectOneMenu>
 
-                        <p:column headerText="DESCRIÇÃO ROTINA">
-                            <p:outputLabel value="#{tab.descRotina}" />                    
-                        </p:column>
-                        
-                        <p:column headerText="ATIVO(A)" width="5%">
-                            <center>
-                                <p:graphicImage value="#{MBFuncionarios.verificarBolTab(tab.menu.ativo, tab.menu.tipo)}" />
-                            </center>
-                        </p:column>
-                    </p:dataTable>
-                    
-                    <br />
-                
-                    <h:form>
-                        <p:commandButton value="Clique e descubra..." 
-                            rendered="#{MBFuncionarios.verificarPermComp('FC-21', MBFuncionarios.sistemaLogado.id) == true}" 
-                            onclick="PF('dlgEE').show();" />        
-                    </h:form>
-                </p:panel>              
-                
-                <p:dialog header="Easter Egg" widgetVar="dlgEE" draggable="false" 
-                    resizable="false" modal="true" width="auto">
+					<p:outputLabel value="Sistema: " style="padding-top:5px;" />
+					<p:selectOneMenu disabled="true">
+						<f:selectItem itemLabel="Todos" itemValue="todos" />
+						<f:selectItems value="#{sistemaMB.listaSistemas}" var="sis"
+							itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
+					</p:selectOneMenu>
 
-                    <h:form id="formEE">
-                        <p:panel id="pnlEE">
+					<h:inputText id="campoFiltro" disabled="true">
+						<p:watermark for="campoFiltro" value="Informe a descrição..." />
+					</h:inputText>
 
-                            <p:graphicImage value="../../imgs/bp.jpg" />
-                            
-                            <center>
-                                <p:separator />
+					<p:commandButton value="Filtrar" icon="ui-icon-check"
+						style="width:100px;" disabled="true" />
 
-                                <p:panelGrid columns="2" styleClass="semBorda">
-                                    <p:commandButton value="Fechar" icon="ui-icon-close" 
-                                        style="width:100px;" onclick="PF('dlgEE').hide();" 
-                                        process="@this" />
-                                </p:panelGrid>                           
-                            </center>
-                        </p:panel>
-                    </h:form>
-                </p:dialog>
-                
-            </h:form>
-                    
-        </ui:define>
-    </ui:composition>
-</html>
+					<p:commandButton value="Limpar" icon="ui-icon-minus"
+						style="width:100px;" disabled="true" />
+				</p:panelGrid>
+
+				<p:dataTable value="#{MBFuncionarios.permsUsuarioLogado}"
+					paginator="true" paginatorPosition="bottom" rows="15" var="tab">
+
+					<p:column headerText="ID" width="5%">
+						<p:outputLabel value="#{tab.idPermissao}" />
+					</p:column>
+
+					<p:column headerText="DESCRIÇÃO">
+						<p:outputLabel value="#{tab.descPermissao}" />
+					</p:column>
+
+					<p:column headerText="TIPO">
+						<p:outputLabel value="#{tab.menu.tipo}" />
+					</p:column>
+
+					<p:column headerText="URL">
+						<p:outputLabel value="#{tab.menu.url}" />
+					</p:column>
+
+					<p:column headerText="CÓDIGO">
+						<p:outputLabel value="#{tab.codigoFuncao}" />
+					</p:column>
+
+					<p:column headerText="SISTEMA">
+						<p:outputLabel value="#{tab.descSistema}" />
+					</p:column>
+
+					<p:column headerText="DESCRIÇÃO ROTINA">
+						<p:outputLabel value="#{tab.descRotina}" />
+					</p:column>
+
+					<p:column headerText="ATIVO(A)" width="5%">
+						<center>
+							<p:graphicImage
+								value="#{MBFuncionarios.verificarBolTab(tab.menu.ativo, tab.menu.tipo)}" />
+						</center>
+					</p:column>
+				</p:dataTable>
+
+				<br />
+
+				<h:form>
+					<p:commandButton value="Clique e descubra..."
+						rendered="#{MBFuncionarios.verificarPermComp('FC-21', MBFuncionarios.sistemaLogado.id) == true}"
+						onclick="PF('dlgEE').show();" />
+				</h:form>
+			</p:panel>
+
+			<p:dialog header="Easter Egg" widgetVar="dlgEE" draggable="false"
+				resizable="false" modal="true" width="auto">
+
+				<h:form id="formEE">
+					<p:panel id="pnlEE">
+
+						<p:graphicImage value="../../imgs/bp.jpg" />
+
+						<center>
+							<p:separator />
+
+							<p:panelGrid columns="2" styleClass="semBorda">
+								<p:commandButton value="Fechar" icon="ui-icon-close"
+									style="width:100px;" onclick="PF('dlgEE').hide();"
+									process="@this" />
+							</p:panelGrid>
+						</center>
+					</p:panel>
+				</h:form>
+			</p:dialog>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

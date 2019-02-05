@@ -1,102 +1,97 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:b="http://bootsfaces.net/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-<ui:composition template="../../template/template.xhtml">
+	<ui:define name="content">
 
-    <ui:define name="body">
-        <div class="panel-body">
-            <div class="sub-header">
-                <h4>Gerenciamento de Profissão</h4>
-                <hr/>
-            </div>
-            <h:form id="frmPrincipal">
-                <b:commandButton id="btninc" value="Novo" size="sm"
-                                 action="#{ProfissaoController.redirectInsert()}"
-                                 icon="glyphicon-plus" look="primary">
-                    <f:setPropertyActionListener value="1"
-                                                 target="#{ProfissaoController.tipo}"/>
-                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
-                </b:commandButton>
-                <br/>
-                <br/>
+		<div class="panel-body">
+			<div class="sub-header">
+				<h4>Gerenciamento de Profissão</h4>
+				<hr />
+			</div>
+			<h:form id="frmPrincipal">
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{ProfissaoController.redirectInsert()}"
+					icon="glyphicon-plus" look="primary">
+					<f:setPropertyActionListener value="1"
+						target="#{ProfissaoController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				<br />
+				<br />
 
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
+				<div align="center">
+					<b:messages value="Error" id="msgPagina"></b:messages>
+				</div>
 
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-                             value="#{ProfissaoController.listarProfissoes()}">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
+					var="tab" value="#{ProfissaoController.listarProfissoes()}">
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Descrição
                         </f:facet>
 
-                        <h:outputText value="#{tab.descprofissao}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
+						<h:outputText value="#{tab.descprofissao}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
                             Ação
                         </f:facet>
 
-                        <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-                                         action="#{ProfissaoController.redirectEdit()}">
-                            <f:setPropertyActionListener value="#{tab}"
-                                                         target="#{ProfissaoController.profissao}"/>
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{ProfissaoController.redirectEdit()}">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{ProfissaoController.profissao}" />
 
-                            <f:setPropertyActionListener value="2"
-                                                         target="#{ProfissaoController.tipo}"/>
-                        </b:commandButton>
+							<f:setPropertyActionListener value="2"
+								target="#{ProfissaoController.tipo}" />
+						</b:commandButton>
 
-                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-                                         size="sm" ajax="true" style="margin-left:10px"
-                                         oncomplete="PF('dialogExclusao').show()">
+						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px"
+							oncomplete="PF('dialogExclusao').show()">
 
-                            <f:setPropertyActionListener value="#{tab}"
-                                                         target="#{ProfissaoController.profissao}"/>
-                        </b:commandButton>
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{ProfissaoController.profissao}" />
+						</b:commandButton>
 
-                    </h:column>
+					</h:column>
 
-                </b:dataTable>
-            </h:form>
-        </div>
+				</b:dataTable>
+			</h:form>
+		</div>
 
-        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
-                  resizable="false">
+		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+			resizable="false">
 
-            <h:form id="frmExcluir">
-                <h:panelGrid columns="1">
+			<h:form id="frmExcluir">
+				<h:panelGrid columns="1">
 
 
-                    <div class="alert alert-warning" role="alert">Deseja excluir
-                        esta Profissão?
-                    </div>
+					<div class="alert alert-warning" role="alert">Deseja excluir
+						esta Profissão?</div>
 
-                </h:panelGrid>
-				
-                <div align="center">
-                    <p:separator/>
-                    <b:commandButton look="success" value="Sim" style="float:left;"
-                                     action="#{ProfissaoController.excluirProfissao()}" ajax="true"
-                                     icon="glyphicon-ok" update="frmPrincipal"/>
+				</h:panelGrid>
 
-                    <b:commandButton value="Não"
-                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
-                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
+				<div align="center">
+					<p:separator />
+					<b:commandButton look="success" value="Sim" style="float:left;"
+						action="#{ProfissaoController.excluirProfissao()}" ajax="true"
+						icon="glyphicon-ok" update="frmPrincipal" />
 
-                </div>
+					<b:commandButton value="Não"
+						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
 
-            </h:form>
+				</div>
 
-        </p:dialog>
-    </ui:define>
+			</h:form>
+
+		</p:dialog>
+	</ui:define>
 </ui:composition>
-
-</html>

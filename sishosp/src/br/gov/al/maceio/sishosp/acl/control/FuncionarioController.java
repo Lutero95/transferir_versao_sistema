@@ -428,13 +428,13 @@ public class FuncionarioController implements Serializable {
                     .getSessionMap().put("expired", "S");
         } else {
             FacesContext.getCurrentInstance().getExternalContext()
-                    .redirect("/pages/comum/login.faces");
+                    .redirect("/pages/comum/newLogin.faces");
         }
     }
 
     public String logout() {
         SessionUtil.getSession().invalidate();
-        return "/pages/comum/login.faces?faces-redirect=true";
+        return "/pages/comum/newLogin.faces?faces-redirect=true";
     }
 
     // PROFISSIONAL INÍCIO

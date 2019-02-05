@@ -1,77 +1,51 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui">
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/newTemplate.xhtml">
 
-<ui:composition template="../../template/templateselecaosistemas.xhtml">
-
-	<ui:define name="body">
-
-
-
-		<h:form>
-			<p:panelGrid columns="2" styleClass="semBorda"
-				style="margin-top: 60px">
-				<h:outputText value="Usuário Online: " />
-				<h:outputText value="#{MBFuncionarios.usuarioLogado.nome}"
-					style="font-weight: bold;" />
-
-				<h:outputText value="Perfil: " />
-				<h:outputText value="#{MBFuncionarios.usuarioLogado.perfil.descricao}"
-					style="font-weight: bold;" />
-
-
-				<p:commandButton value="SAIR" icon="ui-icon-power"
-					style="width:100px !important" action="#{MBFuncionarios.logout()}" />
-
-				<h:inputHidden />
-			</p:panelGrid>
-		</h:form>
+	<ui:define name="content">
 
 		<div class="sistemas">
-			<h:form id="formSIS">
-				<p:outputPanel autoUpdate="true">
-					<ui:repeat var="sis" value="#{MBFuncionarios.sistemasUsuarioLogado}"
-						varStatus="status">
 
-						<div class="col-md-3" style="margin-top: 20px">
-							<div class="thumbnail sistemas-opc">
-								<h:commandLink
-									actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
-									action="#{MBFuncionarios.redirecionar(sis.url)}">
-									<p:graphicImage value="#{sis.imagem}" />
-								</h:commandLink>
-								<div class="panel-body">
-									<center>
-										<h:commandLink
-											actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
-											action="#{MBFuncionarios.redirecionar(sis.url)}">
-											<p:outputLabel value="#{sis.descricao}" escape="true" />
-										</h:commandLink>
-									</center>
-								</div>
-							</div>
+			<div class="row row-sistema">
 
-							<div class="thumbnail sistemas-opc-bt">
+				<h:form id="formSIS">
+					<p:outputPanel autoUpdate="true">
+						<ui:repeat var="sis"
+							value="#{MBFuncionarios.sistemasUsuarioLogado}"
+							varStatus="status">
 
-								<center>
-									<p:commandButton value="Acesse"
-										style="font-size: 20px !important;" styleClass="acesse"
+							<b:column colXs="4" colSm="4" colMd="4" colLg="3"
+								class="col img-sistemas">
+
+								<div class="thumbnail sistemas-opc fade">
+									<h:commandLink
 										actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
-										action="#{MBFuncionarios.redirecionar(sis.url)}" />
-								</center>
-							</div>
-						</div>
+										action="#{MBFuncionarios.redirecionar(sis.url)}">
+										<p:graphicImage value="#{sis.imagem}" />
+									</h:commandLink>
+									<div class="panel-body">
+										<center>
+											<h:commandLink
+												actionListener="#{MBFuncionarios.recSistemaLogado(sis)}"
+												action="#{MBFuncionarios.redirecionar(sis.url)}">
+												<p:outputLabel class="texto-descr" value="#{sis.descricao}"
+													escape="true" />
+											</h:commandLink>
+										</center>
+									</div>
+								</div>
 
-					</ui:repeat>
-				</p:outputPanel>
-			</h:form>
+							</b:column>
 
+						</ui:repeat>
+					</p:outputPanel>
+				</h:form>
+
+			</div>
 		</div>
-
 	</ui:define>
 </ui:composition>
-</html>

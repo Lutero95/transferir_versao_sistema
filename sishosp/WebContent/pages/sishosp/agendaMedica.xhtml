@@ -1,15 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:b="http://bootsfaces.net/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
 
-<ui:composition template="../../template/template.xhtml">
-
-    <ui:define name="body">
+    <ui:define name="content">
 
         <div class="panel-body">
             <div class="sub-header">
@@ -217,7 +214,7 @@
             <b:row rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
                 <b:column span="12">
                     <div align="center">
-                       <p:panel header="#{AgendaController.dataAtual}"></p:panel>
+                        <p:panel header="#{AgendaController.dataAtual}"></p:panel>
                     </div>
                     <p:dataTable id="dtDiasAtendimentoEquipe" resizableColumns="true"
                                  value="#{AgendaController.listaDiasDeAtendimentoAtuais()}" var="agend"
@@ -778,5 +775,3 @@
     </ui:define>
 
 </ui:composition>
-
-</html>
