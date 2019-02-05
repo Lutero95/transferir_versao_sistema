@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="BootsFaces-OSP-1.2.0-dist">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/sishosp/WebContent/WEB-INF/lib/BootsFaces-OSP-1.2.0-dist.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

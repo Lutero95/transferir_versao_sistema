@@ -8,7 +8,6 @@
           <element id="module-output" name="sishosp" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="BootsFaces-OSP-1.2.0-dist" />
           <element id="library" level="project" name="bootstrap-1.0.8" />
           <element id="library" level="project" name="bridj-0.7.0" />
           <element id="library" level="project" name="caelum-stella-core-2.0-beta1" />
@@ -52,6 +51,7 @@
           <element id="library" level="project" name="smoothness-1.0.10" />
           <element id="library" level="project" name="standard" />
           <element id="library" level="project" name="servlet-api" />
+          <element id="library" level="project" name="bootsfaces-1.1.2" />
         </element>
       </element>
     </root>
