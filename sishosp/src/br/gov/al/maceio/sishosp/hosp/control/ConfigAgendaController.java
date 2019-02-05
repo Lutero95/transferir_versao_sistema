@@ -112,6 +112,10 @@ public class ConfigAgendaController implements Serializable {
             tipo = Integer.parseInt(params.get("tipo"));
 
             this.confParte1 = cDao.listarHorariosPorIDProfissionalEdit(id);
+            listaTipos = cDao.listarTipoAtendimentoConfiguracaoAgenda(id);
+            if(confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())){
+                confParte1.setDiasSemana(cDao.listarDiasAtendimentoPorId(id));
+            }
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
 
@@ -164,7 +168,7 @@ public class ConfigAgendaController implements Serializable {
 
     public void removeNaLista() {
         this.listaTipos.remove(confParte2);
-
+        confParte2 = new ConfigAgendaParte2Bean();
     }
 
     public void removeNaListaEditar() {

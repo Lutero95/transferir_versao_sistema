@@ -28,7 +28,7 @@
                         <b:row>
                             <p:outputPanel id="pnlAcPro">
 
-                                <b:column span="2">
+                                <b:column>
                                     <h:outputLabel value="Profissional: "/>
                                 </b:column>
 
@@ -342,7 +342,7 @@
                                 <p:column headerText="Ação">
                                     <p:commandButton process="@this"
                                                      action="#{ConfigAgendaController.removeNaLista()}"
-                                                     icon="ui-icon-trash" update=":formConfiAgenda">
+                                                     icon="ui-icon-trash" update=":formConfiAgenda:tbview:dtConfi">
                                         <f:setPropertyActionListener value="#{tipo}"
                                                                      target="#{ConfigAgendaController.confParte2}"/>
                                     </p:commandButton>
