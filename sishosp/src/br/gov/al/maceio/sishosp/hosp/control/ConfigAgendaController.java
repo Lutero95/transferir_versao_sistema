@@ -40,7 +40,6 @@ public class ConfigAgendaController implements Serializable {
     private int tipo;
 
     private List<ConfigAgendaParte2Bean> listaTipos;
-    private List<ConfigAgendaParte2Bean> listaTiposEditar;
     private List<ConfigAgendaParte1Bean> listaHorarios;
     private List<ConfigAgendaParte1Bean> listaHorariosEquipe;
     private List<FuncionarioBean> listaProfissionais;
@@ -66,7 +65,6 @@ public class ConfigAgendaController implements Serializable {
         this.prof = new FuncionarioBean();
         this.equipe = new EquipeBean();
         this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
-        this.listaTiposEditar = new ArrayList<ConfigAgendaParte2Bean>();
         this.listaHorarios = null;
         this.listaHorariosEquipe = null;
         this.listaProfissionais = null;
@@ -80,7 +78,6 @@ public class ConfigAgendaController implements Serializable {
         this.confParte1 = new ConfigAgendaParte1Bean();
         this.confParte2 = new ConfigAgendaParte2Bean();
         this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
-        this.listaTiposEditar = new ArrayList<ConfigAgendaParte2Bean>();
         this.listaHorarios = null;
         this.listaHorariosEquipe = null;
         this.listaProfissionais = null;
@@ -153,27 +150,9 @@ public class ConfigAgendaController implements Serializable {
         this.confParte2 = new ConfigAgendaParte2Bean();
     }
 
-    public void addNaListaEditar() {
-        if (confParte2.getQtd() == null
-                || confParte2.getPrograma().getDescPrograma() == null
-                || confParte2.getGrupo().getDescGrupo() == null) {
-            this.confParte2 = new ConfigAgendaParte2Bean();
-            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
-        } else {
-            this.listaTiposEditar.add(confParte2);
-            JSFUtil.adicionarMensagemSucesso("Dados inseridos na tabela!", "Sucesso");
-        }
-        this.confParte2 = new ConfigAgendaParte2Bean();
-    }
-
     public void removeNaLista() {
         this.listaTipos.remove(confParte2);
         confParte2 = new ConfigAgendaParte2Bean();
-    }
-
-    public void removeNaListaEditar() {
-        this.listaTiposEditar.remove(confParte2);
-
     }
 
     // GRUPOBEAN
@@ -268,8 +247,8 @@ public class ConfigAgendaController implements Serializable {
 
     // FINAL EQUIPEBEAN
 
-    public void gravarConfigAgenda() throws ProjetoException, SQLException {
-        boolean cadastrou = false;
+    public void validarConfiguracoesAgendaProfissional() throws ProjetoException, SQLException {
+
         int somatorio = 0;
         for (ConfigAgendaParte2Bean conf : listaTipos) {
             somatorio += conf.getQtd();
@@ -278,7 +257,6 @@ public class ConfigAgendaController implements Serializable {
         if (confParte1.getQtdMax() != null && listaTipos.size() > 0) {
             if (somatorio != confParte1.getQtdMax()) {
                 JSFUtil.adicionarMensagemAdvertencia("Quantidade máxima está divergente!", "Advertência");
-                cadastrou = false;
                 return;
             }
         }
@@ -300,6 +278,19 @@ public class ConfigAgendaController implements Serializable {
             return;
         }
 
+        else{
+            if(tipo == 1) {
+                gravarConfigAgendaProfissional();
+            }
+            else{
+                alterarConfigAgendaProfissional();
+            }
+        }
+
+    }
+
+    public void gravarConfigAgendaProfissional() throws ProjetoException, SQLException {
+        boolean cadastrou = false;
 
         cadastrou = cDao.gravarConfiguracaoAgendaProfissionalInicio(confParte1, listaTipos);
 
@@ -312,6 +303,19 @@ public class ConfigAgendaController implements Serializable {
 
         limparDados();
         JSFUtil.atualizarComponente("formConfiAgenda");
+    }
+
+    public void alterarConfigAgendaProfissional() throws ProjetoException, SQLException {
+        boolean alterou = false;
+
+        alterou = cDao.alterarConfiguracaoAgendaProfissionalInicio(confParte1, listaTipos);
+
+        if (alterou) {
+            JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+        }
+
     }
 
     public void gravarConfigAgendaEquipe() {
@@ -331,37 +335,6 @@ public class ConfigAgendaController implements Serializable {
         }
 
         limparDados();
-    }
-
-    public void alterarConfigAgenda() {
-        boolean alterou = false;
-
-        //SEM USO POR ENQUANTO
-        /*
-        int somatorio = 0;
-
-        for (ConfigAgendaParte2Bean conf : listaTiposEditar) {
-            somatorio += conf.getQtd();
-        }
-
-
-        if (confParte1.getQtdMax() != null) {
-            if (somatorio != confParte1.getQtdMax()) {
-                JSFUtil.adicionarMensagemAdvertencia("Quantidade máxima está divergente!", "Advertência");
-                alterou = false;
-                return;
-            }
-        }
-        */
-
-        alterou = cDao.alterarTurno(confParte1, listaTiposEditar);
-
-        if (alterou) {
-            JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
-        } else {
-            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
-        }
-
     }
 
     public void alterarConfigAgendaEquipe() throws SQLException,
@@ -526,15 +499,6 @@ public class ConfigAgendaController implements Serializable {
 
     public void setListaEquipes(List<EquipeBean> listaEquipes) {
         this.listaEquipes = listaEquipes;
-    }
-
-    public List<ConfigAgendaParte2Bean> getListaTiposEditar() {
-        return listaTiposEditar;
-    }
-
-    public void setListaTiposEditar(
-            List<ConfigAgendaParte2Bean> listaTiposEditar) {
-        this.listaTiposEditar = listaTiposEditar;
     }
 
     public FuncionarioBean getProf() {
