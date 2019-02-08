@@ -178,6 +178,9 @@
                             <div align="center">
                                 <p:commandButton icon="ui-icon-pencil"
                                                  action="#{ConfigAgendaController.redirectEditEquipe()}">
+                                    <f:setPropertyActionListener value="#{prof}"
+                                                                 target="#{ConfigAgendaController.confParte1}"/>
+
                                     <f:setPropertyActionListener value="#{config}"
                                                                  target="#{ConfigAgendaController.confParte1}"/>
 

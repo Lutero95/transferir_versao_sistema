@@ -55,7 +55,6 @@ public class ConfigAgendaController implements Serializable {
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "configuracaoAgenda?faces-redirect=true";
     private static final String ENDERECO_CADASTRO_EQUIPE = "configuracaoAgendaEquipe?faces-redirect=true";
-    private static final String ENDERECO_EDITAR_EQUIPE = "editarConfAgendaEquipe?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;codconfigagenda=";
 
@@ -97,7 +96,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public String redirectEditEquipe() {
-        return RedirecionarUtil.redirectEdit(ENDERECO_EDITAR_EQUIPE, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO_EQUIPE, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
     }
 
     public void getEditAgenda() throws ProjetoException {
@@ -110,9 +109,11 @@ public class ConfigAgendaController implements Serializable {
 
             this.confParte1 = cDao.listarHorariosPorIDProfissionalEdit(id);
             listaTipos = cDao.listarTipoAtendimentoConfiguracaoAgenda(id);
+
             if(confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())){
                 confParte1.setDiasSemana(cDao.listarDiasAtendimentoPorId(id));
             }
+
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
 
@@ -129,6 +130,12 @@ public class ConfigAgendaController implements Serializable {
             tipo = Integer.parseInt(params.get("tipo"));
 
             this.confParte1 = cDao.listarHorariosPorIDEquipeEdit(id);
+            this.confParte2 = cDao.listarHorariosPorIDEquipeEditParte2(id);
+
+            if(confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())){
+                confParte1.setDiasSemana(cDao.listarDiasAtendimentoEquipePorId(id));
+            }
+
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
 
@@ -318,15 +325,10 @@ public class ConfigAgendaController implements Serializable {
 
     }
 
-    public void gravarConfigAgendaEquipe() {
+    public void gravarConfigAgendaEquipe() throws ProjetoException, SQLException {
         boolean gravou = false;
 
-        if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())) {
-            this.confParte1.setAno(0);
-            this.confParte1.setMes(0);
-        }
-
-        gravou = cDao.gravarConfigAgendaEquipe(confParte1, confParte2);
+        gravou = cDao.gravarConfiguracaoAgendaEquipeInicio(confParte1, confParte2);
 
         if (gravou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
@@ -366,7 +368,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void excluirConfigEquipe() throws ProjetoException {
-        boolean excluiu = cDao.excluirConfigEquipe(confParte1);
+        Boolean excluiu = cDao.excluirConfigEquipe(confParte1);
 
         if (excluiu == true) {
             JSFUtil.adicionarMensagemSucesso("Configuração excluída com sucesso!", "Sucesso");
