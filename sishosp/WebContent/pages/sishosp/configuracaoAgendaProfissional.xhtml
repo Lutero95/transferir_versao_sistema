@@ -9,7 +9,7 @@
     <ui:define name="content">
 
     <f:metadata>
-        <f:viewAction action="#{ConfigAgendaController.getEditAgenda()}"/>
+        <f:viewAction action="#{ConfigAgendaController.getEditAgendaProfissional()}"/>
     </f:metadata>
 
         <h:form id="formConfiAgenda">
@@ -369,7 +369,7 @@
                                  size="sm" immediate="true" look="info" style="float:right" id="b4"
                                  update=":formConfiAgenda"
                                  actionListener="#{ConfigAgendaController.limparDados()}"
-                                 action="consConfAgenda.xhtml?faces-redirect=true">
+                                 action="consConfAgendaProfissional.xhtml?faces-redirect=true">
                 </b:commandButton>
 
             </div>

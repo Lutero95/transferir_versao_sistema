@@ -40,7 +40,7 @@ public class ConfigAgendaController implements Serializable {
     private int tipo;
 
     private List<ConfigAgendaParte2Bean> listaTipos;
-    private List<ConfigAgendaParte1Bean> listaHorarios;
+    private List<ConfigAgendaParte1Bean> listaHorariosProfissional;
     private List<ConfigAgendaParte1Bean> listaHorariosEquipe;
     private List<FuncionarioBean> listaProfissionais;
     private List<EquipeBean> listaEquipes;
@@ -53,7 +53,7 @@ public class ConfigAgendaController implements Serializable {
     private EquipeDAO eDao = new EquipeDAO();
 
     //CONSTANTES
-    private static final String ENDERECO_CADASTRO = "configuracaoAgenda?faces-redirect=true";
+    private static final String ENDERECO_CADASTRO_PROFISSIONAL = "configuracaoAgendaProfissional?faces-redirect=true";
     private static final String ENDERECO_CADASTRO_EQUIPE = "configuracaoAgendaEquipe?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;codconfigagenda=";
@@ -64,7 +64,7 @@ public class ConfigAgendaController implements Serializable {
         this.prof = new FuncionarioBean();
         this.equipe = new EquipeBean();
         this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
-        this.listaHorarios = null;
+        this.listaHorariosProfissional = null;
         this.listaHorariosEquipe = null;
         this.listaProfissionais = null;
         this.listaEquipes = null;
@@ -77,18 +77,18 @@ public class ConfigAgendaController implements Serializable {
         this.confParte1 = new ConfigAgendaParte1Bean();
         this.confParte2 = new ConfigAgendaParte2Bean();
         this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
-        this.listaHorarios = null;
+        this.listaHorariosProfissional = null;
         this.listaHorariosEquipe = null;
         this.listaProfissionais = null;
         this.listaEquipes = null;
     }
 
-    public String redirectEdit() {
-        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
+    public String redirectEditProfissional() {
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO_PROFISSIONAL, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
     }
 
-    public String redirectInsert() {
-        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
+    public String redirectInsertProfissional() {
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO_PROFISSIONAL, ENDERECO_TIPO, tipo);
     }
 
     public String redirectInsertEquipe() {
@@ -99,7 +99,7 @@ public class ConfigAgendaController implements Serializable {
         return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO_EQUIPE, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
     }
 
-    public void getEditAgenda() throws ProjetoException {
+    public void getEditAgendaProfissional() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -108,10 +108,10 @@ public class ConfigAgendaController implements Serializable {
             tipo = Integer.parseInt(params.get("tipo"));
 
             this.confParte1 = cDao.listarHorariosPorIDProfissionalEdit(id);
-            listaTipos = cDao.listarTipoAtendimentoConfiguracaoAgenda(id);
+            listaTipos = cDao.listarTipoAtendimentoConfiguracaoAgendaProfissional(id);
 
-            if(confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())){
-                confParte1.setDiasSemana(cDao.listarDiasAtendimentoPorId(id));
+            if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
+                confParte1.setDiasSemana(cDao.listarDiasAtendimentoProfissionalPorId(id));
             }
 
         } else {
@@ -132,7 +132,7 @@ public class ConfigAgendaController implements Serializable {
             this.confParte1 = cDao.listarHorariosPorIDEquipeEdit(id);
             this.confParte2 = cDao.listarHorariosPorIDEquipeEditParte2(id);
 
-            if(confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())){
+            if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
                 confParte1.setDiasSemana(cDao.listarDiasAtendimentoEquipePorId(id));
             }
 
@@ -283,13 +283,10 @@ public class ConfigAgendaController implements Serializable {
         if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla()) && this.confParte1.getAno() == null) {
             JSFUtil.adicionarMensagemErro("Ano: Campo obrigatório!", "Erro");
             return;
-        }
-
-        else{
-            if(tipo == 1) {
+        } else {
+            if (tipo == 1) {
                 gravarConfigAgendaProfissional();
-            }
-            else{
+            } else {
                 alterarConfigAgendaProfissional();
             }
         }
@@ -325,6 +322,14 @@ public class ConfigAgendaController implements Serializable {
 
     }
 
+    public void validarGravarConfigAgendaEquipe() throws ProjetoException, SQLException {
+        if (tipo == 1) {
+            gravarConfigAgendaEquipe();
+        } else {
+            alterarConfigAgendaEquipe();
+        }
+    }
+
     public void gravarConfigAgendaEquipe() throws ProjetoException, SQLException {
         boolean gravou = false;
 
@@ -343,7 +348,7 @@ public class ConfigAgendaController implements Serializable {
             ProjetoException {
         boolean alterou = false;
 
-        alterou = cDao.alterarTurnoEquipe(confParte1);
+        alterou = cDao.alterarConfiguracaoAgendaEquipeInicio(confParte1, confParte2);
 
         if (alterou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
@@ -353,8 +358,8 @@ public class ConfigAgendaController implements Serializable {
 
     }
 
-    public void excluirConfig() throws ProjetoException {
-        boolean excluiu = cDao.excluirConfig(confParte1);
+    public void excluirConfigProfissional() throws ProjetoException {
+        boolean excluiu = cDao.excluirConfigProfissional(confParte1);
 
         if (excluiu == true) {
             JSFUtil.adicionarMensagemSucesso("Configuração excluída com sucesso!", "Sucesso");
@@ -363,7 +368,7 @@ public class ConfigAgendaController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
-        this.listaHorarios = cDao.listarHorariosComFiltros(confParte1,
+        this.listaHorariosProfissional = cDao.listarHorariosComFiltrosProfissional(confParte1,
                 prof.getId());
     }
 
@@ -381,7 +386,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void selectProfissional() throws ProjetoException {
-        this.listaHorarios = cDao.listarHorariosPorIDProfissional(prof
+        this.listaHorariosProfissional = cDao.listarHorariosPorIDProfissional(prof
                 .getId());
     }
 
@@ -391,7 +396,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void selectProfissionalComFiltros() throws ProjetoException {
-        this.listaHorarios = cDao.listarHorariosComFiltros(confParte1,
+        this.listaHorariosProfissional = cDao.listarHorariosComFiltrosProfissional(confParte1,
                 prof.getId());
     }
 
@@ -433,24 +438,24 @@ public class ConfigAgendaController implements Serializable {
         this.listaTipos = listaTipos;
     }
 
-    public List<ConfigAgendaParte1Bean> getListaHorarios()
+    public List<ConfigAgendaParte1Bean> getListaHorariosProfissional()
             throws ProjetoException {
-        if (listaHorarios == null) {
-            return listaHorarios;
+        if (listaHorariosProfissional == null) {
+            return listaHorariosProfissional;
         } else {
             if (this.confParte1.getProfissional() == null) {
             }
             if (this.confParte1.getProfissional().getId() != null) {
-                this.listaHorarios = cDao
+                this.listaHorariosProfissional = cDao
                         .listarHorariosPorIDProfissional(this.confParte1
                                 .getProfissional().getId());
             }
         }
-        return listaHorarios;
+        return listaHorariosProfissional;
     }
 
-    public void setListaHorarios(List<ConfigAgendaParte1Bean> listaHorarios) {
-        this.listaHorarios = listaHorarios;
+    public void setListaHorariosProfissional(List<ConfigAgendaParte1Bean> listaHorariosProfissional) {
+        this.listaHorariosProfissional = listaHorariosProfissional;
     }
 
     public List<ConfigAgendaParte1Bean> getListaHorariosEquipe()

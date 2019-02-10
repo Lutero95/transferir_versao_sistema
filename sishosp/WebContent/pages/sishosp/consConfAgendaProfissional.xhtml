@@ -16,7 +16,7 @@
                 </div>
 
                 <b:commandButton id="btninc" value="Novo" size="sm"
-                                 action="#{ConfigAgendaController.redirectInsert()}"
+                                 action="#{ConfigAgendaController.redirectInsertProfissional()}"
                                  icon="glyphicon-plus" look="primary">
                     <f:setPropertyActionListener value="1"
                                                  target="#{ConfigAgendaController.tipo}"/>
@@ -111,7 +111,7 @@
                     <br></br>
 
                     <p:dataTable id="dtHorarios"
-                                 value="#{ConfigAgendaController.listaHorarios}" var="config"
+                                 value="#{ConfigAgendaController.listaHorariosProfissional}" var="config"
                                  resizableColumns="true" paginator="true" rows="10"
                                  emptyMessage="Não existe nenhum horário cadastrado!">
                         <p:column headerText="Dia da Semana" width="20%">
@@ -175,7 +175,7 @@
                             <div align="center">
 
                                 <p:commandButton icon="ui-icon-pencil"
-                                                 action="#{ConfigAgendaController.redirectEdit()}">
+                                                 action="#{ConfigAgendaController.redirectEditProfissional()}">
 
                                     <f:setPropertyActionListener value="#{prof}"
                                                                  target="#{ConfigAgendaController.confParte1}"/>
@@ -217,7 +217,7 @@
                 <div align="center">
                     <p:separator/>
                     <b:commandButton look="success" value="Sim" style="float:left;"
-                                     action="#{ConfigAgendaController.excluirConfig()}" ajax="true"
+                                     action="#{ConfigAgendaController.excluirConfigProfissional()}" ajax="true"
                                      icon="glyphicon-ok"
                                      update=":formConsConfAgenda:msgPagina, :formConsConfAgenda:dtHorarios"/>
 
