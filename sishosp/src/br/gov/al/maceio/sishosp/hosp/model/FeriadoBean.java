@@ -1,7 +1,8 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
+
 
 public class FeriadoBean implements Serializable {
 

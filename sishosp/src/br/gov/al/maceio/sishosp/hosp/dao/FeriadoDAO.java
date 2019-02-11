@@ -16,7 +16,7 @@ public class FeriadoDAO {
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarFeriado(FeriadoBean feriado) {
+	public Boolean gravarFeriado(FeriadoBean feriado) {
 		Boolean retorno = false;
 		String sql = "insert into hosp.feriado (descferiado, dataferiado) values (?, ?);";
 		try {
@@ -91,7 +91,7 @@ public class FeriadoDAO {
 
 	public List<FeriadoBean> listarFeriado() throws ProjetoException {
 		List<FeriadoBean> lista = new ArrayList<>();
-		String sql = "select codferiado, descferiado, dataferiado from hosp.feriado order by descferiado ";
+		String sql = "SELECT codferiado, descferiado, dataferiado FROM hosp.feriado ORDER BY dataferiado DESC";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -121,7 +121,7 @@ public class FeriadoDAO {
 	public FeriadoBean listarFeriadoPorId(int id) throws ProjetoException {
 
 		FeriadoBean feriado = new FeriadoBean();
-		String sql = "select codferiado, descferiado, dataferiado from hosp.feriado where codferiado = ?";
+		String sql = "select codferiado, descferiado, dataferiado from hosp.feriado where codferiado = ? ORDER BY dataferiado DESC";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
