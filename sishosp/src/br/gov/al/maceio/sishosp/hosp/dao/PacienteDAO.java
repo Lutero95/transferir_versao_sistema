@@ -837,7 +837,7 @@ public class PacienteDAO {
         PacienteBean p = new PacienteBean();
 
         String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
-                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, municipio.codigo, "
+                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, municipio.codigo, municipio.nome descmunicipio, "
                 + "pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, "
                 + "pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
                 + "pacientes.protreab, "
@@ -850,13 +850,14 @@ public class PacienteDAO {
                 + " encaminhado.descencaminhado, formatransporte.descformatransporte,"
                 + " deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, deficienciamultipla, "
                 + " pacientes.nome_social, pacientes.necessita_nome_social, pacientes.motivo_nome_social, coalesce(pacientes.associado,'N') associado, "
-                +" pacientes.codmunicipio "
+                +" pacientes.codmunicipio, b.descbairro "
                 + "from hosp.pacientes left join hosp.escolaridade on pacientes.id_escolaridade=escolaridade.id_escolaridade "
                 + " left join hosp.escola on pacientes.id_escola=escola.id_escola "
                 + "left join hosp.profissao on pacientes.id_profissao=profissao.id_profissao "
                 + "left join hosp.encaminhado on pacientes.id_encaminhado=encaminhado.id_encaminhado "
                 + "left join hosp.formatransporte on pacientes.id_formatransporte=formatransporte.id_formatransporte "
                 + "left join hosp.municipio on pacientes.codmunicipio = municipio.id_municipio "
+                + " left join hosp.bairros b on b.id_bairro = pacientes.codbairro "
                 + "where id_paciente = ?";
 
         try {
@@ -877,11 +878,13 @@ public class PacienteDAO {
                 p.setConjuge(rs.getString("conjuge"));
                 p.setCodRaca(rs.getInt("codraca"));
                 p.getEndereco().setCep(rs.getString("cep"));
+                p.getEndereco().setMunicipio(rs.getString("descmunicipio"));
                 p.getEndereco().setUf(rs.getString("uf"));
                 p.getEndereco().setLogradouro(rs.getString("logradouro"));
                 p.getEndereco().setNumero(rs.getString("numero"));
                 p.getEndereco().setComplemento(rs.getString("complemento"));
                 p.getEndereco().setReferencia(rs.getString("referencia"));
+                p.getEndereco().setBairro(rs.getString("descbairro"));
                 p.setRg(rs.getString("rg").toLowerCase());
                 p.setOe(rs.getString("oe").toLowerCase());
                 p.setDataExpedicao1(rs.getDate("dtaexpedicaorg"));

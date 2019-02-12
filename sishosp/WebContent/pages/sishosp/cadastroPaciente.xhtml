@@ -394,8 +394,8 @@
                             <b:column span="3">
 
                                     <p:outputPanel id="outMunicipios">
-
-                                        <b:selectOneMenu required="true" requiredMessage="Município: Campo obrigatório!"
+  <p:outputLabel  style="margin-top: 10px" rendered="#{PacienteController.paciente.endereco.municipio!=null}" value="#{PacienteController.paciente.endereco.municipio}"/>
+                                        <b:selectOneMenu rendered="false" required="true" requiredMessage="Município: Campo obrigatório!"
                                                          value="#{PacienteController.paciente.endereco.codmunicipio}">
                                             <f:selectItem itemLabel="Selecione" itemValue=""/>
                                             <f:selectItems value="#{EnderecoController.listarMunicipiosPorEstado()}"
@@ -421,8 +421,8 @@
                                                        var="sis" itemLabel="#{sis.bairro}"
                                                        itemValue="#{sis.codbairro}"/>
                                     </b:selectOneMenu>
-
-                                   <p:outputLabel id="bairro2" style="margin-top: 10px" value="#{PacienteController.paciente.endereco.bairro}"></p:outputLabel>
+                                   <p:outputLabel id="bairro2" style="margin-top: 10px" rendered="#{PacienteController.paciente.endereco.bairro!=null}" value="#{PacienteController.paciente.endereco.bairro}"
+                                  ></p:outputLabel>
                                 </p:outputPanel>
 
                             </b:column>

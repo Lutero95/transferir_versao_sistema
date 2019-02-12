@@ -111,7 +111,7 @@ public class MotivoDesligamentoDAO {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
-				con.close();
+				conexao.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
