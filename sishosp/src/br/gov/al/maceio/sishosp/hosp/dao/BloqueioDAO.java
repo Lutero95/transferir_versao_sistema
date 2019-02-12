@@ -12,6 +12,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 
 import javax.faces.context.FacesContext;
@@ -22,26 +23,57 @@ public class BloqueioDAO {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
 
-    public boolean gravarBloqueio(BloqueioBean bloqueio) {
-
-        Calendar calendarData = Calendar.getInstance();
-        boolean condicao = true;
-        String sql = "insert into hosp.bloqueio_agenda (codmedico, dataagenda, turno, descricao, cod_empresa) values (?, ?, ?, ?, ?);";
+    public Boolean gravarBloqueioInicio(BloqueioBean bloqueio) throws ProjetoException {
+        Boolean retorno = false;
 
         try {
             con = ConnectionFactory.getConnection();
-            ps = con.prepareStatement(sql);
+
+            if (bloqueio.getTurno().equals(Turno.AMBOS.getSigla())) {
+                retorno = gravarBloqueio(bloqueio, con, Turno.MANHA.getSigla());
+                if (retorno) {
+                    retorno = gravarBloqueio(bloqueio, con, Turno.TARDE.getSigla());
+                }
+            } else {
+                retorno = gravarBloqueio(bloqueio, con, bloqueio.getTurno());
+            }
+
+            if(retorno) {
+                con.commit();
+            }
+
+        } catch (
+                SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+
+    public Boolean gravarBloqueio(BloqueioBean bloqueio, Connection conAuxiliar, String turno) {
+
+        Calendar calendarData = Calendar.getInstance();
+        Boolean condicao = true;
+        String sql = "insert into hosp.bloqueio_agenda (codmedico, dataagenda, turno, descricao, cod_empresa) values (?, ?, ?, ?, ?);";
+
+        try {
+            ps = conAuxiliar.prepareStatement(sql);
             Date dataInicio = bloqueio.getDataInicio();
             Date dataFim = bloqueio.getDataFim();
             do {
                 if (dataInicio.after(dataFim) == false) {
                     ps.setLong(1, bloqueio.getProf().getId());
                     ps.setDate(2, new java.sql.Date(dataInicio.getTime()));
-                    ps.setString(3, bloqueio.getTurno().toUpperCase());
+                    ps.setString(3, turno.toUpperCase());
                     ps.setString(4, bloqueio.getDescBloqueio().toUpperCase());
                     ps.setInt(5, user_session.getEmpresa().getCodEmpresa());
                     ps.execute();
-                    con.commit();
                     condicao = true;
                     calendarData.setTime(dataInicio);
                     calendarData.add(Calendar.DATE, 1);
@@ -50,14 +82,13 @@ public class BloqueioDAO {
                     condicao = false;
                 }
             } while (condicao);
-            con.commit();
+
             condicao = true;
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
-                con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

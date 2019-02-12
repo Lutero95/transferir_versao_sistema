@@ -58,21 +58,35 @@ public class BloqueioController implements Serializable {
 
     }
 
-    public void gravarBloqueio() {
+    public Boolean validarBloqueio(){
+        if (bloqueio.getDataInicio().after(bloqueio.getDataFim()) == false) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
-        boolean cadastrou = bDao.gravarBloqueio(bloqueio);
+    public void gravarBloqueio() throws ProjetoException {
 
-        if (cadastrou == true) {
-            limparDados();
-            JSFUtil.adicionarMensagemSucesso("Bloqueio cadastrado com sucesso!", "Sucesso");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+        if(validarBloqueio()) {
+            Boolean cadastrou = bDao.gravarBloqueioInicio(bloqueio);
+
+            if (cadastrou == true) {
+                limparDados();
+                JSFUtil.adicionarMensagemSucesso("Bloqueio cadastrado com sucesso!", "Sucesso");
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+            }
+        }
+        else{
+            JSFUtil.adicionarMensagemErro("Data inicial tem que ser anterior a data final!", "Erro");
         }
     }
 
     public void alterarBloqueio() {
 
-        boolean alterou = bDao.alterarBloqueio(bloqueio);
+        Boolean alterou = bDao.alterarBloqueio(bloqueio);
 
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Bloqueio alterado com sucesso!", "Sucesso");
@@ -83,7 +97,7 @@ public class BloqueioController implements Serializable {
 
     public void excluirBloqueio() throws ProjetoException {
 
-        boolean excluiu = bDao.excluirBloqueio(bloqueio);
+        Boolean excluiu = bDao.excluirBloqueio(bloqueio);
 
         if (excluiu == true) {
             JSFUtil.adicionarMensagemSucesso("Bloqueio excluído com sucesso!", "Sucesso");

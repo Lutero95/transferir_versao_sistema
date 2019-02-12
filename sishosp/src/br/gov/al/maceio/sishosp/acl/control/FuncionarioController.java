@@ -188,7 +188,14 @@ public class FuncionarioController implements Serializable {
 
             recoverDataFromSession();
 
-            String url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
+            String url = "";
+
+            if(sistemas.size() > 1) url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
+            else {
+                recSistemaLogado(sistemas.get(0));
+                gerarMenus(sistemaLogado);
+                url = sistemas.get(0).getUrl() + "?faces-redirect=true";
+            }
 
             return url;
 
