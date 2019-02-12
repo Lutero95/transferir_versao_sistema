@@ -11,13 +11,14 @@
         <f:metadata>
             <f:viewAction action="#{EnderecoController.getEditBairro()}"/>
         </f:metadata>
+        
+        <div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{EnderecoController.cabecalhoBairro}"
+                              class="panel-title"></h:outputText>
+			</div>
 
-        <div class="panel-body">
-            <div class="sub-header">
-                <h:outputText value="#{EnderecoController.cabecalhoBairro}"
-                              styleClass="cadcabecalho"></h:outputText>
-                <hr/>
-            </div>
+        <div class="panel-body table-body">
 
             <h:form class="form-horizontal" id="frmPrincipal">
 
@@ -115,6 +116,7 @@
 
             </h:form>
 
+        </div>
         </div>
 
     </ui:define>

@@ -11,17 +11,8 @@
 <body>
 	<ui:composition>
 	
-		<div class="navbar navbar-inverse navbar-fixed-top"
-				rendered="#{MBFuncionarios.usuarioLogado.codigo == null}">
-		    <div class="container">
-		        <div class="navbar-header">
-		            <a class="navbar-brand texto" href="#">EHosp</a>
-		        </div>
-		    </div>
-		</div>
 	
-		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto"
-				rendered="#{MBFuncionarios.usuarioLogado.codigo != null}">
+		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto">
 
 			<p:outputPanel autoUpdate="true">
 

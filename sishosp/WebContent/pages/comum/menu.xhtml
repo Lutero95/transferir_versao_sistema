@@ -1,12 +1,47 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:ui="http://java.sun.com/jsf/facelets">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
 
-    <h:body>
-                        
-            <p:menubar styleClass="menu-sistema" model="#{MBFuncionarios.menuModel}" />
-           
-    </h:body>
+<body>
+	<ui:composition>
+
+		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto"
+				rendered="#{MBFuncionarios.usuarioLogado.codigo != null}">
+
+			<p:outputPanel autoUpdate="true">
+
+				<h:form>
+					<b:navbarLinks class="new-menu-usuario">
+
+						<b:navLink class="user-index"
+							value="#{MBFuncionarios.usuarioLogado.nome}" iconAwesome="user"
+							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
+							style="cursor: default !important;" />
+
+						<b:navLink class="user-index"
+							value="Perfil: #{MBFuncionarios.usuarioLogado.perfil.descricao}"
+							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
+							style="cursor: default !important;" />
+
+					</b:navbarLinks>
+
+				</h:form>
+				
+				<p:menubar styleClass="menu-sistema" model="#{MBFuncionarios.menuModel}" />
+
+			</p:outputPanel>
+
+		</b:navBar>
+
+	</ui:composition>
+</body>
+
+
 </html>
+    
