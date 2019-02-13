@@ -186,9 +186,13 @@ public class AgendaDAO {
 
         List<BloqueioBean> lista = new ArrayList<>();
         FuncionarioDAO pDao = new FuncionarioDAO();
-        String sql = "select id_bloqueioagenda, codmedico, dataagenda, turno, descricao "
-                + " from hosp.bloqueio_agenda "
-                + " where codmedico = ? and  dataagenda = ? and turno = ? order by id_bloqueioagenda";
+
+        String sql = "select b.id_bloqueioagenda, b.codmedico, b.dataagenda, b.turno, b.descricao, " +
+                "f.descfuncionario, f.cpf, f.cns, f.codprocedimentopadrao " +
+                "from hosp.bloqueio_agenda b " +
+                "left join acl.funcionarios f on (b.codmedico = f.id_funcionario) " +
+                "where codmedico = ? and  dataagenda = ? and turno = ? order by id_bloqueioagenda";
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -200,8 +204,11 @@ public class AgendaDAO {
             while (rs.next()) {
                 BloqueioBean bloqueio = new BloqueioBean();
                 bloqueio.setIdBloqueio(rs.getInt("id_bloqueioagenda"));
-                bloqueio.setProf(pDao.buscarProfissionalPorId(rs
-                        .getInt("codmedico")));
+                bloqueio.getProf().setId(rs.getLong("codmedico"));
+                bloqueio.getProf().setNome(rs.getString("descfuncionario"));
+                bloqueio.getProf().setCns(rs.getString("cns"));
+                bloqueio.getProf().setCpf(rs.getString("cpf"));
+                bloqueio.getProf().getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
                 bloqueio.setDataInicio(rs.getDate("dataagenda"));
                 bloqueio.setTurno(rs.getString("turno"));
                 bloqueio.setDescBloqueio(rs.getString("descricao"));
@@ -223,8 +230,16 @@ public class AgendaDAO {
 
     public int verQtdMaxAgendaData(AgendaBean agenda) throws ProjetoException {
         int qtdMax = 0;
-        String sqlPro = "select qtdmax from hosp.config_agenda where codmedico = ? and dataagenda = ? and turno = ?";
-        String sqlEqui = "select qtdmax from hosp.config_agenda_equipe where codequipe = ? and dataagenda = ? and turno = ?";
+        String sqlPro = "select p.qtdmax " +
+                "from hosp.config_agenda_profissional p " +
+                "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_equipe) " +
+                "where p.codmedico = ? and d.data_especifica = ? and d.turno = ?;";
+
+        String sqlEqui = "select e.qtdmax " +
+                "from hosp.config_agenda_equipe e " +
+                "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
+                "where e.codequipe = ? and d.data_especifica = ? and d.turno = 'M';";
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
@@ -294,8 +309,17 @@ public class AgendaDAO {
     public boolean buscarDataEspecifica(AgendaBean agenda)
             throws ProjetoException {
         int id = 0;
-        String sqlPro = "select id_configagenda from hosp.config_agenda where codmedico = ? and dataagenda = ? and turno = ?";
-        String sqlEqui = "select id_configagenda from hosp.config_agenda_equipe where codequipe = ? and dataagenda = ? and turno = ?";
+
+        String sqlPro = "select p.id_configagenda " +
+                "from hosp.config_agenda_profissional p " +
+                "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
+                "where p.codmedico = ? and d.data_especifica = ? and d.turno = ?;";
+
+        String sqlEqui = "select e.id_configagenda " +
+                "from hosp.config_agenda_equipe e " +
+                "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
+                "where e.codequipe = ? and d.data_especifica = ? and d.turno = 'M';";
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
@@ -368,8 +392,17 @@ public class AgendaDAO {
         int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
         int mes = cal.get(Calendar.MONTH);
         int id = 0;
-        String sqlPro = "select id_configagenda from hosp.config_agenda where codmedico = ? and diasemana = ? and turno = ? and mes = ?";
-        String sqlEqui = "select id_configagenda from hosp.config_agenda_equipe where codequipe = ? and diasemana = ? and turno = ? and mes = ?";
+
+        String sqlPro = "select p.id_configagenda " +
+                "from hosp.config_agenda_profissional p " +
+                "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
+                "where p.codmedico = ? and d.dia = ? and d.turno = ? and p.mes = ?;";
+
+        String sqlEqui = "select e.id_configagenda " +
+                "from hosp.config_agenda_equipe e " +
+                "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
+                "where e.codequipe = ? and d.dia = ? and d.turno = 'M' and e.mes = ?;";
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
@@ -549,8 +582,17 @@ public class AgendaDAO {
         cal.setTime(agenda.getDataAtendimento());
         int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
         int qtdMax = 0;
-        String sqlPro = "select qtdmax from hosp.config_agenda where codmedico = ? and diasemana = ? and turno = ?";
-        String sqlEqui = "select qtdmax from hosp.config_agenda_equipe where codequipe = ? and diasemana = ? and turno = ?";
+
+        String sqlPro = "select p.qtdmax " +
+                "from hosp.config_agenda_profissional p " +
+                "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_equipe) " +
+                "where p.codmedico = ? and d.dia = ? and d.turno = ?;";
+
+        String sqlEqui = "select e.qtdmax " +
+                "from hosp.config_agenda_equipe e " +
+                "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
+                "where e.codequipe = ? and d.dia = ? and d.turno = 'M';";
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
@@ -586,8 +628,17 @@ public class AgendaDAO {
         cal.setTime(agenda.getDataAtendimento());
         int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
         int qtdMax = 0;
-        String sqlPro = "select qtdmax from hosp.config_agenda where codmedico = ? and diasemana = ? and turno = ?";
-        String sqlEqui = "select qtdmax from hosp.config_agenda_equipe where codequipe = ? and diasemana = ? and turno = ?";
+
+        String sqlPro = "select p.qtdmax " +
+                "from hosp.config_agenda_profissional p " +
+                "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
+                "where p.codmedico = ? and d.dia = ? and d.turno = ?;";
+
+        String sqlEqui = "select e.qtdmax " +
+                "from hosp.config_agenda_equipe e " +
+                "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
+                "where e.codequipe = ? and d.dia = ? and d.turno = 'M';";
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
@@ -694,20 +745,21 @@ public class AgendaDAO {
         StringBuilder sql = new StringBuilder();
 
         sql.append("SELECT f.descfuncionario, ");
-        sql.append("CASE WHEN c.turno = 'M' THEN 'Manhã' ");
-        sql.append("WHEN c.turno = 'T' THEN 'Tarde' END AS turno, ");
-        sql.append("CASE WHEN c.diasemana = 1 THEN 'Domingo' ");
-        sql.append("WHEN c.diasemana = 2 THEN 'Segunda' ");
-        sql.append("WHEN c.diasemana = 3 THEN 'Terça' ");
-        sql.append("WHEN c.diasemana = 4 THEN 'Quarta' ");
-        sql.append("WHEN c.diasemana = 5 THEN 'Quinta' ");
-        sql.append("WHEN c.diasemana = 6 THEN 'Sexta' ");
-        sql.append("WHEN c.diasemana = 7 THEN 'Sábado' END AS dia ");
-        sql.append("FROM hosp.config_agenda c ");
+        sql.append("CASE WHEN d.turno = 'M' THEN 'Manhã' ");
+        sql.append("WHEN d.turno = 'T' THEN 'Tarde' END AS turno, ");
+        sql.append("CASE WHEN d.dia = 1 THEN 'Domingo' ");
+        sql.append("WHEN d.dia = 2 THEN 'Segunda' ");
+        sql.append("WHEN d.dia = 3 THEN 'Terça' ");
+        sql.append("WHEN d.dia = 4 THEN 'Quarta' ");
+        sql.append("WHEN d.dia = 5 THEN 'Quinta' ");
+        sql.append("WHEN d.dia = 6 THEN 'Sexta' ");
+        sql.append("WHEN d.dia = 7 THEN 'Sábado' END AS dia ");
+        sql.append("FROM hosp.config_agenda_profissional c ");
+        sql.append("LEFT JOIN hosp.config_agenda_profissional_dias d ON (c.id_configagenda = d.id_config_agenda_profissional) ");
         sql.append("LEFT JOIN acl.funcionarios f ON (c.codmedico = f.id_funcionario) ");
         sql.append("WHERE c.codmedico = ? AND ");
         sql.append("c.mes = (SELECT DATE_PART('MONTH', CURRENT_TIMESTAMP)) AND c.ano = (SELECT DATE_PART('YEAR', CURRENT_TIMESTAMP)) ");
-        sql.append("ORDER BY f.descfuncionario, c.diasemana, c.turno");
+        sql.append("ORDER BY f.descfuncionario, d.dia, d.turno");
 
         try {
             con = ConnectionFactory.getConnection();
@@ -745,20 +797,22 @@ public class AgendaDAO {
         StringBuilder sql = new StringBuilder();
 
         sql.append("SELECT e.descequipe, ");
-        sql.append("CASE WHEN c.turno = 'M' THEN 'Manhã' ");
-        sql.append("WHEN c.turno = 'T' THEN 'Tarde' END AS turno, ");
-        sql.append("CASE WHEN c.diasemana = 1 THEN 'Domingo' ");
-        sql.append("WHEN c.diasemana = 2 THEN 'Segunda' ");
-        sql.append("WHEN c.diasemana = 3 THEN 'Terça' ");
-        sql.append("WHEN c.diasemana = 4 THEN 'Quarta' ");
-        sql.append("WHEN c.diasemana = 5 THEN 'Quinta' ");
-        sql.append("WHEN c.diasemana = 6 THEN 'Sexta' ");
-        sql.append("WHEN c.diasemana = 7 THEN 'Sábado' END AS dia ");
+        sql.append("CASE WHEN d.turno = 'M' THEN 'Manhã' ");
+        sql.append("WHEN d.turno = 'T' THEN 'Tarde' END AS turno, ");
+        sql.append("CASE WHEN d.dia = 1 THEN 'Domingo' ");
+        sql.append("WHEN d.dia = 2 THEN 'Segunda' ");
+        sql.append("WHEN d.dia = 3 THEN 'Terça' ");
+        sql.append("WHEN d.dia = 4 THEN 'Quarta' ");
+        sql.append("WHEN d.dia = 5 THEN 'Quinta' ");
+        sql.append("WHEN d.dia = 6 THEN 'Sexta' ");
+        sql.append("WHEN d.dia = 7 THEN 'Sábado' END AS dia ");
         sql.append("FROM hosp.config_agenda_equipe c ");
         sql.append("LEFT JOIN hosp.equipe e ON (c.codequipe = e.id_equipe) ");
-        sql.append("WHERE c.codequipe = ? AND ");
+        sql.append("LEFT JOIN hosp.config_agenda_equipe_dias d ON (c.id_configagenda = d.id_config_agenda_equipe) ");
+        sql.append("WHERE e.id_equipe = ? AND  ");
         sql.append("c.mes = (SELECT DATE_PART('MONTH', CURRENT_TIMESTAMP)) AND c.ano = (SELECT DATE_PART('YEAR', CURRENT_TIMESTAMP)) ");
-        sql.append("ORDER BY e.descequipe, c.diasemana, c.turno");
+        sql.append("ORDER BY e.descequipe, d.dia, d.turno");
+
 
         try {
             con = ConnectionFactory.getConnection();
