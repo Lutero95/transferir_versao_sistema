@@ -403,6 +403,7 @@ public class AgendaController implements Serializable {
                 .getIdPrograma());
         for (GrupoBean g : listaGruposProgramas) {
         }
+        listaTipos = new ArrayList<>();
 
     }
 
@@ -494,7 +495,7 @@ public class AgendaController implements Serializable {
             if (!intervalo) {
                 JSFUtil.adicionarMensagemErro("Paciente tem agendamento inferior ao mínimo para esse tipo de atendimento!", "Erro");
 
-                agenda.setTipoAt(null);
+                agenda.setTipoAt(new TipoAtendimentoBean());
             }
         }
     }

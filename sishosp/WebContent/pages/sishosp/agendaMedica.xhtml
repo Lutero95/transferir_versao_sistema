@@ -29,7 +29,7 @@
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
                             <p:ajax event="itemSelect"
-                                    update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
+                                    update=":formAgendaMedica:outPa"
                                     listener="#{AgendaController.limparNaBuscaPaciente()}"
                                     global="false"/>
 
@@ -62,7 +62,7 @@
                             <p:ajax event="itemSelect"
                                     listener="#{AgendaController.selectPrograma}"
                                     update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo,
-							:formAgendaMedica:btBusGr, :formAgendaMedica:outGrupo"/>
+							:formAgendaMedica:btBusGr, :formAgendaMedica:outGrupo, :formAgendaMedica:outTipoAt, :formAgendaMedica:btBusTi"/>
 
                         </p:autoComplete>
                     </p:outputPanel>
@@ -127,9 +127,8 @@
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
                                         itemLabel="#{theme.descTipoAt}">
-                            <p:ajax event="itemSelect" update=":formAgendaMedica, msgPagina, outTipoAt" listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"/>
-                            <!-- 	<p:ajax event="change" update=":formAgendaMedica"
-                            listener="#{AgendaController.limparNaBuscaTipo()}" /> -->
+                            <p:ajax event="itemSelect" update=":formAgendaMedica, msgPagina" listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"/>
+
                         </p:autoComplete>
                     </p:outputPanel>
                 </b:column>
@@ -530,7 +529,7 @@
                             Ação
                         </f:facet>
                         <p:commandButton
-                                update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
+                                update=":formAgendaMedica:outPa"
                                 icon="ui-icon-check" title="Selecionar"
                                 onclick="PF('dlgConsuPac').hide();">
                             <f:setPropertyActionListener value="#{pacie}"
@@ -564,7 +563,7 @@
                         </f:facet>
                         <p:commandButton
                                 update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo,
-							:formAgendaMedica:btBusGr, :formAgendaMedica:outGrupo"
+							:formAgendaMedica:btBusGr, :formAgendaMedica:outGrupo, :formAgendaMedica:outTipoAt, :formAgendaMedica:btBusTi"
                                 icon="ui-icon-check" title="Selecionar"
                                 action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
                                 onclick="PF('dlgConsuProg').hide();">
@@ -697,7 +696,7 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton update=":formAgendaMedica:outProf"
+                        <p:commandButton update=":formAgendaMedica:outProf,  :formAgendaMedica"
                                          icon="ui-icon-check" title="Selecionar"
                                          onclick="PF('dlgConsuProf').hide();">
                             <f:setPropertyActionListener value="#{profi}"
