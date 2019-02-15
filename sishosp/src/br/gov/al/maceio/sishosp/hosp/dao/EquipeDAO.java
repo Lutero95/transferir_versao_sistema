@@ -134,8 +134,6 @@ public class EquipeDAO {
                 equipe.setCodEquipe(rs.getInt("id_equipe"));
                 equipe.setDescEquipe(rs.getString("descequipe"));
                 equipe.setCodEmpresa(rs.getInt("cod_empresa"));
-                equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
-                        .getInt("id_equipe")));
                 lista.add(equipe);
             }
         } catch (SQLException ex) {
@@ -316,7 +314,7 @@ public class EquipeDAO {
                 equipe.setCodEquipe(rs.getInt("id_equipe"));
                 equipe.setDescEquipe(rs.getString("descequipe"));
                 equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
-                        .getInt("id_equipe")));
+                        .getInt("id_equipe"), con));
                 equipe.setCodEmpresa(rs.getInt("cod_empresa"));
             }
 

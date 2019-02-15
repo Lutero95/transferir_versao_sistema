@@ -226,7 +226,7 @@ public class TipoAtendimentoDAO {
                 tipo.setDescTipoAt(rs.getString("desctipoatendimento"));
                 tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
-                tipo.setGrupo(gDao.listarGruposPorTipoAtend(rs.getInt("id")));
+                tipo.setGrupo(gDao.listarGruposPorTipoAtend(rs.getInt("id"), con));
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
 
                 lista.add(tipo);
@@ -338,7 +338,7 @@ public class TipoAtendimentoDAO {
                 tipo.setDescTipoAt(rs.getString("desctipoatendimento"));
                 tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
-                tipo.setGrupo(gDao.listarGruposPorTipoAtend(tipo.getIdTipo()));
+                tipo.setGrupo(gDao.listarGruposPorTipoAtend(tipo.getIdTipo(), con));
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
             }
             return tipo;

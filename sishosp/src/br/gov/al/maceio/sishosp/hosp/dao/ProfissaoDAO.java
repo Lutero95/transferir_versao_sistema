@@ -139,8 +139,8 @@ public class ProfissaoDAO {
             ProfissaoBean profissao = new ProfissaoBean();
             while (rs.next()) {
 
-                profissao.setCodprofissao(rs.getInt(1));
-                profissao.setDescprofissao(rs.getString(2));
+                profissao.setCodprofissao(rs.getInt("id_profissao"));
+                profissao.setDescprofissao(rs.getString("descprofissao"));
 
             }
             return profissao;

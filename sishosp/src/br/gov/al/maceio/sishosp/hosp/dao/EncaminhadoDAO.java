@@ -143,8 +143,8 @@ public class EncaminhadoDAO {
             EncaminhadoBean encaminhado = new EncaminhadoBean();
             while (rs.next()) {
 
-                encaminhado.setCodencaminhado(rs.getInt(1));
-                encaminhado.setDescencaminhado(rs.getString(2));
+                encaminhado.setCodencaminhado(rs.getInt("id_encaminhado"));
+                encaminhado.setDescencaminhado(rs.getString("descencaminhado"));
 
             }
             return encaminhado;

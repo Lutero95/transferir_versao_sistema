@@ -1350,14 +1350,13 @@ public class FuncionarioDAO {
         }
     }
 
-    public List<FuncionarioBean> listarProfissionaisPorEquipe(int id) {
+    public List<FuncionarioBean> listarProfissionaisPorEquipe(int id, Connection conAuxiliar) {
 
         List<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
         String sql = "select medico from hosp.equipe_medico where equipe = ? order by medico";
         FuncionarioDAO pDao = new FuncionarioDAO();
         try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
@@ -1368,7 +1367,6 @@ public class FuncionarioDAO {
             throw new RuntimeException(ex);
         } finally {
             try {
-                con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

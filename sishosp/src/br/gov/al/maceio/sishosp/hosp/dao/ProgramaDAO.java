@@ -199,8 +199,8 @@ public class ProgramaDAO {
                 ProgramaBean programa = new ProgramaBean();
                 programa.setIdPrograma(rs.getInt("id_programa"));
                 programa.setDescPrograma(rs.getString("descprograma"));
-                programa.setGrupo(gDao.listarGruposPorPrograma(rs
-                        .getInt("id_programa")));
+                programa.setGrupo(gDao.listarGruposPorProgramaComConexao(rs
+                        .getInt("id_programa"), con));
                 lista.add(programa);
             }
         } catch (SQLException ex) {
@@ -345,8 +345,8 @@ public class ProgramaDAO {
                 programa = new ProgramaBean();
                 programa.setIdPrograma(rs.getInt("id_programa"));
                 programa.setDescPrograma(rs.getString("descprograma"));
-                programa.setGrupo(gDao.listarGruposPorPrograma(rs
-                        .getInt("id_programa")));
+                programa.setGrupo(gDao.listarGruposPorProgramaComConexao(rs
+                        .getInt("id_programa"), con));
             }
 
         } catch (SQLException ex) {

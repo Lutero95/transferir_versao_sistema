@@ -142,8 +142,8 @@ public class FormaTransporteDAO {
             FormaTransporteBean transporte = new FormaTransporteBean();
             while (rs.next()) {
 
-                transporte.setCodformatransporte(rs.getInt(1));
-                transporte.setDescformatransporte(rs.getString(2));
+                transporte.setCodformatransporte(rs.getInt("id_formatransporte"));
+                transporte.setDescformatransporte(rs.getString("descformatransporte"));
 
             }
             return transporte;
@@ -165,7 +165,6 @@ public class FormaTransporteDAO {
         conexao = ConnectionFactory.getConnection();
 
         try {
-            List<FormaTransporteBean> listatransportes = new ArrayList<FormaTransporteBean>();
             String sql = "select id_formatransporte,id_formatransporte ||'-'|| descformatransporte descformatransporte from hosp.formatransporte "
                     + " where upper(id_formatransporte ||'-'|| descformatransporte) like ? order by descformatransporte";
 

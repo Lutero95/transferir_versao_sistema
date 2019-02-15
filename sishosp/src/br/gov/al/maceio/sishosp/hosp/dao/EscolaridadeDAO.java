@@ -146,8 +146,8 @@ public class EscolaridadeDAO {
             EscolaridadeBean escolaridade = new EscolaridadeBean();
             while (rs.next()) {
 
-                escolaridade.setCodescolaridade(rs.getInt(1));
-                escolaridade.setDescescolaridade(rs.getString(2));
+                escolaridade.setCodescolaridade(rs.getInt("id_escolaridade"));
+                escolaridade.setDescescolaridade(rs.getString("descescolaridade"));
 
             }
             return escolaridade;

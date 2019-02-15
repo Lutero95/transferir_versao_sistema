@@ -139,8 +139,8 @@ public class EscolaDAO {
             EscolaBean escola = new EscolaBean();
             while (rs.next()) {
 
-                escola.setCodEscola(rs.getInt(1));
-                escola.setDescescola(rs.getString(2));
+                escola.setCodEscola(rs.getInt("id_escola"));
+                escola.setDescescola(rs.getString("descescola"));
 
             }
             return escola;
@@ -208,7 +208,7 @@ public class EscolaDAO {
 
                 p.setCodtipoescola(rs.getInt("codtipoescola"));
                 p.setDesctipoescola(rs.getString("desctipoescola")
-                        .toLowerCase());
+                        .toUpperCase());
 
                 lista.add(p);
             }

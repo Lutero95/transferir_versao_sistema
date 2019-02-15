@@ -154,7 +154,7 @@ public class GrupoDAO {
         }
     }
 
-    public List<EquipeBean> listarEquipesDoGrupo(int id)
+    public List<EquipeBean> listarEquipesDoGrupo(int id, Connection conAuxiliar)
             throws ProjetoException {
 
         List<EquipeBean> lista = new ArrayList<EquipeBean>();
@@ -163,8 +163,7 @@ public class GrupoDAO {
                 + " where eg.id_grupo=?";
 
         try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
@@ -178,7 +177,6 @@ public class GrupoDAO {
             throw new RuntimeException(ex);
         } finally {
             try {
-                con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -227,15 +225,53 @@ public class GrupoDAO {
         return lista;
     }
 
-    public List<GrupoBean> listarGruposPorTipoAtend(int idTipo)
+    public List<GrupoBean> listarGruposPorProgramaComConexao(int codPrograma, Connection conAuxiliar)
+            throws ProjetoException {
+        List<GrupoBean> lista = new ArrayList<>();
+        String sql = "select distinct g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut from hosp.grupo g  "
+                + "left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)  "
+                + "where p.id_programa = ?";
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext
+                .getCurrentInstance().getExternalContext().getSessionMap()
+                .get("obj_usuario");
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, codPrograma);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                GrupoBean grupo = new GrupoBean();
+                grupo.setIdGrupo(rs.getInt("id_grupo"));
+                grupo.setDescGrupo(rs.getString("descgrupo"));
+                grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+                grupo.setAuditivo(rs.getBoolean("auditivo"));
+                grupo.setEquipeSim(rs.getBoolean("equipe"));
+                grupo.setinsercao_pac_institut(rs
+                        .getBoolean("insercao_pac_institut"));
+                lista.add(grupo);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
+    public List<GrupoBean> listarGruposPorTipoAtend(int idTipo, Connection conAuxiliar)
             throws ProjetoException {
         List<GrupoBean> lista = new ArrayList<>();
         String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.insercao_pac_institut from hosp.grupo g, "
                 + " hosp.tipoatendimento_grupo tg, hosp.tipoatendimento t"
                 + " where t.id = ? and g.cod_empresa = ? and g.id_grupo = tg.codgrupo and t.id = tg.codtipoatendimento order by g.descgrupo";
         try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, idTipo);
             stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
@@ -256,7 +292,6 @@ public class GrupoDAO {
             throw new RuntimeException(ex);
         } finally {
             try {
-                con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -385,7 +420,7 @@ public class GrupoDAO {
                 grupo.setAuditivo(rs.getBoolean("auditivo"));
                 grupo.setinsercao_pac_institut(rs
                         .getBoolean("insercao_pac_institut"));
-                grupo.setEquipes(listarEquipesDoGrupo(rs.getInt("id_grupo")));
+                grupo.setEquipes(listarEquipesDoGrupo(rs.getInt("id_grupo"), con));
             }
 
         } catch (SQLException ex) {

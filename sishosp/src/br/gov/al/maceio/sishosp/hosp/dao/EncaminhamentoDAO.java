@@ -153,8 +153,8 @@ public class EncaminhamentoDAO {
 			EncaminhamentoBean encaminhamento = new EncaminhamentoBean();
 			while (rs.next()) {
 
-				encaminhamento.setCod(rs.getInt(1));
-				encaminhamento.setTipo1(rs.getString(2));
+				encaminhamento.setCod(rs.getInt("id_encaminhamento"));
+				encaminhamento.setTipo1(rs.getString("descencaminhado"));
 
 			}
 			return encaminhamento;
@@ -192,8 +192,8 @@ public class EncaminhamentoDAO {
 			while (rs.next()) {
 
 				EncaminhamentoBean encaminhamento = new EncaminhamentoBean();
-				encaminhamento.setCod(rs.getInt(1));
-				encaminhamento.setTipo1(rs.getString(2));
+				encaminhamento.setCod(rs.getInt("id_encaminhado"));
+				encaminhamento.setTipo1(rs.getString("descencaminhado"));
 				colecao.add(encaminhamento);
 
 				;
