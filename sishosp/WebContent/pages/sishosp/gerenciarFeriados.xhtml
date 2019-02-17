@@ -6,101 +6,101 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	template="../../template/template.xhtml">
 
-    <ui:define name="content">
-    
-        <div class="panel-body">
-            <div class="sub-header">
-                <h4>Gerenciamento de Feriados</h4>
-                <hr/>
-            </div>
+	<ui:define name="content">
 
-            <h:form id="frmPrincipal">
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Gerenciamento de Feriados</h4>
+			</div>
 
+			<div class="panel-body table-body">
 
-                <b:commandButton id="btninc" value="Novo" size="sm"
-                                 action="#{FeriadoController.redirectInsert()}"
-                                 icon="glyphicon-plus" look="primary">
-
-                    <f:setPropertyActionListener value="1"
-                                                 target="#{FeriadoController.tipo}"/>
-                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
-                </b:commandButton>
-
-                <br/>
-                <br/>
-
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
+				<h:form id="frmPrincipal">
 
 
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela"
-                             value="#{FeriadoController.listarFeriados()}" var="tab">
+					<b:commandButton id="btninc" value="Novo" size="sm"
+						action="#{FeriadoController.redirectInsert()}"
+						icon="glyphicon-plus" class="btn-addNovo">
 
-                    <h:column>
-                        <f:facet name="header">
+						<f:setPropertyActionListener value="1"
+							target="#{FeriadoController.tipo}" />
+						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+					</b:commandButton>
+
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
+
+
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela"
+						value="#{FeriadoController.listarFeriados()}" var="tab">
+
+						<h:column>
+							<f:facet name="header">
                             Descrição
                         </f:facet>
-                        <h:outputText value="#{tab.descFeriado}"/>
-                    </h:column>
+							<h:outputText value="#{tab.descFeriado}" />
+						</h:column>
 
 
-                    <h:column>
-                        <f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                             Data
                         </f:facet>
-                        <h:outputText value="#{tab.dataFeriado}">
-                            <f:convertDateTime pattern="dd/MM/yyyy"/>
-                        </h:outputText>
-                    </h:column>
+							<h:outputText value="#{tab.dataFeriado}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                             Ação
                         </f:facet>
-                        <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-                                         action="#{FeriadoController.redirectEdit()}">
-                            <f:setPropertyActionListener value="#{tab}"
-                                                         target="#{FeriadoController.feriado}"/>
-                            <f:setPropertyActionListener value="2"
-                                                         target="#{FeriadoController.tipo}"/>
-                        </b:commandButton>
+							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+								class="btn-acao-table"
+								size="sm" action="#{FeriadoController.redirectEdit()}">
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{FeriadoController.feriado}" />
+								<f:setPropertyActionListener value="2"
+									target="#{FeriadoController.tipo}" />
+							</b:commandButton>
 
-                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-                                         size="sm" ajax="true" style="margin-left:10px"
-                                         oncomplete="PF('dialogExclusao').show()">
+							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+								size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table"
+								oncomplete="PF('dialogExclusao').show()">
 
-                            <f:setPropertyActionListener value="#{tab}"
-                                                         target="#{FeriadoController.feriado}"/>
-                        </b:commandButton>
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{FeriadoController.feriado}" />
+							</b:commandButton>
 
-                    </h:column>
-
-
-                </b:dataTable>
-            </h:form>
-        </div>
+						</h:column>
 
 
-        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
-                  resizable="false">
+					</b:dataTable>
+				</h:form>
+			</div>
+		</div>
 
-            <h:form id="frmExcluir">
-                <div class="alert alert-warning" role="alert">Deseja excluir
-                    este Feriado?
-                </div>
-                <div align="center">
-                    <p:separator/>
-                    <b:commandButton look="success" value="Sim" style="float:left;"
-                                     action="#{FeriadoController.excluirFeriado()}" ajax="true"
-                                     icon="glyphicon-ok" update=":frmPrincipal"/>
 
-                    <b:commandButton value="Não"
-                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
-                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
-                </div>
-            </h:form>
-        </p:dialog>
+		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+			resizable="false" showEffect="clip" hideEffect="clip">
 
-    </ui:define>
+			<h:form id="frmExcluir">
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					este Feriado?</div>
+				<div align="center">
+					<p:separator />
+					<b:commandButton look="success" value="Sim" style="float:left;"
+						class="btn-sim"
+						action="#{FeriadoController.excluirFeriado()}" ajax="true"
+						icon="glyphicon-ok" update=":frmPrincipal" />
+
+					<b:commandButton value="Não" class="btn-nao"
+						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
 </ui:composition>

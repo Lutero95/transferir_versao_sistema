@@ -12,24 +12,20 @@
         <f:viewAction action="#{TipoAtendimentoController.getEditTipoAtend()}"/>
     </f:metadata>
 
-        <div class="panel-body">
-            <div class="sub-header">
+        <div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
                 <h:outputText value="#{TipoAtendimentoController.cabecalho}"
-                              styleClass="cadcabecalho"></h:outputText>
-                <hr/>
-            </div>
+                      class="panel-title"></h:outputText>
+			</div>
 
-            <h:form class="form-horizontal" id="frmPrincipal">
+			<div class="panel-body table-body sub-table-body">
+
+				<h:form class="form-horizontal" id="frmPrincipal">
 
                 <b:row>
 
-                    <b:column span="2">
-                        <h:outputLabel for="inputdesc" value="Descrição"
-                                       style="margin-top:10px"/>
-
-                    </b:column>
-
-                    <b:column span="6">
+                    <b:column span="8" class="label-position">
+								<b:label for="inputdesc" value="Descrição" severity="info" />
 
                         <b:inputText value="#{TipoAtendimentoController.tipoAtendimento.descTipoAt}"
                                      id="inputdesc" required="true"
@@ -40,13 +36,8 @@
 
                     </b:column>
 
-                    <b:column span="2">
-                        <h:outputLabel for="inputintervalo" value="Intervalo mínimo"
-                                       style="margin-top:10px"/>
-
-                    </b:column>
-
-                    <b:column span="2">
+                    <b:column span="2" class="label-position">
+								<b:label for="inputintervalo" value="Intervalo Mínimo" severity="info" />
 
                         <b:inputText value="#{TipoAtendimentoController.tipoAtendimento.intervaloMinimo}"
                                      id="inputintervalo" required="true"
@@ -59,20 +50,17 @@
 
                 <b:row>
 
-                    <b:column span="1">
-                        <h:outputLabel value="Grupos "
-                                       style="margin-top:10px"/>
-
-                    </b:column>
-
-                    <b:column span="1">
-                        <b:commandButton process="@this" size="sm"
+                    <b:column span="2" class="label-position">
+								<b:label value="Grupo" severity="info" />
+								
+                        <b:commandButton process="@this" size="sm" class="btn-acao-table" style="margin-left: 35px;"
                                          actionListener="#{GrupoController.listaTodosGrupos()}"
                                          tooltip="Incluir Grupo" icon="glyphicon-plus"
                                          oncomplete="PF('dlgConsuGrupo').show();" update="formConsuGrop"/>
                     </b:column>
 
-                    <b:column span="10">
+                    <b:column span="6" class="label-position">
+									
                         <p:dataTable emptyMessage="Sem Dados"
                                      styleClass="table table-hover" id="tabela"
                                      style="margin-top:10px;"
@@ -90,7 +78,7 @@
 
                             <p:column headerText="Ação">
                                 <div align="center">
-                                    <p:commandButton process="@this"
+                                    <p:commandButton process="@this" class="new-btn-acao-table"
                                                      action="#{TipoAtendimentoController.tipoAtendimento.rmvGrupoLista()}"
                                                      icon="ui-icon-trash" update=":frmPrincipal:tabela">
                                         <f:setPropertyActionListener value="#{tab}"
@@ -105,26 +93,20 @@
 
                 <b:row>
 
-                    <b:column span="2">
-                        <h:outputLabel value="Primeiro Atendimento: "/>
-
-                    </b:column>
-
-                    <b:column span="1">
-
-                        <p:selectBooleanCheckbox
+                    <b:column span="3">
+								<p:selectBooleanCheckbox label="Primeiro Atendimento"
+									itemLabel="Primeiro Atendimento:" style="color:#2e84ce;"
                                 value="#{TipoAtendimentoController.tipoAtendimento.primeiroAt}">
                         </p:selectBooleanCheckbox>
                     </b:column>
                 </b:row>
+                
+                <br></br>
 
                 <b:row>
-                    <b:column span="2">
-                        <h:outputLabel value="Equipe: "/>
-                    </b:column>
-
-                    <b:column span="1">
-                        <p:selectBooleanCheckbox
+                    <b:column span="3">
+								<p:selectBooleanCheckbox label="Equipe"
+									itemLabel="Equipe:" style="color:#2e84ce;"
                                 value="#{TipoAtendimentoController.tipoAtendimento.equipe}">
                         </p:selectBooleanCheckbox>
                     </b:column>
@@ -137,29 +119,29 @@
                 </div>
 
                 <br></br>
-                <br></br>
 
                 <div align="center">
 
                     <b:commandButton action="#{TipoAtendimentoController.gravarTipo()}"
-                                     icon="glyphicon-ok" size="sm" look="success" style="float:left"
+                                     icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
                                      update=":frmPrincipal" value="Incluir"
                                      rendered="#{TipoAtendimentoController.tipo == 1}"/>
 
                     <b:commandButton
                             action="#{TipoAtendimentoController.alterarTipo()}"
-                            icon="glyphicon-ok" size="sm" style="float:left"
+                            icon="glyphicon-ok" size="sm" class="btn-incluir"
                             update=":frmPrincipal" value="Alterar" look="success"
                             rendered="#{TipoAtendimentoController.tipo  == 2}"/>
 
                     <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                     style="float:right" size="sm" immediate="true" look="info"
+                                     class="btn-voltar" size="sm" immediate="true" look="info"
                                      action="/pages/sishosp/gerenciarTipoAtendimento.faces?faces-redirect=true">
                     </b:commandButton>
 
                 </div>
 
             </h:form>
+            </div>
 
         </div>
 
@@ -194,7 +176,7 @@
                             <p:commandButton process="@this"
                                              update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
                                              icon="ui-icon-check" title="Selecionar"
-                                             onclick="PF('dlgConsuGrupo').hide();"
+                                             onclick="PF('dlgConsuGrupo').hide();" class="new-btn-acao-table"
                                              action="#{TipoAtendimentoController.tipoAtendimento.addGrupoLista()}">
                                 <f:setPropertyActionListener value="#{grupo}"
                                                              target="#{TipoAtendimentoController.tipoAtendimento.grupoParaAdd}"/>

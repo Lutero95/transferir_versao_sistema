@@ -6,109 +6,112 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	template="../../template/template.xhtml">
 
-    <ui:define name="content">
+	<f:metadata>
+		<f:viewAction action="#{PacienteController.buscarPacientes()}" />
+	</f:metadata>
 
-        <div class="panel-body">
-            <div class="sub-header">
-                <h4>Gerenciamento de Paciente</h4>
-                <hr/>
-            </div>
-            <h:form id="frmPrincipal">
-                <f:metadata>
-                    <f:viewAction action="#{PacienteController.buscarPacientes()}"/>
-                </f:metadata>
+	<ui:define name="content">
 
-                <b:commandButton id="btninc" value="Novo" size="sm"
-                                 action="#{PacienteController.redirectInsert()}"
-                                 icon="glyphicon-plus" look="primary">
-                    <f:setPropertyActionListener value="1"
-                                                 target="#{PacienteController.tipo}"/>
-                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
-                </b:commandButton>
-                <br/>
-                <br/>
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Gerenciamento de Paciente</h4>
+			</div>
 
-                <div align="center">
-                    <b:messages value="Error" id="msgError"></b:messages>
-                </div>
+			<div class="panel-body table-body">
 
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabelapacientes" var="tab"
-                             value="#{PacienteController.listarPacientes()}">
+				<h:form id="frmPrincipal">
 
-                    <h:column>
-                        <f:facet name="header">
+					<b:commandButton id="btninc" value="Novo" size="sm"
+						action="#{PacienteController.redirectInsert()}"
+						icon="glyphicon-plus" class="btn-addNovo">
+						<f:setPropertyActionListener value="1"
+							target="#{PacienteController.tipo}" />
+						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+					</b:commandButton>
+
+					<div align="center">
+						<b:messages value="Error" id="msgError"></b:messages>
+					</div>
+
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+						id="tabelapacientes" var="tab"
+						value="#{PacienteController.listarPacientes()}">
+
+						<h:column>
+							<f:facet name="header">
                             Nome
                         </f:facet>
 
-                        <h:outputText value="#{tab.nome}"/>
-                    </h:column>
+							<h:outputText value="#{tab.nome}" />
+						</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                             CPF
                         </f:facet>
 
-                        <h:outputText value="#{tab.cpf}"/>
-                    </h:column>
+							<h:outputText value="#{tab.cpf}" />
+						</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                             CNS
                         </f:facet>
 
-                        <h:outputText value="#{tab.cns}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
+							<h:outputText value="#{tab.cns}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
                             Ação
                         </f:facet>
 
-                        <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-                                         action="#{PacienteController.redirectEdit()}">
+							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+								size="sm" action="#{PacienteController.redirectEdit()}"
+								class="btn-acao-table">
 
-                            <f:setPropertyActionListener value="#{tab}"
-                                                         target="#{PacienteController.paciente}"/>
-                            <f:setPropertyActionListener value="2"
-                                                         target="#{PacienteController.tipo}"/>
-                        </b:commandButton>
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{PacienteController.paciente}" />
+								<f:setPropertyActionListener value="2"
+									target="#{PacienteController.tipo}" />
+							</b:commandButton>
 
-                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-                                         size="sm" ajax="true" style="margin-left:10px"
-                                         oncomplete="PF('dialogExclusao').show()">
-                            <f:setPropertyActionListener value="#{tab.id_paciente}"
-                                                         target="#{PacienteController.paciente.id_paciente}"/>
-                        </b:commandButton>
+							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+								size="sm" ajax="true" style="margin-left:10px" 
+								class="btn-acao-table" oncomplete="PF('dialogExclusao').show()">
+								<f:setPropertyActionListener value="#{tab.id_paciente}"
+									target="#{PacienteController.paciente.id_paciente}" />
+							</b:commandButton>
 
-                    </h:column>
+						</h:column>
 
-                </b:dataTable>
+					</b:dataTable>
 
-            </h:form>
+				</h:form>
+			</div>
 
-        </div>
+		</div>
 
-        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
-                  resizable="false">
+		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+			resizable="false" showEffect="clip" hideEffect="clip">
 
-            <h:form id="frmExcluir">
+			<h:form id="frmExcluir">
 
-                <div class="alert alert-warning" role="alert">Deseja excluir
-                    este Paciente?
-                </div>
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					este Paciente?</div>
 
-                <div align="center">
-                    <p:separator/>
-                    <b:commandButton look="success" value="Sim" style="float:left;"
-                                     action="#{PacienteController.excluirPaciente()}" ajax="true"
-                                     icon="glyphicon-ok" update=":frmPrincipal"/>
+				<div align="center">
+					<p:separator />
+					<b:commandButton look="success" value="Sim" style="float:left;"
+						action="#{PacienteController.excluirPaciente()}" ajax="true"
+						icon="glyphicon-ok" update=":frmPrincipal" class="btn-sim" />
 
-                    <b:commandButton value="Não"
-                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
-                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
-                </div>
+					<b:commandButton value="Não" class="btn-nao"
+						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
+				</div>
 
-            </h:form>
-        </p:dialog>
+			</h:form>
+		</p:dialog>
 
-    </ui:define>
+	</ui:define>
 </ui:composition>

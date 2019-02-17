@@ -8,23 +8,22 @@
 
 	<ui:define name="content">
 
-		<div class="panel-body">
-			<div class="sub-header">
-				<h4>Gerenciamento de CBO</h4>
-				<hr />
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Gerenciamento de CBO</h4>
 			</div>
+			
+			<div class="panel-body table-body">
 
 			<h:form id="frmPrincipal">
 
 				<b:commandButton id="btninc" value="Novo" size="sm"
 					action="#{CboController.redirectInsert()}" icon="glyphicon-plus"
-					look="primary">
+					class="btn-addNovo" >
 					<f:setPropertyActionListener value="1"
 						target="#{CboController.tipo}" />
 					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 				</b:commandButton>
-				<br />
-				<br />
 
 				<div align="center">
 					<b:messages value="Error" id="msgPagina"></b:messages>
@@ -56,7 +55,7 @@
                         </f:facet>
 
 						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{CboController.redirectEdit()}">
+							action="#{CboController.redirectEdit()}" class="btn-acao-table">
 							<f:setPropertyActionListener value="#{tab}"
 								target="#{CboController.cbo}" />
 
@@ -65,7 +64,7 @@
 						</b:commandButton>
 
 						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px"
+							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table"
 							oncomplete="PF('dlgExclusao').show()">
 
 							<f:setPropertyActionListener value="#{tab}"
@@ -76,11 +75,12 @@
 				</b:dataTable>
 
 			</h:form>
+			</div>
 
 		</div>
 
 		<p:dialog widgetVar="dlgExclusao" modal="true" header="Atenção"
-			resizable="false">
+			resizable="false" showEffect="clip" hideEffect="clip">
 
 			<h:form id="dlgexcluir">
 				<div class="alert alert-warning" role="alert">Deseja excluir
@@ -90,10 +90,10 @@
 
 					<b:commandButton look="success" value="Sim" style="float:left;"
 						action="#{CboController.excluirCbo()}" ajax="true"
-						icon="glyphicon-ok" update=":frmPrincipal" />
+						class="btn-sim" icon="glyphicon-ok" update=":frmPrincipal" />
 
 					<b:commandButton value="Não" oncomplete="PF('dlgExclusao').hide();"
-						look="info" ajax="true" icon="glyphicon-remove"
+						look="info" ajax="true" icon="glyphicon-remove" class="btn-nao"
 						style="margin-left:5px;float:right;" />
 				</div>
 			</h:form>

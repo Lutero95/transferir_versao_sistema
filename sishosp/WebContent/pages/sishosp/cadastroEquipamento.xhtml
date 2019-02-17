@@ -1,75 +1,74 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-    <f:metadata>
-        <f:viewAction action="#{EquipamentoController.getEditEquipamento()}"/>
-    </f:metadata>
+		<f:metadata>
+			<f:viewAction action="#{EquipamentoController.getEditEquipamento()}" />
+		</f:metadata>
 
-        <div class="panel-body">
-            <div class="sub-header">
-                <h:outputText value="#{EquipamentoController.cabecalho}"
-                              styleClass="cadcabecalho"></h:outputText>
-                <hr/>
-            </div>
-            <h:form class="form-horizontal" id="frmPrincipal">
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{EquipamentoController.cabecalho}"
+					class="panel-title"></h:outputText>
+			</div>
 
-                <b:row>
+			<div class="panel-body table-body sub-table-body">
 
-                    <b:column span="1">
-                        <h:outputLabel for="inputname" value="Descrição"
-                                       style="margin-top:10px"/>
-                    </b:column>
+				<h:form class="form-horizontal" id="frmPrincipal">
 
-                    <b:column span="5">
+					<b:row>
 
-                        <b:inputText
-                                value="#{EquipamentoController.equipamento.descEquipamento}"
-                                class="form-control" id="inputname" required="true"
-                                requiredMessage="Descrição: Campo obrigatório!"
-                                validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">
-                            <f:validateLength minimum="2" maximum="50"/>
+						<b:column span="5" class="label-position">
+							<b:label value="Descrição" severity="info" />
 
-                        </b:inputText>
+							<b:inputText
+								value="#{EquipamentoController.equipamento.descEquipamento}"
+								class="form-control" id="inputname" required="true"
+								requiredMessage="Descrição: Campo obrigatório!"
+								validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">
+								<f:validateLength minimum="2" maximum="50" />
 
-                    </b:column>
-                </b:row>
+							</b:inputText>
 
-                <br></br>
+						</b:column>
+					</b:row>
 
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
 
-                <div align="center">
+					<br></br>
 
-                    <b:commandButton
-                            action="#{EquipamentoController.gravarEquipamento()}"
-                            icon="glyphicon-ok" size="sm" look="success" style="float:left"
-                            update=":frmPrincipal" value="Incluir"
-                            rendered="#{EquipamentoController.tipo == 1}"/>
+					<div align="center">
 
-                    <b:commandButton
-                            action="#{EquipamentoController.alterarEquipamento()}"
-                            icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
-                            look="success" style="float:left"
-                            rendered="#{EquipamentoController.tipo  == 2}"/>
+						<b:commandButton
+							action="#{EquipamentoController.gravarEquipamento()}"
+							icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+							update=":frmPrincipal" value="Incluir"
+							rendered="#{EquipamentoController.tipo == 1}" />
 
-                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                     style="float:right" size="sm" immediate="true" look="info"
-                                     action="/pages/sishosp/gerenciarEquipamento.faces?faces-redirect=true">
-                    </b:commandButton>
+						<b:commandButton
+							action="#{EquipamentoController.alterarEquipamento()}"
+							icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+							value="Alterar" look="success" class="btn-incluir"
+							rendered="#{EquipamentoController.tipo  == 2}" />
 
-                </div>
+						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							class="btn-voltar" size="sm" immediate="true" look="info"
+							action="/pages/sishosp/gerenciarEquipamento.faces?faces-redirect=true">
+						</b:commandButton>
 
-            </h:form>
-        </div>
+					</div>
 
-    </ui:define>
+				</h:form>
+			</div>
+		</div>
+
+	</ui:define>
 </ui:composition>

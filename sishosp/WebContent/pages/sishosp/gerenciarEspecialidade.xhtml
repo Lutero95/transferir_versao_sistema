@@ -13,23 +13,23 @@
     
     <ui:define name="content">
 
-        <div class="panel-body">
-            <div class="sub-header">
-                <h4>Gerenciamento de Especialidade</h4>
-                <hr/>
+        <div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Gerenciamento de Especialidade</h4>
             </div>
+            
+            <div class="panel-body table-body">
+            
             <h:form id="frmPrincipal">
 
 
                 <b:commandButton id="btninc" value="Novo" size="sm"
                                  action="#{EspecialidadeController.redirectInsert()}"
-                                 icon="glyphicon-plus" look="primary">
+                                 icon="glyphicon-plus" class="btn-addNovo">
                     <f:setPropertyActionListener value="1"
                                                  target="#{EspecialidadeController.tipo}"/>
                     <p:tooltip for="btninc" value="Incluir"></p:tooltip>
                 </b:commandButton>
-                <br/>
-                <br/>
 
                 <div align="center">
                     <b:messages value="Error" id="msgPagina"></b:messages>
@@ -50,6 +50,7 @@
                         </f:facet>
 
                         <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+                        				class="btn-acao-table"
                                          action="#{EspecialidadeController.redirectEdit()}">
                             <f:setPropertyActionListener value="#{tab}"
                                                          target="#{EspecialidadeController.espec}"/>
@@ -59,7 +60,7 @@
                         </b:commandButton>
 
                         <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-                                         size="sm" ajax="true" style="margin-left:10px"
+                                         size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table"
                                          oncomplete="PF('dialogExclusao').show()">
 
                             <f:setPropertyActionListener value="#{tab}"
@@ -70,9 +71,10 @@
 
                 </b:dataTable>
             </h:form>
+            </div>
         </div>
         <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
-                  resizable="false">
+                  resizable="false" showEffect="clip" hideEffect="clip">
 
             <h:form id="frmExcluir">
                 <h:panelGrid columns="1">
@@ -85,11 +87,11 @@
 
                 <div align="center">
                     <p:separator/>
-                    <b:commandButton look="success" value="Sim" style="float:left;"
+                    <b:commandButton look="success" value="Sim" style="float:left;" class="btn-sim"
                                      action="#{EspecialidadeController.excluirEspecialidade()}"
                                      ajax="true" icon="glyphicon-ok" update="frmPrincipal"/>
 
-                    <b:commandButton value="Não"
+                    <b:commandButton value="Não" class="btn-nao"
                                      oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
                                      icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
 

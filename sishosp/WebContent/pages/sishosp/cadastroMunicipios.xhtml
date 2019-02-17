@@ -1,111 +1,103 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-        <f:metadata>
-            <f:viewAction action="#{EnderecoController.getEditMunicipio()}"/>
-        </f:metadata>
+		<f:metadata>
+			<f:viewAction action="#{EnderecoController.getEditMunicipio()}" />
+		</f:metadata>
 
-        <div class="panel-body">
-            <div class="sub-header">
-                <h:outputText value="#{EnderecoController.cabecalho}"
-                              styleClass="cadcabecalho"></h:outputText>
-                <hr/>
-            </div>
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{EnderecoController.cabecalho}"
+					class="panel-title"></h:outputText>
+			</div>
 
-            <h:form class="form-horizontal" id="frmPrincipal">
+			<div class="panel-body table-body sub-table-body">
 
+				<h:form class="form-horizontal" id="frmPrincipal">
 
-                <b:row>
+					<b:row>
 
-                    <b:column span="2">
-                        <h:outputLabel for="inputname" value="Município"
-                                       style="margin-top:10px"/>
+						<b:column span="11" class="label-position">
+							<b:label for="inputname" value="Município" severity="info" />
 
-                    </b:column>
+							<b:inputText value="#{EnderecoController.endereco.municipio}"
+								class="form-control" id="inputname" required="false"
+								validatorMessage="Nome deve conter entre 2 e 40 caracteres."
+								requiredMessage="Município: Campo obrigatório!">
+								<f:validateLength minimum="2" maximum="40" />
 
-                    <b:column span="10">
+							</b:inputText>
 
-                        <b:inputText value="#{EnderecoController.endereco.municipio}"
-                                     class="form-control" id="inputname" required="false"
-                                     validatorMessage="Nome deve conter entre 2 e 40 caracteres."
-                                     requiredMessage="Município: Campo obrigatório!">
-                            <f:validateLength minimum="2" maximum="40"/>
+						</b:column>
 
-                        </b:inputText>
+					</b:row>
 
-                    </b:column>
+					<br></br>
 
-                </b:row>
+					<b:row>
 
-                <br></br>
+						<b:column span="11" class="label-position">
+							<b:label for="inputcod" value="Código IBGE" severity="info" />
 
-                <b:row>
+							<b:inputText class="form-control" id="inputcod"
+								value="#{EnderecoController.endereco.codIbge}" />
+						</b:column>
 
-                    <b:column span="2">
-                        <h:outputLabel for="inputcod" value="Código IBGE"
-                                       style="margin-top:10px"/>
-                    </b:column>
+					</b:row>
 
-                    <b:column span="10">
+					<br></br>
 
-                        <b:inputText class="form-control" id="inputcod"
-                                     value="#{EnderecoController.endereco.codIbge}"/>
-                    </b:column>
+					<b:row>
 
-                </b:row>
+						<b:column span="3" class="label-position">
+							<b:label value="Estado" severity="info" />
+							
+							<b:selectOneMenu required="true"
+								requiredMessage="Estado: Campo obrigatório!"
+								value="#{EnderecoController.endereco.uf}" id="estado">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems
+									value="#{EnderecoController.endereco.listaEstados}" />
+							</b:selectOneMenu>
+						</b:column>
 
-                <br></br>
+					</b:row>
 
-                <b:row>
+					<br></br>
 
-                <b:column span="2">
-                    <h:outputLabel value="Estado"
-                                   style="margin-top:10px"/>
-                </b:column>
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
 
-                <b:column span="2">
-                    <b:selectOneMenu required="true" requiredMessage="Estado: Campo obrigatório!"
-                                     value="#{EnderecoController.endereco.uf}" id="estado">
-                        <f:selectItem itemLabel="Selecione" itemValue=""/>
-                        <f:selectItems value="#{EnderecoController.endereco.listaEstados}"/>
-                    </b:selectOneMenu>
-                </b:column>
+					<div align="center">
+						<b:commandButton action="#{EnderecoController.gravarMunicipios()}"
+							icon="glyphicon-ok" size="sm" look="success"
+							update=":frmPrincipal" value="Incluir" class="btn-incluir"
+							rendered="#{EnderecoController.tipo == 1}" />
 
-                </b:row>
+						<b:commandButton
+							action="#{EnderecoController.alterarMunicipios()}"
+							icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+							value="Alterar" look="success" class="btn-incluir"
+							rendered="#{EnderecoController.tipo  == 2}" />
 
-                <br></br>
+						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							class="btn-voltar" size="sm" immediate="true" look="info"
+							action="/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true">
+						</b:commandButton>
 
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
+					</div>
 
-                <div align="center">
-                    <b:commandButton action="#{EnderecoController.gravarMunicipios()}"
-                                     icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
-                                     value="Incluir" style="float:left"
-                                     rendered="#{EnderecoController.tipo == 1}"/>
+				</h:form>
+			</div>
 
-                    <b:commandButton action="#{EnderecoController.alterarMunicipios()}"
-                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
-                                     look="success" style="float:left"
-                                     rendered="#{EnderecoController.tipo  == 2}"/>
-
-                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                     style="float:right" size="sm" immediate="true" look="info"
-                                     action="/pages/sishosp/gerenciarMunicipio.faces?faces-redirect=true">
-                    </b:commandButton>
-
-                </div>
-
-            </h:form>
-
-        </div>
-    </ui:define>
+		</div>
+	</ui:define>
 </ui:composition>

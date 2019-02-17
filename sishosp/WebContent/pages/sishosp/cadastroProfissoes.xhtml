@@ -1,80 +1,75 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-				xmlns:h="http://java.sun.com/jsf/html"
-				xmlns:p="http://primefaces.org/ui"
-				xmlns:f="http://xmlns.jcp.org/jsf/core"
-				xmlns:b="http://bootsfaces.net/ui"
-				xmlns:ui="http://java.sun.com/jsf/facelets"
-				template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
 	<ui:define name="content">
 
-	<f:metadata>
-		<f:viewAction action="#{ProfissaoController.getEditProfissao()}" />
-	</f:metadata>
+		<f:metadata>
+			<f:viewAction action="#{ProfissaoController.getEditProfissao()}" />
+		</f:metadata>
 
-		<h:form class="form-horizontal" id="frmPrincipal">
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{ProfissaoController.cabecalho}"
+					class="panel-title"></h:outputText>
+			</div>
 
-			<div class="panel-body">
-				<div class="sub-header">
-					<h:outputText value="#{ProfissaoController.cabecalho}"
-						styleClass="cadcabecalho"></h:outputText>
-					<hr />
-				</div>
+			<div class="panel-body table-body sub-table-body">
 
+				<h:form class="form-horizontal" id="frmPrincipal">
 
-				<b:row>
+					<b:row>
 
-					<b:column span="1">
-						<h:outputLabel for="inputname" value="Descrição"
-							style="margin-top:10px" />
+						<b:column span="11" class="label-position">
+							<b:label for="inputname" value="Descrição" severity="info" />
 
-					</b:column>
+							<b:inputText
+								value="#{ProfissaoController.profissao.descprofissao}"
+								class="form-control" id="inputname" required="true"
+								requiredMessage="Descrição: Campo obrigatório!"
+								validatorMessage="Descrição deve conter entre 2 e 40 caracteres.">
+								<f:validateLength minimum="2" maximum="40" />
 
-					<b:column span="11">
+							</b:inputText>
 
-						<b:inputText
-							value="#{ProfissaoController.profissao.descprofissao}"
-							class="form-control" id="inputname" required="true"
-							requiredMessage="Descrição: Campo obrigatório!"
-							validatorMessage="Descrição deve conter entre 2 e 40 caracteres.">
-							<f:validateLength minimum="2" maximum="40" />
+						</b:column>
 
-						</b:inputText>
+					</b:row>
 
-					</b:column>
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
+					
+					<br></br>
 
-				</b:row>
+					<div align="center">
 
-				<br></br>
-				<br></br>
+						<b:commandButton action="#{ProfissaoController.gravarProfissao()}"
+							icon="glyphicon-ok" size="sm" look="success"
+							update=":frmPrincipal" value="Incluir" class="btn-incluir"
+							rendered="#{ProfissaoController.tipo == 1}" />
 
-				<div align="center">
-					<b:messages value="Error" id="msgPagina"></b:messages>
-				</div>
+						<b:commandButton
+							action="#{ProfissaoController.alterarProfissao()}"
+							icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+							value="Alterar" class="btn-incluir" look="success"
+							rendered="#{ProfissaoController.tipo  == 2}" />
 
-				<div align="center">
+						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							class="btn-voltar" size="sm" immediate="true" look="info"
+							action="/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true">
+						</b:commandButton>
 
-					<b:commandButton action="#{ProfissaoController.gravarProfissao()}"
-						icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
-						value="Incluir" style="float:left"
-						rendered="#{ProfissaoController.tipo == 1}" />
+					</div>
 
-					<b:commandButton action="#{ProfissaoController.alterarProfissao()}"
-						icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
-						style="float:left" look="success"
-						rendered="#{ProfissaoController.tipo  == 2}" />
-
-					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-						style="float:right" size="sm" immediate="true" look="info"
-						action="/pages/sishosp/gerenciarProfissoes.faces?faces-redirect=true">
-					</b:commandButton>
-
-				</div>
+				</h:form>
 
 			</div>
-		</h:form>
-
-
+		</div>
 
 	</ui:define>
 </ui:composition>
