@@ -731,6 +731,11 @@ public class FuncionarioController implements Serializable {
 
     }
 
+    public List<EmpresaBean> listarUnidadesDoFuncionario(){
+
+        return fDao.listarUnidadesDoFuncionario();
+    }
+
     public void addUnidadeExtra() throws ProjetoException {
         if (profissional.getUnidadeExtra().getCodEmpresa() != null) {
             if (profissional.getListaUnidades().size() == 0) {

@@ -1499,4 +1499,57 @@ public class FuncionarioDAO {
         }
     }
 
+    public List<EmpresaBean> listarUnidadesDoFuncionario() {
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
+        List<EmpresaBean> lista = new ArrayList<EmpresaBean>();
+        PreparedStatement stm = null;
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT cod_empresa, nome_principal, nome_fantasia, padrao FROM ( ");
+        sql.append("SELECT func.cod_empresa, ee.nome_principal, ee.nome_fantasia, TRUE AS padrao ");
+        sql.append("FROM acl.funcionarios func ");
+        sql.append("LEFT JOIN hosp.empresa ee ON (ee.cod_empresa = func.cod_empresa) ");
+        sql.append("WHERE func.id_funcionario = ? ");
+        sql.append("UNION ");
+        sql.append("SELECT f.cod_empresa, e.nome_principal, e.nome_fantasia, FALSE AS padrao ");
+        sql.append("FROM hosp.empresa e ");
+        sql.append("LEFT JOIN hosp.funcionario_unidades f ON (e.cod_empresa = f.cod_empresa) ");
+        sql.append("WHERE f.cod_funcionario = ? ) ");
+        sql.append("a ");
+        sql.append("ORDER BY padrao DESC ");
+
+        try {
+
+            con = ConnectionFactory.getConnection();
+            stm = con.prepareStatement(sql.toString());
+
+            stm.setLong(1, user_session.getId());
+            stm.setLong(2, user_session.getId());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                EmpresaBean empresaBean = new EmpresaBean();
+                empresaBean.setCodEmpresa(rs.getInt("cod_empresa"));
+                empresaBean.setNomeEmpresa(rs.getString("nome_principal"));
+                empresaBean.setNomeFantasia(rs.getString("nome_fantasia"));
+                lista.add(empresaBean);
+
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return lista;
+        }
+    }
+
 }

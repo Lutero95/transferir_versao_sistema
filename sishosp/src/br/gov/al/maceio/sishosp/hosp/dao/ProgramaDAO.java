@@ -398,4 +398,45 @@ public class ProgramaDAO {
         return lista;
     }
 
+    public List<ProgramaBean> listarProgramasBuscaUsuarioOutraUnidade(String descricao, Integer codEmpresa) throws ProjetoException {
+        List<ProgramaBean> lista = new ArrayList<>();
+        String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma  from hosp.programa "
+                + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
+                + "where codprofissional = ? and cod_empresa = ?"
+                + "and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            FuncionarioBean user_session = (FuncionarioBean) FacesContext
+                    .getCurrentInstance().getExternalContext().getSessionMap()
+                    .get("obj_usuario");
+
+            stm.setLong(1, user_session.getId());
+            stm.setInt(2, codEmpresa);
+            stm.setString(3, "%" + descricao.toUpperCase() + "%");
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProgramaBean programa = new ProgramaBean();
+                programa.setIdPrograma(rs.getInt("id_programa"));
+                programa.setDescPrograma(rs.getString("descprograma"));
+
+                lista.add(programa);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
 }

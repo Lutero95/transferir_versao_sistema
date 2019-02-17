@@ -10,9 +10,11 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.event.SelectEvent;
@@ -20,10 +22,6 @@ import org.primefaces.event.SelectEvent;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 
 @ManagedBean(name = "AgendaController")
 @ViewScoped
@@ -82,7 +80,11 @@ public class AgendaController implements Serializable {
         listaHorariosOcupados = new ArrayList<AgendaBean>();
         agendamentosConfirmados = false;
         dataAtual = DataUtil.mesIhAnoAtual();
+        agenda.getEmpresa().setCodEmpresa(user_session.getCodigo());
     }
+
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().get("obj_funcionario");
 
     public void limparDados() {
         this.agenda = new AgendaBean();
@@ -526,6 +528,13 @@ public class AgendaController implements Serializable {
             }
         }
         return listaConfigAgenda;
+    }
+
+    public List<ProgramaBean> listaProgramaAutoCompleteUsuarioOutraUnidade(String query)
+            throws ProjetoException {
+        ProgramaDAO pDao = new ProgramaDAO();
+        List<ProgramaBean> result = pDao.listarProgramasBuscaUsuarioOutraUnidade(query, agenda.getEmpresa().getCodEmpresa());
+        return result;
     }
 
     // LISTAS E AUTOCOMPLETES FINAL

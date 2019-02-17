@@ -61,7 +61,7 @@ public class AgendaDAO {
                 }
                 ps.setString(10, agenda.getObservacao().toUpperCase());
                 ps.setString(11, "S");
-                ps.setInt(12, user_session.getEmpresa().getCodEmpresa());
+                ps.setInt(12, agenda.getEmpresa().getCodEmpresa());
                 ps.setInt(13, agenda.getGrupo().getIdGrupo());
 
                 ResultSet rs = ps.executeQuery();

@@ -8,12 +8,36 @@
 
     <ui:define name="content">
 
+        <h:form>
+            <b:row rendered="#{MBFuncionarios.listarUnidadesDoFuncionario().size()>1}">
+
+                <b:column span="1">
+                    <h:outputLabel value="Unidade:" style="margin-top:5px;"/>
+                </b:column>
+
+                <b:column span="2">
+                    <p:selectOneMenu value="#{AgendaController.agenda.empresa.codEmpresa}">
+                        <f:selectItems value="#{MBFuncionarios.listarUnidadesDoFuncionario()}"
+                                       var="emp" itemLabel="#{emp.nomeFantasia}"
+                                       itemValue="#{emp.codEmpresa}" />
+                        <p:ajax event="change" process="@this" update=":formAgendaMedica:outProg"/>
+                    </p:selectOneMenu>
+
+                </b:column>
+
+                <br></br>
+
+            </b:row>
+        </h:form>
+
         <div class="panel-body">
             <div class="sub-header">
                 <h4>Agenda Médica</h4>
                 <hr/>
             </div>
+
         </div>
+
         <h:form id="formAgendaMedica">
 
             <b:row>
@@ -24,7 +48,8 @@
                 <b:column span="3">
                     <p:outputPanel id="outPa">
                         <p:autoComplete value="#{AgendaController.agenda.paciente}"
-                                        size="40" converter="conPaciente" required="true" requiredMessage="Paciente: Campo obrigatório!"
+                                        size="40" converter="conPaciente" required="true"
+                                        requiredMessage="Paciente: Campo obrigatório!"
                                         completeMethod="#{PacienteController.listaPacienteAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}" itemLabel="#{theme.nome}">
@@ -55,7 +80,7 @@
                                         size="40" converter="conPrograma"
                                         required="true" requiredMessage="Programa: Campo obrigatório!"
                                         disabled="#{AgendaController.agenda.paciente==null}"
-                                        completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                        completeMethod="#{AgendaController.listaProgramaAutoCompleteUsuarioOutraUnidade}"
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
                                         itemLabel="#{theme.descPrograma}">
@@ -127,7 +152,8 @@
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
                                         itemLabel="#{theme.descTipoAt}">
-                            <p:ajax event="itemSelect" update=":formAgendaMedica, msgPagina" listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"/>
+                            <p:ajax event="itemSelect" update=":formAgendaMedica, msgPagina"
+                                    listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"/>
 
                         </p:autoComplete>
                     </p:outputPanel>
