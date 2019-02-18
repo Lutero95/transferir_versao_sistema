@@ -227,7 +227,7 @@
 
 								<p:commandButton process="@this" size="sm" immediate="true"
 									tooltip="Incluir Profissional" icon="ui-icon-plus"
-									class="btn-acao-table" style="margin-left: 35px;"
+									class="new-btn-acao-table acao-editar" style="margin-left: 35px;"
 									oncomplete="PF('dlgConsuGrupos').show();" />
 							</b:column>
 
@@ -252,7 +252,7 @@
 											<p:commandButton immediate="true"
 												action="#{MBFuncionarios.removeListaGruposEProgramasProfissional()}"
 												icon="ui-icon-trash" update="tabelagrupo"
-												class="new-btn-acao-table">
+												class="new-btn-acao-table acao-excluir">
 												<f:setPropertyActionListener value="#{programa}"
 													target="#{MBFuncionarios.profissional.progAdd}" />
 											</p:commandButton>
@@ -312,7 +312,7 @@
 
 									<p:column headerText="Ação">
 										<div align="center">
-											<p:commandButton immediate="true" class="new-btn-acao-table"
+											<p:commandButton immediate="true" class="new-btn-acao-table acao-excluir"
 												action="#{MBFuncionarios.removerUnidadeExtra()}"
 												icon="ui-icon-trash" update="tabelaunidades">
 												<f:setPropertyActionListener value="#{empresa}"
@@ -435,7 +435,7 @@
                                 Adicionar
                             </f:facet>
 							<p:commandButton update=":frmPrincipal:tbv" icon="ui-icon-check"
-								title="Selecionar" class="new-btn-acao-table"
+								title="Selecionar" class="new-btn-acao-table acao-editar"
 								onclick="PF('dlgConsulEspecialidade').hide();">
 								<f:setPropertyActionListener value="#{espec}"
 									target="#{MBFuncionarios.profissional.especialidade}" />
@@ -466,7 +466,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton update=":frmPrincipal" icon="ui-icon-check"
-							class="new-btn-acao-table"
+							class="new-btn-acao-table acao-editar"
 							title="Selecionar" onclick="PF('dlgConsulCbo').hide();">
 							<f:setPropertyActionListener value="#{cbo}"
 								target="#{MBFuncionarios.profissional.cbo}" />
@@ -496,7 +496,7 @@
                                 Adicionar
                             </f:facet>
 							<p:commandButton update=":frmPrincipal" icon="ui-icon-check"
-								class="new-btn-acao-table"
+								class="new-btn-acao-table acao-editar"
 								title="Selecionar" onclick="PF('dlgConsulProc1').hide();">
 								<f:setPropertyActionListener value="#{proc}"
 									target="#{MBFuncionarios.profissional.proc1}" />
@@ -528,7 +528,7 @@
                                 Adicionar
                             </f:facet>
 							<p:commandButton update=":frmPrincipal" icon="ui-icon-check"
-								class="new-btn-acao-table"
+								class="new-btn-acao-table acao-editar"
 								title="Selecionar" onclick="PF('dlgConsulProc2').hide();">
 								<f:setPropertyActionListener value="#{proc}"
 									target="#{MBFuncionarios.profissional.proc2}" />
@@ -571,7 +571,7 @@
                             </f:facet>
 							<p:commandButton
 								update=":frmPrincipal:tbv:tabelagrupo :frmPrincipal:msgPagina"
-								icon="ui-icon-check" title="Selecionar" class="new-btn-acao-table"
+								icon="ui-icon-check" title="Selecionar" class="new-btn-acao-table acao-editar"
 								onclick="PF('dlgConsuGrupos').hide();"
 								action="#{MBFuncionarios.addListaGruposEProgramasProfissional()}">
 								<f:setPropertyActionListener value="#{programa}"

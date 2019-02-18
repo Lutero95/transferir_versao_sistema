@@ -1,233 +1,227 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-        <h:form id="formConsConfAgenda">
-            <div class="panel-body">
-                <div class="sub-header">
-                    <h4>Consulta de Configuração de Agenda por Profissional</h4>
-                    <hr/>
-                </div>
+		<h:form id="formConsConfAgenda">
+			<div class="panel panel-primary top-primary">
+				<div class="panel-heading top-heading">
+					<h4 class="panel-title">Consulta de Configuração de Agenda por
+						Profissional</h4>
+				</div>
 
-                <b:commandButton id="btninc" value="Novo" size="sm"
-                                 action="#{ConfigAgendaController.redirectInsert()}"
-                                 icon="glyphicon-plus" look="primary">
-                    <f:setPropertyActionListener value="1"
-                                                 target="#{ConfigAgendaController.tipo}"/>
-                    <p:tooltip for="btninc" value="Incluir"></p:tooltip>
-                </b:commandButton>
+				<div class="panel-body table-body">
 
+					<b:commandButton id="btninc" value="Novo" size="sm"
+						action="#{ConfigAgendaController.redirectInsert()}"
+						icon="glyphicon-plus" class="btn-addNovo">
+						<f:setPropertyActionListener value="1"
+							target="#{ConfigAgendaController.tipo}" />
+						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+					</b:commandButton>
 
-                <br></br>
-                <br></br>
-
-                <p:outputPanel id="outGeral" autoUpdate="true">
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dtProf"
-                                 value="#{ConfigAgendaController.listaProfissionais}" var="prof"
-                                 resizableColumns="true" selectionMode="single">
+					<p:outputPanel id="outGeral" autoUpdate="true">
+						<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dtProf"
+							value="#{ConfigAgendaController.listaProfissionais}" var="prof"
+							resizableColumns="true" selectionMode="single">
 
 
-                        <h:column>
-                            <f:facet name="header">
+							<h:column>
+								<f:facet name="header">
                                 Profissional
                             </f:facet>
-                            <h:outputText value="#{prof.nome}"/>
-                        </h:column>
+								<h:outputText value="#{prof.nome}" />
+							</h:column>
 
 
-                        <h:column>
-                            <f:facet name="header">
+							<h:column>
+								<f:facet name="header">
                                 Ação
                             </f:facet>
-                            <b:commandButton tooltip="Confirmar" icon="glyphicon-ok"
-                                             value="Selecionar" size="sm"
-                                             action="#{ConfigAgendaController.selectProfissional()}">
-                                <f:setPropertyActionListener value="#{prof}"
-                                                             target="#{ConfigAgendaController.prof}"/>
+								<b:commandButton tooltip="Confirmar" icon="glyphicon-ok"
+									value="Selecionar" size="sm" class="btn-acao-table acao-editar"
+									action="#{ConfigAgendaController.selectProfissional()}">
+									<f:setPropertyActionListener value="#{prof}"
+										target="#{ConfigAgendaController.prof}" />
 
-                            </b:commandButton>
+								</b:commandButton>
 
-                        </h:column>
+							</h:column>
 
 
-                    </b:dataTable>
+						</b:dataTable>
 
-                    <br></br>
+						<br></br>
 
-                    <div align="center">
-                        <b:row>
+							<b:row>
 
-                            <b:column span="2"></b:column>
+								<b:column span="2"></b:column>
 
-                            <b:column span="1">
-                                <h:outputLabel value="Mês: "/>
-                            </b:column>
+								<b:column span="3" class="label-position">
+								<b:label value="Mês:" severity="info" class="label-agendaEquipe" />
 
-                            <b:column span="2">
-                                <p:selectOneMenu style="width:120px"
-                                                 value="#{ConfigAgendaController.confParte1.mes}">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                    <f:selectItem itemLabel="Janeiro" itemValue="1"/>
-                                    <f:selectItem itemLabel="Fevereiro" itemValue="2"/>
-                                    <f:selectItem itemLabel="Março" itemValue="3"/>
-                                    <f:selectItem itemLabel="Abril" itemValue="4"/>
-                                    <f:selectItem itemLabel="Maio" itemValue="5"/>
-                                    <f:selectItem itemLabel="Junho" itemValue="6"/>
-                                    <f:selectItem itemLabel="Julho" itemValue="7"/>
-                                    <f:selectItem itemLabel="Agosto" itemValue="8"/>
-                                    <f:selectItem itemLabel="Setembro" itemValue="9"/>
-                                    <f:selectItem itemLabel="Outubro" itemValue="10"/>
-                                    <f:selectItem itemLabel="Novembro" itemValue="11"/>
-                                    <f:selectItem itemLabel="Dezembro" itemValue="12"/>
-                                </p:selectOneMenu>
-                            </b:column>
+								<b:selectOneMenu class="select-agendaEquipe"
+										value="#{ConfigAgendaController.confParte1.mes}">
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItem itemLabel="Janeiro" itemValue="1" />
+										<f:selectItem itemLabel="Fevereiro" itemValue="2" />
+										<f:selectItem itemLabel="Março" itemValue="3" />
+										<f:selectItem itemLabel="Abril" itemValue="4" />
+										<f:selectItem itemLabel="Maio" itemValue="5" />
+										<f:selectItem itemLabel="Junho" itemValue="6" />
+										<f:selectItem itemLabel="Julho" itemValue="7" />
+										<f:selectItem itemLabel="Agosto" itemValue="8" />
+										<f:selectItem itemLabel="Setembro" itemValue="9" />
+										<f:selectItem itemLabel="Outubro" itemValue="10" />
+										<f:selectItem itemLabel="Novembro" itemValue="11" />
+										<f:selectItem itemLabel="Dezembro" itemValue="12" />
+									</b:selectOneMenu>
+								</b:column>
 
-                            <b:column span="1">
-                                <h:outputLabel value="Ano: "/>
-                            </b:column>
+								<b:column span="3" class="label-position">
+									<b:label value="Ano:" severity="info" class="label-agendaEquipe"/>
 
-                            <b:column span="2">
-                                <h:inputText value="#{ConfigAgendaController.confParte1.ano}"/>
-                            </b:column>
+									<b:inputText class="select-agendaEquipe" 
+										value="#{ConfigAgendaController.confParte1.ano}" />
+								</b:column>
 
-                            <b:column span="2">
-                                <p:commandButton value="Buscar" icon="ui-icon-search"
-                                                 action="#{ConfigAgendaController.selectProfissionalComFiltros}"
-                                                 update="dtHorarios"/>
-                            </b:column>
+								<b:column span="2">
+									<p:commandButton value="Buscar" icon="ui-icon-search"
+										style="margin-top: 20px;margin-left: -15px;"
+										action="#{ConfigAgendaController.selectProfissionalComFiltros}"
+										update="dtHorarios" />
+								</b:column>
 
-                            <b:column span="2"></b:column>
+								<b:column span="2"></b:column>
 
-                        </b:row>
+							</b:row>
 
-                    </div>
+						<br></br>
 
-                    <br></br>
+						<p:dataTable id="dtHorarios"
+							value="#{ConfigAgendaController.listaHorarios}" var="config"
+							resizableColumns="true" paginator="true" rows="10"
+							emptyMessage="Não existe nenhum horário cadastrado!">
+							<p:column headerText="Dia da Semana" width="20%">
 
-                    <p:dataTable id="dtHorarios"
-                                 value="#{ConfigAgendaController.listaHorarios}" var="config"
-                                 resizableColumns="true" paginator="true" rows="10"
-                                 emptyMessage="Não existe nenhum horário cadastrado!">
-                        <p:column headerText="Dia da Semana" width="20%">
+								<div align="center">
+									<p:outputLabel value="Domingo"
+										rendered="#{config.diaDaSemana == 1}" />
+									<p:outputLabel value="Segunda"
+										rendered="#{config.diaDaSemana == 2}" />
+									<p:outputLabel value="Terça"
+										rendered="#{config.diaDaSemana == 3}" />
+									<p:outputLabel value="Quarta"
+										rendered="#{config.diaDaSemana == 4}" />
+									<p:outputLabel value="Quinta"
+										rendered="#{config.diaDaSemana == 5}" />
+									<p:outputLabel value="Sexta"
+										rendered="#{config.diaDaSemana == 6}" />
+									<p:outputLabel value="Sábado"
+										rendered="#{config.diaDaSemana == 7}" />
+								</div>
 
-                            <div align="center">
-                                <p:outputLabel value="Domingo"
-                                               rendered="#{config.diaDaSemana == 1}"/>
-                                <p:outputLabel value="Segunda"
-                                               rendered="#{config.diaDaSemana == 2}"/>
-                                <p:outputLabel value="Terça"
-                                               rendered="#{config.diaDaSemana == 3}"/>
-                                <p:outputLabel value="Quarta"
-                                               rendered="#{config.diaDaSemana == 4}"/>
-                                <p:outputLabel value="Quinta"
-                                               rendered="#{config.diaDaSemana == 5}"/>
-                                <p:outputLabel value="Sexta"
-                                               rendered="#{config.diaDaSemana == 6}"/>
-                                <p:outputLabel value="Sábado"
-                                               rendered="#{config.diaDaSemana == 7}"/>
-                            </div>
+							</p:column>
+							<p:column headerText="Data Específica" width="16%">
+								<div align="center">
+									<p:outputLabel value="#{config.dataEspecifica}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</p:outputLabel>
+								</div>
+							</p:column>
 
-                        </p:column>
-                        <p:column headerText="Data Específica" width="16%">
-                            <div align="center">
-                                <p:outputLabel value="#{config.dataEspecifica}">
-                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                                </p:outputLabel>
-                            </div>
-                        </p:column>
+							<p:column headerText="Quantidade Máxima" width="16%">
+								<div align="center">
+									<p:outputLabel value="#{config.qtdMax}" />
+								</div>
+							</p:column>
 
-                        <p:column headerText="Quantidade Máxima" width="16%">
-                            <div align="center">
-                                <p:outputLabel value="#{config.qtdMax}"/>
-                            </div>
-                        </p:column>
+							<p:column headerText="Mês" width="16%">
+								<div align="center">
+									<p:outputLabel value="Janeiro" rendered="#{config.mes == 1}" />
+									<p:outputLabel value="Fevereiro" rendered="#{config.mes == 2}" />
+									<p:outputLabel value="Março" rendered="#{config.mes == 3}" />
+									<p:outputLabel value="Abril" rendered="#{config.mes == 4}" />
+									<p:outputLabel value="Maio" rendered="#{config.mes == 5}" />
+									<p:outputLabel value="Junho" rendered="#{config.mes == 6}" />
+									<p:outputLabel value="Julho" rendered="#{config.mes == 7}" />
+									<p:outputLabel value="Agosto" rendered="#{config.mes == 8}" />
+									<p:outputLabel value="Setembro" rendered="#{config.mes == 9}" />
+									<p:outputLabel value="Outubro" rendered="#{config.mes == 10}" />
+									<p:outputLabel value="Novembro" rendered="#{config.mes == 11}" />
+									<p:outputLabel value="Dezembro" rendered="#{config.mes == 12}" />
+								</div>
+							</p:column>
 
-                        <p:column headerText="Mês" width="16%">
-                            <div align="center">
-                                <p:outputLabel value="Janeiro" rendered="#{config.mes == 1}"/>
-                                <p:outputLabel value="Fevereiro" rendered="#{config.mes == 2}"/>
-                                <p:outputLabel value="Março" rendered="#{config.mes == 3}"/>
-                                <p:outputLabel value="Abril" rendered="#{config.mes == 4}"/>
-                                <p:outputLabel value="Maio" rendered="#{config.mes == 5}"/>
-                                <p:outputLabel value="Junho" rendered="#{config.mes == 6}"/>
-                                <p:outputLabel value="Julho" rendered="#{config.mes == 7}"/>
-                                <p:outputLabel value="Agosto" rendered="#{config.mes == 8}"/>
-                                <p:outputLabel value="Setembro" rendered="#{config.mes == 9}"/>
-                                <p:outputLabel value="Outubro" rendered="#{config.mes == 10}"/>
-                                <p:outputLabel value="Novembro" rendered="#{config.mes == 11}"/>
-                                <p:outputLabel value="Dezembro" rendered="#{config.mes == 12}"/>
-                            </div>
-                        </p:column>
+							<p:column headerText="Ano" width="16%">
+								<div align="center">
+									<p:outputLabel value="#{config.ano}" />
+								</div>
+							</p:column>
 
-                        <p:column headerText="Ano" width="16%">
-                            <div align="center">
-                                <p:outputLabel value="#{config.ano}"/>
-                            </div>
-                        </p:column>
+							<p:column headerText="Ações" width="16%">
+								<div align="center">
 
-                        <p:column headerText="Ações" width="16%">
-                            <div align="center">
+									<p:commandButton icon="ui-icon-pencil" class="new-btn-acao-table acao-editar"
+										action="#{ConfigAgendaController.redirectEdit()}">
 
-                                <p:commandButton icon="ui-icon-pencil"
-                                                 action="#{ConfigAgendaController.redirectEdit()}">
+										<f:setPropertyActionListener value="#{prof}"
+											target="#{ConfigAgendaController.confParte1}" />
 
-                                    <f:setPropertyActionListener value="#{prof}"
-                                                                 target="#{ConfigAgendaController.confParte1}"/>
+										<f:setPropertyActionListener value="#{config}"
+											target="#{ConfigAgendaController.confParte1}" />
 
-                                    <f:setPropertyActionListener value="#{config}"
-                                                                 target="#{ConfigAgendaController.confParte1}"/>
+										<f:setPropertyActionListener value="2"
+											target="#{ConfigAgendaController.tipo}" />
 
-                                    <f:setPropertyActionListener value="2"
-                                                                 target="#{ConfigAgendaController.tipo}"/>
+									</p:commandButton>
 
-                                </p:commandButton>
+									<p:commandButton icon="ui-icon-closethick" class="new-btn-acao-table acao-excluir"
+										onclick="PF('dialogExclusao').show()">
 
-                                <p:commandButton icon="ui-icon-closethick"
-                                                 onclick="PF('dialogExclusao').show()">
+										<f:setPropertyActionListener value="#{config}"
+											target="#{ConfigAgendaController.confParte1}" />
+									</p:commandButton>
+								</div>
+							</p:column>
 
-                                    <f:setPropertyActionListener value="#{config}"
-                                                                 target="#{ConfigAgendaController.confParte1}"/>
-                                </p:commandButton>
-                            </div>
-                        </p:column>
+						</p:dataTable>
+					</p:outputPanel>
+				</div>
 
-                    </p:dataTable>
-                </p:outputPanel>
-            </div>
+				<div align="center">
+					<b:messages value="Error" id="msgPagina"></b:messages>
+				</div>
 
-            <div align="center">
-                <b:messages value="Error" id="msgPagina"></b:messages>
-            </div>
+			</div>
 
-        </h:form>
+		</h:form>
 
-        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
-                  resizable="false">
+		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+			resizable="false">
 
-            <h:form id="dlgexcluir">
-                <div class="alert alert-warning" role="alert">Deseja excluir
-                    essa configuração?
-                </div>
-                <div align="center">
-                    <p:separator/>
-                    <b:commandButton look="success" value="Sim" style="float:left;"
-                                     action="#{ConfigAgendaController.excluirConfig()}" ajax="true"
-                                     icon="glyphicon-ok"
-                                     update=":formConsConfAgenda:msgPagina, :formConsConfAgenda:dtHorarios"/>
+			<h:form id="dlgexcluir">
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					essa configuração?</div>
+				<div align="center">
+					<p:separator />
+					<b:commandButton look="success" value="Sim" style="float:left;"
+						action="#{ConfigAgendaController.excluirConfig()}" ajax="true"
+						icon="glyphicon-ok" class="btn-sim"
+						update=":formConsConfAgenda:msgPagina, :formConsConfAgenda:dtHorarios" />
 
-                    <b:commandButton value="Não"
-                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
-                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
-                </div>
-            </h:form>
-        </p:dialog>
+					<b:commandButton value="Não" class="btn-nao"
+						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
+				</div>
+			</h:form>
+		</p:dialog>
 
-    </ui:define>
+	</ui:define>
 
 </ui:composition>

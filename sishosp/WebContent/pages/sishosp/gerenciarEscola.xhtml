@@ -52,7 +52,7 @@
 
 
                         <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-                        				 class="btn-acao-table"
+                        				 class="btn-acao-table acao-editar"
                                          action="#{EscolaController.redirectEdit()}">
                             <f:setPropertyActionListener value="#{tab}"
                                                          target="#{EscolaController.escola}"/>
@@ -61,7 +61,7 @@
                                                          target="#{EscolaController.tipo}"/>
                         </b:commandButton>
 
-                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash" class="btn-acao-table"
+                        <b:commandButton tooltip="Excluir" icon="glyphicon-trash" class="btn-acao-table acao-excluir"
                                          size="sm" ajax="true" style="margin-left:10px"
                                          oncomplete="PF('dialogExclusao').show()">
 

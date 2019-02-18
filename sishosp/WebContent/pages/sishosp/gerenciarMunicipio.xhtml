@@ -61,7 +61,7 @@
                         </f:facet>
 
 							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
-								class="btn-acao-table"
+								class="btn-acao-table acao-editar"
 								size="sm" action="#{EnderecoController.redirectEditMunicipio()}">
 								<f:setPropertyActionListener value="#{tab}"
 									target="#{EnderecoController.endereco}" />
@@ -71,7 +71,7 @@
 							</b:commandButton>
 
 							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-								size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table"
+								size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
 								oncomplete="PF('dialogExclusao').show()">
 
 								<f:setPropertyActionListener value="#{tab}"

@@ -72,7 +72,7 @@
                         </f:facet>
 
 						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{EmpresaController.redirectEdit()}" class="btn-acao-table">
+							action="#{EmpresaController.redirectEdit()}" class="btn-acao-table acao-editar">
 							<f:setPropertyActionListener value="#{tab}"
 								target="#{EmpresaController.empresa}" />
 
@@ -81,7 +81,7 @@
 						</b:commandButton>
 
 						<b:commandButton tooltip="Desativar" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table"
+							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
 							oncomplete="PF('dialogExclusao').show()">
 
 							<f:setPropertyActionListener value="#{tab}"

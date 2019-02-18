@@ -43,7 +43,7 @@
 							<b:label value="Profissionais" severity="info" />
 							
                         <b:commandButton process="@this" size="sm" style="margin-left: 35px;"
-                        				 class="btn-acao-table"
+                        				 class="btn-acao-table acao-editar"
                                          action="#{MBFuncionarios.ListarTodosProfissionais()}"
                                          tooltip="Incluir Profissional" icon="glyphicon-plus"
                                          oncomplete="PF('dlgConsuProfE').show();" update="formConsuProfE"/>
@@ -62,7 +62,7 @@
 
                             <p:column headerText="Ação">
                                 <div align="center">
-                                    <p:commandButton process="@this" class="new-btn-acao-table"
+                                    <p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
                                                      action="#{EquipeController.equipe.removeProfList()}"
                                                      icon="ui-icon-trash" update=":frmPrincipal">
                                         <f:setPropertyActionListener value="#{tab}"
@@ -131,7 +131,7 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton process="@this" class="new-btn-acao-table"
+                        <p:commandButton process="@this" class="new-btn-acao-table acao-editar"
                                          update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
                                          icon="ui-icon-check" title="Selecionar"
                                          action="#{EquipeController.equipe.addProfList()}"

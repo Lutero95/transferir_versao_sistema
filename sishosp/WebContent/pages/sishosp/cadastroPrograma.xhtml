@@ -47,7 +47,7 @@
 								<b:commandButton process="@this" size="sm"
 									action="#{GrupoController.listaTodosGrupos()}"
 									tooltip="Incluir Grupo" icon="glyphicon-plus"
-									class="btn-acao-table" style="margin-left: 35px;"
+									class="btn-acao-table acao-editar" style="margin-left: 35px;"
 									oncomplete="PF('dlgConsuGrupos').show();"
 									update=":formConsuGrop" />
 							</b:column>
@@ -70,7 +70,7 @@
 
 									<p:column headerText="Ação">
 										<div align="center">
-											<p:commandButton process="@this" class="new-btn-acao-table"
+											<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
 												action="#{ProgramaController.prog.removeGrupoLista()}"
 												icon="ui-icon-trash" update=":frmPrincipal:tabela">
 												<f:setPropertyActionListener value="#{tab}"
@@ -141,7 +141,7 @@
                             </f:facet>
 								<p:commandButton
 									update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
-									icon="ui-icon-check" title="Selecionar" class="new-btn-acao-table"
+									icon="ui-icon-check" title="Selecionar" class="new-btn-acao-table acao-editar"
 									onclick="PF('dlgConsuGrupos').hide();"
 									action="#{ProgramaController.prog.addGrupoLista()}">
 									<f:setPropertyActionListener value="#{grupo}"

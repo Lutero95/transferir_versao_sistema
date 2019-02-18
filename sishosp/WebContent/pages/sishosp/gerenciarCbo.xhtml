@@ -55,7 +55,7 @@
                         </f:facet>
 
 						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{CboController.redirectEdit()}" class="btn-acao-table">
+							action="#{CboController.redirectEdit()}" class="btn-acao-table acao-editar">
 							<f:setPropertyActionListener value="#{tab}"
 								target="#{CboController.cbo}" />
 
@@ -64,7 +64,7 @@
 						</b:commandButton>
 
 						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table"
+							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
 							oncomplete="PF('dlgExclusao').show()">
 
 							<f:setPropertyActionListener value="#{tab}"

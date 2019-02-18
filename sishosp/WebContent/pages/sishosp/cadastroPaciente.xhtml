@@ -238,7 +238,7 @@
 											<div align="center">
 												<p:commandButton process="@this"
 													action="#{PacienteController.removeListaTelefone()}"
-													icon="ui-icon-trash" class="new-btn-acao-table"
+													icon="ui-icon-trash" class="new-btn-acao-table acao-excluir"
 													update=":frmPrincipal:tbv:outTabelaTelefones">
 													<f:setPropertyActionListener value="#{tab}"
 														target="#{PacienteController.telefone}" />
@@ -943,7 +943,7 @@
 								<p:commandButton oncomplete="PF('dlgbuscaescola').hide()"
 									process="@this" icon="ui-icon-check" id="confirmar"
 									update=":frmPrincipal:tbv:escolacomplete2"
-									class="new-btn-acao-table">
+									class="new-btn-acao-table acao-editar">
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.escolaSuggestion}" />
 									<p:tooltip for="confirmar" value="Selecionar Escola"></p:tooltip>
@@ -985,7 +985,7 @@
 								<p:commandButton oncomplete="PF('dlgbuscaescolaridade').hide();"
 									process="@this" icon="ui-icon-check" id="confirmar"
 									update=":frmPrincipal:tbv:escolacomplete1"
-									class="new-btn-acao-table">
+									class="new-btn-acao-table acao-editar">
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.escolaridadeSuggestion}" />
 									<p:tooltip for="confirmar" value="Selecionar Escolaridade2"></p:tooltip>
@@ -1026,7 +1026,7 @@
                                     Adicionar
                                 </f:facet>
 								<p:commandButton oncomplete="PF('dlgbuscaprofissao').hide()"
-									icon="ui-icon-check" id="confirmar" class="new-btn-acao-table"
+									icon="ui-icon-check" id="confirmar" class="new-btn-acao-table acao-editar"
 									update=":frmPrincipal:tbv:escolacomplete3">
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.profissaoSuggestion}" />
@@ -1068,7 +1068,7 @@
                                     Adicionar
                                 </f:facet>
 								<p:commandButton oncomplete="PF('dlgbuscaencaminhado').hide()"
-									icon="ui-icon-check" id="confirmar" class="new-btn-acao-table"
+									icon="ui-icon-check" id="confirmar" class="new-btn-acao-table acao-editar"
 									update=":frmPrincipal:tbv:escolacomplete4">
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.encaminhadoSuggestion}" />
@@ -1109,7 +1109,7 @@
                                     Adicionar
                                 </f:facet>
 								<p:commandButton oncomplete="PF('dlgbuscacomochegou').hide();"
-									icon="ui-icon-check" id="confirmar" class="new-btn-acao-table"
+									icon="ui-icon-check" id="confirmar" class="new-btn-acao-table acao-editar"
 									update=":frmPrincipal:tbv:escolacomplete5">
 									<f:setPropertyActionListener value="#{busca}"
 										target="#{PacienteController.transporteSuggestion}" />

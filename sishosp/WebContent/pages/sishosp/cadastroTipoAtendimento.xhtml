@@ -53,7 +53,7 @@
                     <b:column span="2" class="label-position">
 								<b:label value="Grupo" severity="info" />
 								
-                        <b:commandButton process="@this" size="sm" class="btn-acao-table" style="margin-left: 35px;"
+                        <b:commandButton process="@this" size="sm" class="btn-acao-table acao-editar" style="margin-left: 35px;"
                                          actionListener="#{GrupoController.listaTodosGrupos()}"
                                          tooltip="Incluir Grupo" icon="glyphicon-plus"
                                          oncomplete="PF('dlgConsuGrupo').show();" update="formConsuGrop"/>
@@ -78,7 +78,7 @@
 
                             <p:column headerText="Ação">
                                 <div align="center">
-                                    <p:commandButton process="@this" class="new-btn-acao-table"
+                                    <p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
                                                      action="#{TipoAtendimentoController.tipoAtendimento.rmvGrupoLista()}"
                                                      icon="ui-icon-trash" update=":frmPrincipal:tabela">
                                         <f:setPropertyActionListener value="#{tab}"
@@ -95,7 +95,7 @@
 
                     <b:column span="3">
 								<p:selectBooleanCheckbox label="Primeiro Atendimento"
-									itemLabel="Primeiro Atendimento:" style="color:#2e84ce;"
+									itemLabel="Primeiro Atendimento" style="color:#2e84ce;"
                                 value="#{TipoAtendimentoController.tipoAtendimento.primeiroAt}">
                         </p:selectBooleanCheckbox>
                     </b:column>
@@ -106,7 +106,7 @@
                 <b:row>
                     <b:column span="3">
 								<p:selectBooleanCheckbox label="Equipe"
-									itemLabel="Equipe:" style="color:#2e84ce;"
+									itemLabel="Equipe" style="color:#2e84ce;"
                                 value="#{TipoAtendimentoController.tipoAtendimento.equipe}">
                         </p:selectBooleanCheckbox>
                     </b:column>
@@ -176,7 +176,7 @@
                             <p:commandButton process="@this"
                                              update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
                                              icon="ui-icon-check" title="Selecionar"
-                                             onclick="PF('dlgConsuGrupo').hide();" class="new-btn-acao-table"
+                                             onclick="PF('dlgConsuGrupo').hide();" class="new-btn-acao-table acao-editar"
                                              action="#{TipoAtendimentoController.tipoAtendimento.addGrupoLista()}">
                                 <f:setPropertyActionListener value="#{grupo}"
                                                              target="#{TipoAtendimentoController.tipoAtendimento.grupoParaAdd}"/>

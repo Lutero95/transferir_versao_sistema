@@ -80,7 +80,7 @@
 							<b:label value="Equipe:" severity="info" />
 							
                         <b:commandButton process="@this" size="sm" style="margin-left: 35px;"
-                        				 class="btn-acao-table"
+                        				 class="btn-acao-table acao-editar"
 								action="#{EquipeController.ListarTodasEquipes()	}"
 								tooltip="Incluir Profissional" icon="glyphicon-plus"
 								oncomplete="PF('dlgConsultEquipes').show();"
@@ -106,7 +106,7 @@
 
 								<p:column headerText="Ação">
 									<div align="center">
-										<p:commandButton process="@this" class="new-btn-acao-table"
+										<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
 											action="#{GrupoController.grupo.rmvEquipe()}"
 											icon="ui-icon-trash" update=":frmPrincipal:tabela">
 											<f:setPropertyActionListener value="#{tab}"
@@ -170,7 +170,7 @@
 							<p:commandButton
 								update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
 								icon="ui-icon-check" title="Selecionar"
-								class="new-btn-acao-table"
+								class="new-btn-acao-table acao-editar"
 								onclick="PF('dlgConsultEquipes').hide();"
 								action="#{GrupoController.grupo.addEquipe()}">
 								<f:setPropertyActionListener value="#{equipe}"

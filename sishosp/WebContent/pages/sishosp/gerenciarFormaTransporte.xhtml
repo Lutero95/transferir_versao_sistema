@@ -46,7 +46,7 @@
                         </f:facet>
 
 						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							class="btn-acao-table"
+							class="btn-acao-table acao-editar"
 							action="#{FormaTransporteController.redirectEdit()}">
 							<f:setPropertyActionListener value="#{tab}"
 								target="#{FormaTransporteController.transporte}" />
@@ -56,7 +56,7 @@
 						</b:commandButton>
 
 						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table"
+							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
 							oncomplete="PF('dialogExclusao').show()">
 
 							<f:setPropertyActionListener value="#{tab}"

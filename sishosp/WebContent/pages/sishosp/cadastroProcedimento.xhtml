@@ -256,7 +256,7 @@
 
 								<p:column headerText="Ação">
 									<center>
-										<p:commandButton process="@this" class="new-btn-acao-table"
+										<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
 											action="#{ProcedimentoController.removerCid()}"
 											icon="ui-icon-trash" update="tabelaCid">
 											<f:setPropertyActionListener value="#{tab}"
@@ -314,7 +314,7 @@
 
 								<p:column headerText="Ação">
 									<center>
-										<p:commandButton process="@this" class="new-btn-acao-table"
+										<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
 											action="#{ProcedimentoController.removerCbo()}"
 											icon="ui-icon-trash" update="tabelaCbo">
 											<f:setPropertyActionListener value="#{tab}"
@@ -373,7 +373,7 @@
 
 								<p:column headerText="Ação">
 									<center>
-										<p:commandButton process="@this" class="new-btn-acao-table"
+										<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
 											action="#{ProcedimentoController.removerRecurso()}"
 											icon="ui-icon-trash" update="tabelaRecurso">
 											<f:setPropertyActionListener value="#{tab}"
