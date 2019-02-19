@@ -1,12 +1,34 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="../../template/template.xhtml">
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
 
     <ui:define name="content">
+
+        <h:form>
+            <b:row rendered="#{MBFuncionarios.listarUnidadesDoFuncionario().size()>1}">
+
+                <b:column span="1">
+                    <h:outputLabel value="Unidade:" style="margin-top:5px;"/>
+                </b:column>
+
+                <b:column span="2">
+                    <p:selectOneMenu value="#{AgendaController.agenda.empresa.codEmpresa}">
+                        <f:selectItems value="#{MBFuncionarios.listarUnidadesDoFuncionario()}"
+                                       var="emp" itemLabel="#{emp.nomeFantasia}"
+                                       itemValue="#{emp.codEmpresa}"/>
+                        <p:ajax event="change" process="@this"/>
+                    </p:selectOneMenu>
+
+                </b:column>
+
+                <br></br>
+
+            </b:row>
+        </h:form>
 
         <h:form id="formConsAge">
             <div class="panel-body">
@@ -16,7 +38,7 @@
                 </div>
             </div>
 
-            <p:panelGrid columns="5" styleClass="semBorda">
+            <p:panelGrid columns="6" styleClass="semBorda">
                 <p:outputPanel>
                     <h:outputLabel value="Data de Marcação: "/>
 
@@ -32,11 +54,11 @@
                     <p:calendar value="#{AgendaController.dataAtendimentoFinalC}" style="margin-left: 20px"
                                 id="dtagen3" locale="pt" navigator="true" mask="true"
                                 showOn="button" pattern="dd/MM/yyyy">
-                        <p:ajax event="dateSelect"
-                                listener="#{AgendaController.consultarAgenda()}"
-                                process="@form @this"
-                                update=":formConsAge:dtConsultas, :formConsAge:msgPagina"></p:ajax>
                     </p:calendar>
+
+                    <b:commandButton value="Buscar" icon="glyphicon-search" style="margin-left:10px"
+                                     action="#{AgendaController.consultarAgenda()}"
+                                     update=":formConsAge:dtConsultas, :formConsAge:msgPagina"></b:commandButton>
                 </p:outputPanel>
 
             </p:panelGrid>

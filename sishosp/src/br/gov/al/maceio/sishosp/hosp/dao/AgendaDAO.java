@@ -518,29 +518,28 @@ public class AgendaDAO {
     }
 
     public List<AgendaBean> consultarAgenda(Date dataAgenda,
-                                            Date dataAgendaFinal) throws ProjetoException {
+                                            Date dataAgendaFinal, Integer codEmpresa) throws ProjetoException {
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
         String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome, p.cns, a.codmedico, m.descfuncionario, "
                 + " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, "
                 + " a.codequipe, e.descequipe "
                 + " FROM  hosp.atendimentos a "
-                + " left join hosp.atendimentos1 a1 on (a.id_atendimento = a1.id_atendimento)"
-                + " left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
-                + " left join acl.funcionarios m on (m.id_funcionario = a.codmedico) "
-                + " left join hosp.equipe e on (e.id_equipe = a.codequipe) "
-                + " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)";
+                + " LEFT JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento)"
+                + " LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) "
+                + " LEFT JOIN acl.funcionarios m ON (m.id_funcionario = a.codmedico) "
+                + " LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) "
+                + " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) "
+                + " WHERE a.cod_empresa = ? AND a.dtamarcacao >= ? AND a.dtamarcacao <= ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
             stm = con.prepareStatement(sql);
 
-            if (dataAgenda != null) {
-                sql += " where a.dtamarcacao >= ? and a.dtamarcacao <= ?";
-                stm = con.prepareStatement(sql);
-                stm.setDate(1, new java.sql.Date(dataAgenda.getTime()));
-                stm.setDate(2, new java.sql.Date(dataAgendaFinal.getTime()));
-            }
+            stm.setInt(1, codEmpresa);
+            stm.setDate(2, new java.sql.Date(dataAgenda.getTime()));
+            stm.setDate(3, new java.sql.Date(dataAgendaFinal.getTime()));
+
 
             ResultSet rs = stm.executeQuery();
 
@@ -622,7 +621,7 @@ public class AgendaDAO {
             }
         }
     }
-    
+
     public int verQtdMaxAgendaEspec(AgendaBean agenda) throws ProjetoException {
         Calendar cal = Calendar.getInstance();
         cal.setTime(agenda.getDataAtendimento());

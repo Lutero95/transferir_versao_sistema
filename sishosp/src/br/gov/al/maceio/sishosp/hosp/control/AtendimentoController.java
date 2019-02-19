@@ -47,6 +47,9 @@ public class AtendimentoController implements Serializable {
     private static final String ENDERECO_ID = "&amp;id=";
 
     public AtendimentoController() {
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         this.atendimento = new AtendimentoBean();
         this.atendimentoLista = null;
         listAtendimentos = new ArrayList<AtendimentoBean>();
@@ -55,8 +58,10 @@ public class AtendimentoController implements Serializable {
         procedimento = new ProcedimentoBean();
         listaProcedimentos = new ArrayList<ProcedimentoBean>();
         primeiraVez = true;
+        atendimento.getEmpresa().setCodEmpresa(user_session.getCodigo());
 
     }
+
 
     public void consultarAtendimentos() throws ProjetoException {
         if (this.atendimento.getDataAtendimentoInicio() == null
@@ -142,7 +147,8 @@ public class AtendimentoController implements Serializable {
     }
 
     public void listarAtendimentos() throws ProjetoException {
-        this.listAtendimentos = aDao.carregaAtendimentos(atendimento);
+        this.listAtendimentos = aDao
+                .carregaAtendimentos(atendimento, atendimento.getEmpresa().getCodEmpresa());
     }
 
     public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {

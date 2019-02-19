@@ -58,6 +58,10 @@ public class AgendaController implements Serializable {
     private String dataAtual;
 
     public AgendaController() {
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         this.agenda = new AgendaBean();
         grupoSelecionado = new GrupoBean();
         listaGruposProgramas = new ArrayList<GrupoBean>();
@@ -82,9 +86,6 @@ public class AgendaController implements Serializable {
         dataAtual = DataUtil.mesIhAnoAtual();
         agenda.getEmpresa().setCodEmpresa(user_session.getCodigo());
     }
-
-    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-            .getSessionMap().get("obj_funcionario");
 
     public void limparDados() {
         this.agenda = new AgendaBean();
@@ -329,7 +330,7 @@ public class AgendaController implements Serializable {
             return;
         }
         this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC,
-                dataAtendimentoFinalC);
+                dataAtendimentoFinalC, agenda.getEmpresa().getCodEmpresa());
     }
 
     //SEM USO NO MOMENTO

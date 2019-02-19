@@ -220,7 +220,7 @@ public class AtendimentoDAO {
         }
     }
 
-    public List<AtendimentoBean> carregaAtendimentos(AtendimentoBean atendimento)
+    public List<AtendimentoBean> carregaAtendimentos(AtendimentoBean atendimento, Integer codEmpresa)
             throws ProjetoException {
 
         String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
@@ -257,7 +257,7 @@ public class AtendimentoDAO {
                     .getDataAtendimentoInicio().getTime()));
             stm.setDate(2, new java.sql.Date(atendimento
                     .getDataAtendimentoFinal().getTime()));
-            stm.setInt(3, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(3, codEmpresa);
 
             ResultSet rs = stm.executeQuery();
             
