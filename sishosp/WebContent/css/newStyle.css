@@ -1346,6 +1346,10 @@ min-width
     margin-top: 6px;
 }
 
+.new-data-size4 {
+    width: 265px;
+}
+
 .data-size1 {
     width: 185px;
     margin-right: -18px;
@@ -1357,13 +1361,24 @@ min-width
 	margin-left: -15px;
 }
 
-.campo-laudoDig {
+.campo-laudoDig, .campo-laudoDig3 {
 	margin-top: 5px;
 	padding: 10px 10px;
     background: none #ffffff;
     border: 1px solid #cccccc;
     border-radius: 3px;
     margin-left: -15px;
+    width: 200px;
+    height: 35px;
+}
+
+.campo-laudoDig2 {
+    margin-top: 5px;
+    padding: 10px 10px;
+    background: none #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    margin-left: 0px;
     width: 200px;
     height: 35px;
 }
@@ -1376,6 +1391,12 @@ min-width
     margin-top: 4px;
     margin-left: -15px;
     padding: 0 10px;
+}
+
+@media (min-width: 1977px) {
+	.inserPacient {
+		width: 235px;
+	}
 }
 
 @media (min-width: 992px) {
@@ -1399,6 +1420,12 @@ min-width
 	.data-size3 {
     	width: 185px;
     	margin-top: 12px;
+	}
+}
+
+@media (max-width: 991px) {
+	.inserPacient {
+		width: 235px;
 	}
 }
 
