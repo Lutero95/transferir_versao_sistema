@@ -283,7 +283,7 @@
 					<br></br>
 
 					<b:row>
-						
+
 						<b:column span="2" class="new-data-size2">
 
 							<p:outputLabel value="Data para Atendimento:"
@@ -313,8 +313,8 @@
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									showOn="button" size="15"
 									rendered="#{AgendaController.tipoData == 'U'}"
-									value="#{AgendaController.agenda.dataAtendimento}" id="dtagen" 
-									locale="pt" >
+									value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
+									locale="pt">
 									<p:ajax event="dateSelect"
 										listener="#{AgendaController.verAgenda}" process="@form @this"
 										update="msgPagina, outQtdIhMax"></p:ajax>
@@ -330,21 +330,25 @@
 					<!-- INTERVALO DE DATAS -->
 					<p:outputLabel id="outIntervaloDatas">
 						<b:row rendered="#{AgendaController.tipoData == 'I'}">
+
 							<b:column span="2" class="label-position data-size">
 								<p:calendar rendered="#{AgendaController.tipoData == 'I'}"
 									value="#{AgendaController.agenda.dataAtendimento}" id="dtagen2"
 									locale="pt" navigator="true" mask="true" showOn="button"
-									pattern="dd/MM/yyyy" />
+									pattern="dd/MM/yyyy" size="15"/>
+							</b:column>
+							
+							<b:column span="1" class="data-size6">
+								<h:outputLabel value=" a "
+									rendered="#{AgendaController.tipoData == 'I'}"  />
 							</b:column>
 
 							<b:column span="2" class="label-position data-size">
-								<h:outputLabel value="a"
-									rendered="#{AgendaController.tipoData == 'I'}" />
 
 								<p:calendar rendered="#{AgendaController.tipoData == 'I'}"
 									value="#{AgendaController.agenda.dataAtendimentoFinal}"
 									id="dtagen3" locale="pt" navigator="true" mask="true"
-									showOn="button" pattern="dd/MM/yyyy" />
+									showOn="button" pattern="dd/MM/yyyy" size="15" />
 
 							</b:column>
 
@@ -356,7 +360,7 @@
 					<p:outputPanel id="outQtdIhMax">
 						<b:row rendered="#{AgendaController.tipoData == 'U'}">
 							<b:column span="2" class="label-position">
-								<b:label for="qtd" value="Quantidade" severity="info" 
+								<b:label for="qtd" value="Quantidade" severity="info"
 									rendered="#{AgendaController.tipoData == 'U'}" />
 
 								<b:inputText id="qtd" value="#{AgendaController.agenda.qtd}"
@@ -365,9 +369,9 @@
 							</b:column>
 
 							<b:column span="2" class="label-position">
-								<b:label for="max" value="Máximo" severity="info" 
+								<b:label for="max" value="Máximo" severity="info"
 									rendered="#{AgendaController.tipoData == 'U'}" />
-	
+
 								<b:inputText id="max" value="#{AgendaController.agenda.max}"
 									rendered="#{AgendaController.tipoData == 'U'}"
 									class="select-agendaEquipe2" readonly="true" />
@@ -399,7 +403,8 @@
 						 :formAgendadosData:outlAgendados, :formAgendadosData:dtAgData" />
 
 						<p:outputPanel id="btnOcupados">
-							<b:commandButton value="Visualizar Ocupados" class="btn-acao-table"
+							<b:commandButton value="Visualizar Ocupados"
+								class="btn-acao-table"
 								rendered="#{AgendaController.temLotado == true}"
 								style="margin-top:5px;" icon="glyphicon-remove-sign"
 								actionListener="#{AgendaController.carregarListaOcupados()}"
@@ -412,8 +417,8 @@
 
 					<b:row>
 						<b:column span="12">
-							<h:outputLabel value="Novo(s) Agendamento(s):" 
-								style="margin-top: 8px; margin-bottom: 15px;color:#2e84ce;"/>
+							<h:outputLabel value="Novo(s) Agendamento(s):"
+								style="margin-top: 8px; margin-bottom: 15px;color:#2e84ce;" />
 						</b:column>
 					</b:row>
 
@@ -440,7 +445,7 @@
 
 						</b:column>
 					</b:row>
-					
+
 					<br></br>
 
 					<div align="center">
@@ -512,6 +517,7 @@
 						<p:commandButton
 							update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
 							icon="ui-icon-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuPac').hide();">
 							<f:setPropertyActionListener value="#{pacie}"
 								target="#{AgendaController.agenda.paciente}" />
@@ -545,7 +551,8 @@
 						<p:commandButton
 							update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo,
 							:formAgendaMedica:btBusGr, :formAgendaMedica:outGrupo"
-							icon="ui-icon-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+							title="Selecionar"
 							action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
 							onclick="PF('dlgConsuProg').hide();">
 							<f:setPropertyActionListener value="#{prog}"
@@ -586,6 +593,7 @@
 							update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt,
 							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt"
 							icon="ui-icon-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuGrop').hide();"
 							action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}">
 							<f:setPropertyActionListener value="#{grupo}"
@@ -618,6 +626,7 @@
 						<p:commandButton
 							update=":formAgendaMedica:outTipoAt, :formAgendaMedica"
 							icon="ui-icon-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuTipoAt').hide();">
 							<f:setPropertyActionListener value="#{tipo}"
 								target="#{AgendaController.agenda.tipoAt}" />
@@ -648,6 +657,7 @@
                         </f:facet>
 						<p:commandButton update=":formAgendaMedica:outEquipe"
 							icon="ui-icon-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuEquipe').hide();">
 							<f:setPropertyActionListener value="#{equipe}"
 								target="#{AgendaController.agenda.equipe}" />
@@ -678,6 +688,7 @@
                         </f:facet>
 						<p:commandButton update=":formAgendaMedica:outProf"
 							icon="ui-icon-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsuProf').hide();">
 							<f:setPropertyActionListener value="#{profi}"
 								target="#{AgendaController.agenda.profissional}" />
