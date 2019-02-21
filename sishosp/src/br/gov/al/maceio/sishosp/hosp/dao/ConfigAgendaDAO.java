@@ -772,7 +772,7 @@ public class ConfigAgendaDAO {
                 "(SELECT count(DISTINCT turno) FROM hosp.config_agenda_equipe cc " +
                 "LEFT JOIN hosp.config_agenda_equipe_dias dd ON (cc.id_configagenda = dd.id_config_agenda_equipe) " +
                 "WHERE cc   .id_configagenda = c.id_configagenda) > 1 then 'A' " +
-                "ELSE d.turno END AD turno " +
+                "ELSE d.turno END AS turno " +
                 "FROM hosp.config_agenda_equipe c " +
                 "LEFT JOIN hosp.config_agenda_equipe_dias d ON (c.id_configagenda = d.id_config_agenda_equipe) " +
                 "LEFT JOIN hosp.equipe e ON (c.codequipe = e.id_equipe) " +
