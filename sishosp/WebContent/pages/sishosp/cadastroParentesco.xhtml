@@ -12,24 +12,21 @@
             <f:viewAction action="#{ParentescoController.getEditParentesco()}"/>
         </f:metadata>
 
-        <div class="panel-body">
-            <div class="sub-header">
+        <div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
                 <h:outputText value="#{ParentescoController.cabecalho}"
-                              styleClass="cadcabecalho"></h:outputText>
-                <hr/>
+                         class="panel-title"></h:outputText>
             </div>
+            
+            <div class="panel-body table-body sub-table-body">
 
             <h:form class="form-horizontal" id="frmPrincipal">
 
                 <p:outputPanel>
                     <b:row>
 
-                        <b:column span="1">
-                            <h:outputLabel for="inputname" value="Descrição"
-                                           style="margin-top:10px"/>
-                        </b:column>
-
-                        <b:column span="11">
+                        <b:column span="11" class="label-position">
+							<b:label for="inputname" value="Descrição" severity="info" />
 
                             <b:inputText value="#{ParentescoController.parentesco.descParentesco}"
                                          class="form-control" id="inputname" required="true"
@@ -48,25 +45,28 @@
                 <div align="center">
                     <b:messages value="Error" id="msgPagina"></b:messages>
                 </div>
+                
+                <br></br>
 
                 <div align="center">
                     <b:commandButton action="#{ParentescoController.gravarParentesco()}"
                                      icon="glyphicon-ok" size="sm" look="success"
-                                     update=":frmPrincipal, msgPagina" value="Incluir" style="float:left"
+                                     update=":frmPrincipal, msgPagina" value="Incluir" class="btn-incluir"
                                      rendered="#{ParentescoController.tipo == 1}"/>
 
                     <b:commandButton action="#{ParentescoController.alterarParentesco()}"
                                      icon="glyphicon-ok" size="sm" update=":frmPrincipal, msgPagina"
-                                     value="Alterar" look="success" style="float:left"
+                                     value="Alterar" look="success" class="btn-incluir"
                                      rendered="#{ParentescoController.tipo  == 2}"/>
 
                     <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                     style="float:right" size="sm" immediate="true" look="info"
+                                     class="btn-voltar" size="sm" immediate="true" look="info"
                                      action="/pages/sishosp/gerenciarParentesco.faces?faces-redirect=true">
                     </b:commandButton>
 
                 </div>
             </h:form>
+            </div>
 
         </div>
 

@@ -1,145 +1,154 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:f="http://xmlns.jcp.org/jsf/core"
+				xmlns:b="http://bootsfaces.net/ui"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				template="../../template/template.xhtml">
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-        <h:form>
-            <b:row rendered="#{MBFuncionarios.listarUnidadesDoFuncionario().size()>1}">
+		<h:form>
+			<b:row rendered="#{MBFuncionarios.listarUnidadesDoFuncionario().size()>1}">
 
-                <b:column span="1">
-                    <h:outputLabel value="Unidade:" style="margin-top:5px;"/>
-                </b:column>
+				<b:column span="1">
+					<h:outputLabel value="Unidade:" style="margin-top:5px;"/>
+				</b:column>
 
-                <b:column span="2">
-                    <p:selectOneMenu value="#{AgendaController.agenda.empresa.codEmpresa}">
-                        <f:selectItems value="#{MBFuncionarios.listarUnidadesDoFuncionario()}"
-                                       var="emp" itemLabel="#{emp.nomeFantasia}"
-                                       itemValue="#{emp.codEmpresa}"/>
-                        <p:ajax event="change" process="@this"/>
-                    </p:selectOneMenu>
+				<b:column span="2">
+					<p:selectOneMenu value="#{AgendaController.agenda.empresa.codEmpresa}">
+						<f:selectItems value="#{MBFuncionarios.listarUnidadesDoFuncionario()}"
+									   var="emp" itemLabel="#{emp.nomeFantasia}"
+									   itemValue="#{emp.codEmpresa}"/>
+						<p:ajax event="change" process="@this"/>
+					</p:selectOneMenu>
 
-                </b:column>
+				</b:column>
 
-                <br></br>
+				<br></br>
 
-            </b:row>
-        </h:form>
+			</b:row>
+		</h:form>
 
-        <h:form id="formConsAge">
-            <div class="panel-body">
-                <div class="sub-header">
-                    <h4>Consultar Agendamentos</h4>
-                    <hr/>
-                </div>
-            </div>
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Consultar Agendamentos</h4>
+			</div>
 
-            <p:panelGrid columns="6" styleClass="semBorda">
-                <p:outputPanel>
-                    <h:outputLabel value="Data de Marcação: "/>
+			<div class="panel-body table-body">
 
-                    <p:calendar locale="pt" showOn="button" navigator="true"
-                                mask="true" pattern="dd/MM/yyyy" style="margin-left: 20px"
-                                value="#{AgendaController.dataAtendimentoC}"/>
+				<h:form id="formConsAge">
 
+					<p:panelGrid columns="5" styleClass="semBorda">
+						<p:outputPanel class="data-size5">
+							<b:column span="2" class="label-position data-size">
+								<b:label value="Data da Marcação:" severity="info" />
 
-                    <p:outputLabel id="outdataa">
-                        <h:outputLabel value="a" style="margin-left: 20px"/>
-                    </p:outputLabel>
-
-                    <p:calendar value="#{AgendaController.dataAtendimentoFinalC}" style="margin-left: 20px"
-                                id="dtagen3" locale="pt" navigator="true" mask="true"
-                                showOn="button" pattern="dd/MM/yyyy">
-                    </p:calendar>
-
-                    <b:commandButton value="Buscar" icon="glyphicon-search" style="margin-left:10px"
-                                     action="#{AgendaController.consultarAgenda()}"
-                                     update=":formConsAge:dtConsultas, :formConsAge:msgPagina"></b:commandButton>
-                </p:outputPanel>
-
-            </p:panelGrid>
-            <br/>
-            <b:dataTable customLangUrl="#{resource['pt-br.json']}" resizableColumns="true" id="dtConsultas"
-                         emptyMessage="Sem registros." scrollable="true" paginator="true"
-                         rows="15" var="agenda" value="#{AgendaController.listaConsulta}">
-
-                <h:column>
-                    <f:facet name="header">
-                        Data
-                    </f:facet>
-                    <h:outputLabel value="#{agenda.dataAtendimento}">
-                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </h:outputLabel>
-                </h:column>
-
-                <h:column>
-                    <f:facet name="header">
-                        Paciente
-                    </f:facet>
-                    <p:outputLabel value="#{agenda.paciente.nome}"/>
-                </h:column>
-
-                <h:column>
-                    <f:facet name="header">
-                        CNS
-                    </f:facet>
-                    <p:outputLabel value="#{agenda.paciente.cns}"/>
-                </h:column>
-
-                <h:column>
-                    <f:facet name="header">
-                        Tipo de Atendimento
-                    </f:facet>
-                    <p:outputLabel value="#{agenda.tipoAt.descTipoAt}"/>
-                </h:column>
-
-                <h:column>
-                    <f:facet name="header">
-                        Turno
-                    </f:facet>
-                    <h:outputLabel value="MANHÃ" rendered="#{agenda.turno == 'M'}"/>
-                    <h:outputLabel value="TARDE" rendered="#{agenda.turno == 'T'}"/>
-                </h:column>
-
-                <h:column>
-                    <f:facet name="header">
-                        Profissional
-                    </f:facet>
-                    <p:outputLabel value="#{agenda.profissional.nome}"/>
-                </h:column>
-
-                <h:column>
-                    <f:facet name="header">
-                        Equipe
-                    </f:facet>
-                    <p:outputLabel value="#{agenda.equipe.descEquipe}"/>
-                </h:column>
-
-            </b:dataTable>
-
-            <br></br>
-            <br></br>
-
-            <div align="center">
-                <b:messages value="Error" id="msgPagina"></b:messages>
-            </div>
-
-            <div align="center">
-
-                <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                 size="sm" immediate="true" look="info" update=":formConsAge"
-                                 actionListener="#{AgendaController.limparDados()}"
-                                 action="/pages/comum/selecaoSistema2.faces?faces-redirect=true">
-                </b:commandButton>
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+											showOn="button" size="15"
+											value="#{AgendaController.dataAtendimentoC}" />
+							</b:column>
 
 
-            </div>
+							<b:column span="1" class="data-size4">
+								<p:outputLabel id="outdataa">
+									<h:outputLabel value="a" />
+								</p:outputLabel>
+							</b:column>
 
-        </h:form>
+							<b:column span="2" class="label-position data-size3">
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+											showOn="button" size="15" id="dtagen3" locale="pt">
+									<p:ajax event="dateSelect"
+											listener="#{AgendaController.consultarAgenda()}"
+											process="@form @this"
+											update=":formConsAge:dtConsultas, :formConsAge:msgPagina"></p:ajax>
+								</p:calendar>
+							</b:column>
+						</p:outputPanel>
 
-    </ui:define>
+					</p:panelGrid>
+					<br />
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+								 resizableColumns="true" id="dtConsultas"
+								 emptyMessage="Sem registros." scrollable="true" paginator="true"
+								 rows="15" var="agenda" value="#{AgendaController.listaConsulta}">
+
+						<h:column>
+							<f:facet name="header">
+								Data
+							</f:facet>
+							<h:outputLabel value="#{agenda.dataAtendimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+							</h:outputLabel>
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Paciente
+							</f:facet>
+							<p:outputLabel value="#{agenda.paciente.nome}"/>
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								CNS
+							</f:facet>
+							<p:outputLabel value="#{agenda.paciente.cns}"/>
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Tipo de Atendimento
+							</f:facet>
+							<p:outputLabel value="#{agenda.tipoAt.descTipoAt}"/>
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Turno
+							</f:facet>
+							<h:outputLabel value="MANHÃ" rendered="#{agenda.turno == 'M'}"/>
+							<h:outputLabel value="TARDE" rendered="#{agenda.turno == 'T'}"/>
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Profissional
+							</f:facet>
+							<p:outputLabel value="#{agenda.profissional.nome}"/>
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+								Equipe
+							</f:facet>
+							<p:outputLabel value="#{agenda.equipe.descEquipe}"/>
+						</h:column>
+
+					</b:dataTable>
+
+
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
+
+					<br></br>
+
+					<div align="center">
+
+						<b:commandButton value="Voltar" icon="glyphicon-arrow-left" class="btn-voltar btn-voltar1"
+										 size="sm" immediate="true" look="info" update=":formConsAge"
+										 actionListener="#{AgendaController.limparDados()}"
+										 action="/pages/comum/selecaoSistema2.faces?faces-redirect=true">
+						</b:commandButton>
+
+
+					</div>
+
+				</h:form>
+			</div>
+		</div>
+
+	</ui:define>
 </ui:composition>

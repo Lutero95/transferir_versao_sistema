@@ -1,78 +1,73 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-    <f:metadata>
-        <f:viewAction
-                action="#{FormaTransporteController.getEditFormaTransporte()}"/>
-    </f:metadata>
+		<f:metadata>
+			<f:viewAction
+				action="#{FormaTransporteController.getEditFormaTransporte()}" />
+		</f:metadata>
 
-        <h:form class="form-horizontal" id="frmPrincipal">
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{FormaTransporteController.cabecalho}"
+					class="panel-title"></h:outputText>
+			</div>
 
-            <div class="panel-body">
-                <div class="sub-header">
-                    <h:outputText value="#{FormaTransporteController.cabecalho}"
-                                  styleClass="cadcabecalho"></h:outputText>
-                    <hr/>
-                </div>
+			<div class="panel-body table-body sub-table-body">
 
-                <b:row>
+				<h:form class="form-horizontal" id="frmPrincipal">
+					
+					<b:row>
+						<b:column span="11" class="label-position">
+							<b:label for="inputname" value="Descrição" severity="info" />
 
-                    <b:column span="1">
-                        <h:outputLabel for="inputname" value="Descrição"
-                                       style="margin-top:10px"/>
-                    </b:column>
+							<b:inputText
+								value="#{FormaTransporteController.transporte.descformatransporte}"
+								class="form-control" id="inputname" required="true"
+								validatorMessage="Forma de Transporte deve conter entre 2 e 50 caracteres."
+								requiredMessage="Descrição: Campo obrigatório!">
+								<f:validateLength minimum="2" maximum="50" />
+							</b:inputText>
+						</b:column>
+					</b:row>
+					
 
-                    <b:column span="11">
-                        <h:inputText
-                                value="#{FormaTransporteController.transporte.descformatransporte}"
-                                class="form-control" id="inputname" required="true"
-                                validatorMessage="Forma de Transporte deve conter entre 2 e 50 caracteres."
-                                requiredMessage="Descrição: Campo obrigatório!">
-                            <f:validateLength minimum="2" maximum="50"/>
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
+					
+					<br></br>
 
-                        </h:inputText>
+					<div align="center">
+						<b:commandButton
+							action="#{FormaTransporteController.gravarTransporte()}"
+							icon="glyphicon-ok" size="sm" look="success"
+							update=":frmPrincipal" value="Incluir" class="btn-incluir"
+							rendered="#{FormaTransporteController.tipo == 1}" />
 
-                    </b:column>
+						<b:commandButton
+							action="#{FormaTransporteController.alterarTransporte()}"
+							icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+							value="Alterar" look="success" class="btn-incluir"
+							rendered="#{FormaTransporteController.tipo  == 2}" />
 
-                </b:row>
-
-                <br></br>
-                <br></br>
-
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
-
-                <div align="center">
-                    <b:commandButton
-                            action="#{FormaTransporteController.gravarTransporte()}"
-                            icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
-                            value="Incluir" style="float:left"
-                            rendered="#{FormaTransporteController.tipo == 1}"/>
-
-                    <b:commandButton
-                            action="#{FormaTransporteController.alterarTransporte()}"
-                            icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
-                            look="success" style="float:left"
-                            rendered="#{FormaTransporteController.tipo  == 2}"/>
-
-                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                     style="float:right" size="sm" immediate="true" look="info"
-                                     action="/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true">
-                    </b:commandButton>
+						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							class="btn-voltar" size="sm" immediate="true" look="info"
+							action="/pages/sishosp/gerenciarFormaTransporte.faces?faces-redirect=true">
+						</b:commandButton>
 
 
-                </div>
-            </div>
+					</div>
 
-        </h:form>
+				</h:form>
+			</div>
+		</div>
 
-    </ui:define>
+	</ui:define>
 </ui:composition>

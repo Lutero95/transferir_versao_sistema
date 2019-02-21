@@ -13,41 +13,37 @@
 
     </f:metadata>
 
-        <div class="panel-body">
-            <div class="sub-header">
+        <div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
                 <h:outputText value="#{EquipeController.cabecalho}"
-                              styleClass="cadcabecalho"></h:outputText>
-                <hr/>
+                              class="panel-title"></h:outputText>
             </div>
 
-            <h:form class="form-horizontal" id="frmPrincipal">
+            <div class="panel-body table-body sub-table-body">
+
+				<h:form class="form-horizontal" id="frmPrincipal">
 
                 <b:row>
+						<b:column span="12" class="label-position new-col12">
+							<b:label for="inputnome" value="Descrição" severity="info" />
 
-                    <b:column span="2">
-                        <h:outputLabel for="inputname" value="Descrição"
-                                       style="margin-top:10px"/>
-                    </b:column>
+							<b:inputText
+								value="#{EquipeController.equipe.descEquipe}"
+								class="form-control" id="inputname" required="true"
+								requiredMessage="Descrição: Campo obrigatório!"
+								validatorMessage="Descrição deve conter entre 2 e 100 caracteres.">
+								<f:validateLength minimum="2" maximum="100" />
+							</b:inputText>
 
-                    <b:column span="10">
-                        <h:inputText value="#{EquipeController.equipe.descEquipe}"
-                                     class="form-control" id="inputname" required="true"
-                                     requiredMessage="Descrição: Campo obrigatório!"
-                                     validatorMessage="Equipe deve conter entre 2 e 100 caracteres.">
-                            <f:validateLength minimum="2" maximum="100"/>
-                        </h:inputText>
-                    </b:column>
-                </b:row>
-
-                <br></br>
+						</b:column>
+					</b:row>
 
                 <b:row>
-                    <b:column span="2">
-                        <h:outputLabel value="Profissionais" style="margin-top:10px"/>
-                    </b:column>
-
-                    <b:column span="1">
-                        <b:commandButton process="@this" size="sm"
+                    <b:column span="2" class="label-position">
+							<b:label value="Profissionais" severity="info" />
+							
+                        <b:commandButton process="@this" size="sm" style="margin-left: 35px;"
+                        				 class="btn-acao-table acao-editar"
                                          action="#{MBFuncionarios.ListarTodosProfissionais()}"
                                          tooltip="Incluir Profissional" icon="glyphicon-plus"
                                          oncomplete="PF('dlgConsuProfE').show();" update="formConsuProfE"/>
@@ -66,7 +62,7 @@
 
                             <p:column headerText="Ação">
                                 <div align="center">
-                                    <p:commandButton process="@this"
+                                    <p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
                                                      action="#{EquipeController.equipe.removeProfList()}"
                                                      icon="ui-icon-trash" update=":frmPrincipal">
                                         <f:setPropertyActionListener value="#{tab}"
@@ -92,21 +88,22 @@
                 <div align="center">
                     <b:commandButton action="#{EquipeController.gravarEquipe()}"
                                      icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
-                                     value="Incluir" style="float:left"
+                                     value="Incluir" class="btn-incluir"
                                      rendered="#{EquipeController.tipo == 1}"/>
 
                     <b:commandButton action="#{EquipeController.alterarEquipe()}"
                                      icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
-                                     look="success" style="float:left"
+                                     look="success" class="btn-incluir"
                                      rendered="#{EquipeController.tipo  == 2}"/>
 
                     <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                     size="sm" immediate="true" look="info" style="float:right"
+                                     size="sm" immediate="true" look="info" class="btn-voltar"
                                      action="/pages/sishosp/gerenciarEquipe.faces?faces-redirect=true">
                     </b:commandButton>
 
                 </div>
             </h:form>
+            </div>
         </div>
 
         <p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProfE"
@@ -134,7 +131,7 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton process="@this"
+                        <p:commandButton process="@this" class="new-btn-acao-table acao-editar"
                                          update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
                                          icon="ui-icon-check" title="Selecionar"
                                          action="#{EquipeController.equipe.addProfList()}"

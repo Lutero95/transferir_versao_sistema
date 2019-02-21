@@ -8,84 +8,85 @@
 
 	<ui:define name="content">
 
-		<div class="panel-body">
-			<div class="sub-header">
-				<h4>Gerenciamento de Município</h4>
-				<hr />
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Gerenciamento de Município</h4>
 			</div>
 
-			<h:form id="frmPrincipal">
-				<b:commandButton id="btninc" value="Novo" size="sm"
-					action="#{EnderecoController.redirectInsertMunicipio()}"
-					icon="glyphicon-plus" look="primary">
-					<f:setPropertyActionListener value="1"
-						target="#{EnderecoController.tipo}" />
-					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
-				<br />
-				<br />
+			<div class="panel-body table-body">
 
-				<div align="center">
-					<b:messages value="Error" id="msgPagina"></b:messages>
-				</div>
+				<h:form id="frmPrincipal">
+					<b:commandButton id="btninc" value="Novo" size="sm"
+						action="#{EnderecoController.redirectInsertMunicipio()}"
+						icon="glyphicon-plus" class="btn-addNovo">
+						<f:setPropertyActionListener value="1"
+							target="#{EnderecoController.tipo}" />
+						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+					</b:commandButton>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-					var="tab" value="#{EnderecoController.listarMunicipiosCadastro()}">
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
 
-					<h:column>
-						<f:facet name="header">
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
+						var="tab" value="#{EnderecoController.listarMunicipiosCadastro()}">
+
+						<h:column>
+							<f:facet name="header">
                             Município
                         </f:facet>
 
-						<h:outputText value="#{tab.municipio}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">
+							<h:outputText value="#{tab.municipio}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
                             Código IBGE
                         </f:facet>
 
-						<h:outputText value="#{tab.codIbge}" />
-					</h:column>
+							<h:outputText value="#{tab.codIbge}" />
+						</h:column>
 
-					<h:column>
-						<f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                             Estado
                         </f:facet>
 
-						<h:outputText value="#{tab.uf}" />
-					</h:column>
+							<h:outputText value="#{tab.uf}" />
+						</h:column>
 
-					<h:column>
+						<h:column>
 
-						<f:facet name="header">
+							<f:facet name="header">
                             Ação
                         </f:facet>
 
-						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{EnderecoController.redirectEditMunicipio()}">
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{EnderecoController.endereco}" />
+							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+								class="btn-acao-table acao-editar"
+								size="sm" action="#{EnderecoController.redirectEditMunicipio()}">
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{EnderecoController.endereco}" />
 
-							<f:setPropertyActionListener value="2"
-								target="#{EnderecoController.tipo}" />
-						</b:commandButton>
+								<f:setPropertyActionListener value="2"
+									target="#{EnderecoController.tipo}" />
+							</b:commandButton>
 
-						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px"
-							oncomplete="PF('dialogExclusao').show()">
+							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+								size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
+								oncomplete="PF('dialogExclusao').show()">
 
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{EnderecoController.endereco}" />
-						</b:commandButton>
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{EnderecoController.endereco}" />
+							</b:commandButton>
 
-					</h:column>
+						</h:column>
 
-				</b:dataTable>
-			</h:form>
+					</b:dataTable>
+				</h:form>
+			</div>
 		</div>
 
 		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
-			resizable="false">
+			resizable="false" showEffect="clip" hideEffect="clip">
 
 			<h:form id="frmExcluir">
 				<h:panelGrid columns="1">
@@ -102,9 +103,9 @@
 					<p:separator />
 					<b:commandButton look="success" value="Sim" style="float:left;"
 						action="#{EnderecoController.excluirMunicipios()}" ajax="true"
-						icon="glyphicon-ok" update="frmPrincipal" />
+						icon="glyphicon-ok" update="frmPrincipal" class="btn-sim" />
 
-					<b:commandButton value="Não"
+					<b:commandButton value="Não" class="btn-nao"
 						oncomplete="PF('dialogAtencao').hide();" look="info" ajax="true"
 						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
 

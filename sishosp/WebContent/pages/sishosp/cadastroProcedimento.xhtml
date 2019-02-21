@@ -1,457 +1,422 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-    <f:metadata>
-        <f:viewAction action="#{ProcedimentoController.getEditProcedimento()}"/>
-    </f:metadata>
+		<f:metadata>
+			<f:viewAction
+				action="#{ProcedimentoController.getEditProcedimento()}" />
+		</f:metadata>
 
-        <h:form class="form-horizontal" id="frmCadProc">
-            <div class="panel-body">
-                <div class="sub-header">
-                    <h:outputText value="#{ProcedimentoController.cabecalho}"
-                                  styleClass="cadcabecalho"></h:outputText>
-                    <hr/>
-                </div>
 
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{ProcedimentoController.cabecalho}"
+					class="panel-title"></h:outputText>
+			</div>
 
-                <b:row>
+			<div class="panel-body table-body sub-table-body">
 
-                    <b:column span="2">
-                        <h:outputLabel value="Descrição:" style="margin-top:10px"/>
-                    </b:column>
+				<h:form class="form-horizontal" id="frmCadProc">
 
-                    <b:column span="10">
-                        <b:inputText value="#{ProcedimentoController.proc.nomeProc}"
-                                     required="true" requiredMessage="Descrição: Campo obrigatório!"
-                                     validatorMessage="Descrição deve conter entre 2 e 80 caracteres."
-                                     id="incod">
-                            <f:validateLength minimum="2" maximum="80"/>
-                        </b:inputText>
-                    </b:column>
+					<b:row>
 
-                </b:row>
+						<b:column span="11" class="label-position">
+							<b:label value="Descrição:" severity="info" />
 
-                <br></br>
+							<b:inputText value="#{ProcedimentoController.proc.nomeProc}"
+								required="true" requiredMessage="Descrição: Campo obrigatório!"
+								validatorMessage="Descrição deve conter entre 2 e 80 caracteres."
+								id="incod">
+								<f:validateLength minimum="2" maximum="80" />
+							</b:inputText>
+						</b:column>
 
-                <b:row>
+					</b:row>
 
-                    <b:column span="2">
+					<b:row>
 
-                        <h:outputLabel value="Código:" style="margin-top:10px"/>
+						<b:column span="11" class="label-position">
+							<b:label value="Código:" severity="info" />
 
-                    </b:column>
+							<b:inputText value="#{ProcedimentoController.proc.codProc}"
+								required="true" requiredMessage="Código: Campo obrigatório!" />
+						</b:column>
 
-                    <b:column span="10">
+					</b:row>
 
-                        <b:inputText value="#{ProcedimentoController.proc.codProc}"
-                                     required="true" requiredMessage="Código: Campo obrigatório!"/>
-                    </b:column>
+					<b:row>
 
-                </b:row>
+						<b:column span="5" class="label-position new-col15">
+							<b:label value="Idade Mínima:" severity="info" />
 
-                <b:row>
+							<b:inputText value="#{ProcedimentoController.proc.idadeMinima}"
+								required="true"
+								requiredMessage="Idade mínima: Campo obrigatório!" />
+						</b:column>
 
-                    <b:column span="2">
+						<b:column span="5" class="label-position new-col15">
+							<b:label value="Idade Máxima:" severity="info" />
 
-                        <h:outputLabel value="Idade Mínima:" style="margin-top:10px"/>
+							<b:inputText value="#{ProcedimentoController.proc.idadeMaxima}"
+								required="true"
+								requiredMessage="Idade máxima: Campo obrigatório!" />
+						</b:column>
 
-                    </b:column>
+					</b:row>
 
-                    <b:column span="4">
+					<b:row>
 
-                        <b:inputText value="#{ProcedimentoController.proc.idadeMinima}"
-                                     required="true" requiredMessage="Idade mínima: Campo obrigatório!"/>
-                    </b:column>
+						<b:column span="5" class="label-position new-col15">
+							<b:label value="Quantidade Máxima:" severity="info" />
 
-                    <b:column span="2">
+							<b:inputText value="#{ProcedimentoController.proc.qtdMaxima}"
+								required="true"
+								requiredMessage="Quantidade máxima em meses: Campo obrigatório!" />
+						</b:column>
 
-                        <h:outputLabel value="Idade Máxima:" style="margin-top:10px"/>
+						<b:column span="5" class="label-position new-col15">
+							<b:label value="Prazo Mínimo:" severity="info" />
 
-                    </b:column>
+							<b:inputText
+								value="#{ProcedimentoController.proc.prazoMinimoNovaExecucao}"
+								required="true"
+								requiredMessage="Prazo mínimo para nova execução: Campo obrigatório!" />
+						</b:column>
 
-                    <b:column span="4">
+					</b:row>
 
-                        <b:inputText value="#{ProcedimentoController.proc.idadeMaxima}"
-                                     required="true" requiredMessage="Idade máxima: Campo obrigatório!"/>
-                    </b:column>
+					<br></br>
 
-                </b:row>
+					<b:row>
 
-                <br></br>
+						<b:column span="2" class="new-data-size2">
 
-                <b:row>
-
-                    <b:column span="2">
-
-                        <h:outputLabel value="Quantidade Máxima:" style="margin-top:10px"/>
-
-                    </b:column>
-
-                    <b:column span="4">
-
-                        <b:inputText value="#{ProcedimentoController.proc.qtdMaxima}"
-                                     required="true"
-                                     requiredMessage="Quantidade máxima em meses: Campo obrigatório!"/>
-                    </b:column>
-
-                    <b:column span="2">
-
-                        <h:outputLabel value="Prazo mínimo:" style="margin-top:10px"/>
-
-                    </b:column>
-
-                    <b:column span="4">
-
-                        <b:inputText
-                                value="#{ProcedimentoController.proc.prazoMinimoNovaExecucao}"
-                                required="true"
-                                requiredMessage="Prazo mínimo para nova execução: Campo obrigatório!"/>
-                    </b:column>
-
-                </b:row>
-
-                <br></br>
-
-                <b:row>
-
-                    <b:column span="1">
-
-                        <h:outputLabel value="Sexo para procedimento:"/>
-
-                    </b:column>
-
-                    <b:column span="2">
-                        <p:selectOneRadio value="#{ProcedimentoController.proc.sexo}"
-                                          required="true"
-                                          requiredMessage="Sexo que será permitido esse procedimento: Campo obrigatório!">
-                            <f:selectItem itemLabel="Ambos" itemValue="A"/>
-                            <f:selectItem itemLabel="Masculino" itemValue="M"/>
-                            <f:selectItem itemLabel="Feminino" itemValue="F"/>
-                        </p:selectOneRadio>
-                    </b:column>
-
-                </b:row>
-
-                <br></br>
-
-                <b:row>
-
-                    <b:column span="1">
-                        <h:outputLabel value="Utiliza Equipamento"/>
-                    </b:column>
-
-                    <b:column span="1">
-                        <p:selectBooleanCheckbox
-                                value="#{ProcedimentoController.proc.utilizaEquipamento}"/>
-                    </b:column>
-
-                </b:row>
-
-
-                <b:row>
-
-                    <b:column span="1">
-                        <h:outputLabel value="Auditivo"/>
-                    </b:column>
-
-                    <b:column span="1">
-                        <p:selectBooleanCheckbox
-                                value="#{ProcedimentoController.proc.auditivo}">
-                            <p:ajax update="pnlModelo"/>
-                        </p:selectBooleanCheckbox>
-                    </b:column>
-
-                    <p:outputPanel id="pnlModelo">
-                        <b:column span="3">
-                            <p:panel header="Modelo Auditivo" style="width:220px;"
-                                     rendered="#{ProcedimentoController.proc.auditivo==true}">
-
-                                <p:selectOneRadio
-                                        value="#{ProcedimentoController.proc.tipoExameAuditivo}"
-                                        layout="grid" columns="2">
-                                    <f:selectItem itemLabel="Acompanhamentos"
-                                                  itemValue="ACOMPANHAMENTOS"/>
-                                    <f:selectItem itemLabel="Consultas" itemValue="CONSULTAS"/>
-                                    <f:selectItem itemLabel="Aparelhos" itemValue="APARELHOS"/>
-                                    <f:selectItem itemLabel="Teste" itemValue="TESTE"/>
-                                </p:selectOneRadio>
-                            </p:panel>
-                        </b:column>
-                    </p:outputPanel>
-
-                </b:row>
-
-                <br></br>
-
-                <b:row>
-
-                    <b:column span="1">
-                        <h:outputLabel value="Laudo"/>
-                    </b:column>
-                    <b:column span="1">
-                        <p:selectBooleanCheckbox
-                                value="#{ProcedimentoController.proc.gera_laudo_digita}">
-                            <p:ajax update="pnlMes"/>
-                        </p:selectBooleanCheckbox>
-                    </b:column>
-
-                    <p:outputPanel id="pnlMes">
-                        <b:column span="2">
-                            <h:outputLabel value="Validade(Meses)" style="margin-top:5px"
-                                           rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"/>
-                        </b:column>
-                        <b:column span="1">
-                            <p:selectOneMenu id="mes"
-                                             rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"
-                                             value="#{ProcedimentoController.proc.validade_laudo}"
-                                             style="width:200px;" required="true"
-                                             requiredMessage="Validade: Campo obrigatório!">
-                                <f:selectItem itemLabel="Informe a Validade" itemValue=""/>
-                                <f:selectItem itemLabel="1" itemValue="1"/>
-                                <f:selectItem itemLabel="2" itemValue="2"/>
-                                <f:selectItem itemLabel="3" itemValue="3"/>
-                                <f:selectItem itemLabel="4" itemValue="4"/>
-                                <f:selectItem itemLabel="5" itemValue="5"/>
-                                <f:selectItem itemLabel="6" itemValue="6"/>
-                                <f:selectItem itemLabel="7" itemValue="7"/>
-                                <f:selectItem itemLabel="8" itemValue="8"/>
-                                <f:selectItem itemLabel="9" itemValue="9"/>
-                                <f:selectItem itemLabel="10" itemValue="10"/>
-                                <f:selectItem itemLabel="11" itemValue="11"/>
-                                <f:selectItem itemLabel="12" itemValue="12"/>
-                            </p:selectOneMenu>
-                        </b:column>
-                    </p:outputPanel>
-
-                </b:row>
-
-                <br></br>
-
-                <b:row>
-
-                    <b:column span="2">
-                        <h:outputLabel value="CID:"/>
-                    </b:column>
-
-                    <b:column span="3">
-
-                        <p:outputPanel id="outCid1">
-                            <p:autoComplete value="#{ProcedimentoController.cid}" size="40"
-                                            converter="conCid" id="descCid"
-                                            completeMethod="#{CidController.listaCidAutoComplete}"
-                                            effect="fade" var="theme" forceSelection="true"
-                                            minQueryLength="1" itemValue="#{theme}"
-                                            itemLabel="#{theme.descCid}">
-
-                                <p:ajax event="itemSelect" update=""/>
-                            </p:autoComplete>
-                        </p:outputPanel>
-
-
-                    </b:column>
-
-                    <b:column span="2">
-                        <p:commandButton size="sm" immediate="true"
-                                         action="#{ProcedimentoController.addCid()}"
-                                         tooltip="Adicionar Cid" icon="ui-icon-plus"
-                                         update="tabelaCid, outCid1, :frmCadProc:msgPagina"/>
-                    </b:column>
-
-                    <b:column span="5">
-
-                        <p:dataTable emptyMessage="Nenhum Cid"
-                                     styleClass="table table-hover" id="tabelaCid"
-                                     value="#{ProcedimentoController.proc.listaCid}" var="tab"
-                                     paginator="true" paginatorPosition="bottom" rows="12"
-                                     resizableColumns="true">
-
-                            <p:column headerText="Cód." style="font-weight:bold;width:20%;">
-                                <h:outputText value="#{tab.idCid}"/>
-                            </p:column>
-
-                            <p:column headerText="CID" style="font-weight:bold;">
-                                <h:outputText value="#{tab.cid}"/>
-                            </p:column>
-
-                            <p:column headerText="Descrição" style="font-weight:bold;">
-                                <h:outputText value="#{tab.descCid}"/>
-                            </p:column>
-
-                            <p:column headerText="Ação">
-                                <center>
-                                    <p:commandButton process="@this"
-                                                     action="#{ProcedimentoController.removerCid()}"
-                                                     icon="ui-icon-trash" update="tabelaCid">
-                                        <f:setPropertyActionListener value="#{tab}"
-                                                                     target="#{ProcedimentoController.cid}"/>
-                                    </p:commandButton>
-                                </center>
-                            </p:column>
-
-                        </p:dataTable>
-
-                    </b:column>
-
-                </b:row>
-
-                <b:row>
-
-                    <b:column span="2">
-                        <h:outputLabel value="CBO:"/>
-                    </b:column>
-
-                    <b:column span="3">
-
-                        <p:outputPanel id="outCbo">
-                            <p:autoComplete value="#{ProcedimentoController.cbo}" size="40"
-                                            converter="conCbo" id="descCbo"
-                                            completeMethod="#{CboController.listaCboAutoComplete}"
-                                            effect="fade" var="theme" forceSelection="true"
-                                            minQueryLength="1" itemValue="#{theme}"
-                                            itemLabel="#{theme.descCbo}">
-                                <p:ajax event="itemSelect" update=""/>
-                            </p:autoComplete>
-                        </p:outputPanel>
-                    </b:column>
-
-                    <b:column span="2">
-                        <p:commandButton size="sm" immediate="true"
-                                         action="#{ProcedimentoController.addCbo()}"
-                                         tooltip="Adicionar CBO" icon="ui-icon-plus"
-                                         update="tabelaCbo, outCbo, :frmCadProc:msgPagina"/>
-                    </b:column>
-
-                    <b:column span="5">
-
-                        <p:dataTable emptyMessage="Nenhum CBO"
-                                     styleClass="table table-hover" id="tabelaCbo"
-                                     value="#{ProcedimentoController.proc.listaCbo}" var="tab"
-                                     paginator="true" paginatorPosition="bottom" rows="12"
-                                     resizableColumns="true">
-
-                            <p:column headerText="Cód." style="font-weight:bold;width:20%;">
-                                <h:outputText value="#{tab.codCbo}"/>
-                            </p:column>
-
-                            <p:column headerText="CBO" style="font-weight:bold;">
-                                <h:outputText value="#{tab.descCbo}"/>
-                            </p:column>
-
-                            <p:column headerText="Ação">
-                                <center>
-                                    <p:commandButton process="@this"
-                                                     action="#{ProcedimentoController.removerCbo()}"
-                                                     icon="ui-icon-trash" update="tabelaCbo">
-                                        <f:setPropertyActionListener value="#{tab}"
-                                                                     target="#{ProcedimentoController.cbo}"/>
-                                    </p:commandButton>
-                                </center>
-                            </p:column>
-
-                        </p:dataTable>
-
-                    </b:column>
-
-                </b:row>
-
-                <br></br>
-
-                <b:row>
-
-                    <b:column span="2">
-                        <h:outputLabel value="Recurso:"/>
-                    </b:column>
-
-                    <b:column span="3">
-
-                        <p:outputPanel id="outRecurso">
-                            <p:autoComplete value="#{ProcedimentoController.recurso}" size="40"
-                                            converter="conRecurso" id="descRecurso"
-                                            completeMethod="#{RecursoController.listaRecursoAutoComplete}"
-                                            effect="fade" var="theme" forceSelection="true"
-                                            minQueryLength="1" itemValue="#{theme}"
-                                            itemLabel="#{theme.descRecurso}">
-                                <p:ajax event="itemSelect" update=""/>
-                            </p:autoComplete>
-                        </p:outputPanel>
-                    </b:column>
-
-                    <b:column span="2">
-                        <p:commandButton size="sm" immediate="true"
-                                         action="#{ProcedimentoController.addRecurso()}"
-                                         tooltip="Adicionar Recurso" icon="ui-icon-plus"
-                                         update="tabelaRecurso, outRecurso, :frmCadProc:msgPagina"/>
-                    </b:column>
-
-                    <b:column span="5">
-
-                        <p:dataTable emptyMessage="Nenhum Recurso"
-                                     styleClass="table table-hover" id="tabelaRecurso"
-                                     value="#{ProcedimentoController.proc.listaRecurso}" var="tab"
-                                     paginator="true" paginatorPosition="bottom" rows="12"
-                                     resizableColumns="true">
-
-                            <p:column headerText="Cód." style="font-weight:bold;width:20%;">
-                                <h:outputText value="#{tab.idRecurso}"/>
-                            </p:column>
-
-                            <p:column headerText="Recurso" style="font-weight:bold;">
-                                <h:outputText value="#{tab.descRecurso}"/>
-                            </p:column>
-
-                            <p:column headerText="Ação">
-                                <center>
-                                    <p:commandButton process="@this"
-                                                     action="#{ProcedimentoController.removerRecurso()}"
-                                                     icon="ui-icon-trash" update="tabelaRecurso">
-                                        <f:setPropertyActionListener value="#{tab}"
-                                                                     target="#{ProcedimentoController.recurso}"/>
-                                    </p:commandButton>
-                                </center>
-                            </p:column>
-
-                        </p:dataTable>
-
-                    </b:column>
-
-                </b:row>
-
-            </div>
-
-            <br></br>
-
-           <div align="center">
-                <b:messages value="Error" id="msgPagina"></b:messages>
-           </div>
-
-            <div align="center">
-
-                <b:commandButton
-                        action="#{ProcedimentoController.gravarProcedimento()}"
-                        icon="glyphicon-ok" size="sm" look="success" update="frmCadProc"
-                        style="float:left" value="Incluir"
-                        rendered="#{ProcedimentoController.tipo == 1}"/>
-
-                <b:commandButton
-                        action="#{ProcedimentoController.alterarProcedimento()}"
-                        icon="glyphicon-ok" size="sm" update="frmCadProc" value="Alterar"
-                        style="float:left" look="success"
-                        rendered="#{ProcedimentoController.tipo  == 2}"/>
-
-                <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                 style="float:right" size="sm" immediate="true" look="info"
-                                 action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true">
-                </b:commandButton>
-
-            </div>
-        </h:form>
-
-    </ui:define>
+							<p:outputLabel value="Sexo para procedimento:"
+								style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+						</b:column>
+
+						<b:column span="3" class="btn-radio-table">
+							<p:selectOneRadio value="#{ProcedimentoController.proc.sexo}"
+								required="true"
+								requiredMessage="Sexo que será permitido esse procedimento: Campo obrigatório!">
+								<f:selectItem itemLabel="Ambos" itemValue="A" />
+								<f:selectItem itemLabel="Masculino" itemValue="M" />
+								<f:selectItem itemLabel="Feminino" itemValue="F" />
+							</p:selectOneRadio>
+						</b:column>
+
+					</b:row>
+
+					<br></br>
+
+					<b:row>
+
+						<b:column span="3">
+							<p:selectBooleanCheckbox label="Utiliza Equipamento"
+								itemLabel="Utiliza Equipamento" style="color:#2e84ce;"
+								value="#{ProcedimentoController.proc.utilizaEquipamento}">
+							</p:selectBooleanCheckbox>
+						</b:column>
+
+					</b:row>
+
+					<br></br>
+
+					<b:row>
+						<b:column span="2">
+							<p:selectBooleanCheckbox label="Auditivo" itemLabel="Auditivo"
+								style="color:#2e84ce;"
+								value="#{ProcedimentoController.proc.auditivo}">
+								<p:ajax update="pnlModelo" />
+							</p:selectBooleanCheckbox>
+						</b:column>
+
+						<br></br>
+
+						<p:outputPanel id="pnlModelo">
+							<b:column span="3">
+								<b:panel style="width:265px;background-color: #F5F5F5;"
+									rendered="#{ProcedimentoController.proc.auditivo==true}">
+
+									<p:outputLabel value="Modelo Auditivo:" class="modelo-auditivo"></p:outputLabel>
+
+									<p:selectOneRadio style="color: #2e84ce;"
+										value="#{ProcedimentoController.proc.tipoExameAuditivo}"
+										layout="grid" columns="2">
+										<f:selectItem itemLabel="Acompanhamentos"
+											itemValue="ACOMPANHAMENTOS" />
+										<f:selectItem itemLabel="Consultas" itemValue="CONSULTAS" />
+										<f:selectItem itemLabel="Aparelhos" itemValue="APARELHOS" />
+										<f:selectItem itemLabel="Teste" itemValue="TESTE" />
+									</p:selectOneRadio>
+								</b:panel>
+							</b:column>
+						</p:outputPanel>
+
+					</b:row>
+
+					<br></br>
+
+					<b:row>
+
+						<b:column span="2">
+							<p:selectBooleanCheckbox label="Laudo" itemLabel="Laudo"
+								style="color:#2e84ce;"
+								value="#{ProcedimentoController.proc.gera_laudo_digita}">
+								<p:ajax update="pnlMes" />
+							</p:selectBooleanCheckbox>
+						</b:column>
+
+						<br></br>
+
+						<p:outputPanel id="pnlMes">
+
+							<b:column span="3" class="label-position new-col3-2">
+								<b:label value="Validade(Meses)"
+									rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"
+									severity="info" />
+
+								<b:selectOneMenu id="mes"
+									rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"
+									value="#{ProcedimentoController.proc.validade_laudo}"
+									style="width:200px;" required="true"
+									requiredMessage="Validade: Campo obrigatório!">
+									<f:selectItem itemLabel="Informe a Validade" itemValue="" />
+									<f:selectItem itemLabel="1" itemValue="1" />
+									<f:selectItem itemLabel="2" itemValue="2" />
+									<f:selectItem itemLabel="3" itemValue="3" />
+									<f:selectItem itemLabel="4" itemValue="4" />
+									<f:selectItem itemLabel="5" itemValue="5" />
+									<f:selectItem itemLabel="6" itemValue="6" />
+									<f:selectItem itemLabel="7" itemValue="7" />
+									<f:selectItem itemLabel="8" itemValue="8" />
+									<f:selectItem itemLabel="9" itemValue="9" />
+									<f:selectItem itemLabel="10" itemValue="10" />
+									<f:selectItem itemLabel="11" itemValue="11" />
+									<f:selectItem itemLabel="12" itemValue="12" />
+								</b:selectOneMenu>
+							</b:column>
+						</p:outputPanel>
+
+					</b:row>
+
+					<br></br>
+
+					<b:row>
+
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label value="CID: " severity="info" />
+
+							<p:outputPanel id="outCid1">
+								<p:autoComplete value="#{ProcedimentoController.cid}" size="31"
+									converter="conCid" id="descCid"
+									completeMethod="#{CidController.listaCidAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descCid}">
+
+									<p:ajax event="itemSelect" update="" />
+								</p:autoComplete>
+
+								<p:commandButton size="sm" immediate="true"
+									action="#{ProcedimentoController.addCid()}"
+									tooltip="Adicionar Cid" icon="ui-icon-plus"
+									update="tabelaCid, outCid1, :frmCadProc:msgPagina" />
+							</p:outputPanel>
+						</b:column>
+
+						<b:column span="5">
+
+							<p:dataTable emptyMessage="Nenhum Cid"
+								styleClass="table table-hover" id="tabelaCid"
+								value="#{ProcedimentoController.proc.listaCid}" var="tab"
+								paginator="true" paginatorPosition="bottom" rows="12"
+								resizableColumns="true">
+
+								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
+									<h:outputText value="#{tab.idCid}" />
+								</p:column>
+
+								<p:column headerText="CID" style="font-weight:bold;">
+									<h:outputText value="#{tab.cid}" />
+								</p:column>
+
+								<p:column headerText="Descrição" style="font-weight:bold;">
+									<h:outputText value="#{tab.descCid}" />
+								</p:column>
+
+								<p:column headerText="Ação">
+									<center>
+										<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
+											action="#{ProcedimentoController.removerCid()}"
+											icon="ui-icon-trash" update="tabelaCid">
+											<f:setPropertyActionListener value="#{tab}"
+												target="#{ProcedimentoController.cid}" />
+										</p:commandButton>
+									</center>
+								</p:column>
+
+							</p:dataTable>
+
+						</b:column>
+
+					</b:row>
+
+					<b:row>
+
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label value="CBO: " severity="info" />
+
+							<p:outputPanel id="outCbo">
+								<p:autoComplete value="#{ProcedimentoController.cbo}" size="31"
+									converter="conCbo" id="descCbo"
+									completeMethod="#{CboController.listaCboAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descCbo}">
+									<p:ajax event="itemSelect" update="" />
+								</p:autoComplete>
+
+								<p:commandButton size="sm" immediate="true"
+									action="#{ProcedimentoController.addCbo()}"
+									tooltip="Adicionar CBO" icon="ui-icon-plus"
+									update="tabelaCbo, outCbo, :frmCadProc:msgPagina" />
+
+							</p:outputPanel>
+						</b:column>
+
+
+						<b:column span="5">
+
+							<p:dataTable emptyMessage="Nenhum CBO"
+								styleClass="table table-hover" id="tabelaCbo"
+								value="#{ProcedimentoController.proc.listaCbo}" var="tab"
+								paginator="true" paginatorPosition="bottom" rows="12"
+								resizableColumns="true">
+
+								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
+									<h:outputText value="#{tab.codCbo}" />
+								</p:column>
+
+								<p:column headerText="CBO" style="font-weight:bold;">
+									<h:outputText value="#{tab.descCbo}" />
+								</p:column>
+
+								<p:column headerText="Ação">
+									<center>
+										<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
+											action="#{ProcedimentoController.removerCbo()}"
+											icon="ui-icon-trash" update="tabelaCbo">
+											<f:setPropertyActionListener value="#{tab}"
+												target="#{ProcedimentoController.cbo}" />
+										</p:commandButton>
+									</center>
+								</p:column>
+
+							</p:dataTable>
+
+						</b:column>
+
+					</b:row>
+
+					<br></br>
+
+					<b:row>
+
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label value="Recurso: " severity="info" />
+
+							<p:outputPanel id="outRecurso">
+								<p:autoComplete value="#{ProcedimentoController.recurso}"
+									size="31" converter="conRecurso" id="descRecurso"
+									completeMethod="#{RecursoController.listaRecursoAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descRecurso}">
+									<p:ajax event="itemSelect" update="" />
+								</p:autoComplete>
+
+								<p:commandButton size="sm" immediate="true"
+									action="#{ProcedimentoController.addRecurso()}"
+									tooltip="Adicionar Recurso" icon="ui-icon-plus"
+									update="tabelaRecurso, outRecurso, :frmCadProc:msgPagina" />
+
+							</p:outputPanel>
+						</b:column>
+
+						<b:column span="5">
+
+							<p:dataTable emptyMessage="Nenhum Recurso"
+								styleClass="table table-hover" id="tabelaRecurso"
+								value="#{ProcedimentoController.proc.listaRecurso}" var="tab"
+								paginator="true" paginatorPosition="bottom" rows="12"
+								resizableColumns="true">
+
+								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
+									<h:outputText value="#{tab.idRecurso}" />
+								</p:column>
+
+								<p:column headerText="Recurso" style="font-weight:bold;">
+									<h:outputText value="#{tab.descRecurso}" />
+								</p:column>
+
+								<p:column headerText="Ação">
+									<center>
+										<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
+											action="#{ProcedimentoController.removerRecurso()}"
+											icon="ui-icon-trash" update="tabelaRecurso">
+											<f:setPropertyActionListener value="#{tab}"
+												target="#{ProcedimentoController.recurso}" />
+										</p:commandButton>
+									</center>
+								</p:column>
+
+							</p:dataTable>
+
+						</b:column>
+
+					</b:row>
+
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
+					
+					<br></br>
+
+					<div align="center">
+
+						<b:commandButton
+							action="#{ProcedimentoController.gravarProcedimento()}"
+							icon="glyphicon-ok" size="sm" look="success" update="frmCadProc"
+							class="btn-incluir" value="Incluir"
+							rendered="#{ProcedimentoController.tipo == 1}" />
+
+						<b:commandButton
+							action="#{ProcedimentoController.alterarProcedimento()}"
+							icon="glyphicon-ok" size="sm" update="frmCadProc" value="Alterar"
+							class="btn-incluir" look="success"
+							rendered="#{ProcedimentoController.tipo  == 2}" />
+
+						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							class="btn-voltar" size="sm" immediate="true" look="info"
+							action="/pages/sishosp/gerenciarProcedimento.faces?faces-redirect=true">
+						</b:commandButton>
+
+					</div>
+				</h:form>
+			</div>
+		</div>
+
+	</ui:define>
 </ui:composition>

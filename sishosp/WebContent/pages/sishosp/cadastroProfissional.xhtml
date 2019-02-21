@@ -1,36 +1,35 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:stella="http://stella.caelum.com.br/faces2"
+                xmlns:b="http://bootsfaces.net/ui"
                 template="../../template/template.xhtml">
 
     <ui:define name="content">
 
-    <f:metadata>
-        <f:viewAction action="#{MBFuncionarios.getEditProfissional()}"/>
-    </f:metadata>
+        <f:metadata>
+            <f:viewAction action="#{MBFuncionarios.getEditProfissional()}"/>
+        </f:metadata>
 
-        <h:form id="frmPrincipal" class="form-horizontal">
-            <div class="panel-body">
-                <div class="sub-header">
+        <h:form class="form-horizontal" id="frmPrincipal">
+
+            <div class="panel panel-primary new-top-primary">
+                <div class="panel-heading top-heading">
                     <h:outputText value="#{MBFuncionarios.cabecalho}"
-                                  styleClass="cadcabecalho"></h:outputText>
-                    <hr/>
+                                  class="panel-title"></h:outputText>
                 </div>
 
-                <p:tabView style="height:auto; width:auto" id="tbv">
+                <p:tabView style="height:auto; width:auto;border-bottom:none;"
+                           id="tbv">
+
                     <p:tab title="Dados Pessoais">
 
                         <b:row>
-                            <b:column span="2">
-                                <h:outputLabel value="Realiza Atendimento"/>
-                            </b:column>
-
-                            <b:column span="2">
-                                <p:selectBooleanCheckbox label="" itemLabel=""
+                            <b:column span="3">
+                                <p:selectBooleanCheckbox label="Realiza Atendimento"
+                                                         itemLabel="Realiza Atendimento" style="color:#2e84ce;"
                                                          value="#{MBFuncionarios.profissional.realizaAtendimento}">
                                     <p:ajax listener="#{MBFuncionarios.rendermedico}"
                                             update="frmPrincipal:tbv"></p:ajax>
@@ -41,96 +40,80 @@
                         <br></br>
 
                         <b:row>
-                            <b:column span="1">
-                                <h:outputLabel for="nome" value="Nome" style="margin-top:10px"/>
-                            </b:column>
-                            <b:column span="7">
-                                <b:inputText value="#{MBFuncionarios.profissional.nome}" id="nome"
-                                             required="true" requiredMessage="Nome: Campo obrigatório!"
+                            <b:column span="8" class="label-position">
+                                <b:label for="nome" value="Nome" severity="info" />
+
+                                <b:inputText value="#{MBFuncionarios.profissional.nome}"
+                                             id="nome" required="true"
+                                             requiredMessage="Nome: Campo obrigatório!"
                                              validatorMessage="Nome deve conter entre 2 e 100 caracteres."
                                              class="form-control">
-                                    <f:validateLength minimum="2" maximum="100"/>
+                                    <f:validateLength minimum="2" maximum="100" />
                                 </b:inputText>
                             </b:column>
-                            <b:column span="1">
-                                <h:outputLabel for="cpf" value="CPF" style="margin-top:10px"/>
-                            </b:column>
 
-                            <b:column span="3">
+                            <b:column span="3" class="label-position">
+                                <b:label for="cpf" value="CPF: " severity="info" />
+
                                 <p:inputMask mask="999.999.999-99"
-                                             value="#{MBFuncionarios.profissional.cpf}" class="form-control"
-                                             id="cpf" required="true"
+                                             value="#{MBFuncionarios.profissional.cpf}"
+                                             class="form-control new-size-cpf2" id="cpf" required="true"
                                              requiredMessage="CPF: Campo obrigatório!">
-                                    <stella:validateCPF formatted="true"/>
+                                    <stella:validateCPF formatted="true" />
                                 </p:inputMask>
                             </b:column>
                         </b:row>
 
-                        <br></br>
-
                         <b:row>
 
-                            <b:column span="1">
-                                <h:outputLabel value="Senha" style="margin-top:10px"/>
-                            </b:column>
-                            <b:column span="5">
+                            <b:column span="5" class="label-position">
+                                <b:label value="Senha " severity="info" />
+
                                 <b:inputSecret required="true"
                                                requiredMessage="Senha: Campo obrigatório!"
                                                value="#{MBFuncionarios.profissional.senha}"></b:inputSecret>
                             </b:column>
 
-                            <b:column span="1">
-                                <h:outputLabel value="Ativo"
-                                               style="margin-top:10px;margin-left:50px"/>
-                            </b:column>
-                            <b:column span="5">
-                                <h:selectOneMenu style="width:105px;margin-top:5px"
-                                                 styleClass="form-control"
-                                                 value="#{MBFuncionarios.profissional.ativo}">
-                                    <f:selectItem itemLabel="SIM" itemValue="S"/>
-                                    <f:selectItem itemLabel="NÃO" itemValue="N"/>
-                                </h:selectOneMenu>
+                            <b:column span="3" class="label-position">
+                                <b:label value="Ativo" severity="info" />
+
+                                <b:selectOneMenu value="#{MBFuncionarios.profissional.ativo}">
+                                    <f:selectItem itemLabel="SIM" itemValue="S" />
+                                    <f:selectItem itemLabel="NÃO" itemValue="N" />
+                                </b:selectOneMenu>
                             </b:column>
 
                         </b:row>
 
-                        <br></br>
-
                         <b:row>
 
-                            <b:column span="1">
-                                <h:outputLabel value="Perfil"
-                                               style="margin-top:5px"/>
-                            </b:column>
+                            <b:column span="5" class="label-position">
+                                <b:label value="Perfil" severity="info" />
 
-                            <b:column span="5">
-                                <p:selectOneMenu
+                                <b:selectOneMenu
                                         value="#{MBFuncionarios.profissional.perfil.id}"
-                                        required="true" requiredMessage="Perfil: Campo obrigatório!"
-                                        style="width:230px;">
+                                        required="true" requiredMessage="Perfil: Campo obrigatório!">
 
-                                    <f:selectItem itemLabel="Selecione"/>
+                                    <f:selectItem itemLabel="Selecione" />
                                     <f:selectItems value="#{perfilMB.listaPerfil}" var="perf"
-                                                   itemLabel="#{perf.descricao}" itemValue="#{perf.id}"/>
-                                    <p:ajax event="change" listener="#{MBFuncionarios.limparDualCad()}" update=""/>
-                                </p:selectOneMenu>
+                                                   itemLabel="#{perf.descricao}" itemValue="#{perf.id}" />
+                                    <p:ajax event="change"
+                                            listener="#{MBFuncionarios.limparDualCad()}" update="" />
+                                </b:selectOneMenu>
                             </b:column>
 
-                            <b:column span="1">
-                                <h:outputLabel value="Empresa padrão"
-                                               style="margin-top:5px"/>
-                            </b:column>
+                            <b:column span="3" class="label-position">
+                                <b:label value="Empresa Padrão" severity="info" />
 
-                            <b:column span="5">
-                                <p:selectOneMenu
+                                <b:selectOneMenu
                                         value="#{MBFuncionarios.profissional.empresa.codEmpresa}"
-                                        required="true" requiredMessage="Empresa: Campo obrigatório!"
-                                        style="width:230px;">
+                                        required="true" requiredMessage="Empresa: Campo obrigatório!">
 
-                                    <f:selectItem itemLabel="Selecione"/>
-                                    <f:selectItems value="#{EmpresaController.listarEmpresa()}" var="emp"
-                                                   itemLabel="#{emp.nomeFantasia}" itemValue="#{emp.codEmpresa}"/>
-                                </p:selectOneMenu>
+                                    <f:selectItem itemLabel="Selecione" />
+                                    <f:selectItems value="#{EmpresaController.listarEmpresa()}"
+                                                   var="emp" itemLabel="#{emp.nomeFantasia}"
+                                                   itemValue="#{emp.codEmpresa}" />
+                                </b:selectOneMenu>
                             </b:column>
 
                         </b:row>
@@ -143,46 +126,41 @@
 
                         <b:row>
 
-                            <b:column span="1">
-                                <h:outputLabel value="Especialidade"/>
-                            </b:column>
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Especialidade" severity="info" />
 
-
-                            <b:column span="4">
                                 <p:outputPanel id="outEspeci">
 
                                     <p:autoComplete
-                                            value="#{MBFuncionarios.profissional.especialidade}" size="50"
+                                            value="#{MBFuncionarios.profissional.especialidade}" size="31"
                                             converter="conEspecialidade" id="descE"
                                             completeMethod="#{EspecialidadeController.listaEspecialidadeAutoComplete}"
                                             effect="fade" var="theme" forceSelection="true"
-                                            required="true" requiredMessage="Especialidade: Campo obrigatório!"
+                                            required="true"
+                                            requiredMessage="Especialidade: Campo obrigatório!"
                                             minQueryLength="1" itemValue="#{theme}"
                                             itemLabel="#{theme.descEspecialidade}">
                                     </p:autoComplete>
+
+                                    <p:commandButton id="btBusEsp" icon="ui-icon-search"
+                                                     style="margin-top: 5px;" update=":formConsulEspec"
+                                                     onclick="PF('dlgConsulEspecialidade').show();"
+                                                     immediate="true"
+                                                     actionListener="#{EspecialidadeController.listarTodasEspecialidades()}" />
 
                                 </p:outputPanel>
 
                             </b:column>
 
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="C.B.O" severity="info" />
 
-                            <b:column span="1">
-                                <p:commandButton id="btBusEsp" icon="ui-icon-search"
-                                                 style="margin-left:-20px;" update=":formConsulEspec"
-                                                 onclick="PF('dlgConsulEspecialidade').show();" immediate="true"
-                                                 actionListener="#{EspecialidadeController.listarTodasEspecialidades()}"/>
-
-                            </b:column>
-
-                            <b:column span="1">
-                                <h:outputLabel value="C.B.O."/>
-                            </b:column>
-
-                            <b:column span="4">
                                 <p:outputPanel id="outCboP">
 
                                     <p:autoComplete value="#{MBFuncionarios.profissional.cbo}"
-                                                    size="50" converter="conCbo" id="descCbo"
+                                                    size="31" converter="conCbo" id="descCbo"
                                                     completeMethod="#{CboController.listaCboAutoComplete}"
                                                     effect="fade" var="theme" forceSelection="true"
                                                     minQueryLength="1" itemValue="#{theme}" required="true"
@@ -190,14 +168,52 @@
                                                     itemLabel="#{theme.descCbo}">
                                     </p:autoComplete>
 
+                                    <p:commandButton id="btBusCbo" icon="ui-icon-search"
+                                                     style="margin-top: 5px;" immediate="true"
+                                                     onclick="PF('dlgConsulCbo').show();" />
+
+                                </p:outputPanel>
+
+                            </b:column>
+
+                        </b:row>
+
+                        <b:row>
+
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Procedimento" severity="info" />
+
+                                <p:outputPanel id="outProcP1">
+                                    <p:autoComplete value="#{MBFuncionarios.profissional.proc1}"
+                                                    size="31" converter="conProcedimento" id="descProc1"
+                                                    completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+                                                    effect="fade" var="theme" forceSelection="true"
+                                                    minQueryLength="1" itemValue="#{theme}"
+                                                    itemLabel="#{theme.nomeProc}">
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusProc1" icon="ui-icon-search"
+                                                     onclick="PF('dlgConsulProc1').show();" immediate="true"
+                                                     actionListener="#{ProcedimentoController.listarProcedimentos()}"
+                                                     style="margin-top: 5px;" />
                                 </p:outputPanel>
                             </b:column>
 
-                            <b:column span="1">
-                                <p:commandButton id="btBusCbo" icon="ui-icon-search"
-                                                 style="margin-left:-20px;" immediate="true"
-                                                 onclick="PF('dlgConsulCbo').show();"/>
+                            <b:column span="3" class="label-position">
+                                <b:label value="CNS" severity="info" />
 
+                                <p:outputPanel id="outProcP2">
+                                    <b:inputText value="#{MBFuncionarios.profissional.cns}"
+                                                 class="form-control" required="true"
+                                                 requiredMessage="CNS: Campo obrigátorio!">
+                                        <p:ajax
+                                                listener="#{MBFuncionarios.validaCns(MBFuncionarios.profissional.cns)}"
+                                                global="false" event="blur" immediate="true"
+                                                update=":frmPrincipal:msgPagina" />
+                                    </b:inputText>
+
+                                </p:outputPanel>
                             </b:column>
 
                         </b:row>
@@ -206,66 +222,22 @@
 
                         <b:row>
 
-                            <b:column span="1">
-                                <h:outputLabel value="Procedimento"/>
-                            </b:column>
+                            <b:column span="2" class="label-position">
+                                <b:label value="Grupo" severity="info" />
 
-                            <b:column span="4">
-                                <p:outputPanel id="outProcP1">
-                                    <p:autoComplete value="#{MBFuncionarios.profissional.proc1}"
-                                                    size="50" converter="conProcedimento" id="descProc1"
-                                                    completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-                                                    effect="fade" var="theme" forceSelection="true"
-                                                    minQueryLength="1" itemValue="#{theme}"
-                                                    itemLabel="#{theme.nomeProc}">
-                                    </p:autoComplete>
-                                </p:outputPanel>
-                            </b:column>
-
-                            <b:column span="1">
-                                <p:commandButton id="btBusProc1" icon="ui-icon-search"
-                                                 onclick="PF('dlgConsulProc1').show();" immediate="true"
-                                                 actionListener="#{ProcedimentoController.listarProcedimentos()}"
-                                                 style="margin-left:-20px;"/>
-                            </b:column>
-
-                            <b:column span="1">
-                                <h:outputLabel value="CNS"/>
-                            </b:column>
-
-                            <b:column span="5">
-                                <p:outputPanel id="outProcP2">
-                                    <b:inputText value="#{MBFuncionarios.profissional.cns}" class="form-control"
-                                                 required="true" requiredMessage="CNS: Campo obrigátorio!">
-                                        <p:ajax listener="#{MBFuncionarios.validaCns(MBFuncionarios.profissional.cns)}"
-                                                global="false" event="blur" immediate="true"
-                                                update=":frmPrincipal:msgPagina"/>
-                                    </b:inputText>
-
-                                </p:outputPanel>
-                            </b:column>
-
-                        </b:row>
-
-                        <b:row>
-
-                            <b:column span="1">
-                                <h:outputLabel value="Grupo"/>
-                            </b:column>
-
-                            <b:column span="1">
                                 <p:commandButton process="@this" size="sm" immediate="true"
                                                  tooltip="Incluir Profissional" icon="ui-icon-plus"
-                                                 oncomplete="PF('dlgConsuGrupos').show();"/>
+                                                 class="new-btn-acao-table acao-editar" style="margin-left: 35px;"
+                                                 oncomplete="PF('dlgConsuGrupos').show();" />
                             </b:column>
 
+                            <b:column span="6" class="label-position">
 
-                            <b:column span="10">
-                                <p:dataTable style="width: 480px"
-                                             emptyMessage="Nenhum Programa/Grupo" id="tabelagrupo"
+                                <p:dataTable emptyMessage="Nenhum Programa/Grupo"
+                                             styleClass="table table-hover" id="tabelagrupo"
                                              value="#{MBFuncionarios.listaGruposEProgramasProfissional}"
-                                             var="programa" scrollRows="3" scrollHeight="150"
-                                             scrollable="true">
+                                             var="programa" paginator="true" paginatorPosition="bottom"
+                                             rows="12" resizableColumns="true">
 
                                     <p:column headerText="Programa">
                                         <p:outputLabel value="#{programa.descPrograma}"/>
@@ -279,9 +251,10 @@
                                         <div align="center">
                                             <p:commandButton immediate="true"
                                                              action="#{MBFuncionarios.removeListaGruposEProgramasProfissional()}"
-                                                             icon="ui-icon-trash" update="tabelagrupo">
+                                                             icon="ui-icon-trash" update="tabelagrupo"
+                                                             class="new-btn-acao-table acao-excluir">
                                                 <f:setPropertyActionListener value="#{programa}"
-                                                                             target="#{MBFuncionarios.profissional.progAdd}"/>
+                                                                             target="#{MBFuncionarios.profissional.progAdd}" />
                                             </p:commandButton>
                                         </div>
                                     </p:column>
@@ -300,38 +273,38 @@
 
                         <b:row>
 
-                            <b:column span="2">
-                                <h:outputLabel value="Unidade"
-                                               style="margin-top:5px"/>
-                            </b:column>
+                            <b:column span="5" class="label-position">
+                                <b:label value="Unidade" severity="info" />
 
-                            <b:column span="4">
-                                <p:selectOneMenu id="unidadeExtra"
-                                        value="#{MBFuncionarios.profissional.unidadeExtra.codEmpresa}"
-                                        style="width:230px;">
+                                <b:selectOneMenu id="unidadeExtra"
+                                                 value="#{MBFuncionarios.profissional.unidadeExtra.codEmpresa}">
 
-                                    <f:selectItem itemLabel="Selecione"/>
-                                    <f:selectItems value="#{EmpresaController.listarEmpresa()}" var="emp"
-                                                   itemLabel="#{emp.nomeFantasia}" itemValue="#{emp.codEmpresa}"/>
-                                </p:selectOneMenu>
+                                    <f:selectItem itemLabel="Selecione" />
+                                    <f:selectItems value="#{EmpresaController.listarEmpresa()}"
+                                                   var="emp" itemLabel="#{emp.nomeFantasia}"
+                                                   itemValue="#{emp.codEmpresa}" />
+                                </b:selectOneMenu>
                             </b:column>
 
                             <b:column span="3">
                                 <p:commandButton process="@this, unidadeExtra" value="Adicionar"
                                                  action="#{MBFuncionarios.addUnidadeExtra()}"
-                                                 icon="ui-icon-plus" update="tabelaunidades, :frmPrincipal:msgPagina"></p:commandButton>
+                                                 icon="ui-icon-plus"
+                                                 style="margin-top: 20px;"
+                                                 update="tabelaunidades, :frmPrincipal:msgPagina"></p:commandButton>
                             </b:column>
                         </b:row>
 
                         <br></br>
 
                         <b:row>
-                            <b:column span="12">
-                                <p:dataTable
-                                        emptyMessage="Nenhuma unidade adicionada" id="tabelaunidades"
-                                        value="#{MBFuncionarios.profissional.listaUnidades}"
-                                        var="empresa" scrollRows="3" scrollHeight="150"
-                                        scrollable="true">
+                            <b:column span="9" >
+
+                                <p:dataTable emptyMessage="Nenhuma unidade adicionada"
+                                             styleClass="table table-hover" id="tabelaunidades"
+                                             value="#{MBFuncionarios.profissional.listaUnidades}"
+                                             var="empresa" paginator="true" paginatorPosition="bottom"
+                                             rows="12" resizableColumns="true">
 
                                     <p:column headerText="Unidade">
                                         <p:outputLabel value="#{empresa.nomeFantasia}"/>
@@ -339,11 +312,11 @@
 
                                     <p:column headerText="Ação">
                                         <div align="center">
-                                            <p:commandButton immediate="true"
+                                            <p:commandButton immediate="true" class="new-btn-acao-table acao-excluir"
                                                              action="#{MBFuncionarios.removerUnidadeExtra()}"
                                                              icon="ui-icon-trash" update="tabelaunidades">
                                                 <f:setPropertyActionListener value="#{empresa}"
-                                                                             target="#{MBFuncionarios.empresaBean}"/>
+                                                                             target="#{MBFuncionarios.empresaBean}" />
                                             </p:commandButton>
                                         </div>
                                     </p:column>
@@ -422,16 +395,16 @@
                 <div align="center">
                     <b:commandButton action="#{MBFuncionarios.gravarProfissional()}"
                                      icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
-                                     style="float:left" value="Incluir"
+                                     class="btn-incluir new-bottom" value="Incluir"
                                      rendered="#{MBFuncionarios.tipo == 1}"/>
 
                     <b:commandButton action="#{MBFuncionarios.alterarProfissional()}"
                                      icon="glyphicon-ok" size="sm" update=":frmPrincipal"
-                                     value="Alterar" look="success" style="float:left"
+                                     value="Alterar" look="success" class="btn-incluir new-bottom"
                                      rendered="#{MBFuncionarios.tipo  == 2}"/>
 
                     <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                     style="float:right" size="sm" immediate="true" look="info"
+                                     class="btn-voltar new-bottom" size="sm" immediate="true" look="info"
                                      action="/pages/sishosp/gerenciarProfissional.faces?faces-redirect=true">
                     </b:commandButton>
 
@@ -477,9 +450,9 @@
         <p:dialog header="Consultar C.B.O." widgetVar="dlgConsulCbo"
                   modal="true">
             <h:form id="formConsulCbo">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{CboController.listarCbos()}" var="cbo"
-                             page-length="5" page-length-menu="5,10,20"
-                             display="Nenhum C.B.O.">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{CboController.listarCbos()}" var="cbo" page-length="5"
+                             page-length-menu="5,10,20" display="Nenhum C.B.O.">
 
                     <h:column>
                         <f:facet name="header">
@@ -493,9 +466,10 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton update=":frmPrincipal" icon="ui-icon-check"
+                                         class="new-btn-acao-table acao-editar"
                                          title="Selecionar" onclick="PF('dlgConsulCbo').hide();">
                             <f:setPropertyActionListener value="#{cbo}"
-                                                         target="#{MBFuncionarios.profissional.cbo}"/>
+                                                         target="#{MBFuncionarios.profissional.cbo}" />
                         </p:commandButton>
                     </h:column>
 
@@ -523,9 +497,10 @@
                                 Adicionar
                             </f:facet>
                             <p:commandButton update=":frmPrincipal" icon="ui-icon-check"
+                                             class="new-btn-acao-table acao-editar"
                                              title="Selecionar" onclick="PF('dlgConsulProc1').hide();">
                                 <f:setPropertyActionListener value="#{proc}"
-                                                             target="#{MBFuncionarios.profissional.proc1}"/>
+                                                             target="#{MBFuncionarios.profissional.proc1}" />
                             </p:commandButton>
                         </h:column>
 
@@ -555,9 +530,10 @@
                                 Adicionar
                             </f:facet>
                             <p:commandButton update=":frmPrincipal" icon="ui-icon-check"
+                                             class="new-btn-acao-table acao-editar"
                                              title="Selecionar" onclick="PF('dlgConsulProc2').hide();">
                                 <f:setPropertyActionListener value="#{proc}"
-                                                             target="#{MBFuncionarios.profissional.proc2}"/>
+                                                             target="#{MBFuncionarios.profissional.proc2}" />
                             </p:commandButton>
                         </h:column>
 
@@ -597,11 +573,11 @@
                             </f:facet>
                             <p:commandButton
                                     update=":frmPrincipal:tbv:tabelagrupo :frmPrincipal:msgPagina"
-                                    icon="ui-icon-check" title="Selecionar"
+                                    icon="ui-icon-check" title="Selecionar" class="new-btn-acao-table acao-editar"
                                     onclick="PF('dlgConsuGrupos').hide();"
                                     action="#{MBFuncionarios.addListaGruposEProgramasProfissional()}">
                                 <f:setPropertyActionListener value="#{programa}"
-                                                             target="#{MBFuncionarios.profissional.progAdd}"/>
+                                                             target="#{MBFuncionarios.profissional.progAdd}" />
                             </p:commandButton>
                         </h:column>
 
