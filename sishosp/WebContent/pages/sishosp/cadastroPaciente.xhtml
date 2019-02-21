@@ -69,7 +69,7 @@
 						<b:row>
 
 							<p:outputPanel id="outNomeSocial">
-								<b:column span="3">
+								<b:column span="2" class="size-nomeSocial">
 									<p:selectBooleanCheckbox label="Necessita nome social"
 										itemLabel="Necessita nome social" style="color:#2e84ce;"
 										value="#{PacienteController.paciente.necessitaNomeSocial}">
@@ -81,7 +81,7 @@
 
 								<b:column span="5" class="label-position">
 									<b:label for="inputnamesocial" value="Nome Social"
-										severity="info" id="idnomesociallabel"
+										severity="info" id="idnomesociallabel" class="label-nomeSocial" 
 										rendered="#{PacienteController.paciente.necessitaNomeSocial == true}" />
 
 									<b:inputText value="#{PacienteController.paciente.nomeSocial}"
@@ -94,7 +94,7 @@
 								</b:column>
 
 								<b:column span="3" class="label-position label-motivo">
-									<b:label value="Motivo" severity="info"
+									<b:label value="Motivo" severity="info" class="label-nomeSocial" 
 										rendered="#{PacienteController.paciente.necessitaNomeSocial == true}" />
 
 									<b:selectOneMenu required="true"
@@ -194,8 +194,8 @@
 								</b:inputText>
 							</b:column>
 
-							<b:column span="3" class="label-position">
-								<p:commandButton style="margin-top: 20px;margin-left: -15px;"
+							<b:column span="12" class="label-position">
+								<p:commandButton style="margin-top:20px;margin-left: -15px;"
 									value="Adicionar Telefone"
 									actionListener="#{PacienteController.limparTelefone}"
 									onclick="PF('dlgTelefone').show();" icon="ui-icon-plus"

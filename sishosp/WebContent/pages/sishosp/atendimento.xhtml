@@ -17,7 +17,7 @@
 
 				<h:form id="formConsAge">
 
-					<p:panelGrid columns="5" styleClass="semBorda">
+					<b:row>
 						<p:outputPanel class="data-size5">
 
 							<b:column span="2" class="label-position data-size1">
@@ -40,7 +40,7 @@
 									value="#{AtendimentoController.atendimento.dataAtendimentoFinal}" />
 							</b:column>
 
-							<b:column span="2">
+							<b:column span="2" class="label-position2">
 								<b:commandButton value="Buscar" icon="glyphicon-search"
 									class="btn-acao-table btn-buscaAtendimento"
 									action="#{AtendimentoController.consultarAtendimentos()}"
@@ -49,12 +49,14 @@
 							</b:column>
 						</p:outputPanel>
 
-					</p:panelGrid>
-					<br />
+					</b:row>
+					
+					<br></br><br></br>
+					
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						resizableColumns="true" id="dtAtendimentos"
 						emptyMessage="Sem registros." scrollable="true" paginator="true"
-						rows="15" var="atendimento"
+						rows="15" var="atendimento" responsive="true"
 						value="#{AtendimentoController.listAtendimentos}">
 
 						<h:column>
