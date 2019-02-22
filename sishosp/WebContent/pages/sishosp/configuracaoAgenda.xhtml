@@ -36,6 +36,7 @@
 											requiredMessage="Profissional: Campo obrigatório!"
 											value="#{ConfigAgendaController.confParte1.profissional}"
 											size="31" converter="conFuncionario"
+											class="select-agendaEquipe4"
 											completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
 											effect="fade" var="theme" forceSelection="true"
 											minQueryLength="1" itemValue="#{theme}"
@@ -160,7 +161,7 @@
 										rendered="#{ConfigAgendaController.confParte1.opcao=='1'}" />
 
 									<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-										showOn="button" size="15"
+										showOn="button" size="15" class="select-agendaEquipe2"
 										rendered="#{ConfigAgendaController.confParte1.opcao==1}"
 										value="#{ConfigAgendaController.confParte1.dataEspecifica}"
 										locale="pt" />
@@ -207,7 +208,7 @@
 								<p:outputPanel id="outProg">
 									<p:autoComplete
 										value="#{ConfigAgendaController.confParte2.programa}"
-										size="31" converter="conPrograma"
+										size="31" converter="conPrograma" class="select-agendaEquipe4"
 										completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"
 										minQueryLength="1" itemValue="#{theme}"
@@ -234,7 +235,7 @@
 								<p:outputPanel id="outGrupo">
 									<p:autoComplete
 										value="#{ConfigAgendaController.confParte2.grupo}" size="31"
-										converter="conGrupo"
+										converter="conGrupo" class="select-agendaEquipe4"
 										disabled="#{ConfigAgendaController.confParte2.programa==null}"
 										completeMethod="#{ConfigAgendaController.listaGrupoAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"
@@ -259,12 +260,12 @@
 
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
-								<b:label value="Tipo de tendimento:" severity="info" />
+								<b:label value="Tipo de Atendimento:" severity="info" />
 
 								<p:outputPanel id="outTipoAt">
 									<p:autoComplete
 										value="#{ConfigAgendaController.confParte2.tipoAt}" size="31"
-										converter="conTipoAtendimento"
+										converter="conTipoAtendimento" class="select-agendaEquipe4"
 										disabled="#{ConfigAgendaController.confParte2.programa==null}"
 										completeMethod="#{ConfigAgendaController.listaTipoAtAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"

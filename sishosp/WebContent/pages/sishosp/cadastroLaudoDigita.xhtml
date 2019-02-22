@@ -31,6 +31,7 @@
 								<p:autoComplete value="#{LaudoController.laudo.paciente}"
 									size="31" converter="conPaciente" required="true"
 									requiredMessage="Escolha um paciente!"
+									class="select-agendaEquipe4"
 									completeMethod="#{PacienteController.listaPacienteAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -72,6 +73,7 @@
 							<b:label value="Data para Solicitação:" severity="info" />
 
 							<p:calendar id="dataAte" locale="pt" required="true" size="15"
+								class="select-agendaEquipe2"
 								requiredMessage="É necessário informar a data de solitação"
 								value="#{LaudoController.laudo.data_solicitacao}" mask="true"
 								pattern="dd/MM/yyyy" pages="1" showOn="button" />
@@ -175,7 +177,7 @@
 								<p:autoComplete
 									value="#{LaudoController.laudo.procedimento_primario}"
 									size="31" converter="conProcedimento" id="descProcP1"
-									required="true"
+									required="true" class="select-agendaEquipe4"
 									requiredMessage="Escolha o procedimento primário!"
 									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
@@ -224,6 +226,7 @@
 								<p:autoComplete
 									value="#{LaudoController.laudo.procedimento_secundario1}"
 									size="31" converter="conProcedimento" id="descProcS1"
+									class="select-agendaEquipe4"
 									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -245,6 +248,7 @@
 								<p:autoComplete
 									value="#{LaudoController.laudo.procedimento_secundario2}"
 									size="31" converter="conProcedimento" id="descProcS2"
+									class="select-agendaEquipe4"
 									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -274,6 +278,7 @@
 									size="31" converter="conProcedimento" id="descProcS3"
 									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
+									class="select-agendaEquipe4"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.nomeProc}">
 								</p:autoComplete>
@@ -295,6 +300,7 @@
 									size="31" converter="conProcedimento" id="descProcS4"
 									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
+									class="select-agendaEquipe4"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.nomeProc}">
 								</p:autoComplete>
@@ -322,6 +328,7 @@
 									size="31" converter="conProcedimento" id="descProcS5"
 									completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
+									class="select-agendaEquipe4"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.nomeProc}">
 								</p:autoComplete>
@@ -347,7 +354,7 @@
 								<p:autoComplete
 									disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
 									value="#{LaudoController.laudo.cid1}" size="25"
-									converter="conCid" id="descCid1"
+									converter="conCid" id="descCid1" class="select-agendaEquipe4"
 									completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -369,7 +376,7 @@
 								<p:autoComplete
 									disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
 									value="#{LaudoController.laudo.cid2}" size="25"
-									converter="conCid" id="descCid2"
+									converter="conCid" id="descCid2" class="select-agendaEquipe4"
 									completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -390,7 +397,7 @@
 								<p:autoComplete
 									disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
 									value="#{LaudoController.laudo.cid3}" size="25"
-									converter="conCid" id="descCid3"
+									converter="conCid" id="descCid3" class="select-agendaEquipe4"
 									completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"

@@ -1,206 +1,218 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-    <f:metadata>
-        <f:viewAction action="#{ConfigAgendaController.getEditAgendaEquipe()}"/>
-    </f:metadata>
+		<f:metadata>
+			<f:viewAction
+				action="#{ConfigAgendaController.getEditAgendaEquipe()}" />
+		</f:metadata>
 
-        <h:form id="formEditConfAgenda">
-            <div class="panel-body">
-                <div class="sub-header">
-                    <h4>Editar Configuração da Agenda Por Equipe</h4>
-                    <hr/>
-                </div>
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Editar Configuração da Agenda Por
+					Equipe</h4>
+			</div>
 
-                <b:row>
+			<div class="panel-body table-body">
 
-                    <b:column span="2">
-                        <h:outputLabel value="Equipe: "/>
-                    </b:column>
+				<h:form id="formEditConfAgenda">
 
-                    <b:column span="4">
-                        <p:outputPanel id="outEquipe">
-                            <p:autoComplete
-                                    value="#{ConfigAgendaController.confParte1.equipe}" size="60"
-                                    converter="conEquipe"
-                                    completeMethod="#{ConfigAgendaController.listaEquipeAutoComplete}"
-                                    effect="fade" var="theme" forceSelection="true"
-                                    minQueryLength="1" itemValue="#{theme}"
-                                    itemLabel="#{theme.descEquipe}">
-                                <p:ajax event="itemSelect" update=":formEditConfAgenda:outEquipe"/>
-                            </p:autoComplete>
-                        </p:outputPanel>
-                    </b:column>
+					<b:row>
 
-                    <b:column span="1">
-                        <p:commandButton icon="ui-icon-search" id="btBusEq"
-                                         update=":formConsuEquipe" onclick="PF('dlgConsultEquipe').show();"/>
-                    </b:column>
+						<b:column span="4"
+							class="label-position new-data-size new-comple1">
+							<b:label value="Equipe:" severity="info" />
 
-                </b:row>
+							<p:outputPanel id="outEquipe">
+								<p:autoComplete
+									value="#{ConfigAgendaController.confParte1.equipe}" size="31"
+									converter="conEquipe" class="select-agendaEquipe4"
+									completeMethod="#{ConfigAgendaController.listaEquipeAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descEquipe}">
+									<p:ajax event="itemSelect"
+										update=":formEditConfAgenda:outEquipe" />
+								</p:autoComplete>
 
-                <br></br>
+								<p:commandButton icon="ui-icon-search" id="btBusEq"
+									update=":formConsuEquipe"
+									onclick="PF('dlgConsultEquipe').show();" />
 
-                <b:row>
-                    <b:column span="2">
-                        <h:outputLabel value="Opção: "/>
-                    </b:column>
+							</p:outputPanel>
+						</b:column>
 
-                    <b:column span="3">
-                        <p:selectOneRadio value="#{ConfigAgendaController.confParte1.opcao}">
-                            <f:selectItem itemLabel="Data Específica" itemValue="1"/>
-                            <f:selectItem itemLabel="Dias Semana" itemValue="2"/>
-                            <p:ajax update="panelDias, panelData, panelMesAno" event="change"/>
-                        </p:selectOneRadio>
-                    </b:column>
-                </b:row>
+					</b:row>
 
-                <br></br>
+					<br></br>
 
-                <p:outputPanel id="panelDias">
-                    <b:row rendered="#{ConfigAgendaController.confParte1.opcao==2}">
+					<b:row>
 
-                        <b:column span="2">
-                            <h:outputLabel value="Dia: "
-                                           rendered="#{ConfigAgendaController.confParte1.opcao==2}"/>
-                        </b:column>
+						<b:column span="2" class="new-data-size2">
 
-                        <b:column span="3">
-                            <p:selectOneMenu style="width:100px"
-                                             rendered="#{ConfigAgendaController.confParte1.opcao==2}" required="true"
-                                             requiredMessage="Informe algum dia."
-                                             value="#{ConfigAgendaController.confParte1.diaDaSemana}">
-                                <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                <f:selectItem itemLabel="Domingo" itemValue="1"/>
-                                <f:selectItem itemLabel="Segunda" itemValue="2"/>
-                                <f:selectItem itemLabel="Terça" itemValue="3"/>
-                                <f:selectItem itemLabel="Quarta" itemValue="4"/>
-                                <f:selectItem itemLabel="Quinta" itemValue="5"/>
-                                <f:selectItem itemLabel="Sexta" itemValue="6"/>
-                                <f:selectItem itemLabel="Sábado" itemValue="7"/>
-                            </p:selectOneMenu>
-                        </b:column>
-                    </b:row>
-                </p:outputPanel>
+							<p:outputLabel value="Opção:"
+								style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
-                <p:outputPanel id="panelData">
-                    <b:row rendered="#{ConfigAgendaController.confParte1.opcao==1}">
+						</b:column>
 
-                        <b:column span="2">
-                            <h:outputLabel value="Data Específica: "/>
-                        </b:column>
+						<b:column span="3" class="btn-radio-table">
+							<p:selectOneRadio
+								value="#{ConfigAgendaController.confParte1.opcao}">
+								<f:selectItem itemLabel="Data Específica" itemValue="1" />
+								<f:selectItem itemLabel="Dias Semana" itemValue="2" />
+								<p:ajax update="panelDias, panelData, panelMesAno"
+									event="change" />
+							</p:selectOneRadio>
+						</b:column>
 
-                        <b:column span="3">
-                            <p:calendar locale="pt" navigator="true" mask="true"
-                                        required="true" requiredMessage="Informe a data específica."
-                                        pattern="dd/MM/yyyy"
-                                        value="#{ConfigAgendaController.confParte1.dataEspecifica}"/>
-                        </b:column>
-                    </b:row>
-                </p:outputPanel>
+					</b:row>
+
+					<br></br>
+
+					<p:outputPanel id="panelDias">
+						<b:row rendered="#{ConfigAgendaController.confParte1.opcao==2}">
+
+							<b:column span="3" class="label-position">
+								<b:label value="Dia:"
+									rendered="#{ConfigAgendaController.confParte1.opcao==2}"
+									severity="info" />
 
 
-                <br></br>
+								<b:selectOneMenu class="select-agendaEquipe2"
+									rendered="#{ConfigAgendaController.confParte1.opcao==2}"
+									required="true" requiredMessage="Informe algum dia."
+									value="#{ConfigAgendaController.confParte1.diaDaSemana}">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItem itemLabel="Domingo" itemValue="1" />
+									<f:selectItem itemLabel="Segunda" itemValue="2" />
+									<f:selectItem itemLabel="Terça" itemValue="3" />
+									<f:selectItem itemLabel="Quarta" itemValue="4" />
+									<f:selectItem itemLabel="Quinta" itemValue="5" />
+									<f:selectItem itemLabel="Sexta" itemValue="6" />
+									<f:selectItem itemLabel="Sábado" itemValue="7" />
+								</b:selectOneMenu>
+							</b:column>
 
-                <b:row>
-                    <p:outputPanel id="panelMesAno">
-                        <b:column span="2">
-                            <h:outputLabel value="Mês: "
-                                           rendered="#{ConfigAgendaController.confParte1.opcao==2}"/>
-                        </b:column>
+						</b:row>
+					</p:outputPanel>
 
-                        <b:column span="3">
-                            <p:selectOneMenu style="width:120px"
-                                             rendered="#{ConfigAgendaController.confParte1.opcao==2}"
-                                             value="#{ConfigAgendaController.confParte1.mes}">
-                                <f:selectItem itemLabel="Janeiro" itemValue="1"/>
-                                <f:selectItem itemLabel="Fevereiro" itemValue="2"/>
-                                <f:selectItem itemLabel="Março" itemValue="3"/>
-                                <f:selectItem itemLabel="Abril" itemValue="4"/>
-                                <f:selectItem itemLabel="Maio" itemValue="5"/>
-                                <f:selectItem itemLabel="Junho" itemValue="6"/>
-                                <f:selectItem itemLabel="Julho" itemValue="7"/>
-                                <f:selectItem itemLabel="Agosto" itemValue="8"/>
-                                <f:selectItem itemLabel="Setembro" itemValue="9"/>
-                                <f:selectItem itemLabel="Outubro" itemValue="10"/>
-                                <f:selectItem itemLabel="Novembro" itemValue="11"/>
-                                <f:selectItem itemLabel="Dezembro" itemValue="12"/>
-                            </p:selectOneMenu>
-                        </b:column>
+					<p:outputPanel id="panelData">
+						<b:row rendered="#{ConfigAgendaController.confParte1.opcao==1}">
 
-                        <b:column span="2">
-                            <h:outputLabel value="Ano: "
-                                           rendered="#{ConfigAgendaController.confParte1.opcao==2}"/>
-                        </b:column>
+							<b:column span="2" class="label-position data-size">
+								<b:label value="Data Específica:" severity="info" />
 
-                        <b:column span="2">
-                            <b:inputText value="#{ConfigAgendaController.confParte1.ano}"
-                                         rendered="#{ConfigAgendaController.confParte1.opcao==2}"/>
-                        </b:column>
-                    </p:outputPanel>
-                </b:row>
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="15" class="select-agendaEquipe2"
+									requiredMessage="Informe a data específica."
+									value="#{ConfigAgendaController.confParte1.dataEspecifica}"
+									locale="pt" />
 
-                <br></br>
+							</b:column>
+						</b:row>
+					</p:outputPanel>
 
-                <b:row>
-                    <b:column span="2">
-                        <h:outputLabel value="Turno: "/>
-                    </b:column>
+					<br></br>
 
-                    <b:column span="3">
-                        <p:selectOneMenu style="width:100px"
-                                         value="#{ConfigAgendaController.confParte1.turno}">
-                            <f:selectItem itemLabel="Manhã" itemValue="M"/>
-                            <f:selectItem itemLabel="Tarde" itemValue="T"/>
-                        </p:selectOneMenu>
-                    </b:column>
+					<b:row>
+						<p:outputLabel id="panelMesAno">
 
-                    <b:column span="2">
-                        <h:outputLabel value="Quantidade Máxima:"/>
-                    </b:column>
 
-                    <b:column span="2">
-                        <b:inputText style="width: 60px"
-                                     value="#{ConfigAgendaController.confParte1.qtdMax}"/>
-                    </b:column>
 
-                </b:row>
+							<b:column span="4" class="label-position">
+								<b:label value="Mês:" severity="info"
+									rendered="#{ConfigAgendaController.confParte1.opcao==2}" />
 
-                <br></br> <br></br>
+								<b:selectOneMenu class="select-agendaEquipe2"
+									rendered="#{ConfigAgendaController.confParte1.opcao==2}"
+									value="#{ConfigAgendaController.confParte1.mes}">
+									<f:selectItem itemLabel="Janeiro" itemValue="1" />
+									<f:selectItem itemLabel="Fevereiro" itemValue="2" />
+									<f:selectItem itemLabel="Março" itemValue="3" />
+									<f:selectItem itemLabel="Abril" itemValue="4" />
+									<f:selectItem itemLabel="Maio" itemValue="5" />
+									<f:selectItem itemLabel="Junho" itemValue="6" />
+									<f:selectItem itemLabel="Julho" itemValue="7" />
+									<f:selectItem itemLabel="Agosto" itemValue="8" />
+									<f:selectItem itemLabel="Setembro" itemValue="9" />
+									<f:selectItem itemLabel="Outubro" itemValue="10" />
+									<f:selectItem itemLabel="Novembro" itemValue="11" />
+									<f:selectItem itemLabel="Dezembro" itemValue="12" />
+								</b:selectOneMenu>
+							</b:column>
 
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
+							<b:column span="5" class="label-position">
+								<b:label value="Ano:" severity="info"
+									rendered="#{ConfigAgendaController.confParte1.opcao==2}" />
 
-                <div align="center">
+								<b:inputText value="#{ConfigAgendaController.confParte1.ano}"
+									class="select-agendaEquipe2"
+									rendered="#{ConfigAgendaController.confParte1.opcao==2}" />
+							</b:column>
 
-                    <b:commandButton
-                            action="#{ConfigAgendaController.alterarConfigAgendaEquipe()}"
+
+
+						</p:outputLabel>
+					</b:row>
+
+					<br></br>
+
+					<b:row>
+						<b:column span="3" class="label-position">
+								<b:label value="Turno:" severity="info" />
+								
+							<b:selectOneMenu class="select-agendaEquipe2"
+								value="#{ConfigAgendaController.confParte1.turno}">
+								<f:selectItem itemLabel="Manhã" itemValue="M"/>
+                            	<f:selectItem itemLabel="Tarde" itemValue="T"/>
+							</b:selectOneMenu>
+						</b:column>
+
+						<b:column span="3" class="label-position">
+								<b:label value="Quantidade Máxima:" severity="info"/>
+								
+							<b:inputText class="select-agendaEquipe2"
+								value="#{ConfigAgendaController.confParte1.qtdMax}" />
+						</b:column>
+
+					</b:row>
+
+					<br></br>
+					<br></br>
+
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
+
+					<div align="center">
+
+						<b:commandButton
+							action="#{ConfigAgendaController.alterarConfigAgendaEquipe()}"
                             update=":formEditConfAgenda:msgPagina, :formEditConfAgenda"
-                            icon="glyphicon-ok" style="float:left" value="Alterar"
-                            look="success" size="sm"/>
+							icon="glyphicon-ok" class="btn-incluir" value="Alterar"
+							look="success" size="sm" />
 
-                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                     size="sm" immediate="true" look="info" style="float:right"
-                                     actionListener="#{ConfigAgendaController.limparDados()}"
-                                     action="/pages/sishosp/consConfAgendaEquipe.xhtml?faces-redirect=true">
-                    </b:commandButton>
+						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							size="sm" immediate="true" look="info" class="btn-voltar"
+							actionListener="#{ConfigAgendaController.limparDados()}"
+                            action="/pages/sishosp/consConfAgendaEquipe.xhtml?faces-redirect=true">
+						</b:commandButton>
 
-                </div>
+					</div>
+				</h:form>
+			</div>
+		</div>
 
-            </div>
-        </h:form>
-
-        <p:dialog header="Consultar Equipes" widgetVar="dlgConsultEquipe"
-                  modal="true">
-            <h:form id="formConsuEquipe">
+		<p:dialog header="Consultar Equipes" widgetVar="dlgConsultEquipe"
+			modal="true">
+			<h:form id="formConsuEquipe">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" value="#{ConfigAgendaController.selectEquipe()}"
                              id="dtEquipe" var="equipe">
 
@@ -217,6 +229,7 @@
                         </f:facet>
                         <p:commandButton update=":formEditConfAgenda:outEquipe"
                                          icon="ui-icon-check" title="Selecionar"
+                                         class="new-btn-acao-table acao-editar"
                                          onclick="PF('dlgConsultEquipe').hide();">
                             <f:setPropertyActionListener value="#{equipe}"
                                                          target="#{ConfigAgendaController.confParte1.equipe}"/>
@@ -225,8 +238,8 @@
 
                 </b:dataTable>
             </h:form>
-        </p:dialog>
+		</p:dialog>
 
-    </ui:define>
+	</ui:define>
 
 </ui:composition>

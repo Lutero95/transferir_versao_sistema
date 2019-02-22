@@ -259,29 +259,29 @@
 		</p:dialog>
 
 		<p:dialog widgetVar="dlgExcFuncao" resizable="false" modal="true"
-			header="Excluir Função" width="400px" height="auto">
+			header="Excluir Função" showEffect="clip" hideEffect="clip">
 
 			<h:form id="formCEF">
-				<p:panel id="pnlCEF">
-					<center>
-						<p:panelGrid columns="1" styleClass="semBorda">
-							<p:outputLabel
-								value="Deseja realmente excluir a função selecionada?" />
-						</p:panelGrid>
 
-						<p:separator />
+				<h:panelGrid columns="1" styleClass="semBorda">
+					<div class="alert alert-warning" role="alert">Deseja
+						realmente excluir a função selecionada?</div>
+				</h:panelGrid>
 
-						<p:panelGrid columns="2" styleClass="semBorda">
-							<p:commandButton value="Sim" icon="ui-icon-check"
-								style="width:100px;" action="#{funcaoMB.excluirFuncao()}"
-								update=":form:tabela, :form:growl" />
+				<div align="center">
 
-							<p:commandButton value="Não" icon="ui-icon-close"
-								style="width:100px;" onclick="PF('dlgExcFuncao').hide();"
-								process="@this" />
-						</p:panelGrid>
-					</center>
-				</p:panel>
+					<p:separator />
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<p:commandButton value="Sim" icon="glyphicon-ok"
+							style="float:left;" action="#{funcaoMB.excluirFuncao()}"
+							update=":form:tabela, :form:growl" />
+
+						<p:commandButton value="Não" icon="glyphicon-remove"
+							style="margin-left:5px;float:right;" onclick="PF('dlgExcFuncao').hide();"
+							process="@this" />
+					</p:panelGrid>
+				</div>
+
 			</h:form>
 		</p:dialog>
 	</ui:define>

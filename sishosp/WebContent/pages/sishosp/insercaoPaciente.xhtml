@@ -115,7 +115,8 @@
 							<p:calendar
 								value="#{InsercaoController.insercao.data_solicitacao}"
 								id="dtagen" locale="pt" navigator="true" mask="true"
-								showOn="button" pattern="dd/MM/yyyy" size="15">
+								class="select-agendaEquipe2" showOn="button"
+								pattern="dd/MM/yyyy" size="15">
 							</p:calendar>
 
 						</b:column>
@@ -134,7 +135,7 @@
 
 								<p:autoComplete value="#{InsercaoController.insercao.programa}"
 									rendered="#{InsercaoController.tipo == 'E'}" size="31"
-									converter="conPrograma"
+									converter="conPrograma" class="select-agendaEquipe4"
 									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -159,7 +160,7 @@
 
 								<p:autoComplete value="#{InsercaoController.insercao.grupo}"
 									rendered="#{InsercaoController.tipo == 'E'}" size="31"
-									converter="conGrupo"
+									converter="conGrupo" class="select-agendaEquipe4"
 									disabled="#{InsercaoController.insercao.programa==null}"
 									completeMethod="#{InsercaoController.listaGrupoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
@@ -185,7 +186,7 @@
 									rendered="#{InsercaoController.tipo == 'E'}" severity="info" />
 
 								<p:autoComplete value="#{InsercaoController.insercao.equipe}"
-									size="31" converter="conEquipe"
+									size="31" converter="conEquipe" class="select-agendaEquipe4"
 									rendered="#{InsercaoController.tipo == 'E'}"
 									disabled="#{InsercaoController.insercao.grupo==null}"
 									completeMethod="#{InsercaoController.listaEquipeAutoComplete}"
@@ -214,7 +215,7 @@
 
 								<p:autoComplete rendered="#{InsercaoController.tipo == 'P'}"
 									value="#{InsercaoController.insercao.funcionario}" size="31"
-									converter="conFuncionario"
+									converter="conFuncionario" class="select-agendaEquipe4"
 									completeMethod="#{InsercaoController.listaProfissionalAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -274,7 +275,7 @@
 
 					<b:row>
 						<p:outputPanel id="outTabelas">
-							<b:column span="5">
+							<b:column span="5" style="margin-bottom:15px;">
 								<p:dataTable id="dtEquipe" resizableColumns="true"
 									rendered="#{InsercaoController.tipo == 'E'}"
 									value="#{InsercaoController.listaProfissionaisEquipe}"
@@ -303,8 +304,6 @@
 
 								</p:dataTable>
 							</b:column>
-							
-							<br></br>
 
 							<b:column span="1">
 							</b:column>
@@ -375,7 +374,7 @@
 							<p:outputPanel id="outTipoAt">
 								<p:autoComplete
 									value="#{InsercaoController.insercao.agenda.tipoAt}" size="31"
-									converter="conTipoAtendimento"
+									converter="conTipoAtendimento" class="select-agendaEquipe4"
 									completeMethod="#{InsercaoController.listaTipoAtAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -402,7 +401,7 @@
 
 						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
 							size="sm" immediate="true" look="info" class="btn-voltar"
-							action="/pages/agenda/gerenciamentoPacientes.xhtml?faces-redirect=true">
+							action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true">
 						</b:commandButton>
 
 					</div>
@@ -438,6 +437,7 @@
                         </f:facet>
 						<p:commandButton update=":formInsercao" icon="ui-icon-check"
 							title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
+							class="new-btn-acao-table acao-editar"
 							action="#{InsercaoController.carregarLaudoPaciente()}">
 							<f:setPropertyActionListener value="#{insercao}"
 								target="#{InsercaoController.insercao}" />
@@ -468,7 +468,7 @@
 
 				<div align="center">
 					<b:commandButton value="Adicionar" look="success" size="sm" id="b2"
-						icon="glyphicon-ok"
+						icon="glyphicon-ok" class="new-btn-acao-table acao-editar"
 						update=":formInsercao2:dtAdicionados, :formInsercao2:msgPagina"
 						action="#{InsercaoController.validarAdicionarFuncionario()}" />
 				</div>

@@ -24,7 +24,7 @@
 								<b:label value="Dia de Atendimento:" severity="info" />
 
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									showOn="button" size="15"
+									showOn="button" size="15" class="select-agendaEquipe2"
 									value="#{AtendimentoController.atendimento.dataAtendimentoInicio}" />
 							</b:column>
 
@@ -36,6 +36,7 @@
 
 							<b:column span="2" class="label-position data-size3">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									class="select-agendaEquipe2"
 									showOn="button" size="15" id="dtagen3" locale="pt"
 									value="#{AtendimentoController.atendimento.dataAtendimentoFinal}" />
 							</b:column>

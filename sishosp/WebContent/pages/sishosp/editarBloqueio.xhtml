@@ -1,155 +1,149 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-    <f:metadata>
-        <f:viewAction action="#{BloqueioController.getEditBloqueio()}"/>
-    </f:metadata>
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Editar Bloqueio por Profissional</h4>
+			</div>
 
-        <h:form id="formEdtBloq">
-            <div class="panel-body">
-                <div class="sub-header">
-                    <h4>Editar Bloqueio por Profissional</h4>
-                    <hr/>
-                </div>
+			<div class="panel-body table-body">
 
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
+				<h:form id="formEdtBloq">
 
-                <b:row>
-                    <b:column span="2">
-                        <h:outputLabel value="Profissional: "/>
-                    </b:column>
+					<b:row>
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label value="Profissional:" severity="info" />
 
-                    <b:column span="7">
-                        <p:outputPanel id="outProfi">
-                            <p:autoComplete id="acpro"
-                                            value="#{BloqueioController.bloqueio.prof}" size="110"
-                                            converter="conFuncionario"
-                                            completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
-                                            effect="fade" var="theme" forceSelection="true"
-                                            minQueryLength="1" itemValue="#{theme}"
-                                            itemLabel="#{theme.nome}">
-                                <p:ajax event="itemSelect" update="formEdtBloq"/>
-                            </p:autoComplete>
-                        </p:outputPanel>
-                    </b:column>
+							<p:outputPanel id="outProfi">
+								<p:autoComplete id="acpro"
+									value="#{BloqueioController.bloqueio.prof}" size="31"
+									converter="conFuncionario" class="select-agendaEquipe4"
+									completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.nome}">
+									<p:ajax event="itemSelect" update="formEdtBloq" />
+								</p:autoComplete>
 
-                    <b:column span="3">
-                        <p:commandButton icon="ui-icon-search"
-                                         action="#{MBFuncionarios.listarProfissionais}"
-                                         process="@this" update="formConsultProf"
-                                         oncomplete="PF('dlgConProf').show();"/>
-                    </b:column>
+								<p:commandButton icon="ui-icon-search"
+									action="#{MBFuncionarios.listarProfissionais}" process="@this"
+									update="formConsultProf" oncomplete="PF('dlgConProf').show();" />
+							</p:outputPanel>
+						</b:column>
 
-                </b:row>
+					</b:row>
 
-                <br></br>
+					<b:row>
+					
+						<b:column span="2" class="label-position data-size new-right">
+							<b:label value="Data:" severity="info" />
 
-                <b:row>
+							<p:calendar locale="pt" navigator="true" mask="true"
+									pattern="dd/MM/yyyy" 
+									value="#{BloqueioController.bloqueio.dataInicio}"
+								class="select-agendaEquipe2"/>
+						</b:column>
 
-                    <b:column span="2">
-                        <h:outputLabel value="Data: "/>
-                    </b:column>
+						<b:column span="3" class="label-position">
+							<b:label value="Turno:" severity="info" />
 
-                    <b:column span="4">
-                        <p:calendar locale="pt" navigator="true" mask="true"
-                                    pattern="dd/MM/yyyy"
-                                    value="#{BloqueioController.bloqueio.dataInicio}"/>
-                    </b:column>
+							<b:selectOneMenu class="select-agendaEquipe2"
+								value="#{BloqueioController.bloqueio.turno}">
+								<f:selectItem itemLabel="Manhã" itemValue="M" />
+								<f:selectItem itemLabel="Tarde" itemValue="T" />
+							</b:selectOneMenu>
+						</b:column>
 
-                    <b:column span="2">
-                        <h:outputLabel value="Turno: "/>
-                    </b:column>
+					</b:row>
 
-                    <b:column span="4">
-                        <p:selectOneMenu value="#{BloqueioController.bloqueio.turno}">
-                            <f:selectItem itemLabel="Manhã" itemValue="M"/>
-                            <f:selectItem itemLabel="Tarde" itemValue="T"/>
-                        </p:selectOneMenu>
-                    </b:column>
+					<br></br>
 
-                </b:row>
+					<b:row>
 
-                <br></br>
+						<b:column span="11" class="label-position">
+							<b:label value="Observação do Bloqueio:" severity="info" />
 
-                <b:row>
+							<b:inputTextarea rows="5" cols="120" maxlength="100"
+								class="select-agendaEquipe2"
+								value="#{BloqueioController.bloqueio.descBloqueio}"
+								autoResize="false" />
+						</b:column>
 
-                    <b:column span="2">
-                        <h:outputLabel value="Observação do bloqueio: "/>
-                    </b:column>
+					</b:row>
 
-                    <b:column span="10">
-                        <p:inputTextarea rows="5" cols="120" maxlength="100"
-                                         value="#{BloqueioController.bloqueio.descBloqueio}"/>
-                    </b:column>
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
 
-                </b:row>
+					<br></br>
 
-                <br></br><br></br>
+					<div align="center">
 
-                <div align="center">
+						<b:commandButton value="Gravar" look="success" size="sm" id="b1"
+							icon="glyphicon-ok"
+							update=":formEdtBloq:msgPagina, :formEdtBloq"
+							class="btn-incluir"
+							action="#{BloqueioController.alterarBloqueio()}" />
 
-                    <b:commandButton action="#{BloqueioController.alterarBloqueio()}"
-                                     icon="glyphicon-ok" update=":formEdtBloq:msgPagina, :formEdtBloq"
-                                     style="float:left" value="Alterar" look="success" size="sm"/>
+						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+							size="sm" immediate="true" look="info" class="btn-voltar"
+							update=":formEdtBloq:msgPagina, :formEdtBloq"
+							actionListener="#{ConfigAgendaController.limparDados()}"
+							action="/pages/sishosp/consBloqueios.xhtml?faces-redirect=true">
+						</b:commandButton>
 
-                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                     size="sm" immediate="true" look="info" style="float:right"
-                                     update=":formEdtBloq:msgPagina, :formEdtBloq"
-                                     actionListener="#{ConfigAgendaController.limparDados()}"
-                                     action="/pages/sishosp/consBloqueios.xhtml?faces-redirect=true">
-                    </b:commandButton>
+					</div>
 
-                </div>
+				</h:form>
+			</div>
+		</div>
 
-            </div>
-            <p:dialog header="Consultar Profissionais" widgetVar="dlgConProf"
-                      modal="true">
-                <h:form id="formConsultProf">
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                 value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
-                                 id="dtTipoAt" var="profi"
-                                 display="Nenhuma Profissional">
+		<p:dialog header="Consultar Profissionais" widgetVar="dlgConProf"
+			modal="true">
+			<h:form id="formConsultProf">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+					id="dtTipoAt" var="profi" display="Nenhuma Profissional">
 
-                        <h:column>
-                            <f:facet name="header">
-                                Profissional
-                            </f:facet>
-                            <p:outputLabel value="#{profi.nome}"/>
-                        </h:column>
+					<h:column>
+						<f:facet name="header">
+                            Profissional
+                        </f:facet>
+						<p:outputLabel value="#{profi.nome}" />
+					</h:column>
 
-                        <h:column>
-                            <f:facet name="header">
-                                Especialidade
-                            </f:facet>
-                            <p:outputLabel value="#{profi.especialidade.descEspecialidade}"/>
-                        </h:column>
+					<h:column>
+						<f:facet name="header">
+                            Especialidade
+                        </f:facet>
+						<p:outputLabel value="#{profi.especialidade.descEspecialidade}" />
+					</h:column>
 
-                        <h:column>
-                            <f:facet name="header">
-                                Adicionar
-                            </f:facet>
-                            <p:commandButton icon="ui-icon-check" title="Selecionar"
-                                             onclick="PF('dlgConProf').hide();"
-                                             update=":formEdtBloq:outProfi">
-                                <f:setPropertyActionListener value="#{profi}"
-                                                             target="#{BloqueioController.bloqueio.prof}"/>
-                            </p:commandButton>
-                        </h:column>
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							onclick="PF('dlgConProf').hide();"
+							class="new-btn-acao-table acao-editar"
+							update=":formEdtBloq:outProfi">
+							<f:setPropertyActionListener value="#{profi}"
+								target="#{BloqueioController.bloqueio.prof}" />
+						</p:commandButton>
+					</h:column>
 
-                    </b:dataTable>
-                </h:form>
-            </p:dialog>
-        </h:form>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
 
-    </ui:define>
+	</ui:define>
 
 </ui:composition>

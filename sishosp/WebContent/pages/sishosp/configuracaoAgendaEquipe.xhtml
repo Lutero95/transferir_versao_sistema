@@ -26,7 +26,7 @@
 							<p:outputPanel id="outProg">
 								<p:autoComplete
 									value="#{ConfigAgendaController.confParte2.programa}" size="31"
-									converter="conPrograma"
+									converter="conPrograma" class="select-agendaEquipe4"
 									completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -55,7 +55,7 @@
 							<p:outputPanel id="outGrupo">
 								<p:autoComplete
 									value="#{ConfigAgendaController.confParte2.grupo}" size="31"
-									converter="conGrupo"
+									converter="conGrupo" class="select-agendaEquipe4"
 									disabled="#{ConfigAgendaController.confParte2.programa==null}"
 									completeMethod="#{ConfigAgendaController.listaGrupoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
@@ -85,7 +85,7 @@
 							<p:outputPanel id="outEquipe">
 								<p:autoComplete
 									value="#{ConfigAgendaController.confParte1.equipe}" size="31"
-									converter="conEquipe"
+									converter="conEquipe" class="select-agendaEquipe4"
 									disabled="#{ConfigAgendaController.confParte2.grupo==null}"
 									completeMethod="#{ConfigAgendaController.listaEquipeAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
@@ -169,7 +169,7 @@
 									rendered="#{ConfigAgendaController.confParte1.opcao==1}"/>
 								
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									showOn="button" size="15"
+									showOn="button" size="15" class="select-agendaEquipe2"
 									rendered="#{ConfigAgendaController.confParte1.opcao==1}"
 									value="#{ConfigAgendaController.confParte1.dataEspecifica}" 
 									locale="pt" />

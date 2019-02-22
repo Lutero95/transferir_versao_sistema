@@ -268,6 +268,10 @@ to {
 	margin-top: 15px;
 }
 
+.btnLogin:hover, .btnLogin:focus, .btnLogin:active {
+	background-position: 0 -45px;
+}
+
 .texto-acesso {
 	color: #00577f;
 	font-size: 35px;
@@ -1127,7 +1131,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 }
 
 .ui-inputfield {
-	margin: 5px 0 0 -15px;
+	margin-top: 5px;
 	padding: 10px;
 }
 
@@ -1441,7 +1445,13 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 	margin-left: -15px;
 }
 
+.select-agendaEquipe4 {
+    margin-top: 0px;
+    margin-left: -15px;
+}
+
 /* ------- Paginas Acl ------- */
+
 .btn-buscaAtendimento1, .btn-buscaAtendimento1:hover,
 	.btn-buscaAtendimento1:focus {
 	margin-top: 15px;
@@ -1480,6 +1490,8 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 .btn-cad-gravar {
     font-size: 12px !important;
     cursor: pointer !important;
+    color: #ffffff !important;
+    text-shadow: none !important;
     background-color: #f5f5f5 !important;
     *background-color: #e6e6e6 !important;
     background-image: -webkit-linear-gradient(#88c149, #73A839 60%, #699934) !important;
@@ -1497,6 +1509,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 .btn-cad-gravar:active {
 	background-color: #59822c !important;
 	font-size: 12px !important;
+	color: #ffffff !important;
 	background-image: none !important;
 	text-shadow: none !important;
 	border: 1px solid #cccccc !important;
@@ -1510,7 +1523,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
     background-color: #ffffff !important;
     border-bottom: 1px solid #b91b19 !important;
     border-color: #b91b19 !important;
-    color: #555555 !important;
+    color: #b91b19 !important;
     font-size: 12px !important;
     margin: 0 4px 5px 8px !important;
 }
@@ -1519,11 +1532,91 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 .btn-cad-cancel:active {
 	border-bottom: 1px solid #b91b19 !important;
 	border-color: #b91b19 !important;
-	color: #555555 !important;
+	color: #b91b19 !important;
 	background-color: #f5f5f5 !important;
 	background-position: 0 -30px !important;
 	margin: 0 4px 5px 8px !important;
 }
+
+.topDialog {
+	top:61px !important;
+}
+
+.new-height {
+	height: 30px;
+}
+
+.tab-style {
+	height:auto; 
+	width:auto;
+	padding: 0;
+	margin: -20px -15px;
+	border-bottom: none !important;
+}
+
+.ui-picklist .ui-picklist-filter-container .ui-icon {
+    position: absolute;
+    top: 13px;
+    right: 2px;
+}
+
+.ui-picklist .ui-picklist-filter {
+    padding-right: 15px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.ui-picklist .ui-picklist-list li {
+    color: #227ac6;
+}
+
+.ui-state-highlight, .ui-widget-content 
+.ui-state-highlight, .ui-widget-header 
+.ui-state-highlight {
+    color: #ffffff !important;
+}
+
+.ui-chkbox .ui-chkbox-box {
+    margin-right: 5px;
+}
+
+.btn-radio-table3 {
+    width: 65%;
+    color: #2e84ce;
+    margin-bottom: 10px;
+}
+
+.panel-title1 {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 14px;
+    color: inherit;
+}
+
+.new-heading {
+    padding: 6px 15px;
+}
+
+.top-primary1 {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.label-position8 {
+    margin-left: 30px;
+    margin-right: 0;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.ui-picklist .ui-picklist-list {
+    height: 135px;
+}
+
+.ui-growl {
+    z-index: 1090 !important;
+}
+
 
 @media ( max-width : 992px) {
 	.label-position2 {

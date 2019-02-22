@@ -19,7 +19,7 @@
 
 			<div class="panel panel-primary top-primary">
 				<div class="panel-heading top-heading">
-					<h4 class="panel-title">Gerenciar Funções</h4>
+					<h4 class="panel-title">Gerenciar Menus</h4>
 				</div>
 
 				<div class="panel-body table-body">
@@ -110,8 +110,8 @@
 												target="#{menuMB.idMenuAlt}" />
 										</p:commandButton>
 
-										<p:commandButton icon="ui-icon-trash" 
-										class="new-btn-acao-table2 acao-excluir" disabled="true" />
+										<p:commandButton icon="ui-icon-trash"
+											class="new-btn-acao-table2 acao-excluir" disabled="true" />
 									</center>
 								</p:column>
 							</p:dataTable>
@@ -123,23 +123,23 @@
 
 		<p:dialog header="Cadastro Menu" widgetVar="dlgCadMenu"
 			draggable="false" resizable="false" closable="true" modal="true"
-			width="600px">
+			width="600px" styleClass="topDialog" showEffect="clip"
+			hideEffect="clip">
 
-			<h:form id="formCM">
-				<p:panel id="pnlCM" style="height:510px;">
+			<h:form id="formCM" style="padding: 0px;font-size:12px;">
+				<p:panel id="pnlCM" style="border: none;">
 
-					<p:tabView activeIndex="#{menuMB.abaAtiva}" style="height:390px;">
+					<p:tabView activeIndex="#{menuMB.abaAtiva}" class="tab-style">
 						<p:tab title="Geral">
-							<p:panelGrid styleClass="semBorda">
-								<p:row>
-									<p:column>
-										<p:outputLabel value="Tipo do Menu: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
 
-									<p:column>
-										<p:selectOneMenu value="#{menuMB.menu.tipo}" required="true"
+							<p:panelGrid styleClass="semBorda">
+								<b:row>
+
+									<b:column span="5" class="label-position4">
+										<b:label value="Tipo do Menu: " severity="danger" />
+
+										<b:selectOneMenu value="#{menuMB.menu.tipo}" required="true"
+											class="select-agendaEquipe2 new-height"
 											requiredMessage="Informe o tipo do menu.">
 
 											<f:selectItem itemLabel="Menu Pai" itemValue="menuPai" />
@@ -149,13 +149,314 @@
 												itemValue="menuItemRel" />
 
 											<p:ajax update=":formCM:pnlCM" />
-										</p:selectOneMenu>
-									</p:column>
-								</p:row>
+										</b:selectOneMenu>
+									</b:column>
 
-								<p:row rendered="#{menuMB.menu.tipo == 'menuItemRel'}">
+									<b:column span="5" class="label-position4">
+										<b:label value="Status: " severity="danger" />
+
+										<b:selectOneMenu value="#{menuMB.statusMenu}" required="true"
+											class="select-agendaEquipe2 new-height"
+											requiredMessage="Informe o status.">
+
+											<f:selectItem itemLabel="Habilitado" itemValue="true" />
+											<f:selectItem itemLabel="Desabilitado" itemValue="false" />
+										</b:selectOneMenu>
+									</b:column>
+
+								</b:row>
+
+								<b:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
+									<b:column span="5" class="label-position4">
+										<b:label value="Diretório: " severity="danger" />
+
+										<b:selectOneMenu value="#{menuMB.menu.diretorio}"
+											required="true" class="select-agendaEquipe2 new-height"
+											requiredMessage="Informe o diretório da página.">
+
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems value="#{menuMB.listaDiretorios}" var="dir"
+												itemLabel="#{dir.sigla}" itemValue="#{dir.sigla}" />
+										</b:selectOneMenu>
+									</b:column>
+								</b:row>
+
+								<b:row
+									rendered="#{menuMB.menu.tipo == 'menuItem' 
+                                        or menuMB.menu.tipo == 'submenu' 
+                                        or menuMB.menu.tipo == 'menuItemRel'}">
+
+									<b:column span="5" class="label-position4">
+										<b:label value="Menu Associado	: " severity="danger" />
+
+										<b:selectOneMenu value="#{menuMB.menu.indice}" required="true"
+											class="select-agendaEquipe2 new-height"
+											requiredMessage="Informe o menu associado.">
+
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems value="#{menuMB.listaMenus}" var="menu"
+												itemLabel="#{menu.descricao}" itemValue="#{menu.codigo}" />
+										</b:selectOneMenu>
+									</b:column>
+								</b:row>
+
+								<b:row>
+									<b:column span="12" class="label-position4">
+										<b:label value="Descrição menu: " severity="danger" />
+
+										<b:inputText id="desc" value="#{menuMB.menu.descricao}"
+											size="40" required="true"
+											class="select-agendaEquipe2 new-height"
+											requiredMessage="Informe o nome do menu." />
+									</b:column>
+								</b:row>
+
+								<b:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
+									<b:column span="12" class="label-position4">
+										<b:label value="Página: " severity="danger" />
+
+										<b:inputText value="#{menuMB.menu.descPagina}" required="true"
+											class="select-agendaEquipe2 new-height"
+											requiredMessage="Informe a página associada." />
+									</b:column>
+								</b:row>
+
+								<b:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
+									<p:column span="2" class="new-data-size2">
+										<p:outputLabel style="margin-bottom: 15px;color:#2e84ce;"
+											value="Extensão página: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column span="4" class="btn-radio-table3">
+										<p:selectOneRadio value="#{menuMB.menu.extensao}">
+											<f:selectItems value="#{menuMB.listaExtensoesPag}" />
+										</p:selectOneRadio>
+									</p:column>
+								</b:row>
+
+								<b:row rendered="#{menuMB.menu.tipo == 'menuItemRel'}">
+									<p:column span="2" class="new-data-size2">
+										<p:outputLabel style="margin-bottom: 15px;color:#2e84ce;"
+											value="Tipo Relatório: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column span="4" class="btn-radio-table3">
+										<p:selectOneRadio value="#{menuMB.tipoMenuRel}"
+											required="true"
+											requiredMessage="Informe o tipo do Relatório." layout="grid"
+											columns="2">
+
+											<f:selectItem itemLabel="Rel. com Action" itemValue="A" />
+											<f:selectItem itemLabel="Rel. com Dialog" itemValue="D" />
+
+											<p:ajax update=":formCM:pnlCM" />
+										</p:selectOneRadio>
+									</p:column>
+								</b:row>
+
+								<b:row
+									rendered="#{menuMB.menu.tipo == 'menuItemRel' 
+                                        and menuMB.tipoMenuRel == 'A'}">
+
+									<b:column span="12" class="label-position4">
+										<b:label value="Action: " severity="danger" />
+
+										<b:inputText id="act" value="#{menuMB.menu.action}" size="40"
+											class="select-agendaEquipe2 new-height" required="true"
+											requiredMessage="Informe o valor do action." />
+									</b:column>
+								</b:row>
+
+								<b:row
+									rendered="#{menuMB.menu.tipo == 'menuItemRel' 
+                                        and menuMB.tipoMenuRel == 'D'}">
+
+									<b:column span="12" class="label-position4">
+										<b:label value="Onclick: " severity="danger" />
+
+										<b:inputText id="onc" value="#{menuMB.menu.onclick}" size="40"
+											class="select-agendaEquipe2 new-height" required="true"
+											requiredMessage="Informe o valor do onclick." />
+									</b:column>
+								</b:row>
+
+							</p:panelGrid>
+						</p:tab>
+
+						<p:tab title="Associar Sistemas">
+							<div align="center">
+								<p:panelGrid columns="2" styleClass="semBorda">
+									<p:pickList id="pick" value="#{menuMB.listaSistemasDual}"
+										var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis}"
+										showCheckbox="true" showSourceFilter="true"
+										showTargetFilter="true" filterMatchMode="contains"
+										converter="conPickListSistema" responsive="true">
+
+										<f:facet name="sourceCaption">
+											<font color="#227ac6">Sistemas não associados</font>
+										</f:facet>
+										<f:facet name="targetCaption">
+											<font color="#227ac6">Sistemas associados</font>
+										</f:facet>
+
+										<p:ajax event="transfer"
+											listener="#{menuMB.onTransferMenuSis}" />
+									</p:pickList>
+								</p:panelGrid>
+							</div>
+						</p:tab>
+					</p:tabView>
+
+					<div align="center">
+						<p:separator />
+						<p:row>
+							<b:column span="12" class="label-position3">
+								<p:outputLabel style="color:#C71C22;margin-right: 5px;"
+									value="(*)" />
+								<p:outputLabel value=" Preenchimento Obrigatório"
+									style="color:#2e84ce;" />
+							</b:column>
+						</p:row>
+						<p:row>
+							<p:commandButton value="Gravar" icon="ui-icon-check"
+								class="btn-cad-gravar" style="width:100px;"
+								action="#{menuMB.cadastrarMenu()}"
+								update=":formCM:pnlCM, :form:growl, :form:tabela" />
+
+							<p:commandButton value="Cancelar" icon="ui-icon-close"
+								class="btn-cad-cancel" style="width:100px;"
+								onclick="PF('dlgCadMenu').hide();" process="@this" />
+						</p:row>
+
+					</div>
+
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Alterar Menu" widgetVar="dlgAltMenu"
+			draggable="false" resizable="false" closable="true" modal="true"
+			width="600px" styleClass="topDialog" showEffect="clip"
+			hideEffect="clip">
+
+			<h:form id="formAM" style="padding: 0px;font-size:12px;">
+				<p:panel id="pnlAM" style="border: none;">
+
+					<p:tabView activeIndex="#{menuMB.abaAtiva}" class="tab-style">
+						<p:tab title="Geral">
+							<p:panelGrid styleClass="semBorda">
+
+								<b:row>
+
+									<b:column span="5" class="label-position4">
+										<b:label value="Tipo do Menu: " severity="danger" />
+
+										<b:selectOneMenu value="#{menuMB.menu.tipo}" required="true"
+											class="select-agendaEquipe2 new-height"
+											requiredMessage="Informe o tipo do menu.">
+
+											<f:selectItem itemLabel="Menu Pai" itemValue="menuPai" />
+											<f:selectItem itemLabel="Submenu" itemValue="submenu" />
+											<f:selectItem itemLabel="Menu Item" itemValue="menuItem" />
+											<f:selectItem itemLabel="Menu Item Relatório"
+												itemValue="menuItemRel" />
+
+											<p:ajax update=":formAM:pnlAM" />
+										</b:selectOneMenu>
+									</b:column>
+
+									<b:column span="5" class="label-position4">
+										<b:label value="Status: " severity="danger" />
+
+										<b:selectOneMenu value="#{menuMB.statusMenu}" required="true"
+											class="select-agendaEquipe2 new-height"
+											requiredMessage="Informe o status.">
+
+											<f:selectItem itemLabel="Habilitado" itemValue="true" />
+											<f:selectItem itemLabel="Desabilitado" itemValue="false" />
+										</b:selectOneMenu>
+									</b:column>
+
+								</b:row>
+
+								<b:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
+									<b:column span="5" class="label-position4">
+										<b:label value="Diretório: " severity="danger" />
+
+										<b:selectOneMenu value="#{menuMB.menu.diretorio}"
+											required="true" class="select-agendaEquipe2 new-height"
+											requiredMessage="Informe o diretório da página.">
+
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems value="#{menuMB.listaDiretorios}" var="dir"
+												itemLabel="#{dir.sigla}" itemValue="#{dir.sigla}" />
+										</b:selectOneMenu>
+									</b:column>
+								</b:row>
+
+								<b:row
+									rendered="#{menuMB.menu.tipo == 'menuItem' 
+                                        or menuMB.menu.tipo == 'submenu' 
+                                        or menuMB.menu.tipo == 'menuItemRel'}">
+
+									<b:column span="5" class="label-position4">
+										<b:label value="Menu Associado	: " severity="danger" />
+
+										<b:selectOneMenu value="#{menuMB.menu.indice}" required="true"
+											class="select-agendaEquipe2 new-height"
+											requiredMessage="Informe o menu associado.">
+
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems value="#{menuMB.listaMenus}" var="menu"
+												itemLabel="#{menu.descricao}" itemValue="#{menu.codigo}" />
+										</b:selectOneMenu>
+									</b:column>
+								</b:row>
+
+								<b:row>
+									<b:column span="12" class="label-position4">
+										<b:label value="Descrição menu: " severity="danger" />
+
+										<b:inputText id="desc" value="#{menuMB.menu.descricao}"
+											size="40" required="true"
+											class="select-agendaEquipe2 new-height"
+											requiredMessage="Informe o nome do menu." />
+									</b:column>
+								</b:row>
+
+								<b:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
+									<b:column span="12" class="label-position4">
+										<b:label value="Página: " severity="danger" />
+
+										<b:inputText value="#{menuMB.menu.descPagina}" required="true"
+											class="select-agendaEquipe2 new-height"
+											requiredMessage="Informe a página associada." />
+									</b:column>
+								</b:row>
+
+								<b:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
 									<p:column>
-										<p:outputLabel value="Tipo Relatório: ">
+										<p:outputLabel style="margin-bottom: 15px;color:#2e84ce;"
+											value="Extensão página: ">
+											<font color="#FF0000">*</font>
+										</p:outputLabel>
+									</p:column>
+
+									<p:column>
+										<p:selectOneRadio value="#{menuMB.menu.extensao}">
+											<f:selectItems value="#{menuMB.listaExtensoesPag}" />
+										</p:selectOneRadio>
+									</p:column>
+								</b:row>
+
+								<b:row rendered="#{menuMB.menu.tipo == 'menuItemRel'}">
+									<p:column>
+										<p:outputLabel style="margin-bottom: 15px;color:#2e84ce;"
+											value="Tipo Relatório: ">
 											<font color="#FF0000">*</font>
 										</p:outputLabel>
 									</p:column>
@@ -169,435 +470,115 @@
 											<f:selectItem itemLabel="Rel. com Action" itemValue="A" />
 											<f:selectItem itemLabel="Rel. com Dialog" itemValue="D" />
 
-											<p:ajax update=":formCM:pnlCM" />
+											<p:ajax update=":formAM:pnlAM" />
 										</p:selectOneRadio>
 									</p:column>
-								</p:row>
+								</b:row>
 
-								<p:row
+								<b:row
 									rendered="#{menuMB.menu.tipo == 'menuItemRel' 
                                         and menuMB.tipoMenuRel == 'A'}">
 
-									<p:column>
-										<p:outputLabel value="Action: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
+									<b:column span="12" class="label-position4">
+										<b:label value="Action: " severity="danger" />
 
-									<p:column>
-										<h:inputText id="act" value="#{menuMB.menu.action}" size="40"
-											required="true" requiredMessage="Informe o valor do action." />
-									</p:column>
-								</p:row>
+										<b:inputText id="act" value="#{menuMB.menu.action}" size="40"
+											class="select-agendaEquipe2 new-height" required="true"
+											requiredMessage="Informe o valor do action." />
+									</b:column>
+								</b:row>
 
-								<p:row
+								<b:row
 									rendered="#{menuMB.menu.tipo == 'menuItemRel' 
                                         and menuMB.tipoMenuRel == 'D'}">
 
-									<p:column>
-										<p:outputLabel value="Onclick: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
+									<b:column span="12" class="label-position4">
+										<b:label value="Onclick: " severity="danger" />
 
-									<p:column>
-										<h:inputText id="onc" value="#{menuMB.menu.onclick}" size="40"
-											required="true" requiredMessage="Informe o valor do onclick." />
-									</p:column>
-								</p:row>
+										<b:inputText id="onc" value="#{menuMB.menu.onclick}" size="40"
+											class="select-agendaEquipe2 new-height" required="true"
+											requiredMessage="Informe o valor do onclick." />
+									</b:column>
+								</b:row>
 
-								<p:row>
-									<p:column>
-										<p:outputLabel value="Descrição menu: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<h:inputText id="desc" value="#{menuMB.menu.descricao}"
-											size="40" required="true"
-											requiredMessage="Informe o nome do menu." />
-									</p:column>
-								</p:row>
-
-								<p:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
-									<p:column>
-										<p:outputLabel value="Página: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<h:inputText value="#{menuMB.menu.descPagina}" required="true"
-											requiredMessage="Informe a página associada." />
-									</p:column>
-								</p:row>
-
-								<p:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
-									<p:column>
-										<p:outputLabel value="Extensão página: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<p:selectOneRadio value="#{menuMB.menu.extensao}">
-											<f:selectItems value="#{menuMB.listaExtensoesPag}" />
-										</p:selectOneRadio>
-									</p:column>
-								</p:row>
-
-								<p:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
-									<p:column>
-										<p:outputLabel value="Diretório: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<p:selectOneMenu value="#{menuMB.menu.diretorio}"
-											required="true"
-											requiredMessage="Informe o diretório da página.">
-
-											<f:selectItem itemLabel="Selecione" itemValue="" />
-											<f:selectItems value="#{menuMB.listaDiretorios}" var="dir"
-												itemLabel="#{dir.sigla}" itemValue="#{dir.sigla}" />
-										</p:selectOneMenu>
-									</p:column>
-								</p:row>
-
-								<p:row
-									rendered="#{menuMB.menu.tipo == 'menuItem' 
-                                        or menuMB.menu.tipo == 'submenu' 
-                                        or menuMB.menu.tipo == 'menuItemRel'}">
-
-									<p:column>
-										<p:outputLabel value="Menu associado: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<p:selectOneMenu value="#{menuMB.menu.indice}" required="true"
-											requiredMessage="Informe o menu associado.">
-
-											<f:selectItem itemLabel="Selecione" itemValue="" />
-											<f:selectItems value="#{menuMB.listaMenus}" var="menu"
-												itemLabel="#{menu.descricao}" itemValue="#{menu.codigo}" />
-										</p:selectOneMenu>
-									</p:column>
-								</p:row>
-
-								<p:row>
-									<p:column>
-										<p:outputLabel value="Status: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<p:selectOneMenu value="#{menuMB.statusMenu}" required="true"
-											requiredMessage="Informe o status.">
-
-											<f:selectItem itemLabel="Habilitado" itemValue="true" />
-											<f:selectItem itemLabel="Desabilitado" itemValue="false" />
-										</p:selectOneMenu>
-									</p:column>
-								</p:row>
 							</p:panelGrid>
 						</p:tab>
 
 						<p:tab title="Associar Sistemas">
-							<p:panelGrid columns="2" styleClass="semBorda">
-								<p:pickList id="pick" value="#{menuMB.listaSistemasDual}"
-									var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis}"
-									showCheckbox="true" showSourceFilter="true"
-									showTargetFilter="true" filterMatchMode="contains"
-									converter="conPickListSistema">
+							<div align="center">
+								<p:panelGrid columns="2" styleClass="semBorda">
+									<p:pickList id="pick" value="#{menuMB.listaSistemasDualAlt}"
+										var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis}"
+										showCheckbox="true" showSourceFilter="true"
+										showTargetFilter="true" filterMatchMode="contains"
+										converter="conPickListSistema" responsive="true">
 
-									<f:facet name="sourceCaption">Sistemas não associados</f:facet>
-									<f:facet name="targetCaption">Sistemas associados</f:facet>
+										<f:facet name="sourceCaption">
+											<font color="#227ac6">Sistemas não associados</font>
+										</f:facet>
+										<f:facet name="targetCaption">
+											<font color="#227ac6">Sistemas associados</font>
+										</f:facet>
 
-									<p:ajax event="transfer" listener="#{menuMB.onTransferMenuSis}" />
-								</p:pickList>
-							</p:panelGrid>
+										<p:ajax event="transfer"
+											listener="#{menuMB.onTransferMenuSis}" />
+									</p:pickList>
+								</p:panelGrid>
+							</div>
 						</p:tab>
 					</p:tabView>
 
-					<center>
+					<div align="center">
 						<p:separator />
-						<p:panelGrid columns="2" styleClass="semBorda">
-							<p:outputLabel>
-								<font color="#FF0000">(*)</font>
-							</p:outputLabel>
-							<p:outputLabel value="Preenchimento Obrigatório" />
-						</p:panelGrid>
-
-						<p:panelGrid columns="2" styleClass="semBorda">
+						<p:row>
+							<b:column span="12" class="label-position3">
+								<p:outputLabel style="color:#C71C22;margin-right: 5px;"
+									value="(*)" />
+								<p:outputLabel value=" Preenchimento Obrigatório"
+									style="color:#2e84ce;" />
+							</b:column>
+						</p:row>
+						<p:row>
 							<p:commandButton value="Gravar" icon="ui-icon-check"
-								style="width:100px;" action="#{menuMB.cadastrarMenu()}"
+								class="btn-cad-gravar" style="width:100px;"
+								action="#{menuMB.cadastrarMenu()}"
 								update=":formCM:pnlCM, :form:growl, :form:tabela" />
 
 							<p:commandButton value="Cancelar" icon="ui-icon-close"
-								style="width:100px;" onclick="PF('dlgCadMenu').hide();"
-								process="@this" />
-						</p:panelGrid>
-					</center>
-				</p:panel>
-			</h:form>
-		</p:dialog>
+								class="btn-cad-cancel" style="width:100px;"
+								onclick="PF('dlgAltMenu').hide();" process="@this" />
+						</p:row>
 
-		<p:dialog header="Alterar Menu" widgetVar="dlgAltMenu"
-			draggable="false" resizable="false" closable="true" modal="true"
-			width="600px">
+					</div>
 
-			<h:form id="formAM">
-				<p:panel id="pnlAM" style="height:510px;">
-
-					<p:tabView activeIndex="#{menuMB.abaAtiva}" style="height:390px;">
-						<p:tab title="Geral">
-							<p:panelGrid styleClass="semBorda">
-								<p:row>
-									<p:column>
-										<p:outputLabel value="Tipo do Menu: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<p:selectOneMenu value="#{menuMB.menu.tipo}" required="true"
-											requiredMessage="Informe o tipo do menu." disabled="true">
-
-											<f:selectItem itemLabel="Menu Pai" itemValue="menuPai" />
-											<f:selectItem itemLabel="Submenu" itemValue="submenu" />
-											<f:selectItem itemLabel="Menu Item" itemValue="menuItem" />
-											<f:selectItem itemLabel="Menu Item Relatório"
-												itemValue="menuItemRel" />
-
-											<p:ajax update=":formAM:pnlAM" />
-										</p:selectOneMenu>
-									</p:column>
-								</p:row>
-
-								<p:row rendered="#{menuMB.menu.tipo == 'menuItemRel'}">
-									<p:column>
-										<p:outputLabel value="Tipo Relatório: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<p:selectOneRadio value="#{menuMB.tipoMenuRel}"
-											required="true"
-											requiredMessage="Informe o tipo do Relatório." layout="grid"
-											columns="2" disabled="true">
-
-											<f:selectItem itemLabel="Rel. com Action" itemValue="A" />
-											<f:selectItem itemLabel="Rel. com Dialog" itemValue="D" />
-
-											<p:ajax update=":formAM:pnlAM" />
-										</p:selectOneRadio>
-									</p:column>
-								</p:row>
-
-								<p:row
-									rendered="#{menuMB.menu.tipo == 'menuItemRel' 
-                                        and menuMB.tipoMenuRel == 'A'}">
-
-									<p:column>
-										<p:outputLabel value="Action: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<h:inputText id="act" value="#{menuMB.menu.action}" size="40"
-											required="true" requiredMessage="Informe o valor do action." />
-									</p:column>
-								</p:row>
-
-								<p:row
-									rendered="#{menuMB.menu.tipo == 'menuItemRel' 
-                                        and menuMB.tipoMenuRel == 'D'}">
-
-									<p:column>
-										<p:outputLabel value="Onclick: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<h:inputText id="onc" value="#{menuMB.menu.onclick}" size="40"
-											required="true" requiredMessage="Informe o valor do onclick." />
-									</p:column>
-								</p:row>
-
-								<p:row>
-									<p:column>
-										<p:outputLabel value="Descrição menu: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<h:inputText id="desc" value="#{menuMB.menu.descricao}"
-											size="40" required="true"
-											requiredMessage="Informe o nome do menu." />
-									</p:column>
-								</p:row>
-
-								<p:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
-									<p:column>
-										<p:outputLabel value="Página: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<h:inputText value="#{menuMB.menu.descPagina}" required="true"
-											requiredMessage="Informe a página associada." />
-									</p:column>
-								</p:row>
-
-								<p:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
-									<p:column>
-										<p:outputLabel value="Extensão página: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<p:selectOneRadio value="#{menuMB.menu.extensao}">
-											<f:selectItems value="#{menuMB.listaExtensoesPag}" />
-										</p:selectOneRadio>
-									</p:column>
-								</p:row>
-
-								<p:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
-									<p:column>
-										<p:outputLabel value="Diretório: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<p:selectOneMenu value="#{menuMB.menu.diretorio}"
-											required="true"
-											requiredMessage="Informe o diretório da página.">
-
-											<f:selectItem itemLabel="Selecione" itemValue="" />
-											<f:selectItems value="#{menuMB.listaDiretorios}" var="dir"
-												itemLabel="#{dir.sigla}" itemValue="#{dir.sigla}" />
-										</p:selectOneMenu>
-									</p:column>
-								</p:row>
-
-								<p:row
-									rendered="#{menuMB.menu.tipo == 'menuItem' 
-                                        or menuMB.menu.tipo == 'submenu' 
-                                        or menuMB.menu.tipo == 'menuItemRel'}">
-
-									<p:column>
-										<p:outputLabel value="Menu associado: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<p:selectOneMenu value="#{menuMB.menu.indice}" required="true"
-											requiredMessage="Informe o menu associado." disabled="false">
-
-											<f:selectItem itemLabel="Selecione" itemValue="" />
-											<f:selectItems value="#{menuMB.listaMenus}" var="menu"
-												itemLabel="#{menu.descricao}" itemValue="#{menu.codigo}" />
-										</p:selectOneMenu>
-									</p:column>
-								</p:row>
-
-
-								<p:row>
-									<p:column>
-										<p:outputLabel value="Status: ">
-											<font color="#FF0000">*</font>
-										</p:outputLabel>
-									</p:column>
-
-									<p:column>
-										<p:selectOneMenu value="#{menuMB.statusMenu}" required="true"
-											requiredMessage="Informe o status.">
-
-											<f:selectItem itemLabel="Habilitado" itemValue="true" />
-											<f:selectItem itemLabel="Desabilitado" itemValue="false" />
-										</p:selectOneMenu>
-									</p:column>
-								</p:row>
-							</p:panelGrid>
-						</p:tab>
-
-						<p:tab title="Associar Sistemas">
-							<p:panelGrid columns="2" styleClass="semBorda">
-								<p:pickList id="pick" value="#{menuMB.listaSistemasDualAlt}"
-									var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis}"
-									showCheckbox="true" showSourceFilter="true"
-									showTargetFilter="true" filterMatchMode="contains"
-									converter="conPickListSistema">
-
-									<f:facet name="sourceCaption">Sistemas não associados</f:facet>
-									<f:facet name="targetCaption">Sistemas associados</f:facet>
-
-									<p:ajax event="transfer" listener="#{menuMB.onTransferMenuSis}" />
-								</p:pickList>
-							</p:panelGrid>
-						</p:tab>
-					</p:tabView>
-
-					<center>
-						<p:separator />
-						<p:panelGrid columns="2" styleClass="semBorda">
-							<p:outputLabel>
-								<font color="#FF0000">(*)</font>
-							</p:outputLabel>
-							<p:outputLabel value="Preenchimento Obrigatório" />
-						</p:panelGrid>
-
-						<p:panelGrid columns="2" styleClass="semBorda">
-							<p:commandButton value="Gravar" icon="ui-icon-check"
-								style="width:100px;" action="#{menuMB.alterarMenu()}"
-								update=":formAM:pnlAM, :form:growl, :form:tabela" />
-
-							<p:commandButton value="Cancelar" icon="ui-icon-close"
-								style="width:100px;" onclick="PF('dlgAltMenu').hide();"
-								process="@this" />
-						</p:panelGrid>
-					</center>
 				</p:panel>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog widgetVar="dlgExcMenu" resizable="false" modal="true"
-			header="Excluir Menu" width="400px" height="auto">
+			header="Excluir Menu" showEffect="clip" hideEffect="clip">
 
 			<h:form id="formCEM">
-				<p:panel id="pnlCEM">
-					<center>
-						<p:panelGrid columns="1" styleClass="semBorda">
-							<p:outputLabel
-								value="Deseja realmente excluir o menu selecionado?" />
-						</p:panelGrid>
 
-						<p:separator />
+				<h:panelGrid columns="1" styleClass="semBorda">
+					<div class="alert alert-warning" role="alert">Deseja realmente excluir o 
+					menu selecionado?</div>div>
+				</h:panelGrid>
 
-						<p:panelGrid columns="2" styleClass="semBorda">
-							<p:commandButton value="Sim" icon="ui-icon-check"
-								style="width:100px;" action="#{menuMB.excluirMenu()}"
-								update=":form:tabela, :form:growl" />
+				<div align="center">
 
-							<p:commandButton value="Não" icon="ui-icon-close"
-								style="width:100px;" onclick="PF('dlgExcMenu').hide();"
-								process="@this" />
-						</p:panelGrid>
-					</center>
-				</p:panel>
+					<p:separator />
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<b:commandButton value="Sim" icon="glyphicon-ok"
+							class="btn-sim" style="float:left;"
+							action="#{menuMB.excluirMenu()}"
+							update=":form:tabela, :form:growl" />
+
+						<b:commandButton value="Não" icon="glyphicon-remove"
+							class="btn-nao" style="margin-left:5px;float:right;"
+							onclick="PF('dlgExcMenu').hide();" process="@this" />
+					</p:panelGrid>
+				</div>
 			</h:form>
 		</p:dialog>
 	</ui:define>

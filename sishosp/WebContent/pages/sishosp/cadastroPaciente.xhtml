@@ -44,7 +44,7 @@
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									yearRange="-111:+39" pages="1" showOn="button" size="15"
 									requiredMessage="Nascimento: Campo obrigatório!"
-									required="true"
+									required="true" class="select-agendaEquipe2"
 									value="#{PacienteController.paciente.dtanascimento}"
 									locale="pt" />
 							</b:column>
@@ -263,7 +263,7 @@
 
 								<p:inputMask mask="99999-999" id="inputcep"
 									value="#{PacienteController.paciente.endereco.cep}"
-									class="form-control new-size-cep" required="true" 
+									class="form-control select-agendaEquipe2 new-size-cep" required="true" 
 									requiredMessage="CEP: Campo obrigatório!">
 
 									<p:ajax listener="#{PacienteController.encontraCEP}"
@@ -416,7 +416,7 @@
 
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									id="dtaexpedicao" yearRange="-111:+39" pages="1"
-									showOn="button" size="15"
+									showOn="button" size="15" class="select-agendaEquipe2"
 									value="#{PacienteController.paciente.dataExpedicao1}"
 									locale="pt" />
 							</b:column>
@@ -425,7 +425,8 @@
 								<b:label for="cpf" value="CPF" severity="info" />
 
 								<p:inputMask mask="999.999.999-99"
-									value="#{PacienteController.paciente.cpf}" class="form-control new-size-cpf2"
+									value="#{PacienteController.paciente.cpf}" 
+									class="form-control select-agendaEquipe2 new-size-cpf2"
 									id="cpf" required="true"
 									requiredMessage="CPF: Campo obrigatório!">
 									<stella:validateCPF formatted="true" />
@@ -547,7 +548,7 @@
 
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									yearRange="-111:+39" pages="1" showOn="button" size="15"
-									id="dtaexpedicao2"
+									id="dtaexpedicao2" class="select-agendaEquipe2"
 									value="#{PacienteController.paciente.dataExpedicao2}"
 									locale="pt" />
 							</b:column>
@@ -579,7 +580,7 @@
 							<b:column span="3" class="label-position new-data-size new-comple1">
 								<b:label value="Escolaridade:" severity="danger"/>
 
-								<p:autoComplete id="escolacomplete1"
+								<p:autoComplete id="escolacomplete1" class="select-agendaEquipe4"
 									value="#{PacienteController.escolaridadeSuggestion}" size="31"
 									completeMethod="#{PacienteController.completeText2}"
 									effect="fade" var="theme" forceSelection="true"
@@ -601,7 +602,7 @@
 							<b:column span="3" class="label-position new-data-size new-comple1">
 								<b:label value="Escola:" severity="danger"/>
 
-								<p:autoComplete id="escolacomplete2"
+								<p:autoComplete id="escolacomplete2" class="select-agendaEquipe4"
 									value="#{PacienteController.escolaSuggestion}" size="31"
 									completeMethod="#{PacienteController.completeText}"
 									effect="fade" var="theme" forceSelection="true"
@@ -621,7 +622,7 @@
 							<b:column span="3" class="label-position new-data-size new-comple1">
 								<b:label value="Profissão:" severity="danger"/>
 
-								<p:autoComplete id="escolacomplete3"
+								<p:autoComplete id="escolacomplete3" class="select-agendaEquipe4"
 									value="#{PacienteController.profissaoSuggestion}" size="31"
 									completeMethod="#{PacienteController.completeText6}"
 									effect="fade" var="theme" forceSelection="true"
@@ -711,7 +712,7 @@
 								<b:label value="CPF: " severity="danger"/>
 
 								<p:outputPanel>
-									<p:inputMask mask="999.999.999-99" id="nome7" class="form-control new-size-cpf2"
+									<p:inputMask mask="999.999.999-99" id="nome7" class="form-control select-agendaEquipe2 new-size-cpf2"
 										value="#{PacienteController.paciente.cpfresp}">
 										<p:ajax
 											listener="#{PacienteController.validaCPF(PacienteController.paciente.cpfresp)}"
@@ -731,7 +732,7 @@
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									yearRange="-111:+39" pages="1" showOn="button" size="31"
 									value="#{PacienteController.paciente.dataNascimentoresp}"
-									locale="pt" />
+									locale="pt" class="select-agendaEquipe2"/>
 
 							</b:column>
 						</b:row>
@@ -743,7 +744,7 @@
 							<b:column span="3" class="label-position new-data-size new-comple1">
 								<b:label value="Encaminhado: " severity="danger"/>
 
-								<p:autoComplete id="escolacomplete4"
+								<p:autoComplete id="escolacomplete4" class="select-agendaEquipe4"
 									value="#{PacienteController.encaminhadoSuggestion}" size="31"
 									completeMethod="#{PacienteController.completeText4}"
 									effect="fade" var="theme" forceSelection="true"
@@ -764,7 +765,7 @@
 							<b:column span="3" class="label-position new-data-size new-comple1">
 								<b:label value="Transporte: " severity="danger"/>
 
-								<p:autoComplete id="escolacomplete5"
+								<p:autoComplete id="escolacomplete5" class="select-agendaEquipe4"
 									value="#{PacienteController.transporteSuggestion}" size="31"
 									completeMethod="#{PacienteController.completeText5}"
 									effect="fade" var="theme" forceSelection="true"

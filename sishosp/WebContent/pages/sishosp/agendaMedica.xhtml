@@ -26,6 +26,7 @@
 								<p:autoComplete value="#{AgendaController.agenda.paciente}"
 									size="31" converter="conPaciente" required="true"
 									requiredMessage="Paciente: Campo obrigatório!"
+									class="select-agendaEquipe4"
 									completeMethod="#{PacienteController.listaPacienteAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -51,6 +52,7 @@
 							<p:outputPanel id="outProg">
 								<p:autoComplete value="#{AgendaController.agenda.programa}"
 									size="31" converter="conPrograma" required="true"
+									class="select-agendaEquipe4"
 									requiredMessage="Programa: Campo obrigatório!"
 									disabled="#{AgendaController.agenda.paciente==null}"
 									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
@@ -84,6 +86,7 @@
 								<p:autoComplete value="#{AgendaController.agenda.grupo}"
 									size="31" converter="conGrupo" required="true"
 									requiredMessage="Grupo: Campo obrigatório!"
+									class="select-agendaEquipe4"
 									disabled="#{AgendaController.agenda.programa.idPrograma == null}"
 									completeMethod="#{AgendaController.listaGrupoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
@@ -112,6 +115,7 @@
 								<p:autoComplete value="#{AgendaController.agenda.tipoAt}"
 									size="31" converter="conTipoAtendimento" required="true"
 									requiredMessage="Tipo Atendimento: Campo obrigatório!"
+									class="select-agendaEquipe4"
 									disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
 									completeMethod="#{AgendaController.listaTipoAtAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
@@ -146,6 +150,7 @@
 								<p:autoComplete value="#{AgendaController.agenda.profissional}"
 									size="31" converter="conFuncionario" required="true"
 									requiredMessage="Profissional: Campo obrigatório!"
+									class="select-agendaEquipe4"
 									completeMethod="#{AgendaController.listaProfissionalPorGrupoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -176,6 +181,7 @@
 								<p:autoComplete value="#{AgendaController.agenda.equipe}"
 									size="31" converter="conEquipe" required="true"
 									requiredMessage="Equipe: Campo obrigatório!"
+									class="select-agendaEquipe4"
 									completeMethod="#{AgendaController.listaEquipeAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -311,7 +317,7 @@
 						<b:row rendered="#{AgendaController.tipoData == 'U'}">
 							<b:column span="2" class="label-position data-size">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									showOn="button" size="15"
+									showOn="button" size="15" class="select-agendaEquipe2"
 									rendered="#{AgendaController.tipoData == 'U'}"
 									value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
 									locale="pt">
@@ -333,6 +339,7 @@
 
 							<b:column span="2" class="label-position data-size">
 								<p:calendar rendered="#{AgendaController.tipoData == 'I'}"
+									class="select-agendaEquipe2"
 									value="#{AgendaController.agenda.dataAtendimento}" id="dtagen2"
 									locale="pt" navigator="true" mask="true" showOn="button"
 									pattern="dd/MM/yyyy" size="15"/>
@@ -346,6 +353,7 @@
 							<b:column span="2" class="label-position data-size">
 
 								<p:calendar rendered="#{AgendaController.tipoData == 'I'}"
+									class="select-agendaEquipe2"
 									value="#{AgendaController.agenda.dataAtendimentoFinal}"
 									id="dtagen3" locale="pt" navigator="true" mask="true"
 									showOn="button" pattern="dd/MM/yyyy" size="15" />

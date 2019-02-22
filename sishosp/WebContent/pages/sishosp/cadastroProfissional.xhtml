@@ -57,7 +57,8 @@
 
 								<p:inputMask mask="999.999.999-99"
 									value="#{MBFuncionarios.profissional.cpf}"
-									class="form-control new-size-cpf2" id="cpf" required="true"
+									class="form-control new-size-cpf2 select-agendaEquipe2"
+									id="cpf" required="true"
 									requiredMessage="CPF: Campo obrigatório!">
 									<stella:validateCPF formatted="true" />
 								</p:inputMask>
@@ -137,7 +138,7 @@
 										converter="conEspecialidade" id="descE"
 										completeMethod="#{EspecialidadeController.listaEspecialidadeAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"
-										required="true"
+										required="true" class="select-agendaEquipe4"
 										requiredMessage="Especialidade: Campo obrigatório!"
 										minQueryLength="1" itemValue="#{theme}"
 										itemLabel="#{theme.descEspecialidade}">
@@ -161,6 +162,7 @@
 
 									<p:autoComplete value="#{MBFuncionarios.profissional.cbo}"
 										size="31" converter="conCbo" id="descCbo"
+										class="select-agendaEquipe4"
 										completeMethod="#{CboController.listaCboAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"
 										minQueryLength="1" itemValue="#{theme}" required="true"
@@ -187,6 +189,7 @@
 								<p:outputPanel id="outProcP1">
 									<p:autoComplete value="#{MBFuncionarios.profissional.proc1}"
 										size="31" converter="conProcedimento" id="descProc1"
+										class="select-agendaEquipe4"
 										completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"
 										minQueryLength="1" itemValue="#{theme}"
@@ -227,7 +230,8 @@
 
 								<p:commandButton process="@this" size="sm" immediate="true"
 									tooltip="Incluir Profissional" icon="ui-icon-plus"
-									class="new-btn-acao-table acao-editar" style="margin-left: 35px;"
+									class="new-btn-acao-table acao-editar"
+									style="margin-left: 35px;"
 									oncomplete="PF('dlgConsuGrupos').show();" />
 							</b:column>
 
@@ -289,8 +293,7 @@
 							<b:column span="3">
 								<p:commandButton process="@this, unidadeExtra" value="Adicionar"
 									action="#{MBFuncionarios.addUnidadeExtra()}"
-									icon="ui-icon-plus"
-									style="margin-top: 20px;"
+									icon="ui-icon-plus" style="margin-top: 20px;"
 									update="tabelaunidades, :frmPrincipal:msgPagina"></p:commandButton>
 							</b:column>
 						</b:row>
@@ -298,7 +301,7 @@
 						<br></br>
 
 						<b:row>
-							<b:column span="9" >
+							<b:column span="9">
 
 								<p:dataTable emptyMessage="Nenhuma unidade adicionada"
 									styleClass="table table-hover" id="tabelaunidades"
@@ -312,7 +315,8 @@
 
 									<p:column headerText="Ação">
 										<div align="center">
-											<p:commandButton immediate="true" class="new-btn-acao-table acao-excluir"
+											<p:commandButton immediate="true"
+												class="new-btn-acao-table acao-excluir"
 												action="#{MBFuncionarios.removerUnidadeExtra()}"
 												icon="ui-icon-trash" update="tabelaunidades">
 												<f:setPropertyActionListener value="#{empresa}"
@@ -340,7 +344,7 @@
 									rendered="#{MBFuncionarios.renderizarPermissoes == false}" />
 							</div>
 
-							<p:tabView id="tabvPerms"
+							<p:tabView id="tabvPerms" class="tab-style"
 								rendered="#{MBFuncionarios.renderizarPermissoes == true}">
 
 								<p:tab title="Associar Menus">
@@ -352,8 +356,12 @@
 											showSourceFilter="true" showTargetFilter="true"
 											filterMatchMode="contains" converter="conPickListMenu">
 
-											<f:facet name="sourceCaption">Menus não associadas</f:facet>
-											<f:facet name="targetCaption">Menus associadas</f:facet>
+											<f:facet name="sourceCaption">
+												<font color="#227ac6">Menus não associadas</font>
+											</f:facet>
+											<f:facet name="targetCaption">
+												<font color="#227ac6">Menus associadas</font>
+											</f:facet>
 
 											<p:ajax event="transfer"
 												listener="#{MBFuncionarios.onTransferMenu}" />
@@ -370,8 +378,12 @@
 											showSourceFilter="true" showTargetFilter="true"
 											filterMatchMode="contains" converter="conPickListFuncao">
 
-											<f:facet name="sourceCaption">Funções não associadas</f:facet>
-											<f:facet name="targetCaption">Funções associadas</f:facet>
+											<f:facet name="sourceCaption">
+												<font color="#227ac6">Funções não associadas</font>
+											</f:facet>
+											<f:facet name="targetCaption">
+												<font color="#227ac6">Funções associadas</font>
+											</f:facet>
 
 											<p:ajax event="transfer"
 												listener="#{MBFuncionarios.onTransferFuncao}" />
@@ -466,8 +478,8 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton update=":frmPrincipal" icon="ui-icon-check"
-							class="new-btn-acao-table acao-editar"
-							title="Selecionar" onclick="PF('dlgConsulCbo').hide();">
+							class="new-btn-acao-table acao-editar" title="Selecionar"
+							onclick="PF('dlgConsulCbo').hide();">
 							<f:setPropertyActionListener value="#{cbo}"
 								target="#{MBFuncionarios.profissional.cbo}" />
 						</p:commandButton>
@@ -496,8 +508,8 @@
                                 Adicionar
                             </f:facet>
 							<p:commandButton update=":frmPrincipal" icon="ui-icon-check"
-								class="new-btn-acao-table acao-editar"
-								title="Selecionar" onclick="PF('dlgConsulProc1').hide();">
+								class="new-btn-acao-table acao-editar" title="Selecionar"
+								onclick="PF('dlgConsulProc1').hide();">
 								<f:setPropertyActionListener value="#{proc}"
 									target="#{MBFuncionarios.profissional.proc1}" />
 							</p:commandButton>
@@ -528,8 +540,8 @@
                                 Adicionar
                             </f:facet>
 							<p:commandButton update=":frmPrincipal" icon="ui-icon-check"
-								class="new-btn-acao-table acao-editar"
-								title="Selecionar" onclick="PF('dlgConsulProc2').hide();">
+								class="new-btn-acao-table acao-editar" title="Selecionar"
+								onclick="PF('dlgConsulProc2').hide();">
 								<f:setPropertyActionListener value="#{proc}"
 									target="#{MBFuncionarios.profissional.proc2}" />
 							</p:commandButton>
@@ -571,7 +583,8 @@
                             </f:facet>
 							<p:commandButton
 								update=":frmPrincipal:tbv:tabelagrupo :frmPrincipal:msgPagina"
-								icon="ui-icon-check" title="Selecionar" class="new-btn-acao-table acao-editar"
+								icon="ui-icon-check" title="Selecionar"
+								class="new-btn-acao-table acao-editar"
 								onclick="PF('dlgConsuGrupos').hide();"
 								action="#{MBFuncionarios.addListaGruposEProgramasProfissional()}">
 								<f:setPropertyActionListener value="#{programa}"
