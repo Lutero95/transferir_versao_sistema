@@ -1,7 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -66,12 +65,11 @@ public class MotivoDesligamentoController implements Serializable {
         motivo = new MotivoDesligamentoBean();
     }
 
-    public List<MotivoDesligamentoBean> listarMotivos() throws SQLException,
-            ProjetoException {
+    public List<MotivoDesligamentoBean> listarMotivos() throws ProjetoException {
         return pDao.listarMotivos();
     }
 
-    public void gravarMotivo() throws ProjetoException, SQLException {
+    public void gravarMotivo() {
         boolean cadastrou = pDao.gravarMotivo(motivo);
 
         if (cadastrou == true) {
@@ -82,7 +80,7 @@ public class MotivoDesligamentoController implements Serializable {
         }
     }
 
-    public void alterarMotivo() throws ProjetoException, SQLException {
+    public void alterarMotivo() {
 
         boolean alterou = pDao.alterarMotivo(motivo);
         if (alterou == true) {
@@ -92,7 +90,7 @@ public class MotivoDesligamentoController implements Serializable {
         }
     }
 
-    public void excluirMotivo() throws ProjetoException, SQLException {
+    public void excluirMotivo() throws ProjetoException {
 
         boolean excluiu = pDao.excluirMotivo(motivo);
         if (excluiu == true) {

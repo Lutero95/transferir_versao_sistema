@@ -25,8 +25,10 @@ public class EmpresaBean implements Serializable {
     private Boolean matriz;
     private Boolean ativo;
     private String tipoString;
+    private ParametroBean parametro;
 
     public EmpresaBean() {
+        parametro = new ParametroBean();
     }
 
     public Integer getCodEmpresa() {
@@ -197,4 +199,11 @@ public class EmpresaBean implements Serializable {
         this.tipoString = tipoString;
     }
 
+    public ParametroBean getParametro() {
+        return parametro;
+    }
+
+    public void setParametro(ParametroBean parametro) {
+        this.parametro = parametro;
+    }
 }

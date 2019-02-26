@@ -188,6 +188,58 @@
 
 					</b:row>
 
+                    <b:row>
+
+                        <b:column span="5" class="label-position new-col5">
+                            <b:label value="Motivo padrão de Desligamento" severity="info" />
+
+                            <b:selectOneMenu size="10" required="true"
+                                             requiredMessage="Motivo padrão de Desligamento: Campo obrigatório!"
+                                             value="#{EmpresaController.empresa.parametro.motivoDesligamento}">
+                                <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                                <f:selectItems value="#{MotivoController.listarMotivos()}"
+                                               var="sis" itemLabel="#{sis.motivo_desligamento}"
+                                               itemValue="#{sis.id_motivo}" />
+                            </b:selectOneMenu>
+
+                        </b:column>
+
+                        <b:column span="5" class="label-position new-col5">
+                            <b:label value="Opção de Atendimento" severity="info" />
+
+                            <b:selectOneMenu size="10" required="true"
+                                             requiredMessage="Opção de atendimento: Campo obrigatório!"
+                                             value="#{EmpresaController.empresa.parametro.opcaoAtendimento}">
+                                <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                                <f:selectItem itemLabel="Somente Turno" itemValue="T"></f:selectItem>
+                                <f:selectItem itemLabel="Somente Horário" itemValue="H"></f:selectItem>
+                                <f:selectItem itemLabel="Ambos" itemValue="A"></f:selectItem>
+                            </b:selectOneMenu>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="5" class="label-position new-col5">
+                            <b:label value="Quantidade Simultânea Profissional" severity="info" />
+
+                            <b:inputText value="#{EmpresaController.empresa.parametro.quantidadeSimultaneaProfissional}"
+                                         required="true" requiredMessage="Quantidade Simultânea Profissional: Campo obrigatório!" class="form-control">
+                            </b:inputText>
+                        </b:column>
+
+                        <b:column span="5" class="label-position new-col5">
+                            <b:label value="Quantidade Simultânea Equipe" severity="info" />
+
+                            <b:inputText value="#{EmpresaController.empresa.parametro.quantidadeSimultaneaEquipe}"
+                                         required="true" requiredMessage="Quantidade Simultânea Equipe: Campo obrigatório!" class="form-control">
+                            </b:inputText>
+                        </b:column>
+
+                    </b:row>
+
 					<b:row>
 
 						<b:column span="5">
