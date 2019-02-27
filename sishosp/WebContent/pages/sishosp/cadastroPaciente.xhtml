@@ -41,13 +41,13 @@
                             <b:column span="2" class="label-position data-size">
                                 <b:label value="Nascimento" severity="info"/>
 
-                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-                                            yearRange="-111:+39" pages="1" showOn="button" size="15"
-                                            requiredMessage="Nascimento: Campo obrigatório!"
-                                            required="true"
-                                            value="#{PacienteController.paciente.dtanascimento}"
-                                            locale="pt"/>
-                            </b:column>
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									yearRange="-111:+39" pages="1" showOn="button" size="15"
+									requiredMessage="Nascimento: Campo obrigatório!"
+									required="true" class="select-agendaEquipe2"
+									value="#{PacienteController.paciente.dtanascimento}"
+									locale="pt" />
+							</b:column>
 
                             <b:column span="3" class="label-position new-col3-2">
                                 <b:label for="estadocivil" value="Est. Civil" severity="info"/>
@@ -68,21 +68,21 @@
 
                         <b:row>
 
-                            <p:outputPanel id="outNomeSocial">
-                                <b:column span="3">
-                                    <p:selectBooleanCheckbox label="Necessita nome social"
-                                                             itemLabel="Necessita nome social" style="color:#2e84ce;"
-                                                             value="#{PacienteController.paciente.necessitaNomeSocial}">
-                                        <p:ajax update="outNomeSocial"></p:ajax>
-                                    </p:selectBooleanCheckbox>
-                                </b:column>
+							<p:outputPanel id="outNomeSocial">
+								<b:column span="2" class="size-nomeSocial">
+									<p:selectBooleanCheckbox label="Necessita nome social"
+										itemLabel="Necessita nome social" style="color:#2e84ce;"
+										value="#{PacienteController.paciente.necessitaNomeSocial}">
+										<p:ajax update="outNomeSocial"></p:ajax>
+									</p:selectBooleanCheckbox>
+								</b:column>
+								
+							<br></br>
 
-                                <br></br>
-
-                                <b:column span="5" class="label-position">
-                                    <b:label for="inputnamesocial" value="Nome Social"
-                                             severity="info" id="idnomesociallabel"
-                                             rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"/>
+								<b:column span="5" class="label-position">
+									<b:label for="inputnamesocial" value="Nome Social"
+										severity="info" id="idnomesociallabel" class="label-nomeSocial" 
+										rendered="#{PacienteController.paciente.necessitaNomeSocial == true}" />
 
                                     <b:inputText value="#{PacienteController.paciente.nomeSocial}"
                                                  rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
@@ -93,9 +93,9 @@
                                     </b:inputText>
                                 </b:column>
 
-                                <b:column span="3" class="label-position label-motivo">
-                                    <b:label value="Motivo" severity="info"
-                                             rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"/>
+								<b:column span="3" class="label-position label-motivo">
+									<b:label value="Motivo" severity="info" class="label-nomeSocial" 
+										rendered="#{PacienteController.paciente.necessitaNomeSocial == true}" />
 
                                     <b:selectOneMenu required="true"
                                                      rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
@@ -194,14 +194,14 @@
                                 </b:inputText>
                             </b:column>
 
-                            <b:column span="3" class="label-position">
-                                <p:commandButton style="margin-top: 20px;margin-left: -15px;"
-                                                 value="Adicionar Telefone"
-                                                 actionListener="#{PacienteController.limparTelefone}"
-                                                 onclick="PF('dlgTelefone').show();" icon="ui-icon-plus"
-                                                 update=":frmPrincipal:tbv:outTabelaTelefones">
-                                </p:commandButton>
-                            </b:column>
+							<b:column span="12" class="label-position">
+								<p:commandButton style="margin-top:20px;margin-left: -15px;"
+									value="Adicionar Telefone"
+									actionListener="#{PacienteController.limparTelefone}"
+									onclick="PF('dlgTelefone').show();" icon="ui-icon-plus"
+									update=":frmPrincipal:tbv:outTabelaTelefones">
+								</p:commandButton>
+							</b:column>
 
                         </b:row>
 
@@ -416,25 +416,25 @@
                                 <b:label for="dtaexpedicao" value="RG Dta.Expedição"
                                          severity="info"/>
 
-                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-                                            id="dtaexpedicao" yearRange="-111:+39" pages="1"
-                                            showOn="button" size="15"
-                                            value="#{PacienteController.paciente.dataExpedicao1}"
-                                            locale="pt"/>
-                            </b:column>
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									id="dtaexpedicao" yearRange="-111:+39" pages="1"
+									showOn="button" size="15" class="select-agendaEquipe2"
+									value="#{PacienteController.paciente.dataExpedicao1}"
+									locale="pt" />
+							</b:column>
 
                             <b:column span="3" class="label-position">
                                 <b:label for="cpf" value="CPF" severity="info"/>
 
-                                <p:inputMask mask="999.999.999-99"
-                                             value="#{PacienteController.paciente.cpf}"
-                                             class="form-control new-size-cpf2"
-                                             id="cpf" required="true"
-                                             requiredMessage="CPF: Campo obrigatório!">
-                                    <stella:validateCPF formatted="true"/>
-                                </p:inputMask>
-                            </b:column>
-                        </b:row>
+								<p:inputMask mask="999.999.999-99"
+									value="#{PacienteController.paciente.cpf}" 
+									class="form-control select-agendaEquipe2 new-size-cpf2"
+									id="cpf" required="true"
+									requiredMessage="CPF: Campo obrigatório!">
+									<stella:validateCPF formatted="true" />
+								</p:inputMask>
+							</b:column>
+						</b:row>
 
                         <br></br>
 
@@ -548,13 +548,13 @@
                                 <b:label for="dtaexpedicao2" value="Dta.Expedição"
                                          severity="info"/>
 
-                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-                                            yearRange="-111:+39" pages="1" showOn="button" size="15"
-                                            id="dtaexpedicao2"
-                                            value="#{PacienteController.paciente.dataExpedicao2}"
-                                            locale="pt"/>
-                            </b:column>
-                        </b:row>
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									yearRange="-111:+39" pages="1" showOn="button" size="15"
+									id="dtaexpedicao2" class="select-agendaEquipe2"
+									value="#{PacienteController.paciente.dataExpedicao2}"
+									locale="pt" />
+							</b:column>
+						</b:row>
 
 
                     </p:tab>
@@ -582,16 +582,16 @@
                             <b:column span="3" class="label-position new-data-size new-comple1">
                                 <b:label value="Escolaridade:" severity="danger"/>
 
-                                <p:autoComplete id="escolacomplete1"
-                                                value="#{PacienteController.escolaridadeSuggestion}" size="31"
-                                                completeMethod="#{PacienteController.completeText2}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descescolaridade}"
-                                                converter="conEscolaridade">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{PacienteController.onItemSelect2}"/>
-                                </p:autoComplete>
+								<p:autoComplete id="escolacomplete1" class="select-agendaEquipe4"
+									value="#{PacienteController.escolaridadeSuggestion}" size="31"
+									completeMethod="#{PacienteController.completeText2}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descescolaridade}"
+									converter="conEscolaridade">
+									<p:ajax event="itemSelect"
+										listener="#{PacienteController.onItemSelect2}" />
+								</p:autoComplete>
 
                                 <p:commandButton onclick="PF('dlgbuscaescolaridade').show();"
                                                  icon="ui-icon-search" process="@this" style="margin-top: 5px;"/>
@@ -604,35 +604,35 @@
                             <b:column span="3" class="label-position new-data-size new-comple1">
                             <b:label value="Escola:" severity="danger"/>
 
-                            <p:autoComplete id="escolacomplete2"
-                                            value="#{PacienteController.escolaSuggestion}" size="31"
-                                            completeMethod="#{PacienteController.completeText}"
-                                            effect="fade" var="theme" forceSelection="true"
-                                            minQueryLength="1" itemValue="#{theme}"
-                                            itemLabel="#{theme.descescola}" converter="conEscola">
-                                <p:ajax event="itemSelect"
-                                        listener="#{PacienteController.onItemSelect}"/>
-                            </p:autoComplete>
+								<p:autoComplete id="escolacomplete2" class="select-agendaEquipe4"
+									value="#{PacienteController.escolaSuggestion}" size="31"
+									completeMethod="#{PacienteController.completeText}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descescola}" converter="conEscola">
+									<p:ajax event="itemSelect"
+										listener="#{PacienteController.onItemSelect}" />
+								</p:autoComplete>
 
-                                <p:commandButton process="@this"
-                                                 onclick="PF('dlgbuscaescola').show();" icon="ui-icon-search"/>
-                            </b:column>
-                        </b:row>
+								<p:commandButton process="@this" style="margin-top: 5px;"
+									onclick="PF('dlgbuscaescola').show();" icon="ui-icon-search" />
+							</b:column>
+						</b:row>
 
                         <b:row>
 
                             <b:column span="3" class="label-position new-data-size new-comple1">
                                 <b:label value="Profissão:" severity="danger"/>
 
-                                <p:autoComplete id="escolacomplete3"
-                                                value="#{PacienteController.profissaoSuggestion}" size="31"
-                                                completeMethod="#{PacienteController.completeText6}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descprofissao}" converter="conProfissao">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{PacienteController.onItemSelect6}"/>
-                                </p:autoComplete>
+								<p:autoComplete id="escolacomplete3" class="select-agendaEquipe4"
+									value="#{PacienteController.profissaoSuggestion}" size="31"
+									completeMethod="#{PacienteController.completeText6}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descprofissao}" converter="conProfissao">
+									<p:ajax event="itemSelect"
+										listener="#{PacienteController.onItemSelect6}" />
+								</p:autoComplete>
 
                                 <p:commandButton process="@this" style="margin-top: 5px;"
                                                  onclick="PF('dlgbuscaprofissao').show();" icon="ui-icon-search"/>
@@ -713,14 +713,14 @@
                             <b:column span="3" class="label-position">
                                 <b:label value="CPF: " severity="danger"/>
 
-                                <p:outputPanel>
-                                    <p:inputMask mask="999.999.999-99" id="nome7" class="form-control new-size-cpf2"
-                                                 value="#{PacienteController.paciente.cpfresp}">
-                                        <p:ajax
-                                                listener="#{PacienteController.validaCPF(PacienteController.paciente.cpfresp)}"
-                                                global="false" event="blur"
-                                                update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:nome7"/>
-                                    </p:inputMask>
+								<p:outputPanel>
+									<p:inputMask mask="999.999.999-99" id="nome7" class="form-control select-agendaEquipe2 new-size-cpf2"
+										value="#{PacienteController.paciente.cpfresp}">
+										<p:ajax
+											listener="#{PacienteController.validaCPF(PacienteController.paciente.cpfresp)}"
+											global="false" event="blur"
+											update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:nome7" />
+									</p:inputMask>
 
                                 </p:outputPanel>
                             </b:column>
@@ -731,10 +731,10 @@
                             <b:column span="3" class="label-position new-data-size">
                                 <b:label value="Nascimento Resp.: " severity="danger"/>
 
-                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-                                            yearRange="-111:+39" pages="1" showOn="button" size="31"
-                                            value="#{PacienteController.paciente.dataNascimentoresp}"
-                                            locale="pt"/>
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									yearRange="-111:+39" pages="1" showOn="button" size="31"
+									value="#{PacienteController.paciente.dataNascimentoresp}"
+									locale="pt" class="select-agendaEquipe2"/>
 
                             </b:column>
                         </b:row>
@@ -746,15 +746,15 @@
                             <b:column span="3" class="label-position new-data-size new-comple1">
                                 <b:label value="Encaminhado: " severity="danger"/>
 
-                                <p:autoComplete id="escolacomplete4"
-                                                value="#{PacienteController.encaminhadoSuggestion}" size="31"
-                                                completeMethod="#{PacienteController.completeText4}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descencaminhado}" converter="conEncaminhado">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{PacienteController.onItemSelect4}"/>
-                                </p:autoComplete>
+								<p:autoComplete id="escolacomplete4" class="select-agendaEquipe4"
+									value="#{PacienteController.encaminhadoSuggestion}" size="31"
+									completeMethod="#{PacienteController.completeText4}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descencaminhado}" converter="conEncaminhado">
+									<p:ajax event="itemSelect"
+										listener="#{PacienteController.onItemSelect4}" />
+								</p:autoComplete>
 
                                 <p:commandButton process="@this" style="margin-top: 5px;"
                                                  onclick="PF('dlgbuscaencaminhado').show();"
@@ -767,16 +767,16 @@
                             <b:column span="3" class="label-position new-data-size new-comple1">
                                 <b:label value="Transporte: " severity="danger"/>
 
-                                <p:autoComplete id="escolacomplete5"
-                                                value="#{PacienteController.transporteSuggestion}" size="31"
-                                                completeMethod="#{PacienteController.completeText5}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descformatransporte}"
-                                                converter="conFormaTransporte">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{PacienteController.onItemSelect5}"/>
-                                </p:autoComplete>
+								<p:autoComplete id="escolacomplete5" class="select-agendaEquipe4"
+									value="#{PacienteController.transporteSuggestion}" size="31"
+									completeMethod="#{PacienteController.completeText5}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descformatransporte}"
+									converter="conFormaTransporte">
+									<p:ajax event="itemSelect"
+										listener="#{PacienteController.onItemSelect5}" />
+								</p:autoComplete>
 
                                 <p:commandButton process="@this" style="margin-top: 5px;"
                                                  onclick="PF('dlgbuscacomochegou').show();"

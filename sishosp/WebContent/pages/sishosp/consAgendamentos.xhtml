@@ -39,15 +39,15 @@
 
                 <h:form id="formConsAge">
 
-                    <p:panelGrid columns="5" styleClass="semBorda">
-                        <p:outputPanel class="data-size5">
-                            <b:column span="2" class="label-position data-size">
-                                <b:label value="Data da Marcação:" severity="info"/>
+					<b:row>
+						<p:outputPanel class="data-size5">
+							<b:column span="2" class="label-position data-size">
+								<b:label value="Data da Marcação:" severity="info" />
 
-                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-                                            showOn="button" size="15"
-                                            value="#{AgendaController.dataAtendimentoC}"/>
-                            </b:column>
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="15" class="select-agendaEquipe2"
+									value="#{AgendaController.dataAtendimentoC}" />
+							</b:column>
 
 
                             <b:column span="1" class="data-size4">
@@ -68,12 +68,12 @@
                                              update=":formConsAge:dtConsultas, :formConsAge:msgPagina"></b:commandButton>
                         </p:outputPanel>
 
-                    </p:panelGrid>
-                    <br/>
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                 resizableColumns="true" id="dtConsultas"
-                                 emptyMessage="Sem registros." scrollable="true" paginator="true"
-                                 rows="15" var="agenda" value="#{AgendaController.listaConsulta}">
+					</b:row>
+					<br />
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+						resizableColumns="true" id="dtConsultas"
+						emptyMessage="Sem registros." scrollable="true" paginator="true"
+						rows="15" var="agenda" value="#{AgendaController.listaConsulta}">
 
                         <h:column>
                             <f:facet name="header">

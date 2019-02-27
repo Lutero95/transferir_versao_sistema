@@ -5,102 +5,115 @@
 	xmlns:b="http://bootsfaces.net/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	template="../../template/template.xhtml">
-        
-        <ui:define name="content">
 
-            <h:form id="form" onkeypress="
+	<ui:define name="content">
+
+		<h:form id="form"
+			onkeypress="
                 if (event.keyCode == 13) {
                     document.getElementById('form:botaoBusca').click();
                     return false;
-                }">                
-                
-                <p:growl id="growl" showDetail="false" />
-                
-                <p:panel id="pnlprincipal" header="Gerenciar Funções">
-                    <p:panelGrid columns="6" styleClass="semBorda">
-                        
-                        <p:commandButton value="Nova Função" icon="ui-icon-plus" 
-                            style="margin-top:4px; margin-bottom:10px;" 
-                            actionListener="#{funcaoMB.limparDados()}" 
-                            onclick="PF('dlgCadFuncao').show();" 
-                            update=":formCF:pnlCF" />
-                        
-                        <p:outputLabel value="Sistema:" />
+                }">
 
-                                                                       
-                        
+			<p:growl id="growl" showDetail="false" />
 
-                        
-                        
-                    </p:panelGrid>
+			<div class="panel panel-primary top-primary">
+				<div class="panel-heading top-heading">
+					<h4 class="panel-title">Gerenciar Funções</h4>
+				</div>
 
-                    <p:dataTable id="tabela" value="#{funcaoMB.listaFuncoes}" var="tab" 
-                        paginator="true" paginatorPosition="bottom" rows="15" 
-                        emptyMessage="Nenhum dado encontrado.">
-                        
-                        <p:column headerText="Descrição" style="text-align:left;">
-                            <p:outputLabel value="#{tab.descricao}" />
-                        </p:column>
-                        
-                        <p:column headerText="Código" width="5%">
-                            <p:outputLabel value="#{tab.codigo}" />
-                        </p:column>
-                        
-                        <p:column headerText="Sistema Associado" width="12%">
-                            <p:outputLabel value="#{tab.descSistema}" />
-                        </p:column>
-                        
-                        
-                        <p:column headerText="Ativo" width="5%">
-                            <center>
-                                <p:graphicImage value="#{funcaoMB.verificarBolTab(tab.ativa)}" />
-                            </center>
-                        </p:column>
-                        
-                        <p:column headerText="Ações" width="6%">
-                            <center>
-                                <p:commandButton icon="ui-icon-pencil" 
-                                    actionListener="#{funcaoMB.limparDados()}"
-                                    onclick="PF('dlgAltFuncao').show();" 
-                                    update=":formAF:pnlAF">
+				<div class="panel-body table-body">
 
-                                    <f:setPropertyActionListener value="#{tab}" 
-                                        target="#{funcaoMB.funcao}" />
-                                </p:commandButton>
+					<p:panel id="pnlprincipal" style="border: none;">
 
-                                <p:commandButton icon="ui-icon-trash" 
-                                    onclick="PF('dlgExcFuncao').show();" disabled="true">
+						<b:row>
+							<b:column span="2" class="label-position2">
+								<p:commandButton value="Nova Função" icon="ui-icon-plus"
+									style="margin-top:4px; margin-bottom:10px;"
+									actionListener="#{funcaoMB.limparDados()}"
+									onclick="PF('dlgCadFuncao').show();" update=":formCF:pnlCF" />
+							</b:column>
 
-                                    <f:setPropertyActionListener value="#{tab}" 
-                                        target="#{funcaoMB.funcao}" />
-                                </p:commandButton>
-                            </center>
-                        </p:column>
-                    </p:dataTable>
-                </p:panel>
-            </h:form>
-            
-            <p:dialog header="Cadastrar Função" widgetVar="dlgCadFuncao" draggable="false" 
-                resizable="false" closable="true" modal="true" width="600px" height="auto">
+							<b:column span="1" class="label-position2">
+								<p:outputLabel value="Sistema:"
+									style="margin-top: 8px;color:#2e84ce;" />
+							</b:column>
 
-                <h:form id="formCF" style="font-size:12px;">                   
-                    <p:panel id="pnlCF">         
-                        
-                        <p:panelGrid styleClass="semBorda">
-                            <p:row>
-                                <p:column>
-                                    <p:outputLabel value="Descrição função: ">
-                                        <font color="#FF0000">*</font>
-                                    </p:outputLabel>                                              
-                                </p:column>
+						</b:row>
 
-                                <p:column>
-                                    <h:inputText id="desc" value="#{funcaoMB.funcao.descricao}" 
-                                        size="40" required="true" requiredMessage="Informe a descrição." />
-                                </p:column>                             
-                            </p:row>
+						<br></br>
+						<br></br>
 
-                            <!--<p:row>
+						<b:column span="12" class="label-position3">
+
+							<p:dataTable id="tabela" value="#{funcaoMB.listaFuncoes}"
+								var="tab" paginator="true" paginatorPosition="bottom" rows="15"
+								emptyMessage="Nenhum dado encontrado.">
+
+								<p:column headerText="Descrição" style="text-align:left;">
+									<p:outputLabel value="#{tab.descricao}" class="break-word" />
+								</p:column>
+
+								<p:column headerText="Código" width="75">
+									<p:outputLabel value="#{tab.codigo}" class="break-word" />
+								</p:column>
+
+								<p:column headerText="Sistema Associado" width="12%">
+									<p:outputLabel value="#{tab.descSistema}" class="break-word" />
+								</p:column>
+
+
+								<p:column headerText="Ativo" width="50">
+									<center>
+										<p:graphicImage value="#{funcaoMB.verificarBolTab(tab.ativa)}" />
+									</center>
+								</p:column>
+
+								<p:column headerText="Ações" width="12%">
+									<center>
+										<p:commandButton icon="ui-icon-pencil"
+											actionListener="#{funcaoMB.limparDados()}"
+											class="new-btn-acao-table2 acao-editar"
+											onclick="PF('dlgAltFuncao').show();" update=":formAF:pnlAF">
+
+											<f:setPropertyActionListener value="#{tab}"
+												target="#{funcaoMB.funcao}" />
+										</p:commandButton>
+
+										<p:commandButton icon="ui-icon-trash"
+											class="new-btn-acao-table2 acao-excluir"
+											onclick="PF('dlgExcFuncao').show();" disabled="true">
+
+											<f:setPropertyActionListener value="#{tab}"
+												target="#{funcaoMB.funcao}" />
+										</p:commandButton>
+									</center>
+								</p:column>
+							</p:dataTable>
+						</b:column>
+					</p:panel>
+				</div>
+			</div>
+		</h:form>
+
+		<p:dialog header="Cadastrar Função" widgetVar="dlgCadFuncao"
+			draggable="false" resizable="false" closable="true" modal="true"
+			width="600px" height="auto" showEffect="clip" hideEffect="clip">
+
+			<h:form id="formCF" style="font-size:12px;">
+				<p:panel id="pnlCF" style="border: none;">
+
+					<p:panelGrid styleClass="semBorda">
+						<b:row>
+							<b:column span="4" class="label-position4">
+								<b:label value="Descrição Função: " severity="danger" />
+
+								<b:inputText id="desc" value="#{funcaoMB.funcao.descricao}"
+									size="35" required="true" class="select-agendaEquipe2"
+									requiredMessage="Informe a descrição." />
+							</b:column>
+
+							<!--<p:row>
                                 <p:column>
                                     <p:outputLabel value="Código função: ">
                                         <font color="#FF0000">*</font>
@@ -113,182 +126,163 @@
                                 </p:column>                             
                             </p:row>-->
 
-                                                        
-                            <p:row>
-                                <p:column>
-                                    <p:outputLabel value="Sistema associado: ">
-                                        <font color="#FF0000">*</font>
-                                    </p:outputLabel>
-                                </p:column>
+							<b:column span="4" class="label-position4">
+								<b:label value="Sistema Associado: " severity="danger" />
 
-                                <p:column>
-                                    <p:selectOneMenu value="#{funcaoMB.funcao.idSistema}"
-                                        required="true" requiredMessage="Informe o sistema associado.">
+								<b:selectOneMenu value="#{funcaoMB.funcao.idSistema}"
+									class="select-agendaEquipe2" required="true"
+									requiredMessage="Informe o sistema associado.">
 
-                                        <f:selectItem itemLabel="Selecione" itemValue="" />
-                                        <f:selectItems value="#{sistemaMB.listaSistemas}" 
-                                            var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
-                                    </p:selectOneMenu> 
-                                </p:column>
-                            </p:row>
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItems value="#{sistemaMB.listaSistemas}" var="sis"
+										itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
+								</b:selectOneMenu>
+							</b:column>
 
-                            <p:row>
-                                <p:column>
-                                    <p:outputLabel value="Status: ">
-                                        <font color="#FF0000">*</font>
-                                    </p:outputLabel>
-                                </p:column>
+							<b:column span="3" class="label-position4">
+								<b:label value="Status: " severity="danger" />
 
-                                <p:column>
-                                    <p:selectOneMenu value="#{funcaoMB.funcao.ativa}"
-                                        required="true" requiredMessage="Informe o status.">
+								<b:selectOneMenu value="#{funcaoMB.funcao.ativa}"
+									class="select-agendaEquipe2" required="true"
+									requiredMessage="Informe o status.">
 
-                                        <f:selectItem itemLabel="Ativa" itemValue="true" />
-                                        <f:selectItem itemLabel="Inativa" itemValue="false" />
-                                    </p:selectOneMenu> 
-                                </p:column>
-                            </p:row>
-                        </p:panelGrid>
+									<f:selectItem itemLabel="Ativa" itemValue="true" />
+									<f:selectItem itemLabel="Inativa" itemValue="false" />
+								</b:selectOneMenu>
+							</b:column>
+						</b:row>
+					</p:panelGrid>
 
-                        <center>
-                            <p:separator />
-                            <p:panelGrid columns="2" styleClass="semBorda">
-                                <p:outputLabel>
-                                    <font color="#FF0000">(*)</font>
-                                </p:outputLabel>
-                                <p:outputLabel value="Preenchimento Obrigatório" />                         
-                            </p:panelGrid>
+					<div align="center">
+						<p:separator />
+						<p:row>
+							<b:column span="12" class="label-position3">
+								<p:outputLabel style="color:#C71C22;margin-right: 5px;"
+									value="(*)" />
+								<p:outputLabel value=" Preenchimento Obrigatório"
+									style="color:#2e84ce;" />
+							</b:column>
+						</p:row>
+						<p:row>
+							<p:commandButton value="Gravar" icon="ui-icon-check"
+								class="btn-cad-gravar" style="width:100px;"
+								action="#{funcaoMB.cadastrarFuncao()}"
+								update="pnlCF, :form:tabela, :form:growl" />
 
-                            <p:panelGrid columns="2" styleClass="semBorda">
-                                <p:commandButton value="Gravar" icon="ui-icon-check" 
-                                    style="width:100px;" action="#{funcaoMB.cadastrarFuncao()}" 
-                                    update="pnlCF, :form:tabela, :form:growl"  />
+							<p:commandButton value="Cancelar" icon="ui-icon-close"
+								class="btn-cad-cancel" style="width:100px;"
+								onclick="PF('dlgCadFuncao').hide();" process="@this" />
+						</p:row>
 
-                                <p:commandButton value="Cancelar" icon="ui-icon-close" 
-                                    style="width:100px;" onclick="PF('dlgCadFuncao').hide();" 
-                                    process="@this" />
-                            </p:panelGrid>
-                        </center>
-                    </p:panel>
-                </h:form>
-            </p:dialog> 
+					</div>
+				</p:panel>
+			</h:form>
+		</p:dialog>
 
-            <p:dialog header="Alterar Função" widgetVar="dlgAltFuncao" draggable="false" 
-                resizable="false" closable="true" modal="true" width="610px" height="auto">
+		<p:dialog header="Alterar Função" widgetVar="dlgAltFuncao"
+			draggable="false" resizable="false" closable="true" modal="true"
+			width="610px" height="auto" showEffect="clip" hideEffect="clip">
 
-                <h:form id="formAF" style="font-size:12px;">                   
-                    <p:panel id="pnlAF">                     
+			<h:form id="formAF" style="font-size:12px;">
+				<p:panel id="pnlAF" style="border: none;">
 
-                        <p:panelGrid styleClass="semBorda">
-                            <p:row>
-                                <p:column>
-                                    <p:outputLabel value="Descrição função: ">
-                                        <font color="#FF0000">*</font>
-                                    </p:outputLabel>                                              
-                                </p:column>
+					<p:panelGrid styleClass="semBorda">
+						<b:row>
+							<b:column span="4" class="label-position4">
+								<b:label value="Descrição Função: " severity="danger" />
 
-                                <p:column>
-                                    <h:inputText id="desc" value="#{funcaoMB.funcao.descricao}" 
-                                        size="40" required="true" requiredMessage="Informe a descrição." />
-                                </p:column>                             
-                            </p:row>
+								<b:inputText id="desc" value="#{funcaoMB.funcao.descricao}"
+									size="35" required="true" class="select-agendaEquipe2"
+									requiredMessage="Informe a descrição." />
+							</b:column>
 
-                            <p:row>
-                                <p:column>
-                                    <p:outputLabel value="Código função: ">
-                                        <font color="#FF0000">*</font>
-                                    </p:outputLabel>                                              
-                                </p:column>
+							<b:column span="4" class="label-position4">
+								<b:label value="Código função: " severity="danger" />
 
-                                <p:column>
-                                    <h:inputText id="cod" value="#{funcaoMB.funcao.codigo}" 
-                                        size="40" required="true" requiredMessage="Informe o código." />
-                                </p:column>                             
-                            </p:row>
+								<b:inputText id="cod" value="#{funcaoMB.funcao.codigo}"
+									size="35" required="true" class="select-agendaEquipe2"
+									requiredMessage="Informe o código." />
+							</b:column>
 
-                                                        
-                            <p:row>
-                                <p:column>
-                                    <p:outputLabel value="Sistema associado: ">
-                                        <font color="#FF0000">*</font>
-                                    </p:outputLabel>
-                                </p:column>
 
-                                <p:column>
-                                    <p:selectOneMenu value="#{funcaoMB.funcao.idSistema}"
-                                        required="true" requiredMessage="Informe o sistema associado.">
+							<b:column span="4" class="label-position4">
+								<b:label value="Sistema Associado: " severity="danger" />
 
-                                        <f:selectItem itemLabel="Selecione" itemValue="" />
-                                        <f:selectItems value="#{sistemaMB.listaSistemas}" 
-                                            var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
-                                    </p:selectOneMenu> 
-                                </p:column>
-                            </p:row>
+								<b:selectOneMenu value="#{funcaoMB.funcao.idSistema}"
+									class="select-agendaEquipe2" required="true"
+									requiredMessage="Informe o sistema associado.">
 
-                            <p:row>
-                                <p:column>
-                                    <p:outputLabel value="Status: ">
-                                        <font color="#FF0000">*</font>
-                                    </p:outputLabel>
-                                </p:column>
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItems value="#{sistemaMB.listaSistemas}" var="sis"
+										itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
+								</b:selectOneMenu>
+							</b:column>
 
-                                <p:column>
-                                    <p:selectOneMenu value="#{funcaoMB.funcao.ativa}"
-                                        required="true" requiredMessage="Informe o status.">
+							<b:column span="3" class="label-position4">
+								<b:label value="Status: " severity="danger" />
 
-                                        <f:selectItem itemLabel="Ativa" itemValue="true" />
-                                        <f:selectItem itemLabel="Inativa" itemValue="false" />
-                                    </p:selectOneMenu> 
-                                </p:column>
-                            </p:row>
-                        </p:panelGrid>                        
+								<b:selectOneMenu value="#{funcaoMB.funcao.ativa}"
+									class="select-agendaEquipe2" required="true"
+									requiredMessage="Informe o status.">
 
-                        <center>
-                            <p:separator />
-                            <p:panelGrid columns="2" styleClass="semBorda">
-                                <p:outputLabel>
-                                    <font color="#FF0000">(*)</font>
-                                </p:outputLabel>
-                                <p:outputLabel value="Preenchimento Obrigatório" />                         
-                            </p:panelGrid>
+									<f:selectItem itemLabel="Ativa" itemValue="true" />
+									<f:selectItem itemLabel="Inativa" itemValue="false" />
+								</b:selectOneMenu>
+							</b:column>
+						</b:row>
+					</p:panelGrid>
 
-                            <p:panelGrid columns="2" styleClass="semBorda">
-                                <p:commandButton value="Gravar" icon="ui-icon-check" 
-                                    style="width:100px;" action="#{funcaoMB.alterarFuncao()}" 
-                                    update="pnlAF, :form:tabela, :form:growl" />
+					<div align="center">
+						<p:separator />
+						<p:row>
+							<b:column span="12" class="label-position3">
+								<p:outputLabel style="color:#C71C22;margin-right: 5px;"
+									value="(*)" />
+								<p:outputLabel value=" Preenchimento Obrigatório"
+									style="color:#2e84ce;" />
+							</b:column>
+						</p:row>
+						<p:row>
+							<p:commandButton value="Gravar" icon="ui-icon-check"
+								class="btn-cad-gravar" style="width:100px;"
+								action="#{funcaoMB.alterarFuncao()}"
+								update="pnlAF, :form:tabela, :form:growl" />
 
-                                <p:commandButton value="Cancelar" icon="ui-icon-close" 
-                                    style="width:100px;" onclick="PF('dlgAltFuncao').hide();" 
-                                    process="@this" />
-                            </p:panelGrid>
-                        </center>
-                    </p:panel>
-                </h:form>
-            </p:dialog>
-            
-            <p:dialog widgetVar="dlgExcFuncao" resizable="false"
-                modal="true" header="Excluir Função" width="400px" height="auto">
-                    
-                <h:form id="formCEF">                   
-                    <p:panel id="pnlCEF">
-                        <center>
-                            <p:panelGrid columns="1" styleClass="semBorda">
-                                <p:outputLabel value="Deseja realmente excluir a função selecionada?" />
-                            </p:panelGrid>
-                            
-                            <p:separator />
-                            
-                            <p:panelGrid columns="2" styleClass="semBorda">
-                                <p:commandButton value="Sim" icon="ui-icon-check" style="width:100px;" 
-                                    action="#{funcaoMB.excluirFuncao()}" update=":form:tabela, :form:growl" />
-                                
-                                <p:commandButton value="Não" icon="ui-icon-close" 
-                                    style="width:100px;" onclick="PF('dlgExcFuncao').hide();" 
-                                    process="@this" />
-                            </p:panelGrid>                           
-                        </center>
-                    </p:panel>
-                </h:form>
-            </p:dialog>
-        </ui:define>
-    </ui:composition>
+							<p:commandButton value="Cancelar" icon="ui-icon-close"
+								class="btn-cad-cancel" style="width:100px;"
+								onclick="PF('dlgAltFuncao').hide();" process="@this" />
+						</p:row>
+
+					</div>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="dlgExcFuncao" resizable="false" modal="true"
+			header="Excluir Função" showEffect="clip" hideEffect="clip">
+
+			<h:form id="formCEF">
+
+				<h:panelGrid columns="1" styleClass="semBorda">
+					<div class="alert alert-warning" role="alert">Deseja
+						realmente excluir a função selecionada?</div>
+				</h:panelGrid>
+
+				<div align="center">
+
+					<p:separator />
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<p:commandButton value="Sim" icon="glyphicon-ok"
+							style="float:left;" action="#{funcaoMB.excluirFuncao()}"
+							update=":form:tabela, :form:growl" />
+
+						<p:commandButton value="Não" icon="glyphicon-remove"
+							style="margin-left:5px;float:right;" onclick="PF('dlgExcFuncao').hide();"
+							process="@this" />
+					</p:panelGrid>
+				</div>
+
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

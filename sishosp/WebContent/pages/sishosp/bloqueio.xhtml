@@ -25,7 +25,7 @@
 							<p:outputPanel id="outProfi">
 								<p:autoComplete id="acpro"
 									value="#{BloqueioController.bloqueio.prof}" size="31"
-									converter="conFuncionario"
+									converter="conFuncionario" class="select-agendaEquipe4"
 									completeMethod="#{MBFuncionarios.listaProfissionalAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -48,7 +48,7 @@
 							<b:label value="Período:" severity="info" />
 
 							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-								showOn="button" size="15"
+								showOn="button" size="15" class="select-agendaEquipe2"
 								value="#{BloqueioController.bloqueio.dataInicio}" locale="pt" />
 						</b:column>
 
@@ -58,7 +58,7 @@
 
 						<b:column span="2" class="label-position data-size3">
 							<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-								showOn="button" size="15"
+								showOn="button" size="15" class="select-agendaEquipe2"
 								value="#{BloqueioController.bloqueio.dataFim}" locale="pt" />
 
 						</b:column>

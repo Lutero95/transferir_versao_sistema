@@ -132,16 +132,16 @@
 
                                 <p:outputPanel id="outEspeci">
 
-                                    <p:autoComplete
-                                            value="#{MBFuncionarios.profissional.especialidade}" size="31"
-                                            converter="conEspecialidade" id="descE"
-                                            completeMethod="#{EspecialidadeController.listaEspecialidadeAutoComplete}"
-                                            effect="fade" var="theme" forceSelection="true"
-                                            required="true"
-                                            requiredMessage="Especialidade: Campo obrigatório!"
-                                            minQueryLength="1" itemValue="#{theme}"
-                                            itemLabel="#{theme.descEspecialidade}">
-                                    </p:autoComplete>
+									<p:autoComplete
+										value="#{MBFuncionarios.profissional.especialidade}" size="31"
+										converter="conEspecialidade" id="descE"
+										completeMethod="#{EspecialidadeController.listaEspecialidadeAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										required="true" class="select-agendaEquipe4"
+										requiredMessage="Especialidade: Campo obrigatório!"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.descEspecialidade}">
+									</p:autoComplete>
 
                                     <p:commandButton id="btBusEsp" icon="ui-icon-search"
                                                      style="margin-top: 5px;" update=":formConsulEspec"
@@ -159,14 +159,15 @@
 
                                 <p:outputPanel id="outCboP">
 
-                                    <p:autoComplete value="#{MBFuncionarios.profissional.cbo}"
-                                                    size="31" converter="conCbo" id="descCbo"
-                                                    completeMethod="#{CboController.listaCboAutoComplete}"
-                                                    effect="fade" var="theme" forceSelection="true"
-                                                    minQueryLength="1" itemValue="#{theme}" required="true"
-                                                    requiredMessage="CBO: Campo obrigatório!"
-                                                    itemLabel="#{theme.descCbo}">
-                                    </p:autoComplete>
+									<p:autoComplete value="#{MBFuncionarios.profissional.cbo}"
+										size="31" converter="conCbo" id="descCbo"
+										class="select-agendaEquipe4"
+										completeMethod="#{CboController.listaCboAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}" required="true"
+										requiredMessage="CBO: Campo obrigatório!"
+										itemLabel="#{theme.descCbo}">
+									</p:autoComplete>
 
                                     <p:commandButton id="btBusCbo" icon="ui-icon-search"
                                                      style="margin-top: 5px;" immediate="true"
@@ -184,14 +185,15 @@
                                       class="label-position new-data-size new-comple1">
                                 <b:label value="Procedimento" severity="info" />
 
-                                <p:outputPanel id="outProcP1">
-                                    <p:autoComplete value="#{MBFuncionarios.profissional.proc1}"
-                                                    size="31" converter="conProcedimento" id="descProc1"
-                                                    completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-                                                    effect="fade" var="theme" forceSelection="true"
-                                                    minQueryLength="1" itemValue="#{theme}"
-                                                    itemLabel="#{theme.nomeProc}">
-                                    </p:autoComplete>
+								<p:outputPanel id="outProcP1">
+									<p:autoComplete value="#{MBFuncionarios.profissional.proc1}"
+										size="31" converter="conProcedimento" id="descProc1"
+										class="select-agendaEquipe4"
+										completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+										effect="fade" var="theme" forceSelection="true"
+										minQueryLength="1" itemValue="#{theme}"
+										itemLabel="#{theme.nomeProc}">
+									</p:autoComplete>
 
                                     <p:commandButton id="btBusProc1" icon="ui-icon-search"
                                                      onclick="PF('dlgConsulProc1').show();" immediate="true"
@@ -340,8 +342,8 @@
                                         rendered="#{MBFuncionarios.renderizarPermissoes == false}"/>
                             </div>
 
-                            <p:tabView id="tabvPerms"
-                                       rendered="#{MBFuncionarios.renderizarPermissoes == true}">
+							<p:tabView id="tabvPerms" class="tab-style"
+								rendered="#{MBFuncionarios.renderizarPermissoes == true}">
 
                                 <p:tab title="Associar Menus">
                                     <p:panelGrid styleClass="semBorda" columns="2">
@@ -352,8 +354,12 @@
                                                     showSourceFilter="true" showTargetFilter="true"
                                                     filterMatchMode="contains" converter="conPickListMenu">
 
-                                            <f:facet name="sourceCaption">Menus não associadas</f:facet>
-                                            <f:facet name="targetCaption">Menus associadas</f:facet>
+											<f:facet name="sourceCaption">
+												<font color="#227ac6">Menus não associadas</font>
+											</f:facet>
+											<f:facet name="targetCaption">
+												<font color="#227ac6">Menus associadas</font>
+											</f:facet>
 
                                             <p:ajax event="transfer"
                                                     listener="#{MBFuncionarios.onTransferMenu}"/>
@@ -371,8 +377,12 @@
                                                     showSourceFilter="true" showTargetFilter="true"
                                                     filterMatchMode="contains" converter="conPickListFuncao">
 
-                                            <f:facet name="sourceCaption">Funções não associadas</f:facet>
-                                            <f:facet name="targetCaption">Funções associadas</f:facet>
+											<f:facet name="sourceCaption">
+												<font color="#227ac6">Funções não associadas</font>
+											</f:facet>
+											<f:facet name="targetCaption">
+												<font color="#227ac6">Funções associadas</font>
+											</f:facet>
 
                                             <p:ajax event="transfer"
                                                     listener="#{MBFuncionarios.onTransferFuncao}"/>
@@ -434,13 +444,13 @@
                             <f:facet name="header">
                                 Adicionar
                             </f:facet>
-                            <p:commandButton update=":frmPrincipal:tbv" icon="ui-icon-check"
-                                             title="Selecionar"
-                                             onclick="PF('dlgConsulEspecialidade').hide();">
-                                <f:setPropertyActionListener value="#{espec}"
-                                                             target="#{MBFuncionarios.profissional.especialidade}"/>
-                            </p:commandButton>
-                        </h:column>
+							<p:commandButton update=":frmPrincipal:tbv" icon="ui-icon-check"
+								title="Selecionar" class="new-btn-acao-table acao-editar"
+								onclick="PF('dlgConsulEspecialidade').hide();">
+								<f:setPropertyActionListener value="#{espec}"
+									target="#{MBFuncionarios.profissional.especialidade}" />
+							</p:commandButton>
+						</h:column>
 
                     </b:dataTable>
                 </p:outputPanel>

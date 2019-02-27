@@ -102,115 +102,144 @@
                 </div>                
             </div>-->
 
-		<h:form>
-			<p:panel header="FUNÇÕES E MENUS DOS SISTEMAS">
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Funções e Menus dos Sistemas</h4>
+			</div>
 
-				<p:panelGrid columns="10" styleClass="semBorda"
-					style="margin-bottom:6px;">
-					<p:outputLabel value="Exibir: " style="padding-top:5px;" />
-					<p:selectOneMenu disabled="true">
-						<f:selectItem itemLabel="Todos" itemValue="todos" />
-						<f:selectItem itemLabel="Função" itemValue="funcao" />
-						<f:selectItem itemLabel="Menu Item" itemValue="menuItem" />
-						<f:selectItem itemLabel="Menu Pai" itemValue="menuPai" />
-						<f:selectItem itemLabel="Submenu" itemValue="submenu" />
-					</p:selectOneMenu>
-
-					<p:outputLabel value="Status: " style="padding-top:5px;" />
-					<p:selectOneMenu disabled="true">
-						<f:selectItem itemLabel="Todos" itemValue="todos" />
-						<f:selectItem itemLabel="Ativo" itemValue="true" />
-						<f:selectItem itemLabel="Inativo" itemValue="false" />
-					</p:selectOneMenu>
-
-					<p:outputLabel value="Sistema: " style="padding-top:5px;" />
-					<p:selectOneMenu disabled="true">
-						<f:selectItem itemLabel="Todos" itemValue="todos" />
-						<f:selectItems value="#{sistemaMB.listaSistemas}" var="sis"
-							itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
-					</p:selectOneMenu>
-
-					<h:inputText id="campoFiltro" disabled="true">
-						<p:watermark for="campoFiltro" value="Informe a descrição..." />
-					</h:inputText>
-
-					<p:commandButton value="Filtrar" icon="ui-icon-check"
-						style="width:100px;" disabled="true" />
-
-					<p:commandButton value="Limpar" icon="ui-icon-minus"
-						style="width:100px;" disabled="true" />
-				</p:panelGrid>
-
-				<p:dataTable value="#{MBFuncionarios.permsUsuarioLogado}"
-					paginator="true" paginatorPosition="bottom" rows="15" var="tab">
-
-					<p:column headerText="ID" width="5%">
-						<p:outputLabel value="#{tab.idPermissao}" />
-					</p:column>
-
-					<p:column headerText="DESCRIÇÃO">
-						<p:outputLabel value="#{tab.descPermissao}" />
-					</p:column>
-
-					<p:column headerText="TIPO">
-						<p:outputLabel value="#{tab.menu.tipo}" />
-					</p:column>
-
-					<p:column headerText="URL">
-						<p:outputLabel value="#{tab.menu.url}" />
-					</p:column>
-
-					<p:column headerText="CÓDIGO">
-						<p:outputLabel value="#{tab.codigoFuncao}" />
-					</p:column>
-
-					<p:column headerText="SISTEMA">
-						<p:outputLabel value="#{tab.descSistema}" />
-					</p:column>
-
-					<p:column headerText="DESCRIÇÃO ROTINA">
-						<p:outputLabel value="#{tab.descRotina}" />
-					</p:column>
-
-					<p:column headerText="ATIVO(A)" width="5%">
-						<center>
-							<p:graphicImage
-								value="#{MBFuncionarios.verificarBolTab(tab.menu.ativo, tab.menu.tipo)}" />
-						</center>
-					</p:column>
-				</p:dataTable>
-
-				<br />
+			<div class="panel-body table-body">
 
 				<h:form>
-					<p:commandButton value="Clique e descubra..."
-						rendered="#{MBFuncionarios.verificarPermComp('FC-21', MBFuncionarios.sistemaLogado.id) == true}"
-						onclick="PF('dlgEE').show();" />
+
+					<b:row>
+
+						<b:column span="2" class="label-position new-comple1">
+							<b:label value="Exibir:" severity="info" />
+
+							<b:selectOneMenu class="select-agendaEquipe2" disabled="true">
+								<f:selectItem itemLabel="Todos" itemValue="todos" />
+								<f:selectItem itemLabel="Função" itemValue="funcao" />
+								<f:selectItem itemLabel="Menu Item" itemValue="menuItem" />
+								<f:selectItem itemLabel="Menu Pai" itemValue="menuPai" />
+								<f:selectItem itemLabel="Submenu" itemValue="submenu" />
+							</b:selectOneMenu>
+						</b:column>
+
+						<b:column span="2" class="label-position new-comple1">
+							<b:label value="Status:" severity="info" />
+
+							<b:selectOneMenu class="select-agendaEquipe2" disabled="true">
+								<f:selectItem itemLabel="Todos" itemValue="todos" />
+								<f:selectItem itemLabel="Ativo" itemValue="true" />
+								<f:selectItem itemLabel="Inativo" itemValue="false" />
+							</b:selectOneMenu>
+						</b:column>
+
+						<b:column span="2" class="label-position new-comple1">
+							<b:label value="Sistema:" severity="info" />
+
+							<b:selectOneMenu class="select-agendaEquipe2" disabled="true">
+								<f:selectItem itemLabel="Todos" itemValue="todos" />
+								<f:selectItems value="#{sistemaMB.listaSistemas}" var="sis"
+									itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
+							</b:selectOneMenu>
+						</b:column>
+
+						<b:column span="2" class="label-position2">
+							<b:inputText id="campoFiltro" disabled="true"
+								class="btn-buscaAtendimento1">
+								<p:watermark for="campoFiltro" value="Informe a descrição..." />
+							</b:inputText>
+						</b:column>
+
+						<b:column span="1" class="label-position2">
+							<b:commandButton value="Filtrar" icon="glyphicon-check"
+								class="btn-acao-table btn-buscaAtendimento1" disabled="true">
+							</b:commandButton>
+						</b:column>
+
+						<b:column span="1" class="label-position2">
+							<b:commandButton value="Limpar" icon="glyphicon-minus"
+								class="btn-acao-table btn-buscaAtendimento1" disabled="true" />
+						</b:column>
+					</b:row>
+					
+					<br></br><br></br>
+
+					<b:column span="12" class="label-position1">
+
+						<p:dataTable value="#{MBFuncionarios.permsUsuarioLogado}"
+							paginator="true" paginatorPosition="bottom" rows="15" var="tab">
+
+							<p:column headerText="ID" width="45">
+								<p:outputLabel value="#{tab.idPermissao}" class="break-word" />
+							</p:column>
+
+							<p:column headerText="DESCRIÇÃO">
+								<p:outputLabel value="#{tab.descPermissao}" class="break-word"/>
+							</p:column>
+
+							<p:column headerText="TIPO" width="8%">
+								<p:outputLabel value="#{tab.menu.tipo}" class="break-word"/>
+							</p:column>
+
+							<p:column headerText="URL">
+								<p:outputLabel value="#{tab.menu.url}" class="break-word"/>
+							</p:column>
+
+							<p:column headerText="CÓDIGO">
+								<p:outputLabel value="#{tab.codigoFuncao}" class="break-word"/>
+							</p:column>
+
+							<p:column headerText="SISTEMA" width="14%">
+								<p:outputLabel value="#{tab.descSistema}" class="break-word"/>
+							</p:column>
+
+							<p:column headerText="DESCRIÇÃO ROTINA">
+								<p:outputLabel value="#{tab.descRotina}" class="break-word"/>
+							</p:column>
+
+							<p:column headerText="ATIVO(A)" width="75">
+								<center>
+									<p:graphicImage
+										value="#{MBFuncionarios.verificarBolTab(tab.menu.ativo, tab.menu.tipo)}" />
+								</center>
+							</p:column>
+						</p:dataTable>
+					</b:column>
+
+					<br />
+
+					<h:form>
+						<p:commandButton value="Clique e descubra..."
+							rendered="#{MBFuncionarios.verificarPermComp('FC-21', MBFuncionarios.sistemaLogado.id) == true}"
+							onclick="PF('dlgEE').show();" />
+					</h:form>
+
+					<p:dialog header="Easter Egg" widgetVar="dlgEE" draggable="false"
+						resizable="false" modal="true" width="auto">
+
+						<h:form id="formEE">
+							<p:panel id="pnlEE">
+
+								<p:graphicImage value="../../imgs/bp.jpg" />
+
+								<center>
+									<p:separator />
+
+									<p:panelGrid columns="2" styleClass="semBorda">
+										<p:commandButton value="Fechar" icon="ui-icon-close"
+											style="width:100px;" onclick="PF('dlgEE').hide();"
+											process="@this" />
+									</p:panelGrid>
+								</center>
+							</p:panel>
+						</h:form>
+					</p:dialog>
+
 				</h:form>
-			</p:panel>
-
-			<p:dialog header="Easter Egg" widgetVar="dlgEE" draggable="false"
-				resizable="false" modal="true" width="auto">
-
-				<h:form id="formEE">
-					<p:panel id="pnlEE">
-
-						<p:graphicImage value="../../imgs/bp.jpg" />
-
-						<center>
-							<p:separator />
-
-							<p:panelGrid columns="2" styleClass="semBorda">
-								<p:commandButton value="Fechar" icon="ui-icon-close"
-									style="width:100px;" onclick="PF('dlgEE').hide();"
-									process="@this" />
-							</p:panelGrid>
-						</center>
-					</p:panel>
-				</h:form>
-			</p:dialog>
-
-		</h:form>
+			</div>
+		</div>
 
 	</ui:define>
 </ui:composition>

@@ -180,7 +180,7 @@
 						<p:outputPanel id="pnlMes">
 
 							<b:column span="3" class="label-position new-col3-2">
-								<b:label value="Validade(Meses)"
+								<b:label value="Validade(Meses)" class="label-nomeSocial"
 									rendered="#{ProcedimentoController.proc.gera_laudo_digita==true}"
 									severity="info" />
 
@@ -218,7 +218,7 @@
 
 							<p:outputPanel id="outCid1">
 								<p:autoComplete value="#{ProcedimentoController.cid}" size="31"
-									converter="conCid" id="descCid"
+									converter="conCid" id="descCid" class="select-agendaEquipe4"
 									completeMethod="#{CidController.listaCidAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -279,7 +279,7 @@
 
 							<p:outputPanel id="outCbo">
 								<p:autoComplete value="#{ProcedimentoController.cbo}" size="31"
-									converter="conCbo" id="descCbo"
+									converter="conCbo" id="descCbo" class="select-agendaEquipe4"
 									completeMethod="#{CboController.listaCboAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -340,6 +340,7 @@
 							<p:outputPanel id="outRecurso">
 								<p:autoComplete value="#{ProcedimentoController.recurso}"
 									size="31" converter="conRecurso" id="descRecurso"
+									class="select-agendaEquipe4"
 									completeMethod="#{RecursoController.listaRecursoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"

@@ -33,7 +33,7 @@
 									requiredMessage="Escolha um programa!"
 									readonly="#{GerenciarPacienteController.apenasLeitura}"
 									value="#{GerenciarPacienteController.gerenciarpaciente.programa}"
-									size="31" converter="conPrograma"
+									size="31" converter="conPrograma" class="select-agendaEquipe4"
 									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -60,7 +60,7 @@
 								<p:autoComplete required="true"
 									requiredMessage="Escolha um grupo!"
 									value="#{GerenciarPacienteController.gerenciarpaciente.grupo}"
-									size="31" converter="conGrupo"
+									size="31" converter="conGrupo" class="select-agendaEquipe4"
 									readonly="#{GerenciarPacienteController.apenasLeitura}"
 									disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
 									completeMethod="#{GerenciarPacienteController.listaGrupoAutoComplete}"
@@ -180,20 +180,20 @@
 					<b:row>
 						<br></br>
 						<p:outputPanel id="outEquipamento">
-							<b:column span="1">
-								<h:outputLabel id="idEquipamento" value="Equipamento:"
+						
+							<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label id="idEquipamento" value="Equipamento:"
 									rendered="#{GerenciarPacienteController.rowBean.status == 'A'
-							and GerenciarPacienteController.rowBean.laudo.procedimento_primario.utilizaEquipamento == true}" />
-							</b:column>
-
-							<b:column span="3">
+							and GerenciarPacienteController.rowBean.laudo.procedimento_primario.utilizaEquipamento == true}" 
+							severity="info" />
 
 								<p:autoComplete required="true"
 									rendered="#{GerenciarPacienteController.rowBean.status == 'A'
 							and GerenciarPacienteController.rowBean.laudo.procedimento_primario.utilizaEquipamento == true}"
 									requiredMessage="Escolha um equipamento"
 									value="#{GerenciarPacienteController.gerenciarpaciente.laudo.procedimento_primario.equipamento}"
-									size="40" converter="conEquipamento"
+									size="31" converter="conEquipamento"
 									completeMethod="#{EquipamentoController.listaEquipamentoAutoComplete}"
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
@@ -201,10 +201,6 @@
 									<p:ajax event="itemSelect" update="" />
 
 								</p:autoComplete>
-
-							</b:column>
-
-							<b:column span="4">
 
 								<p:commandButton icon="ui-icon-check"
 									rendered="#{GerenciarPacienteController.rowBean.status == 'A'
@@ -227,7 +223,7 @@
 
 					<br></br>
 
-					<b:column span="12" class="label-position">
+					<b:column span="12" class="label-position1">
 					
 						<p:dataTable emptyMessage="Nenhuma Desistência"
 									styleClass="table table-hover" id="dtNovosAg"

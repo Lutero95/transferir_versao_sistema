@@ -27,18 +27,18 @@
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Programa:" severity="info"/>
 
-                            <p:outputPanel id="outProg">
-                                <p:autoComplete
-                                        value="#{ConfigAgendaController.confParte2.programa}" size="31"
-                                        converter="conPrograma"
-                                        completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
-                                        effect="fade" var="theme" forceSelection="true"
-                                        minQueryLength="1" itemValue="#{theme}"
-                                        itemLabel="#{theme.descPrograma}">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{ConfigAgendaController.selectGrupo}"
-                                            update=":formConfiAgendaEquipe:outProg, :formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:btBusGr"/>
-                                </p:autoComplete>
+							<p:outputPanel id="outProg">
+								<p:autoComplete
+									value="#{ConfigAgendaController.confParte2.programa}" size="31"
+									converter="conPrograma" class="select-agendaEquipe4"
+									completeMethod="#{ProgramaController.listaProgramaAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descPrograma}">
+									<p:ajax event="itemSelect"
+										listener="#{ConfigAgendaController.selectGrupo}"
+										update=":formConfiAgendaEquipe:outProg, :formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:btBusGr" />
+								</p:autoComplete>
 
                                 <p:commandButton id="btBusPr" icon="ui-icon-search"
                                                  immediate="true"
@@ -56,19 +56,19 @@
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Grupo:" severity="info"/>
 
-                            <p:outputPanel id="outGrupo">
-                                <p:autoComplete
-                                        value="#{ConfigAgendaController.confParte2.grupo}" size="31"
-                                        converter="conGrupo"
-                                        disabled="#{ConfigAgendaController.confParte2.programa==null}"
-                                        completeMethod="#{ConfigAgendaController.listaGrupoAutoComplete}"
-                                        effect="fade" var="theme" forceSelection="true"
-                                        minQueryLength="1" itemValue="#{theme}"
-                                        itemLabel="#{theme.descGrupo}">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{ConfigAgendaController.selectTipoAtendimento}"
-                                            update=":formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:outEquipe, :formConfiAgendaEquipe:btBusEq"/>
-                                </p:autoComplete>
+							<p:outputPanel id="outGrupo">
+								<p:autoComplete
+									value="#{ConfigAgendaController.confParte2.grupo}" size="31"
+									converter="conGrupo" class="select-agendaEquipe4"
+									disabled="#{ConfigAgendaController.confParte2.programa==null}"
+									completeMethod="#{ConfigAgendaController.listaGrupoAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descGrupo}">
+									<p:ajax event="itemSelect"
+										listener="#{ConfigAgendaController.selectTipoAtendimento}"
+										update=":formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:outEquipe, :formConfiAgendaEquipe:btBusEq" />
+								</p:autoComplete>
 
                                 <p:commandButton id="btBusGr" icon="ui-icon-search"
                                                  disabled="#{ConfigAgendaController.confParte2.programa==null}"
@@ -86,18 +86,18 @@
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Equipe:" severity="info"/>
 
-                            <p:outputPanel id="outEquipe">
-                                <p:autoComplete
-                                        value="#{ConfigAgendaController.confParte1.equipe}" size="31"
-                                        converter="conEquipe"
-                                        disabled="#{ConfigAgendaController.confParte2.grupo==null}"
-                                        completeMethod="#{ConfigAgendaController.listaEquipeAutoComplete}"
-                                        effect="fade" var="theme" forceSelection="true"
-                                        minQueryLength="1" itemValue="#{theme}"
-                                        itemLabel="#{theme.descEquipe}">
-                                    <p:ajax event="itemSelect"
-                                            update=":formConfiAgendaEquipe:outEquipe"/>
-                                </p:autoComplete>
+							<p:outputPanel id="outEquipe">
+								<p:autoComplete
+									value="#{ConfigAgendaController.confParte1.equipe}" size="31"
+									converter="conEquipe" class="select-agendaEquipe4"
+									disabled="#{ConfigAgendaController.confParte2.grupo==null}"
+									completeMethod="#{ConfigAgendaController.listaEquipeAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descEquipe}">
+									<p:ajax event="itemSelect"
+										update=":formConfiAgendaEquipe:outEquipe" />
+								</p:autoComplete>
 
                                 <p:commandButton icon="ui-icon-search" id="btBusEq"
                                                  update=":formConsuEquipe"
@@ -168,19 +168,19 @@
                     <p:outputPanel id="panelData">
                         <b:row rendered="#{ConfigAgendaController.confParte1.opcao==1}">
 
-                            <b:column span="2" class="label-position data-size">
-                                <b:label value="Data Específica:" severity="info"
-                                         rendered="#{ConfigAgendaController.confParte1.opcao==1}"/>
-
-                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-                                            showOn="button" size="15"
-                                            rendered="#{ConfigAgendaController.confParte1.opcao==1}"
-                                            value="#{ConfigAgendaController.confParte1.dataEspecifica}"
-                                            locale="pt"/>
-
-                            </b:column>
-                        </b:row>
-                    </p:outputPanel>
+							<b:column span="2" class="label-position data-size">
+								<b:label value="Data Específica:" severity="info" 
+									rendered="#{ConfigAgendaController.confParte1.opcao==1}"/>
+								
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									showOn="button" size="15" class="select-agendaEquipe2"
+									rendered="#{ConfigAgendaController.confParte1.opcao==1}"
+									value="#{ConfigAgendaController.confParte1.dataEspecifica}" 
+									locale="pt" />
+									
+							</b:column>
+						</b:row>
+					</p:outputPanel>
 
                     <br></br>
 
@@ -290,14 +290,15 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton
-                                update=":formConfiAgendaEquipe:outProg, :formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:btBusGr"
-                                icon="ui-icon-check" title="Selecionar"
-                                onclick="PF('dlgConsultProg').hide();">
-                            <f:setPropertyActionListener value="#{prog}"
-                                                         target="#{ConfigAgendaController.confParte2.programa}"/>
-                        </p:commandButton>
-                    </h:column>
+						<p:commandButton
+							update=":formConfiAgendaEquipe:outProg, :formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:btBusGr"
+							icon="ui-icon-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsultProg').hide();">
+							<f:setPropertyActionListener value="#{prog}"
+								target="#{ConfigAgendaController.confParte2.programa}" />
+						</p:commandButton>
+					</h:column>
 
                 </b:dataTable>
             </h:form>
