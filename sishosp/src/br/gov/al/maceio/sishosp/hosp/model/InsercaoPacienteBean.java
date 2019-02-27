@@ -9,96 +9,104 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 
 public class InsercaoPacienteBean implements Serializable {
 
-	// HERDADOS
-	private Integer id;
-	private LaudoBean laudo;
-	private GrupoBean grupo;
-	private ProgramaBean programa;
-	private EquipeBean equipe;
-	private String observacao;
-	private Date data_solicitacao;
-	private FuncionarioBean funcionario;
-	private AgendaBean agenda;
+    // HERDADOS
+    private Integer id;
+    private LaudoBean laudo;
+    private GrupoBean grupo;
+    private ProgramaBean programa;
+    private EquipeBean equipe;
+    private String observacao;
+    private Date data_solicitacao;
+    private FuncionarioBean funcionario;
+    private AgendaBean agenda;
+    private String OpcaoAtendimento;
 
-	public InsercaoPacienteBean() {
-		laudo = new LaudoBean();
-		grupo = new GrupoBean();
-		programa = new ProgramaBean();
-		equipe = new EquipeBean();
-		funcionario = new FuncionarioBean();
-		agenda = new AgendaBean();
-	}
+    public InsercaoPacienteBean() {
+        laudo = new LaudoBean();
+        grupo = new GrupoBean();
+        programa = new ProgramaBean();
+        equipe = new EquipeBean();
+        funcionario = new FuncionarioBean();
+        agenda = new AgendaBean();
+    }
 
-	public LaudoBean getLaudo() {
-		return laudo;
-	}
+    public LaudoBean getLaudo() {
+        return laudo;
+    }
 
-	public void setLaudo(LaudoBean laudo) {
-		this.laudo = laudo;
-	}
+    public void setLaudo(LaudoBean laudo) {
+        this.laudo = laudo;
+    }
 
-	public EquipeBean getEquipe() {
-		return equipe;
-	}
+    public EquipeBean getEquipe() {
+        return equipe;
+    }
 
-	public void setEquipe(EquipeBean equipe) {
-		this.equipe = equipe;
-	}
+    public void setEquipe(EquipeBean equipe) {
+        this.equipe = equipe;
+    }
 
-	public GrupoBean getGrupo() {
-		return grupo;
-	}
+    public GrupoBean getGrupo() {
+        return grupo;
+    }
 
-	public void setGrupo(GrupoBean grupo) {
-		this.grupo = grupo;
-	}
+    public void setGrupo(GrupoBean grupo) {
+        this.grupo = grupo;
+    }
 
-	public ProgramaBean getPrograma() {
-		return programa;
-	}
+    public ProgramaBean getPrograma() {
+        return programa;
+    }
 
-	public void setPrograma(ProgramaBean programa) {
-		this.programa = programa;
-	}
+    public void setPrograma(ProgramaBean programa) {
+        this.programa = programa;
+    }
 
-	public String getObservacao() {
-		return observacao;
-	}
+    public String getObservacao() {
+        return observacao;
+    }
 
-	public void setObservacao(String observacao) {
-		this.observacao = observacao;
-	}
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
+    }
 
-	public Date getData_solicitacao() {
-		return data_solicitacao;
-	}
+    public Date getData_solicitacao() {
+        return data_solicitacao;
+    }
 
-	public void setData_solicitacao(Date data_solicitacao) {
-		this.data_solicitacao = data_solicitacao;
-	}
+    public void setData_solicitacao(Date data_solicitacao) {
+        this.data_solicitacao = data_solicitacao;
+    }
 
-	public FuncionarioBean getFuncionario() {
-		return funcionario;
-	}
+    public FuncionarioBean getFuncionario() {
+        return funcionario;
+    }
 
-	public void setFuncionario(FuncionarioBean funcionario) {
-		this.funcionario = funcionario;
-	}
+    public void setFuncionario(FuncionarioBean funcionario) {
+        this.funcionario = funcionario;
+    }
 
-	public AgendaBean getAgenda() {
-		return agenda;
-	}
+    public AgendaBean getAgenda() {
+        return agenda;
+    }
 
-	public void setAgenda(AgendaBean agenda) {
-		this.agenda = agenda;
-	}
+    public void setAgenda(AgendaBean agenda) {
+        this.agenda = agenda;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
+    public String getOpcaoAtendimento() {
+        return OpcaoAtendimento;
+    }
+
+    public void setOpcaoAtendimento(String opcaoAtendimento) {
+        OpcaoAtendimento = opcaoAtendimento;
+    }
 }

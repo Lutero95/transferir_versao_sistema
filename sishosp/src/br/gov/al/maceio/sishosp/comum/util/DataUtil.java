@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.comum.util;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,14 +17,18 @@ public final class DataUtil {
         return c1;
     }
 
-    public static String mesIhAnoAtual(){
-        Date data =  new Date();
-        Locale local = new Locale("pt","BR");
-        DateFormat dateFormat = new SimpleDateFormat("MMMM ' - ' yyyy",local);
+    public static String mesIhAnoAtual() {
+        Date data = new Date();
+        Locale local = new Locale("pt", "BR");
+        DateFormat dateFormat = new SimpleDateFormat("MMMM ' - ' yyyy", local);
 
         String dataAtual = dateFormat.format(data);
 
         return dataAtual;
+    }
+
+    public static Time transformarDateEmTime(Date data) {
+        return new java.sql.Time(data.getTime());
     }
 
 }

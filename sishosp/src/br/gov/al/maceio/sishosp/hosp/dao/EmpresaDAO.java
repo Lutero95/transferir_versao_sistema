@@ -1,10 +1,13 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.ParametroBean;
 
+import javax.faces.context.FacesContext;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +77,9 @@ public class EmpresaDAO {
                 codEmpresa = rs.getInt("cod_empresa");
             }
 
-            sql = "INSERT INTO hosp.parametro(motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, cod_empresa) " +
-                    " VALUES (?, ?, ?, ?, ?)";
+            sql = "INSERT INTO hosp.parametro(motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, " +
+                    "qtd_simultanea_atendimento_equipe, cod_empresa, horario_inicial, horario_final, intervalo) " +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -104,6 +108,27 @@ public class EmpresaDAO {
                 ps.setNull(4, Types.NULL);
             }
             ps.setInt(5, codEmpresa);
+
+            if(empresa.getParametro().getHorarioInicial() != null) {
+                ps.setTime(6, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioInicial()));
+            }
+            else{
+                ps.setNull(6, Types.NULL);
+            }
+
+            if(empresa.getParametro().getHorarioFinal() != null) {
+                ps.setTime(7, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioFinal()));
+            }
+            else{
+                ps.setNull(7, Types.NULL);
+            }
+
+            if(empresa.getParametro().getIntervalo() != null) {
+                ps.setInt(8, empresa.getParametro().getIntervalo());
+            }
+            else{
+                ps.setNull(8, Types.NULL);
+            }
 
             ps.execute();
 
@@ -207,7 +232,8 @@ public class EmpresaDAO {
             ps.executeUpdate();
 
             sql = "UPDATE hosp.parametro SET motivo_padrao_desligamento_opm = ?, opcao_atendimento = ?, " +
-                    "qtd_simultanea_atendimento_profissional = ?, qtd_simultanea_atendimento_equipe = ? " +
+                    "qtd_simultanea_atendimento_profissional = ?, qtd_simultanea_atendimento_equipe = ?, " +
+                    "horario_inicial = ?, horario_final = ?, intervalo = ? " +
                     "WHERE cod_empresa = ?";
 
             ps = con.prepareStatement(sql);
@@ -216,7 +242,10 @@ public class EmpresaDAO {
             ps.setString(2, empresa.getParametro().getOpcaoAtendimento());
             ps.setInt(3, empresa.getParametro().getQuantidadeSimultaneaProfissional());
             ps.setInt(4, empresa.getParametro().getQuantidadeSimultaneaEquipe());
-            ps.setInt(5, empresa.getCodEmpresa());
+            ps.setTime(5, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioInicial()));
+            ps.setTime(6, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioFinal()));
+            ps.setInt(7, empresa.getParametro().getIntervalo());
+            ps.setInt(8, empresa.getCodEmpresa());
             ps.executeUpdate();
 
             con.commit();
@@ -317,7 +346,8 @@ public class EmpresaDAO {
 
         ParametroBean parametro = new ParametroBean();
 
-        String sql = "SELECT id, motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe " +
+        String sql = "SELECT id, motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
+                "horario_inicial, horario_final, intervalo " +
                 " FROM hosp.parametro where cod_empresa = ?;";
 
         try {
@@ -331,6 +361,9 @@ public class EmpresaDAO {
                 parametro.setOpcaoAtendimento(rs.getString("opcao_atendimento"));
                 parametro.setQuantidadeSimultaneaProfissional(rs.getInt("qtd_simultanea_atendimento_profissional"));
                 parametro.setQuantidadeSimultaneaEquipe(rs.getInt("qtd_simultanea_atendimento_equipe"));
+                parametro.setHorarioInicial(rs.getTime("horario_inicial"));
+                parametro.setHorarioFinal(rs.getTime("horario_final"));
+                parametro.setIntervalo(rs.getInt("intervalo"));
 
             }
         } catch (SQLException ex) {
@@ -343,6 +376,37 @@ public class EmpresaDAO {
             }
         }
         return parametro;
+    }
+
+    public String carregarOpcaoAtendimentoDaEmpresa() throws ProjetoException {
+
+        String retorno = null;
+
+        String sql = "SELECT opcao_atendimento FROM hosp.parametro where cod_empresa = ?;";
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                retorno = rs.getString("opcao_atendimento");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
     }
 
 }

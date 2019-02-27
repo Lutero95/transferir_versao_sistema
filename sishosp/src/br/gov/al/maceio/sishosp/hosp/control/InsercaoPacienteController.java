@@ -16,10 +16,7 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -40,14 +37,18 @@ public class InsercaoPacienteController implements Serializable {
     private String tipo;
     private FuncionarioBean funcionario;
     private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
+    private String opcaoAtendimento;
+    private EmpresaDAO empresaDAO = new EmpresaDAO();
 
-    public InsercaoPacienteController() {
+    public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
         listaLaudosVigentes = new ArrayList<InsercaoPacienteBean>();
         this.tipo = TipoAtendimento.EQUIPE.getSigla();
         funcionario = new FuncionarioBean();
         listaProfissionaisAdicionados = new ArrayList<FuncionarioBean>();
         listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
+        opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
+        insercao.setOpcaoAtendimento(!opcaoAtendimento.equals("A") ? opcaoAtendimento : "T");
     }
 
     public void limparDados() {
@@ -366,4 +367,11 @@ public class InsercaoPacienteController implements Serializable {
         this.listaProfissionaisAdicionados = listaProfissionaisAdicionados;
     }
 
+    public String getOpcaoAtendimento() {
+        return opcaoAtendimento;
+    }
+
+    public void setOpcaoAtendimento(String opcaoAtendimento) {
+        this.opcaoAtendimento = opcaoAtendimento;
+    }
 }
