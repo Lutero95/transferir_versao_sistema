@@ -92,7 +92,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public String redirectInsertEquipe() {
-        return RedirecionarUtil.redirectPagina(ENDERECO_CADASTRO_EQUIPE);
+        return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO_EQUIPE, ENDERECO_TIPO, tipo);
     }
 
     public String redirectEditEquipe() {
