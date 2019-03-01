@@ -1,16 +1,16 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -18,10 +18,8 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
-import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
-import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.*;
+import org.primefaces.extensions.util.DateUtils;
 
 @ManagedBean(name = "InsercaoController")
 @ViewScoped
@@ -39,6 +37,7 @@ public class InsercaoPacienteController implements Serializable {
     private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
     private String opcaoAtendimento;
     private EmpresaDAO empresaDAO = new EmpresaDAO();
+    private List<String> listaHorarios = new ArrayList<>();
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -49,6 +48,7 @@ public class InsercaoPacienteController implements Serializable {
         listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
         opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
         insercao.setOpcaoAtendimento(!opcaoAtendimento.equals("A") ? opcaoAtendimento : "T");
+        listaHorarios = new ArrayList<>();
     }
 
     public void limparDados() {
@@ -258,6 +258,36 @@ public class InsercaoPacienteController implements Serializable {
         }
     }
 
+    public List<String> gerarHorariosAtendimento() throws ParseException {
+        ParametroBean parametroBean = new ParametroBean();
+        EmpresaDAO empresaDAO = new EmpresaDAO();
+
+        parametroBean = empresaDAO.carregarDetalhesAtendimentoDaEmpresa();
+
+        java.sql.Time novahora = (Time) parametroBean.getHorarioInicial();
+        String horario = null;
+
+        while(parametroBean.getHorarioFinal().after(novahora)) {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
+            GregorianCalendar gc = new GregorianCalendar();
+            String timeAux = sdf.format(novahora);
+
+            gc.setTime(sdf.parse(timeAux));
+
+            gc.add(Calendar.MINUTE, parametroBean.getIntervalo());
+
+            novahora = new java.sql.Time(gc.getTime().getTime());
+
+            horario = DataUtil.retornarHorarioEmString(novahora);
+
+            listaHorarios.add(horario);
+
+        }
+
+        return listaHorarios;
+    }
+
     // AUTOCOMPLETE INÍCIO
 
     public List<EquipeBean> listaEquipeAutoComplete(String query)
@@ -373,5 +403,13 @@ public class InsercaoPacienteController implements Serializable {
 
     public void setOpcaoAtendimento(String opcaoAtendimento) {
         this.opcaoAtendimento = opcaoAtendimento;
+    }
+
+    public List<String> getListaHorarios() {
+        return listaHorarios;
+    }
+
+    public void setListaHorarios(List<String> listaHorarios) {
+        this.listaHorarios = listaHorarios;
     }
 }

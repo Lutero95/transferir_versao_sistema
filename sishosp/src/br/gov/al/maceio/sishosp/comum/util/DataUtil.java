@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.comum.util;
 
 import java.sql.Time;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,6 +30,15 @@ public final class DataUtil {
 
     public static Time transformarDateEmTime(Date data) {
         return new java.sql.Time(data.getTime());
+    }
+
+    public static String retornarHorarioEmString(Date tempo) throws ParseException {
+        String horario = null;
+
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        horario = dateFormat.format(tempo);
+
+        return horario;
     }
 
 }

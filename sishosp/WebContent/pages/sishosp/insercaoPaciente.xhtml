@@ -364,7 +364,21 @@
 
                     </b:row>
 
-                    <b:row>
+                    <b:row rendered="#{InsercaoController.insercao.opcaoAtendimento == 'H'}">
+                        <p:outputPanel>
+                            <b:column span="3" class="label-position">
+                                <b:label value="Horário:" severity="info"/>
+
+                                <b:selectOneMenu class="select-agendaEquipe2"
+                                                 value="#{InsercaoController.insercao.agenda.horario}">
+                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                    <f:selectItems value="#{InsercaoController.gerarHorariosAtendimento()}"/>
+                                </b:selectOneMenu>
+                            </b:column>
+                        </p:outputPanel>
+                    </b:row>
+
+                    <b:row rendered="#{InsercaoController.insercao.opcaoAtendimento == 'T'}">
                         <p:outputPanel>
                             <b:column span="3" class="label-position">
                                 <b:label value="Turno:" severity="info"/>

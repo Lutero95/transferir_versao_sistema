@@ -18,6 +18,7 @@ public class AgendaBean implements Serializable {
     private Date dataMarcacao;
     private String situacao;
     private String ativo;
+    private String horario;
 
     // HERDADOS
     private PacienteBean paciente;
@@ -203,4 +204,11 @@ public class AgendaBean implements Serializable {
         this.empresa = empresa;
     }
 
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
+    }
 }

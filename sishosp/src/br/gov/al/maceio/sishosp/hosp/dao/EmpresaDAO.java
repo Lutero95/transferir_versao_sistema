@@ -16,6 +16,8 @@ public class EmpresaDAO {
 
     Connection con = null;
     PreparedStatement ps = null;
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().get("obj_funcionario");
 
     public boolean gravarEmpresa(EmpresaBean empresa) {
         Boolean retorno = false;
@@ -384,9 +386,6 @@ public class EmpresaDAO {
 
         String sql = "SELECT opcao_atendimento FROM hosp.parametro where cod_empresa = ?;";
 
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
-
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
@@ -402,11 +401,48 @@ public class EmpresaDAO {
             throw new RuntimeException(ex);
         } finally {
             try {
+                con.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
         return retorno;
+    }
+
+    public ParametroBean carregarDetalhesAtendimentoDaEmpresa() {
+
+        ParametroBean parametro = new ParametroBean();
+
+        String sql = "SELECT qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
+                "horario_inicial, horario_final, intervalo " +
+                " FROM hosp.parametro where cod_empresa = ?;";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                parametro.setQuantidadeSimultaneaProfissional(rs.getInt("qtd_simultanea_atendimento_profissional"));
+                parametro.setQuantidadeSimultaneaEquipe(rs.getInt("qtd_simultanea_atendimento_equipe"));
+                parametro.setHorarioInicial(rs.getTime("horario_inicial"));
+                parametro.setHorarioFinal(rs.getTime("horario_final"));
+                parametro.setIntervalo(rs.getInt("intervalo"));
+
+            }
+        } catch (SQLException | ProjetoException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return parametro;
     }
 
 }
