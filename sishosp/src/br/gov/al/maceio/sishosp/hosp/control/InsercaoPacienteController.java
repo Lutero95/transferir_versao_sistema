@@ -17,9 +17,9 @@ import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
+import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.*;
-import org.primefaces.extensions.util.DateUtils;
 
 @ManagedBean(name = "InsercaoController")
 @ViewScoped
@@ -37,7 +37,7 @@ public class InsercaoPacienteController implements Serializable {
     private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
     private String opcaoAtendimento;
     private EmpresaDAO empresaDAO = new EmpresaDAO();
-    private List<String> listaHorarios = new ArrayList<>();
+    private ArrayList<String> listaHorarios;
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -47,7 +47,7 @@ public class InsercaoPacienteController implements Serializable {
         listaProfissionaisAdicionados = new ArrayList<FuncionarioBean>();
         listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
         opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
-        insercao.setOpcaoAtendimento(!opcaoAtendimento.equals("A") ? opcaoAtendimento : "T");
+        insercao.setOpcaoAtendimento(!opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla());
         listaHorarios = new ArrayList<>();
     }
 
@@ -221,6 +221,29 @@ public class InsercaoPacienteController implements Serializable {
 
     }
 
+    public void validarInsercaoPaciente() throws ProjetoException {
+        AgendaDAO agendaDAO = new AgendaDAO();
+
+        if(tipo.equals(TipoAtendimento.EQUIPE.getSigla())){
+            if(agendaDAO.numeroAtendimentosEquipe(insercao.getAgenda())){
+                gravarInsercaoPaciente();
+            }
+            else{
+                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para esse profissional já antigiu o máximo para esse horário e dia!",
+                        "Erro");
+            }
+        }
+        else{
+            if(agendaDAO.numeroAtendimentosProfissional(insercao.getAgenda())){
+                gravarInsercaoPaciente();
+            }
+            else{
+                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para essa equipe já antigiu o máximo para esse dia!",
+                        "Erro");
+            }
+        }
+    }
+
     public void gravarInsercaoPaciente() throws ProjetoException {
 
         if (insercao.getLaudo().getId() != null) {
@@ -258,7 +281,7 @@ public class InsercaoPacienteController implements Serializable {
         }
     }
 
-    public List<String> gerarHorariosAtendimento() throws ParseException {
+    public ArrayList<String> gerarHorariosAtendimento() throws ParseException {
         ParametroBean parametroBean = new ParametroBean();
         EmpresaDAO empresaDAO = new EmpresaDAO();
 
@@ -405,11 +428,11 @@ public class InsercaoPacienteController implements Serializable {
         this.opcaoAtendimento = opcaoAtendimento;
     }
 
-    public List<String> getListaHorarios() {
+    public ArrayList<String> getListaHorarios() {
         return listaHorarios;
     }
 
-    public void setListaHorarios(List<String> listaHorarios) {
+    public void setListaHorarios(ArrayList<String> listaHorarios) {
         this.listaHorarios = listaHorarios;
     }
 }

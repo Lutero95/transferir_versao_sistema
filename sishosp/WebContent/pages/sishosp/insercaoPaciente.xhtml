@@ -170,7 +170,7 @@
 
                             <b:column span="5"
                                       class="label-position new-data-size4 new-comple1">
-                                <b:label for="prog" value="grupo" id="grupo"
+                                <b:label for="prog" value="Grupo:" id="grupo"
                                          rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
 
 								<p:autoComplete value="#{InsercaoController.insercao.grupo}"
@@ -369,10 +369,10 @@
                             <b:column span="3" class="label-position">
                                 <b:label value="Horário:" severity="info"/>
 
-                                <b:selectOneMenu class="select-agendaEquipe2"
+                                <b:selectOneMenu class="select-agendaEquipe2" required="true" requiredMessage="Horário: Campo obrigatório!"
                                                  value="#{InsercaoController.insercao.agenda.horario}">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
                                     <f:selectItems value="#{InsercaoController.gerarHorariosAtendimento()}"/>
+                                    <p:ajax event="change"></p:ajax>
                                 </b:selectOneMenu>
                             </b:column>
                         </p:outputPanel>
@@ -426,7 +426,7 @@
                         <b:commandButton value="Gravar" look="success" size="sm" id="b1"
                                          icon="glyphicon-ok" update=":formInsercao2:msgPagina"
                                          class="btn-incluir"
-                                         action="#{InsercaoController.gravarInsercaoPaciente()}"/>
+                                         action="#{InsercaoController.validarInsercaoPaciente()}"/>
 
                         <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" look="info" class="btn-voltar"

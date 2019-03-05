@@ -1,9 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +8,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 
 import javax.faces.context.FacesContext;
@@ -175,8 +173,8 @@ public class InsercaoPacienteDAO {
             }
 
             String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, "
-                    + " observacao, ativo, id_paciente_instituicao, cod_empresa)"
-                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?) RETURNING id_atendimento;";
+                    + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario)"
+                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?) RETURNING id_atendimento;";
 
             PreparedStatement ps3 = null;
             ps3 = con.prepareStatement(sql3);
@@ -188,10 +186,24 @@ public class InsercaoPacienteDAO {
                 ps3.setDate(3, new java.sql.Date(listaAgendamento.get(i)
                         .getAgenda().getDataMarcacao().getTime()));
                 ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
-                ps3.setString(5, insercao.getAgenda().getTurno());
+
+                if(insercao.getAgenda().getTurno() != null) {
+                    ps3.setString(5, insercao.getAgenda().getTurno());
+                }
+                else{
+                    ps3.setNull(5, Types.NULL);
+                }
+
                 ps3.setString(6, insercao.getObservacao());
                 ps3.setInt(7, id);
                 ps3.setInt(8, user_session.getEmpresa().getCodEmpresa());
+
+                if(insercao.getAgenda().getHorario() != null) {
+                    ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+                }
+                else{
+                    ps3.setNull(9, Types.NULL);
+                }
 
                 rs = ps3.executeQuery();
 

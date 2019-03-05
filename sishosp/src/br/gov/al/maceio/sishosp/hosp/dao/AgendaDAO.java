@@ -11,10 +11,8 @@ import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
-import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
-import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
-import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.hosp.model.*;
 
 import javax.faces.context.FacesContext;
 
@@ -841,6 +839,91 @@ public class AgendaDAO {
             }
         }
         return lista;
+    }
+
+    public Boolean numeroAtendimentosEquipe(AgendaBean agenda) {
+
+        Boolean resultado = false;
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT ");
+        sql.append("CASE WHEN (SELECT count(id_atendimento) FROM hosp.atendimentos WHERE ");
+        sql.append("dtaatende = ? AND codequipe = ?) < p.qtd_simultanea_atendimento_equipe ");
+        sql.append("THEN TRUE ELSE FALSE END AS pode_marcar ");
+        sql.append("FROM hosp.parametro p WHERE p.cod_empresa = ?");
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql.toString());
+            stm.setDate(1, new java.sql.Date(agenda.getDataAtendimento().getTime()));
+            stm.setInt(2, agenda.getEquipe().getCodEquipe());
+            stm.setInt(3, user_session.getEmpresa().getCodEmpresa());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                resultado = rs.getBoolean("pode_marcar");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } catch (ProjetoException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return resultado;
+    }
+
+    public Boolean numeroAtendimentosProfissional(AgendaBean agenda) {
+
+        Boolean resultado = false;
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT ");
+        sql.append("CASE WHEN (SELECT count(id_atendimento) FROM hosp.atendimentos WHERE horario = ? ");
+        sql.append("AND dtaatende = ? AND codmedico = ?) < p.qtd_simultanea_atendimento_profissional ");
+        sql.append("THEN TRUE ELSE FALSE END AS pode_marcar ");
+        sql.append("FROM hosp.parametro p WHERE p.cod_empresa = ?");
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql.toString());
+            stm.setTime(1, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+            stm.setDate(2, new java.sql.Date(agenda.getDataAtendimento().getTime()));
+            stm.setInt(3, agenda.getProfissional().getCodigo());
+            stm.setInt(4, user_session.getEmpresa().getCodEmpresa());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                resultado = rs.getBoolean("pode_marcar");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } catch (ProjetoException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return resultado;
     }
 
 }

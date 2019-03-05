@@ -32,13 +32,27 @@ public final class DataUtil {
         return new java.sql.Time(data.getTime());
     }
 
-    public static String retornarHorarioEmString(Date tempo) throws ParseException {
+    public static String retornarHorarioEmString(Date tempo) {
         String horario = null;
 
         DateFormat dateFormat = new SimpleDateFormat("HH:mm");
         horario = dateFormat.format(tempo);
 
         return horario;
+    }
+
+    public static Time retornarHorarioEmTime(String tempo) {
+
+        SimpleDateFormat formatador = new SimpleDateFormat("HH:mm");
+        Date data = null;
+        try {
+            data = formatador.parse(tempo);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Time time = new Time(data.getTime());
+
+        return time;
     }
 
 }
