@@ -12,6 +12,7 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 
 import javax.faces.context.FacesContext;
+import javax.xml.crypto.Data;
 
 public class InsercaoPacienteDAO {
     Connection con = null;
@@ -183,8 +184,8 @@ public class InsercaoPacienteDAO {
 
                 ps3.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
                 ps3.setLong(2, listaAgendamento.get(i).getAgenda().getProfissional().getId());
-                ps3.setDate(3, new java.sql.Date(listaAgendamento.get(i)
-                        .getAgenda().getDataMarcacao().getTime()));
+                ps3.setDate(3, DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i)
+                        .getAgenda().getDataMarcacao()));
                 ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
 
                 if(insercao.getAgenda().getTurno() != null) {
@@ -299,8 +300,8 @@ public class InsercaoPacienteDAO {
 
             }
 
-            String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, observacao, ativo, id_paciente_instituicao, cod_empresa)"
-                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?) RETURNING id_atendimento;";
+            String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, observacao, ativo, id_paciente_instituicao, cod_empresa, horario)"
+                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?) RETURNING id_atendimento;";
 
             PreparedStatement ps3 = null;
             ps3 = con.prepareStatement(sql3);
@@ -309,13 +310,19 @@ public class InsercaoPacienteDAO {
 
                 ps3.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
                 ps3.setLong(2, insercao.getFuncionario().getId());
-                ps3.setDate(3, new java.sql.Date(listaAgendamento.get(i)
-                        .getAgenda().getDataMarcacao().getTime()));
+                ps3.setDate(3, DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i)
+                        .getAgenda().getDataMarcacao()));
                 ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
                 ps3.setString(5, insercao.getAgenda().getTurno());
                 ps3.setString(6, insercao.getObservacao());
                 ps3.setInt(7, id);
                 ps3.setInt(8, user_session.getEmpresa().getCodEmpresa());
+                if(insercao.getAgenda().getHorario() != null) {
+                    ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+                }
+                else{
+                    ps3.setNull(9, Types.NULL);
+                }
 
                 rs = ps3.executeQuery();
 

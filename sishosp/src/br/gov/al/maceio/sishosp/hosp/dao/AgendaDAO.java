@@ -841,7 +841,7 @@ public class AgendaDAO {
         return lista;
     }
 
-    public Boolean numeroAtendimentosEquipe(AgendaBean agenda) {
+    public Boolean numeroAtendimentosEquipe(InsercaoPacienteBean insercao) {
 
         Boolean resultado = false;
 
@@ -859,8 +859,8 @@ public class AgendaDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql.toString());
-            stm.setDate(1, new java.sql.Date(agenda.getDataAtendimento().getTime()));
-            stm.setInt(2, agenda.getEquipe().getCodEquipe());
+            stm.setDate(1, DataUtil.converterDateUtilParaDateSql(insercao.getData_solicitacao()));
+            stm.setInt(2, insercao.getEquipe().getCodEquipe());
             stm.setInt(3, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 
@@ -883,7 +883,7 @@ public class AgendaDAO {
         return resultado;
     }
 
-    public Boolean numeroAtendimentosProfissional(AgendaBean agenda) {
+    public Boolean numeroAtendimentosProfissional(InsercaoPacienteBean insercao) {
 
         Boolean resultado = false;
 
@@ -901,9 +901,9 @@ public class AgendaDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql.toString());
-            stm.setTime(1, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
-            stm.setDate(2, new java.sql.Date(agenda.getDataAtendimento().getTime()));
-            stm.setInt(3, agenda.getProfissional().getCodigo());
+            stm.setTime(1, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+            stm.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getData_solicitacao()));
+            stm.setLong(3, insercao.getFuncionario().getId());
             stm.setInt(4, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
 

@@ -47,7 +47,7 @@ public class InsercaoPacienteController implements Serializable {
         listaProfissionaisAdicionados = new ArrayList<FuncionarioBean>();
         listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
         opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
-        insercao.setOpcaoAtendimento(!opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla());
+        opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
         listaHorarios = new ArrayList<>();
     }
 
@@ -225,7 +225,7 @@ public class InsercaoPacienteController implements Serializable {
         AgendaDAO agendaDAO = new AgendaDAO();
 
         if(tipo.equals(TipoAtendimento.EQUIPE.getSigla())){
-            if(agendaDAO.numeroAtendimentosEquipe(insercao.getAgenda())){
+            if(agendaDAO.numeroAtendimentosEquipe(insercao)){
                 gravarInsercaoPaciente();
             }
             else{
@@ -234,7 +234,7 @@ public class InsercaoPacienteController implements Serializable {
             }
         }
         else{
-            if(agendaDAO.numeroAtendimentosProfissional(insercao.getAgenda())){
+            if(agendaDAO.numeroAtendimentosProfissional(insercao)){
                 gravarInsercaoPaciente();
             }
             else{

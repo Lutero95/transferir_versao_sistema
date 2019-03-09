@@ -55,4 +55,10 @@ public final class DataUtil {
         return time;
     }
 
+    public static java.sql.Date converterDateUtilParaDateSql(Date dataUtil) {
+        java.sql.Date dataSql = new java.sql.Date(dataUtil.getTime());
+
+        return dataSql;
+    }
+
 }
