@@ -386,6 +386,20 @@
                         </p:outputPanel>
                     </b:row>
 
+                    <b:row>
+
+                        <b:column span="3" class="label-position">
+
+                        <b:label value="Encaixe:" severity="info"/>
+
+                        <p:selectBooleanCheckbox label="Encaixe" style="margin-left: 10px;margin-top: 5px"
+                                value="#{InsercaoController.insercao.encaixe}">
+                        </p:selectBooleanCheckbox>
+
+                        </b:column>
+
+                    </b:row>
+
                     <b:row rendered="#{InsercaoController.opcaoAtendimento == 'T'}">
                         <p:outputPanel>
                             <b:column span="3" class="label-position">

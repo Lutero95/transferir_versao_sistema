@@ -225,7 +225,10 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void validarInsercaoPaciente() throws ProjetoException {
 
-        if(tipo.equals(TipoAtendimento.EQUIPE.getSigla())){
+        if(insercao.getEncaixe()){
+            gravarInsercaoPaciente();
+        }
+        else if(tipo.equals(TipoAtendimento.EQUIPE.getSigla())){
             if(agendaDAO.numeroAtendimentosEquipe(insercao)){
                 gravarInsercaoPaciente();
             }

@@ -20,6 +20,7 @@ public class InsercaoPacienteBean implements Serializable {
     private FuncionarioBean funcionario;
     private AgendaBean agenda;
     private String OpcaoAtendimento;
+    private Boolean encaixe;
 
     public InsercaoPacienteBean() {
         laudo = new LaudoBean();
@@ -108,5 +109,13 @@ public class InsercaoPacienteBean implements Serializable {
 
     public void setOpcaoAtendimento(String opcaoAtendimento) {
         OpcaoAtendimento = opcaoAtendimento;
+    }
+
+    public Boolean getEncaixe() {
+        return encaixe;
+    }
+
+    public void setEncaixe(Boolean encaixe) {
+        this.encaixe = encaixe;
     }
 }
