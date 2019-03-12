@@ -19,6 +19,8 @@ public class AgendaBean implements Serializable {
     private String situacao;
     private String ativo;
     private String horario;
+    private Integer qtdAtendimentosManha[];
+    private Integer qtdAtendimentosTarde[];
 
     // HERDADOS
     private PacienteBean paciente;
@@ -50,6 +52,8 @@ public class AgendaBean implements Serializable {
         this.max = null;
         this.idAgenda = null;
         this.empresa = new EmpresaBean();
+        qtdAtendimentosManha = new Integer [5];
+        qtdAtendimentosTarde = new Integer [5];
     }
 
     public Integer getIdAgenda() {
@@ -207,7 +211,25 @@ public class AgendaBean implements Serializable {
     public String getHorario() {
         return horario;
     }
+
     public void setHorario(String horario) {
         this.horario = horario;
     }
+
+    public Integer[] getQtdAtendimentosManha() {
+        return qtdAtendimentosManha;
+    }
+
+    public void setQtdAtendimentosManha(Integer[] qtdAtendimentosManha) {
+        this.qtdAtendimentosManha = qtdAtendimentosManha;
+    }
+
+    public Integer[] getQtdAtendimentosTarde() {
+        return qtdAtendimentosTarde;
+    }
+
+    public void setQtdAtendimentosTarde(Integer[] qtdAtendimentosTarde) {
+        this.qtdAtendimentosTarde = qtdAtendimentosTarde;
+    }
+
 }

@@ -127,12 +127,12 @@
                             <b:label value="Data de Solicitação:" id="datasoli"
                                      severity="info"/>
 
-							<p:calendar
-								value="#{InsercaoController.insercao.data_solicitacao}"
-								id="dtagen" locale="pt" navigator="true" mask="true"
-								class="select-agendaEquipe2" showOn="button"
-								pattern="dd/MM/yyyy" size="15">
-							</p:calendar>
+                            <p:calendar
+                                    value="#{InsercaoController.insercao.data_solicitacao}"
+                                    id="dtagen" locale="pt" navigator="true" mask="true"
+                                    class="select-agendaEquipe2" showOn="button"
+                                    pattern="dd/MM/yyyy" size="15">
+                            </p:calendar>
 
                         </b:column>
 
@@ -148,15 +148,15 @@
                                 <b:label for="prog" value="Programa:" id="prog"
                                          rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
 
-								<p:autoComplete value="#{InsercaoController.insercao.programa}"
-									rendered="#{InsercaoController.tipo == 'E'}" size="31"
-									converter="conPrograma" class="select-agendaEquipe4"
-									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descPrograma}">
-									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectPrograma}" update="" />
+                                <p:autoComplete value="#{InsercaoController.insercao.programa}"
+                                                rendered="#{InsercaoController.tipo == 'E'}" size="31"
+                                                converter="conPrograma" class="select-agendaEquipe4"
+                                                completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descPrograma}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.selectPrograma}" update=""/>
 
                                 </p:autoComplete>
 
@@ -173,16 +173,16 @@
                                 <b:label for="prog" value="Grupo:" id="grupo"
                                          rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
 
-								<p:autoComplete value="#{InsercaoController.insercao.grupo}"
-									rendered="#{InsercaoController.tipo == 'E'}" size="31"
-									converter="conGrupo" class="select-agendaEquipe4"
-									disabled="#{InsercaoController.insercao.programa==null}"
-									completeMethod="#{InsercaoController.listaGrupoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descGrupo}">
-									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectGrupo}" update="" />
+                                <p:autoComplete value="#{InsercaoController.insercao.grupo}"
+                                                rendered="#{InsercaoController.tipo == 'E'}" size="31"
+                                                converter="conGrupo" class="select-agendaEquipe4"
+                                                disabled="#{InsercaoController.insercao.programa==null}"
+                                                completeMethod="#{InsercaoController.listaGrupoAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descGrupo}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.selectGrupo}" update=""/>
 
                                 </p:autoComplete>
 
@@ -200,21 +200,28 @@
                                 <b:label for="equipe" value="Equipe:" id="equipe"
                                          rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
 
-								<p:autoComplete value="#{InsercaoController.insercao.equipe}"
-									size="31" converter="conEquipe" class="select-agendaEquipe4"
-									rendered="#{InsercaoController.tipo == 'E'}"
-									disabled="#{InsercaoController.insercao.grupo==null}"
-									completeMethod="#{InsercaoController.listaEquipeAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descEquipe}">
-									<p:ajax event="itemSelect" update="" />
-								</p:autoComplete>
+                                <p:autoComplete value="#{InsercaoController.insercao.equipe}"
+                                                size="31" converter="conEquipe" class="select-agendaEquipe4"
+                                                rendered="#{InsercaoController.tipo == 'E'}"
+                                                disabled="#{InsercaoController.insercao.grupo==null}"
+                                                completeMethod="#{InsercaoController.listaEquipeAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descEquipe}">
+                                    <p:ajax event="itemSelect" update=""/>
+                                </p:autoComplete>
 
                                 <p:commandButton icon="ui-icon-search"
                                                  update="dtEquipe, :formInsercao2:msgPagina"
                                                  rendered="#{InsercaoController.tipo == 'E'}"
                                                  action="#{InsercaoController.listarProfissionaisEquipe()}"/>
+                            </b:column>
+                            <b:column span="3">
+                                <p:commandButton value="Visualizar" look="success" size="sm"
+                                                 id="btnVisualizarAgendaEquipe"
+                                                 icon="ui-icon-search" rendered="#{InsercaoController.tipo == 'E'}"
+                                                 class="btn-incluir" immediate="true"
+                                                 onclick="PF('dlgQtdAgendamentos').show();"/>
                             </b:column>
                         </p:outputPanel>
 
@@ -228,15 +235,15 @@
                                 <b:label value="Profissional" id="prof"
                                          rendered="#{InsercaoController.tipo == 'P'}" severity="info"/>
 
-								<p:autoComplete rendered="#{InsercaoController.tipo == 'P'}"
-									value="#{InsercaoController.insercao.funcionario}" size="31"
-									converter="conFuncionario" class="select-agendaEquipe4"
-									completeMethod="#{InsercaoController.listaProfissionalAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nome}">
-									<p:ajax event="itemSelect" update="outDetalhes" />
-								</p:autoComplete>
+                                <p:autoComplete rendered="#{InsercaoController.tipo == 'P'}"
+                                                value="#{InsercaoController.insercao.funcionario}" size="31"
+                                                converter="conFuncionario" class="select-agendaEquipe4"
+                                                completeMethod="#{InsercaoController.listaProfissionalAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.nome}">
+                                    <p:ajax event="itemSelect" update="outDetalhes"/>
+                                </p:autoComplete>
 
                             </b:column>
                         </p:outputPanel>
@@ -288,13 +295,13 @@
 
                     </b:row>
 
-					<b:row>
-						<p:outputPanel id="outTabelas">
-							<b:column span="5" style="margin-bottom:15px;">
-								<p:dataTable id="dtEquipe" resizableColumns="true"
-									rendered="#{InsercaoController.tipo == 'E'}"
-									value="#{InsercaoController.listaProfissionaisEquipe}"
-									var="func" emptyMessage="Sem registros.">
+                    <b:row>
+                        <p:outputPanel id="outTabelas">
+                            <b:column span="5" style="margin-bottom:15px;">
+                                <p:dataTable id="dtEquipe" resizableColumns="true"
+                                             rendered="#{InsercaoController.tipo == 'E'}"
+                                             value="#{InsercaoController.listaProfissionaisEquipe}"
+                                             var="func" emptyMessage="Sem registros.">
 
                                     <p:column headerText="Profissional">
                                         <h:outputLabel value="#{func.nome}"/>
@@ -317,8 +324,8 @@
                                         </div>
                                     </p:column>
 
-								</p:dataTable>
-							</b:column>
+                                </p:dataTable>
+                            </b:column>
 
                             <b:column span="1">
                             </b:column>
@@ -369,7 +376,8 @@
                             <b:column span="3" class="label-position">
                                 <b:label value="Horário:" severity="info"/>
 
-                                <b:selectOneMenu class="select-agendaEquipe2" required="true" requiredMessage="Horário: Campo obrigatório!"
+                                <b:selectOneMenu class="select-agendaEquipe2" required="true"
+                                                 requiredMessage="Horário: Campo obrigatório!"
                                                  value="#{InsercaoController.insercao.agenda.horario}">
                                     <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
                                     <f:selectItems value="#{InsercaoController.gerarHorariosAtendimento()}"/>
@@ -400,18 +408,18 @@
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Tipo Atendimento" severity="info"/>
 
-							<p:outputPanel id="outTipoAt">
-								<p:autoComplete
-									value="#{InsercaoController.insercao.agenda.tipoAt}" size="31"
-									converter="conTipoAtendimento" class="select-agendaEquipe4"
-									completeMethod="#{InsercaoController.listaTipoAtAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descTipoAt}">
-									<p:ajax event="itemSelect" />
-								</p:autoComplete>
-							</p:outputPanel>
-						</b:column>
+                            <p:outputPanel id="outTipoAt">
+                                <p:autoComplete
+                                        value="#{InsercaoController.insercao.agenda.tipoAt}" size="31"
+                                        converter="conTipoAtendimento" class="select-agendaEquipe4"
+                                        completeMethod="#{InsercaoController.listaTipoAtAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descTipoAt}">
+                                    <p:ajax event="itemSelect"/>
+                                </p:autoComplete>
+                            </p:outputPanel>
+                        </b:column>
 
                     </b:row>
 
@@ -464,14 +472,14 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":formInsercao" icon="ui-icon-check"
-							title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
-							class="new-btn-acao-table acao-editar"
-							action="#{InsercaoController.carregarLaudoPaciente()}">
-							<f:setPropertyActionListener value="#{insercao}"
-								target="#{InsercaoController.insercao}" />
-						</p:commandButton>
-					</h:column>
+                        <p:commandButton update=":formInsercao" icon="ui-icon-check"
+                                         title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
+                                         class="new-btn-acao-table acao-editar"
+                                         action="#{InsercaoController.carregarLaudoPaciente()}">
+                            <f:setPropertyActionListener value="#{insercao}"
+                                                         target="#{InsercaoController.insercao}"/>
+                        </p:commandButton>
+                    </h:column>
 
                 </b:dataTable>
             </h:form>
@@ -495,14 +503,70 @@
                 <br></br>
                 <br></br>
 
-				<div align="center">
-					<b:commandButton value="Adicionar" look="success" size="sm" id="b2"
-						icon="glyphicon-ok" class="new-btn-acao-table acao-editar"
-						update=":formInsercao2:dtAdicionados, :formInsercao2:msgPagina"
-						action="#{InsercaoController.validarAdicionarFuncionario()}" />
-				</div>
-			</h:form>
-		</p:dialog>
+                <div align="center">
+                    <b:commandButton value="Adicionar" look="success" size="sm" id="b2"
+                                     icon="glyphicon-ok" class="new-btn-acao-table acao-editar"
+                                     update=":formInsercao2:dtAdicionados, :formInsercao2:msgPagina"
+                                     action="#{InsercaoController.validarAdicionarFuncionario()}"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Quantidade de Agendamentos" widgetVar="dlgQtdAgendamentos"
+                  modal="true">
+            <h:form id="formQtdAgendamentos">
+                <p:dataTable id="dtAgendamentosEquipe" resizableColumns="true"
+                             value="#{InsercaoController.visualizarHorariosEquipe()}"
+                             var="ag" emptyMessage="Sem registros.">
+
+                    <p:column headerText="Equipe">
+                        <h:outputLabel value="#{ag.equipe.descEquipe}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Segunda ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[0]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Segunda">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[0]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Terça ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[1]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Terça">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[1]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Quarta ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[2]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Quarta">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[2]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Quinta ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[3]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Quinta">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[3]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Sexta ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[4]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Sexta">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[4]}"/>
+                    </p:column>
+
+                </p:dataTable>
+
+            </h:form>
+        </p:dialog>
 
     </ui:define>
 

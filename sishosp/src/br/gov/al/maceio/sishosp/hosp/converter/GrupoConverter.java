@@ -17,7 +17,7 @@ public class GrupoConverter implements Converter {
 	public Object getAsObject(FacesContext contet, UIComponent component,
 			String value) {
 		// if (value.equals("null") || value.equals("") || value == null)
-		if (value == null)
+		if (value == null || value.equals("null"))
 			return null;
 		try {
 			int id = Integer.parseInt(value);

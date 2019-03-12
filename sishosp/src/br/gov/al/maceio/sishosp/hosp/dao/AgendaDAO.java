@@ -12,11 +12,12 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 
 import javax.faces.context.FacesContext;
 
-public class AgendaDAO {
+public class AgendaDAO extends VetorDiaSemanaAbstract {
     Connection con = null;
     PreparedStatement ps = null;
 
@@ -924,6 +925,145 @@ public class AgendaDAO {
             }
         }
         return resultado;
+    }
+
+    public List<AgendaBean> quantidadeDeAgendamentosDaEquipePorTurno() {
+
+        List<AgendaBean> lista = new ArrayList<AgendaBean>();
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT DISTINCT e.id_equipe, e.descequipe, ");
+        sql.append("(SELECT count(codpaciente) FROM ( ");
+        sql.append("SELECT DISTINCT aa.codpaciente AS codpaciente FROM hosp.atendimentos aa ");
+        sql.append("JOIN hosp.paciente_instituicao pp ON (aa.id_paciente_instituicao = pp.id) ");
+        sql.append("JOIN hosp.profissional_dia_atendimento pda ON (aa.id_paciente_instituicao = pda.id_paciente_instituicao) ");
+        sql.append("WHERE ((aa.horario >= '07:00' AND aa.horario <= '12:00') OR aa.turno = 'M') ");
+        sql.append("AND aa.codequipe = e.id_equipe ");
+        sql.append("AND pp.status = 'A' ");
+        sql.append("AND pda.dia_semana = 2 ) a1) AS qtd_manha_segunda, ");
+        sql.append("(SELECT count(codpaciente) FROM ( ");
+        sql.append("SELECT DISTINCT aa.codpaciente AS codpaciente FROM hosp.atendimentos aa ");
+        sql.append("JOIN hosp.paciente_instituicao pp ON (aa.id_paciente_instituicao = pp.id) ");
+        sql.append("JOIN hosp.profissional_dia_atendimento pda ON (aa.id_paciente_instituicao = pda.id_paciente_instituicao) ");
+        sql.append("WHERE ((aa.horario >= '07:00' AND aa.horario <= '12:00') OR aa.turno = 'M') ");
+        sql.append("AND aa.codequipe = e.id_equipe ");
+        sql.append("AND pp.status = 'A' ");
+        sql.append("AND pda.dia_semana = 3 ) a1) AS qtd_manha_terca, ");
+        sql.append("(SELECT count(codpaciente) FROM ( ");
+        sql.append("SELECT DISTINCT aa.codpaciente AS codpaciente FROM hosp.atendimentos aa ");
+        sql.append("JOIN hosp.paciente_instituicao pp ON (aa.id_paciente_instituicao = pp.id) ");
+        sql.append("JOIN hosp.profissional_dia_atendimento pda ON (aa.id_paciente_instituicao = pda.id_paciente_instituicao) ");
+        sql.append("WHERE ((aa.horario >= '07:00' AND aa.horario <= '12:00') OR aa.turno = 'M') ");
+        sql.append("AND aa.codequipe = e.id_equipe ");
+        sql.append("AND pp.status = 'A' ");
+        sql.append("AND pda.dia_semana = 4 ) a1) AS qtd_manha_quarta, ");
+        sql.append("(SELECT count(codpaciente) FROM ( ");
+        sql.append("SELECT DISTINCT aa.codpaciente AS codpaciente FROM hosp.atendimentos aa ");
+        sql.append("JOIN hosp.paciente_instituicao pp ON (aa.id_paciente_instituicao = pp.id) ");
+        sql.append("JOIN hosp.profissional_dia_atendimento pda ON (aa.id_paciente_instituicao = pda.id_paciente_instituicao) ");
+        sql.append("WHERE ((aa.horario >= '07:00' AND aa.horario <= '12:00') OR aa.turno = 'M') ");
+        sql.append("AND aa.codequipe = e.id_equipe ");
+        sql.append("AND pp.status = 'A' ");
+        sql.append("AND pda.dia_semana = 5 ) a1) AS qtd_manha_quinta, ");
+        sql.append("(SELECT count(codpaciente) FROM ( ");
+        sql.append("SELECT DISTINCT aa.codpaciente AS codpaciente FROM hosp.atendimentos aa ");
+        sql.append("JOIN hosp.paciente_instituicao pp ON (aa.id_paciente_instituicao = pp.id) ");
+        sql.append("JOIN hosp.profissional_dia_atendimento pda ON (aa.id_paciente_instituicao = pda.id_paciente_instituicao) ");
+        sql.append("WHERE ((aa.horario >= '07:00' AND aa.horario <= '12:00') OR aa.turno = 'M') ");
+        sql.append("AND aa.codequipe = e.id_equipe ");
+        sql.append("AND pp.status = 'A' ");
+        sql.append("AND pda.dia_semana = 6 ) a1) AS qtd_manha_sexta, ");
+        sql.append("(SELECT count(codpaciente) FROM ( ");
+        sql.append("SELECT DISTINCT aa.codpaciente AS codpaciente FROM hosp.atendimentos aa ");
+        sql.append("JOIN hosp.paciente_instituicao pp ON (aa.id_paciente_instituicao = pp.id) ");
+        sql.append("JOIN hosp.profissional_dia_atendimento pda ON (aa.id_paciente_instituicao = pda.id_paciente_instituicao) ");
+        sql.append("WHERE (horario >'12:00' OR turno = 'T') ");
+        sql.append("AND aa.codequipe = e.id_equipe ");
+        sql.append("AND pp.status = 'A' ");
+        sql.append("AND pda.dia_semana = 2 ) a1) AS qtd_tarde_segunda, ");
+        sql.append("(SELECT count(codpaciente) FROM ( ");
+        sql.append("SELECT DISTINCT aa.codpaciente AS codpaciente FROM hosp.atendimentos aa ");
+        sql.append("JOIN hosp.paciente_instituicao pp ON (aa.id_paciente_instituicao = pp.id) ");
+        sql.append("JOIN hosp.profissional_dia_atendimento pda ON (aa.id_paciente_instituicao = pda.id_paciente_instituicao) ");
+        sql.append("WHERE (horario >'12:00' OR turno = 'T') ");
+        sql.append("AND aa.codequipe = e.id_equipe ");
+        sql.append("AND pp.status = 'A' ");
+        sql.append("AND pda.dia_semana = 3 ) a1) AS qtd_tarde_terca, ");
+        sql.append("(SELECT count(codpaciente) FROM ( ");
+        sql.append("SELECT DISTINCT aa.codpaciente AS codpaciente FROM hosp.atendimentos aa ");
+        sql.append("JOIN hosp.paciente_instituicao pp ON (aa.id_paciente_instituicao = pp.id) ");
+        sql.append("JOIN hosp.profissional_dia_atendimento pda ON (aa.id_paciente_instituicao = pda.id_paciente_instituicao) ");
+        sql.append("WHERE (horario >'12:00' OR turno = 'T') ");
+        sql.append("AND aa.codequipe = e.id_equipe ");
+        sql.append("AND pp.status = 'A' ");
+        sql.append("AND pda.dia_semana = 4 ) a1) AS qtd_tarde_quarta, ");
+        sql.append("(SELECT count(codpaciente) FROM ( ");
+        sql.append("SELECT DISTINCT aa.codpaciente AS codpaciente FROM hosp.atendimentos aa ");
+        sql.append("JOIN hosp.paciente_instituicao pp ON (aa.id_paciente_instituicao = pp.id) ");
+        sql.append("JOIN hosp.profissional_dia_atendimento pda ON (aa.id_paciente_instituicao = pda.id_paciente_instituicao) ");
+        sql.append("WHERE (horario >'12:00' OR turno = 'T') ");
+        sql.append("AND aa.codequipe = e.id_equipe ");
+        sql.append("AND pp.status = 'A' ");
+        sql.append("AND pda.dia_semana = 5 ) a1) AS qtd_tarde_quinta, ");
+        sql.append("(SELECT count(codpaciente) FROM ( ");
+        sql.append("SELECT DISTINCT aa.codpaciente AS codpaciente FROM hosp.atendimentos aa ");
+        sql.append("JOIN hosp.paciente_instituicao pp ON (aa.id_paciente_instituicao = pp.id) ");
+        sql.append("JOIN hosp.profissional_dia_atendimento pda ON (aa.id_paciente_instituicao = pda.id_paciente_instituicao) ");
+        sql.append("WHERE (horario >'12:00' OR turno = 'T') ");
+        sql.append("AND aa.codequipe = e.id_equipe ");
+        sql.append("AND pp.status = 'A' ");
+        sql.append("AND pda.dia_semana = 6 ) a1) AS qtd_tarde_sexta ");
+        sql.append("FROM hosp.atendimentos a ");
+        sql.append("LEFT JOIN hosp.equipe e ON (a.codequipe = e.id_equipe) ");
+        sql.append("WHERE a.codequipe IS NOT NULL AND a.cod_empresa = ? ");
+        sql.append("ORDER BY e.descequipe ");
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = null;
+            stm = con.prepareStatement(sql.toString());
+
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                Integer vetor[] = new Integer[5];
+
+                AgendaBean agendaBean = new AgendaBean();
+                agendaBean.getEquipe().setCodEquipe(rs.getInt("id_equipe"));
+                agendaBean.getEquipe().setDescEquipe(rs.getString("descequipe"));
+                agendaBean.getQtdAtendimentosManha()[SEGUNDA]  = rs.getInt("qtd_manha_segunda");
+                agendaBean.getQtdAtendimentosManha()[TERCA] = rs.getInt("qtd_manha_terca");
+                agendaBean.getQtdAtendimentosManha()[QUARTA] = rs.getInt("qtd_manha_quarta");
+                agendaBean.getQtdAtendimentosManha()[QUINTA] = rs.getInt("qtd_manha_quinta");
+                agendaBean.getQtdAtendimentosManha()[SEXTA] = rs.getInt("qtd_manha_sexta");
+                agendaBean.getQtdAtendimentosTarde()[SEGUNDA] = rs.getInt("qtd_tarde_segunda");
+                agendaBean.getQtdAtendimentosTarde()[TERCA] = rs.getInt("qtd_tarde_terca");
+                agendaBean.getQtdAtendimentosTarde()[QUARTA] = rs.getInt("qtd_tarde_quarta");
+                agendaBean.getQtdAtendimentosTarde()[QUINTA] = rs.getInt("qtd_tarde_quinta");
+                agendaBean.getQtdAtendimentosTarde()[SEXTA] = rs.getInt("qtd_tarde_sexta");
+
+                lista.add(agendaBean);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } catch (ProjetoException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
     }
 
 }

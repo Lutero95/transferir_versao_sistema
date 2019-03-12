@@ -16,6 +16,7 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
@@ -23,12 +24,13 @@ import br.gov.al.maceio.sishosp.hosp.model.*;
 
 @ManagedBean(name = "InsercaoController")
 @ViewScoped
-public class InsercaoPacienteController implements Serializable {
+public class InsercaoPacienteController extends VetorDiaSemanaAbstract implements Serializable{
 
     private static final long serialVersionUID = 1L;
     private InsercaoPacienteBean insercao;
     private InsercaoPacienteDAO iDao = new InsercaoPacienteDAO();
     private EquipeDAO eDao = new EquipeDAO();
+    private AgendaDAO agendaDAO = new AgendaDAO();
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
     private ArrayList<FuncionarioBean> listaProfissionaisEquipe;
     private ArrayList<FuncionarioBean> listaProfissionaisAdicionados;
@@ -222,7 +224,6 @@ public class InsercaoPacienteController implements Serializable {
     }
 
     public void validarInsercaoPaciente() throws ProjetoException {
-        AgendaDAO agendaDAO = new AgendaDAO();
 
         if(tipo.equals(TipoAtendimento.EQUIPE.getSigla())){
             if(agendaDAO.numeroAtendimentosEquipe(insercao)){
@@ -309,6 +310,10 @@ public class InsercaoPacienteController implements Serializable {
         }
 
         return listaHorarios;
+    }
+
+    public List<AgendaBean> visualizarHorariosEquipe() {
+        return agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
 
     // AUTOCOMPLETE INÍCIO
