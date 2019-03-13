@@ -40,6 +40,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private String opcaoAtendimento;
     private EmpresaDAO empresaDAO = new EmpresaDAO();
     private ArrayList<String> listaHorarios;
+    private Boolean todosOsProfissionais;
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -51,6 +52,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
         opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
         listaHorarios = new ArrayList<>();
+        todosOsProfissionais = false;
     }
 
     public void limparDados() {
@@ -334,8 +336,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             if (insercao.getEquipe() != null) {
                 if (insercao.getEquipe().getCodEquipe() != null) {
                     listaProfissionaisEquipe = eDao
-                            .listarProfissionaisDaEquipe(insercao.getEquipe()
-                                    .getCodEquipe());
+                            .listarProfissionaisDaEquipeInsercao(insercao.getEquipe()
+                                    .getCodEquipe(), todosOsProfissionais);
                 }
             } else {
                 JSFUtil.adicionarMensagemErro("Escolha uma equipe!",
@@ -442,5 +444,13 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void setListaHorarios(ArrayList<String> listaHorarios) {
         this.listaHorarios = listaHorarios;
+    }
+
+    public Boolean getTodosOsProfissionais() {
+        return todosOsProfissionais;
+    }
+
+    public void setTodosOsProfissionais(Boolean todosOsProfissionais) {
+        this.todosOsProfissionais = todosOsProfissionais;
     }
 }

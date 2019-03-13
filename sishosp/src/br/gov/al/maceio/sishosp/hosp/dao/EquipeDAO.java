@@ -368,4 +368,58 @@ public class EquipeDAO {
         return lista;
     }
 
+    public ArrayList<FuncionarioBean> listarProfissionaisDaEquipeInsercao(Integer codequipe, Boolean todosOsProfissionais)
+            throws ProjetoException {
+        ArrayList<FuncionarioBean> lista = new ArrayList<>();
+
+        String sql = "";
+
+        if(todosOsProfissionais){
+            sql = "select distinct e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo "
+                    + "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
+                    + "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
+                    + " where cod_empresa = ? order by f.descfuncionario ";
+        }
+        else {
+            sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo "
+                    + "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
+                    + "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
+                    + " where equipe = ? order by f.descfuncionario ";
+        }
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            if(todosOsProfissionais) {
+                stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            }
+            else{
+                stm.setInt(1, codequipe);
+            }
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                FuncionarioBean func = new FuncionarioBean();
+                func.setId(rs.getLong("medico"));
+                func.setNome(rs.getString("descfuncionario"));
+                func.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+                func.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+                func.getCbo().setCodCbo(rs.getInt("codcbo"));
+
+                lista.add(func);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
 }

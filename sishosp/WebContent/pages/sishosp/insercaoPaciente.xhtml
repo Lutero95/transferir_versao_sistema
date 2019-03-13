@@ -208,11 +208,11 @@
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
                                                 itemLabel="#{theme.descEquipe}">
-                                    <p:ajax event="itemSelect" update=""/>
+                                    <p:ajax event="itemSelect"/>
                                 </p:autoComplete>
 
-                                <p:commandButton icon="ui-icon-search"
-                                                 update="dtEquipe, :formInsercao2:msgPagina"
+                                <p:commandButton icon="ui-icon-search" value="Carregar Profissionais"
+                                                 update="dtEquipe, :formInsercao2:msgPagina" immediate="true"
                                                  rendered="#{InsercaoController.tipo == 'E'}"
                                                  action="#{InsercaoController.listarProfissionaisEquipe()}"/>
                             </b:column>
@@ -224,6 +224,21 @@
                                                  onclick="PF('dlgQtdAgendamentos').show();"/>
                             </b:column>
                         </p:outputPanel>
+
+                    </b:row>
+
+                    <b:row rendered="#{InsercaoController.tipo == 'E'}">
+
+                        <b:column span="5" class="label-position">
+
+                            <b:label value="Listar todos os profissionais:" severity="info"/>
+
+                            <p:selectBooleanCheckbox style="margin-left: 10px;margin-top: 5px"
+                                                     value="#{InsercaoController.todosOsProfissionais}">
+                                <p:ajax></p:ajax>
+                            </p:selectBooleanCheckbox>
+
+                        </b:column>
 
                     </b:row>
 
@@ -318,8 +333,10 @@
                                                              title="Selecionar" class="new-btn-acao-table acao-editar"
                                                              onclick="PF('dlgDiasAtendimento').show();"
                                                              update=":formDiasAtendimento">
-                                                <f:setPropertyActionListener value="#{func}"
-                                                                             target="#{InsercaoController.funcionario}"/>
+                                                <f:setPropertyActionListener value="#{func.codigo}"
+                                                                             target="#{InsercaoController.funcionario.codigo}"/>
+                                                <f:setPropertyActionListener value="#{func.nome}"
+                                                                             target="#{InsercaoController.funcionario.nome}"/>
                                             </p:commandButton>
                                         </div>
                                     </p:column>
