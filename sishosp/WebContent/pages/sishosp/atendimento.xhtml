@@ -1,34 +1,12 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-				xmlns:h="http://java.sun.com/jsf/html"
-				xmlns:p="http://primefaces.org/ui"
-				xmlns:f="http://xmlns.jcp.org/jsf/core"
-				xmlns:b="http://bootsfaces.net/ui"
-				xmlns:ui="http://java.sun.com/jsf/facelets"
-				template="../../template/template.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
 
 	<ui:define name="content">
-
-		<h:form>
-			<b:row rendered="#{MBFuncionarios.listarUnidadesDoFuncionario().size()>1}">
-
-				<b:column span="1">
-					<h:outputLabel value="Unidade:" style="margin-top:5px;"/>
-				</b:column>
-
-				<b:column span="2">
-					<p:selectOneMenu value="#{AtendimentoController.atendimento.empresa.codEmpresa}">
-						<f:selectItems value="#{MBFuncionarios.listarUnidadesDoFuncionario()}"
-									   var="emp" itemLabel="#{emp.nomeFantasia}"
-									   itemValue="#{emp.codEmpresa}"/>
-						<p:ajax event="change" process="@this"/>
-					</p:selectOneMenu>
-
-				</b:column>
-
-				<br></br>
-
-			</b:row>
-		</h:form>
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
@@ -36,6 +14,28 @@
 			</div>
 
 			<div class="panel-body table-body">
+				
+				<h:form>
+					<b:row rendered="#{MBFuncionarios.listarUnidadesDoFuncionario().size()>1}">
+
+						<b:column span="2" class="label-position">
+								<b:label value="Unidade:" severity="info" />
+								
+							<b:selectOneMenu class="select-agendaEquipe2"
+								value="#{AtendimentoController.atendimento.empresa.codEmpresa}">
+								<f:selectItems
+									value="#{MBFuncionarios.listarUnidadesDoFuncionario()}"
+									var="emp" itemLabel="#{emp.nomeFantasia}"
+									itemValue="#{emp.codEmpresa}" />
+								<p:ajax event="change" process="@this" />
+							</b:selectOneMenu>
+
+						</b:column>
+
+						<br></br>
+
+					</b:row>
+				</h:form>
 
 				<h:form id="formConsAge">
 
@@ -58,24 +58,25 @@
 
 							<b:column span="2" class="label-position data-size3">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									class="select-agendaEquipe2"
-									showOn="button" size="15" id="dtagen3" locale="pt"
+									class="select-agendaEquipe2" showOn="button" size="15"
+									id="dtagen3" locale="pt"
 									value="#{AtendimentoController.atendimento.dataAtendimentoFinal}" />
 							</b:column>
 
 							<b:column span="2" class="label-position2">
 								<b:commandButton value="Buscar" icon="glyphicon-search"
-												 class="btn-acao-table btn-buscaAtendimento"
-												 action="#{AtendimentoController.consultarAtendimentos()}"
-												 update="dtAtendimentos, msgPagina">
+								class="btn-acao-table acao-buscar btn-buscaAtendimento"
+									action="#{AtendimentoController.consultarAtendimentos()}"
+									update="dtAtendimentos, msgPagina">
 								</b:commandButton>
 							</b:column>
 						</p:outputPanel>
 
 					</b:row>
-					
-					<br></br><br></br>
-					
+
+					<br></br>
+					<br></br>
+
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						resizableColumns="true" id="dtAtendimentos"
 						emptyMessage="Sem registros." scrollable="true" paginator="true"
@@ -84,85 +85,88 @@
 
 						<h:column>
 							<f:facet name="header">
-								Data
-							</f:facet>
+                        Data
+                    </f:facet>
 							<h:outputLabel value="#{atendimento.dataAtendimentoInicio}">
-								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputLabel>
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-								Paciente
-							</f:facet>
-							<p:outputLabel value="#{atendimento.paciente.nome}"/>
+                        Paciente
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.paciente.nome}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-								CNS
-							</f:facet>
-							<p:outputLabel value="#{atendimento.paciente.cns}"/>
+                        CNS
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.paciente.cns}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-								Turno
-							</f:facet>
-							<h:outputLabel value="MANHÃ" rendered="#{atendimento.turno == 'M'}"/>
-							<h:outputLabel value="TARDE" rendered="#{atendimento.turno == 'T'}"/>
+                        Turno
+                    </f:facet>
+							<h:outputLabel value="MANHÃ"
+								rendered="#{atendimento.turno == 'M'}" />
+							<h:outputLabel value="TARDE"
+								rendered="#{atendimento.turno == 'T'}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-								Profissional
-							</f:facet>
-							<p:outputLabel value="#{atendimento.funcionario.nome}"/>
+                        Profissional
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.funcionario.nome}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-								Programa
-							</f:facet>
-							<p:outputLabel value="#{atendimento.programa.descPrograma}"/>
+                        Programa
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.programa.descPrograma}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-								Tipo de Atendimento
-							</f:facet>
-							<p:outputLabel value="#{atendimento.tipoAt.descTipoAt}"/>
+                        Tipo de Atendimento
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.tipoAt.descTipoAt}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-								Nome Equipe
-							</f:facet>
-							<p:outputLabel value="#{atendimento.equipe.descEquipe}"/>
+                        Nome Equipe
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.equipe.descEquipe}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-								Equipe
-							</f:facet>
-							<p:outputLabel value="#{atendimento.ehEquipe}"/>
+                        Equipe
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.ehEquipe}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-								Situação
-							</f:facet>
-							<p:outputLabel value="#{atendimento.situacao}"/>
+                        Situação
+                    </f:facet>
+							<p:outputLabel value="#{atendimento.situacao}" />
 						</h:column>
 
 						<h:column>
 							<f:facet name="header">
-								Atendimento
-							</f:facet>
+                        Atendimento
+                    </f:facet>
 							<b:commandButton tooltip="Atendimento" icon="glyphicon-edit"
-											 size="sm" action="#{AtendimentoController.redirectAtendimento()}">
+								size="sm"
+								action="#{AtendimentoController.redirectAtendimento()}">
 								<f:setPropertyActionListener value="#{atendimento}"
-															 target="#{AtendimentoController.atendimento}"/>
+									target="#{AtendimentoController.atendimento}" />
 							</b:commandButton>
 						</h:column>
 
@@ -178,9 +182,9 @@
 					<div align="center">
 
 						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-										 class="btn-voltar btn-voltar1"
-										 size="sm" immediate="true" look="info" update=":formConsAge"
-										 action="/pages/comum/selecaoSistema2.faces?faces-redirect=true">
+							class="btn-voltar btn-voltar1" size="sm" immediate="true"
+							look="info" update=":formConsAge"
+							action="/pages/comum/selecaoSistema2.faces?faces-redirect=true">
 						</b:commandButton>
 
 					</div>

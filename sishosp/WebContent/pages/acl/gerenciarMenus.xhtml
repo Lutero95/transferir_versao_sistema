@@ -29,6 +29,7 @@
 							<b:column span="2" class="label-position5">
 								<p:commandButton value="Novo Menu" icon="ui-icon-plus"
 									style="margin-top:4px; margin-bottom:10px;"
+									class="btn-acao-table acao-confirmar"
 									actionListener="#{menuMB.limparDados()}"
 									action="#{menuMB.limparDualMenuSis()}"
 									onclick="PF('dlgCadMenu').show();" update=":formCM:pnlCM" />
@@ -46,16 +47,20 @@
 							<b:column span="1" class="label-position6">
 								<p:commandButton id="botaoBusca" icon="ui-icon-search"
 									style="height:37px; margin-top:0px; margin-left:-20px;"
+									class="btn-acao-table acao-confirmar"
 									actionListener="#{menuMB.buscarMenu()}"
 									update=":form:tabela, :form:growl" />
 							</b:column>
-
+							
 							<b:column span="2" class="label-position5">
-								<p:commandButton value="Limpar" icon="ui-icon-minus"
-									style="height:37px; margin-top:0px;"
-									actionListener="#{menuMB.limparBusca()}"
-									update=":form:campoBusca, :form:tabela" />
-							</b:column>
+
+							<b:commandButton value="Limpar" icon="glyphicon-trash"
+								style="height:37px; margin-top:0px;"
+								class="btn-acao-table acao-limpar2"
+								actionListener="#{menuMB.limparBusca()}"
+								update=":form:campoBusca, :form:tabela">
+							</b:commandButton>
+						</b:column>
 
 						</b:row>
 

@@ -30,6 +30,7 @@
 							<b:column span="2" class="label-position5">
 								<p:commandButton value="Novo Sistema" icon="ui-icon-plus"
 									style="margin-top:4px; margin-bottom:10px;"
+									class="btn-acao-table acao-confirmar"
 									actionListener="#{sistemaMB.limparDados()}"
 									onclick="PF('dlgCadSistema').show();" update=":formCS:pnlCS" />
 							</b:column>
@@ -46,16 +47,20 @@
 							<b:column span="1" class="label-position6">
 								<p:commandButton id="botaoBusca" icon="ui-icon-search"
 									style="height:37px; margin-top:0px; margin-left:-20px;"
+									class="btn-acao-table acao-confirmar"
 									actionListener="#{sistemaMB.buscarSistema()}"
 									update=":form:tabela, :form:growl" />
 							</b:column>
-
+							
 							<b:column span="2" class="label-position5">
-								<p:commandButton value="Limpar" icon="ui-icon-minus"
-									style="height:37px; margin-top:0px;"
-									actionListener="#{sistemaMB.limparBusca()}"
-									update=":form:campoBusca, :form:tabela" />
-							</b:column>
+
+							<b:commandButton value="Limpar" icon="glyphicon-trash"
+								style="height:37px; margin-top:0px;"
+								class="btn-acao-table acao-limpar2"
+								actionListener="#{sistemaMB.limparBusca()}"
+									update=":form:campoBusca, :form:tabela">
+							</b:commandButton>
+						</b:column>
 
 						</b:row>
 

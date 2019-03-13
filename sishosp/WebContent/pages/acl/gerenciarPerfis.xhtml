@@ -30,6 +30,7 @@
 							<b:column span="2" class="label-position5">
 								<p:commandButton value="Novo Perfil" icon="ui-icon-plus"
 									style="margin-top:4px; margin-bottom:10px;"
+									class="btn-acao-table acao-confirmar"
 									actionListener="#{perfilMB.limparDados()}"
 									action="#{perfilMB.limparDualCad()}"
 									onclick="PF('dlgCadPerfil').show();" update=":formCP:pnlCP" />
@@ -47,16 +48,20 @@
 							<b:column span="1" class="label-position6">
 								<p:commandButton id="botaoBusca" icon="ui-icon-search"
 									style="height:37px; margin-top:0px; margin-left:-20px;"
+									class="btn-acao-table acao-confirmar"
 									actionListener="#{perfilMB.buscarPerfil()}"
 									update=":form:tabela, :form:growl" />
 							</b:column>
-
+							
 							<b:column span="2" class="label-position5">
-								<p:commandButton value="Limpar" icon="ui-icon-minus"
-									style="height:37px; margin-top:0px;"
-									actionListener="#{perfilMB.limparBusca()}"
-									update=":form:campoBusca, :form:tabela" />
-							</b:column>
+
+							<b:commandButton value="Limpar" icon="glyphicon-trash"
+								style="height:37px; margin-top:0px;"
+								class="btn-acao-table acao-limpar2"
+								actionListener="#{perfilMB.limparBusca()}"
+									update=":form:campoBusca, :form:tabela">
+							</b:commandButton>
+						</b:column>
 
 						</b:row>
 
@@ -194,6 +199,7 @@
 								<b:column span="2" class="label-position2">
 									<p:commandButton value="Previsualizar" icon="ui-icon-check"
 										style="margin-top:27px; margin-bottom:10px;"
+										class="btn-acao-table acao-confirmar"
 										actionListener="#{perfilMB.gerarPreMenuPerfil('CM')}"
 										update="pnlCP, :form:tabela, :form:growl" />
 								</b:column>
@@ -309,6 +315,7 @@
 								<b:column span="2" class="label-position2">
 									<p:commandButton value="Previsualizar" icon="ui-icon-check"
 										style="margin-top:27px; margin-bottom:10px;"
+										class="btn-acao-table acao-confirmar"
 										action="#{perfilMB.gerarPreMenuPerfil('AM')}"
 										update="pnlAP, :form:tabela, :form:growl" />
 								</b:column>
