@@ -87,7 +87,7 @@
                 </h:form>
 
                 <h:form id="formInsercao2">
-
+                <p:outputPanel rendered="#{InsercaoController.renderizarAposLaudo == true}">
                     <b:row>
 
                         <b:column span="3" class="btn-radio-table">
@@ -328,15 +328,12 @@
 
                                     <p:column headerText="Adicionar">
                                         <div align="center">
-                                            <p:commandButton icon="ui-icon-check"
-                                                             action="#{InsercaoController.limparDias()}"
+                                            <p:commandButton icon="ui-icon-check" immediate="true"
+                                                             actionListener="#{InsercaoController.abrirDialog}"
                                                              title="Selecionar" class="new-btn-acao-table acao-editar"
-                                                             onclick="PF('dlgDiasAtendimento').show();"
                                                              update=":formDiasAtendimento">
-                                                <f:setPropertyActionListener value="#{func.codigo}"
-                                                                             target="#{InsercaoController.funcionario.codigo}"/>
-                                                <f:setPropertyActionListener value="#{func.nome}"
-                                                                             target="#{InsercaoController.funcionario.nome}"/>
+                                                <f:setPropertyActionListener value="#{func}"
+                                                                             target="#{InsercaoController.funcionario}"/>
                                             </p:commandButton>
                                         </div>
                                     </p:column>
@@ -353,17 +350,29 @@
                                              value="#{InsercaoController.listaProfissionaisAdicionados}"
                                              var="funcionario" emptyMessage="Sem registros.">
 
-                                    <p:column headerText="Profissional">
+                                    <p:column headerText="Profissional" width="30%">
                                         <h:outputLabel value="#{funcionario.nome}"/>
                                     </p:column>
 
-                                    <p:column headerText="Especialidade">
+                                    <p:column headerText="Especialidade" width="20%">
                                         <h:outputLabel
                                                 value="#{funcionario.especialidade.descEspecialidade}"/>
                                     </p:column>
 
-                                    <p:column headerText="Dias Atendimento">
+                                    <p:column headerText="Dias Atendimento" width="40%">
                                         <h:outputLabel value="#{funcionario.diasSemana}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Excluir" width="10%">
+                                        <div align="center">
+                                            <p:commandButton icon="ui-icon-trash" immediate="true"
+                                                             actionListener="#{InsercaoController.excluirFuncionarioIhDiasDeAtendimento}"
+                                                             title="Excluir" class="new-btn-acao-table acao-editar"
+                                                             update=":formInsercao2:dtAdicionados">
+                                                <f:setPropertyActionListener value="#{funcionario}"
+                                                                             target="#{InsercaoController.funcionario}"/>
+                                            </p:commandButton>
+                                        </div>
                                     </p:column>
 
                                 </p:dataTable>
@@ -473,6 +482,7 @@
                         </b:commandButton>
 
                     </div>
+                </p:outputPanel>
                 </h:form>
             </div>
         </div>
@@ -503,7 +513,7 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton update=":formInsercao" icon="ui-icon-check"
+                        <p:commandButton update=":formInsercao, :formInsercao2" icon="ui-icon-check"
                                          title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
                                          class="new-btn-acao-table acao-editar"
                                          action="#{InsercaoController.carregarLaudoPaciente()}">

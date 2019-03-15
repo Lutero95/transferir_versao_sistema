@@ -18,6 +18,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
+import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.*;
@@ -41,6 +42,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private EmpresaDAO empresaDAO = new EmpresaDAO();
     private ArrayList<String> listaHorarios;
     private Boolean todosOsProfissionais;
+    private Boolean renderizarAposLaudo;
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -53,6 +55,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
         listaHorarios = new ArrayList<>();
         todosOsProfissionais = false;
+        renderizarAposLaudo = false;
     }
 
     public void limparDados() {
@@ -60,7 +63,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void limparDias() {
-        funcionario.setListDiasSemana(null);
+        funcionario.setListDiasSemana(new ArrayList<>());
     }
 
     public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
@@ -72,6 +75,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         int id = insercao.getLaudo().getId();
         limparDados();
         insercao = iDao.carregarLaudoPaciente(id);
+        renderizarAposLaudo = true;
 
     }
 
@@ -97,34 +101,76 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             }
 
         }
+
+        limparDias();
+    }
+
+    public void abrirDialog(){
+        JSFUtil.abrirDialog("dlgDiasAtendimento");
+    }
+
+    public void excluirFuncionarioIhDiasDeAtendimento(){
+        funcionario.getListDiasSemana().remove(funcionario);
+        listaProfissionaisAdicionados.remove(funcionario);
     }
 
     public void adicionarFuncionario() {
         String dias = "";
 
         for (int i = 0; i < funcionario.getListDiasSemana().size(); i++) {
-            if (funcionario.getListDiasSemana().get(i).equals("1")) {
+            if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.DOMINGO.getSigla())) {
                 dias = dias + "Domingo";
+
+                if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+                    dias = dias + ", ";
+                }
             }
-            if (funcionario.getListDiasSemana().get(i).equals("2")) {
-                dias = dias + ", Segunda";
+
+            if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.SEGUNDA.getSigla())) {
+                dias = dias + "Segunda";
+                if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+                    dias = dias + ", ";
+                }
             }
-            if (funcionario.getListDiasSemana().get(i).equals("3")) {
-                dias = dias + ", Terça";
+
+            if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.TERCA.getSigla())) {
+                dias = dias + "Terça";
+                if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+                    dias = dias + ", ";
+                }
             }
-            if (funcionario.getListDiasSemana().get(i).equals("4")) {
-                dias = dias + ", Quarta";
+
+            if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.QUARTA.getSigla())) {
+                dias = dias + "Quarta";
+                if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+                    dias = dias + ", ";
+                }
             }
-            if (funcionario.getListDiasSemana().get(i).equals("5")) {
-                dias = dias + ", Quinta";
+
+            if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.QUINTA.getSigla())) {
+                dias = dias + "Quinta";
+                if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+                    dias = dias + ", ";
+                }
             }
-            if (funcionario.getListDiasSemana().get(i).equals("6")) {
-                dias = dias + ", Sexta";
+
+            if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.SEXTA.getSigla())) {
+                dias = dias + "Sexta";
+                if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+                    dias = dias + ", ";
+                }
             }
-            if (funcionario.getListDiasSemana().get(i).equals("7")) {
-                dias = dias + ", Sábado";
+
+            if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.SABADO.getSigla())) {
+                dias = dias + "Sábado";
+                if(funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size()!=i+1){
+                    dias = dias + ", ";
+                }
             }
+
         }
+        dias = dias + ".";
+
         funcionario.setDiasSemana(dias);
         listaProfissionaisAdicionados.add(funcionario);
 
@@ -452,5 +498,13 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void setTodosOsProfissionais(Boolean todosOsProfissionais) {
         this.todosOsProfissionais = todosOsProfissionais;
+    }
+
+    public Boolean getRenderizarAposLaudo() {
+        return renderizarAposLaudo;
+    }
+
+    public void setRenderizarAposLaudo(Boolean renderizarAposLaudo) {
+        this.renderizarAposLaudo = renderizarAposLaudo;
     }
 }
