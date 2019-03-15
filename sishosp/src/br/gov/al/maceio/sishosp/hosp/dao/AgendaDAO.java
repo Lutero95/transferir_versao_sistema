@@ -583,7 +583,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sqlPro = "select p.qtdmax " +
                 "from hosp.config_agenda_profissional p " +
-                "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_equipe) " +
+                "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
                 "where p.codmedico = ? and d.dia = ? and d.turno = ?;";
 
         String sqlEqui = "select e.qtdmax " +
