@@ -1208,6 +1208,13 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 
 .label-nomeSocial {
 	background-color: #564999e0;
+	*background-color: rgba(86,73,153,1); /*IE 7*/
+	_background-color: rgba(86,73,153,1); /*IE 6*/
+}
+@media all and (min-width:0) {/*IE 9*/
+	.label-nomeSocial {
+		background-color: rgba(86,73,153,1);
+	}
 }
 
 .new-data-size {
@@ -1379,6 +1386,14 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 
 #laudo-id {
 	left: 33% !important;
+}
+
+.style-info {
+	color: #227ac6;
+}
+
+.fire-label {
+	padding: 0.3em 2.5em 0.3em 0.6em;
 }
 
 .btn-buscaAtendimento, .btn-buscaAtendimento:hover,
