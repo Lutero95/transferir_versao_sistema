@@ -955,10 +955,10 @@ public class FuncionarioDAO {
 
         StringBuilder sql = new StringBuilder();
 
-        sql.append("SELECT h.id_funcionario, h.id_funcionario ||'-'|| h.descfuncionario AS descfuncionario, h.codespecialidade, ");
+        sql.append("SELECT DISTINCT h.id_funcionario, h.id_funcionario ||'-'|| h.descfuncionario AS descfuncionario, h.codespecialidade, ");
         sql.append("h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, e.descespecialidade, c.descricao AS desccbo, p.nome AS descproc ");
         sql.append("FROM acl.funcionarios h ");
-        sql.append("join hosp.profissional_programa_grupo ppg on (h.id_funcionario = ppg.codprofissional)");
+        sql.append("JOIN hosp.profissional_programa_grupo ppg ON (h.id_funcionario = ppg.codprofissional)");
         sql.append("LEFT JOIN hosp.especialidade e ON (e.id_especialidade = h.codespecialidade) ");
         sql.append("LEFT JOIN hosp.cbo c ON (c.id = h.codcbo) ");
         sql.append("LEFT JOIN hosp.proc p ON (p.id = h.codprocedimentopadrao) ");
@@ -1055,7 +1055,7 @@ public class FuncionarioDAO {
     public List<FuncionarioBean> listarProfissionalPorGrupo(Integer codgrupo)
             throws ProjetoException {
         List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
-        String sql = "select m.id_funcionario, m.descfuncionario, m.codespecialidade, e.descespecialidade, m.cns from acl.funcionarios m"
+        String sql = "select distinct m.id_funcionario, m.descfuncionario, m.codespecialidade, e.descespecialidade, m.cns from acl.funcionarios m"
                 + " join hosp.profissional_programa_grupo ppg on (m.id_funcionario = ppg.codprofissional)"
                 + " left join hosp.especialidade e on (e.id_especialidade = m.codespecialidade)"
                 + " where m.ativo = 'S' and realiza_atendimento is true and ppg.codgrupo = ?";

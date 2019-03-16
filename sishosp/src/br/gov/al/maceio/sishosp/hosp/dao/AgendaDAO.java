@@ -751,13 +751,26 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         sql.append("WHEN d.dia = 4 THEN 'Quarta' ");
         sql.append("WHEN d.dia = 5 THEN 'Quinta' ");
         sql.append("WHEN d.dia = 6 THEN 'Sexta' ");
-        sql.append("WHEN d.dia = 7 THEN 'Sábado' END AS dia ");
+        sql.append("WHEN d.dia = 7 THEN 'Sábado' END AS dia, ");
+        sql.append("NULL AS data_especifica ");
         sql.append("FROM hosp.config_agenda_profissional c ");
         sql.append("LEFT JOIN hosp.config_agenda_profissional_dias d ON (c.id_configagenda = d.id_config_agenda_profissional) ");
         sql.append("LEFT JOIN acl.funcionarios f ON (c.codmedico = f.id_funcionario) ");
         sql.append("WHERE c.codmedico = ? AND ");
         sql.append("c.mes = (SELECT DATE_PART('MONTH', CURRENT_TIMESTAMP)) AND c.ano = (SELECT DATE_PART('YEAR', CURRENT_TIMESTAMP)) ");
-        sql.append("ORDER BY f.descfuncionario, d.dia, d.turno");
+        sql.append("UNION ");
+        sql.append("SELECT ff.descfuncionario, ");
+        sql.append("CASE WHEN dd.turno = 'M' THEN 'Manhã' ");
+        sql.append("WHEN dd.turno = 'T' THEN 'Tarde' END AS turno, ");
+        sql.append("NULL AS dia, dd.data_especifica ");
+        sql.append("FROM hosp.config_agenda_profissional cc ");
+        sql.append("LEFT JOIN hosp.config_agenda_profissional_dias dd ON (cc.id_configagenda = dd.id_config_agenda_profissional) ");
+        sql.append("LEFT JOIN acl.funcionarios ff ON (cc.codmedico = ff.id_funcionario) ");
+        sql.append("WHERE cc.codmedico = ? AND ");
+        sql.append("(SELECT DATE_PART('MONTH', dd.data_especifica)) = (SELECT DATE_PART('MONTH', CURRENT_TIMESTAMP)) ");
+        sql.append("AND (SELECT DATE_PART('YEAR', dd.data_especifica)) = (SELECT DATE_PART('YEAR', CURRENT_TIMESTAMP)) ");
+        sql.append("ORDER BY descfuncionario, dia, turno ");
+
 
         try {
             con = ConnectionFactory.getConnection();
@@ -765,6 +778,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stm = con.prepareStatement(sql.toString());
 
             stm.setLong(1, codProfissional);
+            stm.setLong(2, codProfissional);
 
             ResultSet rs = stm.executeQuery();
 
@@ -773,6 +787,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 configAgendaParte1Bean.getProfissional().setNome(rs.getString("descfuncionario"));
                 configAgendaParte1Bean.setTurno(rs.getString("turno"));
                 configAgendaParte1Bean.setDiaSemana(rs.getString("dia"));
+                configAgendaParte1Bean.setDataEspecifica(rs.getDate("data_especifica"));
 
                 lista.add(configAgendaParte1Bean);
             }

@@ -85,8 +85,7 @@
 									itemLabel="#{theme.descPrograma}">
 									<p:ajax event="itemSelect"
 										listener="#{AgendaController.selectPrograma}"
-										update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo,
-							:formAgendaMedica:btBusGr, :formAgendaMedica:outGrupo, :formAgendaMedica:outTipoAt" />
+										update="outProg, :formConsuGrop:dtGrupo, btBusGr, outGrupo, outTipoAt, outProfissional, outEquipeRow" />
 
 								</p:autoComplete>
 
@@ -118,8 +117,7 @@
 									itemLabel="#{theme.descGrupo}">
 									<p:ajax event="itemSelect"
 										listener="#{AgendaController.selectGrupo}"
-										update=":formAgendaMedica:outGrupo, :formConsuTipoAt:dtTipoAt,
-							 :formAgendaMedica:btBusTi, :formAgendaMedica:outTipoAt" />
+										update="outTipoAt, outGrupo, :formConsuTipoAt:dtTipoAt, btBusTi, outProfissional, outEquipeRow" />
 
 								</p:autoComplete>
 
@@ -146,10 +144,8 @@
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descTipoAt}">
 									<p:ajax event="itemSelect"
-										update=":formAgendaMedica, msgPagina, outTipoAt"
-										listener="#{AgendaController.validarTipoAtendimentoNaAgenda}" />
-									<!-- 	<p:ajax event="change" update=":formAgendaMedica"
-                            listener="#{AgendaController.limparNaBuscaTipo()}" /> -->
+										listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"
+                                            update=":formAgendaMedica, msgPagina, outTipoAt, outProfissional, outEquipeRow"/>
 								</p:autoComplete>
 
 								<p:commandButton id="btBusTi" immediate="true"
@@ -163,14 +159,15 @@
 
 					</b:row>
 
-					<b:row rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
+                    <p:outputPanel id="outProfissional">
+					<b:row rendered="#{AgendaController.agenda.tipoAt.profissional==true}">
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
 							<b:label value="Profissional" severity="info"
-								rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
+								rendered="#{AgendaController.agenda.tipoAt.profissional==true}" />
 
 							<p:outputPanel id="outProf"
-								rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
+								rendered="#{AgendaController.agenda.tipoAt.profissional==true}">
 								<p:autoComplete value="#{AgendaController.agenda.profissional}"
 									size="31" converter="conFuncionario" required="true"
 									requiredMessage="Profissional: Campo obrigatório!"
@@ -180,8 +177,8 @@
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.nome}">
 									<p:ajax event="itemSelect"
-											listener="#{AgendaController.verAgenda}" process="@form @this"
-											update=":formAgendaMedica, msgPagina, outQtdIhMax"></p:ajax>
+											listener="#{AgendaController.verAgenda}"
+											update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissional"></p:ajax>
 								</p:autoComplete>
 
 								<p:commandButton id="btBusProf" icon="ui-icon-search"
@@ -189,12 +186,14 @@
 									disabled="#{AgendaController.agenda.tipoAt==null}"
 									action="#{AgendaController.limparNaBuscaEquipeProf()}"
 									update=":formConsuProf" onclick="PF('dlgConsuProf').show();"
-									rendered="#{AgendaController.agenda.tipoAt.equipe==false}" />
+									rendered="#{AgendaController.agenda.tipoAt.profissional==true}" />
 							</p:outputPanel>
 						</b:column>
 
 					</b:row>
+                </p:outputPanel>
 
+                    <p:outputPanel id="outEquipeRow">
 					<b:row rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
 
 						<b:column span="3"
@@ -212,7 +211,7 @@
 									effect="fade" var="theme" forceSelection="true"
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.descEquipe}">
-									<p:ajax event="itemSelect" update=":formAgendaMedica" />
+									<p:ajax event="itemSelect" update=":formAgendaMedica, outHorariosEquipe" />
 								</p:autoComplete>
 
 								<p:commandButton id="btBusEqui" immediate="true"
@@ -224,10 +223,12 @@
 						</b:column>
 
 					</b:row>
+                    </p:outputPanel>
 
 					<br></br>
 
-					<b:row rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
+                    <p:outputPanel id="outHorariosEquipe">
+					<b:row rendered="#{AgendaController.agenda.equipe.codEquipe!=null}">
 						<b:column span="12">
 							<div align="center">
 								<p:panel header="#{AgendaController.dataAtual}"></p:panel>
@@ -252,10 +253,12 @@
 
 						</b:column>
 					</b:row>
+                    </p:outputPanel>
 
 					<br></br>
 
-					<b:row rendered="#{AgendaController.agenda.tipoAt.equipe==false}">
+					<p:outputPanel id="outHorariosProfissional">
+					<b:row rendered="#{AgendaController.agenda.profissional.id!=null}">
 						<b:column span="12">
 							<div align="center">
 								<p:panel header="#{AgendaController.dataAtual}"></p:panel>
@@ -277,10 +280,17 @@
 									<h:outputLabel value="#{agend.turno}" />
 								</p:column>
 
+                                <p:column headerText="Data Específica">
+                                    <h:outputLabel value="#{agend.dataEspecifica}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputLabel>
+                                </p:column>
+
 							</p:dataTable>
 
 						</b:column>
 					</b:row>
+					</p:outputPanel>
 
 					<br></br>
 
@@ -343,7 +353,7 @@
 						<b:row rendered="#{AgendaController.tipoData == 'U'}">
 							<b:column span="2" class="label-position data-size">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									showOn="button" size="15" class="select-agendaEquipe2"
+									showOn="button" size="15" class="select-agendaEquipe2" required="true" requiredMessage="Data: Campo obrigatório!"
 									rendered="#{AgendaController.tipoData == 'U'}"
 									value="#{AgendaController.agenda.dataAtendimento}" id="dtagen"
 									locale="pt">
@@ -365,7 +375,7 @@
 
 							<b:column span="2" class="label-position data-size">
 								<p:calendar rendered="#{AgendaController.tipoData == 'I'}"
-									class="select-agendaEquipe2"
+									class="select-agendaEquipe2" required="true" requiredMessage="Data Inicial: Campo obrigatório!"
 									value="#{AgendaController.agenda.dataAtendimento}" id="dtagen2"
 									locale="pt" navigator="true" mask="true" showOn="button"
 									pattern="dd/MM/yyyy" size="15" />
@@ -379,7 +389,7 @@
 							<b:column span="2" class="label-position data-size bottom-size2">
 
 								<p:calendar rendered="#{AgendaController.tipoData == 'I'}"
-									class="select-agendaEquipe2"
+									class="select-agendaEquipe2" required="true" requiredMessage="Data Final: Campo obrigatório!"
 									value="#{AgendaController.agenda.dataAtendimentoFinal}"
 									id="dtagen3" locale="pt" navigator="true" mask="true"
 									showOn="button" pattern="dd/MM/yyyy" size="15" />

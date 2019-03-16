@@ -14,6 +14,7 @@ public class TipoAtendimentoBean implements Serializable {
 	private Integer idTipo;
 	private String descTipoAt;
 	private Boolean equipe;
+	private Boolean profissional;
 	private boolean primeiroAt;
 	private Integer codEmpresa;
 	private Integer intervaloMinimo;
@@ -33,6 +34,7 @@ public class TipoAtendimentoBean implements Serializable {
 		this.primeiroAt = false;
 		this.grupoParaAdd = new GrupoBean();
 		this.idTipo = null;
+		this.profissional = false;
 
 	}
 
@@ -129,5 +131,13 @@ public class TipoAtendimentoBean implements Serializable {
 
 	public void setEquipe(Boolean equipe) {
 		this.equipe = equipe;
+	}
+
+	public Boolean getProfissional() {
+		return profissional;
+	}
+
+	public void setProfissional(Boolean profissional) {
+		this.profissional = profissional;
 	}
 }

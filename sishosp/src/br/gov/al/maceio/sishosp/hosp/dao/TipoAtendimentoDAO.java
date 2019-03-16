@@ -179,7 +179,8 @@ public class TipoAtendimentoDAO {
     public List<TipoAtendimentoBean> listarTipoAtPorGrupo(int codGrupo)
             throws ProjetoException {
         List<TipoAtendimentoBean> lista = new ArrayList<>();
-        String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.intervalo_minimo "
+        String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.intervalo_minimo, " +
+                "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
                 + " from hosp.tipoatendimento t left join hosp.tipoatendimento_grupo tg on (t.id = tg.codtipoatendimento) "
                 + " where tg.codgrupo = ? order by t.desctipoatendimento";
         try {
@@ -195,6 +196,7 @@ public class TipoAtendimentoDAO {
                 tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
+                tipo.setProfissional(rs.getBoolean("profissional"));
 
                 lista.add(tipo);
             }
@@ -289,9 +291,11 @@ public class TipoAtendimentoDAO {
         List<TipoAtendimentoBean> lista = new ArrayList<>();
 
         try {
-            String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.intervalo_minimo "
-                    + " from hosp.tipoatendimento t left join hosp.tipoatendimento_grupo tg on (t.id = tg.codtipoatendimento) "
-                    + " where tg.codgrupo = ? and upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? order by t.desctipoatendimento";
+            String sql = "SELECT t.id, t.desctipoatendimento, t.primeiroatendimento, t.intervalo_minimo, t.equipe_programa, "
+                    + "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
+                    + "FROM hosp.tipoatendimento t LEFT JOIN hosp.tipoatendimento_grupo tg ON (t.id = tg.codtipoatendimento) "
+                    + "WHERE tg.codgrupo = ? AND upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? "
+                    + "ORDER BY t.desctipoatendimento";
 
             stm = con.prepareStatement(sql);
             stm.setInt(1, grupo.getIdGrupo());
@@ -304,8 +308,9 @@ public class TipoAtendimentoDAO {
                 tipo1.setIdTipo(rs.getInt("id"));
                 tipo1.setDescTipoAt(rs.getString("desctipoatendimento"));
                 tipo1.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
-                tipo1.setEquipe(rs.getBoolean("primeiroatendimento"));
+                tipo1.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo1.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
+                tipo1.setProfissional(rs.getBoolean("profissional"));
 
                 lista.add(tipo1);
             }
@@ -352,6 +357,43 @@ public class TipoAtendimentoDAO {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public TipoAtendimentoBean listarInformacoesTipoAtendimentoEquieProgramaPorId(int codigo)
+            throws ProjetoException {
+
+        TipoAtendimentoBean tipo = new TipoAtendimentoBean();
+
+        String sql = "select distinct t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.intervalo_minimo, " +
+                "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
+                + " from hosp.tipoatendimento t left join hosp.tipoatendimento_grupo tg on (t.id = tg.codtipoatendimento) "
+                + " where t.id = ? order by t.desctipoatendimento";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codigo);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                tipo = new TipoAtendimentoBean();
+                tipo.setIdTipo(rs.getInt("id"));
+                tipo.setDescTipoAt(rs.getString("desctipoatendimento"));
+                tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
+                tipo.setEquipe(rs.getBoolean("equipe_programa"));
+                tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
+                tipo.setProfissional(rs.getBoolean("profissional"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return tipo;
     }
 
 }

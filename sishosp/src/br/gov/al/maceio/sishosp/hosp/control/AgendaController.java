@@ -15,6 +15,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.event.SelectEvent;
@@ -56,6 +57,7 @@ public class AgendaController implements Serializable {
     private EquipeDAO eDao = new EquipeDAO();
     private Boolean agendamentosConfirmados;
     private String dataAtual;
+    private TipoAtendimentoBean tipoAtendimentoSelecionado;
 
     public AgendaController() {
 
@@ -85,6 +87,7 @@ public class AgendaController implements Serializable {
         agendamentosConfirmados = false;
         dataAtual = DataUtil.mesIhAnoAtual();
         agenda.getEmpresa().setCodEmpresa(user_session.getCodigo());
+        tipoAtendimentoSelecionado = new TipoAtendimentoBean();
     }
 
     public void limparDados() {
@@ -155,32 +158,19 @@ public class AgendaController implements Serializable {
     }
 
     public void preparaConfirmar() throws ProjetoException {
-        if (this.agenda.getPaciente() == null
-                || this.agenda.getPrograma() == null
-                || this.agenda.getGrupo() == null
-                || this.agenda.getTipoAt() == null
-                || this.agenda.getDataAtendimento() == null
-                || (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla()) && this.agenda
-                .getDataAtendimentoFinal() == null)
-                || (this.agenda.getProfissional() == null && this.agenda
-                .getEquipe() == null)) {
-            JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
-        } else {
-        	if (agenda.getMax()==0) {
-        		
-        		JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");	
-        	}
-        	else
-            if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
-                addListaNovosAgendamentos();
-                agendamentosConfirmados = true;
-            }
-            if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
-                verAgendaIntervalo();
-                agendamentosConfirmados = true;
-            }
-            
+
+        if (agenda.getMax() == 0) {
+            JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
+        } else if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
+            addListaNovosAgendamentos();
+            agendamentosConfirmados = true;
         }
+        if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
+            verAgendaIntervalo();
+            agendamentosConfirmados = true;
+        }
+
+
     }
 
     public void verAgendaIntervalo() throws ProjetoException {
@@ -358,14 +348,17 @@ public class AgendaController implements Serializable {
     }
 
     public void limparNaBuscaPrograma() {
-        this.agenda.setGrupo(null);
-        this.agenda.setTipoAt(null);
+        this.agenda.setGrupo(new GrupoBean());
+        this.agenda.setTipoAt(new TipoAtendimentoBean());
         this.agenda.setProfissional(new FuncionarioBean());
         this.agenda.setEquipe(new EquipeBean());
         this.agenda.setObservacao(new String());
         this.agenda.setDataAtendimento(null);
+        this.agenda.setDataAtendimentoFinal(null);
         this.agenda.setQtd(null);
         this.agenda.setMax(null);
+        this.agenda.getTipoAt().setEquipe(false);
+        this.agenda.getTipoAt().setProfissional(false);
     }
 
     public void limparNaBuscaGrupo() {
@@ -398,7 +391,6 @@ public class AgendaController implements Serializable {
         this.programaSelecionado = (ProgramaBean) event.getObject();
         atualizaListaGrupos(programaSelecionado);
         limparNaBuscaPrograma();
-        limparNaBuscaGrupo();
     }
 
     public void atualizaListaGrupos(ProgramaBean p) throws ProjetoException {
@@ -485,15 +477,23 @@ public class AgendaController implements Serializable {
 
     public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
             throws ProjetoException {
+
+        List<TipoAtendimentoBean> lista = new ArrayList<>();
+
         if (agenda.getGrupo() != null) {
-            return tDao.listarTipoAtAutoComplete(query, this.agenda.getGrupo());
+            lista = tDao.listarTipoAtAutoComplete(query, this.agenda.getGrupo());
         } else
             return null;
+        return lista;
     }
 
+    public void validarTipoAtendimentoNaAgenda(SelectEvent event) throws ProjetoException {
+        this.tipoAtendimentoSelecionado = (TipoAtendimentoBean) event.getObject();
 
-    public void validarTipoAtendimentoNaAgenda() throws ProjetoException {
+        agenda.setTipoAt(new TipoAtendimentoDAO().listarInformacoesTipoAtendimentoEquieProgramaPorId(tipoAtendimentoSelecionado.getIdTipo()));
+
         if (agenda.getTipoAt().getIntervaloMinimo() > 0) {
+
             Boolean intervalo = aDao.retornarIntervaloUltimoAgendamento(agenda.getPaciente().getId_paciente(), agenda.getTipoAt().getIdTipo(), agenda.getTipoAt().getIntervaloMinimo());
 
             if (!intervalo) {
@@ -552,7 +552,6 @@ public class AgendaController implements Serializable {
         this.listaProfissional = fDao
                 .listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
     }
-
 
     public ProgramaBean getProgramaSelecionado() {
         return programaSelecionado;
