@@ -39,7 +39,7 @@
 							</b:column>
 
 							<b:column span="2" class="label-position data-size new-label-nome">
-								<b:label value="Nascimento" severity="info" />
+								<b:label value="Nascimento" severity="info" class="fire-label" />
 
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									yearRange="-111:+39" pages="1" showOn="button" size="15"
@@ -600,7 +600,7 @@
 						<b:row>
 
 							<b:column span="3" class="label-position new-data-size new-comple1">
-								<b:label value="Escola:" severity="danger"/>
+								<b:label value="Escola:" severity="danger" class="fire-label"/>
 
 								<p:autoComplete id="escolacomplete2" class="select-agendaEquipe4"
 									value="#{PacienteController.escolaSuggestion}" size="31"
@@ -620,7 +620,7 @@
 						<b:row>
 
 							<b:column span="3" class="label-position new-data-size new-comple1">
-								<b:label value="Profissão:" severity="danger"/>
+								<b:label value="Profissão:" severity="danger" class="fire-label"/>
 
 								<p:autoComplete id="escolacomplete3" class="select-agendaEquipe4"
 									value="#{PacienteController.profissaoSuggestion}" size="31"
