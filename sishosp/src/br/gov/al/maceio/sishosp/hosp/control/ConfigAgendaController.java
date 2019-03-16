@@ -302,7 +302,7 @@ public class ConfigAgendaController implements Serializable {
         if (cadastrou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
         } else {
-            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a gravação!", "Erro");
         }
 
         limparDados();
@@ -317,7 +317,7 @@ public class ConfigAgendaController implements Serializable {
         if (alterou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
         } else {
-            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!!", "Erro");
         }
 
     }
@@ -338,7 +338,7 @@ public class ConfigAgendaController implements Serializable {
         if (gravou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
         } else {
-            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a gravação!", "Erro");
         }
 
         limparDados();
@@ -353,7 +353,7 @@ public class ConfigAgendaController implements Serializable {
         if (alterou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
         } else {
-            JSFUtil.adicionarMensagemErro("Insira os dados corretamente!", "Erro");
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
         }
 
     }

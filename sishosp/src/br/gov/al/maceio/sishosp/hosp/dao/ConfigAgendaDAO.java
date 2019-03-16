@@ -22,6 +22,8 @@ public class ConfigAgendaDAO {
                                                               List<ConfigAgendaParte2Bean> listaTipos) throws ProjetoException, SQLException {
 
         Boolean retorno = false;
+
+        try{
         con = ConnectionFactory.getConnection();
 
         Integer idConfiguracaoAgenda = gravaConfiguracaoAgendaProfissional(confParte1, listaTipos, con);
@@ -48,7 +50,17 @@ public class ConfigAgendaDAO {
 
         }
 
-        return retorno;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
     }
 
 
@@ -228,6 +240,8 @@ public class ConfigAgendaDAO {
     public Boolean gravarConfiguracaoAgendaEquipeInicio(ConfigAgendaParte1Bean confParte1, ConfigAgendaParte2Bean confParte2) throws ProjetoException, SQLException {
 
         Boolean retorno = false;
+
+        try {
         con = ConnectionFactory.getConnection();
 
         Integer idConfiguracaoAgenda = gravaConfiguracaoAgendaEquipe(confParte1, confParte2, con);
@@ -251,11 +265,20 @@ public class ConfigAgendaDAO {
             if (retorno) {
                 con.commit();
             }
-
         }
 
-        return retorno;
-    }
+        } catch (SQLException ex) {
+                ex.printStackTrace();
+                throw new RuntimeException(ex);
+            } finally {
+                try {
+                    con.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return retorno;
+            }
+        }
 
     public Integer gravaConfiguracaoAgendaEquipe(ConfigAgendaParte1Bean confParte1, ConfigAgendaParte2Bean confParte2, Connection conAuxiliar) {
 

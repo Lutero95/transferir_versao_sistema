@@ -21,6 +21,7 @@
 					<b:commandButton id="btninc" value="Novo" size="sm"
 						action="#{ConfigAgendaController.redirectInsertEquipe()}"
 						icon="glyphicon-plus" class="btn-addNovo">
+						<f:setPropertyActionListener value="1" target="#{ConfigAgendaController.tipo}" />
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 					</b:commandButton>
 
