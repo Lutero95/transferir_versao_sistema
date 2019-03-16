@@ -27,7 +27,7 @@
 
 						<b:row>
 
-							<b:column span="6" class="label-position">
+							<b:column span="6" class="label-position new-label-nome">
 								<b:label for="inputname" value="Nome" severity="info" />
 
 								<b:inputText value="#{PacienteController.paciente.nome}"
@@ -38,7 +38,7 @@
 								</b:inputText>
 							</b:column>
 
-							<b:column span="2" class="label-position data-size">
+							<b:column span="2" class="label-position data-size new-label-nome">
 								<b:label value="Nascimento" severity="info" />
 
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
@@ -49,7 +49,7 @@
 									locale="pt" />
 							</b:column>
 
-							<b:column span="3" class="label-position new-col3-2">
+							<b:column span="3" class="label-position">
 								<b:label for="estadocivil" value="Est. Civil" severity="info" />
 
 								<b:selectOneMenu
@@ -263,7 +263,7 @@
 
 								<p:inputMask mask="99999-999" id="inputcep"
 									value="#{PacienteController.paciente.endereco.cep}"
-									class="form-control select-agendaEquipe2 new-size-cep" required="true" 
+									class="form-control select-agendaEquipe2" required="true" 
 									requiredMessage="CEP: Campo obrigatório!">
 
 									<p:ajax listener="#{PacienteController.encontraCEP}"
@@ -410,7 +410,7 @@
 								</b:inputText>
 							</b:column>
 
-							<b:column span="3" class="label-position data-size new-right">
+							<b:column span="3" class="label-position data-size new-label-nome">
 								<b:label for="dtaexpedicao" value="RG Dta.Expedição"
 									severity="info" />
 
@@ -426,7 +426,7 @@
 
 								<p:inputMask mask="999.999.999-99"
 									value="#{PacienteController.paciente.cpf}" 
-									class="form-control select-agendaEquipe2 new-size-cpf2"
+									class="form-control select-agendaEquipe2"
 									id="cpf" required="true"
 									requiredMessage="CPF: Campo obrigatório!">
 									<stella:validateCPF formatted="true" />
@@ -712,7 +712,7 @@
 								<b:label value="CPF: " severity="danger"/>
 
 								<p:outputPanel>
-									<p:inputMask mask="999.999.999-99" id="nome7" class="form-control select-agendaEquipe2 new-size-cpf2"
+									<p:inputMask mask="999.999.999-99" id="nome7" class="form-control select-agendaEquipe2"
 										value="#{PacienteController.paciente.cpfresp}">
 										<p:ajax
 											listener="#{PacienteController.validaCPF(PacienteController.paciente.cpfresp)}"
@@ -790,7 +790,7 @@
 						<p:outputPanel id="outDeficiencia" autoUpdate="true">
 							<b:row>
 
-								<b:column span="2">
+								<b:column span="2" class="new-col-lg2">
 									<p:outputLabel value="Apresenta Deficiência: "
 										style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>

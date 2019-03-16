@@ -1174,7 +1174,22 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 }
 
 .data-size {
-	width: 185px;
+	/*width: 185px;*/
+	width: 216px;
+}
+
+@media (min-width:1441px) {
+	.new-col-lg2 {
+		width: 200px;
+	}
+}
+
+.new-label-nome {
+	margin-right: 0px;
+}
+
+.ui-tabs.ui-widget-content {
+	border-bottom: 0px solid #DDDDDD;
 }
 
 /*@media screen and (-webkit-min-device-pixel-ratio:0) {
@@ -1358,8 +1373,12 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 }
 
 .data-size1 {
-	width: 185px;
+	width: 216px;
 	margin-right: -18px;
+}
+
+#laudo-id {
+	left: 33% !important;
 }
 
 .btn-buscaAtendimento, .btn-buscaAtendimento:hover,
@@ -1368,8 +1387,12 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 	margin-left: -15px;
 }
 
+.ui-dialog.ui-widget-content .ui-dialog-content {
+    overflow-x: hidden;
+}
+
 .campo-laudoDig, .campo-laudoDig3 {
-	margin-top: 5px;
+	margin-top: 4px;
 	padding: 10px 10px;
 	background: none #ffffff;
 	border: 1px solid #cccccc;
@@ -1422,7 +1445,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 		width: 60px;
 	}
 	.data-size3 {
-		width: 185px;
+		width: 216px;
 		margin-top: 12px;
 	}
 }
@@ -1448,7 +1471,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 }
 
 .select-agendaEquipe4 {
-	margin-top: 0px;
+	margin-top: -1px;
 	margin-left: -15px;
 }
 
