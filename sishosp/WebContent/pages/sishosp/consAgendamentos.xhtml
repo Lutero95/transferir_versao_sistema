@@ -59,7 +59,7 @@
 							<b:column span="2" class="label-position data-size3">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
 									class="select-agendaEquipe2" showOn="button" size="15"
-									id="dtagen3" locale="pt">
+									id="dtagen3" locale="pt" value="#{AgendaController.dataAtendimentoFinalC}">
 									<p:ajax event="dateSelect"
 										listener="#{AgendaController.consultarAgenda()}"
 										process="@form @this"
