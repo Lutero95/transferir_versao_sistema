@@ -398,6 +398,7 @@ public class AgendaController implements Serializable {
         this.programaSelecionado = (ProgramaBean) event.getObject();
         atualizaListaGrupos(programaSelecionado);
         limparNaBuscaPrograma();
+        limparNaBuscaGrupo();
     }
 
     public void atualizaListaGrupos(ProgramaBean p) throws ProjetoException {
