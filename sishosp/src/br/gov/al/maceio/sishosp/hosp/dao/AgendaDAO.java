@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 
 import javax.faces.context.FacesContext;
@@ -149,89 +150,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
     }
 
-    public FeriadoBean verificarFeriado(Date dataAtendimento)
-            throws ProjetoException {
-
-        String sql = "select codferiado, descferiado, dataferiado from hosp.feriado where dataferiado = ?";
-        FeriadoBean fer = null;
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            stm.setDate(1, new java.sql.Date(dataAtendimento.getTime()));
-            ResultSet rs = stm.executeQuery();
-
-            while (rs.next()) {
-                fer = new FeriadoBean();
-                fer.setCodFeriado(rs.getInt("codferiado"));
-                fer.setDescFeriado(rs.getString("descferiado"));
-                fer.setDataFeriado(rs.getDate("dataferiado"));
-            }
-            return fer;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    public List<BloqueioBean> verificarBloqueioProfissional(
-            FuncionarioBean prof, Date dataAtendimento, String turno)
-            throws ProjetoException {
-
-        List<BloqueioBean> lista = new ArrayList<>();
-        FuncionarioDAO pDao = new FuncionarioDAO();
-
-        String sql = "select b.id_bloqueioagenda, b.codmedico, b.dataagenda, b.turno, b.descricao, " +
-                "f.descfuncionario, f.cpf, f.cns, f.codprocedimentopadrao " +
-                "from hosp.bloqueio_agenda b " +
-                "left join acl.funcionarios f on (b.codmedico = f.id_funcionario) " +
-                "where codmedico = ? and  dataagenda = ? and turno = ? order by id_bloqueioagenda";
-
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stm = con.prepareStatement(sql);
-            stm.setLong(1, prof.getId());
-            stm.setDate(2, new java.sql.Date(dataAtendimento.getTime()));
-            stm.setString(3, turno.toUpperCase());
-            ResultSet rs = stm.executeQuery();
-
-            while (rs.next()) {
-                BloqueioBean bloqueio = new BloqueioBean();
-                bloqueio.setIdBloqueio(rs.getInt("id_bloqueioagenda"));
-                bloqueio.getProf().setId(rs.getLong("codmedico"));
-                bloqueio.getProf().setNome(rs.getString("descfuncionario"));
-                bloqueio.getProf().setCns(rs.getString("cns"));
-                bloqueio.getProf().setCpf(rs.getString("cpf"));
-                bloqueio.getProf().getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
-                bloqueio.setDataInicio(rs.getDate("dataagenda"));
-                bloqueio.setTurno(rs.getString("turno"));
-                bloqueio.setDescBloqueio(rs.getString("descricao"));
-
-                lista.add(bloqueio);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return lista;
-    }
-
     public int verQtdMaxAgendaData(AgendaBean agenda) throws ProjetoException {
         int qtdMax = 0;
         String sqlPro = "select p.qtdmax " +
                 "from hosp.config_agenda_profissional p " +
-                "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_equipe) " +
+                "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
                 "where p.codmedico = ? and d.data_especifica = ? and d.turno = ?;";
 
         String sqlEqui = "select e.qtdmax " +
@@ -622,24 +545,27 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public int verQtdMaxAgendaEspec(AgendaBean agenda) throws ProjetoException {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(agenda.getDataAtendimento());
-        int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
+
+        int diaSemana = DataUtil.extrairDiaDeData(agenda.getDataAtendimento());
+        int mes = DataUtil.extrairMesDeData(agenda.getDataAtendimento());
+        int ano = DataUtil.extrairAnoDeData(agenda.getDataAtendimento());
         int qtdMax = 0;
 
         String sqlPro = "select p.qtdmax " +
                 "from hosp.config_agenda_profissional p " +
                 "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
-                "where p.codmedico = ? and d.dia = ? and d.turno = ?;";
+                "where p.codmedico = ? and d.dia = ? and d.turno = ? AND p.mes = ? AND p.ano = ?;";
 
         String sqlEqui = "select e.qtdmax " +
                 "from hosp.config_agenda_equipe e " +
                 "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
-                "where e.codequipe = ? and d.dia = ? and d.turno = 'M';";
+                "where e.codequipe = ? and d.dia = ? and d.turno = 'M' AND e.mes = ? AND e.ano = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
+
             PreparedStatement stm = null;
+
             if (agenda.getProfissional().getId() != null) {
                 stm = con.prepareStatement(sqlPro);
                 stm.setLong(1, agenda.getProfissional().getId());
@@ -649,6 +575,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
             stm.setInt(2, diaSemana);
             stm.setString(3, agenda.getTurno().toUpperCase());
+            stm.setInt(4, mes);
+            stm.setInt(5, ano);
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -1079,6 +1008,43 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
         }
         return lista;
+    }
+
+    public Integer contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(
+            Long codProfissional, java.util.Date dataAtendimento, String turno, Integer codTipoAtendimento)
+            throws ProjetoException {
+
+        Integer qtd = null;
+
+        String sql = "";
+
+        sql = "SELECT count(id_atendimento) as qtd FROM hosp.atendimentos WHERE codtipoatendimento = ? AND codmedico = ? AND turno = ? AND dtaatende = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setLong(1, codTipoAtendimento);
+            stm.setLong(2, codProfissional);
+            stm.setString(3, turno.toUpperCase());
+            stm.setDate(4, new java.sql.Date(dataAtendimento.getTime()));
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                qtd = rs.getInt("qtd");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return qtd;
     }
 
 }

@@ -35,6 +35,15 @@
 										update="frmPrincipal:tbv"></p:ajax>
 								</p:selectBooleanCheckbox>
 							</b:column>
+
+							<b:column span="3">
+								<p:selectBooleanCheckbox label="Realizar Liberações"
+														 itemLabel="Realiza Liberações" style="color:#2e84ce;"
+														 value="#{MBFuncionarios.profissional.realizaAtendimento}">
+									<p:ajax listener="#{MBFuncionarios.rendermedico}"
+											update="frmPrincipal:tbv"></p:ajax>
+								</p:selectBooleanCheckbox>
+							</b:column>
 						</b:row>
 
 						<br></br>

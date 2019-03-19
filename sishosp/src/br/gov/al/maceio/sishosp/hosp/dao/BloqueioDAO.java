@@ -9,9 +9,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 
@@ -217,6 +220,54 @@ public class BloqueioDAO {
             }
         }
         return bloqueio;
+    }
+
+    public Boolean verificarBloqueioProfissional(
+            Long codProfissional, Date dataAtendimento, Date dataAtendimentoFinal, String turno, String tipoData)
+            throws ProjetoException {
+
+        Boolean retorno = false;
+
+        String sql = "SELECT b.id_bloqueioagenda, b.codmedico, b.dataagenda, b.turno, b.descricao, " +
+                "f.descfuncionario, f.cpf, f.cns, f.codprocedimentopadrao " +
+                "FROM hosp.bloqueio_agenda b " +
+                "LEFT JOIN acl.funcionarios f ON (b.codmedico = f.id_funcionario) " +
+                "WHERE codmedico = ? AND turno = ?";
+
+        if(tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
+            sql = sql + " AND dataagenda = ?";
+        }
+        if(tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
+            sql = sql + " AND dataagenda >= ? AND dataagenda <= ?";
+        }
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setLong(1, codProfissional);
+            stm.setString(2, turno.toUpperCase());
+            stm.setDate(3, new java.sql.Date(dataAtendimento.getTime()));
+            if(tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
+                stm.setDate(4, DataUtil.converterDateUtilParaDateSql(dataAtendimentoFinal));
+            }
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                retorno = true;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
     }
 
 }

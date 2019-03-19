@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public final class DataUtil {
@@ -59,6 +58,30 @@ public final class DataUtil {
         java.sql.Date dataSql = new java.sql.Date(dataUtil.getTime());
 
         return dataSql;
+    }
+
+    public static Integer extrairAnoDeData(Date data) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(data);
+        int ano = cal.get(Calendar.YEAR);
+
+        return ano;
+    }
+
+    public static Integer extrairDiaDeData(Date data) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(data);
+        int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
+
+        return diaSemana;
+    }
+
+    public static Integer extrairMesDeData(Date data) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(data);
+        int mes = cal.get(Calendar.MONTH) + 1;
+
+        return mes;
     }
 
 }

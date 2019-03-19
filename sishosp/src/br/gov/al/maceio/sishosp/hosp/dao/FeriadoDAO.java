@@ -5,10 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.FeriadoBean;
 
 public class FeriadoDAO {
@@ -146,4 +149,47 @@ public class FeriadoDAO {
 		}
 		return feriado;
 	}
+
+	public Boolean verificarSeEhFeriado(Date dataAtendimento, Date dataAtendimentoFinal, String tipoData)
+			throws ProjetoException {
+
+	    String sql = "";
+
+	    if(tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
+            sql = "SELECT codferiado FROM hosp.feriado WHERE dataferiado = ?";
+        }
+        else if(tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
+            sql = "SELECT codferiado FROM hosp.feriado WHERE dataferiado >= ? AND dataferiado <= ?";
+        }
+
+		Boolean retorno = false;
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			stm.setDate(1, DataUtil.converterDateUtilParaDateSql(dataAtendimento));
+            if(tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
+                stm.setDate(2, DataUtil.converterDateUtilParaDateSql(dataAtendimentoFinal));
+            }
+
+            ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				retorno = true;
+			}
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+
 }

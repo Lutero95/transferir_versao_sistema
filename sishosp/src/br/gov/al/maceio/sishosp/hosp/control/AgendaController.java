@@ -88,6 +88,7 @@ public class AgendaController implements Serializable {
         dataAtual = DataUtil.mesIhAnoAtual();
         agenda.getEmpresa().setCodEmpresa(user_session.getCodigo());
         tipoAtendimentoSelecionado = new TipoAtendimentoBean();
+        agenda.setTurno("M");
     }
 
     public void limparDados() {
@@ -103,58 +104,128 @@ public class AgendaController implements Serializable {
         this.situacao = new String();
     }
 
-    public void verificaDisponibilidadeData() throws ProjetoException {
-        if (!agenda.getTipoAt().getEquipe()) {
-            FeriadoBean feriado = aDao.verificarFeriado(this.agenda
-                    .getDataAtendimento());
-            List<BloqueioBean> bloqueio = new ArrayList<BloqueioBean>();
-            if (this.agenda.getProfissional().getId() != null) {
-                bloqueio = aDao.verificarBloqueioProfissional(
-                        this.agenda.getProfissional(),
-                        this.agenda.getDataAtendimento(),
-                        this.agenda.getTurno());
+        public void preparaVerificarDisponibilidadeData() throws ProjetoException {
+        if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
+            if (this.agenda.getPaciente() == null
+                    || this.agenda.getPrograma() == null
+                    || this.agenda.getGrupo() == null
+                    || this.agenda.getTipoAt() == null
+                    || this.agenda.getDataAtendimento() == null
+                    || (this.agenda.getProfissional() == null && this.agenda
+                    .getEquipe() == null)) {
+                return;
+            } else {
+                verificaDisponibilidadeData();
             }
-            if (feriado != null) {
-                JSFUtil.adicionarMensagemAdvertencia("Data bloqueada! "
-                        + feriado.getDescFeriado(), "Feriado");
-            } else if (!bloqueio.isEmpty()) {
-                JSFUtil.adicionarMensagemAdvertencia("Data bloqueada para este profissional!", "Bloqueio");
-            } else
-                verAgenda();
 
+        } else if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
+            if (this.agenda.getPaciente() == null
+                    || this.agenda.getPrograma() == null
+                    || this.agenda.getGrupo() == null
+                    || this.agenda.getTipoAt() == null
+                    || (this.agenda.getDataAtendimento() == null || this.agenda.getDataAtendimentoFinal() == null)
+                    || (this.agenda.getProfissional() == null && this.agenda
+                    .getEquipe() == null)) {
+                return;
+            } else {
+                verificaDisponibilidadeData();
+            }
+        }
+    }
+
+    public void verificaDisponibilidadeData() throws ProjetoException {
+
+        if (verificarSeEhFeriado()) {
+            JSFUtil.adicionarMensagemErro("Data com feriado, não é permitido fazer agendamento!", "Erro");
+        }
+        else if (agenda.getProfissional().getId() != null && verificarSeTemBloqueio()) {
+                    JSFUtil.adicionarMensagemErro("Data com bloqueio, não é permitido fazer agendamento!", "Erro");
+
+        }
+        else if (verificarTipoDeAtendimento()){
+                JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
+        }
+        else {
+        verAgenda();
         }
 
     }
 
-    public void verAgenda() throws ProjetoException {
-        if (this.agenda.getPaciente() == null
-                || this.agenda.getPrograma() == null
-                || this.agenda.getGrupo() == null
-                || this.agenda.getTipoAt() == null
-                || this.agenda.getDataAtendimento() == null
-                || (this.agenda.getProfissional() == null && this.agenda
-                .getEquipe() == null)) {
-            JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
-            return;
-        } else {
-            boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
-            boolean diaSem = aDao.buscarDiaSemana(this.agenda);
-            boolean limitePorTipoAtend = aDao
-                    .buscarTabTipoAtendAgenda(this.agenda);
-            if (dtEspecifica && limitePorTipoAtend) {
-                listarAgendamentosData();
-                this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));
-                this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
-            } else if (diaSem && limitePorTipoAtend) {
-                listarAgendamentosData();
-                this.agenda.setMax(aDao.verQtdMaxAgendaEspec(this.agenda));
-                this.agenda.setQtd(aDao.verQtdAgendadosEspec(this.agenda));
-            } else {
-                listarAgendamentosData();
-                this.agenda.setMax(aDao.verQtdMaxAgendaGeral(this.agenda));
-                this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
+    public Boolean verificarTipoDeAtendimento() throws ProjetoException {
+        Boolean retorno = false;
+
+        if(verificarSeExisteTipoAtendimentoEspecifico()) {
+
+            if(verificarSeAtingiuLimitePorTipoDeAtendimento()){
+                retorno = true;
             }
         }
+
+        return retorno;
+    }
+
+    public Boolean verificarSeEhFeriado() throws ProjetoException {
+        Boolean retorno = false;
+
+        retorno = new FeriadoDAO().verificarSeEhFeriado(this.agenda.getDataAtendimento(), this.agenda.getDataAtendimentoFinal(), tipoData);
+
+        return retorno;
+    }
+
+    public Boolean verificarSeTemBloqueio() throws ProjetoException {
+        Boolean retorno = false;
+
+        retorno = new BloqueioDAO().verificarBloqueioProfissional(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
+                this.agenda.getDataAtendimentoFinal(), this.agenda.getTurno(), tipoData);
+
+        return retorno;
+    }
+
+    public Boolean verificarSeExisteTipoAtendimentoEspecifico() throws ProjetoException {
+        Boolean retorno = false;
+
+        retorno = new ConfigAgendaDAO().verificarSeExisteTipoAtendimentoEspecificoDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
+                this.agenda.getTurno(), tipoData);
+
+        return retorno;
+    }
+
+    public Boolean verificarSeAtingiuLimitePorTipoDeAtendimento() throws ProjetoException {
+
+        Boolean retorno = false;
+
+        Integer limite = aDao.contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
+                this.agenda.getTurno(), agenda.getTipoAt().getIdTipo());
+
+        Integer maximo = aDao.verQtdMaxAgendaEspec(this.agenda);
+
+        if(limite >= maximo){
+            retorno = true;
+        }
+
+        return retorno;
+    }
+
+    public void verAgenda() throws ProjetoException {
+
+        Boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
+        Boolean diaSem = aDao.buscarDiaSemana(this.agenda);
+        Boolean limitePorTipoAtend = aDao.buscarTabTipoAtendAgenda(this.agenda);
+
+        if (dtEspecifica && limitePorTipoAtend) {
+            listarAgendamentosData();
+            this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));
+            this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
+        } else if (diaSem && limitePorTipoAtend) {
+            listarAgendamentosData();
+            this.agenda.setMax(aDao.verQtdMaxAgendaEspec(this.agenda));
+            this.agenda.setQtd(aDao.verQtdAgendadosEspec(this.agenda));
+        } else {
+            listarAgendamentosData();
+            this.agenda.setMax(aDao.verQtdMaxAgendaGeral(this.agenda));
+            this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
+        }
+
     }
 
     public void preparaConfirmar() throws ProjetoException {

@@ -22,6 +22,7 @@ public class FuncionarioBean implements Serializable {
     private String cpf;
     private boolean primeiroAcesso;
     private Boolean realizaAtendimento;
+    private Boolean realizaLiberacoes;
     private String cns;
     private String diasSemana;
     private ArrayList<String> listDiasSemana;
@@ -74,6 +75,7 @@ public class FuncionarioBean implements Serializable {
         this.perfil = new Perfil();
         listDiasSemana = new ArrayList<String>();
         this.realizaAtendimento = false;
+        this.realizaLiberacoes = false;
         listaUnidades = new ArrayList<>();
         unidadeExtra = new EmpresaBean();
     }
@@ -415,5 +417,13 @@ public class FuncionarioBean implements Serializable {
 
     public void setUnidadeExtra(EmpresaBean unidadeExtra) {
         this.unidadeExtra = unidadeExtra;
+    }
+
+    public Boolean getRealizaLiberacoes() {
+        return realizaLiberacoes;
+    }
+
+    public void setRealizaLiberacoes(Boolean realizaLiberacoes) {
+        this.realizaLiberacoes = realizaLiberacoes;
     }
 }
