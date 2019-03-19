@@ -1218,7 +1218,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 }
 
 .new-data-size {
-	width: 300px;
+	width: 318px;
 }
 
 .btn-radio-table {
@@ -1393,7 +1393,8 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 }
 
 .fire-label {
-	padding: 0.3em 2.5em 0.3em 0.6em;
+	padding: 0.3em 1em 0.3em 0.6em;
+	margin-right: 2.5em;
 }
 
 .btn-buscaAtendimento, .btn-buscaAtendimento:hover,
