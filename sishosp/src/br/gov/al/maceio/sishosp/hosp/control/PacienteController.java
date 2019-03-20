@@ -105,6 +105,7 @@ public class PacienteController implements Serializable {
 
     public String redirectEdit() {
         return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.paciente.getId_paciente(), ENDERECO_TIPO, tipo);
+
     }
 
     public String redirectInsert() {
