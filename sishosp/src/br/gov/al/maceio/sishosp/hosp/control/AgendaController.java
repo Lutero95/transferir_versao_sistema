@@ -58,6 +58,7 @@ public class AgendaController implements Serializable {
     private Boolean agendamentosConfirmados;
     private String dataAtual;
     private TipoAtendimentoBean tipoAtendimentoSelecionado;
+    private List<Date> listaNaoPermitidosIntervaloDeDatas;
 
     public AgendaController() {
 
@@ -89,6 +90,7 @@ public class AgendaController implements Serializable {
         agenda.getEmpresa().setCodEmpresa(user_session.getCodigo());
         tipoAtendimentoSelecionado = new TipoAtendimentoBean();
         agenda.setTurno("M");
+        listaNaoPermitidosIntervaloDeDatas = new ArrayList<>();
     }
 
     public void limparDados() {
@@ -115,7 +117,7 @@ public class AgendaController implements Serializable {
                     .getEquipe() == null)) {
                 return;
             } else {
-                verificaDisponibilidadeData();
+                verificaDisponibilidadeDataUnica();
             }
 
         } else if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
@@ -128,21 +130,21 @@ public class AgendaController implements Serializable {
                     .getEquipe() == null)) {
                 return;
             } else {
-                verificaDisponibilidadeData();
+                verificaDisponibilidadeDataUnica();
             }
         }
     }
 
-    public void verificaDisponibilidadeData() throws ProjetoException {
+    public void verificaDisponibilidadeDataUnica() throws ProjetoException {
 
-        if (verificarSeEhFeriado()) {
+        if (verificarSeEhFeriadoDataUnica()) {
             JSFUtil.adicionarMensagemErro("Data com feriado, não é permitido fazer agendamento!", "Erro");
         }
-        else if (agenda.getProfissional().getId() != null && verificarSeTemBloqueio()) {
+        else if (agenda.getProfissional().getId() != null && verificarSeTemBloqueioDataUnica()) {
                     JSFUtil.adicionarMensagemErro("Data com bloqueio, não é permitido fazer agendamento!", "Erro");
 
         }
-        else if (verificarTipoDeAtendimento()){
+        else if (verificarTipoDeAtendimentoDataUnica()){
                 JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
         }
         else {
@@ -151,10 +153,10 @@ public class AgendaController implements Serializable {
 
     }
 
-    public Boolean verificarTipoDeAtendimento() throws ProjetoException {
+    public Boolean verificarTipoDeAtendimentoDataUnica() throws ProjetoException {
         Boolean retorno = false;
 
-        if(verificarSeExisteTipoAtendimentoEspecifico()) {
+        if(verificarSeExisteTipoAtendimentoEspecificoDataUnica()) {
 
             if(verificarSeAtingiuLimitePorTipoDeAtendimento()){
                 retorno = true;
@@ -164,28 +166,37 @@ public class AgendaController implements Serializable {
         return retorno;
     }
 
-    public Boolean verificarSeEhFeriado() throws ProjetoException {
+    public Boolean verificarSeEhFeriadoDataUnica() throws ProjetoException {
         Boolean retorno = false;
 
-        retorno = new FeriadoDAO().verificarSeEhFeriado(this.agenda.getDataAtendimento(), this.agenda.getDataAtendimentoFinal(), tipoData);
+        retorno = new FeriadoDAO().verificarSeEhFeriadoDataUnica(this.agenda.getDataAtendimento());
 
         return retorno;
     }
 
-    public Boolean verificarSeTemBloqueio() throws ProjetoException {
+    public Boolean verificarSeTemBloqueioDataUnica() throws ProjetoException {
         Boolean retorno = false;
 
-        retorno = new BloqueioDAO().verificarBloqueioProfissional(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
-                this.agenda.getDataAtendimentoFinal(), this.agenda.getTurno(), tipoData);
+        retorno = new BloqueioDAO().verificarBloqueioProfissionalDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
+                this.agenda.getTurno());
 
         return retorno;
     }
 
-    public Boolean verificarSeExisteTipoAtendimentoEspecifico() throws ProjetoException {
+    public Boolean verificarSeTemBloqueioIntervaloDeDatas() throws ProjetoException {
+        Boolean retorno = false;
+
+        retorno = new BloqueioDAO().verificarBloqueioProfissionalDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
+                this.agenda.getTurno());
+
+        return retorno;
+    }
+
+    public Boolean verificarSeExisteTipoAtendimentoEspecificoDataUnica() throws ProjetoException {
         Boolean retorno = false;
 
         retorno = new ConfigAgendaDAO().verificarSeExisteTipoAtendimentoEspecificoDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
-                this.agenda.getTurno(), tipoData);
+                this.agenda.getTurno());
 
         return retorno;
     }
@@ -230,21 +241,79 @@ public class AgendaController implements Serializable {
 
     public void preparaConfirmar() throws ProjetoException {
 
-        if (agenda.getMax() == 0) {
-            JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
-        } else if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
-            addListaNovosAgendamentos();
-            agendamentosConfirmados = true;
+         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
+             if (agenda.getMax() == 0) {
+                 JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
+             }else {
+                 addListaNovosAgendamentos();
+                 agendamentosConfirmados = true;
+             }
         }
         if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
-            verAgendaIntervalo();
-            agendamentosConfirmados = true;
+
+            List<Date> listaAgendamentoPermitidos = new ArrayList<>();
+
+            Date dataInicio = agenda.getDataAtendimento();
+            Date dataFinal = agenda.getDataAtendimentoFinal();
+
+            if(verAgendaIntervalo()){
+
+                listaNaoPermitidosIntervaloDeDatas = listarDatasBloqueadas(dataInicio, dataFinal);
+
+                listaNaoPermitidosIntervaloDeDatas = listarDatasComFeriado(listaNaoPermitidosIntervaloDeDatas, dataInicio, dataFinal);
+
+                    while (dataInicio.before(dataFinal) || dataInicio.equals(dataFinal)) {
+                        int contador = 0;
+                        Boolean podeAdicionar = false;
+                        for(int i=0; i<listaNaoPermitidosIntervaloDeDatas.size(); i++) {
+                            if (!dataInicio.equals(listaNaoPermitidosIntervaloDeDatas.get(i))) {
+                                contador++;
+                            }
+                        }
+                        if(contador == listaNaoPermitidosIntervaloDeDatas.size()){
+                            for(int i=0; i<this.listaNovosAgendamentos.size(); i++) {
+                                if (dataInicio.equals(this.listaNovosAgendamentos.get(i).getDataAtendimento())) {
+                                   podeAdicionar = true;
+                                }
+                            }
+
+                            if(podeAdicionar) {
+                                listaAgendamentoPermitidos.add(dataInicio);
+                            }
+                        }
+                        dataInicio = DataUtil.adicionarDiasAData(dataInicio, 1);
+                    }
+                }
+                this.listaNovosAgendamentos = new ArrayList<>();
+                agendamentosConfirmados = true;
+
+                for(int j=0; j<listaAgendamentoPermitidos.size(); j++){
+                    agenda.setDataAtendimento(listaAgendamentoPermitidos.get(j));
+                    listaNovosAgendamentos.add(agenda);
+                }
         }
-
-
     }
 
-    public void verAgendaIntervalo() throws ProjetoException {
+    public List<Date> listarDatasBloqueadas(Date dataInicio, Date dataFinal) throws ProjetoException {
+        BloqueioDAO bloqueioDAO = new BloqueioDAO();
+
+        return bloqueioDAO.verificarBloqueioProfissionalIntervaloDeDatas(
+                agenda.getProfissional().getId(), dataInicio, dataFinal, agenda.getTurno());
+    }
+
+    public List<Date> listarDatasComFeriado(List<Date> listaDatasBloqueadas, Date dataInicio, Date dataFinal) throws ProjetoException {
+        FeriadoDAO feriadoDAO = new FeriadoDAO();
+
+        List<Date> listaFeriado = feriadoDAO.verificarSeEhFeriadoIntervaloDeDatas(dataInicio, dataFinal);
+
+        for(int i =0; i<listaFeriado.size(); i++){
+            listaDatasBloqueadas.add(listaFeriado.get(i));
+        }
+
+        return listaDatasBloqueadas;
+    }
+
+    public Boolean verAgendaIntervalo() throws ProjetoException {
         if (this.agenda.getPaciente() == null
                 || this.agenda.getPrograma() == null
                 || this.agenda.getGrupo() == null
@@ -254,8 +323,9 @@ public class AgendaController implements Serializable {
                 || (this.agenda.getProfissional() == null && this.agenda
                 .getEquipe() == null)) {
             JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
-            return;
+            return false;
         } else {
+            Boolean retorno = false;
 
             boolean dtEspecifica = false;
             boolean diaSem = false;
@@ -327,6 +397,11 @@ public class AgendaController implements Serializable {
                 JSFUtil.adicionarMensagemErro("Não foi possível agendar, pois tem horários lotados! Clique em Visualizar Ocupados para ver.",
                         "Erro");
             }
+            else{
+                retorno = true;
+            }
+
+        return retorno;
 
         }
     }
@@ -802,4 +877,11 @@ public class AgendaController implements Serializable {
         this.dataAtual = dataAtual;
     }
 
+    public List<Date> getListaNaoPermitidosIntervaloDeDatas() {
+        return listaNaoPermitidosIntervaloDeDatas;
+    }
+
+    public void setListaNaoPermitidosIntervaloDeDatas(List<Date> listaNaoPermitidosIntervaloDeDatas) {
+        this.listaNaoPermitidosIntervaloDeDatas = listaNaoPermitidosIntervaloDeDatas;
+    }
 }

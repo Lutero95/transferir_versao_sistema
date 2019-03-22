@@ -84,4 +84,15 @@ public final class DataUtil {
         return mes;
     }
 
+    public static Date adicionarDiasAData(Date data, Integer qtdDias){
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(data);
+        c.add(Calendar.DATE, +qtdDias);
+
+        data = c.getTime();
+
+        return data;
+    }
+
 }

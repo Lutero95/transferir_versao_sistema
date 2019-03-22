@@ -1335,7 +1335,7 @@ public class ConfigAgendaDAO {
     }
 
     public Boolean verificarSeExisteTipoAtendimentoEspecificoDataUnica(
-            Long codProfissional, java.util.Date dataAtendimento, String turno, String tipoData)
+            Long codProfissional, java.util.Date dataAtendimento, String turno)
             throws ProjetoException {
 
         Boolean retorno = false;

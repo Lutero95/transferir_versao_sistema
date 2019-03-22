@@ -16,9 +16,11 @@ import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
+import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.BloqueioBean;
 
 import javax.faces.context.FacesContext;
+import javax.xml.crypto.Data;
 
 public class BloqueioDAO {
     Connection con = null;
@@ -222,8 +224,8 @@ public class BloqueioDAO {
         return bloqueio;
     }
 
-    public Boolean verificarBloqueioProfissional(
-            Long codProfissional, Date dataAtendimento, Date dataAtendimentoFinal, String turno, String tipoData)
+    public Boolean verificarBloqueioProfissionalDataUnica(
+            Long codProfissional, Date dataAtendimento, String turno)
             throws ProjetoException {
 
         Boolean retorno = false;
@@ -232,14 +234,7 @@ public class BloqueioDAO {
                 "f.descfuncionario, f.cpf, f.cns, f.codprocedimentopadrao " +
                 "FROM hosp.bloqueio_agenda b " +
                 "LEFT JOIN acl.funcionarios f ON (b.codmedico = f.id_funcionario) " +
-                "WHERE codmedico = ? AND turno = ?";
-
-        if(tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
-            sql = sql + " AND dataagenda = ?";
-        }
-        if(tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
-            sql = sql + " AND dataagenda >= ? AND dataagenda <= ?";
-        }
+                "WHERE codmedico = ? AND turno = ? AND dataagenda = ?";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -247,9 +242,6 @@ public class BloqueioDAO {
             stm.setLong(1, codProfissional);
             stm.setString(2, turno.toUpperCase());
             stm.setDate(3, new java.sql.Date(dataAtendimento.getTime()));
-            if(tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
-                stm.setDate(4, DataUtil.converterDateUtilParaDateSql(dataAtendimentoFinal));
-            }
 
             ResultSet rs = stm.executeQuery();
 
@@ -268,6 +260,46 @@ public class BloqueioDAO {
             }
         }
         return retorno;
+    }
+
+    public List<Date> verificarBloqueioProfissionalIntervaloDeDatas(
+            Long codProfissional, Date dataAtendimento, Date dataAtendimentoFinal, String turno)
+            throws ProjetoException {
+
+        Boolean retorno = false;
+        List<Date> lista = new ArrayList<>();
+
+        String sql = "SELECT dataagenda " +
+                "FROM hosp.bloqueio_agenda b " +
+                "LEFT JOIN acl.funcionarios f ON (b.codmedico = f.id_funcionario) " +
+                "WHERE codmedico = ? AND turno = ? AND dataagenda >= ? AND dataagenda <= ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setLong(1, codProfissional);
+            stm.setString(2, turno.toUpperCase());
+            stm.setDate(3, DataUtil.converterDateUtilParaDateSql(dataAtendimento));
+            stm.setDate(4, DataUtil.converterDateUtilParaDateSql(dataAtendimentoFinal));
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                Date data = rs.getDate("dataagenda");
+                lista.add(data);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
     }
 
 }
