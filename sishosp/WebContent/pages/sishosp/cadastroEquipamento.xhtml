@@ -28,7 +28,7 @@
 							<b:label value="Descrição" severity="info" />
 
 							<b:inputText
-								value="#{EquipamentoController.equipamento.descEquipamento}"
+								value="#{EquipamentoController.equipamento.descEquipamento}" validator="CaractereEmBrancoValidator"
 								class="form-control" id="inputname" required="true"
 								requiredMessage="Descrição: Campo obrigatório!"
 								validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">

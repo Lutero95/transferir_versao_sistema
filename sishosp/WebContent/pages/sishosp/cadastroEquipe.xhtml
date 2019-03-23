@@ -27,7 +27,7 @@
 						<b:column span="12" class="label-position">
 							<b:label for="inputnome" value="Descrição" severity="info" />
 
-							<b:inputText
+							<b:inputText validator="CaractereEmBrancoValidator"
 								value="#{EquipeController.equipe.descEquipe}"
 								class="form-control" id="inputname" required="true"
 								requiredMessage="Descrição: Campo obrigatório!"

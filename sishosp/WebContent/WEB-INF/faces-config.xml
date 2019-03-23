@@ -4,4 +4,9 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
 	version="2.2">
 
+	<validator>
+		<validator-id>CaractereEmBrancoValidator</validator-id>
+		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CaractereEmBrancoValidator</validator-class>
+	</validator>
+
 </faces-config>

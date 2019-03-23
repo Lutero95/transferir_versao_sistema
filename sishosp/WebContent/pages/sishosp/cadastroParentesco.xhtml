@@ -28,7 +28,7 @@
                         <b:column span="12" class="label-position">
 							<b:label for="inputname" value="Descrição" severity="info" />
 
-                            <b:inputText value="#{ParentescoController.parentesco.descParentesco}"
+                            <b:inputText value="#{ParentescoController.parentesco.descParentesco}" validator="CaractereEmBrancoValidator"
                                          class="form-control" id="inputname" required="true"
                                          validatorMessage="Nome deve conter entre 2 e 50 caracteres."
                                          requiredMessage="Descrição: Campo obrigatório!">

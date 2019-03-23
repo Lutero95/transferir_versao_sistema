@@ -28,7 +28,7 @@
 								<b:label for="inputdesc" value="Descrição" severity="info" />
 
                         <b:inputText value="#{TipoAtendimentoController.tipoAtendimento.descTipoAt}"
-                                     id="inputdesc" required="true"
+                                     id="inputdesc" required="true" validator="CaractereEmBrancoValidator"
                                      requiredMessage="Descrição: Campo obrigatório!"
                                      validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">
                             <f:validateLength minimum="2" maximum="50"/>

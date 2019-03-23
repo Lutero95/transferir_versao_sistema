@@ -26,7 +26,7 @@
 						<b:column span="5" class="label-position">
 							<b:label for="inputbairro" value="Bairro" severity="info" />
 								
-							<b:inputText value="#{EnderecoController.bairro}"
+							<b:inputText value="#{EnderecoController.bairro}" validator="CaractereEmBrancoValidator"
 								class="form-control" id="inputbairro" required="true"
 								validatorMessage="Bairro deve conter entre 2 e 50 caracteres."
 								requiredMessage="Bairro: Campo obrigatório!">

@@ -28,7 +28,7 @@
 							<b:label for="inputname" value="Município" severity="info" />
 
 							<b:inputText value="#{EnderecoController.endereco.municipio}"
-								class="form-control" id="inputname" required="false"
+								class="form-control" id="inputname" required="false" validator="CaractereEmBrancoValidator"
 								validatorMessage="Nome deve conter entre 2 e 40 caracteres."
 								requiredMessage="Município: Campo obrigatório!">
 								<f:validateLength minimum="2" maximum="40" />

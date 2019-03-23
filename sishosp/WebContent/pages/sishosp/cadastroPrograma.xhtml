@@ -27,7 +27,7 @@
 							<b:column span="12" class="label-position">
 							<b:label for="inputname" value="Descrição" severity="info" />
 
-								<b:inputText value="#{ProgramaController.prog.descPrograma}"
+								<b:inputText value="#{ProgramaController.prog.descPrograma}" validator="CaractereEmBrancoValidator"
 									class="form-control" id="inputname" required="true"
 									requiredMessage="Descrição: Campo obrigatório!"
 									validatorMessage="Escolaridade deve conter entre 2 e 50 caracteres.">

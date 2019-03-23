@@ -27,7 +27,7 @@
 						<b:column span="12" class="label-position">
 							<b:label for="inputname" value="Descrição" severity="info" />
 
-							<b:inputText
+							<b:inputText validator="CaractereEmBrancoValidator"
 								value="#{EscolaridadeController.escolaridade.descescolaridade}"
 								class="form-control" id="inputname" required="true"
 								validatorMessage="Escolaridade deve conter entre 2 e 50 caracteres."

@@ -53,7 +53,7 @@
 								<b:label for="nome" value="Nome" severity="info" />
 
 								<b:inputText value="#{MBFuncionarios.profissional.nome}"
-									id="nome" required="true"
+									id="nome" required="true" validator="CaractereEmBrancoValidator"
 									requiredMessage="Nome: Campo obrigatório!"
 									validatorMessage="Nome deve conter entre 2 e 100 caracteres."
 									class="form-control">
@@ -217,7 +217,7 @@
 
 								<p:outputPanel id="outProcP2">
 									<b:inputText value="#{MBFuncionarios.profissional.cns}"
-										class="form-control" required="true"
+										class="form-control" required="true" validator="CaractereEmBrancoValidator"
 										requiredMessage="CNS: Campo obrigátorio!">
 										<p:ajax
 											listener="#{MBFuncionarios.validaCns(MBFuncionarios.profissional.cns)}"

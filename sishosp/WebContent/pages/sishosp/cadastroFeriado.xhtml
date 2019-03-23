@@ -37,7 +37,7 @@
 						<b:column span="12" class="label-position">
 							<b:label for="inputname" value="Descrição" severity="info" />
 
-							<b:inputText value="#{FeriadoController.feriado.descFeriado}"
+							<b:inputText value="#{FeriadoController.feriado.descFeriado}" validator="CaractereEmBrancoValidator"
 								class="form-control" required="true"
 								requiredMessage="Descrição: Campo obrigatório!"
 								validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">

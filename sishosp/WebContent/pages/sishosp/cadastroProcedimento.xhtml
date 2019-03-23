@@ -29,7 +29,7 @@
 						<b:column span="11" class="label-position">
 							<b:label value="Descrição:" severity="info" />
 
-							<b:inputText value="#{ProcedimentoController.proc.nomeProc}"
+							<b:inputText value="#{ProcedimentoController.proc.nomeProc}" validator="CaractereEmBrancoValidator"
 								required="true" requiredMessage="Descrição: Campo obrigatório!"
 								validatorMessage="Descrição deve conter entre 2 e 80 caracteres."
 								id="incod">

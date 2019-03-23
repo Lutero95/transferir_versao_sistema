@@ -26,7 +26,7 @@
                         <b:column span="12" class="label-position new-col12">
                             <b:label value="Nome Principal" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.nomeEmpresa}"
+                            <b:inputText value="#{EmpresaController.empresa.nomeEmpresa}" validator="CaractereEmBrancoValidator"
                                          class="form-control" required="true"
                                          requiredMessage="Nome Principal: Campo obrigatório!"
                                          validatorMessage="Nome Principal deve conter entre 2 e 100 caracteres.">
@@ -41,7 +41,7 @@
                             <b:label value="Nome Fantasia" severity="info"/>
 
                             <b:inputText value="#{EmpresaController.empresa.nomeFantasia}"
-                                         class="form-control" required="true"
+                                         class="form-control" required="true" validator="CaractereEmBrancoValidator"
                                          requiredMessage="Nome Fantasia: Campo obrigatório!"
                                          validatorMessage="Nome Fantasia deve conter entre 2 e 100 caracteres.">
                                 <f:validateLength minimum="2" maximum="100"/>
@@ -53,7 +53,7 @@
                         <b:column span="5" class="label-position new-col5">
                             <b:label value="CNPJ" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.cnpj}"
+                            <b:inputText value="#{EmpresaController.empresa.cnpj}" validator="CaractereEmBrancoValidator"
                                          class="form-control" required="true"
                                          requiredMessage="CNPJ: Campo obrigatório!">
                             </b:inputText>
@@ -62,7 +62,7 @@
                         <b:column span="5" class="label-position new-col5">
                             <b:label value="CEP" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.cep}"
+                            <b:inputText value="#{EmpresaController.empresa.cep}" validator="CaractereEmBrancoValidator"
                                          class="form-control" required="true"
                                          requiredMessage="CEP: Campo obrigatório!">
                             </b:inputText>
@@ -73,7 +73,7 @@
                         <b:column span="5" class="label-position new-col5">
                             <b:label value="Rua" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.rua}"
+                            <b:inputText value="#{EmpresaController.empresa.rua}" validator="CaractereEmBrancoValidator"
                                          class="form-control" required="true"
                                          requiredMessage="Rua: Campo obrigatório!">
                             </b:inputText>
@@ -82,7 +82,7 @@
                         <b:column span="5" class="label-position new-col5">
                             <b:label value="Bairro" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.bairro}"
+                            <b:inputText value="#{EmpresaController.empresa.bairro}" validator="CaractereEmBrancoValidator"
                                          class="form-control" required="true"
                                          requiredMessage="Bairro: Campo obrigatório!">
                             </b:inputText>
@@ -102,7 +102,7 @@
                         <b:column span="5" class="label-position new-col5">
                             <b:label value="Complemento" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.complemento}"
+                            <b:inputText value="#{EmpresaController.empresa.complemento}" validator="CaractereEmBrancoValidator"
                                          class="form-control">
                             </b:inputText>
                         </b:column>
@@ -114,7 +114,7 @@
                         <b:column span="5" class="label-position new-col5">
                             <b:label value="Cidade" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.cidade}"
+                            <b:inputText value="#{EmpresaController.empresa.cidade}" validator="CaractereEmBrancoValidator"
                                          class="form-control" required="true"
                                          requiredMessage="Cidade: Campo obrigatório!">
                             </b:inputText>

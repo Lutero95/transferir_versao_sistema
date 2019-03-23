@@ -28,7 +28,7 @@
 						<b:column span="12" class="label-position">
 							<b:label for="inputname" value="Descrição" severity="info" />
 
-							<b:inputText value="#{RecursoController.recurso.descRecurso}"
+							<b:inputText value="#{RecursoController.recurso.descRecurso}" validator="CaractereEmBrancoValidator"
 								class="form-control" id="inputname" required="true"
 								validatorMessage="Descrição deve conter entre 2 e 50 caracteres."
 								requiredMessage="Descrição: Campo obrigatório!">

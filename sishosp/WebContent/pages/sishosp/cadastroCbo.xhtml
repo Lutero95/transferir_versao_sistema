@@ -26,7 +26,7 @@
 						<b:column span="3" class="label-position">
 							<b:label value="Código" severity="info" />
 
-							<b:inputText value="#{CboController.cbo.codigo}"
+							<b:inputText value="#{CboController.cbo.codigo}" validator="CaractereEmBrancoValidator"
 								class="form-control" required="true" id="incCod"
 								requiredMessage="Código: Campo obrigatório!" />
 						</b:column>
@@ -38,7 +38,7 @@
 						<b:column span="12" class="label-position">
 							<b:label value="Descrição" severity="info" />
 
-							<b:inputText value="#{CboController.cbo.descCbo}"
+							<b:inputText value="#{CboController.cbo.descCbo}" validator="CaractereEmBrancoValidator"
 								class="form-control" required="true" id="incDesc"
 								requiredMessage="Descrição: Campo obrigatório!"
 								validatorMessage="Descrição deve conter entre 2 e 100 caracteres.">
