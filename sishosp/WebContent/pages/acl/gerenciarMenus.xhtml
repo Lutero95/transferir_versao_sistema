@@ -70,21 +70,21 @@
 						<b:column span="12" class="label-position3">
 							<p:dataTable id="tabela" value="#{menuMB.listaMenusGeral}"
 								var="tab" paginator="true" paginatorPosition="bottom" rows="15"
-								emptyMessage="Nenhum dado encontrado.">
+								emptyMessage="Nenhum dado encontrado." responsive="true">
 
-								<p:column headerText="Descrição" style="text-align:left;">
+								<p:column headerText="Descrição" style="text-align:left;" class="col-desc-funcao">
 									<p:outputLabel value="#{tab.descricao}" class="break-word" />
 								</p:column>
 
-								<p:column headerText="Tipo" width="10%">
+								<p:column headerText="Tipo" width="10%" class="mobile-col">
 									<p:outputLabel value="#{tab.tipo}" class="break-word" />
 								</p:column>
 
-								<p:column headerText="Código" width="75">
+								<p:column headerText="Código" width="75" class="mobile-col">
 									<p:outputLabel value="#{tab.codigo}" class="break-word" />
 								</p:column>
 
-								<p:column headerText="Índice" width="65">
+								<p:column headerText="Índice" width="65" class="mobile-col">
 									<p:outputLabel value="#{tab.indice}" class="break-word" />
 								</p:column>
 

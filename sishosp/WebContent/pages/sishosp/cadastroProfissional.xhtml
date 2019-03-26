@@ -235,12 +235,13 @@
 						<b:row>
 
 							<b:column span="2" class="label-position">
-								<b:label value="Grupo" severity="info" />
+								<p:outputLabel value="Grupo:" style="margin-left:-15px; margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
 								<p:commandButton process="@this" size="sm" immediate="true"
 									tooltip="Incluir Profissional" icon="ui-icon-plus"
 									class="new-btn-acao-table acao-editar"
-									style="margin-left: 35px;"
+									style="margin-left: 20px;"
 									oncomplete="PF('dlgConsuGrupos').show();" />
 							</b:column>
 
@@ -470,7 +471,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar C.B.O." widgetVar="dlgConsulCbo"
-			modal="true">
+			modal="true" styleClass="topDialog">
 			<h:form id="formConsulCbo">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					value="#{CboController.listarCbos()}" var="cbo" page-length="5"
@@ -532,7 +533,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Procedimento 2" widgetVar="dlgConsulProc2"
-			modal="true">
+			modal="true" styleClass="topDialog">
 			<h:form id="formConsulProc2">
 				<p:outputPanel autoUpdate="true">
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -564,7 +565,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupos"
-			modal="true">
+			modal="true" styleClass="topDialog">
 			<h:form id="formConsuGrops">
 				<p:outputPanel autoUpdate="true">
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"

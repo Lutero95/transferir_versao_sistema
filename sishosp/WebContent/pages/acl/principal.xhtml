@@ -168,10 +168,10 @@
 
 					<b:column span="12" class="label-position1">
 
-						<p:dataTable value="#{MBFuncionarios.permsUsuarioLogado}"
+						<p:dataTable value="#{MBFuncionarios.permsUsuarioLogado}" responsive="true"
 							paginator="true" paginatorPosition="bottom" rows="15" var="tab">
 
-							<p:column headerText="ID" width="45">
+							<p:column headerText="ID" width="45" class="mobile-col">
 								<p:outputLabel value="#{tab.idPermissao}" class="break-word" />
 							</p:column>
 
@@ -179,7 +179,7 @@
 								<p:outputLabel value="#{tab.descPermissao}" class="break-word"/>
 							</p:column>
 
-							<p:column headerText="TIPO" width="8%">
+							<p:column headerText="TIPO" width="8%" class="mobile-col">
 								<p:outputLabel value="#{tab.menu.tipo}" class="break-word"/>
 							</p:column>
 
@@ -187,15 +187,15 @@
 								<p:outputLabel value="#{tab.menu.url}" class="break-word"/>
 							</p:column>
 
-							<p:column headerText="CÓDIGO">
+							<p:column headerText="CÓDIGO" class="mobile-col">
 								<p:outputLabel value="#{tab.codigoFuncao}" class="break-word"/>
 							</p:column>
 
-							<p:column headerText="SISTEMA" width="14%">
+							<p:column headerText="SISTEMA" width="14%" class="mobile-col">
 								<p:outputLabel value="#{tab.descSistema}" class="break-word"/>
 							</p:column>
 
-							<p:column headerText="DESCRIÇÃO ROTINA">
+							<p:column headerText="DESCRIÇÃO ROTINA" class="mobile-col">
 								<p:outputLabel value="#{tab.descRotina}" class="break-word"/>
 							</p:column>
 

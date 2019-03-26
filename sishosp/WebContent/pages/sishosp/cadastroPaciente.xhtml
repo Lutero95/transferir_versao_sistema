@@ -30,7 +30,8 @@
 							<b:column span="6" class="label-position new-label-nome">
 								<b:label for="inputname" value="Nome" severity="info" />
 
-								<b:inputText value="#{PacienteController.paciente.nome}" validator="CaractereEmBrancoValidator"
+								<b:inputText value="#{PacienteController.paciente.nome}" 
+									validator="CaractereEmBrancoValidator"
 									class="form-control" id="inputname" required="true"
 									validatorMessage="Nome deve conter entre 2 e 60 caracteres."
 									requiredMessage="Nome: Campo obrigatório!">
@@ -84,7 +85,7 @@
 										severity="info" id="idnomesociallabel" class="label-nomeSocial" 
 										rendered="#{PacienteController.paciente.necessitaNomeSocial == true}" />
 
-									<b:inputText value="#{PacienteController.paciente.nomeSocial}" validator="CaractereEmBrancoValidator"
+									<b:inputText value="#{PacienteController.paciente.nomeSocial}"
 										rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
 										class="form-control" id="inputnamesocial" required="true"
 										validatorMessage="Nome deve conter entre 2 e 60 caracteres."
@@ -165,7 +166,7 @@
 							<b:column span="5" class="label-position new-col5">
 								<b:label for="mae" value="Mãe" severity="info" />
 
-								<b:inputText value="#{PacienteController.paciente.nomeMae}" validator="CaractereEmBrancoValidator"
+								<b:inputText value="#{PacienteController.paciente.nomeMae}"
 									class="form-control" id="mae" required="true"
 									requiredMessage="Mãe: Campo obrigatório!"
 									validatorMessage="Nome da Mãe deve conter entre 2 e 60 caracteres.">
@@ -216,7 +217,7 @@
 										styleClass="table table-hover" id="tabela"
 										value="#{PacienteController.paciente.listaTelefones}"
 										var="tab" paginator="true" paginatorPosition="bottom" rows="5"
-										resizableColumns="true">
+										resizableColumns="true" responsive="true">
 
 										<p:column headerText="Telefone" style="font-weight:bold;"
 											width="35%">
@@ -278,7 +279,7 @@
 
 								<b:inputText
 									value="#{PacienteController.paciente.endereco.logradouro}"
-									required="true" validator="CaractereEmBrancoValidator"
+									required="true"
 									requiredMessage="Logradouro: Campo obrigatório!"
 									class="form-control" id="inputrua"
 									validatorMessage="Logradouro deve conter entre 2 e 50 caracteres.">
@@ -916,7 +917,7 @@
 		</h:form>
 
 
-		<p:dialog widgetVar="dlgbuscaescola" modal="true" resizable="false">
+		<p:dialog widgetVar="dlgbuscaescola" modal="true" resizable="false" styleClass="topDialog">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -957,7 +958,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgbuscaescolaridade" modal="true" resizable="false">
+		<p:dialog widgetVar="dlgbuscaescolaridade" modal="true" resizable="false" styleClass="topDialog">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -999,7 +1000,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgbuscaprofissao" modal="true" resizable="false">
+		<p:dialog widgetVar="dlgbuscaprofissao" modal="true" resizable="false" styleClass="topDialog">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1042,7 +1043,7 @@
 		</p:dialog>
 
 
-		<p:dialog widgetVar="dlgbuscaencaminhado" modal="true" resizable="false">
+		<p:dialog widgetVar="dlgbuscaencaminhado" modal="true" resizable="false" styleClass="topDialog">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1083,7 +1084,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgbuscacomochegou" modal="true" resizable="false">
+		<p:dialog widgetVar="dlgbuscacomochegou" modal="true" resizable="false" styleClass="topDialog">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1126,7 +1127,7 @@
 
 
 		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscaatendimento"
-			width="550px" height="200px" modal="true" resizable="false">
+			width="550px" height="200px" modal="true" resizable="false" styleClass="topDialog">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1181,7 +1182,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgTelefone"
+		<p:dialog widgetVar="dlgTelefone" styleClass="topDialog"
 			header="Adicionar telefones" width="auto" height="auto"
 			modal="true" resizable="false">
 
@@ -1223,7 +1224,7 @@
 								<b:label value="Responsável " severity="info" class="label-add-tel"/>
 								
 							<b:inputText class="form-control label-tel" id="inputResponsavel"
-								required="true" validator="CaractereEmBrancoValidator"
+								required="true"
 								requiredMessage=" Responsável: Campo obrigatório!"
 								value="#{PacienteController.telefone.responsavel}" />
 						</b:column>

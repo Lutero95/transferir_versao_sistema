@@ -138,7 +138,7 @@
 							<b:column span="3" class="new-span2">
 								<b:commandButton value="Inserir" style="margin-top:5px;"
 									id="btnInserir" immediate="true"
-									class="btn-acao-table acao-confirmar"
+									class="btn-acao-table acao-confirmar btn-new-padding2"
 									update=":formGerenPaci, :frmEquipamentos:msgPagina"
 									disabled="#{GerenciarPacienteController.busca == 'N'}"
 									icon="glyphicon-plus"
@@ -149,7 +149,7 @@
 								<b:commandButton value="Alterar" style="margin-top:5px;"
 									disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 									id="btnAlterar" immediate="true"
-									class="btn-acao-table acao-altera2"
+									class="btn-acao-table acao-altera2 btn-new-padding2"
 									update=":formGerenPaci, :frmEquipamentos:msgPagina"
 									icon="glyphicon-pencil"
 									action="#{GerenciarPacienteController.redirectAlteracao()}" />
@@ -159,7 +159,7 @@
 								<b:commandButton value="Renovar" style="margin-top:5px;"
 									disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 									id="btnRenovar" immediate="true"
-									class="btn-acao-table acao-limpar"
+									class="btn-acao-table acao-limpar btn-new-padding2"
 									update=":formGerenPaci, :frmEquipamentos:msgPagina"
 									icon="glyphicon glyphicon-refresh"
 									action="#{GerenciarPacienteController.redirectRenovacao()}" />
@@ -169,7 +169,7 @@
 								<b:commandButton value="Desligar" style="margin-top:5px;"
 									disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 									id="btnDesligar" immediate="true"
-									class="btn-acao-table acao-desligar"
+									class="btn-acao-table acao-desligar btn-new-padding2"
 									update=":formGerenPaci, :frmEquipamentos:msgPagina"
 									icon="glyphicon glyphicon-remove"
 									action="#{GerenciarPacienteController.inicioDesligar()}" />

@@ -483,7 +483,7 @@
 
                     <b:row>
                         <b:column span="12">
-                            <p:dataTable id="dtNovosAg" resizableColumns="true"
+                            <p:dataTable id="dtNovosAg" resizableColumns="true" responsive="true"
                                          value="#{AgendaController.listaNovosAgendamentos}" var="agend"
                                          emptyMessage="Sem registros.">
                                 <p:column headerText="Data">
@@ -533,7 +533,7 @@
         </div>
 
         <p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
-                  modal="true" width="750px" height="400px">
+                  modal="true" width="750px" height="400px" styleClass="topDialog">
             <h:form id="formConsuPac">
                 <p:growl id="msgC"/>
 
@@ -590,7 +590,7 @@
         </p:dialog>
 
         <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
-                  modal="true">
+                  modal="true" styleClass="topDialog">
             <h:form id="formConsuProg">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                              value="#{ProgramaController.listaProgramasUsuario()}" var="prog"
@@ -624,7 +624,7 @@
         </p:dialog>
 
         <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-                  modal="true">
+                  modal="true" styleClass="topDialog">
             <h:form id="formConsuGrop">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                              value="#{AgendaController.listaGruposPorPrograma()}" id="dtGrupo"
@@ -665,7 +665,7 @@
         </p:dialog>
 
         <p:dialog header="Consultar Tipos de Atendimento"
-                  widgetVar="dlgConsuTipoAt" modal="true">
+                  widgetVar="dlgConsuTipoAt" modal="true" styleClass="topDialog">
             <h:form id="formConsuTipoAt">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                              value="#{AgendaController.listaTipoAtendimentoPorGrupo()}"
@@ -697,7 +697,7 @@
         </p:dialog>
 
         <p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
-                  modal="true">
+                  modal="true" styleClass="topDialog">
             <h:form id="formConsuEquipe">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                              value="#{AgendaController.listaEquipePorTipoAtendimento()}"
@@ -730,7 +730,7 @@
         </p:dialog>
 
         <p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
-                  modal="true">
+                  modal="true" styleClass="topDialog">
             <h:form id="formConsuProf">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                              value="#{AgendaController.listaProfissionalPorGrupo()}" id="dtProf"
@@ -763,7 +763,7 @@
         </p:dialog>
 
         <p:dialog header="Agendados na Data" widgetVar="dlgAgendadosData"
-                  modal="true">
+                  modal="true" styleClass="topDialog">
             <h:form id="formAgendadosData">
                 <p:panelGrid columns="2">
                     <h:outputLabel value="Agendados na Data" class="style-info"/>
@@ -797,7 +797,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Ocupados" widgetVar="dlgOcupados" modal="true">
+        <p:dialog header="Ocupados" widgetVar="dlgOcupados" modal="true" styleClass="topDialog">
             <h:form id="frmOcupados">
                 <p:panelGrid columns="1" styleClass="semBorda"
                              style="margin-top:25px">

@@ -71,18 +71,18 @@
 
 							<p:dataTable id="tabela" value="#{sistemaMB.listaSistemas}"
 								var="tab" paginator="true" paginatorPosition="bottom" rows="15"
-								emptyMessage="Nenhum dado encontrado.">
+								emptyMessage="Nenhum dado encontrado." responsive="true">
 
-								<p:column headerText="Descrição" style="text-align:left;">
+								<p:column headerText="Descrição" style="text-align:left;" class="col-desc-funcao">
 									<p:outputLabel value="#{tab.descricao}" class="break-word" />
 								</p:column>
 
-								<p:column headerText="Sigla" width="85">
+								<p:column headerText="Sigla" width="85" class="mobile-col">
 									<p:outputLabel value="#{tab.sigla.toUpperCase()}"
 										class="break-word" />
 								</p:column>
 
-								<p:column headerText="Versão" width="65">
+								<p:column headerText="Versão" width="65" class="mobile-col">
 									<p:outputLabel value="#{tab.versao}" class="break-word" />
 								</p:column>
 

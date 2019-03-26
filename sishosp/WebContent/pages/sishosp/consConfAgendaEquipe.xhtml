@@ -28,7 +28,7 @@
 					<p:outputPanel id="outGeral" autoUpdate="true">
 						<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dtProf"
 							value="#{ConfigAgendaController.listaEquipes}" var="equipe"
-							resizableColumns="true" selectionMode="single">
+							resizableColumns="true" selectionMode="single" responsive="true">
 
 							<h:column>
 								<f:facet name="header">
@@ -112,7 +112,7 @@
 
 						<br></br>
 
-						<p:dataTable id="dtHorarios"
+						<p:dataTable id="dtHorarios" responsive="true"
 							value="#{ConfigAgendaController.listaHorariosEquipe}"
 							var="config" resizableColumns="true" paginator="true" rows="10"
 							emptyMessage="Não existe nenhum horário cadastrado!">

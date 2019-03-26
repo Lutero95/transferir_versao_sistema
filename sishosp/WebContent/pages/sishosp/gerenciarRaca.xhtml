@@ -25,13 +25,12 @@
 					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 				</b:commandButton>
 
-
 				<div align="center">
 					<b:messages value="Error" id="msgPagina"></b:messages>
 				</div>
 
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela" var="tab"
-					value="#{RacaController.listaRacas()}">
+					value="#{RacaController.listaRacas()}" responsive="true">
 					<h:column>
 						<f:facet name="header">
                         Descrição

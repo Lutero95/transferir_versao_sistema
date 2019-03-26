@@ -27,7 +27,7 @@
 					<p:panel id="pnlprincipal" style="border: none;">
 
 						<b:row>
-							<b:column span="2" class="label-position2">
+							<b:column span="2" class="label-position2 new-position2">
 								<p:commandButton value="Nova Função" icon="ui-icon-plus"
 									style="margin-top:4px; margin-bottom:10px;"
 									class="btn-acao-table acao-confirmar"
@@ -49,17 +49,17 @@
 
 							<p:dataTable id="tabela" value="#{funcaoMB.listaFuncoes}"
 								var="tab" paginator="true" paginatorPosition="bottom" rows="15"
-								emptyMessage="Nenhum dado encontrado.">
+								emptyMessage="Nenhum dado encontrado." responsive="true">
 
-								<p:column headerText="Descrição" style="text-align:left;">
+								<p:column headerText="Descrição" style="text-align:left;" class="col-desc-funcao">
 									<p:outputLabel value="#{tab.descricao}" class="break-word" />
 								</p:column>
 
-								<p:column headerText="Código" width="75">
+								<p:column headerText="Código" width="75" class="mobile-col">
 									<p:outputLabel value="#{tab.codigo}" class="break-word" />
 								</p:column>
 
-								<p:column headerText="Sistema Associado" width="12%">
+								<p:column headerText="Sistema Associado" width="12%" class="mobile-col">
 									<p:outputLabel value="#{tab.descSistema}" class="break-word" />
 								</p:column>
 
@@ -97,7 +97,7 @@
 			</div>
 		</h:form>
 
-		<p:dialog header="Cadastrar Função" widgetVar="dlgCadFuncao"
+		<p:dialog header="Cadastrar Função" widgetVar="dlgCadFuncao" styleClass="topDialog3"
 			draggable="false" resizable="false" closable="true" modal="true"
 			width="600px" height="auto" showEffect="clip" hideEffect="clip">
 
@@ -180,7 +180,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Alterar Função" widgetVar="dlgAltFuncao"
+		<p:dialog header="Alterar Função" widgetVar="dlgAltFuncao" styleClass="topDialog"
 			draggable="false" resizable="false" closable="true" modal="true"
 			width="610px" height="auto" showEffect="clip" hideEffect="clip">
 
@@ -260,7 +260,7 @@
 		</p:dialog>
 
 		<p:dialog widgetVar="dlgExcFuncao" resizable="false" modal="true"
-			header="Excluir Função" showEffect="clip" hideEffect="clip">
+			header="Excluir Função" showEffect="clip" hideEffect="clip" styleClass="topDialog">
 
 			<h:form id="formCEF">
 

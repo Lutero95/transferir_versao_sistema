@@ -23,8 +23,6 @@
                                                  target="#{RecursoController.tipo}"/>
                     <p:tooltip for="btninc" value="Incluir"></p:tooltip>
                 </b:commandButton>
-                <br/>
-                <br/>
 
                 <div align="center">
                     <b:messages value="Error" id="msgPagina"></b:messages>
@@ -32,7 +30,7 @@
 
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela"
                              value="#{RecursoController.listarRecursos()}"
-                             var="tab">
+                             var="tab" responsive="true">
 
                     <h:column>
                         <f:facet name="header">
