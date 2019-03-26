@@ -56,7 +56,7 @@
                                                 minQueryLength="1" itemValue="#{theme}"
                                                 itemLabel="#{theme.nome}">
                                     <p:ajax event="itemSelect"
-                                            update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
+                                            update=":formAgendaMedica:outPa, :formAgendaMedica:outTipoAt, :formAgendaMedica:outProfissional, :formAgendaMedica:outEquipeRow"
                                             listener="#{AgendaController.limparNaBuscaPaciente()}"
                                             global="false"/>
 

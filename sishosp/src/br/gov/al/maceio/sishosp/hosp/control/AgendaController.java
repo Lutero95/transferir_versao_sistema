@@ -183,15 +183,6 @@ public class AgendaController implements Serializable {
         return retorno;
     }
 
-    public Boolean verificarSeTemBloqueioIntervaloDeDatas() throws ProjetoException {
-        Boolean retorno = false;
-
-        retorno = new BloqueioDAO().verificarBloqueioProfissionalDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
-                this.agenda.getTurno());
-
-        return retorno;
-    }
-
     public Boolean verificarSeExisteTipoAtendimentoEspecificoDataUnica() throws ProjetoException {
         Boolean retorno = false;
 
@@ -213,6 +204,42 @@ public class AgendaController implements Serializable {
         if(limite >= maximo){
             retorno = true;
         }
+
+        return retorno;
+    }
+
+    public Boolean verificarSeExisteTipoAtendimentoEspecificoIntervaloDeDatas(Date data) throws ProjetoException {
+        Boolean retorno = false;
+
+        retorno = new ConfigAgendaDAO().verificarSeExisteTipoAtendimentoEspecificoDataUnica(this.agenda.getProfissional().getId(), data,
+                this.agenda.getTurno());
+
+        return retorno;
+    }
+
+    public Boolean verificarSeAtingiuLimitePorTipoDeAtendimentoIntervaloDeDatas(Date data) throws ProjetoException {
+
+        Boolean retorno = false;
+
+        Integer limite = aDao.contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(this.agenda.getProfissional().getId(), data,
+                this.agenda.getTurno(), agenda.getTipoAt().getIdTipo());
+
+        Integer maximo = aDao.verQtdMaxAgendaEspec(this.agenda);
+
+        if(limite >= maximo){
+            retorno = true;
+        }
+
+        return retorno;
+    }
+
+    public Boolean podeAdicionarAposVerificarTipoDeAtendimentoIntervaloDeDatas(Date data) throws ProjetoException {
+
+        Boolean retorno = true;
+
+       if(verificarSeExisteTipoAtendimentoEspecificoIntervaloDeDatas(data)){
+           retorno = verificarSeAtingiuLimitePorTipoDeAtendimentoIntervaloDeDatas(data);
+       }
 
         return retorno;
     }
@@ -252,14 +279,12 @@ public class AgendaController implements Serializable {
         if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
 
             List<Date> listaAgendamentoPermitidos = new ArrayList<>();
-
             Date dataInicio = agenda.getDataAtendimento();
             Date dataFinal = agenda.getDataAtendimentoFinal();
 
             if(verAgendaIntervalo()){
 
                 listaNaoPermitidosIntervaloDeDatas = listarDatasBloqueadas(dataInicio, dataFinal);
-
                 listaNaoPermitidosIntervaloDeDatas = listarDatasComFeriado(listaNaoPermitidosIntervaloDeDatas, dataInicio, dataFinal);
 
                     while (dataInicio.before(dataFinal) || dataInicio.equals(dataFinal)) {
@@ -278,7 +303,13 @@ public class AgendaController implements Serializable {
                             }
 
                             if(podeAdicionar) {
-                                listaAgendamentoPermitidos.add(dataInicio);
+                                if(podeAdicionarAposVerificarTipoDeAtendimentoIntervaloDeDatas(dataInicio)){
+                                    listaAgendamentoPermitidos.add(dataInicio);
+                                }
+                                else{
+                                    listaNaoPermitidosIntervaloDeDatas.add(dataInicio);
+                                }
+
                             }
                         }
                         dataInicio = DataUtil.adicionarDiasAData(dataInicio, 1);
@@ -482,8 +513,6 @@ public class AgendaController implements Serializable {
     }
 
     public void limparNaBuscaPaciente() {
-        this.agenda.setPrograma(null);
-        this.agenda.setGrupo(null);
         this.agenda.setTipoAt(null);
         this.agenda.setProfissional(new FuncionarioBean());
         this.agenda.setEquipe(new EquipeBean());

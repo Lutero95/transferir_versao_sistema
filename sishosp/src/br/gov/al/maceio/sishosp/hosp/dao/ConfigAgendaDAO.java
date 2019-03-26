@@ -1347,7 +1347,7 @@ public class ConfigAgendaDAO {
 
         sql = "SELECT c.id_configagenda FROM hosp.config_agenda_profissional c " +
                 "LEFT JOIN hosp.config_agenda_profissional_dias d on (c.id_configagenda = d.id_config_agenda_profissional) " +
-                "LEFT JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda) " +
+                "JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda) " +
                 "WHERE c.codmedico = ? AND d.turno = ?  AND (d.data_especifica = ? OR d.dia = ? AND c.mes = ? AND c.ano = ?)";
 
         try {
