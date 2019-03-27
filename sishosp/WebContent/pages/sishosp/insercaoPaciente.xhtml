@@ -264,7 +264,7 @@
 
 								<b:column span="5"
 									class="label-position new-data-size new-comple1">
-									<b:label value="Profissional" id="prof"
+									<b:label value="Profissional" id="prof" class="fire-label"
 										rendered="#{InsercaoController.tipo == 'P'}" severity="info" />
 
 									<p:autoComplete rendered="#{InsercaoController.tipo == 'P'}"
@@ -285,7 +285,7 @@
 							<p:outputPanel id="outDetalhes">
 
 								<b:column span="2" class="label-position">
-									<b:label value="Especialidade:" severity="info"
+									<b:label value="Especialidade:" severity="info" class="fire-label"
 										rendered="#{InsercaoController.tipo == 'P'}" />
 
 									<h:outputLabel
@@ -295,7 +295,7 @@
 								</b:column>
 
 								<b:column span="2" class="label-position">
-									<b:label value="CNS:" severity="info"
+									<b:label value="CNS:" severity="info" class="fire-label"
 										rendered="#{InsercaoController.tipo == 'P'}" />
 
 									<h:outputLabel
@@ -405,7 +405,7 @@
 						<b:row>
 
 							<b:column span="11" class="label-position">
-								<b:label for="obs" value="Observação" severity="info" />
+								<b:label for="obs" value="Observação" severity="info" class="fire-label"/>
 
 								<b:inputTextarea id="obs" rows="1"
 									value="#{InsercaoController.insercao.observacao}"
@@ -435,7 +435,7 @@
 
 							<b:column span="3" class="label-position">
 
-								<p:outputLabel value="Encaixe:"
+								<p:outputLabel value="Encaixe:" 
 									style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
@@ -451,7 +451,7 @@
 						<b:row rendered="#{InsercaoController.opcaoAtendimento == 'T'}">
 							<p:outputPanel>
 								<b:column span="3" class="label-position">
-									<b:label value="Turno:" severity="info" />
+									<b:label value="Turno:" severity="info"  />
 
 									<b:selectOneMenu class="select-agendaEquipe2"
 										value="#{InsercaoController.insercao.agenda.turno}">
@@ -468,7 +468,7 @@
 
 							<b:column span="5"
 								class="label-position new-data-size new-comple1">
-								<b:label value="Tipo Atendimento" severity="info" />
+								<b:label value="Tipo Atendimento" class="fire-label" severity="info" />
 
 								<p:outputPanel id="outTipoAt">
 									<p:autoComplete
