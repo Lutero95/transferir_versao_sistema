@@ -1909,3 +1909,9 @@ table.dataTable.dtr-inline.collapsed>tbody>tr>th:first-child:before {
 		width: 20%;
 	}
 }
+
+@media (min-width: 1500px) {
+	.carregar-margin {
+		 width: 14%;
+	}
+}
