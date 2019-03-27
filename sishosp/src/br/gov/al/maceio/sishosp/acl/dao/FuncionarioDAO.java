@@ -903,7 +903,7 @@ public class FuncionarioDAO {
 
         List<FuncionarioBean> lista = new ArrayList<>();
         String sql = "SELECT f.id_funcionario, f.id_funcionario ||'-'|| f.descfuncionario AS descfuncionario, f.codespecialidade, e.descespecialidade, " +
-                     "f.cns, f.ativo, f.codcbo, c.descricao, f.codprocedimentopadrao, p.nome, p.permite_liberacao "+
+                     "f.cns, f.ativo, f.codcbo, c.descricao, f.codprocedimentopadrao, p.nome, f.permite_liberacao "+
                      " FROM acl.funcionarios f " +
                      "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) " +
                      "LEFT JOIN hosp.proc p ON (f.codprocedimentopadrao = p.id) " +

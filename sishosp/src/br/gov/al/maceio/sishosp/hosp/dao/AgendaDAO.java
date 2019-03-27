@@ -452,7 +452,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + " LEFT JOIN acl.funcionarios m ON (m.id_funcionario = a.codmedico) "
                 + " LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) "
                 + " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) "
-                + " WHERE a.cod_empresa = ? AND a.dtamarcacao >= ? AND a.dtamarcacao <= ?";
+                + " WHERE a.cod_empresa = ? AND a.dtaatende >= ? AND a.dtaatende <= ?";
+
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;

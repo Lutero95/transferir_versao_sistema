@@ -101,8 +101,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             }
 
         }
-
-        limparDias();
+        //Retirado para análise futura, retirei na véspera da apresentação para a funcionalidade ficar ok. Data: 26/03/2019
+        //limparDias();
     }
 
     public void abrirDialog(){

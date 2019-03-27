@@ -384,6 +384,9 @@ public class EmpresaDAO {
 
         String retorno = null;
 
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         String sql = "SELECT opcao_atendimento FROM hosp.parametro where cod_empresa = ?;";
 
         try {

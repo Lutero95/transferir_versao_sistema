@@ -12,7 +12,6 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 
 import javax.faces.context.FacesContext;
-import javax.xml.crypto.Data;
 
 public class InsercaoPacienteDAO {
     Connection con = null;
@@ -173,7 +172,7 @@ public class InsercaoPacienteDAO {
                 }
             }
 
-            String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, "
+            String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
                     + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario, encaixe)"
                     + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, ?) RETURNING id_atendimento;";
 
@@ -302,7 +301,7 @@ public class InsercaoPacienteDAO {
 
             }
 
-            String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, observacao, ativo, " +
+            String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, observacao, ativo, " +
                     "id_paciente_instituicao, cod_empresa, horario, encaixe)"
                     + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, ?) RETURNING id_atendimento;";
 
