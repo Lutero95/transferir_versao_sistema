@@ -153,26 +153,28 @@ public class GerenciarPacienteDAO {
         return lista;
     }
 
-    public Boolean desligarPaciente(GerenciarPacienteBean row,
+    public Boolean desligarPaciente(GerenciarPacienteBean gerenciarRow,
                                     GerenciarPacienteBean gerenciar) throws ProjetoException {
 
         Boolean retorno = false;
+        final String DESLIGADO = "D";
 
-        String sql = "update hosp.paciente_instituicao set status = 'D' "
+        String sql = "update hosp.paciente_instituicao set status = ? "
                 + " where codlaudo = ?";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
-            stmt.setInt(1, row.getLaudo().getId());
+            stmt.setString(1, DESLIGADO);
+            stmt.setInt(2, gerenciarRow.getLaudo().getId());
             stmt.executeUpdate();
 
             String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao) "
                     + " VALUES  (?, current_date, ?, ?, ?)";
             stmt = conexao.prepareStatement(sql2);
-            stmt.setLong(1, row.getPaciente().getId_paciente());
+            stmt.setLong(1, gerenciarRow.getId());
             stmt.setInt(2, gerenciar.getMotivo_desligamento());
-            stmt.setString(3, "D");
+            stmt.setString(3, DESLIGADO);
             stmt.setString(4, gerenciar.getObservacao());
 
             stmt.executeUpdate();

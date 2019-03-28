@@ -140,7 +140,6 @@
 									id="btnInserir" immediate="true"
 									class="btn-acao-table acao-confirmar btn-new-padding2"
 									update=":formGerenPaci, :frmEquipamentos:msgPagina"
-									disabled="#{GerenciarPacienteController.busca == 'N'}"
 									icon="glyphicon-plus"
 									action="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true" />
 							</b:column>
@@ -170,7 +169,7 @@
 									disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 									id="btnDesligar" immediate="true"
 									class="btn-acao-table acao-desligar btn-new-padding2"
-									update=":formGerenPaci, :frmEquipamentos:msgPagina"
+									update=":formGerenPaci, :frmEquipamentos:msgPagina, :formDeslPac"
 									icon="glyphicon glyphicon-remove"
 									action="#{GerenciarPacienteController.inicioDesligar()}" />
 							</b:column>
@@ -375,6 +374,7 @@
 
 		<p:dialog header="Desligar Paciente" widgetVar="dlgDeslPac"
 			width="350" height="auto" modal="true" responsive="true">
+
 			<h:form id="formDeslPac">
 
 				<b:row>
@@ -412,15 +412,8 @@
 				<div align="center">
 					<p:separator />
 					<b:commandButton value="Desligar" look="success" size="sm" id="b1"
-						icon="glyphicon-ok"
-						update="frmEquipamentos:msgPagina, :frmEquipamentos:dtNovosAg"
-						style="float:left" class="btn-sim"
-						action="#{GerenciarPacienteController.desligarPaciente()}" />
-
-					<b:commandButton value="Fechar" icon="glyphicon-remove" size="sm"
-						immediate="true" look="info" style="float:right" class="btn-nao"
-						onclick="PF('dlgDeslPac').hide();">
-					</b:commandButton>
+						icon="glyphicon-ok" actionListener="#{GerenciarPacienteController.desligarPaciente}"
+						update="frmEquipamentos:msgPagina, :frmEquipamentos:dtNovosAg" class="btn-sim"/>
 
 				</div>
 

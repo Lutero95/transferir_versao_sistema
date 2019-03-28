@@ -99,6 +99,7 @@ public class GerenciarPacienteController implements Serializable {
     }
 
     public void inicioDesligar() {
+        gerenciarpaciente = new GerenciarPacienteBean();
         JSFUtil.abrirDialog("dlgDeslPac");
     }
 
