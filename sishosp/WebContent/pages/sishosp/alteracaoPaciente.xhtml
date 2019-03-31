@@ -1,426 +1,529 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="../../template/template.xhtml">
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-		<f:metadata>
-			<f:viewAction
-				action="#{AlteracaoPacienteController.carregaAlteracao()}" />
-		</f:metadata>
+        <f:metadata>
+            <f:viewAction
+                    action="#{AlteracaoPacienteController.carregaAlteracao()}"/>
+        </f:metadata>
 
-		<div class="panel panel-primary top-primary">
-			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Alteração de Pacientes na Instituição</h4>
-			</div>
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Alteração de Pacientes na Instituição</h4>
+            </div>
 
-			<div class="panel-body table-body sub-table-body">
+            <div class="panel-body table-body sub-table-body">
 
-				<h:form id="formInsercao">
+                <h:form id="formInsercao">
 
-					<b:row>
+                    <b:row>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Paciente:" severity="info" />
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Paciente:" severity="info"/>
 
-							<h:outputLabel
-								value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.paciente.nome}"
-								class="campo-laudoDig3" />
-						</b:column>
+                            <h:outputLabel
+                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.paciente.nome}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Procedimento:" severity="info" />
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Procedimento:" severity="info"/>
 
-							<h:outputLabel
-								value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.procedimento_primario.nomeProc}"
-								class="campo-laudoDig3" />
-						</b:column>
+                            <h:outputLabel
+                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.procedimento_primario.nomeProc}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
 
-					</b:row>
+                    </b:row>
 
-					<b:row>
+                    <b:row>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="CID:" severity="info" />
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="CID:" severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.cid1.descCid}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
 
-							<h:outputLabel
-								value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.cid1.descCid}"
-								class="campo-laudoDig3" />
-						</b:column>
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Vigência Inicial:" severity="info"/>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Vigência Inicial:" severity="info" />
+                            <h:outputLabel
+                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigencia_inicial}"
+                                    class="campo-laudoDig3">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </b:column>
 
-							<h:outputLabel
-								value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigencia_inicial}"
-								class="campo-laudoDig3">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputLabel>
-						</b:column>
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Vigência Final" severity="info"/>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Vigência Final" severity="info" />
+                            <h:outputLabel
+                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigencia_final}"
+                                    class="campo-laudoDig3">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </b:column>
 
-							<h:outputLabel
-								value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigencia_final}"
-								class="campo-laudoDig3">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputLabel>
-						</b:column>
+                    </b:row>
+
+                </h:form>
 
-					</b:row>
-
-				</h:form>
-
-				<h:form id="formInsercao2">
-
-					<b:row>
-
-						<b:column span="2" class="label-position data-size">
-
-							<b:label value="Data de Solicitação:" id="datasoli"
-								severity="info" />
-
-							<p:calendar
-								value="#{AlteracaoPacienteController.insercao.data_solicitacao}"
-								id="dtagen" locale="pt" navigator="true" mask="true"
-								class="select-agendaEquipe2" showOn="button"
-								pattern="dd/MM/yyyy" size="15">
-							</p:calendar>
-
-						</b:column>
-
-					</b:row>
-
-					<b:row>
-						<p:outputPanel id="outProg">
-
-							<b:column span="5"
-								class="label-position new-data-size new-comple1">
-								<b:label for="prog" value="Programa:" id="prog"
-									rendered="#{AlteracaoPacienteController.tipo == 'E'}"
-									severity="info" />
-
-								<p:autoComplete
-									value="#{AlteracaoPacienteController.insercao.programa}"
-									readonly="true"
-									rendered="#{AlteracaoPacienteController.tipo == 'E'}" size="31"
-									converter="conPrograma" class="select-agendaEquipe4"
-									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descPrograma}">
-									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectPrograma}" update="" />
-
-								</p:autoComplete>
-
-							</b:column>
-						</p:outputPanel>
-
-					</b:row>
-
-					<b:row>
-						<p:outputPanel id="outGrupo">
-
-							<b:column span="5"
-								class="label-position new-data-size4 new-comple1">
-								<b:label for="prog" value="Grupo:" id="grupo"
-									rendered="#{AlteracaoPacienteController.tipo == 'E'}"
-									severity="info" />
-
-								<p:autoComplete
-									value="#{AlteracaoPacienteController.insercao.grupo}"
-									readonly="true"
-									rendered="#{AlteracaoPacienteController.tipo == 'E'}" size="31"
-									converter="conGrupo" class="select-agendaEquipe4"
-									disabled="#{AlteracaoPacienteController.insercao.programa==null}"
-									completeMethod="#{InsercaoPacienteController.listaGrupoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descGrupo}">
-									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectGrupo}" update="" />
-
-								</p:autoComplete>
-
-							</b:column>
-
-						</p:outputPanel>
-
-					</b:row>
-
-					<b:row>
-						<p:outputPanel id="outEquipe">
-
-							<b:column span="5"
-								class="label-position new-data-size new-comple1">
-								<b:label for="equipe" value="Equipe:" id="equipe" class="fire-label"
-									rendered="#{InsercaoController.tipo == 'E'}" severity="info" />
-
-								<p:autoComplete
-									value="#{AlteracaoPacienteController.insercao.equipe}"
-									size="31" converter="conEquipe" class="select-agendaEquipe4"
-									rendered="#{AlteracaoPacienteController.tipo == 'E'}"
-									disabled="#{AlteracaoPacienteController.insercao.grupo==null}"
-									completeMethod="#{AlteracaoPacienteController.listaEquipeAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descEquipe}">
-									<p:ajax event="itemSelect" update="" />
-								</p:autoComplete>
-
-								<p:commandButton icon="ui-icon-search"
-									update="dtEquipe, :formInsercao2:msgPagina"
-									rendered="#{AlteracaoPacienteController.tipo == 'E'}"
-									action="#{AlteracaoPacienteController.listarProfissionaisEquipe()}" />
-							</b:column>
-						</p:outputPanel>
-
-					</b:row>
-
-					<br></br>
-
-					<b:row>
-						<p:outputPanel id="outProf">
-
-							<b:column span="5"
-								class="label-position new-data-size new-comple1">
-								<b:label value="Profissional" id="prof"
-									rendered="#{InsercaoController.tipo == 'P'}" severity="info" />
-
-								<p:autoComplete
-									rendered="#{AlteracaoPacienteController.tipo == 'P'}"
-									value="#{AlteracaoPacienteController.insercao.funcionario}"
-									size="31" converter="conFuncionario"
-									class="select-agendaEquipe4"
-									completeMethod="#{AlteracaoPacienteController.listaProfissionalAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nome}">
-									<p:ajax event="itemSelect" update="outDetalhes" />
-								</p:autoComplete>
-
-							</b:column>
-						</p:outputPanel>
-					</b:row>
-
-					<b:row>
-						<p:outputPanel id="outDetalhes">
-
-							<b:column span="2" class="label-position">
-								<b:label value="Especialidade:" severity="info"
-									rendered="#{AlteracaoPacienteController.tipo == 'P'}" />
-
-								<h:outputLabel
-									value="#{AlteracaoPacienteController.insercao.funcionario.especialidade.descEspecialidade}"
-									rendered="#{AlteracaoPacienteController.tipo == 'P'}"
-									class="campo-laudoDig" />
-							</b:column>
-
-							<b:column span="2" class="label-position">
-								<b:label value="CNS:" severity="info"
-									rendered="#{AlteracaoPacienteController.tipo == 'P'}" />
-
-								<h:outputLabel
-									value="#{AlteracaoPacienteController.insercao.funcionario.cns}"
-									rendered="#{AlteracaoPacienteController.tipo == 'P'}"
-									class="campo-laudoDig" />
-							</b:column>
-
-						</p:outputPanel>
-					</b:row>
-
-					<b:row>
-						<p:outputPanel id="outDias">
-							<b:column span="4" class="btn-radio-table">
-								<p:selectManyCheckbox layout="grid" columns="3" required="true"
-									rendered="#{AlteracaoPacienteController.tipo == 'P'}"
-									requiredMessage="Escolha ao menos um dia da semana!"
-									value="#{AlteracaoPacienteController.funcionario.listDiasSemana}">
-									<f:selectItem itemLabel="Domingo" itemValue="1" />
-									<f:selectItem itemLabel="Segunda" itemValue="2" />
-									<f:selectItem itemLabel="Terça" itemValue="3" />
-									<f:selectItem itemLabel="Quarta" itemValue="4" />
-									<f:selectItem itemLabel="Quinta" itemValue="5" />
-									<f:selectItem itemLabel="Sexta" itemValue="6" />
-									<f:selectItem itemLabel="Sábado" itemValue="7" />
-								</p:selectManyCheckbox>
-							</b:column>
-						</p:outputPanel>
-
-					</b:row>
-
-					<br></br>
-
-					<b:row>
-						<p:outputPanel id="outTabelas">
-							<b:column span="5" style="margin-bottom:15px;">
-								<p:dataTable id="dtEquipe" resizableColumns="true"
-									rendered="#{AlteracaoPacienteController.tipo == 'E'}"
-									responsive="true"
-									value="#{AlteracaoPacienteController.listaProfissionaisEquipe}"
-									var="func" emptyMessage="Sem registros.">
-
-									<p:column headerText="Profissional">
-										<h:outputLabel value="#{func.nome}" />
-									</p:column>
-
-									<p:column headerText="Especialidade">
-										<h:outputLabel value="#{func.especialidade.descEspecialidade}" />
-									</p:column>
-
-									<p:column headerText="Adicionar">
-										<div align="center">
-											<p:commandButton icon="ui-icon-check"
-												action="#{AlteracaoPacienteController.limparDias()}"
-												title="Selecionar" class="new-btn-acao-table acao-editar"
-												onclick="PF('dlgDiasAtendimento').show();"
-												update=":formDiasAtendimento">
-												<f:setPropertyActionListener value="#{func}"
-													target="#{AlteracaoPacienteController.funcionario}" />
-											</p:commandButton>
-										</div>
-									</p:column>
-
-								</p:dataTable>
-							</b:column>
-
-							<b:column span="1">
-							</b:column>
-
-							<b:column span="6">
-								<p:dataTable id="dtAdicionados" resizableColumns="true"
-									rendered="#{AlteracaoPacienteController.tipo == 'E'}"
-									responsive="true"
-									value="#{AlteracaoPacienteController.listaProfissionaisAdicionados}"
-									var="funcionario" emptyMessage="Sem registros.">
-
-									<p:column headerText="Profissional">
-										<h:outputLabel value="#{funcionario.nome}" />
-									</p:column>
-
-									<p:column headerText="Especialidade">
-										<h:outputLabel
-											value="#{funcionario.especialidade.descEspecialidade}" />
-									</p:column>
-
-									<p:column headerText="Dias Atendimento">
-										<h:outputLabel value="#{funcionario.diasSemana}" />
-									</p:column>
-
-								</p:dataTable>
-							</b:column>
-						</p:outputPanel>
-
-					</b:row>
-
-
-					<br></br>
-
-					<b:row>
-
-						<b:column span="11" class="label-position">
-							<b:label for="obs" value="Observação" severity="info" />
-
-							<b:inputTextarea id="obs" rows="1"
-								value="#{AlteracaoPacienteController.insercao.observacao}"
-								autoResize="false" class="select-agendaEquipe2">
-							</b:inputTextarea>
-						</b:column>
-
-					</b:row>
-
-					<b:row>
-						<p:outputPanel>
-							<b:column span="3" class="label-position">
-								<b:label value="Turno:" severity="info" />
-
-								<b:selectOneMenu class="select-agendaEquipe2"
-									value="#{AlteracaoPacienteController.insercao.agenda.turno}">
-									<f:selectItem itemLabel="Manhã" itemValue="M" />
-									<f:selectItem itemLabel="Tarde" itemValue="T" />
-								</b:selectOneMenu>
-							</b:column>
-						</p:outputPanel>
-					</b:row>
-
-					<b:row>
-
-						<b:column span="5"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Tipo Atendimento" severity="info" />
-
-							<p:outputPanel id="outTipoAt">
-								<p:autoComplete
-									value="#{AlteracaoPacienteController.insercao.agenda.tipoAt}"
-									size="31" converter="conTipoAtendimento"
-									class="select-agendaEquipe4"
-									completeMethod="#{InsercaoPacienteController.listaTipoAtAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descTipoAt}">
-									<p:ajax event="itemSelect" />
-								</p:autoComplete>
-							</p:outputPanel>
-						</b:column>
-
-					</b:row>
-
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
-
-					<br></br>
-
-					<div align="center">
-
-						<b:commandButton value="Gravar" look="success" size="sm" id="b1"
-							icon="glyphicon-ok" update=":formInsercao2:msgPagina"
-							class="btn-incluir"
-							action="#{AlteracaoPacienteController.gravarAlteracaoPaciente()}" />
-
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-							size="sm" immediate="true" look="info" class="btn-voltar"
-							action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true">
-						</b:commandButton>
-
-					</div>
-				</h:form>
-			</div>
-		</div>
-
-		<p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
-			modal="true">
-			<h:form id="formDiasAtendimento">
-				<p:selectManyCheckbox layout="grid" columns="7" required="true"
-					requiredMessage="Escolha ao menos um dia da semana!"
-					value="#{AlteracaoPacienteController.funcionario.listDiasSemana}">
-					<f:selectItem itemLabel="Domingo" itemValue="1" />
-					<f:selectItem itemLabel="Segunda" itemValue="2" />
-					<f:selectItem itemLabel="Terça" itemValue="3" />
-					<f:selectItem itemLabel="Quarta" itemValue="4" />
-					<f:selectItem itemLabel="Quinta" itemValue="5" />
-					<f:selectItem itemLabel="Sexta" itemValue="6" />
-					<f:selectItem itemLabel="Sábado" itemValue="7" />
-				</p:selectManyCheckbox>
-
-				<br></br>
-				<br></br>
-
-				<div align="center">
-					<b:commandButton value="Adicionar" look="success" size="sm" id="b2"
-						icon="glyphicon-ok" class="new-btn-acao-table acao-editar"
-						update=":formInsercao2:dtAdicionados, :formInsercao2:msgPagina"
-						action="#{AlteracaoPacienteController.validarAdicionarFuncionario()}" />
-				</div>
-			</h:form>
-		</p:dialog>
-
-	</ui:define>
+                <h:form id="formInsercao2">
+
+                    <b:row>
+
+                        <b:column span="2" class="label-position data-size">
+
+                            <b:label value="Data de Solicitação:" id="datasoli"
+                                     severity="info"/>
+
+                            <p:calendar
+                                    value="#{AlteracaoPacienteController.insercao.data_solicitacao}"
+                                    id="dtagen" locale="pt" navigator="true" mask="true" required="true"
+                                    requiredMessage="Data de Solicitação: Campo obrigatório!"
+                                    class="select-agendaEquipe2" showOn="button"
+                                    pattern="dd/MM/yyyy" size="15">
+                            </p:calendar>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+                        <p:outputPanel id="outProg">
+
+                            <b:column span="5"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label for="prog" value="Programa:" id="prog"
+                                         rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+                                         severity="info"/>
+
+                                <p:autoComplete
+                                        value="#{AlteracaoPacienteController.insercao.programa}"
+                                        readonly="true"
+                                        rendered="#{AlteracaoPacienteController.tipo == 'E'}" size="31"
+                                        converter="conPrograma" class="select-agendaEquipe4"
+                                        completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descPrograma}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.selectPrograma}" update=""/>
+
+                                </p:autoComplete>
+
+                            </b:column>
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <b:row>
+                        <p:outputPanel id="outGrupo">
+
+                            <b:column span="5"
+                                      class="label-position new-data-size4 new-comple1">
+                                <b:label for="prog" value="Grupo:" id="grupo"
+                                         rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+                                         severity="info"/>
+
+                                <p:autoComplete
+                                        value="#{AlteracaoPacienteController.insercao.grupo}"
+                                        readonly="true"
+                                        rendered="#{AlteracaoPacienteController.tipo == 'E'}" size="31"
+                                        converter="conGrupo" class="select-agendaEquipe4"
+                                        disabled="#{AlteracaoPacienteController.insercao.programa==null}"
+                                        completeMethod="#{InsercaoPacienteController.listaGrupoAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descGrupo}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.selectGrupo}" update=""/>
+
+                                </p:autoComplete>
+
+                            </b:column>
+
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <b:row>
+                        <p:outputPanel id="outEquipe">
+
+                            <b:column span="5"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label for="equipe" value="Equipe:" id="equipe" class="fire-label"
+                                         rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
+
+                                <p:autoComplete
+                                        value="#{AlteracaoPacienteController.insercao.equipe}"
+                                        size="31" converter="conEquipe" class="select-agendaEquipe4"
+                                        rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+                                        disabled="#{AlteracaoPacienteController.insercao.grupo==null}"
+                                        completeMethod="#{AlteracaoPacienteController.listaEquipeAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descEquipe}">
+                                    <p:ajax event="itemSelect" update=""/>
+                                </p:autoComplete>
+
+                                <p:commandButton icon="ui-icon-search"
+                                                 update="dtEquipe, :formInsercao2:msgPagina"
+                                                 rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+                                                 action="#{AlteracaoPacienteController.listarProfissionaisEquipe()}"/>
+                            </b:column>
+
+                            <b:column span="3" class="label-position5 carregar-margin">
+                                <p:commandButton icon="ui-icon-search" immediate="true" process="@this"
+                                                 value="Carregar Profissionais"
+                                                 style="margin-top:20px; margin-bottom:10px;"
+                                                 class="btn-acao-table acao-confirmar"
+                                                 update="dtEquipe, :formInsercao2:msgPagina"
+                                                 rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+                                                 action="#{AlteracaoPacienteController.listarProfissionaisEquipe()}"/>
+                            </b:column>
+                            <b:column span="2">
+                                <p:commandButton value="Visualizar" look="success" size="sm"
+                                                 id="btnVisualizarAgendaEquipe" icon="ui-icon-search"
+                                                 rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+                                                 class="btn-agendaBusca btn-acao-table acao-buscar"
+                                                 immediate="true" onclick="PF('dlgQtdAgendamentos').show();"/>
+                            </b:column>
+
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+                        <p:outputPanel id="outProf">
+
+                            <b:column span="5"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Profissional" id="prof"
+                                         rendered="#{InsercaoController.tipo == 'P'}" severity="info"/>
+
+                                <p:autoComplete
+                                        rendered="#{AlteracaoPacienteController.tipo == 'P'}"
+                                        value="#{AlteracaoPacienteController.insercao.funcionario}"
+                                        size="31" converter="conFuncionario"
+                                        class="select-agendaEquipe4"
+                                        completeMethod="#{AlteracaoPacienteController.listaProfissionalAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.nome}">
+                                    <p:ajax event="itemSelect" update="outDetalhes"/>
+                                </p:autoComplete>
+
+                            </b:column>
+                        </p:outputPanel>
+                    </b:row>
+
+                    <b:row>
+                        <p:outputPanel id="outDetalhes">
+
+                            <b:column span="2" class="label-position">
+                                <b:label value="Especialidade:" severity="info"
+                                         rendered="#{AlteracaoPacienteController.tipo == 'P'}"/>
+
+                                <h:outputLabel
+                                        value="#{AlteracaoPacienteController.insercao.funcionario.especialidade.descEspecialidade}"
+                                        rendered="#{AlteracaoPacienteController.tipo == 'P'}"
+                                        class="campo-laudoDig"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position">
+                                <b:label value="CNS:" severity="info"
+                                         rendered="#{AlteracaoPacienteController.tipo == 'P'}"/>
+
+                                <h:outputLabel
+                                        value="#{AlteracaoPacienteController.insercao.funcionario.cns}"
+                                        rendered="#{AlteracaoPacienteController.tipo == 'P'}"
+                                        class="campo-laudoDig"/>
+                            </b:column>
+
+                        </p:outputPanel>
+                    </b:row>
+
+                    <b:row>
+                        <p:outputPanel id="outDias">
+                            <b:column span="4" class="btn-radio-table">
+                                <p:selectManyCheckbox layout="grid" columns="3" required="true"
+                                                      rendered="#{AlteracaoPacienteController.tipo == 'P'}"
+                                                      requiredMessage="Escolha ao menos um dia da semana!"
+                                                      value="#{AlteracaoPacienteController.funcionario.listDiasSemana}">
+                                    <f:selectItem itemLabel="Domingo" itemValue="1"/>
+                                    <f:selectItem itemLabel="Segunda" itemValue="2"/>
+                                    <f:selectItem itemLabel="Terça" itemValue="3"/>
+                                    <f:selectItem itemLabel="Quarta" itemValue="4"/>
+                                    <f:selectItem itemLabel="Quinta" itemValue="5"/>
+                                    <f:selectItem itemLabel="Sexta" itemValue="6"/>
+                                    <f:selectItem itemLabel="Sábado" itemValue="7"/>
+                                </p:selectManyCheckbox>
+                            </b:column>
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+                        <p:outputPanel id="outTabelas">
+                            <b:column span="5" style="margin-bottom:15px;">
+                                <p:dataTable id="dtEquipe" resizableColumns="true"
+                                             rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+                                             responsive="true"
+                                             value="#{AlteracaoPacienteController.listaProfissionaisEquipe}"
+                                             var="func" emptyMessage="Sem registros.">
+
+                                    <p:column headerText="Profissional">
+                                        <h:outputLabel value="#{func.nome}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Especialidade">
+                                        <h:outputLabel value="#{func.especialidade.descEspecialidade}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Adicionar">
+                                        <div align="center">
+                                            <p:commandButton icon="ui-icon-check" immediate="true"
+                                                             title="Selecionar" class="new-btn-acao-table acao-editar"
+                                                             actionListener="#{AlteracaoPacienteController.abrirDialog}"
+                                                             update=":formDiasAtendimento">
+                                                <f:setPropertyActionListener value="#{func}"
+                                                                             target="#{AlteracaoPacienteController.funcionario}"/>
+                                            </p:commandButton>
+                                        </div>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </b:column>
+
+                            <b:column span="1">
+                            </b:column>
+
+                            <b:column span="6">
+                                <p:dataTable id="dtAdicionados" resizableColumns="true"
+                                             rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+                                             responsive="true"
+                                             value="#{AlteracaoPacienteController.listaProfissionaisAdicionados}"
+                                             var="funcionario" emptyMessage="Sem registros.">
+
+                                    <p:column headerText="Profissional" width="30%">
+                                        <h:outputLabel value="#{funcionario.nome}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Especialidade" width="20%">
+                                        <h:outputLabel
+                                                value="#{funcionario.especialidade.descEspecialidade}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Dias Atendimento" width="38%">
+                                        <h:outputLabel value="#{funcionario.diasSemana}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Excluir" width="12%">
+                                        <div align="center">
+                                            <p:commandButton icon="ui-icon-trash" immediate="true"
+                                                             actionListener="#{AlteracaoPacienteController.excluirFuncionarioIhDiasDeAtendimento}"
+                                                             title="Excluir" class="new-btn-acao-table acao-editar"
+                                                             update=":formInsercao2:dtAdicionados">
+                                                <f:setPropertyActionListener value="#{funcionario}"
+                                                                             target="#{InsercaoController.funcionario}"/>
+                                            </p:commandButton>
+                                        </div>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </b:column>
+                        </p:outputPanel>
+
+                    </b:row>
+
+
+                    <br></br>
+
+                    <b:row>
+
+                        <b:column span="11" class="label-position">
+                            <b:label for="obs" value="Observação" severity="info"/>
+
+                            <b:inputTextarea id="obs" rows="1"
+                                             value="#{AlteracaoPacienteController.insercao.observacao}"
+                                             autoResize="false" class="select-agendaEquipe2">
+                            </b:inputTextarea>
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row rendered="#{AlteracaoPacienteController.opcaoAtendimento == 'T'}">
+                        <p:outputPanel>
+                            <b:column span="3" class="label-position">
+                                <b:label value="Turno:" severity="info"/>
+
+                                <b:selectOneMenu class="select-agendaEquipe2"
+                                                 value="#{AlteracaoPacienteController.insercao.agenda.turno}">
+                                    <f:selectItem itemLabel="Manhã" itemValue="M"/>
+                                    <f:selectItem itemLabel="Tarde" itemValue="T"/>
+                                </b:selectOneMenu>
+                            </b:column>
+                        </p:outputPanel>
+                    </b:row>
+
+                    <b:row rendered="#{AlteracaoPacienteController.opcaoAtendimento == 'H'}">
+                        <p:outputPanel>
+                            <b:column span="3" class="label-position">
+                                <b:label value="Horário:" severity="info"/>
+
+                                <b:selectOneMenu class="select-agendaEquipe2" required="true"
+                                                 requiredMessage="Horário: Campo obrigatório!"
+                                                 value="#{AlteracaoPacienteController.insercao.agenda.horario}">
+                                    <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                                    <f:selectItems
+                                            value="#{InsercaoController.gerarHorariosAtendimento()}"/>
+                                </b:selectOneMenu>
+                            </b:column>
+                        </p:outputPanel>
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="5"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Tipo Atendimento" severity="info"/>
+
+                            <p:outputPanel id="outTipoAt">
+                                <p:autoComplete
+                                        value="#{AlteracaoPacienteController.insercao.agenda.tipoAt}"
+                                        size="31" converter="conTipoAtendimento"
+                                        class="select-agendaEquipe4"
+                                        completeMethod="#{InsercaoPacienteController.listaTipoAtAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.descTipoAt}">
+                                    <p:ajax event="itemSelect"/>
+                                </p:autoComplete>
+                            </p:outputPanel>
+                        </b:column>
+
+                    </b:row>
+
+                    <div align="center">
+                        <b:messages value="Error" id="msgPagina"></b:messages>
+                    </div>
+
+                    <br></br>
+
+                    <div align="center">
+
+                        <b:commandButton value="Gravar" look="success" size="sm" id="b1"
+                                         icon="glyphicon-ok" update=":formInsercao2:msgPagina"
+                                         class="btn-incluir"
+                                         action="#{AlteracaoPacienteController.gravarAlteracaoPaciente()}"/>
+
+                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true">
+                        </b:commandButton>
+
+                    </div>
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
+                  modal="true">
+            <h:form id="formDiasAtendimento">
+                <p:selectManyCheckbox layout="grid" columns="7" required="true"
+                                      requiredMessage="Escolha ao menos um dia da semana!"
+                                      value="#{AlteracaoPacienteController.funcionario.listDiasSemana}">
+                    <f:selectItem itemLabel="Domingo" itemValue="1"/>
+                    <f:selectItem itemLabel="Segunda" itemValue="2"/>
+                    <f:selectItem itemLabel="Terça" itemValue="3"/>
+                    <f:selectItem itemLabel="Quarta" itemValue="4"/>
+                    <f:selectItem itemLabel="Quinta" itemValue="5"/>
+                    <f:selectItem itemLabel="Sexta" itemValue="6"/>
+                    <f:selectItem itemLabel="Sábado" itemValue="7"/>
+                </p:selectManyCheckbox>
+
+                <br></br>
+                <br></br>
+
+                <div align="center">
+                    <b:commandButton value="Adicionar" style="margin-top:5px;"
+                                     class="btn-acao-table acao-confirmar"
+                                     update=":formInsercao2:dtAdicionados, :formInsercao2:msgPagina"
+                                     id="b2" icon="glyphicon-ok"
+                                     action="#{AlteracaoPacienteController.validarAdicionarFuncionario()}"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Quantidade de Agendamentos" styleClass="topDialog"
+                  widgetVar="dlgQtdAgendamentos" modal="true">
+            <h:form id="formQtdAgendamentos">
+                <p:dataTable id="dtAgendamentosEquipe" resizableColumns="true"
+                             value="#{AlteracaoPacienteController.visualizarHorariosEquipe()}" var="ag"
+                             emptyMessage="Sem registros.">
+
+                    <p:column headerText="Equipe">
+                        <h:outputLabel value="#{ag.equipe.descEquipe}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Segunda ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[0]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Segunda">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[0]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Terça ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[1]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Terça">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[1]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Quarta ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[2]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Quarta">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[2]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Quinta ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[3]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Quinta">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[3]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Sexta ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[4]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Sexta">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[4]}"/>
+                    </p:column>
+
+                </p:dataTable>
+
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
 
 </ui:composition>

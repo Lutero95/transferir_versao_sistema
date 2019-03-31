@@ -222,7 +222,7 @@
 									</p:autoComplete>
 								</b:column>
 								<b:column span="3" class="label-position5 carregar-margin">
-									<p:commandButton icon="ui-icon-search"
+									<p:commandButton icon="ui-icon-search" process="@this"
 										value="Carregar Profissionais"
 										style="margin-top:20px; margin-bottom:10px;"
 										class="btn-acao-table acao-confirmar"
@@ -377,11 +377,11 @@
 												value="#{funcionario.especialidade.descEspecialidade}" />
 										</p:column>
 
-										<p:column headerText="Dias Atendimento" width="40%">
+										<p:column headerText="Dias Atendimento" width="38%">
 											<h:outputLabel value="#{funcionario.diasSemana}" />
 										</p:column>
 
-										<p:column headerText="Excluir" width="10%">
+										<p:column headerText="Excluir" width="12%">
 											<div align="center">
 												<p:commandButton icon="ui-icon-trash" immediate="true"
 													actionListener="#{InsercaoController.excluirFuncionarioIhDiasDeAtendimento}"
