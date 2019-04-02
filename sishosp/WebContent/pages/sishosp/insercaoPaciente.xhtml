@@ -418,7 +418,7 @@
 						<b:row rendered="#{InsercaoController.opcaoAtendimento == 'H'}">
 							<p:outputPanel>
 								<b:column span="3" class="label-position">
-									<b:label value="Horário:" severity="info" />
+									<b:label value="Horário:" severity="info" class="fire-label" />
 
 									<b:selectOneMenu class="select-agendaEquipe2" required="true"
 										requiredMessage="Horário: Campo obrigatório!"
@@ -451,7 +451,7 @@
 						<b:row rendered="#{InsercaoController.opcaoAtendimento == 'T'}">
 							<p:outputPanel>
 								<b:column span="3" class="label-position">
-									<b:label value="Turno:" severity="info"  />
+									<b:label value="Turno:" severity="info" class="fire-label"/>
 
 									<b:selectOneMenu class="select-agendaEquipe2"
 										value="#{InsercaoController.insercao.agenda.turno}">

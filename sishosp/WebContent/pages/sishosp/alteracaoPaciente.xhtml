@@ -102,7 +102,7 @@
 
                             <b:column span="5"
                                       class="label-position new-data-size new-comple1">
-                                <b:label for="prog" value="Programa:" id="prog"
+                                <b:label for="prog" value="Programa:" id="prog" class="fire-label"
                                          rendered="#{AlteracaoPacienteController.tipo == 'E'}"
                                          severity="info"/>
 
@@ -130,7 +130,7 @@
 
                             <b:column span="5"
                                       class="label-position new-data-size4 new-comple1">
-                                <b:label for="prog" value="Grupo:" id="grupo"
+                                <b:label for="prog" value="Grupo:" id="grupo" class="fire-label"
                                          rendered="#{AlteracaoPacienteController.tipo == 'E'}"
                                          severity="info"/>
 
@@ -209,7 +209,7 @@
 
                             <b:column span="5"
                                       class="label-position new-data-size new-comple1">
-                                <b:label value="Profissional" id="prof"
+                                <b:label value="Profissional" id="prof" class="fire-label"
                                          rendered="#{InsercaoController.tipo == 'P'}" severity="info"/>
 
                                 <p:autoComplete
@@ -232,7 +232,7 @@
                         <p:outputPanel id="outDetalhes">
 
                             <b:column span="2" class="label-position">
-                                <b:label value="Especialidade:" severity="info"
+                                <b:label value="Especialidade:" severity="info" class="fire-label"
                                          rendered="#{AlteracaoPacienteController.tipo == 'P'}"/>
 
                                 <h:outputLabel
@@ -242,7 +242,7 @@
                             </b:column>
 
                             <b:column span="2" class="label-position">
-                                <b:label value="CNS:" severity="info"
+                                <b:label value="CNS:" severity="info" class="fire-label"
                                          rendered="#{AlteracaoPacienteController.tipo == 'P'}"/>
 
                                 <h:outputLabel
@@ -355,7 +355,7 @@
                     <b:row>
 
                         <b:column span="11" class="label-position">
-                            <b:label for="obs" value="Observação" severity="info"/>
+                            <b:label for="obs" value="Observação" severity="info" class="fire-label"/>
 
                             <b:inputTextarea id="obs" rows="1"
                                              value="#{AlteracaoPacienteController.insercao.observacao}"
@@ -368,7 +368,7 @@
                     <b:row rendered="#{AlteracaoPacienteController.opcaoAtendimento == 'T'}">
                         <p:outputPanel>
                             <b:column span="3" class="label-position">
-                                <b:label value="Turno:" severity="info"/>
+                                <b:label value="Turno:" severity="info" class="fire-label"/>
 
                                 <b:selectOneMenu class="select-agendaEquipe2"
                                                  value="#{AlteracaoPacienteController.insercao.agenda.turno}">
@@ -382,7 +382,7 @@
                     <b:row rendered="#{AlteracaoPacienteController.opcaoAtendimento == 'H'}">
                         <p:outputPanel>
                             <b:column span="3" class="label-position">
-                                <b:label value="Horário:" severity="info"/>
+                                <b:label value="Horário:" severity="info" class="fire-label"/>
 
                                 <b:selectOneMenu class="select-agendaEquipe2" required="true"
                                                  requiredMessage="Horário: Campo obrigatório!"
@@ -399,7 +399,7 @@
 
                         <b:column span="5"
                                   class="label-position new-data-size new-comple1">
-                            <b:label value="Tipo Atendimento" severity="info"/>
+                            <b:label value="Tipo Atendimento" severity="info" class="fire-label"/>
 
                             <p:outputPanel id="outTipoAt">
                                 <p:autoComplete
