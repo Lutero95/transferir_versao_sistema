@@ -296,24 +296,68 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         }
     }
 
+    public ArrayList<InsercaoPacienteBean> validarDatas(ArrayList<InsercaoPacienteBean> listaAgendamentos, String turno) throws ProjetoException {
+
+        ArrayList<InsercaoPacienteBean> listaAgendamentosAux = new ArrayList<>();
+
+        for(int i=0; i<listaAgendamentos.size(); i++) {
+
+            if(verificarSeEhFeriadoData(listaAgendamentos.get(i).getAgenda().getDataMarcacao())){
+                listaAgendamentosAux.add(listaAgendamentos.get(i));
+            }
+            else if(verificarSeTemBloqueioData(listaAgendamentos.get(i), turno)){
+                listaAgendamentosAux.add(listaAgendamentos.get(i));
+            }
+        }
+
+        //Adicionei esse FOR pois não estava indo com remove nas condições acima, então adicionei em uma lista e depois removi nesse for abaixo.
+        for(int i=0; i<listaAgendamentosAux.size(); i++){
+            listaAgendamentos.remove(listaAgendamentosAux.get(i));
+        }
+
+        return listaAgendamentos;
+    }
+
+    public Boolean verificarSeEhFeriadoData(Date data) throws ProjetoException {
+        Boolean retorno = false;
+
+        retorno = new FeriadoDAO().verificarSeEhFeriadoDataUnica(data);
+
+        return retorno;
+    }
+
+    public Boolean verificarSeTemBloqueioData(InsercaoPacienteBean insercaoBean, String turno) throws ProjetoException {
+        Boolean retorno = false;
+
+        retorno = new BloqueioDAO().verificarBloqueioProfissionalDataUnica
+                (insercaoBean.getAgenda().getProfissional().getId(), insercaoBean.getAgenda().getDataMarcacao(), turno);
+
+        return retorno;
+    }
+
     public void gravarInsercaoPaciente() throws ProjetoException {
 
         if (insercao.getLaudo().getId() != null) {
 
             Boolean cadastrou = null;
+
+            ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
+
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
                 gerarListaAgendamentosEquipe();
 
+
+
                 cadastrou = iDao.gravarInsercaoEquipe(insercao,
-                        listaProfissionaisAdicionados, listAgendamentoProfissional);
+                        listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal);
             }
             if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
                 gerarListaAgendamentosProfissional();
 
                 cadastrou = iDao.gravarInsercaoProfissional(insercao,
-                        listAgendamentoProfissional);
+                        listaAgendamentosProfissionalFinal);
             }
 
             if (cadastrou == true) {

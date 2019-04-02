@@ -237,24 +237,31 @@ public class AlteracaoPacienteController implements Serializable {
     public void gravarAlteracaoPaciente() throws ProjetoException {
 
         Boolean cadastrou = null;
+
+        InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+
         if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
             gerarListaAgendamentosEquipe();
 
+            ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
+
             cadastrou = aDao.gravarAlteracaoEquipe(insercao, insercaoParaLaudo,
-                    listAgendamentoProfissional, id_paciente_insituicao, listaProfissionaisAdicionados);
+                    listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
         }
         if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
             gerarListaAgendamentosProfissional();
 
+            ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
+
             cadastrou = aDao.gravarAlteracaoProfissional(insercao,
-                    insercaoParaLaudo, listAgendamentoProfissional,
+                    insercaoParaLaudo, listaAgendamentosProfissionalFinal,
                     id_paciente_insituicao);
         }
 
         if (cadastrou) {
-            JSFUtil.adicionarMensagemSucesso("Inserção de Equipe cadastrada com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("Alteração de Equipe cadastrada com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }
