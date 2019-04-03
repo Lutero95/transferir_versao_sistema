@@ -240,7 +240,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlEqui = "select e.id_configagenda " +
                 "from hosp.config_agenda_equipe e " +
                 "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
-                "where e.codequipe = ? and d.data_especifica = ? and d.turno = 'M';";
+                "where e.codequipe = ? and d.data_especifica = ? and d.turno = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -323,7 +323,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlEqui = "select e.id_configagenda " +
                 "from hosp.config_agenda_equipe e " +
                 "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
-                "where e.codequipe = ? and d.dia = ? and d.turno = 'M' and e.mes = ?;";
+                "where e.codequipe = ? and d.dia = ? and d.turno = ? and e.mes = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -513,7 +513,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlEqui = "select e.qtdmax " +
                 "from hosp.config_agenda_equipe e " +
                 "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
-                "where e.codequipe = ? and d.dia = ? and d.turno = 'M';";
+                "where e.codequipe = ? and d.dia = ? and d.turno = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
