@@ -213,7 +213,7 @@
                                                     itemLabel="#{theme.descEquipe}">
                                         <p:ajax event="itemSelect"
                                                 listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-                                                process="@form @this"
+                                                process="@this"
                                                 update=":formAgendaMedica, outHorariosEquipe, msgPagina, outQtdIhMax"></p:ajax>
                                     </p:autoComplete>
 
@@ -715,8 +715,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton  actionListener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-                                          update=":formAgendaMedica:outEquipe, :formAgendaMedicaoutHorariosEquipe,
-						:formAgendaMedicamsgPagina, :formAgendaMedicaoutQtdIhMax"
+                                          update=":formAgendaMedica:outEquipe"
                                          icon="ui-icon-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          onclick="PF('dlgConsuEquipe').hide();">
@@ -750,8 +749,7 @@
                         <p:commandButton icon="ui-icon-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          actionListener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-                                         update=":formAgendaMedica:outProf, :formAgendaMedicaoutHorariosEquipe,
-						:formAgendaMedicamsgPagina, :formAgendaMedicaoutQtdIhMax"
+                                         update=":formAgendaMedica:outProf"
                                          onclick="PF('dlgConsuProf').hide();">
                             <f:setPropertyActionListener value="#{profi}"
                                                          target="#{AgendaController.agenda.profissional}"/>
