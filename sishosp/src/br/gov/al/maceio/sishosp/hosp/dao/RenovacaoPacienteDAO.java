@@ -1,15 +1,13 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 
@@ -174,79 +172,74 @@ public class RenovacaoPacienteDAO {
 
             ps.executeUpdate();
 
-            String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, cod_empresa) VALUES  (?, ?, ?, ?)";
-            ps = conexao.prepareStatement(sql2);
+            String sql2 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
+                    + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario, dtamarcacao)"
+                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, current_timestamp ) RETURNING id_atendimento;";
 
-            for (int i = 0; i < lista.size(); i++) {
-                ps.setLong(1, insercao.getId());
-                ps.setLong(2, lista.get(i).getAgenda().getProfissional()
-                        .getId());
-                for (int j = 0; j < lista.get(i).getFuncionario()
-                        .getListDiasSemana().size(); j++) {
-                    ps.setInt(
-                            3,
-                            Integer.parseInt(lista.get(i).getFuncionario()
-                                    .getListDiasSemana().get(j)));
-                    ps.setInt(4, user_session.getEmpresa().getCodEmpresa());
-                    ps.executeUpdate();
-                }
-            }
-
-            String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, "
-                    + " observacao, ativo, id_paciente_instituicao, cod_empresa)"
-                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?) RETURNING id_atendimento;";
-
-            PreparedStatement ps3 = null;
-            ps3 = conexao.prepareStatement(sql3);
+            PreparedStatement ps2 = null;
+            ps2 = conexao.prepareStatement(sql2);
 
             for (int i = 0; i < lista.size(); i++) {
 
-                ps3.setInt(1, insercaoParaLaudo.getLaudo().getPaciente()
+                ps2.setInt(1, insercaoParaLaudo.getLaudo().getPaciente()
                         .getId_paciente());
-                ps3.setLong(2, lista.get(i).getAgenda().getProfissional()
+                ps2.setLong(2, lista.get(i).getAgenda().getProfissional()
                         .getId());
-                ps3.setDate(3, new java.sql.Date(lista.get(i).getAgenda()
+                ps2.setDate(3, new java.sql.Date(lista.get(i).getAgenda()
                         .getDataMarcacao().getTime()));
-                ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
-                ps3.setString(5, insercao.getAgenda().getTurno());
-                ps3.setString(6, insercao.getObservacao());
-                ps3.setInt(7, insercao.getId());
-                ps3.setInt(8, user_session.getEmpresa().getCodEmpresa());
+                ps2.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
 
-                rs = ps3.executeQuery();
+                if(insercao.getAgenda().getTurno() != null) {
+                    ps2.setString(5, insercao.getAgenda().getTurno());
+                }
+                else{
+                    ps2.setNull(5, Types.NULL);
+                }
+
+                ps2.setString(6, insercao.getObservacao());
+                ps2.setInt(7, insercao.getId());
+                ps2.setInt(8, user_session.getEmpresa().getCodEmpresa());
+
+                if(insercao.getAgenda().getHorario() != null) {
+                    ps2.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+                }
+                else{
+                    ps2.setNull(9, Types.NULL);
+                }
+
+                rs = ps2.executeQuery();
 
                 int idAgend = 0;
                 if (rs.next()) {
                     idAgend = rs.getInt("id_atendimento");
                 }
 
-                String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+                String sql3 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
 
-                PreparedStatement ps4 = null;
-                ps4 = conexao.prepareStatement(sql4);
+                PreparedStatement ps3 = null;
+                ps3 = conexao.prepareStatement(sql3);
 
-                ps4.setLong(1, lista.get(i).getAgenda().getProfissional()
+                ps3.setLong(1, lista.get(i).getAgenda().getProfissional()
                         .getId());
-                ps4.setInt(2, idAgend);
-                ps4.setInt(3, lista.get(i).getAgenda().getProfissional()
+                ps3.setInt(2, idAgend);
+                ps3.setInt(3, lista.get(i).getAgenda().getProfissional()
                         .getCbo().getCodCbo());
 
-                ps4.executeUpdate();
+                ps3.executeUpdate();
 
             }
 
-            String sql5 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
+            String sql4 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
                     + " VALUES  (?, current_date, ?, ?)";
 
-            PreparedStatement ps5 = null;
-            ps5 = conexao.prepareStatement(sql5);
+            PreparedStatement ps4 = null;
+            ps4 = conexao.prepareStatement(sql4);
 
-            ps5.setLong(1, insercaoParaLaudo.getLaudo().getPaciente()
-                    .getId_paciente());
-            ps5.setString(2, insercao.getObservacao());
-            ps5.setString(3, "R");
+            ps4.setLong(1, insercao.getId());
+            ps4.setString(2, insercao.getObservacao());
+            ps4.setString(3, "R");
 
-            ps5.executeUpdate();
+            ps4.executeUpdate();
 
             conexao.commit();
 

@@ -309,14 +309,29 @@
 
 					<br></br>
 
-					<b:row>
+					<b:row rendered="#{RenovarPacienteController.opcaoAtendimento == 'H'}">
+						<p:outputPanel>
+							<b:column span="3" class="label-position">
+								<b:label value="Horário:" severity="info" class="fire-label"/>
+
+								<b:selectOneMenu class="select-agendaEquipe2" required="true"
+												 requiredMessage="Horário: Campo obrigatório!"
+												 value="#{AlteracaoPacienteController.insercao.agenda.horario}">
+									<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+									<f:selectItems
+											value="#{InsercaoController.gerarHorariosAtendimento()}"/>
+								</b:selectOneMenu>
+							</b:column>
+						</p:outputPanel>
+					</b:row>
+
+					<b:row rendered="#{RenovarPacienteController.opcaoAtendimento == 'T'}">
 
 						<p:outputPanel>
 							<b:column span="3" class="label-position">
 								<b:label value="Turno:" severity="info" class="fire-label"/>
 
 								<b:selectOneMenu class="select-agendaEquipe2"
-									readonly="true"
 									value="#{RenovarPacienteController.insercao.agenda.turno}">
 									<f:selectItem itemLabel="Manhã" itemValue="M" />
 									<f:selectItem itemLabel="Tarde" itemValue="T" />
@@ -378,7 +393,7 @@
 			modal="true" id="laudo-id">
 			<h:form id="formConsuLaudo">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{RenovarPacienteController.listarLaudosVigentes()}" id="dtLaudo"
+					value="#{RenovarPacienteController.listarLaudosVigentesDoPaciente()}" id="dtLaudo"
 					var="insercao" display="Nenhum Laudo">
 
 					<h:column>

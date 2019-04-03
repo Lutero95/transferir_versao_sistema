@@ -14,8 +14,11 @@ import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RenovacaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
@@ -33,6 +36,8 @@ public class RenovacaoPacienteController implements Serializable {
     private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
     private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
     private Integer id_paciente_insituicao;
+    private String opcaoAtendimento;
+    private EmpresaDAO empresaDAO = new EmpresaDAO();
 
     public RenovacaoPacienteController() {
         insercao = new InsercaoPacienteBean();
@@ -51,6 +56,8 @@ public class RenovacaoPacienteController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             id_paciente_insituicao = id;
             this.insercao = rDao.carregarPacientesInstituicaoRenovacao(id);
+            opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
+            opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
             if (insercao.getEquipe().getCodEquipe() != null
                     && insercao.getEquipe().getCodEquipe() > 0) {
                 tipo = TipoAtendimento.EQUIPE.getSigla();
@@ -168,20 +175,26 @@ public class RenovacaoPacienteController implements Serializable {
 
         if (insercaoParaLaudo.getLaudo().getId() != null) {
 
+
+            InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
             Boolean cadastrou = null;
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
                 gerarListaAgendamentosEquipe();
 
+                ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
+
                 cadastrou = rDao.gravarRenovacaoEquipe(insercao,
-                        insercaoParaLaudo, listAgendamentoProfissional);
+                        insercaoParaLaudo, listaAgendamentosProfissionalFinal);
             }
             if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
                 gerarListaAgendamentosProfissional();
 
+                ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
+
                 cadastrou = rDao.gravarInsercaoProfissional(insercao,
-                        insercaoParaLaudo, listAgendamentoProfissional);
+                        insercaoParaLaudo, listaAgendamentosProfissionalFinal);
             }
 
             if (cadastrou == true) {
@@ -197,6 +210,12 @@ public class RenovacaoPacienteController implements Serializable {
     public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
             throws ProjetoException {
         return iDao.listarLaudosVigentes();
+    }
+
+    public ArrayList<InsercaoPacienteBean> listarLaudosVigentesDoPaciente()
+            throws ProjetoException {
+        LaudoDAO laudoDAO = new LaudoDAO();
+        return laudoDAO.listarLaudosVigentesParaPaciente(insercao.getLaudo().getPaciente().getId_paciente());
     }
 
     public void carregarLaudoPaciente() throws ProjetoException {
@@ -240,4 +259,11 @@ public class RenovacaoPacienteController implements Serializable {
         this.insercaoParaLaudo = insercaoParaLaudo;
     }
 
+    public String getOpcaoAtendimento() {
+        return opcaoAtendimento;
+    }
+
+    public void setOpcaoAtendimento(String opcaoAtendimento) {
+        this.opcaoAtendimento = opcaoAtendimento;
+    }
 }
