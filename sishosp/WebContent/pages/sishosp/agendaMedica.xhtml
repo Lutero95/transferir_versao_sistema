@@ -57,7 +57,6 @@
                                                 itemLabel="#{theme.nome}">
                                     <p:ajax event="itemSelect"
                                             update=":formAgendaMedica:outPa, :formAgendaMedica:outTipoAt, :formAgendaMedica:outProfissional, :formAgendaMedica:outEquipeRow"
-                                            listener="#{AgendaController.limparNaBuscaPaciente()}"
                                             global="false"/>
 
                                 </p:autoComplete>
@@ -370,7 +369,7 @@
                                             locale="pt">
                                     <p:ajax event="dateSelect"
                                             listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-                                            process="@form @this"
+                                            process="@this dtagen"
                                             update="msgPagina, outQtdIhMax"></p:ajax>
                                 </p:calendar>
 
@@ -415,7 +414,7 @@
 
                     <br></br>
 
-                    <p:outputPanel id="outQtdIhMax">
+                    <p:outputPanel id="outQtdIhMax" autoUpdate="true">
                         <b:row rendered="#{AgendaController.tipoData == 'U'}">
                             <b:column span="2" class="label-position">
                                 <b:label for="qtd" value="Quantidade" severity="info"

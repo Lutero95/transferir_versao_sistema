@@ -301,12 +301,13 @@ public class AtendimentoDAO {
             throws ProjetoException {
 
         AtendimentoBean at = new AtendimentoBean();
-        String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, f.codprocedimentopadrao, "
-                + "pr.nome as procedimento, a.situacao "
-                + "from hosp.atendimentos a "
-                + "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) "
-                + "left join acl.funcionarios f on (f.id_funcionario = a.codmedico) "
-                + "left join hosp.proc pr on (pr.id = f.codprocedimentopadrao) "
+        String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, f.codprocedimentopadrao, \n" + 
+        		"pr.nome as procedimento, a1.situacao \n" + 
+        		"from hosp.atendimentos a \n" + 
+        		"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento\n" + 
+        		"left join hosp.pacientes p on (p.id_paciente = a.codpaciente) \n" + 
+        		"left join acl.funcionarios f on (f.id_funcionario = a.codmedico) \n" + 
+        		"left join hosp.proc pr on (pr.id = f.codprocedimentopadrao) "
                 + "where a.id_atendimento = ?";
         try {
             con = ConnectionFactory.getConnection();
@@ -323,7 +324,7 @@ public class AtendimentoDAO {
                 at.getProcedimento().setNomeProc(rs.getString("procedimento"));
                 at.getFuncionario().setId(rs.getLong("codmedico"));
                 at.getFuncionario().setNome(rs.getString("descfuncionario"));
-                at.setSituacao(rs.getString("situacao"));
+                at.setStatus(rs.getString("situacao"));
             }
 
         } catch (SQLException ex) {

@@ -15,6 +15,7 @@ public class AtendimentoBean implements Serializable {
     private String status;
     private String situacao;
     private String ehEquipe;
+    
 
     // HERDADOS
     private PacienteBean paciente;

@@ -108,8 +108,7 @@ public class AgendaController implements Serializable {
 
         public void preparaVerificarDisponibilidadeData() throws ProjetoException {
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
-            if (this.agenda.getPaciente() == null
-                    || this.agenda.getPrograma() == null
+            if (this.agenda.getPrograma() == null
                     || this.agenda.getGrupo() == null
                     || this.agenda.getTipoAt() == null
                     || this.agenda.getDataAtendimento() == null
@@ -121,8 +120,7 @@ public class AgendaController implements Serializable {
             }
 
         } else if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
-            if (this.agenda.getPaciente() == null
-                    || this.agenda.getPrograma() == null
+            if (this.agenda.getPrograma() == null
                     || this.agenda.getGrupo() == null
                     || this.agenda.getTipoAt() == null
                     || (this.agenda.getDataAtendimento() == null || this.agenda.getDataAtendimentoFinal() == null)
@@ -156,7 +154,7 @@ public class AgendaController implements Serializable {
     public Boolean verificarTipoDeAtendimentoDataUnica() throws ProjetoException {
         Boolean retorno = false;
 
-        if(!agenda.getTipoAt().getEquipe()) {
+        if(agenda.getTipoAt().getProfissional()) {
             if (verificarSeExisteTipoAtendimentoEspecificoDataUnica()) {
 
                 if (verificarSeAtingiuLimitePorTipoDeAtendimento()) {
@@ -247,7 +245,7 @@ public class AgendaController implements Serializable {
     }
 
     public void verAgenda() throws ProjetoException {
-
+System.out.println("veragenda dtaatende "+this.agenda.getDataAtendimento());
         Boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
         Boolean diaSem = aDao.buscarDiaSemana(this.agenda);
         Boolean limitePorTipoAtend = aDao.buscarTabTipoAtendAgenda(this.agenda);

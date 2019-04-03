@@ -668,6 +668,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public List<ConfigAgendaParte1Bean> retornarDiaAtendimentoProfissional(Long codProfissional) throws ProjetoException {
+    	System.out.println("retornarDiaAtendimentoProfissional");
         List<ConfigAgendaParte1Bean> lista = new ArrayList<ConfigAgendaParte1Bean>();
 
         StringBuilder sql = new StringBuilder();
