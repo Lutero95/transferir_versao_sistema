@@ -144,10 +144,8 @@ public class AgendaController implements Serializable {
                     JSFUtil.adicionarMensagemErro("Data com bloqueio, não é permitido fazer agendamento!", "Erro");
 
         }
-        else if(!agenda.getTipoAt().getEquipe()){
-            if (verificarTipoDeAtendimentoDataUnica()) {
+        else if(verificarTipoDeAtendimentoDataUnica()) {
                 JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
-            }
         }
         else {
         verAgenda();
@@ -158,10 +156,12 @@ public class AgendaController implements Serializable {
     public Boolean verificarTipoDeAtendimentoDataUnica() throws ProjetoException {
         Boolean retorno = false;
 
-        if(verificarSeExisteTipoAtendimentoEspecificoDataUnica()) {
+        if(!agenda.getTipoAt().getEquipe()) {
+            if (verificarSeExisteTipoAtendimentoEspecificoDataUnica()) {
 
-            if(verificarSeAtingiuLimitePorTipoDeAtendimento()){
-                retorno = true;
+                if (verificarSeAtingiuLimitePorTipoDeAtendimento()) {
+                    retorno = true;
+                }
             }
         }
 
