@@ -172,7 +172,7 @@ public class InsercaoPacienteDAO {
                 }
             }
 
-            String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
+            String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codequipe, situacao, dtaatende, codtipoatendimento, turno, "
                     + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario, encaixe)"
                     + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, ?) RETURNING id_atendimento;";
 
@@ -182,7 +182,7 @@ public class InsercaoPacienteDAO {
             for (int i = 0; i < listaAgendamento.size(); i++) {
 
                 ps3.setInt(1, insercao.getLaudo().getPaciente().getId_paciente());
-                ps3.setLong(2, listaAgendamento.get(i).getAgenda().getProfissional().getId());
+                ps3.setLong(2, insercao.getEquipe().getCodEquipe());
                 ps3.setDate(3, DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i)
                         .getAgenda().getDataMarcacao()));
                 ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
@@ -209,21 +209,23 @@ public class InsercaoPacienteDAO {
 
                 rs = ps3.executeQuery();
 
-                int idAgend = 0;
+                int idAtendimento = 0;
                 if (rs.next()) {
-                    idAgend = rs.getInt("id_atendimento");
+                    idAtendimento = rs.getInt("id_atendimento");
                 }
 
-                String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+                for(int j=0; j<listaAgendamento.get(i).getAgenda().getProfissional().getListDiasSemana().size(); j++) {
+                    String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
 
-                PreparedStatement ps4 = null;
-                ps4 = con.prepareStatement(sql4);
+                    PreparedStatement ps4 = null;
+                    ps4 = con.prepareStatement(sql4);
 
-                ps4.setLong(1, listaAgendamento.get(i).getAgenda().getProfissional().getId());
-                ps4.setInt(2, idAgend);
-                ps4.setInt(3, listaAgendamento.get(i).getAgenda().getProfissional().getCbo().getCodCbo());
+                    ps4.setLong(1, listaAgendamento.get(i).getAgenda().getProfissional().getId());
+                    ps4.setInt(2, idAtendimento);
+                    ps4.setInt(3, listaAgendamento.get(i).getAgenda().getProfissional().getCbo().getCodCbo());
 
-                ps4.executeUpdate();
+                    ps4.executeUpdate();
+                }
 
             }
 
