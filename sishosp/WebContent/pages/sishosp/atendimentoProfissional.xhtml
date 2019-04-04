@@ -34,7 +34,7 @@
 
 						<b:column span="5" class="label-position">
 							<b:label value="Procedimento" severity="info" />
-							
+
 							<p:outputPanel id="outProcP1">
 								<p:autoComplete required="true" class="select-agendaEquipe4"
 									requiredMessage="Escolha o procedimento!"
@@ -56,16 +56,16 @@
 
 						<b:column span="5" class="label-position">
 							<b:label value="Profissional" severity="info" />
-							
+
 							<b:inputText
 								value="#{AtendimentoController.atendimento.funcionario.nome}"
-								readonly="true" class="form-control select-agendaEquipe5" 
+								readonly="true" class="form-control select-agendaEquipe5"
 								id="inputnamefunc"></b:inputText>
 						</b:column>
 
 						<b:column span="5" class="label-position">
 							<b:label value="Atendimento" severity="info" />
-							
+
 							<p:outputPanel id="outProfi">
 								<p:autoComplete id="acpro" required="true"
 									requiredMessage="Escolha o atendente"
@@ -87,9 +87,10 @@
 
 						<b:column span="5" class="label-position">
 							<b:label value="Status" severity="info" />
-							
+
 							<b:selectOneMenu required="true"
-								requiredMessage="Escolha um status!" class="select-agendaEquipe5"
+								requiredMessage="Escolha um status!"
+								class="select-agendaEquipe5"
 								value="#{AtendimentoController.atendimento.status}" id="status">
 								<f:selectItem itemLabel="Selecione" itemValue="" />
 								<f:selectItem itemLabel="Atendido" itemValue="A" />
@@ -108,11 +109,13 @@
 					<b:row>
 
 
-                        <b:column span="12" class="label-position">
-                            <b:label value="Evolução" severity="info" />
+						<b:column span="12" class="label-position">
+							<b:label value="Evolução" severity="info" />
 
-							<p:editor widgetVar="editor2" value="#{AtendimentoController.atendimento.evolucao}"
-                                      required="true" requiredMessage="Evolução: Campo obrigatório!">
+							<p:editor widgetVar="editor2" style="margin-right: 15px;"
+								value="#{AtendimentoController.atendimento.evolucao}"
+								class="select-agendaEquipe2" required="true"
+								requiredMessage="Evolução: Campo obrigatório!">
 
 							</p:editor>
 						</b:column>
@@ -121,7 +124,7 @@
 					<div align="center">
 						<b:messages value="Error" id="msgPagina"></b:messages>
 					</div>
-					
+
 					<br></br>
 
 					<div align="center">
