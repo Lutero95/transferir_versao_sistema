@@ -220,7 +220,7 @@ public class InsercaoPacienteDAO {
                     PreparedStatement ps4 = null;
                     ps4 = con.prepareStatement(sql4);
 
-                    ps4.setLong(1, listaAgendamento.get(i).getAgenda().getProfissional().getId());
+                    ps4.setLong(1, listaAgendamento.get(j).getAgenda().getProfissional().getId());
                     ps4.setInt(2, idAtendimento);
                     ps4.setInt(3, listaAgendamento.get(i).getAgenda().getProfissional().getCbo().getCodCbo());
 
