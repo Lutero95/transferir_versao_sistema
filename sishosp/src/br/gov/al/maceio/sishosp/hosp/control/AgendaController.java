@@ -284,7 +284,9 @@ System.out.println("veragenda dtaatende "+this.agenda.getDataAtendimento());
 
             if(verAgendaIntervalo()){
 
-                listaNaoPermitidosIntervaloDeDatas = listarDatasBloqueadas(dataInicio, dataFinal);
+                if(!agenda.getTipoAt().getEquipe() && agenda.getTipoAt().getProfissional()) {
+                    listaNaoPermitidosIntervaloDeDatas = listarDatasBloqueadas(dataInicio, dataFinal);
+                }
                 listaNaoPermitidosIntervaloDeDatas = listarDatasComFeriado(listaNaoPermitidosIntervaloDeDatas, dataInicio, dataFinal);
 
                     while (dataInicio.before(dataFinal) || dataInicio.equals(dataFinal)) {
@@ -303,13 +305,13 @@ System.out.println("veragenda dtaatende "+this.agenda.getDataAtendimento());
                             }
 
                             if(podeAdicionar) {
-                                if(podeAdicionarAposVerificarTipoDeAtendimentoIntervaloDeDatas(dataInicio)){
-                                    listaAgendamentoPermitidos.add(dataInicio);
+                                if(!agenda.getTipoAt().getEquipe() && agenda.getTipoAt().getProfissional()) {
+                                    if (podeAdicionarAposVerificarTipoDeAtendimentoIntervaloDeDatas(dataInicio)) {
+                                        listaAgendamentoPermitidos.add(dataInicio);
+                                    } else {
+                                        listaNaoPermitidosIntervaloDeDatas.add(dataInicio);
+                                    }
                                 }
-                                else{
-                                    listaNaoPermitidosIntervaloDeDatas.add(dataInicio);
-                                }
-
                             }
                         }
                         dataInicio = DataUtil.adicionarDiasAData(dataInicio, 1);

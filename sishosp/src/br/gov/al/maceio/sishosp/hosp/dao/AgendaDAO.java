@@ -7,13 +7,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 
 import javax.faces.context.FacesContext;
@@ -25,10 +23,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     public boolean gravarAgenda(AgendaBean agenda,
                                 List<AgendaBean> listaNovosAgendamentos) {
 
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
-
         Boolean retorno = false;
+        int idAtendimento = 0;
+
         String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
                 + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
                 + " turno, codequipe, observacao, ativo, cod_empresa, codgrupo)"
@@ -66,28 +63,31 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 ResultSet rs = ps.executeQuery();
 
-                int idAgend = 0;
                 if (rs.next()) {
-                    idAgend = rs.getInt("id_atendimento");
+                    idAtendimento = rs.getInt("id_atendimento");
                 }
 
-                String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
-                        + " cbo) VALUES  (?, ?, ?)";
-                ps = con.prepareStatement(sql2);
-                if (agenda.getProfissional().getId() != null) {
-                    ps.setLong(1, agenda.getProfissional().getId());
-                    ps.setInt(2, idAgend);
-                    ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
-                } else if (agenda.getEquipe().getCodEquipe() != null) {
-                    for (FuncionarioBean prof : agenda.getEquipe()
-                            .getProfissionais()) {
-                        ps.setLong(1, prof.getId());
-                        ps.setInt(2, idAgend);
-                        ps.setInt(3, prof.getCbo().getCodCbo());
+                for (int j = 0; j < listaNovosAgendamentos.size(); j++) {
+                    String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
+                            + " cbo) VALUES  (?, ?, ?)";
+                    ps = con.prepareStatement(sql2);
+                    if (agenda.getProfissional().getId() != null) {
+                        ps.setLong(1, agenda.getProfissional().getId());
+                        ps.setInt(2, idAtendimento);
+                        ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
+                        ps.executeUpdate();
+                    } else if (agenda.getEquipe().getCodEquipe() != null) {
+                        for (FuncionarioBean prof : agenda.getEquipe()
+                                .getProfissionais()) {
+                            ps.setLong(1, prof.getId());
+                            ps.setInt(2, idAtendimento);
+                            ps.setInt(3, prof.getCbo().getCodCbo());
+                            ps.executeUpdate();
+                        }
                     }
-                }
 
-                ps.executeUpdate();
+
+                }
             }
             con.commit();
 
@@ -160,7 +160,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlEqui = "select e.qtdmax " +
                 "from hosp.config_agenda_equipe e " +
                 "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
-                "where e.codequipe = ? and d.data_especifica = ? and d.turno = 'M';";
+                "where e.codequipe = ? and d.data_especifica = ? and d.turno = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -560,7 +560,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlEqui = "select e.qtdmax " +
                 "from hosp.config_agenda_equipe e " +
                 "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
-                "where e.codequipe = ? and d.dia = ? and d.turno = 'M' AND e.mes = ? AND e.ano = ?;";
+                "where e.codequipe = ? and d.dia = ? and d.turno = ? AND e.mes = ? AND e.ano = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
