@@ -41,6 +41,7 @@ public class AtendimentoController implements Serializable {
     private FuncionarioDAO fDao = new FuncionarioDAO();
     private AtendimentoDAO aDao = new AtendimentoDAO();
     private ProcedimentoDAO pDao = new ProcedimentoDAO();
+    private Integer idAtendimento1;
 
     //CONSTANTES
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
@@ -222,6 +223,15 @@ public class AtendimentoController implements Serializable {
 
     }
 
+    public void adicionarEvolucaoAtendimentoEquipe() {
+
+        for(int i=0; i<listAtendimentosEquipe.size(); i++){
+            if(listAtendimentosEquipe.get(i).getId1() == idAtendimento1){
+                listAtendimentosEquipe.get(i).setEvolucao(atendimento.getEvolucao());
+            }
+        }
+    }
+
     public void onCellEdit(CellEditEvent event) {
 
         Object oldValue = event.getOldValue();
@@ -303,4 +313,11 @@ public class AtendimentoController implements Serializable {
         this.atendimentoLista = atendimentoLista;
     }
 
+    public Integer getIdAtendimento1() {
+        return idAtendimento1;
+    }
+
+    public void setIdAtendimento1(Integer idAtendimento1) {
+        this.idAtendimento1 = idAtendimento1;
+    }
 }

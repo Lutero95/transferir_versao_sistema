@@ -29,12 +29,12 @@
                     <p:ajax event="cellEdit"
                             listener="#{AtendimentoController.onCellEdit}"/>
 
-                    <p:column headerText="CNS">
+                    <p:column headerText="CNS" width="10%">
                         <h:outputText value="#{atendimento.funcionario.cns}"
                                       style="font-weight:bold;"></h:outputText>
                     </p:column>
 
-                    <p:column headerText="Profissional">
+                    <p:column headerText="Profissional" width="25%">
                         <p:commandButton icon="ui-icon-search"
                                          onclick="PF('dlgConsultProfi').show()">
                             <f:setPropertyActionListener value="#{atendimento}"
@@ -44,12 +44,12 @@
                                       style="font-weight:bold;"></h:outputText>
                     </p:column>
 
-                    <p:column headerText="CBO">
+                    <p:column headerText="CBO" width="20%">
                         <h:outputText value="#{atendimento.cbo.descCbo}"
                                       style="font-weight:bold;"></h:outputText>
                     </p:column>
 
-                    <p:column headerText="Procedimento">
+                    <p:column headerText="Procedimento" width="20%">
                         <p:commandButton icon="ui-icon-search"
                                          onclick="PF('dlgConsulProc1').show()">
                             <f:setPropertyActionListener value="#{atendimento}"
@@ -59,7 +59,7 @@
                                       style="font-weight:bold;"></h:outputText>
                     </p:column>
 
-                    <p:column headerText="Status">
+                    <p:column headerText="Status" width="15%">
                         <p:cellEditor>
                             <f:facet name="output">
                                 <h:outputLabel value="Atendido"
@@ -84,14 +84,15 @@
                         </p:cellEditor>
                     </p:column>
 
-                    <p:column headerText="Procedimento">
-                        <p:commandButton icon="ui-icon-search"
-                                         onclick="PF('dlgConsulProc1').show()">
-                            <f:setPropertyActionListener value="#{atendimento}"
-                                                         target="#{AtendimentoController.atendimentoLista}"/>
+                    <p:column headerText="Evolução" width="10%">
+                        <div align="center">
+                        <p:commandButton icon="ui-icon-document"
+                                         size="sm"
+                                         onclick="PF('dlgEvolucao').show()">
+                            <f:setPropertyActionListener value="#{atendimento.id1}"
+                                                         target="#{AtendimentoController.idAtendimento1}" />
                         </p:commandButton>
-                        <h:outputText value="#{atendimento.procedimento.nomeProc}"
-                                      style="font-weight:bold;"></h:outputText>
+                        </div>
                     </p:column>
 
                 </p:dataTable>
@@ -187,6 +188,25 @@
 
 
                 </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Digite a evolução" widgetVar="dlgEvolucao"
+                  modal="true">
+            <h:form id="formEvolucao">
+                <p:editor widgetVar="editor2" value="#{AtendimentoController.atendimento.evolucao}"
+                          required="true" requiredMessage="Evolução: Campo obrigatório!">
+
+                </p:editor>
+
+                <br></br>
+
+                <div align="center">
+                <p:commandButton
+                        action="#{AtendimentoController.adicionarEvolucaoAtendimentoEquipe()}"
+                        icon="glyphicon-ok" size="sm" look="success" value="Gravar Evolução"
+                        style="float:left"/>
+                </div>
             </h:form>
         </p:dialog>
 
