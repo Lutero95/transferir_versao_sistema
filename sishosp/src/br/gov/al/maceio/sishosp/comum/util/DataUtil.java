@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public final class DataUtil {
@@ -93,6 +94,13 @@ public final class DataUtil {
         data = c.getTime();
 
         return data;
+    }
+
+    public static Date retornarDataAtual(){
+        Calendar calendar = new GregorianCalendar();
+        Date date = new Date();
+        calendar.setTime(date);
+        return calendar.getTime();
     }
 
 }

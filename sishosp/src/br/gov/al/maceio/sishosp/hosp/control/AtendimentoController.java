@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import org.primefaces.event.CellEditEvent;
@@ -59,6 +60,8 @@ public class AtendimentoController implements Serializable {
         listaProcedimentos = new ArrayList<ProcedimentoBean>();
         primeiraVez = true;
         atendimento.getEmpresa().setCodEmpresa(user_session.getCodigo());
+        atendimento.setDataAtendimentoInicio(DataUtil.retornarDataAtual());
+        atendimento.setDataAtendimentoFinal(DataUtil.retornarDataAtual());
 
     }
 

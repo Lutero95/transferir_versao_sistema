@@ -15,6 +15,7 @@ public class AtendimentoBean implements Serializable {
     private String status;
     private String situacao;
     private String ehEquipe;
+    private String evolucao;
     
 
     // HERDADOS
@@ -166,4 +167,11 @@ public class AtendimentoBean implements Serializable {
         this.empresa = empresa;
     }
 
+    public String getEvolucao() {
+        return evolucao;
+    }
+
+    public void setEvolucao(String evolucao) {
+        this.evolucao = evolucao;
+    }
 }
