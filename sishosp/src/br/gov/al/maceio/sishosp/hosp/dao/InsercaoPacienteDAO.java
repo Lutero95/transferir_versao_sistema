@@ -215,16 +215,24 @@ public class InsercaoPacienteDAO {
                 }
 
                 for(int j=0; j<lista.size(); j++) {
-                    String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
 
-                    PreparedStatement ps4 = null;
-                    ps4 = con.prepareStatement(sql4);
+                    for (int h = 0; h < lista.get(j).getListDiasSemana().size(); h++) {
 
-                    ps4.setLong(1,lista.get(j).getId());
-                    ps4.setInt(2, idAtendimento);
-                    ps4.setInt(3, lista.get(j).getCbo().getCodCbo());
+                        if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getAgenda().getDataMarcacao()) ==
+                                Integer.parseInt(lista.get(j).getListDiasSemana().get(h))) {
 
-                    ps4.executeUpdate();
+                        String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+
+                        PreparedStatement ps4 = null;
+                        ps4 = con.prepareStatement(sql4);
+
+                        ps4.setLong(1, lista.get(j).getId());
+                        ps4.setInt(2, idAtendimento);
+                        ps4.setInt(3, lista.get(j).getCbo().getCodCbo());
+
+                        ps4.executeUpdate();
+                        }
+                    }
                 }
 
             }
