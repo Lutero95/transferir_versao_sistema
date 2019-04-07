@@ -333,7 +333,7 @@
 
                     <br></br>
 
-                    <b:row>
+                    <b:row rendered="false">
 
                         <b:column span="2" class="new-data-size2">
 
@@ -713,7 +713,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton  actionListener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-                                          update=":formAgendaMedica:outEquipe"
+                                          update=":formAgendaMedica, :formAgendaMedica:outEquipe, :formAgendaMedica:outHorariosEquipe, :formAgendaMedica:msgPagina, :formAgendaMedica:outQtdIhMax"
                                          icon="ui-icon-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          onclick="PF('dlgConsuEquipe').hide();">
@@ -747,7 +747,7 @@
                         <p:commandButton icon="ui-icon-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          actionListener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-                                         update=":formAgendaMedica:outProf"
+                                         update=":formAgendaMedica:outProf, :formAgendaMedica:msgPagina, :formAgendaMedica:outQtdIhMax, :formAgendaMedica:outHorariosProfissional"
                                          onclick="PF('dlgConsuProf').hide();">
                             <f:setPropertyActionListener value="#{profi}"
                                                          target="#{AgendaController.agenda.profissional}"/>
