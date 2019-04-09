@@ -41,6 +41,8 @@
 
                 <h:form id="formAgendaMedica">
 
+                    <p:growl id="growlMsg"></p:growl>
+
                     <b:row>
                         <b:column span="3"
                                   class="label-position new-data-size new-comple1">
@@ -311,8 +313,8 @@
                         <p:outputPanel>
                             <b:column span="2" class="new-data-size2">
 
-                                    <p:outputLabel value="Turno:"
-                                                   style="margin-top: 8px;
+                                <p:outputLabel value="Turno:"
+                                               style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
                             </b:column>
@@ -358,7 +360,7 @@
                     <br></br>
 
                     <!-- DATA ÚNICA -->
-                    <p:outputLabel id="outdata">
+                    <p:outputPanel id="outdata">
                         <b:row rendered="#{AgendaController.tipoData == 'U'}">
                             <b:column span="2" class="label-position data-size">
                                 <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
@@ -376,7 +378,24 @@
                             </b:column>
 
                         </b:row>
-                    </p:outputLabel>
+                    </p:outputPanel>
+
+                    <b:row>
+
+                        <b:column span="3" class="label-position">
+
+                            <p:outputLabel value="Encaixe:"
+                                           style="margin-left:-15px; margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                            <p:selectBooleanCheckbox label="Encaixe"
+                                                     style="margin-left: 10px;margin-top: 5px"
+                                                     value="#{AgendaController.agenda.encaixe}">
+                            </p:selectBooleanCheckbox>
+
+                        </b:column>
+
+                    </b:row>
 
                     <br></br>
 
@@ -514,8 +533,9 @@
                     <div align="center">
 
                         <b:commandButton value="Gravar" look="success" size="sm" id="b1"
-                                         icon="glyphicon-ok" action="#{AgendaController.gravarAgenda()}"
-                                         update=":formAgendaMedica" class="btn-incluir"/>
+                                         icon="glyphicon-ok"
+                                         action="#{AgendaController.verificarPacienteAtivoInstituicao()}"
+                                         update=":formAgendaMedica, :frmSenha" class="btn-incluir"/>
 
                         <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" look="info" class="btn-voltar"
@@ -712,8 +732,8 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton  actionListener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-                                          update=":formAgendaMedica, :formAgendaMedica:outEquipe, :formAgendaMedica:outHorariosEquipe, :formAgendaMedica:msgPagina, :formAgendaMedica:outQtdIhMax"
+                        <p:commandButton actionListener="#{AgendaController.preparaVerificarDisponibilidadeData}"
+                                         update=":formAgendaMedica, :formAgendaMedica:outEquipe, :formAgendaMedica:outHorariosEquipe, :formAgendaMedica:msgPagina, :formAgendaMedica:outQtdIhMax"
                                          icon="ui-icon-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          onclick="PF('dlgConsuEquipe').hide();">
@@ -818,6 +838,32 @@
                     </p:dataTable>
 
                 </p:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Digite a senha" widgetVar="dlgSenha" modal="true" styleClass="topDialog">
+            <h:form id="frmSenha">
+                <h:panelGrid columns="1" cellpadding="3">
+
+                    <b:inputText mask="999-999-999-99" style="padding:10px;"
+                                 required="true" value="#{AgendaController.funcionario.cpf}"
+                                 placeholder="Digite o CPF" render-label="true"
+                                 requiredMessage="CPF obrigatório"/>
+                    <b:message for="@previous"/>
+
+                    <b:inputSecret style="padding:10px;margin-top:10px"
+                                   required="true" placeholder="Digite a Senha"
+                                   requiredMessage="Senha obrigatório"
+                                   value="#{AgendaController.funcionario.senha}"></b:inputSecret>
+                    <b:message for="@previous"/>
+
+                </h:panelGrid>
+
+                <div align="center">
+                    <p:commandButton value="Liberar" look="success" size="sm" id="b1" style="margin-top:10px"
+                                     icon="ui-icon-check" update=":formAgendaMedica, :formAgendaMedica:growlMsg," action="#{AgendaController.validarSenhaLiberacao()}"/>
+                </div>
+
             </h:form>
         </p:dialog>
     </ui:define>

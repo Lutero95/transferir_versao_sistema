@@ -237,4 +237,35 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
+    public Boolean verificarPacienteAtivoInstituicao(Integer codPaciente) throws ProjetoException {
+
+        Boolean retorno = false;
+
+        String sql = "SELECT id FROM hosp.paciente_instituicao WHERE status = 'A' AND codpaciente = ?;";
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+
+            stmt.setInt(1, codPaciente);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                retorno = true;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+
 }

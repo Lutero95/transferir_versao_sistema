@@ -60,6 +60,8 @@ public class AgendaController implements Serializable {
     private String dataAtual;
     private TipoAtendimentoBean tipoAtendimentoSelecionado;
     private List<Date> listaNaoPermitidosIntervaloDeDatas;
+    private FuncionarioBean funcionario;
+    private static final Integer SEM_FUNCIONARIO_LIBERACAO = 0;
 
     public AgendaController() {
 
@@ -92,6 +94,7 @@ public class AgendaController implements Serializable {
         tipoAtendimentoSelecionado = new TipoAtendimentoBean();
         agenda.setTurno("M");
         listaNaoPermitidosIntervaloDeDatas = new ArrayList<>();
+        funcionario = new FuncionarioBean();
     }
 
     public void limparDados() {
@@ -141,13 +144,22 @@ public class AgendaController implements Serializable {
         }
     }
 
+    public void setarQuantidadeIhMaximoComoNulos(){
+        agenda.setQtd(null);
+        agenda.setMax(null);
+    }
+
     public void verificaDisponibilidadeDataUnica() throws ProjetoException {
 
         if (verificarSeEhFeriadoDataUnica()) {
             JSFUtil.adicionarMensagemErro("Data com feriado, não é permitido fazer agendamento!", "Erro");
+            setarQuantidadeIhMaximoComoNulos();
+
         } else if (agenda.getProfissional().getId() != null && verificarSeTemBloqueioDataUnica()) {
             JSFUtil.adicionarMensagemErro("Data com bloqueio, não é permitido fazer agendamento!", "Erro");
-        } else if (verificarTipoDeAtendimentoDataUnica()) {
+            setarQuantidadeIhMaximoComoNulos();
+
+        } else if (verificarTipoDeAtendimentoDataUnica() && !agenda.getEncaixe()) {
             JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
         }
         else if (verificarTipoDeAtendimentoDataUnica()) {
@@ -287,7 +299,10 @@ public class AgendaController implements Serializable {
     public void preparaConfirmar() throws ProjetoException {
 
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
-            if (agenda.getMax() == 0 || agenda.getQtd() >= agenda.getMax()) {
+            if (agenda.getMax() == null || agenda.getQtd() == null){
+                JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
+            }
+            else if ((agenda.getMax() == 0 || agenda.getQtd() >= agenda.getMax()) && !agenda.getEncaixe()) {
                 JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
             } else {
                 addListaNovosAgendamentos();
@@ -470,7 +485,35 @@ public class AgendaController implements Serializable {
         this.listaAgendamentosData = aDao.listarAgendamentosData(this.agenda);
     }
 
-    public void gravarAgenda() {
+    public void verificarPacienteAtivoInstituicao() throws ProjetoException {
+        GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+
+        Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(agenda.getPaciente().getId_paciente());
+
+        if(pacienteAtivo){
+            gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
+        }
+        else{
+            funcionario = new FuncionarioBean();
+            JSFUtil.abrirDialog("dlgSenha");
+        }
+    }
+
+    public void validarSenhaLiberacao() throws ProjetoException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha());
+
+        if(idFuncionario > 0){
+            JSFUtil.fecharDialog("dlgSenha");
+            gravarAgenda(idFuncionario);
+        }
+        else{
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+        }
+    }
+
+    public void gravarAgenda(Integer funcionarioLiberacao) {
         // verificar se existe algum campo nao preenchido
         if (this.agenda.getPaciente() == null
                 || this.agenda.getPrograma() == null
@@ -488,7 +531,7 @@ public class AgendaController implements Serializable {
         }
 
         // verificar a quantidade de agendamentos
-        if (this.agenda.getQtd() >= this.agenda.getMax()) {
+        if (this.agenda.getQtd() >= this.agenda.getMax() && !agenda.getEncaixe()) {
             JSFUtil.adicionarMensagemErro("Quantidade de agendamentos está no limite!", "Erro");
             return;
         }
@@ -500,7 +543,7 @@ public class AgendaController implements Serializable {
 
         boolean cadastrou = false;
 
-        cadastrou = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos);
+        cadastrou = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos, funcionarioLiberacao);
 
         if (cadastrou) {
             limparDados();
@@ -932,5 +975,13 @@ public class AgendaController implements Serializable {
 
     public void setListaNaoPermitidosIntervaloDeDatas(List<Date> listaNaoPermitidosIntervaloDeDatas) {
         this.listaNaoPermitidosIntervaloDeDatas = listaNaoPermitidosIntervaloDeDatas;
+    }
+
+    public FuncionarioBean getFuncionario() {
+        return funcionario;
+    }
+
+    public void setFuncionario(FuncionarioBean funcionario) {
+        this.funcionario = funcionario;
     }
 }

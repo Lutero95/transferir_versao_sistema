@@ -1563,4 +1563,36 @@ public class FuncionarioDAO {
         }
     }
 
+    public Integer validarCpfIhSenha(String cpf, String senha) throws ProjetoException {
+
+        Integer idFuncionario = 0;
+
+        String sql = "SELECT id_funcionario FROM acl.funcionarios WHERE cpf = ? AND senha = ? AND permite_liberacao IS TRUE;";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setString(1, cpf.replaceAll("[^0-9]", ""));
+            stmt.setString(2, senha);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                idFuncionario = rs.getInt("id_funcionario");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return idFuncionario;
+    }
+
 }

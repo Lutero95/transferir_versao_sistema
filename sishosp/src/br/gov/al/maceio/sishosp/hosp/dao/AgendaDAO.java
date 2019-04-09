@@ -21,18 +21,18 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     PreparedStatement ps = null;
 
     public boolean gravarAgenda(AgendaBean agenda,
-                                List<AgendaBean> listaNovosAgendamentos) {
+                                List<AgendaBean> listaNovosAgendamentos, Integer funcionarioLiberacao) {
 
         Boolean retorno = false;
         int idAtendimento = 0;
 
         String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
                 + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
-                + " turno, codequipe, observacao, ativo, cod_empresa, codgrupo)"
+                + " turno, codequipe, observacao, ativo, cod_empresa, codgrupo, encaixe, funcionario_liberacao)"
                 + " VALUES "
                 + "(?, ?, ?, ?, ?,"
                 + " ?, ?, ?, ?, ?,"
-                + " ?, ?, ?) RETURNING id_atendimento;";
+                + " ?, ?, ?, ?, ?) RETURNING id_atendimento;";
         try {
             con = ConnectionFactory.getConnection();
 
@@ -60,6 +60,12 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ps.setString(11, "S");
                 ps.setInt(12, agenda.getEmpresa().getCodEmpresa());
                 ps.setInt(13, agenda.getGrupo().getIdGrupo());
+                ps.setBoolean(14, agenda.getEncaixe());
+                if (funcionarioLiberacao > 0) {
+                    ps.setLong(15, funcionarioLiberacao);
+                } else {
+                    ps.setNull(15, Types.NULL);
+                }
 
                 ResultSet rs = ps.executeQuery();
 

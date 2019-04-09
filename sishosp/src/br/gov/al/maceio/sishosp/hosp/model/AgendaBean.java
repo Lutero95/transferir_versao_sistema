@@ -21,6 +21,7 @@ public class AgendaBean implements Serializable {
     private String horario;
     private Integer qtdAtendimentosManha[];
     private Integer qtdAtendimentosTarde[];
+    private Boolean encaixe;
 
     // HERDADOS
     private PacienteBean paciente;
@@ -54,6 +55,7 @@ public class AgendaBean implements Serializable {
         this.empresa = new EmpresaBean();
         qtdAtendimentosManha = new Integer [5];
         qtdAtendimentosTarde = new Integer [5];
+        encaixe = false;
     }
 
     public Integer getIdAgenda() {
@@ -232,4 +234,11 @@ public class AgendaBean implements Serializable {
         this.qtdAtendimentosTarde = qtdAtendimentosTarde;
     }
 
+    public Boolean getEncaixe() {
+        return encaixe;
+    }
+
+    public void setEncaixe(Boolean encaixe) {
+        this.encaixe = encaixe;
+    }
 }
