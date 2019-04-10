@@ -39,7 +39,7 @@ public class FuncionarioDAO {
     public FuncionarioBean autenticarUsuario(FuncionarioBean usuario)
             throws ProjetoException {
 
-        String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, "
+        String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, permite_encaixe, "
                 + "pf.descricao as descperfil, cod_empresa, case when us.ativo = 'S' "
                 + "then true else false end as usuarioativo, "
                 + "pf.id as idperfil from acl.funcionarios us "
@@ -65,6 +65,7 @@ public class FuncionarioDAO {
                 ub.setEmail(rs.getString("email"));
                 ub.getEmpresa().setCodEmpresa(rs.getInt("cod_empresa"));
                 ub.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+                ub.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
                 // ACL
                 ub.setId(rs.getLong("id_funcionario"));
@@ -784,8 +785,8 @@ public class FuncionarioDAO {
         Boolean retorno = false;
 
         String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
-                + " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, cod_empresa, permite_liberacao) "
-                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_date, false, ?, ?, ?) returning id_funcionario;";
+                + " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, cod_empresa, permite_liberacao, permite_encaixe) "
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_date, false, ?, ?, ?, ?) returning id_funcionario;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -843,6 +844,8 @@ public class FuncionarioDAO {
             ps.setInt(12, profissional.getEmpresa().getCodEmpresa());
 
             ps.setBoolean(13, profissional.getRealizaLiberacoes());
+
+            ps.setBoolean(14, profissional.getRealizaEncaixes());
 
             ResultSet rs = ps.executeQuery();
 
@@ -904,7 +907,7 @@ public class FuncionarioDAO {
 
         List<FuncionarioBean> lista = new ArrayList<>();
         String sql = "SELECT f.id_funcionario, f.id_funcionario ||'-'|| f.descfuncionario AS descfuncionario, f.codespecialidade, e.descespecialidade, " +
-                     "f.cns, f.ativo, f.codcbo, c.descricao, f.codprocedimentopadrao, p.nome, f.permite_liberacao "+
+                     "f.cns, f.ativo, f.codcbo, c.descricao, f.codprocedimentopadrao, p.nome, f.permite_liberacao, permite_encaixe "+
                      " FROM acl.funcionarios f " +
                      "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) " +
                      "LEFT JOIN hosp.proc p ON (f.codprocedimentopadrao = p.id) " +
@@ -937,6 +940,7 @@ public class FuncionarioDAO {
                 prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
                 prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
                 prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+                prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
                 lista.add(prof);
             }
@@ -960,7 +964,7 @@ public class FuncionarioDAO {
         StringBuilder sql = new StringBuilder();
 
         sql.append("SELECT DISTINCT h.id_funcionario, h.id_funcionario ||'-'|| h.descfuncionario AS descfuncionario, h.codespecialidade, h.permite_liberacao, ");
-        sql.append("h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, e.descespecialidade, c.descricao AS desccbo, p.nome AS descproc ");
+        sql.append("h.permite_encaixe, h.cns, h.ativo, h.codcbo, h.codprocedimentopadrao, e.descespecialidade, c.descricao AS desccbo, p.nome AS descproc ");
         sql.append("FROM acl.funcionarios h ");
         sql.append("JOIN hosp.profissional_programa_grupo ppg ON (h.id_funcionario = ppg.codprofissional)");
         sql.append("LEFT JOIN hosp.especialidade e ON (e.id_especialidade = h.codespecialidade) ");
@@ -994,6 +998,7 @@ public class FuncionarioDAO {
                 prof.setPrograma(listarProgProf(rs.getInt("id_funcionario")));
                 prof.setGrupo(listarProgGrupo(rs.getInt("id_funcionario")));
                 prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+                prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
                 lista.add(prof);
             }
@@ -1018,7 +1023,7 @@ public class FuncionarioDAO {
                 .getSessionMap().get("obj_funcionario");
 
         String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, " +
-                " codprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao "
+                " codprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe "
                 + " from acl.funcionarios where cod_empresa = ? order by descfuncionario";
         try {
             con = ConnectionFactory.getConnection();
@@ -1042,6 +1047,7 @@ public class FuncionarioDAO {
                         .getInt("codprocedimentopadrao")));
                 prof.getPerfil().setId(rs.getLong("id_perfil"));
                 prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+                prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
                 listaProf.add(prof);
             }
@@ -1146,7 +1152,7 @@ public class FuncionarioDAO {
 
         Boolean retorno = false;
         String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
-                + " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ? "
+                + " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ? "
                 + " where id_funcionario = ?";
 
         try {
@@ -1200,7 +1206,9 @@ public class FuncionarioDAO {
 
             stmt.setBoolean(9, profissional.getRealizaLiberacoes());
 
-            stmt.setLong(10, profissional.getId());
+            stmt.setBoolean(10, profissional.getRealizaEncaixes());
+
+            stmt.setLong(11, profissional.getId());
 
             stmt.executeUpdate();
 
@@ -1271,7 +1279,7 @@ public class FuncionarioDAO {
         FuncionarioBean prof = null;
 
         String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
-                + " cpf, senha, realiza_atendimento, id_perfil, cod_empresa, permite_liberacao "
+                + " cpf, senha, realiza_atendimento, id_perfil, cod_empresa, permite_liberacao, permite_encaixe "
                 + " from acl.funcionarios where id_funcionario = ? and ativo = 'S' order by descfuncionario";
 
         try {
@@ -1299,6 +1307,7 @@ public class FuncionarioDAO {
                 prof.getPerfil().setId(rs.getLong("id_perfil"));
                 prof.getEmpresa().setCodEmpresa(rs.getInt("cod_empresa"));
                 prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+                prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
             }
             return prof;
@@ -1320,7 +1329,7 @@ public class FuncionarioDAO {
         FuncionarioBean prof = null;
 
         String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
-                + " cpf, senha, realiza_atendimento, permite_liberacao "
+                + " cpf, senha, realiza_atendimento, permite_liberacao, permite_encaixe "
                 + " from acl.funcionarios where id_funcionario = ? and ativo = 'S' and realiza_atendimento is true order by descfuncionario";
 
         try {
@@ -1346,6 +1355,7 @@ public class FuncionarioDAO {
                 prof.setProc1(procDao.listarProcedimentoPorId(rs
                         .getInt("codprocedimentopadrao")));
                 prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+                prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
             }
 

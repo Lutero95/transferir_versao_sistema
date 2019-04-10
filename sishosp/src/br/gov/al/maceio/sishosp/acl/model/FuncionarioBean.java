@@ -23,6 +23,7 @@ public class FuncionarioBean implements Serializable {
     private boolean primeiroAcesso;
     private Boolean realizaAtendimento;
     private Boolean realizaLiberacoes;
+    private Boolean realizaEncaixes;
     private String cns;
     private String diasSemana;
     private ArrayList<String> listDiasSemana;
@@ -425,5 +426,13 @@ public class FuncionarioBean implements Serializable {
 
     public void setRealizaLiberacoes(Boolean realizaLiberacoes) {
         this.realizaLiberacoes = realizaLiberacoes;
+    }
+
+    public Boolean getRealizaEncaixes() {
+        return realizaEncaixes;
+    }
+
+    public void setRealizaEncaixes(Boolean realizaEncaixes) {
+        this.realizaEncaixes = realizaEncaixes;
     }
 }
