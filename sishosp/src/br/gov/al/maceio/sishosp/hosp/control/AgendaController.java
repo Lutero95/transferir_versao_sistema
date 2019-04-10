@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
@@ -65,9 +66,6 @@ public class AgendaController implements Serializable {
 
     public AgendaController() {
 
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
-
         this.agenda = new AgendaBean();
         grupoSelecionado = new GrupoBean();
         listaGruposProgramas = new ArrayList<GrupoBean>();
@@ -90,7 +88,7 @@ public class AgendaController implements Serializable {
         listaHorariosOcupados = new ArrayList<AgendaBean>();
         agendamentosConfirmados = false;
         dataAtual = DataUtil.mesIhAnoAtual();
-        agenda.getEmpresa().setCodEmpresa(user_session.getCodigo());
+        agenda.getEmpresa().setCodEmpresa(SessionUtil.recuperarDadosSessao().getEmpresa().getCodEmpresa());
         tipoAtendimentoSelecionado = new TipoAtendimentoBean();
         agenda.setTurno("M");
         listaNaoPermitidosIntervaloDeDatas = new ArrayList<>();
@@ -110,10 +108,9 @@ public class AgendaController implements Serializable {
         this.situacao = new String();
         agenda.setTurno(Turno.MANHA.getSigla());
 
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
-
-        agenda.getEmpresa().setCodEmpresa(user_session.getEmpresa().getCodEmpresa());
+        agenda.getEmpresa().setCodEmpresa(SessionUtil.recuperarDadosSessao().getEmpresa().getCodEmpresa());
+        this.agenda.setProfissional(null);
+        this.agenda.setProfissional(new FuncionarioBean());
     }
 
     public void preparaVerificarDisponibilidadeData() throws ProjetoException {
@@ -227,9 +224,15 @@ public class AgendaController implements Serializable {
         Integer limite = aDao.contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
                 this.agenda.getTurno(), agenda.getTipoAt().getIdTipo());
 
-        Integer maximo = aDao.verQtdMaxAgendaEspec(this.agenda);
+        Integer maximo = 0;
 
-        if (limite >= maximo) {
+        maximo = aDao.verQtdMaxAgendaEspecDataEspecifica(this.agenda);
+
+        if(maximo == 0){
+            aDao.verQtdMaxAgendaEspec(this.agenda);
+        }
+
+        if (limite >= maximo && limite > 0) {
             retorno = true;
         }
 
@@ -486,16 +489,26 @@ public class AgendaController implements Serializable {
     }
 
     public void verificarPacienteAtivoInstituicao() throws ProjetoException {
+
         GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
         Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(agenda.getPaciente().getId_paciente());
 
-        if(pacienteAtivo){
-            gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
+        if(agenda.getEquipe().getCodEquipe() != null) {
+
+            if (pacienteAtivo) {
+                gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
+            } else {
+                funcionario = new FuncionarioBean();
+                JSFUtil.abrirDialog("dlgSenha");
+            }
         }
-        else{
-            funcionario = new FuncionarioBean();
-            JSFUtil.abrirDialog("dlgSenha");
+        if(agenda.getProfissional().getId() != null) {
+            if (pacienteAtivo) {
+                gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
+            } else {
+                JSFUtil.adicionarMensagemErro("Esse paciente não está ativo na instituição!", "Erro!");
+            }
         }
     }
 

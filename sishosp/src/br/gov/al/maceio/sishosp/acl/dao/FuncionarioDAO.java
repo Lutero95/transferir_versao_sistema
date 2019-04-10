@@ -39,7 +39,7 @@ public class FuncionarioDAO {
     public FuncionarioBean autenticarUsuario(FuncionarioBean usuario)
             throws ProjetoException {
 
-        String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, "
+        String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, "
                 + "pf.descricao as descperfil, cod_empresa, case when us.ativo = 'S' "
                 + "then true else false end as usuarioativo, "
                 + "pf.id as idperfil from acl.funcionarios us "
@@ -64,6 +64,7 @@ public class FuncionarioDAO {
                 ub.setSenha(rs.getString("senha"));
                 ub.setEmail(rs.getString("email"));
                 ub.getEmpresa().setCodEmpresa(rs.getInt("cod_empresa"));
+                ub.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 
                 // ACL
                 ub.setId(rs.getLong("id_funcionario"));

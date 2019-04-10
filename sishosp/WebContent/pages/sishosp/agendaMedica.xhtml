@@ -146,7 +146,7 @@
                                                 itemLabel="#{theme.descTipoAt}">
                                     <p:ajax event="itemSelect"
                                             listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"
-                                            update=":formAgendaMedica, msgPagina, outTipoAt, outProfissional, outEquipeRow"/>
+                                            update=":formAgendaMedica, msgPagina, outTipoAt, outProfissional, outEquipeRow, outProf, autoCompleteProfissional"/>
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusTi" immediate="true"
@@ -169,7 +169,7 @@
 
                                 <p:outputPanel id="outProf"
                                                rendered="#{AgendaController.agenda.tipoAt.profissional==true}">
-                                    <p:autoComplete value="#{AgendaController.agenda.profissional}"
+                                    <p:autoComplete value="#{AgendaController.agenda.profissional}" id="autoCompleteProfissional"
                                                     size="31" converter="conFuncionario" required="true"
                                                     requiredMessage="Profissional: Campo obrigatório!"
                                                     class="select-agendaEquipe4"
@@ -535,7 +535,7 @@
                         <b:commandButton value="Gravar" look="success" size="sm" id="b1"
                                          icon="glyphicon-ok"
                                          action="#{AgendaController.verificarPacienteAtivoInstituicao()}"
-                                         update=":formAgendaMedica, :frmSenha" class="btn-incluir"/>
+                                         update=":formAgendaMedica, :frmSenha, outProf" class="btn-incluir"/>
 
                         <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" look="info" class="btn-voltar"

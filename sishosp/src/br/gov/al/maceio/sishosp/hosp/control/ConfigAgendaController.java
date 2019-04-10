@@ -262,8 +262,8 @@ public class ConfigAgendaController implements Serializable {
         }
 
         if (confParte1.getQtdMax() != null && listaTipos.size() > 0) {
-            if (somatorio != confParte1.getQtdMax()) {
-                JSFUtil.adicionarMensagemAdvertencia("Quantidade máxima está divergente!", "Advertência");
+            if (somatorio > confParte1.getQtdMax()) {
+                JSFUtil.adicionarMensagemAdvertencia("Quantidade de tipos de atendimento superior a quantidade máxima!", "Advertência");
                 return;
             }
         }

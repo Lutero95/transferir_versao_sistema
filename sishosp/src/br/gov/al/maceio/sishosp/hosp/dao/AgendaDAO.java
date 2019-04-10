@@ -603,6 +603,53 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
     }
 
+    public int verQtdMaxAgendaEspecDataEspecifica(AgendaBean agenda) throws ProjetoException {
+
+        int qtdMax = 0;
+
+        String sqlPro = "select p.qtdmax " +
+                "from hosp.config_agenda_profissional p " +
+                "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
+                "where p.codmedico = ? and d.turno = ? and d.data_especifica = ? ";
+
+        String sqlEqui = "select e.qtdmax " +
+                "from hosp.config_agenda_equipe e " +
+                "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
+                "where e.codequipe = ? and d.turno = ? and d.data_especifica = ?;";
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            PreparedStatement stm = null;
+
+            if (agenda.getProfissional().getId() != null) {
+                stm = con.prepareStatement(sqlPro);
+                stm.setLong(1, agenda.getProfissional().getId());
+            } else if (agenda.getEquipe().getCodEquipe() != null) {
+                stm = con.prepareStatement(sqlEqui);
+                stm.setInt(1, agenda.getEquipe().getCodEquipe());
+            }
+            stm.setString(2, agenda.getTurno().toUpperCase());
+            stm.setDate(3, DataUtil.converterDateUtilParaDateSql(agenda.getDataAtendimento()));
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                qtdMax = rs.getInt("qtdmax");
+            }
+            return qtdMax;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     public int verQtdAgendadosEspec(AgendaBean agenda) throws ProjetoException {
         int qtd = 0;
         String sqlPro = "select count(*) as qtd from hosp.atendimentos where codmedico = ? and dtaatende = ? and turno = ?;";
