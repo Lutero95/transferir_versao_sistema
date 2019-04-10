@@ -7,6 +7,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
@@ -1574,11 +1575,18 @@ public class FuncionarioDAO {
         }
     }
 
-    public Integer validarCpfIhSenha(String cpf, String senha) throws ProjetoException {
+    public Integer validarCpfIhSenha(String cpf, String senha, String tipoValidacao) throws ProjetoException {
 
         Integer idFuncionario = 0;
 
-        String sql = "SELECT id_funcionario FROM acl.funcionarios WHERE cpf = ? AND senha = ? AND permite_liberacao IS TRUE;";
+        String sql = "SELECT id_funcionario FROM acl.funcionarios WHERE cpf = ? AND senha = ? ";
+
+        if(tipoValidacao.equals(ValidacaoSenhaAgenda.LIBERACAO.getSigla())){
+            sql = sql + " AND permite_liberacao IS TRUE;";
+        }
+        if(tipoValidacao.equals(ValidacaoSenhaAgenda.ENCAIXE.getSigla())){
+            sql = sql + " AND permite_encaixe IS TRUE;";
+        }
 
         try {
             con = ConnectionFactory.getConnection();

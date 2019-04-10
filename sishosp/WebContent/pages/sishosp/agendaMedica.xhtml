@@ -459,9 +459,9 @@
                     <div align="center">
                         <b:commandButton value="Confirmar" style="margin-top:5px;"
                                          class="btn-acao-table acao-confirmar"
-                                         update=":formAgendaMedica:dtNovosAg, btnOcupados, btnConfirmar, msgPagina"
+                                         update=":formAgendaMedica:dtNovosAg, btnOcupados, btnConfirmar, msgPagina, frmSenhaEncaixe"
                                          id="btnConfirmar" icon="glyphicon-ok"
-                                         action="#{AgendaController.preparaConfirmar()}"/>
+                                         action="#{AgendaController.validarParaConfirmar()}"/>
 
                         <b:commandButton value="Limpar Busca" immediate="true"
                                          style="margin-top:5px;margin-left:25px"
@@ -866,6 +866,34 @@
 
             </h:form>
         </p:dialog>
+
+        <p:dialog header="Digite a senha" widgetVar="dlgSenhaEncaixe" modal="true" styleClass="topDialog">
+            <h:form id="frmSenhaEncaixe">
+                <h:panelGrid columns="1" cellpadding="3">
+
+                    <b:inputText mask="999-999-999-99" style="padding:10px;"
+                                 required="true" value="#{AgendaController.funcionario.cpf}"
+                                 placeholder="Digite o CPF" render-label="true"
+                                 requiredMessage="CPF obrigatório"/>
+                    <b:message for="@previous"/>
+
+                    <b:inputSecret style="padding:10px;margin-top:10px"
+                                   required="true" placeholder="Digite a Senha"
+                                   requiredMessage="Senha obrigatório"
+                                   value="#{AgendaController.funcionario.senha}"></b:inputSecret>
+                    <b:message for="@previous"/>
+
+                </h:panelGrid>
+
+                <div align="center">
+                    <p:commandButton value="Liberar" look="success" size="sm" style="margin-top:10px"
+                                     icon="ui-icon-check" update=":formAgendaMedica, :formAgendaMedica:growlMsg,"
+                                     action="#{AgendaController.validarSenhaEncaixe()}"/>
+                </div>
+
+            </h:form>
+        </p:dialog>
+
     </ui:define>
 
 </ui:composition>

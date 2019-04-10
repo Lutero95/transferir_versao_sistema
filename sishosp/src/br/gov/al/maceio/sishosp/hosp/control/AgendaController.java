@@ -19,6 +19,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.event.SelectEvent;
 
@@ -141,7 +142,7 @@ public class AgendaController implements Serializable {
         }
     }
 
-    public void setarQuantidadeIhMaximoComoNulos(){
+    public void setarQuantidadeIhMaximoComoNulos() {
         agenda.setQtd(null);
         agenda.setMax(null);
     }
@@ -158,11 +159,9 @@ public class AgendaController implements Serializable {
 
         } else if (verificarTipoDeAtendimentoDataUnica() && !agenda.getEncaixe()) {
             JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
-        }
-        else if (verificarTipoDeAtendimentoDataUnica()) {
+        } else if (verificarTipoDeAtendimentoDataUnica()) {
             JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
-        }
-        else {
+        } else {
             verAgenda();
         }
 
@@ -228,7 +227,7 @@ public class AgendaController implements Serializable {
 
         maximo = aDao.verQtdMaxAgendaEspecDataEspecifica(this.agenda);
 
-        if(maximo == 0){
+        if (maximo == 0) {
             aDao.verQtdMaxAgendaEspec(this.agenda);
         }
 
@@ -299,13 +298,22 @@ public class AgendaController implements Serializable {
 
     }
 
+    public void validarParaConfirmar() throws ProjetoException {
+
+        if(verificarEncaixe()){
+            preparaConfirmar();
+        }
+        else{
+            JSFUtil.abrirDialog("dlgSenhaEncaixe");
+        }
+    }
+
     public void preparaConfirmar() throws ProjetoException {
 
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
-            if (agenda.getMax() == null || agenda.getQtd() == null){
+            if (agenda.getMax() == null || agenda.getQtd() == null) {
                 JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
-            }
-            else if ((agenda.getMax() == 0 || agenda.getQtd() >= agenda.getMax()) && !agenda.getEncaixe()) {
+            } else if ((agenda.getMax() == 0 || agenda.getQtd() >= agenda.getMax()) && !agenda.getEncaixe()) {
                 JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
             } else {
                 addListaNovosAgendamentos();
@@ -320,7 +328,7 @@ public class AgendaController implements Serializable {
 
             if (verAgendaIntervalo()) {
 
-                if(agenda.getTipoAt().getProfissional()) {
+                if (agenda.getTipoAt().getProfissional()) {
                     listaNaoPermitidosIntervaloDeDatas = listarDatasBloqueadas(data1, data2);
                 }
 
@@ -494,7 +502,7 @@ public class AgendaController implements Serializable {
 
         Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(agenda.getPaciente().getId_paciente());
 
-        if(agenda.getEquipe().getCodEquipe() != null) {
+        if (agenda.getEquipe().getCodEquipe() != null) {
 
             if (pacienteAtivo) {
                 gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
@@ -503,23 +511,51 @@ public class AgendaController implements Serializable {
                 JSFUtil.abrirDialog("dlgSenha");
             }
         }
-        if(agenda.getProfissional().getId() != null) {
-                gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
+        if (agenda.getProfissional().getId() != null) {
+            gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
         }
     }
 
     public void validarSenhaLiberacao() throws ProjetoException {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
-        Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha());
+        Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(), ValidacaoSenhaAgenda.LIBERACAO.getSigla());
 
-        if(idFuncionario > 0){
+        if (idFuncionario > 0) {
             JSFUtil.fecharDialog("dlgSenha");
             gravarAgenda(idFuncionario);
-        }
-        else{
+        } else {
             JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
         }
+    }
+
+    public void validarSenhaEncaixe() throws ProjetoException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(), ValidacaoSenhaAgenda.ENCAIXE.getSigla());
+
+        if (idFuncionario > 0) {
+            JSFUtil.fecharDialog("dlgSenhaEncaixe");
+            preparaConfirmar();
+        } else {
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+        }
+    }
+
+    public Boolean verificarEncaixe() {
+
+        Boolean retorno = false;
+
+        if (agenda.getEncaixe()) {
+            if (SessionUtil.recuperarDadosSessao().getRealizaEncaixes()) {
+                retorno = true;
+            }
+        }
+        else{
+            retorno = true;
+        }
+
+        return retorno;
     }
 
     public void gravarAgenda(Integer funcionarioLiberacao) {
