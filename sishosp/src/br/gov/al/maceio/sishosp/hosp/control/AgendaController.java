@@ -504,11 +504,7 @@ public class AgendaController implements Serializable {
             }
         }
         if(agenda.getProfissional().getId() != null) {
-            if (pacienteAtivo) {
                 gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
-            } else {
-                JSFUtil.adicionarMensagemErro("Esse paciente não está ativo na instituição!", "Erro!");
-            }
         }
     }
 
