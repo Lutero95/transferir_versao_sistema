@@ -76,6 +76,8 @@ public class AgendaController implements Serializable {
     private List<Date> listaNaoPermitidosIntervaloDeDatas;
     private FuncionarioBean funcionario;
     private static final Integer SEM_FUNCIONARIO_LIBERACAO = 0;
+    private List<GrupoBean> listaDeGruposFiltrada;
+    
 
     public AgendaController() {
     	System.out.println("construtor AgendaController");
@@ -106,9 +108,11 @@ public class AgendaController implements Serializable {
         agenda.setTurno("M");
         listaNaoPermitidosIntervaloDeDatas = new ArrayList<>();
         funcionario = new FuncionarioBean();
+        
     }
 
     public void limparDados() {
+    	System.out.println("limparDados");
         this.agenda = new AgendaBean();
         this.listaNovosAgendamentos = new ArrayList<AgendaBean>();
         this.listaAgendamentosData = new ArrayList<AgendaBean>();
@@ -127,6 +131,7 @@ public class AgendaController implements Serializable {
     }
 
     public void preparaVerificarDisponibilidadeData() throws ProjetoException {
+    	System.out.println("preparaVerificarDisponibilidadeData");
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
             if (this.agenda.getPrograma().getIdPrograma() == null
                     || this.agenda.getPaciente().getId_paciente() == null
@@ -156,11 +161,13 @@ public class AgendaController implements Serializable {
     }
 
     public void setarQuantidadeIhMaximoComoNulos() {
+    	System.out.println("setarQuantidadeIhMaximoComoNulos");
         agenda.setQtd(null);
         agenda.setMax(null);
     }
 
     public void verificaDisponibilidadeDataUnica() throws ProjetoException {
+    	System.out.println("verificaDisponibilidadeDataUnica");
 
         if (verificarSeEhFeriadoDataUnica()) {
             JSFUtil.adicionarMensagemErro("Data com feriado, não é permitido fazer agendamento!", "Erro");
@@ -183,6 +190,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verificarTipoDeAtendimentoDataUnica() throws ProjetoException {
+    	System.out.println("verificarTipoDeAtendimentoDataUnica");
         Boolean retorno = false;
 
         if (agenda.getTipoAt().getProfissional()) {
@@ -198,7 +206,7 @@ public class AgendaController implements Serializable {
     }
 
     public void verificarDisponibilidadeDataEspecifica(Integer quantidade, Integer maxima) throws ProjetoException {
-
+System.out.println("verificarDisponibilidadeDataEspecifica");
         if (quantidade >= maxima) {
             JSFUtil.adicionarMensagemErro("Já atingiu a quantidade máxima para essa data específica!", "Erro!");
         }
@@ -206,6 +214,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verificarSeEhFeriadoDataUnica() throws ProjetoException {
+    	System.out.println("verificarSeEhFeriadoDataUnica");
         Boolean retorno = false;
 
         retorno = new FeriadoDAO().verificarSeEhFeriadoDataUnica(this.agenda.getDataAtendimento());
@@ -214,6 +223,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verificarSeTemBloqueioDataUnica() throws ProjetoException {
+    	System.out.println("verificarSeTemBloqueioDataUnica");
         Boolean retorno = false;
 
         retorno = new BloqueioDAO().verificarBloqueioProfissionalDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
@@ -223,6 +233,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verificarSeExisteTipoAtendimentoEspecificoDataUnica() throws ProjetoException {
+    	System.out.println("verificarSeExisteTipoAtendimentoEspecificoDataUnica");
         Boolean retorno = false;
 
         retorno = new ConfigAgendaDAO().verificarSeExisteTipoAtendimentoEspecificoDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
@@ -232,6 +243,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verificarSeAtingiuLimitePorTipoDeAtendimento() throws ProjetoException {
+    	System.out.println("verificarSeAtingiuLimitePorTipoDeAtendimento");
 
         Boolean retorno = false;
 
@@ -254,6 +266,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verificarSeExisteTipoAtendimentoEspecificoIntervaloDeDatas(Date data) throws ProjetoException {
+    	System.out.println("verificarSeExisteTipoAtendimentoEspecificoIntervaloDeDatas");
         Boolean retorno = false;
 
         retorno = new ConfigAgendaDAO().verificarSeExisteTipoAtendimentoEspecificoDataUnica(this.agenda.getProfissional().getId(), data,
@@ -263,6 +276,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verificarSeAtingiuLimitePorTipoDeAtendimentoIntervaloDeDatas(Date data) throws ProjetoException {
+    	System.out.println("verificarSeAtingiuLimitePorTipoDeAtendimentoIntervaloDeDatas");
 
         Boolean retorno = false;
 
@@ -279,7 +293,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean podeAdicionarAposVerificarTipoDeAtendimentoIntervaloDeDatas(Date data) throws ProjetoException {
-
+    	System.out.println("podeAdicionarAposVerificarTipoDeAtendimentoIntervaloDeDatas");
         Boolean retorno = true;
 
         if (verificarSeExisteTipoAtendimentoEspecificoIntervaloDeDatas(data)) {
@@ -290,6 +304,7 @@ public class AgendaController implements Serializable {
     }
 
     public void verAgenda() throws ProjetoException {
+    	System.out.println("verAgenda");
 
         Boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
         Boolean diaSem = aDao.buscarDiaSemana(this.agenda);
@@ -314,6 +329,7 @@ public class AgendaController implements Serializable {
     }
 
     public void validarParaConfirmar() throws ProjetoException {
+    	System.out.println("validarParaConfirmar");
     	agenda.getTipoAt().getProfissional();
         if(verificarEncaixe()){
             preparaConfirmar();
@@ -324,7 +340,7 @@ public class AgendaController implements Serializable {
     }
 
     public void preparaConfirmar() throws ProjetoException {
-
+    	System.out.println("preparaConfirmar");
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
             if (agenda.getMax() == null || agenda.getQtd() == null) {
                 JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
@@ -389,6 +405,7 @@ public class AgendaController implements Serializable {
     }
 
     public List<Date> listarDatasBloqueadas(Date dataInicio, Date dataFinal) throws ProjetoException {
+    	System.out.println("listarDatasBloqueadas");
         BloqueioDAO bloqueioDAO = new BloqueioDAO();
 
         return bloqueioDAO.verificarBloqueioProfissionalIntervaloDeDatas(
@@ -396,6 +413,7 @@ public class AgendaController implements Serializable {
     }
 
     public List<Date> listarDatasComFeriado(List<Date> listaDatasBloqueadas, Date dataInicio, Date dataFinal) throws ProjetoException {
+    	System.out.println("listarDatasComFeriado");
         FeriadoDAO feriadoDAO = new FeriadoDAO();
 
         List<Date> listaFeriado = feriadoDAO.verificarSeEhFeriadoIntervaloDeDatas(dataInicio, dataFinal);
@@ -408,6 +426,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verAgendaIntervalo() throws ProjetoException {
+    	System.out.println("verAgendaIntervalo");
         if (this.agenda.getPaciente() == null
                 || this.agenda.getPrograma() == null
                 || this.agenda.getGrupo() == null
@@ -500,20 +519,23 @@ public class AgendaController implements Serializable {
     }
 
     public void carregarListaOcupados() {
+    	System.out.println("carregarListaOcupados");
         JSFUtil.abrirDialog("dlgOcupados");
         getListaHorariosOcupados();
     }
 
     public void addListaNovosAgendamentos() {
+    	System.out.println("addListaNovosAgendamentos");
         this.listaNovosAgendamentos.add(this.agenda);
     }
 
     public void listarAgendamentosData() throws ProjetoException {
+    	System.out.println("listarAgendamentosData");
         this.listaAgendamentosData = aDao.listarAgendamentosData(this.agenda);
     }
 
     public void verificarPacienteAtivoInstituicao() throws ProjetoException {
-
+    	System.out.println("verificarPacienteAtivoInstituicao");
         GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
         Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(agenda.getPaciente().getId_paciente());
@@ -533,6 +555,7 @@ public class AgendaController implements Serializable {
     }
 
     public void validarSenhaLiberacao() throws ProjetoException {
+    	System.out.println("validarSenhaLiberacao");
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
         Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(), ValidacaoSenhaAgenda.LIBERACAO.getSigla());
@@ -546,6 +569,7 @@ public class AgendaController implements Serializable {
     }
 
     public void validarSenhaEncaixe() throws ProjetoException {
+    	System.out.println("validarSenhaEncaixe");
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
         Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(), ValidacaoSenhaAgenda.ENCAIXE.getSigla());
@@ -559,7 +583,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verificarEncaixe() {
-
+    	System.out.println("verificarEncaixe");
         Boolean retorno = false;
 
         if (agenda.getEncaixe()) {
@@ -575,6 +599,7 @@ public class AgendaController implements Serializable {
     }
 
     public void gravarAgenda(Integer funcionarioLiberacao) {
+    	System.out.println("gravarAgenda");
         // verificar se existe algum campo nao preenchido
         if (this.agenda.getPaciente() == null
                 || this.agenda.getPrograma() == null
@@ -616,6 +641,7 @@ public class AgendaController implements Serializable {
     }
 
     public void consultarAgenda() throws ProjetoException {
+    	System.out.println("consultarAgenda");
         if (this.dataAtendimentoC == null) {
             JSFUtil.adicionarMensagemErro("Selecione uma data de atendimento!", "Erro");
             return;
@@ -626,6 +652,7 @@ public class AgendaController implements Serializable {
 
     //SEM USO NO MOMENTO
     public void excluirAgendamento() {
+    	System.out.println("excluirAgendamento");
         boolean excluiu = aDao.excluirAgendamento(this.agenda);
         if (excluiu) {
             limparDados();
@@ -674,6 +701,7 @@ public class AgendaController implements Serializable {
     }
 
     public void limparNaBuscaTipo() {
+    	System.out.println("limparNaBuscaTipo");
         this.agenda.setProfissional(new FuncionarioBean());
         this.agenda.setEquipe(new EquipeBean());
         this.agenda.setObservacao(new String());
@@ -683,6 +711,7 @@ public class AgendaController implements Serializable {
     }
 
     public void limparNaBuscaEquipeProf() {
+    	System.out.println("limparNaBuscaEquipeProf");
         this.agenda.setObservacao(new String());
         this.agenda.setDataAtendimento(null);
         this.agenda.setQtd(null);
@@ -690,12 +719,14 @@ public class AgendaController implements Serializable {
     }
 
     public void selectPrograma(SelectEvent event) throws ProjetoException {
+    	System.out.println("selectPrograma");
         this.programaSelecionado = (ProgramaBean) event.getObject();
         atualizaListaGrupos(programaSelecionado);
         limparNaBuscaPrograma();
     }
 
     public void atualizaListaGrupos(ProgramaBean p) throws ProjetoException {
+    	System.out.println("atualizaListaGrupos");
         this.programaSelecionado = p;
         this.listaGruposProgramas = gDao.listarGruposPorPrograma(p
                 .getIdPrograma());
@@ -706,6 +737,7 @@ public class AgendaController implements Serializable {
     }
 
     public void atualizaListaTipos(GrupoBean g) throws ProjetoException {
+    	System.out.println("atualizaListaTipos");
         this.grupoSelecionado = g;
         this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
     }
@@ -715,6 +747,7 @@ public class AgendaController implements Serializable {
             throws ProjetoException {
 
         if (agenda.getPrograma().getIdPrograma() != null) {
+        	System.out.println("listaGrupoAutoComplete");
             return gDao.listarGruposAutoComplete(query,
                     this.agenda.getPrograma());
         } else {
@@ -724,6 +757,7 @@ public class AgendaController implements Serializable {
     }
 
     public List<GrupoBean> listaGruposPorPrograma() throws ProjetoException {
+    	System.out.println("listaGruposPorPrograma");
         if (agenda.getPrograma() != null) {
             if (agenda.getPrograma().getIdPrograma() != null) {
                 listaGruposProgramas = gDao.listarGruposPorPrograma(agenda
@@ -735,7 +769,7 @@ public class AgendaController implements Serializable {
 
     public List<EquipeBean> listaEquipeAutoComplete(String query)
             throws ProjetoException {
-
+    	System.out.println("listaEquipeAutoComplete");
         List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
                 agenda.getGrupo().getIdGrupo());
         return result;
@@ -743,7 +777,7 @@ public class AgendaController implements Serializable {
 
     public List<EquipeBean> listaEquipePorTipoAtendimento()
             throws ProjetoException {
-
+    	System.out.println("listaEquipePorTipoAtendimento");
         if (agenda.getTipoAt() != null) {
             if (agenda.getGrupo().getIdGrupo() != null) {
                 listaEquipePorTipoAtendimento = eDao
@@ -755,6 +789,7 @@ public class AgendaController implements Serializable {
 
     public List<FuncionarioBean> listaProfissionalPorGrupoAutoComplete(
             String query) throws ProjetoException {
+    	System.out.println("listaProfissionalPorGrupoAutoComplete");
         List<FuncionarioBean> result = fDao.listarProfissionalBuscaPorGrupo(
                 query, agenda.getGrupo().getIdGrupo());
         return result;
@@ -762,6 +797,7 @@ public class AgendaController implements Serializable {
 
     public List<FuncionarioBean> listaProfissionalPorGrupo()
             throws ProjetoException {
+    	System.out.println("listaProfissionalPorGrupo");
         if (agenda.getGrupo() != null) {
             if (agenda.getGrupo().getIdGrupo() != null) {
                 List<FuncionarioBean> result = fDao
@@ -779,7 +815,7 @@ public class AgendaController implements Serializable {
 
     public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
             throws ProjetoException {
-
+    	System.out.println("listaTipoAtAutoComplete");
         List<TipoAtendimentoBean> lista = new ArrayList<>();
 
         if (agenda.getGrupo() != null) {
@@ -809,7 +845,7 @@ public class AgendaController implements Serializable {
 
     public List<TipoAtendimentoBean> listaTipoAtendimentoPorGrupo()
             throws ProjetoException {
-
+    	System.out.println("listaTipoAtendimentoPorGrupo");
         if (agenda.getGrupo() != null) {
             if (agenda.getGrupo().getIdGrupo() != null) {
                 listaTiposPorGrupo = tDao.listarTipoAtPorGrupo(agenda
@@ -820,7 +856,7 @@ public class AgendaController implements Serializable {
     }
 
     public void listaDiasDeAtendimentoAtuais() throws ProjetoException {
-        
+        System.out.println("listaDiasDeAtendimentoAtuais");
         if (agenda.getTipoAt() != null) {
             if (agenda.getTipoAt().getIdTipo() != null) {
                 if (agenda.getProfissional().getId() != null) {
@@ -836,6 +872,7 @@ public class AgendaController implements Serializable {
 
     public List<ProgramaBean> listaProgramaAutoCompleteUsuarioOutraUnidade(String query)
             throws ProjetoException {
+    	System.out.println("listaProgramaAutoCompleteUsuarioOutraUnidade");
         ProgramaDAO pDao = new ProgramaDAO();
         List<ProgramaBean> result = pDao.listarProgramasBuscaUsuarioOutraUnidade(query, agenda.getEmpresa().getCodEmpresa());
         return result;
@@ -844,6 +881,7 @@ public class AgendaController implements Serializable {
     // LISTAS E AUTOCOMPLETES FINAL
 
     public void selectGrupo(SelectEvent event) throws ProjetoException {
+    	System.out.println("selectGrupo");
         this.grupoSelecionado = (GrupoBean) event.getObject();
         atualizaListaTipos(grupoSelecionado);
         atualizaListaProfPorGrupo();
@@ -851,6 +889,7 @@ public class AgendaController implements Serializable {
     }
 
     public void atualizaListaProfPorGrupo() throws ProjetoException {
+    	System.out.println("atualizaListaProfPorGrupo");
         this.listaProfissional = fDao
                 .listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
     }
@@ -1127,5 +1166,13 @@ public class AgendaController implements Serializable {
 
 	public void setListaConfigAgenda(List<ConfigAgendaParte1Bean> listaConfigAgenda) {
 		this.listaConfigAgenda = listaConfigAgenda;
+	}
+
+	public List<GrupoBean> getListaDeGruposFiltrada() {
+		return listaDeGruposFiltrada;
+	}
+
+	public void setListaDeGruposFiltrada(List<GrupoBean> listaDeGruposFiltrada) {
+		this.listaDeGruposFiltrada = listaDeGruposFiltrada;
 	}
 }

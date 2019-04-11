@@ -15,6 +15,7 @@ public class GrupoBean implements Serializable {
 	private boolean auditivo;
 	private boolean equipeSim;
 	private boolean insercao_pac_institut;
+	
 
 	// LISTAS
 	private List<EquipeBean> equipes;
@@ -30,6 +31,7 @@ public class GrupoBean implements Serializable {
 		this.equipesNovo = new ArrayList<EquipeBean>();
 		this.equipeAdd = null;
 		equipeSim = false;
+		
 	}
 
 	public Integer getIdGrupo() {

@@ -180,6 +180,9 @@
                                         <p:ajax event="itemSelect"
                                                 listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
                                                 update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissional"></p:ajax>
+ 										<p:ajax event="itemSelect"
+                                                listener="#{AgendaController.listaDiasDeAtendimentoAtuais()}"
+                                                update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissional"></p:ajax>                                                
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusProf" icon="ui-icon-search"
@@ -553,7 +556,7 @@
             </div>
         </div>
 
-        <p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac"
+        <p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac" dynamic="true"
                   modal="true" width="750px" height="400px" styleClass="topDialog">
             <h:form id="formConsuPac">
                 <p:growl id="msgC"/>
@@ -611,6 +614,7 @@
         </p:dialog>
 
         <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+        dynamic="true"
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuProg">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -645,9 +649,13 @@
         </p:dialog>
 
         <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-                  modal="true" styleClass="topDialog">
+                  modal="true" styleClass="topDialog" dynamic="true">
             <h:form id="formConsuGrop">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" 
+                			ajax="true"
+                			responsive="true"
+                			save-state="false"
+                			saveState="false"
                              value="#{AgendaController.listaGruposPorPrograma()}" id="dtGrupo"
                              var="grupo" display="Nenhum Grupo">
 
@@ -685,7 +693,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Consultar Tipos de Atendimento"
+        <p:dialog header="Consultar Tipos de Atendimento" dynamic="true"
                   widgetVar="dlgConsuTipoAt" modal="true" styleClass="topDialog">
             <h:form id="formConsuTipoAt">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -717,7 +725,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
+        <p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe" dynamic="true"
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuEquipe">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -749,7 +757,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
+        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf" dynamic="true"
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuProf">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -781,7 +789,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Agendados na Data" widgetVar="dlgAgendadosData"
+        <p:dialog header="Agendados na Data" widgetVar="dlgAgendadosData" dynamic="true"
                   modal="true" styleClass="topDialog">
             <h:form id="formAgendadosData">
                 <p:panelGrid columns="2">
@@ -816,7 +824,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Ocupados" widgetVar="dlgOcupados" modal="true" styleClass="topDialog">
+        <p:dialog header="Ocupados" widgetVar="dlgOcupados" modal="true" styleClass="topDialog" dynamic="true">
             <h:form id="frmOcupados">
                 <p:panelGrid columns="1" styleClass="semBorda"
                              style="margin-top:25px">
@@ -844,7 +852,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Digite a senha" widgetVar="dlgSenha" modal="true" styleClass="topDialog">
+        <p:dialog header="Digite a senha" widgetVar="dlgSenha" modal="true" styleClass="topDialog" dynamic="true">
             <h:form id="frmSenha">
                 <h:panelGrid columns="1" cellpadding="3">
 
@@ -870,7 +878,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Digite a senha" widgetVar="dlgSenhaEncaixe" modal="true" styleClass="topDialog">
+        <p:dialog header="Digite a senha" widgetVar="dlgSenhaEncaixe" modal="true" styleClass="topDialog" dynamic="true">
             <h:form id="frmSenhaEncaixe">
                 <h:panelGrid columns="1" cellpadding="3">
 
