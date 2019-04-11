@@ -22,6 +22,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.*;
+import org.primefaces.event.SelectEvent;
 
 @ManagedBean(name = "InsercaoController")
 @ViewScoped
@@ -32,9 +33,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private InsercaoPacienteDAO iDao = new InsercaoPacienteDAO();
     private EquipeDAO eDao = new EquipeDAO();
     private AgendaDAO agendaDAO = new AgendaDAO();
+    private ProgramaBean programaSelecionado;
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
     private ArrayList<FuncionarioBean> listaProfissionaisEquipe;
     private ArrayList<FuncionarioBean> listaProfissionaisAdicionados;
+    private List<GrupoBean> listaGruposProgramas;
     private String tipo;
     private FuncionarioBean funcionario;
     private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
@@ -46,11 +49,13 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
+        programaSelecionado = new ProgramaBean();
         listaLaudosVigentes = new ArrayList<InsercaoPacienteBean>();
         this.tipo = TipoAtendimento.EQUIPE.getSigla();
         funcionario = new FuncionarioBean();
         listaProfissionaisAdicionados = new ArrayList<FuncionarioBean>();
         listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
+        listaGruposProgramas = new ArrayList<GrupoBean>();
         opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
         opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
         listaHorarios = new ArrayList<>();
@@ -69,6 +74,27 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
             throws ProjetoException {
         return listaLaudosVigentes = iDao.listarLaudosVigentes();
+    }
+
+    public void limparNaBuscaPrograma() {
+        this.insercao.setGrupo(new GrupoBean());
+        this.insercao.setEquipe(new EquipeBean());
+    }
+
+    public void selectPrograma(SelectEvent event) throws ProjetoException {
+        this.programaSelecionado = (ProgramaBean) event.getObject();
+        atualizaListaGrupos(programaSelecionado);
+        limparNaBuscaPrograma();
+    }
+
+    public void atualizaListaGrupos(ProgramaBean p) throws ProjetoException {
+        GrupoDAO gDao = new GrupoDAO();
+        this.programaSelecionado = p;
+        this.listaGruposProgramas = gDao.listarGruposPorPrograma(p
+                .getIdPrograma());
+        for (GrupoBean g : listaGruposProgramas) {
+        }
+
     }
 
     public void carregarLaudoPaciente() throws ProjetoException {
