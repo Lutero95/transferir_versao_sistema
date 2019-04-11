@@ -1,18 +1,5 @@
 package br.gov.al.maceio.sishosp.acl.control;
 
-import br.gov.al.maceio.sishosp.acl.model.Funcao;
-import br.gov.al.maceio.sishosp.acl.model.Funcionalidade;
-import br.gov.al.maceio.sishosp.acl.model.Menu;
-import br.gov.al.maceio.sishosp.acl.model.Perfil;
-import br.gov.al.maceio.sishosp.acl.model.Sistema;
-import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
-import br.gov.al.maceio.sishosp.acl.dao.FuncionalidadeDAO;
-import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
-import br.gov.al.maceio.sishosp.acl.dao.PerfilDAO;
-import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
-import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +9,24 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.MenuModel;
+
+import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
+import br.gov.al.maceio.sishosp.acl.dao.FuncionalidadeDAO;
+import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
+import br.gov.al.maceio.sishosp.acl.dao.PerfilDAO;
+import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
+import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
+import br.gov.al.maceio.sishosp.acl.model.Funcao;
+import br.gov.al.maceio.sishosp.acl.model.Funcionalidade;
+import br.gov.al.maceio.sishosp.acl.model.Menu;
+import br.gov.al.maceio.sishosp.acl.model.Perfil;
+import br.gov.al.maceio.sishosp.acl.model.Sistema;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 @ManagedBean
 @ViewScoped
@@ -130,7 +130,7 @@ public class PerfilMB implements Serializable {
 						"Perfil cadastrado com sucesso!", "Sucesso");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('dlgCadPerfil').hide();");
 			} else {
 				FacesMessage msg = new FacesMessage(
@@ -138,7 +138,7 @@ public class PerfilMB implements Serializable {
 						"Ocorreu um erro durante o cadastro!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('dlgCadPerfil').hide();");
 			}
 		} else {
@@ -181,7 +181,7 @@ public class PerfilMB implements Serializable {
 						"Perfil alterado com sucesso!", "Sucesso");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('dlgAltPerfil').hide();");
 			} else {
 				FacesMessage msg = new FacesMessage(
@@ -189,7 +189,7 @@ public class PerfilMB implements Serializable {
 						"Ocorreu um erro durante a alteração!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('dlgAltPerfil').hide();");
 			}
 		} else {
@@ -212,14 +212,14 @@ public class PerfilMB implements Serializable {
 					"Perfil excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgExcPerfil').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusão!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgExcPerfil').hide();");
 		}
 	}
@@ -253,7 +253,7 @@ public class PerfilMB implements Serializable {
 		sisPreMenu = sdao.buscarSisMenuPreview(Integer
 				.parseInt(sisSelecionadoPreMenu));
 
-		RequestContext.getCurrentInstance().execute("dlgMenuPreview.show();");
+		PrimeFaces.current().executeScript("dlgMenuPreview.show();");
 	}
 
 	public void onTransferMenu(TransferEvent event) {

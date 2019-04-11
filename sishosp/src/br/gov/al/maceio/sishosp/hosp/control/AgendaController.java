@@ -3,35 +3,47 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.*;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
-import br.gov.al.maceio.sishosp.hosp.enums.Turno;
-import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
-import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ConfigAgendaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.FeriadoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
+import br.gov.al.maceio.sishosp.hosp.enums.Turno;
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
+import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
+import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 @ManagedBean(name = "AgendaController")
 @ViewScoped
 public class AgendaController implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    List<ConfigAgendaParte1Bean> listaConfigAgenda = new ArrayList<>();    
     private AgendaBean agenda;
     private Date dataAtendimentoC;
     private Date dataAtendimentoFinalC;
@@ -66,7 +78,7 @@ public class AgendaController implements Serializable {
     private static final Integer SEM_FUNCIONARIO_LIBERACAO = 0;
 
     public AgendaController() {
-
+    	System.out.println("construtor AgendaController");
         this.agenda = new AgendaBean();
         grupoSelecionado = new GrupoBean();
         listaGruposProgramas = new ArrayList<GrupoBean>();
@@ -125,6 +137,7 @@ public class AgendaController implements Serializable {
                 return;
             } else {
                 verificaDisponibilidadeDataUnica();
+                listaDiasDeAtendimentoAtuais();
             }
 
         } else if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
@@ -159,8 +172,10 @@ public class AgendaController implements Serializable {
 
         } else if (verificarTipoDeAtendimentoDataUnica() && !agenda.getEncaixe()) {
             JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
+            setarQuantidadeIhMaximoComoNulos();
         } else if (verificarTipoDeAtendimentoDataUnica()) {
             JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
+            setarQuantidadeIhMaximoComoNulos();
         } else {
             verAgenda();
         }
@@ -299,7 +314,7 @@ public class AgendaController implements Serializable {
     }
 
     public void validarParaConfirmar() throws ProjetoException {
-
+    	agenda.getTipoAt().getProfissional();
         if(verificarEncaixe()){
             preparaConfirmar();
         }
@@ -320,6 +335,7 @@ public class AgendaController implements Serializable {
                 agendamentosConfirmados = true;
             }
         }
+        agenda.getTipoAt().getProfissional();
         if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
 
             List<Date> listaAgendamentoPermitidos = new ArrayList<>();
@@ -621,6 +637,7 @@ public class AgendaController implements Serializable {
     }
 
     public void limparNaBuscaPaciente() {
+    	System.out.println("limparNaBuscaPaciente");
         this.agenda.setTipoAt(null);
         this.agenda.setProfissional(new FuncionarioBean());
         this.agenda.setEquipe(new EquipeBean());
@@ -631,6 +648,7 @@ public class AgendaController implements Serializable {
     }
 
     public void limparNaBuscaPrograma() {
+    	System.out.println("limparNaBuscaPrograma");
         this.agenda.setGrupo(new GrupoBean());
         this.agenda.setTipoAt(new TipoAtendimentoBean());
         this.agenda.setProfissional(new FuncionarioBean());
@@ -645,6 +663,7 @@ public class AgendaController implements Serializable {
     }
 
     public void limparNaBuscaGrupo() {
+    	System.out.println("limparNaBuscaGrupo");
         this.agenda.setTipoAt(null);
         this.agenda.setProfissional(new FuncionarioBean());
         this.agenda.setEquipe(new EquipeBean());
@@ -771,6 +790,7 @@ public class AgendaController implements Serializable {
     }
 
     public void validarTipoAtendimentoNaAgenda(SelectEvent event) throws ProjetoException {
+    	System.out.println("validarTipoAtendimentoNaAgenda");
         this.tipoAtendimentoSelecionado = (TipoAtendimentoBean) event.getObject();
 
         agenda.setTipoAt(new TipoAtendimentoDAO().listarInformacoesTipoAtendimentoEquieProgramaPorId(tipoAtendimentoSelecionado.getIdTipo()));
@@ -799,8 +819,8 @@ public class AgendaController implements Serializable {
         return listaTiposPorGrupo;
     }
 
-    public List<ConfigAgendaParte1Bean> listaDiasDeAtendimentoAtuais() throws ProjetoException {
-        List<ConfigAgendaParte1Bean> listaConfigAgenda = new ArrayList<>();
+    public void listaDiasDeAtendimentoAtuais() throws ProjetoException {
+        
         if (agenda.getTipoAt() != null) {
             if (agenda.getTipoAt().getIdTipo() != null) {
                 if (agenda.getProfissional().getId() != null) {
@@ -812,7 +832,6 @@ public class AgendaController implements Serializable {
                 }
             }
         }
-        return listaConfigAgenda;
     }
 
     public List<ProgramaBean> listaProgramaAutoCompleteUsuarioOutraUnidade(String query)
@@ -1029,4 +1048,84 @@ public class AgendaController implements Serializable {
     public void setFuncionario(FuncionarioBean funcionario) {
         this.funcionario = funcionario;
     }
+
+	public List<TipoAtendimentoBean> getListaTiposPorGrupo() {
+		return listaTiposPorGrupo;
+	}
+
+	public void setListaTiposPorGrupo(List<TipoAtendimentoBean> listaTiposPorGrupo) {
+		this.listaTiposPorGrupo = listaTiposPorGrupo;
+	}
+
+	public List<EquipeBean> getListaEquipePorTipoAtendimento() {
+		return listaEquipePorTipoAtendimento;
+	}
+
+	public void setListaEquipePorTipoAtendimento(List<EquipeBean> listaEquipePorTipoAtendimento) {
+		this.listaEquipePorTipoAtendimento = listaEquipePorTipoAtendimento;
+	}
+
+	public FuncionarioDAO getfDao() {
+		return fDao;
+	}
+
+	public void setfDao(FuncionarioDAO fDao) {
+		this.fDao = fDao;
+	}
+
+	public TipoAtendimentoDAO gettDao() {
+		return tDao;
+	}
+
+	public void settDao(TipoAtendimentoDAO tDao) {
+		this.tDao = tDao;
+	}
+
+	public AgendaDAO getaDao() {
+		return aDao;
+	}
+
+	public void setaDao(AgendaDAO aDao) {
+		this.aDao = aDao;
+	}
+
+	public GrupoDAO getgDao() {
+		return gDao;
+	}
+
+	public void setgDao(GrupoDAO gDao) {
+		this.gDao = gDao;
+	}
+
+	public EquipeDAO geteDao() {
+		return eDao;
+	}
+
+	public void seteDao(EquipeDAO eDao) {
+		this.eDao = eDao;
+	}
+
+	public TipoAtendimentoBean getTipoAtendimentoSelecionado() {
+		return tipoAtendimentoSelecionado;
+	}
+
+	public void setTipoAtendimentoSelecionado(TipoAtendimentoBean tipoAtendimentoSelecionado) {
+		this.tipoAtendimentoSelecionado = tipoAtendimentoSelecionado;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public static Integer getSemFuncionarioLiberacao() {
+		return SEM_FUNCIONARIO_LIBERACAO;
+	}
+
+	public List<ConfigAgendaParte1Bean> getListaConfigAgenda() {
+		return listaConfigAgenda;
+	}
+
+	public void setListaConfigAgenda(List<ConfigAgendaParte1Bean> listaConfigAgenda) {
+		this.listaConfigAgenda = listaConfigAgenda;
+	}
 }

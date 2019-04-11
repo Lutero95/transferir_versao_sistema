@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 public class FuncionarioDAO {
 
@@ -219,7 +220,9 @@ public class FuncionarioDAO {
                 + "order by pmdesc, sid";
 
         List<Permissoes> lista = new ArrayList<>();
-
+    	FacesContext fc = FacesContext.getCurrentInstance();
+    	HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
+    	String contextPath = request.getServletContext().getContextPath();
         Connection con = null;
         try {
             con = ConnectionFactory.getConnection();
@@ -245,7 +248,7 @@ public class FuncionarioDAO {
                 m.setOnclick(rs.getString("onclick_rel"));
 
                 if (rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl("/pages/" + m.getDiretorio() + "/"
+                    m.setUrl(contextPath+"/pages/" + m.getDiretorio() + "/"
                             + m.getDescPagina() + m.getExtensao());
                 }
 

@@ -1,13 +1,5 @@
 package br.gov.al.maceio.sishosp.acl.control;
 
-import br.gov.al.maceio.sishosp.acl.model.Funcionalidade;
-import br.gov.al.maceio.sishosp.acl.model.Menu;
-import br.gov.al.maceio.sishosp.acl.model.Sistema;
-import br.gov.al.maceio.sishosp.acl.dao.FuncionalidadeDAO;
-import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
-import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +9,16 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
+
+import br.gov.al.maceio.sishosp.acl.dao.FuncionalidadeDAO;
+import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
+import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
+import br.gov.al.maceio.sishosp.acl.model.Funcionalidade;
+import br.gov.al.maceio.sishosp.acl.model.Sistema;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 @ManagedBean
 @ViewScoped
@@ -103,7 +102,7 @@ public class FuncionalidadeMB implements Serializable {
 						"Funcionalidade cadastrada com sucesso!", "Sucesso");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('dlgCadMenu').hide();");
 			} else {
 				FacesMessage msg = new FacesMessage(
@@ -111,7 +110,7 @@ public class FuncionalidadeMB implements Serializable {
 						"Ocorreu um erro durante o cadastro!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('dlgCadMenu').hide();");
 			}
 		} else {
@@ -149,14 +148,14 @@ public class FuncionalidadeMB implements Serializable {
 					"Funcionalidade alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgAltMenu').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgAltMenu').hide();");
 		}
 
@@ -175,14 +174,14 @@ public class FuncionalidadeMB implements Serializable {
 					"Funcionalidade excluída com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgExcMenu').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Ocorreu um erro durante a exclusão!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgExcMenu').hide();");
 		}
 	}

@@ -1,9 +1,5 @@
 package br.gov.al.maceio.sishosp.acl.control;
 
-import br.gov.al.maceio.sishosp.acl.model.Funcao;
-import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +9,11 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
+
+import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
+import br.gov.al.maceio.sishosp.acl.model.Funcao;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 @ManagedBean
 @ViewScoped
@@ -48,14 +48,14 @@ public class FuncaoMB implements Serializable {
 					"Função cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgCadFuncao').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgCadFuncao').hide();");
 		}
 	}
@@ -73,14 +73,14 @@ public class FuncaoMB implements Serializable {
 					"Função alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgAltFuncao').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a alteração!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgAltFuncao').hide();");
 		}
 	}
@@ -98,14 +98,14 @@ public class FuncaoMB implements Serializable {
 					"Função excluída com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgExcFuncao').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusão!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgExcFuncao').hide();");
 		}
 	}

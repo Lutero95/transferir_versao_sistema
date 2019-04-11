@@ -1,9 +1,5 @@
 package br.gov.al.maceio.sishosp.acl.control;
 
-import br.gov.al.maceio.sishosp.acl.model.Permissao;
-import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +9,11 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
+
+import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
+import br.gov.al.maceio.sishosp.acl.model.Permissao;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 @ManagedBean
 @ViewScoped
@@ -47,14 +47,14 @@ public class PermissaoMB implements Serializable {
 					"Permissão cadastrada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgCadPermissao').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgCadPermissao').hide();");
 		}
 	}
@@ -74,14 +74,14 @@ public class PermissaoMB implements Serializable {
 					"Permissão alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgAltPermissao').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a alteração!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgAltPermissao').hide();");
 		}
 	}
@@ -101,14 +101,14 @@ public class PermissaoMB implements Serializable {
 					"Permissão excluída com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgExcPermissao').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Ocorreu um erro durante a exclusão!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgExcPermissao').hide();");
 		}
 	}

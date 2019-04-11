@@ -135,7 +135,7 @@
                             <b:label value="Tipo Atendimento" severity="info"/>
 
                             <p:outputPanel id="outTipoAt">
-                                <p:autoComplete value="#{AgendaController.agenda.tipoAt}"
+                                <p:autoComplete  value="#{AgendaController.agenda.tipoAt}"
                                                 size="31" converter="conTipoAtendimento" required="true"
                                                 requiredMessage="Tipo Atendimento: Campo obrigatório!"
                                                 class="select-agendaEquipe4"
@@ -237,7 +237,7 @@
                                     <p:panel header="#{AgendaController.dataAtual}"></p:panel>
                                 </div>
                                 <p:dataTable id="dtDiasAtendimentoEquipe" resizableColumns="true"
-                                             value="#{AgendaController.listaDiasDeAtendimentoAtuais()}"
+                                             value="#{AgendaController.listaConfigAgenda}"
                                              var="agend" emptyMessage="Sem registros.">
                                     <p:column headerText="Equipe">
                                         <h:outputLabel value="#{agend.equipe.descEquipe}">
@@ -268,7 +268,7 @@
                                 </div>
                                 <p:dataTable id="dtDiasAtendimentoProfissional"
                                              resizableColumns="true"
-                                             value="#{AgendaController.listaDiasDeAtendimentoAtuais()}"
+                                             value="#{AgendaController.listaConfigAgenda}"
                                              var="agend" emptyMessage="Sem registros.">
                                     <p:column headerText="Profissional">
                                         <h:outputLabel value="#{agend.profissional.nome}">
@@ -360,6 +360,9 @@
                     <br></br>
 
                     <!-- DATA ÚNICA -->
+                    <p:outputPanel autoUpdate="true">
+                    <h:outputText value="#{AgendaController.agenda.tipoAt.profissional}" />
+                    </p:outputPanel>
                     <p:outputPanel id="outdata">
                         <b:row rendered="#{AgendaController.tipoData == 'U'}">
                             <b:column span="2" class="label-position data-size">

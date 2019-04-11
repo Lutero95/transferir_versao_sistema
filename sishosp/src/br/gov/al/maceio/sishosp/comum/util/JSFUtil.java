@@ -1,9 +1,9 @@
 package br.gov.al.maceio.sishosp.comum.util;
 
-import org.primefaces.context.RequestContext;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+
+import org.primefaces.PrimeFaces;
 
 public final class JSFUtil {
 	
@@ -25,24 +25,22 @@ public final class JSFUtil {
 		contexto.addMessage(null, msg);
 	}
 
-	public static RequestContext getRequestContext() {
-		return RequestContext.getCurrentInstance();
-	}
+
 
 	public static void abrirDialog(String dialog) {
-		getRequestContext().execute("PF('" + dialog + "').show();");
+		PrimeFaces.current().executeScript("PF('" + dialog + "').show();");
 	}
 
 	public static void fecharDialog(String dialog) {
-		getRequestContext().execute("PF('" + dialog + "').hide();");
+		PrimeFaces.current().executeScript("PF('" + dialog + "').hide();");
 	}
 
 	public static void atualizarComponente(String componente){
-		RequestContext.getCurrentInstance().update(componente);
+		 PrimeFaces.current().ajax().update(componente);
 	}
 
 	public static void selecionarTabEspecifica(String tab, String numero){
-		getRequestContext().execute("PF('" + tab + "').select(" + numero + ");");
+		PrimeFaces.current().executeScript("PF('" + tab + "').select(" + numero + ");");
 	}
 
 }

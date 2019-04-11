@@ -1,11 +1,5 @@
 package br.gov.al.maceio.sishosp.acl.control;
 
-import br.gov.al.maceio.sishosp.acl.model.Menu;
-import br.gov.al.maceio.sishosp.acl.model.Sistema;
-import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
-import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +9,19 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
+
+import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
+import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
+import br.gov.al.maceio.sishosp.acl.model.Menu;
+import br.gov.al.maceio.sishosp.acl.model.Sistema;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 @ManagedBean
 @ViewScoped
@@ -134,7 +134,7 @@ public class MenuMB implements Serializable {
 						"Menu cadastrado com sucesso!", "Sucesso");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('dlgCadMenu').hide();");
 			} else {
 				FacesMessage msg = new FacesMessage(
@@ -142,7 +142,7 @@ public class MenuMB implements Serializable {
 						"Ocorreu um erro durante o cadastro!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('dlgCadMenu').hide();");
 			}
 		} else {
@@ -175,7 +175,7 @@ public class MenuMB implements Serializable {
 						"Menu alterado com sucesso!", "Sucesso");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('dlgAltMenu').hide();");
 			} else {
 				FacesMessage msg = new FacesMessage(
@@ -183,7 +183,7 @@ public class MenuMB implements Serializable {
 						"Ocorreu um erro durante o cadastro!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('dlgAltMenu').hide();");
 			}
 		} else {
@@ -206,14 +206,14 @@ public class MenuMB implements Serializable {
 					"Menu excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgExcMenu').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Ocorreu um erro durante a exclusão!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute(
+			PrimeFaces.current().executeScript(
 					"PF('dlgExcMenu').hide();");
 		}
 	}

@@ -74,4 +74,34 @@
     </listener-class>
 </listener>
 
+<context-param>
+<param-name>net.bootsfaces.get_fontawesome_from_cdn</param-name>
+<param-value>false</param-value>
+</context-param>
+
+
+<mime-mapping>
+   <extension>xhtml</extension>
+   <mime-type>application/xhtml</mime-type>
+</mime-mapping>
+
+<filter>
+	 <filter-name>PrimeFaces FileUpload Filter</filter-name>
+  	 <filter-class>
+		org.primefaces.webapp.filter.FileUploadFilter
+	 </filter-class>
+</filter>	
+<filter-mapping>
+	 <filter-name>PrimeFaces FileUpload Filter</filter-name>
+	 <servlet-name>Faces Servlet</servlet-name>
+</filter-mapping>
+
+<mime-mapping>
+        <extension>java</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>cpp</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>    
 </web-app>

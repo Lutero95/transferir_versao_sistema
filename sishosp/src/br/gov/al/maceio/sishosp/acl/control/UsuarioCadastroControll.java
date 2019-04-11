@@ -1,45 +1,33 @@
 package br.gov.al.maceio.sishosp.acl.control;
 
-import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
-import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
-import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
-import br.gov.al.maceio.sishosp.acl.dao.SistemaDAO;
-import br.gov.al.maceio.sishosp.acl.model.Funcao;
-import br.gov.al.maceio.sishosp.acl.model.Menu;
-import br.gov.al.maceio.sishosp.acl.model.Perfil;
-import br.gov.al.maceio.sishosp.acl.model.Permissao;
-import br.gov.al.maceio.sishosp.acl.model.Sistema;
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
-import br.gov.al.maceio.sishosp.hosp.model.CboBean;
-import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
-import br.gov.al.maceio.sishosp.acl.model.PessoaBean;
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.CloseEvent;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
-import org.primefaces.model.menu.DefaultMenuModel;
-import org.primefaces.model.menu.MenuModel;
+
+import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
+import br.gov.al.maceio.sishosp.acl.model.Funcao;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.acl.model.Menu;
+import br.gov.al.maceio.sishosp.acl.model.Perfil;
+import br.gov.al.maceio.sishosp.acl.model.Permissao;
+import br.gov.al.maceio.sishosp.acl.model.PessoaBean;
+import br.gov.al.maceio.sishosp.acl.model.Sistema;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 @ManagedBean(name = "MBUsuarioCadastro")
 @SessionScoped
@@ -265,7 +253,7 @@ public class UsuarioCadastroControll implements Serializable {
 
 				listaUsuario = null;
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('altUsuario').hide();");
 			} else {
 				FacesMessage msg = new FacesMessage(
@@ -273,7 +261,7 @@ public class UsuarioCadastroControll implements Serializable {
 						"Ocorreu um erro durante a alteracao!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				RequestContext.getCurrentInstance().execute(
+				PrimeFaces.current().executeScript(
 						"PF('altUsuario').hide();");
 			}
 
@@ -327,13 +315,13 @@ public class UsuarioCadastroControll implements Serializable {
 					"Senha alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute("altSenha.hide();");
+			PrimeFaces.current().executeScript("altSenha.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a alteração!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			RequestContext.getCurrentInstance().execute("altSenha.hide();");
+			PrimeFaces.current().executeScript("altSenha.hide();");
 		}
 	}
 
