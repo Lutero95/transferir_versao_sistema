@@ -56,10 +56,10 @@ public class AgendaController implements Serializable {
     private List<GrupoBean> listaGruposProgramas;
     private GrupoBean grupoSelecionado;
     private List<AgendaBean> listaConsulta;
-    private List<FuncionarioBean> listaProfissional;
+    private List<FuncionarioBean> listaProfissional, listaProfissionalPorGrupo;
     private boolean habilitarDetalhes;
     private List<TipoAtendimentoBean> listaTipos;
-    private List<TipoAtendimentoBean> listaTiposPorGrupo;
+    
     private List<EquipeBean> listaEquipePorTipoAtendimento;
     private String tipoData;
     private Boolean temLotado;
@@ -88,6 +88,7 @@ public class AgendaController implements Serializable {
         programaSelecionado = new ProgramaBean();
         this.listaNovosAgendamentos = new ArrayList<AgendaBean>();
         this.listaProfissional = new ArrayList<FuncionarioBean>();
+        this.listaProfissionalPorGrupo = new ArrayList<FuncionarioBean>();        
         this.listaAgendamentosData = new ArrayList<AgendaBean>();
         this.listaConsulta = new ArrayList<AgendaBean>();
         this.dataAtendimentoC = null;
@@ -96,7 +97,6 @@ public class AgendaController implements Serializable {
         this.protuarioC = null;
         this.tipoC = new TipoAtendimentoBean();
         this.situacao = new String();
-        listaTiposPorGrupo = new ArrayList<TipoAtendimentoBean>();
         listaEquipePorTipoAtendimento = new ArrayList<EquipeBean>();
         tipoData = TipoDataAgenda.DATA_UNICA.getSigla();
         temLotado = false;
@@ -142,7 +142,6 @@ public class AgendaController implements Serializable {
                 return;
             } else {
                 verificaDisponibilidadeDataUnica();
-                listaDiasDeAtendimentoAtuais();
             }
 
         } else if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
@@ -710,12 +709,13 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
         this.agenda.setMax(null);
     }
 
-    public void limparNaBuscaEquipeProf() {
+    public void limparNaBuscaEquipeProf() throws ProjetoException {
     	System.out.println("limparNaBuscaEquipeProf");
         this.agenda.setObservacao(new String());
         this.agenda.setDataAtendimento(null);
         this.agenda.setQtd(null);
         this.agenda.setMax(null);
+        carregaListaProfissionalPorGrupo();
     }
 
     public void selectPrograma(SelectEvent event) throws ProjetoException {
@@ -730,8 +730,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
         this.programaSelecionado = p;
         this.listaGruposProgramas = gDao.listarGruposPorPrograma(p
                 .getIdPrograma());
-        for (GrupoBean g : listaGruposProgramas) {
-        }
+
         listaTipos = new ArrayList<>();
 
     }
@@ -756,7 +755,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
     }
 
-    public List<GrupoBean> listaGruposPorPrograma() throws ProjetoException {
+    public void carregaListaGruposPorPrograma() throws ProjetoException {
     	System.out.println("listaGruposPorPrograma");
         if (agenda.getPrograma() != null) {
             if (agenda.getPrograma().getIdPrograma() != null) {
@@ -764,7 +763,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
                         .getPrograma().getIdPrograma());
             }
         }
-        return listaGruposProgramas;
+        
     }
 
     public List<EquipeBean> listaEquipeAutoComplete(String query)
@@ -775,7 +774,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
         return result;
     }
 
-    public List<EquipeBean> listaEquipePorTipoAtendimento()
+    public void carregaListaEquipePorTipoAtendimento()
             throws ProjetoException {
     	System.out.println("listaEquipePorTipoAtendimento");
         if (agenda.getTipoAt() != null) {
@@ -784,7 +783,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
                         .listarEquipePorGrupo(agenda.getGrupo().getIdGrupo());
             }
         }
-        return listaEquipePorTipoAtendimento;
     }
 
     public List<FuncionarioBean> listaProfissionalPorGrupoAutoComplete(
@@ -795,21 +793,17 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
         return result;
     }
 
-    public List<FuncionarioBean> listaProfissionalPorGrupo()
+    public void carregaListaProfissionalPorGrupo()
             throws ProjetoException {
+    	listaProfissionalPorGrupo = new ArrayList<FuncionarioBean>();
     	System.out.println("listaProfissionalPorGrupo");
         if (agenda.getGrupo() != null) {
             if (agenda.getGrupo().getIdGrupo() != null) {
-                List<FuncionarioBean> result = fDao
+            	listaProfissionalPorGrupo = fDao
                         .listarProfissionalPorGrupo(agenda.getGrupo()
                                 .getIdGrupo());
-                return result;
-            } else {
-                return null;
             }
-
-        } else
-            return null;
+        }
 
     }
 
@@ -841,18 +835,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
                 agenda.setTipoAt(new TipoAtendimentoBean());
             }
         }
-    }
-
-    public List<TipoAtendimentoBean> listaTipoAtendimentoPorGrupo()
-            throws ProjetoException {
-    	System.out.println("listaTipoAtendimentoPorGrupo");
-        if (agenda.getGrupo() != null) {
-            if (agenda.getGrupo().getIdGrupo() != null) {
-                listaTiposPorGrupo = tDao.listarTipoAtPorGrupo(agenda
-                        .getGrupo().getIdGrupo());
-            }
-        }
-        return listaTiposPorGrupo;
     }
 
     public void listaDiasDeAtendimentoAtuais() throws ProjetoException {
@@ -1088,14 +1070,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
         this.funcionario = funcionario;
     }
 
-	public List<TipoAtendimentoBean> getListaTiposPorGrupo() {
-		return listaTiposPorGrupo;
-	}
-
-	public void setListaTiposPorGrupo(List<TipoAtendimentoBean> listaTiposPorGrupo) {
-		this.listaTiposPorGrupo = listaTiposPorGrupo;
-	}
-
+	
 	public List<EquipeBean> getListaEquipePorTipoAtendimento() {
 		return listaEquipePorTipoAtendimento;
 	}
@@ -1174,5 +1149,13 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
 	public void setListaDeGruposFiltrada(List<GrupoBean> listaDeGruposFiltrada) {
 		this.listaDeGruposFiltrada = listaDeGruposFiltrada;
+	}
+
+	public List<FuncionarioBean> getListaProfissionalPorGrupo() {
+		return listaProfissionalPorGrupo;
+	}
+
+	public void setListaProfissionalPorGrupo(List<FuncionarioBean> listaProfissionalPorGrupo) {
+		this.listaProfissionalPorGrupo = listaProfissionalPorGrupo;
 	}
 }

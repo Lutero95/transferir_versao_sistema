@@ -87,7 +87,8 @@
                                     <p:ajax event="itemSelect"
                                             listener="#{AgendaController.selectPrograma}"
                                             update="outProg, :formConsuGrop:dtGrupo, btBusGr, outGrupo, outTipoAt, outProfissional, outEquipeRow"/>
-
+                                 
+                                            
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusPr" immediate="true"
@@ -218,11 +219,15 @@
                                         <p:ajax event="itemSelect"
                                                 listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
                                                 update=":formAgendaMedica, outHorariosEquipe, msgPagina, outQtdIhMax"></p:ajax>
+                                                <p:ajax event="itemSelect"
+                                                listener="#{AgendaController.listaDiasDeAtendimentoAtuais()}"
+                                                update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissional"></p:ajax>
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusEqui" immediate="true"
                                                      disabled="#{AgendaController.agenda.tipoAt==null}"
-                                                     icon="ui-icon-search" onclick="PF('dlgConsuEquipe').show();"
+                                                     icon="ui-icon-search" oncomplete="PF('dlgConsuEquipe').show();"
+                                                     action="#{AgendaController.carregaListaEquipePorTipoAtendimento()}"    
                                                      update=":formConsuEquipe"
                                                      rendered="#{AgendaController.agenda.tipoAt.equipe==true}"/>
                                 </p:outputPanel>
@@ -234,6 +239,7 @@
                     <br></br>
 
                     <p:outputPanel id="outHorariosEquipe">
+                    <p:autoUpdate/>
                         <b:row rendered="#{AgendaController.agenda.equipe.codEquipe!=null}">
                             <b:column span="12">
                                 <div align="center">
@@ -656,7 +662,7 @@
                 			responsive="true"
                 			save-state="false"
                 			saveState="false"
-                             value="#{AgendaController.listaGruposPorPrograma()}" id="dtGrupo"
+                             value="#{AgendaController.listaGruposProgramas}" id="dtGrupo"
                              var="grupo" display="Nenhum Grupo">
 
                     <h:column>
@@ -697,7 +703,7 @@
                   widgetVar="dlgConsuTipoAt" modal="true" styleClass="topDialog">
             <h:form id="formConsuTipoAt">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{AgendaController.listaTipoAtendimentoPorGrupo()}"
+                             value="#{AgendaController.listaTipos}"
                              id="dtTipoAt" var="tipo" display="Nenhum Tipo de Atendimento">
 
                     <h:column>
@@ -729,7 +735,7 @@
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuEquipe">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{AgendaController.listaEquipePorTipoAtendimento()}"
+                             value="#{AgendaController.listaEquipePorTipoAtendimento}"
                              id="dtEquipe" var="equipe" display="Nenhuma Equipe">
 
                     <h:column>
@@ -761,7 +767,7 @@
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuProf">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{AgendaController.listaProfissionalPorGrupo()}" id="dtProf"
+                             value="#{AgendaController.listaProfissionalPorGrupo}" id="dtProf"
                              var="profi" display="Nenhum Profissional">
 
                     <h:column>
@@ -778,8 +784,8 @@
                         <p:commandButton icon="ui-icon-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          actionListener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-                                         update=":formAgendaMedica:outProf, :formAgendaMedica:msgPagina, :formAgendaMedica:outQtdIhMax, :formAgendaMedica:outHorariosProfissional"
-                                         onclick="PF('dlgConsuProf').hide();">
+                                         action="#AgendaController.listaDiasDeAtendimentoAtuais()}">
+                                         
                             <f:setPropertyActionListener value="#{profi}"
                                                          target="#{AgendaController.agenda.profissional}"/>
                         </p:commandButton>
