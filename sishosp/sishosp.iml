@@ -48,7 +48,6 @@
     <orderEntry type="library" name="jackson-mapper-asl-1.9.2" level="project" />
     <orderEntry type="library" name="jackson-xc-1.9.2" level="project" />
     <orderEntry type="library" name="jasperreports-fonts-5.5.0" level="project" />
-    <orderEntry type="library" name="javax.faces-2.2.12" level="project" />
     <orderEntry type="library" name="jstl-api-1.2" level="project" />
     <orderEntry type="library" name="jstl-impl-1.2" level="project" />
     <orderEntry type="library" name="jstl" level="project" />
@@ -56,7 +55,6 @@
     <orderEntry type="library" name="org-netbeans-core" level="project" />
     <orderEntry type="library" name="pepper-grinder-1.0.10" level="project" />
     <orderEntry type="library" name="postgresql-8.3-604.jdbc4" level="project" />
-    <orderEntry type="library" name="primefaces-5.2" level="project" />
     <orderEntry type="library" name="primefaces-extensions-3.1.0" level="project" />
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" name="slf4j-api-1.7.13" level="project" />
@@ -64,5 +62,7 @@
     <orderEntry type="library" name="smoothness-1.0.10" level="project" />
     <orderEntry type="library" name="standard" level="project" />
     <orderEntry type="library" name="bootsfaces-1.1.2" level="project" />
+    <orderEntry type="library" name="javax.faces-2.3.8" level="project" />
+    <orderEntry type="library" name="primefaces-7.0" level="project" />
   </component>
 </module>
