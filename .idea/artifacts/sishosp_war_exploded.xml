@@ -2,7 +2,6 @@
   <artifact type="exploded-war" name="sishosp:war exploded">
     <output-path>$PROJECT_DIR$/out/artifacts/sishosp_war_exploded</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="sishosp/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="sishosp" />
@@ -36,7 +35,6 @@
           <element id="library" level="project" name="jackson-mapper-asl-1.9.2" />
           <element id="library" level="project" name="jackson-xc-1.9.2" />
           <element id="library" level="project" name="jasperreports-fonts-5.5.0" />
-          <element id="library" level="project" name="javax.faces-2.2.12" />
           <element id="library" level="project" name="jstl-api-1.2" />
           <element id="library" level="project" name="jstl-impl-1.2" />
           <element id="library" level="project" name="jstl" />
@@ -44,16 +42,17 @@
           <element id="library" level="project" name="org-netbeans-core" />
           <element id="library" level="project" name="pepper-grinder-1.0.10" />
           <element id="library" level="project" name="postgresql-8.3-604.jdbc4" />
-          <element id="library" level="project" name="primefaces-5.2" />
           <element id="library" level="project" name="primefaces-extensions-3.1.0" />
           <element id="library" level="project" name="slf4j-api-1.7.13" />
           <element id="library" level="project" name="slf4j-simple-1.7.13" />
           <element id="library" level="project" name="smoothness-1.0.10" />
           <element id="library" level="project" name="standard" />
-          <element id="library" level="project" name="servlet-api" />
-          <element id="library" level="project" name="bootsfaces-1.1.2" />
+          <element id="library" level="project" name="primefaces-7.0" />
+          <element id="library" level="project" name="javax.faces" />
         </element>
       </element>
+      <element id="library" level="project" name="bootsfaces-1.1.2" />
+      <element id="javaee-facet-resources" facet="sishosp/web/Web" />
     </root>
   </artifact>
 </component>
