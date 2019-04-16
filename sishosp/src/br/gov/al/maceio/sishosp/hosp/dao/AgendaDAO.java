@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
+import javax.xml.crypto.Data;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -1084,22 +1085,25 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public Integer contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(
-            Long codProfissional, java.util.Date dataAtendimento, String turno, Integer codTipoAtendimento)
+            AgendaBean agenda, java.util.Date dataAtendimento)
             throws ProjetoException {
     	System.out.println("DAO contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica");
         Integer qtd = null;
 
         String sql = "";
 
-        sql = "SELECT count(id_atendimento) as qtd FROM hosp.atendimentos WHERE codtipoatendimento = ? AND codmedico = ? AND turno = ? AND dtaatende = ?";
+        sql = "SELECT count(id_atendimento) as qtd FROM hosp.atendimentos WHERE codtipoatendimento = ? AND codmedico = ? AND turno = ? " +
+                "AND (dtaatende = ? OR (extract(month from dtaatende) = ? AND (extract(year from dtaatende) = ?)))";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setLong(1, codTipoAtendimento);
-            stm.setLong(2, codProfissional);
-            stm.setString(3, turno.toUpperCase());
+            stm.setLong(1, agenda.getTipoAt().getIdTipo());
+            stm.setLong(2, agenda.getProfissional().getId());
+            stm.setString(3, agenda.getTurno().toUpperCase());
             stm.setDate(4, new java.sql.Date(dataAtendimento.getTime()));
+            stm.setInt(5, DataUtil.extrairMesDeData(dataAtendimento));
+            stm.setInt(6, DataUtil.extrairAnoDeData(dataAtendimento));
 
             ResultSet rs = stm.executeQuery();
 

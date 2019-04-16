@@ -43,7 +43,7 @@ import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 public class AgendaController implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    List<ConfigAgendaParte1Bean> listaConfigAgenda = new ArrayList<>();    
+    List<ConfigAgendaParte1Bean> listaConfigAgenda = new ArrayList<>();
     private AgendaBean agenda;
     private Date dataAtendimentoC;
     private Date dataAtendimentoFinalC;
@@ -59,7 +59,7 @@ public class AgendaController implements Serializable {
     private List<FuncionarioBean> listaProfissional, listaProfissionalPorGrupo;
     private boolean habilitarDetalhes;
     private List<TipoAtendimentoBean> listaTipos;
-    
+
     private List<EquipeBean> listaEquipePorTipoAtendimento;
     private String tipoData;
     private Boolean temLotado;
@@ -77,7 +77,7 @@ public class AgendaController implements Serializable {
     private FuncionarioBean funcionario;
     private static final Integer SEM_FUNCIONARIO_LIBERACAO = 0;
     private List<GrupoBean> listaDeGruposFiltrada;
-    
+
 
     public AgendaController() {
     	System.out.println("construtor AgendaController");
@@ -88,7 +88,7 @@ public class AgendaController implements Serializable {
         programaSelecionado = new ProgramaBean();
         this.listaNovosAgendamentos = new ArrayList<AgendaBean>();
         this.listaProfissional = new ArrayList<FuncionarioBean>();
-        this.listaProfissionalPorGrupo = new ArrayList<FuncionarioBean>();        
+        this.listaProfissionalPorGrupo = new ArrayList<FuncionarioBean>();
         this.listaAgendamentosData = new ArrayList<AgendaBean>();
         this.listaConsulta = new ArrayList<AgendaBean>();
         this.dataAtendimentoC = null;
@@ -108,7 +108,7 @@ public class AgendaController implements Serializable {
         agenda.setTurno("M");
         listaNaoPermitidosIntervaloDeDatas = new ArrayList<>();
         funcionario = new FuncionarioBean();
-        
+
     }
 
     public void limparDados() {
@@ -179,9 +179,6 @@ public class AgendaController implements Serializable {
         } else if (verificarTipoDeAtendimentoDataUnica() && !agenda.getEncaixe()) {
             JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
             setarQuantidadeIhMaximoComoNulos();
-        } else if (verificarTipoDeAtendimentoDataUnica()) {
-            JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
-            setarQuantidadeIhMaximoComoNulos();
         } else {
             verAgenda();
         }
@@ -192,7 +189,7 @@ public class AgendaController implements Serializable {
     	System.out.println("verificarTipoDeAtendimentoDataUnica");
         Boolean retorno = false;
 
-        if (agenda.getTipoAt().getProfissional()) {
+        if (agenda.getProfissional().getId() != null) {
             if (verificarSeExisteTipoAtendimentoEspecificoDataUnica()) {
 
                 if (verificarSeAtingiuLimitePorTipoDeAtendimento()) {
@@ -246,8 +243,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
         Boolean retorno = false;
 
-        Integer limite = aDao.contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
-                this.agenda.getTurno(), agenda.getTipoAt().getIdTipo());
+        Integer limite = aDao.contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(this.agenda, this.agenda.getDataAtendimento());
 
         Integer maximo = 0;
 
@@ -279,8 +275,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
         Boolean retorno = false;
 
-        Integer limite = aDao.contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(this.agenda.getProfissional().getId(), data,
-                this.agenda.getTurno(), agenda.getTipoAt().getIdTipo());
+        Integer limite = aDao.contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(this.agenda, data);
 
         Integer maximo = aDao.verQtdMaxAgendaEspec(this.agenda);
 
@@ -329,13 +324,21 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
     public void validarParaConfirmar() throws ProjetoException {
     	System.out.println("validarParaConfirmar");
-    	agenda.getTipoAt().getProfissional();
         if(verificarEncaixe()){
             preparaConfirmar();
         }
         else{
             JSFUtil.abrirDialog("dlgSenhaEncaixe");
         }
+    }
+
+    public Boolean verificarSeFoiAdicionadoODiaNaLista() {
+        for(int i=0; i<listaNovosAgendamentos.size(); i++){
+            if(agenda == listaNovosAgendamentos.get(i)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void preparaConfirmar() throws ProjetoException {
@@ -763,7 +766,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
                         .getPrograma().getIdPrograma());
             }
         }
-        
+
     }
 
     public List<EquipeBean> listaEquipeAutoComplete(String query)
@@ -1070,7 +1073,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
         this.funcionario = funcionario;
     }
 
-	
+
 	public List<EquipeBean> getListaEquipePorTipoAtendimento() {
 		return listaEquipePorTipoAtendimento;
 	}

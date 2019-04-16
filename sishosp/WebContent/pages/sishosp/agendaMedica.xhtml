@@ -369,9 +369,6 @@
                     <br></br>
 
                     <!-- DATA ÚNICA -->
-                    <p:outputPanel autoUpdate="true">
-                    <h:outputText value="#{AgendaController.agenda.tipoAt.profissional}" />
-                    </p:outputPanel>
                     <p:outputPanel id="outdata">
                         <b:row rendered="#{AgendaController.tipoData == 'U'}">
                             <b:column span="2" class="label-position data-size">
@@ -471,7 +468,7 @@
                     <div align="center">
                         <b:commandButton value="Confirmar" style="margin-top:5px;"
                                          class="btn-acao-table acao-confirmar"
-                                         update=":formAgendaMedica:dtNovosAg, btnOcupados, btnConfirmar, msgPagina, frmSenhaEncaixe"
+                                         update=":formAgendaMedica:dtNovosAg, btnOcupados, btnConfirmar, msgPagina, frmSenhaEncaixe, outQtdIhMax"
                                          id="btnConfirmar" icon="glyphicon-ok"
                                          action="#{AgendaController.validarParaConfirmar()}"/>
 
