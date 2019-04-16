@@ -80,8 +80,8 @@ public class EmpresaDAO {
             }
 
             sql = "INSERT INTO hosp.parametro(motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, " +
-                    "qtd_simultanea_atendimento_equipe, cod_empresa, horario_inicial, horario_final, intervalo) " +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    "qtd_simultanea_atendimento_equipe, cod_empresa, horario_inicial, horario_final, intervalo, tipo_atendimento_terapia) " +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -130,6 +130,12 @@ public class EmpresaDAO {
             }
             else{
                 ps.setNull(8, Types.NULL);
+            }
+            if(empresa.getParametro().getTipoAtendimento().getIdTipo() != null) {
+                ps.setInt(9, empresa.getParametro().getTipoAtendimento().getIdTipo());
+            }
+            else{
+                ps.setNull(9, Types.NULL);
             }
 
             ps.execute();
@@ -235,7 +241,7 @@ public class EmpresaDAO {
 
             sql = "UPDATE hosp.parametro SET motivo_padrao_desligamento_opm = ?, opcao_atendimento = ?, " +
                     "qtd_simultanea_atendimento_profissional = ?, qtd_simultanea_atendimento_equipe = ?, " +
-                    "horario_inicial = ?, horario_final = ?, intervalo = ? " +
+                    "horario_inicial = ?, horario_final = ?, intervalo = ?, tipo_atendimento_terapia = ? " +
                     "WHERE cod_empresa = ?";
 
             ps = con.prepareStatement(sql);
@@ -247,7 +253,8 @@ public class EmpresaDAO {
             ps.setTime(5, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioInicial()));
             ps.setTime(6, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioFinal()));
             ps.setInt(7, empresa.getParametro().getIntervalo());
-            ps.setInt(8, empresa.getCodEmpresa());
+            ps.setInt(8, empresa.getParametro().getTipoAtendimento().getIdTipo());
+            ps.setInt(9, empresa.getCodEmpresa());
             ps.executeUpdate();
 
             con.commit();
@@ -349,7 +356,7 @@ public class EmpresaDAO {
         ParametroBean parametro = new ParametroBean();
 
         String sql = "SELECT id, motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
-                "horario_inicial, horario_final, intervalo " +
+                "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia " +
                 " FROM hosp.parametro where cod_empresa = ?;";
 
         try {
@@ -366,6 +373,7 @@ public class EmpresaDAO {
                 parametro.setHorarioInicial(rs.getTime("horario_inicial"));
                 parametro.setHorarioFinal(rs.getTime("horario_final"));
                 parametro.setIntervalo(rs.getInt("intervalo"));
+                parametro.getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
 
             }
         } catch (SQLException ex) {

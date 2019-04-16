@@ -281,6 +281,19 @@
                             </b:inputText>
                         </b:column>
 
+                        <b:column span="5" class="label-position new-col5">
+                            <b:label value="Tipo de Atendimento para Terapia" severity="info"/>
+
+                            <b:selectOneMenu size="10" required="true"
+                                             requiredMessage="Opção de atendimento: Campo obrigatório!"
+                                             value="#{EmpresaController.empresa.parametro.tipoAtendimento.idTipo}">
+                                <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                                <f:selectItems value="#{TipoAtendimentoController.listarTipos()}" var="tipo"
+                                               itemLabel="#{tipo.descTipoAt}" itemValue="#{tipo.idTipo}" />
+                            </b:selectOneMenu>
+
+                        </b:column>
+
                     </b:row>
 
                     <b:row>

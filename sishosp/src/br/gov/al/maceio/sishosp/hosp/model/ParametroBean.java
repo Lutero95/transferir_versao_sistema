@@ -13,8 +13,10 @@ public class ParametroBean implements Serializable {
     private Date horarioInicial;
     private Date horarioFinal;
     private Integer intervalo;
+    private TipoAtendimentoBean tipoAtendimento;
 
     public ParametroBean() {
+        tipoAtendimento = new TipoAtendimentoBean();
     }
 
     public Integer getMotivoDesligamento() {
@@ -76,4 +78,13 @@ public class ParametroBean implements Serializable {
     public void setIntervalo(Integer intervalo) {
         this.intervalo = intervalo;
     }
+
+    public TipoAtendimentoBean getTipoAtendimento() {
+        return tipoAtendimento;
+    }
+
+    public void setTipoAtendimento(TipoAtendimentoBean tipoAtendimento) {
+        this.tipoAtendimento = tipoAtendimento;
+    }
+
 }

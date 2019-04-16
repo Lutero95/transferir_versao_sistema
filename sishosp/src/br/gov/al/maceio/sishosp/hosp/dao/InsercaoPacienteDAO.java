@@ -186,7 +186,7 @@ public class InsercaoPacienteDAO {
                 ps3.setLong(2, insercao.getEquipe().getCodEquipe());
                 ps3.setDate(3, DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i)
                         .getAgenda().getDataMarcacao()));
-                ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
+                ps3.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
 
                 if(insercao.getAgenda().getTurno() != null) {
                     ps3.setString(5, insercao.getAgenda().getTurno());
@@ -325,7 +325,7 @@ public class InsercaoPacienteDAO {
                 ps3.setLong(2, insercao.getFuncionario().getId());
                 ps3.setDate(3, DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i)
                         .getAgenda().getDataMarcacao()));
-                ps3.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
+                ps3.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
                 ps3.setString(5, insercao.getAgenda().getTurno());
                 ps3.setString(6, insercao.getObservacao());
                 ps3.setInt(7, id);

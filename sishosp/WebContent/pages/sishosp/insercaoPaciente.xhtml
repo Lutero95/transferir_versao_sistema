@@ -165,7 +165,7 @@
 										minQueryLength="1" itemValue="#{theme}"
 										itemLabel="#{theme.descPrograma}">
 										<p:ajax event="itemSelect"
-											listener="#{InsercaoController.selectPrograma}" update="" />
+											listener="#{InsercaoController.selectPrograma}"  update=":formInsercao2:outGrupo" />
 
 									</p:autoComplete>
 
@@ -197,7 +197,7 @@
 										minQueryLength="1" itemValue="#{theme}"
 										itemLabel="#{theme.descGrupo}">
 										<p:ajax event="itemSelect"
-											listener="#{AgendaController.selectGrupo}" update="" />
+											listener="#{AgendaController.selectGrupo}" update=":formInsercao2:outGrupo, :formInsercao2:outEquipe" />
 
 									</p:autoComplete>
 
@@ -481,27 +481,6 @@
 						</b:row>
 
 						<br></br>
-
-						<b:row>
-
-							<b:column span="5"
-								class="label-position new-data-size new-comple1">
-								<b:label value="Tipo Atendimento" class="fire-label" severity="info" />
-
-								<p:outputPanel id="outTipoAt">
-									<p:autoComplete
-										value="#{InsercaoController.insercao.agenda.tipoAt}" size="31"
-										converter="conTipoAtendimento" class="select-agendaEquipe4"
-										completeMethod="#{InsercaoController.listaTipoAtAutoComplete}"
-										effect="fade" var="theme" forceSelection="true"
-										minQueryLength="1" itemValue="#{theme}"
-										itemLabel="#{theme.descTipoAt}">
-										<p:ajax event="itemSelect" />
-									</p:autoComplete>
-								</p:outputPanel>
-							</b:column>
-
-						</b:row>
 
 						<div align="center">
 							<b:messages value="Error" id="msgPagina"></b:messages>

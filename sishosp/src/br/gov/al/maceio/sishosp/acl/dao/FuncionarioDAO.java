@@ -42,10 +42,11 @@ public class FuncionarioDAO {
             throws ProjetoException {
 
         String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, permite_encaixe, "
-                + "pf.descricao as descperfil, cod_empresa, case when us.ativo = 'S' "
+                + "pf.descricao as descperfil, us.cod_empresa, p.tipo_atendimento_terapia,  case when us.ativo = 'S' "
                 + "then true else false end as usuarioativo, "
                 + "pf.id as idperfil from acl.funcionarios us "
-                + "join acl.perfil pf on (pf.id = us.id_perfil) "
+                + "join acl.perfil pf on (pf.id = us.id_perfil) " +
+                " left join hosp.parametro p ON (p.cod_empresa = us.cod_empresa) "
                 + "where (us.cpf = ?) and (upper(us.senha) = ?) and (? = 'S')";
 
         FuncionarioBean ub = null;
@@ -68,6 +69,7 @@ public class FuncionarioDAO {
                 ub.getEmpresa().setCodEmpresa(rs.getInt("cod_empresa"));
                 ub.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
                 ub.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+                ub.getEmpresa().getParametro().getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
 
                 // ACL
                 ub.setId(rs.getLong("id_funcionario"));
