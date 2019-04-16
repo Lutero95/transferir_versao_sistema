@@ -170,7 +170,7 @@
 									</p:autoComplete>
 
 									<p:commandButton id="btBusPr" immediate="true" style="margin-left: 5px"
-													 icon="ui-icon-search"
+													 icon="ui-icon-search" rendered="#{InsercaoController.tipo == 'E'}"
 													 action="#{InsercaoController.limparNaBuscaPrograma()}"
 													 update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
 
@@ -182,8 +182,8 @@
 						<b:row>
 							<p:outputPanel id="outGrupo">
 
-								<b:column span="5"
-									class="label-position new-data-size4 new-comple1">
+								<b:column span="3"
+									class="label-position new-data-size new-comple1">
 									<b:label for="prog" value="Grupo:" id="grupo"
 										class="fire-label"
 										rendered="#{InsercaoController.tipo == 'E'}" severity="info" />
@@ -200,6 +200,11 @@
 											listener="#{AgendaController.selectGrupo}" update="" />
 
 									</p:autoComplete>
+
+									<p:commandButton id="btBusGr" immediate="true" style="margin-left: 5px"
+													 icon="ui-icon-search" rendered="#{InsercaoController.tipo == 'E'}"
+													 disabled="#{InsercaoController.insercao.programa.idPrograma == null}"
+													 update=":formConsuProg" onclick="PF('dlgConsuGrop').show();"/>
 
 								</b:column>
 
@@ -226,6 +231,13 @@
 										itemLabel="#{theme.descEquipe}">
 										<p:ajax event="itemSelect" />
 									</p:autoComplete>
+
+                                    <p:commandButton id="btBusEqui" immediate="true" style="margin-left: 5px"
+                                                     disabled="#{InsercaoController.insercao.grupo.idGrupo == null}"
+                                                     icon="ui-icon-search" oncomplete="PF('dlgConsuEquipe').show();"
+                                                     actionListener="#{InsercaoController.carregaListaEquipePorTipoAtendimento()}"
+                                                     update=":formConsuEquipe"
+                                                     rendered="#{InsercaoController.tipo == 'E'}"/>
 								</b:column>
 								<b:column span="3" class="label-position5 carregar-margin">
 									<p:commandButton icon="ui-icon-search" process="@this"
@@ -658,13 +670,87 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton
-                                update=":formInsercao2:outProg"
+                                update=":formInsercao2:outProg, :formInsercao2:outGrupo"
                                 class="new-btn-acao-table acao-editar" icon="ui-icon-check"
                                 title="Selecionar"
                                 action="#{InsercaoController.atualizaListaGrupos(InsercaoController.insercao.programa)}"
                                 onclick="PF('dlgConsuProg').hide();">
                             <f:setPropertyActionListener value="#{prog}"
                                                          target="#{InsercaoController.insercao.programa}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+                  modal="true" styleClass="topDialog" dynamic="true">
+            <h:form id="formConsuGrop">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             ajax="true"
+                             responsive="true"
+                             save-state="false"
+                             saveState="false"
+                             value="#{InsercaoController.listaGruposProgramas}" id="dtGrupo"
+                             var="grupo" display="Nenhum Grupo">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Grupo
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.descGrupo}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Quantidade Frequência
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.qtdFrequencia}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao2:outGrupo, :formInsercao2:outEquipe"
+                                icon="ui-icon-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                onclick="PF('dlgConsuGrop').hide();">
+                            <f:setPropertyActionListener value="#{grupo}"
+                                                         target="#{InsercaoController.insercao.grupo}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe" dynamic="true"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuEquipe">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{InsercaoController.listaEquipePorGrupo}"
+                             id="dtEquipe" var="equipe" display="Nenhuma Equipe">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Equipe
+                        </f:facet>
+                        <p:outputLabel value="#{equipe.descEquipe}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton update=":formInsercao2:outEquipe"
+                                         icon="ui-icon-check" title="Selecionar"
+                                         class="new-btn-acao-table acao-editar"
+                                         onclick="PF('dlgConsuEquipe').hide();">
+                            <f:setPropertyActionListener value="#{equipe}"
+                                                         target="#{InsercaoController.insercao.equipe}"/>
                         </p:commandButton>
                     </h:column>
 
