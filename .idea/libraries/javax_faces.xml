@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="javax.faces">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/sishosp/WebContent/WEB-INF/lib/javax.faces.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

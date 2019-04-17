@@ -911,16 +911,34 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         StringBuilder sql = new StringBuilder();
 
-        sql.append("SELECT ");
-        sql.append("CASE WHEN (SELECT count(id_atendimento) FROM hosp.atendimentos WHERE horario = ? ");
-        sql.append("AND dtaatende = ? AND codmedico = ?) < p.qtd_simultanea_atendimento_profissional ");
-        sql.append("THEN TRUE ELSE FALSE END AS pode_marcar ");
-        sql.append("FROM hosp.parametro p WHERE p.cod_empresa = ?");
+        if(insercao.getAgenda().getHorario() != null) {
+            sql.append("SELECT ");
+            sql.append("CASE WHEN (SELECT count(id_atendimento) FROM hosp.atendimentos WHERE horario = ? ");
+            sql.append("AND dtaatende = ? AND codmedico = ?) < p.qtd_simultanea_atendimento_profissional ");
+            sql.append("THEN TRUE ELSE FALSE END AS pode_marcar ");
+            sql.append("FROM hosp.parametro p WHERE p.cod_empresa = ?");
+        }
+
+        if(insercao.getAgenda().getTurno() != null) {
+            sql.append("SELECT ");
+            sql.append("CASE WHEN (SELECT count(id_atendimento) FROM hosp.atendimentos WHERE turno = ? ");
+            sql.append("AND dtaatende = ? AND codmedico = ?) < p.qtd_simultanea_atendimento_profissional ");
+            sql.append("THEN TRUE ELSE FALSE END AS pode_marcar ");
+            sql.append("FROM hosp.parametro p WHERE p.cod_empresa = ?");
+        }
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql.toString());
-            stm.setTime(1, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+
+            if(insercao.getAgenda().getHorario() != null) {
+                stm.setTime(1, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+            }
+
+            if(insercao.getAgenda().getTurno() != null) {
+                stm.setString(1, insercao.getAgenda().getTurno());
+            }
+
             stm.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getData_solicitacao()));
             stm.setLong(3, insercao.getFuncionario().getId());
             stm.setInt(4, user_session.getEmpresa().getCodEmpresa());
