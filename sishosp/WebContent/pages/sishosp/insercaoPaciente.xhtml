@@ -137,6 +137,7 @@
 								<p:calendar
 									value="#{InsercaoController.insercao.data_solicitacao}"
 									id="dtagen" locale="pt" navigator="true" mask="true"
+                                    required="true" requiredMessage="Data de Inclusão: Campo obrigatório!"
 									class="select-agendaEquipe2" showOn="button"
 									pattern="dd/MM/yyyy" size="15">
 								</p:calendar>
@@ -282,7 +283,7 @@
 
 								<b:column span="5"
 									class="label-position new-data-size new-comple1">
-									<b:label value="Profissional" id="prof" class="fire-label"
+									<b:label value="Profissional:" id="prof" class="fire-label"
 										rendered="#{InsercaoController.tipo == 'P'}" severity="info" />
 
 									<p:autoComplete rendered="#{InsercaoController.tipo == 'P'}"
@@ -294,6 +295,12 @@
 										itemLabel="#{theme.nome}">
 										<p:ajax event="itemSelect" update="outDetalhes" />
 									</p:autoComplete>
+
+									<p:commandButton id="btBusProf" icon="ui-icon-search"
+													 immediate="true" style="margin-left: 5px"
+                                                     action="#{InsercaoController.listarProfissionais()}"
+													 update=":formConsuProf" onclick="PF('dlgConsuProf').show();"
+                                                     rendered="#{InsercaoController.tipo == 'P'}"/>
 
 								</b:column>
 							</p:outputPanel>
@@ -730,6 +737,35 @@
                                          onclick="PF('dlgConsuEquipe').hide();">
                             <f:setPropertyActionListener value="#{equipe}"
                                                          target="#{InsercaoController.insercao.equipe}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf" dynamic="true"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuProf">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{InsercaoController.listaProfissionais}" id="dtProf"
+                             var="profi" display="Nenhum Profissional">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Profissional
+                        </f:facet>
+                        <p:outputLabel value="#{profi.nome}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton icon="ui-icon-check" title="Selecionar" update=":formInsercao2:outProf, :formInsercao2:outDetalhes"
+                                         class="new-btn-acao-table acao-editar" onclick="PF('dlgConsuProf').hide();">
+                            <f:setPropertyActionListener value="#{profi}"
+                                                         target="#{InsercaoController.insercao.funcionario}"/>
                         </p:commandButton>
                     </h:column>
 

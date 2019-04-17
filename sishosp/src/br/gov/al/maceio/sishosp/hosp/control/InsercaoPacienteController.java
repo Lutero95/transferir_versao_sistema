@@ -37,6 +37,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
     private ArrayList<FuncionarioBean> listaProfissionaisEquipe;
     private ArrayList<FuncionarioBean> listaProfissionaisAdicionados;
+    private List<FuncionarioBean> listaProfissionais;
     private List<GrupoBean> listaGruposProgramas;
     private String tipo;
     private FuncionarioBean funcionario;
@@ -63,6 +64,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         todosOsProfissionais = false;
         renderizarAposLaudo = false;
         listaEquipePorGrupo = new ArrayList<>();
+        listaProfissionais = new ArrayList<>();
     }
 
     public void limparDados() {
@@ -473,6 +475,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         }
     }
 
+    public void listarProfissionais() throws ProjetoException {
+        FuncionarioDAO fDao = new FuncionarioDAO();
+        listaProfissionais = fDao.listarProfissional();
+    }
+
     public List<GrupoBean> listaGrupoAutoComplete(String query)
             throws ProjetoException {
 
@@ -602,4 +609,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         this.listaEquipePorGrupo = listaEquipePorGrupo;
     }
 
+    public List<FuncionarioBean> getListaProfissionais() {
+        return listaProfissionais;
+    }
+
+    public void setListaProfissionais(List<FuncionarioBean> listaProfissionais) {
+        this.listaProfissionais = listaProfissionais;
+    }
 }
