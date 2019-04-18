@@ -80,6 +80,7 @@ public class AlteracaoPacienteController implements Serializable {
             }
             if (insercao.getFuncionario().getId() != null
                     && insercao.getFuncionario().getId() > 0) {
+                funcionario.setListDiasSemana(agendaDAO.listaDiasDeAtendimetoParaPacienteInstituicao(id));
                 tipo = TipoAtendimento.PROFISSIONAL.getSigla();
                 insercao.getFuncionario().setListDiasSemana(
                         aDao.listarDiasAtendimentoProfissional(id));

@@ -1142,4 +1142,35 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         return qtd;
     }
 
+    public ArrayList<String> listaDiasDeAtendimetoParaPacienteInstituicao(Integer idPacienteInstituicao) throws ProjetoException {
+        ArrayList<String> lista = new ArrayList<String>();
+
+        String sql = "SELECT dia_semana FROM hosp.profissional_dia_atendimento WHERE id_paciente_instituicao = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = null;
+            stm = con.prepareStatement(sql.toString());
+            stm.setInt(1, idPacienteInstituicao);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                String dia = null;
+                dia = rs.getString("dia_semana");
+                lista.add(dia);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
 }
