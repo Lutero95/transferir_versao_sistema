@@ -244,7 +244,7 @@ public class AlteracaoPacienteDAO {
                         .getId());
                 ps7.setDate(3, new java.sql.Date(listAgendamentoProfissional.get(i).getAgenda()
                         .getDataMarcacao().getTime()));
-                ps7.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
+                ps7.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
 
                 if(insercao.getAgenda().getTurno() != null) {
                     ps7.setString(5, insercao.getAgenda().getTurno());
@@ -271,18 +271,26 @@ public class AlteracaoPacienteDAO {
                     idAgend = rs.getInt("id_atendimento");
                 }
 
-                String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+                for(int j=0; j<listaProfissionais.size(); j++) {
 
-                PreparedStatement ps8 = null;
-                ps8 = conexao.prepareStatement(sql8);
+                    for (int h = 0; h < listaProfissionais.get(j).getListDiasSemana().size(); h++) {
 
-                ps8.setLong(1, listAgendamentoProfissional.get(i).getAgenda().getProfissional()
-                        .getId());
-                ps8.setInt(2, idAgend);
-                ps8.setInt(3, listAgendamentoProfissional.get(i).getAgenda().getProfissional()
-                        .getCbo().getCodCbo());
+                        if (DataUtil.extrairDiaDeData(listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao()) ==
+                                Integer.parseInt(listaProfissionais.get(j).getListDiasSemana().get(h))) {
 
-                ps8.executeUpdate();
+                            String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+
+                            PreparedStatement ps8 = null;
+                            ps8 = conexao.prepareStatement(sql8);
+
+                            ps8.setLong(1, listaProfissionais.get(j).getId());
+                            ps8.setInt(2, idAgend);
+                            ps8.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
+
+                            ps8.executeUpdate();
+                        }
+                    }
+                }
 
             }
 
@@ -389,7 +397,7 @@ public class AlteracaoPacienteDAO {
                 ps6.setLong(2, insercao.getFuncionario().getId());
                 ps6.setDate(3, new java.sql.Date(listaAgendamento.get(i)
                         .getAgenda().getDataMarcacao().getTime()));
-                ps6.setInt(4, insercao.getAgenda().getTipoAt().getIdTipo());
+                ps6.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
                 ps6.setString(5, insercao.getAgenda().getTurno());
                 ps6.setString(6, insercao.getObservacao());
                 ps6.setInt(7, id_paciente);

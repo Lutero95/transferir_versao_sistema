@@ -395,28 +395,6 @@
                         </p:outputPanel>
                     </b:row>
 
-                    <b:row>
-
-                        <b:column span="5"
-                                  class="label-position new-data-size new-comple1">
-                            <b:label value="Tipo Atendimento" severity="info" class="fire-label"/>
-
-                            <p:outputPanel id="outTipoAt">
-                                <p:autoComplete
-                                        value="#{AlteracaoPacienteController.insercao.agenda.tipoAt}"
-                                        size="31" converter="conTipoAtendimento"
-                                        class="select-agendaEquipe4"
-                                        completeMethod="#{InsercaoController.listaTipoAtAutoComplete}"
-                                        effect="fade" var="theme" forceSelection="true"
-                                        minQueryLength="1" itemValue="#{theme}"
-                                        itemLabel="#{theme.descTipoAt}">
-                                    <p:ajax event="itemSelect"/>
-                                </p:autoComplete>
-                            </p:outputPanel>
-                        </b:column>
-
-                    </b:row>
-
                     <div align="center">
                         <b:messages value="Error" id="msgPagina"></b:messages>
                     </div>
