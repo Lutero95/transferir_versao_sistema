@@ -334,11 +334,11 @@
                                     <p:column headerText="Excluir" width="12%">
                                         <div align="center">
                                             <p:commandButton icon="ui-icon-trash" immediate="true"
-                                                             actionListener="#{AlteracaoPacienteController.excluirFuncionarioIhDiasDeAtendimento}"
+                                                             action="#{AlteracaoPacienteController.excluirFuncionarioIhDiasDeAtendimento()}"
                                                              title="Excluir" class="new-btn-acao-table acao-editar"
                                                              update=":formInsercao2:dtAdicionados">
                                                 <f:setPropertyActionListener value="#{funcionario}"
-                                                                             target="#{InsercaoController.funcionario}"/>
+                                                                             target="#{AlteracaoPacienteController.funcionario}"/>
                                             </p:commandButton>
                                         </div>
                                     </p:column>

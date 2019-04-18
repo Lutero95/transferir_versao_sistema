@@ -1150,7 +1150,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = null;
-            stm = con.prepareStatement(sql.toString());
+            stm = con.prepareStatement(sql);
             stm.setInt(1, idPacienteInstituicao);
 
             ResultSet rs = stm.executeQuery();
@@ -1166,6 +1166,122 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         } finally {
             try {
                 con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
+    public ArrayList<FuncionarioBean> listaProfissionaisAtendimetoParaPacienteInstituicao(Integer idPacienteInstituicao) throws ProjetoException {
+        ArrayList<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
+
+        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, c.id, c.descricao " +
+                "FROM hosp.profissional_dia_atendimento p " +
+                "JOIN acl.funcionarios f ON (p.id_profissional = f.id_funcionario) " +
+                "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) " +
+                "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) " +
+                "WHERE p.id_paciente_instituicao = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = null;
+            stm = con.prepareStatement(sql);
+            stm.setInt(1, idPacienteInstituicao);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                FuncionarioBean funcionario = new FuncionarioBean();
+                funcionario.setId(rs.getLong("id_profissional"));
+                funcionario.setNome(rs.getString("descfuncionario"));
+                funcionario.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+                funcionario.getEspecialidade().setCodEspecialidade(rs.getInt("id_especialidade"));
+                funcionario.getCbo().setCodCbo(rs.getInt("id"));
+                funcionario.getCbo().setDescCbo(rs.getString("descricao"));
+
+                lista.add(funcionario);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
+    public ArrayList<FuncionarioBean> listaProfissionaisIhDiasAtendimetoParaPacienteInstituicao(Integer idPacienteInstituicao) throws ProjetoException {
+        ArrayList<FuncionarioBean> lista = new ArrayList<FuncionarioBean>();
+
+        String sql = "SELECT DISTINCT p.id_profissional, f.descfuncionario, e.id_especialidade, e.descespecialidade, c.id, c.descricao " +
+                "FROM hosp.profissional_dia_atendimento p " +
+                "JOIN acl.funcionarios f ON (p.id_profissional = f.id_funcionario) " +
+                "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) " +
+                "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) " +
+                "WHERE p.id_paciente_instituicao = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = null;
+            stm = con.prepareStatement(sql);
+            stm.setInt(1, idPacienteInstituicao);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                FuncionarioBean funcionario = new FuncionarioBean();
+                funcionario.setId(rs.getLong("id_profissional"));
+                funcionario.setNome(rs.getString("descfuncionario"));
+                funcionario.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+                funcionario.setListDiasSemana(listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(idPacienteInstituicao, funcionario.getId(), con));
+                funcionario.getEspecialidade().setCodEspecialidade(rs.getInt("id_especialidade"));
+                funcionario.getCbo().setCodCbo(rs.getInt("id"));
+                funcionario.getCbo().setDescCbo(rs.getString("descricao"));
+
+                lista.add(funcionario);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
+    public ArrayList<String> listaDiasDeAtendimetoParaPacienteInstituicaoIhProfissional(
+            Integer idPacienteInstituicao, Long idProfissional, Connection conAuxiliar) {
+        ArrayList<String> lista = new ArrayList<String>();
+
+        String sql = "SELECT dia_semana FROM hosp.profissional_dia_atendimento WHERE id_paciente_instituicao = ? AND id_profissional = ?";
+
+        try {
+            PreparedStatement stm = null;
+            stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idPacienteInstituicao);
+            stm.setLong(2, idProfissional);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                String dia = null;
+                dia = rs.getString("dia_semana");
+                lista.add(dia);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
