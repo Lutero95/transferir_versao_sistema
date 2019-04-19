@@ -46,7 +46,7 @@
 										</p:autoComplete>
 
 										<p:commandButton icon="ui-icon-search"
-											action="#{MBFuncionarios.listarProfissionais}"
+											action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
 											process="@this" update="formConsultProf"
 											oncomplete="PF('dlgConsultaProf').show();" />
 									</p:outputPanel>
@@ -220,7 +220,9 @@
 
 									<p:commandButton icon="ui-icon-search" immediate="true"
 										action="#{ConfigAgendaController.limparBuscaPrograma()}"
-										onclick="PF('dlgConsuProg').show();" />
+										update="formConsuProg"
+										actionListener="#{ProgramaController.carregaListaProgramas()}"
+										oncomplete="PF('dlgConsuProg').show();" />
 								</p:outputPanel>
 							</b:column>
 
@@ -250,7 +252,8 @@
 										icon="ui-icon-search"
 										disabled="#{ConfigAgendaController.confParte2.programa==null}"
 										action="#{ConfigAgendaController.limparBuscaGrupo()}"
-										update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();" />
+										actionListener="#{ConfigAgendaController.selectGrupo()}"
+										update=":formConsuGrop" oncomplete="PF('dlgConsuGrop').show();" />
 								</p:outputPanel>
 							</b:column>
 
@@ -278,6 +281,7 @@
 									<p:commandButton id="btBusTi" process="@this"
 										icon="ui-icon-search"
 										action="#{ConfigAgendaController.limparBuscaGrupo()}"
+										actionListener="#{ConfigAgendaController.carregaListaTipoAtendimento()}"
 										disabled="#{ConfigAgendaController.confParte2.programa==null}"
 										update="formConsuTipoAt"
 										onclick="PF('dlgConsuTipoAt').show();" />
@@ -406,7 +410,7 @@
 			modal="true">
 			<h:form id="formConsuGrop">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{ConfigAgendaController.selectGrupo()}" id="dtGrupo"
+					value="#{ConfigAgendaController.listaGruposProgramas}" id="dtGrupo"
 					var="grupo" display="Nenhum Grupo">
 
 					<h:column>
@@ -445,7 +449,7 @@
 			widgetVar="dlgConsuTipoAt" modal="true">
 			<h:form id="formConsuTipoAt">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{ConfigAgendaController.selectTipoAtendimento()}"
+					value="#{ConfigAgendaController.listaTipoAtendimentosGrupo}"
 					id="dtTipoAt" var="tipo" display="Nenhum Tipo de Atendimento">
 
 					<h:column>
@@ -478,7 +482,7 @@
 			<h:form id="formConsultProf">
 				<p:outputPanel>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+						value="#{MBFuncionarios.listaProfissional}"
 						id="dtTipoAt" resizableColumns="true" var="profi"
 						display="Nenhum Profissional">
 

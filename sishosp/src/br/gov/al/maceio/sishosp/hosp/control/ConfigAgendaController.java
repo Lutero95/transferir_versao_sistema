@@ -59,6 +59,7 @@ public class ConfigAgendaController implements Serializable {
     private static final String ENDERECO_ID = "&amp;codconfigagenda=";
 
     public ConfigAgendaController() {
+    	System.out.println("ConfigAgendaController construroe");
         this.confParte1 = new ConfigAgendaParte1Bean();
         this.confParte2 = new ConfigAgendaParte2Bean();
         this.prof = new FuncionarioBean();
@@ -74,6 +75,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void limparDados() {
+    	System.out.println("limparDados configagendacontroller");
         this.confParte1 = new ConfigAgendaParte1Bean();
         this.confParte2 = new ConfigAgendaParte2Bean();
         this.listaTipos = new ArrayList<ConfigAgendaParte2Bean>();
@@ -100,6 +102,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void getEditAgendaProfissional() throws ProjetoException {
+    	System.out.println("getEditAgendaProfissional");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -122,6 +125,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void getEditAgendaEquipe() throws ProjetoException {
+    	System.out.println("getEditAgendaEquipe");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -144,6 +148,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void addNaLista() {
+    	System.out.println("addNaLista");
         if (confParte2.getQtd() == null) {
             JSFUtil.adicionarMensagemErro("Insira a quantidade!", "Erro");
         } else if (confParte2.getPrograma() == null) {
@@ -158,23 +163,26 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void removeNaLista() {
+    	System.out.println("removeNaLista");
         this.listaTipos.remove(confParte2);
         confParte2 = new ConfigAgendaParte2Bean();
     }
 
     // GRUPOBEAN
 
-    public List<GrupoBean> selectGrupo() throws ProjetoException {
+    public void selectGrupo() throws ProjetoException {
+    	System.out.println("selectGrupo");
         GrupoDAO gDao = new GrupoDAO();
         if (confParte2.getPrograma() != null) {
             listaGruposProgramas = gDao.listarGruposPorPrograma(confParte2
                     .getPrograma().getIdPrograma());
         }
-        return listaGruposProgramas;
+
     }
 
     public List<GrupoBean> listaGrupoAutoComplete(String query)
             throws ProjetoException {
+    	System.out.println("listaGrupoAutoComplete");
         GrupoDAO gDao = new GrupoDAO();
         if (confParte2.getPrograma() != null) {
             return gDao.listarGruposAutoComplete(query,
@@ -191,6 +199,7 @@ public class ConfigAgendaController implements Serializable {
 
     public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
             throws ProjetoException {
+    	System.out.println("listaTipoAtAutoComplete");
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
         if (confParte2.getGrupo() != null) {
             return tDao.listarTipoAtAutoComplete(query, confParte2.getGrupo());
@@ -199,14 +208,15 @@ public class ConfigAgendaController implements Serializable {
         }
     }
 
-    public List<TipoAtendimentoBean> selectTipoAtendimento()
+    public void carregaListaTipoAtendimento()
             throws ProjetoException {
+    	System.out.println("selectTipoAtendimento");
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
         if (confParte2.getGrupo() != null) {
             listaTipoAtendimentosGrupo = tDao.listarTipoAtPorGrupo(confParte2
                     .getGrupo().getIdGrupo());
         }
-        return listaTipoAtendimentosGrupo;
+
     }
 
     // FINAL TIPOATENDIMENTOBEAN
@@ -215,6 +225,7 @@ public class ConfigAgendaController implements Serializable {
 
     public List<EquipeBean> listaEquipeAutoComplete(String query)
             throws ProjetoException {
+    	System.out.println("listaEquipeAutoComplete");
         int grupoId = 0;
         if (confParte2.getGrupo() == null) {
             grupoId = cDao.carregarGrupoDaEquipe(confParte1.getIdConfiAgenda());
@@ -227,6 +238,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public List<EquipeBean> selectEquipe() throws ProjetoException {
+    	System.out.println("selectEquipe");
         EquipeDAO eDao = new EquipeDAO();
 
         if (confParte2.getGrupo() != null) {
@@ -241,6 +253,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public List<EquipeBean> selectEquipeInsercao() throws ProjetoException {
+    	System.out.println("selectEquipeInsercao");
         EquipeDAO eDao = new EquipeDAO();
 
         if (confParte2.getGrupo() != null) {
@@ -255,7 +268,7 @@ public class ConfigAgendaController implements Serializable {
     // FINAL EQUIPEBEAN
 
     public void validarConfiguracoesAgendaProfissional() throws ProjetoException, SQLException {
-
+    	System.out.println("validarConfiguracoesAgendaProfissional");
         int somatorio = 0;
         for (ConfigAgendaParte2Bean conf : listaTipos) {
             somatorio += conf.getQtd();
@@ -294,6 +307,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void gravarConfigAgendaProfissional() throws ProjetoException, SQLException {
+    	System.out.println("gravarConfigAgendaProfissional");
         boolean cadastrou = false;
 
         cadastrou = cDao.gravarConfiguracaoAgendaProfissionalInicio(confParte1, listaTipos);
@@ -310,6 +324,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void alterarConfigAgendaProfissional() throws ProjetoException, SQLException {
+    	System.out.println("alterarConfigAgendaProfissional");
         boolean alterou = false;
 
         alterou = cDao.alterarConfiguracaoAgendaProfissionalInicio(confParte1, listaTipos);
@@ -323,6 +338,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void validarGravarConfigAgendaEquipe() throws ProjetoException, SQLException {
+    	System.out.println("validarGravarConfigAgendaEquipe");
         if (tipo == 1) {
             gravarConfigAgendaEquipe();
         } else {
@@ -331,6 +347,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void gravarConfigAgendaEquipe() throws ProjetoException, SQLException {
+    	System.out.println("gravarConfigAgendaEquipe");
         boolean gravou = false;
 
         gravou = cDao.gravarConfiguracaoAgendaEquipeInicio(confParte1, confParte2);
@@ -346,6 +363,7 @@ public class ConfigAgendaController implements Serializable {
 
     public void alterarConfigAgendaEquipe() throws SQLException,
             ProjetoException {
+    	System.out.println("alterarConfigAgendaEquipe");
         boolean alterou = false;
 
         alterou = cDao.alterarConfiguracaoAgendaEquipeInicio(confParte1, confParte2);
@@ -359,6 +377,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void excluirConfigProfissional() throws ProjetoException {
+    	System.out.println("excluirConfigProfissional");
         boolean excluiu = cDao.excluirConfigProfissional(confParte1);
 
         if (excluiu == true) {
@@ -373,6 +392,7 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void excluirConfigEquipe() throws ProjetoException {
+    	System.out.println("excluirConfigEquipe");
         Boolean excluiu = cDao.excluirConfigEquipe(confParte1);
 
         if (excluiu == true) {
@@ -386,31 +406,37 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void selectProfissional() throws ProjetoException {
+    	System.out.println("selectProfissional");
         this.listaHorariosProfissional = cDao.listarHorariosPorIDProfissional(prof
                 .getId());
     }
 
     public void selectEquipeOnRow() throws ProjetoException {
+    	System.out.println("selectEquipeOnRow");
         this.listaHorariosEquipe = cDao.listarHorariosPorIDEquipe(equipe
                 .getCodEquipe());
     }
 
     public void selectProfissionalComFiltros() throws ProjetoException {
+    	System.out.println("selectProfissionalComFiltros");
         this.listaHorariosProfissional = cDao.listarHorariosComFiltrosProfissional(confParte1,
                 prof.getId());
     }
 
     public void selectEquipeComFiltros() throws ProjetoException {
+    	System.out.println("selectEquipeComFiltros");
         this.listaHorariosEquipe = cDao.listarHorariosComFiltrosEquipe(
                 confParte1, equipe.getCodEquipe());
     }
 
     public void limparBuscaPrograma() {
+    	System.out.println("limparBuscaPrograma configagendacontroller");
         this.confParte2.setGrupo(null);
         this.confParte2.setTipoAt(null);
     }
 
     public void limparBuscaGrupo() {
+    	System.out.println("limparBuscaGrupo");
         this.confParte2.setTipoAt(null);
     }
 

@@ -19,11 +19,11 @@ public class PacienteDAO {
 
     public Boolean cadastrar(PacienteBean paciente, Boolean bairroExiste) throws ProjetoException {
         boolean retorno = false;
-        conexao = ConnectionFactory.getConnection();
+        
         Integer idPaciente = null;
 
         try {
-
+        	conexao = ConnectionFactory.getConnection();
             if (!bairroExiste) {
                 String sql2 = "INSERT INTO hosp.bairros(descbairro, codmunicipio) "
                         + " VALUES (?, ?) returning id_bairro;";
@@ -369,10 +369,10 @@ public class PacienteDAO {
     public Boolean alterar(PacienteBean paciente)
             throws ProjetoException {
         boolean retorno = false;
-        conexao = ConnectionFactory.getConnection();
+       
 
         try {
-
+        	 conexao = ConnectionFactory.getConnection();
             String sql = "update hosp.pacientes set nome = ?, dtanascimento = ?, estcivil = ?, sexo = ? , sangue = ?, pai = ? "
                     + ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, logradouro = ?, numero = ?"
                     + ", complemento = ?, referencia = ? "
@@ -711,46 +711,47 @@ public class PacienteDAO {
                 + "left join hosp.encaminhado on pacientes.id_encaminhado=encaminhado.id_encaminhado "
                 + "left join hosp.formatransporte on pacientes.id_formatransporte=formatransporte.id_formatransporte where";
 
-        conexao = ConnectionFactory.getConnection();
         List<PacienteBean> listaP = new ArrayList<PacienteBean>();
-        PacienteBean p = null;
-
-        if (tipo.equals("CPF")) {
-            sql += " cpf = ? ;";
-            ps = conexao.prepareStatement(sql);
-            ps.setString(1, conteudo.toUpperCase());
-        }
-        if (tipo.equals("NOME")) {
-            sql += " nome LIKE ? ;";
-            ps = conexao.prepareStatement(sql);
-            ps.setString(1, '%' + conteudo.toUpperCase() + '%');
-        }
-        if (tipo.equals("PRONTVELHO")) {
-            sql += " protreab = ? ;";
-            ps = conexao.prepareStatement(sql);
-            Integer prontVelho = null;
-            try {
-                prontVelho = Integer.parseInt(conteudo);
-            } catch (Exception e) {
-                return listaP;
-            }
-
-            if (prontVelho != null)
-                ps.setInt(1, prontVelho);
-        }
-        if (tipo.equals("PRONTNOVO")) {
-            sql += " id_paciente = ? ;";
-            ps = conexao.prepareStatement(sql);
-            Long prontNovo = null;
-            try {
-                prontNovo = Long.parseLong(conteudo);
-            } catch (Exception e) {
-                return listaP;
-            }
-            if (prontNovo != null)
-                ps.setLong(1, prontNovo);
-        }
         try {
+        	 conexao = ConnectionFactory.getConnection();
+             
+             PacienteBean p = null;
+
+             if (tipo.equals("CPF")) {
+                 sql += " cpf = ? ;";
+                 ps = conexao.prepareStatement(sql);
+                 ps.setString(1, conteudo.toUpperCase());
+             }
+             if (tipo.equals("NOME")) {
+                 sql += " nome LIKE ? ;";
+                 ps = conexao.prepareStatement(sql);
+                 ps.setString(1, '%' + conteudo.toUpperCase() + '%');
+             }
+             if (tipo.equals("PRONTVELHO")) {
+                 sql += " protreab = ? ;";
+                 ps = conexao.prepareStatement(sql);
+                 Integer prontVelho = null;
+                 try {
+                     prontVelho = Integer.parseInt(conteudo);
+                 } catch (Exception e) {
+                     return listaP;
+                 }
+
+                 if (prontVelho != null)
+                     ps.setInt(1, prontVelho);
+             }
+             if (tipo.equals("PRONTNOVO")) {
+                 sql += " id_paciente = ? ;";
+                 ps = conexao.prepareStatement(sql);
+                 Long prontNovo = null;
+                 try {
+                     prontNovo = Long.parseLong(conteudo);
+                 } catch (Exception e) {
+                     return listaP;
+                 }
+                 if (prontNovo != null)
+                     ps.setLong(1, prontNovo);
+             }
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -962,9 +963,10 @@ public class PacienteDAO {
 
         List<Telefone> lista = new ArrayList<Telefone>();
         PreparedStatement ps = null;
-        conexao = ConnectionFactory.getConnection();
+        
 
         try {
+        	conexao = ConnectionFactory.getConnection();
             String sql = " select id, ddd, telefone, whatsapp, responsavel, id_parentesco " +
                     "from hosp.telefone_paciente where id_paciente = ? order by id";
 
@@ -1001,8 +1003,9 @@ public class PacienteDAO {
 
     public List<PacienteBean> listaPaciente() throws ProjetoException {
         PreparedStatement ps = null;
-        conexao = ConnectionFactory.getConnection();
+       
         try {
+        	 conexao = ConnectionFactory.getConnection();
             String sql = " select id_paciente, nome, cpf, cns from hosp.pacientes order by nome";
 
             ps = conexao.prepareStatement(sql);
@@ -1036,8 +1039,9 @@ public class PacienteDAO {
     public List<PacienteBean> buscaPacienteAutoCompleteOk(String str)
             throws ProjetoException {
         PreparedStatement ps = null;
-        conexao = ConnectionFactory.getConnection();
+        
         try {
+        	conexao = ConnectionFactory.getConnection();
             String sql = " select id_paciente, nome, cpf, cns from hosp.pacientes where nome like ? order by nome";
 
             ps = conexao.prepareStatement(sql);

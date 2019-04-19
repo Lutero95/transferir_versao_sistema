@@ -70,6 +70,7 @@ public class PacienteController implements Serializable {
     private static final String CABECALHO_ALTERACAO = "Alteração de Paciente";
 
     public PacienteController() {
+    	System.out.println("construror PacienteController");
         paciente = new PacienteBean();
         endereco = new EnderecoBean();
         escola = new EscolaBean();
@@ -104,15 +105,18 @@ public class PacienteController implements Serializable {
     }
 
     public String redirectEdit() {
+    	System.out.println("redirectEdit");
         return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.paciente.getId_paciente(), ENDERECO_TIPO, tipo);
 
     }
 
     public String redirectInsert() {
+    	System.out.println("redirectInsert");
         return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
     }
 
     public void getEditPaciente() throws ProjetoException {
+    	System.out.println("getEditPaciente");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -137,16 +141,19 @@ public class PacienteController implements Serializable {
     }
 
     public void buscarPacientes() throws ProjetoException {
+    	System.out.println("buscarPacientes");
         listaPacientes = pDao.listaPacientes();
     }
 
     public List<PacienteBean> listarPacientes() throws ProjetoException {
+    	System.out.println("listarPacientes");
         listaPacientes = pDao.listaPacientes();
 
         return listaPacientes;
     }
 
     public void encontraCEP() throws ProjetoException {
+    	System.out.println("encontraCEP");
         bairroExiste = false;
         paciente.setEndereco(CEPUtil.encontraCEP(paciente.getEndereco().getCep()));
         EnderecoDAO enderecoDAO = new EnderecoDAO();
@@ -172,7 +179,7 @@ public class PacienteController implements Serializable {
     }
 
     public void gravarPaciente() throws ProjetoException {
-
+    	System.out.println("gravarPaciente");
         if (escolaSuggestion != null)
             paciente.getEscola().setCodEscola(
                     escolaSuggestion.getCodEscola());
@@ -217,6 +224,7 @@ public class PacienteController implements Serializable {
     }
 
     public void buscarPaciente() throws ProjetoException, SQLException {
+    	System.out.println("buscarPaciente");
         if (tipoBuscar.equals("VAZIO") || descricaoParaBuscar.isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("Escolha uma opção válida e insira uma descrição!",
                     "Escolha uma opção válida e insira uma descrição!");
@@ -234,7 +242,7 @@ public class PacienteController implements Serializable {
     }
 
     public void alterarPaciente() throws ProjetoException {
-
+    	System.out.println("alterarPaciente");
         if (escolaSuggestion != null) {
             paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
         }
@@ -266,7 +274,7 @@ public class PacienteController implements Serializable {
     }
 
     public void excluirPaciente() throws ProjetoException {
-
+    	System.out.println("excluirPaciente");
         boolean excluiu = pDao.excluir(paciente);
 
         if (excluiu == true) {
@@ -280,7 +288,7 @@ public class PacienteController implements Serializable {
     }
 
     public void buscaProfissaoCod(Integer codprofissao) throws Exception {
-
+    	System.out.println("buscaProfissaoCod");
         ProfissaoBean profissao = new ProfissaoBean();
 
         Integer in = (Integer) Integer.valueOf(codprofissao);
@@ -300,6 +308,7 @@ public class PacienteController implements Serializable {
 
     public List<ProfissaoBean> completeText6(String query)
             throws ProjetoException {
+    	System.out.println("completeText6");
         List<ProfissaoBean> result = new ArrayList<ProfissaoBean>();
         ProfissaoDAO icdao = new ProfissaoDAO();
         result = icdao.buscaprofissao(query);
@@ -307,7 +316,7 @@ public class PacienteController implements Serializable {
     }
 
     public void onItemSelect6(SelectEvent event) throws Exception {
-
+    	System.out.println("onItemSelect6");
         ProfissaoBean prodsel = new ProfissaoBean();
         prodsel = (ProfissaoBean) event.getObject();
 
@@ -318,7 +327,7 @@ public class PacienteController implements Serializable {
     }
 
     public void buscaTransporteCod(Integer codformatransporte) throws Exception {
-
+    	System.out.println("buscaTransporteCod");
         FormaTransporteBean transporte = new FormaTransporteBean();
 
         Integer in = (Integer) Integer.valueOf(codformatransporte);
@@ -339,6 +348,7 @@ public class PacienteController implements Serializable {
 
     public List<FormaTransporteBean> completeText5(String query)
             throws ProjetoException {
+    	System.out.println("completeText5");
         List<FormaTransporteBean> result = new ArrayList<FormaTransporteBean>();
         FormaTransporteDAO icdao = new FormaTransporteDAO();
         result = icdao.buscatransporte(query);
@@ -346,7 +356,7 @@ public class PacienteController implements Serializable {
     }
 
     public void onItemSelect5(SelectEvent event) throws Exception {
-
+    	System.out.println("onItemSelect5");
         FormaTransporteBean prodsel = new FormaTransporteBean();
         prodsel = (FormaTransporteBean) event.getObject();
 
@@ -357,7 +367,7 @@ public class PacienteController implements Serializable {
     }
 
     public void buscaEncaminhadoCod(Integer codencaminhado) throws Exception {
-
+    	System.out.println("buscaEncaminhadoCod");
         EncaminhadoBean encaminhado = new EncaminhadoBean();
 
         Integer in = (Integer) Integer.valueOf(codencaminhado);
@@ -379,6 +389,7 @@ public class PacienteController implements Serializable {
 
     public List<EncaminhadoBean> completeText4(String query)
             throws ProjetoException {
+    	System.out.println("completeText4");
         List<EncaminhadoBean> result = new ArrayList<EncaminhadoBean>();
         EncaminhadoDAO icdao = new EncaminhadoDAO();
         result = icdao.buscaencaminhado(query);
@@ -386,6 +397,7 @@ public class PacienteController implements Serializable {
     }
 
     public void onItemSelect4(SelectEvent event) throws Exception {
+    	System.out.println("onItemSelect4");
         EncaminhadoBean prodsel = new EncaminhadoBean();
         prodsel = (EncaminhadoBean) event.getObject();
 
@@ -396,7 +408,7 @@ public class PacienteController implements Serializable {
     }
 
     public void buscaEscolaridadeCod(Integer codescolaridade) throws Exception {
-
+    	System.out.println("buscaEscolaridadeCod");
         EscolaridadeBean escolaridade = new EscolaridadeBean();
 
         Integer in = (Integer) Integer.valueOf(codescolaridade);
@@ -418,6 +430,7 @@ public class PacienteController implements Serializable {
 
     public List<EscolaridadeBean> completeText2(String query)
             throws ProjetoException {
+    	System.out.println("completeText2");
         List<EscolaridadeBean> result = new ArrayList<EscolaridadeBean>();
         EscolaridadeDAO icdao = new EscolaridadeDAO();
         result = icdao.buscaescolaridade(query);
@@ -426,11 +439,13 @@ public class PacienteController implements Serializable {
 
     public List<PacienteBean> listaPacienteAutoComplete(String query)
             throws ProjetoException {
+    	System.out.println("listaPacienteAutoComplete");
         List<PacienteBean> result = pDao.buscaPacienteAutoCompleteOk(query);
         return result;
     }
 
     public void onItemSelect2(SelectEvent event) throws Exception {
+    	System.out.println("onItemSelect2");
         EscolaridadeBean prodsel = new EscolaridadeBean();
         prodsel = (EscolaridadeBean) event.getObject();
 
@@ -441,7 +456,7 @@ public class PacienteController implements Serializable {
     }
 
     public void buscaEscolaCod(Integer codescola) throws Exception {
-
+    	System.out.println("buscaEscolaCod");
         EscolaBean escola = new EscolaBean();
 
         Integer in = (Integer) Integer.valueOf(codescola);
@@ -459,13 +474,14 @@ public class PacienteController implements Serializable {
     }
 
     public List<EscolaBean> completeText(String query) throws ProjetoException {
+    	System.out.println("completeText");
         List<EscolaBean> result = new ArrayList<EscolaBean>();
         result = esDao.buscaescola(query);
         return result;
     }
 
     public void onItemSelect(SelectEvent event) throws Exception {
-
+    	System.out.println("onItemSelect");
         EscolaBean prodsel = new EscolaBean();
         prodsel = (EscolaBean) event.getObject();
 
@@ -477,6 +493,7 @@ public class PacienteController implements Serializable {
     }
 
     public void limparDados() {
+    	System.out.println("limparDados pacintescontroller");
         transporteSuggestion = new FormaTransporteBean();
         encaminhadoSuggestion = new EncaminhadoBean();
         profissaoSuggestion = new ProfissaoBean();
@@ -496,13 +513,15 @@ public class PacienteController implements Serializable {
 
     }
 
-    public List<PacienteBean> listarPacienteAgenda() throws ProjetoException {
+    public void listarPacienteAgenda() throws ProjetoException {
+    	System.out.println("listarPacienteAgenda");
         listaPacientesAgenda = pDao.listaPaciente();
 
-        return listaPacientesAgenda;
+      
     }
 
     public void validaCns(String s) {
+    	System.out.println("validaCns");
         if (!DocumentosUtil.validaCns(s)) {
             JSFUtil.adicionarMensagemAdvertencia("Esse número de CNS não é valido", "Advertência");
             paciente.setCns("");
@@ -511,6 +530,7 @@ public class PacienteController implements Serializable {
 
 
     public void validaPIS(String pis) {
+    	System.out.println("validaPIS");
         if (!DocumentosUtil.validaPIS(pis)) {
             JSFUtil.adicionarMensagemAdvertencia("Esse número do PIS não é valido", "Advertência");
             paciente.setPis("");
@@ -518,6 +538,7 @@ public class PacienteController implements Serializable {
     }
 
     public void validaCPF(String cpf) {
+    	System.out.println("validaCPF");
         cpf = cpf.replaceAll("[^0-9]", "");
         if (!DocumentosUtil.validaCPF(cpf)) {
             JSFUtil.adicionarMensagemAdvertencia("Esse número de CPF não é valido", "Advertência");
@@ -527,21 +548,25 @@ public class PacienteController implements Serializable {
 
     public List<EnderecoBean> listaBairroAutoComplete(String query)
             throws ProjetoException {
+    	System.out.println("listaBairroAutoComplete");
         List<EnderecoBean> result = eDao.buscaBairroAutoComplete(query,
                 endereco.getCodmunicipio());
         return result;
     }
 
     public void addListaTelefone() {
+    	System.out.println("addListaTelefone");
         paciente.getListaTelefones().add(telefone);
         limparTelefone();
     }
 
     public void removeListaTelefone() {
+    	System.out.println("removeListaTelefone");
         this.paciente.getListaTelefones().remove(telefone);
     }
 
     public void limparTelefone(){
+    	
         telefone = new Telefone();
     }
 
@@ -802,4 +827,12 @@ public class PacienteController implements Serializable {
     public void setBairroExiste(Boolean bairroExiste) {
         this.bairroExiste = bairroExiste;
     }
+
+	public List<PacienteBean> getListaPacientesAgenda() {
+		return listaPacientesAgenda;
+	}
+
+	public void setListaPacientesAgenda(List<PacienteBean> listaPacientesAgenda) {
+		this.listaPacientesAgenda = listaPacientesAgenda;
+	}
 }

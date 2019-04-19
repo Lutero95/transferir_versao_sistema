@@ -65,8 +65,9 @@
 
                                 <p:commandButton id="btBPa" immediate="true"
                                                  action="#{AgendaController.limparNaBuscaPaciente()}"
+                                                 actionListener="#{PacienteController.listarPacienteAgenda()}"
                                                  icon="ui-icon-search" update=":formConsuPac"
-                                                 onclick="PF('dlgConsuPac').show();"/>
+                                                 oncomplete="PF('dlgConsuPac').show();"/>
                             </p:outputPanel>
                         </b:column>
 
@@ -95,6 +96,7 @@
                                                  disabled="#{AgendaController.agenda.paciente==null}"
                                                  icon="ui-icon-search"
                                                  action="#{AgendaController.limparNaBuscaPrograma()}"
+                                                 actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
                                                  update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
                             </p:outputPanel>
                         </b:column>
@@ -183,7 +185,7 @@
                                                 update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissional"></p:ajax>
  										<p:ajax event="itemSelect"
                                                 listener="#{AgendaController.listaDiasDeAtendimentoAtuais()}"
-                                                update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissional"></p:ajax>                                                
+                                                ></p:ajax>                                                
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusProf" icon="ui-icon-search"
@@ -570,7 +572,7 @@
 
 
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-                             var="pacie" value="#{PacienteController.listarPacienteAgenda()}"
+                             var="pacie" value="#{PacienteController.listaPacientesAgenda}"
                              display="Nenhum Paciente">
 
                     <h:column>
@@ -621,7 +623,7 @@
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuProg">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{ProgramaController.listaProgramasUsuario()}" var="prog"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
                              display="Nenhum Programa">
 
                     <h:column>
@@ -636,12 +638,12 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton
-                                update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo,
-							:formAgendaMedica:btBusGr, :formAgendaMedica:outGrupo"
+                                update=":formAgendaMedica:outProg, :formConsuGrop:dtGrupo, :formAgendaMedica:outGrupo, :formAgendaMedica:outTipoAt, :formAgendaMedica:outProfissional, :formAgendaMedica:outEquipeRow"
                                 class="new-btn-acao-table acao-editar" icon="ui-icon-check"
                                 title="Selecionar"
                                 action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
-                                onclick="PF('dlgConsuProg').hide();">
+                                actionListener="#{AgendaController.limparNaBuscaPrograma()}"
+                                oncomplete="PF('dlgConsuProg').hide();">
                             <f:setPropertyActionListener value="#{prog}"
                                                          target="#{AgendaController.agenda.programa}"/>
                         </p:commandButton>
@@ -781,10 +783,13 @@
                         <p:commandButton icon="ui-icon-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
                                          actionListener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-                                         action="#AgendaController.listaDiasDeAtendimentoAtuais()}">
-                                         
+                                        oncomplete="PF('dlgConsuProf').hide();"
+                                        >
+                                          
                             <f:setPropertyActionListener value="#{profi}"
                                                          target="#{AgendaController.agenda.profissional}"/>
+                                                          <f:ajax 
+                                            execute="#AgendaController.listaDiasDeAtendimentoAtuais()}"  render=":formAgendaMedica"/>
                         </p:commandButton>
                     </h:column>
 

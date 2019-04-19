@@ -581,11 +581,11 @@ public class FuncionarioController implements Serializable {
 
     }
 
-    public List<FuncionarioBean> listarProfissionaisConfigAgenda()
+    public void listarProfissionaisConfigAgenda()
             throws ProjetoException {
         listaProfissional = fDao.listarProfissional();
 
-        return listaProfissional;
+
     }
 
     public void addListaGruposEProgramasProfissional() {
