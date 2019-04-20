@@ -12,7 +12,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.PrimeFaces;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.CloseEvent;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
@@ -253,7 +253,7 @@ public class UsuarioCadastroControll implements Serializable {
 
 				listaUsuario = null;
 
-				PrimeFaces.current().executeScript(
+				RequestContext.getCurrentInstance().execute(
 						"PF('altUsuario').hide();");
 			} else {
 				FacesMessage msg = new FacesMessage(
@@ -261,7 +261,7 @@ public class UsuarioCadastroControll implements Serializable {
 						"Ocorreu um erro durante a alteracao!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				PrimeFaces.current().executeScript(
+				RequestContext.getCurrentInstance().execute(
 						"PF('altUsuario').hide();");
 			}
 
@@ -315,13 +315,13 @@ public class UsuarioCadastroControll implements Serializable {
 					"Senha alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			PrimeFaces.current().executeScript("altSenha.hide();");
+			RequestContext.getCurrentInstance().execute("altSenha.hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a alteração!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			PrimeFaces.current().executeScript("altSenha.hide();");
+			RequestContext.getCurrentInstance().execute("altSenha.hide();");
 		}
 	}
 

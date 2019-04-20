@@ -234,9 +234,9 @@ public class FuncionarioController implements Serializable {
     }
 
     public void gerarMenus(Sistema sistema) {
-    	FacesContext fc = FacesContext.getCurrentInstance();
-    	HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
-    	String contextPath = request.getServletContext().getContextPath();
+    	//FacesContext fc = FacesContext.getCurrentInstance();
+    	//HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
+    	//String contextPath = request.getServletContext().getContextPath();
         limparMenuModel();
         List<DefaultSubMenu> menuPai = new ArrayList<>();
         List<DefaultSubMenu> submenu = new ArrayList<>();
@@ -250,7 +250,8 @@ public class FuncionarioController implements Serializable {
         // Gerar menu início.
         DefaultMenuItem item1 = new DefaultMenuItem();
         item1.setValue("Início");
-        item1.setUrl(contextPath+ sistema.getUrl().replace("?faces-redirect=true", ""));
+        //contextPath+
+        item1.setUrl( sistema.getUrl().replace("?faces-redirect=true", ""));
         menuModel.addElement(item1);
 
         for (Permissoes p : permsUsuarioLogado) {
@@ -411,7 +412,7 @@ public class FuncionarioController implements Serializable {
         // Gerar menu sistemas.
         DefaultMenuItem item3 = new DefaultMenuItem();
         item3.setValue("Sistemas");
-        item3.setUrl(contextPath+ "/pages/comum/selecaoSistema.faces");
+        item3.setUrl("/pages/comum/selecaoSistema.faces");
         menuModel.addElement(item3);
 
         // Gerar menu sair.
@@ -576,10 +577,6 @@ public class FuncionarioController implements Serializable {
         listaProfissional = fDao.listarProfissional();
     }
 
-    public List<FuncionarioBean> listarProfissional() throws ProjetoException {
-        return fDao.listarProfissional();
-
-    }
 
     public void listarProfissionaisConfigAgenda()
             throws ProjetoException {

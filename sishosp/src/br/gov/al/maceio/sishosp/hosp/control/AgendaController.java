@@ -130,6 +130,12 @@ public class AgendaController implements Serializable {
         this.agenda.setProfissional(new FuncionarioBean());
     }
 
+    public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException {
+    	preparaVerificarDisponibilidadeData();
+    	listaDiasDeAtendimentoAtuais();
+    }
+    
+    
     public void preparaVerificarDisponibilidadeData() throws ProjetoException {
     	System.out.println("preparaVerificarDisponibilidadeData");
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
@@ -592,6 +598,10 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
             if (SessionUtil.recuperarDadosSessao().getRealizaEncaixes()) {
                 retorno = true;
             }
+            else
+            {
+            	JSFUtil.adicionarMensagemAdvertencia("Usuário não tem permissão para fazer encaixe!", "Atenção");
+            }
         }
         else{
             retorno = true;
@@ -613,7 +623,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
         }
 
         // verificar as quantidades de vagas
-        if (this.agenda.getMax() <= 0) {
+        if ((this.agenda.getMax() <= 0) && ( !agenda.getEncaixe())) {
             JSFUtil.adicionarMensagemErro("Quantidade máxima inválida!", "Erro");
             return;
         }
@@ -715,7 +725,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     public void limparNaBuscaEquipeProf() throws ProjetoException {
     	System.out.println("limparNaBuscaEquipeProf");
         this.agenda.setObservacao(new String());
-        this.agenda.setDataAtendimento(null);
+        //this.agenda.setDataAtendimento(null);
         this.agenda.setQtd(null);
         this.agenda.setMax(null);
         carregaListaProfissionalPorGrupo();

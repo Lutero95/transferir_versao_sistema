@@ -9,7 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.PrimeFaces;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.menu.DefaultMenuModel;
@@ -130,7 +130,7 @@ public class PerfilMB implements Serializable {
 						"Perfil cadastrado com sucesso!", "Sucesso");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				PrimeFaces.current().executeScript(
+				RequestContext.getCurrentInstance().execute(
 						"PF('dlgCadPerfil').hide();");
 			} else {
 				FacesMessage msg = new FacesMessage(
@@ -138,7 +138,7 @@ public class PerfilMB implements Serializable {
 						"Ocorreu um erro durante o cadastro!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				PrimeFaces.current().executeScript(
+				RequestContext.getCurrentInstance().execute(
 						"PF('dlgCadPerfil').hide();");
 			}
 		} else {
@@ -181,7 +181,7 @@ public class PerfilMB implements Serializable {
 						"Perfil alterado com sucesso!", "Sucesso");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				PrimeFaces.current().executeScript(
+				RequestContext.getCurrentInstance().execute(
 						"PF('dlgAltPerfil').hide();");
 			} else {
 				FacesMessage msg = new FacesMessage(
@@ -189,7 +189,7 @@ public class PerfilMB implements Serializable {
 						"Ocorreu um erro durante a alteração!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				PrimeFaces.current().executeScript(
+				RequestContext.getCurrentInstance().execute(
 						"PF('dlgAltPerfil').hide();");
 			}
 		} else {
@@ -212,14 +212,14 @@ public class PerfilMB implements Serializable {
 					"Perfil excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			PrimeFaces.current().executeScript(
+			RequestContext.getCurrentInstance().execute(
 					"PF('dlgExcPerfil').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusão!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			PrimeFaces.current().executeScript(
+			RequestContext.getCurrentInstance().execute(
 					"PF('dlgExcPerfil').hide();");
 		}
 	}
@@ -253,7 +253,7 @@ public class PerfilMB implements Serializable {
 		sisPreMenu = sdao.buscarSisMenuPreview(Integer
 				.parseInt(sisSelecionadoPreMenu));
 
-		PrimeFaces.current().executeScript("dlgMenuPreview.show();");
+		RequestContext.getCurrentInstance().execute("dlgMenuPreview.show();");
 	}
 
 	public void onTransferMenu(TransferEvent event) {

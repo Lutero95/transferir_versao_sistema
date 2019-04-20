@@ -8,6 +8,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
+import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
@@ -222,9 +223,9 @@ public class FuncionarioDAO {
                 + "order by pmdesc, sid";
 
         List<Permissoes> lista = new ArrayList<>();
-    	FacesContext fc = FacesContext.getCurrentInstance();
-    	HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
-    	String contextPath = request.getServletContext().getContextPath();
+    	//FacesContext fc = FacesContext.getCurrentInstance();
+    	//HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
+    	//String contextPath = request.getServletContext().getContextPath();
         Connection con = null;
         try {
             con = ConnectionFactory.getConnection();
@@ -250,7 +251,8 @@ public class FuncionarioDAO {
                 m.setOnclick(rs.getString("onclick_rel"));
 
                 if (rs.getString("tipo").equals("menuItem")) {
-                    m.setUrl(contextPath+"/pages/" + m.getDiretorio() + "/"
+                	//contextPath
+                    m.setUrl("/pages/" + m.getDiretorio() + "/"
                             + m.getDescPagina() + m.getExtensao());
                 }
 
@@ -1073,10 +1075,13 @@ public class FuncionarioDAO {
     public List<FuncionarioBean> listarProfissionalPorGrupo(Integer codgrupo)
             throws ProjetoException {
         List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
-        String sql = "select distinct m.id_funcionario, m.descfuncionario, m.codespecialidade, e.descespecialidade, m.cns from acl.funcionarios m"
-                + " join hosp.profissional_programa_grupo ppg on (m.id_funcionario = ppg.codprofissional)"
-                + " left join hosp.especialidade e on (e.id_especialidade = m.codespecialidade)"
-                + " where m.ativo = 'S' and realiza_atendimento is true and ppg.codgrupo = ?";
+        String sql = "select distinct m.id_funcionario, m.descfuncionario, m.codespecialidade, e.descespecialidade, m.cns,\n" + 
+        		"m.codcbo, c.id idcbo,c.descricao desccbo\n" + 
+        		"from acl.funcionarios m\n" + 
+        		"                join hosp.profissional_programa_grupo ppg on (m.id_funcionario = ppg.codprofissional)\n" + 
+        		"                 left join hosp.especialidade e on (e.id_especialidade = m.codespecialidade)\n" + 
+        		"                 left join hosp.cbo c on (c.id = m.codcbo)\n" + 
+        		"                 where m.ativo = 'S' and realiza_atendimento is true and ppg.codgrupo = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -1092,7 +1097,11 @@ public class FuncionarioDAO {
                 prof.getEspecialidade().setDescEspecialidade(
                         rs.getString("descespecialidade"));
                 prof.setCns(rs.getString("cns"));
-
+                CboBean cbo = new CboBean();
+                cbo.setCodCbo(rs.getInt("idcbo"));
+                cbo.setCodigo(rs.getString("codcbo"));
+                cbo.setDescCbo(rs.getString("desccbo"));
+                prof.setCbo(cbo);
                 listaProf.add(prof);
             }
         } catch (SQLException ex) {

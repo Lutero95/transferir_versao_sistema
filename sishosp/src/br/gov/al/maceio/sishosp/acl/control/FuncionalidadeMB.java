@@ -9,7 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.PrimeFaces;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 
@@ -102,7 +102,7 @@ public class FuncionalidadeMB implements Serializable {
 						"Funcionalidade cadastrada com sucesso!", "Sucesso");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				PrimeFaces.current().executeScript(
+				RequestContext.getCurrentInstance().execute(
 						"PF('dlgCadMenu').hide();");
 			} else {
 				FacesMessage msg = new FacesMessage(
@@ -110,7 +110,7 @@ public class FuncionalidadeMB implements Serializable {
 						"Ocorreu um erro durante o cadastro!", "Erro");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-				PrimeFaces.current().executeScript(
+				RequestContext.getCurrentInstance().execute(
 						"PF('dlgCadMenu').hide();");
 			}
 		} else {
@@ -148,14 +148,14 @@ public class FuncionalidadeMB implements Serializable {
 					"Funcionalidade alterada com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			PrimeFaces.current().executeScript(
+			RequestContext.getCurrentInstance().execute(
 					"PF('dlgAltMenu').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante o cadastro!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			PrimeFaces.current().executeScript(
+			RequestContext.getCurrentInstance().execute(
 					"PF('dlgAltMenu').hide();");
 		}
 
@@ -174,14 +174,14 @@ public class FuncionalidadeMB implements Serializable {
 					"Funcionalidade excluída com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			PrimeFaces.current().executeScript(
+			RequestContext.getCurrentInstance().execute(
 					"PF('dlgExcMenu').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Ocorreu um erro durante a exclusão!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			PrimeFaces.current().executeScript(
+			RequestContext.getCurrentInstance().execute(
 					"PF('dlgExcMenu').hide();");
 		}
 	}

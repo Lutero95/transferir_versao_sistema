@@ -7,7 +7,9 @@
 	template="../../template/template.xhtml">
 
 	<ui:define name="content">
-
+		<f:metadata>
+			<f:viewAction action="#{ConfigAgendaController.carregaListaEquipes()}" />
+		</f:metadata>
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Consulta de Configuração de Agenda Por

@@ -10,7 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.PrimeFaces;
+import org.primefaces.context.RequestContext;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.FornecedorDAO;
@@ -102,14 +102,14 @@ public class FornecedorController implements Serializable {
 					"Fornecedor excluído com sucesso!", "Sucesso");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			listaFornecedor = null;
-			PrimeFaces.current().executeScript(
+			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um erro durante a exclusao!", "Erro");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			PrimeFaces.current().executeScript(
+			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
 		}
 	}

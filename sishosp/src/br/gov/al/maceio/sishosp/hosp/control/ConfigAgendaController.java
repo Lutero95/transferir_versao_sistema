@@ -252,7 +252,7 @@ public class ConfigAgendaController implements Serializable {
 
     }
 
-    public List<EquipeBean> selectEquipeInsercao() throws ProjetoException {
+    public void selectEquipeInsercao() throws ProjetoException {
     	System.out.println("selectEquipeInsercao");
         EquipeDAO eDao = new EquipeDAO();
 
@@ -261,7 +261,7 @@ public class ConfigAgendaController implements Serializable {
                     .getIdGrupo());
         }
 
-        return listaEquipes;
+       
 
     }
 
@@ -523,14 +523,16 @@ public class ConfigAgendaController implements Serializable {
         this.listaProfissionais = listaProfissionais;
     }
 
-    public List<EquipeBean> getListaEquipes() throws ProjetoException {
-        if (this.listaEquipes == null) {
+    public void carregaListaEquipes() throws ProjetoException {
             this.listaEquipes = eDao.listarEquipe();
-        }
-        return listaEquipes;
+
     }
 
-    public void setListaEquipes(List<EquipeBean> listaEquipes) {
+    public List<EquipeBean> getListaEquipes() {
+		return listaEquipes;
+	}
+
+	public void setListaEquipes(List<EquipeBean> listaEquipes) {
         this.listaEquipes = listaEquipes;
     }
 

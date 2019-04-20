@@ -85,19 +85,12 @@ public class PacienteController implements Serializable {
 
         // LISTAS
         listaPacientes = new ArrayList<>();
-        listaPacientes = null;
         listaPacientesParaAgenda = new ArrayList<>();
-        listaPacientesParaAgenda = null;
         listaEscolas = new ArrayList<>();
-        listaEscolas = null;
         listaEscolaridade = new ArrayList<>();
-        listaEscolaridade = null;
         listaProfissao = new ArrayList<>();
-        listaProfissao = null;
         listaEncaminhado = new ArrayList<>();
-        listaEncaminhado = null;
         listaTransporte = new ArrayList<>();
-        listaTransporte = null;
         listaPacientesAgenda = new ArrayList<PacienteBean>();
         listaRaca = new ArrayList<>();
         listaRaca = null;

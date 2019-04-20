@@ -180,12 +180,10 @@
                                                     effect="fade" var="theme" forceSelection="true"
                                                     minQueryLength="1" itemValue="#{theme}"
                                                     itemLabel="#{theme.nome}">
-                                        <p:ajax event="itemSelect"
-                                                listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
+                                        <p:ajax event="itemSelect"  
+                                                listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}" 
                                                 update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissional"></p:ajax>
- 										<p:ajax event="itemSelect"
-                                                listener="#{AgendaController.listaDiasDeAtendimentoAtuais()}"
-                                                ></p:ajax>                                                
+ 										                                                        
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusProf" icon="ui-icon-search"
@@ -219,11 +217,9 @@
                                                     minQueryLength="1" itemValue="#{theme}"
                                                     itemLabel="#{theme.descEquipe}">
                                         <p:ajax event="itemSelect"
-                                                listener="#{AgendaController.preparaVerificarDisponibilidadeData}"
+                                                listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
                                                 update=":formAgendaMedica, outHorariosEquipe, msgPagina, outQtdIhMax"></p:ajax>
-                                                <p:ajax event="itemSelect"
-                                                listener="#{AgendaController.listaDiasDeAtendimentoAtuais()}"
-                                                update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissional"></p:ajax>
+                                               
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusEqui" immediate="true"
@@ -241,7 +237,7 @@
                     <br></br>
 
                     <p:outputPanel id="outHorariosEquipe">
-                    <p:autoUpdate/>
+                    
                         <b:row rendered="#{AgendaController.agenda.equipe.codEquipe!=null}">
                             <b:column span="12">
                                 <div align="center">
@@ -444,7 +440,7 @@
 
                     <br></br>
 
-                    <p:outputPanel id="outQtdIhMax" autoUpdate="true">
+                    <p:outputPanel id="outQtdIhMax">
                         <b:row rendered="#{AgendaController.tipoData == 'U'}">
                             <b:column span="2" class="label-position">
                                 <b:label for="qtd" value="Quantidade" severity="info"
@@ -543,17 +539,18 @@
 
                     <div align="center">
 
-                        <b:commandButton value="Gravar" look="success" size="sm" id="b1"
+                        <p:commandButton value="Gravar" look="success" size="sm" id="b1"
                                          icon="glyphicon-ok"
+                                        
                                          action="#{AgendaController.verificarPacienteAtivoInstituicao()}"
                                          update=":formAgendaMedica, :frmSenha, outProf" class="btn-incluir"/>
 
-                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                        <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" look="info" class="btn-voltar"
                                          update=":formAgendaMedica"
                                          actionListener="#{AgendaController.limparDados()}"
                                          action="/pages/comum/selecaoSistema2.xhtml?faces-redirect=true">
-                        </b:commandButton>
+                        </p:commandButton>
 
                     </div>
 
@@ -748,11 +745,12 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton actionListener="#{AgendaController.preparaVerificarDisponibilidadeData}"
-                                         update=":formAgendaMedica, :formAgendaMedica:outEquipe, :formAgendaMedica:outHorariosEquipe, :formAgendaMedica:msgPagina, :formAgendaMedica:outQtdIhMax"
+                        <p:commandButton
+                         action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
+                                         update=":formAgendaMedica" 
                                          icon="ui-icon-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
-                                         onclick="PF('dlgConsuEquipe').hide();">
+                                         oncomplete="PF('dlgConsuEquipe').hide();">
                             <f:setPropertyActionListener value="#{equipe}"
                                                          target="#{AgendaController.agenda.equipe}"/>
                         </p:commandButton>
@@ -782,14 +780,16 @@
                         </f:facet>
                         <p:commandButton icon="ui-icon-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
-                                         actionListener="#{AgendaController.preparaVerificarDisponibilidadeData}"
+                                        
+                                         update=":formAgendaMedica"                
+                                          action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
                                         oncomplete="PF('dlgConsuProf').hide();"
                                         >
                                           
                             <f:setPropertyActionListener value="#{profi}"
                                                          target="#{AgendaController.agenda.profissional}"/>
                                                           <f:ajax 
-                                            execute="#AgendaController.listaDiasDeAtendimentoAtuais()}"  render=":formAgendaMedica"/>
+                                            execute="#AgendaController.listaDiasDeAtendimentoAtuais()}"  />
                         </p:commandButton>
                     </h:column>
 
