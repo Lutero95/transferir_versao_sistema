@@ -1,162 +1,221 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="../../template/template.xhtml">
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-		<f:metadata>
-			<f:viewAction action="#{ProgramaController.getEditProg()}" />
-		</f:metadata>
+        <f:metadata>
+            <f:viewAction action="#{ProgramaController.getEditProg()}"/>
+        </f:metadata>
 
-		<div class="panel panel-primary top-primary">
-			<div class="panel-heading top-heading">
-				<h:outputText value="#{ProgramaController.cabecalho}"
-					class="panel-title"></h:outputText>
-			</div>
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h:outputText value="#{ProgramaController.cabecalho}"
+                              class="panel-title"></h:outputText>
+            </div>
 
-			<div class="panel-body table-body sub-table-body">
+            <div class="panel-body table-body sub-table-body">
 
-				<h:form class="form-horizontal" id="frmPrincipal">
+                <h:form class="form-horizontal" id="frmPrincipal">
 
-					<b:row>
+                    <b:row>
 
-						<b:column span="12" class="label-position">
-							<b:label for="inputname" value="Descrição" severity="info" />
+                        <b:column span="12" class="label-position">
+                            <b:label for="inputname" value="Descrição" severity="info"/>
 
-							<b:inputText value="#{ProgramaController.prog.descPrograma}" 
-								validator="CaractereEmBrancoValidator"
-								class="form-control" id="inputname" required="true"
-								requiredMessage="Descrição: Campo obrigatório!"
-								validatorMessage="Escolaridade deve conter entre 2 e 50 caracteres.">
-								<f:validateLength minimum="2" maximum="50" />
-							</b:inputText>
-						</b:column>
-					</b:row>
+                            <b:inputText value="#{ProgramaController.prog.descPrograma}"
+                                         validator="CaractereEmBrancoValidator"
+                                         class="form-control" id="inputname" required="true"
+                                         requiredMessage="Descrição: Campo obrigatório!"
+                                         validatorMessage="Escolaridade deve conter entre 2 e 50 caracteres.">
+                                <f:validateLength minimum="2" maximum="50"/>
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
 
-					<br></br>
+                    <br></br>
 
-					<br></br>
+                    <br></br>
 
-					<b:row>
-						<b:column span="2" class="label-position">
-							<p:outputLabel value="Grupo:"
-								style="margin-left:-15px; margin-top: 8px;
+                    <b:row>
+                        <b:column span="2" class="label-position">
+                            <p:outputLabel value="Grupo:"
+                                           style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
-							<b:commandButton process="@this" size="sm"
-								action="#{GrupoController.listaTodosGrupos()}"
-								tooltip="Incluir Grupo" icon="glyphicon-plus"
-								class="btn-acao-table acao-editar" style="margin-left: 20px;"
-								oncomplete="PF('dlgConsuGrupos').show();"
-								update=":formConsuGrop" />
-						</b:column>
+                            <b:commandButton process="@this" size="sm"
+                                             action="#{GrupoController.listaTodosGrupos()}"
+                                             tooltip="Incluir Grupo" icon="glyphicon-plus"
+                                             class="btn-acao-table acao-editar" style="margin-left: 20px;"
+                                             oncomplete="PF('dlgConsuGrupos').show();"
+                                             update=":formConsuGrop"/>
+                        </b:column>
 
-						<b:column span="7" class="label-position">
+                        <b:column span="7" class="label-position">
 
-							<p:dataTable emptyMessage="Nenhum Grupo"
-								styleClass="table table-hover" id="tabela"
-								value="#{ProgramaController.prog.grupo}" var="tab"
-								paginator="true" paginatorPosition="bottom" rows="12"
-								resizableColumns="true">
+                            <p:dataTable emptyMessage="Nenhum Grupo"
+                                         styleClass="table table-hover" id="tabela"
+                                         value="#{ProgramaController.prog.grupo}" var="tab"
+                                         paginator="true" paginatorPosition="bottom" rows="12"
+                                         resizableColumns="true">
 
-								<p:column headerText="Cód." style="font-weight:bold;width:20%;">
-									<h:outputText value="#{tab.idGrupo}" />
-								</p:column>
+                                <p:column headerText="Cód." style="font-weight:bold;width:20%;">
+                                    <h:outputText value="#{tab.idGrupo}"/>
+                                </p:column>
 
-								<p:column headerText="Nome" style="font-weight:bold;">
-									<h:outputText value="#{tab.descGrupo}" />
-								</p:column>
+                                <p:column headerText="Nome" style="font-weight:bold;">
+                                    <h:outputText value="#{tab.descGrupo}"/>
+                                </p:column>
 
-								<p:column headerText="Ação">
-									<div align="center">
-										<p:commandButton process="@this"
-											class="new-btn-acao-table acao-excluir"
-											action="#{ProgramaController.prog.removeGrupoLista()}"
-											icon="ui-icon-trash" update=":frmPrincipal:tabela">
-											<f:setPropertyActionListener value="#{tab}"
-												target="#{ProgramaController.prog.grupoRmv}" />
-										</p:commandButton>
-									</div>
-								</p:column>
+                                <p:column headerText="Ação">
+                                    <div align="center">
+                                        <p:commandButton process="@this"
+                                                         class="new-btn-acao-table acao-excluir"
+                                                         action="#{ProgramaController.prog.removeGrupoLista()}"
+                                                         icon="ui-icon-trash" update=":frmPrincipal:tabela">
+                                            <f:setPropertyActionListener value="#{tab}"
+                                                                         target="#{ProgramaController.prog.grupoRmv}"/>
+                                        </p:commandButton>
+                                    </div>
+                                </p:column>
 
-							</p:dataTable>
+                            </p:dataTable>
 
-						</b:column>
-					</b:row>
+                        </b:column>
+                    </b:row>
 
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
+                    <b:row>
 
-					<br></br>
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Procedimento Padrão:" severity="info"/>
 
-					<div align="center">
+                            <p:outputPanel id="outProc">
+                                <p:autoComplete
+                                        value="#{ProgramaController.prog.procedimento}"
+                                        size="31" converter="conProcedimento" id="descProcP1"
+                                        required="true" class="select-agendaEquipe4"
+                                        requiredMessage="Escolha o procedimento padrão!"
+                                        completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.nomeProc}">
+                                    <p:ajax event="itemSelect"></p:ajax>
+                                </p:autoComplete>
 
-						<b:commandButton action="#{ProgramaController.gravarPrograma()}"
-							icon="glyphicon-ok" size="sm" look="success"
-							update=":frmPrincipal" value="Incluir" class="btn-incluir"
-							rendered="#{ProgramaController.tipo == 1}" />
+                                <p:commandButton id="btBusProcP1" icon="ui-icon-search"
+                                                 onclick="PF('dlgConsulProc').show();" immediate="true"
+                                                 actionListener="#{ProcedimentoController.listarProcedimentos()}"/>
+                            </p:outputPanel>
+                        </b:column>
 
-						<b:commandButton action="#{ProgramaController.alterarPrograma()}"
-							icon="glyphicon-ok" size="sm" update=":frmPrincipal"
-							class="btn-incluir" value="Alterar" look="success"
-							rendered="#{ProgramaController.tipo  == 2}" />
+                    </b:row>
 
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-							class="btn-voltar" size="sm" immediate="true" look="info"
-							action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
-						</b:commandButton>
+                    <div align="center">
+                        <b:messages value="Error" id="msgPagina"></b:messages>
+                    </div>
 
-					</div>
+                    <br></br>
 
-				</h:form>
-			</div>
-		</div>
+                    <div align="center">
 
-		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupos"
-			modal="true" styleClass="topDialog">
-			<h:form id="formConsuGrop">
-				<p:outputPanel autoUpdate="true">
-					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{GrupoController.listaGrupos}" id="dtGrupo"
-						display="Nenhum Grupo" var="grupo">
+                        <b:commandButton action="#{ProgramaController.gravarPrograma()}"
+                                         icon="glyphicon-ok" size="sm" look="success"
+                                         update=":frmPrincipal" value="Incluir" class="btn-incluir"
+                                         rendered="#{ProgramaController.tipo == 1}"/>
 
-						<h:column>
-							<f:facet name="header">
+                        <b:commandButton action="#{ProgramaController.alterarPrograma()}"
+                                         icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+                                         class="btn-incluir" value="Alterar" look="success"
+                                         rendered="#{ProgramaController.tipo  == 2}"/>
+
+                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                         class="btn-voltar" size="sm" immediate="true" look="info"
+                                         action="/pages/sishosp/gerenciarPrograma.faces?faces-redirect=true">
+                        </b:commandButton>
+
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrupos"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuGrop">
+                <p:outputPanel autoUpdate="true">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{GrupoController.listaGrupos}" id="dtGrupo"
+                                 display="Nenhum Grupo" var="grupo">
+
+                        <h:column>
+                            <f:facet name="header">
                                 Grupo
                             </f:facet>
-							<p:outputLabel value="#{grupo.descGrupo}" />
-						</h:column>
+                            <p:outputLabel value="#{grupo.descGrupo}"/>
+                        </h:column>
 
-						<h:column>
-							<f:facet name="header">
+                        <h:column>
+                            <f:facet name="header">
                                 Quantidade Frequência
                             </f:facet>
-							<p:outputLabel value="#{grupo.qtdFrequencia}" />
-						</h:column>
+                            <p:outputLabel value="#{grupo.qtdFrequencia}"/>
+                        </h:column>
 
-						<h:column>
-							<f:facet name="header">
+                        <h:column>
+                            <f:facet name="header">
                                 Adicionar
                             </f:facet>
-							<p:commandButton
-								update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
-								icon="ui-icon-check" title="Selecionar"
-								class="new-btn-acao-table acao-editar"
-								onclick="PF('dlgConsuGrupos').hide();"
-								action="#{ProgramaController.prog.addGrupoLista()}">
-								<f:setPropertyActionListener value="#{grupo}"
-									target="#{ProgramaController.prog.grupoParaAdd}" />
-							</p:commandButton>
-						</h:column>
+                            <p:commandButton
+                                    update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
+                                    icon="ui-icon-check" title="Selecionar"
+                                    class="new-btn-acao-table acao-editar"
+                                    onclick="PF('dlgConsuGrupos').hide();"
+                                    action="#{ProgramaController.prog.addGrupoLista()}">
+                                <f:setPropertyActionListener value="#{grupo}"
+                                                             target="#{ProgramaController.prog.grupoParaAdd}"/>
+                            </p:commandButton>
+                        </h:column>
 
-					</b:dataTable>
-				</p:outputPanel>
-			</h:form>
-		</p:dialog>
-	</ui:define>
+                    </b:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Procedimento"
+                  widgetVar="dlgConsulProc" modal="true">
+            <h:form id="formConsulProc">
+                <p:outputPanel autoUpdate="true">
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                                 value="#{ProcedimentoController.listaProcedimentos}" var="proc">
+
+                        <h:column>
+                            <f:facet name="header">
+                                Descrição
+                            </f:facet>
+                            <p:outputLabel value="#{proc.nomeProc}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Adicionar
+                            </f:facet>
+                            <p:commandButton
+                                    icon="ui-icon-check" title="Selecionar"
+                                    class="new-btn-acao-table acao-editar" update=":frmPrincipal:outProc"
+                                    onclick="PF('dlgConsulProc').hide();">
+                                <f:setPropertyActionListener value="#{proc}"
+                                                             target="#{ProgramaController.prog.procedimento}"/>
+                            </p:commandButton>
+                        </h:column>
+                    </b:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
 </ui:composition>

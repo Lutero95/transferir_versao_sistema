@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 import javax.faces.context.FacesContext;
@@ -429,6 +430,44 @@ public class ProcedimentoDAO {
             }
         }
         return lista;
+    }
+
+    public ProcedimentoBean listarProcedimentoPorIdComConexao(int id, Connection conAuxiliar)
+            throws ProjetoException {
+        ProcedimentoBean proc = new ProcedimentoBean();
+        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo,"
+                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
+                + "from hosp.proc where id = ? order by nome";
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                proc = new ProcedimentoBean();
+                proc.setIdProc(rs.getInt("id"));
+                proc.setCodProc(rs.getInt("codproc"));
+                proc.setNomeProc(rs.getString("nome"));
+                proc.setAuditivo(rs.getBoolean("auditivo"));
+                proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
+                proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+                proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
+                proc.setValidade_laudo(rs.getInt("validade_laudo"));
+                proc.setIdadeMinima(rs.getInt("idade_minima"));
+                proc.setIdadeMaxima(rs.getInt("idade_maxima"));
+                proc.setQtdMaxima(rs.getInt("qtd_maxima"));
+                proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
+                proc.setSexo(rs.getString("sexo"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return proc;
     }
 
 }

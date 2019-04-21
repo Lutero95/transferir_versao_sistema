@@ -21,6 +21,7 @@ public class ProgramaBean implements Serializable {
 	private GrupoBean grupoBean;
 	private GrupoBean grupoParaAdd;
 	private GrupoBean grupoRmv;
+	private ProcedimentoBean procedimento;
 
 	public ProgramaBean() {
 		this.grupoBean = new GrupoBean();
@@ -31,6 +32,7 @@ public class ProgramaBean implements Serializable {
 		this.idPrograma = null;
 		this.descPrograma = new String();
 		this.codFederal = null;
+		this.procedimento = new ProcedimentoBean();
 	}
 
 	public Integer getIdPrograma() {
@@ -120,5 +122,13 @@ public class ProgramaBean implements Serializable {
 
 	public void setGrupoBean(GrupoBean grupoBean) {
 		this.grupoBean = grupoBean;
+	}
+
+	public ProcedimentoBean getProcedimento() {
+		return procedimento;
+	}
+
+	public void setProcedimento(ProcedimentoBean procedimento) {
+		this.procedimento = procedimento;
 	}
 }
