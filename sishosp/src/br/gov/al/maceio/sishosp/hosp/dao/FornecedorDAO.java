@@ -172,7 +172,6 @@ public class FornecedorDAO {
 				fornecedor.setIdFornecedor(rs.getInt("id_fornecedor"));
 				fornecedor.setDescFornecedor(rs.getString("descfornecedor"));
 				fornecedor.setValor(rs.getDouble("valor"));
-				// programa.setCodFederal(rs.getDouble("codfederal"));
 			}
 
 		} catch (SQLException ex) {

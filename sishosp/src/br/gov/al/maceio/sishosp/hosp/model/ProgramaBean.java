@@ -11,7 +11,6 @@ public class ProgramaBean implements Serializable {
 
 	private Integer idPrograma;
 	private String descPrograma;
-	private Double codFederal;
 
 	// LISTAS
 	private List<GrupoBean> grupo;
@@ -31,7 +30,6 @@ public class ProgramaBean implements Serializable {
 		this.grupoNovo = new ArrayList<GrupoBean>();
 		this.idPrograma = null;
 		this.descPrograma = new String();
-		this.codFederal = null;
 		this.procedimento = new ProcedimentoBean();
 	}
 
@@ -49,14 +47,6 @@ public class ProgramaBean implements Serializable {
 
 	public void setDescPrograma(String descPrograma) {
 		this.descPrograma = descPrograma;
-	}
-
-	public Double getCodFederal() {
-		return codFederal;
-	}
-
-	public void setCodFederal(Double codFederal) {
-		this.codFederal = codFederal;
 	}
 
 	public List<GrupoBean> getGrupo() {
