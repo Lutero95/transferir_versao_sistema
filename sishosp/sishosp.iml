@@ -62,7 +62,7 @@
     <orderEntry type="library" name="smoothness-1.0.10" level="project" />
     <orderEntry type="library" name="standard" level="project" />
     <orderEntry type="library" name="bootsfaces-1.1.2" level="project" />
-    <orderEntry type="library" name="primefaces-7.0" level="project" />
     <orderEntry type="library" name="javax.faces" level="project" />
+    <orderEntry type="library" name="primefaces-5.2" level="project" />
   </component>
 </module>
