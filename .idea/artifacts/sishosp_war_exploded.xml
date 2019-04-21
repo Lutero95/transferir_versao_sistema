@@ -47,8 +47,8 @@
           <element id="library" level="project" name="slf4j-simple-1.7.13" />
           <element id="library" level="project" name="smoothness-1.0.10" />
           <element id="library" level="project" name="standard" />
-          <element id="library" level="project" name="primefaces-7.0" />
           <element id="library" level="project" name="javax.faces" />
+          <element id="library" level="project" name="primefaces-5.2" />
         </element>
       </element>
       <element id="library" level="project" name="bootsfaces-1.1.2" />
