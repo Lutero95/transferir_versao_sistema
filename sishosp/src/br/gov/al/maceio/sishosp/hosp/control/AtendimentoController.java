@@ -110,6 +110,7 @@ public class AtendimentoController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
 
             this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
+            listarAtendimentosEquipe();
         }
     }
 
@@ -243,8 +244,8 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-    public List<ProcedimentoBean> listarProcedimentos() throws ProjetoException {
-        return this.listaProcedimentos = pDao.listarProcedimento();
+    public void listarProcedimentos() throws ProjetoException {
+        this.listaProcedimentos = pDao.listarProcedimento();
 
     }
 
@@ -320,4 +321,14 @@ public class AtendimentoController implements Serializable {
     public void setIdAtendimento1(Integer idAtendimento1) {
         this.idAtendimento1 = idAtendimento1;
     }
+
+
+	public List<ProcedimentoBean> getListaProcedimentos() {
+		return listaProcedimentos;
+	}
+
+
+	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
+		this.listaProcedimentos = listaProcedimentos;
+	}
 }

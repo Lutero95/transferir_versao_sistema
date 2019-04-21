@@ -9,7 +9,7 @@
 	<ui:define name="content">
 		<f:metadata>
 			<f:viewAction
-				action="#{AtendimentoController.getCarregaAtendimentoEquipe()}" />
+				action="#{AtendimentoController.getCarregaAtendimentoEquipe()}"  />
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
@@ -23,7 +23,7 @@
 
 					<p:outputPanel>
 						<p:dataTable
-							value="#{AtendimentoController.listarAtendimentosEquipe()}"
+							value="#{AtendimentoController.listAtendimentosEquipe}"
 							id="dtAtendimentos" var="atendimento" editable="true"
 							editMode="cell" emptyMessage="Sem registros.">
 
@@ -38,7 +38,8 @@
 							<p:column headerText="Profissional" width="25%">
 								<p:commandButton icon="ui-icon-search" class="btn-acao-table acao-editar"
 								style="margin-right: 10px;"
-									onclick="PF('dlgConsultProfi').show()">
+								action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+									oncomplete="PF('dlgConsultProfi').show()">
 									<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimentoLista}" />
 								</p:commandButton>
@@ -53,7 +54,8 @@
 
 							<p:column headerText="Procedimento" width="20%">
 								<p:commandButton icon="ui-icon-search" class="btn-acao-table acao-editar"
-									onclick="PF('dlgConsulProc1').show()">
+								action="#{AtendimentoController.listarProcedimentos()}"
+									oncomplete="PF('dlgConsulProc1').show()">
 									<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimentoLista}" />
 								</p:commandButton>
@@ -130,7 +132,7 @@
 			modal="true" width="750px"  styleClass="topDialog">
 			<h:form id="formConsultProf">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
+					value="#{MBFuncionarios.listaProfissional}"
 					id="dtTipoAt" var="profi">
 
 					<h:column>
@@ -167,7 +169,7 @@
 			modal="true" width="750px" styleClass="topDialog">
 			<h:form id="formConsulProc1">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{AtendimentoController.listarProcedimentos()}" var="proc"
+					value="#{AtendimentoController.listaProcedimentos}" var="proc"
 					display="Nenhum Procedimento">
 
 					<h:column>

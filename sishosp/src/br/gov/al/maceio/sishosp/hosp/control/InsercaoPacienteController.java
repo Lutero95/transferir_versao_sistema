@@ -48,9 +48,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private ArrayList<String> listaHorarios;
     private Boolean todosOsProfissionais;
     private Boolean renderizarAposLaudo;
+    private List<AgendaBean> listaHorariosDaEquipe;
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
+        listaHorariosDaEquipe = new ArrayList<AgendaBean>();
         programaSelecionado = new ProgramaBean();
         listaLaudosVigentes = new ArrayList<InsercaoPacienteBean>();
         this.tipo = TipoAtendimento.EQUIPE.getSigla();
@@ -75,9 +77,9 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         funcionario.setListDiasSemana(new ArrayList<String>());
     }
 
-    public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
+    public void listarLaudosVigentes()
             throws ProjetoException {
-        return listaLaudosVigentes = iDao.listarLaudosVigentes();
+        listaLaudosVigentes = iDao.listarLaudosVigentes();
     }
 
     public void limparNaBuscaPrograma() {
@@ -443,8 +445,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         return listaHorarios;
     }
 
-    public List<AgendaBean> visualizarHorariosEquipe() {
-        return agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
+    public void visualizarHorariosEquipe() {
+    	listaHorariosDaEquipe=  agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
 
     // AUTOCOMPLETE INÍCIO
@@ -616,4 +618,12 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     public void setListaProfissionais(List<FuncionarioBean> listaProfissionais) {
         this.listaProfissionais = listaProfissionais;
     }
+
+	public List<AgendaBean> getListaHorariosDaEquipe() {
+		return listaHorariosDaEquipe;
+	}
+
+	public void setListaHorariosDaEquipe(List<AgendaBean> listaHorariosDaEquipe) {
+		this.listaHorariosDaEquipe = listaHorariosDaEquipe;
+	}
 }

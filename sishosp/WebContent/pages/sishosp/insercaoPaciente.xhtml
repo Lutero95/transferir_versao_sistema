@@ -27,6 +27,7 @@
 							<p:commandButton size="sm" style="margin-left: 20px;"
 								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
 								update=":formConsuLaudo"
+								action="#{InsercaoController.listarLaudosVigentes()}"
 								oncomplete="PF('dlgConsuLaudo').show();" />
 						</b:column>
 
@@ -172,6 +173,7 @@
 
 									<p:commandButton id="btBusPr" immediate="true" style="margin-left: 5px"
 													 icon="ui-icon-search" rendered="#{InsercaoController.tipo == 'E'}"
+													 actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
 													 action="#{InsercaoController.limparNaBuscaPrograma()}"
 													 update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
 
@@ -254,7 +256,8 @@
 										id="btnVisualizarAgendaEquipe" icon="ui-icon-search"
 										rendered="#{InsercaoController.tipo == 'E'}"
 										class="btn-agendaBusca btn-acao-table acao-buscar"
-										immediate="true" onclick="PF('dlgQtdAgendamentos').show();" />
+										action="#{InsercaoController.visualizarHorariosEquipe()}"
+										immediate="true" oncomplete="PF('dlgQtdAgendamentos').show();" />
 								</b:column>
 							</p:outputPanel>
 
@@ -518,7 +521,7 @@
 			modal="true" id="laudo-id">
 			<h:form id="formConsuLaudo">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{InsercaoController.listarLaudosVigentes()}" id="dtLaudo"
+					value="#{InsercaoController.listaLaudosVigentes}" id="dtLaudo"
 					var="insercao" display="Nenhum Laudo">
 
 					<h:column>
@@ -585,7 +588,7 @@
 			widgetVar="dlgQtdAgendamentos" modal="true">
 			<h:form id="formQtdAgendamentos">
 				<p:dataTable id="dtAgendamentosEquipe" resizableColumns="true"
-					value="#{InsercaoController.visualizarHorariosEquipe()}" var="ag"
+					value="#{InsercaoController.listaHorariosDaEquipe}" var="ag"
 					emptyMessage="Sem registros.">
 
 					<p:column headerText="Equipe">
@@ -641,7 +644,7 @@
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuProg">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{ProgramaController.listaProgramasUsuario()}" var="prog"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
                              display="Nenhum Programa">
 
                     <h:column>

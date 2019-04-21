@@ -47,8 +47,9 @@
 								<p:commandButton id="btBusPr"
 									disabled="#{GerenciarPacienteController.apenasLeitura}"
 									icon="ui-icon-search"
-									action="#{AgendaController.limparNaBuscaPrograma()}"
-									update=":formConsuProg" onclick="PF('dlgConsuProg').show();" />
+									process="@this"
+									action="#{ProgramaController.carregaListaProgramas()}"
+									update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();" />
 							</p:outputPanel>
 						</b:column>
 
@@ -74,8 +75,10 @@
 								<p:commandButton id="btBusGr"
 									readonly="#{GerenciarPacienteController.apenasLeitura}"
 									icon="ui-icon-search"
+									process="@this"
+									action="#{GerenciarPacienteController.carregaGruposDoPrograma()}"
 									disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
-									update=":formGerenPaci" onclick="PF('dlgConsuGrop').show();" />
+									update=":formConsuGrop	" onclick="PF('dlgConsuGrop').show();" />
 							</p:outputPanel>
 						</b:column>
 
@@ -306,7 +309,7 @@
 			modal="true">
 			<h:form id="formConsuProg">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{ProgramaController.listaProgramasUsuario()}" var="prog"
+					value="#{ProgramaController.listaProgramas}" var="prog"
 					display="Nenhum Programa">
 
 					<h:column>
@@ -338,7 +341,7 @@
 			modal="true">
 			<h:form id="formConsuGrop">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{GerenciarPacienteController.listaGrupoLista()}"
+					value="#{GerenciarPacienteController.listaGrupos}"
 					id="dtGrupo" var="grupo" display="Nenhum Grupo">
 
 					<h:column>

@@ -26,6 +26,7 @@ public class GerenciarPacienteController implements Serializable {
     private GerenciarPacienteBean gerenciarpaciente;
     private GerenciarPacienteBean rowBean;
     private List<GerenciarPacienteBean> listaPacientes;
+    private List<GrupoBean> listaGrupos;
     private GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
     private String busca = "N";
     private Boolean apenasLeitura;
@@ -43,6 +44,7 @@ public class GerenciarPacienteController implements Serializable {
     public GerenciarPacienteController() {
         gerenciarpaciente = new GerenciarPacienteBean();
         gerenciarpaciente.setPrograma(null);
+        listaGrupos = new ArrayList();
         gerenciarpaciente.setStatus("T");
         listaPacientes = new ArrayList<GerenciarPacienteBean>();
         apenasLeitura = false;
@@ -82,19 +84,15 @@ public class GerenciarPacienteController implements Serializable {
 
     }
 
-    public List<GrupoBean> listaGrupoLista() throws ProjetoException {
+    public void carregaGruposDoPrograma() throws ProjetoException {
 
         GrupoDAO grDao = new GrupoDAO();
         if (gerenciarpaciente.getPrograma() != null) {
             if (gerenciarpaciente.getPrograma().getIdPrograma() != null) {
-                return grDao.listarGruposPorPrograma(this.gerenciarpaciente
+            	listaGrupos=  grDao.listarGruposPorPrograma(this.gerenciarpaciente
                         .getPrograma().getIdPrograma());
-            } else {
-                return null;
             }
-        } else {
-            return null;
-        }
+        } 
 
     }
 
@@ -213,5 +211,15 @@ public class GerenciarPacienteController implements Serializable {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
+
+	public List<GrupoBean> getListaGrupos() {
+		return listaGrupos;
+	}
+
+	public void setListaGrupos(List<GrupoBean> listaGrupos) {
+		this.listaGrupos = listaGrupos;
+	}
+
+	
 
 }
