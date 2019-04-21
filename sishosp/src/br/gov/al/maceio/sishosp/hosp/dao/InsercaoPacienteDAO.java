@@ -222,7 +222,7 @@ public class InsercaoPacienteDAO {
                         if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getAgenda().getDataMarcacao()) ==
                                 Integer.parseInt(lista.get(j).getListDiasSemana().get(h))) {
 
-                        String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+                        String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
                         PreparedStatement ps4 = null;
                         ps4 = con.prepareStatement(sql4);
@@ -230,6 +230,7 @@ public class InsercaoPacienteDAO {
                         ps4.setLong(1, lista.get(j).getId());
                         ps4.setInt(2, idAtendimento);
                         ps4.setInt(3, lista.get(j).getCbo().getCodCbo());
+                        ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 
                         ps4.executeUpdate();
                         }
@@ -346,7 +347,7 @@ public class InsercaoPacienteDAO {
                     idAgend = rs.getInt("id_atendimento");
                 }
 
-                String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+                String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
                 PreparedStatement ps4 = null;
                 ps4 = con.prepareStatement(sql4);
@@ -354,6 +355,7 @@ public class InsercaoPacienteDAO {
                 ps4.setLong(1, insercao.getFuncionario().getId());
                 ps4.setInt(2, idAgend);
                 ps4.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
+                ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 
                 ps4.executeUpdate();
 

@@ -82,12 +82,13 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 for (int j = 0; j < listaNovosAgendamentos.size(); j++) {
                     String sql2 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, "
-                            + " cbo) VALUES  (?, ?, ?)";
+                            + " cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
                     ps = con.prepareStatement(sql2);
                     if (agenda.getProfissional().getId() != null) {
                         ps.setLong(1, agenda.getProfissional().getId());
                         ps.setInt(2, idAtendimento);
                         ps.setInt(3, agenda.getProfissional().getCbo().getCodCbo());
+                        ps.setInt(4, agenda.getPrograma().getProcedimento().getIdProc());
                         ps.executeUpdate();
                     } else if (agenda.getEquipe().getCodEquipe() != null) {
                         for (FuncionarioBean prof : agenda.getEquipe()
@@ -95,6 +96,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                             ps.setLong(1, prof.getId());
                             ps.setInt(2, idAtendimento);
                             ps.setInt(3, prof.getCbo().getCodCbo());
+                            ps.setInt(4, agenda.getPrograma().getProcedimento().getIdProc());
                             ps.executeUpdate();
                         }
                     }

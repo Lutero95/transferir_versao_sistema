@@ -278,7 +278,7 @@ public class AlteracaoPacienteDAO {
                         if (DataUtil.extrairDiaDeData(listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao()) ==
                                 Integer.parseInt(listaProfissionais.get(j).getListDiasSemana().get(h))) {
 
-                            String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+                            String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
                             PreparedStatement ps8 = null;
                             ps8 = conexao.prepareStatement(sql8);
@@ -286,6 +286,7 @@ public class AlteracaoPacienteDAO {
                             ps8.setLong(1, listaProfissionais.get(j).getId());
                             ps8.setInt(2, idAgend);
                             ps8.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
+                            ps8.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 
                             ps8.executeUpdate();
                         }
@@ -410,7 +411,7 @@ public class AlteracaoPacienteDAO {
                     idAgend = rs.getInt("id_atendimento");
                 }
 
-                String sql7 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo) VALUES  (?, ?, ?)";
+                String sql7 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
                 PreparedStatement ps7 = null;
                 ps7 = conexao.prepareStatement(sql7);
@@ -418,6 +419,7 @@ public class AlteracaoPacienteDAO {
                 ps7.setLong(1, insercao.getFuncionario().getId());
                 ps7.setInt(2, idAgend);
                 ps7.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
+                ps7.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 
                 ps7.executeUpdate();
 
