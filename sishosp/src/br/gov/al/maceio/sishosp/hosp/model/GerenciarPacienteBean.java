@@ -21,7 +21,7 @@ public class GerenciarPacienteBean implements Serializable {
 	private ProgramaBean programa;
 	private PacienteBean paciente;
 	private FuncionarioBean funcionario;
-	private EquipamentoBean equipe;
+	private EquipeBean equipe;
 	private LaudoBean laudo;
 
 	public GerenciarPacienteBean() {
@@ -29,7 +29,7 @@ public class GerenciarPacienteBean implements Serializable {
 		programa = new ProgramaBean();
 		paciente = new PacienteBean();
 		funcionario = new FuncionarioBean();
-		equipe = new EquipamentoBean();
+		equipe = new EquipeBean();
 		laudo = new LaudoBean();
 	}
 
@@ -105,11 +105,11 @@ public class GerenciarPacienteBean implements Serializable {
 		this.funcionario = funcionario;
 	}
 
-	public EquipamentoBean getEquipe() {
+	public EquipeBean getEquipe() {
 		return equipe;
 	}
 
-	public void setEquipe(EquipamentoBean equipe) {
+	public void setEquipe(EquipeBean equipe) {
 		this.equipe = equipe;
 	}
 

@@ -56,8 +56,8 @@ public class GerenciarPacienteDAO {
                 gp.getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 gp.getPaciente().setNome(rs.getString("nome"));
                 gp.getPaciente().setCns(rs.getString("cns"));
-                gp.getEquipe().setId_equipamento(rs.getInt("codequipe"));
-                gp.getEquipe().setDescEquipamento(rs.getString("descequipe"));
+                gp.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+                gp.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 gp.getFuncionario().setId(rs.getLong("codprofissional"));
                 gp.getFuncionario().setNome(rs.getString("descfuncionario"));
                 gp.setStatus(rs.getString("status"));
@@ -126,8 +126,8 @@ public class GerenciarPacienteDAO {
                 gp.getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 gp.getPaciente().setNome(rs.getString("nome"));
                 gp.getPaciente().setCns(rs.getString("cns"));
-                gp.getEquipe().setId_equipamento(rs.getInt("codequipe"));
-                gp.getEquipe().setDescEquipamento(rs.getString("descequipe"));
+                gp.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+                gp.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 gp.getFuncionario().setId(rs.getLong("codprofissional"));
                 gp.getFuncionario().setNome(rs.getString("descfuncionario"));
                 gp.setStatus(rs.getString("status"));

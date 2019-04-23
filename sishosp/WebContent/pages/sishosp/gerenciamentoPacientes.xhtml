@@ -138,7 +138,9 @@
 
 						<div align="center">
 
-							<b:column span="3" class="new-span2">
+                            <b:column span="1"></b:column>
+
+							<b:column span="2" class="new-span2">
 								<b:commandButton value="Inserir" style="margin-top:5px;"
 									id="btnInserir" immediate="true"
 									class="btn-acao-table acao-confirmar btn-new-padding2"
@@ -147,7 +149,7 @@
 									action="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true" />
 							</b:column>
 
-							<b:column span="3" class="new-span2">
+							<b:column span="2" class="new-span2">
 								<b:commandButton value="Alterar" style="margin-top:5px;"
 									disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 									id="btnAlterar" immediate="true"
@@ -157,7 +159,7 @@
 									action="#{GerenciarPacienteController.redirectAlteracao()}" />
 							</b:column>
 
-							<b:column span="3" class="new-span2">
+							<b:column span="2" class="new-span2">
 								<b:commandButton value="Renovar" style="margin-top:5px;"
 									disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 									id="btnRenovar" immediate="true"
@@ -167,7 +169,18 @@
 									action="#{GerenciarPacienteController.redirectRenovacao()}" />
 							</b:column>
 
-							<b:column span="3" class="new-span2">
+							<b:column span="2" class="new-span2">
+								<b:commandButton value="Transferir" style="margin-top:5px;"
+												 disabled="#{GerenciarPacienteController.rowBean.status != 'A'
+												 or GerenciarPacienteController.rowBean.equipe.codEquipe == 0}"
+												 id="btnTransferir" immediate="true"
+												 class="btn-acao-table acao-transfere btn-new-padding2"
+												 update=":formGerenPaci, :frmEquipamentos:msgPagina"
+												 icon="glyphicon glyphicon-refresh"
+												 action="#{GerenciarPacienteController.redirectTransferencia()}" />
+							</b:column>
+
+							<b:column span="2" class="new-span2">
 								<b:commandButton value="Desligar" style="margin-top:5px;"
 									disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
 									id="btnDesligar" immediate="true"
@@ -176,6 +189,8 @@
 									icon="glyphicon glyphicon-remove"
 									action="#{GerenciarPacienteController.inicioDesligar()}" />
 							</b:column>
+
+                            <b:column span="1"></b:column>
 
 						</div>
 
@@ -196,7 +211,7 @@
 							rowKey="#{pacie.id}">
 
 							<p:ajax event="rowSelect"
-								update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnDesligar :frmEquipamentos:outEquipamento" />
+								update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnTransferir :formGerenPaci:btnDesligar :frmEquipamentos:outEquipamento" />
 
 							<p:column width="5%">
 								<f:facet name="header">
@@ -230,7 +245,7 @@
 								<f:facet name="header">
 									<h:outputText style="font-size: 14px;" value="Equipe" />
 								</f:facet>
-								<h:outputText value="#{pacie.equipe.descEquipamento}"></h:outputText>
+								<h:outputText value="#{pacie.equipe.descEquipe}"></h:outputText>
 							</p:column>
 
 							<p:column width="20%">

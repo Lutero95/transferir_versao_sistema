@@ -1783,6 +1783,13 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 	text-shadow: none;
 }
 
+.acao-transfere, .acao-transfere:hover, .acao-transfere:focus {
+	border-bottom: 1px solid #1616c3 !important;
+	border-color: #1616c3 !important;
+	color: #1616c3 !important;
+	text-shadow: none;
+}
+
 .acao-desligar, .acao-desligar:hover, .acao-desligar:focus {
 	border-bottom: 1px solid #b91b19 !important;
 	border-color: #b91b19 !important;
