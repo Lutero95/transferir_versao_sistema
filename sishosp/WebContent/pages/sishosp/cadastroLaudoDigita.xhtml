@@ -41,7 +41,10 @@
 								</p:autoComplete>
 
 								<p:commandButton id="btBusPa" icon="ui-icon-search"
-									onclick="PF('dlgConsuPac').show();" />
+								action="#{PacienteController.listarTodosPaciente()}"
+								process="@this"
+								update="formConsuPac"
+									oncomplete="PF('dlgConsuPac').show();" />
 							</p:outputPanel>
 						</b:column>
 
@@ -91,7 +94,7 @@
 								<f:selectItem itemLabel="30 dias" itemValue="30" />
 								<f:selectItem itemLabel="90 dias" itemValue="90" />
 								<p:ajax listener="#{LaudoController.calcularPeriodoLaudo()}"
-									update="outAnoFim, outMesFim" global="false" event="change"></p:ajax>
+									update="outMesFim" global="false" event="change"></p:ajax>
 							</p:selectOneRadio>
 						</b:column>
 
@@ -108,7 +111,7 @@
 								class="select-agendaEquipe2" required="true"
 								requiredMessage="Escolha o ano início!">
 								<p:ajax listener="#{LaudoController.calcularPeriodoLaudo()}"
-									update="outAnoFim, outMesFim" global="false" event="blur"></p:ajax>
+									update="outMesFim" global="false" event="blur"></p:ajax>
 							</b:inputText>
 						</b:column>
 
@@ -119,49 +122,43 @@
 								class="select-agendaEquipe3" required="true"
 								requiredMessage="Escolha o ano início!">
 								<p:ajax listener="#{LaudoController.calcularPeriodoLaudo()}"
-									update="outAnoFim, outMesFim" global="false" event="blur"></p:ajax>
+									update="outMesFim" global="false" event="blur"></p:ajax>
 							</h:inputText>
 						</b:column>
 
 						<b:column span="3" class="label-position">
-							<b:label value="Mês Fim:" severity="info" />
+							<b:label value="Mês/Ano Fim:" severity="info" />
 
 							<p:outputPanel id="outMesFim" class="campo-laudoDig">
-								<h:outputLabel value="Janeiro"
+								<h:outputLabel value="Janeiro/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 1}" />
-								<h:outputLabel value="Fevereiro"
+								<h:outputLabel value="Fevereiro/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 2}" />
-								<h:outputLabel value="Março"
+								<h:outputLabel value="Março/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 3}" />
-								<h:outputLabel value="Abril"
+								<h:outputLabel value="Abril/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 4}" />
-								<h:outputLabel value="Maio"
+								<h:outputLabel value="Maio/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 5}" />
-								<h:outputLabel value="Junho"
+								<h:outputLabel value="Junho/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 6}" />
-								<h:outputLabel value="Julho"
+								<h:outputLabel value="Julho/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 7}" />
-								<h:outputLabel value="Agosto"
+								<h:outputLabel value="Agosto/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 8}" />
-								<h:outputLabel value="Setembro"
+								<h:outputLabel value="Setembro/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 9}" />
-								<h:outputLabel value="Outubro"
+								<h:outputLabel value="Outubro/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 10}" />
-								<h:outputLabel value="Novembro"
+								<h:outputLabel value="Novembro/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 11}" />
-								<h:outputLabel value="Dezembro"
+								<h:outputLabel value="Dezembro/#{LaudoController.laudo.ano_final}"
 									rendered="#{LaudoController.laudo.mes_final == 12}" />
+							
 							</p:outputPanel>
 						</b:column>
 
-						<b:column span="3" class="label-position">
-							<b:label value="Ano Fim:" severity="info" />
-
-							<p:outputPanel id="outAnoFim">
-								<p:outputLabel value="#{LaudoController.laudo.ano_final}"
-									class="campo-laudoDig" />
-							</p:outputPanel>
-						</b:column>
+					
 
 					</b:row>
 
@@ -188,12 +185,12 @@
 								</p:autoComplete>
 
 								<p:commandButton id="btBusProcP1" icon="ui-icon-search"
-									onclick="PF('dlgConsulProcPrimario').show();" immediate="true"
+									oncomplete="PF('dlgConsulProcPrimario').show();" immediate="true"
 									actionListener="#{ProcedimentoController.listarProcedimentos()}" />
 							</p:outputPanel>
 						</b:column>
 
-						<b:column span="3" class="label-position">
+							<b:column span="3" class="label-position">
 							<b:label value="Recurso:" severity="info" />
 
 							<p:outputPanel id="outRecurso">
@@ -363,7 +360,10 @@
 
 								<p:commandButton id="btBusCid1" icon="ui-icon-search"
 									disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
-									onclick="PF('dlgConsulCid1').show();" />
+									action="#{LaudoController.listarCidsPorProcedimento()}"
+									update="formConsulCid1"
+									process="@this"
+									oncomplete="PF('dlgConsulCid1').show();" />
 							</p:outputPanel>
 						</b:column>
 
@@ -385,7 +385,10 @@
 
 								<p:commandButton id="btBusCid2" icon="ui-icon-search"
 									disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
-									onclick="PF('dlgConsulCid2').show();" />
+									action="#{LaudoController.listarCidsPorProcedimento()}"
+									update="formConsulCid2"
+									process="@this"
+									oncomplete="PF('dlgConsulCid2').show();" />
 							</p:outputPanel>
 						</b:column>
 
@@ -406,7 +409,10 @@
 
 								<p:commandButton id="btBusCid3" icon="ui-icon-search"
 									disabled="#{LaudoController.laudo.procedimento_primario.idProc == null}"
-									onclick="PF('dlgConsulCid3').show();" />
+									action="#{LaudoController.listarCidsPorProcedimento()}"
+									update="formConsulCid3"
+									process="@this"
+									oncomplete="PF('dlgConsulCid3').show();" />
 							</p:outputPanel>
 						</b:column>
 
@@ -463,7 +469,7 @@
 
 
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-					var="pacie" value="#{PacienteController.listarPacienteAgenda()}">
+					var="pacie" value="#{PacienteController.listaPacientesAgenda}">
 
 					<h:column>
 						<f:facet name="header">
@@ -527,7 +533,7 @@
                                 Adicionar
                             </f:facet>
 							<p:commandButton
-								update=":formLaudo:outProcP1, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3"
+								update=":formLaudo:outProcP1, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3 :formLaudo:outRecurso"
 								icon="ui-icon-check" title="Selecionar"
 								class="new-btn-acao-table acao-editar"
 								onclick="PF('dlgConsulProcPrimario').hide();">
@@ -700,7 +706,7 @@
 			<h:form id="formConsulCid1">
 				<p:outputPanel autoUpdate="true">
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{LaudoController.listarCidsPorProcedimento()}" var="tab">
+						value="#{LaudoController.listaCids}" var="tab">
 
 						<h:column>
 							<f:facet name="header">
@@ -745,7 +751,7 @@
 			<h:form id="formConsulCid2">
 				<p:outputPanel autoUpdate="true">
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{LaudoController.listarCidsPorProcedimento()}" var="tab">
+						value="#{LaudoController.listaCids}" var="tab">
 
 						<h:column>
 							<f:facet name="header">
@@ -790,7 +796,7 @@
 			<h:form id="formConsulCid3">
 				<p:outputPanel autoUpdate="true">
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{LaudoController.listarCidsPorProcedimento()}" var="tab">
+						value="#{LaudoController.listaCids}" var="tab">
 
 						<h:column>
 							<f:facet name="header">

@@ -27,6 +27,7 @@ public class LaudoController implements Serializable {
     private String cabecalho;
     private int tipo;
     private List<LaudoBean> listaLaudo;
+    private List<CidBean> listaCids;
     private LaudoDAO lDao = new LaudoDAO();
     private CidDAO cDao = new CidDAO();
 
@@ -41,7 +42,7 @@ public class LaudoController implements Serializable {
         this.laudo = new LaudoBean();
         this.cabecalho = "";
         listaLaudo = new ArrayList<>();
-        listaLaudo = null;
+        listaCids = new ArrayList<>();
     }
 
     public String redirectEdit() {
@@ -77,7 +78,7 @@ public class LaudoController implements Serializable {
 
         if (laudo.getPeriodo() != null && laudo.getMes_inicio() != null && laudo.getAno_inicio() != null) {
 
-            int periodo = laudo.getPeriodo() / 30;
+            int periodo = (laudo.getPeriodo() / 30)-1; // o periodo do laudo considera o mes atual, por isso a inclusao do -1
             int mes = 0;
             int ano = 0;
 
@@ -145,13 +146,11 @@ public class LaudoController implements Serializable {
         return result;
     }
 
-    public List<CidBean> listarCidsPorProcedimento() throws ProjetoException {
+    public void listarCidsPorProcedimento() throws ProjetoException {
         if (laudo.getProcedimento_primario().getIdProc() != null) {
-            return cDao.listarCidsBuscaPorProcedimento(laudo.getProcedimento_primario().getIdProc());
+            listaCids =  cDao.listarCidsBuscaPorProcedimento(laudo.getProcedimento_primario().getIdProc());
         }
-        else{
-            return null;
-        }
+        
     }
 
 
@@ -194,5 +193,13 @@ public class LaudoController implements Serializable {
     public void setTipo(int tipo) {
         this.tipo = tipo;
     }
+
+	public List<CidBean> getListaCids() {
+		return listaCids;
+	}
+
+	public void setListaCids(List<CidBean> listaCids) {
+		this.listaCids = listaCids;
+	}
 
 }

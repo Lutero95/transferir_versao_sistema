@@ -218,9 +218,9 @@ public class ProcedimentoController implements Serializable {
 
     }
 
-    public List<ProcedimentoBean> listarProcedimentos() throws ProjetoException {
+    public void listarProcedimentos() throws ProjetoException {
         this.listaProcedimentos = pDao.listarProcedimento();
-        return listaProcedimentos;
+        
     }
 
     public List<ProcedimentoBean> getListaProcedimentos() {

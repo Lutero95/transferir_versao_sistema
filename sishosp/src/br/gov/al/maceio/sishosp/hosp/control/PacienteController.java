@@ -506,8 +506,8 @@ public class PacienteController implements Serializable {
 
     }
 
-    public void listarPacienteAgenda() throws ProjetoException {
-    	System.out.println("listarPacienteAgenda");
+    public void listarTodosPaciente() throws ProjetoException {
+    	System.out.println("listarTodosPaciente");
         listaPacientesAgenda = pDao.listaPaciente();
 
       

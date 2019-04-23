@@ -108,6 +108,7 @@ public class RecursoController implements Serializable {
     }
 
     public ArrayList<RecursoBean> listarRecurso(Integer id_proc) throws ProjetoException {
+    	System.out.println("listarRecurso");
         if (id_proc != null) {
             return rDao.listaRecursosPorProcedimento(id_proc);
         } else {

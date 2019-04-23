@@ -241,7 +241,7 @@ public class TransferenciaPacienteDAO {
                             String sql10 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
                             PreparedStatement ps10 = null;
-                            ps8 = conexao.prepareStatement(sql10);
+                            ps10 = conexao.prepareStatement(sql10);
 
                             ps10.setLong(1, listaProfissionais.get(j).getId());
                             ps10.setInt(2, idAgend);

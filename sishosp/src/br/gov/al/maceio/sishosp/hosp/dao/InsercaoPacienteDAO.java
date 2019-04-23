@@ -137,8 +137,8 @@ public class InsercaoPacienteDAO {
 
         Boolean retorno = false;
 
-        String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codpaciente, codequipe, status, codlaudo, observacao, cod_empresa) "
-                + " values (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
+        String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codpaciente, codequipe, status, codlaudo, observacao, cod_empresa, data_solicitacao, data_cadastro) "
+                + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -150,7 +150,7 @@ public class InsercaoPacienteDAO {
             ps.setInt(6, insercao.getLaudo().getId());
             ps.setString(7, insercao.getObservacao());
             ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
-
+            ps.setDate(9, new java.sql.Date(insercao.getData_solicitacao().getTime()));
             ResultSet rs = ps.executeQuery();
             int id = 0;
             if (rs.next()) {
