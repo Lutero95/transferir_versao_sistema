@@ -303,13 +303,13 @@ public class AtendimentoDAO {
             throws ProjetoException {
 
         AtendimentoBean at = new AtendimentoBean();
-        String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, f.codprocedimentopadrao, " +
+        String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, a1.codprocedimento, " +
         		"pr.nome as procedimento, a1.situacao, a1.evolucao " +
         		"from hosp.atendimentos a " +
         		"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " +
         		"left join hosp.pacientes p on (p.id_paciente = a.codpaciente) " +
         		"left join acl.funcionarios f on (f.id_funcionario = a.codmedico) " +
-        		"left join hosp.proc pr on (pr.id = f.codprocedimentopadrao) "
+        		"left join hosp.proc pr on (pr.id = a1.codprocedimento) "
                 + "where a.id_atendimento = ?";
         try {
             con = ConnectionFactory.getConnection();
@@ -322,7 +322,7 @@ public class AtendimentoDAO {
                 at.getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 at.getPaciente().setNome(rs.getString("nome"));
                 at.getProcedimento().setIdProc(
-                        rs.getInt("codprocedimentopadrao"));
+                        rs.getInt("codprocedimento"));
                 at.getProcedimento().setNomeProc(rs.getString("procedimento"));
                 at.getFuncionario().setId(rs.getLong("codmedico"));
                 at.getFuncionario().setNome(rs.getString("descfuncionario"));

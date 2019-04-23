@@ -174,8 +174,8 @@ public class InsercaoPacienteDAO {
             }
 
             String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codequipe, situacao, dtaatende, codtipoatendimento, turno, "
-                    + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario, encaixe)"
-                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, ?) RETURNING id_atendimento;";
+                    + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario, encaixe, codatendente, dtamarcacao, codprograma, codgrupo)"
+                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, ?, ?, current_timestamp, ?, ?) RETURNING id_atendimento;";
 
             PreparedStatement ps3 = null;
             ps3 = con.prepareStatement(sql3);
@@ -208,6 +208,12 @@ public class InsercaoPacienteDAO {
 
                 ps3.setBoolean(10, insercao.getEncaixe());
 
+                ps3.setInt(11, user_session.getCodigo());
+                
+                ps3.setLong(12, insercao.getPrograma().getIdPrograma());
+                
+                ps3.setLong(13, insercao.getGrupo().getIdGrupo());
+                
                 rs = ps3.executeQuery();
 
                 int idAtendimento = 0;
