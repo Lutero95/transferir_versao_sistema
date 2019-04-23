@@ -231,7 +231,7 @@ public class TransferenciaPacienteDAO {
 
             ps9.setLong(1, id_paciente);
             ps9.setString(2, insercao.getObservacao());
-            ps9.setString(3, "R");
+            ps9.setString(3, "D");
 
             ps9.executeUpdate();
 
