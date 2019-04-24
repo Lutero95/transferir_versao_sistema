@@ -230,8 +230,8 @@ public class AlteracaoPacienteDAO {
             }
 
             String sql7 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
-                    + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario, dtamarcacao)"
-                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP) RETURNING id_atendimento;";
+                    + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
+                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
 
             PreparedStatement ps7 = null;
             ps7 = conexao.prepareStatement(sql7);
@@ -263,6 +263,29 @@ public class AlteracaoPacienteDAO {
                 else{
                     ps7.setNull(9, Types.NULL);
                 }
+
+                if(insercao.getPrograma().getIdPrograma() != null) {
+                    ps7.setInt(10, insercao.getPrograma().getIdPrograma());
+                }
+                else{
+                    ps7.setNull(10, Types.NULL);
+                }
+
+                if(insercao.getGrupo().getIdGrupo() != null) {
+                    ps7.setInt(11, insercao.getGrupo().getIdGrupo());
+                }
+                else{
+                    ps7.setNull(11, Types.NULL);
+                }
+
+                if(insercao.getEquipe().getCodEquipe() != null) {
+                    ps7.setInt(12, insercao.getEquipe().getCodEquipe());
+                }
+                else{
+                    ps7.setNull(12, Types.NULL);
+                }
+
+                ps7.setInt(13, user_session.getCodigo());
 
                 rs = ps7.executeQuery();
 

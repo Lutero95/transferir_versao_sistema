@@ -184,8 +184,8 @@ public class TransferenciaPacienteDAO {
             }
 
             String sql9 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
-                    + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario, dtamarcacao, codprograma, codgrupo, codequipe)"
-                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?) RETURNING id_atendimento;";
+                    + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
+                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
 
             PreparedStatement ps9 = null;
             ps9 = conexao.prepareStatement(sql9);
@@ -223,6 +223,8 @@ public class TransferenciaPacienteDAO {
                 ps9.setInt(11, insercao.getGrupo().getIdGrupo());
 
                 ps9.setInt(12, insercao.getEquipe().getCodEquipe());
+
+                ps9.setInt(13, user_session.getCodigo());
 
                 rs = ps9.executeQuery();
 
