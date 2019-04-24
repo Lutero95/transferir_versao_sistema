@@ -322,7 +322,7 @@ public class LaudoDAO {
                 + " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, l.codprocedimento_secundario2, "
                 + " l.codprocedimento_secundario3, l.codprocedimento_secundario4, l.codprocedimento_secundario5, l.cid1, l.cid2, l.cid3, l.obs "
                 + " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
-                + " left join hosp.proc pr on (pr.codproc = l.codprocedimento_primario) "
+                + " left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
                 + " left join hosp.recurso r on (l.id_recurso = r.id) where l.ativo is true and l.cod_empresa = ? order by id_laudo";
 
         ArrayList<LaudoBean> lista = new ArrayList();
