@@ -245,6 +245,7 @@ public class AtendimentoController implements Serializable {
     }
 
     public void listarProcedimentos() throws ProjetoException {
+    	System.out.println("listarProcedimentos");
         this.listaProcedimentos = pDao.listarProcedimento();
 
     }
