@@ -82,9 +82,11 @@ public class FuncionarioController implements Serializable {
 
         // Profissional
         listaProfissional = new ArrayList<FuncionarioBean>();
+        this.profissional = null;
         this.profissional = new FuncionarioBean();
         this.listaGruposEProgramasProfissional = new ArrayList<ProgramaBean>();
         usuario = new FuncionarioBean();
+        renderizarPermissoes = false;
 
         // ACL
         usuarioLogado = new FuncionarioBean();
@@ -453,6 +455,7 @@ public class FuncionarioController implements Serializable {
         this.profissional = new FuncionarioBean();
         this.listaProfissional = fDao.listarProfissional();
         this.listaGruposEProgramasProfissional = new ArrayList<ProgramaBean>();
+        renderizarPermissoes = false;
     }
 
     public void gravarProfissional() throws ProjetoException {
@@ -679,8 +682,9 @@ public class FuncionarioController implements Serializable {
                 renderizarPermissoes = false;
             }
         } else {
+            profissional.setCpf(null);
+            renderizarPermissoes = false;
             tipo = Integer.parseInt(params.get("tipo"));
-
         }
 
     }
