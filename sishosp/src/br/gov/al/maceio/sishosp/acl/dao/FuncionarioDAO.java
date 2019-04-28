@@ -223,9 +223,9 @@ public class FuncionarioDAO {
                 + "order by pmdesc, sid";
 
         List<Permissoes> lista = new ArrayList<>();
-    	//FacesContext fc = FacesContext.getCurrentInstance();
-    	//HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
-    	//String contextPath = request.getServletContext().getContextPath();
+        //FacesContext fc = FacesContext.getCurrentInstance();
+        //HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
+        //String contextPath = request.getServletContext().getContextPath();
         Connection con = null;
         try {
             con = ConnectionFactory.getConnection();
@@ -251,7 +251,7 @@ public class FuncionarioDAO {
                 m.setOnclick(rs.getString("onclick_rel"));
 
                 if (rs.getString("tipo").equals("menuItem")) {
-                	//contextPath
+                    //contextPath
                     m.setUrl("/pages/" + m.getDiretorio() + "/"
                             + m.getDescPagina() + m.getExtensao());
                 }
@@ -423,6 +423,131 @@ public class FuncionarioDAO {
             }
             return retorno;
         }
+    }
+
+    public ArrayList<Menu> listarMenuItemSourcerEditUser(Long idPerfil, Integer idUsuario) throws ProjetoException, SQLException {
+
+        String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
+                + "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
+                + "si.descricao as desc_sis, si.sigla as sigla_sis from acl.menu me "
+                + "join acl.perm_geral pg on pg.id_menu = me.id "
+                + "join acl.permissao pm on pm.id = pg.id_permissao "
+                + "join acl.menu_sistema ms on ms.id_menu = me.id "
+                + "join acl.sistema si on si.id = ms.id_sistema "
+                + "where me.id not in("
+                + "	select me.id from acl.perm_perfil pp "
+                + "	join acl.perfil pf on pf.id = pp.id_perfil "
+                + "	join acl.permissao pm on pm.id = pp.id_permissao "
+                + "	join acl.perm_geral pg on pg.id_permissao = pm.id "
+                + "	join acl.menu me on me.id = pg.id_menu "
+                + "	join acl.menu_sistema ms on ms.id_menu = me.id "
+                + "	join acl.sistema si on si.id = ms.id_sistema "
+                + "	where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pf.id = ? ) "
+                + " AND me.id NOT IN ( "
+                + " select me.id "
+                + " from acl.perm_usuario pu "
+                + " LEFT join acl.permissao pm on pm.id = pu.id_permissao "
+                + " LEFT join acl.perm_geral pg on pg.id_permissao = pm.id "
+                + " LEFT join acl.menu me on me.id = pg.id_menu "
+                + " where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pu.id_usuario = ? )"
+                + " order by me.descricao";
+
+
+        ArrayList<Menu> lista = new ArrayList<Menu>();
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setLong(1, idPerfil);
+            stmt.setInt(2, idUsuario);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Menu m = new Menu();
+                m.setId(rs.getLong("id"));
+                m.setDescricao(rs.getString("descricao"));
+                m.setCodigo(rs.getString("codigo"));
+                m.setIndice(rs.getString("indice"));
+
+                m.setTipo(rs.getString("tipo"));
+                m.setAtivo(rs.getBoolean("ativo"));
+
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
+
+                if (rs.getString("tipo").equals("menuItem")) {
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
+                }
+                m.setIndiceAux(rs.getString("codigo"));
+
+                m.setIdSistema(rs.getInt("id_sis"));
+                m.setDescSistema(rs.getString("desc_sis"));
+                m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+                lista.add(m);
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            con.close();
+        }
+        return lista;
+    }
+
+    public ArrayList<Menu> listarMenuItemTargetEditUser(Integer idUsuario) throws ProjetoException, SQLException {
+
+        String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
+                + "me.ativo, me.diretorio, me.desc_pagina, me.extensao, si.id as id_sis, "
+                + "si.descricao as desc_sis, si.sigla as sigla_sis from acl.perm_usuario pu "
+                + "join acl.permissao pm on pm.id = pu.id_permissao "
+                + "join acl.perm_geral pg on pg.id_permissao = pm.id " + "join acl.menu me on me.id = pg.id_menu "
+                + "join acl.menu_sistema ms on ms.id_menu = me.id " + "join acl.sistema si on si.id = ms.id_sistema "
+                + "where pu.id_usuario = ? ";
+
+        /* + " and (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') " */
+
+        ArrayList<Menu> lista = new ArrayList<Menu>();
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setInt(1, idUsuario);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Menu m = new Menu();
+                m.setId(rs.getLong("id"));
+                m.setDescricao(rs.getString("descricao"));
+                m.setCodigo(rs.getString("codigo"));
+                m.setIndice(rs.getString("indice"));
+                m.setTipo(rs.getString("tipo"));
+                m.setAtivo(rs.getBoolean("ativo"));
+
+                m.setDiretorio(rs.getString("diretorio"));
+                m.setDescPagina(rs.getString("desc_pagina"));
+                m.setExtensao(rs.getString("extensao"));
+
+                if (rs.getString("tipo").equals("menuItem")) {
+                    m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
+                }
+                m.setIndiceAux(rs.getString("codigo"));
+
+                m.setIdSistema(rs.getInt("id_sis"));
+                m.setDescSistema(rs.getString("desc_sis"));
+                m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
+                lista.add(m);
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            con.close();
+        }
+        return lista;
     }
 
     public ArrayList<FuncionarioBean> buscaUsuarios() throws ProjetoException {
@@ -915,11 +1040,11 @@ public class FuncionarioDAO {
 
         List<FuncionarioBean> lista = new ArrayList<>();
         String sql = "SELECT f.id_funcionario, f.id_funcionario ||'-'|| f.descfuncionario AS descfuncionario, f.codespecialidade, e.descespecialidade, " +
-                     "f.cns, f.ativo, f.codcbo, c.descricao, f.codprocedimentopadrao, p.nome, f.permite_liberacao, permite_encaixe "+
-                     " FROM acl.funcionarios f " +
-                     "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) " +
-                     "LEFT JOIN hosp.proc p ON (f.codprocedimentopadrao = p.id) " +
-                     "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) ";
+                "f.cns, f.ativo, f.codcbo, c.descricao, f.codprocedimentopadrao, p.nome, f.permite_liberacao, permite_encaixe " +
+                " FROM acl.funcionarios f " +
+                "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) " +
+                "LEFT JOIN hosp.proc p ON (f.codprocedimentopadrao = p.id) " +
+                "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) ";
 
         if (tipoBuscar == 1) {
             sql += " where upper(f.id_funcionario ||' - '|| f.descfuncionario) LIKE ? and f.realiza_atendimento is true and f.cod_empresa = ? " +
@@ -1075,13 +1200,13 @@ public class FuncionarioDAO {
     public List<FuncionarioBean> listarProfissionalPorGrupo(Integer codgrupo)
             throws ProjetoException {
         List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
-        String sql = "select distinct m.id_funcionario, m.descfuncionario, m.codespecialidade, e.descespecialidade, m.cns,\n" + 
-        		"m.codcbo, c.id idcbo,c.descricao desccbo\n" + 
-        		"from acl.funcionarios m\n" + 
-        		"                join hosp.profissional_programa_grupo ppg on (m.id_funcionario = ppg.codprofissional)\n" + 
-        		"                 left join hosp.especialidade e on (e.id_especialidade = m.codespecialidade)\n" + 
-        		"                 left join hosp.cbo c on (c.id = m.codcbo)\n" + 
-        		"                 where m.ativo = 'S' and realiza_atendimento is true and ppg.codgrupo = ?";
+        String sql = "select distinct m.id_funcionario, m.descfuncionario, m.codespecialidade, e.descespecialidade, m.cns,\n" +
+                "m.codcbo, c.id idcbo,c.descricao desccbo\n" +
+                "from acl.funcionarios m\n" +
+                "                join hosp.profissional_programa_grupo ppg on (m.id_funcionario = ppg.codprofissional)\n" +
+                "                 left join hosp.especialidade e on (e.id_especialidade = m.codespecialidade)\n" +
+                "                 left join hosp.cbo c on (c.id = m.codcbo)\n" +
+                "                 where m.ativo = 'S' and realiza_atendimento is true and ppg.codgrupo = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -1595,10 +1720,10 @@ public class FuncionarioDAO {
 
         String sql = "SELECT id_funcionario FROM acl.funcionarios WHERE cpf = ? AND senha = ? ";
 
-        if(tipoValidacao.equals(ValidacaoSenhaAgenda.LIBERACAO.getSigla())){
+        if (tipoValidacao.equals(ValidacaoSenhaAgenda.LIBERACAO.getSigla())) {
             sql = sql + " AND permite_liberacao IS TRUE;";
         }
-        if(tipoValidacao.equals(ValidacaoSenhaAgenda.ENCAIXE.getSigla())){
+        if (tipoValidacao.equals(ValidacaoSenhaAgenda.ENCAIXE.getSigla())) {
             sql = sql + " AND permite_encaixe IS TRUE;";
         }
 
@@ -1627,5 +1752,6 @@ public class FuncionarioDAO {
         }
         return idFuncionario;
     }
+
 
 }

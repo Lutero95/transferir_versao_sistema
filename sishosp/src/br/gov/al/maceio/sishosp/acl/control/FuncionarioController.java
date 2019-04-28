@@ -6,6 +6,7 @@ import br.gov.al.maceio.sishosp.acl.model.*;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
-import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
+import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
@@ -540,7 +538,7 @@ public class FuncionarioController implements Serializable {
             for (Menu mp : menusPerfil) {
                 for (Menu mf : listaFiltrada) {
                     if (mp.getCodigo().equals(mf.getCodigo())) {
-                        listaFiltrada.remove(mf);
+                        listaFiltradaaux.remove(mf);
                     }
                 }
             }
@@ -665,7 +663,7 @@ public class FuncionarioController implements Serializable {
         return listaProfissional;
     }
 
-    public void getEditProfissional() throws ProjetoException {
+    public void getEditProfissional() throws ProjetoException, SQLException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -868,11 +866,27 @@ public class FuncionarioController implements Serializable {
         this.menuModel = menuModel;
     }
 
-    public DualListModel<Menu> getListaMenusDual() throws ProjetoException {
-        if (listaMenusDual == null) {
+    public DualListModel<Menu> getListaMenusDual() throws ProjetoException, SQLException {
+        if (listaMenusDual == null ) {
             listaMenusSource = null;
             listaMenusTarget = new ArrayList<>();
             getListaMenusSource();
+            listaMenusDual = new DualListModel<>(listaMenusSource, listaMenusTarget);
+        }
+        if (listaMenusDual == null || (listaMenusTarget.size() > 0 || listaMenusSource.size() > 0)) {
+            listaMenusSource = null;
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            Map<String, String> params = facesContext.getExternalContext()
+                    .getRequestParameterMap();
+            if (params.get("id") != null) {
+                Integer id = Integer.parseInt(params.get("id"));
+                listaMenusTarget = fDao.listarMenuItemTargetEditUser(id);
+                listaMenusSource = fDao.listarMenuItemSourcerEditUser(profissional.getPerfil().getId(), id);
+            }
+            else{
+                listaMenusTarget = fDao.listarMenuItemTargetEditUser(ConverterUtil.converterLogoParaInt(profissional.getId()));
+                listaMenusSource = fDao.listarMenuItemSourcerEditUser(profissional.getPerfil().getId(), ConverterUtil.converterLogoParaInt(profissional.getId()));
+            }
             listaMenusDual = new DualListModel<>(listaMenusSource, listaMenusTarget);
         }
         return listaMenusDual;
