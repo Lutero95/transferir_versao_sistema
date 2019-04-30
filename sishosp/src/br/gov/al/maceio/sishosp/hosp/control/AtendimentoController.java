@@ -140,6 +140,20 @@ public class AtendimentoController implements Serializable {
         }
     }
 
+    public void abrirDialogAtendimentoPorEquipe(){
+        carregarEvolucaoSelecionada();
+        JSFUtil.abrirDialog("dlgEvolucao");
+        JSFUtil.atualizarComponente("formEvolucao");
+    }
+
+    public void carregarEvolucaoSelecionada(){
+        for(int i=0; i<listAtendimentosEquipe.size(); i++){
+            if(listAtendimentosEquipe.get(i).getId1() == idAtendimento1){
+                atendimento.setEvolucao(listAtendimentosEquipe.get(i).getEvolucao());
+            }
+        }
+    }
+
     public void limparAtendimentoProfissional() throws ProjetoException {
 
         boolean alterou = aDao.limpaAtendimentoProfissional(atendimento);
@@ -231,6 +245,8 @@ public class AtendimentoController implements Serializable {
                 listAtendimentosEquipe.get(i).setEvolucao(atendimento.getEvolucao());
             }
         }
+
+        JSFUtil.fecharDialog("dlgEvolucao");
     }
 
     public void onCellEdit(CellEditEvent event) {
@@ -261,7 +277,8 @@ public class AtendimentoController implements Serializable {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
             }
         } else {
-            JSFUtil.adicionarMensagemErro("Esse procedimento não pode ser atendido por um profissional com esse CBO!", "Erro");
+            String mensagem = aDao.gerarMensagemSeCboNaoEhPermitidoParaProcedimento(listAtendimentosEquipe);
+            JSFUtil.adicionarMensagemErro(mensagem, "Erro");
         }
     }
 

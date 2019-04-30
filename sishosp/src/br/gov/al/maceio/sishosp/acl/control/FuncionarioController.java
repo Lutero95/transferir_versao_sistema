@@ -582,8 +582,6 @@ public class FuncionarioController implements Serializable {
     public void listarProfissionaisConfigAgenda()
             throws ProjetoException {
         listaProfissional = fDao.listarProfissional();
-
-
     }
 
     public void addListaGruposEProgramasProfissional() {

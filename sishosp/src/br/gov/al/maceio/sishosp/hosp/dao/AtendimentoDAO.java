@@ -32,13 +32,16 @@ public class AtendimentoDAO {
 
             con = ConnectionFactory.getConnection();
             for (int i = 0; i < lista.size(); i++) {
-                String sql = "select p.id_cbo from hosp.proc_cbo p left join acl.funcionarios f on (p.id_proc = ?) left join hosp.cbo c on (c.id = p.id_cbo)"
-                        + " where p.id_proc = f.codprocedimentopadrao and c.id = p.id_cbo and f.id_funcionario = ?";
+                String sql = "SELECT p.id_cbo " +
+                        "FROM hosp.proc_cbo p " +
+                        "LEFT JOIN hosp.cbo c ON (c.id = p.id_cbo) " +
+                        "LEFT JOIN acl.funcionarios f ON (f.codcbo = p.id_cbo) " +
+                        "WHERE p.id_proc = f.codprocedimentopadrao AND f.id_funcionario = ? AND p.id_proc = ?;";
 
                 PreparedStatement stm = con.prepareStatement(sql);
 
-                stm.setInt(1, lista.get(i).getProcedimento().getIdProc());
-                stm.setLong(2, lista.get(i).getFuncionario().getId());
+                stm.setLong(1, lista.get(i).getFuncionario().getId());
+                stm.setInt(2, lista.get(i).getProcedimento().getIdProc());
 
                 ResultSet rs = stm.executeQuery();
 
@@ -57,6 +60,53 @@ public class AtendimentoDAO {
 
             if (lista.size() == listaAux.size()) {
                 retorno = true;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public String gerarMensagemSeCboNaoEhPermitidoParaProcedimento(List<AtendimentoBean> lista) {
+
+        String retorno = "";
+        Boolean permiteAtendimento = false;
+
+        try {
+
+            con = ConnectionFactory.getConnection();
+            for (int i = 0; i < lista.size(); i++) {
+                String sql = "SELECT p.id_cbo " +
+                        "FROM hosp.proc_cbo p " +
+                        "LEFT JOIN hosp.cbo c ON (c.id = p.id_cbo) " +
+                        "LEFT JOIN acl.funcionarios f ON (f.codcbo = p.id_cbo) " +
+                        "WHERE p.id_proc = f.codprocedimentopadrao AND f.id_funcionario = ? AND p.id_proc = ?;";
+
+                PreparedStatement stm = con.prepareStatement(sql);
+
+                stm.setLong(1, lista.get(i).getFuncionario().getId());
+                stm.setInt(2, lista.get(i).getProcedimento().getIdProc());
+
+                ResultSet rs = stm.executeQuery();
+
+                while (rs.next()) {
+                    permiteAtendimento = true;
+                }
+
+                if (!permiteAtendimento) {
+                    retorno = retorno + "O procedimento: "+lista.get(i).getProcedimento().getNomeProc()+" não pode ser atendimento pelo CBO: "
+                            +lista.get(i).getCbo().getDescCbo()+".\n";
+                }
+
+
             }
 
         } catch (SQLException ex) {
@@ -162,7 +212,7 @@ public class AtendimentoDAO {
                 stmt.execute();
 
                 String sql2 = "INSERT INTO hosp.atendimentos1(dtaatendido, codprofissionalatendimento, id_atendimento, "
-                        + " cbo, codprocedimento, situacao) VALUES (current_timestamp, ?, ?, ?, ?, ?);";
+                        + " cbo, codprocedimento, situacao, evolucao) VALUES (current_timestamp, ?, ?, ?, ?, ?, ?);";
 
                 PreparedStatement stmt2 = con.prepareStatement(sql2);
                 stmt2.setLong(1, lista.get(i).getFuncionario().getId());
@@ -170,6 +220,7 @@ public class AtendimentoDAO {
                 stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
                 stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
                 stmt2.setString(5, lista.get(i).getStatus());
+                stmt2.setString(6, lista.get(i).getEvolucao());
                 stmt2.executeUpdate();
 
             }
@@ -262,7 +313,7 @@ public class AtendimentoDAO {
             stm.setInt(3, codEmpresa);
 
             ResultSet rs = stm.executeQuery();
-            
+
             while (rs.next()) {
                 AtendimentoBean at = new AtendimentoBean();
                 at.setId(rs.getInt("id_atendimento"));
@@ -304,12 +355,12 @@ public class AtendimentoDAO {
 
         AtendimentoBean at = new AtendimentoBean();
         String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, a1.codprocedimento, " +
-        		"pr.nome as procedimento, a1.situacao, a1.evolucao " +
-        		"from hosp.atendimentos a " +
-        		"join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " +
-        		"left join hosp.pacientes p on (p.id_paciente = a.codpaciente) " +
-        		"left join acl.funcionarios f on (f.id_funcionario = a.codmedico) " +
-        		"left join hosp.proc pr on (pr.id = a1.codprocedimento) "
+                "pr.nome as procedimento, a1.situacao, a1.evolucao " +
+                "from hosp.atendimentos a " +
+                "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " +
+                "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) " +
+                "left join acl.funcionarios f on (f.id_funcionario = a.codmedico) " +
+                "left join hosp.proc pr on (pr.id = a1.codprocedimento) "
                 + "where a.id_atendimento = ?";
         try {
             con = ConnectionFactory.getConnection();
@@ -347,7 +398,7 @@ public class AtendimentoDAO {
             throws ProjetoException {
 
         String sql = "select a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns,"
-                + " f.codcbo, c.descricao, a1.situacao, a1.codprocedimento, pr.nome as procedimento"
+                + " f.codcbo, c.descricao, a1.situacao, pr.id, a1.codprocedimento, pr.nome as procedimento"
                 + " from hosp.atendimentos1 a1"
                 + " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
                 + " left join hosp.cbo c on (f.codcbo = c.id)"
@@ -377,6 +428,7 @@ public class AtendimentoDAO {
                 at.setStatus(rs.getString("situacao"));
                 at.getProcedimento().setCodProc(rs.getInt("codprocedimento"));
                 at.getProcedimento().setNomeProc(rs.getString("procedimento"));
+                at.getProcedimento().setIdProc(rs.getInt("id"));
 
                 lista.add(at);
             }

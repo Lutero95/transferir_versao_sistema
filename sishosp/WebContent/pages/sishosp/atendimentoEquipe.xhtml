@@ -39,7 +39,7 @@
 								<p:commandButton icon="ui-icon-search" class="btn-acao-table acao-editar"
 								style="margin-right: 10px;"
 								action="#{MBFuncionarios.listarProfissionaisConfigAgenda()}"
-									oncomplete="PF('dlgConsultProfi').show()">
+									oncomplete="PF('dlgConsultProfi').show()" update=":formConsultProf">
 									<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimentoLista}" />
 								</p:commandButton>
@@ -55,7 +55,7 @@
 							<p:column headerText="Procedimento" width="20%">
 								<p:commandButton icon="ui-icon-search" class="btn-acao-table acao-editar"
 								action="#{AtendimentoController.listarProcedimentos()}"
-									oncomplete="PF('dlgConsulProc1').show()">
+									oncomplete="PF('dlgConsulProc1').show()" update=":formConsulProc1">
 									<f:setPropertyActionListener value="#{atendimento}"
 										target="#{AtendimentoController.atendimentoLista}" />
 								</p:commandButton>
@@ -92,7 +92,7 @@
 								<div align="center">
 									<p:commandButton icon="ui-icon-document" size="sm"
 									class="btn-acao-table acao-editar"
-										onclick="PF('dlgEvolucao').show()">
+										action="#{AtendimentoController.abrirDialogAtendimentoPorEquipe()}">
 										<f:setPropertyActionListener value="#{atendimento.id1}"
 											target="#{AtendimentoController.idAtendimento1}" />
 									</p:commandButton>
@@ -208,9 +208,9 @@
 				<br></br>
 
 				<div align="center">
-					<b:commandButton
+					<p:commandButton
 						action="#{AtendimentoController.adicionarEvolucaoAtendimentoEquipe()}"
-						icon="glyphicon-ok" class="btn-acao-table acao-confirmar"
+						icon="ui-icon-disk" class="btn-acao-table acao-confirmar"
 						value="Gravar Evolução" style="float:left" />
 				</div>
 			</h:form>
