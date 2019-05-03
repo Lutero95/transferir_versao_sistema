@@ -30,7 +30,7 @@
 
 							<p:commandButton size="sm" style="margin-left: 20px;"
 								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
-								update=":formConsuLaudo"
+								update=":formConsuLaudo" actionListener="#{RenovarPacienteController.listarLaudosVigentes()}"
 								oncomplete="PF('dlgConsuLaudo').show();"  />
 						</b:column>
 
@@ -269,20 +269,69 @@
 
 					<b:row>
 						<p:outputPanel id="outTabelas">
-
-								<b:column span="12" style="margin-bottom:15px;">
-								<p:dataTable id="dtAdicionados" resizableColumns="true"
-									responsive="true"
-									rendered="#{RenovarPacienteController.tipo == 'E'}"
-									value="#{RenovarPacienteController.listaDiasProfissional}"
-									var="gerenciamento" emptyMessage="Sem registros.">
+							<b:column span="5" style="margin-bottom:15px;">
+								<p:dataTable id="dtEquipe" resizableColumns="true"
+											 rendered="#{RenovarPacienteController.tipo == 'E'}"
+											 responsive="true"
+											 value="#{RenovarPacienteController.listaProfissionaisEquipe}"
+											 var="func" emptyMessage="Sem registros.">
 
 									<p:column headerText="Profissional">
-										<h:outputLabel value="#{gerenciamento.funcionario.nome}" />
+										<h:outputLabel value="#{func.nome}"/>
 									</p:column>
 
-									<p:column headerText="Dias Atendimento">
-										<h:outputLabel value="#{gerenciamento.funcionario.diasSemana}" />
+									<p:column headerText="Especialidade">
+										<h:outputLabel value="#{func.especialidade.descEspecialidade}"/>
+									</p:column>
+
+									<p:column headerText="Adicionar">
+										<div align="center">
+											<p:commandButton icon="ui-icon-check" immediate="true"
+															 title="Selecionar" class="new-btn-acao-table acao-editar"
+															 actionListener="#{RenovarPacienteController.abrirDialog}"
+															 update=":formDiasAtendimento">
+												<f:setPropertyActionListener value="#{func}"
+																			 target="#{RenovarPacienteController.funcionario}"/>
+											</p:commandButton>
+										</div>
+									</p:column>
+
+								</p:dataTable>
+							</b:column>
+
+							<b:column span="1">
+							</b:column>
+
+							<b:column span="6">
+								<p:dataTable id="dtAdicionados" resizableColumns="true"
+											 rendered="#{RenovarPacienteController.tipo == 'E'}"
+											 responsive="true"
+											 value="#{RenovarPacienteController.listaProfissionaisAdicionados}"
+											 var="funcionario" emptyMessage="Sem registros.">
+
+									<p:column headerText="Profissional" width="30%">
+										<h:outputLabel value="#{funcionario.nome}"/>
+									</p:column>
+
+									<p:column headerText="Especialidade" width="20%">
+										<h:outputLabel
+												value="#{funcionario.especialidade.descEspecialidade}"/>
+									</p:column>
+
+									<p:column headerText="Dias Atendimento" width="38%">
+										<h:outputLabel value="#{funcionario.diasSemana}"/>
+									</p:column>
+
+									<p:column headerText="Excluir" width="12%">
+										<div align="center">
+											<p:commandButton icon="ui-icon-trash" immediate="true"
+															 action="#{RenovarPacienteController.excluirFuncionarioIhDiasDeAtendimento()}"
+															 title="Excluir" class="new-btn-acao-table acao-editar"
+															 update=":formInsercao2:dtAdicionados">
+												<f:setPropertyActionListener value="#{funcionario}"
+																			 target="#{RenovarPacienteController.funcionario}"/>
+											</p:commandButton>
+										</div>
 									</p:column>
 
 								</p:dataTable>
@@ -316,7 +365,7 @@
 
 								<b:selectOneMenu class="select-agendaEquipe2" required="true"
 												 requiredMessage="Horário: Campo obrigatório!"
-												 value="#{AlteracaoPacienteController.insercao.agenda.horario}">
+												 value="#{RenovarPacienteController.insercao.agenda.horario}">
 									<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
 									<f:selectItems
 											value="#{InsercaoController.gerarHorariosAtendimento()}"/>
@@ -341,28 +390,6 @@
 					</b:row>
 
 					<br></br>
-
-					<b:row>
-
-						<b:column span="5"
-							class="label-position new-data-size new-comple1">
-							<b:label value="Tipo Atendimento" severity="info" class="fire-label"/>
-
-							<p:outputPanel id="outTipoAt">
-								<p:autoComplete
-									value="#{RenovarPacienteController.insercao.agenda.tipoAt}"
-									size="31" readonly="true"
-									converter="conTipoAtendimento" class="select-agendaEquipe4"
-									completeMethod="#{InsercaoPacienteController.listaTipoAtAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descTipoAt}">
-									<p:ajax event="itemSelect" />
-								</p:autoComplete>
-							</p:outputPanel>
-						</b:column>
-
-					</b:row>
 
 					<div align="center">
 						<b:messages value="Error" id="msgPagina"></b:messages>
@@ -393,7 +420,7 @@
 			modal="true" id="laudo-id">
 			<h:form id="formConsuLaudo">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{RenovarPacienteController.listarLaudosVigentesDoPaciente()}" id="dtLaudo"
+					value="#{RenovarPacienteController.listaLaudosVigentes}" id="dtLaudo"
 					var="insercao" display="Nenhum Laudo">
 
 					<h:column>
@@ -426,6 +453,90 @@
 				</b:dataTable>
 			</h:form>
 		</p:dialog>
+
+        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
+                  modal="true">
+            <h:form id="formDiasAtendimento">
+                <p:selectManyCheckbox layout="grid" columns="7" required="true"
+                                      requiredMessage="Escolha ao menos um dia da semana!"
+                                      value="#{RenovarPacienteController.funcionario.listDiasSemana}">
+                    <f:selectItem itemLabel="Domingo" itemValue="1"/>
+                    <f:selectItem itemLabel="Segunda" itemValue="2"/>
+                    <f:selectItem itemLabel="Terça" itemValue="3"/>
+                    <f:selectItem itemLabel="Quarta" itemValue="4"/>
+                    <f:selectItem itemLabel="Quinta" itemValue="5"/>
+                    <f:selectItem itemLabel="Sexta" itemValue="6"/>
+                    <f:selectItem itemLabel="Sábado" itemValue="7"/>
+                </p:selectManyCheckbox>
+
+                <br></br>
+                <br></br>
+
+                <div align="center">
+                    <b:commandButton value="Adicionar" style="margin-top:5px;"
+                                     class="btn-acao-table acao-confirmar"
+                                     update=":formInsercao2:dtAdicionados, :formInsercao2:msgPagina"
+                                     id="b2" icon="glyphicon-ok"
+                                     action="#{RenovarPacienteController.validarAdicionarFuncionario()}"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Quantidade de Agendamentos" styleClass="topDialog"
+                  widgetVar="dlgQtdAgendamentos" modal="true">
+            <h:form id="formQtdAgendamentos">
+                <p:dataTable id="dtAgendamentosEquipe" resizableColumns="true"
+                             value="#{RenovarPacienteController.visualizarHorariosEquipe()}" var="ag"
+                             emptyMessage="Sem registros.">
+
+                    <p:column headerText="Equipe">
+                        <h:outputLabel value="#{ag.equipe.descEquipe}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Segunda ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[0]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Segunda">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[0]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Terça ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[1]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Terça">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[1]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Quarta ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[2]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Quarta">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[2]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Quinta ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[3]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Quinta">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[3]}"/>
+                    </p:column>
+
+                    <p:column headerText="Manhã Sexta ">
+                        <h:outputLabel value="#{ag.qtdAtendimentosManha[4]}"/>
+                    </p:column>
+
+                    <p:column headerText="Tarde Sexta">
+                        <h:outputLabel value="#{ag.qtdAtendimentosTarde[4]}"/>
+                    </p:column>
+
+                </p:dataTable>
+
+            </h:form>
+        </p:dialog>
 
 	</ui:define>
 
