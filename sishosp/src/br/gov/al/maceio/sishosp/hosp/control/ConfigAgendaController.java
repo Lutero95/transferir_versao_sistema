@@ -514,7 +514,7 @@ public class ConfigAgendaController implements Serializable {
     public List<FuncionarioBean> getListaProfissionais()
             throws ProjetoException {
         if (this.listaProfissionais == null) {
-            this.listaProfissionais = fDao.listarProfissional();
+            this.listaProfissionais = fDao.listarProfissionalAtendimento();
         }
         return listaProfissionais;
     }

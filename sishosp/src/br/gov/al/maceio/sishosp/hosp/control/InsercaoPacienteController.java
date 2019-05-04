@@ -479,7 +479,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void listarProfissionais() throws ProjetoException {
         FuncionarioDAO fDao = new FuncionarioDAO();
-        listaProfissionais = fDao.listarProfissional();
+        listaProfissionais = fDao.listarProfissionalAtendimento();
     }
 
     public List<GrupoBean> listaGrupoAutoComplete(String query)

@@ -361,7 +361,7 @@ public class InsercaoPacienteDAO {
                 ps4.setLong(1, insercao.getFuncionario().getId());
                 ps4.setInt(2, idAgend);
                 ps4.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
-                ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+                ps4.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
 
                 ps4.executeUpdate();
 

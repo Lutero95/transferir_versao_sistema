@@ -261,12 +261,14 @@ public class RenovacaoPacienteController implements Serializable {
 
 
             InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+
             Boolean cadastrou = null;
+
+            ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
+
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
                 gerarListaAgendamentosEquipe();
-
-                ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
 
                 cadastrou = rDao.gravarRenovacaoEquipe(insercao, insercaoParaLaudo,
                         listaAgendamentosProfissionalFinal, listaProfissionaisAdicionados);
@@ -274,8 +276,6 @@ public class RenovacaoPacienteController implements Serializable {
             if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
                 gerarListaAgendamentosProfissional();
-
-                ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
 
                 cadastrou = rDao.gravarInsercaoProfissional(insercao,
                         insercaoParaLaudo, listaAgendamentosProfissionalFinal);

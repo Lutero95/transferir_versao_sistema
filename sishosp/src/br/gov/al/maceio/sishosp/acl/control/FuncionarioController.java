@@ -14,7 +14,6 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -451,7 +450,7 @@ public class FuncionarioController implements Serializable {
     // PROFISSIONAL INÍCIO
     public void limparDados() throws ProjetoException {
         this.profissional = new FuncionarioBean();
-        this.listaProfissional = fDao.listarProfissional();
+        this.listaProfissional = fDao.listarProfissionalAtendimento();
         this.listaGruposEProgramasProfissional = new ArrayList<ProgramaBean>();
         renderizarPermissoes = false;
     }
@@ -500,7 +499,7 @@ public class FuncionarioController implements Serializable {
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
             }
-            this.listaProfissional = fDao.listarProfissional();
+            this.listaProfissional = fDao.listarProfissionalAtendimento();
         }
     }
 
@@ -514,7 +513,7 @@ public class FuncionarioController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
-        this.listaProfissional = fDao.listarProfissional();
+        this.listaProfissional = fDao.listarProfissionalAtendimento();
     }
 
     public void alterarProfissional() throws ProjetoException {
@@ -575,13 +574,13 @@ public class FuncionarioController implements Serializable {
     }
 
     public void listarProfissionais() throws ProjetoException {
-        listaProfissional = fDao.listarProfissional();
+        listaProfissional = fDao.listarTodosOsProfissional();
     }
 
 
     public void listarProfissionaisConfigAgenda()
             throws ProjetoException {
-        listaProfissional = fDao.listarProfissional();
+        listaProfissional = fDao.listarProfissionalAtendimento();
     }
 
     public void addListaGruposEProgramasProfissional() {
@@ -784,7 +783,7 @@ public class FuncionarioController implements Serializable {
     }
 
     public void ListarTodosProfissionais() throws ProjetoException {
-        listaProfissional = fDao.listarProfissional();
+        listaProfissional = fDao.listarProfissionalAtendimento();
 
     }
 

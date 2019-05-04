@@ -1148,7 +1148,56 @@ public class FuncionarioDAO {
         return lista;
     }
 
-    public List<FuncionarioBean> listarProfissional() throws ProjetoException {
+    public List<FuncionarioBean> listarProfissionalAtendimento() throws ProjetoException {
+
+        List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
+        String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, " +
+                " codprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe "
+                + " from acl.funcionarios where cod_empresa = ? AND realiza_atendimento IS TRUE order by descfuncionario";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                FuncionarioBean prof = new FuncionarioBean();
+                prof.setId(rs.getLong("id_funcionario"));
+                prof.setCpf(rs.getString("cpf"));
+                prof.setSenha(rs.getString("senha"));
+                prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
+                prof.setNome(rs.getString("descfuncionario"));
+                prof.setEspecialidade(espDao.listarEspecialidadePorId(rs
+                        .getInt("codespecialidade")));
+                prof.setCns(rs.getString("cns"));
+                prof.setAtivo(rs.getString("ativo"));
+                prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
+                prof.setProc1(procDao.listarProcedimentoPorId(rs
+                        .getInt("codprocedimentopadrao")));
+                prof.getPerfil().setId(rs.getLong("id_perfil"));
+                prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
+                prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+
+                listaProf.add(prof);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaProf;
+    }
+
+    public List<FuncionarioBean> listarTodosOsProfissional() throws ProjetoException {
 
         List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
 

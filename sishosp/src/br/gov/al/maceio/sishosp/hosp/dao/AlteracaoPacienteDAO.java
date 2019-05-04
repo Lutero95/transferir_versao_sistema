@@ -444,7 +444,7 @@ public class AlteracaoPacienteDAO {
                 ps7.setLong(1, insercao.getFuncionario().getId());
                 ps7.setInt(2, idAgend);
                 ps7.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
-                ps7.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+                ps7.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
 
                 ps7.executeUpdate();
 
