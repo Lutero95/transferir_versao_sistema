@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import org.primefaces.event.CellEditEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -42,6 +43,8 @@ public class AtendimentoController implements Serializable {
     private AtendimentoDAO aDao = new AtendimentoDAO();
     private ProcedimentoDAO pDao = new ProcedimentoDAO();
     private Integer idAtendimento1;
+    private List<AtendimentoBean> listaEvolucoes;
+    private PacienteBean paciente;
 
     //CONSTANTES
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
@@ -60,10 +63,11 @@ public class AtendimentoController implements Serializable {
         procedimento = new ProcedimentoBean();
         listaProcedimentos = new ArrayList<ProcedimentoBean>();
         primeiraVez = true;
+        listaEvolucoes = new ArrayList<>();
         atendimento.getEmpresa().setCodEmpresa(user_session.getCodigo());
         atendimento.setDataAtendimentoInicio(DataUtil.retornarDataAtual());
         atendimento.setDataAtendimentoFinal(DataUtil.retornarDataAtual());
-
+        paciente = new PacienteBean();
     }
 
 
@@ -282,6 +286,9 @@ public class AtendimentoController implements Serializable {
         }
     }
 
+    public void carregarEvolucoesPaciente() throws ProjetoException {
+        listaEvolucoes = aDao.carregarEvolucoesDoPaciente(paciente.getId_paciente());
+    }
 
     public AtendimentoBean getAtendimento() {
         return atendimento;
@@ -349,4 +356,20 @@ public class AtendimentoController implements Serializable {
 	public void setListaProcedimentos(List<ProcedimentoBean> listaProcedimentos) {
 		this.listaProcedimentos = listaProcedimentos;
 	}
+
+    public List<AtendimentoBean> getListaEvolucoes() {
+        return listaEvolucoes;
+    }
+
+    public void setListaEvolucoes(List<AtendimentoBean> listaEvolucoes) {
+        this.listaEvolucoes = listaEvolucoes;
+    }
+
+    public PacienteBean getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(PacienteBean paciente) {
+        this.paciente = paciente;
+    }
 }
