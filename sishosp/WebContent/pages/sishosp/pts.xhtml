@@ -1,0 +1,152 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <f:metadata>
+        <f:viewAction
+                action="#{PtsController.carregarPts()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">PTS</h4>
+            </div>
+
+            <div class="panel-body table-body sub-table-body">
+
+                <h:form id="formPts">
+
+                    <b:row>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Paciente:" class="fire-label" severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{PtsController.pts.paciente.nome}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="CPF:" class="fire-label" severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{PtsController.pts.paciente.cpf}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="CNS:" class="fire-label" severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{PtsController.pts.paciente.cns}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Programa:" class="fire-label" severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{PtsController.pts.programa.descPrograma}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Grupo:" class="fire-label" severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{PtsController.pts.grupo.descGrupo}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="2" class="label-position data-size">
+
+                            <b:label value="Data do PTS:" id="datapts"
+                                     severity="info" class="fire-label"/>
+
+                            <p:calendar
+                                    value="#{PtsController.pts.data}"
+                                    id="dtagen" locale="pt" navigator="true" mask="true"
+                                    required="true" requiredMessage="Data do PTS: Campo obrigatório!"
+                                    class="select-agendaEquipe2" showOn="button"
+                                    pattern="dd/MM/yyyy" size="15">
+                            </p:calendar>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+
+                        <h1>VISÃO GERAL DO PACIENTE</h1>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+
+                        <b:column span="5" class="label-position data-size">
+
+                            <b:label value="A) Diagnóstico Funcional:" id="diagnosticoFuncional"
+                                     severity="info" class="fire-label"/>
+
+                            <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
+                                             required="true" rows="20" cols="89" requiredMessage="Diagnóstico Funcional: Campo obrigatório!"
+                                             value="#{PtsController.pts.diagnosticoFuncional}"></h:inputTextarea>
+
+                        </b:column>
+
+                        <b:column span="2"></b:column>
+
+                        <b:column span="5" class="label-position data-size">
+
+                            <b:label value="B) Necessidades e Desejos:" id="necessidadesIhDesejos"
+                                     severity="info" class="fire-label"/>
+
+                            <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
+                                             required="true" rows="20" cols="89" requiredMessage="Necessidades e Desejos: Campo obrigatório!"
+                                             value="#{PtsController.pts.necessidadesIhDesejos}"></h:inputTextarea>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+
+                        <h1>VISÃO MULTIDISCIPLINAR</h1>
+
+                    </b:row>
+
+                    <b:row>
+
+                        <p:commandButton icon="ui-icon-plus" style="margin-top: 10px"
+                                         value="Incluir Área"
+                                         class="btn-acao-table acao-confirmar"
+                                         update="" />
+
+                    </b:row>
+
+                </h:form>
+
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

@@ -1797,6 +1797,13 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 	text-shadow: none;
 }
 
+.acao-pts, .acao-pts:hover, .acao-pts:focus {
+	border-bottom: 1px solid #000000 !important;
+	border-color: #000000 !important;
+	color: #000000 !important;
+	text-shadow: none;
+}
+
 .col-md-2-new {
 	width: 11.666667%;
 }

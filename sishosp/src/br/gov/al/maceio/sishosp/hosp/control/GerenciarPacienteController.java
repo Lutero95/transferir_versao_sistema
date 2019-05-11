@@ -40,6 +40,7 @@ public class GerenciarPacienteController implements Serializable {
     private static final String ENDERECO_RENOVACAO = "renovacaoPaciente?faces-redirect=true";
     private static final String ENDERECO_TRANSFERENCIA = "transferenciaPaciente?faces-redirect=true";
     private static final String ENDERECO_ALTERACAO = "alteracaoPaciente?faces-redirect=true";
+    private static final String ENDERECO_PTS = "pts?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
 
     public GerenciarPacienteController() {
@@ -151,6 +152,10 @@ public class GerenciarPacienteController implements Serializable {
 
     public String redirectRenovacao() {
         return RedirecionarUtil.redirectEditSemTipo(ENDERECO_RENOVACAO, ENDERECO_ID, this.rowBean.getId());
+    }
+
+    public String redirectPTS() {
+        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PTS, ENDERECO_ID, this.rowBean.getId());
     }
 
     public String redirectTransferencia() {

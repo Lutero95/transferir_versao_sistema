@@ -138,8 +138,6 @@
 
 						<div align="center">
 
-                            <b:column span="1"></b:column>
-
 							<b:column span="2" class="new-span2">
 								<b:commandButton value="Inserir" style="margin-top:5px;"
 									id="btnInserir" immediate="true"
@@ -176,7 +174,7 @@
 												 id="btnTransferir" immediate="true"
 												 class="btn-acao-table acao-transfere btn-new-padding2"
 												 update=":formGerenPaci, :frmEquipamentos:msgPagina"
-												 icon="glyphicon glyphicon-refresh"
+												 icon="glyphicon glyphicon-random"
 												 action="#{GerenciarPacienteController.redirectTransferencia()}" />
 							</b:column>
 
@@ -190,7 +188,15 @@
 									action="#{GerenciarPacienteController.inicioDesligar()}" />
 							</b:column>
 
-                            <b:column span="1"></b:column>
+							<b:column span="2" class="new-span2">
+								<b:commandButton value="PTS" style="margin-top:5px;"
+												 disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
+												 id="btnPTS" immediate="true"
+												 class="btn-acao-table acao-pts btn-new-padding2"
+												 update=":formGerenPaci, :frmEquipamentos:msgPagina, :formDeslPac"
+												 icon="glyphicon glyphicon-file"
+                                                 action="#{GerenciarPacienteController.redirectPTS()}" />
+							</b:column>
 
 						</div>
 
@@ -211,7 +217,7 @@
 							rowKey="#{pacie.id}">
 
 							<p:ajax event="rowSelect"
-								update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnTransferir :formGerenPaci:btnDesligar :frmEquipamentos:outEquipamento" />
+								update=":formGerenPaci:btnRenovar :formGerenPaci:btnAlterar :formGerenPaci:btnTransferir :formGerenPaci:btnDesligar :formGerenPaci:btnPTS :frmEquipamentos:outEquipamento" />
 
 							<p:column width="5%">
 								<f:facet name="header">
