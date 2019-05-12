@@ -105,7 +105,8 @@
                                      severity="info" class="fire-label"/>
 
                             <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
-                                             required="true" rows="20" cols="89" requiredMessage="Diagnóstico Funcional: Campo obrigatório!"
+                                             required="true" rows="20" cols="89"
+                                             requiredMessage="Diagnóstico Funcional: Campo obrigatório!"
                                              value="#{PtsController.pts.diagnosticoFuncional}"></h:inputTextarea>
 
                         </b:column>
@@ -118,7 +119,8 @@
                                      severity="info" class="fire-label"/>
 
                             <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
-                                             required="true" rows="20" cols="89" requiredMessage="Necessidades e Desejos: Campo obrigatório!"
+                                             required="true" rows="20" cols="89"
+                                             requiredMessage="Necessidades e Desejos: Campo obrigatório!"
                                              value="#{PtsController.pts.necessidadesIhDesejos}"></h:inputTextarea>
 
                         </b:column>
@@ -126,6 +128,10 @@
                     </b:row>
 
                     <br></br>
+
+                    <div align="center">
+                        <b:messages value="Error" id="msgPagina"></b:messages>
+                    </div>
 
                     <b:row>
 
@@ -136,16 +142,233 @@
                     <b:row>
 
                         <p:commandButton icon="ui-icon-plus" style="margin-top: 10px"
-                                         value="Incluir Área"
+                                         value="Incluir Área" immediate="true"
                                          class="btn-acao-table acao-confirmar"
-                                         update="" />
+                                         update=":frmInclusaoAreaPts"
+                                         actionListener="#{PtsController.abrirDialogInclusaoPts()}"/>
 
                     </b:row>
+
+                    <br></br>
+
+                    <b:row>
+
+                        <p:dataTable id="dtPtsAdicionados" resizableColumns="true"
+                                     value="#{PtsController.listaPts}"
+                                     var="pts" emptyMessage="Sem registros.">
+
+                            <p:column headerText="Especialidade" width="16%">
+                                <h:outputLabel value="#{pts.area.descEspecialidade}">
+                                </h:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Objetivo Curto" width="14%">
+                                <h:outputLabel value="#{pts.objetivoCurto}"/>
+                            </p:column>
+
+                            <p:column headerText="Objetivo Médio" width="14%">
+                                <h:outputLabel value="#{pts.objetivoMedio}"/>
+                            </p:column>
+
+                            <p:column headerText="Objetivo Longo" width="14%">
+                                <h:outputLabel value="#{pts.objetivoLongo}"/>
+                            </p:column>
+
+                            <p:column headerText="Plano Curto" width="14%">
+                                <h:outputLabel value="#{pts.planoDeIntervencoesCurto}"/>
+                            </p:column>
+
+                            <p:column headerText="Plano Médio" width="14%">
+                                <h:outputLabel value="#{pts.planoDeIntervencoesMedio}"/>
+                            </p:column>
+
+                            <p:column headerText="Plano Longo" width="14%">
+                                <h:outputLabel value="#{pts.planoDeIntervencoesLongo}"/>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <div align="center">
+
+                        <b:commandButton value="Gravar" look="success" size="sm" id="b1"
+                                         icon="glyphicon-ok" update=":formPts:msgPagina"
+                                         class="btn-incluir"
+                                         action="#{PtsController.gravarPts()}" />
+
+                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true">
+                        </b:commandButton>
+
+                    </div>
 
                 </h:form>
 
             </div>
         </div>
+
+        <p:dialog header="Inclusão de Área - PTS" widgetVar="dlgInclusaoAreaPts" dynamic="true"
+                  modal="true" styleClass="topDialog" position="top" width="1200px">
+            <h:form id="frmInclusaoAreaPts">
+
+                <b:row>
+
+                    <b:column span="12" class="label-position data-size">
+
+                        <b:label value="Área" id="idArea"
+                                 severity="info" class="fire-label"/>
+
+                        <b:selectOneMenu class="select-agendaEquipe2" required="true"
+                                         requiredMessage="Área: Campo obrigatório!"
+                                         value="#{PtsController.pts.ptsArea.area}">
+                            <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                            <f:selectItems value="#{PtsController.listaEspecialidadesEquipe}" var="especialidade"
+                                           itemLabel="#{especialidade.descEspecialidade}"
+                                           itemValue="#{especialidade}"/>
+
+                        </b:selectOneMenu>
+
+                    </b:column>
+
+                </b:row>
+
+                <br></br>
+
+                <b:row>
+
+                    <b:column span="5" class="label-position data-size">
+
+                        <h1>OBJETIVO</h1>
+
+                        <br></br>
+
+                        <b:label value="Curto"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:70px;width:250px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Prazo Curto(Objetivos): Campo obrigatório!"
+                                         value="#{PtsController.pts.ptsArea.objetivoCurto}"></h:inputTextarea>
+
+                        <br></br>
+                        <br></br>
+
+                        <b:label value="Médio"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:70px;width:250px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Prazo Médio(Objetivos): Campo obrigatório!"
+                                         value="#{PtsController.pts.ptsArea.objetivoMedio}"></h:inputTextarea>
+
+                        <br></br>
+                        <br></br>
+
+                        <b:label value="Longo"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:70px;width:250px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Prazo Longo(Objetivos): Campo obrigatório!"
+                                         value="#{PtsController.pts.ptsArea.objetivoLongo}"></h:inputTextarea>
+
+                    </b:column>
+
+                    <b:column span="2"></b:column>
+
+                    <b:column span="5" class="label-position data-size">
+
+                        <h1>PLANO DE INTERVENÇÕES</h1>
+
+                        <br></br>
+
+                        <b:label value="Curto"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:70px;width:250px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Prazo Curto(Plano de Intervenções): Campo obrigatório!"
+                                         value="#{PtsController.pts.ptsArea.planoDeIntervencoesCurto}"></h:inputTextarea>
+
+                        <br></br>
+                        <br></br>
+
+                        <b:label value="Médio"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:70px;width:250px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Prazo Médio(Plano de Intervenções): Campo obrigatório!"
+                                         value="#{PtsController.pts.ptsArea.planoDeIntervencoesMedio}"></h:inputTextarea>
+
+                        <br></br>
+                        <br></br>
+
+                        <b:label value="Longo"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:70px;width:250px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Prazo Longo(Plano de Intervenções): Campo obrigatório!"
+                                         value="#{PtsController.pts.ptsArea.planoDeIntervencoesLongo}"></h:inputTextarea>
+
+                    </b:column>
+
+                </b:row>
+
+                <div align="center">
+                    <b:messages value="Error" id="msgDialog"></b:messages>
+                </div>
+
+                <b:row>
+
+                    <p:commandButton icon="ui-icon-plus" style="margin-top: 10px;margin-left: 10px"
+                                     value="Incluir"
+                                     class="btn-acao-table acao-confirmar"
+                                     onclick="PF('dlgSenhaAreaPts').show();"/>
+
+                    <p:commandButton value="Fechar" icon="ui-icon-close" styleClass="btn-nao"
+                                     style="width:100px;margin-left: 10px" onclick="PF('dlgInclusaoAreaPts').hide();"
+                                     process="@this"/>
+
+                </b:row>
+
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog header="Digite a senha" widgetVar="dlgSenhaAreaPts" modal="true" styleClass="topDialog" dynamic="true">
+            <h:form id="frmSenhaAreaPts">
+
+                <p:growl id="grwSenha"/>
+                <h:panelGrid columns="1" cellpadding="3">
+
+                    <b:inputText mask="999-999-999-99" style="padding:10px;"
+                                 required="true" value="#{PtsController.pts.ptsArea.funcionario.cpf}"
+                                 placeholder="Digite o CPF" render-label="true"
+                                 requiredMessage="CPF obrigatório"/>
+                    <b:message for="@previous"/>
+
+                    <b:inputSecret style="padding:10px;margin-top:10px"
+                                   required="true" placeholder="Digite a Senha"
+                                   requiredMessage="Senha obrigatório"
+                                   value="#{PtsController.pts.ptsArea.funcionario.senha}"></b:inputSecret>
+                    <b:message for="@previous"/>
+
+                </h:panelGrid>
+
+                <div align="center">
+                    <p:commandButton value="Liberar" look="success" size="sm" style="margin-top:10px"
+                                     icon="ui-icon-check" update=":formPts:dtPtsAdicionados, grwSenha"
+                                     action="#{PtsController.validarSenhaAdicionarAreaPts()}"/>
+                </div>
+
+            </h:form>
+        </p:dialog>
 
     </ui:define>
 

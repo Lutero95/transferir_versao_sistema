@@ -1,23 +1,33 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
-public class PtsBean implements Serializable {
+public class Pts implements Serializable {
 
-    // HERDADOS
     private Integer id;
-    private GrupoBean grupo;
-    private ProgramaBean programa;
-    private PacienteBean paciente;
     private Date data;
     private String diagnosticoFuncional;
     private String necessidadesIhDesejos;
+    private Timestamp dataHoraOperacao;
 
-    public PtsBean() {
+    // HERDADOS
+    private GrupoBean grupo;
+    private ProgramaBean programa;
+    private PacienteBean paciente;
+    private GerenciarPacienteBean gerenciarPaciente;
+
+    private PtsArea ptsArea;
+
+    public Pts() {
         grupo = new GrupoBean();
         programa = new ProgramaBean();
         paciente = new PacienteBean();
+        gerenciarPaciente = new GerenciarPacienteBean();
+        ptsArea = new PtsArea();
     }
 
     public Integer getId() {
@@ -74,6 +84,30 @@ public class PtsBean implements Serializable {
 
     public void setNecessidadesIhDesejos(String necessidadesIhDesejos) {
         this.necessidadesIhDesejos = necessidadesIhDesejos;
+    }
+
+    public GerenciarPacienteBean getGerenciarPaciente() {
+        return gerenciarPaciente;
+    }
+
+    public void setGerenciarPaciente(GerenciarPacienteBean gerenciarPaciente) {
+        this.gerenciarPaciente = gerenciarPaciente;
+    }
+
+    public Timestamp getDataHoraOperacao() {
+        return dataHoraOperacao;
+    }
+
+    public void setDataHoraOperacao(Timestamp dataHoraOperacao) {
+        this.dataHoraOperacao = dataHoraOperacao;
+    }
+
+    public PtsArea getPtsArea() {
+        return ptsArea;
+    }
+
+    public void setPtsArea(PtsArea ptsArea) {
+        this.ptsArea = ptsArea;
     }
 
 }

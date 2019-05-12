@@ -178,4 +178,43 @@ public class EspecialidadeDAO {
         return esp;
     }
 
+    public List<EspecialidadeBean> listarEspecialidadesEquipe(Integer idPacienteInstituicao)
+            throws ProjetoException {
+
+        List<EspecialidadeBean> lista = new ArrayList<>();
+
+        String sql = "SELECT es.id_especialidade, es.descespecialidade " +
+                "FROM hosp.equipe e " +
+                "LEFT JOIN hosp.equipe_medico em ON (em.equipe = e.id_equipe) " +
+                "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = em.medico) " +
+                "LEFT JOIN hosp.especialidade es ON (es.id_especialidade = f.codespecialidade) " +
+                "WHERE id_equipe = (SELECT p.codequipe FROM hosp.paciente_instituicao p WHERE id = ?)";
+
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, idPacienteInstituicao);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                EspecialidadeBean esp = new EspecialidadeBean();
+                esp.setCodEspecialidade(rs.getInt("id_especialidade"));
+                esp.setDescEspecialidade(rs.getString("descespecialidade"));
+
+                lista.add(esp);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
 }

@@ -3,7 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.enums;
 public enum ValidacaoSenhaAgenda {
 
     LIBERACAO("L"),
-    ENCAIXE("E");
+    ENCAIXE("E"),
+    ADICIONAR_AREA_PTS("P");
 
     private String sigla;
 

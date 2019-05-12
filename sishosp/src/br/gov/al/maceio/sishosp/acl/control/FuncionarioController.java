@@ -881,8 +881,8 @@ public class FuncionarioController implements Serializable {
                 listaMenusSource = fDao.listarMenuItemSourcerEditUser(profissional.getPerfil().getId(), id);
             }
             else{
-                listaMenusTarget = fDao.listarMenuItemTargetEditUser(ConverterUtil.converterLogoParaInt(profissional.getId()));
-                listaMenusSource = fDao.listarMenuItemSourcerEditUser(profissional.getPerfil().getId(), ConverterUtil.converterLogoParaInt(profissional.getId()));
+                listaMenusTarget = fDao.listarMenuItemTargetEditUser(ConverterUtil.converterLongParaInt(profissional.getId()));
+                listaMenusSource = fDao.listarMenuItemSourcerEditUser(profissional.getPerfil().getId(), ConverterUtil.converterLongParaInt(profissional.getId()));
             }
             listaMenusDual = new DualListModel<>(listaMenusSource, listaMenusTarget);
         }
