@@ -36,7 +36,8 @@ public class AtendimentoDAO {
                         "FROM hosp.proc_cbo p " +
                         "LEFT JOIN hosp.cbo c ON (c.id = p.id_cbo) " +
                         "LEFT JOIN acl.funcionarios f ON (f.codcbo = p.id_cbo) " +
-                        "WHERE p.id_proc = f.codprocedimentopadrao AND f.id_funcionario = ? AND p.id_proc = ?;";
+                        "WHERE 1=1 "+//p.id_proc = f.codprocedimentopadrao 
+                        " AND f.id_funcionario = ? AND p.id_proc = ?;";
 
                 PreparedStatement stm = con.prepareStatement(sql);
 
@@ -88,7 +89,8 @@ public class AtendimentoDAO {
                         "FROM hosp.proc_cbo p " +
                         "LEFT JOIN hosp.cbo c ON (c.id = p.id_cbo) " +
                         "LEFT JOIN acl.funcionarios f ON (f.codcbo = p.id_cbo) " +
-                        "WHERE p.id_proc = f.codprocedimentopadrao AND f.id_funcionario = ? AND p.id_proc = ?;";
+                        "WHERE 1=1 "+//p.id_proc = f.codprocedimentopadrao 
+                        " AND f.id_funcionario = ? AND p.id_proc = ?;";
 
                 PreparedStatement stm = con.prepareStatement(sql);
 

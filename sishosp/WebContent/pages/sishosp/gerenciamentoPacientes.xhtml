@@ -400,6 +400,7 @@
 			width="350" height="auto" modal="true" responsive="true">
 
 			<h:form id="formDeslPac">
+			<p:growl id="grwdesligamento"/>
 
 				<b:row>
 
@@ -421,7 +422,8 @@
 						<b:label for="obs" value="Motivo:" severity="info" />
 
 						<p:outputPanel id="inMot">
-							<b:selectOneMenu filter="true" class="select-agendaEquipe5"
+							<b:selectOneMenu filter="true" class="select-agendaEquipe5" 
+							required="true" requiredMessage="Motivo do desligamento: Campo obrigatório!"
 								value="#{GerenciarPacienteController.gerenciarpaciente.motivo_desligamento}">
 								<f:selectItem itemLabel="Selecione" itemValue="" />
 								<f:selectItems itemValue="#{x.id_motivo}"
@@ -437,7 +439,7 @@
 					<p:separator />
 					<b:commandButton value="Desligar" look="success" size="sm" id="b1"
 						icon="glyphicon-ok" actionListener="#{GerenciarPacienteController.desligarPaciente}"
-						update="frmEquipamentos:msgPagina, :frmEquipamentos:dtNovosAg" class="btn-sim"/>
+						update=":formDeslPac:grwdesligamento, :frmEquipamentos:dtNovosAg" class="btn-sim"/>
 
 				</div>
 

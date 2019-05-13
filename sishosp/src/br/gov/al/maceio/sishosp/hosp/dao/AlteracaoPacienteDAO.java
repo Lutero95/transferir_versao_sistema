@@ -328,7 +328,7 @@ public class AlteracaoPacienteDAO {
 
             ps9.setLong(1, id_paciente);
             ps9.setString(2, insercao.getObservacao());
-            ps9.setString(3, "R");
+            ps9.setString(3, "A");
 
             ps9.executeUpdate();
 
