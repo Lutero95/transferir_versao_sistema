@@ -1,10 +1,10 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Pts implements Serializable {
 
@@ -19,8 +19,8 @@ public class Pts implements Serializable {
     private ProgramaBean programa;
     private PacienteBean paciente;
     private GerenciarPacienteBean gerenciarPaciente;
-
     private PtsArea ptsArea;
+    private List<PtsArea> listaPtsArea;
 
     public Pts() {
         grupo = new GrupoBean();
@@ -28,6 +28,7 @@ public class Pts implements Serializable {
         paciente = new PacienteBean();
         gerenciarPaciente = new GerenciarPacienteBean();
         ptsArea = new PtsArea();
+        listaPtsArea = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -108,6 +109,14 @@ public class Pts implements Serializable {
 
     public void setPtsArea(PtsArea ptsArea) {
         this.ptsArea = ptsArea;
+    }
+
+    public List<PtsArea> getListaPtsArea() {
+        return listaPtsArea;
+    }
+
+    public void setListaPtsArea(List<PtsArea> listaPtsArea) {
+        this.listaPtsArea = listaPtsArea;
     }
 
 }

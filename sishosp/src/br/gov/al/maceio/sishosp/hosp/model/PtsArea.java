@@ -4,7 +4,6 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 public class PtsArea implements Serializable {
 
