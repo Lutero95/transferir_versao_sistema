@@ -92,13 +92,13 @@ public class PtsController implements Serializable {
         pts.getListaPtsArea().remove(ptsRemover);
     }
 
-    public void gravarPts() {
+    public void gravarPts() throws ProjetoException {
 
         boolean cadastrou = pDao.gravarPts(pts, existePts);
 
         if (cadastrou == true) {
-            limparDados();
             existePts = true;
+            this.pts = pDao.ptsCarregarPacientesInstituicaoIhPts(pts.getGerenciarPaciente().getId());
             JSFUtil.adicionarMensagemSucesso("PTS cadastrado com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
