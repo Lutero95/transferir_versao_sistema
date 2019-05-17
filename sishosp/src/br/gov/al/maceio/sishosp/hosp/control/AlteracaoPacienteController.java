@@ -78,6 +78,7 @@ public class AlteracaoPacienteController implements Serializable {
                 tipo = TipoAtendimento.EQUIPE.getSigla();
                 listaDiasProfissional = aDao
                         .listarDiasAtendimentoProfissionalEquipe(id);
+                listarProfissionaisEquipe();
 
                 List<FuncionarioBean> listaFuncionarioAuxiliar = agendaDAO.listaProfissionaisIhDiasAtendimetoParaPacienteInstituicao(id);
                 for(int i=0; i<listaFuncionarioAuxiliar.size(); i++){

@@ -163,6 +163,8 @@ public class RenovacaoPacienteDAO {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
 
+        GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+
         Boolean retorno = false;
         ResultSet rs = null;
 
@@ -282,19 +284,11 @@ public class RenovacaoPacienteDAO {
 
             }
 
-            String sql5 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
-                    + " VALUES  (?, current_date, ?, ?)";
+            if(gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), "R", conexao)){
+                conexao.commit();
 
-            PreparedStatement ps5 = null;
-            ps5 = conexao.prepareStatement(sql5);
-
-            ps5.setLong(1, idPacienteInstituicao);
-            ps5.setString(2, insercao.getObservacao());
-            ps5.setString(3, "R");
-
-            ps5.executeUpdate();
-
-            conexao.commit();
+                retorno = true;
+            }
 
             retorno = true;
         } catch (SQLException ex) {
@@ -316,6 +310,8 @@ public class RenovacaoPacienteDAO {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
+
+        GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
         Boolean retorno = false;
         ResultSet rs = null;
@@ -413,21 +409,12 @@ public class RenovacaoPacienteDAO {
 
             }
 
-            String sql6 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
-                    + " VALUES  (?, current_date, ?, ?)";
+            if(gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(idPacienteInstituicao, insercao.getObservacao(), "R", conexao)){
+                conexao.commit();
 
-            PreparedStatement ps6 = null;
-            ps6 = conexao.prepareStatement(sql6);
+                retorno = true;
+            }
 
-            ps6.setLong(1, insercao.getId());
-            ps6.setString(2, insercao.getObservacao());
-            ps6.setString(3, "R");
-
-            ps6.executeUpdate();
-
-            conexao.commit();
-
-            retorno = true;
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);

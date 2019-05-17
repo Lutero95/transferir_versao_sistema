@@ -137,6 +137,8 @@ public class InsercaoPacienteDAO {
 
         Boolean retorno = false;
 
+        GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+
         String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codpaciente, codequipe, status, codlaudo, observacao, cod_empresa, data_solicitacao, data_cadastro) "
                 + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING id;";
         try {
@@ -245,21 +247,11 @@ public class InsercaoPacienteDAO {
 
             }
 
-            String sql5 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
-                    + " VALUES  (?, current_date, ?, ?)";
+            if(gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id, insercao.getObservacao(), "I", con)){
+                con.commit();
 
-            PreparedStatement ps5 = null;
-            ps5 = con.prepareStatement(sql5);
-
-            ps5.setLong(1, id);
-            ps5.setString(2, insercao.getObservacao());
-            ps5.setString(3, "I");
-
-            ps5.executeUpdate();
-
-            con.commit();
-
-            retorno = true;
+                retorno = true;
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -282,6 +274,8 @@ public class InsercaoPacienteDAO {
                 .getSessionMap().get("obj_funcionario");
 
         Boolean retorno = false;
+
+        GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
         String sql = "insert into hosp.paciente_instituicao (codprofissional, status, codlaudo, observacao, data_solicitacao, cod_empresa) "
                 + " values (?, ?, ?, ?, ?, ?) RETURNING id;";
@@ -367,21 +361,12 @@ public class InsercaoPacienteDAO {
 
             }
 
-            String sql5 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
-                    + " VALUES  (?, current_date, ?, ?)";
+            if(gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id, insercao.getObservacao(), "I", con)){
+                con.commit();
 
-            PreparedStatement ps5 = null;
-            ps5 = con.prepareStatement(sql5);
+                retorno = true;
+            }
 
-            ps5.setLong(1, id);
-            ps5.setString(2, insercao.getObservacao());
-            ps5.setString(3, "I");
-
-            ps5.executeUpdate();
-
-            con.commit();
-
-            retorno = true;
 
         } catch (SQLException ex) {
             ex.printStackTrace();

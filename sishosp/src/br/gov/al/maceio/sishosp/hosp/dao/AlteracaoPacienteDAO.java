@@ -171,47 +171,17 @@ public class AlteracaoPacienteDAO {
 
         Boolean retorno = false;
         ResultSet rs = null;
-        ArrayList<Integer> lista = new ArrayList<Integer>();
 
         try {
             conexao = ConnectionFactory.getConnection();
 
-            String sql2 = "select id_atendimento from hosp.atendimentos where situacao = 'A' and id_paciente_instituicao = ?";
+            GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+            if(!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao)){
 
-            PreparedStatement ps2 = null;
-            ps2 = conexao.prepareStatement(sql2);
-            ps2.setLong(1, id_paciente);
-            ps2.execute();
+                conexao.close();
 
-            rs = ps2.executeQuery();
-
-            while (rs.next()) {
-                lista.add(rs.getInt("id_atendimento"));
+                return retorno;
             }
-
-            for (int i = 0; i < lista.size(); i++) {
-                String sql3 = "delete from hosp.atendimentos1 where id_atendimento = ?";
-
-                PreparedStatement ps3 = null;
-                ps3 = conexao.prepareStatement(sql3);
-                ps3.setLong(1, lista.get(i));
-                ps3.execute();
-            }
-
-            String sql4 = "delete from hosp.atendimentos where situacao = 'A' and id_paciente_instituicao = ?";
-
-            PreparedStatement ps4 = null;
-            ps4 = conexao.prepareStatement(sql4);
-            ps4.setLong(1, id_paciente);
-            ps4.execute();
-
-            String sql5 = "delete from hosp.profissional_dia_atendimento where id_paciente_instituicao = ?";
-
-            PreparedStatement ps5 = null;
-            ps5 = conexao.prepareStatement(sql5);
-            ps5.setLong(1, id_paciente);
-            ps5.execute();
-
 
             String sql6 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, cod_empresa) VALUES  (?, ?, ?, ?)";
             PreparedStatement ps6 = null;
@@ -219,13 +189,10 @@ public class AlteracaoPacienteDAO {
 
             for (int i = 0; i < listaProfissionais.size(); i++) {
                 ps6.setLong(1, insercao.getId());
-                ps6.setLong(2, listAgendamentoProfissional.get(i).getAgenda().getProfissional()
-                        .getId());
-                for (int j = 0; j < listAgendamentoProfissional.get(i).getAgenda().getProfissional()
-                        .getListDiasSemana().size(); j++) {
+                ps6.setLong(2, listaProfissionais.get(i).getId());
+                for (int j = 0; j < listaProfissionais.get(i).getListDiasSemana().size(); j++) {
                     ps6.setInt(3,
-                            Integer.parseInt(listAgendamentoProfissional.get(i).getAgenda().getProfissional()
-                                    .getListDiasSemana().get(j)));
+                            Integer.parseInt(listaProfissionais.get(i).getListDiasSemana().get(j)));
                     ps6.setInt(4, user_session.getEmpresa().getCodEmpresa());
                     ps6.executeUpdate();
                 }
@@ -242,8 +209,7 @@ public class AlteracaoPacienteDAO {
 
                 ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente()
                         .getId_paciente());
-                ps7.setLong(2, listAgendamentoProfissional.get(i).getAgenda().getProfissional()
-                        .getId());
+                ps7.setNull(2, Types.NULL);
                 ps7.setDate(3, new java.sql.Date(listAgendamentoProfissional.get(i).getAgenda()
                         .getDataMarcacao().getTime()));
                 ps7.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
@@ -320,21 +286,11 @@ public class AlteracaoPacienteDAO {
 
             }
 
-            String sql9 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
-                    + " VALUES  (?, current_date, ?, ?)";
+            if(gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)){
+                conexao.commit();
 
-            PreparedStatement ps9 = null;
-            ps9 = conexao.prepareStatement(sql9);
-
-            ps9.setLong(1, id_paciente);
-            ps9.setString(2, insercao.getObservacao());
-            ps9.setString(3, "A");
-
-            ps9.executeUpdate();
-
-            conexao.commit();
-
-            retorno = true;
+                retorno = true;
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -360,6 +316,8 @@ public class AlteracaoPacienteDAO {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
+
+        GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -450,21 +408,11 @@ public class AlteracaoPacienteDAO {
 
             }
 
-            String sql8 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
-                    + " VALUES  (?, current_date, ?, ?)";
+            if(gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)){
+                conexao.commit();
 
-            PreparedStatement ps8 = null;
-            ps8 = conexao.prepareStatement(sql8);
-
-            ps8.setLong(1, id_paciente);
-            ps8.setString(2, insercao.getObservacao());
-            ps8.setString(3, "A");
-
-            ps8.executeUpdate();
-
-            conexao.commit();
-
-            retorno = true;
+                retorno = true;
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();

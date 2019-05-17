@@ -165,6 +165,7 @@
 
                                 <p:autoComplete
                                         value="#{AlteracaoPacienteController.insercao.equipe}"
+                                        readonly="true"
                                         size="31" converter="conEquipe" class="select-agendaEquipe4"
                                         rendered="#{AlteracaoPacienteController.tipo == 'E'}"
                                         disabled="#{AlteracaoPacienteController.insercao.grupo==null}"
@@ -187,8 +188,9 @@
                                                  style="margin-top:20px; margin-bottom:10px;"
                                                  class="btn-acao-table acao-confirmar"
                                                  update="dtEquipe, :formInsercao2:msgPagina"
-                                                 rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+                                                 rendered="false"
                                                  action="#{AlteracaoPacienteController.listarProfissionaisEquipe()}"/>
+                                <!--rendered="#{AlteracaoPacienteController.tipo == 'E'}"-->
                             </b:column>
                             <b:column span="2">
                                 <p:commandButton value="Visualizar" look="success" size="sm"

@@ -35,7 +35,7 @@ public class GerenciarPacienteDAO {
                 + " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo)"
-                + " where p.cod_empresa = ?";
+                + " where p.cod_empresa = ? AND p.status = 'A' ";
 
         List<GerenciarPacienteBean> lista = new ArrayList<>();
 
@@ -261,6 +261,102 @@ public class GerenciarPacienteDAO {
         } finally {
             try {
                 conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+
+    public Boolean gravarHistoricoAcaoPaciente(Integer idPacienteInstituicao, String observacao, String tipo, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+
+        String sql = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
+                + " VALUES  (?, CURRENT_TIMESTAMP , ?, ?)";
+
+        try {
+            ps = null;
+            ps = conAuxiliar.prepareStatement(sql);
+
+            ps.setLong(1, idPacienteInstituicao);
+            ps.setString(2, observacao);
+            ps.setString(3, tipo);
+
+            ps.executeUpdate();
+
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+
+    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+        ArrayList<Integer> lista = new ArrayList<Integer>();
+
+        try {
+
+            String sql = "SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 " +
+                    "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " +
+                    "WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= current_date AND  " +
+                    "(SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) = " +
+                    "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL) " +
+                    "ORDER BY a1.id_atendimento;";
+
+
+            ps = null;
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setLong(1, idPacienteInstituicao);
+            ps.execute();
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                lista.add(rs.getInt("id_atendimento"));
+            }
+
+            for (int i = 0; i < lista.size(); i++) {
+                String sql2 = "delete from hosp.atendimentos1 where id_atendimento = ?";
+
+                PreparedStatement ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, lista.get(i));
+                ps2.execute();
+            }
+
+            for (int i = 0; i < lista.size(); i++) {
+                String sql3 = "delete from hosp.atendimentos where id_atendimento = ?";
+
+                PreparedStatement ps3 = null;
+                ps3 = conAuxiliar.prepareStatement(sql3);
+                ps3.setLong(1, lista.get(i));
+                ps3.execute();
+            }
+
+            String sql4 = "delete from hosp.profissional_dia_atendimento where id_paciente_instituicao = ?";
+
+            PreparedStatement ps4 = null;
+            ps4 = conAuxiliar.prepareStatement(sql4);
+            ps4.setLong(1, idPacienteInstituicao);
+            ps4.execute();
+
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

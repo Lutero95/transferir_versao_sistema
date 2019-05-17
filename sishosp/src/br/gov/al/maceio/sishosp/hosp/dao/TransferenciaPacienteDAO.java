@@ -91,6 +91,8 @@ public class TransferenciaPacienteDAO {
         ResultSet rs = null;
         ArrayList<Integer> lista = new ArrayList<Integer>();
 
+        GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+
         try {
             conexao = ConnectionFactory.getConnection();
 
@@ -171,13 +173,10 @@ public class TransferenciaPacienteDAO {
 
             for (int i = 0; i < listaProfissionais.size(); i++) {
             	ps8.setLong(1, idPacienteInstituicaoNovo);
-            	ps8.setLong(2, listAgendamentoProfissional.get(i).getAgenda().getProfissional()
-                        .getId());
-                for (int j = 0; j < listAgendamentoProfissional.get(i).getAgenda().getProfissional()
-                        .getListDiasSemana().size(); j++) {
+            	ps8.setLong(2, listaProfissionais.get(i).getId());
+                for (int j = 0; j < listaProfissionais.get(i).getListDiasSemana().size(); j++) {
                 	ps8.setInt(3,
-                            Integer.parseInt(listAgendamentoProfissional.get(i).getAgenda().getProfissional()
-                                    .getListDiasSemana().get(j)));
+                            Integer.parseInt(listaProfissionais.get(i).getListDiasSemana().get(j)));
                 	ps8.setInt(4, user_session.getEmpresa().getCodEmpresa());
                 	ps8.executeUpdate();
                 }
@@ -257,21 +256,11 @@ public class TransferenciaPacienteDAO {
 
             }
 
-            String sql11 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
-                    + " VALUES  (?, current_date, ?, ?)";
+            if(gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "IT", conexao)){
+                conexao.commit();
 
-            PreparedStatement ps11 = null;
-            ps11 = conexao.prepareStatement(sql11);
-
-            ps11.setLong(1, idPacienteInstituicaoNovo);
-            ps11.setString(2, insercao.getObservacao());
-            ps11.setString(3, "IT");
-
-            ps11.executeUpdate();
-
-            conexao.commit();
-
-            retorno = true;
+                retorno = true;
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
