@@ -84,7 +84,7 @@ public class TransferenciaPacienteController implements Serializable {
         Calendar c = Calendar.getInstance();
         c.setTime(insercao.getData_solicitacao());
 
-        for (int i = 0; i < dt; i++) {
+        for (int i = 0; i <= dt; i++) {
 
             if (i > 0) {
                 c.add(Calendar.DAY_OF_MONTH, 1);

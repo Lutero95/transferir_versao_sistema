@@ -178,8 +178,9 @@
 
                                 <p:commandButton icon="ui-icon-search"
                                                  update="dtEquipe, :formInsercao2:msgPagina"
-                                                 rendered="#{AlteracaoPacienteController.tipo == 'E'}"
+                                                 rendered="false"
                                                  action="#{AlteracaoPacienteController.listarProfissionaisEquipe()}"/>
+                                <!-- rendered="#{AlteracaoPacienteController.tipo == 'E'}" -->
                             </b:column>
 
                             <b:column span="3" class="label-position5 carregar-margin">

@@ -543,6 +543,24 @@
 
                     <h:column>
                         <f:facet name="header">
+                            Vigência Inicial
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.vigencia_inicial}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </p:outputLabel>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Vigência Final
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.vigencia_final}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </p:outputLabel>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
                             Adicionar
                         </f:facet>
                         <p:commandButton update=":formInsercao, :formInsercao2"
