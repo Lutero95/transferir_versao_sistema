@@ -11,14 +11,17 @@ import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
+import br.gov.al.maceio.sishosp.hosp.enums.RetornoLaudoRenovacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 
 @ManagedBean(name = "RenovarPacienteController")
 @ViewScoped
@@ -41,6 +44,7 @@ public class RenovacaoPacienteController implements Serializable {
     private AgendaDAO agendaDAO = new AgendaDAO();
     private AlteracaoPacienteDAO aDao = new AlteracaoPacienteDAO();
     private FuncionarioBean funcionario;
+    private LaudoBean laudo;
 
     public RenovacaoPacienteController() {
         insercao = new InsercaoPacienteBean();
@@ -52,6 +56,7 @@ public class RenovacaoPacienteController implements Serializable {
         listaDiasProfissional = new ArrayList<GerenciarPacienteBean>();
         listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
         funcionario = new FuncionarioBean();
+        laudo = new LaudoBean();
     }
 
     public void carregaRenovacao() throws ProjetoException {
@@ -64,6 +69,7 @@ public class RenovacaoPacienteController implements Serializable {
             this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
             opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
             opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
+            laudo = new LaudoDAO().buscarLaudosPorId(insercao.getLaudo().getId());
             if (insercao.getEquipe().getCodEquipe() != null
                     && insercao.getEquipe().getCodEquipe() > 0) {
                 listaProfissionaisEquipe = agendaDAO.listaProfissionaisAtendimetoParaPacienteInstituicao(id);
@@ -303,10 +309,55 @@ public class RenovacaoPacienteController implements Serializable {
 
 
     public void carregarLaudoPaciente() throws ProjetoException {
-        insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo()
-                .getId());
-        insercao = rDao
-                .carregarPacientesInstituicaoRenovacao(id_paciente_insituicao);
+
+        String condicao_datas_laudo = compararDatasLaudo(laudo.getMes_final(), laudo.getAno_final(),
+                insercao.getLaudo().getMes_final(), insercao.getLaudo().getAno_final());
+
+        if(condicao_datas_laudo.equals(RetornoLaudoRenovacao.DATA_ATUAL_MAIOR_QUE_NOVA_DATA.getSigla())){
+            JSFUtil.adicionarMensagemErro("A data do novo laudo é menor que a data do laudo atual", "Erro!");
+        }
+        else if(condicao_datas_laudo.equals(RetornoLaudoRenovacao.MAIS_DE_UM_MES.getSigla())){
+            JSFUtil.adicionarMensagemAdvertencia("O novo laudo tem início com mais de 30 dias a mais que o término do que o lado atual!", "Observação!");
+            insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo()
+                    .getId());
+            insercao = rDao
+                    .carregarPacientesInstituicaoRenovacao(id_paciente_insituicao);
+        }
+        else{
+            insercaoParaLaudo = iDao.carregarLaudoPaciente(insercao.getLaudo()
+                    .getId());
+            insercao = rDao
+                    .carregarPacientesInstituicaoRenovacao(id_paciente_insituicao);
+        }
+    }
+
+    public String compararDatasLaudo(Integer mesAtual, Integer anoAtual, Integer mesNovo, Integer anoNovo){
+
+        String retorno = "";
+
+        final Boolean INICIO_MES = true;
+        final Boolean FIM_MES = false;
+
+        Date dataLaudoAtual = DataUtil.adicionarMesIhAnoEmDate(mesAtual, anoAtual, FIM_MES);
+        Date dataLaudoNovo = DataUtil.adicionarMesIhAnoEmDate(mesNovo, anoNovo, INICIO_MES);
+
+        long totalDiasDataLaudoAtual = DataUtil.calcularQuantidadeDeDiasDeUmaData(dataLaudoAtual);
+        long totalDiasDataLaudoNovo = DataUtil.calcularQuantidadeDeDiasDeUmaData(dataLaudoNovo);
+
+        long totalDiasGeral = totalDiasDataLaudoNovo - totalDiasDataLaudoAtual;
+
+        if(totalDiasGeral <= 0){
+            retorno = RetornoLaudoRenovacao.DATA_ATUAL_MAIOR_QUE_NOVA_DATA.getSigla();
+        }
+        else if(totalDiasGeral > 30){
+            retorno = RetornoLaudoRenovacao.MAIS_DE_UM_MES.getSigla();
+
+        }
+        else{
+            retorno = RetornoLaudoRenovacao.DATA_OK.getSigla();
+        }
+
+        return retorno;
 
     }
 

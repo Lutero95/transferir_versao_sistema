@@ -103,4 +103,35 @@ public final class DataUtil {
         return calendar.getTime();
     }
 
+    public static Date adicionarMesIhAnoEmDate(Integer mes, Integer ano, Boolean ultimoDiaDoMes){
+
+        int dia = 0;
+        mes = mes - 1;
+
+        Date data = new Date();
+        data.setMonth(mes);
+        data.setYear(ano - 1900);
+
+        if(!ultimoDiaDoMes){
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.MONTH, mes);
+            dia = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        }
+        else{
+            dia = 1;
+        }
+
+        data.setDate(dia);
+
+
+        return data;
+    }
+
+    public static Long calcularQuantidadeDeDiasDeUmaData(Date data){
+        final Long VALOR_DIA_EM_LONG =  86400000L;
+        Long quantidadeDeDias = data.getTime() / VALOR_DIA_EM_LONG;
+
+        return quantidadeDeDias;
+    }
+
 }

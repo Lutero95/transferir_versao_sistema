@@ -26,7 +26,7 @@ public class AlteracaoPacienteDAO {
             throws ProjetoException {
 
         String sql = "select pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, pi.codpaciente, "
-                + " pi.codequipe, e.descequipe, a.turno, a.situacao, "
+                + " pi.codequipe, e.descequipe, a.turno, a.situacao, l.mes_final, l.ano_final,  "
                 + " pi.codprofissional, f.descfuncionario, pi.observacao, a.codtipoatendimento, t.desctipoatendimento, pi.codlaudo, pi.data_solicitacao "
                 + " from hosp.paciente_instituicao pi "
                 + " left join hosp.programa p on (p.id_programa = pi.codprograma) "
@@ -35,6 +35,7 @@ public class AlteracaoPacienteDAO {
                 + " left join hosp.atendimentos a on (a.id_paciente_instituicao = pi.id) "
                 + " left join hosp.tipoatendimento t on (a.codtipoatendimento = t.id) "
                 + " left join acl.funcionarios f on (pi.codprofissional = f.id_funcionario) "
+                + " LEFT JOIN hosp.laudo l ON (l.id_laudo = pi.codlaudo) "
                 + " where pi.id = ?";
 
         List<GerenciarPacienteBean> lista = new ArrayList<>();
@@ -69,6 +70,8 @@ public class AlteracaoPacienteDAO {
                 ip.getAgenda().setTurno(rs.getString("turno"));
                 ip.getAgenda().setSituacao(rs.getString("situacao"));
                 ip.getLaudo().setId(rs.getInt("codlaudo"));
+                ip.getLaudo().setAno_final(rs.getInt("ano_final"));
+                ip.getLaudo().setMes_final(rs.getInt("mes_final"));
                 ip.setData_solicitacao(rs.getDate("data_solicitacao"));
                 ip.getPrograma().getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
 

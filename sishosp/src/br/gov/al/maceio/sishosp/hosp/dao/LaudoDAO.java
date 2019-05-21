@@ -455,7 +455,7 @@ public class LaudoDAO {
 
         ArrayList<InsercaoPacienteBean> lista = new ArrayList<>();
 
-        String sql = "select nome, cns, id_laudo, " +
+        String sql = "select nome, cns, id_laudo, mes_final, ano_final, " +
                 "to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') as datainicio, " +
                 "(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal " +
                 "from ( "
@@ -483,6 +483,8 @@ public class LaudoDAO {
                 insercao.getLaudo().getPaciente().setCns(rs.getString("cns"));
                 insercao.getLaudo().setVigencia_inicial(rs.getDate("datainicio"));
                 insercao.getLaudo().setVigencia_final(rs.getDate("datafinal"));
+                insercao.getLaudo().setMes_final(rs.getInt("mes_final"));
+                insercao.getLaudo().setAno_final(rs.getInt("ano_final"));
 
                 lista.add(insercao);
             }

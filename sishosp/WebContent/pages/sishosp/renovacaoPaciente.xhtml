@@ -419,6 +419,9 @@
 		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
 			modal="true" id="laudo-id">
 			<h:form id="formConsuLaudo">
+
+                <p:growl id="msgLaudo"></p:growl>
+
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					value="#{RenovarPacienteController.listaLaudosVigentes}" id="dtLaudo"
 					var="insercao" display="Nenhum Laudo">
@@ -455,11 +458,25 @@
                         </p:outputLabel>
                     </h:column>
 
+					<h:column rendered="false">
+						<f:facet name="header">
+							Paciente
+						</f:facet>
+						<p:outputLabel value="#{insercao.laudo.mes_final}" />
+					</h:column>
+
+					<h:column rendered="false">
+						<f:facet name="header">
+							Paciente
+						</f:facet>
+						<p:outputLabel value="#{insercao.laudo.ano_final}" />
+					</h:column>
+
 					<h:column>
 						<f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":formInsercao" icon="ui-icon-check"
+						<p:commandButton update=":formInsercao, formConsuLaudo:msgLaudo" icon="ui-icon-check"
 							title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
 							class="new-btn-acao-table acao-editar"
 							action="#{RenovarPacienteController.carregarLaudoPaciente()}">
