@@ -4,6 +4,7 @@ import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
@@ -126,24 +127,44 @@ public class TransferenciaPacienteController implements Serializable {
         listaProfissionaisAdicionados.remove(funcionario);
     }
 
-    public void gravarAlteracaoPaciente() throws ProjetoException {
+    public String gravarAlteracaoPaciente() throws ProjetoException {
 
-        Boolean cadastrou = null;
+        String retorno = "";
 
-        InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+        if(validarProfissionaisAdicionados()) {
+            Boolean cadastrou = null;
 
-        ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
-                listAgendamentoProfissional, insercao.getAgenda().getTurno());
+            InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
-        gerarListaAgendamentosEquipe();
+            ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
+                    listAgendamentoProfissional, insercao.getAgenda().getTurno());
 
-        cadastrou = aDao.gravarTransferenciaEquipe(insercao, insercaoParaLaudo,
-                listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
+            gerarListaAgendamentosEquipe();
 
-        if (cadastrou) {
-            JSFUtil.adicionarMensagemSucesso("Transferência realizada com sucesso!", "Sucesso");
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+            cadastrou = aDao.gravarTransferenciaEquipe(insercao, insercaoParaLaudo,
+                    listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
+
+            if (cadastrou) {
+                JSFUtil.adicionarMensagemSucesso("Transferência realizada com sucesso!", "Sucesso");
+                final String ENDERECO_PAGINA_GERENCIAMENTO = "gerenciamentoPacientes?faces-redirect=true";
+                retorno = RedirecionarUtil.redirectPagina(ENDERECO_PAGINA_GERENCIAMENTO);
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+            }
+        }
+        else{
+            JSFUtil.adicionarMensagemErro("Adicione ao menos um profissional com seus dias de atendimento!", "Erro");
+        }
+
+        return retorno;
+    }
+
+    private Boolean validarProfissionaisAdicionados(){
+        if(listaProfissionaisAdicionados.size() == 0){
+            return false;
+        }
+        else{
+            return true;
         }
     }
 

@@ -170,7 +170,7 @@
 
                                     <p:autoComplete
                                             value="#{TransferenciaPacienteController.insercao.programa}"
-                                            size="31"
+                                            size="31" required="true" requiredMessage="Programa: Campo obrigatório"
                                             converter="conPrograma" class="select-agendaEquipe4"
                                             completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
                                             effect="fade" var="theme" forceSelection="true"
@@ -196,7 +196,7 @@
 
                                     <p:autoComplete
                                             value="#{TransferenciaPacienteController.insercao.grupo}"
-                                            size="31"
+                                            size="31" required="true" requiredMessage="Grupo: Campo obrigatório"
                                             converter="conGrupo" class="select-agendaEquipe4"
                                             disabled="#{TransferenciaPacienteController.insercao.programa==null}"
                                             completeMethod="#{TransferenciaPacienteController.listaGrupoAutoComplete}"
@@ -225,6 +225,7 @@
                                     <p:autoComplete
                                             value="#{TransferenciaPacienteController.insercao.equipe}"
                                             size="31" converter="conEquipe" class="select-agendaEquipe4"
+                                            required="true" requiredMessage="Equipe: Campo obrigatório"
                                             disabled="#{TransferenciaPacienteController.insercao.grupo==null}"
                                             completeMethod="#{TransferenciaPacienteController.listaEquipeAutoComplete}"
                                             effect="fade" var="theme" forceSelection="true"

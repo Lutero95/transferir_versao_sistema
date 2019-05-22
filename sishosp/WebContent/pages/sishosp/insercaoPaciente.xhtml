@@ -8,6 +8,11 @@
 
     <ui:define name="content">
 
+        <f:metadata>
+            <f:viewAction
+                    action="#{InsercaoController.carregarHorarioOuTurno()}" />
+        </f:metadata>
+
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
                 <h4 class="panel-title">Inserção de Paciente</h4>
@@ -504,7 +509,7 @@
                         <div align="center">
 
                             <b:commandButton value="Gravar" look="success" size="sm" id="b1"
-                                             icon="glyphicon-ok" update=":formInsercao2:msgPagina"
+                                             icon="glyphicon-ok" update=":formInsercao2:msgPagina, :formInsercao2, :formInsercao"
                                              class="btn-incluir"
                                              action="#{InsercaoController.validarInsercaoPaciente()}"/>
 

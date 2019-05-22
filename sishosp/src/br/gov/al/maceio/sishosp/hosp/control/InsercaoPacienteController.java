@@ -60,8 +60,6 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaProfissionaisAdicionados = new ArrayList<FuncionarioBean>();
         listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
         listaGruposProgramas = new ArrayList<GrupoBean>();
-        opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
-        opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
         listaHorarios = new ArrayList<>();
         todosOsProfissionais = false;
         renderizarAposLaudo = false;
@@ -69,8 +67,17 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaProfissionais = new ArrayList<>();
     }
 
+    public void carregarHorarioOuTurno() throws ProjetoException {
+        opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
+        opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
+    }
+
     public void limparDados() {
         this.insercao = new InsercaoPacienteBean();
+        renderizarAposLaudo = false;
+        listaProfissionaisEquipe = new ArrayList<>();
+        listaProfissionaisAdicionados = new ArrayList<>();
+        limparDias();
     }
 
     public void limparDias() {
