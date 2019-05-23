@@ -135,7 +135,7 @@ public class TransferenciaPacienteDAO {
             ps5.execute();
             
             String sql6 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
-                    + " VALUES  (?, current_date, ?, ?)";
+                    + " VALUES  (?, current_timestamp, ?, ?)";
 
             PreparedStatement ps6 = null;
             ps6 = conexao.prepareStatement(sql6);
