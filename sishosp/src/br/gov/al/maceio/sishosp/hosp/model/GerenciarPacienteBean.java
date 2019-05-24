@@ -11,6 +11,7 @@ public class GerenciarPacienteBean implements Serializable {
 	private String status;
 	private Date data_operacao;
 	private Date data_solicitacao;
+	private Date dataDesligamento;
 	private Date data_cadastro;
 	private String observacao;
 	private String tipo;
@@ -143,6 +144,14 @@ public class GerenciarPacienteBean implements Serializable {
 
 	public void setMotivo_desligamento(Integer motivo_desligamento) {
 		this.motivo_desligamento = motivo_desligamento;
+	}
+
+	public Date getDataDesligamento() {
+		return dataDesligamento;
+	}
+
+	public void setDataDesligamento(Date dataDesligamento) {
+		this.dataDesligamento = dataDesligamento;
 	}
 
 }

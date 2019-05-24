@@ -159,24 +159,35 @@ public class GerenciarPacienteDAO {
         Boolean retorno = false;
         final String DESLIGADO = "D";
 
+        
         String sql = "update hosp.paciente_instituicao set status = ? "
                 + " where codlaudo = ?";
         try {
             conexao = ConnectionFactory.getConnection();
+            
+            GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
+                    if(!gerenciarPacienteDAO.apagarAtendimentos(gerenciarRow.getPaciente().getId_paciente(), conexao, false)){
+
+                        conexao.close();
+
+                        return retorno;
+                    }
+            
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
             stmt.setString(1, DESLIGADO);
             stmt.setInt(2, gerenciarRow.getLaudo().getId());
             stmt.executeUpdate();
 
-            String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao, id_funcionario_gravacao) "
-                    + " VALUES  (?, current_timestamp, ?, ?, ?,?)";
+            String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao, id_funcionario_gravacao, data_desligamento) "
+                    + " VALUES  (?, current_timestamp, ?, ?, ?,?, ?)";
             stmt = conexao.prepareStatement(sql2);
             stmt.setLong(1, gerenciarRow.getId());
             stmt.setInt(2, gerenciar.getMotivo_desligamento());
             stmt.setString(3, DESLIGADO);
             stmt.setString(4, gerenciar.getObservacao());
             stmt.setInt(5, user_session.getCodigo());
+            stmt.setDate(6, new java.sql.Date(gerenciar.getDataDesligamento().getTime()));
             stmt.executeUpdate();
 
             conexao.commit();
@@ -301,7 +312,7 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar) {
+    public Boolean apagarAtendimentos(Integer idPacienteInstituicao, Connection conAuxiliar, Boolean alteracaoDePaciente) {
 
         Boolean retorno = false;
         ArrayList<Integer> lista = new ArrayList<Integer>();
@@ -319,7 +330,6 @@ public class GerenciarPacienteDAO {
             ps = null;
             ps = conAuxiliar.prepareStatement(sql);
             ps.setLong(1, idPacienteInstituicao);
-            ps.execute();
 
             ResultSet rs = ps.executeQuery();
 
@@ -345,13 +355,14 @@ public class GerenciarPacienteDAO {
                 ps3.execute();
             }
 
+            if (alteracaoDePaciente) {
             String sql4 = "delete from hosp.profissional_dia_atendimento where id_paciente_instituicao = ?";
 
             PreparedStatement ps4 = null;
             ps4 = conAuxiliar.prepareStatement(sql4);
             ps4.setLong(1, idPacienteInstituicao);
             ps4.execute();
-
+            }
             retorno = true;
 
         } catch (SQLException ex) {

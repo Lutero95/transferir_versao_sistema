@@ -179,7 +179,7 @@ public class AlteracaoPacienteDAO {
             conexao = ConnectionFactory.getConnection();
 
             GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
-            if(!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao)){
+            if(!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true)){
 
                 conexao.close();
 

@@ -399,11 +399,25 @@
         </p:dialog>
 
         <p:dialog header="Desligar Paciente" widgetVar="dlgDeslPac"
-                  width="350" height="auto" modal="true" responsive="true">
+                  width="400" height="auto" modal="true" responsive="true">
 
             <h:form id="formDeslPac">
                 <p:growl id="grwdesligamento"/>
+				   <b:row>
 
+                    <b:column span="12" class="label-position">
+				<b:label value="Data de Desligamento" id="datadeslig"
+                                         severity="info" class="fire-label"/>
+
+                                <p:calendar
+                                        value="#{GerenciarPacienteController.gerenciarpaciente.dataDesligamento}"
+                                        id="dtagen" locale="pt" navigator="true" mask="true"
+                                        required="false" requiredMessage="Data de Desligamento: Campo obrigatório!"
+                                        class="select-agendaEquipe2" showOn="button"
+                                        pattern="dd/MM/yyyy" size="15">
+                                </p:calendar>
+                                </b:column>
+                                </b:row>	
                 <b:row>
 
                     <b:column span="12" class="label-position">
