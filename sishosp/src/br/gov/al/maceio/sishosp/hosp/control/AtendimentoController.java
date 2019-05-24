@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.event.CellEditEvent;
 
@@ -269,19 +270,35 @@ public class AtendimentoController implements Serializable {
 
     }
 
-    public void realizarAtendimentoEquipe() throws ProjetoException {
-        boolean verificou = aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
+    private Boolean validarStatusDoAtendimentoForamInformados() {
 
-        if (verificou) {
-            boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe);
-            if (alterou) {
-                JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
-            } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+        for(int i=0; i<listAtendimentosEquipe.size(); i++){
+            if(VerificadorUtil.verificarSeObjetoNuloOuVazio(listAtendimentosEquipe.get(i).getStatus())){
+                return false;
             }
-        } else {
-            String mensagem = aDao.gerarMensagemSeCboNaoEhPermitidoParaProcedimento(listAtendimentosEquipe);
-            JSFUtil.adicionarMensagemErro(mensagem, "Erro");
+        }
+
+        return true;
+    }
+
+    public void realizarAtendimentoEquipe() throws ProjetoException {
+        if(validarStatusDoAtendimentoForamInformados()) {
+            boolean verificou = aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
+
+            if (verificou) {
+                boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe);
+                if (alterou) {
+                    JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
+                } else {
+                    JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o atendimento!", "Erro");
+                }
+            } else {
+                String mensagem = aDao.gerarMensagemSeCboNaoEhPermitidoParaProcedimento(listAtendimentosEquipe);
+                JSFUtil.adicionarMensagemErro(mensagem, "Erro");
+            }
+        }
+        else{
+            JSFUtil.adicionarMensagemErro("Informe o status de cada profissional!", "Erro!");
         }
     }
 

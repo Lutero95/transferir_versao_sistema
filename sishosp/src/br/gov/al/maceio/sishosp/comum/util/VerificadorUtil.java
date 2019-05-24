@@ -12,4 +12,14 @@ public final class VerificadorUtil {
         return retorno;
     }
 
+    public static Boolean verificarSeObjetoNuloOuVazio(Object object) {
+        Boolean retorno = true;
+
+        if(object != null && !object.equals("")){
+            retorno = false;
+        }
+
+        return retorno;
+    }
+
 }
