@@ -95,7 +95,14 @@ public class TransferenciaPacienteDAO {
         try {
             conexao = ConnectionFactory.getConnection();
 
-            String sql2 = "select id_atendimento from hosp.atendimentos where situacao = 'A' and id_paciente_instituicao = ? AND dtaatende > ?";
+            String sql2 = "SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 " +
+                    "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " +
+                    "WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= ? AND  " +
+                    "(SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) = " +
+                    "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL) " +
+                    "ORDER BY a1.id_atendimento;"; 
+            		
+            		
 
             PreparedStatement ps2 = null;
             ps2 = conexao.prepareStatement(sql2);
@@ -118,7 +125,12 @@ public class TransferenciaPacienteDAO {
                 ps3.execute();
             }
 
-            String sql4 = "delete from hosp.atendimentos where situacao = 'A' and id_paciente_instituicao = ? AND dtaatende > ?";
+            String sql4 = "delete from hosp.atendimentos where id_atendimento in (SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 " + 
+            		"                    LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " + 
+            		"                    WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= ? AND  " + 
+            		"                    (SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) = " + 
+            		"                    (SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL) " + 
+            		"                    ORDER BY a1.id_atendimento)";
 
             PreparedStatement ps4 = null;
             ps4 = conexao.prepareStatement(sql4);
