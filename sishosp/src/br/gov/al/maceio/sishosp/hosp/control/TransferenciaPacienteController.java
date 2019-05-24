@@ -40,6 +40,8 @@ public class TransferenciaPacienteController implements Serializable {
     private EmpresaDAO empresaDAO = new EmpresaDAO();
     private Boolean todosOsProfissionais;
     private AgendaDAO agendaDAO = new AgendaDAO();
+    private List<AgendaBean> listaHorariosAgenda;
+    private List<EquipeBean> listaEquipePorGrupo;
 
     public TransferenciaPacienteController() {
         insercao = new InsercaoPacienteBean();
@@ -51,6 +53,8 @@ public class TransferenciaPacienteController implements Serializable {
         listaDiasProfissional = new ArrayList<GerenciarPacienteBean>();
         listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
         todosOsProfissionais = false;
+        listaHorariosAgenda =  new ArrayList<AgendaBean>();
+        listaEquipePorGrupo = new ArrayList<>();
     }
 
     public void carregarTransferencia() throws ProjetoException {
@@ -193,6 +197,15 @@ public class TransferenciaPacienteController implements Serializable {
         List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
                 insercao.getGrupo().getIdGrupo());
         return result;
+    }
+    
+    public void carregaListaEquipePorGrupo()
+            throws ProjetoException {
+        System.out.println("listaEquipePorTipoAtendimento");
+        if (insercao.getGrupo().getIdGrupo() != null) {
+            listaEquipePorGrupo = eDao
+                    .listarEquipePorGrupo(insercao.getGrupo().getIdGrupo());
+        }
     }
 
     // VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL
@@ -381,8 +394,8 @@ public class TransferenciaPacienteController implements Serializable {
         insercao.setEquipe(new EquipeBean());
     }
 
-    public List<AgendaBean> visualizarHorariosEquipe() {
-        return agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
+    public void carregaHorariosEquipe() {
+        listaHorariosAgenda =  agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
 
     public InsercaoPacienteBean getInsercao() {
@@ -459,4 +472,20 @@ public class TransferenciaPacienteController implements Serializable {
     public void setTodosOsProfissionais(Boolean todosOsProfissionais) {
         this.todosOsProfissionais = todosOsProfissionais;
     }
+
+	public List<AgendaBean> getListaHorariosAgenda() {
+		return listaHorariosAgenda;
+	}
+
+	public void setListaHorariosAgenda(List<AgendaBean> listaHorariosAgenda) {
+		this.listaHorariosAgenda = listaHorariosAgenda;
+	}
+
+	public List<EquipeBean> getListaEquipePorGrupo() {
+		return listaEquipePorGrupo;
+	}
+
+	public void setListaEquipePorGrupo(List<EquipeBean> listaEquipePorGrupo) {
+		this.listaEquipePorGrupo = listaEquipePorGrupo;
+	}
 }

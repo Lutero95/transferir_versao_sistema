@@ -45,6 +45,7 @@ public class RenovacaoPacienteController implements Serializable {
     private AlteracaoPacienteDAO aDao = new AlteracaoPacienteDAO();
     private FuncionarioBean funcionario;
     private LaudoBean laudo;
+    private List<AgendaBean> listaHorariosAgenda;
 
     public RenovacaoPacienteController() {
         insercao = new InsercaoPacienteBean();
@@ -57,6 +58,7 @@ public class RenovacaoPacienteController implements Serializable {
         listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
         funcionario = new FuncionarioBean();
         laudo = new LaudoBean();
+        listaHorariosAgenda =  new ArrayList<AgendaBean>();
     }
 
     public void carregaRenovacao() throws ProjetoException {
@@ -288,7 +290,7 @@ public class RenovacaoPacienteController implements Serializable {
             }
 
             if (cadastrou == true) {
-                JSFUtil.adicionarMensagemSucesso("Inserção de Equipe cadastrada com sucesso!", "Sucesso");
+                JSFUtil.adicionarMensagemSucesso("Renovação de Paciente cadastrada com sucesso!", "Sucesso");
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
             }
@@ -303,15 +305,15 @@ public class RenovacaoPacienteController implements Serializable {
         listaLaudosVigentes = laudoDAO.listarLaudosVigentesParaPaciente(insercao.getLaudo().getPaciente().getId_paciente());
     }
 
-    public List<AgendaBean> visualizarHorariosEquipe() {
-        return agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
+    public void carregaHorariosEquipe() {
+        listaHorariosAgenda =  agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
 
 
     public void carregarLaudoPaciente() throws ProjetoException {
 
         String condicao_datas_laudo = compararDatasLaudo(laudo.getMes_final(), laudo.getAno_final(),
-                insercao.getLaudo().getMes_final(), insercao.getLaudo().getAno_final());
+                insercao.getLaudo().getMes_inicio(), insercao.getLaudo().getAno_inicio());
 
         if(condicao_datas_laudo.equals(RetornoLaudoRenovacao.DATA_ATUAL_MAIOR_QUE_NOVA_DATA.getSigla())){
             JSFUtil.adicionarMensagemErro("A data do novo laudo é menor que a data do laudo atual", "Erro!");
@@ -522,4 +524,14 @@ public class RenovacaoPacienteController implements Serializable {
     public void setListaLaudosVigentes(ArrayList<InsercaoPacienteBean> listaLaudosVigentes) {
         this.listaLaudosVigentes = listaLaudosVigentes;
     }
+
+	public List<AgendaBean> getListaHorariosAgenda() {
+		return listaHorariosAgenda;
+	}
+
+	public void setListaHorariosAgenda(List<AgendaBean> listaHorariosAgenda) {
+		this.listaHorariosAgenda = listaHorariosAgenda;
+	}
+
+
 }

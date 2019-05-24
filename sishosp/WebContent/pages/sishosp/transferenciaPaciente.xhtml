@@ -82,7 +82,7 @@
 
                         <b:column span="2" class="label-position data-size">
 
-                            <b:label value="Data de Inclusão:" id="datasoli"
+                            <b:label value="Data da Transferência" id="datasoli"
                                      severity="info"/>
 
                             <p:calendar
@@ -235,9 +235,11 @@
                                     </p:autoComplete>
 
                                     <p:commandButton icon="ui-icon-search"
-                                                     update="dtEquipe, :formInsercao2:msgPagina"
+                                                     update="dtEquipe, :formInsercao2:msgPagina :formConsuEquipe"
+                                                     oncomplete="PF('dlgConsuEquipe').show();"
+                                                     process="@this"
                                                      rendered="#{TransferenciaPacienteController.tipo == 'E'}"
-                                                     action="#{TransferenciaPacienteController.listarProfissionaisEquipe()}"/>
+                                                     actionListener="#{TransferenciaPacienteController.carregaListaEquipePorGrupo()}"/>
                                 </b:column>
 
                                 <b:column span="3" class="label-position5 carregar-margin">
@@ -254,7 +256,8 @@
                                                      id="btnVisualizarAgendaEquipe" icon="ui-icon-search"
                                                      rendered="#{TransferenciaPacienteController.tipo == 'E'}"
                                                      class="btn-agendaBusca btn-acao-table acao-buscar"
-                                                     immediate="true" onclick="PF('dlgQtdAgendamentos').show();"/>
+                                                     action="#{TransferenciaPacienteController.carregaHorariosEquipe()}"
+                                                     immediate="true" oncomplete="PF('dlgQtdAgendamentos').show();"/>
                                 </b:column>
 
                             </p:outputPanel>
@@ -427,7 +430,7 @@
             </div>
         </div>
 
-        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
+        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento" dynamic="true"
                   modal="true">
             <h:form id="formDiasAtendimento">
                 <p:selectManyCheckbox layout="grid" columns="7" required="true"
@@ -456,10 +459,10 @@
         </p:dialog>
 
         <p:dialog header="Quantidade de Agendamentos" styleClass="topDialog"
-                  widgetVar="dlgQtdAgendamentos" modal="true">
+                  widgetVar="dlgQtdAgendamentos" modal="true" dynamic="true">
             <h:form id="formQtdAgendamentos">
                 <p:dataTable id="dtAgendamentosEquipe" resizableColumns="true"
-                             value="#{TransferenciaPacienteController.visualizarHorariosEquipe()}" var="ag"
+                             value="#{TransferenciaPacienteController.listaHorariosAgenda}" var="ag"
                              emptyMessage="Sem registros.">
 
                     <p:column headerText="Equipe">
@@ -511,6 +514,37 @@
             </h:form>
         </p:dialog>
 
+
+<p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe" dynamic="true"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuEquipe">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{TransferenciaPacienteController.listaEquipePorGrupo}"
+                             id="dtEquipe" var="equipe" display="Nenhuma Equipe">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Equipe
+                        </f:facet>
+                        <p:outputLabel value="#{equipe.descEquipe}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton update=":formInsercao2:outEquipe"
+                                         icon="ui-icon-check" title="Selecionar"
+                                         class="new-btn-acao-table acao-editar"
+                                         onclick="PF('dlgConsuEquipe').hide();">
+                            <f:setPropertyActionListener value="#{equipe}"
+                                                         target="#{TransferenciaPacienteController.insercao.equipe}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
     </ui:define>
 
 </ui:composition>

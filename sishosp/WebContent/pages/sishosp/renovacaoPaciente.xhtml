@@ -416,7 +416,7 @@
 		</div>
 
 
-		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
+		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo" dynamic="true"
 			modal="true" id="laudo-id">
 			<h:form id="formConsuLaudo">
 
@@ -490,7 +490,7 @@
 		</p:dialog>
 
         <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
-                  modal="true">
+                  modal="true" dynamic="true">
             <h:form id="formDiasAtendimento">
                 <p:selectManyCheckbox layout="grid" columns="7" required="true"
                                       requiredMessage="Escolha ao menos um dia da semana!"
@@ -518,10 +518,10 @@
         </p:dialog>
 
         <p:dialog header="Quantidade de Agendamentos" styleClass="topDialog"
-                  widgetVar="dlgQtdAgendamentos" modal="true">
+                  widgetVar="dlgQtdAgendamentos" modal="true" dynamic="true">
             <h:form id="formQtdAgendamentos">
                 <p:dataTable id="dtAgendamentosEquipe" resizableColumns="true"
-                             value="#{RenovarPacienteController.visualizarHorariosEquipe()}" var="ag"
+                             value="#{RenovarPacienteController.listaHorariosAgenda}" var="ag"
                              emptyMessage="Sem registros.">
 
                     <p:column headerText="Equipe">

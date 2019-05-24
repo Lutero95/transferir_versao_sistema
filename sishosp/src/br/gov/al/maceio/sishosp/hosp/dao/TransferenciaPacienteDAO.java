@@ -54,8 +54,8 @@ public class TransferenciaPacienteDAO {
                 ip.getGrupo().setDescGrupo(rs.getString("descgrupo"));
                 ip.getLaudo().getPaciente()
                         .setId_paciente(rs.getInt("codpaciente"));
-                ip.getEquipe().setCodEquipe(rs.getInt("codequipe"));
-                ip.getEquipe().setDescEquipe(rs.getString("descequipe"));
+               // ip.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+              //  ip.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 ip.getFuncionario().setId(rs.getLong("codprofissional"));
                 ip.getFuncionario().setNome(rs.getString("descfuncionario"));
                 ip.setObservacao(rs.getString("observacao"));
@@ -66,7 +66,6 @@ public class TransferenciaPacienteDAO {
                 ip.getAgenda().setTurno(rs.getString("turno"));
                 ip.getAgenda().setSituacao(rs.getString("situacao"));
                 ip.getLaudo().setId(rs.getInt("codlaudo"));
-                ip.setData_solicitacao(rs.getDate("data_solicitacao"));
 
             }
 
@@ -134,8 +133,8 @@ public class TransferenciaPacienteDAO {
             ps5.setLong(1, id_paciente);
             ps5.execute();
             
-            String sql6 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
-                    + " VALUES  (?, current_timestamp, ?, ?)";
+            String sql6 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo, id_funcionario_gravacao) "
+                    + " VALUES  (?, current_timestamp, ?, ?, ?)";
 
             PreparedStatement ps6 = null;
             ps6 = conexao.prepareStatement(sql6);
@@ -143,6 +142,7 @@ public class TransferenciaPacienteDAO {
             ps6.setLong(1, id_paciente);
             ps6.setString(2, insercao.getObservacao());
             ps6.setString(3, "T");
+            ps6.setInt(4, user_session.getCodigo());
 
             ps6.executeUpdate();            
 
@@ -182,9 +182,9 @@ public class TransferenciaPacienteDAO {
                 }
             }
 
-            String sql9 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
+            String sql9 = "INSERT INTO hosp.atendimentos(codpaciente,  situacao, dtaatende, codtipoatendimento, turno, "
                     + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
-                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
+                    + " VALUES (?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
 
             PreparedStatement ps9 = null;
             ps9 = conexao.prepareStatement(sql9);
@@ -193,37 +193,35 @@ public class TransferenciaPacienteDAO {
 
             	ps9.setInt(1, insercaoParaLaudo.getLaudo().getPaciente()
                         .getId_paciente());
-            	ps9.setLong(2, listAgendamentoProfissional.get(i).getAgenda().getProfissional()
-                        .getId());
-            	ps9.setDate(3, new Date(listAgendamentoProfissional.get(i).getAgenda()
+            	ps9.setDate(2, new Date(listAgendamentoProfissional.get(i).getAgenda()
                         .getDataMarcacao().getTime()));
-            	ps9.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
+            	ps9.setInt(3, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
 
                 if(insercao.getAgenda().getTurno() != null) {
-                	ps9.setString(5, insercao.getAgenda().getTurno());
+                	ps9.setString(4, insercao.getAgenda().getTurno());
                 }
                 else{
-                	ps9.setNull(5, Types.NULL);
+                	ps9.setNull(4, Types.NULL);
                 }
 
-                ps9.setString(6, insercao.getObservacao());
-                ps9.setInt(7, idPacienteInstituicaoNovo);
-                ps9.setInt(8, user_session.getEmpresa().getCodEmpresa());
+                ps9.setString(5, insercao.getObservacao());
+                ps9.setInt(6, idPacienteInstituicaoNovo);
+                ps9.setInt(7, user_session.getEmpresa().getCodEmpresa());
 
                 if(insercao.getAgenda().getHorario() != null) {
-                	ps9.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+                	ps9.setTime(8, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
                 }
                 else{
-                	ps9.setNull(9, Types.NULL);
+                	ps9.setNull(8, Types.NULL);
                 }
 
-                ps9.setInt(10, insercao.getPrograma().getIdPrograma());
+                ps9.setInt(9, insercao.getPrograma().getIdPrograma());
 
-                ps9.setInt(11, insercao.getGrupo().getIdGrupo());
+                ps9.setInt(10, insercao.getGrupo().getIdGrupo());
 
-                ps9.setInt(12, insercao.getEquipe().getCodEquipe());
+                ps9.setInt(11, insercao.getEquipe().getCodEquipe());
 
-                ps9.setInt(13, user_session.getCodigo());
+                ps9.setInt(12, user_session.getCodigo());
 
                 rs = ps9.executeQuery();
 

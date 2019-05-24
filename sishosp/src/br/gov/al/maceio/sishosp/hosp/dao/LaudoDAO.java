@@ -455,7 +455,7 @@ public class LaudoDAO {
 
         ArrayList<InsercaoPacienteBean> lista = new ArrayList<>();
 
-        String sql = "select nome, cns, id_laudo, mes_final, ano_final, " +
+        String sql = "select nome, cns, id_laudo,mes_inicio, ano_inicio, mes_final, ano_final, " +
                 "to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') as datainicio, " +
                 "(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal " +
                 "from ( "
@@ -467,8 +467,9 @@ public class LaudoDAO {
                 + " left join hosp.pacientes p on (l.codpaciente = p.id_paciente) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
                 + " left join hosp.cid ci on (l.cid1 = cast(ci.cod as integer)) "
-                + " where current_date <= (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) "
-                + " AND l.codpaciente = ?"
+                + " where 1=1 "
+                //current_date <= (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) "
+                + " AND l.codpaciente = ?  AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo)"
                 + " ) a";
         try {
             conexao = ConnectionFactory.getConnection();
@@ -485,6 +486,8 @@ public class LaudoDAO {
                 insercao.getLaudo().setVigencia_final(rs.getDate("datafinal"));
                 insercao.getLaudo().setMes_final(rs.getInt("mes_final"));
                 insercao.getLaudo().setAno_final(rs.getInt("ano_final"));
+                insercao.getLaudo().setMes_inicio(rs.getInt("mes_inicio"));
+                insercao.getLaudo().setAno_inicio(rs.getInt("ano_inicio"));                
 
                 lista.add(insercao);
             }

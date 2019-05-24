@@ -34,8 +34,9 @@ public class InsercaoPacienteDAO {
                 + " left join hosp.pacientes p on (l.codpaciente = p.id_paciente) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
                 + " left join hosp.cid ci on (l.cid1 = cast(ci.cod as integer)) "
-                + " where current_date >= to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') "
-                + " and current_date <= (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) "
+                + " where 1=1 "
+                //current_date >= to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') "
+                //+ " and current_date <= (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) "
                 + " AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo)"
                 + " ) a";
         try {
@@ -81,8 +82,9 @@ public class InsercaoPacienteDAO {
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
                 + " left join hosp.cid ci on (l.cid1 = cast(ci.cod as integer)) "
                 + " left join hosp.recurso r on (l.id_recurso = r.id) "
-                + " where current_date >= to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') "
-                + " and current_date <= (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) "
+                + " where 1=1 "
+                //current_date >= to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') "
+                //+ " and current_date <= (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) "
                 + " and l.id_laudo = ?";
         try {
             con = ConnectionFactory.getConnection();

@@ -169,14 +169,14 @@ public class GerenciarPacienteDAO {
             stmt.setInt(2, gerenciarRow.getLaudo().getId());
             stmt.executeUpdate();
 
-            String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao) "
-                    + " VALUES  (?, current_timestamp, ?, ?, ?)";
+            String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao, id_funcionario_gravacao) "
+                    + " VALUES  (?, current_timestamp, ?, ?, ?,?)";
             stmt = conexao.prepareStatement(sql2);
             stmt.setLong(1, gerenciarRow.getId());
             stmt.setInt(2, gerenciar.getMotivo_desligamento());
             stmt.setString(3, DESLIGADO);
             stmt.setString(4, gerenciar.getObservacao());
-
+            stmt.setInt(5, user_session.getCodigo());
             stmt.executeUpdate();
 
             conexao.commit();
@@ -211,12 +211,13 @@ public class GerenciarPacienteDAO {
             stmt.setInt(2, row.getLaudo().getId());
             stmt.executeUpdate();
 
-            String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao) "
-                    + " VALUES  (?, current_timestamp, (select motivo_padrao_desligamento_opm from hosp.parametro), ?, ?)";
+            String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao,id_funcionario_gravacao) "
+                    + " VALUES  (?, current_timestamp, (select motivo_padrao_desligamento_opm from hosp.parametro), ?, ?, ?)";
             stmt = conexao.prepareStatement(sql2);
             stmt.setLong(1, row.getPaciente().getId_paciente());
             stmt.setString(2, "D");
             stmt.setString(3, gerenciar.getObservacao());
+            stmt.setInt(4, user_session.getCodigo());
 
             stmt.executeUpdate();
 
@@ -272,8 +273,8 @@ public class GerenciarPacienteDAO {
 
         Boolean retorno = false;
 
-        String sql = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo) "
-                + " VALUES  (?, CURRENT_TIMESTAMP , ?, ?)";
+        String sql = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, observacao, tipo,id_funcionario_gravacao) "
+                + " VALUES  (?, CURRENT_TIMESTAMP , ?, ?,?)";
 
         try {
             ps = null;
@@ -282,6 +283,7 @@ public class GerenciarPacienteDAO {
             ps.setLong(1, idPacienteInstituicao);
             ps.setString(2, observacao);
             ps.setString(3, tipo);
+            ps.setInt(4, user_session.getCodigo());
 
             ps.executeUpdate();
 
