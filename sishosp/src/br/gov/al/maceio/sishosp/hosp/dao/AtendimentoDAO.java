@@ -400,7 +400,7 @@ public class AtendimentoDAO {
             throws ProjetoException {
 
         String sql = "select a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns,"
-                + " f.codcbo, c.descricao, a1.situacao, pr.id, a1.codprocedimento, pr.nome as procedimento"
+                + " f.codcbo, c.descricao, a1.situacao, pr.id, a1.codprocedimento, pr.nome as procedimento, a1.evolucao "
                 + " from hosp.atendimentos1 a1"
                 + " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
                 + " left join hosp.cbo c on (f.codcbo = c.id)"
@@ -431,6 +431,7 @@ public class AtendimentoDAO {
                 at.getProcedimento().setCodProc(rs.getInt("codprocedimento"));
                 at.getProcedimento().setNomeProc(rs.getString("procedimento"));
                 at.getProcedimento().setIdProc(rs.getInt("id"));
+                at.setEvolucao(rs.getString("evolucao"));
 
                 lista.add(at);
             }
