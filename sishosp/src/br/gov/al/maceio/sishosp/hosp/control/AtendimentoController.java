@@ -286,8 +286,8 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-    public void carregarEvolucoesPaciente() throws ProjetoException {
-        listaEvolucoes = aDao.carregarEvolucoesDoPaciente(paciente.getId_paciente());
+    public void carregarEvolucoesPaciente(Integer codPaciente) throws ProjetoException {
+        listaEvolucoes = aDao.carregarEvolucoesDoPaciente(codPaciente);
     }
 
     public AtendimentoBean getAtendimento() {
