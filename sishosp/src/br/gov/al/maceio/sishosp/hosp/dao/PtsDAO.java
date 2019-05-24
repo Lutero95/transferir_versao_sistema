@@ -372,4 +372,43 @@ public class PtsDAO {
 
     }
 
+    public Pts carregarPtsDoPaciente(Integer codPaciente) throws ProjetoException {
+
+        String sql = "SELECT p.data, p.diagnostico_funcional, p.necessidades_e_desejos, p.id_paciente_instituicao " +
+                "FROM hosp.pts p " +
+                "LEFT JOIN hosp.paciente_instituicao pi ON (pi.id = p.id_paciente_instituicao) " +
+                "WHERE pi.codpaciente = ?";
+
+
+        Pts pts = new Pts();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, codPaciente);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                pts.setData(rs.getDate("data"));
+                pts.setDiagnosticoFuncional(rs.getString("diagnostico_funcional"));
+                pts.setNecessidadesIhDesejos(rs.getString("necessidades_e_desejos"));
+                pts.getGerenciarPaciente().setId(rs.getInt("id_paciente_instituicao"));
+                pts.setListaPtsArea(carregarAreasPts(pts.getGerenciarPaciente().getId(), conexao));
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return pts;
+    }
+
 }

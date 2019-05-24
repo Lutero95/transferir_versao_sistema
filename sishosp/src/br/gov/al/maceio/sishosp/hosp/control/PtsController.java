@@ -124,6 +124,10 @@ public class PtsController implements Serializable {
         JSFUtil.abrirDialog("dlgSenhaAreaPts");
     }
 
+    public Pts carregarPtsPaciente(Integer codPaciente) throws ProjetoException {
+        return pDao.carregarPtsDoPaciente(codPaciente);
+    }
+
     public Pts getPts() {
         return pts;
     }

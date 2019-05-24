@@ -28,6 +28,12 @@
 												 icon="ui-icon-search" immediate="true" update=":frmPrincipal"
 												 action="#{AtendimentoController.carregarEvolucoesPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
 												 oncomplete="PF('dlgConsultaEvolucoes').show();"/>
+
+                                <p:commandButton value="Consultar PTS" look="success" size="sm"
+                                                 style="margin-left: 10px"
+                                                 icon="ui-icon-search" immediate="true" update=":frmPrincipalPts"
+                                                 action="#{AtendimentoController.carregarPtsDoPaciente(AtendimentoController.atendimento.paciente.id_paciente)}"
+                                                 oncomplete="PF('dlgConsultaPTS').show();"/>
 							</b:row>
 						</div>
 					</b:row>
@@ -265,6 +271,109 @@
                     </b:row>
                 </p:outputPanel>
 
+
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog header="Consultar PTS" widgetVar="dlgConsultaPTS" width="1100px" height="500px" styleClass="topDialog">
+
+            <h:form id="frmPrincipalPts">
+                <b:row>
+
+                    <h1>VISÃO GERAL DO PACIENTE</h1>
+
+                </b:row>
+
+                <br></br>
+
+                <b:row>
+
+                    <b:column span="5" class="label-position data-size">
+
+                        <b:label value="A) Diagnóstico Funcional:" id="diagnosticoFuncional"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Diagnóstico Funcional: Campo obrigatório!"
+                                         value="#{AtendimentoController.pts.diagnosticoFuncional}"></h:inputTextarea>
+
+                    </b:column>
+
+                    <b:column span="2"></b:column>
+
+                    <b:column span="5" class="label-position data-size">
+
+                        <b:label value="B) Necessidades e Desejos:" id="necessidadesIhDesejos"
+                                 severity="info" class="fire-label"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Necessidades e Desejos: Campo obrigatório!"
+                                         value="#{AtendimentoController.pts.necessidadesIhDesejos}"></h:inputTextarea>
+
+                    </b:column>
+
+                </b:row>
+
+                <br></br>
+
+                <div align="center">
+                    <b:messages value="Error" id="msgPagina"></b:messages>
+                </div>
+
+                <b:row>
+
+                    <h1>VISÃO MULTIDISCIPLINAR</h1>
+
+                </b:row>
+
+                <br></br>
+
+                <b:row>
+
+                    <p:dataTable id="dtPtsAdicionados" resizableColumns="true"
+                                 value="#{AtendimentoController.pts.listaPtsArea}"
+                                 var="pts" emptyMessage="Sem registros.">
+
+                        <p:column headerText="Cód Especialidade" width="0%" rendered="false">
+                            <h:outputLabel value="#{pts.area.codEspecialidade}">
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Especialidade" width="13%">
+                            <h:outputLabel value="#{pts.area.descEspecialidade}">
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Objetivo Curto" width="13%">
+                            <h:outputLabel value="#{pts.objetivoCurto}"/>
+                        </p:column>
+
+                        <p:column headerText="Objetivo Médio" width="13%">
+                            <h:outputLabel value="#{pts.objetivoMedio}"/>
+                        </p:column>
+
+                        <p:column headerText="Objetivo Longo" width="13%">
+                            <h:outputLabel value="#{pts.objetivoLongo}"/>
+                        </p:column>
+
+                        <p:column headerText="Plano Curto" width="13%">
+                            <h:outputLabel value="#{pts.planoDeIntervencoesCurto}"/>
+                        </p:column>
+
+                        <p:column headerText="Plano Médio" width="13%">
+                            <h:outputLabel value="#{pts.planoDeIntervencoesMedio}"/>
+                        </p:column>
+
+                        <p:column headerText="Plano Longo" width="13%">
+                            <h:outputLabel value="#{pts.planoDeIntervencoesLongo}"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </b:row>
 
             </h:form>
 

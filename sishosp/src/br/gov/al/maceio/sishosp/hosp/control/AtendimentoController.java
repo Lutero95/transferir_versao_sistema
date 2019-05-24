@@ -12,7 +12,7 @@ import javax.faces.context.FacesContext;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
-import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.event.CellEditEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -21,9 +21,6 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
-import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.CboBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
 
 @ManagedBean(name = "AtendimentoController")
 @ViewScoped
@@ -45,6 +42,7 @@ public class AtendimentoController implements Serializable {
     private Integer idAtendimento1;
     private List<AtendimentoBean> listaEvolucoes;
     private PacienteBean paciente;
+    private Pts pts;
 
     //CONSTANTES
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
@@ -68,6 +66,7 @@ public class AtendimentoController implements Serializable {
         atendimento.setDataAtendimentoInicio(DataUtil.retornarDataAtual());
         atendimento.setDataAtendimentoFinal(DataUtil.retornarDataAtual());
         paciente = new PacienteBean();
+        pts = new Pts();
     }
 
 
@@ -290,6 +289,10 @@ public class AtendimentoController implements Serializable {
         listaEvolucoes = aDao.carregarEvolucoesDoPaciente(codPaciente);
     }
 
+    public void carregarPtsDoPaciente(Integer codPaciente) throws ProjetoException {
+        pts = new PtsController().carregarPtsPaciente(codPaciente);
+    }
+
     public AtendimentoBean getAtendimento() {
         return atendimento;
     }
@@ -371,5 +374,13 @@ public class AtendimentoController implements Serializable {
 
     public void setPaciente(PacienteBean paciente) {
         this.paciente = paciente;
+    }
+
+    public Pts getPts() {
+        return pts;
+    }
+
+    public void setPts(Pts pts) {
+        this.pts = pts;
     }
 }
