@@ -207,10 +207,10 @@ public class AtendimentoDAO {
 
             for (int i = 0; i < lista.size(); i++) {
 
-                String sql = "delete from hosp.atendimentos1 where id_atendimentos1 = ?";
+                String sql = "delete from hosp.atendimentos1 where id_atendimento = ?";
 
                 PreparedStatement stmt = con.prepareStatement(sql);
-                stmt.setLong(1, lista.get(i).getId1());
+                stmt.setLong(1, lista.get(i).getId());
                 stmt.execute();
 
                 String sql2 = "INSERT INTO hosp.atendimentos1(dtaatendido, codprofissionalatendimento, id_atendimento, "
