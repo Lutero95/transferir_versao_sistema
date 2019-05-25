@@ -252,6 +252,7 @@ public class PacienteDAO {
             } else {
                 stmt.setInt(42, paciente.getEncaminhado().getCodencaminhado());
             }
+            
             if (paciente.getFormatransporte().getCodformatransporte() == null) {
                 stmt.setNull(43, Types.INTEGER);
             } else {
@@ -438,8 +439,16 @@ public class PacienteDAO {
             }
 
             stmt.setString(31, paciente.getAssociado().toUpperCase().trim());
-            stmt.setInt(32, paciente.getEscolaridade().getCodescolaridade());
-            stmt.setInt(33, paciente.getEscola().getCodEscola());
+            
+            if (paciente.getEscolaridade().getCodescolaridade() != null) 
+            	stmt.setInt(32, paciente.getEscolaridade().getCodescolaridade());
+            else
+            	stmt.setNull(32, Types.INTEGER);
+            
+            if (paciente.getEscola().getCodEscola() != null) 
+            	stmt.setInt(33, paciente.getEscola().getCodEscola());
+            else
+            	stmt.setNull(33, Types.INTEGER);
 
             if (paciente.getProfissao().getCodprofissao() == null) {
                 stmt.setNull(34, Types.INTEGER);
@@ -467,10 +476,18 @@ public class PacienteDAO {
                 stmt.setNull(41, Types.DATE);
             }
 
+            if (paciente.getEncaminhado().getCodencaminhado() != null) 
             stmt.setInt(42, paciente.getEncaminhado().getCodencaminhado());
-            stmt.setInt(43, paciente.getFormatransporte()
-                    .getCodformatransporte());
-            stmt.setString(44, paciente.getDeficiencia());
+            else 
+                stmt.setNull(42, Types.INTEGER);
+            
+            if (paciente.getFormatransporte()
+                    .getCodformatransporte() != null) 
+                stmt.setInt(43, paciente.getFormatransporte()
+                        .getCodformatransporte());
+                else 
+                    stmt.setNull(43, Types.INTEGER);
+           stmt.setString(44, paciente.getDeficiencia());
 
             stmt.setInt(45, paciente.getEndereco().getCodmunicipio());
 
@@ -905,12 +922,22 @@ public class PacienteDAO {
                 p.setEmail(rs.getString("email"));
                 p.setFacebook(rs.getString("facebook"));
                 p.setInstagram(rs.getString("instagram"));
+                if (rs.getString("id_escolaridade") != null) {
                 p.getEscolaridade().setCodescolaridade(
                         rs.getInt("id_escolaridade"));
                 p.getEscolaridade().setDescescolaridade(
                         rs.getString("descescolaridade"));
+                }
+                if (rs.getString("id_escola") != null) {
                 p.getEscola().setCodEscola(rs.getInt("id_escola"));
+                p.getEscola().setDescescola(rs.getString("descescola"));
+                }
+                
+                if (rs.getString("id_profissao") != null) {
                 p.getProfissao().setCodprofissao(rs.getInt("id_profissao"));
+                p.getProfissao()
+                .setDescprofissao(rs.getString("descprofissao"));
+                }
                 p.setTrabalha(rs.getString("trabalha"));
                 p.setLocaltrabalha(rs.getString("localtrabalha"));
                 p.setCodparentesco(rs.getInt("codparentesco"));
@@ -918,18 +945,25 @@ public class PacienteDAO {
                 p.setRgresp(rs.getString("rgresp"));
                 p.setCpfresp(rs.getString("cpfresp"));
                 p.setDataNascimentoresp(rs.getDate("dtanascimentoresp"));
-                p.getEncaminhado().setCodencaminhado(
-                        rs.getInt("id_encaminhado"));
+               
+
+                p.setDeficiencia(rs.getString("deficiencia"));
+               
+                
+                if (rs.getString("id_encaminhado") != null) {
+                	 p.getEncaminhado().setCodencaminhado(
+                             rs.getInt("id_encaminhado"));
+                	    p.getEncaminhado().setDescencaminhado(
+                                rs.getString("descencaminhado"));
+                }
+            
+          
+            if (rs.getString("id_formatransporte") != null) {
                 p.getFormatransporte().setCodformatransporte(
                         rs.getInt("id_formatransporte"));
-                p.setDeficiencia(rs.getString("deficiencia"));
-                p.getEscola().setDescescola(rs.getString("descescola"));
-                p.getProfissao()
-                        .setDescprofissao(rs.getString("descprofissao"));
-                p.getEncaminhado().setDescencaminhado(
-                        rs.getString("descencaminhado"));
                 p.getFormatransporte().setDescformatransporte(
                         rs.getString("descformatransporte"));
+            }
                 p.setDeficienciaFisica(rs.getBoolean("deficienciafisica"));
                 p.setDeficienciaMental(rs.getBoolean("deficienciamental"));
                 p.setDeficienciaAuditiva(rs.getBoolean("deficienciaauditiva"));

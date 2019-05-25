@@ -150,7 +150,7 @@
 							<b:column span="4" class="label-position">
 								<b:label for="cor" value="Cor / Raça" severity="info" />
 
-								<b:selectOneMenu disable="true"
+								<b:selectOneMenu disable="true" required="true" requiredMessage="Informe a Raça"
 									value="#{PacienteController.paciente.codRaca}" id="cor">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
 									<f:selectItems value="#{PacienteController.listaRaca}"
