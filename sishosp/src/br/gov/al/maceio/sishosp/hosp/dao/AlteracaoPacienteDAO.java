@@ -179,7 +179,7 @@ public class AlteracaoPacienteDAO {
             conexao = ConnectionFactory.getConnection();
 
             GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
-            if(!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true)){
+            if (!gerenciarPacienteDAO.apagarAtendimentos(id_paciente, conexao, true)) {
 
                 conexao.close();
 
@@ -210,86 +210,85 @@ public class AlteracaoPacienteDAO {
 
             for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
-                ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente()
-                        .getId_paciente());
-                ps7.setNull(2, Types.NULL);
-                ps7.setDate(3, new java.sql.Date(listAgendamentoProfissional.get(i).getAgenda()
-                        .getDataMarcacao().getTime()));
-                ps7.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
+                if (!verificarSeAtendimentoExistePorEquipe(insercao, listAgendamentoProfissional.get(i).getAgenda()
+                        .getDataMarcacao(), conexao)) {
 
-                if(insercao.getAgenda().getTurno() != null) {
-                    ps7.setString(5, insercao.getAgenda().getTurno());
-                }
-                else{
-                    ps7.setNull(5, Types.NULL);
-                }
 
-                ps7.setString(6, insercao.getObservacao());
-                ps7.setInt(7, id_paciente);
-                ps7.setInt(8, user_session.getEmpresa().getCodEmpresa());
+                    ps7.setInt(1, insercaoParaLaudo.getLaudo().getPaciente()
+                            .getId_paciente());
+                    ps7.setNull(2, Types.NULL);
+                    ps7.setDate(3, DataUtil.converterDateUtilParaDateSql(listAgendamentoProfissional.get(i).getAgenda()
+                            .getDataMarcacao()));
+                    ps7.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
 
-                if(insercao.getAgenda().getHorario() != null) {
-                    ps7.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
-                }
-                else{
-                    ps7.setNull(9, Types.NULL);
-                }
+                    if (insercao.getAgenda().getTurno() != null) {
+                        ps7.setString(5, insercao.getAgenda().getTurno());
+                    } else {
+                        ps7.setNull(5, Types.NULL);
+                    }
 
-                if(insercao.getPrograma().getIdPrograma() != null) {
-                    ps7.setInt(10, insercao.getPrograma().getIdPrograma());
-                }
-                else{
-                    ps7.setNull(10, Types.NULL);
-                }
+                    ps7.setString(6, insercao.getObservacao());
+                    ps7.setInt(7, id_paciente);
+                    ps7.setInt(8, user_session.getEmpresa().getCodEmpresa());
 
-                if(insercao.getGrupo().getIdGrupo() != null) {
-                    ps7.setInt(11, insercao.getGrupo().getIdGrupo());
-                }
-                else{
-                    ps7.setNull(11, Types.NULL);
-                }
+                    if (insercao.getAgenda().getHorario() != null) {
+                        ps7.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+                    } else {
+                        ps7.setNull(9, Types.NULL);
+                    }
 
-                if(insercao.getEquipe().getCodEquipe() != null) {
-                    ps7.setInt(12, insercao.getEquipe().getCodEquipe());
-                }
-                else{
-                    ps7.setNull(12, Types.NULL);
-                }
+                    if (insercao.getPrograma().getIdPrograma() != null) {
+                        ps7.setInt(10, insercao.getPrograma().getIdPrograma());
+                    } else {
+                        ps7.setNull(10, Types.NULL);
+                    }
 
-                ps7.setInt(13, user_session.getCodigo());
+                    if (insercao.getGrupo().getIdGrupo() != null) {
+                        ps7.setInt(11, insercao.getGrupo().getIdGrupo());
+                    } else {
+                        ps7.setNull(11, Types.NULL);
+                    }
 
-                rs = ps7.executeQuery();
+                    if (insercao.getEquipe().getCodEquipe() != null) {
+                        ps7.setInt(12, insercao.getEquipe().getCodEquipe());
+                    } else {
+                        ps7.setNull(12, Types.NULL);
+                    }
 
-                int idAgend = 0;
-                if (rs.next()) {
-                    idAgend = rs.getInt("id_atendimento");
-                }
+                    ps7.setInt(13, user_session.getCodigo());
 
-                for(int j=0; j<listaProfissionais.size(); j++) {
+                    rs = ps7.executeQuery();
 
-                    for (int h = 0; h < listaProfissionais.get(j).getListDiasSemana().size(); h++) {
+                    int idAgend = 0;
+                    if (rs.next()) {
+                        idAgend = rs.getInt("id_atendimento");
+                    }
 
-                        if (DataUtil.extrairDiaDeData(listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao()) ==
-                                Integer.parseInt(listaProfissionais.get(j).getListDiasSemana().get(h))) {
+                    for (int j = 0; j < listaProfissionais.size(); j++) {
 
-                            String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+                        for (int h = 0; h < listaProfissionais.get(j).getListDiasSemana().size(); h++) {
 
-                            PreparedStatement ps8 = null;
-                            ps8 = conexao.prepareStatement(sql8);
+                            if (DataUtil.extrairDiaDeData(listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao()) ==
+                                    Integer.parseInt(listaProfissionais.get(j).getListDiasSemana().get(h))) {
 
-                            ps8.setLong(1, listaProfissionais.get(j).getId());
-                            ps8.setInt(2, idAgend);
-                            ps8.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
-                            ps8.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+                                String sql8 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
-                            ps8.executeUpdate();
+                                PreparedStatement ps8 = null;
+                                ps8 = conexao.prepareStatement(sql8);
+
+                                ps8.setLong(1, listaProfissionais.get(j).getId());
+                                ps8.setInt(2, idAgend);
+                                ps8.setInt(3, listaProfissionais.get(j).getCbo().getCodCbo());
+                                ps8.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+
+                                ps8.executeUpdate();
+                            }
                         }
                     }
                 }
-
             }
 
-            if(gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)){
+            if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
                 conexao.commit();
 
                 retorno = true;
@@ -370,48 +369,51 @@ public class AlteracaoPacienteDAO {
 
             }
 
-            String sql6 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, "
-                    + "observacao, ativo, id_paciente_instituicao, cod_empresa)"
-                    + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?) RETURNING id_atendimento;";
+            if (!verificarSeAtendimentoExistePorProfissional(insercao, conexao)) {
 
-            PreparedStatement ps6 = null;
-            ps6 = conexao.prepareStatement(sql6);
+                String sql6 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, "
+                        + "observacao, ativo, id_paciente_instituicao, cod_empresa)"
+                        + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?) RETURNING id_atendimento;";
 
-            for (int i = 0; i < listaAgendamento.size(); i++) {
+                PreparedStatement ps6 = null;
+                ps6 = conexao.prepareStatement(sql6);
 
-                ps6.setInt(1, insercaoParaLaudo.getLaudo().getPaciente()
-                        .getId_paciente());
-                ps6.setLong(2, insercao.getFuncionario().getId());
-                ps6.setDate(3, new java.sql.Date(listaAgendamento.get(i)
-                        .getAgenda().getDataMarcacao().getTime()));
-                ps6.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
-                ps6.setString(5, insercao.getAgenda().getTurno());
-                ps6.setString(6, insercao.getObservacao());
-                ps6.setInt(7, id_paciente);
-                ps6.setInt(8, user_session.getEmpresa().getCodEmpresa());
+                for (int i = 0; i < listaAgendamento.size(); i++) {
 
-                rs = ps6.executeQuery();
+                    ps6.setInt(1, insercaoParaLaudo.getLaudo().getPaciente()
+                            .getId_paciente());
+                    ps6.setLong(2, insercao.getFuncionario().getId());
+                    ps6.setDate(3, new java.sql.Date(listaAgendamento.get(i)
+                            .getAgenda().getDataMarcacao().getTime()));
+                    ps6.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
+                    ps6.setString(5, insercao.getAgenda().getTurno());
+                    ps6.setString(6, insercao.getObservacao());
+                    ps6.setInt(7, id_paciente);
+                    ps6.setInt(8, user_session.getEmpresa().getCodEmpresa());
 
-                int idAgend = 0;
-                if (rs.next()) {
-                    idAgend = rs.getInt("id_atendimento");
+                    rs = ps6.executeQuery();
+
+                    int idAgend = 0;
+                    if (rs.next()) {
+                        idAgend = rs.getInt("id_atendimento");
+                    }
+
+                    String sql7 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+
+                    PreparedStatement ps7 = null;
+                    ps7 = conexao.prepareStatement(sql7);
+
+                    ps7.setLong(1, insercao.getFuncionario().getId());
+                    ps7.setInt(2, idAgend);
+                    ps7.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
+                    ps7.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
+
+                    ps7.executeUpdate();
+
                 }
-
-                String sql7 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
-
-                PreparedStatement ps7 = null;
-                ps7 = conexao.prepareStatement(sql7);
-
-                ps7.setLong(1, insercao.getFuncionario().getId());
-                ps7.setInt(2, idAgend);
-                ps7.setInt(3, insercao.getFuncionario().getCbo().getCodCbo());
-                ps7.setInt(4, insercao.getFuncionario().getProc1().getIdProc());
-
-                ps7.executeUpdate();
-
             }
 
-            if(gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)){
+            if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id_paciente, insercao.getObservacao(), "A", conexao)) {
                 conexao.commit();
 
                 retorno = true;
@@ -465,6 +467,70 @@ public class AlteracaoPacienteDAO {
             }
         }
         return lista;
+    }
+
+    public Boolean verificarSeAtendimentoExistePorEquipe(InsercaoPacienteBean insercaoPacienteBean, java.util.Date data, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+
+        String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND codequipe = ? AND dtaatende = ?;";
+
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+
+            stm.setInt(1, insercaoPacienteBean.getPrograma().getIdPrograma());
+            stm.setInt(2, insercaoPacienteBean.getGrupo().getIdGrupo());
+            stm.setInt(3, insercaoPacienteBean.getEquipe().getCodEquipe());
+            stm.setDate(4, DataUtil.converterDateUtilParaDateSql(data));
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                retorno = true;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+
+    public Boolean verificarSeAtendimentoExistePorProfissional(InsercaoPacienteBean insercaoPacienteBean, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+
+        String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE codprograma = ? AND codgrupo = ? AND codmedico = ? AND dtaatende = ?;";
+
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+
+            stm.setInt(1, insercaoPacienteBean.getPrograma().getIdPrograma());
+            stm.setInt(2, insercaoPacienteBean.getGrupo().getIdGrupo());
+            stm.setLong(3, insercaoPacienteBean.getFuncionario().getId());
+            stm.setDate(4, DataUtil.converterDateUtilParaDateSql(insercaoPacienteBean.getAgenda().getDataMarcacao()));
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                retorno = true;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
     }
 
 }
