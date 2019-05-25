@@ -85,6 +85,8 @@ public class AtendimentoDAO {
 
             con = ConnectionFactory.getConnection();
             for (int i = 0; i < lista.size(); i++) {
+                permiteAtendimento = false;
+
                 String sql = "SELECT p.id_cbo " +
                         "FROM hosp.proc_cbo p " +
                         "LEFT JOIN hosp.cbo c ON (c.id = p.id_cbo) " +
