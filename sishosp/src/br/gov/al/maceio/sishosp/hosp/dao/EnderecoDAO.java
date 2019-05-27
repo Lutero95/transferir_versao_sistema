@@ -34,7 +34,7 @@ public class EnderecoDAO {
 
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            stmt.setString(1, endereco.getBairro().toUpperCase().trim());
+            stmt.setString(1,StringUtil.removeAcentos( endereco.getBairro().toUpperCase().trim()));
             stmt.setInt(2, endereco.getCodmunicipio());
 
             stmt.execute();
@@ -62,7 +62,7 @@ public class EnderecoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            stmt.setString(1, endereco.getBairro().toUpperCase());
+            stmt.setString(1,StringUtil.removeAcentos( endereco.getBairro().toUpperCase()));
             stmt.setInt(2, endereco.getCodmunicipio());
             stmt.setInt(3, endereco.getCodbairro());
             stmt.executeUpdate();

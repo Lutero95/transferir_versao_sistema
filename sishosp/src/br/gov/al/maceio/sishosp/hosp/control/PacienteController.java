@@ -235,6 +235,11 @@ public class PacienteController implements Serializable {
 
     public void alterarPaciente() throws ProjetoException {
     	System.out.println("alterarPaciente");
+    	if ((paciente.getEndereco().getCodbairro() == null) && (paciente.getEndereco().getBairro() == null)) {
+    	JSFUtil.adicionarMensagemAdvertencia("Informe o Bairro!", "Advertência");
+    	}
+    	else
+    	{
         if (escolaSuggestion != null) {
             paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
         }
@@ -255,13 +260,14 @@ public class PacienteController implements Serializable {
                     transporteSuggestion.getCodformatransporte());
         }
 
-        boolean alterou = pDao.alterar(paciente);
+        boolean alterou = pDao.alterar(paciente, bairroExiste);
 
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Paciente alterado com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
         }
+    	}
 
     }
 

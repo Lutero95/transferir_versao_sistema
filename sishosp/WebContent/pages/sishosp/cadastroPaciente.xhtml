@@ -442,14 +442,14 @@
 							<b:column span="3" class="label-position">
 								<b:label for="cns" value="CNS" severity="info" />
 
-								<b:inputText value="#{PacienteController.paciente.cns}"
-									class="form-control" id="cns"
+								<p:inputText value="#{PacienteController.paciente.cns}"
+									class="form-control" id="cns" required="true" requiredMessage="Informe o CNS"
 									validatorMessage="CNS deve conter entre 15 digitos.">
-									<p:ajax
+									<p:ajax process="cns @this"
 										listener="#{PacienteController.validaCns(PacienteController.paciente.cns)}"
 										global="false" event="blur"
-										update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:cns" />
-								</b:inputText>
+										update=":frmPrincipal:msgPagina" />
+								</p:inputText>
 							</b:column>
 
 							<b:column span="2" class="label-position">

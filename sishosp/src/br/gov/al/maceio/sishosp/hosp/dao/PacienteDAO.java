@@ -10,6 +10,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.StringUtil;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Telefone;
 
@@ -30,8 +31,8 @@ public class PacienteDAO {
 
                 PreparedStatement ps2 = conexao.prepareStatement(sql2);
 
-                ps2.setString(1, paciente.getEndereco().getBairro()
-                        .toUpperCase());
+                ps2.setString(1, StringUtil.removeAcentos(paciente.getEndereco().getBairro()
+                        .toUpperCase()));
                 ps2.setInt(2, paciente.getEndereco().getCodmunicipio());
 
                 ResultSet set = ps2.executeQuery();
@@ -367,13 +368,30 @@ public class PacienteDAO {
         }
     }
 
-    public Boolean alterar(PacienteBean paciente)
+    public Boolean alterar(PacienteBean paciente, boolean bairroExiste)
             throws ProjetoException {
         boolean retorno = false;
        
 
         try {
         	 conexao = ConnectionFactory.getConnection();
+             if (!bairroExiste) {
+                 String sql2 = "INSERT INTO hosp.bairros(descbairro, codmunicipio) "
+                         + " VALUES (?, ?) returning id_bairro;";
+
+                 PreparedStatement ps2 = conexao.prepareStatement(sql2);
+
+                 ps2.setString(1,StringUtil.removeAcentos( paciente.getEndereco().getBairro()
+                         .toUpperCase()));
+                 ps2.setInt(2, paciente.getEndereco().getCodmunicipio());
+
+                 ResultSet set = ps2.executeQuery();
+                 while (set.next()) {
+                     paciente.getEndereco().setCodbairro(set.getInt(1));
+                 }
+
+             }
+             
             String sql = "update hosp.pacientes set nome = ?, dtanascimento = ?, estcivil = ?, sexo = ? , sangue = ?, pai = ? "
                     + ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, logradouro = ?, numero = ?"
                     + ", complemento = ?, referencia = ? "
@@ -383,7 +401,7 @@ public class PacienteDAO {
                     + ", codparentesco = ?, nomeresp = ?, rgresp = ?, cpfresp = ?, dtanascimentoresp = ?, id_encaminhado = ?"
                     + ", id_formatransporte = ?, deficiencia = ?, codmunicipio = ?"
                     + ", deficienciafisica = ?, deficienciamental = ?, deficienciaauditiva = ?, deficienciavisual = ?, deficienciamultipla = ?"
-                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, motivo_nome_social = ?, associado=? "
+                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, motivo_nome_social = ?, associado=?, codbairro=?  "
                     + " where id_paciente = ?";
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -526,8 +544,10 @@ public class PacienteDAO {
             } else {
                 stmt.setString(57, paciente.getAssociado());
             }
+            
+            stmt.setInt(58, paciente.getEndereco().getCodbairro());
 
-            stmt.setLong(58, paciente.getId_paciente());
+            stmt.setLong(59, paciente.getId_paciente());
 
             stmt.executeUpdate();
 
