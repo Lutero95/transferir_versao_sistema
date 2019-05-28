@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,6 +14,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
@@ -61,7 +63,7 @@ public class AlteracaoPacienteController implements Serializable {
         todosOsProfissionais = false;
     }
 
-    public void carregaAlteracao() throws ProjetoException {
+    public void carregaAlteracao() throws ProjetoException, ParseException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -70,8 +72,8 @@ public class AlteracaoPacienteController implements Serializable {
             id_paciente_insituicao = id;
             this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
             carregarLaudoPaciente();
-            opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
-            opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
+            InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+            opcaoAtendimento = insercaoPacienteController.carregarHorarioOuTurno();
             if (insercao.getEquipe().getCodEquipe() != null
                     && insercao.getEquipe().getCodEquipe() > 0) {
                 listaProfissionaisEquipe = agendaDAO.listaProfissionaisAtendimetoParaPacienteInstituicao(id);

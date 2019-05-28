@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,6 +12,8 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -59,7 +62,7 @@ public class AgendaController implements Serializable {
     private List<FuncionarioBean> listaProfissional, listaProfissionalPorGrupo;
     private boolean habilitarDetalhes;
     private List<TipoAtendimentoBean> listaTipos;
-
+    private String opcaoAtendimento;
     private List<EquipeBean> listaEquipePorTipoAtendimento;
     private String tipoData;
     private Boolean temLotado;
@@ -77,6 +80,7 @@ public class AgendaController implements Serializable {
     private FuncionarioBean funcionario;
     private static final Integer SEM_FUNCIONARIO_LIBERACAO = 0;
     private List<GrupoBean> listaDeGruposFiltrada;
+    private ArrayList<String> listaHorarios;
 
 
     public AgendaController() {
@@ -108,6 +112,7 @@ public class AgendaController implements Serializable {
         agenda.setTurno("M");
         listaNaoPermitidosIntervaloDeDatas = new ArrayList<>();
         funcionario = new FuncionarioBean();
+        listaHorarios = new ArrayList<>();
 
     }
 
@@ -133,6 +138,21 @@ public class AgendaController implements Serializable {
     public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException {
     	preparaVerificarDisponibilidadeData();
     	listaDiasDeAtendimentoAtuais();
+    }
+
+    public String carregarHorarioOuTurno() throws ProjetoException, ParseException {
+        opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoEmpresa();
+
+        if(opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())){
+            gerarHorariosAtendimento();
+        }
+
+        return opcaoAtendimento;
+
+    }
+
+    private void gerarHorariosAtendimento() throws ParseException {
+        listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
     
     
@@ -1171,4 +1191,20 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 	public void setListaProfissionalPorGrupo(List<FuncionarioBean> listaProfissionalPorGrupo) {
 		this.listaProfissionalPorGrupo = listaProfissionalPorGrupo;
 	}
+
+    public String getOpcaoAtendimento() {
+        return opcaoAtendimento;
+    }
+
+    public void setOpcaoAtendimento(String opcaoAtendimento) {
+        this.opcaoAtendimento = opcaoAtendimento;
+    }
+
+    public ArrayList<String> getListaHorarios() {
+        return listaHorarios;
+    }
+
+    public void setListaHorarios(ArrayList<String> listaHorarios) {
+        this.listaHorarios = listaHorarios;
+    }
 }

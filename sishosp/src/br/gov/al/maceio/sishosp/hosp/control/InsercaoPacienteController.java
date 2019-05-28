@@ -11,6 +11,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -67,9 +68,23 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaProfissionais = new ArrayList<>();
     }
 
-    public void carregarHorarioOuTurno() throws ProjetoException {
-        opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
-        opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
+    public void carregarHorarioOuTurnoInsercao() throws ProjetoException, ParseException {
+        opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoEmpresa();
+
+        if(opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())){
+            gerarHorariosAtendimento();
+        }
+    }
+
+    public String carregarHorarioOuTurno() throws ProjetoException, ParseException {
+        opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoEmpresa();
+
+        if(opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())){
+            gerarHorariosAtendimento();
+        }
+
+        return opcaoAtendimento;
+
     }
 
     public void limparDados() {
@@ -422,34 +437,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         }
     }
 
-    public ArrayList<String> gerarHorariosAtendimento() throws ParseException {
-        ParametroBean parametroBean = new ParametroBean();
-        EmpresaDAO empresaDAO = new EmpresaDAO();
-
-        parametroBean = empresaDAO.carregarDetalhesAtendimentoDaEmpresa();
-
-        java.sql.Time novahora = (Time) parametroBean.getHorarioInicial();
-        String horario = null;
-
-        while (parametroBean.getHorarioFinal().after(novahora)) {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-
-            GregorianCalendar gc = new GregorianCalendar();
-            String timeAux = sdf.format(novahora);
-
-            gc.setTime(sdf.parse(timeAux));
-
-            gc.add(Calendar.MINUTE, parametroBean.getIntervalo());
-
-            novahora = new java.sql.Time(gc.getTime().getTime());
-
-            horario = DataUtil.retornarHorarioEmString(novahora);
-
-            listaHorarios.add(horario);
-
-        }
-
-        return listaHorarios;
+    private void gerarHorariosAtendimento() throws ParseException {
+        listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
 
     public void visualizarHorariosEquipe() {

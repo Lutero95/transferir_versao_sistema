@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -61,7 +62,7 @@ public class RenovacaoPacienteController implements Serializable {
         listaHorariosAgenda =  new ArrayList<AgendaBean>();
     }
 
-    public void carregaRenovacao() throws ProjetoException {
+    public void carregaRenovacao() throws ProjetoException, ParseException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -69,8 +70,8 @@ public class RenovacaoPacienteController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             id_paciente_insituicao = id;
             this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
-            opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
-            opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
+            InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+            opcaoAtendimento = insercaoPacienteController.carregarHorarioOuTurno();
             laudo = new LaudoDAO().buscarLaudosPorId(insercao.getLaudo().getId());
             if (insercao.getEquipe().getCodEquipe() != null
                     && insercao.getEquipe().getCodEquipe() > 0) {

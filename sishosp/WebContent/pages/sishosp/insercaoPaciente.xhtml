@@ -10,7 +10,7 @@
 
         <f:metadata>
             <f:viewAction
-                    action="#{InsercaoController.carregarHorarioOuTurno()}" />
+                    action="#{InsercaoController.carregarHorarioOuTurnoInsercao()}" />
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
@@ -467,7 +467,7 @@
                                                      value="#{InsercaoController.insercao.agenda.horario}">
                                         <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
                                         <f:selectItems
-                                                value="#{InsercaoController.gerarHorariosAtendimento()}"/>
+                                                value="#{InsercaoController.listaHorarios}"/>
                                     </b:selectOneMenu>
                                 </b:column>
                             </p:outputPanel>

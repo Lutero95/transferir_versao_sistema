@@ -16,6 +16,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -57,7 +58,7 @@ public class TransferenciaPacienteController implements Serializable {
         listaEquipePorGrupo = new ArrayList<>();
     }
 
-    public void carregarTransferencia() throws ProjetoException {
+    public void carregarTransferencia() throws ProjetoException, ParseException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -66,8 +67,8 @@ public class TransferenciaPacienteController implements Serializable {
             id_paciente_insituicao = id;
             this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
             carregarLaudoPaciente();
-            opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
-            opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
+            InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
+            opcaoAtendimento = insercaoPacienteController.carregarHorarioOuTurno();
             tipo = TipoAtendimento.EQUIPE.getSigla();
 
         } else {

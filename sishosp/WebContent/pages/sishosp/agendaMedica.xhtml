@@ -8,6 +8,11 @@
 
     <ui:define name="content">
 
+        <f:metadata>
+            <f:viewAction
+                    action="#{AgendaController.carregarHorarioOuTurno()}" />
+        </f:metadata>
+
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
                 <h4 class="panel-title">Agenda Médica</h4>
@@ -315,7 +320,7 @@
 
                     </b:row>
 
-                    <b:row>
+                    <b:row rendered="#{AgendaController.opcaoAtendimento == 'T'}">
 
                         <p:outputPanel>
                             <b:column span="2" class="new-data-size2">
@@ -336,6 +341,22 @@
                                             update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissional"></p:ajax>
                                 </p:selectOneRadio>
 
+                            </b:column>
+                        </p:outputPanel>
+                    </b:row>
+
+                    <b:row rendered="#{AgendaController.opcaoAtendimento == 'H'}">
+                        <p:outputPanel>
+                            <b:column span="3" class="label-position">
+                                <b:label value="Horário:" severity="info" class="fire-label"/>
+
+                                <b:selectOneMenu class="select-agendaEquipe2" required="true"
+                                                 requiredMessage="Horário: Campo obrigatório!"
+                                                 value="#{AgendaController.agenda.horario}">
+                                    <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                                    <f:selectItems
+                                            value="#{AgendaController.listaHorarios}"/>
+                                </b:selectOneMenu>
                             </b:column>
                         </p:outputPanel>
                     </b:row>

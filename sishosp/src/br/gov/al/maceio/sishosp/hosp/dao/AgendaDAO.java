@@ -35,11 +35,11 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
                 + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
-                + " turno, codequipe, observacao, ativo, cod_empresa, codgrupo, encaixe, funcionario_liberacao)"
+                + " turno, codequipe, observacao, ativo, cod_empresa, codgrupo, encaixe, funcionario_liberacao, horario)"
                 + " VALUES "
                 + "(?, ?, ?, ?, ?,"
                 + " ?, ?, ?, ?, ?,"
-                + " ?, ?, ?, ?, ?) RETURNING id_atendimento;";
+                + " ?, ?, ?, ?, ?, ?) RETURNING id_atendimento;";
         try {
             con = ConnectionFactory.getConnection();
 
@@ -57,7 +57,14 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 ps.setString(5, "A");
                 ps.setDate(6, new java.sql.Date(new Date().getTime()));
                 ps.setInt(7, agenda.getTipoAt().getIdTipo());
-                ps.setString(8, agenda.getTurno().toUpperCase());
+
+                if(agenda.getTurno() != null) {
+                    ps.setString(8, agenda.getTurno().toUpperCase());
+                }
+                else{
+                    ps.setNull(8, Types.NULL);
+                }
+
                 if (agenda.getEquipe().getCodEquipe() != null) {
                     ps.setInt(9, agenda.getEquipe().getCodEquipe());
                 } else {
@@ -72,6 +79,13 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                     ps.setLong(15, funcionarioLiberacao);
                 } else {
                     ps.setNull(15, Types.NULL);
+                }
+
+                if(agenda.getHorario() != null) {
+                    ps.setTime(16, DataUtil.retornarHorarioEmTime(agenda.getHorario()));
+                }
+                else{
+                    ps.setNull(16, Types.NULL);
                 }
 
                 ResultSet rs = ps.executeQuery();
