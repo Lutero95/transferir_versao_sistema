@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 
@@ -34,25 +36,25 @@ public class LaudoDAO {
         String sql = "insert into hosp.laudo "
                 + "(codpaciente, id_recurso, data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
                 + "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, "
-                + "cid1, cid2, cid3, obs, ativo, cod_empresa ) "
-                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?)";
+                + "cid1, cid2, cid3, obs, ativo, cod_empresa, data_hora_operacao, situacao ) "
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?)";
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setLong(1, laudo.getPaciente().getId_paciente());
             stmt.setInt(2, laudo.getRecurso().getIdRecurso());
-            stmt.setDate(3, new java.sql.Date(laudo.getData_solicitacao()
+            stmt.setDate(3, new java.sql.Date(laudo.getDataSolicitacao()
                     .getTime()));
-            stmt.setInt(4, laudo.getMes_inicio());
-            stmt.setInt(5, laudo.getAno_inicio());
-            stmt.setInt(6, laudo.getMes_final());
-            stmt.setInt(7, laudo.getAno_final());
+            stmt.setInt(4, laudo.getMesInicio());
+            stmt.setInt(5, laudo.getAnoInicio());
+            stmt.setInt(6, laudo.getMesFinal());
+            stmt.setInt(7, laudo.getAnoFinal());
             stmt.setInt(8, laudo.getPeriodo());
-            stmt.setInt(9, laudo.getProcedimento_primario().getIdProc());
-            if (laudo.getProcedimento_secundario1() != null) {
-                if (laudo.getProcedimento_secundario1().getIdProc() != null) {
-                    stmt.setInt(10, laudo.getProcedimento_secundario1()
+            stmt.setInt(9, laudo.getProcedimentoPrimario().getIdProc());
+            if (laudo.getProcedimentoSecundario1() != null) {
+                if (laudo.getProcedimentoSecundario1().getIdProc() != null) {
+                    stmt.setInt(10, laudo.getProcedimentoSecundario1()
                             .getIdProc());
                 } else {
                     stmt.setNull(10, Types.NULL);
@@ -61,9 +63,9 @@ public class LaudoDAO {
                 stmt.setNull(10, Types.NULL);
             }
 
-            if (laudo.getProcedimento_secundario2() != null) {
-                if (laudo.getProcedimento_secundario2().getIdProc() != null) {
-                    stmt.setInt(11, laudo.getProcedimento_secundario2()
+            if (laudo.getProcedimentoSecundario2() != null) {
+                if (laudo.getProcedimentoSecundario2().getIdProc() != null) {
+                    stmt.setInt(11, laudo.getProcedimentoSecundario2()
                             .getIdProc());
                 } else {
                     stmt.setNull(11, Types.NULL);
@@ -72,9 +74,9 @@ public class LaudoDAO {
                 stmt.setNull(11, Types.NULL);
             }
 
-            if (laudo.getProcedimento_secundario3() != null) {
-                if (laudo.getProcedimento_secundario3().getIdProc() != null) {
-                    stmt.setInt(12, laudo.getProcedimento_secundario3()
+            if (laudo.getProcedimentoSecundario3() != null) {
+                if (laudo.getProcedimentoSecundario3().getIdProc() != null) {
+                    stmt.setInt(12, laudo.getProcedimentoSecundario3()
                             .getIdProc());
                 } else {
                     stmt.setNull(12, Types.NULL);
@@ -83,9 +85,9 @@ public class LaudoDAO {
                 stmt.setNull(12, Types.NULL);
             }
 
-            if (laudo.getProcedimento_secundario4() != null) {
-                if (laudo.getProcedimento_secundario4().getIdProc() != null) {
-                    stmt.setInt(13, laudo.getProcedimento_secundario4()
+            if (laudo.getProcedimentoSecundario4() != null) {
+                if (laudo.getProcedimentoSecundario4().getIdProc() != null) {
+                    stmt.setInt(13, laudo.getProcedimentoSecundario4()
                             .getIdProc());
                 } else {
                     stmt.setNull(13, Types.NULL);
@@ -94,9 +96,9 @@ public class LaudoDAO {
                 stmt.setNull(13, Types.NULL);
             }
 
-            if (laudo.getProcedimento_secundario5() != null) {
-                if (laudo.getProcedimento_secundario5().getIdProc() != null) {
-                    stmt.setInt(14, laudo.getProcedimento_secundario5()
+            if (laudo.getProcedimentoSecundario5() != null) {
+                if (laudo.getProcedimentoSecundario5().getIdProc() != null) {
+                    stmt.setInt(14, laudo.getProcedimentoSecundario5()
                             .getIdProc());
                 } else {
                     stmt.setNull(14, Types.NULL);
@@ -143,6 +145,8 @@ public class LaudoDAO {
 
             stmt.setInt(19, user_session.getEmpresa().getCodEmpresa());
 
+            stmt.setString(20, SituacaoLaudo.PENDENTE.getSigla());
+
             stmt.execute();
             conexao.commit();
             retorno = true;
@@ -163,24 +167,25 @@ public class LaudoDAO {
         boolean retorno = false;
         String sql = "update hosp.laudo set codpaciente = ?, id_recurso = ?, data_solicitacao = ?, mes_inicio = ?, ano_inicio = ?, mes_final = ?, ano_final = ?, " +
                 "periodo = ?, codprocedimento_primario = ?, codprocedimento_secundario1 = ?, codprocedimento_secundario2 = ?, codprocedimento_secundario3 = ?, " +
-                "codprocedimento_secundario4 = ?, codprocedimento_secundario5 = ?, cid1 = ?, cid2 = ?, cid3 = ?, obs = ? where id_laudo = ?";
+                "codprocedimento_secundario4 = ?, codprocedimento_secundario5 = ?, cid1 = ?, cid2 = ?, cid3 = ?, obs = ?, " +
+                "situacao = ?, data_autorizacao = ?, usuario_autorizou = ?, data_hora_operacao = CURRENT_TIMESTAMP where id_laudo = ?";
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setLong(1, laudo.getPaciente().getId_paciente());
             stmt.setInt(2, laudo.getRecurso().getIdRecurso());
-            stmt.setDate(3, new java.sql.Date(laudo.getData_solicitacao()
+            stmt.setDate(3, new java.sql.Date(laudo.getDataSolicitacao()
                     .getTime()));
-            stmt.setInt(4, laudo.getMes_inicio());
-            stmt.setInt(5, laudo.getAno_inicio());
-            stmt.setInt(6, laudo.getMes_final());
-            stmt.setInt(7, laudo.getAno_final());
+            stmt.setInt(4, laudo.getMesInicio());
+            stmt.setInt(5, laudo.getAnoInicio());
+            stmt.setInt(6, laudo.getMesFinal());
+            stmt.setInt(7, laudo.getAnoFinal());
             stmt.setInt(8, laudo.getPeriodo());
-            stmt.setInt(9, laudo.getProcedimento_primario().getIdProc());
-            if (laudo.getProcedimento_secundario1() != null) {
-                if (laudo.getProcedimento_secundario1().getIdProc() != null) {
-                    stmt.setInt(10, laudo.getProcedimento_secundario1()
+            stmt.setInt(9, laudo.getProcedimentoPrimario().getIdProc());
+            if (laudo.getProcedimentoSecundario1() != null) {
+                if (laudo.getProcedimentoSecundario1().getIdProc() != null) {
+                    stmt.setInt(10, laudo.getProcedimentoSecundario1()
                             .getIdProc());
                 } else {
                     stmt.setNull(10, Types.NULL);
@@ -189,9 +194,9 @@ public class LaudoDAO {
                 stmt.setNull(10, Types.NULL);
             }
 
-            if (laudo.getProcedimento_secundario2() != null) {
-                if (laudo.getProcedimento_secundario2().getIdProc() != null) {
-                    stmt.setInt(11, laudo.getProcedimento_secundario2()
+            if (laudo.getProcedimentoSecundario2() != null) {
+                if (laudo.getProcedimentoSecundario2().getIdProc() != null) {
+                    stmt.setInt(11, laudo.getProcedimentoSecundario2()
                             .getIdProc());
                 } else {
                     stmt.setNull(11, Types.NULL);
@@ -200,9 +205,9 @@ public class LaudoDAO {
                 stmt.setNull(11, Types.NULL);
             }
 
-            if (laudo.getProcedimento_secundario3() != null) {
-                if (laudo.getProcedimento_secundario3().getIdProc() != null) {
-                    stmt.setInt(12, laudo.getProcedimento_secundario3()
+            if (laudo.getProcedimentoSecundario3() != null) {
+                if (laudo.getProcedimentoSecundario3().getIdProc() != null) {
+                    stmt.setInt(12, laudo.getProcedimentoSecundario3()
                             .getIdProc());
                 } else {
                     stmt.setNull(12, Types.NULL);
@@ -211,9 +216,9 @@ public class LaudoDAO {
                 stmt.setNull(12, Types.NULL);
             }
 
-            if (laudo.getProcedimento_secundario4() != null) {
-                if (laudo.getProcedimento_secundario4().getIdProc() != null) {
-                    stmt.setInt(13, laudo.getProcedimento_secundario4()
+            if (laudo.getProcedimentoSecundario4() != null) {
+                if (laudo.getProcedimentoSecundario4().getIdProc() != null) {
+                    stmt.setInt(13, laudo.getProcedimentoSecundario4()
                             .getIdProc());
                 } else {
                     stmt.setNull(13, Types.NULL);
@@ -222,9 +227,9 @@ public class LaudoDAO {
                 stmt.setNull(13, Types.NULL);
             }
 
-            if (laudo.getProcedimento_secundario5() != null) {
-                if (laudo.getProcedimento_secundario5().getIdProc() != null) {
-                    stmt.setInt(14, laudo.getProcedimento_secundario5()
+            if (laudo.getProcedimentoSecundario5() != null) {
+                if (laudo.getProcedimentoSecundario5().getIdProc() != null) {
+                    stmt.setInt(14, laudo.getProcedimentoSecundario5()
                             .getIdProc());
                 } else {
                     stmt.setNull(14, Types.NULL);
@@ -268,7 +273,18 @@ public class LaudoDAO {
             } else {
                 stmt.setString(18, laudo.getObs().toUpperCase().trim());
             }
-            stmt.setInt(19, laudo.getId());
+
+            stmt.setString(19, laudo.getSituacao().toUpperCase());
+
+            if (laudo.getSituacao() == null) {
+                stmt.setNull(20, Types.NULL);
+            } else {
+                stmt.setDate(20, DataUtil.converterDateUtilParaDateSql(laudo.getDataAutorizacao()));
+            }
+
+            stmt.setInt(21, user_session.getCodigo());
+
+            stmt.setInt(22, laudo.getId());
 
             stmt.executeUpdate();
 
@@ -341,19 +357,19 @@ public class LaudoDAO {
                 l.getPaciente().setNome(rs.getString("nome"));
                 l.getRecurso().setIdRecurso(rs.getInt("id_recurso"));
                 l.getRecurso().setDescRecurso(rs.getString("descrecurso"));
-                l.setData_solicitacao(rs.getDate("data_solicitacao"));
-                l.setMes_inicio(rs.getInt("mes_inicio"));
-                l.setAno_inicio(rs.getInt("ano_inicio"));
-                l.setMes_final(rs.getInt("mes_final"));
-                l.setAno_final(rs.getInt("ano_final"));
+                l.setDataSolicitacao(rs.getDate("data_solicitacao"));
+                l.setMesInicio(rs.getInt("mes_inicio"));
+                l.setAnoInicio(rs.getInt("ano_inicio"));
+                l.setMesFinal(rs.getInt("mes_final"));
+                l.setAnoFinal(rs.getInt("ano_final"));
                 l.setPeriodo(rs.getInt("periodo"));
-                l.getProcedimento_primario().setIdProc(rs.getInt("codprocedimento_primario"));
-                l.getProcedimento_primario().setNomeProc(rs.getString("procedimento"));
-                l.getProcedimento_secundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
-                l.getProcedimento_secundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
-                l.getProcedimento_secundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
-                l.getProcedimento_secundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
-                l.getProcedimento_secundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
+                l.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
+                l.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
+                l.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
+                l.getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
+                l.getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
+                l.getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
+                l.getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
                 l.getCid1().setIdCid(rs.getInt("cid1"));
                 l.getCid2().setIdCid(rs.getInt("cid2"));
                 l.getCid3().setIdCid(rs.getInt("cid3"));
@@ -410,24 +426,24 @@ public class LaudoDAO {
                 l.getPaciente().setNome(rs.getString("nome"));
                 l.getRecurso().setIdRecurso(rs.getInt("id_recurso"));
                 l.getRecurso().setDescRecurso(rs.getString("descrecurso"));
-                l.setData_solicitacao(rs.getDate("data_solicitacao"));
-                l.setMes_inicio(rs.getInt("mes_inicio"));
-                l.setAno_inicio(rs.getInt("ano_inicio"));
-                l.setMes_final(rs.getInt("mes_final"));
-                l.setAno_final(rs.getInt("ano_final"));
+                l.setDataSolicitacao(rs.getDate("data_solicitacao"));
+                l.setMesInicio(rs.getInt("mes_inicio"));
+                l.setAnoInicio(rs.getInt("ano_inicio"));
+                l.setMesFinal(rs.getInt("mes_final"));
+                l.setAnoFinal(rs.getInt("ano_final"));
                 l.setPeriodo(rs.getInt("periodo"));
-                l.getProcedimento_primario().setIdProc(rs.getInt("codprocedimento_primario"));
-                l.getProcedimento_primario().setNomeProc(rs.getString("procedimento"));
-                l.getProcedimento_secundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
-                l.getProcedimento_secundario1().setNomeProc(rs.getString("nome1"));
-                l.getProcedimento_secundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
-                l.getProcedimento_secundario2().setNomeProc(rs.getString("nome2"));
-                l.getProcedimento_secundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
-                l.getProcedimento_secundario3().setNomeProc(rs.getString("nome3"));
-                l.getProcedimento_secundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
-                l.getProcedimento_secundario4().setNomeProc(rs.getString("nome4"));
-                l.getProcedimento_secundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
-                l.getProcedimento_secundario5().setNomeProc(rs.getString("nome5"));
+                l.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
+                l.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
+                l.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
+                l.getProcedimentoSecundario1().setNomeProc(rs.getString("nome1"));
+                l.getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
+                l.getProcedimentoSecundario2().setNomeProc(rs.getString("nome2"));
+                l.getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
+                l.getProcedimentoSecundario3().setNomeProc(rs.getString("nome3"));
+                l.getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
+                l.getProcedimentoSecundario4().setNomeProc(rs.getString("nome4"));
+                l.getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
+                l.getProcedimentoSecundario5().setNomeProc(rs.getString("nome5"));
                 l.getCid1().setIdCid(rs.getInt("cid1"));
                 l.getCid1().setDescCid(rs.getString("desccid1"));
                 l.getCid2().setIdCid(rs.getInt("cid2"));
@@ -482,12 +498,12 @@ public class LaudoDAO {
                 insercao.getLaudo().setId(rs.getInt("id_laudo"));
                 insercao.getLaudo().getPaciente().setNome(rs.getString("nome"));
                 insercao.getLaudo().getPaciente().setCns(rs.getString("cns"));
-                insercao.getLaudo().setVigencia_inicial(rs.getDate("datainicio"));
-                insercao.getLaudo().setVigencia_final(rs.getDate("datafinal"));
-                insercao.getLaudo().setMes_final(rs.getInt("mes_final"));
-                insercao.getLaudo().setAno_final(rs.getInt("ano_final"));
-                insercao.getLaudo().setMes_inicio(rs.getInt("mes_inicio"));
-                insercao.getLaudo().setAno_inicio(rs.getInt("ano_inicio"));                
+                insercao.getLaudo().setVigenciaInicial(rs.getDate("datainicio"));
+                insercao.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
+                insercao.getLaudo().setMesFinal(rs.getInt("mes_final"));
+                insercao.getLaudo().setAnoFinal(rs.getInt("ano_final"));
+                insercao.getLaudo().setMesInicio(rs.getInt("mes_inicio"));
+                insercao.getLaudo().setAnoInicio(rs.getInt("ano_inicio"));
 
                 lista.add(insercao);
             }

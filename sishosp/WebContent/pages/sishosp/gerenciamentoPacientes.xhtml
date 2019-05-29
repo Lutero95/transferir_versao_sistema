@@ -283,14 +283,14 @@
                                       class="label-position new-data-size new-comple1">
                                 <b:label id="idEquipamento" value="Equipamento:"
                                          rendered="#{GerenciarPacienteController.rowBean.status == 'A'
-							and GerenciarPacienteController.rowBean.laudo.procedimento_primario.utilizaEquipamento == true}"
+							and GerenciarPacienteController.rowBean.laudo.procedimentoPrimario.utilizaEquipamento == true}"
                                          severity="info"/>
 
                                 <p:autoComplete required="true" class="select-agendaEquipe4"
                                                 rendered="#{GerenciarPacienteController.rowBean.status == 'A'
-							and GerenciarPacienteController.rowBean.laudo.procedimento_primario.utilizaEquipamento == true}"
+							and GerenciarPacienteController.rowBean.laudo.procedimentoPrimario.utilizaEquipamento == true}"
                                                 requiredMessage="Escolha um equipamento"
-                                                value="#{GerenciarPacienteController.gerenciarpaciente.laudo.procedimento_primario.equipamento}"
+                                                value="#{GerenciarPacienteController.gerenciarpaciente.laudo.procedimentoPrimario.equipamento}"
                                                 size="31" converter="conEquipamento"
                                                 completeMethod="#{EquipamentoController.listaEquipamentoAutoComplete}"
                                                 effect="fade" var="theme" forceSelection="true"
@@ -304,7 +304,7 @@
                             <b:column span="2">
                                 <b:commandButton icon="glyphicon-plus" style="margin-top:18px;"
                                                  rendered="#{GerenciarPacienteController.rowBean.status == 'A'
-							and GerenciarPacienteController.rowBean.laudo.procedimento_primario.utilizaEquipamento == true}"
+							and GerenciarPacienteController.rowBean.laudo.procedimentoPrimario.utilizaEquipamento == true}"
                                                  value="Gerar Encaminhamento"
                                                  class="btn btn-default btn-acao-table acao-confirmar"
                                                  action="#{GerenciarPacienteController.gerarEncaminhamento()}"

@@ -16,7 +16,6 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
-import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.RetornoLaudoRenovacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
@@ -313,8 +312,8 @@ public class RenovacaoPacienteController implements Serializable {
 
     public void carregarLaudoPaciente() throws ProjetoException {
 
-        String condicao_datas_laudo = compararDatasLaudo(laudo.getMes_final(), laudo.getAno_final(),
-                insercao.getLaudo().getMes_inicio(), insercao.getLaudo().getAno_inicio());
+        String condicao_datas_laudo = compararDatasLaudo(laudo.getMesFinal(), laudo.getAnoFinal(),
+                insercao.getLaudo().getMesInicio(), insercao.getLaudo().getAnoInicio());
 
         if(condicao_datas_laudo.equals(RetornoLaudoRenovacao.DATA_ATUAL_MAIOR_QUE_NOVA_DATA.getSigla())){
             JSFUtil.adicionarMensagemErro("A data do novo laudo é menor que a data do laudo atual", "Erro!");

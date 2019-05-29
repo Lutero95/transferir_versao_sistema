@@ -70,8 +70,8 @@ public class AlteracaoPacienteDAO {
                 ip.getAgenda().setTurno(rs.getString("turno"));
                 ip.getAgenda().setSituacao(rs.getString("situacao"));
                 ip.getLaudo().setId(rs.getInt("codlaudo"));
-                ip.getLaudo().setAno_final(rs.getInt("ano_final"));
-                ip.getLaudo().setMes_final(rs.getInt("mes_final"));
+                ip.getLaudo().setAnoFinal(rs.getInt("ano_final"));
+                ip.getLaudo().setMesFinal(rs.getInt("mes_final"));
                 ip.setData_solicitacao(rs.getDate("data_solicitacao"));
                 ip.getPrograma().getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
 

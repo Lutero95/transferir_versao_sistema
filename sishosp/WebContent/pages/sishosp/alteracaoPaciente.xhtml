@@ -36,7 +36,7 @@
                             <b:label value="Procedimento:" severity="info"/>
 
                             <h:outputLabel
-                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.procedimento_primario.nomeProc}"
+                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
                                     class="campo-laudoDig3"/>
                         </b:column>
 
@@ -56,7 +56,7 @@
                             <b:label value="Vigência Inicial:" severity="info"/>
 
                             <h:outputLabel
-                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigencia_inicial}"
+                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigenciaInicial}"
                                     class="campo-laudoDig3">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
@@ -66,7 +66,7 @@
                             <b:label value="Vigência Final" severity="info"/>
 
                             <h:outputLabel
-                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigencia_final}"
+                                    value="#{AlteracaoPacienteController.insercaoParaLaudo.laudo.vigenciaFinal}"
                                     class="campo-laudoDig3">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
@@ -86,7 +86,7 @@
                                      severity="info"/>
 
                             <p:calendar
-                                    value="#{AlteracaoPacienteController.insercao.data_solicitacao}"
+                                    value="#{AlteracaoPacienteController.insercao.dataSolicitacao}"
                                     id="dtagen" locale="pt" navigator="true" mask="true" required="true"
                                     requiredMessage="Data de Inclusão: Campo obrigatório!"
                                     class="select-agendaEquipe2" showOn="button"

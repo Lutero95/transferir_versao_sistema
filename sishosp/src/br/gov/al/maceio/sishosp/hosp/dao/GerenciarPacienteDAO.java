@@ -65,7 +65,7 @@ public class GerenciarPacienteDAO {
                 gp.setData_solicitacao(rs.getDate("data_solicitacao"));
                 gp.setObservacao(rs.getString("observacao"));
                 gp.setData_cadastro(rs.getDate("data_cadastro"));
-                gp.getLaudo().getProcedimento_primario().setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+                gp.getLaudo().getProcedimentoPrimario().setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
 
                 lista.add(gp);
 
@@ -135,7 +135,7 @@ public class GerenciarPacienteDAO {
                 gp.setData_solicitacao(rs.getDate("data_solicitacao"));
                 gp.setObservacao(rs.getString("observacao"));
                 gp.setData_cadastro(rs.getDate("data_cadastro"));
-                gp.getLaudo().getProcedimento_primario().setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+                gp.getLaudo().getProcedimentoPrimario().setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
 
                 lista.add(gp);
 
@@ -218,7 +218,7 @@ public class GerenciarPacienteDAO {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
-            stmt.setInt(1, gerenciar.getLaudo().getProcedimento_primario().getEquipamento().getId_equipamento());
+            stmt.setInt(1, gerenciar.getLaudo().getProcedimentoPrimario().getEquipamento().getId_equipamento());
             stmt.setInt(2, row.getLaudo().getId());
             stmt.executeUpdate();
 

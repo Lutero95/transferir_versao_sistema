@@ -14,6 +14,7 @@ import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 
@@ -30,6 +31,7 @@ public class LaudoController implements Serializable {
     private List<CidBean> listaCids;
     private LaudoDAO lDao = new LaudoDAO();
     private CidDAO cDao = new CidDAO();
+    private Boolean renderizarDataAutorizacao;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
@@ -43,6 +45,7 @@ public class LaudoController implements Serializable {
         this.cabecalho = "";
         listaLaudo = new ArrayList<>();
         listaCids = new ArrayList<>();
+        renderizarDataAutorizacao = false;
     }
 
     public String redirectEdit() {
@@ -70,28 +73,34 @@ public class LaudoController implements Serializable {
 
     }
 
+    public void renderizarDadosDeAutorizacao(){
+        if(laudo.getSituacao().equals(SituacaoLaudo.AUTORIZADO.getSigla())){
+            renderizarDataAutorizacao = true;
+        }
+    }
+
     public void limparDados() {
         laudo = new LaudoBean();
     }
 
     public void calcularPeriodoLaudo() {
 
-        if (laudo.getPeriodo() != null && laudo.getMes_inicio() != null && laudo.getAno_inicio() != null) {
+        if (laudo.getPeriodo() != null && laudo.getMesInicio() != null && laudo.getAnoInicio() != null) {
 
             int periodo = (laudo.getPeriodo() / 30)-1; // o periodo do laudo considera o mes atual, por isso a inclusao do -1
             int mes = 0;
             int ano = 0;
 
-            if (laudo.getMes_inicio() + periodo > 12) {
-                mes = laudo.getMes_inicio() + periodo - 12;
-                ano = laudo.getAno_inicio() + 1;
+            if (laudo.getMesInicio() + periodo > 12) {
+                mes = laudo.getMesInicio() + periodo - 12;
+                ano = laudo.getAnoInicio() + 1;
             } else {
-                mes = laudo.getMes_inicio() + periodo;
-                ano = laudo.getAno_inicio();
+                mes = laudo.getMesInicio() + periodo;
+                ano = laudo.getAnoInicio();
             }
 
-            laudo.setMes_final(mes);
-            laudo.setAno_final(ano);
+            laudo.setMesFinal(mes);
+            laudo.setAnoFinal(ano);
 
 
         } else {
@@ -142,13 +151,13 @@ public class LaudoController implements Serializable {
 
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query)
             throws ProjetoException {
-        List<CidBean> result = cDao.listarCidsBuscaPorProcedimentoAutoComplete(query, laudo.getProcedimento_primario().getIdProc());
+        List<CidBean> result = cDao.listarCidsBuscaPorProcedimentoAutoComplete(query, laudo.getProcedimentoPrimario().getIdProc());
         return result;
     }
 
     public void listarCidsPorProcedimento() throws ProjetoException {
-        if (laudo.getProcedimento_primario().getIdProc() != null) {
-            listaCids =  cDao.listarCidsBuscaPorProcedimento(laudo.getProcedimento_primario().getIdProc());
+        if (laudo.getProcedimentoPrimario().getIdProc() != null) {
+            listaCids =  cDao.listarCidsBuscaPorProcedimento(laudo.getProcedimentoPrimario().getIdProc());
         }
         
     }
@@ -202,4 +211,11 @@ public class LaudoController implements Serializable {
 		this.listaCids = listaCids;
 	}
 
+    public Boolean getRenderizarDataAutorizacao() {
+        return renderizarDataAutorizacao;
+    }
+
+    public void setRenderizarDataAutorizacao(Boolean renderizarDataAutorizacao) {
+        this.renderizarDataAutorizacao = renderizarDataAutorizacao;
+    }
 }

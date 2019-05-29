@@ -49,8 +49,8 @@ public class InsercaoPacienteDAO {
                 insercao.getLaudo().setId(rs.getInt("id_laudo"));
                 insercao.getLaudo().getPaciente().setNome(rs.getString("nome"));
                 insercao.getLaudo().getPaciente().setCns(rs.getString("cns"));
-                insercao.getLaudo().setVigencia_inicial(rs.getDate("datainicio"));
-                insercao.getLaudo().setVigencia_final(rs.getDate("datafinal"));
+                insercao.getLaudo().setVigenciaInicial(rs.getDate("datainicio"));
+                insercao.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
 
                 lista.add(insercao);
             }
@@ -104,23 +104,23 @@ public class InsercaoPacienteDAO {
                 insercao.getLaudo().getPaciente().setCns(rs.getString("cns"));
                 insercao.getLaudo().getRecurso().setIdRecurso(rs.getInt("id_recurso"));
                 insercao.getLaudo().getRecurso().setDescRecurso(rs.getString("descrecurso"));
-                insercao.getLaudo().setData_solicitacao(
+                insercao.getLaudo().setDataSolicitacao(
                         rs.getDate("data_solicitacao"));
-                insercao.getLaudo().setMes_inicio(rs.getInt("mes_inicio"));
-                insercao.getLaudo().setAno_inicio(rs.getInt("ano_inicio"));
-                insercao.getLaudo().setMes_final(rs.getInt("mes_final"));
-                insercao.getLaudo().setAno_final(rs.getInt("ano_final"));
+                insercao.getLaudo().setMesInicio(rs.getInt("mes_inicio"));
+                insercao.getLaudo().setAnoInicio(rs.getInt("ano_inicio"));
+                insercao.getLaudo().setMesFinal(rs.getInt("mes_final"));
+                insercao.getLaudo().setAnoFinal(rs.getInt("ano_final"));
                 insercao.getLaudo().setPeriodo(rs.getInt("periodo"));
-                insercao.getLaudo().getProcedimento_primario()
+                insercao.getLaudo().getProcedimentoPrimario()
                         .setIdProc(rs.getInt("codprocedimento_primario"));
-                insercao.getLaudo().getProcedimento_primario()
+                insercao.getLaudo().getProcedimentoPrimario()
                         .setNomeProc(rs.getString("procedimento"));
                 insercao.getLaudo().getCid1().setIdCid(rs.getInt("cid1"));
                 insercao.getLaudo().getCid1()
                         .setDescCid(rs.getString("desccid"));
-                insercao.getLaudo().setVigencia_inicial(
+                insercao.getLaudo().setVigenciaInicial(
                         rs.getDate("datainicio"));
-                insercao.getLaudo().setVigencia_final(rs.getDate("datafinal"));
+                insercao.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
             }
 
         } catch (SQLException ex) {

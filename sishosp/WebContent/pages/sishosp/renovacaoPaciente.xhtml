@@ -50,7 +50,7 @@
 							<b:label value="Procedimento:" severity="info" class="fire-label"/>
 
 							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.procedimento_primario.nomeProc}"
+								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
 								class="campo-laudoDig3" />
 						</b:column>
 
@@ -70,7 +70,7 @@
 							<b:label value="Vigência Inicial:" severity="info" class="fire-label"/>
 
 							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigencia_inicial}"
+								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigenciaInicial}"
 								class="campo-laudoDig3">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputLabel>
@@ -80,7 +80,7 @@
 							<b:label value="Vigência Final" severity="info" class="fire-label"/>
 
 							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigencia_final}"
+								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigenciaFinal}"
 								class="campo-laudoDig3">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputLabel>
@@ -102,7 +102,7 @@
 								severity="info" class="fire-label"/>
 
 							<p:calendar
-								value="#{RenovarPacienteController.insercao.data_solicitacao}"
+								value="#{RenovarPacienteController.insercao.dataSolicitacao}"
 								id="dtagen" locale="pt" navigator="true" mask="true"
 								class="select-agendaEquipe2" showOn="button"
 								pattern="dd/MM/yyyy" size="15">
@@ -444,7 +444,7 @@
 						<f:facet name="header">
 							Vigência Inicial
 						</f:facet>
-						<p:outputLabel value="#{insercao.laudo.vigencia_inicial}">
+						<p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
                             <f:convertDateTime pattern="dd/MM/yyyy"/>
                         </p:outputLabel>
 					</h:column>
@@ -453,7 +453,7 @@
                         <f:facet name="header">
                             Vigência Final
                         </f:facet>
-                        <p:outputLabel value="#{insercao.laudo.vigencia_final}">
+                        <p:outputLabel value="#{insercao.laudo.vigenciaFinal}">
                             <f:convertDateTime pattern="dd/MM/yyyy"/>
                         </p:outputLabel>
                     </h:column>
@@ -462,14 +462,14 @@
 						<f:facet name="header">
 							Paciente
 						</f:facet>
-						<p:outputLabel value="#{insercao.laudo.mes_final}" />
+						<p:outputLabel value="#{insercao.laudo.mesFinal}" />
 					</h:column>
 
 					<h:column rendered="false">
 						<f:facet name="header">
 							Paciente
 						</f:facet>
-						<p:outputLabel value="#{insercao.laudo.ano_final}" />
+						<p:outputLabel value="#{insercao.laudo.anoFinal}" />
 					</h:column>
 
 					<h:column>

@@ -52,7 +52,7 @@
                             <b:label value="Procedimento:" class="fire-label" severity="info"/>
 
                             <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.procedimento_primario.nomeProc}"
+                                    value="#{InsercaoController.insercao.laudo.procedimentoPrimario.nomeProc}"
                                     class="campo-laudoDig3"/>
                         </b:column>
 
@@ -73,7 +73,7 @@
                                      severity="info"/>
 
                             <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.vigencia_inicial}"
+                                    value="#{InsercaoController.insercao.laudo.vigenciaInicial}"
                                     class="campo-laudoDig3">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
@@ -84,7 +84,7 @@
                                      severity="info"/>
 
                             <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.vigencia_final}"
+                                    value="#{InsercaoController.insercao.laudo.vigenciaFinal}"
                                     class="campo-laudoDig3">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
@@ -147,7 +147,7 @@
                                          severity="info" class="fire-label"/>
 
                                 <p:calendar
-                                        value="#{InsercaoController.insercao.data_solicitacao}"
+                                        value="#{InsercaoController.insercao.dataSolicitacao}"
                                         id="dtagen" locale="pt" navigator="true" mask="true"
                                         required="true" requiredMessage="Data de Inclusão: Campo obrigatório!"
                                         class="select-agendaEquipe2" showOn="button"
@@ -552,7 +552,7 @@
                         <f:facet name="header">
                             Vigência Inicial
                         </f:facet>
-                        <p:outputLabel value="#{insercao.laudo.vigencia_inicial}">
+                        <p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
                             <f:convertDateTime pattern="dd/MM/yyyy"/>
                         </p:outputLabel>
                     </h:column>
@@ -561,7 +561,7 @@
                         <f:facet name="header">
                             Vigência Final
                         </f:facet>
-                        <p:outputLabel value="#{insercao.laudo.vigencia_final}">
+                        <p:outputLabel value="#{insercao.laudo.vigenciaFinal}">
                             <f:convertDateTime pattern="dd/MM/yyyy"/>
                         </p:outputLabel>
                     </h:column>

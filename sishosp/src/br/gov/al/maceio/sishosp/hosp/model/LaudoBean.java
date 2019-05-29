@@ -1,31 +1,33 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
+
 import java.io.Serializable;
 import java.util.Date;
-
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 
 public class LaudoBean implements Serializable {
 
     private Integer id;
-    private Date data_solicitacao;
-    private Integer mes_inicio;
-    private Integer ano_inicio;
-    private Integer mes_final;
-    private Integer ano_final;
+    private Date dataSolicitacao;
+    private Integer mesInicio;
+    private Integer anoInicio;
+    private Integer mesFinal;
+    private Integer anoFinal;
     private Integer periodo;
     private String obs;
-    private Date vigencia_inicial;
-    private Date vigencia_final;
+    private Date vigenciaInicial;
+    private Date vigenciaFinal;
+    private Date dataAutorizacao;
+    private String situacao;
 
     // HERDADOS
     private PacienteBean paciente;
-    private ProcedimentoBean procedimento_primario;
-    private ProcedimentoBean procedimento_secundario1;
-    private ProcedimentoBean procedimento_secundario2;
-    private ProcedimentoBean procedimento_secundario3;
-    private ProcedimentoBean procedimento_secundario4;
-    private ProcedimentoBean procedimento_secundario5;
+    private ProcedimentoBean procedimentoPrimario;
+    private ProcedimentoBean procedimentoSecundario1;
+    private ProcedimentoBean procedimentoSecundario2;
+    private ProcedimentoBean procedimentoSecundario3;
+    private ProcedimentoBean procedimentoSecundario4;
+    private ProcedimentoBean procedimentoSecundario5;
     private CidBean cid1;
     private CidBean cid2;
     private CidBean cid3;
@@ -33,16 +35,17 @@ public class LaudoBean implements Serializable {
 
     public LaudoBean() {
         paciente = new PacienteBean();
-        procedimento_primario = new ProcedimentoBean();
-        procedimento_secundario1 = new ProcedimentoBean();
-        procedimento_secundario2 = new ProcedimentoBean();
-        procedimento_secundario3 = new ProcedimentoBean();
-        procedimento_secundario4 = new ProcedimentoBean();
-        procedimento_secundario5 = new ProcedimentoBean();
+        procedimentoPrimario = new ProcedimentoBean();
+        procedimentoSecundario1 = new ProcedimentoBean();
+        procedimentoSecundario2 = new ProcedimentoBean();
+        procedimentoSecundario3 = new ProcedimentoBean();
+        procedimentoSecundario4 = new ProcedimentoBean();
+        procedimentoSecundario5 = new ProcedimentoBean();
         cid1 = new CidBean();
         cid2 = new CidBean();
         cid3 = new CidBean();
         recurso = new RecursoBean();
+        situacao = SituacaoLaudo.PENDENTE.getSigla();
     }
 
     public Integer getId() {
@@ -53,44 +56,44 @@ public class LaudoBean implements Serializable {
         this.id = id;
     }
 
-    public Date getData_solicitacao() {
-        return data_solicitacao;
+    public Date getDataSolicitacao() {
+        return dataSolicitacao;
     }
 
-    public void setData_solicitacao(Date data_solicitacao) {
-        this.data_solicitacao = data_solicitacao;
+    public void setDataSolicitacao(Date dataSolicitacao) {
+        this.dataSolicitacao = dataSolicitacao;
     }
 
-    public Integer getMes_inicio() {
-        return mes_inicio;
+    public Integer getMesInicio() {
+        return mesInicio;
     }
 
-    public void setMes_inicio(Integer mes_inicio) {
-        this.mes_inicio = mes_inicio;
+    public void setMesInicio(Integer mesInicio) {
+        this.mesInicio = mesInicio;
     }
 
-    public Integer getAno_inicio() {
-        return ano_inicio;
+    public Integer getAnoInicio() {
+        return anoInicio;
     }
 
-    public void setAno_inicio(Integer ano_inicio) {
-        this.ano_inicio = ano_inicio;
+    public void setAnoInicio(Integer anoInicio) {
+        this.anoInicio = anoInicio;
     }
 
-    public Integer getMes_final() {
-        return mes_final;
+    public Integer getMesFinal() {
+        return mesFinal;
     }
 
-    public void setMes_final(Integer mes_final) {
-        this.mes_final = mes_final;
+    public void setMesFinal(Integer mesFinal) {
+        this.mesFinal = mesFinal;
     }
 
-    public Integer getAno_final() {
-        return ano_final;
+    public Integer getAnoFinal() {
+        return anoFinal;
     }
 
-    public void setAno_final(Integer ano_final) {
-        this.ano_final = ano_final;
+    public void setAnoFinal(Integer anoFinal) {
+        this.anoFinal = anoFinal;
     }
 
     public Integer getPeriodo() {
@@ -117,57 +120,57 @@ public class LaudoBean implements Serializable {
         this.paciente = paciente;
     }
 
-    public ProcedimentoBean getProcedimento_primario() {
-        return procedimento_primario;
+    public ProcedimentoBean getProcedimentoPrimario() {
+        return procedimentoPrimario;
     }
 
-    public void setProcedimento_primario(ProcedimentoBean procedimento_primario) {
-        this.procedimento_primario = procedimento_primario;
+    public void setProcedimentoPrimario(ProcedimentoBean procedimentoPrimario) {
+        this.procedimentoPrimario = procedimentoPrimario;
     }
 
-    public ProcedimentoBean getProcedimento_secundario1() {
-        return procedimento_secundario1;
+    public ProcedimentoBean getProcedimentoSecundario1() {
+        return procedimentoSecundario1;
     }
 
-    public void setProcedimento_secundario1(
-            ProcedimentoBean procedimento_secundario1) {
-        this.procedimento_secundario1 = procedimento_secundario1;
+    public void setProcedimentoSecundario1(
+            ProcedimentoBean procedimentoSecundario1) {
+        this.procedimentoSecundario1 = procedimentoSecundario1;
     }
 
-    public ProcedimentoBean getProcedimento_secundario2() {
-        return procedimento_secundario2;
+    public ProcedimentoBean getProcedimentoSecundario2() {
+        return procedimentoSecundario2;
     }
 
-    public void setProcedimento_secundario2(
-            ProcedimentoBean procedimento_secundario2) {
-        this.procedimento_secundario2 = procedimento_secundario2;
+    public void setProcedimentoSecundario2(
+            ProcedimentoBean procedimentoSecundario2) {
+        this.procedimentoSecundario2 = procedimentoSecundario2;
     }
 
-    public ProcedimentoBean getProcedimento_secundario3() {
-        return procedimento_secundario3;
+    public ProcedimentoBean getProcedimentoSecundario3() {
+        return procedimentoSecundario3;
     }
 
-    public void setProcedimento_secundario3(
-            ProcedimentoBean procedimento_secundario3) {
-        this.procedimento_secundario3 = procedimento_secundario3;
+    public void setProcedimentoSecundario3(
+            ProcedimentoBean procedimentoSecundario3) {
+        this.procedimentoSecundario3 = procedimentoSecundario3;
     }
 
-    public ProcedimentoBean getProcedimento_secundario4() {
-        return procedimento_secundario4;
+    public ProcedimentoBean getProcedimentoSecundario4() {
+        return procedimentoSecundario4;
     }
 
-    public void setProcedimento_secundario4(
-            ProcedimentoBean procedimento_secundario4) {
-        this.procedimento_secundario4 = procedimento_secundario4;
+    public void setProcedimentoSecundario4(
+            ProcedimentoBean procedimentoSecundario4) {
+        this.procedimentoSecundario4 = procedimentoSecundario4;
     }
 
-    public ProcedimentoBean getProcedimento_secundario5() {
-        return procedimento_secundario5;
+    public ProcedimentoBean getProcedimentoSecundario5() {
+        return procedimentoSecundario5;
     }
 
-    public void setProcedimento_secundario5(
-            ProcedimentoBean procedimento_secundario5) {
-        this.procedimento_secundario5 = procedimento_secundario5;
+    public void setProcedimentoSecundario5(
+            ProcedimentoBean procedimentoSecundario5) {
+        this.procedimentoSecundario5 = procedimentoSecundario5;
     }
 
     public CidBean getCid1() {
@@ -194,20 +197,20 @@ public class LaudoBean implements Serializable {
         this.cid3 = cid3;
     }
 
-    public Date getVigencia_inicial() {
-        return vigencia_inicial;
+    public Date getVigenciaInicial() {
+        return vigenciaInicial;
     }
 
-    public void setVigencia_inicial(Date vigencia_inicial) {
-        this.vigencia_inicial = vigencia_inicial;
+    public void setVigenciaInicial(Date vigenciaInicial) {
+        this.vigenciaInicial = vigenciaInicial;
     }
 
-    public Date getVigencia_final() {
-        return vigencia_final;
+    public Date getVigenciaFinal() {
+        return vigenciaFinal;
     }
 
-    public void setVigencia_final(Date vigencia_final) {
-        this.vigencia_final = vigencia_final;
+    public void setVigenciaFinal(Date vigenciaFinal) {
+        this.vigenciaFinal = vigenciaFinal;
     }
 
     public RecursoBean getRecurso() {
@@ -216,5 +219,21 @@ public class LaudoBean implements Serializable {
 
     public void setRecurso(RecursoBean recurso) {
         this.recurso = recurso;
+    }
+
+    public Date getDataAutorizacao() {
+        return dataAutorizacao;
+    }
+
+    public void setDataAutorizacao(Date dataAutorizacao) {
+        this.dataAutorizacao = dataAutorizacao;
+    }
+
+    public String getSituacao() {
+        return situacao;
+    }
+
+    public void setSituacao(String situacao) {
+        this.situacao = situacao;
     }
 }
