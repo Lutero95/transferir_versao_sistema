@@ -82,12 +82,44 @@
                                         pattern="dd/MM/yyyy" pages="1" showOn="button"/>
                         </b:column>
 
-                        <b:column span="2" class="new-data-size2">
-                            <p:outputLabel value="Período:"
-                                           style="margin-top: 8px;color:#2e84ce;"></p:outputLabel>
-                        </b:column>
+                       
+
+<b:column span="2">
+                            <b:label styleClass="label-position" value="Autorização:" severity="info"/>
+                      
+
+                            <p:selectOneRadio id="idAutorizado" 
+                                              class="select-agendaEquipe2"
+                                              value="#{LaudoController.laudo.situacao}">
+                                <f:selectItem itemLabel="Sim" itemValue="A"/>
+                                <f:selectItem itemLabel="Não" itemValue="P"/>
+                                <p:ajax listener="#{LaudoController.renderizarDadosDeAutorizacao()}"
+                                        update="outDataAutorizacao"></p:ajax>
+                            </p:selectOneRadio>
+                                </b:column>
+<b:column span="2">
+                            <p:outputPanel id="outDataAutorizacao" style="margin-left:-50px !important">
+                                <b:label value="Data da Autorização:"  severity="info" rendered="#{LaudoController.renderizarDataAutorizacao == true}"/>
+
+                                <p:calendar id="dataAutorizacao" locale="pt" required="true" size="15"
+                                            class="select-agendaEquipe2" rendered="#{LaudoController.renderizarDataAutorizacao == true}"
+                                            requiredMessage="É necessário informar a data de solitação"
+                                            value="#{LaudoController.laudo.dataAutorizacao}" mask="true"
+                                            pattern="dd/MM/yyyy" pages="1" showOn="button"/>
+                            </p:outputPanel>
+                       
+                       </b:column>	  
+
+                       
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
 
                         <b:column span="3" class="btn-radio-table">
+                        <b:label value="Período:" severity="info"/>
                             <p:selectOneRadio id="prorrogar" required="true"
                                               layout="pageDirection" requiredMessage="Período é necessário!"
                                               value="#{LaudoController.laudo.periodo}">
@@ -97,13 +129,6 @@
                                         update="outMesFim" global="false" event="change"></p:ajax>
                             </p:selectOneRadio>
                         </b:column>
-
-                    </b:row>
-
-                    <br></br>
-
-                    <b:row>
-
                         <b:column span="2" class="label-position">
                             <b:label value="Mês Início:" severity="info"/>
 
@@ -435,33 +460,7 @@
 
                     <b:row rendered="#{MBFuncionarios.verificarPermComp('FC-29', MBFuncionarios.sistemaLogado.id) == true and LaudoController.tipo != 1}">
 
-                        <b:column span="1" class="new-data-size2">
-                            <b:label value="Autorização:" severity="info"/>
-                        </b:column>
-
-                        <b:column span="3" class="btn-radio-table">
-                            <p:selectOneRadio id="idAutorizado"
-                                              layout="pageDirection"
-                                              value="#{LaudoController.laudo.situacao}">
-                                <f:selectItem itemLabel="Sim" itemValue="A"/>
-                                <f:selectItem itemLabel="Não" itemValue="P"/>
-                                <p:ajax listener="#{LaudoController.renderizarDadosDeAutorizacao()}"
-                                        update="outDataAutorizacao"></p:ajax>
-                            </p:selectOneRadio>
-                        </b:column>
-
-                        <b:column span="2" class="label-position data-size">
-
-                            <p:outputPanel id="outDataAutorizacao">
-                                <b:label value="Data da Autorização:" severity="info" rendered="#{LaudoController.renderizarDataAutorizacao == true}"/>
-
-                                <p:calendar id="dataAutorizacao" locale="pt" required="true" size="15"
-                                            class="select-agendaEquipe2" rendered="#{LaudoController.renderizarDataAutorizacao == true}"
-                                            requiredMessage="É necessário informar a data de solitação"
-                                            value="#{LaudoController.laudo.dataAutorizacao}" mask="true"
-                                            pattern="dd/MM/yyyy" pages="1" showOn="button"/>
-                            </p:outputPanel>
-                        </b:column>
+                        
 
                     </b:row>
 
