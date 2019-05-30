@@ -84,7 +84,7 @@
 
                        
 
-<b:column span="2">
+<b:column span="1">
                             <b:label styleClass="label-position" value="Autorização:" severity="info"/>
                       
 
@@ -97,8 +97,8 @@
                                         update="outDataAutorizacao"></p:ajax>
                             </p:selectOneRadio>
                                 </b:column>
-<b:column span="2">
-                            <p:outputPanel id="outDataAutorizacao" style="margin-left:-50px !important">
+<b:column span="1">
+                            <p:outputPanel id="outDataAutorizacao" style="margin-left:-20px !important">
                                 <b:label value="Data da Autorização:"  severity="info" rendered="#{LaudoController.renderizarDataAutorizacao == true}"/>
 
                                 <p:calendar id="dataAutorizacao" locale="pt" required="true" size="15"
