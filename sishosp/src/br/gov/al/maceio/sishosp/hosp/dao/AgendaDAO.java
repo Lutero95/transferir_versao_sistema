@@ -894,7 +894,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql.toString());
-            stm.setDate(1, DataUtil.converterDateUtilParaDateSql(insercao.getData_solicitacao()));
+            stm.setDate(1, DataUtil.converterDateUtilParaDateSql(insercao.getDataSolicitacao()));
             stm.setInt(2, insercao.getEquipe().getCodEquipe());
             stm.setInt(3, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();
@@ -955,7 +955,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 stm.setString(1, insercao.getAgenda().getTurno());
             }
 
-            stm.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getData_solicitacao()));
+            stm.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getDataSolicitacao()));
             stm.setLong(3, insercao.getFuncionario().getId());
             stm.setInt(4, user_session.getEmpresa().getCodEmpresa());
             ResultSet rs = stm.executeQuery();

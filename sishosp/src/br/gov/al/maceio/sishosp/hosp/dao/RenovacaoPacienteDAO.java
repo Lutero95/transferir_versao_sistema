@@ -191,7 +191,7 @@ public class RenovacaoPacienteDAO {
             ps2.setInt(6, insercaoParaLaudo.getLaudo().getId());
             ps2.setString(7, insercao.getObservacao());
             ps2.setInt(8, user_session.getEmpresa().getCodEmpresa());
-            ps2.setDate(9, new java.sql.Date(insercao.getData_solicitacao().getTime()));
+            ps2.setDate(9, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
             rs = ps2.executeQuery();
             int idPacienteInstituicao = 0;
             if (rs.next()) {
@@ -337,7 +337,7 @@ public class RenovacaoPacienteDAO {
             ps2.setInt(6, insercaoParaLaudo.getLaudo().getId());
             ps2.setString(7, insercao.getObservacao());
             ps2.setInt(8, user_session.getEmpresa().getCodEmpresa());
-            ps2.setDate(9, new java.sql.Date(insercao.getData_solicitacao().getTime()));
+            ps2.setDate(9, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
             rs = ps2.executeQuery();
             int idPacienteInstituicao = 0;
             if (rs.next()) {

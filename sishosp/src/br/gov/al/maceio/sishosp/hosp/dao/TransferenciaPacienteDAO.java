@@ -107,7 +107,7 @@ public class TransferenciaPacienteDAO {
             PreparedStatement ps2 = null;
             ps2 = conexao.prepareStatement(sql2);
             ps2.setLong(1, id_paciente);
-            ps2.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getData_solicitacao()));
+            ps2.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getDataSolicitacao()));
             ps2.execute();
 
             rs = ps2.executeQuery();
@@ -135,7 +135,7 @@ public class TransferenciaPacienteDAO {
             PreparedStatement ps4 = null;
             ps4 = conexao.prepareStatement(sql4);
             ps4.setLong(1, id_paciente);
-            ps4.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getData_solicitacao()));
+            ps4.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getDataSolicitacao()));
             ps4.execute();
 
             String sql5 = "update hosp.paciente_instituicao set status='CR' where id = ?";

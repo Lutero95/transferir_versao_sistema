@@ -105,14 +105,14 @@ public class AlteracaoPacienteController implements Serializable {
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
-        Date d1 = insercao.getData_solicitacao();
+        Date d1 = insercao.getDataSolicitacao();
         Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         Long dt = (d2.getTime() - d1.getTime());
 
         dt = (dt / 86400000L);
 
         Calendar c = Calendar.getInstance();
-        c.setTime(insercao.getData_solicitacao());
+        c.setTime(insercao.getDataSolicitacao());
 
         for (int i = 0; i <= dt; i++) {
 
@@ -161,7 +161,7 @@ public class AlteracaoPacienteController implements Serializable {
         Boolean temAtendimento = false;
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
-        Date d1 = insercao.getData_solicitacao();
+        Date d1 = insercao.getDataSolicitacao();
 
         if (aDao.listaAtendimentos(id_paciente_insituicao).size() > 0
                 && aDao.listaAtendimentos(id_paciente_insituicao).get(0)
@@ -170,7 +170,7 @@ public class AlteracaoPacienteController implements Serializable {
                     .size(); i++) {
                 d1 = aDao.listaAtendimentos(id_paciente_insituicao).get(i)
                         .getDataAtendimento();
-                insercao.setData_solicitacao(d1);
+                insercao.setDataSolicitacao(d1);
                 temAtendimento = true;
             }
         }
@@ -185,10 +185,10 @@ public class AlteracaoPacienteController implements Serializable {
 
         // INICIA O ATENDIMENTO 1 DIA APÓS O ÚLTIMO
         if (temAtendimento) {
-            c.setTime(insercao.getData_solicitacao());
+            c.setTime(insercao.getDataSolicitacao());
             c.add(Calendar.DAY_OF_MONTH, 1);
         } else {
-            c.setTime(insercao.getData_solicitacao());
+            c.setTime(insercao.getDataSolicitacao());
         }
 
         for (int i = 0; i <= dt; i++) {

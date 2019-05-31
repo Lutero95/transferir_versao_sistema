@@ -72,7 +72,7 @@ public class AlteracaoPacienteDAO {
                 ip.getLaudo().setId(rs.getInt("codlaudo"));
                 ip.getLaudo().setAnoFinal(rs.getInt("ano_final"));
                 ip.getLaudo().setMesFinal(rs.getInt("mes_final"));
-                ip.setData_solicitacao(rs.getDate("data_solicitacao"));
+                ip.setDataSolicitacao(rs.getDate("data_solicitacao"));
                 ip.getPrograma().getProcedimento().setIdProc(rs.getInt("cod_procedimento"));
 
             }

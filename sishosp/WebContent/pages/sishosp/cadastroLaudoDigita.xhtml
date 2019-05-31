@@ -84,8 +84,8 @@
 
                        
 
-<b:column span="1">
-                            <b:label styleClass="label-position" value="Autorização:" severity="info"/>
+<b:column span="1"  class="label-position" style="width: 116px !important">
+                            <b:label styleClass="label-position" value="Autorizado:" severity="info"/>
                       
 
                             <p:selectOneRadio id="idAutorizado" 
@@ -97,13 +97,13 @@
                                         update="outDataAutorizacao"></p:ajax>
                             </p:selectOneRadio>
                                 </b:column>
-<b:column span="1">
-                            <p:outputPanel id="outDataAutorizacao" style="margin-left:-20px !important">
+<b:column span="1" class="data-size">
+                            <p:outputPanel id="outDataAutorizacao" style="margin-left:-25px !important">
                                 <b:label value="Data da Autorização:"  severity="info" rendered="#{LaudoController.renderizarDataAutorizacao == true}"/>
 
                                 <p:calendar id="dataAutorizacao" locale="pt" required="true" size="15"
                                             class="select-agendaEquipe2" rendered="#{LaudoController.renderizarDataAutorizacao == true}"
-                                            requiredMessage="É necessário informar a data de solitação"
+                                            requiredMessage="É necessário informar a data de autorização"
                                             value="#{LaudoController.laudo.dataAutorizacao}" mask="true"
                                             pattern="dd/MM/yyyy" pages="1" showOn="button"/>
                             </p:outputPanel>
@@ -118,7 +118,7 @@
 
                     <b:row>
 
-                        <b:column span="3" class="btn-radio-table">
+                        <b:column span="1" style="color: #2e84ce;width:108px !important">
                         <b:label value="Período:" severity="info"/>
                             <p:selectOneRadio id="prorrogar" required="true"
                                               layout="pageDirection" requiredMessage="Período é necessário!"

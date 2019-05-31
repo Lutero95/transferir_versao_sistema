@@ -16,11 +16,11 @@ public class InsercaoPacienteBean implements Serializable {
     private ProgramaBean programa;
     private EquipeBean equipe;
     private String observacao;
-    private Date data_solicitacao;
     private FuncionarioBean funcionario;
     private AgendaBean agenda;
     private String OpcaoAtendimento;
     private Boolean encaixe;
+    private Date dataSolicitacao;
 
     public InsercaoPacienteBean() {
         laudo = new LaudoBean();
@@ -71,13 +71,6 @@ public class InsercaoPacienteBean implements Serializable {
         this.observacao = observacao;
     }
 
-    public Date getData_solicitacao() {
-        return data_solicitacao;
-    }
-
-    public void setData_solicitacao(Date data_solicitacao) {
-        this.data_solicitacao = data_solicitacao;
-    }
 
     public FuncionarioBean getFuncionario() {
         return funcionario;
@@ -118,4 +111,12 @@ public class InsercaoPacienteBean implements Serializable {
     public void setEncaixe(Boolean encaixe) {
         this.encaixe = encaixe;
     }
+
+	public Date getDataSolicitacao() {
+		return dataSolicitacao;
+	}
+
+	public void setDataSolicitacao(Date dataSolicitacao) {
+		this.dataSolicitacao = dataSolicitacao;
+	}
 }

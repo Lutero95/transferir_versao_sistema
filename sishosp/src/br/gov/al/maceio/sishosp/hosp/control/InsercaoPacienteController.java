@@ -245,14 +245,14 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
-        Date d1 = insercao.getData_solicitacao();
+        Date d1 = insercao.getDataSolicitacao();
         Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         Long dt = (d2.getTime() - d1.getTime());
 
         dt = (dt / 86400000L);
 
         Calendar c = Calendar.getInstance();
-        c.setTime(insercao.getData_solicitacao());
+        c.setTime(insercao.getDataSolicitacao());
 
         for (int i = 0; i <= dt; i++) {
 
@@ -291,14 +291,14 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
-        Date d1 = insercao.getData_solicitacao();
+        Date d1 = insercao.getDataSolicitacao();
         Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         Long dt = (d2.getTime() - d1.getTime());
 
         dt = (dt / 86400000L);
 
         Calendar c = Calendar.getInstance();
-        c.setTime(insercao.getData_solicitacao());
+        c.setTime(insercao.getDataSolicitacao());
 
         for (int i = 0; i <= dt; i++) {
 

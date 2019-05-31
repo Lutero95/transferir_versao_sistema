@@ -159,7 +159,7 @@ public class InsercaoPacienteDAO {
             ps.setInt(6, insercao.getLaudo().getId());
             ps.setString(7, insercao.getObservacao());
             ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
-            ps.setDate(9, new java.sql.Date(insercao.getData_solicitacao().getTime()));
+            ps.setDate(9, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
             ResultSet rs = ps.executeQuery();
             int id = 0;
             if (rs.next()) {
@@ -293,7 +293,7 @@ public class InsercaoPacienteDAO {
             ps.setString(2, "A");
             ps.setInt(3, insercao.getLaudo().getId());
             ps.setString(4, insercao.getObservacao());
-            ps.setDate(5, new java.sql.Date(insercao.getData_solicitacao()
+            ps.setDate(5, new java.sql.Date(insercao.getDataSolicitacao()
                     .getTime()));
             ps.setInt(6, user_session.getEmpresa().getCodEmpresa());
 
