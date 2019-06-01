@@ -334,12 +334,19 @@ public class LaudoDAO {
 
     public ArrayList<LaudoBean> listaLaudos() throws ProjetoException {
 
-        String sql = "select id_laudo, l.id_recurso, r.descrecurso, l.codpaciente, p.nome, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
-                + " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, l.codprocedimento_secundario2, "
-                + " l.codprocedimento_secundario3, l.codprocedimento_secundario4, l.codprocedimento_secundario5, l.cid1, l.cid2, l.cid3, l.obs "
-                + " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
-                + " left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
-                + " left join hosp.recurso r on (l.id_recurso = r.id) where l.ativo is true and l.cod_empresa = ? order by id_laudo";
+        String sql = "select id_laudo, l.id_recurso, r.descrecurso, l.codpaciente, p.nome, " +
+                "l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, l.periodo, " +
+                "l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, l.codprocedimento_secundario2, " +
+                "l.codprocedimento_secundario3, l.codprocedimento_secundario4, l.codprocedimento_secundario5, " +
+                "c.desccid, l.cid1, l.cid2, l.cid3, l.obs, l.mes_final, l.ano_final, " +
+                "CASE WHEN l.situacao = 'A' THEN 'Autorizado' ELSE 'Pendente' END AS situacao " +
+                "from hosp.laudo l " +
+                "left join hosp.pacientes p on (p.id_paciente = l.codpaciente) " +
+                "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) " +
+                "left join hosp.recurso r on (l.id_recurso = r.id) " +
+                "LEFT JOIN hosp.cid c ON (c.cod = l.cid1) " +
+                "where l.ativo is true and l.cod_empresa = ? " +
+                "order by id_laudo ";
 
         ArrayList<LaudoBean> lista = new ArrayList();
 
@@ -370,10 +377,15 @@ public class LaudoDAO {
                 l.getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
                 l.getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
                 l.getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
+                l.getCid1().setDescCid(rs.getString("desccid"));
                 l.getCid1().setIdCid(rs.getInt("cid1"));
                 l.getCid2().setIdCid(rs.getInt("cid2"));
                 l.getCid3().setIdCid(rs.getInt("cid3"));
                 l.setObs(rs.getString("obs"));
+                l.setSituacao(rs.getString("situacao"));
+                l.setMesFinal(rs.getInt("mes_final"));
+                l.setAnoFinal(rs.getInt("ano_final"));
+                l.setVencimento(DataUtil.mostraMesPorExtenso(l.getMesFinal())+"/"+l.getAnoFinal().toString());
 
                 lista.add(l);
             }

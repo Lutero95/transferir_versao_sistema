@@ -19,6 +19,7 @@ public class LaudoBean implements Serializable {
     private Date vigenciaFinal;
     private Date dataAutorizacao;
     private String situacao;
+    private String vencimento;
 
     // HERDADOS
     private PacienteBean paciente;
@@ -235,5 +236,13 @@ public class LaudoBean implements Serializable {
 
     public void setSituacao(String situacao) {
         this.situacao = situacao;
+    }
+
+    public String getVencimento() {
+        return vencimento;
+    }
+
+    public void setVencimento(String vencimento) {
+        this.vencimento = vencimento;
     }
 }
