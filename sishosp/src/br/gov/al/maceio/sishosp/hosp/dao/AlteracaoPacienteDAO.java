@@ -8,6 +8,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.StringUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
@@ -25,8 +26,11 @@ public class AlteracaoPacienteDAO {
     public InsercaoPacienteBean carregarPacientesInstituicaoAlteracao(Integer id)
             throws ProjetoException {
 
+        final Integer limitadorHorarioParaStringInicio = 0;
+        final Integer limitadorHorarioParaStringFinal = 5;
+
         String sql = "select pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, pi.codpaciente, "
-                + " pi.codequipe, e.descequipe, a.turno, a.situacao, l.mes_final, l.ano_final,  "
+                + " pi.codequipe, e.descequipe, a.turno, a.horario, a.situacao, l.mes_final, l.ano_final,  "
                 + " pi.codprofissional, f.descfuncionario, pi.observacao, a.codtipoatendimento, t.desctipoatendimento, pi.codlaudo, pi.data_solicitacao "
                 + " from hosp.paciente_instituicao pi "
                 + " left join hosp.programa p on (p.id_programa = pi.codprograma) "
@@ -68,6 +72,7 @@ public class AlteracaoPacienteDAO {
                 ip.getAgenda().getTipoAt()
                         .setDescTipoAt(rs.getString("desctipoatendimento"));
                 ip.getAgenda().setTurno(rs.getString("turno"));
+                ip.getAgenda().setHorario(StringUtil.quebrarStringPorQuantidade(rs.getString("horario"), limitadorHorarioParaStringInicio,limitadorHorarioParaStringFinal));
                 ip.getAgenda().setSituacao(rs.getString("situacao"));
                 ip.getLaudo().setId(rs.getInt("codlaudo"));
                 ip.getLaudo().setAnoFinal(rs.getInt("ano_final"));

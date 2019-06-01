@@ -12,4 +12,10 @@ public final class StringUtil {
 
     }
 
+    public static String quebrarStringPorQuantidade(String texto, Integer numeroInicial, Integer numeroFinal) {
+
+         return texto.substring(numeroInicial, numeroFinal).trim();
+
+    }
+
 }

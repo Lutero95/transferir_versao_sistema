@@ -567,7 +567,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         this.opcaoAtendimento = opcaoAtendimento;
     }
 
-    public ArrayList<String> getListaHorarios() {
+    public ArrayList<String> getListaHorarios() throws ParseException {
+        gerarHorariosAtendimento();
         return listaHorarios;
     }
 
