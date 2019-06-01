@@ -3,7 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.enums;
 public enum SituacaoLaudo {
 
     AUTORIZADO("A"),
-    PENDENTE("P");
+    PENDENTE("P"),
+    TODOS("T");
 
     private String sigla;
 

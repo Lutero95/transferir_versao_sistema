@@ -332,7 +332,7 @@ public class LaudoDAO {
         }
     }
 
-    public ArrayList<LaudoBean> listaLaudos() throws ProjetoException {
+    public ArrayList<LaudoBean> listaLaudos(String situacao) throws ProjetoException {
 
         String sql = "select id_laudo, l.id_recurso, r.descrecurso, l.codpaciente, p.nome, " +
                 "l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, l.periodo, " +
@@ -345,8 +345,13 @@ public class LaudoDAO {
                 "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) " +
                 "left join hosp.recurso r on (l.id_recurso = r.id) " +
                 "LEFT JOIN hosp.cid c ON (c.cod = l.cid1) " +
-                "where l.ativo is true and l.cod_empresa = ? " +
-                "order by id_laudo ";
+                "where l.ativo is true and l.cod_empresa = ? ";
+
+        if (!situacao.equals(SituacaoLaudo.TODOS.getSigla())) {
+            sql = sql + " AND l.situacao = ? ";
+        }
+
+        sql = sql + "order by id_laudo ";
 
         ArrayList<LaudoBean> lista = new ArrayList();
 
@@ -354,6 +359,11 @@ public class LaudoDAO {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
             stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+
+            if (!situacao.equals(SituacaoLaudo.TODOS.getSigla())) {
+                stm.setString(2, situacao);
+            }
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -385,7 +395,7 @@ public class LaudoDAO {
                 l.setSituacao(rs.getString("situacao"));
                 l.setMesFinal(rs.getInt("mes_final"));
                 l.setAnoFinal(rs.getInt("ano_final"));
-                l.setVencimento(DataUtil.mostraMesPorExtenso(l.getMesFinal())+"/"+l.getAnoFinal().toString());
+                l.setVencimento(DataUtil.mostraMesPorExtenso(l.getMesFinal()) + "/" + l.getAnoFinal().toString());
 
                 lista.add(l);
             }

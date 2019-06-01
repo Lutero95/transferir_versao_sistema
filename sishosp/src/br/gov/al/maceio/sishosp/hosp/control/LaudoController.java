@@ -145,8 +145,8 @@ public class LaudoController implements Serializable {
 
     }
 
-    public List<LaudoBean> listarLaudo() throws ProjetoException {
-        return lDao.listaLaudos();
+    public void listarLaudo(String situacao) throws ProjetoException {
+        listaLaudo = lDao.listaLaudos(situacao);
     }
 
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query)
@@ -159,9 +159,7 @@ public class LaudoController implements Serializable {
         if (laudo.getProcedimentoPrimario().getIdProc() != null) {
             listaCids =  cDao.listarCidsBuscaPorProcedimento(laudo.getProcedimentoPrimario().getIdProc());
         }
-        
     }
-
 
     public LaudoBean getLaudo() {
         return laudo;
@@ -184,10 +182,7 @@ public class LaudoController implements Serializable {
         this.cabecalho = cabecalho;
     }
 
-    public List<LaudoBean> getListaLaudo() throws ProjetoException {
-        if (listaLaudo == null) {
-            listaLaudo = lDao.listaLaudos();
-        }
+    public List<LaudoBean> getListaLaudo() {
         return listaLaudo;
     }
 
