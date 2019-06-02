@@ -69,6 +69,10 @@ public class RenovacaoPacienteController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             id_paciente_insituicao = id;
             this.insercao = aDao.carregarPacientesInstituicaoAlteracao(id);
+            //vou setar nulo para a data de solicitacao, pois numa nova renovacao nao é pra carregar a data de solicitacao,
+            //pois a mesma é informada na hora do lancamento pelo profissional. 
+            //Esta acao é para nao criar um novo metodo especifico para carregar os dados de gerenc. paciente
+            insercao.setDataSolicitacao(null);
             InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
             opcaoAtendimento = insercaoPacienteController.carregarHorarioOuTurno();
             laudo = new LaudoDAO().buscarLaudosPorId(insercao.getLaudo().getId());

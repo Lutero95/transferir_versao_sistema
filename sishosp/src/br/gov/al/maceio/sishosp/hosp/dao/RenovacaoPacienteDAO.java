@@ -197,6 +197,21 @@ public class RenovacaoPacienteDAO {
             if (rs.next()) {
                 idPacienteInstituicao = rs.getInt("id");
             }
+            
+            String sql8 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, cod_empresa) VALUES  (?, ?, ?, ?)";
+            PreparedStatement ps8 = null;
+            ps8 = conexao.prepareStatement(sql8);
+
+            for (int i = 0; i < listaProfissionais.size(); i++) {
+            	ps8.setLong(1, idPacienteInstituicao);
+            	ps8.setLong(2, listaProfissionais.get(i).getId());
+                for (int j = 0; j < listaProfissionais.get(i).getListDiasSemana().size(); j++) {
+                	ps8.setInt(3,
+                            Integer.parseInt(listaProfissionais.get(i).getListDiasSemana().get(j)));
+                	ps8.setInt(4, user_session.getEmpresa().getCodEmpresa());
+                	ps8.executeUpdate();
+                }
+            }
 
 
             String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "

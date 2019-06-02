@@ -42,7 +42,8 @@ public class RelatoriosController implements Serializable {
 	private FuncionarioBean prof;
 	private List<GrupoBean> listaGrupos;
 	private List<TipoAtendimentoBean> listaTipos;
-
+	private String atributoGenerico1;
+	
 	private Date dataInicial;
 	private Date dataFinal;
 
@@ -103,6 +104,10 @@ public class RelatoriosController implements Serializable {
 			return false;
 	}
 
+	public void preparaRelLaudosVencer() {
+		atributoGenerico1="N";
+	}
+	
 	public void gerarMapaLaudoOrteseProtese() throws IOException,
 			ParseException, ProjetoException {
 
@@ -716,6 +721,14 @@ public class RelatoriosController implements Serializable {
 
 	public void setListaTipos(List<TipoAtendimentoBean> listaTipos) {
 		this.listaTipos = listaTipos;
+	}
+
+	public String getAtributoGenerico1() {
+		return atributoGenerico1;
+	}
+
+	public void setAtributoGenerico1(String atributoGenerico1) {
+		this.atributoGenerico1 = atributoGenerico1;
 	}
 
 }

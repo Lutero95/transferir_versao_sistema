@@ -1,29 +1,42 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
-import br.gov.al.maceio.sishosp.hosp.dao.*;
+import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.FeriadoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
-import br.gov.al.maceio.sishosp.hosp.model.*;
-import org.primefaces.event.SelectEvent;
+import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 @ManagedBean(name = "InsercaoController")
 @ViewScoped
@@ -143,7 +156,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     }
 
-    // VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL
+    // VALIDAÃ‡ÃƒO DE NÃƒO REPETIR O PROFISSIONAL
     public void validarAdicionarFuncionario() {
         Boolean existe = false;
         if (listaProfissionaisAdicionados.size() == 0) {
@@ -161,11 +174,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             } else {
                 JSFUtil.fecharDialog("dlgDiasAtendimento");
 
-                JSFUtil.adicionarMensagemSucesso("Esse profissional já foi adicionado!", "Sucesso");
+                JSFUtil.adicionarMensagemSucesso("Esse profissional jÃ¡ foi adicionado!", "Sucesso");
             }
 
         }
-        //Retirado para análise futura, retirei na véspera da apresentação para a funcionalidade ficar ok. Data: 26/03/2019
+        //Retirado para anÃ¡lise futura, retirei na vÃ©spera da apresentaÃ§Ã£o para a funcionalidade ficar ok. Data: 26/03/2019
         //limparDias();
     }
 
@@ -198,7 +211,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             }
 
             if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.TERCA.getSigla())) {
-                dias = dias + "Terça";
+                dias = dias + "TerÃ§a";
                 if (funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size() != i + 1) {
                     dias = dias + ", ";
                 }
@@ -226,7 +239,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             }
 
             if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.SABADO.getSigla())) {
-                dias = dias + "Sábado";
+                dias = dias + "SÃ¡bado";
                 if (funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size() != i + 1) {
                     dias = dias + ", ";
                 }
@@ -345,14 +358,14 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             if (agendaDAO.numeroAtendimentosEquipe(insercao)) {
                 gravarInsercaoPaciente();
             } else {
-                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para esse profissional já antigiu o máximo para esse horário e dia!",
+                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para esse profissional jÃ¡ antigiu o mÃ¡ximo para esse horÃ¡rio e dia!",
                         "Erro");
             }
         } else {
             if (agendaDAO.numeroAtendimentosProfissional(insercao)) {
                 gravarInsercaoPaciente();
             } else {
-                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para essa equipe já antigiu o máximo para esse dia!",
+                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para essa equipe jÃ¡ antigiu o mÃ¡ximo para esse dia!",
                         "Erro");
             }
         }
@@ -371,7 +384,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             }
         }
 
-        //Adicionei esse FOR pois não estava indo com remove nas condições acima, então adicionei em uma lista e depois removi nesse for abaixo.
+        //Adicionei esse FOR pois nÃ£o estava indo com remove nas condiÃ§Ãµes acima, entÃ£o adicionei em uma lista e depois removi nesse for abaixo.
         for (int i = 0; i < listaAgendamentosAux.size(); i++) {
             listaAgendamentos.remove(listaAgendamentosAux.get(i));
         }
@@ -423,7 +436,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             if (cadastrou == true) {
                 limparDados();
 
-                JSFUtil.adicionarMensagemSucesso("Inserção de Equipe cadastrada com sucesso!", "Sucesso");
+                JSFUtil.adicionarMensagemSucesso("InserÃ§Ã£o de Equipe cadastrada com sucesso!", "Sucesso");
 
             } else {
 
@@ -445,7 +458,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     	listaHorariosDaEquipe=  agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
 
-    // AUTOCOMPLETE INÍCIO
+    // AUTOCOMPLETE INÃ�CIO
 
     public List<EquipeBean> listaEquipeAutoComplete(String query)
             throws ProjetoException {
