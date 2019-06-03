@@ -174,11 +174,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             } else {
                 JSFUtil.fecharDialog("dlgDiasAtendimento");
 
-                JSFUtil.adicionarMensagemSucesso("Esse profissional jÃ¡ foi adicionado!", "Sucesso");
+                JSFUtil.adicionarMensagemSucesso("Esse profissional já foi adicionado!", "Sucesso");
             }
 
         }
-        //Retirado para anÃ¡lise futura, retirei na vÃ©spera da apresentaÃ§Ã£o para a funcionalidade ficar ok. Data: 26/03/2019
+        //Retirado para análise futura, retirei na véspera da apresentação para a funcionalidade ficar ok. Data: 26/03/2019
         //limparDias();
     }
 
@@ -352,20 +352,24 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void validarInsercaoPaciente() throws ProjetoException {
 
+        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+        Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
+        insercao.setDataSolicitacao(dataSolicitacaoCorreta);
+
         if (insercao.getEncaixe()) {
             gravarInsercaoPaciente();
         } else if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
             if (agendaDAO.numeroAtendimentosEquipe(insercao)) {
                 gravarInsercaoPaciente();
             } else {
-                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para esse profissional jÃ¡ antigiu o mÃ¡ximo para esse horÃ¡rio e dia!",
+                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para esse profissional já antigiu o máximo para esse horário e dia!",
                         "Erro");
             }
         } else {
             if (agendaDAO.numeroAtendimentosProfissional(insercao)) {
                 gravarInsercaoPaciente();
             } else {
-                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para essa equipe jÃ¡ antigiu o mÃ¡ximo para esse dia!",
+                JSFUtil.adicionarMensagemErro("Quantidade de agendamentos para essa equipe já antigiu o máximo para esse dia!",
                         "Erro");
             }
         }
@@ -384,7 +388,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             }
         }
 
-        //Adicionei esse FOR pois nÃ£o estava indo com remove nas condiÃ§Ãµes acima, entÃ£o adicionei em uma lista e depois removi nesse for abaixo.
+        //Adicionei esse FOR pois não estava indo com remove nas condições acima, então adicionei em uma lista e depois removi nesse for abaixo.
         for (int i = 0; i < listaAgendamentosAux.size(); i++) {
             listaAgendamentos.remove(listaAgendamentosAux.get(i));
         }
@@ -436,7 +440,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             if (cadastrou == true) {
                 limparDados();
 
-                JSFUtil.adicionarMensagemSucesso("InserÃ§Ã£o de Equipe cadastrada com sucesso!", "Sucesso");
+                JSFUtil.adicionarMensagemSucesso("Inserção de Equipe cadastrada com sucesso!", "Sucesso");
 
             } else {
 

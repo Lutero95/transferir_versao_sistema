@@ -659,8 +659,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
         boolean cadastrou = false;
 
-        ajustarDataDeSolicitacao(agenda.getDataAtendimento());
-
         cadastrou = aDao.gravarAgenda(this.agenda, this.listaNovosAgendamentos, funcionarioLiberacao);
 
         if (cadastrou) {
@@ -672,13 +670,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
         limparDados();
     }
 
-    public void ajustarDataDeSolicitacao(Date data){
-        Date data2 = DataUtil.montarDataCompleta(1, 2, 2019);
-        if(data.after(data2)){
-            System.out.println("Ok");
-        }
-
-    }
 
     public void consultarAgenda() throws ProjetoException {
     	System.out.println("consultarAgenda");

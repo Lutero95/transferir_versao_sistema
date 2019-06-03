@@ -109,8 +109,8 @@ public final class DataUtil {
         mes = mes - 1;
 
         Date data = new Date();
-        data.setMonth(mes);
-        data.setYear(ano - 1900);
+        data.setMonth(ajustarMes(mes));
+        data.setYear(ajustarAno(ano));
 
         if(!ultimoDiaDoMes){
             Calendar calendar = Calendar.getInstance();
@@ -179,6 +179,24 @@ public final class DataUtil {
 
         }
         return mesPorExtenso;
+    }
+
+    public static Date montarDataCompleta(Integer dia, Integer mes, Integer ano){
+        Date data = new Date();
+
+        data.setDate(dia);
+        data.setMonth(ajustarMes(mes));
+        data.setYear(ajustarAno(ano));
+
+        return data;
+    }
+
+    private static Integer ajustarAno(Integer ano){
+        return ano - 1900;
+    }
+
+    private static Integer ajustarMes(Integer mes){
+        return mes - 1;
     }
 
 }

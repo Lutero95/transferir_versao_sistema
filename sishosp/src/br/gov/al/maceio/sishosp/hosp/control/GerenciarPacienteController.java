@@ -2,20 +2,24 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 
 @ManagedBean(name = "GerenciarPacienteController")
 @ViewScoped
@@ -145,6 +149,20 @@ public class GerenciarPacienteController implements Serializable {
 
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o encaminhamento!", "Erro");
+        }
+
+    }
+
+    public Date ajustarDataDeSolicitacao(Date dataSolicitacao, Integer codLaudo) throws ProjetoException {
+        LaudoDAO laudoDAO = new LaudoDAO();
+        LaudoBean laudoBean = laudoDAO.recuperarPeriodosLaudo(codLaudo);
+        Date dataInicioLaudo = DataUtil.montarDataCompleta(1, laudoBean.getMesInicio(), laudoBean.getAnoInicio());
+
+        if(dataSolicitacao.after(dataInicioLaudo) || dataSolicitacao.equals(dataInicioLaudo)){
+            return dataSolicitacao;
+        }
+        else{
+            return dataInicioLaudo;
         }
 
     }
