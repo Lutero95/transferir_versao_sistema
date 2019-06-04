@@ -276,6 +276,10 @@ public class RenovacaoPacienteController implements Serializable {
 
             Boolean cadastrou = null;
 
+            GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+            Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
+            insercao.setDataSolicitacao(dataSolicitacaoCorreta);
+
             ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
 
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {

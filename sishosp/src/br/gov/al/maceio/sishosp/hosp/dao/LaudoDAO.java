@@ -542,4 +542,35 @@ public class LaudoDAO {
         return lista;
     }
 
+    public LaudoBean recuperarPeriodosLaudo(Integer codLaudo)
+            throws ProjetoException {
+
+        LaudoBean laudo = new LaudoBean();
+
+        String sql = "SELECT mes_inicio, ano_inicio FROM hosp.laudo WHERE id_laudo = ?;";
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, codLaudo);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                laudo.setMesInicio(rs.getInt("mes_inicio"));
+                laudo.setAnoInicio(rs.getInt("ano_inicio"));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return laudo;
+    }
+
 }

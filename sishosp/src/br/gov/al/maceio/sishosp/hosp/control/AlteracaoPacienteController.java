@@ -226,6 +226,10 @@ public class AlteracaoPacienteController implements Serializable {
 
         InsercaoPacienteController insercaoPacienteController = new InsercaoPacienteController();
 
+        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+        Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
+        insercao.setDataSolicitacao(dataSolicitacaoCorreta);
+
         ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
                 listAgendamentoProfissional, insercao.getAgenda().getTurno());
 

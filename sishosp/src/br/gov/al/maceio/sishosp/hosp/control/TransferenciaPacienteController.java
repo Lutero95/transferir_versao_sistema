@@ -144,6 +144,10 @@ public class TransferenciaPacienteController implements Serializable {
             ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(
                     listAgendamentoProfissional, insercao.getAgenda().getTurno());
 
+            GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+            Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
+            insercao.setDataSolicitacao(dataSolicitacaoCorreta);
+
             gerarListaAgendamentosEquipe();
 
             cadastrou = aDao.gravarTransferenciaEquipe(insercao, insercaoParaLaudo,
