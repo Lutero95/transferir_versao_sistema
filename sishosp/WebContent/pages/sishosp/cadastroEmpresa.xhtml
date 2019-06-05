@@ -312,7 +312,7 @@
                                     <b:label value="Programa Padrão" class="fire-label" severity="info"/>
 
                                     <p:autoComplete
-                                            value="#{EmpresaController.empresa.parametro.programaOrteseIhProtese}"
+                                            value="#{EmpresaController.empresa.parametro.orteseProtese.programa}"
                                             size="31"
                                             converter="conPrograma" class="select-agendaEquipe4"
                                             completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
@@ -332,7 +332,7 @@
                                 <b:column span="5" class="label-position new-col5">
                                     <b:label value="Grupo Padrão" severity="info" class="fire-label"/>
 
-                                    <p:autoComplete value="#{EmpresaController.empresa.parametro.grupoOrteseIhProtese}"
+                                    <p:autoComplete value="#{EmpresaController.empresa.parametro.orteseProtese.grupo}"
                                                     size="31" id="grupo"
                                                     converter="conGrupo" class="select-agendaEquipe4"
                                                     completeMethod="#{EmpresaController.listaGrupoAutoCompleteComPrograma}"
@@ -345,7 +345,7 @@
 
                                     <p:commandButton id="btBusGr" immediate="true" style="margin-left: 5px"
                                                      icon="ui-icon-search"
-                                                     action="#{EmpresaController.listaGrupoPorPrograma(EmpresaController.empresa.parametro.programaOrteseIhProtese.idPrograma)}"
+                                                     action="#{EmpresaController.listaGrupoPorPrograma(EmpresaController.empresa.parametro.orteseProtese.programa.idPrograma)}"
                                                      update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();"/>
 
                                 </b:column>
@@ -422,7 +422,7 @@
                                 title="Selecionar"
                                 onclick="PF('dlgConsuProg').hide();">
                             <f:setPropertyActionListener value="#{prog}"
-                                                         target="#{EmpresaController.empresa.parametro.programaOrteseIhProtese}"/>
+                                                         target="#{EmpresaController.empresa.parametro.orteseProtese.programa}"/>
                         </p:commandButton>
                     </h:column>
 
@@ -465,7 +465,7 @@
                                 class="new-btn-acao-table acao-editar"
                                 onclick="PF('dlgConsuGrop').hide();">
                             <f:setPropertyActionListener value="#{grupo}"
-                                                         target="#{EmpresaController.empresa.parametro.grupoOrteseIhProtese}"/>
+                                                         target="#{EmpresaController.empresa.parametro.orteseProtese.grupo}"/>
                         </p:commandButton>
                     </h:column>
 

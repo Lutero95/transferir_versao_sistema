@@ -141,14 +141,14 @@ public class EmpresaDAO {
             else{
                 ps.setNull(9, Types.NULL);
             }
-            if(empresa.getParametro().getProgramaOrteseIhProtese().getIdPrograma() != null) {
-                ps.setInt(10, empresa.getParametro().getProgramaOrteseIhProtese().getIdPrograma());
+            if(empresa.getParametro().getOrteseProtese().getPrograma().getIdPrograma() != null) {
+                ps.setInt(10, empresa.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
             }
             else{
                 ps.setNull(10, Types.NULL);
             }
-            if(empresa.getParametro().getGrupoOrteseIhProtese().getIdGrupo() != null) {
-                ps.setInt(11, empresa.getParametro().getGrupoOrteseIhProtese().getIdGrupo());
+            if(empresa.getParametro().getOrteseProtese().getGrupo().getIdGrupo() != null) {
+                ps.setInt(11, empresa.getParametro().getOrteseProtese().getGrupo().getIdGrupo());
             }
             else{
                 ps.setNull(11, Types.NULL);
@@ -271,8 +271,8 @@ public class EmpresaDAO {
             ps.setTime(6, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioFinal()));
             ps.setInt(7, empresa.getParametro().getIntervalo());
             ps.setInt(8, empresa.getParametro().getTipoAtendimento().getIdTipo());
-            ps.setInt(9, empresa.getParametro().getProgramaOrteseIhProtese().getIdPrograma());
-            ps.setInt(10, empresa.getParametro().getGrupoOrteseIhProtese().getIdGrupo());
+            ps.setInt(9, empresa.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
+            ps.setInt(10, empresa.getParametro().getOrteseProtese().getGrupo().getIdGrupo());
             ps.setInt(11, empresa.getCodEmpresa());
             ps.executeUpdate();
 
@@ -394,16 +394,16 @@ public class EmpresaDAO {
                 parametro.setIntervalo(rs.getInt("intervalo"));
                 parametro.getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
                 if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("programa_ortese_protese"))) {
-                    parametro.setProgramaOrteseIhProtese(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("programa_ortese_protese"), conAuxiliar));
+                    parametro.getOrteseProtese().setPrograma(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("programa_ortese_protese"), conAuxiliar));
                 }
                 else{
-                    parametro.setProgramaOrteseIhProtese(new ProgramaBean());
+                    parametro.getOrteseProtese().setPrograma(new ProgramaBean());
                 }
                 if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("grupo_ortese_protese"))) {
-                    parametro.setGrupoOrteseIhProtese(new GrupoDAO().listarGrupoPorIdComConexao(rs.getInt("grupo_ortese_protese"), conAuxiliar));
+                    parametro.getOrteseProtese().setGrupo(new GrupoDAO().listarGrupoPorIdComConexao(rs.getInt("grupo_ortese_protese"), conAuxiliar));
                 }
                 else{
-                    parametro.setGrupoOrteseIhProtese(new GrupoBean());
+                    parametro.getOrteseProtese().setGrupo(new GrupoBean());
                 }
 
             }

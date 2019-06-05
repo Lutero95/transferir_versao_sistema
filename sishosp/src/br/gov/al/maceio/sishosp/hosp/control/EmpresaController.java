@@ -143,8 +143,8 @@ public class EmpresaController implements Serializable {
             throws ProjetoException {
         List<GrupoBean> listaGrupo = new ArrayList<>();
 
-        if(verificarProgramaPreenchido(empresa.getParametro().getProgramaOrteseIhProtese().getIdPrograma())) {
-            listaGrupo = gDao.listarGruposNoAutoComplete(query, empresa.getParametro().getProgramaOrteseIhProtese().getIdPrograma());
+        if(verificarProgramaPreenchido(empresa.getParametro().getOrteseProtese().getPrograma().getIdPrograma())) {
+            listaGrupo = gDao.listarGruposNoAutoComplete(query, empresa.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
         }
 
         return listaGrupo;

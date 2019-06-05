@@ -1,7 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 
 public class ParametroBean implements Serializable {
@@ -14,13 +13,11 @@ public class ParametroBean implements Serializable {
     private Date horarioFinal;
     private Integer intervalo;
     private TipoAtendimentoBean tipoAtendimento;
-    private ProgramaBean programaOrteseIhProtese;
-    private GrupoBean grupoOrteseIhProtese;
+    private OrteseProtese orteseProtese;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
-        programaOrteseIhProtese = new ProgramaBean();
-        grupoOrteseIhProtese = new GrupoBean();
+        orteseProtese = new OrteseProtese();
     }
 
     public Integer getMotivoDesligamento() {
@@ -87,19 +84,12 @@ public class ParametroBean implements Serializable {
         this.tipoAtendimento = tipoAtendimento;
     }
 
-    public ProgramaBean getProgramaOrteseIhProtese() {
-        return programaOrteseIhProtese;
+    public OrteseProtese getOrteseProtese() {
+        return orteseProtese;
     }
 
-    public void setProgramaOrteseIhProtese(ProgramaBean programaOrteseIhProtese) {
-        this.programaOrteseIhProtese = programaOrteseIhProtese;
+    public void setOrteseProtese(OrteseProtese orteseProtese) {
+        this.orteseProtese = orteseProtese;
     }
 
-    public GrupoBean getGrupoOrteseIhProtese() {
-        return grupoOrteseIhProtese;
-    }
-
-    public void setGrupoOrteseIhProtese(GrupoBean grupoOrteseIhProtese) {
-        this.grupoOrteseIhProtese = grupoOrteseIhProtese;
-    }
 }
