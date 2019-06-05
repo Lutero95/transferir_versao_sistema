@@ -26,7 +26,8 @@
                         <b:column span="12" class="label-position new-col12">
                             <b:label value="Nome Principal" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.nomeEmpresa}" validator="CaractereEmBrancoValidator"
+                            <b:inputText value="#{EmpresaController.empresa.nomeEmpresa}"
+                                         validator="CaractereEmBrancoValidator"
                                          class="form-control" required="true"
                                          requiredMessage="Nome Principal: Campo obrigatório!"
                                          validatorMessage="Nome Principal deve conter entre 2 e 100 caracteres.">
@@ -53,7 +54,8 @@
                         <b:column span="5" class="label-position new-col5">
                             <b:label value="CNPJ" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.cnpj}" validator="CaractereEmBrancoValidator"
+                            <b:inputText value="#{EmpresaController.empresa.cnpj}"
+                                         validator="CaractereEmBrancoValidator"
                                          class="form-control" required="true"
                                          requiredMessage="CNPJ: Campo obrigatório!">
                             </b:inputText>
@@ -82,7 +84,8 @@
                         <b:column span="5" class="label-position new-col5">
                             <b:label value="Bairro" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.bairro}" validator="CaractereEmBrancoValidator"
+                            <b:inputText value="#{EmpresaController.empresa.bairro}"
+                                         validator="CaractereEmBrancoValidator"
                                          class="form-control" required="true"
                                          requiredMessage="Bairro: Campo obrigatório!">
                             </b:inputText>
@@ -102,7 +105,8 @@
                         <b:column span="5" class="label-position new-col5">
                             <b:label value="Complemento" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.complemento}" validator="CaractereEmBrancoValidator"
+                            <b:inputText value="#{EmpresaController.empresa.complemento}"
+                                         validator="CaractereEmBrancoValidator"
                                          class="form-control">
                             </b:inputText>
                         </b:column>
@@ -114,7 +118,8 @@
                         <b:column span="5" class="label-position new-col5">
                             <b:label value="Cidade" severity="info"/>
 
-                            <b:inputText value="#{EmpresaController.empresa.cidade}" validator="CaractereEmBrancoValidator"
+                            <b:inputText value="#{EmpresaController.empresa.cidade}"
+                                         validator="CaractereEmBrancoValidator"
                                          class="form-control" required="true"
                                          requiredMessage="Cidade: Campo obrigatório!">
                             </b:inputText>
@@ -289,12 +294,69 @@
                                              value="#{EmpresaController.empresa.parametro.tipoAtendimento.idTipo}">
                                 <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
                                 <f:selectItems value="#{TipoAtendimentoController.listarTipos()}" var="tipo"
-                                               itemLabel="#{tipo.descTipoAt}" itemValue="#{tipo.idTipo}" />
+                                               itemLabel="#{tipo.descTipoAt}" itemValue="#{tipo.idTipo}"/>
                             </b:selectOneMenu>
 
                         </b:column>
 
                     </b:row>
+
+                    <br></br>
+
+                    <b:row>
+
+                        <p:fieldset legend="Órtese e Prótese">
+
+                            <p:outputPanel id="idOrteseProtese">
+                                <b:column span="5" class="label-position new-col5">
+                                    <b:label value="Programa Padrão" class="fire-label" severity="info"/>
+
+                                    <p:autoComplete
+                                            value="#{EmpresaController.empresa.parametro.programaOrteseIhProtese}"
+                                            size="31"
+                                            converter="conPrograma" class="select-agendaEquipe4"
+                                            completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                            effect="fade" var="theme" forceSelection="true"
+                                            minQueryLength="1" itemValue="#{theme}"
+                                            itemLabel="#{theme.descPrograma}">
+                                        <p:ajax event="itemSelect" update="grupo"/>
+
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusPr" immediate="true" style="margin-left: 5px"
+                                                     icon="ui-icon-search"
+                                                     actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
+                                                     update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
+                                </b:column>
+
+                                <b:column span="5" class="label-position new-col5">
+                                    <b:label value="Grupo Padrão" severity="info" class="fire-label"/>
+
+                                    <p:autoComplete value="#{EmpresaController.empresa.parametro.grupoOrteseIhProtese}"
+                                                    size="31" id="grupo"
+                                                    converter="conGrupo" class="select-agendaEquipe4"
+                                                    completeMethod="#{EmpresaController.listaGrupoAutoCompleteComPrograma}"
+                                                    effect="fade" var="theme" forceSelection="true"
+                                                    minQueryLength="1" itemValue="#{theme}"
+                                                    itemLabel="#{theme.descGrupo}">
+                                        <p:ajax event="itemSelect"/>
+
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusGr" immediate="true" style="margin-left: 5px"
+                                                     icon="ui-icon-search"
+                                                     action="#{EmpresaController.listaGrupoPorPrograma(EmpresaController.empresa.parametro.programaOrteseIhProtese.idPrograma)}"
+                                                     update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();"/>
+
+                                </b:column>
+
+                            </p:outputPanel>
+
+                        </p:fieldset>
+
+                    </b:row>
+
+                    <br></br>
 
                     <b:row>
 
@@ -335,6 +397,81 @@
             </div>
 
         </div>
+
+        <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuProg">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+                             display="Nenhum Programa">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Programa
+                        </f:facet>
+                        <p:outputLabel value="#{prog.descPrograma}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":frmPrincipal:idOrteseProtese"
+                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                title="Selecionar"
+                                onclick="PF('dlgConsuProg').hide();">
+                            <f:setPropertyActionListener value="#{prog}"
+                                                         target="#{EmpresaController.empresa.parametro.programaOrteseIhProtese}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+                  modal="true" styleClass="topDialog" dynamic="true">
+            <h:form id="formConsuGrop">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             ajax="true"
+                             responsive="true"
+                             save-state="false"
+                             saveState="false"
+                             value="#{EmpresaController.listaGruposProgramas}" id="dtGrupo"
+                             var="grupo" display="Nenhum Grupo">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Grupo
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.descGrupo}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Quantidade Frequência
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.qtdFrequencia}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":frmPrincipal:idOrteseProtese"
+                                icon="ui-icon-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                onclick="PF('dlgConsuGrop').hide();">
+                            <f:setPropertyActionListener value="#{grupo}"
+                                                         target="#{EmpresaController.empresa.parametro.grupoOrteseIhProtese}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
 
     </ui:define>
 </ui:composition>

@@ -363,6 +363,7 @@ public class GrupoDAO {
         return lista;
     }
 
+    @Deprecated
     public List<GrupoBean> listarGruposAutoComplete(String descricao,
                                                     ProgramaBean prog) throws ProjetoException {
         List<GrupoBean> lista = new ArrayList<>();
@@ -374,6 +375,44 @@ public class GrupoDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1, prog.getIdPrograma());
+            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stm.setString(3, "%" + descricao.toUpperCase() + "%");
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                GrupoBean grupo = new GrupoBean();
+                grupo.setIdGrupo(rs.getInt("id_grupo"));
+                grupo.setDescGrupo(rs.getString("descgrupo"));
+                grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+                grupo.setAuditivo(rs.getBoolean("auditivo"));
+                grupo.setEquipeSim(rs.getBoolean("equipe"));
+                grupo.setinsercao_pac_institut(rs
+                        .getBoolean("insercao_pac_institut"));
+                lista.add(grupo);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
+    public List<GrupoBean> listarGruposNoAutoComplete(String descricao, Integer codPrograma) throws ProjetoException {
+        List<GrupoBean> lista = new ArrayList<>();
+        String sql = "select distinct g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut  "
+                + " from hosp.grupo g left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)"
+                + " where p.id_programa = ? and g.cod_empresa = ? and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? order by descgrupo ";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codPrograma);
             stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
             stm.setString(3, "%" + descricao.toUpperCase() + "%");
             ResultSet rs = stm.executeQuery();
@@ -429,6 +468,33 @@ public class GrupoDAO {
         } finally {
             try {
                 con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return grupo;
+    }
+
+    public GrupoBean listarGrupoPorIdComConexao(int id, Connection conAuxiliar) throws ProjetoException {
+
+        GrupoBean grupo = new GrupoBean();
+        String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, insercao_pac_institut from hosp.grupo where id_grupo = ?";
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                grupo.setIdGrupo(rs.getInt("id_grupo"));
+                grupo.setDescGrupo(rs.getString("descgrupo"));
+                grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+                grupo.setAuditivo(rs.getBoolean("auditivo"));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

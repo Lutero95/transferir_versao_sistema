@@ -183,11 +183,6 @@ public class GrupoController implements Serializable {
 
     }
 
-    public List<GrupoBean> listaGrupoAutoComplete2(String query)
-            throws ProjetoException {
-        return gDao.listarGruposAutoComplete2(query);
-    }
-
     public int getTipo() {
         return tipo;
     }

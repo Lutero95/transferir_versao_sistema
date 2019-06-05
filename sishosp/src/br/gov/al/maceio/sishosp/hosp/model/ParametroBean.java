@@ -14,9 +14,13 @@ public class ParametroBean implements Serializable {
     private Date horarioFinal;
     private Integer intervalo;
     private TipoAtendimentoBean tipoAtendimento;
+    private ProgramaBean programaOrteseIhProtese;
+    private GrupoBean grupoOrteseIhProtese;
 
     public ParametroBean() {
         tipoAtendimento = new TipoAtendimentoBean();
+        programaOrteseIhProtese = new ProgramaBean();
+        grupoOrteseIhProtese = new GrupoBean();
     }
 
     public Integer getMotivoDesligamento() {
@@ -67,10 +71,6 @@ public class ParametroBean implements Serializable {
         this.horarioFinal = horarioFinal;
     }
 
-    public void setHorarioFinal(Time horarioFinal) {
-        this.horarioFinal = horarioFinal;
-    }
-
     public Integer getIntervalo() {
         return intervalo;
     }
@@ -87,4 +87,19 @@ public class ParametroBean implements Serializable {
         this.tipoAtendimento = tipoAtendimento;
     }
 
+    public ProgramaBean getProgramaOrteseIhProtese() {
+        return programaOrteseIhProtese;
+    }
+
+    public void setProgramaOrteseIhProtese(ProgramaBean programaOrteseIhProtese) {
+        this.programaOrteseIhProtese = programaOrteseIhProtese;
+    }
+
+    public GrupoBean getGrupoOrteseIhProtese() {
+        return grupoOrteseIhProtese;
+    }
+
+    public void setGrupoOrteseIhProtese(GrupoBean grupoOrteseIhProtese) {
+        this.grupoOrteseIhProtese = grupoOrteseIhProtese;
+    }
 }
