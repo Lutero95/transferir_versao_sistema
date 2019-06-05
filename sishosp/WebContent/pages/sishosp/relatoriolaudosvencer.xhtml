@@ -82,8 +82,7 @@
 
                             <p:outputPanel id="outGrupo">
                                 <p:autoComplete value="#{AgendaController.agenda.grupo}"
-                                                size="31" converter="conGrupo" required="true"
-                                                requiredMessage="Grupo: Campo obrigatório!"
+                                                size="31" converter="conGrupo" 
                                                 class="select-agendaEquipe4"
                                                 disabled="#{AgendaController.agenda.programa.idPrograma == null}"
                                                 completeMethod="#{AgendaController.listaGrupoAutoComplete}"
