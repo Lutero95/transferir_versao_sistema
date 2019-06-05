@@ -20,13 +20,13 @@
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Relatório: Laudos a Vencer</h4>
             </div>
-            
+            <p:growl id="grw"/>
             <div class="panel-body table-body">
 				<h:form id="frm">
 					
 				<b:row>
 				<b:column >
-				   <p:selectOneRadio id="console" value="#{RelatoriosController.atributoGenerico1}" unselectable="true">
+				   <p:selectOneRadio required="true" requiredMessage="Informe o Tipo da Geração" id="console" value="#{RelatoriosController.atributoGenerico1}" unselectable="true">
             <f:selectItem itemLabel="Geração Nominal" itemValue="N" />
             <f:selectItem itemLabel="Geração de Laudos" itemValue="L" />
         </p:selectOneRadio>
@@ -34,7 +34,7 @@
 				</b:column>
 				<b:column col-md="1">
 					<b:label for="periodovencer" class="label label-info" style="margin-left:0px !important" value="A vencer no período" severity="info" />
-							<p:inputMask mask="99/9999"  style="padding:10px !important;font-size:1em;"	 id="periodovencer" size="5"></p:inputMask>
+							<p:inputMask required="true" value="#{RelatoriosController.atributoGenerico2}" requiredMessage="Informe o período a Vencer" mask="99/9999"  style="padding:10px !important;font-size:1em;"	 id="periodovencer" size="5"></p:inputMask>
 				</b:column>
 				
 				
@@ -48,9 +48,9 @@
 
                             <p:outputPanel id="outProg">
                                 <p:autoComplete value="#{AgendaController.agenda.programa}"
-                                                size="31" converter="conPrograma" required="true"
+                                                size="31" converter="conPrograma"
                                                 class="select-agendaEquipe4"
-                                                requiredMessage="Programa: Campo obrigatório!"
+                                                
                                                 disabled="#{AgendaController.agenda.paciente==null}"
                                                 completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
                                                 effect="fade" var="theme" forceSelection="true"
@@ -115,11 +115,11 @@
 						
 
 						<br />
-						<center>
+					
 							<p:commandButton icon="ui-icon-print" value="Imprimir"
-								style="font-size: 12px;  text-align: right;"
-								actionListener="#{reportController.clientesFaltosos}" ajax="false" />
-						</center>
+								style="font-size: 12px;  text-align: right;" update="grw"
+								actionListener="#{RelatoriosController.geraLaudoVencer(AgendaController.agenda.programa, AgendaController.agenda.grupo)}" ajax="false" />
+						
 					
 				</h:form>
 		</div>

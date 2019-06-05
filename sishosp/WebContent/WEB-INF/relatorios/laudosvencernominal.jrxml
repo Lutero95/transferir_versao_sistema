@@ -6,12 +6,14 @@
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="hosp"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<parameter name="periodo_laudo_vencer" class="java.lang.String">
+	<parameter name="periodolaudovencer" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="codfunclogado" class="java.lang.Integer">
+	<parameter name="codempresa" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="codprograma" class="java.lang.Integer"/>
+	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select distinct  empresa.nome_principal nomeinstituicao, matricula,p.id_paciente, p.nome nomepaciente,lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0') vencto, 
 l.codprocedimento_primario codproced, proc.nome nomeprocedimento,
@@ -20,11 +22,9 @@ l.codprocedimento_primario codproced, proc.nome nomeprocedimento,
     join hosp.pacientes p on p.id_paciente = pl.codpaciente
      left join hosp.laudo l on l.id_laudo = pl.codlaudo
     left join hosp.proc on proc.id = l.codprocedimento_primario
-    join acl.funcionarios funclogado on funclogado.id_funcionario =   $P{codfunclogado} 
-join hosp.empresa on empresa.cod_empresa = funclogado.cod_empresa
+	 join hosp.empresa on empresa.cod_empresa =  1
     where 1=1
-    and lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0')= $P{periodo_laudo_vencer}  and pl.status='A'
-    and pl.cod_empresa=funclogado.cod_empresa]]>
+    ]]>
 	</queryString>
 	<field name="nomeinstituicao" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeinstituicao"/>

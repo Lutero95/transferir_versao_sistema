@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="hosp"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -39,6 +39,9 @@
 	</style>
 	<parameter name="cod_laudo" class="java.lang.Integer"/>
 	<parameter name="codempresa" class="java.lang.Integer"/>
+	<parameter name="codprograma" class="java.lang.Integer"/>
+	<parameter name="codgrupo" class="java.lang.Integer"/>
+	<parameter name="periodolaudovencer" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
 select u.*
@@ -75,8 +78,11 @@ LEFT JOIN hosp.cid c1 ON c1.cod = l.cid1
 LEFT JOIN hosp.cid c2 ON c2.cod = l.cid2
 LEFT JOIN hosp.cid c3 ON c3.cod = l.cid3
 LEFT JOIN hosp.raca r ON r.id_raca = p.codraca
+left join hosp.paciente_instituicao pi on pi.codlaudo = l.id_laudo
 WHERE 1=1
 and ((  $P{cod_laudo}  is not null and l.id_laudo= $P{cod_laudo}) or (($P{cod_laudo} =0 ) OR ($P{cod_laudo} is null )))
+and ((   $P{codprograma}   is not null and pi.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
+and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
 ) t
 )u
 )v

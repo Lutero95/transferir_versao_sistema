@@ -23,10 +23,16 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
@@ -43,6 +49,7 @@ public class RelatoriosController implements Serializable {
 	private List<GrupoBean> listaGrupos;
 	private List<TipoAtendimentoBean> listaTipos;
 	private String atributoGenerico1;
+	private String atributoGenerico2;
 	
 	private Date dataInicial;
 	private Date dataFinal;
@@ -57,6 +64,10 @@ public class RelatoriosController implements Serializable {
 	private Integer diaSemana;
 	private Integer mes;
 	private Integer ano;
+	
+	FuncionarioBean user_session = (FuncionarioBean) FacesContext
+            .getCurrentInstance().getExternalContext().getSessionMap()
+            .get("obj_usuario");
 
 	public RelatoriosController() {
 		this.programa = new ProgramaBean();
@@ -108,50 +119,81 @@ public class RelatoriosController implements Serializable {
 		atributoGenerico1="N";
 	}
 	
-	public void gerarMapaLaudoOrteseProtese() throws IOException,
+	public void geraLaudoVencer(ProgramaBean programa, GrupoBean grupo) throws IOException,
 			ParseException, ProjetoException {
-
-		if (this.dataFinal == null || this.dataInicial == null
-				|| this.programa == null || this.grupo == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Todos os campos devem ser preenchidos.",
-					"Campos inválidos!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-
-		if (!verificarMesesIguais(this.dataInicial, this.dataFinal)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"As datas devem possuir o mesmo mês.", "Datas Inválidas!");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-
+		
+		if (atributoGenerico1.equals(null)) {
+			 JSFUtil.adicionarMensagemErro("Informe o período a vencer!", "Erro!");
+			}
+		else
+		{
 		String caminho = "/WEB-INF/relatorios/";
 		String relatorio = "";
+		if (atributoGenerico1.equals("N"))
+				relatorio = caminho + "laudosvencernominal.jasper";
+		else
+				relatorio = caminho + "laudo.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (this.grupo.isAuditivo()) {
-			relatorio = caminho + "mapaLaudoOrteseProteseAuditivo.jasper";
-			map.put("dt_inicial", this.dataInicial);
-			map.put("dt_final", this.dataFinal);
-			map.put("cod_programa", this.programa.getIdPrograma());
-			map.put("cod_grupo", this.grupo.getIdGrupo());
-			map.put("recurso", this.recurso);
-			map.put("tipo_exame_auditivo", this.tipoExameAuditivo);
-		} else {
-			relatorio = caminho + "mapaLaudoOrteseProteseNormal.jasper";
-			map.put("dt_inicial", this.dataInicial);
-			map.put("dt_final", this.dataFinal);
-			map.put("cod_programa", this.programa.getIdPrograma());
-			map.put("cod_grupo", this.grupo.getIdGrupo());
-			map.put("recurso", this.recurso);
+		map.put("periodolaudovencer", this.atributoGenerico2);
+			map.put("codempresa", user_session.getEmpresa().getCodEmpresa());
+			//if (programa!=null)
+			map.put("codprograma", null);
+			
+			//if (grupo!=null)
+			map.put("codgrupo", null);
+			map.put("cod_laudo", null);
+			this.executeReport(relatorio, map, "relatorio.pdf");
+		//	this.executeReportNewTab(relatorio, "laudovencer.pdf",
+			//		map);
+			
+		
 		}
-
-		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
-				+ File.separator);
-		this.executeReport(relatorio, map, "relatorio.pdf");
-		// limparDados();
 	}
+	
+	public void gerarMapaLaudoOrteseProtese() throws IOException,
+	ParseException, ProjetoException {
+
+if (this.dataFinal == null || this.dataInicial == null
+		|| this.programa == null || this.grupo == null) {
+	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+			"Todos os campos devem ser preenchidos.",
+			"Campos invÃ¡lidos!");
+	FacesContext.getCurrentInstance().addMessage(null, msg);
+	return;
+}
+
+if (!verificarMesesIguais(this.dataInicial, this.dataFinal)) {
+	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+			"As datas devem possuir o mesmo mÃªs.", "Datas InvÃ¡lidas!");
+	FacesContext.getCurrentInstance().addMessage(null, msg);
+	return;
+}
+
+String caminho = "/WEB-INF/relatorios/";
+String relatorio = "";
+Map<String, Object> map = new HashMap<String, Object>();
+if (this.grupo.isAuditivo()) {
+	relatorio = caminho + "mapaLaudoOrteseProteseAuditivo.jasper";
+	map.put("dt_inicial", this.dataInicial);
+	map.put("dt_final", this.dataFinal);
+	map.put("cod_programa", this.programa.getIdPrograma());
+	map.put("cod_grupo", this.grupo.getIdGrupo());
+	map.put("recurso", this.recurso);
+	map.put("tipo_exame_auditivo", this.tipoExameAuditivo);
+} else {
+	relatorio = caminho + "mapaLaudoOrteseProteseNormal.jasper";
+	map.put("dt_inicial", this.dataInicial);
+	map.put("dt_final", this.dataFinal);
+	map.put("cod_programa", this.programa.getIdPrograma());
+	map.put("cod_grupo", this.grupo.getIdGrupo());
+	map.put("recurso", this.recurso);
+}
+
+map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
+		+ File.separator);
+this.executeReport(relatorio, map, "relatorio.pdf");
+// limparDados();
+}
 
 	public void gerarFinanceiroOrteseProtese() throws IOException,
 			ParseException, ProjetoException {
@@ -160,14 +202,14 @@ public class RelatoriosController implements Serializable {
 				|| this.programa == null || this.grupo == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Todos os campos devem ser preenchidos.",
-					"Campos inválidos!");
+					"Campos invÃ¡lidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
 
 		if (!verificarMesesIguais(this.dataInicial, this.dataFinal)) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"As datas devem possuir o mesmo mês.", "Datas Inválidas!");
+					"As datas devem possuir o mesmo mÃªs.", "Datas InvÃ¡lidas!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -213,7 +255,7 @@ public class RelatoriosController implements Serializable {
 				|| this.tipo == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Todos os campos devem ser preenchidos.",
-					"Campos inválidos!");
+					"Campos invÃ¡lidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -246,7 +288,7 @@ public class RelatoriosController implements Serializable {
 				|| this.programa == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Datas e programa devem ser preenchidos.",
-					"Campos inválidos!");
+					"Campos invÃ¡lidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -279,7 +321,7 @@ public class RelatoriosController implements Serializable {
 				|| this.programa == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Datas e programa devem ser preenchidos.",
-					"Campos inválidos!");
+					"Campos invÃ¡lidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -313,7 +355,7 @@ public class RelatoriosController implements Serializable {
 		if (this.dataFinal == null || this.dataInicial == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Datas e programa devem ser preenchidos.",
-					"Campos inválidos!");
+					"Campos invÃ¡lidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -341,7 +383,7 @@ public class RelatoriosController implements Serializable {
 				|| this.programa == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Datas e programa devem ser preenchidos.",
-					"Campos inválidos!");
+					"Campos invÃ¡lidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 
@@ -380,7 +422,7 @@ public class RelatoriosController implements Serializable {
 				|| this.programa == null || this.grupo == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Datas, programa e grupo devem ser preenchidos.",
-					"Campos inválidos!");
+					"Campos invÃ¡lidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
 
@@ -420,7 +462,7 @@ public class RelatoriosController implements Serializable {
 		if (this.grupo == null || this.programa == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Programa e Grupo devem ser preenchidos.",
-					"Campos inválidos!");
+					"Campos invÃ¡lidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -432,7 +474,7 @@ public class RelatoriosController implements Serializable {
 			if (this.mes == null || this.ano == null) {
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
-						"Mês e Ano devem ser preenchidos.", "Campos inv�lidos!");
+						"MÃªs e Ano devem ser preenchidos.", "Campos invï¿½lidos!");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				return;
 			}
@@ -447,8 +489,8 @@ public class RelatoriosController implements Serializable {
 			if (this.dataEspec == null) {
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
-						"Data específica deve ser preenchida.",
-						"Campo inválido!");
+						"Data especÃ­fica deve ser preenchida.",
+						"Campo invÃ¡lido!");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				return;
 			}
@@ -469,6 +511,55 @@ public class RelatoriosController implements Serializable {
 		limparDados();
 	}
 
+	
+	public void executeReportNewTab(String caminhoRelatorio,
+			String nomeRelatorio, Map parametros) throws ProjetoException {
+
+		Connection conexao = null;
+		ServletOutputStream outputStream = null;
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		HttpServletResponse response = (HttpServletResponse) context
+				.getExternalContext().getResponse();
+		InputStream relatorioStream = context.getExternalContext()
+				.getResourceAsStream(caminhoRelatorio);
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+			JasperPrint print = JasperFillManager.fillReport(relatorioStream,
+					parametros, conexao);
+
+			JRExporter exportador = new JRPdfExporter();
+			exportador.setParameter(JRExporterParameter.OUTPUT_STREAM,
+					response.getOutputStream());
+			exportador.setParameter(JRExporterParameter.JASPER_PRINT, print);
+
+			response.setContentType("application/pdf");
+			response.setHeader("Content-disposition",
+					"inline; filename=arquivo.pdf");
+			ServletOutputStream servletOutputStream = response
+					.getOutputStream();
+
+			exportador.exportReport();
+			servletOutputStream.flush();
+			servletOutputStream.close();
+			context.renderResponse();
+			context.responseComplete();
+		} catch (JRException ex) {
+			throw new RuntimeException(ex);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+	
 	private void executeReport(String relatorio, Map<String, Object> map,
 			String filename) throws IOException, ParseException,
 			ProjetoException {
@@ -509,7 +600,7 @@ public class RelatoriosController implements Serializable {
 				|| this.programa == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Datas e programa devem ser preenchidas.",
-					"Campos inválidos!");
+					"Campos invÃ¡lidos!");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return;
 		}
@@ -729,6 +820,14 @@ public class RelatoriosController implements Serializable {
 
 	public void setAtributoGenerico1(String atributoGenerico1) {
 		this.atributoGenerico1 = atributoGenerico1;
+	}
+
+	public String getAtributoGenerico2() {
+		return atributoGenerico2;
+	}
+
+	public void setAtributoGenerico2(String atributoGenerico2) {
+		this.atributoGenerico2 = atributoGenerico2;
 	}
 
 }
