@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <f:metadata>
+        <f:viewAction
+                action="#{OrteseProteseController.carregarOrteseIhProtese()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Gerenciamento de Órtese e Prótese</h4>
+            </div>
+
+            <div class="panel-body table-body">
+
+                <h:form id="formGerenOrteseEProtese">
+
+                    <b:row rendered="#{OrteseProteseController.temOrteseIhProteseCadastrado == true}">
+
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Programa" severity="info"/>
+
+                            <p:outputLabel style="margin-left: 15px"
+                                    value="#{OrteseProteseController.orteseProtese.programa.descPrograma}"></p:outputLabel>
+
+                        </b:column>
+
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Grupo" severity="info"/>
+
+                            <p:outputLabel style="margin-left: 15px"
+                                    value="#{OrteseProteseController.orteseProtese.grupo.descGrupo}"></p:outputLabel>
+
+                        </b:column>
+
+                    </b:row>
+
+                </h:form>
+
+            </div>
+
+        </div>
+
+        <p:dialog header="Programa e Grupo não cadastrados" widgetVar="dlgAviso"
+                  modal="true">
+            <h:form id="formAviso">
+
+                <p:outputLabel value="Programa e/ou Grupo não associado a Órtese e Prótese nos parâmetros do sistema."></p:outputLabel>
+
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
