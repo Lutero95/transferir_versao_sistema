@@ -3,8 +3,12 @@ package br.gov.al.maceio.sishosp.hosp.control;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -24,6 +28,8 @@ public class EmpresaController implements Serializable {
     private String cabecalho;
     private EmpresaDAO eDao = new EmpresaDAO();
     private ArrayList<String> listaEstados;
+    private List<GrupoBean> listaGruposProgramas;
+    private GrupoDAO gDao = new GrupoDAO();
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroEmpresa?faces-redirect=true";
@@ -35,6 +41,7 @@ public class EmpresaController implements Serializable {
     public EmpresaController() {
         this.empresa = new EmpresaBean();
         this.cabecalho = "";
+        listaGruposProgramas = new ArrayList<>();
         listaEstados = new ArrayList<>();
         listaEstados.add("AC");
         listaEstados.add("AL");
@@ -132,6 +139,36 @@ public class EmpresaController implements Serializable {
         return eDao.listarEmpresa();
     }
 
+    public List<GrupoBean> listaGrupoAutoCompleteComPrograma(String query)
+            throws ProjetoException {
+        List<GrupoBean> listaGrupo = new ArrayList<>();
+
+        if(verificarProgramaPreenchido(empresa.getParametro().getProgramaOrteseIhProtese().getIdPrograma())) {
+            listaGrupo = gDao.listarGruposNoAutoComplete(query, empresa.getParametro().getProgramaOrteseIhProtese().getIdPrograma());
+        }
+
+        return listaGrupo;
+    }
+
+    public void listaGrupoPorPrograma(Integer codPrograma)
+            throws ProjetoException {
+
+        if(verificarProgramaPreenchido(codPrograma)) {
+            listaGruposProgramas = gDao.listarGruposPorPrograma(codPrograma);
+        }
+
+    }
+
+    private Boolean verificarProgramaPreenchido(Integer idPrograma){
+        Boolean retorno = false;
+
+        if(!VerificadorUtil.verificarSeObjetoNulo(idPrograma)) {
+            retorno = true;
+        }
+
+        return retorno;
+    }
+
     public String getCabecalho() {
         if (this.tipo == 1) {
             cabecalho = CABECALHO_INCLUSAO;
@@ -167,5 +204,13 @@ public class EmpresaController implements Serializable {
 
     public void setListaEstados(ArrayList<String> listaEstados) {
         this.listaEstados = listaEstados;
+    }
+
+    public List<GrupoBean> getListaGruposProgramas() {
+        return listaGruposProgramas;
+    }
+
+    public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
+        this.listaGruposProgramas = listaGruposProgramas;
     }
 }

@@ -22,4 +22,14 @@ public final class VerificadorUtil {
         return retorno;
     }
 
+    public static Boolean verificarSeObjetoNuloOuZero(Object object) {
+        Boolean retorno = true;
+
+        if(object != null && !object.equals(0)){
+            retorno = false;
+        }
+
+        return retorno;
+    }
+
 }

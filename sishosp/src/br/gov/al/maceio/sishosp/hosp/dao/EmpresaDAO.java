@@ -4,8 +4,11 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ParametroBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 import javax.faces.context.FacesContext;
 import java.sql.*;
@@ -80,8 +83,9 @@ public class EmpresaDAO {
             }
 
             sql = "INSERT INTO hosp.parametro(motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, " +
-                    "qtd_simultanea_atendimento_equipe, cod_empresa, horario_inicial, horario_final, intervalo, tipo_atendimento_terapia) " +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "qtd_simultanea_atendimento_equipe, cod_empresa, horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, " +
+                    "programa_ortese_protese, grupo_ortese_protese) " +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             ps = con.prepareStatement(sql);
 
@@ -136,6 +140,18 @@ public class EmpresaDAO {
             }
             else{
                 ps.setNull(9, Types.NULL);
+            }
+            if(empresa.getParametro().getProgramaOrteseIhProtese().getIdPrograma() != null) {
+                ps.setInt(10, empresa.getParametro().getProgramaOrteseIhProtese().getIdPrograma());
+            }
+            else{
+                ps.setNull(10, Types.NULL);
+            }
+            if(empresa.getParametro().getGrupoOrteseIhProtese().getIdGrupo() != null) {
+                ps.setInt(11, empresa.getParametro().getGrupoOrteseIhProtese().getIdGrupo());
+            }
+            else{
+                ps.setNull(11, Types.NULL);
             }
 
             ps.execute();
@@ -241,7 +257,8 @@ public class EmpresaDAO {
 
             sql = "UPDATE hosp.parametro SET motivo_padrao_desligamento_opm = ?, opcao_atendimento = ?, " +
                     "qtd_simultanea_atendimento_profissional = ?, qtd_simultanea_atendimento_equipe = ?, " +
-                    "horario_inicial = ?, horario_final = ?, intervalo = ?, tipo_atendimento_terapia = ? " +
+                    "horario_inicial = ?, horario_final = ?, intervalo = ?, tipo_atendimento_terapia = ?, " +
+                    "programa_ortese_protese = ?, grupo_ortese_protese = ? " +
                     "WHERE cod_empresa = ?";
 
             ps = con.prepareStatement(sql);
@@ -254,7 +271,9 @@ public class EmpresaDAO {
             ps.setTime(6, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioFinal()));
             ps.setInt(7, empresa.getParametro().getIntervalo());
             ps.setInt(8, empresa.getParametro().getTipoAtendimento().getIdTipo());
-            ps.setInt(9, empresa.getCodEmpresa());
+            ps.setInt(9, empresa.getParametro().getProgramaOrteseIhProtese().getIdPrograma());
+            ps.setInt(10, empresa.getParametro().getGrupoOrteseIhProtese().getIdGrupo());
+            ps.setInt(11, empresa.getCodEmpresa());
             ps.executeUpdate();
 
             con.commit();
@@ -351,12 +370,12 @@ public class EmpresaDAO {
         return empresa;
     }
 
-    public ParametroBean carregarParametro(Integer id, Connection conAuxiliar) {
+    public ParametroBean carregarParametro(Integer id, Connection conAuxiliar) throws ProjetoException {
 
         ParametroBean parametro = new ParametroBean();
 
         String sql = "SELECT id, motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
-                "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia " +
+                "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, programa_ortese_protese, grupo_ortese_protese " +
                 " FROM hosp.parametro where cod_empresa = ?;";
 
         try {
@@ -374,6 +393,18 @@ public class EmpresaDAO {
                 parametro.setHorarioFinal(rs.getTime("horario_final"));
                 parametro.setIntervalo(rs.getInt("intervalo"));
                 parametro.getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
+                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("programa_ortese_protese"))) {
+                    parametro.setProgramaOrteseIhProtese(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("programa_ortese_protese"), conAuxiliar));
+                }
+                else{
+                    parametro.setProgramaOrteseIhProtese(new ProgramaBean());
+                }
+                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("grupo_ortese_protese"))) {
+                    parametro.setGrupoOrteseIhProtese(new GrupoDAO().listarGrupoPorIdComConexao(rs.getInt("grupo_ortese_protese"), conAuxiliar));
+                }
+                else{
+                    parametro.setGrupoOrteseIhProtese(new GrupoBean());
+                }
 
             }
         } catch (SQLException ex) {

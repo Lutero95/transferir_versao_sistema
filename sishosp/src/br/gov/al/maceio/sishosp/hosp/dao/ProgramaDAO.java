@@ -370,6 +370,33 @@ public class ProgramaDAO {
         return programa;
     }
 
+    public ProgramaBean listarProgramaPorIdComConexao(int id, Connection conAuxiliar) {
+
+        ProgramaBean programa = new ProgramaBean();
+        GrupoDAO gDao = new GrupoDAO();
+        String sql = "select id_programa, descprograma, cod_procedimento from hosp.programa where id_programa = ? order by descprograma";
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                programa = new ProgramaBean();
+                programa.setIdPrograma(rs.getInt("id_programa"));
+                programa.setDescPrograma(rs.getString("descprograma"));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return programa;
+    }
+
     public List<ProgramaBean> listarProgramasEGrupos() throws ProjetoException {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select gp.codprograma, p.descprograma, gp.codgrupo, g.descgrupo, p.cod_procedimento "
