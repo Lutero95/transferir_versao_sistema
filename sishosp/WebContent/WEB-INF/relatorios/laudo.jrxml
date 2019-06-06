@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Laudo" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="24cc471e-33e0-448f-ae71-d324a5b957fb">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Laudo" pageWidth="612" pageHeight="792" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="24cc471e-33e0-448f-ae71-d324a5b957fb">
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -60,7 +60,8 @@ p.id_paciente, f.cns as cns_medico, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep,
 l.codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
 l.codprocedimento_secundario2, prs2.nome AS nomeprocedimento_secundario2, l.codprocedimento_secundario3, prs3.nome AS nomeprocedimento_secundario3,
 l.codprocedimento_secundario4, prs4.nome AS nomeprocedimento_secundario4, l.codprocedimento_secundario5, prs5.nome AS nomeprocedimento_secundario5
-FROM hosp.laudo l
+FROM hosp.paciente_instituicao pi 
+join hosp.laudo l on pi.codlaudo = l.id_laudo
 JOIN hosp.pacientes p ON p.id_paciente = l.codpaciente
 LEFT JOIN hosp.proc prp ON prp.id = l.codprocedimento_primario
 LEFT JOIN hosp.proc prs1 ON prs1.id = l.codprocedimento_secundario1
@@ -78,11 +79,12 @@ LEFT JOIN hosp.cid c1 ON c1.cod = l.cid1
 LEFT JOIN hosp.cid c2 ON c2.cod = l.cid2
 LEFT JOIN hosp.cid c3 ON c3.cod = l.cid3
 LEFT JOIN hosp.raca r ON r.id_raca = p.codraca
-left join hosp.paciente_instituicao pi on pi.codlaudo = l.id_laudo
 WHERE 1=1
 and ((  $P{cod_laudo}  is not null and l.id_laudo= $P{cod_laudo}) or (($P{cod_laudo} =0 ) OR ($P{cod_laudo} is null )))
 and ((   $P{codprograma}   is not null and pi.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+and ((   $P{periodolaudovencer}  is not null and lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0')= $P{periodolaudovencer}  and pi.status='A') or ( ( $P{periodolaudovencer} ='' ) OR ($P{periodolaudovencer} is null) ))
+
 ) t
 )u
 )v
@@ -275,7 +277,7 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
 	<pageHeader>
-		<band height="41">
+		<band height="37">
 			<textField>
 				<reportElement x="4" y="-5" width="591" height="20" uuid="9030f283-33e0-4172-8b16-560f4a584f4f"/>
 				<textElement textAlignment="Center">

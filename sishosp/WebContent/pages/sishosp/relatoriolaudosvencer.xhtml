@@ -98,8 +98,9 @@
                                 <p:commandButton id="btBusGr" immediate="true"
                                                  icon="ui-icon-search"
                                                  disabled="#{AgendaController.agenda.programa.idPrograma == null}"
-                                                 action="#{AgendaController.limparNaBuscaGrupo()}"
-                                                 update=":frm" onclick="PF('dlgConsuGrop').show();"/>
+                                                 actionListener="#{AgendaController.limparNaBuscaGrupo()}"
+                                                 action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
+                                                 update=":frm formConsuGrop" oncomplete="PF('dlgConsuGrop').show();"/>
                             </p:outputPanel>
                         </b:column>
      </b:row>

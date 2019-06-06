@@ -24,7 +24,9 @@ l.codprocedimento_primario codproced, proc.nome nomeprocedimento,
     left join hosp.proc on proc.id = l.codprocedimento_primario
 	 join hosp.empresa on empresa.cod_empresa =  1
     where 1=1
-    ]]>
+    and ((   $P{codprograma}   is not null and pl.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
+and ((   $P{codgrupo}   is not null and pl.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
+and lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0')= $P{periodolaudovencer}  and pl.status='A']]>
 	</queryString>
 	<field name="nomeinstituicao" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeinstituicao"/>
