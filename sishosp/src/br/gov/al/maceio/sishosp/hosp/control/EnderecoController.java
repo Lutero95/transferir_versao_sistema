@@ -229,9 +229,17 @@ public class EnderecoController implements Serializable {
 
     }
 
+    @Deprecated
     public List<EnderecoBean> listarMunicipiosPorEstado()
             throws ProjetoException {
         listaMunicipios = eDao.listaMunicipiosPorEstado(endereco.getUf());
+        return listaMunicipios;
+
+    }
+
+    public List<EnderecoBean> listarMunicipiosPorEstadoGenerico(String estado)
+            throws ProjetoException {
+        listaMunicipios = eDao.listaMunicipiosPorEstado(estado);
         return listaMunicipios;
 
     }

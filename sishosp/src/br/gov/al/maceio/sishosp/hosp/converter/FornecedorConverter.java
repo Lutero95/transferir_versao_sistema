@@ -32,6 +32,6 @@ public class FornecedorConverter implements Converter {
 			Object value) {
 		if (value == null || value.equals(""))
 			return null;
-		return String.valueOf(((FornecedorBean) value).getIdFornecedor());
+		return String.valueOf(((FornecedorBean) value).getId());
 	}
 }

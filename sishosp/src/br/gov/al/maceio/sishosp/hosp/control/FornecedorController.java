@@ -1,16 +1,16 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.FornecedorDAO;
@@ -20,140 +20,114 @@ import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 @ViewScoped
 public class FornecedorController implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	private Integer abaAtiva = 0;
 	private FornecedorBean fornecedor;
+	private int tipo;
 	private String cabecalho;
+	private List<FornecedorBean> listaFornecedores;
+	private FornecedorDAO fDao = new FornecedorDAO();
 
-	// BUSCAS
-	private String tipo;
-	private Integer tipoBuscaFornecedor;
-	private String campoBuscaFornecedor;
-	private String statusFornecedor;
-	private List<FornecedorBean> listaFornecedor;
+	//CONSTANTES
+	private static final String ENDERECO_CADASTRO = "cadastroFornecedor?faces-redirect=true";
+	private static final String ENDERECO_TIPO = "&amp;tipo=";
+	private static final String ENDERECO_ID = "&amp;id=";
+	private static final String CABECALHO_INCLUSAO = "Inclusão de Fornecedor";
+	private static final String CABECALHO_ALTERACAO = "Alteração de Fornecedor";
 
 	public FornecedorController() {
-
 		fornecedor = new FornecedorBean();
-
-		// BUSCA
-		tipo = "";
-		tipoBuscaFornecedor = 1;
-		campoBuscaFornecedor = "";
-		statusFornecedor = "P";
-
-		listaFornecedor = new ArrayList<>();
-		listaFornecedor = null;
-	}
-
-	public void gravarFornecedor() throws ProjetoException, SQLException {
-		FornecedorDAO udao = new FornecedorDAO();
-		boolean cadastrou = udao.gravarFornecedor(fornecedor);
-
-		if (cadastrou == true) {
-			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Fornecedor cadastrado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			listaFornecedor = null;
-
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-		}
-
-	}
-
-	public String alterarFornecedor() throws ProjetoException {
-
-		FornecedorDAO rdao = new FornecedorDAO();
-		boolean alterou = rdao.alterarFornecedor(fornecedor);
-
-		if (alterou == true) {
-			limparDados();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Fornecedor alterado com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "/pages/sishosp/gerenciarFornecedor.faces?faces-redirect=true";
-			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante o cadastro!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
-			// RequestContext.getCurrentInstance().execute("dlgAltMenu.hide();");
-		}
-
-	}
-
-	public void excluirFornecedor() throws ProjetoException {
-		FornecedorDAO udao = new FornecedorDAO();
-
-		boolean excluio = udao.excluirFornecedor(fornecedor);
-
-		if (excluio == true) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Fornecedor excluído com sucesso!", "Sucesso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			listaFornecedor = null;
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um erro durante a exclusao!", "Erro");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			RequestContext.getCurrentInstance().execute(
-					"PF('dialogAtencao').hide();");
-		}
-	}
-
-	public void buscarFornecedores() throws ProjetoException {
-
-		List<FornecedorBean> listaAux = null;
-		listaFornecedor = new ArrayList<>();
-
-		FornecedorDAO adao = new FornecedorDAO();
-
-		listaAux = adao.listarFornecedorBusca(campoBuscaFornecedor,
-				tipoBuscaFornecedor);
-
-		if (listaAux != null && listaAux.size() > 0) {
-			// listaAss = null;
-			listaFornecedor = listaAux;
-		} else {
-			// listaAss = null;
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-					"Nenhum Fornecedor encontrada.", "Aviso");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-	}
-
-	public void limparBuscaDados() {
-		tipoBuscaFornecedor = 1;
-		campoBuscaFornecedor = "";
-		statusFornecedor = "P";
-		listaFornecedor = null;
+		cabecalho = "";
+		listaFornecedores = new ArrayList<>();
 	}
 
 	public void limparDados() {
-		fornecedor = new FornecedorBean();
+		this.fornecedor = new FornecedorBean();
+	}
+
+	public String redirectEdit() {
+		return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.fornecedor.getId(), ENDERECO_TIPO, tipo);
+	}
+
+	public String redirectInsert() {
+		return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
+	}
+
+	public void getEditFornecedor() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo = Integer.parseInt(params.get("tipo"));
+
+			this.fornecedor = fDao.listarFornecedorPorId(id);
+		} else {
+
+			tipo = Integer.parseInt(params.get("tipo"));
+		}
 
 	}
 
-	public Integer getAbaAtiva() {
-		return abaAtiva;
+	public void gravarFornecedor() {
+
+		boolean cadastrou = fDao.gravarFornecedor(fornecedor);
+
+		if (cadastrou == true) {
+			limparDados();
+			JSFUtil.adicionarMensagemSucesso("Fornecedor cadastrado com sucesso!", "Sucesso");
+		} else {
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+		}
 	}
 
-	public void setAbaAtiva(Integer abaAtiva) {
-		this.abaAtiva = abaAtiva;
+	public void alterarFornecedor() {
+		boolean alterou = fDao.alterarFornecedor(fornecedor);
+
+		if (alterou == true) {
+			JSFUtil.adicionarMensagemSucesso("Fornecedor alterado com sucesso!", "Sucesso");
+		} else {
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+		}
+	}
+
+	public void excluirFornecedor() throws ProjetoException {
+		boolean excluiu = fDao.excluirFornecedor(fornecedor.getId());
+
+		if (excluiu == true) {
+			JSFUtil.adicionarMensagemSucesso("Fornecedor excluído com sucesso!", "Sucesso");
+			JSFUtil.fecharDialog("dialogExclusao");
+			listarFornecedores();
+		} else {
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
+			JSFUtil.fecharDialog("dialogExclusao");
+		}
+	}
+
+	public List<FornecedorBean> listaFornecedorAutoComplete(String query)
+			throws ProjetoException {
+		List<FornecedorBean> result = fDao.listarFornecedorBusca(query);
+		return result;
+	}
+
+	public void listarFornecedores() throws ProjetoException {
+		listaFornecedores = fDao.listarFornecedores();
+	}
+
+	public String getCabecalho() {
+		if (this.tipo == 1) {
+			cabecalho = CABECALHO_INCLUSAO;
+		} else if (this.tipo == 2) {
+			cabecalho = CABECALHO_ALTERACAO;
+		}
+		return cabecalho;
+	}
+
+	public void setCabecalho(String cabecalho) {
+		this.cabecalho = cabecalho;
+	}
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
 	}
 
 	public FornecedorBean getFornecedor() {
@@ -164,69 +138,20 @@ public class FornecedorController implements Serializable {
 		this.fornecedor = fornecedor;
 	}
 
-	public String getTipo() {
+	public int getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(int tipo) {
 		this.tipo = tipo;
 	}
 
-	public Integer getTipoBuscaFornecedor() {
-		return tipoBuscaFornecedor;
+	public List<FornecedorBean> getListaFornecedores() {
+		return listaFornecedores;
 	}
 
-	public void setTipoBuscaFornecedor(Integer tipoBuscaFornecedor) {
-		this.tipoBuscaFornecedor = tipoBuscaFornecedor;
+	public void setListaFornecedores(List<FornecedorBean> listaFornecedores) {
+		this.listaFornecedores = listaFornecedores;
 	}
 
-	public String getCampoBuscaFornecedor() {
-		return campoBuscaFornecedor;
-	}
-
-	public void setCampoBuscaFornecedor(String campoBuscaFornecedor) {
-		this.campoBuscaFornecedor = campoBuscaFornecedor;
-	}
-
-	public String getStatusFornecedor() {
-		return statusFornecedor;
-	}
-
-	public void setStatusFornecedor(String statusFornecedor) {
-		this.statusFornecedor = statusFornecedor;
-	}
-
-	public List<FornecedorBean> getListaFornecedor() throws ProjetoException {
-		if (listaFornecedor == null) {
-
-			FornecedorDAO fdao = new FornecedorDAO();
-			listaFornecedor = fdao.listarFornecedores();
-
-		}
-		return listaFornecedor;
-	}
-
-	public void setListaFornecedor(List<FornecedorBean> listaFornecedor) {
-		this.listaFornecedor = listaFornecedor;
-	}
-
-	public String getCabecalho() {
-		if (this.tipo.equals("I")) {
-			cabecalho = "CADASTRO DE FORNECEDOR";
-		} else if (this.tipo.equals("A")) {
-			cabecalho = "ALTERAR FORNECEDOR";
-		}
-		return cabecalho;
-	}
-
-	public void setCabecalho(String cabecalho) {
-		this.cabecalho = cabecalho;
-	}
-
-	public List<FornecedorBean> listaFornecedorAutoComplete(String query)
-			throws ProjetoException {
-		FornecedorDAO cDao = new FornecedorDAO();
-		List<FornecedorBean> result = cDao.listarFornecedoresBusca(query, 1);
-		return result;
-	}
 }

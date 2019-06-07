@@ -16,211 +16,229 @@ import javax.faces.context.FacesContext;
 
 public class FornecedorDAO {
 
-	Connection con = null;
-	PreparedStatement ps = null;
+    Connection con = null;
+    PreparedStatement ps = null;
 
-	FuncionarioBean user_session = (FuncionarioBean) FacesContext
-			.getCurrentInstance().getExternalContext().getSessionMap()
-			.get("obj_usuario");
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext
+            .getCurrentInstance().getExternalContext().getSessionMap()
+            .get("obj_usuario");
 
-	public boolean gravarFornecedor(FornecedorBean fornecedor)
-			throws SQLException, ProjetoException {
+    public Boolean gravarFornecedor(FornecedorBean fornecedor) {
 
-		String sql = "insert into hosp.fornecedor (descfornecedor, cod_empresa) values (?, ?);";
-		try {
+        Boolean retorno = false;
 
-			con = ConnectionFactory.getConnection();
-			ps = con.prepareStatement(sql);
-			ps.setString(1, fornecedor.getDescFornecedor().toUpperCase());
-			ps.setInt(2, user_session.getEmpresa().getCodEmpresa());
+        String sql = "INSERT INTO hosp.fornecedor (descfornecedor, cnpj, endereco, bairro, cep, cod_municipio, estado, " +
+                "telefone1, telefone2, ie, cod_empresa, valor) " +
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        try {
 
-			ps.execute();
-			con.commit();
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, fornecedor.getDescricao().toUpperCase());
+            ps.setString(2, fornecedor.getCnpj().toUpperCase());
+            ps.setString(3, fornecedor.getEndereco().getLogradouro().toUpperCase());
+            ps.setString(4, fornecedor.getEndereco().getBairro().toUpperCase());
+            ps.setString(5, fornecedor.getEndereco().getCep().toUpperCase());
+            ps.setInt(6, fornecedor.getEndereco().getCodmunicipio());
+            ps.setString(7, fornecedor.getEndereco().getUf().toUpperCase());
+            ps.setString(8, fornecedor.getTelefone1().toUpperCase());
+            ps.setString(9, fornecedor.getTelefone2().toUpperCase());
+            ps.setString(10, fornecedor.getIe().toUpperCase());
+            ps.setInt(11, user_session.getEmpresa().getCodEmpresa());
+            ps.setDouble(12, fornecedor.getValor());
 
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-	}
+            ps.execute();
+            con.commit();
 
-	public List<FornecedorBean> listarFornecedores() throws ProjetoException {
-		List<FornecedorBean> lista = new ArrayList<>();
-		String sql = "select id_fornecedor, descfornecedor from hosp.fornecedor where cod_empresa = ? order by descfornecedor";
-		try {
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
-			ResultSet rs = stm.executeQuery();
+    public List<FornecedorBean> listarFornecedores() throws ProjetoException {
+        List<FornecedorBean> lista = new ArrayList<>();
+        String sql = "SELECT id_fornecedor, descfornecedor, cnpj, endereco, valor, bairro, cep, cod_municipio, estado, " +
+                "telefone1, telefone2, ie FROM hosp.fornecedor WHERE cod_empresa = ? ORDER BY descfornecedor";
+        try {
 
-			while (rs.next()) {
-				FornecedorBean fornecedor = new FornecedorBean();
-				fornecedor.setIdFornecedor(rs.getInt("id_fornecedor"));
-				fornecedor.setDescFornecedor(rs.getString("descfornecedor"));
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ResultSet rs = stm.executeQuery();
 
-				lista.add(fornecedor);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return lista;
-	}
+            while (rs.next()) {
+                FornecedorBean fornecedor = new FornecedorBean();
+                fornecedor.setId(rs.getInt("id_fornecedor"));
+                fornecedor.setDescricao(rs.getString("descfornecedor"));
+                fornecedor.setCnpj(rs.getString("cnpj"));
+                fornecedor.getEndereco().setLogradouro(rs.getString("endereco"));
+                fornecedor.setValor(rs.getDouble("valor"));
+                fornecedor.getEndereco().setBairro(rs.getString("bairro"));
+                fornecedor.getEndereco().setCep("cep");
+                fornecedor.getEndereco().setCodmunicipio(rs.getInt("cod_municipio"));
+                fornecedor.getEndereco().setUf(rs.getString("estado"));
+                fornecedor.setTelefone1(rs.getString("telefone1"));
+                fornecedor.setTelefone2(rs.getString("telefone2"));
+                fornecedor.setIe(rs.getString("ie"));
+                lista.add(fornecedor);
+            }
 
-	public List<FornecedorBean> listarFornecedorBusca(String descricao,
-			Integer tipo) throws ProjetoException {
-		List<FornecedorBean> lista = new ArrayList<>();
-		String sql = "select id_fornecedor, descfornecedor from hosp.fornecedor ";
-		if (tipo == 1) {
-			sql += " where descfornecedor LIKE ? and cod_empresa = ?  order by id_fornecedor";
-		}
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setString(1, "%" + descricao.toUpperCase() + "%");
-			stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
-			ResultSet rs = stm.executeQuery();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 
-			while (rs.next()) {
-				FornecedorBean fornecedor = new FornecedorBean();
-				fornecedor.setIdFornecedor(rs.getInt("id_fornecedor"));
-				fornecedor.setDescFornecedor(rs.getString("descfornecedor"));
+    public Boolean alterarFornecedor(FornecedorBean fornecedor) {
 
-				lista.add(fornecedor);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
+        Boolean retorno = false;
 
-		return lista;
-	}
+        String sql = "UPDATE hosp.fornecedor SET descfornecedor = ?, cnpj = ?, endereco = ?, bairro = ?, cep = ?, cod_municipio = ?, estado = ?, " +
+                "telefone1 = ?, telefone2 = ?, ie = ?, valor = ? WHERE id_fornecedor = ?";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, fornecedor.getDescricao().toUpperCase());
+            ps.setString(2, fornecedor.getCnpj().toUpperCase());
+            ps.setString(3, fornecedor.getEndereco().getLogradouro().toUpperCase());
+            ps.setString(4, fornecedor.getEndereco().getBairro().toUpperCase());
+            ps.setString(5, fornecedor.getEndereco().getCep().toUpperCase());
+            ps.setInt(6, fornecedor.getEndereco().getCodmunicipio());
+            ps.setString(7, fornecedor.getEndereco().getUf().toUpperCase());
+            ps.setString(8, fornecedor.getTelefone1().toUpperCase());
+            ps.setString(9, fornecedor.getTelefone2().toUpperCase());
+            ps.setString(10, fornecedor.getIe().toUpperCase());
+            ps.setDouble(11, fornecedor.getValor());
+            ps.setInt(12, fornecedor.getId());
+            ps.executeUpdate();
+            con.commit();
+            retorno = true;
 
-	public Boolean alterarFornecedor(FornecedorBean fornecedor)
-			throws ProjetoException {
-		String sql = "update hosp.fornecedor set descfornecedor = ? where id_fornecedor = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, fornecedor.getDescFornecedor().toUpperCase());
-			stmt.setInt(2, fornecedor.getIdFornecedor());
-			stmt.executeUpdate();
-			con.commit();
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-	public Boolean excluirFornecedor(FornecedorBean fornecedor)
-			throws ProjetoException {
-		String sql = "delete from hosp.fornecedor where id_fornecedor = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, fornecedor.getIdFornecedor());
-			stmt.execute();
-			con.commit();
-			return true;
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
+    public Boolean excluirFornecedor(Integer id) {
 
-	public FornecedorBean listarFornecedorPorId(int id) throws ProjetoException {
+        Boolean retorno = false;
 
-		FornecedorBean fornecedor = new FornecedorBean();
-		String sql = "select id_fornecedor, descfornecedor, valor from hosp.fornecedor where id_fornecedor = ?";
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, id);
-			ResultSet rs = stm.executeQuery();
-			while (rs.next()) {
+        String sql = "DELETE FROM hosp.fornecedor WHERE id_fornecedor = ?";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setLong(1, id);
+            stmt.execute();
+            con.commit();
 
-				fornecedor.setIdFornecedor(rs.getInt("id_fornecedor"));
-				fornecedor.setDescFornecedor(rs.getString("descfornecedor"));
-				fornecedor.setValor(rs.getDouble("valor"));
-			}
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
 
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
-		return fornecedor;
-	}
+    public FornecedorBean listarFornecedorPorId(int id) throws ProjetoException {
 
-	public List<FornecedorBean> listarFornecedoresBusca(String descricao,
-			Integer tipo) throws ProjetoException {
-		List<FornecedorBean> lista = new ArrayList<>();
-		String sql = "select id_fornecedor,id_fornecedor ||'-'|| descfornecedor as descfornecedor, valor from hosp.fornecedor ";
-		if (tipo == 1) {
-			sql += " where upper(id_fornecedor ||'-'|| descfornecedor) LIKE ? and cod_empresa = ?";
-		}
-		try {
-			con = ConnectionFactory.getConnection();
-			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setString(1, "%" + descricao.toUpperCase() + "%");
-			stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
-			ResultSet rs = stm.executeQuery();
+        FornecedorBean fornecedor = new FornecedorBean();
+        String sql = "SELECT id_fornecedor, descfornecedor, cnpj, endereco, valor, bairro, cep, cod_municipio, estado, " +
+                "telefone1, telefone2, ie FROM hosp.fornecedor WHERE id_fornecedor = ?";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                fornecedor.setId(rs.getInt("id_fornecedor"));
+                fornecedor.setDescricao(rs.getString("descfornecedor"));
+                fornecedor.setCnpj(rs.getString("cnpj"));
+                fornecedor.getEndereco().setLogradouro(rs.getString("endereco"));
+                fornecedor.setValor(rs.getDouble("valor"));
+                fornecedor.getEndereco().setBairro(rs.getString("bairro"));
+                fornecedor.getEndereco().setCep("cep");
+                fornecedor.getEndereco().setCodmunicipio(rs.getInt("cod_municipio"));
+                fornecedor.getEndereco().setUf(rs.getString("estado"));
+                fornecedor.setTelefone1(rs.getString("telefone1"));
+                fornecedor.setTelefone2(rs.getString("telefone2"));
+                fornecedor.setIe(rs.getString("ie"));
+            }
 
-			while (rs.next()) {
-				FornecedorBean f = new FornecedorBean();
-				f.setIdFornecedor(rs.getInt("id_fornecedor"));
-				f.setDescFornecedor(rs.getString("descfornecedor"));
-				f.setValor(rs.getDouble("valor"));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return fornecedor;
+    }
 
-				lista.add(f);
-			}
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				con.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.exit(1);
-			}
-		}
+    public List<FornecedorBean> listarFornecedorBusca(String descricao)
+            throws ProjetoException {
+        List<FornecedorBean> lista = new ArrayList<>();
+        String sql = "SELECT id_fornecedor, descfornecedor FROM hosp.fornecedor WHERE descfornecedor LIKE ? AND cod_empresa = ? ORDER BY descfornecedor";
 
-		return lista;
-	}
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setString(1, "%" + descricao.toUpperCase() + "%");
+            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                FornecedorBean f = new FornecedorBean();
+                f.setId(rs.getInt("id_fornecedor"));
+                f.setDescricao(rs.getString("descfornecedor"));
+
+                lista.add(f);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return lista;
+    }
 
 }

@@ -4,40 +4,38 @@ import java.io.Serializable;
 
 public class FornecedorBean implements Serializable {
 
-	private Integer idFornecedor;
-	private String descFornecedor;
+	private Integer id;
+	private String descricao;
 	private String cnpj;
-	private String endereco;
-	private String tecnico;
 	private Double valor;
-	private String bairrofornecedor;
-	private String cepfornecedor;
-	private String cidadefornecedor;
-	private String estadofornecedor;
-	private String tel1;
-	private String tel2;
+	private String telefone1;
+	private String telefone2;
+	private String inscricaoEstadual;
 	private String ie;
-	private Integer codempresa;
+
+	//HERDADOS
+	private EnderecoBean endereco;
+	private EmpresaBean empresa;
 
 	public FornecedorBean() {
-		idFornecedor = null;
-		descFornecedor = null;
+		endereco = new EnderecoBean();
+		empresa = new EmpresaBean();
 	}
 
-	public Integer getIdFornecedor() {
-		return idFornecedor;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setIdFornecedor(Integer idFornecedor) {
-		this.idFornecedor = idFornecedor;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public String getDescFornecedor() {
-		return descFornecedor;
+	public String getDescricao() {
+		return descricao;
 	}
 
-	public void setDescFornecedor(String descFornecedor) {
-		this.descFornecedor = descFornecedor;
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 
 	public String getCnpj() {
@@ -48,22 +46,6 @@ public class FornecedorBean implements Serializable {
 		this.cnpj = cnpj;
 	}
 
-	public String getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(String endereco) {
-		this.endereco = endereco;
-	}
-
-	public String getTecnico() {
-		return tecnico;
-	}
-
-	public void setTecnico(String tecnico) {
-		this.tecnico = tecnico;
-	}
-
 	public Double getValor() {
 		return valor;
 	}
@@ -72,52 +54,44 @@ public class FornecedorBean implements Serializable {
 		this.valor = valor;
 	}
 
-	public String getBairrofornecedor() {
-		return bairrofornecedor;
+	public String getTelefone1() {
+		return telefone1;
 	}
 
-	public void setBairrofornecedor(String bairrofornecedor) {
-		this.bairrofornecedor = bairrofornecedor;
+	public void setTelefone1(String telefone1) {
+		this.telefone1 = telefone1;
 	}
 
-	public String getCepfornecedor() {
-		return cepfornecedor;
+	public String getTelefone2() {
+		return telefone2;
 	}
 
-	public void setCepfornecedor(String cepfornecedor) {
-		this.cepfornecedor = cepfornecedor;
+	public void setTelefone2(String telefone2) {
+		this.telefone2 = telefone2;
 	}
 
-	public String getCidadefornecedor() {
-		return cidadefornecedor;
+	public String getInscricaoEstadual() {
+		return inscricaoEstadual;
 	}
 
-	public void setCidadefornecedor(String cidadefornecedor) {
-		this.cidadefornecedor = cidadefornecedor;
+	public void setInscricaoEstadual(String inscricaoEstadual) {
+		this.inscricaoEstadual = inscricaoEstadual;
 	}
 
-	public String getEstadofornecedor() {
-		return estadofornecedor;
+	public EnderecoBean getEndereco() {
+		return endereco;
 	}
 
-	public void setEstadofornecedor(String estadofornecedor) {
-		this.estadofornecedor = estadofornecedor;
+	public void setEndereco(EnderecoBean endereco) {
+		this.endereco = endereco;
 	}
 
-	public String getTel1() {
-		return tel1;
+	public EmpresaBean getEmpresa() {
+		return empresa;
 	}
 
-	public void setTel1(String tel1) {
-		this.tel1 = tel1;
-	}
-
-	public String getTel2() {
-		return tel2;
-	}
-
-	public void setTel2(String tel2) {
-		this.tel2 = tel2;
+	public void setEmpresa(EmpresaBean empresa) {
+		this.empresa = empresa;
 	}
 
 	public String getIe() {
@@ -127,13 +101,4 @@ public class FornecedorBean implements Serializable {
 	public void setIe(String ie) {
 		this.ie = ie;
 	}
-
-	public Integer getCodempresa() {
-		return codempresa;
-	}
-
-	public void setCodempresa(Integer codempresa) {
-		this.codempresa = codempresa;
-	}
-
 }
