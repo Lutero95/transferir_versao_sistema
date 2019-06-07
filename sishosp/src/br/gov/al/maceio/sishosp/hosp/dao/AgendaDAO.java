@@ -477,7 +477,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public List<AgendaBean> consultarAgenda(Date dataAgenda,
-                                            Date dataAgendaFinal, Integer codEmpresa) throws ProjetoException {
+                                            Date dataAgendaFinal, Integer codEmpresa, String situacao) throws ProjetoException {
     	System.out.println("DAO consultarAgenda");
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
@@ -491,6 +491,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + " LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) "
                 + " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) "
                 + " WHERE a.cod_empresa = ? AND a.dtaatende >= ? AND a.dtaatende <= ?";
+        if (situacao!="T")
+        	sql = sql + " and a.presenca=?";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -500,7 +502,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stm.setInt(1, codEmpresa);
             stm.setDate(2, new java.sql.Date(dataAgenda.getTime()));
             stm.setDate(3, new java.sql.Date(dataAgendaFinal.getTime()));
-
+            if (situacao!="T")
+            	stm.setString(4, situacao);
 
             ResultSet rs = stm.executeQuery();
 

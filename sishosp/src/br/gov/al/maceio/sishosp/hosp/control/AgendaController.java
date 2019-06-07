@@ -671,14 +671,14 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
 
-    public void consultarAgenda() throws ProjetoException {
+    public void consultarAgenda(String situacao) throws ProjetoException {
     	System.out.println("consultarAgenda");
         if (this.dataAtendimentoC == null) {
             JSFUtil.adicionarMensagemErro("Selecione uma data de atendimento!", "Erro");
             return;
         }
         this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC,
-                dataAtendimentoFinalC, agenda.getEmpresa().getCodEmpresa());
+                dataAtendimentoFinalC, agenda.getEmpresa().getCodEmpresa(), situacao);
     }
     
     public void resetaParametrosConsultaAgenda() {
