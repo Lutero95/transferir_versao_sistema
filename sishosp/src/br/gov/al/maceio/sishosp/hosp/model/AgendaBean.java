@@ -22,7 +22,8 @@ public class AgendaBean implements Serializable {
     private Integer qtdAtendimentosManha[];
     private Integer qtdAtendimentosTarde[];
     private Boolean encaixe;
-
+    private String presenca;
+    
     // HERDADOS
     private PacienteBean paciente;
     private ProcedimentoBean procedimento;
@@ -241,4 +242,12 @@ public class AgendaBean implements Serializable {
     public void setEncaixe(Boolean encaixe) {
         this.encaixe = encaixe;
     }
+
+	public String getPresenca() {
+		return presenca;
+	}
+
+	public void setPresenca(String presenca) {
+		this.presenca = presenca;
+	}
 }

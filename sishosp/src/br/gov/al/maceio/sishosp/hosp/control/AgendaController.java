@@ -680,6 +680,11 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
         this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC,
                 dataAtendimentoFinalC, agenda.getEmpresa().getCodEmpresa());
     }
+    
+    public void resetaParametrosConsultaAgenda() {
+    	agenda.setPresenca("T");
+    	
+    }
 
     //SEM USO NO MOMENTO
     public void excluirAgendamento() {
@@ -773,7 +778,7 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
         this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
     }
 
-    // LISTAS E AUTOCOMPLETES INÍCIO
+    // LISTAS E AUTOCOMPLETES INICIO
     public List<GrupoBean> listaGrupoAutoComplete(String query)
             throws ProjetoException {
 
