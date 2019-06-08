@@ -101,7 +101,7 @@
 
                             <b:commandButton value="Buscar" icon="glyphicon-search"
                                              class="btn-acao-table acao-buscar"
-                                             action="#{AgendaController.consultarAgenda()}"
+                                             action="#{AgendaController.consultarAgenda(AgendaController.agenda.presenca)}"
                                              update=":formConsAge"
 										></b:commandButton>
 
@@ -116,85 +116,142 @@
                         </b:column>
 
                     </b:row>
+                    
+                     <b:row class="table-border">
+
+                        <div align="center">
+
+                            <b:column span="2" class="new-span2">
+                                <b:commandButton value="Inserir" style="margin-top:5px;"
+                                                 id="btnInserir" immediate="true"
+                                                 class="btn-acao-table acao-confirmar btn-new-padding2"
+                                                 update=":formConsAge"
+                                                 icon="glyphicon-plus"
+                                                 action="/pages/sishosp/insercaoPaciente.xhtml?faces-redirect=true"/>
+                            </b:column>
+
+                            <b:column span="2" class="new-span2">
+                                <b:commandButton value="Alterar" style="margin-top:5px;"
+                                                 disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
+                                                 id="btnAlterar" immediate="true"
+                                                 class="btn-acao-table acao-altera2 btn-new-padding2"
+                                                 update=":formConsAge"
+                                                 icon="glyphicon-pencil"
+                                                 action="#{GerenciarPacienteController.redirectAlteracao()}"/>
+                            </b:column>
+
+                            <b:column span="2" class="new-span2">
+                                <b:commandButton value="Renovar" style="margin-top:5px;"
+                                                 disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
+                                                 id="btnRenovar" immediate="true"
+                                                 class="btn-acao-table acao-limpar btn-new-padding2"
+                                                 update=":formConsAge"
+                                                 icon="glyphicon glyphicon-refresh"
+                                                 action="#{GerenciarPacienteController.redirectRenovacao()}"/>
+                            </b:column>
+
+                            <b:column span="2" class="new-span2">
+                                <b:commandButton value="Transferir" style="margin-top:5px;"
+                                                 disabled="#{GerenciarPacienteController.rowBean.status != 'A'
+												 or GerenciarPacienteController.rowBean.equipe.codEquipe == 0}"
+                                                 id="btnTransferir" immediate="true"
+                                                 class="btn-acao-table acao-transfere btn-new-padding2"
+                                                 update=":formConsAge"
+                                                 icon="glyphicon glyphicon-random"
+                                                 action="#{GerenciarPacienteController.redirectTransferencia()}"/>
+                            </b:column>
+
+                            <b:column span="2" class="new-span2">
+                                <b:commandButton value="Desligar" style="margin-top:5px;"
+                                                 disabled="#{GerenciarPacienteController.rowBean.status != 'A'}"
+                                                 id="btnDesligar" immediate="true"
+                                                 class="btn-acao-table acao-desligar btn-new-padding2"
+                                                 update=":formConsAge"
+                                                 icon="glyphicon glyphicon-remove"
+                                                 action="#{GerenciarPacienteController.inicioDesligar()}"/>
+                            </b:column>
+
+                            <b:column span="2" class="new-span2">
+                                <b:commandButton value="PTS" style="margin-top:5px;"
+                                                 disabled="#{GerenciarPacienteController.rowBean.status != 'A'
+                                                 or GerenciarPacienteController.rowBean.equipe.codEquipe == 0}"
+                                                 id="btnPTS" immediate="true"
+                                                 class="btn-acao-table acao-pts btn-new-padding2"
+                                                 update=":formConsAge"
+                                                 icon="glyphicon glyphicon-file"
+                                                 action="#{GerenciarPacienteController.redirectPTS()}"/>
+                            </b:column>
+
+                        </div>
+
+                    </b:row>  
 					
 					<br />
-					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						resizableColumns="true" id="dtConsultas" responsive="true"
-						emptyMessage="Sem registros." scrollable="true" paginator="true"
-						rows="15" var="agenda" value="#{AgendaController.listaConsulta}">
+					
+                        <p:dataTable emptyMessage="Nenhum Paciente" responsive="true"
+                                     styleClass="table table-hover" id="dtConsultas"
+                                     value="#{AgendaController.listaConsulta}" var="agenda"
+                                     paginator="true" paginatorPosition="bottom" rows="12"
+                                     resizableColumns="true" selectionMode="single"
+                                     selection="#{AgendaController.rowBean}"
+                                     rowKey="#{agenda.idAgenda}">
+					
+				
 
-						<h:column>
-							<f:facet name="header">
-                        Data
-                    </f:facet>
-							<h:outputLabel value="#{agenda.dataAtendimento}">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputLabel>
-						</h:column>
+  <p:ajax event="rowSelect"
+                                    update=":formConsAge:btnRenovar :formConsAge:btnAlterar :formConsAge:btnTransferir :formConsAge:btnDesligar :formConsAge:btnPTS"/>
 
-						<h:column>
-							<f:facet name="header">
-                        Paciente
-                    </f:facet>
-							<p:outputLabel value="#{agenda.paciente.nome}" />
-						</h:column>
+						    <p:column width="20%">
+                                <f:facet name="header">
+                                    <h:outputText style="font-size: 14px;" value="Paciente"/>
+                                </f:facet>
+                                <h:outputText value="#{pacie.paciente.nome}"></h:outputText>
+                            </p:column>
 
-						<h:column>
-							<f:facet name="header">
-                        CNS
-                    </f:facet>
-							<p:outputLabel value="#{agenda.paciente.cns}" />
-						</h:column>
+                            <p:column width="10%">
+                                <f:facet name="header">
+                                    <h:outputText style="font-size: 14px;" value="CNS"/>
+                                </f:facet>
+                                <h:outputText value="#{pacie.paciente.cns}"></h:outputText>
+                            </p:column>
 
-						<h:column>
-							<f:facet name="header">
-                        Tipo de Atendimento
-                    </f:facet>
-							<p:outputLabel value="#{agenda.tipoAt.descTipoAt}" />
-						</h:column>
+                            <p:column width="20%">
+                                <f:facet name="header">
+                                    <h:outputText style="font-size: 14px;" value="Grupo"/>
+                                </f:facet>
+                                <h:outputText value="#{pacie.grupo.descGrupo}"></h:outputText>
+                            </p:column>
 
-						<h:column>
-							<f:facet name="header">
-                        Turno
-                    </f:facet>
-							<h:outputLabel value="MANHÃ" rendered="#{agenda.turno == 'M'}" />
-							<h:outputLabel value="TARDE" rendered="#{agenda.turno == 'T'}" />
-						</h:column>
+                            <p:column width="15%">
+                                <f:facet name="header">
+                                    <h:outputText style="font-size: 14px;" value="Equipe"/>
+                                </f:facet>
+                                <h:outputText value="#{pacie.equipe.descEquipe}"></h:outputText>
+                            </p:column>
 
-						<h:column>
-							<f:facet name="header">
-                        Profissional
-                    </f:facet>
-							<p:outputLabel value="#{agenda.profissional.nome}" />
-						</h:column>
+                            <p:column width="20%">
+                                <f:facet name="header">
+                                    <h:outputText style="font-size: 14px;" value="Profissional"/>
+                                </f:facet>
+                                <h:outputText value="#{pacie.funcionario.nome}"></h:outputText>
+                            </p:column>
 
-						<h:column>
-							<f:facet name="header">
-                        Equipe
-                    </f:facet>
-							<p:outputLabel value="#{agenda.equipe.descEquipe}" />
-						</h:column>
+                            <p:column width="10%">
+                                <f:facet name="header">
+                                    <h:outputText style="font-size: 14px;" value="Situação"/>
+                                </f:facet>
+                                <h:outputText value="Ativo" rendered="#{pacie.status == 'A'}"></h:outputText>
+                                <h:outputText value="Desligado"
+                                              rendered="#{pacie.status == 'D'}"></h:outputText>
+                            </p:column>
 
-					</b:dataTable>
+					</p:dataTable>
 
 
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
 
 					<br></br>
 
-					<div align="center">
-
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-							class="btn-voltar btn-voltar1" size="sm" immediate="true"
-							look="info" update=":formConsAge"
-							actionListener="#{AgendaController.limparDados()}"
-							action="/pages/comum/selecaoSistema2.faces?faces-redirect=true">
-						</b:commandButton>
-
-
-					</div>
+					
 
 				</h:form>
 			</div>

@@ -12,14 +12,13 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
-import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
@@ -31,6 +30,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.GerenciarPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
@@ -52,7 +52,16 @@ public class AgendaController implements Serializable {
     private Date dataAtendimentoFinalC;
     private String cnsC;
     private Integer protuarioC;
-    private TipoAtendimentoBean tipoC;
+    private AgendaBean rowBean;
+    public AgendaBean getRowBean() {
+		return rowBean;
+	}
+
+	public void setRowBean(AgendaBean rowBean) {
+		this.rowBean = rowBean;
+	}
+
+	private TipoAtendimentoBean tipoC;
     private ProgramaBean programaSelecionado;
     private List<AgendaBean> listaNovosAgendamentos;
     private List<AgendaBean> listaAgendamentosData;

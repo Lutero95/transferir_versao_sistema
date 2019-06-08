@@ -491,8 +491,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + " LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) "
                 + " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) "
                 + " WHERE a.cod_empresa = ? AND a.dtaatende >= ? AND a.dtaatende <= ?";
-        if (situacao!="T")
-        	sql = sql + " and a.presenca=?";
+        if (!situacao.equals("T"))
+        	sql = sql + " and coalesce(a.presenca,'N')=?";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -502,7 +502,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stm.setInt(1, codEmpresa);
             stm.setDate(2, new java.sql.Date(dataAgenda.getTime()));
             stm.setDate(3, new java.sql.Date(dataAgendaFinal.getTime()));
-            if (situacao!="T")
+            if (!situacao.equals("T"))
             	stm.setString(4, situacao);
 
             ResultSet rs = stm.executeQuery();
