@@ -39,7 +39,7 @@
 
                             <b:inputText value="#{FornecedorController.fornecedor.valor}"
                                          class="form-control" required="false"
-                                         requiredMessage="Valor 1: Campo obrigatório!">
+                                         requiredMessage="Valor: Campo obrigatório!">
                             </b:inputText>
                         </b:column>
 
@@ -60,7 +60,7 @@
                             <b:label value="Inscrição Estadual" severity="info"/>
 
                             <b:inputText value="#{FornecedorController.fornecedor.ie}"
-                                         class="form-control" required="false" validator="CaractereEmBrancoValidator"
+                                         class="form-control" required="false"
                                          requiredMessage="Inscrição Estadual: Campo obrigatório!">
                             </b:inputText>
                         </b:column>
@@ -71,8 +71,7 @@
                             <b:label value="CEP" severity="info"/>
 
                             <b:inputText value="#{FornecedorController.fornecedor.endereco.cep}"
-                                         validator="CaractereEmBrancoValidator"
-                                         class="form-control" required="true"
+                                         class="form-control" required="false"
                                          requiredMessage="CEP: Campo obrigatório!">
                             </b:inputText>
                         </b:column>
@@ -84,7 +83,7 @@
                             <b:label value="Endereço" severity="info"/>
 
                             <b:inputText value="#{FornecedorController.fornecedor.endereco.logradouro}"
-                                         class="form-control" required="true" validator="CaractereEmBrancoValidator"
+                                         class="form-control" required="false"
                                          requiredMessage="Endereço: Campo obrigatório!"
                                          validatorMessage="Endereço deve conter entre 2 e 100 caracteres.">
                                 <f:validateLength minimum="2" maximum="100"/>
@@ -95,8 +94,7 @@
                             <b:label value="Bairro" severity="info"/>
 
                             <b:inputText value="#{FornecedorController.fornecedor.endereco.bairro}"
-                                         validator="CaractereEmBrancoValidator"
-                                         class="form-control" required="true"
+                                         class="form-control" required="false"
                                          requiredMessage="Bairro: Campo obrigatório!"
                                          validatorMessage="Descrição deve conter entre 2 e 100 caracteres.">
                                 <f:validateLength minimum="2" maximum="100"/>
@@ -114,8 +112,7 @@
                                 <f:selectItem itemLabel="Selecione" itemValue=""/>
                                 <f:selectItems
                                         value="#{EnderecoController.endereco.listaEstados}"/>
-                                <p:ajax
-                                        listener="#{EnderecoController.listarMunicipiosPorEstadoGenerico(FornecedorController.fornecedor.endereco.uf)}"
+                                <p:ajax listener="#{FornecedorController.listarMunicipiosPorEstadoGenerico(FornecedorController.fornecedor.endereco.uf)}"
                                         update="outMunicipios"></p:ajax>
                             </p:selectOneMenu>
                         </b:column>
@@ -130,7 +127,7 @@
                                                  value="#{FornecedorController.fornecedor.endereco.codmunicipio}">
                                     <f:selectItem itemLabel="Selecione" itemValue=""/>
                                     <f:selectItems
-                                            value="#{EnderecoController.listaMunicipios}"
+                                            value="#{FornecedorController.listaMunicipios}"
                                             var="sis" itemLabel="#{sis.municipio}"
                                             itemValue="#{sis.codmunicipio}"/>
                                 </b:selectOneMenu>
@@ -144,8 +141,7 @@
                             <b:label value="Telefone 1" severity="info"/>
 
                             <b:inputText value="#{FornecedorController.fornecedor.telefone1}"
-                                         validator="CaractereEmBrancoValidator"
-                                         class="form-control" required="false"
+                                         class="form-control" required="true"
                                          requiredMessage="Telefone 1: Campo obrigatório!">
                             </b:inputText>
                         </b:column>
@@ -154,7 +150,7 @@
                             <b:label value="Telefone 2" severity="info"/>
 
                             <b:inputText value="#{FornecedorController.fornecedor.telefone2}"
-                                         class="form-control" required="false" validator="CaractereEmBrancoValidator"
+                                         class="form-control" required="false"
                                          requiredMessage="Telefone 2: Campo obrigatório!"
                                          validatorMessage="Bairro deve conter entre 2 e 100 caracteres.">
                                 <f:validateLength minimum="2" maximum="100"/>

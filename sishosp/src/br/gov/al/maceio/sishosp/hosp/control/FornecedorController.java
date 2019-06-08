@@ -13,7 +13,9 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.hosp.dao.EnderecoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FornecedorDAO;
+import br.gov.al.maceio.sishosp.hosp.model.EnderecoBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 
 @ManagedBean(name = "FornecedorController")
@@ -26,6 +28,7 @@ public class FornecedorController implements Serializable {
 	private String cabecalho;
 	private List<FornecedorBean> listaFornecedores;
 	private FornecedorDAO fDao = new FornecedorDAO();
+	private List<EnderecoBean> listaMunicipios;
 
 	//CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroFornecedor?faces-redirect=true";
@@ -38,6 +41,7 @@ public class FornecedorController implements Serializable {
 		fornecedor = new FornecedorBean();
 		cabecalho = "";
 		listaFornecedores = new ArrayList<>();
+		listaMunicipios = new ArrayList<>();
 	}
 
 	public void limparDados() {
@@ -59,13 +63,21 @@ public class FornecedorController implements Serializable {
 		if (params.get("id") != null) {
 			Integer id = Integer.parseInt(params.get("id"));
 			tipo = Integer.parseInt(params.get("tipo"));
-
 			this.fornecedor = fDao.listarFornecedorPorId(id);
+			EnderecoController enderecoController = new EnderecoController();
+			listaMunicipios = enderecoController.listarMunicipiosPorEstadoGenerico(fornecedor.getEndereco().getUf());
 		} else {
 
 			tipo = Integer.parseInt(params.get("tipo"));
 		}
 
+	}
+
+	public List<EnderecoBean> listarMunicipiosPorEstadoGenerico(String estado)
+			throws ProjetoException {
+		EnderecoDAO eDao = new EnderecoDAO();
+		listaMunicipios = eDao.listaMunicipiosPorEstado(estado);
+		return listaMunicipios;
 	}
 
 	public void gravarFornecedor() {
@@ -154,4 +166,11 @@ public class FornecedorController implements Serializable {
 		this.listaFornecedores = listaFornecedores;
 	}
 
+	public List<EnderecoBean> getListaMunicipios() {
+		return listaMunicipios;
+	}
+
+	public void setListaMunicipios(List<EnderecoBean> listaMunicipios) {
+		this.listaMunicipios = listaMunicipios;
+	}
 }

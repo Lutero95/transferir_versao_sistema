@@ -241,7 +241,6 @@ public class EnderecoController implements Serializable {
             throws ProjetoException {
         listaMunicipios = eDao.listaMunicipiosPorEstado(estado);
         return listaMunicipios;
-
     }
 
     public void setListaMunicipios(List<EnderecoBean> listaMunicipios) {
