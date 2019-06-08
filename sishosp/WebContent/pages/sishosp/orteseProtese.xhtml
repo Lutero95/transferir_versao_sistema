@@ -10,17 +10,42 @@
 
         <f:metadata>
             <f:viewAction
-                    action="#{InsercaoController.carregarHorarioOuTurnoInsercao()}" />
+                    action="#{OrteseProteseController.carregarOrteseIhProtese()}"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
-                <h4 class="panel-title">Inserção de Paciente</h4>
+                <h:outputText value="#{OrteseProteseController.cabecalho}"
+                              class="panel-title"></h:outputText>
             </div>
 
             <div class="panel-body table-body sub-table-body">
 
                 <h:form id="formInsercao">
+
+                    <b:row rendered="#{OrteseProteseController.temOrteseIhProteseCadastrado == true}">
+
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Programa" severity="info"/>
+
+                            <p:outputLabel style="margin-left: 15px"
+                                           value="#{OrteseProteseController.orteseProtese.programa.descPrograma}"></p:outputLabel>
+
+                        </b:column>
+
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Grupo" severity="info"/>
+
+                            <p:outputLabel style="margin-left: 15px"
+                                           value="#{OrteseProteseController.orteseProtese.grupo.descGrupo}"></p:outputLabel>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
 
                     <b:row>
 
@@ -94,80 +119,54 @@
 
                     <br></br>
 
+                    <b:row>
+
+                        <p:outputPanel id="outEquipamento">
+
+                            <b:column span="3"
+                                      class="label-position inserPacient">
+                                <b:label id="idEquipamento" value="Equipamento:"
+                                         severity="info"/>
+
+                                <p:autoComplete required="true" class="select-agendaEquipe4"
+                                                requiredMessage="Escolha um equipamento"
+                                                value="#{OrteseProteseController.orteseProtese.equipamento}"
+                                                size="31" converter="conEquipamento"
+                                                completeMethod="#{EquipamentoController.listaEquipamentoAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descEquipamento}">
+                                    <p:ajax event="itemSelect" update=""/>
+
+                                </p:autoComplete>
+                            </b:column>
+
+                        </p:outputPanel>
+                    </b:row>
+
                     <div align="center">
                         <b:messages value="Error" id="msgPagina"></b:messages>
                     </div>
 
                     <br></br>
 
-                </h:form>
 
-                <h:form id="formInsercao2">
-                    <p:outputPanel
-                            rendered="#{InsercaoController.renderizarAposLaudo == true}">
+                    <br></br>
 
-                        <b:row>
+                    <div align="center">
 
-                            <b:column span="2" class="label-position data-size">
+                        <b:commandButton value="Gravar" look="success" size="sm" id="b1"
+                                         icon="glyphicon-ok"
+                                         update="msgPagina"
+                                         class="btn-incluir"
+                                         action="#{InsercaoController.validarInsercaoPaciente()}"/>
 
-                                <b:label value="Data de Inclusão:" id="datasoli"
-                                         severity="info" class="fire-label"/>
+                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         action="/pages/sishosp/gerenciamentoOrteseProtese.xhtml?faces-redirect=true">
+                        </b:commandButton>
 
-                                <p:calendar
-                                        value="#{InsercaoController.insercao.dataSolicitacao}"
-                                        id="dtagen" locale="pt" navigator="true" mask="true"
-                                        required="true" requiredMessage="Data de Inclusão: Campo obrigatório!"
-                                        class="select-agendaEquipe2" showOn="button"
-                                        pattern="dd/MM/yyyy" size="15">
-                                </p:calendar>
-
-                            </b:column>
-
-                        </b:row>
-
-                        <br></br>
-
-                        <b:row>
-                            <p:outputPanel id="outProgGrupo">
-
-                                <b:column span="3"
-                                          class="label-position new-data-size new-comple1">
-                                    <b:label value="Programa" severity="info"/>
-
-                                    <p:outputLabel style="margin-left: 15px"
-                                                   value="#{OrteseProteseController.orteseProtese.programa.descPrograma}"></p:outputLabel>
-
-                                </b:column>
-
-                                <b:column span="3"
-                                          class="label-position new-data-size new-comple1">
-                                    <b:label value="Grupo" severity="info"/>
-
-                                    <p:outputLabel style="margin-left: 15px"
-                                                   value="#{OrteseProteseController.orteseProtese.grupo.descGrupo}"></p:outputLabel>
-
-                                </b:column>
-                            </p:outputPanel>
-
-                        </b:row>
-
-
-                        <br></br>
-
-                        <div align="center">
-
-                            <b:commandButton value="Gravar" look="success" size="sm" id="b1"
-                                             icon="glyphicon-ok" update=":formInsercao:msgPagina, :formInsercao2, :formInsercao"
-                                             class="btn-incluir"
-                                             action="#{InsercaoController.validarInsercaoPaciente()}"/>
-
-                            <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                             size="sm" immediate="true" look="info" class="btn-voltar"
-                                             action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true">
-                            </b:commandButton>
-
-                        </div>
-                    </p:outputPanel>
+                    </div>
                 </h:form>
             </div>
         </div>
@@ -216,7 +215,7 @@
                         <f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton update=":formInsercao, :formInsercao2"
+                        <p:commandButton update=":formInsercao"
                                          icon="ui-icon-check" title="Selecionar"
                                          onclick="PF('dlgConsuLaudo').hide();"
                                          class="new-btn-acao-table acao-editar"

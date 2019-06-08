@@ -15,11 +15,9 @@ public class FornecedorBean implements Serializable {
 
 	//HERDADOS
 	private EnderecoBean endereco;
-	private EmpresaBean empresa;
 
 	public FornecedorBean() {
 		endereco = new EnderecoBean();
-		empresa = new EmpresaBean();
 	}
 
 	public Integer getId() {
@@ -86,14 +84,6 @@ public class FornecedorBean implements Serializable {
 		this.endereco = endereco;
 	}
 
-	public EmpresaBean getEmpresa() {
-		return empresa;
-	}
-
-	public void setEmpresa(EmpresaBean empresa) {
-		this.empresa = empresa;
-	}
-
 	public String getIe() {
 		return ie;
 	}
@@ -101,4 +91,5 @@ public class FornecedorBean implements Serializable {
 	public void setIe(String ie) {
 		this.ie = ie;
 	}
+
 }
