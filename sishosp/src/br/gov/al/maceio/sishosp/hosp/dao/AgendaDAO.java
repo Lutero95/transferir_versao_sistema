@@ -158,6 +158,34 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             return retorno;
         }
     }
+    
+    public boolean mudaStatusPresenca(AgendaBean agenda) {
+  	  System.out.println("DAO excluirAgendamento");
+      Boolean retorno = false;
+      String sql = "update hosp.atendimentos set presenca=? where id_atendimento = ?";
+      try {
+          con = ConnectionFactory.getConnection();
+          PreparedStatement stmt = con.prepareStatement(sql);
+          if (agenda.getPresenca().equals("S"))
+          stmt.setString(1, "N");
+          if (agenda.getPresenca().equals("N"))
+          stmt.setString(1, "S");
+          stmt.setLong(2, agenda.getIdAgenda());
+          stmt.execute();
+          con.commit();
+          retorno = true;
+      } catch (SQLException ex) {
+          ex.printStackTrace();
+          throw new RuntimeException(ex);
+      } finally {
+          try {
+              con.close();
+          } catch (Exception ex) {
+              ex.printStackTrace();
+          }
+          return retorno;
+      }
+  }
 
     public void excluirTabelaAgendamentos1(AgendaBean agenda)
             throws ProjetoException {
@@ -483,9 +511,8 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome, p.cns, a.codmedico, m.descfuncionario, "
                 + " a.dtaatende, a.dtamarcacao, a.codtipoatendimento, t.desctipoatendimento, a.turno, "
-                + " a.codequipe, e.descequipe "
+                + " a.codequipe, e.descequipe, coalesce(a.presenca, 'N') presenca "
                 + " FROM  hosp.atendimentos a "
-                + " LEFT JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento)"
                 + " LEFT JOIN hosp.pacientes p ON (p.id_paciente = a.codpaciente) "
                 + " LEFT JOIN acl.funcionarios m ON (m.id_funcionario = a.codmedico) "
                 + " LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) "
@@ -493,6 +520,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + " WHERE a.cod_empresa = ? AND a.dtaatende >= ? AND a.dtaatende <= ?";
         if (!situacao.equals("T"))
         	sql = sql + " and coalesce(a.presenca,'N')=?";
+        sql = sql + " order by a.dtaatende, p.nome";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -524,7 +552,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 agenda.setTurno(rs.getString("turno"));
                 agenda.getEquipe().setCodEquipe(rs.getInt("codequipe"));
                 agenda.getEquipe().setDescEquipe(rs.getString("descequipe"));
-
+                agenda.setPresenca(rs.getString("presenca"));
                 lista.add(agenda);
             }
         } catch (SQLException ex) {

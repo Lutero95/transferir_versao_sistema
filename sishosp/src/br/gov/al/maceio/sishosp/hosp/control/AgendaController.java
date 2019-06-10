@@ -138,7 +138,7 @@ public class AgendaController implements Serializable {
         this.habilitarDetalhes = false;
         this.situacao = new String();
         agenda.setTurno(Turno.MANHA.getSigla());
-
+        rowBean = new AgendaBean();
         agenda.getEmpresa().setCodEmpresa(SessionUtil.recuperarDadosSessao().getEmpresa().getCodEmpresa());
         this.agenda.setProfissional(null);
         this.agenda.setProfissional(new FuncionarioBean());
@@ -706,6 +706,19 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusÃ£o!", "Erro");
         }
         limparDados();
+    }
+    
+    public void mudaStatusPresenca(AgendaBean agendaSelecionada) throws ProjetoException {
+    	System.out.println("statuspresencaagenda");
+        boolean mudouStatusPresenca = aDao.mudaStatusPresenca(agendaSelecionada);
+        if (mudouStatusPresenca) {
+        	consultarAgenda(agenda.getPresenca());
+        	rowBean =  new AgendaBean();
+            JSFUtil.adicionarMensagemSucesso("Ação concluída com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a ação!", "Erro");
+        }
+        
     }
 
     public void limparNaBuscaPaciente() {

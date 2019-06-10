@@ -1693,6 +1693,13 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 	text-shadow: none;
 }
 
+.acao-cancelar, .acao-cancelar:hover, .acao-cancelar:focus {
+	border-bottom: 1px solid #FF0000 !important;
+	border-color: #FF0000 !important;
+	color: #FF0000 !important;
+	text-shadow: none;
+}
+
 .acao-limpar, .acao-limpar:hover, .acao-limpar:focus {
 	border-bottom: 1px solid #564999 !important;
 	border-color: #564999 !important;
