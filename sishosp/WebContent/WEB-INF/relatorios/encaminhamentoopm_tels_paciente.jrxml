@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="encaminhamentoopm_tels_paciente" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4bd5cebf-178d-4bb2-b149-a14035e6ddcc">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp.xml"/>
+	<parameter name="id_paciente" class="java.lang.Integer"/>
+	<queryString language="SQL">
+		<![CDATA[select ddd, telefone, responsavel, p.descparentesco	 from hosp.telefone_paciente t
+left join hosp.parentesco p on p.id_parentesco = t.id_parentesco
+where id_paciente= $P{id_paciente} ]]>
+	</queryString>
+	<field name="ddd" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="ddd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
+	</field>
+	<field name="telefone" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="telefone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
+	</field>
+	<field name="responsavel" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="responsavel"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
+	</field>
+	<field name="descparentesco" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descparentesco"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="parentesco"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
