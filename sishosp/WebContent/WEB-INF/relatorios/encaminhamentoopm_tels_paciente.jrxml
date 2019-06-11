@@ -2,12 +2,12 @@
 <!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="encaminhamentoopm_tels_paciente" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4bd5cebf-178d-4bb2-b149-a14035e6ddcc">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<parameter name="id_paciente" class="java.lang.Integer"/>
 	<queryString language="SQL">
 		<![CDATA[select ddd, telefone, responsavel, p.descparentesco	 from hosp.telefone_paciente t
 left join hosp.parentesco p on p.id_parentesco = t.id_parentesco
-where id_paciente= $P{id_paciente} ]]>
+where id_paciente= 41]]>
 	</queryString>
 	<field name="ddd" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="ddd"/>
@@ -25,28 +25,24 @@ where id_paciente= $P{id_paciente} ]]>
 		<property name="com.jaspersoft.studio.field.label" value="descparentesco"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="parentesco"/>
 	</field>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
-	<title>
-		<band height="79" splitType="Stretch"/>
-	</title>
-	<pageHeader>
-		<band height="35" splitType="Stretch"/>
-	</pageHeader>
 	<columnHeader>
-		<band height="61" splitType="Stretch"/>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="38271292-e198-4d40-9341-5db4c2793267">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c3369745-5d89-44f9-86c3-065badaf73a3"/>
+				</reportElement>
+				<text><![CDATA[telefone]]></text>
+			</staticText>
+		</band>
 	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch"/>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="140" height="30" uuid="b5eb1c58-8d02-42c3-97c4-8d06105118fb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c3369745-5d89-44f9-86c3-065badaf73a3"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ddd}+" "+$F{telefone}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="54" splitType="Stretch"/>
-	</pageFooter>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>

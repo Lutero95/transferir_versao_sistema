@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -257,7 +257,7 @@ WHERE 1=1]]>
 					<subreportParameterExpression><![CDATA[$F{id_paciente}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA["/encaminhamentoopm_tels_paciente.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "encaminhamentoopm_tels_paciente.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
