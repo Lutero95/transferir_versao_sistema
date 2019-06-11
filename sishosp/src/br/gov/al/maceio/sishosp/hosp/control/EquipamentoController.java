@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class EquipamentoController implements Serializable {
     private EquipamentoBean equipamento;
     private int tipo;
     private String cabecalho;
+    private List<EquipamentoBean> listEquipamentos;
     private EquipamentoDAO eDao = new EquipamentoDAO();
 
     //CONSTANTES
@@ -35,6 +37,7 @@ public class EquipamentoController implements Serializable {
     public EquipamentoController() {
         equipamento = new EquipamentoBean();
         this.cabecalho = "";
+        listEquipamentos = new ArrayList<>();
     }
 
     public String redirectEdit() {
@@ -99,9 +102,9 @@ public class EquipamentoController implements Serializable {
 
     }
 
-    public List<EquipamentoBean> listarEquipamentos()
+    public void listarEquipamentos()
             throws ProjetoException {
-        return eDao.listarEquipamentos();
+        listEquipamentos = eDao.listarEquipamentos();
     }
 
     public List<EquipamentoBean> listaEquipamentoAutoComplete(String query) {
@@ -139,4 +142,11 @@ public class EquipamentoController implements Serializable {
         return cabecalho;
     }
 
+    public List<EquipamentoBean> getListEquipamentos() {
+        return listEquipamentos;
+    }
+
+    public void setListEquipamentos(List<EquipamentoBean> listEquipamentos) {
+        this.listEquipamentos = listEquipamentos;
+    }
 }

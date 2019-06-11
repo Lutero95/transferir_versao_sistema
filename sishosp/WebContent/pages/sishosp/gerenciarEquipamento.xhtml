@@ -8,6 +8,12 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:viewAction
+					action="#{EquipamentoController.listarEquipamentos()}" />
+		</f:metadata>
+
+
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Gerenciamento de Equipamento</h4>
@@ -30,7 +36,7 @@
 				</div>
 
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-					var="tab" responsive="true" value="#{EquipamentoController.listarEquipamentos()}">
+					var="tab" responsive="true" value="#{EquipamentoController.listEquipamentos}">
 
 					<h:column>
 						<f:facet name="header">
