@@ -31,6 +31,7 @@ public class OrteseProteseController implements Serializable {
     public OrteseProteseController() {
         this.orteseProtese = new OrteseProtese();
         temOrteseIhProteseCadastrado = false;
+        tipo = 1;
     }
 
     public String redirectEdit() {
@@ -53,6 +54,16 @@ public class OrteseProteseController implements Serializable {
             JSFUtil.abrirDialog("dlgAviso");
         }
 
+    }
+
+    public void gravarOrteseIhProtese() {
+        boolean cadastrou = oDao.gravarInsercaoOrteseIhProtese(this.orteseProtese);
+
+        if (cadastrou == true) {
+            JSFUtil.adicionarMensagemSucesso("Cadastrado com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro", "Erro");
+        }
     }
 
     public OrteseProtese getOrteseProtese() {

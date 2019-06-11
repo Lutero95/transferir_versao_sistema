@@ -56,9 +56,9 @@
 
                             <p:commandButton size="sm" style="margin-left: 20px;"
                                              class="new-btn-acao-table acao-editar" icon="ui-icon-search"
-                                             update=":formConsuLaudo"
-                                             action="#{InsercaoController.listarLaudosVigentes()}"
-                                             oncomplete="PF('dlgConsuLaudo').show();"/>
+                                             update=":formConsuLaudo" immediate="true"
+                                             onclick="PF('dlgConsuLaudo').show();"
+                                             action="#{InsercaoController.listarLaudosVigentes}"/>
                         </b:column>
 
                     </b:row>
@@ -69,7 +69,7 @@
                             <b:label value="Paciente:" class="fire-label" severity="info"/>
 
                             <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.paciente.nome}"
+                                    value="#{OrteseProteseController.orteseProtese.laudo.paciente.nome}"
                                     class="campo-laudoDig3"/>
                         </b:column>
 
@@ -77,7 +77,7 @@
                             <b:label value="Procedimento:" class="fire-label" severity="info"/>
 
                             <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.procedimentoPrimario.nomeProc}"
+                                    value="#{OrteseProteseController.orteseProtese.laudo.procedimentoPrimario.nomeProc}"
                                     class="campo-laudoDig3"/>
                         </b:column>
 
@@ -89,7 +89,7 @@
                             <b:label value="CID:" class="fire-label" severity="info"/>
 
                             <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.cid1.descCid}"
+                                    value="#{OrteseProteseController.orteseProtese.laudo.cid1.descCid}"
                                     class="campo-laudoDig3"/>
                         </b:column>
 
@@ -98,7 +98,7 @@
                                      severity="info"/>
 
                             <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.vigenciaInicial}"
+                                    value="#{OrteseProteseController.orteseProtese.laudo.vigenciaInicial}"
                                     class="campo-laudoDig3">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
@@ -109,7 +109,7 @@
                                      severity="info"/>
 
                             <h:outputLabel
-                                    value="#{InsercaoController.insercao.laudo.vigenciaFinal}"
+                                    value="#{OrteseProteseController.orteseProtese.laudo.vigenciaFinal}"
                                     class="campo-laudoDig3">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
@@ -124,12 +124,12 @@
                         <p:outputPanel id="outEquipamento">
 
                             <b:column span="3"
-                                      class="label-position inserPacient">
-                                <b:label id="idEquipamento" value="Equipamento:"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label id="idEquipamento" value="Equipamento:" class="fire-label"
                                          severity="info"/>
 
                                 <p:autoComplete required="true" class="select-agendaEquipe4"
-                                                requiredMessage="Escolha um equipamento"
+                                                requiredMessage="Equipamento: Campo obrigatório!"
                                                 value="#{OrteseProteseController.orteseProtese.equipamento}"
                                                 size="31" converter="conEquipamento"
                                                 completeMethod="#{EquipamentoController.listaEquipamentoAutoComplete}"
@@ -139,9 +139,56 @@
                                     <p:ajax event="itemSelect" update=""/>
 
                                 </p:autoComplete>
+
+                                <p:commandButton id="btBusEquip" icon="ui-icon-search"
+                                                 immediate="true" style="margin-left: 5px"
+                                                 action="#{EquipamentoController.listarEquipamentos()}"
+                                                 update=":formConsuEquip" onclick="PF('dlgConsuEquip').show();"/>
                             </b:column>
 
                         </p:outputPanel>
+                    </b:row>
+
+                    <b:row>
+
+                        <p:outputPanel id="outFornecedor">
+
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label id="idFornecedor" value="Fornecedor:" class="fire-label"
+                                         severity="info"/>
+
+                                <p:autoComplete required="false" class="select-agendaEquipe4"
+                                                requiredMessage="Fornecedor: Campo obrigatório!"
+                                                value="#{OrteseProteseController.orteseProtese.fornecedor}"
+                                                size="31" converter="conFornecedor"
+                                                completeMethod="#{FornecedorController.listaFornecedorAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descricao}">
+                                    <p:ajax event="itemSelect" update=""/>
+
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusForn" icon="ui-icon-search"
+                                                 immediate="true" style="margin-left: 5px"
+                                                 action="#{FornecedorController.listarFornecedores()}"
+                                                 update=":formConsuForn" onclick="PF('dlgConsuForn').show();"/>
+                            </b:column>
+
+                        </p:outputPanel>
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Nota Fiscal:" class="fire-label" severity="info"/>
+
+                            <h:inputText
+                                    value="#{OrteseProteseController.orteseProtese.notaFiscal}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
                     </b:row>
 
                     <div align="center">
@@ -159,7 +206,7 @@
                                          icon="glyphicon-ok"
                                          update="msgPagina"
                                          class="btn-incluir"
-                                         action="#{InsercaoController.validarInsercaoPaciente()}"/>
+                                         action="#{OrteseProteseController.gravarOrteseIhProtese()}"/>
 
                         <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" look="info" class="btn-voltar"
@@ -218,10 +265,80 @@
                         <p:commandButton update=":formInsercao"
                                          icon="ui-icon-check" title="Selecionar"
                                          onclick="PF('dlgConsuLaudo').hide();"
-                                         class="new-btn-acao-table acao-editar"
-                                         action="#{InsercaoController.carregarLaudoPaciente()}">
-                            <f:setPropertyActionListener value="#{insercao}"
-                                                         target="#{InsercaoController.insercao}"/>
+                                         class="new-btn-acao-table acao-editar">
+                            <f:setPropertyActionListener value="#{insercao.laudo}"
+                                                         target="#{OrteseProteseController.orteseProtese.laudo}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Equipamentos" widgetVar="dlgConsuEquip"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuEquip">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{EquipamentoController.listEquipamentos}" var="equi"
+                             display="Nenhum Equipamento">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
+                        <p:outputLabel value="#{equi.descEquipamento}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao:outEquipamento"
+                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                title="Selecionar"
+                                onclick="PF('dlgConsuEquip').hide();">
+                            <f:setPropertyActionListener value="#{equi}"
+                                                         target="#{OrteseProteseController.orteseProtese.equipamento}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Fornecedor" widgetVar="dlgConsuForn"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuForn">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{FornecedorController.listaFornecedores}" var="forn"
+                             display="Nenhum Fornecedor">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
+                        <p:outputLabel value="#{forn.descricao}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            CNPJ
+                        </f:facet>
+                        <p:outputLabel value="#{forn.cnpj}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao:outFornecedor"
+                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                title="Selecionar"
+                                onclick="PF('dlgConsuForn').hide();">
+                            <f:setPropertyActionListener value="#{forn}"
+                                                         target="#{OrteseProteseController.orteseProtese.fornecedor}"/>
                         </p:commandButton>
                     </h:column>
 
