@@ -202,16 +202,21 @@
 
                     <div align="center">
 
-                        <b:commandButton value="Gravar" look="success" size="sm" id="b1"
+                        <p:commandButton value="Gravar" look="success" size="sm" id="b1"
                                          icon="glyphicon-ok"
                                          update="msgPagina"
                                          class="btn-incluir"
-                                         action="#{OrteseProteseController.gravarOrteseIhProtese()}"/>
+                                         action="#{OrteseProteseController.gravarOrteseIhProtese()}"
+                                         rendered="#{OrteseProteseController.tipo == 1}"/>
 
-                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                        <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" look="info" class="btn-voltar"
-                                         action="/pages/sishosp/gerenciamentoOrteseProtese.xhtml?faces-redirect=true">
-                        </b:commandButton>
+                                         action="/pages/sishosp/gerenciamentoOrteseProtese.xhtml?faces-redirect=true"/>
+
+                        <p:commandButton action="#{OrteseProteseController.alterarOrteseIhProtese()}"
+                                         icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+                                         update="formInsercao" value="Alterar"
+                                         rendered="#{OrteseProteseController.tipo  == 2}"/>
 
                     </div>
                 </h:form>
