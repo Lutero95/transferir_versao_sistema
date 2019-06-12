@@ -3,15 +3,15 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusMovimentacaoOrteseProtese;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusPadraoOrteseProtese;
 import br.gov.al.maceio.sishosp.hosp.model.OrteseProtese;
 
 import javax.faces.context.FacesContext;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrteseProteseDAO {
 
@@ -20,7 +20,7 @@ public class OrteseProteseDAO {
     FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().get("obj_funcionario");
 
-    public OrteseProtese carregarOrteseIhProtese() {
+    public OrteseProtese carregarGrupoProgramaOrteseIhProtese() {
 
         OrteseProtese orteseProtese = new OrteseProtese();
 
@@ -55,28 +55,133 @@ public class OrteseProteseDAO {
         return orteseProtese;
     }
 
+    public OrteseProtese carregarOrteseIhProtesePorId(Integer id) {
+
+        OrteseProtese orteseProtese = new OrteseProtese();
+
+        String sql = "SELECT o.id, o.nota_fiscal, o.cod_equipamento, t.desctipoaparelho, o.cod_laudo, o.cod_fornecedor, f.descfornecedor, " +
+                "pa.programa_ortese_protese, pr.descprograma, pa.grupo_ortese_protese, g.descgrupo " +
+                "FROM hosp.ortese_protese o " +
+                "LEFT JOIN hosp.tipoaparelho t ON (o.cod_equipamento = t.id) " +
+                "LEFT JOIN hosp.fornecedor f ON (f.id_fornecedor = o.cod_fornecedor) " +
+                "JOIN hosp.parametro pa ON (pa.cod_empresa = o.cod_empresa) " +
+                "JOIN hosp.programa pr ON (pr.id_programa = pa.programa_ortese_protese) " +
+                "JOIN hosp.grupo g ON (g.id_grupo = pa.grupo_ortese_protese) " +
+                "WHERE o.id = ? ";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                orteseProtese.setId(rs.getInt("id"));
+                orteseProtese.getEquipamento().setId_equipamento(rs.getInt("cod_equipamento"));
+                orteseProtese.getEquipamento().setDescEquipamento(rs.getString("desctipoaparelho"));
+                orteseProtese.getLaudo().setId(rs.getInt("cod_laudo"));
+                orteseProtese.getFornecedor().setId(rs.getInt("cod_fornecedor"));
+                orteseProtese.getFornecedor().setDescricao(rs.getString("descfornecedor"));
+                orteseProtese.setNotaFiscal(rs.getString("nota_fiscal"));
+                orteseProtese.getPrograma().setIdPrograma(rs.getInt("programa_ortese_protese"));
+                orteseProtese.getPrograma().setDescPrograma(rs.getString("descprograma"));
+                orteseProtese.getGrupo().setIdGrupo(rs.getInt("grupo_ortese_protese"));
+                orteseProtese.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+            }
+        } catch (SQLException | ProjetoException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return orteseProtese;
+    }
+
+    public List<OrteseProtese> listarOrteseIhProtese() {
+
+        List<OrteseProtese> lista = new ArrayList<>();
+
+        String sql = "SELECT id, status, nota_fiscal, cod_laudo FROM hosp.ortese_protese WHERE cod_empresa = ?;";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                OrteseProtese orteseProtese = new OrteseProtese();
+                orteseProtese.setId(rs.getInt("id"));
+                orteseProtese.setStatusPadrao(rs.getString("status"));
+                orteseProtese.getLaudo().setId(rs.getInt("cod_laudo"));
+                orteseProtese.setNotaFiscal(rs.getString("nota_fiscal"));
+                lista.add(orteseProtese);
+            }
+        } catch (SQLException | ProjetoException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
     public Boolean gravarInsercaoOrteseIhProtese(OrteseProtese orteseProtese) {
 
         Boolean retorno = false;
-        String sql = "INSERT INTO hosp.ortese_protese (status, nota_fiscal, cod_programa, cod_grupo, cod_equipamento, cod_laudo, cod_fornecedor, data_hora_acao, cod_operador) " +
-                "values (?,?,?,?,?,?,?,CURRENT_TIMESTAMP ,?);";
+        String sql = "INSERT INTO hosp.ortese_protese (status, nota_fiscal, cod_programa, cod_grupo, cod_equipamento, cod_laudo, cod_fornecedor, " +
+                "data_hora_acao, cod_operador, cod_empresa) " +
+                "values (?,?,?,?,?,?,?,CURRENT_TIMESTAMP ,?,?) RETURNING id;";
 
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
+
             ps.setString(1, StatusPadraoOrteseProtese.PENDENTE.getSigla());
-            ps.setString(2, orteseProtese.getNotaFiscal().toUpperCase());
+
+            if(!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getNotaFiscal())) {
+                ps.setString(2, orteseProtese.getNotaFiscal().toUpperCase());
+            }
+            else{
+                ps.setNull(2, Types.NULL);
+            }
+
             ps.setInt(3, orteseProtese.getPrograma().getIdPrograma());
+
             ps.setInt(4, orteseProtese.getGrupo().getIdGrupo());
+
             ps.setInt(5, orteseProtese.getEquipamento().getId_equipamento());
+
             ps.setInt(6, orteseProtese.getLaudo().getId());
-            ps.setInt(7, orteseProtese.getFornecedor().getId());
+
+            if(!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getFornecedor())) {
+                ps.setInt(7, orteseProtese.getFornecedor().getId());
+            }
+            else{
+                ps.setNull(7, Types.NULL);
+            }
+
             ps.setInt(8, user_session.getCodigo());
-            ps.execute();
 
-            retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.INSERCAO_DE_SOLICITACAO.getSigla(), con);
+            ps.setInt(9, user_session.getEmpresa().getCodEmpresa());
 
-            if(retorno) {
+            Integer codOrteseIhProtese = null;
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                codOrteseIhProtese = rs.getInt("id");
+            }
+
+            retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.INSERCAO_DE_SOLICITACAO.getSigla(), codOrteseIhProtese, con);
+
+            if (retorno) {
                 con.commit();
             }
 
@@ -93,16 +198,63 @@ public class OrteseProteseDAO {
         }
     }
 
-    public Boolean gravarHistoricoMovimentacaoOrteseIhProtese(String statusMovimentacao, Connection conAuxiliar) {
+    public Boolean alterarOrteseIhProtese(OrteseProtese orteseProtese) {
 
         Boolean retorno = false;
-        String sql = "INSERT INTO hosp.historico_movimentacao_ortese_protese (status, data_hora_acao, cod_operador) " +
-                "values (?,CURRENT_TIMESTAMP,?);";
+        String sql = "UPDATE hosp.ortese_protese set nota_fiscal = ?, cod_equipamento = ?, cod_laudo = ?, cod_fornecedor = ? WHERE id = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            if(!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getNotaFiscal())) {
+                stmt.setString(1, orteseProtese.getNotaFiscal().toUpperCase());
+            }
+            else{
+                stmt.setNull(1, Types.NULL);
+            }
+
+            stmt.setInt(2, orteseProtese.getEquipamento().getId_equipamento());
+
+            stmt.setInt(3, orteseProtese.getLaudo().getId());
+
+            if(!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getFornecedor())) {
+                stmt.setInt(4, orteseProtese.getFornecedor().getId());
+            }
+            else{
+                stmt.setNull(4, Types.NULL);
+            }
+
+            stmt.setInt(5, orteseProtese.getId());
+            stmt.executeUpdate();
+
+            con.commit();
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean gravarHistoricoMovimentacaoOrteseIhProtese(String statusMovimentacao, Integer codOrteseIhProtese, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+        String sql = "INSERT INTO hosp.historico_movimentacao_ortese_protese (status, data_hora_acao, cod_operador, cod_ortese_protese) " +
+                "values (?,CURRENT_TIMESTAMP,?,?);";
 
         try {
             ps = conAuxiliar.prepareStatement(sql);
             ps.setString(1, statusMovimentacao);
             ps.setInt(2, user_session.getCodigo());
+            ps.setInt(3, codOrteseIhProtese);
             ps.execute();
 
             retorno = true;

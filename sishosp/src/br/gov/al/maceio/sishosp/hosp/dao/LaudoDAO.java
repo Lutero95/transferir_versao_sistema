@@ -573,4 +573,56 @@ public class LaudoDAO {
         return laudo;
     }
 
+    public LaudoBean listarLaudosVigentesPorId(Integer id)
+            throws ProjetoException {
+
+        LaudoBean laudoBean = new LaudoBean();
+
+        String sql = "select nome, cns, id_laudo,mes_inicio, ano_inicio, mes_final, ano_final, " +
+                "to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') as datainicio, " +
+                "(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal " +
+                "from ( "
+                + " select l.id_laudo, l.codpaciente, p.nome, p.cns, l.id_recurso, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, l.periodo, "
+                + " l.codprocedimento_primario, pr.nome as procedimento, l.cid1, ci.desccid,  "
+                + " to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') as datainicio,  "
+                + " (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal "
+                + " from hosp.laudo l "
+                + " left join hosp.pacientes p on (l.codpaciente = p.id_paciente) "
+                + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
+                + " left join hosp.cid ci on (l.cid1 = cast(ci.cod as integer)) "
+                + " where 1=1 "
+                //current_date <= (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) "
+                + " AND l.id_laudo = ?  AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo)"
+                + " ) a";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                laudoBean.setId(rs.getInt("id_laudo"));
+                laudoBean.getPaciente().setNome(rs.getString("nome"));
+                laudoBean.getPaciente().setCns(rs.getString("cns"));
+                laudoBean.setVigenciaInicial(rs.getDate("datainicio"));
+                laudoBean.setVigenciaFinal(rs.getDate("datafinal"));
+                laudoBean.setMesFinal(rs.getInt("mes_final"));
+                laudoBean.setAnoFinal(rs.getInt("ano_final"));
+                laudoBean.setMesInicio(rs.getInt("mes_inicio"));
+                laudoBean.setAnoInicio(rs.getInt("ano_inicio"));
+
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return laudoBean;
+    }
+
 }

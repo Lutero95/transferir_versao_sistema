@@ -1,14 +1,23 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.OrteseProteseDAO;
+import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
+import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 import br.gov.al.maceio.sishosp.hosp.model.OrteseProtese;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @ManagedBean(name = "OrteseProteseController")
 @ViewScoped
@@ -20,6 +29,7 @@ public class OrteseProteseController implements Serializable {
     private OrteseProteseDAO oDao = new OrteseProteseDAO();
     private Boolean temOrteseIhProteseCadastrado;
     private String cabecalho;
+    private List<OrteseProtese> listOrteseProtese;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "orteseProtese?faces-redirect=true";
@@ -31,7 +41,7 @@ public class OrteseProteseController implements Serializable {
     public OrteseProteseController() {
         this.orteseProtese = new OrteseProtese();
         temOrteseIhProteseCadastrado = false;
-        tipo = 1;
+        listOrteseProtese = new ArrayList<>();
     }
 
     public String redirectEdit() {
@@ -42,18 +52,38 @@ public class OrteseProteseController implements Serializable {
         return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
     }
 
-    public void carregarOrteseIhProtese(){
+    public void carregarOrteseIhProtese() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
 
-        orteseProtese = oDao.carregarOrteseIhProtese();
-
-        if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(orteseProtese.getGrupo().getDescGrupo())
-                || !VerificadorUtil.verificarSeObjetoNuloOuVazio(orteseProtese.getPrograma().getDescPrograma())){
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            tipo = Integer.parseInt(params.get("tipo"));
+            orteseProtese = oDao.carregarOrteseIhProtesePorId(id);
+            LaudoDAO lDao = new LaudoDAO();
+            orteseProtese.setLaudo(lDao.listarLaudosVigentesPorId(orteseProtese.getLaudo().getId()));
             temOrteseIhProteseCadastrado = true;
-        }
-        else{
-            JSFUtil.abrirDialog("dlgAviso");
+        } else {
+            orteseProtese = oDao.carregarGrupoProgramaOrteseIhProtese();
+            tipo = Integer.parseInt(params.get("tipo"));
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(orteseProtese.getGrupo().getDescGrupo())
+                    || !VerificadorUtil.verificarSeObjetoNuloOuVazio(orteseProtese.getPrograma().getDescPrograma())) {
+                temOrteseIhProteseCadastrado = true;
+            } else {
+                JSFUtil.abrirDialog("dlgAviso");
+            }
         }
 
+
+    }
+
+    public void limparInsercao(){
+        orteseProtese.setEquipamento(new EquipamentoBean());
+        orteseProtese.setFornecedor(new FornecedorBean());
+        orteseProtese.setLaudo(new LaudoBean());
+        orteseProtese.setNotaFiscal(null);
     }
 
     public void gravarOrteseIhProtese() {
@@ -61,9 +91,27 @@ public class OrteseProteseController implements Serializable {
 
         if (cadastrou == true) {
             JSFUtil.adicionarMensagemSucesso("Cadastrado com sucesso!", "Sucesso");
+            limparInsercao();
+            JSFUtil.atualizarComponente("formInsercao");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro", "Erro");
         }
+    }
+
+    public void alterarOrteseIhProtese() {
+        boolean alterou = oDao.alterarOrteseIhProtese(orteseProtese);
+
+        if (alterou == true) {
+            JSFUtil.adicionarMensagemSucesso("Alterado com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração", "Erro");
+        }
+
+        listarOrteseIhProtese();
+    }
+
+    public void listarOrteseIhProtese(){
+        listOrteseProtese = oDao.listarOrteseIhProtese();
     }
 
     public OrteseProtese getOrteseProtese() {
@@ -102,4 +150,13 @@ public class OrteseProteseController implements Serializable {
     public void setTipo(int tipo) {
         this.tipo = tipo;
     }
+
+    public List<OrteseProtese> getListOrteseProtese() {
+        return listOrteseProtese;
+    }
+
+    public void setListOrteseProtese(List<OrteseProtese> listOrteseProtese) {
+        this.listOrteseProtese = listOrteseProtese;
+    }
+
 }
