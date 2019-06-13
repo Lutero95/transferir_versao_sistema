@@ -1,0 +1,305 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <ui:define name="content">
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h:outputText value="#{PestalozziController.cabecalho}"
+                              class="panel-title"></h:outputText>
+            </div>
+
+            <div class="panel-body table-body sub-table-body">
+
+                <h:form id="formInsercao">
+
+                   <!-- 1 COLUNA -->
+                    <b:row>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Nota Fiscal:" class="fire-label" severity="info"/>
+
+                            <h:inputText
+                                    value="#{OrteseProteseController.orteseProtese.notaFiscal}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <!-- 2 COLUNAS -->
+                    <b:row>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Paciente:" class="fire-label" severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{OrteseProteseController.orteseProtese.laudo.paciente.nome}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Procedimento:" class="fire-label" severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{OrteseProteseController.orteseProtese.laudo.procedimentoPrimario.nomeProc}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <!-- 3 COLUNAS -->
+                    <b:row>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="CID:" class="fire-label" severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{OrteseProteseController.orteseProtese.laudo.cid1.descCid}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Vigência Inicial:" class="fire-label"
+                                     severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{OrteseProteseController.orteseProtese.laudo.vigenciaInicial}"
+                                    class="campo-laudoDig3">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </b:column>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Vigência Final" class="fire-label"
+                                     severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{OrteseProteseController.orteseProtese.laudo.vigenciaFinal}"
+                                    class="campo-laudoDig3">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <!-- 4 COLUNAS -->
+
+                    <b:row>
+
+                        <b:column span="3" class="label-position">
+                            <b:label for="serie" value="CTPS Série" severity="info" />
+
+                            <b:inputText value="#{PacienteController.paciente.serie}"
+                                         class="form-control" id="serie">
+                            </b:inputText>
+                        </b:column>
+
+                        <b:column span="2" class="label-position">
+                            <b:label for="pis" value="PIS" severity="info" />
+
+                            <b:inputText value="#{PacienteController.paciente.pis}"
+                                         class="form-control" id="pis" required="false">
+                                <p:ajax
+                                        listener="#{PacienteController.validaPIS(PacienteController.paciente.pis)}"
+                                        global="false" event="blur"
+                                        update="" />
+                            </b:inputText>
+                        </b:column>
+
+                        <b:column span="2" class="label-position">
+                            <b:label for="numero2" value="Reg. Nasc. Núm" severity="info" />
+
+                            <b:inputText
+                                    value="#{PacienteController.paciente.numeroCartorio}"
+                                    class="form-control" id="numero2">
+                            </b:inputText>
+                        </b:column>
+
+                        <b:column span="3" class="label-position">
+                            <b:label for="cartorio" value="Reg. Nasc. Cartório"
+                                     severity="info" />
+
+                            <b:inputText value="#{PacienteController.paciente.cartorio}"
+                                         class="form-control" id="cartorio">
+                            </b:inputText>
+                        </b:column>
+
+                    </b:row>
+
+
+                    <!-- COMPONENTE DE MENSAGEM, SEMELHANTE AO GROWN -->
+                    <div align="center">
+                        <b:messages value="Error" id="msgPagina"></b:messages>
+                    </div>
+
+                    <br></br>
+
+
+                    <!-- BOTÕES DE SALVAR E VOLTAR(esse sem uso por enquanto) -->
+
+                    <div align="center">
+
+                        <p:commandButton value="Gravar" look="success" size="sm" id="b1"
+                                         icon="glyphicon-ok"
+                                         update="msgPagina"
+                                         class="btn-incluir"
+                                         action="#{OrteseProteseController.gravarOrteseIhProtese()}"
+                                         rendered="#{PestalozziController.tipo == 1}"/>
+
+                        <p:commandButton action="#{OrteseProteseController.alterarOrteseIhProtese()}"
+                                         icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+                                         update="formInsercao" value="Alterar"
+                                         rendered="#{PestalozziController.tipo  == 2}"/>
+
+                        <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"/>
+
+
+
+                    </div>
+                </h:form>
+            </div>
+        </div>
+
+
+        <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
+                  modal="true" id="laudo-id">
+            <h:form id="formConsuLaudo">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{InsercaoController.listaLaudosVigentes}" id="dtLaudo"
+                             var="insercao" display="Nenhum Laudo">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Paciente
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.paciente.nome}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            CNS
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.paciente.cns}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Vigência Inicial
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </p:outputLabel>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Vigência Final
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.vigenciaFinal}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </p:outputLabel>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton update=":formInsercao"
+                                         icon="ui-icon-check" title="Selecionar"
+                                         onclick="PF('dlgConsuLaudo').hide();"
+                                         class="new-btn-acao-table acao-editar">
+                            <f:setPropertyActionListener value="#{insercao.laudo}"
+                                                         target="#{OrteseProteseController.orteseProtese.laudo}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Equipamentos" widgetVar="dlgConsuEquip"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuEquip">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{EquipamentoController.listEquipamentos}" var="equi"
+                             display="Nenhum Equipamento">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
+                        <p:outputLabel value="#{equi.descEquipamento}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao:outEquipamento"
+                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                title="Selecionar"
+                                onclick="PF('dlgConsuEquip').hide();">
+                            <f:setPropertyActionListener value="#{equi}"
+                                                         target="#{OrteseProteseController.orteseProtese.equipamento}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Fornecedor" widgetVar="dlgConsuForn"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuForn">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{FornecedorController.listaFornecedores}" var="forn"
+                             display="Nenhum Fornecedor">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
+                        <p:outputLabel value="#{forn.descricao}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            CNPJ
+                        </f:facet>
+                        <p:outputLabel value="#{forn.cnpj}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao:outFornecedor"
+                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                title="Selecionar"
+                                onclick="PF('dlgConsuForn').hide();">
+                            <f:setPropertyActionListener value="#{forn}"
+                                                         target="#{OrteseProteseController.orteseProtese.fornecedor}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
