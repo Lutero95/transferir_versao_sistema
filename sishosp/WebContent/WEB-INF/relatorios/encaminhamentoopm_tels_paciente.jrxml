@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="encaminhamentoopm_tels_paciente" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4bd5cebf-178d-4bb2-b149-a14035e6ddcc">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="encaminhamentoopm_tels_paciente" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="4bd5cebf-178d-4bb2-b149-a14035e6ddcc">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ehosp"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Ehosp"/>
 	<parameter name="id_paciente" class="java.lang.Integer"/>
 	<queryString language="SQL">
 		<![CDATA[select ddd, telefone, responsavel, p.descparentesco	 from hosp.telefone_paciente t
 left join hosp.parentesco p on p.id_parentesco = t.id_parentesco
-where id_paciente= 41]]>
+where id_paciente=  $P{id_paciente} ]]>
 	</queryString>
 	<field name="ddd" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="ddd"/>
@@ -26,22 +26,46 @@ where id_paciente= 41]]>
 		<property name="com.jaspersoft.studio.field.tree.path" value="parentesco"/>
 	</field>
 	<columnHeader>
-		<band height="61" splitType="Stretch">
+		<band height="13" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="100" height="20" uuid="38271292-e198-4d40-9341-5db4c2793267">
+				<reportElement x="0" y="0" width="100" height="13" uuid="38271292-e198-4d40-9341-5db4c2793267">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c3369745-5d89-44f9-86c3-065badaf73a3"/>
 				</reportElement>
-				<text><![CDATA[telefone]]></text>
+				<text><![CDATA[NÚMERO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="221" y="0" width="100" height="13" uuid="7590f621-00e2-4db0-a00f-37fd922d09a8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="477335dc-a62f-4c85-8650-52c7b1882bcc"/>
+				</reportElement>
+				<text><![CDATA[RESPONSÁVEL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="473" y="0" width="100" height="13" uuid="87aca97f-12e9-4381-9448-47a627183008">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="46340916-6941-4875-a076-1603d68274b9"/>
+				</reportElement>
+				<text><![CDATA[PARENTESCO]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch">
+		<band height="15" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="140" height="30" uuid="b5eb1c58-8d02-42c3-97c4-8d06105118fb">
+				<reportElement x="0" y="0" width="140" height="13" uuid="b5eb1c58-8d02-42c3-97c4-8d06105118fb">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c3369745-5d89-44f9-86c3-065badaf73a3"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{ddd}+" "+$F{telefone}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="221" y="0" width="239" height="13" uuid="4c3d3d5f-a762-4f3f-8645-5a8b4efcc507">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="477335dc-a62f-4c85-8650-52c7b1882bcc"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{responsavel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="473" y="0" width="100" height="13" uuid="5a3efe48-6b2e-49b3-965e-7a2e9fb00868">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="46340916-6941-4875-a076-1603d68274b9"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{descparentesco}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
