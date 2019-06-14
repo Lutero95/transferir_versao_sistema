@@ -55,7 +55,7 @@
                                                  id="btnInserir" immediate="true"
                                                  class="btn-acao-table acao-confirmar btn-new-padding2"
                                                  icon="glyphicon-plus"
-                                                 action="#{OrteseProteseController.redirectInsert}">
+                                                 action="#{OrteseProteseController.redirectInserir}">
                                     <f:setPropertyActionListener value="1"
                                                                  target="#{OrteseProteseController.tipo}"/>
                                 </b:commandButton>
@@ -67,9 +67,19 @@
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null}"
                                                  class="btn-acao-table acao-altera2 btn-new-padding2"
                                                  icon="glyphicon-plus"
-                                                 action="#{OrteseProteseController.redirectEdit}">
+                                                 action="#{OrteseProteseController.redirectAlterar}">
                                     <f:setPropertyActionListener value="2"
                                                                  target="#{OrteseProteseController.tipo}"/>
+                                </b:commandButton>
+                            </b:column>
+
+                            <b:column span="2" class="new-span2">
+                                <b:commandButton value="Encaminhar" style="margin-top:5px;"
+                                                 id="btnEncaminhar" immediate="true"
+                                                 disabled="#{OrteseProteseController.orteseProtese.id == null}"
+                                                 class="btn-acao-table acao-limpar btn-new-padding2"
+                                                 icon="glyphicon-plus"
+                                                 action="#{OrteseProteseController.redirectEncaminhar}">
                                 </b:commandButton>
                             </b:column>
 
@@ -88,7 +98,7 @@
                                      rowKey="#{opm.id}">
 
                             <p:ajax event="rowSelect"
-                                    update="formGerenOrteseEProtese:btnAlterar"/>
+                                    update="formGerenOrteseEProtese:btnAlterar, formGerenOrteseEProtese:btnEncaminhar"/>
 
                             <p:column width="20%">
                                 <f:facet name="header">
