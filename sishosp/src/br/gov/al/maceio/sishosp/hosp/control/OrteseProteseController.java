@@ -159,6 +159,8 @@ public class OrteseProteseController implements Serializable {
 
         if (cancelou == true) {
             JSFUtil.adicionarMensagemSucesso("Cancelado com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgCancelar");
+            JSFUtil.abrirDialog("dlgCancelado");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cancelamento", "Erro");
         }

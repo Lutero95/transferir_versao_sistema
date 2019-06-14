@@ -50,6 +50,16 @@
                                                  update=":formConsuForn" onclick="PF('dlgConsuForn').show();"/>
                             </b:column>
 
+                            <b:column>
+
+                                <p:commandButton value="Cancelar Encaminhamento" look="success" size="sm" id="bcancelar"
+                                                 icon="ui-icon-close" style="float: right"
+                                                 class="btn-nao"
+                                                 rendered="#{OrteseProteseController.renderizarBotaoAlterar == true}"
+                                                 onclick="PF('dlgCancelar').show();"/>
+
+                            </b:column>
+
                         </p:outputPanel>
                     </b:row>
 
@@ -155,6 +165,53 @@
                     </h:column>
 
                 </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Cancelar Encaminhamento" widgetVar="dlgCancelar"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formCancelar">
+
+                <div class="alert alert-warning" role="alert">Deseja cancelar este encaminhamento?</div>
+
+                <div align="center">
+
+                    <p:separator/>
+                    <p:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{OrteseProteseController.cancelarEncaminhamentoOrteseIhProtese}"
+                                     ajax="true"
+                                     class="btn-sim" icon="glyphicon-ok"/>
+
+                    <p:commandButton value="Não"
+                                     oncomplete="PF('dlgCancelar').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"
+                                     class="btn-nao"/>
+
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Encaminhamento cancelado" widgetVar="dlgCancelado"
+                  modal="true" styleClass="topDialog" closable="false">
+            <h:form id="formCancelado">
+
+                <div class="alert alert-warning" role="alert">Encaminhamento cancelado com sucesso!</div>
+
+                <div align="center">
+
+                    <p:separator/>
+
+                    <div align="center">
+                        <b:commandButton value="Voltar"
+                                         action="/pages/sishosp/gerenciamentoOrteseProtese.xhtml?faces-redirect=true"
+                                         look="info" ajax="true"
+                                         icon="glyphicon-remove"
+                                         class="btn-nao"/>
+                    </div>
+
+                </div>
+
             </h:form>
         </p:dialog>
 

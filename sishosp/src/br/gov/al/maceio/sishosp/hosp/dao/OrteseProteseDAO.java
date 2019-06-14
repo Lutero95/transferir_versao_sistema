@@ -356,17 +356,15 @@ public class OrteseProteseDAO {
     public Boolean cancelarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) {
 
         Boolean retorno = false;
-        String sql = "UPDATE hosp.encaminhamento_opm set data_cancelamento = ?, usuario_cancelamento = ? WHERE id = ?";
+        String sql = "UPDATE hosp.encaminhamento_opm set data_cancelamento = CURRENT_TIMESTAMP , usuario_cancelamento = ? WHERE id = ?";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
 
-            ps.setDate(1, DataUtil.converterDateUtilParaDateSql(orteseProtese.getDataCancelamento()));
+            ps.setInt(1, user_session.getCodigo());
 
-            ps.setInt(2, user_session.getCodigo());
-
-            ps.setInt(3, orteseProtese.getIdEncaminhamento());
+            ps.setInt(2, orteseProtese.getIdEncaminhamento());
 
             ps.executeUpdate();
 
