@@ -18,136 +18,356 @@
 
                 <h:form id="formInsercao">
 
-                   <!-- 1 COLUNA -->
-                    <b:row>
-
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Nota Fiscal:" class="fire-label" severity="info"/>
-
-                            <h:inputText
-                                    value="#{OrteseProteseController.orteseProtese.notaFiscal}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
-
-                    </b:row>
-
-                    <br></br>
-
-                    <!-- 2 COLUNAS -->
-                    <b:row>
-
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Paciente:" class="fire-label" severity="info"/>
-
-                            <h:outputLabel
-                                    value="#{OrteseProteseController.orteseProtese.laudo.paciente.nome}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
-
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Procedimento:" class="fire-label" severity="info"/>
-
-                            <h:outputLabel
-                                    value="#{OrteseProteseController.orteseProtese.laudo.procedimentoPrimario.nomeProc}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
-
-                    </b:row>
-
-                    <br></br>
-
-                    <!-- 3 COLUNAS -->
-                    <b:row>
-
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="CID:" class="fire-label" severity="info"/>
-
-                            <h:outputLabel
-                                    value="#{OrteseProteseController.orteseProtese.laudo.cid1.descCid}"
-                                    class="campo-laudoDig3"/>
-                        </b:column>
-
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Vigência Inicial:" class="fire-label"
-                                     severity="info"/>
-
-                            <h:outputLabel
-                                    value="#{OrteseProteseController.orteseProtese.laudo.vigenciaInicial}"
-                                    class="campo-laudoDig3">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
-                        </b:column>
-
-                        <b:column span="2" class="label-position inserPacient">
-                            <b:label value="Vigência Final" class="fire-label"
-                                     severity="info"/>
-
-                            <h:outputLabel
-                                    value="#{OrteseProteseController.orteseProtese.laudo.vigenciaFinal}"
-                                    class="campo-laudoDig3">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
-                        </b:column>
-
-                    </b:row>
-
-                    <br></br>
-
-                    <!-- 4 COLUNAS -->
-
-                    <b:row>
-
-                        <b:column span="3" class="label-position">
-                            <b:label for="serie" value="CTPS Série" severity="info" />
-
-                            <b:inputText value="#{PacienteController.paciente.serie}"
-                                         class="form-control" id="serie">
-                            </b:inputText>
-                        </b:column>
-
-                        <b:column span="2" class="label-position">
-                            <b:label for="pis" value="PIS" severity="info" />
-
-                            <b:inputText value="#{PacienteController.paciente.pis}"
-                                         class="form-control" id="pis" required="false">
-                                <p:ajax
-                                        listener="#{PacienteController.validaPIS(PacienteController.paciente.pis)}"
-                                        global="false" event="blur"
-                                        update="" />
-                            </b:inputText>
-                        </b:column>
-
-                        <b:column span="2" class="label-position">
-                            <b:label for="numero2" value="Reg. Nasc. Núm" severity="info" />
-
-                            <b:inputText
-                                    value="#{PacienteController.paciente.numeroCartorio}"
-                                    class="form-control" id="numero2">
-                            </b:inputText>
-                        </b:column>
-
-                        <b:column span="3" class="label-position">
-                            <b:label for="cartorio" value="Reg. Nasc. Cartório"
-                                     severity="info" />
-
-                            <b:inputText value="#{PacienteController.paciente.cartorio}"
-                                         class="form-control" id="cartorio">
-                            </b:inputText>
-                        </b:column>
-
-                    </b:row>
-
                     <p:fieldset legend="Saúde">
                         <b:row>
                             <b:column span="2" class="label-position inserPacient">
-                                <b:label value="Realiza Atendimento Nesta Instituição?" class="fire-label" severity="info"/>
+                                <b:label value="Realiza Atendimento Nesta Instituição?" class="fire-label"
+                                         severity="info"/>
 
                                 <h:inputText
                                         value="#{PestalozziController.pestalozzi.saudeRealizaAtendimentoNestaInstituicao}"
                                         class="campo-laudoDig3"/>
                             </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Unidade" class="fire-label" severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUnidade}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
                         </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Serviço Atendimento Rede" class="fire-label" severity="info"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="8" class="label-position inserPacient">
+                            <p:outputLabel value="Reabilitação Auditiva "/>
+                            <p:selectBooleanCheckbox
+                                    value="#{PestalozziController.pestalozzi.saudeServicoAtendimentoRedeReabilitacaoAuditiva}"
+                                    label="Basic"/>
+
+                            <p:outputLabel value="Reabilitação Física "/>
+                            <p:selectBooleanCheckbox
+                                    value="#{PestalozziController.pestalozzi.saudeServicoAtendimentoRedeReabilitacaoFisica}"
+                                    label="Basic"/>
+
+                            <p:outputLabel value="Reabilitação Intelectual "/>
+                            <p:selectBooleanCheckbox
+                                    value="#{PestalozziController.pestalozzi.saudeServicoAtendimentoRedeReabilitacaoIntelectual}"
+                                    label="Basic"/>
+
+                            <p:outputLabel value="Reabilitação Visual "/>
+                            <p:selectBooleanCheckbox
+                                    value="#{PestalozziController.pestalozzi.saudeServicoAtendimentoRedeReabilitacaoVisual}"
+                                    label="Basic"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Serviço Ambulatorio" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeServicoAmbulatorio}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Outros Serviços" class="fire-label" severity="info"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="8" class="label-position inserPacient">
+                                <p:outputLabel value="Home Care"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosHomeCare}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Equoterapia"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosEquoterapia}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Grupo Convivencia"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosGrupoConvivencia}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Grupo Terapêutico"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosGrupoTerapeuticoFamiliar}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="8" class="label-position inserPacient">
+                                <p:outputLabel value="Ortese, Proteses e Meios de Locomoção"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosOrteseProtesesMeiosLocomocao}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Oficina Ortopedica"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosOficinaOrtopedica}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Estimulação Precoce"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosEstimulacaoPrecoce}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Hidro Terapia"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosHidroTerapia}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Já faz uso de Órtese, Prótese e/ou meios auxiliares de locomoção?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsoOrteseProtese}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há Quanto Tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsoOrteseProteseQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há Quanto Tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsoOrteseProteseQual}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="usa Algum Equipamento Ortoédico?" class="fire-label" severity="info"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="6" class="label-position inserPacient">
+                                <p:outputLabel value="Ortese, Proteses e Meios de Locomoção"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoOrtese}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="AASI (Aparalho de Amplição Sonora Individua)"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAASI}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Auxilio Óptico (Visual)"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAuxilioOptico}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="6" class="label-position inserPacient">
+                                <p:outputLabel value="Meios Auxiliares de locomoção"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Prótese"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoOculosAdaptado}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Óculos Adaptado"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoOculosAdaptado}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há quanto tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Entidade que concedeu:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Já realizou algum tipo de Reabilitação?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoRealizouReabilitacao}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Onde?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoRealizouReabilitacaoOnde}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há mais alguém na família com deficiência?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Qual o parantesco?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Morbidade/CID" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoMorbidadeCID}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há Quanto Tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoMorbidadeCIDQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Causa da Doença e ou Deficiencia:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoCausaDoencaDeficiencia}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Residência Coberta pelo PSF:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoResidenciaCobertaPSF}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Recebe Visita do Agente de Saúde?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Como faz para ser atendido quando doente?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoFazParaSerAtendidoDoente}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Qual o Posto de Saúde da região que reside?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoPostoSaudeRegiaoReside}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Faz uso de medicação?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoUsoMedicacao}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Qual Medicação?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoUsoMedicacaoQual}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Medicação com qual frequência?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoUsoMedicacaoFrequencia}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+
+
                     </p:fieldset>
+
 
                     <!-- COMPONENTE DE MENSAGEM, SEMELHANTE AO GROWN -->
                     <div align="center">
@@ -175,7 +395,6 @@
 
                         <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" look="info" class="btn-voltar"/>
-
 
 
                     </div>
