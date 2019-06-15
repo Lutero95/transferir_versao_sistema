@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.questionario.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Pestalozzi implements Serializable {
     private Integer id;
@@ -76,25 +77,25 @@ public class Pestalozzi implements Serializable {
     private String beneficioSocialAposentadoriaPossui;
     private String beneficioSocialAposentadoriaTipo;
     private String beneficioSocialAposentadoriaQuantoTempo;
-    private String beneficioSocialAposentadoriaValor;
+    private Double beneficioSocialAposentadoriaValor;
     private String beneficioSocialBeneficioFamilia;
     private String beneficioSocialBeneficioFamiliaTipo;
     private String beneficioSocialBeneficioFamiliaQuantoTempo;
-    private String beneficioSocialBeneficioFamiliaValor;
+    private Double beneficioSocialBeneficioFamiliaValor;
     private String beneficioSocialIncapacidadePossui;
     private String beneficioSocialIncapacidadeTipo;
     private String beneficioSocialIncapacidadeQuantoTempo;
-    private String beneficioSocialIncapacidadeValor;
+    private Double beneficioSocialIncapacidadeValor;
     private String beneficioSocialINSSPossui;
     private String beneficioSocialINSSTipo;
     private String beneficioSocialINSSQuantoTempo;
-    private String beneficioSocialINSSValor;
+    private Double beneficioSocialINSSValor;
     private String beneficioSocialProgramaSociaisPossui;
     private String beneficioSocialProgramaLeitePossui;
     private String beneficioSocialProgramaSopaPossui;
     private String beneficioSocialBolsaFamiliaPossui;
     private String beneficioSocialBolsaFamiliaQuantoTempo;
-    private String beneficioSocialBolsaFamiliaValor;
+    private Double beneficioSocialBolsaFamiliaValor;
     private String beneficioSocialMinhaCasaMinhaVidaPossui;
     private String beneficioSocialCadastroUnico;
     private String beneficioSocialNumeroNisPossui;
@@ -113,22 +114,21 @@ public class Pestalozzi implements Serializable {
     private String rendaFamiliarProfissaoFuncao;
     private String rendaFamiliarAtividadeAntesAgravo;
     private String rendaFamiliarTempoAntesAgravo;
-    private String rendaFamiliarValor;
-    private String rendaFamiliarMantem;
-    private String rendaFamiliarUsuario;
-    private String rendaFamiliarPai;
-    private String rendaFamiliarMae;
-    private String rendaFamiliarIrmao;
-    private String rendaFamiliarAvo;
-    private String rendaFamiliarCuidador;
-    private String rendaFamiliarTio;
-    private String rendaFamiliarEsposo;
-    private String rendaFamiliarVizinho;
-    private String rendaFamiliarFilho;
-    private String rendaFamiliarPadastroMadastra;
-    private String rendaFamiliarGenroNora;
-    private String rendaFamiliarSobrinho;
-    private String rendaFamiliarEntenado;
+    private Double rendaFamiliarValor;
+    private String rendaFamiliarMantemUsuario;
+    private String rendaFamiliarMantemPai;
+    private String rendaFamiliarMantemMae;
+    private String rendaFamiliarMantemIrmao;
+    private String rendaFamiliarMantemAvo;
+    private String rendaFamiliarMantemCuidador;
+    private String rendaFamiliarMantemTio;
+    private String rendaFamiliarMantemEsposo;
+    private String rendaFamiliarMantemVizinho;
+    private String rendaFamiliarMantemFilho;
+    private String rendaFamiliarMantemPadastroMadastra;
+    private String rendaFamiliarMantemGenroNora;
+    private String rendaFamiliarMantemSobrinho;
+    private String rendaFamiliarMantemEntenado;
 
     //HABITACAO
     private String habitacaoSitucaoMoradia;
@@ -142,6 +142,7 @@ public class Pestalozzi implements Serializable {
     private String habitacaoResidenciaAdaptada;
 
     //COMPOSIcÃO FAMILIAR
+    private ArrayList<ComposicaoFamiliar> listaComposicaoFamiliar;
 
     //RELATO DE VIDA
     private String relatoVida;
@@ -150,7 +151,7 @@ public class Pestalozzi implements Serializable {
     private String parecerSocialEncaminhamento;
 
     public Pestalozzi() {
-
+        listaComposicaoFamiliar = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -697,14 +698,6 @@ public class Pestalozzi implements Serializable {
         this.beneficioSocialAposentadoriaQuantoTempo = beneficioSocialAposentadoriaQuantoTempo;
     }
 
-    public String getBeneficioSocialAposentadoriaValor() {
-        return beneficioSocialAposentadoriaValor;
-    }
-
-    public void setBeneficioSocialAposentadoriaValor(String beneficioSocialAposentadoriaValor) {
-        this.beneficioSocialAposentadoriaValor = beneficioSocialAposentadoriaValor;
-    }
-
     public String getBeneficioSocialBeneficioFamilia() {
         return beneficioSocialBeneficioFamilia;
     }
@@ -727,14 +720,6 @@ public class Pestalozzi implements Serializable {
 
     public void setBeneficioSocialBeneficioFamiliaQuantoTempo(String beneficioSocialBeneficioFamiliaQuantoTempo) {
         this.beneficioSocialBeneficioFamiliaQuantoTempo = beneficioSocialBeneficioFamiliaQuantoTempo;
-    }
-
-    public String getBeneficioSocialBeneficioFamiliaValor() {
-        return beneficioSocialBeneficioFamiliaValor;
-    }
-
-    public void setBeneficioSocialBeneficioFamiliaValor(String beneficioSocialBeneficioFamiliaValor) {
-        this.beneficioSocialBeneficioFamiliaValor = beneficioSocialBeneficioFamiliaValor;
     }
 
     public String getBeneficioSocialIncapacidadePossui() {
@@ -761,14 +746,6 @@ public class Pestalozzi implements Serializable {
         this.beneficioSocialIncapacidadeQuantoTempo = beneficioSocialIncapacidadeQuantoTempo;
     }
 
-    public String getBeneficioSocialIncapacidadeValor() {
-        return beneficioSocialIncapacidadeValor;
-    }
-
-    public void setBeneficioSocialIncapacidadeValor(String beneficioSocialIncapacidadeValor) {
-        this.beneficioSocialIncapacidadeValor = beneficioSocialIncapacidadeValor;
-    }
-
     public String getBeneficioSocialINSSPossui() {
         return beneficioSocialINSSPossui;
     }
@@ -791,14 +768,6 @@ public class Pestalozzi implements Serializable {
 
     public void setBeneficioSocialINSSQuantoTempo(String beneficioSocialINSSQuantoTempo) {
         this.beneficioSocialINSSQuantoTempo = beneficioSocialINSSQuantoTempo;
-    }
-
-    public String getBeneficioSocialINSSValor() {
-        return beneficioSocialINSSValor;
-    }
-
-    public void setBeneficioSocialINSSValor(String beneficioSocialINSSValor) {
-        this.beneficioSocialINSSValor = beneficioSocialINSSValor;
     }
 
     public String getBeneficioSocialProgramaSociaisPossui() {
@@ -839,14 +808,6 @@ public class Pestalozzi implements Serializable {
 
     public void setBeneficioSocialBolsaFamiliaQuantoTempo(String beneficioSocialBolsaFamiliaQuantoTempo) {
         this.beneficioSocialBolsaFamiliaQuantoTempo = beneficioSocialBolsaFamiliaQuantoTempo;
-    }
-
-    public String getBeneficioSocialBolsaFamiliaValor() {
-        return beneficioSocialBolsaFamiliaValor;
-    }
-
-    public void setBeneficioSocialBolsaFamiliaValor(String beneficioSocialBolsaFamiliaValor) {
-        this.beneficioSocialBolsaFamiliaValor = beneficioSocialBolsaFamiliaValor;
     }
 
     public String getBeneficioSocialMinhaCasaMinhaVidaPossui() {
@@ -961,132 +922,116 @@ public class Pestalozzi implements Serializable {
         this.rendaFamiliarTempoAntesAgravo = rendaFamiliarTempoAntesAgravo;
     }
 
-    public String getRendaFamiliarValor() {
-        return rendaFamiliarValor;
+    public String getRendaFamiliarMantemUsuario() {
+        return rendaFamiliarMantemUsuario;
     }
 
-    public void setRendaFamiliarValor(String rendaFamiliarValor) {
-        this.rendaFamiliarValor = rendaFamiliarValor;
+    public void setRendaFamiliarMantemUsuario(String rendaFamiliarMantemUsuario) {
+        this.rendaFamiliarMantemUsuario = rendaFamiliarMantemUsuario;
     }
 
-    public String getRendaFamiliarMantem() {
-        return rendaFamiliarMantem;
+    public String getRendaFamiliarMantemPai() {
+        return rendaFamiliarMantemPai;
     }
 
-    public void setRendaFamiliarMantem(String rendaFamiliarMantem) {
-        this.rendaFamiliarMantem = rendaFamiliarMantem;
+    public void setRendaFamiliarMantemPai(String rendaFamiliarMantemPai) {
+        this.rendaFamiliarMantemPai = rendaFamiliarMantemPai;
     }
 
-    public String getRendaFamiliarUsuario() {
-        return rendaFamiliarUsuario;
+    public String getRendaFamiliarMantemMae() {
+        return rendaFamiliarMantemMae;
     }
 
-    public void setRendaFamiliarUsuario(String rendaFamiliarUsuario) {
-        this.rendaFamiliarUsuario = rendaFamiliarUsuario;
+    public void setRendaFamiliarMantemMae(String rendaFamiliarMantemMae) {
+        this.rendaFamiliarMantemMae = rendaFamiliarMantemMae;
     }
 
-    public String getRendaFamiliarPai() {
-        return rendaFamiliarPai;
+    public String getRendaFamiliarMantemIrmao() {
+        return rendaFamiliarMantemIrmao;
     }
 
-    public void setRendaFamiliarPai(String rendaFamiliarPai) {
-        this.rendaFamiliarPai = rendaFamiliarPai;
+    public void setRendaFamiliarMantemIrmao(String rendaFamiliarMantemIrmao) {
+        this.rendaFamiliarMantemIrmao = rendaFamiliarMantemIrmao;
     }
 
-    public String getRendaFamiliarMae() {
-        return rendaFamiliarMae;
+    public String getRendaFamiliarMantemAvo() {
+        return rendaFamiliarMantemAvo;
     }
 
-    public void setRendaFamiliarMae(String rendaFamiliarMae) {
-        this.rendaFamiliarMae = rendaFamiliarMae;
+    public void setRendaFamiliarMantemAvo(String rendaFamiliarMantemAvo) {
+        this.rendaFamiliarMantemAvo = rendaFamiliarMantemAvo;
     }
 
-    public String getRendaFamiliarIrmao() {
-        return rendaFamiliarIrmao;
+    public String getRendaFamiliarMantemCuidador() {
+        return rendaFamiliarMantemCuidador;
     }
 
-    public void setRendaFamiliarIrmao(String rendaFamiliarIrmao) {
-        this.rendaFamiliarIrmao = rendaFamiliarIrmao;
+    public void setRendaFamiliarMantemCuidador(String rendaFamiliarMantemCuidador) {
+        this.rendaFamiliarMantemCuidador = rendaFamiliarMantemCuidador;
     }
 
-    public String getRendaFamiliarAvo() {
-        return rendaFamiliarAvo;
+    public String getRendaFamiliarMantemTio() {
+        return rendaFamiliarMantemTio;
     }
 
-    public void setRendaFamiliarAvo(String rendaFamiliarAvo) {
-        this.rendaFamiliarAvo = rendaFamiliarAvo;
+    public void setRendaFamiliarMantemTio(String rendaFamiliarMantemTio) {
+        this.rendaFamiliarMantemTio = rendaFamiliarMantemTio;
     }
 
-    public String getRendaFamiliarCuidador() {
-        return rendaFamiliarCuidador;
+    public String getRendaFamiliarMantemEsposo() {
+        return rendaFamiliarMantemEsposo;
     }
 
-    public void setRendaFamiliarCuidador(String rendaFamiliarCuidador) {
-        this.rendaFamiliarCuidador = rendaFamiliarCuidador;
+    public void setRendaFamiliarMantemEsposo(String rendaFamiliarMantemEsposo) {
+        this.rendaFamiliarMantemEsposo = rendaFamiliarMantemEsposo;
     }
 
-    public String getRendaFamiliarTio() {
-        return rendaFamiliarTio;
+    public String getRendaFamiliarMantemVizinho() {
+        return rendaFamiliarMantemVizinho;
     }
 
-    public void setRendaFamiliarTio(String rendaFamiliarTio) {
-        this.rendaFamiliarTio = rendaFamiliarTio;
+    public void setRendaFamiliarMantemVizinho(String rendaFamiliarMantemVizinho) {
+        this.rendaFamiliarMantemVizinho = rendaFamiliarMantemVizinho;
     }
 
-    public String getRendaFamiliarEsposo() {
-        return rendaFamiliarEsposo;
+    public String getRendaFamiliarMantemFilho() {
+        return rendaFamiliarMantemFilho;
     }
 
-    public void setRendaFamiliarEsposo(String rendaFamiliarEsposo) {
-        this.rendaFamiliarEsposo = rendaFamiliarEsposo;
+    public void setRendaFamiliarMantemFilho(String rendaFamiliarMantemFilho) {
+        this.rendaFamiliarMantemFilho = rendaFamiliarMantemFilho;
     }
 
-    public String getRendaFamiliarVizinho() {
-        return rendaFamiliarVizinho;
+    public String getRendaFamiliarMantemPadastroMadastra() {
+        return rendaFamiliarMantemPadastroMadastra;
     }
 
-    public void setRendaFamiliarVizinho(String rendaFamiliarVizinho) {
-        this.rendaFamiliarVizinho = rendaFamiliarVizinho;
+    public void setRendaFamiliarMantemPadastroMadastra(String rendaFamiliarMantemPadastroMadastra) {
+        this.rendaFamiliarMantemPadastroMadastra = rendaFamiliarMantemPadastroMadastra;
     }
 
-    public String getRendaFamiliarFilho() {
-        return rendaFamiliarFilho;
+    public String getRendaFamiliarMantemGenroNora() {
+        return rendaFamiliarMantemGenroNora;
     }
 
-    public void setRendaFamiliarFilho(String rendaFamiliarFilho) {
-        this.rendaFamiliarFilho = rendaFamiliarFilho;
+    public void setRendaFamiliarMantemGenroNora(String rendaFamiliarMantemGenroNora) {
+        this.rendaFamiliarMantemGenroNora = rendaFamiliarMantemGenroNora;
     }
 
-    public String getRendaFamiliarPadastroMadastra() {
-        return rendaFamiliarPadastroMadastra;
+    public String getRendaFamiliarMantemSobrinho() {
+        return rendaFamiliarMantemSobrinho;
     }
 
-    public void setRendaFamiliarPadastroMadastra(String rendaFamiliarPadastroMadastra) {
-        this.rendaFamiliarPadastroMadastra = rendaFamiliarPadastroMadastra;
+    public void setRendaFamiliarMantemSobrinho(String rendaFamiliarMantemSobrinho) {
+        this.rendaFamiliarMantemSobrinho = rendaFamiliarMantemSobrinho;
     }
 
-    public String getRendaFamiliarGenroNora() {
-        return rendaFamiliarGenroNora;
+    public String getRendaFamiliarMantemEntenado() {
+        return rendaFamiliarMantemEntenado;
     }
 
-    public void setRendaFamiliarGenroNora(String rendaFamiliarGenroNora) {
-        this.rendaFamiliarGenroNora = rendaFamiliarGenroNora;
-    }
-
-    public String getRendaFamiliarSobrinho() {
-        return rendaFamiliarSobrinho;
-    }
-
-    public void setRendaFamiliarSobrinho(String rendaFamiliarSobrinho) {
-        this.rendaFamiliarSobrinho = rendaFamiliarSobrinho;
-    }
-
-    public String getRendaFamiliarEntenado() {
-        return rendaFamiliarEntenado;
-    }
-
-    public void setRendaFamiliarEntenado(String rendaFamiliarEntenado) {
-        this.rendaFamiliarEntenado = rendaFamiliarEntenado;
+    public void setRendaFamiliarMantemEntenado(String rendaFamiliarMantemEntenado) {
+        this.rendaFamiliarMantemEntenado = rendaFamiliarMantemEntenado;
     }
 
     public String getHabitacaoSitucaoMoradia() {
@@ -1175,5 +1120,61 @@ public class Pestalozzi implements Serializable {
 
     public void setParecerSocialEncaminhamento(String parecerSocialEncaminhamento) {
         this.parecerSocialEncaminhamento = parecerSocialEncaminhamento;
+    }
+
+    public Double getBeneficioSocialAposentadoriaValor() {
+        return beneficioSocialAposentadoriaValor;
+    }
+
+    public void setBeneficioSocialAposentadoriaValor(Double beneficioSocialAposentadoriaValor) {
+        this.beneficioSocialAposentadoriaValor = beneficioSocialAposentadoriaValor;
+    }
+
+    public Double getBeneficioSocialBeneficioFamiliaValor() {
+        return beneficioSocialBeneficioFamiliaValor;
+    }
+
+    public void setBeneficioSocialBeneficioFamiliaValor(Double beneficioSocialBeneficioFamiliaValor) {
+        this.beneficioSocialBeneficioFamiliaValor = beneficioSocialBeneficioFamiliaValor;
+    }
+
+    public Double getBeneficioSocialIncapacidadeValor() {
+        return beneficioSocialIncapacidadeValor;
+    }
+
+    public void setBeneficioSocialIncapacidadeValor(Double beneficioSocialIncapacidadeValor) {
+        this.beneficioSocialIncapacidadeValor = beneficioSocialIncapacidadeValor;
+    }
+
+    public Double getBeneficioSocialINSSValor() {
+        return beneficioSocialINSSValor;
+    }
+
+    public void setBeneficioSocialINSSValor(Double beneficioSocialINSSValor) {
+        this.beneficioSocialINSSValor = beneficioSocialINSSValor;
+    }
+
+    public Double getBeneficioSocialBolsaFamiliaValor() {
+        return beneficioSocialBolsaFamiliaValor;
+    }
+
+    public void setBeneficioSocialBolsaFamiliaValor(Double beneficioSocialBolsaFamiliaValor) {
+        this.beneficioSocialBolsaFamiliaValor = beneficioSocialBolsaFamiliaValor;
+    }
+
+    public Double getRendaFamiliarValor() {
+        return rendaFamiliarValor;
+    }
+
+    public void setRendaFamiliarValor(Double rendaFamiliarValor) {
+        this.rendaFamiliarValor = rendaFamiliarValor;
+    }
+
+    public ArrayList<ComposicaoFamiliar> getListaComposicaoFamiliar() {
+        return listaComposicaoFamiliar;
+    }
+
+    public void setListaComposicaoFamiliar(ArrayList<ComposicaoFamiliar> listaComposicaoFamiliar) {
+        this.listaComposicaoFamiliar = listaComposicaoFamiliar;
     }
 }
