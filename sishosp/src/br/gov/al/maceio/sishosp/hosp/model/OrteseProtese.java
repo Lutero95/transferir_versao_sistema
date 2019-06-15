@@ -1,13 +1,20 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+
 import java.io.Serializable;
+import java.util.Date;
 
 public class OrteseProtese implements Serializable {
 
     private Integer id;
+    private Integer idEncaminhamento;
     private String statusMovimentacao;
     private String statusPadrao;
     private String notaFiscal;
+    private String especificacao;
+    private Date dataEncaminhamento;
+    private Date dataCancelamento;
 
     //HERDADOS
     private ProgramaBean programa;
@@ -22,6 +29,7 @@ public class OrteseProtese implements Serializable {
         equipamento = new EquipamentoBean();
         laudo = new LaudoBean();
         fornecedor = new FornecedorBean();
+        dataEncaminhamento = DataUtil.retornarDataAtual();
     }
 
     public Integer getId() {
@@ -94,5 +102,37 @@ public class OrteseProtese implements Serializable {
 
     public void setStatusPadrao(String statusPadrao) {
         this.statusPadrao = statusPadrao;
+    }
+
+    public String getEspecificacao() {
+        return especificacao;
+    }
+
+    public void setEspecificacao(String especificacao) {
+        this.especificacao = especificacao;
+    }
+
+    public Date getDataEncaminhamento() {
+        return dataEncaminhamento;
+    }
+
+    public void setDataEncaminhamento(Date dataEncaminhamento) {
+        this.dataEncaminhamento = dataEncaminhamento;
+    }
+
+    public Date getDataCancelamento() {
+        return dataCancelamento;
+    }
+
+    public void setDataCancelamento(Date dataCancelamento) {
+        this.dataCancelamento = dataCancelamento;
+    }
+
+    public Integer getIdEncaminhamento() {
+        return idEncaminhamento;
+    }
+
+    public void setIdEncaminhamento(Integer idEncaminhamento) {
+        this.idEncaminhamento = idEncaminhamento;
     }
 }

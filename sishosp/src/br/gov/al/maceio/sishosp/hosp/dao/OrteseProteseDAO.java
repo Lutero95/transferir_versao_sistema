@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusMovimentacaoOrteseProtese;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusPadraoOrteseProtese;
@@ -41,6 +42,42 @@ public class OrteseProteseDAO {
                 orteseProtese.getPrograma().setDescPrograma(rs.getString("descprograma"));
                 orteseProtese.getGrupo().setIdGrupo(rs.getInt("grupo_ortese_protese"));
                 orteseProtese.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+            }
+        } catch (SQLException | ProjetoException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return orteseProtese;
+    }
+
+    public OrteseProtese carregarEncaminhamentoOrteseIhProtese(Integer idOrteseProtese) {
+
+        OrteseProtese orteseProtese = new OrteseProtese();
+
+        String sql = "SELECT o.id, o.cod_fornecedor, f.descfornecedor, o.especificacao, o.data_encaminhamento, o.id_ortese_protese " +
+                "FROM hosp.encaminhamento_opm o " +
+                "LEFT JOIN hosp.fornecedor f ON (f.id_fornecedor = o.cod_fornecedor) " +
+                "WHERE o.id_ortese_protese = ? AND o.data_cancelamento IS NULL;";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, idOrteseProtese);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                orteseProtese.setIdEncaminhamento(rs.getInt("id"));
+                orteseProtese.getFornecedor().setId(rs.getInt("cod_fornecedor"));
+                orteseProtese.getFornecedor().setDescricao(rs.getString("descfornecedor"));
+                orteseProtese.setEspecificacao(rs.getString("especificacao"));
+                orteseProtese.setDataEncaminhamento(rs.getDate("data_encaminhamento"));
+                orteseProtese.setId(rs.getInt("id_ortese_protese"));
             }
         } catch (SQLException | ProjetoException ex) {
             ex.printStackTrace();
@@ -147,10 +184,9 @@ public class OrteseProteseDAO {
 
             ps.setString(1, StatusPadraoOrteseProtese.PENDENTE.getSigla());
 
-            if(!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getNotaFiscal())) {
+            if (!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getNotaFiscal())) {
                 ps.setString(2, orteseProtese.getNotaFiscal().toUpperCase());
-            }
-            else{
+            } else {
                 ps.setNull(2, Types.NULL);
             }
 
@@ -162,10 +198,9 @@ public class OrteseProteseDAO {
 
             ps.setInt(6, orteseProtese.getLaudo().getId());
 
-            if(!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getFornecedor())) {
+            if (!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getFornecedor())) {
                 ps.setInt(7, orteseProtese.getFornecedor().getId());
-            }
-            else{
+            } else {
                 ps.setNull(7, Types.NULL);
             }
 
@@ -207,10 +242,9 @@ public class OrteseProteseDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
 
-            if(!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getNotaFiscal())) {
+            if (!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getNotaFiscal())) {
                 stmt.setString(1, orteseProtese.getNotaFiscal().toUpperCase());
-            }
-            else{
+            } else {
                 stmt.setNull(1, Types.NULL);
             }
 
@@ -218,10 +252,9 @@ public class OrteseProteseDAO {
 
             stmt.setInt(3, orteseProtese.getLaudo().getId());
 
-            if(!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getFornecedor())) {
+            if (!VerificadorUtil.verificarSeObjetoNulo(orteseProtese.getFornecedor())) {
                 stmt.setInt(4, orteseProtese.getFornecedor().getId());
-            }
-            else{
+            } else {
                 stmt.setNull(4, Types.NULL);
             }
 
@@ -244,7 +277,114 @@ public class OrteseProteseDAO {
         }
     }
 
-    public Boolean gravarHistoricoMovimentacaoOrteseIhProtese(String statusMovimentacao, Integer codOrteseIhProtese, Connection conAuxiliar) {
+    public Boolean gravarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) {
+
+        Boolean retorno = false;
+        String sql = "INSERT INTO hosp.encaminhamento_opm (cod_fornecedor, especificacao, data_encaminhamento, usuario_encaminhamento, id_ortese_protese) " +
+                "values (?,?,?,?,?);";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            ps = con.prepareStatement(sql);
+
+            ps.setInt(1, orteseProtese.getFornecedor().getId());
+
+            ps.setString(2, orteseProtese.getEspecificacao().toUpperCase());
+
+            ps.setDate(3, DataUtil.converterDateUtilParaDateSql(orteseProtese.getDataEncaminhamento()));
+
+            ps.setInt(4, user_session.getCodigo());
+
+            ps.setInt(5, orteseProtese.getId());
+
+            ps.execute();
+
+            retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.ENCAMINHAMENTO_FORNECEDOR.getSigla(), orteseProtese.getId(), con);
+
+            if (retorno) {
+                con.commit();
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean alterarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) {
+
+        Boolean retorno = false;
+        String sql = "UPDATE hosp.encaminhamento_opm set cod_fornecedor = ?, especificacao = ?, data_encaminhamento = ? WHERE id = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, orteseProtese.getFornecedor().getId());
+
+            ps.setString(2, orteseProtese.getEspecificacao().toUpperCase());
+
+            ps.setDate(3, DataUtil.converterDateUtilParaDateSql(orteseProtese.getDataEncaminhamento()));
+
+            ps.setInt(4, orteseProtese.getIdEncaminhamento());
+
+            ps.executeUpdate();
+
+            con.commit();
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean cancelarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) {
+
+        Boolean retorno = false;
+        String sql = "UPDATE hosp.encaminhamento_opm set data_cancelamento = CURRENT_TIMESTAMP , usuario_cancelamento = ? WHERE id = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, user_session.getCodigo());
+
+            ps.setInt(2, orteseProtese.getIdEncaminhamento());
+
+            ps.executeUpdate();
+
+            con.commit();
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    private Boolean gravarHistoricoMovimentacaoOrteseIhProtese(String statusMovimentacao, Integer codOrteseIhProtese, Connection conAuxiliar) {
 
         Boolean retorno = false;
         String sql = "INSERT INTO hosp.historico_movimentacao_ortese_protese (status, data_hora_acao, cod_operador, cod_ortese_protese) " +

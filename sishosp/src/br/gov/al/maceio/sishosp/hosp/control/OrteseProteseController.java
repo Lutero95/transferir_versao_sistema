@@ -30,25 +30,33 @@ public class OrteseProteseController implements Serializable {
     private Boolean temOrteseIhProteseCadastrado;
     private String cabecalho;
     private List<OrteseProtese> listOrteseProtese;
+    private Boolean renderizarBotaoAlterar;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "orteseProtese?faces-redirect=true";
+    private static final String ENDERECO_ENCAMINHAMENTO = "encaminhamentoopm?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
     private static final String CABECALHO_INCLUSAO = "Inserção de Órtese/Prótese";
     private static final String CABECALHO_ALTERACAO = "Alteração de Órtese/Prótese";
 
+
     public OrteseProteseController() {
         this.orteseProtese = new OrteseProtese();
         temOrteseIhProteseCadastrado = false;
         listOrteseProtese = new ArrayList<>();
+        renderizarBotaoAlterar = false;
     }
 
-    public String redirectEdit() {
+    public String redirectAlterar() {
         return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.orteseProtese.getId(), ENDERECO_TIPO, tipo);
     }
 
-    public String redirectInsert() {
+    public String redirectEncaminhar() {
+        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_ENCAMINHAMENTO, ENDERECO_ID, this.orteseProtese.getId());
+    }
+
+    public String redirectInserir() {
         return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
     }
 
@@ -75,11 +83,25 @@ public class OrteseProteseController implements Serializable {
                 JSFUtil.abrirDialog("dlgAviso");
             }
         }
-
-
     }
 
-    public void limparInsercao(){
+    public void carregarEncaminhamentoOrteseIhProtese() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            orteseProtese = oDao.carregarEncaminhamentoOrteseIhProtese(id);
+            if (VerificadorUtil.verificarSeObjetoNuloOuZero(orteseProtese.getId())) {
+                orteseProtese.setId(id);
+            } else {
+                renderizarBotaoAlterar = true;
+            }
+        }
+    }
+
+    public void limparInsercao() {
         orteseProtese.setEquipamento(new EquipamentoBean());
         orteseProtese.setFornecedor(new FornecedorBean());
         orteseProtese.setLaudo(new LaudoBean());
@@ -90,7 +112,7 @@ public class OrteseProteseController implements Serializable {
         boolean cadastrou = oDao.gravarInsercaoOrteseIhProtese(this.orteseProtese);
 
         if (cadastrou == true) {
-            JSFUtil.adicionarMensagemSucesso("Cadastrado com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("Alterado com sucesso!", "Sucesso");
             limparInsercao();
             JSFUtil.atualizarComponente("formInsercao");
         } else {
@@ -110,7 +132,43 @@ public class OrteseProteseController implements Serializable {
         listarOrteseIhProtese();
     }
 
-    public void listarOrteseIhProtese(){
+    public void gravarEncaminhamentoOrteseIhProtese() {
+        boolean cadastrou = oDao.gravarEncaminhamentoOrteseIhProtese(this.orteseProtese);
+
+        if (cadastrou == true) {
+            JSFUtil.adicionarMensagemSucesso("Cadastrado com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro", "Erro");
+        }
+    }
+
+    public void alterarEncaminhamentoOrteseIhProtese() {
+        boolean alterou = oDao.alterarEncaminhamentoOrteseIhProtese(orteseProtese);
+
+        if (alterou == true) {
+            JSFUtil.adicionarMensagemSucesso("Alterado com sucesso!", "Sucesso");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração", "Erro");
+        }
+
+        listarOrteseIhProtese();
+    }
+
+    public void cancelarEncaminhamentoOrteseIhProtese() {
+        boolean cancelou = oDao.cancelarEncaminhamentoOrteseIhProtese(orteseProtese);
+
+        if (cancelou == true) {
+            JSFUtil.adicionarMensagemSucesso("Cancelado com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgCancelar");
+            JSFUtil.abrirDialog("dlgCancelado");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cancelamento", "Erro");
+        }
+
+        listarOrteseIhProtese();
+    }
+
+    public void listarOrteseIhProtese() {
         listOrteseProtese = oDao.listarOrteseIhProtese();
     }
 
@@ -159,4 +217,11 @@ public class OrteseProteseController implements Serializable {
         this.listOrteseProtese = listOrteseProtese;
     }
 
+    public Boolean getRenderizarBotaoAlterar() {
+        return renderizarBotaoAlterar;
+    }
+
+    public void setRenderizarBotaoAlterar(Boolean renderizarBotaoAlterar) {
+        this.renderizarBotaoAlterar = renderizarBotaoAlterar;
+    }
 }

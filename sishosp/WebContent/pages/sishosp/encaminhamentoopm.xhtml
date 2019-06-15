@@ -1,0 +1,220 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <ui:define name="content">
+
+        <f:metadata>
+            <f:viewAction
+                    action="#{OrteseProteseController.carregarEncaminhamentoOrteseIhProtese()}"/>
+        </f:metadata>
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h:outputText value="Encaminhamento Órtese e Prótese"
+                              class="panel-title"></h:outputText>
+            </div>
+
+            <div class="panel-body table-body sub-table-body">
+
+                <h:form id="formInsercao">
+
+                    <b:row>
+
+                        <p:outputPanel id="outFornecedor">
+
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label id="idFornecedor" value="Fornecedor:" class="fire-label"
+                                         severity="info"/>
+
+                                <p:autoComplete required="false" class="select-agendaEquipe4"
+                                                requiredMessage="Fornecedor: Campo obrigatório!"
+                                                value="#{OrteseProteseController.orteseProtese.fornecedor}"
+                                                size="31" converter="conFornecedor"
+                                                completeMethod="#{FornecedorController.listaFornecedorAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descricao}">
+                                    <p:ajax event="itemSelect" update=""/>
+
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusForn" icon="ui-icon-search"
+                                                 immediate="true" style="margin-left: 5px"
+                                                 action="#{FornecedorController.listarFornecedores()}"
+                                                 update=":formConsuForn" onclick="PF('dlgConsuForn').show();"/>
+                            </b:column>
+
+                            <b:column>
+
+                                <p:commandButton value="Cancelar Encaminhamento" look="success" size="sm" id="bcancelar"
+                                                 icon="ui-icon-close" style="float: right"
+                                                 class="btn-nao"
+                                                 rendered="#{OrteseProteseController.renderizarBotaoAlterar == true}"
+                                                 onclick="PF('dlgCancelar').show();"/>
+
+                            </b:column>
+
+                        </p:outputPanel>
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Especificação:" class="fire-label" severity="info"/>
+
+                            <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
+                                             required="true" rows="20" cols="89"
+                                             requiredMessage="Especificação: Campo obrigatório!"
+                                             value="#{OrteseProteseController.orteseProtese.especificacao}"></h:inputTextarea>
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="2" class="label-position data-size">
+
+                            <b:label value="Data Encaminhamento:" id="datasoli"
+                                     severity="info" class="fire-label"/>
+
+                            <p:calendar
+                                    value="#{OrteseProteseController.orteseProtese.dataEncaminhamento}"
+                                    id="dtagen" locale="pt" navigator="true" mask="true"
+                                    required="true" requiredMessage="Data de Encaminhamento: Campo obrigatório!"
+                                    class="select-agendaEquipe2" showOn="button"
+                                    pattern="dd/MM/yyyy" size="15">
+                            </p:calendar>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <div align="center">
+                        <b:messages value="Error" id="msgPagina"></b:messages>
+                    </div>
+
+                    <br></br>
+
+
+                    <br></br>
+
+                    <div align="center">
+
+                        <p:commandButton value="Gravar" look="success" size="sm" id="b1"
+                                         icon="glyphicon-ok"
+                                         update="msgPagina"
+                                         class="btn-incluir"
+                                         rendered="#{OrteseProteseController.renderizarBotaoAlterar == false}"
+                                         action="#{OrteseProteseController.gravarEncaminhamentoOrteseIhProtese()}"/>
+
+                        <p:commandButton value="Alterar" look="success" size="sm" id="b2"
+                                         icon="glyphicon-ok"
+                                         update="msgPagina"
+                                         class="btn-incluir"
+                                         rendered="#{OrteseProteseController.renderizarBotaoAlterar == true}"
+                                         action="#{OrteseProteseController.alterarEncaminhamentoOrteseIhProtese()}"/>
+
+                        <p:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         action="/pages/sishosp/gerenciamentoOrteseProtese.xhtml?faces-redirect=true"/>
+
+                    </div>
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog header="Consultar Fornecedor" widgetVar="dlgConsuForn"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuForn">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{FornecedorController.listaFornecedores}" var="forn"
+                             display="Nenhum Fornecedor">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
+                        <p:outputLabel value="#{forn.descricao}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            CNPJ
+                        </f:facet>
+                        <p:outputLabel value="#{forn.cnpj}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao:outFornecedor"
+                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                title="Selecionar"
+                                onclick="PF('dlgConsuForn').hide();">
+                            <f:setPropertyActionListener value="#{forn}"
+                                                         target="#{OrteseProteseController.orteseProtese.fornecedor}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Cancelar Encaminhamento" widgetVar="dlgCancelar"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formCancelar">
+
+                <div class="alert alert-warning" role="alert">Deseja cancelar este encaminhamento?</div>
+
+                <div align="center">
+
+                    <p:separator/>
+                    <p:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{OrteseProteseController.cancelarEncaminhamentoOrteseIhProtese}"
+                                     ajax="true"
+                                     class="btn-sim" icon="glyphicon-ok"/>
+
+                    <p:commandButton value="Não"
+                                     oncomplete="PF('dlgCancelar').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"
+                                     class="btn-nao"/>
+
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Encaminhamento cancelado" widgetVar="dlgCancelado"
+                  modal="true" styleClass="topDialog" closable="false">
+            <h:form id="formCancelado">
+
+                <div class="alert alert-warning" role="alert">Encaminhamento cancelado com sucesso!</div>
+
+                <div align="center">
+
+                    <p:separator/>
+
+                    <div align="center">
+                        <b:commandButton value="Voltar"
+                                         action="/pages/sishosp/gerenciamentoOrteseProtese.xhtml?faces-redirect=true"
+                                         look="info" ajax="true"
+                                         icon="glyphicon-remove"
+                                         class="btn-nao"/>
+                    </div>
+
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
