@@ -23,10 +23,12 @@
                             <b:column span="2" class="label-position inserPacient">
                                 <b:label value="Realiza Atendimento Nesta Instituição?" class="fire-label"
                                          severity="info"/>
-
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.saudeRealizaAtendimentoNestaInstituicao}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeRealizaAtendimentoNestaInstituicao}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
                             <b:column span="2" class="label-position inserPacient">
@@ -136,10 +138,12 @@
                                 <b:label value="Já faz uso de Órtese, Prótese e/ou meios auxiliares de locomoção?"
                                          class="fire-label"
                                          severity="info"/>
-
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.saudeUsoOrteseProtese}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeUsoOrteseProtese}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -249,9 +253,12 @@
                                 <b:label value="Há mais alguém na família com deficiência?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -306,12 +313,15 @@
 
                         <b:row>
                             <b:column span="2" class="label-position inserPacient">
-                                <b:label value="Recebe Visita do Agente de Saúde?" class="fire-label"
+                                <b:label value="Recebeu Visita do Agente de Saúde?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -340,9 +350,12 @@
                                 <b:label value="Faz uso de medicação?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoUsoMedicacao}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoUsoMedicacao}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -371,10 +384,12 @@
                             <b:column span="2" class="label-position inserPacient">
                                 <b:label value="Matriculado(a) na escola?" class="fire-label"
                                          severity="info"/>
-
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.educacaoMatriculado}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoMatriculado}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -421,9 +436,12 @@
                                 <b:label value="Escola em que estuda fica no bairro que reside?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.educacaoEscolaFicaNoBairro}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoEscolaFicaNoBairro}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
                             <b:column span="2" class="label-position inserPacient">
@@ -440,10 +458,12 @@
                             <b:column span="2" class="label-position inserPacient">
                                 <b:label value="Escola tem sala de recurso?" class="fire-label"
                                          severity="info"/>
-
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.educacaoEscolaTemSalaDeRecurso}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoEscolaTemSalaDeRecurso}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -451,18 +471,23 @@
                                 <b:label value="Recebe apoio auxiliar de sala?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.educacaoRecebeApoioAuxiliarSala}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoRecebeApoioAuxiliarSala}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
                             <b:column span="2" class="label-position inserPacient">
                                 <b:label value="Responsável participa das reuniões escolares?" class="fire-label"
                                          severity="info"/>
-
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.educacaoResponsavelParticipaReuniaoEscolar}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoResponsavelParticipaReuniaoEscolar}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
                         </b:row>
 
@@ -471,9 +496,12 @@
                                 <b:label value="Atividade Institucional?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeInstituconalPossui}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoAtividadeInstituconalPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
                             <b:column span="1" class="label-position inserPacient">
                                 <b:label value="Qual Atividade Institucional?" class="fire-label"
@@ -516,9 +544,12 @@
                                 <b:label value="Atividade Complementares?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeComplementaresPossui}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoAtividadeComplementaresPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
                             <b:column span="1" class="label-position inserPacient">
                                 <b:label value="Qual Atividade Complementares?" class="fire-label"
@@ -562,10 +593,12 @@
                             <b:column span="2" class="label-position inserPacient">
                                 <b:label value="Aposentadoria?" class="fire-label"
                                          severity="info"/>
-
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.beneficioSocialAposentadoriaPossui}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialAposentadoriaPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -601,9 +634,12 @@
                                 <b:label value="Benefícios P/Familia?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.beneficioSocialBeneficioFamilia}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialBeneficioFamilia}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -639,9 +675,12 @@
                                 <b:label value="Benefício por Incapacidade?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.beneficioSocialIncapacidadePossui}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialIncapacidadePossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -715,9 +754,12 @@
                                 <b:label value="Programas Sociais?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.beneficioSocialProgramaSociaisPossui}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialProgramaSociaisPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -744,9 +786,12 @@
                                 <b:label value="Bolsa Família?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.beneficioSocialBolsaFamiliaPossui}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialBolsaFamiliaPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -773,9 +818,12 @@
                                 <b:label value="Minha casa minha vida?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.beneficioSocialMinhaCasaMinhaVidaPossui}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialMinhaCasaMinhaVidaPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -814,9 +862,12 @@
                                 <b:label value="Carteira Transporte?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.transporteCarteiraTransportePossui}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.transporteCarteiraTransportePossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -875,9 +926,12 @@
                                 <b:label value="Inserido no mercado de Trabalho: " class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
+                                    <f:selectItem itemLabel="Não" itemValue="N"/>
+                                </p:selectOneRadio>
                             </b:column>
 
 
@@ -1086,10 +1140,10 @@
                     </p:fieldset>
 
                     <p:fieldset legend="Composição Familiar">
-                        <b:commandButton value="Adicionar Composição Familiar" size="sm"
+                        <p:commandButton value="Adicionar Composição Familiar" size="sm"
                                          class="btn-addNovo" onclick="PF('dlgAddComposicaoFamiliar').show();"
                                          icon="glyphicon-plus">
-                        </b:commandButton>
+                        </p:commandButton>
 
                         <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabComposicaoFamiliar"
                                      value="#{PestalozziController.pestalozzi.listaComposicaoFamiliar}" var="composicao"
@@ -1148,19 +1202,26 @@
                                     Excluir
                                 </f:facet>
                                 <p:commandButton
-                                        update=":formInsercao:tabComposicaoFamiliar"
+                                        update=":formDelComposicaoFamiliar" onclick="PF('dlgDelComposicaoFamiliar').show();"
                                         class="new-btn-acao-table acao-editar" icon="ui-icon-delete"
                                         title="Excluir">
-                                    <!--
-                                    <f:setPropertyActionListener value="#{equi}"
-                                                                 target="#{OrteseProteseController.orteseProtese.equipamento}"/>
-                                                                 -->
+                                    <f:setPropertyActionListener value="#{composicao}"
+                                                                 target="#{PestalozziController.composicaoFamiliarDel}"/>
                                 </p:commandButton>
                             </h:column>
 
                         </b:dataTable>
                     </p:fieldset>
 
+                    <p:fieldset legend="Relato da Vida">
+                        <p:inputTextarea rows="15" cols="45" value="#{PestalozziController.pestalozzi.relatoVida}"/>
+
+                    </p:fieldset>
+
+                    <p:fieldset legend="Parecer Social/Encaminhamentos">
+                        <p:inputTextarea rows="8" cols="45"
+                                         value="#{PestalozziController.pestalozzi.parecerSocialEncaminhamento}"/>
+                    </p:fieldset>
 
 
                     <!-- COMPONENTE DE MENSAGEM, SEMELHANTE AO GROWN -->
@@ -1325,10 +1386,107 @@
         </p:dialog>
 
         <p:dialog header="Adicionar Composição Familiar" widgetVar="dlgAddComposicaoFamiliar"
-                  modal="true" styleClass="topDialog">
+                  modal="true" styleClass="topDialog" resizable="false">
             <h:form id="formAddComposicaoFamiliar">
+                <b:row>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Nome: " class="fire-label"
+                                 severity="info"/>
 
+                        <h:inputText required="true" requiredMessage="Compo Obrigatório: Nome"
+                                     value="#{PestalozziController.composicaoFamiliarAdd.nome}"
+                                     class="campo-laudoDig3"/>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Sexo: " class="fire-label"
+                                 severity="info"/>
+                        <p:selectOneRadio class="campo-laudoDig3"
+                                          value="#{PestalozziController.composicaoFamiliarAdd.sexo}"
+                                          unselectable="true">
+                            <f:selectItem itemLabel="Masculino" itemValue="M"/>
+                            <f:selectItem itemLabel="Feminino" itemValue="F"/>
+                        </p:selectOneRadio>
+                    </b:column>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Idade: " class="fire-label"
+                                 severity="info"/>
 
+                        <h:inputText
+                                value="#{PestalozziController.composicaoFamiliarAdd.idade}"
+                                class="campo-laudoDig3"/>
+                    </b:column>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Parentesco:" class="fire-label"
+                                 severity="info"/>
+
+                        <h:inputText required="true" requiredMessage="Compo Obrigatório: Parentesco"
+                                     value="#{PestalozziController.composicaoFamiliarAdd.parentesco}"
+                                     class="campo-laudoDig3"/>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Trabalha: " class="fire-label"
+                                 severity="info"/>
+
+                        <h:inputText
+                                value="#{PestalozziController.composicaoFamiliarAdd.trabalha}"
+                                class="campo-laudoDig3"/>
+                    </b:column>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Valor: " class="fire-label"
+                                 severity="info"/>
+
+                        <h:inputText
+                                value="#{PestalozziController.composicaoFamiliarAdd.valor}"
+                                class="campo-laudoDig3"/>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="PCD: " class="fire-label"
+                                 severity="info"/>
+
+                        <h:inputText
+                                value="#{PestalozziController.composicaoFamiliarAdd.pcd}"
+                                class="campo-laudoDig3"/>
+                    </b:column>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Benef: " class="fire-label"
+                                 severity="info"/>
+
+                        <h:inputText
+                                value="#{PestalozziController.composicaoFamiliarAdd.benef}"
+                                class="campo-laudoDig3"/>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:commandButton action="#{PestalozziController.adicionarComposicaoFamiliar()}"
+                                     icon="glyphicon-ok" size="sm" class="btn-incluir"
+                                     oncomplete="PF('dlgAddComposicaoFamiliar').hide();"
+                                     update=":formInsercao:tabComposicaoFamiliar, formAddComposicaoFamiliar"
+                                     value="Incluir"/>
+                </b:row>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Excluir Composição Familiar" widgetVar="dlgDelComposicaoFamiliar"
+                  modal="true" styleClass="topDialog" resizable="false">
+            <h:form id="formDelComposicaoFamiliar">
+                <b:row>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Deseja excluir #{PestalozziController.composicaoFamiliarDel.nome} ?" severity="info"/>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <p:commandButton action="#{PestalozziController.deletarComposicaoFamiliar()}"
+                                     icon="glyphicon-ok" size="sm" class="btn-excluir"  oncomplete="PF('dlgDelComposicaoFamiliar').hide();"
+                                     update=":formInsercao:tabComposicaoFamiliar" value="Excluir" />
+                    <p:commandButton size="sm" class="btn-excluir"  onclick="PF('dlgDelComposicaoFamiliar').hide();"
+                                     value="Cancelar" />
+                </b:row>
             </h:form>
         </p:dialog>
 

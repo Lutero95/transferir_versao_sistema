@@ -2,7 +2,9 @@ package br.gov.al.maceio.sishosp.questionario.control;
 
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.questionario.dao.PestalozziDAO;
+import br.gov.al.maceio.sishosp.questionario.model.ComposicaoFamiliar;
 import br.gov.al.maceio.sishosp.questionario.model.Pestalozzi;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -17,6 +19,8 @@ public class PestalozziController implements Serializable {
     private int tipo;
     private String cabecalho;
     private PestalozziDAO pDao = new PestalozziDAO();
+    private ComposicaoFamiliar composicaoFamiliarAdd = new ComposicaoFamiliar();
+    private ComposicaoFamiliar composicaoFamiliarDel = new ComposicaoFamiliar();
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "questionariopestalozzi?faces-redirect=true";
@@ -28,6 +32,16 @@ public class PestalozziController implements Serializable {
     public PestalozziController() {
         this.pestalozzi = new Pestalozzi();
         tipo = 1;
+    }
+
+    public void adicionarComposicaoFamiliar(){
+        this.pestalozzi.getListaComposicaoFamiliar().add(this.composicaoFamiliarAdd);
+        composicaoFamiliarAdd = new ComposicaoFamiliar();
+    }
+
+    public void deletarComposicaoFamiliar(){
+        this.pestalozzi.getListaComposicaoFamiliar().remove(this.composicaoFamiliarDel);
+        composicaoFamiliarDel= new ComposicaoFamiliar();
     }
 
     public String redirectEdit() {
@@ -67,4 +81,19 @@ public class PestalozziController implements Serializable {
         this.tipo = tipo;
     }
 
+    public ComposicaoFamiliar getComposicaoFamiliarAdd() {
+        return composicaoFamiliarAdd;
+    }
+
+    public void setComposicaoFamiliarAdd(ComposicaoFamiliar composicaoFamiliarAdd) {
+        this.composicaoFamiliarAdd = composicaoFamiliarAdd;
+    }
+
+    public ComposicaoFamiliar getComposicaoFamiliarDel() {
+        return composicaoFamiliarDel;
+    }
+
+    public void setComposicaoFamiliarDel(ComposicaoFamiliar composicaoFamiliarDel) {
+        this.composicaoFamiliarDel = composicaoFamiliarDel;
+    }
 }
