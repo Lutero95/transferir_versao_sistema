@@ -47,7 +47,7 @@ public class Pestalozzi implements Serializable {
     private String saudeUsaEquipamentoOrtopedicoUsoMedicacaoQual;
     private String saudeUsaEquipamentoOrtopedicoUsoMedicacaoFrequencia;
 
-    //EDUCAcÃO
+    //EDUCACAO
     private String educacaoMatriculado;
     private String educacaoEscolaridade;
     private String educacaoTurno;
