@@ -406,9 +406,11 @@
                                 <b:label value="Turno:" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.educacaoTurno}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneMenu value="#{PestalozziController.pestalozzi.educacaoTurno}">
+                                    <f:selectItem itemLabel="Manhã" itemValue="MANHA"/>
+                                    <f:selectItem itemLabel="Tarde" itemValue="TARDE"/>
+                                    <f:selectItem itemLabel="Noite" itemValue="NOITE"/>
+                                </p:selectOneMenu>
                             </b:column>
 
                             <b:column span="2" class="label-position inserPacient">
@@ -1202,7 +1204,8 @@
                                     Excluir
                                 </f:facet>
                                 <p:commandButton
-                                        update=":formDelComposicaoFamiliar" onclick="PF('dlgDelComposicaoFamiliar').show();"
+                                        update=":formDelComposicaoFamiliar"
+                                        onclick="PF('dlgDelComposicaoFamiliar').show();"
                                         class="new-btn-acao-table acao-editar" icon="ui-icon-delete"
                                         title="Excluir">
                                     <f:setPropertyActionListener value="#{composicao}"
@@ -1477,15 +1480,17 @@
             <h:form id="formDelComposicaoFamiliar">
                 <b:row>
                     <b:column span="2" class="label-position inserPacient">
-                        <b:label value="Deseja excluir #{PestalozziController.composicaoFamiliarDel.nome} ?" severity="info"/>
+                        <b:label value="Deseja excluir #{PestalozziController.composicaoFamiliarDel.nome} ?"
+                                 severity="info"/>
                     </b:column>
                 </b:row>
                 <b:row>
                     <p:commandButton action="#{PestalozziController.deletarComposicaoFamiliar()}"
-                                     icon="glyphicon-ok" size="sm" class="btn-excluir"  oncomplete="PF('dlgDelComposicaoFamiliar').hide();"
-                                     update=":formInsercao:tabComposicaoFamiliar" value="Excluir" />
-                    <p:commandButton size="sm" class="btn-excluir"  onclick="PF('dlgDelComposicaoFamiliar').hide();"
-                                     value="Cancelar" />
+                                     icon="glyphicon-ok" size="sm" class="btn-excluir"
+                                     oncomplete="PF('dlgDelComposicaoFamiliar').hide();"
+                                     update=":formInsercao:tabComposicaoFamiliar" value="Excluir"/>
+                    <p:commandButton size="sm" class="btn-excluir" onclick="PF('dlgDelComposicaoFamiliar').hide();"
+                                     value="Cancelar"/>
                 </b:row>
             </h:form>
         </p:dialog>
