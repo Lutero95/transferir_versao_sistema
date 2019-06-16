@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition  template="../../template/template.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+  <f:metadata>
+            <f:viewAction
+                    action="#{RelatoriosController.preparaRelLaudosVencer()}" />
+        </f:metadata>
+	<ui:define name="content">
+		<br />
+		<br />
+		
+
+			<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Relatório: Laudos a Vencer</h4>
+            </div>
+            <p:growl id="grw"/>
+            <div class="panel-body table-body">
+				<h:form id="frm">
+					
+				<b:row>
+				<b:column >
+				   <p:selectOneRadio required="true" requiredMessage="Informe o Tipo da Geração" id="console" value="#{RelatoriosController.atributoGenerico1}" unselectable="true">
+            <f:selectItem itemLabel="Geração Nominal" itemValue="N" />
+            <f:selectItem itemLabel="Geração de Laudos" itemValue="L" />
+        </p:selectOneRadio>
+                <hr/>
+				</b:column>
+				<b:column col-md="1">
+					<b:label for="periodovencer" class="label label-info" style="margin-left:0px !important" value="A vencer no período" severity="info" />
+							<p:inputMask required="true" value="#{RelatoriosController.atributoGenerico2}" requiredMessage="Informe o período a Vencer" mask="99/9999"  style="padding:10px !important;font-size:1em;"	 id="periodovencer" size="5"></p:inputMask>
+				</b:column>
+				
+				
+				</b:row>
+				<br/>		
+          <b:row>
+       
+      <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Programa:" severity="info"/>
+
+                            <p:outputPanel id="outProg">
+                                <p:autoComplete value="#{AgendaController.agenda.programa}"
+                                                size="31" converter="conPrograma"
+                                                class="select-agendaEquipe4"
+                                                
+                                                disabled="#{AgendaController.agenda.paciente==null}"
+                                                completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descPrograma}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.selectPrograma}"
+                                            update="outProg,  outGrupo"/>
+                                 
+                                            
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusPr" immediate="true"
+                                                 disabled="#{AgendaController.agenda.paciente==null}"
+                                                 icon="ui-icon-search"
+                                                 action="#{AgendaController.limparNaBuscaPrograma()}"
+                                                 actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
+                                                 update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();"/>
+                            </p:outputPanel>
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Grupo" severity="info"/>
+
+                            <p:outputPanel id="outGrupo">
+                                <p:autoComplete value="#{AgendaController.agenda.grupo}"
+                                                size="31" converter="conGrupo" 
+                                                class="select-agendaEquipe4"
+                                                disabled="#{AgendaController.agenda.programa.idPrograma == null}"
+                                                completeMethod="#{AgendaController.listaGrupoAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descGrupo}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.selectGrupo}"
+                                            update=" outGrupo"/>
+
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusGr" immediate="true"
+                                                 icon="ui-icon-search"
+                                                 disabled="#{AgendaController.agenda.programa.idPrograma == null}"
+                                                 actionListener="#{AgendaController.limparNaBuscaGrupo()}"
+                                                 action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
+                                                 update=":frm formConsuGrop" oncomplete="PF('dlgConsuGrop').show();"/>
+                            </p:outputPanel>
+                        </b:column>
+     </b:row>
+
+						
+
+							
+
+							
+					
+
+						
+
+						<br />
+					
+							<p:commandButton  icon="ui-icon-print" value="Imprimir"
+								style="font-size: 12px;  text-align: right;" update="grw"
+								actionListener="#{RelatoriosController.geraFrequencia(AgendaController.agenda.programa, AgendaController.agenda.grupo)}" ajax="false" />
+						
+					
+				</h:form>
+		</div>
+		</div>
+
+<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+        dynamic="true"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuProg">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+                             display="Nenhum Programa">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Programa
+                        </f:facet>
+                        <p:outputLabel value="#{prog.descPrograma}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":frm:outProg, :frm:outGrupo"
+                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                title="Selecionar"
+                                action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
+                                actionListener="#{AgendaController.limparNaBuscaPrograma()}"
+                                oncomplete="PF('dlgConsuProg').hide();">
+                            <f:setPropertyActionListener value="#{prog}"
+                                                         target="#{AgendaController.agenda.programa}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+                  modal="true" styleClass="topDialog" dynamic="true">
+            <h:form id="formConsuGrop">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" 
+                			ajax="true"
+                			responsive="true"
+                			save-state="false"
+                			saveState="false"
+                             value="#{AgendaController.listaGruposProgramas}" id="dtGrupo"
+                             var="grupo" display="Nenhum Grupo">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Grupo
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.descGrupo}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Quantidade Frequência
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.qtdFrequencia}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":frm:outGrupo"
+                                icon="ui-icon-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                onclick="PF('dlgConsuGrop').hide();"
+                                action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}">
+                            <f:setPropertyActionListener value="#{grupo}"
+                                                         target="#{AgendaController.agenda.grupo}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+	
+	</ui:define>
+
+</ui:composition>
+</html>

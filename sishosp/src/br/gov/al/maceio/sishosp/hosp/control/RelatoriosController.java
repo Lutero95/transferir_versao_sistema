@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -28,11 +29,13 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
@@ -135,7 +138,7 @@ public class RelatoriosController implements Serializable {
 				relatorio = caminho + "laudo.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("periodolaudovencer", this.atributoGenerico2);
-			map.put("codempresa", user_session.getEmpresa().getCodEmpresa());
+		map.put("codusuario", user_session.getCodigo());
 			if (programa!=null)
 			map.put("codprograma", programa.getIdPrograma());
 			
@@ -149,6 +152,46 @@ public class RelatoriosController implements Serializable {
 		
 		}
 	}
+	
+	public void geraFrequencia(ProgramaBean programa, GrupoBean grupo) throws IOException,
+	ParseException, ProjetoException, NoSuchAlgorithmException {
+		//lista criada para ser populada e mostrar as linhas na frequencia
+		List<Integer> lista = new ArrayList<Integer>();
+		lista.add(1);
+		lista.add(2);
+		int randomico = JSFUtil.geraNumeroRandomico();
+		RelatorioDAO rDao = new RelatorioDAO();
+		rDao.popularTabelaTemporariaFrequencia(randomico, grupo.getQtdFrequencia());
+		
+		JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(lista);
+	if (programa.equals(null)) {
+		 JSFUtil.adicionarMensagemErro("Informe o Programa!", "Erro!");
+		}
+	else
+	{
+	String caminho = "/WEB-INF/relatorios/";
+	String relatorio = "";
+	relatorio = caminho + "frequencia.jasper";
+	Map<String, Object> map = new HashMap<String, Object>();
+		map.put("chave", randomico);
+		map.put("codusuario", user_session.getCodigo());
+		if (programa!=null)
+		map.put("codprograma", programa.getIdPrograma());
+		
+		if (grupo!=null)
+		map.put("codgrupo", grupo.getIdGrupo());
+		map.put("cod_laudo", null);
+		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
+				+ File.separator);
+		//this.executeReport(relatorio, map, "relatorio.pdf");
+		this.executeReportNewTab(relatorio, "frequencia.pdf",
+				map);
+		rDao.limparTabelaTemporariaFrequencia(randomico);
+		
+	
+	}
+}
+
 	
 	public void gerarMapaLaudoOrteseProtese() throws IOException,
 	ParseException, ProjetoException {
