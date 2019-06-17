@@ -1,12 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
 
 <ui:composition  template="../../template/template.xhtml"
-	xmlns:p="http://primefaces.org/ui">
+	>
   <f:metadata>
             <f:viewAction
                     action="#{RelatoriosController.preparaRelLaudosVencer()}" />
@@ -23,15 +25,25 @@
             <p:growl id="grw"/>
             <div class="panel-body table-body">
 				<h:form id="frm">
-					
+				<b:row>
+				<b:column >
+				   <p:selectOneRadio required="true"  requiredMessage="Informe o Tipo da Geração" id="console" value="#{RelatoriosController.atributoGenerico1}" unselectable="true">
+            <f:selectItem itemLabel="Por Programa" itemValue="P" />
+            <f:selectItem itemLabel="Individual" itemValue="I" />
+            <p:ajax update="frm" event="valueChange" />
+        </p:selectOneRadio>
+                <hr/>
+				</b:column>
+
+				
+				</b:row>	
 			
 				<br/>		
-          <b:row>
+          <b:row rendered="#{RelatoriosController.atributoGenerico1=='I'}">
        
-        <b:column span="3"
+        <b:column   span="3"
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Paciente:" severity="info"/>
-       
         <p:outputPanel id="outPa">
                                 <p:autoComplete value="#{AgendaController.agenda.paciente}"
                                                 size="31" converter="conPaciente" 
@@ -55,7 +67,7 @@
        </b:column>
        
        </b:row>
-        <b:row>
+        <b:row rendered="#{RelatoriosController.atributoGenerico1=='P'}">
       <b:column span="3"
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Programa:" severity="info"/>
