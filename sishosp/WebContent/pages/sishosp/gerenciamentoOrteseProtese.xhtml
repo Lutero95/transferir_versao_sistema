@@ -22,6 +22,8 @@
 
                 <h:form id="formGerenOrteseEProtese">
 
+                    <p:growl id="msgPagina"></p:growl>
+
                     <b:row rendered="#{OrteseProteseController.temOrteseIhProteseCadastrado == true}">
 
                         <b:column span="3"
@@ -83,6 +85,16 @@
                                 </b:commandButton>
                             </b:column>
 
+                            <b:column span="2" class="new-span2">
+                                <b:commandButton value="Medição" style="margin-top:5px;"
+                                                 id="btnMedicao" immediate="true"
+                                                 disabled="#{OrteseProteseController.orteseProtese.id == null}"
+                                                 class="btn-acao-table acao-pts btn-new-padding2"
+                                                 icon="glyphicon-plus"
+                                                 action="#{OrteseProteseController.iniciarMedicao}">
+                                </b:commandButton>
+                            </b:column>
+
                         </div>
 
                     </b:row>
@@ -98,7 +110,7 @@
                                      rowKey="#{opm.id}">
 
                             <p:ajax event="rowSelect"
-                                    update="formGerenOrteseEProtese:btnAlterar, formGerenOrteseEProtese:btnEncaminhar"/>
+                                    update="formGerenOrteseEProtese:btnAlterar, formGerenOrteseEProtese:btnEncaminhar, formGerenOrteseEProtese:btnMedicao"/>
 
                             <p:column width="20%">
                                 <f:facet name="header">
@@ -144,6 +156,113 @@
 
                 <p:outputLabel
                         value="Programa e/ou Grupo não associado a Órtese e Prótese nos parâmetros do sistema."></p:outputLabel>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Medição" widgetVar="dlgMedicao"
+                  modal="true">
+            <h:form id="formMedicao">
+
+                <b:row>
+
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Paciente:" class="fire-label" severity="info"/>
+
+                        <h:outputLabel
+                                value="#{OrteseProteseController.orteseProtese.laudo.paciente.nome}"
+                                class="campo-laudoDig3"/>
+                    </b:column>
+
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="CID:" class="fire-label" severity="info"/>
+
+                        <h:outputLabel
+                                value="#{OrteseProteseController.orteseProtese.laudo.cid1.descCid}"
+                                class="campo-laudoDig3"/>
+                    </b:column>
+
+                    <b:column>
+
+                        <p:commandButton value="Cancelar Medição" look="success" size="sm" id="bcancelar"
+                                         icon="ui-icon-close" style="float: right"
+                                         class="btn-nao"
+                                         rendered="#{OrteseProteseController.existeMedicao == true}"
+                                         onclick="PF('dlgCancelar').show();"/>
+
+                    </b:column>
+
+                </b:row>
+
+                <b:row>
+
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Dados da Medição:" class="fire-label" severity="info"/>
+
+                        <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
+                                         required="true" rows="20" cols="89"
+                                         requiredMessage="Medição: Campo obrigatório!"
+                                         value="#{OrteseProteseController.orteseProtese.medicao}"></h:inputTextarea>
+                    </b:column>
+
+                </b:row>
+
+                <b:row>
+
+                    <b:column span="2" class="label-position data-size">
+
+                        <b:label value="Data Medição:" id="datamedicao"
+                                 severity="info" class="fire-label"/>
+
+                        <p:calendar
+                                value="#{OrteseProteseController.orteseProtese.dataMedicao}"
+                                id="dtagen" locale="pt" navigator="true" mask="true"
+                                required="true" requiredMessage="Data Medição: Campo obrigatório!"
+                                class="select-agendaEquipe2" showOn="button"
+                                pattern="dd/MM/yyyy" size="15">
+                        </p:calendar>
+
+                    </b:column>
+
+                </b:row>
+
+                <div align="center">
+
+                    <p:separator />
+                    <b:commandButton look="success" value="Gravar" style="float:left;"
+                                     action="#{OrteseProteseController.gravarMedicaoOrteseIhProtese}" ajax="true"
+                                     class="btn-sim" icon="glyphicon-ok" update="formGerenOrteseEProtese:msgPagina" />
+
+                    <b:commandButton value="Fechar"
+                                     oncomplete="PF('dlgMedicao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" class="btn-nao"
+                                     style="margin-left:5px;float:right;" />
+
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Cancelar Medição" widgetVar="dlgCancelar"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formCancelar">
+
+                <div class="alert alert-warning" role="alert">Deseja cancelar a medição?</div>
+
+                <div align="center">
+
+                    <p:separator/>
+                    <p:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{OrteseProteseController.cancelarMedicaoOrteseIhProtese}"
+                                     ajax="true" update="formGerenOrteseEProtese:msgPagina"
+                                     class="btn-sim" icon="glyphicon-ok"/>
+
+                    <p:commandButton value="Não"
+                                     oncomplete="PF('dlgCancelar').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"
+                                     class="btn-nao"/>
+
+                </div>
 
             </h:form>
         </p:dialog>
