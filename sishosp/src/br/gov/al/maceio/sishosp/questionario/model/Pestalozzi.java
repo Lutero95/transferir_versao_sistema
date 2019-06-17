@@ -6,103 +6,103 @@ import java.util.ArrayList;
 public class Pestalozzi implements Serializable {
     private Integer id;
     //SAÚDE
-    private String saudeRealizaAtendimentoNestaInstituicao;
+    private Boolean saudeRealizaAtendimentoNestaInstituicao;
     private String saudeUnidade;
-    private String saudeServicoAtendimentoRedeReabilitacaoAuditiva;
-    private String saudeServicoAtendimentoRedeReabilitacaoFisica;
-    private String saudeServicoAtendimentoRedeReabilitacaoIntelectual;
-    private String saudeServicoAtendimentoRedeReabilitacaoVisual;
+    private Boolean saudeServicoAtendimentoRedeReabilitacaoAuditiva;
+    private Boolean saudeServicoAtendimentoRedeReabilitacaoFisica;
+    private Boolean saudeServicoAtendimentoRedeReabilitacaoIntelectual;
+    private Boolean saudeServicoAtendimentoRedeReabilitacaoVisual;
     private String saudeServicoAmbulatorio;
-    private String saudeOutrosServicosHomeCare;
-    private String saudeOutrosServicosEquoterapia;
-    private String saudeOutrosServicosGrupoConvivencia;
-    private String saudeOutrosServicosGrupoTerapeuticoFamiliar;
-    private String saudeOutrosServicosOrteseProtesesMeiosLocomocao;
-    private String saudeOutrosServicosOficinaOrtopedica;
-    private String saudeOutrosServicosEstimulacaoPrecoce;
-    private String saudeOutrosServicosHidroTerapia;
+    private Boolean saudeOutrosServicosHomeCare;
+    private Boolean saudeOutrosServicosEquoterapia;
+    private Boolean saudeOutrosServicosGrupoConvivencia;
+    private Boolean saudeOutrosServicosGrupoTerapeuticoFamiliar;
+    private Boolean saudeOutrosServicosOrteseProtesesMeiosLocomocao;
+    private Boolean saudeOutrosServicosOficinaOrtopedica;
+    private Boolean saudeOutrosServicosEstimulacaoPrecoce;
+    private Boolean saudeOutrosServicosHidroTerapia;
     private String saudeUsoOrteseProtese;
     private String saudeUsoOrteseProteseQuantoTempo;
     private String saudeUsoOrteseProteseQual;
-    private String saudeUsaEquipamentoOrtopedicoOrtese;
-    private String saudeUsaEquipamentoOrtopedicoAASI;
-    private String saudeUsaEquipamentoOrtopedicoAuxilioOptico;
-    private String saudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao;
-    private String saudeUsaEquipamentoOrtopedicoProtese;
-    private String saudeUsaEquipamentoOrtopedicoOculosAdaptado;
+    private Boolean saudeUsaEquipamentoOrtopedicoOrtese;
+    private Boolean saudeUsaEquipamentoOrtopedicoAASI;
+    private Boolean saudeUsaEquipamentoOrtopedicoAuxilioOptico;
+    private Boolean saudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao;
+    private Boolean saudeUsaEquipamentoOrtopedicoProtese;
+    private Boolean saudeUsaEquipamentoOrtopedicoOculosAdaptado;
     private String saudeUsaEquipamentoOrtopedicoQuantoTempo;
     private String saudeUsaEquipamentoOrtopedicoEntidadeQueConcedeu;
     private String saudeUsaEquipamentoOrtopedicoRealizouReabilitacao;
     private String saudeUsaEquipamentoOrtopedicoRealizouReabilitacaoOnde;
-    private String saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia;
+    private Boolean saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia;
     private String saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco;
     private String saudeUsaEquipamentoOrtopedicoMorbidadeCID;
     private String saudeUsaEquipamentoOrtopedicoMorbidadeCIDQuantoTempo;
     private String saudeUsaEquipamentoOrtopedicoCausaDoencaDeficiencia;
     private String saudeUsaEquipamentoOrtopedicoResidenciaCobertaPSF;
-    private String saudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude;
+    private Boolean saudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude;
     private String saudeUsaEquipamentoOrtopedicoFazParaSerAtendidoDoente;
     private String saudeUsaEquipamentoOrtopedicoPostoSaudeRegiaoReside;
-    private String saudeUsaEquipamentoOrtopedicoUsoMedicacao;
+    private Boolean saudeUsaEquipamentoOrtopedicoUsoMedicacao;
     private String saudeUsaEquipamentoOrtopedicoUsoMedicacaoQual;
     private String saudeUsaEquipamentoOrtopedicoUsoMedicacaoFrequencia;
 
     //EDUCACAO
-    private String educacaoMatriculado;
+    private Boolean educacaoMatriculado;
     private String educacaoEscolaridade;
     private String educacaoTurno;
     private String educacaoEscolaEstaMatriculado;
     private String educacaoAcessoEscola;
     private String educacaoEscolaFicaNoBairro;
     private String educacaoEscolaQualBairro;
-    private String educacaoEscolaTemSalaDeRecurso;
+    private Boolean educacaoEscolaTemSalaDeRecurso;
     private String educacaoRecebeApoioAuxiliarSala;
     private String educacaoResponsavelParticipaReuniaoEscolar;
-    private String educacaoAtividadeInstituconalPossui;
-    private String educacaoAtividadeInstituconalQualAEE;
-    private String educacaoAtividadeInstituconalQualEJA;
-    private String educacaoAtividadeInstituconalQualEsporte;
-    private String educacaoAtividadeInstituconalQualOficinaProf;
-    private String educacaoAtividadeInstituconalQualJovemAprendiz;
-    private String educacaoAtividadeInstituconalQualArteCultura;
-    private String educacaoAtividadeComplementaresPossui;
-    private String educacaoAtividadeComplementaresDanca;
-    private String educacaoAtividadeComplementaresCapoeira;
-    private String educacaoAtividadeComplementaresTeatro;
-    private String educacaoAtividadeComplementaresPercussao;
-    private String educacaoAtividadeComplementaresMusica;
-    private String educacaoAtividadeComplementaresCoral;
+    private Boolean educacaoAtividadeInstituconalPossui;
+    private Boolean educacaoAtividadeInstituconalQualAEE;
+    private Boolean educacaoAtividadeInstituconalQualEJA;
+    private Boolean educacaoAtividadeInstituconalQualEsporte;
+    private Boolean educacaoAtividadeInstituconalQualOficinaProf;
+    private Boolean educacaoAtividadeInstituconalQualJovemAprendiz;
+    private Boolean educacaoAtividadeInstituconalQualArteCultura;
+    private Boolean educacaoAtividadeComplementaresPossui;
+    private Boolean educacaoAtividadeComplementaresDanca;
+    private Boolean educacaoAtividadeComplementaresCapoeira;
+    private Boolean educacaoAtividadeComplementaresTeatro;
+    private Boolean educacaoAtividadeComplementaresPercussao;
+    private Boolean educacaoAtividadeComplementaresMusica;
+    private Boolean educacaoAtividadeComplementaresCoral;
 
     //BENEFICIOS SOCIAIS
-    private String beneficioSocialAposentadoriaPossui;
+    private Boolean beneficioSocialAposentadoriaPossui;
     private String beneficioSocialAposentadoriaTipo;
     private String beneficioSocialAposentadoriaQuantoTempo;
     private Double beneficioSocialAposentadoriaValor;
-    private String beneficioSocialBeneficioFamiliaPossui;
+    private Boolean beneficioSocialBeneficioFamiliaPossui;
     private String beneficioSocialBeneficioFamiliaTipo;
     private String beneficioSocialBeneficioFamiliaQuantoTempo;
     private Double beneficioSocialBeneficioFamiliaValor;
-    private String beneficioSocialIncapacidadePossui;
+    private Boolean beneficioSocialIncapacidadePossui;
     private String beneficioSocialIncapacidadeTipo;
     private String beneficioSocialIncapacidadeQuantoTempo;
     private Double beneficioSocialIncapacidadeValor;
-    private String beneficioSocialINSSPossui;
+    private Boolean beneficioSocialINSSPossui;
     private String beneficioSocialINSSTipo;
     private String beneficioSocialINSSQuantoTempo;
     private Double beneficioSocialINSSValor;
-    private String beneficioSocialProgramaSociaisPossui;
+    private Boolean beneficioSocialProgramaSociaisPossui;
     private String beneficioSocialProgramaLeitePossui;
     private String beneficioSocialProgramaSopaPossui;
-    private String beneficioSocialBolsaFamiliaPossui;
+    private Boolean beneficioSocialBolsaFamiliaPossui;
     private String beneficioSocialBolsaFamiliaQuantoTempo;
     private Double beneficioSocialBolsaFamiliaValor;
-    private String beneficioSocialMinhaCasaMinhaVidaPossui;
+    private Boolean beneficioSocialMinhaCasaMinhaVidaPossui;
     private String beneficioSocialCadastroUnico;
     private String beneficioSocialNumeroNisPossui;
     private String beneficioSocialNumeroNis;
 
     //TRANSPORTE
-    private String transporteCarteiraTransportePossui;
+    private Boolean transporteCarteiraTransportePossui;
     private String transporteCarteiraTransporteAcompanhate;
     private String transporteCarteiraTransporteTipo;
     private String transporteUtilizadoTratamento;
@@ -115,20 +115,20 @@ public class Pestalozzi implements Serializable {
     private String rendaFamiliarAtividadeAntesAgravo;
     private String rendaFamiliarTempoAntesAgravo;
     private Double rendaFamiliarValor;
-    private String rendaFamiliarMantemUsuario;
-    private String rendaFamiliarMantemPai;
-    private String rendaFamiliarMantemMae;
-    private String rendaFamiliarMantemIrmao;
-    private String rendaFamiliarMantemAvo;
-    private String rendaFamiliarMantemCuidador;
-    private String rendaFamiliarMantemTio;
-    private String rendaFamiliarMantemEsposo;
-    private String rendaFamiliarMantemVizinho;
-    private String rendaFamiliarMantemFilho;
-    private String rendaFamiliarMantemPadastroMadastra;
-    private String rendaFamiliarMantemGenroNora;
-    private String rendaFamiliarMantemSobrinho;
-    private String rendaFamiliarMantemEntenado;
+    private Boolean rendaFamiliarMantemUsuario;
+    private Boolean rendaFamiliarMantemPai;
+    private Boolean rendaFamiliarMantemMae;
+    private Boolean rendaFamiliarMantemIrmao;
+    private Boolean rendaFamiliarMantemAvo;
+    private Boolean rendaFamiliarMantemCuidador;
+    private Boolean rendaFamiliarMantemTio;
+    private Boolean rendaFamiliarMantemEsposo;
+    private Boolean rendaFamiliarMantemVizinho;
+    private Boolean rendaFamiliarMantemFilho;
+    private Boolean rendaFamiliarMantemPadastroMadastra;
+    private Boolean rendaFamiliarMantemGenroNora;
+    private Boolean rendaFamiliarMantemSobrinho;
+    private Boolean rendaFamiliarMantemEntenado;
 
     //HABITACAO
     private String habitacaoSitucaoMoradia;
@@ -162,11 +162,11 @@ public class Pestalozzi implements Serializable {
         this.id = id;
     }
 
-    public String getSaudeRealizaAtendimentoNestaInstituicao() {
+    public Boolean getSaudeRealizaAtendimentoNestaInstituicao() {
         return saudeRealizaAtendimentoNestaInstituicao;
     }
 
-    public void setSaudeRealizaAtendimentoNestaInstituicao(String saudeRealizaAtendimentoNestaInstituicao) {
+    public void setSaudeRealizaAtendimentoNestaInstituicao(Boolean saudeRealizaAtendimentoNestaInstituicao) {
         this.saudeRealizaAtendimentoNestaInstituicao = saudeRealizaAtendimentoNestaInstituicao;
     }
 
@@ -178,35 +178,35 @@ public class Pestalozzi implements Serializable {
         this.saudeUnidade = saudeUnidade;
     }
 
-    public String getSaudeServicoAtendimentoRedeReabilitacaoAuditiva() {
+    public Boolean getSaudeServicoAtendimentoRedeReabilitacaoAuditiva() {
         return saudeServicoAtendimentoRedeReabilitacaoAuditiva;
     }
 
-    public void setSaudeServicoAtendimentoRedeReabilitacaoAuditiva(String saudeServicoAtendimentoRedeReabilitacaoAuditiva) {
+    public void setSaudeServicoAtendimentoRedeReabilitacaoAuditiva(Boolean saudeServicoAtendimentoRedeReabilitacaoAuditiva) {
         this.saudeServicoAtendimentoRedeReabilitacaoAuditiva = saudeServicoAtendimentoRedeReabilitacaoAuditiva;
     }
 
-    public String getSaudeServicoAtendimentoRedeReabilitacaoFisica() {
+    public Boolean getSaudeServicoAtendimentoRedeReabilitacaoFisica() {
         return saudeServicoAtendimentoRedeReabilitacaoFisica;
     }
 
-    public void setSaudeServicoAtendimentoRedeReabilitacaoFisica(String saudeServicoAtendimentoRedeReabilitacaoFisica) {
+    public void setSaudeServicoAtendimentoRedeReabilitacaoFisica(Boolean saudeServicoAtendimentoRedeReabilitacaoFisica) {
         this.saudeServicoAtendimentoRedeReabilitacaoFisica = saudeServicoAtendimentoRedeReabilitacaoFisica;
     }
 
-    public String getSaudeServicoAtendimentoRedeReabilitacaoIntelectual() {
+    public Boolean getSaudeServicoAtendimentoRedeReabilitacaoIntelectual() {
         return saudeServicoAtendimentoRedeReabilitacaoIntelectual;
     }
 
-    public void setSaudeServicoAtendimentoRedeReabilitacaoIntelectual(String saudeServicoAtendimentoRedeReabilitacaoIntelectual) {
+    public void setSaudeServicoAtendimentoRedeReabilitacaoIntelectual(Boolean saudeServicoAtendimentoRedeReabilitacaoIntelectual) {
         this.saudeServicoAtendimentoRedeReabilitacaoIntelectual = saudeServicoAtendimentoRedeReabilitacaoIntelectual;
     }
 
-    public String getSaudeServicoAtendimentoRedeReabilitacaoVisual() {
+    public Boolean getSaudeServicoAtendimentoRedeReabilitacaoVisual() {
         return saudeServicoAtendimentoRedeReabilitacaoVisual;
     }
 
-    public void setSaudeServicoAtendimentoRedeReabilitacaoVisual(String saudeServicoAtendimentoRedeReabilitacaoVisual) {
+    public void setSaudeServicoAtendimentoRedeReabilitacaoVisual(Boolean saudeServicoAtendimentoRedeReabilitacaoVisual) {
         this.saudeServicoAtendimentoRedeReabilitacaoVisual = saudeServicoAtendimentoRedeReabilitacaoVisual;
     }
 
@@ -218,67 +218,67 @@ public class Pestalozzi implements Serializable {
         this.saudeServicoAmbulatorio = saudeServicoAmbulatorio;
     }
 
-    public String getSaudeOutrosServicosHomeCare() {
+    public Boolean getSaudeOutrosServicosHomeCare() {
         return saudeOutrosServicosHomeCare;
     }
 
-    public void setSaudeOutrosServicosHomeCare(String saudeOutrosServicosHomeCare) {
+    public void setSaudeOutrosServicosHomeCare(Boolean saudeOutrosServicosHomeCare) {
         this.saudeOutrosServicosHomeCare = saudeOutrosServicosHomeCare;
     }
 
-    public String getSaudeOutrosServicosEquoterapia() {
+    public Boolean getSaudeOutrosServicosEquoterapia() {
         return saudeOutrosServicosEquoterapia;
     }
 
-    public void setSaudeOutrosServicosEquoterapia(String saudeOutrosServicosEquoterapia) {
+    public void setSaudeOutrosServicosEquoterapia(Boolean saudeOutrosServicosEquoterapia) {
         this.saudeOutrosServicosEquoterapia = saudeOutrosServicosEquoterapia;
     }
 
-    public String getSaudeOutrosServicosGrupoConvivencia() {
+    public Boolean getSaudeOutrosServicosGrupoConvivencia() {
         return saudeOutrosServicosGrupoConvivencia;
     }
 
-    public void setSaudeOutrosServicosGrupoConvivencia(String saudeOutrosServicosGrupoConvivencia) {
+    public void setSaudeOutrosServicosGrupoConvivencia(Boolean saudeOutrosServicosGrupoConvivencia) {
         this.saudeOutrosServicosGrupoConvivencia = saudeOutrosServicosGrupoConvivencia;
     }
 
-    public String getSaudeOutrosServicosGrupoTerapeuticoFamiliar() {
+    public Boolean getSaudeOutrosServicosGrupoTerapeuticoFamiliar() {
         return saudeOutrosServicosGrupoTerapeuticoFamiliar;
     }
 
-    public void setSaudeOutrosServicosGrupoTerapeuticoFamiliar(String saudeOutrosServicosGrupoTerapeuticoFamiliar) {
+    public void setSaudeOutrosServicosGrupoTerapeuticoFamiliar(Boolean saudeOutrosServicosGrupoTerapeuticoFamiliar) {
         this.saudeOutrosServicosGrupoTerapeuticoFamiliar = saudeOutrosServicosGrupoTerapeuticoFamiliar;
     }
 
-    public String getSaudeOutrosServicosOrteseProtesesMeiosLocomocao() {
+    public Boolean getSaudeOutrosServicosOrteseProtesesMeiosLocomocao() {
         return saudeOutrosServicosOrteseProtesesMeiosLocomocao;
     }
 
-    public void setSaudeOutrosServicosOrteseProtesesMeiosLocomocao(String saudeOutrosServicosOrteseProtesesMeiosLocomocao) {
+    public void setSaudeOutrosServicosOrteseProtesesMeiosLocomocao(Boolean saudeOutrosServicosOrteseProtesesMeiosLocomocao) {
         this.saudeOutrosServicosOrteseProtesesMeiosLocomocao = saudeOutrosServicosOrteseProtesesMeiosLocomocao;
     }
 
-    public String getSaudeOutrosServicosOficinaOrtopedica() {
+    public Boolean getSaudeOutrosServicosOficinaOrtopedica() {
         return saudeOutrosServicosOficinaOrtopedica;
     }
 
-    public void setSaudeOutrosServicosOficinaOrtopedica(String saudeOutrosServicosOficinaOrtopedica) {
+    public void setSaudeOutrosServicosOficinaOrtopedica(Boolean saudeOutrosServicosOficinaOrtopedica) {
         this.saudeOutrosServicosOficinaOrtopedica = saudeOutrosServicosOficinaOrtopedica;
     }
 
-    public String getSaudeOutrosServicosEstimulacaoPrecoce() {
+    public Boolean getSaudeOutrosServicosEstimulacaoPrecoce() {
         return saudeOutrosServicosEstimulacaoPrecoce;
     }
 
-    public void setSaudeOutrosServicosEstimulacaoPrecoce(String saudeOutrosServicosEstimulacaoPrecoce) {
+    public void setSaudeOutrosServicosEstimulacaoPrecoce(Boolean saudeOutrosServicosEstimulacaoPrecoce) {
         this.saudeOutrosServicosEstimulacaoPrecoce = saudeOutrosServicosEstimulacaoPrecoce;
     }
 
-    public String getSaudeOutrosServicosHidroTerapia() {
+    public Boolean getSaudeOutrosServicosHidroTerapia() {
         return saudeOutrosServicosHidroTerapia;
     }
 
-    public void setSaudeOutrosServicosHidroTerapia(String saudeOutrosServicosHidroTerapia) {
+    public void setSaudeOutrosServicosHidroTerapia(Boolean saudeOutrosServicosHidroTerapia) {
         this.saudeOutrosServicosHidroTerapia = saudeOutrosServicosHidroTerapia;
     }
 
@@ -306,51 +306,51 @@ public class Pestalozzi implements Serializable {
         this.saudeUsoOrteseProteseQual = saudeUsoOrteseProteseQual;
     }
 
-    public String getSaudeUsaEquipamentoOrtopedicoOrtese() {
+    public Boolean getSaudeUsaEquipamentoOrtopedicoOrtese() {
         return saudeUsaEquipamentoOrtopedicoOrtese;
     }
 
-    public void setSaudeUsaEquipamentoOrtopedicoOrtese(String saudeUsaEquipamentoOrtopedicoOrtese) {
+    public void setSaudeUsaEquipamentoOrtopedicoOrtese(Boolean saudeUsaEquipamentoOrtopedicoOrtese) {
         this.saudeUsaEquipamentoOrtopedicoOrtese = saudeUsaEquipamentoOrtopedicoOrtese;
     }
 
-    public String getSaudeUsaEquipamentoOrtopedicoAASI() {
+    public Boolean getSaudeUsaEquipamentoOrtopedicoAASI() {
         return saudeUsaEquipamentoOrtopedicoAASI;
     }
 
-    public void setSaudeUsaEquipamentoOrtopedicoAASI(String saudeUsaEquipamentoOrtopedicoAASI) {
+    public void setSaudeUsaEquipamentoOrtopedicoAASI(Boolean saudeUsaEquipamentoOrtopedicoAASI) {
         this.saudeUsaEquipamentoOrtopedicoAASI = saudeUsaEquipamentoOrtopedicoAASI;
     }
 
-    public String getSaudeUsaEquipamentoOrtopedicoAuxilioOptico() {
+    public Boolean getSaudeUsaEquipamentoOrtopedicoAuxilioOptico() {
         return saudeUsaEquipamentoOrtopedicoAuxilioOptico;
     }
 
-    public void setSaudeUsaEquipamentoOrtopedicoAuxilioOptico(String saudeUsaEquipamentoOrtopedicoAuxilioOptico) {
+    public void setSaudeUsaEquipamentoOrtopedicoAuxilioOptico(Boolean saudeUsaEquipamentoOrtopedicoAuxilioOptico) {
         this.saudeUsaEquipamentoOrtopedicoAuxilioOptico = saudeUsaEquipamentoOrtopedicoAuxilioOptico;
     }
 
-    public String getSaudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao() {
+    public Boolean getSaudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao() {
         return saudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao;
     }
 
-    public void setSaudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao(String saudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao) {
+    public void setSaudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao(Boolean saudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao) {
         this.saudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao = saudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao;
     }
 
-    public String getSaudeUsaEquipamentoOrtopedicoProtese() {
+    public Boolean getSaudeUsaEquipamentoOrtopedicoProtese() {
         return saudeUsaEquipamentoOrtopedicoProtese;
     }
 
-    public void setSaudeUsaEquipamentoOrtopedicoProtese(String saudeUsaEquipamentoOrtopedicoProtese) {
+    public void setSaudeUsaEquipamentoOrtopedicoProtese(Boolean saudeUsaEquipamentoOrtopedicoProtese) {
         this.saudeUsaEquipamentoOrtopedicoProtese = saudeUsaEquipamentoOrtopedicoProtese;
     }
 
-    public String getSaudeUsaEquipamentoOrtopedicoOculosAdaptado() {
+    public Boolean getSaudeUsaEquipamentoOrtopedicoOculosAdaptado() {
         return saudeUsaEquipamentoOrtopedicoOculosAdaptado;
     }
 
-    public void setSaudeUsaEquipamentoOrtopedicoOculosAdaptado(String saudeUsaEquipamentoOrtopedicoOculosAdaptado) {
+    public void setSaudeUsaEquipamentoOrtopedicoOculosAdaptado(Boolean saudeUsaEquipamentoOrtopedicoOculosAdaptado) {
         this.saudeUsaEquipamentoOrtopedicoOculosAdaptado = saudeUsaEquipamentoOrtopedicoOculosAdaptado;
     }
 
@@ -386,11 +386,11 @@ public class Pestalozzi implements Serializable {
         this.saudeUsaEquipamentoOrtopedicoRealizouReabilitacaoOnde = saudeUsaEquipamentoOrtopedicoRealizouReabilitacaoOnde;
     }
 
-    public String getSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia() {
+    public Boolean getSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia() {
         return saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia;
     }
 
-    public void setSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia(String saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia) {
+    public void setSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia(Boolean saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia) {
         this.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia = saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia;
     }
 
@@ -434,11 +434,11 @@ public class Pestalozzi implements Serializable {
         this.saudeUsaEquipamentoOrtopedicoResidenciaCobertaPSF = saudeUsaEquipamentoOrtopedicoResidenciaCobertaPSF;
     }
 
-    public String getSaudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude() {
+    public Boolean getSaudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude() {
         return saudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude;
     }
 
-    public void setSaudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude(String saudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude) {
+    public void setSaudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude(Boolean saudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude) {
         this.saudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude = saudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude;
     }
 
@@ -458,11 +458,11 @@ public class Pestalozzi implements Serializable {
         this.saudeUsaEquipamentoOrtopedicoPostoSaudeRegiaoReside = saudeUsaEquipamentoOrtopedicoPostoSaudeRegiaoReside;
     }
 
-    public String getSaudeUsaEquipamentoOrtopedicoUsoMedicacao() {
+    public Boolean getSaudeUsaEquipamentoOrtopedicoUsoMedicacao() {
         return saudeUsaEquipamentoOrtopedicoUsoMedicacao;
     }
 
-    public void setSaudeUsaEquipamentoOrtopedicoUsoMedicacao(String saudeUsaEquipamentoOrtopedicoUsoMedicacao) {
+    public void setSaudeUsaEquipamentoOrtopedicoUsoMedicacao(Boolean saudeUsaEquipamentoOrtopedicoUsoMedicacao) {
         this.saudeUsaEquipamentoOrtopedicoUsoMedicacao = saudeUsaEquipamentoOrtopedicoUsoMedicacao;
     }
 
@@ -482,11 +482,11 @@ public class Pestalozzi implements Serializable {
         this.saudeUsaEquipamentoOrtopedicoUsoMedicacaoFrequencia = saudeUsaEquipamentoOrtopedicoUsoMedicacaoFrequencia;
     }
 
-    public String getEducacaoMatriculado() {
+    public Boolean getEducacaoMatriculado() {
         return educacaoMatriculado;
     }
 
-    public void setEducacaoMatriculado(String educacaoMatriculado) {
+    public void setEducacaoMatriculado(Boolean educacaoMatriculado) {
         this.educacaoMatriculado = educacaoMatriculado;
     }
 
@@ -538,11 +538,11 @@ public class Pestalozzi implements Serializable {
         this.educacaoEscolaQualBairro = educacaoEscolaQualBairro;
     }
 
-    public String getEducacaoEscolaTemSalaDeRecurso() {
+    public Boolean getEducacaoEscolaTemSalaDeRecurso() {
         return educacaoEscolaTemSalaDeRecurso;
     }
 
-    public void setEducacaoEscolaTemSalaDeRecurso(String educacaoEscolaTemSalaDeRecurso) {
+    public void setEducacaoEscolaTemSalaDeRecurso(Boolean educacaoEscolaTemSalaDeRecurso) {
         this.educacaoEscolaTemSalaDeRecurso = educacaoEscolaTemSalaDeRecurso;
     }
 
@@ -562,123 +562,123 @@ public class Pestalozzi implements Serializable {
         this.educacaoResponsavelParticipaReuniaoEscolar = educacaoResponsavelParticipaReuniaoEscolar;
     }
 
-    public String getEducacaoAtividadeInstituconalPossui() {
+    public Boolean getEducacaoAtividadeInstituconalPossui() {
         return educacaoAtividadeInstituconalPossui;
     }
 
-    public void setEducacaoAtividadeInstituconalPossui(String educacaoAtividadeInstituconalPossui) {
+    public void setEducacaoAtividadeInstituconalPossui(Boolean educacaoAtividadeInstituconalPossui) {
         this.educacaoAtividadeInstituconalPossui = educacaoAtividadeInstituconalPossui;
     }
 
-    public String getEducacaoAtividadeInstituconalQualAEE() {
+    public Boolean getEducacaoAtividadeInstituconalQualAEE() {
         return educacaoAtividadeInstituconalQualAEE;
     }
 
-    public void setEducacaoAtividadeInstituconalQualAEE(String educacaoAtividadeInstituconalQualAEE) {
+    public void setEducacaoAtividadeInstituconalQualAEE(Boolean educacaoAtividadeInstituconalQualAEE) {
         this.educacaoAtividadeInstituconalQualAEE = educacaoAtividadeInstituconalQualAEE;
     }
 
-    public String getEducacaoAtividadeInstituconalQualEJA() {
+    public Boolean getEducacaoAtividadeInstituconalQualEJA() {
         return educacaoAtividadeInstituconalQualEJA;
     }
 
-    public void setEducacaoAtividadeInstituconalQualEJA(String educacaoAtividadeInstituconalQualEJA) {
+    public void setEducacaoAtividadeInstituconalQualEJA(Boolean educacaoAtividadeInstituconalQualEJA) {
         this.educacaoAtividadeInstituconalQualEJA = educacaoAtividadeInstituconalQualEJA;
     }
 
-    public String getEducacaoAtividadeInstituconalQualEsporte() {
+    public Boolean getEducacaoAtividadeInstituconalQualEsporte() {
         return educacaoAtividadeInstituconalQualEsporte;
     }
 
-    public void setEducacaoAtividadeInstituconalQualEsporte(String educacaoAtividadeInstituconalQualEsporte) {
+    public void setEducacaoAtividadeInstituconalQualEsporte(Boolean educacaoAtividadeInstituconalQualEsporte) {
         this.educacaoAtividadeInstituconalQualEsporte = educacaoAtividadeInstituconalQualEsporte;
     }
 
-    public String getEducacaoAtividadeInstituconalQualOficinaProf() {
+    public Boolean getEducacaoAtividadeInstituconalQualOficinaProf() {
         return educacaoAtividadeInstituconalQualOficinaProf;
     }
 
-    public void setEducacaoAtividadeInstituconalQualOficinaProf(String educacaoAtividadeInstituconalQualOficinaProf) {
+    public void setEducacaoAtividadeInstituconalQualOficinaProf(Boolean educacaoAtividadeInstituconalQualOficinaProf) {
         this.educacaoAtividadeInstituconalQualOficinaProf = educacaoAtividadeInstituconalQualOficinaProf;
     }
 
-    public String getEducacaoAtividadeInstituconalQualJovemAprendiz() {
+    public Boolean getEducacaoAtividadeInstituconalQualJovemAprendiz() {
         return educacaoAtividadeInstituconalQualJovemAprendiz;
     }
 
-    public void setEducacaoAtividadeInstituconalQualJovemAprendiz(String educacaoAtividadeInstituconalQualJovemAprendiz) {
+    public void setEducacaoAtividadeInstituconalQualJovemAprendiz(Boolean educacaoAtividadeInstituconalQualJovemAprendiz) {
         this.educacaoAtividadeInstituconalQualJovemAprendiz = educacaoAtividadeInstituconalQualJovemAprendiz;
     }
 
-    public String getEducacaoAtividadeInstituconalQualArteCultura() {
+    public Boolean getEducacaoAtividadeInstituconalQualArteCultura() {
         return educacaoAtividadeInstituconalQualArteCultura;
     }
 
-    public void setEducacaoAtividadeInstituconalQualArteCultura(String educacaoAtividadeInstituconalQualArteCultura) {
+    public void setEducacaoAtividadeInstituconalQualArteCultura(Boolean educacaoAtividadeInstituconalQualArteCultura) {
         this.educacaoAtividadeInstituconalQualArteCultura = educacaoAtividadeInstituconalQualArteCultura;
     }
 
-    public String getEducacaoAtividadeComplementaresPossui() {
+    public Boolean getEducacaoAtividadeComplementaresPossui() {
         return educacaoAtividadeComplementaresPossui;
     }
 
-    public void setEducacaoAtividadeComplementaresPossui(String educacaoAtividadeComplementaresPossui) {
+    public void setEducacaoAtividadeComplementaresPossui(Boolean educacaoAtividadeComplementaresPossui) {
         this.educacaoAtividadeComplementaresPossui = educacaoAtividadeComplementaresPossui;
     }
 
-    public String getEducacaoAtividadeComplementaresDanca() {
+    public Boolean getEducacaoAtividadeComplementaresDanca() {
         return educacaoAtividadeComplementaresDanca;
     }
 
-    public void setEducacaoAtividadeComplementaresDanca(String educacaoAtividadeComplementaresDanca) {
+    public void setEducacaoAtividadeComplementaresDanca(Boolean educacaoAtividadeComplementaresDanca) {
         this.educacaoAtividadeComplementaresDanca = educacaoAtividadeComplementaresDanca;
     }
 
-    public String getEducacaoAtividadeComplementaresCapoeira() {
+    public Boolean getEducacaoAtividadeComplementaresCapoeira() {
         return educacaoAtividadeComplementaresCapoeira;
     }
 
-    public void setEducacaoAtividadeComplementaresCapoeira(String educacaoAtividadeComplementaresCapoeira) {
+    public void setEducacaoAtividadeComplementaresCapoeira(Boolean educacaoAtividadeComplementaresCapoeira) {
         this.educacaoAtividadeComplementaresCapoeira = educacaoAtividadeComplementaresCapoeira;
     }
 
-    public String getEducacaoAtividadeComplementaresTeatro() {
+    public Boolean getEducacaoAtividadeComplementaresTeatro() {
         return educacaoAtividadeComplementaresTeatro;
     }
 
-    public void setEducacaoAtividadeComplementaresTeatro(String educacaoAtividadeComplementaresTeatro) {
+    public void setEducacaoAtividadeComplementaresTeatro(Boolean educacaoAtividadeComplementaresTeatro) {
         this.educacaoAtividadeComplementaresTeatro = educacaoAtividadeComplementaresTeatro;
     }
 
-    public String getEducacaoAtividadeComplementaresPercussao() {
+    public Boolean getEducacaoAtividadeComplementaresPercussao() {
         return educacaoAtividadeComplementaresPercussao;
     }
 
-    public void setEducacaoAtividadeComplementaresPercussao(String educacaoAtividadeComplementaresPercussao) {
+    public void setEducacaoAtividadeComplementaresPercussao(Boolean educacaoAtividadeComplementaresPercussao) {
         this.educacaoAtividadeComplementaresPercussao = educacaoAtividadeComplementaresPercussao;
     }
 
-    public String getEducacaoAtividadeComplementaresMusica() {
+    public Boolean getEducacaoAtividadeComplementaresMusica() {
         return educacaoAtividadeComplementaresMusica;
     }
 
-    public void setEducacaoAtividadeComplementaresMusica(String educacaoAtividadeComplementaresMusica) {
+    public void setEducacaoAtividadeComplementaresMusica(Boolean educacaoAtividadeComplementaresMusica) {
         this.educacaoAtividadeComplementaresMusica = educacaoAtividadeComplementaresMusica;
     }
 
-    public String getEducacaoAtividadeComplementaresCoral() {
+    public Boolean getEducacaoAtividadeComplementaresCoral() {
         return educacaoAtividadeComplementaresCoral;
     }
 
-    public void setEducacaoAtividadeComplementaresCoral(String educacaoAtividadeComplementaresCoral) {
+    public void setEducacaoAtividadeComplementaresCoral(Boolean educacaoAtividadeComplementaresCoral) {
         this.educacaoAtividadeComplementaresCoral = educacaoAtividadeComplementaresCoral;
     }
 
-    public String getBeneficioSocialAposentadoriaPossui() {
+    public Boolean getBeneficioSocialAposentadoriaPossui() {
         return beneficioSocialAposentadoriaPossui;
     }
 
-    public void setBeneficioSocialAposentadoriaPossui(String beneficioSocialAposentadoriaPossui) {
+    public void setBeneficioSocialAposentadoriaPossui(Boolean beneficioSocialAposentadoriaPossui) {
         this.beneficioSocialAposentadoriaPossui = beneficioSocialAposentadoriaPossui;
     }
 
@@ -698,11 +698,19 @@ public class Pestalozzi implements Serializable {
         this.beneficioSocialAposentadoriaQuantoTempo = beneficioSocialAposentadoriaQuantoTempo;
     }
 
-    public String getBeneficioSocialBeneficioFamiliaPossui() {
+    public Double getBeneficioSocialAposentadoriaValor() {
+        return beneficioSocialAposentadoriaValor;
+    }
+
+    public void setBeneficioSocialAposentadoriaValor(Double beneficioSocialAposentadoriaValor) {
+        this.beneficioSocialAposentadoriaValor = beneficioSocialAposentadoriaValor;
+    }
+
+    public Boolean getBeneficioSocialBeneficioFamiliaPossui() {
         return beneficioSocialBeneficioFamiliaPossui;
     }
 
-    public void setBeneficioSocialBeneficioFamiliaPossui(String beneficioSocialBeneficioFamiliaPossui) {
+    public void setBeneficioSocialBeneficioFamiliaPossui(Boolean beneficioSocialBeneficioFamiliaPossui) {
         this.beneficioSocialBeneficioFamiliaPossui = beneficioSocialBeneficioFamiliaPossui;
     }
 
@@ -722,11 +730,19 @@ public class Pestalozzi implements Serializable {
         this.beneficioSocialBeneficioFamiliaQuantoTempo = beneficioSocialBeneficioFamiliaQuantoTempo;
     }
 
-    public String getBeneficioSocialIncapacidadePossui() {
+    public Double getBeneficioSocialBeneficioFamiliaValor() {
+        return beneficioSocialBeneficioFamiliaValor;
+    }
+
+    public void setBeneficioSocialBeneficioFamiliaValor(Double beneficioSocialBeneficioFamiliaValor) {
+        this.beneficioSocialBeneficioFamiliaValor = beneficioSocialBeneficioFamiliaValor;
+    }
+
+    public Boolean getBeneficioSocialIncapacidadePossui() {
         return beneficioSocialIncapacidadePossui;
     }
 
-    public void setBeneficioSocialIncapacidadePossui(String beneficioSocialIncapacidadePossui) {
+    public void setBeneficioSocialIncapacidadePossui(Boolean beneficioSocialIncapacidadePossui) {
         this.beneficioSocialIncapacidadePossui = beneficioSocialIncapacidadePossui;
     }
 
@@ -746,11 +762,19 @@ public class Pestalozzi implements Serializable {
         this.beneficioSocialIncapacidadeQuantoTempo = beneficioSocialIncapacidadeQuantoTempo;
     }
 
-    public String getBeneficioSocialINSSPossui() {
+    public Double getBeneficioSocialIncapacidadeValor() {
+        return beneficioSocialIncapacidadeValor;
+    }
+
+    public void setBeneficioSocialIncapacidadeValor(Double beneficioSocialIncapacidadeValor) {
+        this.beneficioSocialIncapacidadeValor = beneficioSocialIncapacidadeValor;
+    }
+
+    public Boolean getBeneficioSocialINSSPossui() {
         return beneficioSocialINSSPossui;
     }
 
-    public void setBeneficioSocialINSSPossui(String beneficioSocialINSSPossui) {
+    public void setBeneficioSocialINSSPossui(Boolean beneficioSocialINSSPossui) {
         this.beneficioSocialINSSPossui = beneficioSocialINSSPossui;
     }
 
@@ -770,11 +794,19 @@ public class Pestalozzi implements Serializable {
         this.beneficioSocialINSSQuantoTempo = beneficioSocialINSSQuantoTempo;
     }
 
-    public String getBeneficioSocialProgramaSociaisPossui() {
+    public Double getBeneficioSocialINSSValor() {
+        return beneficioSocialINSSValor;
+    }
+
+    public void setBeneficioSocialINSSValor(Double beneficioSocialINSSValor) {
+        this.beneficioSocialINSSValor = beneficioSocialINSSValor;
+    }
+
+    public Boolean getBeneficioSocialProgramaSociaisPossui() {
         return beneficioSocialProgramaSociaisPossui;
     }
 
-    public void setBeneficioSocialProgramaSociaisPossui(String beneficioSocialProgramaSociaisPossui) {
+    public void setBeneficioSocialProgramaSociaisPossui(Boolean beneficioSocialProgramaSociaisPossui) {
         this.beneficioSocialProgramaSociaisPossui = beneficioSocialProgramaSociaisPossui;
     }
 
@@ -794,11 +826,11 @@ public class Pestalozzi implements Serializable {
         this.beneficioSocialProgramaSopaPossui = beneficioSocialProgramaSopaPossui;
     }
 
-    public String getBeneficioSocialBolsaFamiliaPossui() {
+    public Boolean getBeneficioSocialBolsaFamiliaPossui() {
         return beneficioSocialBolsaFamiliaPossui;
     }
 
-    public void setBeneficioSocialBolsaFamiliaPossui(String beneficioSocialBolsaFamiliaPossui) {
+    public void setBeneficioSocialBolsaFamiliaPossui(Boolean beneficioSocialBolsaFamiliaPossui) {
         this.beneficioSocialBolsaFamiliaPossui = beneficioSocialBolsaFamiliaPossui;
     }
 
@@ -810,11 +842,19 @@ public class Pestalozzi implements Serializable {
         this.beneficioSocialBolsaFamiliaQuantoTempo = beneficioSocialBolsaFamiliaQuantoTempo;
     }
 
-    public String getBeneficioSocialMinhaCasaMinhaVidaPossui() {
+    public Double getBeneficioSocialBolsaFamiliaValor() {
+        return beneficioSocialBolsaFamiliaValor;
+    }
+
+    public void setBeneficioSocialBolsaFamiliaValor(Double beneficioSocialBolsaFamiliaValor) {
+        this.beneficioSocialBolsaFamiliaValor = beneficioSocialBolsaFamiliaValor;
+    }
+
+    public Boolean getBeneficioSocialMinhaCasaMinhaVidaPossui() {
         return beneficioSocialMinhaCasaMinhaVidaPossui;
     }
 
-    public void setBeneficioSocialMinhaCasaMinhaVidaPossui(String beneficioSocialMinhaCasaMinhaVidaPossui) {
+    public void setBeneficioSocialMinhaCasaMinhaVidaPossui(Boolean beneficioSocialMinhaCasaMinhaVidaPossui) {
         this.beneficioSocialMinhaCasaMinhaVidaPossui = beneficioSocialMinhaCasaMinhaVidaPossui;
     }
 
@@ -842,11 +882,11 @@ public class Pestalozzi implements Serializable {
         this.beneficioSocialNumeroNis = beneficioSocialNumeroNis;
     }
 
-    public String getTransporteCarteiraTransportePossui() {
+    public Boolean getTransporteCarteiraTransportePossui() {
         return transporteCarteiraTransportePossui;
     }
 
-    public void setTransporteCarteiraTransportePossui(String transporteCarteiraTransportePossui) {
+    public void setTransporteCarteiraTransportePossui(Boolean transporteCarteiraTransportePossui) {
         this.transporteCarteiraTransportePossui = transporteCarteiraTransportePossui;
     }
 
@@ -922,115 +962,123 @@ public class Pestalozzi implements Serializable {
         this.rendaFamiliarTempoAntesAgravo = rendaFamiliarTempoAntesAgravo;
     }
 
-    public String getRendaFamiliarMantemUsuario() {
+    public Double getRendaFamiliarValor() {
+        return rendaFamiliarValor;
+    }
+
+    public void setRendaFamiliarValor(Double rendaFamiliarValor) {
+        this.rendaFamiliarValor = rendaFamiliarValor;
+    }
+
+    public Boolean getRendaFamiliarMantemUsuario() {
         return rendaFamiliarMantemUsuario;
     }
 
-    public void setRendaFamiliarMantemUsuario(String rendaFamiliarMantemUsuario) {
+    public void setRendaFamiliarMantemUsuario(Boolean rendaFamiliarMantemUsuario) {
         this.rendaFamiliarMantemUsuario = rendaFamiliarMantemUsuario;
     }
 
-    public String getRendaFamiliarMantemPai() {
+    public Boolean getRendaFamiliarMantemPai() {
         return rendaFamiliarMantemPai;
     }
 
-    public void setRendaFamiliarMantemPai(String rendaFamiliarMantemPai) {
+    public void setRendaFamiliarMantemPai(Boolean rendaFamiliarMantemPai) {
         this.rendaFamiliarMantemPai = rendaFamiliarMantemPai;
     }
 
-    public String getRendaFamiliarMantemMae() {
+    public Boolean getRendaFamiliarMantemMae() {
         return rendaFamiliarMantemMae;
     }
 
-    public void setRendaFamiliarMantemMae(String rendaFamiliarMantemMae) {
+    public void setRendaFamiliarMantemMae(Boolean rendaFamiliarMantemMae) {
         this.rendaFamiliarMantemMae = rendaFamiliarMantemMae;
     }
 
-    public String getRendaFamiliarMantemIrmao() {
+    public Boolean getRendaFamiliarMantemIrmao() {
         return rendaFamiliarMantemIrmao;
     }
 
-    public void setRendaFamiliarMantemIrmao(String rendaFamiliarMantemIrmao) {
+    public void setRendaFamiliarMantemIrmao(Boolean rendaFamiliarMantemIrmao) {
         this.rendaFamiliarMantemIrmao = rendaFamiliarMantemIrmao;
     }
 
-    public String getRendaFamiliarMantemAvo() {
+    public Boolean getRendaFamiliarMantemAvo() {
         return rendaFamiliarMantemAvo;
     }
 
-    public void setRendaFamiliarMantemAvo(String rendaFamiliarMantemAvo) {
+    public void setRendaFamiliarMantemAvo(Boolean rendaFamiliarMantemAvo) {
         this.rendaFamiliarMantemAvo = rendaFamiliarMantemAvo;
     }
 
-    public String getRendaFamiliarMantemCuidador() {
+    public Boolean getRendaFamiliarMantemCuidador() {
         return rendaFamiliarMantemCuidador;
     }
 
-    public void setRendaFamiliarMantemCuidador(String rendaFamiliarMantemCuidador) {
+    public void setRendaFamiliarMantemCuidador(Boolean rendaFamiliarMantemCuidador) {
         this.rendaFamiliarMantemCuidador = rendaFamiliarMantemCuidador;
     }
 
-    public String getRendaFamiliarMantemTio() {
+    public Boolean getRendaFamiliarMantemTio() {
         return rendaFamiliarMantemTio;
     }
 
-    public void setRendaFamiliarMantemTio(String rendaFamiliarMantemTio) {
+    public void setRendaFamiliarMantemTio(Boolean rendaFamiliarMantemTio) {
         this.rendaFamiliarMantemTio = rendaFamiliarMantemTio;
     }
 
-    public String getRendaFamiliarMantemEsposo() {
+    public Boolean getRendaFamiliarMantemEsposo() {
         return rendaFamiliarMantemEsposo;
     }
 
-    public void setRendaFamiliarMantemEsposo(String rendaFamiliarMantemEsposo) {
+    public void setRendaFamiliarMantemEsposo(Boolean rendaFamiliarMantemEsposo) {
         this.rendaFamiliarMantemEsposo = rendaFamiliarMantemEsposo;
     }
 
-    public String getRendaFamiliarMantemVizinho() {
+    public Boolean getRendaFamiliarMantemVizinho() {
         return rendaFamiliarMantemVizinho;
     }
 
-    public void setRendaFamiliarMantemVizinho(String rendaFamiliarMantemVizinho) {
+    public void setRendaFamiliarMantemVizinho(Boolean rendaFamiliarMantemVizinho) {
         this.rendaFamiliarMantemVizinho = rendaFamiliarMantemVizinho;
     }
 
-    public String getRendaFamiliarMantemFilho() {
+    public Boolean getRendaFamiliarMantemFilho() {
         return rendaFamiliarMantemFilho;
     }
 
-    public void setRendaFamiliarMantemFilho(String rendaFamiliarMantemFilho) {
+    public void setRendaFamiliarMantemFilho(Boolean rendaFamiliarMantemFilho) {
         this.rendaFamiliarMantemFilho = rendaFamiliarMantemFilho;
     }
 
-    public String getRendaFamiliarMantemPadastroMadastra() {
+    public Boolean getRendaFamiliarMantemPadastroMadastra() {
         return rendaFamiliarMantemPadastroMadastra;
     }
 
-    public void setRendaFamiliarMantemPadastroMadastra(String rendaFamiliarMantemPadastroMadastra) {
+    public void setRendaFamiliarMantemPadastroMadastra(Boolean rendaFamiliarMantemPadastroMadastra) {
         this.rendaFamiliarMantemPadastroMadastra = rendaFamiliarMantemPadastroMadastra;
     }
 
-    public String getRendaFamiliarMantemGenroNora() {
+    public Boolean getRendaFamiliarMantemGenroNora() {
         return rendaFamiliarMantemGenroNora;
     }
 
-    public void setRendaFamiliarMantemGenroNora(String rendaFamiliarMantemGenroNora) {
+    public void setRendaFamiliarMantemGenroNora(Boolean rendaFamiliarMantemGenroNora) {
         this.rendaFamiliarMantemGenroNora = rendaFamiliarMantemGenroNora;
     }
 
-    public String getRendaFamiliarMantemSobrinho() {
+    public Boolean getRendaFamiliarMantemSobrinho() {
         return rendaFamiliarMantemSobrinho;
     }
 
-    public void setRendaFamiliarMantemSobrinho(String rendaFamiliarMantemSobrinho) {
+    public void setRendaFamiliarMantemSobrinho(Boolean rendaFamiliarMantemSobrinho) {
         this.rendaFamiliarMantemSobrinho = rendaFamiliarMantemSobrinho;
     }
 
-    public String getRendaFamiliarMantemEntenado() {
+    public Boolean getRendaFamiliarMantemEntenado() {
         return rendaFamiliarMantemEntenado;
     }
 
-    public void setRendaFamiliarMantemEntenado(String rendaFamiliarMantemEntenado) {
+    public void setRendaFamiliarMantemEntenado(Boolean rendaFamiliarMantemEntenado) {
         this.rendaFamiliarMantemEntenado = rendaFamiliarMantemEntenado;
     }
 
@@ -1106,6 +1154,14 @@ public class Pestalozzi implements Serializable {
         this.habitacaoResidenciaAdaptada = habitacaoResidenciaAdaptada;
     }
 
+    public ArrayList<ComposicaoFamiliar> getListaComposicaoFamiliar() {
+        return listaComposicaoFamiliar;
+    }
+
+    public void setListaComposicaoFamiliar(ArrayList<ComposicaoFamiliar> listaComposicaoFamiliar) {
+        this.listaComposicaoFamiliar = listaComposicaoFamiliar;
+    }
+
     public String getRelatoVida() {
         return relatoVida;
     }
@@ -1120,61 +1176,5 @@ public class Pestalozzi implements Serializable {
 
     public void setParecerSocialEncaminhamento(String parecerSocialEncaminhamento) {
         this.parecerSocialEncaminhamento = parecerSocialEncaminhamento;
-    }
-
-    public Double getBeneficioSocialAposentadoriaValor() {
-        return beneficioSocialAposentadoriaValor;
-    }
-
-    public void setBeneficioSocialAposentadoriaValor(Double beneficioSocialAposentadoriaValor) {
-        this.beneficioSocialAposentadoriaValor = beneficioSocialAposentadoriaValor;
-    }
-
-    public Double getBeneficioSocialBeneficioFamiliaValor() {
-        return beneficioSocialBeneficioFamiliaValor;
-    }
-
-    public void setBeneficioSocialBeneficioFamiliaValor(Double beneficioSocialBeneficioFamiliaValor) {
-        this.beneficioSocialBeneficioFamiliaValor = beneficioSocialBeneficioFamiliaValor;
-    }
-
-    public Double getBeneficioSocialIncapacidadeValor() {
-        return beneficioSocialIncapacidadeValor;
-    }
-
-    public void setBeneficioSocialIncapacidadeValor(Double beneficioSocialIncapacidadeValor) {
-        this.beneficioSocialIncapacidadeValor = beneficioSocialIncapacidadeValor;
-    }
-
-    public Double getBeneficioSocialINSSValor() {
-        return beneficioSocialINSSValor;
-    }
-
-    public void setBeneficioSocialINSSValor(Double beneficioSocialINSSValor) {
-        this.beneficioSocialINSSValor = beneficioSocialINSSValor;
-    }
-
-    public Double getBeneficioSocialBolsaFamiliaValor() {
-        return beneficioSocialBolsaFamiliaValor;
-    }
-
-    public void setBeneficioSocialBolsaFamiliaValor(Double beneficioSocialBolsaFamiliaValor) {
-        this.beneficioSocialBolsaFamiliaValor = beneficioSocialBolsaFamiliaValor;
-    }
-
-    public Double getRendaFamiliarValor() {
-        return rendaFamiliarValor;
-    }
-
-    public void setRendaFamiliarValor(Double rendaFamiliarValor) {
-        this.rendaFamiliarValor = rendaFamiliarValor;
-    }
-
-    public ArrayList<ComposicaoFamiliar> getListaComposicaoFamiliar() {
-        return listaComposicaoFamiliar;
-    }
-
-    public void setListaComposicaoFamiliar(ArrayList<ComposicaoFamiliar> listaComposicaoFamiliar) {
-        this.listaComposicaoFamiliar = listaComposicaoFamiliar;
     }
 }
