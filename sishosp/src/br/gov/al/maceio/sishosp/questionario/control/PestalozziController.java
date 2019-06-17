@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.questionario.control;
 
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.questionario.dao.PestalozziDAO;
 import br.gov.al.maceio.sishosp.questionario.model.ComposicaoFamiliar;
@@ -42,6 +43,11 @@ public class PestalozziController implements Serializable {
     public void deletarComposicaoFamiliar(){
         this.pestalozzi.getListaComposicaoFamiliar().remove(this.composicaoFamiliarDel);
         composicaoFamiliarDel= new ComposicaoFamiliar();
+    }
+
+    public void gravarQuestionario() throws ProjetoException {
+        PestalozziDAO pestalozziDAO = new PestalozziDAO();
+        pestalozziDAO.gravarQuestionario(pestalozzi, 1, 1);
     }
 
     public String redirectEdit() {

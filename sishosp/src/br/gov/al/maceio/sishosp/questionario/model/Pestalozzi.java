@@ -78,7 +78,7 @@ public class Pestalozzi implements Serializable {
     private String beneficioSocialAposentadoriaTipo;
     private String beneficioSocialAposentadoriaQuantoTempo;
     private Double beneficioSocialAposentadoriaValor;
-    private String beneficioSocialBeneficioFamilia;
+    private String beneficioSocialBeneficioFamiliaPossui;
     private String beneficioSocialBeneficioFamiliaTipo;
     private String beneficioSocialBeneficioFamiliaQuantoTempo;
     private Double beneficioSocialBeneficioFamiliaValor;
@@ -698,12 +698,12 @@ public class Pestalozzi implements Serializable {
         this.beneficioSocialAposentadoriaQuantoTempo = beneficioSocialAposentadoriaQuantoTempo;
     }
 
-    public String getBeneficioSocialBeneficioFamilia() {
-        return beneficioSocialBeneficioFamilia;
+    public String getBeneficioSocialBeneficioFamiliaPossui() {
+        return beneficioSocialBeneficioFamiliaPossui;
     }
 
-    public void setBeneficioSocialBeneficioFamilia(String beneficioSocialBeneficioFamilia) {
-        this.beneficioSocialBeneficioFamilia = beneficioSocialBeneficioFamilia;
+    public void setBeneficioSocialBeneficioFamiliaPossui(String beneficioSocialBeneficioFamiliaPossui) {
+        this.beneficioSocialBeneficioFamiliaPossui = beneficioSocialBeneficioFamiliaPossui;
     }
 
     public String getBeneficioSocialBeneficioFamiliaTipo() {

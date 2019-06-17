@@ -14,24 +14,51 @@ public class PestalozziDAO {
     //conexao = ConnectionFactory.getConnection();
     Connection conexao = null;
 
-    public Boolean gravarQuestionario(Pestalozzi pestalozzi, Integer idPaciente) throws ProjetoException {
+    public Boolean gravarQuestionario(Pestalozzi pestalozzi, Integer idPaciente, Integer idUsuarioCadastroEntrevista) throws ProjetoException {
         boolean retorno = false;
-        String sql = "INSERT INTO questionario_social.questionario_social_pestalozzimaceio(id_paciente) VALUES (?) ";
+        Integer idInsercao = null;
+        String sql = "INSERT INTO questionario_social.questionario_social_pestalozzimaceio( " +
+                "id_paciente, relato_vida, parecer_social_encaminhamentos, usuario_cadastro_entrevista, datahora_cadastro_entrevista) " +
+                "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP) RETURNING id ";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setInt(1, idPaciente);
+            stmt.setString(2, pestalozzi.getRelatoVida());
+            stmt.setString(3, pestalozzi.getParecerSocialEncaminhamento());
+            stmt.setInt(4, idUsuarioCadastroEntrevista);
             ResultSet rs = stmt.executeQuery();
-            Integer idInsercao = rs.getInt("id");
+            while (rs.next()) {
+                idInsercao = rs.getInt("id");
+            }
 
             if(gravarQuestionarioSaude(pestalozzi,idInsercao,conexao)){
+                if(gravarQuestionarioEducacao(pestalozzi, idInsercao, conexao)){
+                    if(gravarQuestionarioBeneficioSocial(pestalozzi, idInsercao, conexao)){
+                        if(gravarQuestionarioTransporte(pestalozzi, idInsercao, conexao)){
+                            if(gravarQuestionarioRendaFamilar(pestalozzi, idInsercao, conexao)){
+                                if(gravarQuestionarioHabitacao(pestalozzi, idInsercao, conexao)){
+                                    conexao.commit();
+                                    retorno = true;
+                                }else{
 
+                                }
+                            }else{
+
+                            }
+                        }else{
+
+                        }
+                    }else{
+
+                    }
+                }else{
+
+                }
             }else{
-            }
-            //MÉTODOS PARA INSERIR EM CADA CATEGORIA ESPECIFICA
 
-            conexao.commit();
-            retorno = true;
+            }
+
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
@@ -57,7 +84,7 @@ public class PestalozziDAO {
                 "saude_uso_equip_ortese, saude_uso_equip_aasi, saude_uso_equip_aux_optico,  " +
                 "saude_uso_equip_meios_aux_loc, saude_uso_equip_protese, saude_uso_equip_oculos_adapt,  " +
                 "saude_uso_equip_quanto_tempo, saude_uso_equip_entidade_concedeu, saude_uso_equip_realizou_reab,  " +
-                "saude_uso_equip_realizou_reab_onde, saude_uso_equip_alguem_fam_deficiencia, saude_uso_equip_alguem_fam_deficiencia_parentesco, - " +
+                "saude_uso_equip_realizou_reab_onde, saude_uso_equip_alguem_fam_deficiencia, saude_uso_equip_alguem_fam_deficiencia_parentesco, " +
                 "saude_uso_equip_morbidade_cid, saude_uso_equip_morbidade_cid_quanto_tempo, saude_uso_equip_causa_doenca,  " +
                 "saude_uso_equip_residencia_coberta_psf, saude_uso_equip_visita_agenda_saude, saude_uso_equip_como_atendido_doente,  " +
                 "saude_uso_equip_posto_saude_regiao, saude_uso_equip_faz_uso_medicacao, saude_uso_equip_faz_uso_qual_medicacao,  " +
@@ -66,7 +93,7 @@ public class PestalozziDAO {
                 "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
                 "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
                 "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-                "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
+                "?, ?, ?, ?, ?, ?, ?, ?, ?, ? " +
                 ") WHERE id = ?";
         try {
             PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql);
@@ -297,8 +324,6 @@ public class PestalozziDAO {
                 "?, ?, ?, ?, ?, ?, ?, ?) WHERE id = ?;";
         try {
             PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql);
-            stmt.setString(1, p.getEducacaoMatriculado());
-
             if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getEducacaoMatriculado())){
                 stmt.setString(1, p.getEducacaoMatriculado());
             }else{
@@ -419,8 +444,381 @@ public class PestalozziDAO {
             }else{
                 stmt.setNull(24,  java.sql.Types.NULL);
             }
-
             stmt.setInt(25, idInsercao);
+
+            stmt.executeQuery();
+            retorno = true;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+        return retorno;
+    }
+
+    public Boolean gravarQuestionarioBeneficioSocial(Pestalozzi p, Integer idInsercao, Connection conexaoAuxiliar) throws ProjetoException {
+        boolean retorno = false;
+        String sql = "INSERT INTO questionario_social.questionario_social_pestalozzimaceio( " +
+                "benefsociais_possui_apos, benefsociais_tipo_apos, benefsociais_tempo_apos,  " +
+                "benefsociais_valor_apos, benefsociais_benef_familia, benefsociais_benef_familia_tipobenef,  " +
+                "benefsociais_tempo_benef_familia, benefsociais_valor_benef_familia, benefsociais_possui_benef_inss,  " +
+                "benefsociais_tempo_benef_inss, benefsociais_tipo_benef_inss, benefsociais_valor_benef_inss,  " +
+                "benefsociais_possui_prog_sociais, benefsociais_possui_prog_leite, benefsociais_possui_prog_sopa,  " +
+                "benefsociais_possui_bolsa_fam, benefsociais_tempo_bolsa_fam, benefsociais_valor_bolsa_fam,  " +
+                "benefsociais_possui_minhacasa_minhavida, benefsociais_possui_cad_unico, benefsociais_possui_numero_nis,  " +
+                "benefsociais_numeronis)" +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? " +
+                "?, ?, ?, ?, ?, ?, ?, ?, ?, ? " +
+                "?)  WHERE id = ?;";
+        try {
+            PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql);
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialAposentadoriaPossui())){
+                stmt.setString(1, p.getBeneficioSocialAposentadoriaPossui());
+            }else{
+                stmt.setNull(1,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialAposentadoriaTipo())){
+                stmt.setString(2, p.getBeneficioSocialAposentadoriaTipo());
+            }else{
+                stmt.setNull(2,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialAposentadoriaQuantoTempo())){
+                stmt.setString(3, p.getBeneficioSocialAposentadoriaQuantoTempo());
+            }else{
+                stmt.setNull(3,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(p.getBeneficioSocialAposentadoriaValor())){
+                stmt.setDouble(4, p.getBeneficioSocialAposentadoriaValor());
+            }else{
+                stmt.setNull(4,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialBeneficioFamiliaPossui())){
+                stmt.setString(5, p.getBeneficioSocialBeneficioFamiliaPossui());
+            }else{
+                stmt.setNull(5,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialBeneficioFamiliaTipo())){
+                stmt.setString(6, p.getBeneficioSocialBeneficioFamiliaTipo());
+            }else{
+                stmt.setNull(6,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialBeneficioFamiliaQuantoTempo())){
+                stmt.setString(7, p.getBeneficioSocialBeneficioFamiliaQuantoTempo());
+            }else{
+                stmt.setNull(7,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(p.getBeneficioSocialBeneficioFamiliaValor())){
+                stmt.setDouble(8, p.getBeneficioSocialBeneficioFamiliaValor());
+            }else{
+                stmt.setNull(8,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialINSSPossui())){
+                stmt.setString(9, p.getBeneficioSocialINSSPossui());
+            }else{
+                stmt.setNull(9,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialINSSQuantoTempo())){
+                stmt.setString(10, p.getBeneficioSocialINSSQuantoTempo());
+            }else{
+                stmt.setNull(10,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialINSSTipo())){
+                stmt.setString(11, p.getBeneficioSocialINSSTipo());
+            }else{
+                stmt.setNull(11,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(p.getBeneficioSocialINSSValor())){
+                stmt.setDouble(12, p.getBeneficioSocialINSSValor());
+            }else{
+                stmt.setNull(12,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialProgramaSociaisPossui())){
+                stmt.setString(13, p.getBeneficioSocialProgramaSociaisPossui());
+            }else{
+                stmt.setNull(13,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialProgramaLeitePossui())){
+                stmt.setString(14, p.getBeneficioSocialProgramaLeitePossui());
+            }else{
+                stmt.setNull(14,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialProgramaSopaPossui())){
+                stmt.setString(15, p.getBeneficioSocialProgramaSopaPossui());
+            }else{
+                stmt.setNull(15,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialBolsaFamiliaPossui())){
+                stmt.setString(16, p.getBeneficioSocialBolsaFamiliaPossui());
+            }else{
+                stmt.setNull(16, java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialBolsaFamiliaQuantoTempo())){
+                stmt.setString(17, p.getBeneficioSocialBolsaFamiliaQuantoTempo());
+            }else{
+                stmt.setNull(17, java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(p.getBeneficioSocialBolsaFamiliaValor())){
+                stmt.setDouble(18, p.getBeneficioSocialBolsaFamiliaValor());
+            }else{
+                stmt.setNull(18,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialMinhaCasaMinhaVidaPossui())){
+                stmt.setString(19, p.getBeneficioSocialMinhaCasaMinhaVidaPossui());
+            }else{
+                stmt.setNull(19, java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialCadastroUnico())){
+                stmt.setString(20, p.getBeneficioSocialCadastroUnico());
+            }else{
+                stmt.setNull(20, java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialNumeroNisPossui())){
+                stmt.setString(21, p.getBeneficioSocialNumeroNisPossui());
+            }else{
+                stmt.setNull(21, java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getBeneficioSocialNumeroNis())){
+                stmt.setString(22, p.getBeneficioSocialNumeroNis());
+            }else{
+                stmt.setNull(22, java.sql.Types.NULL);
+            }
+            stmt.setInt(23, idInsercao);
+
+            stmt.executeQuery();
+            retorno = true;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+        return retorno;
+    }
+
+    public Boolean gravarQuestionarioTransporte(Pestalozzi p, Integer idInsercao, Connection conexaoAuxiliar) throws ProjetoException {
+        boolean retorno = false;
+        String sql = "INSERT INTO questionario_social.questionario_social_pestalozzimaceio( " +
+                "transporte_possui_cart_transp, transporte_cart_transp_acompanhante, transporte_tipo_carteira,  " +
+                "transporte_utilizado_tratamento, transporte_qtd_onibus_ate_instituicao, transporte_acessibilidade_acesso_percurso_instit) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?) WHERE id = ?; ";
+        try {
+            PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql);
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getTransporteCarteiraTransportePossui())){
+                stmt.setString(1, p.getTransporteCarteiraTransportePossui());
+            }else{
+                stmt.setNull(1,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getTransporteCarteiraTransporteAcompanhate())){
+                stmt.setString(2, p.getTransporteCarteiraTransporteAcompanhate());
+            }else{
+                stmt.setNull(2,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getTransporteCarteiraTransporteTipo())){
+                stmt.setString(3, p.getTransporteCarteiraTransporteTipo());
+            }else{
+                stmt.setNull(3,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getTransporteUtilizadoTratamento())){
+                stmt.setString(4, p.getTransporteUtilizadoTratamento());
+            }else{
+                stmt.setNull(4,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getTransporteQuantidadeOnibusAteInstituicao())){
+                stmt.setString(5, p.getTransporteQuantidadeOnibusAteInstituicao());
+            }else{
+                stmt.setNull(5,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getTransporteExisteAcessibilidadeAcessoPercusoInstituicao())){
+                stmt.setString(6, p.getTransporteExisteAcessibilidadeAcessoPercusoInstituicao());
+            }else{
+                stmt.setNull(6,  java.sql.Types.NULL);
+            }
+            stmt.setInt(7, idInsercao);
+
+            stmt.executeQuery();
+            retorno = true;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+        return retorno;
+    }
+
+
+    public Boolean gravarQuestionarioRendaFamilar(Pestalozzi p, Integer idInsercao, Connection conexaoAuxiliar) throws ProjetoException {
+        boolean retorno = false;
+        String sql = "INSERT INTO questionario_social.questionario_social_pestalozzimaceio( " +
+                "rendafam_inserida_merc_trab, rendafam_profissao_funcao, rendafam_atividade_antes_agravo,  " +
+                "rendafam_tempo_atividade_antes_agravo, rendafam_valor, rendafam_mantem_fam_usuario,  " +
+                "rendafam_mantem_fam_pai, rendafam_mantem_fam_mae, rendafam_mantem_fam_irmao,  " +
+                "rendafam_mantem_fam_avo, rendafam_mantem_fam_cuidador, rendafam_mantem_fam_tio,  " +
+                "rendafam_mantem_fam_esposo, rendafam_mantem_fam_vizinho, rendafam_mantem_fam_filho,  " +
+                "rendafam_mantem_fam_padastro_madastra, rendafam_mantem_fam_genro_nora, rendafam_mantem_fam_sobrinho,  " +
+                "rendafam_mantem_fam_enteado) " +
+                "VALUES ( " +
+                "?, ?, ?, ?, ?, ?, ?, ?, ?, ? " +
+                "?, ?, ?, ?, ?, ?, ?, ?, ? " +
+                ") WHERE id = ?; ";
+        try {
+            PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql);;
+
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarInseridoMercadoTrabalho())){
+                stmt.setString(1, p.getRendaFamiliarInseridoMercadoTrabalho());
+            }else{
+                stmt.setNull(1,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarProfissaoFuncao())){
+                stmt.setString(2, p.getRendaFamiliarProfissaoFuncao());
+            }else{
+                stmt.setNull(2,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarAtividadeAntesAgravo())){
+                stmt.setString(3, p.getRendaFamiliarAtividadeAntesAgravo());
+            }else{
+                stmt.setNull(3,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarTempoAntesAgravo())){
+                stmt.setString(4, p.getRendaFamiliarTempoAntesAgravo());
+            }else{
+                stmt.setNull(4,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(p.getRendaFamiliarValor())){
+                stmt.setDouble(5, p.getRendaFamiliarValor());
+            }else{
+                stmt.setNull(5,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemUsuario())){
+                stmt.setString(6, p.getRendaFamiliarMantemUsuario());
+            }else{
+                stmt.setNull(6,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemPai())){
+                stmt.setString(7, p.getRendaFamiliarMantemPai());
+            }else{
+                stmt.setNull(7,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemMae())){
+                stmt.setString(8, p.getRendaFamiliarMantemMae());
+            }else{
+                stmt.setNull(8,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemIrmao())){
+                stmt.setString(9, p.getRendaFamiliarMantemIrmao());
+            }else{
+                stmt.setNull(9,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemAvo())){
+                stmt.setString(10, p.getRendaFamiliarMantemAvo());
+            }else{
+                stmt.setNull(10,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemCuidador())){
+                stmt.setString(11, p.getRendaFamiliarMantemCuidador());
+            }else{
+                stmt.setNull(11,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemTio())){
+                stmt.setString(12, p.getRendaFamiliarMantemTio());
+            }else{
+                stmt.setNull(12,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemEsposo())){
+                stmt.setString(13, p.getRendaFamiliarMantemEsposo());
+            }else{
+                stmt.setNull(13,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemVizinho())){
+                stmt.setString(14, p.getRendaFamiliarMantemVizinho());
+            }else{
+                stmt.setNull(14,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemFilho())){
+                stmt.setString(15, p.getRendaFamiliarMantemFilho());
+            }else{
+                stmt.setNull(15,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemPadastroMadastra())){
+                stmt.setString(16, p.getRendaFamiliarMantemPadastroMadastra());
+            }else{
+                stmt.setNull(16,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemGenroNora())){
+                stmt.setString(17, p.getRendaFamiliarMantemGenroNora());
+            }else{
+                stmt.setNull(17,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemSobrinho())){
+                stmt.setString(18, p.getRendaFamiliarMantemSobrinho());
+            }else{
+                stmt.setNull(18,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarMantemEntenado())){
+                stmt.setString(19, p.getRendaFamiliarMantemEntenado());
+            }else{
+                stmt.setNull(19,  java.sql.Types.NULL);
+            }
+            stmt.setInt(20, idInsercao);
+
+            stmt.executeQuery();
+            retorno = true;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+        return retorno;
+    }
+
+    public Boolean gravarQuestionarioHabitacao(Pestalozzi p, Integer idInsercao, Connection conexaoAuxiliar) throws ProjetoException {
+        boolean retorno = false;
+        String sql = "INSERT INTO questionario_social.questionario_social_pestalozzimaceio( " +
+                "habitacao_situacao_moradia, habitacao_tipo_construcao, habitacao_tipo_residencia,  " +
+                "habitacao_num_comodos, habitacao_abastecimento_agua, habitacao_tipo_iluminacao,  " +
+                "habitacao_escoamento_sanitario, habitacao_destino_lixo, habitacao_residencia_adaptada) " +
+                "VALUES ( " +
+                "?, ?, ?, ?, ?, ?, ?, ?, ? " +
+                ") WHERE id = ?; ";
+        try {
+            PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql);;
+
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getHabitacaoSitucaoMoradia())){
+                stmt.setString(1, p.getHabitacaoSitucaoMoradia());
+            }else{
+                stmt.setNull(1,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getHabitacaoTipoConstrucao())){
+                stmt.setString(2, p.getHabitacaoTipoConstrucao());
+            }else{
+                stmt.setNull(2,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getHabitacaoTipoResidencia())){
+                stmt.setString(3, p.getHabitacaoTipoResidencia());
+            }else{
+                stmt.setNull(3,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getHabitacaoNumeroComodo())){
+                stmt.setString(4, p.getHabitacaoNumeroComodo());
+            }else{
+                stmt.setNull(4,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getHabitacaoAbastecimentoDeAgua())){
+                stmt.setString(5, p.getHabitacaoAbastecimentoDeAgua());
+            }else{
+                stmt.setNull(5,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getHabitacaoTipoIluminacao())){
+                stmt.setString(6, p.getHabitacaoTipoIluminacao());
+            }else{
+                stmt.setNull(6,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getHabitacaoEscoamentoSanitario())){
+                stmt.setString(7, p.getHabitacaoEscoamentoSanitario());
+            }else{
+                stmt.setNull(7,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getHabitacaoDestinoLixo())){
+                stmt.setString(8, p.getHabitacaoDestinoLixo());
+            }else{
+                stmt.setNull(8,  java.sql.Types.NULL);
+            }
+            if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getHabitacaoResidenciaAdaptada())){
+                stmt.setString(9, p.getHabitacaoResidenciaAdaptada());
+            }else{
+                stmt.setNull(9,  java.sql.Types.NULL);
+            }
+            stmt.setInt(10, idInsercao);
 
             stmt.executeQuery();
             retorno = true;

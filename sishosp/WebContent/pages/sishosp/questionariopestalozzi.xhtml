@@ -637,7 +637,7 @@
                                          severity="info"/>
 
                                 <p:selectOneRadio class="campo-laudoDig3"
-                                                  value="#{PestalozziController.pestalozzi.beneficioSocialBeneficioFamilia}"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialBeneficioFamiliaPossui}"
                                                   unselectable="true">
                                     <f:selectItem itemLabel="Sim" itemValue="S"/>
                                     <f:selectItem itemLabel="Não" itemValue="N"/>
@@ -1243,7 +1243,7 @@
                                          icon="glyphicon-ok"
                                          update="msgPagina"
                                          class="btn-incluir"
-                                         action="#{OrteseProteseController.gravarOrteseIhProtese()}"
+                                         action="#{PestalozziController.gravarQuestionario()}"
                                          rendered="#{PestalozziController.tipo == 1}"/>
 
                         <p:commandButton action="#{OrteseProteseController.alterarOrteseIhProtese()}"
