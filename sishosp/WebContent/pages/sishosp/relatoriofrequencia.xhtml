@@ -18,30 +18,44 @@
 
 			<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Relatório: Laudos a Vencer</h4>
+				<h4 class="panel-title">Relatório: Frequência</h4>
             </div>
             <p:growl id="grw"/>
             <div class="panel-body table-body">
 				<h:form id="frm">
 					
-				<b:row>
-				<b:column >
-				   <p:selectOneRadio required="true" requiredMessage="Informe o Tipo da Geração" id="console" value="#{RelatoriosController.atributoGenerico1}" unselectable="true">
-            <f:selectItem itemLabel="Geração Nominal" itemValue="N" />
-            <f:selectItem itemLabel="Geração de Laudos" itemValue="L" />
-        </p:selectOneRadio>
-                <hr/>
-				</b:column>
-				<b:column col-md="1">
-					<b:label for="periodovencer" class="label label-info" style="margin-left:0px !important" value="A vencer no período" severity="info" />
-							<p:inputMask required="true" value="#{RelatoriosController.atributoGenerico2}" requiredMessage="Informe o período a Vencer" mask="99/9999"  style="padding:10px !important;font-size:1em;"	 id="periodovencer" size="5"></p:inputMask>
-				</b:column>
-				
-				
-				</b:row>
+			
 				<br/>		
           <b:row>
        
+        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Paciente:" severity="info"/>
+       
+        <p:outputPanel id="outPa">
+                                <p:autoComplete value="#{AgendaController.agenda.paciente}"
+                                                size="31" converter="conPaciente" 
+                                                class="select-agendaEquipe4"
+                                                completeMethod="#{PacienteController.listaPacienteAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.nome}">
+                                    <p:ajax event="itemSelect"
+                                            update=":frm:outPa"
+                                            global="false"/>
+
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBPa" immediate="true"
+                                                 action="#{AgendaController.limparNaBuscaPaciente()}"
+                                                 actionListener="#{PacienteController.listarTodosPaciente()}"
+                                                 icon="ui-icon-search" update=":formConsuPac"
+                                                 oncomplete="PF('dlgConsuPac').show();"/>
+                            </p:outputPanel>
+       </b:column>
+       
+       </b:row>
+        <b:row>
       <b:column span="3"
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Programa:" severity="info"/>
@@ -199,6 +213,63 @@
                                                          target="#{AgendaController.agenda.grupo}"/>
                         </p:commandButton>
                     </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+        
+         <p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac" dynamic="true"
+                  modal="true" width="750px" height="400px" styleClass="topDialog">
+            <h:form id="formConsuPac">
+                <p:growl id="msgC"/>
+
+                <div class="form-group row">
+                    <div class="col-sm-2"></div>
+                </div>
+
+
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
+                             var="pacie" value="#{PacienteController.listaPacientesAgenda}"
+                             display="Nenhum Paciente">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Código
+                        </f:facet>
+
+                        <p:outputLabel value="#{pacie.id_paciente}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Nome
+                        </f:facet>
+
+                        <p:outputLabel value="#{pacie.nome}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Cpf
+                        </f:facet>
+                        <p:outputLabel value="#{pacie.cpf}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Ação
+                        </f:facet>
+                        <p:commandButton
+                                update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
+                                icon="ui-icon-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                onclick="PF('dlgConsuPac').hide();">
+                            <f:setPropertyActionListener value="#{pacie}"
+                                                         target="#{AgendaController.agenda.paciente}"/>
+                        </p:commandButton>
+
+                    </h:column>
+
 
                 </b:dataTable>
             </h:form>

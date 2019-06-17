@@ -22,6 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
@@ -36,7 +37,9 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
+import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
@@ -46,6 +49,7 @@ public class RelatoriosController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private ProgramaBean programa;
+	private PacienteBean paciente;
 	private GrupoBean grupo;
 	private TipoAtendimentoBean tipo;
 	private FuncionarioBean prof;
@@ -153,7 +157,7 @@ public class RelatoriosController implements Serializable {
 		}
 	}
 	
-	public void geraFrequencia(ProgramaBean programa, GrupoBean grupo) throws IOException,
+	public void geraFrequencia(ProgramaBean programa, GrupoBean grupo, PacienteBean paciente) throws IOException,
 	ParseException, ProjetoException, NoSuchAlgorithmException {
 		//lista criada para ser populada e mostrar as linhas na frequencia
 		List<Integer> lista = new ArrayList<Integer>();
@@ -164,8 +168,8 @@ public class RelatoriosController implements Serializable {
 		rDao.popularTabelaTemporariaFrequencia(randomico, grupo.getQtdFrequencia());
 		
 		JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(lista);
-	if (programa.equals(null)) {
-		 JSFUtil.adicionarMensagemErro("Informe o Programa!", "Erro!");
+	if ((programa==null) && (paciente==null)) {
+		 JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
 		}
 	else
 	{
@@ -180,7 +184,10 @@ public class RelatoriosController implements Serializable {
 		
 		if (grupo!=null)
 		map.put("codgrupo", grupo.getIdGrupo());
-		map.put("cod_laudo", null);
+		
+		if (paciente!=null)
+		map.put("codpaciente",paciente.getId_paciente());
+		
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
 		//this.executeReport(relatorio, map, "relatorio.pdf");
