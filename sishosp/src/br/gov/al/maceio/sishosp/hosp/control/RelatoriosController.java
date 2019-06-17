@@ -22,8 +22,17 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.ParserConfigurationException;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -32,16 +41,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
-import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 @ManagedBean(name = "RelatoriosController")
 @ViewScoped
@@ -52,6 +51,7 @@ public class RelatoriosController implements Serializable {
 	private PacienteBean paciente;
 	private GrupoBean grupo;
 	private TipoAtendimentoBean tipo;
+	private ProcedimentoBean procedimento;
 	private FuncionarioBean prof;
 	private List<GrupoBean> listaGrupos;
 	private List<TipoAtendimentoBean> listaTipos;
@@ -83,6 +83,7 @@ public class RelatoriosController implements Serializable {
 		this.prof = new FuncionarioBean();
 		this.listaGrupos = new ArrayList<GrupoBean>();
 		this.listaTipos = new ArrayList<TipoAtendimentoBean>();
+		procedimento = new ProcedimentoBean();
 		this.dataInicial = null;
 		this.dataFinal = null;
 		this.tipoExameAuditivo = new String("TODOS");
@@ -124,6 +125,10 @@ public class RelatoriosController implements Serializable {
 
 	public void preparaRelLaudosVencer() {
 		atributoGenerico1="N";
+	}
+	
+	public void preparaRelFrequencia() {
+		atributoGenerico1="P";
 	}
 	
 	public void geraLaudoVencer(ProgramaBean programa, GrupoBean grupo) throws IOException,
@@ -878,6 +883,14 @@ this.executeReport(relatorio, map, "relatorio.pdf");
 
 	public void setAtributoGenerico2(String atributoGenerico2) {
 		this.atributoGenerico2 = atributoGenerico2;
+	}
+
+	public ProcedimentoBean getProcedimento() {
+		return procedimento;
+	}
+
+	public void setProcedimento(ProcedimentoBean procedimento) {
+		this.procedimento = procedimento;
 	}
 
 }

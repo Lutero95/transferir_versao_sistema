@@ -11,7 +11,7 @@
 	>
   <f:metadata>
             <f:viewAction
-                    action="#{RelatoriosController.preparaRelLaudosVencer()}" />
+                    action="#{RelatoriosController.preparaRelFrequencia()}" />
         </f:metadata>
 	<ui:define name="content">
 		<br />
@@ -59,15 +59,27 @@
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBPa" immediate="true"
-                                                 action="#{AgendaController.limparNaBuscaPaciente()}"
-                                                 actionListener="#{PacienteController.listarTodosPaciente()}"
+                                                 action="#{GerenciarPacienteController.carregarPacientesInstituicao()}"
                                                  icon="ui-icon-search" update=":formConsuPac"
                                                  oncomplete="PF('dlgConsuPac').show();"/>
                             </p:outputPanel>
        </b:column>
        
        </b:row>
-        <b:row rendered="#{RelatoriosController.atributoGenerico1=='P'}">
+        <b:row rendered="#{RelatoriosController.atributoGenerico1=='I'}">
+      <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+<h:outputText class="select-agendaEquipe4" value="Programa: #{RelatoriosController.programa.descPrograma}" severity="info"/>
+<br/>
+<br/>
+<h:outputText class="select-agendaEquipe4" style="padding-bottom:20px !important" value="Grupo: #{RelatoriosController.grupo.descGrupo}" severity="info"/>
+<br/><br/>
+                            <h:outputText class="select-agendaEquipe4" value="Procedimento: #{RelatoriosController.procedimento.nomeProc}" severity="info"/>
+                        </b:column>
+
+                    </b:row>
+                    
+ <b:row rendered="#{RelatoriosController.atributoGenerico1=='P'}">
       <b:column span="3"
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Programa:" severity="info"/>
@@ -98,9 +110,9 @@
                             </p:outputPanel>
                         </b:column>
 
-                    </b:row>
+                    </b:row>                    
 
-                    <b:row>
+                    <b:row rendered="#{RelatoriosController.atributoGenerico1=='P'}">
 
                         <b:column span="3"
                                   class="label-position new-data-size new-comple1">
@@ -230,7 +242,7 @@
             </h:form>
         </p:dialog>
         
-         <p:dialog header="Consultar Pacientes" widgetVar="dlgConsuPac" dynamic="true"
+         <p:dialog header="Consultar Pacientes na Rede" widgetVar="dlgConsuPac" dynamic="true"
                   modal="true" width="750px" height="400px" styleClass="topDialog">
             <h:form id="formConsuPac">
                 <p:growl id="msgC"/>
@@ -241,30 +253,43 @@
 
 
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-                             var="pacie" value="#{PacienteController.listaPacientesAgenda}"
+                             var="pacie" value="#{GerenciarPacienteController.listaPacientes}"
                              display="Nenhum Paciente">
 
-                    <h:column>
-                        <f:facet name="header">
-                            Código
-                        </f:facet>
-
-                        <p:outputLabel value="#{pacie.id_paciente}"/>
-                    </h:column>
-
-                    <h:column>
+                   <h:column>
                         <f:facet name="header">
                             Nome
                         </f:facet>
 
-                        <p:outputLabel value="#{pacie.nome}"/>
+                        <p:outputLabel value="#{pacie.paciente.nome}"/>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">
                             Cpf
                         </f:facet>
-                        <p:outputLabel value="#{pacie.cpf}"/>
+                        <p:outputLabel value="#{pacie.paciente.cpf}"/>
+                    </h:column>
+                    
+                                        <h:column>
+                        <f:facet name="header">
+                            Cns
+                        </f:facet>
+                        <p:outputLabel value="#{pacie.paciente.cns}"/>
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">
+                            Cód. Proced.
+                        </f:facet>
+                        <p:outputLabel value="#{pacie.laudo.procedimentoPrimario.codProc}"/>
+                    </h:column>
+                    
+                     <h:column>
+                        <f:facet name="header">
+                            Cns
+                        </f:facet>
+                        <p:outputLabel value="#{pacie.laudo.procedimentoPrimario.nomeProc}"/>
                     </h:column>
 
                     <h:column>
@@ -272,12 +297,18 @@
                             Ação
                         </f:facet>
                         <p:commandButton
-                                update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
+                                update=":frm"
                                 icon="ui-icon-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
                                 onclick="PF('dlgConsuPac').hide();">
-                            <f:setPropertyActionListener value="#{pacie}"
+                            <f:setPropertyActionListener value="#{pacie.paciente}"
                                                          target="#{AgendaController.agenda.paciente}"/>
+                            <f:setPropertyActionListener value="#{pacie.laudo.procedimentoPrimario}"
+                                                         target="#{RelatoriosController.procedimento}"/>     
+                            <f:setPropertyActionListener value="#{pacie.grupo}"
+                                                         target="#{RelatoriosController.grupo}"/>      
+                            <f:setPropertyActionListener value="#{pacie.programa}"
+                                                         target="#{RelatoriosController.programa}"/>                                                                                                                                                                   
                         </p:commandButton>
 
                     </h:column>

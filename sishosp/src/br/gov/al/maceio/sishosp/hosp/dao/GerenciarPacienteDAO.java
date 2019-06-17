@@ -26,15 +26,16 @@ public class GerenciarPacienteDAO {
     public List<GerenciarPacienteBean> carregarPacientesInstituicao()
             throws ProjetoException {
 
-        String sql = "select p.id, p.codprograma, p.codgrupo, g.descgrupo, p.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
-                + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento "
-                + " from hosp.paciente_instituicao p "
+        String sql = "select p.id, p.codprograma,programa.descprograma, p.codgrupo, g.descgrupo, p.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
+                + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, "
+                + " pr.codproc, pr.nome nomeproc from hosp.paciente_instituicao p "
                 + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
                 + " left join hosp.pacientes pa on (p.codpaciente = pa.id_paciente) "
                 + " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo)"
+                + " left join hosp.programa  on (programa.id_programa = p.codprograma)"
                 + " where p.cod_empresa = ? AND p.status = 'A' ";
 
         List<GerenciarPacienteBean> lista = new ArrayList<>();
@@ -53,6 +54,8 @@ public class GerenciarPacienteDAO {
                 gp.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 gp.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 gp.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+                gp.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+                gp.getPrograma().setDescPrograma(rs.getString("descprograma"));
                 gp.getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 gp.getPaciente().setNome(rs.getString("nome"));
                 gp.getPaciente().setCns(rs.getString("cns"));
@@ -66,6 +69,8 @@ public class GerenciarPacienteDAO {
                 gp.setObservacao(rs.getString("observacao"));
                 gp.setData_cadastro(rs.getDate("data_cadastro"));
                 gp.getLaudo().getProcedimentoPrimario().setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+                gp.getLaudo().getProcedimentoPrimario().setCodProc(rs.getInt("codproc"));
+                gp.getLaudo().getProcedimentoPrimario().setNomeProc(rs.getString("nomeproc"));
 
                 lista.add(gp);
 
