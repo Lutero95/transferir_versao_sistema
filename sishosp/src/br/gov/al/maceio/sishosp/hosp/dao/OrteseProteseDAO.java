@@ -217,7 +217,10 @@ public class OrteseProteseDAO {
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.INSERCAO_DE_SOLICITACAO.getSigla(), codOrteseIhProtese, con);
 
             if (retorno) {
-                con.commit();
+                retorno = alterarSituacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.INSERCAO_DE_SOLICITACAO.getSigla(), orteseProtese.getId(), con);
+                if (retorno) {
+                    con.commit();
+                }
             }
 
         } catch (SQLException ex) {
@@ -302,7 +305,10 @@ public class OrteseProteseDAO {
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.ENCAMINHAMENTO_FORNECEDOR.getSigla(), orteseProtese.getId(), con);
 
             if (retorno) {
-                con.commit();
+                retorno = alterarSituacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.ENCAMINHAMENTO_FORNECEDOR.getSigla(), orteseProtese.getId(), con);
+                if (retorno) {
+                    con.commit();
+                }
             }
 
         } catch (SQLException ex) {
