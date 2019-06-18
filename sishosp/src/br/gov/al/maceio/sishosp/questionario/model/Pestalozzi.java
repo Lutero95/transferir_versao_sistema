@@ -8,8 +8,8 @@ import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 public class Pestalozzi implements Serializable {
     private Integer id;
     private PacienteBean paciente;
-    //SAÚDE
-    private String saudeRealizaAtendimentoNestaInstituicao;
+    //SAï¿½DE
+    private Boolean saudeRealizaAtendimentoNestaInstituicao;
     private String saudeUnidade;
     private Boolean saudeServicoAtendimentoRedeReabilitacaoAuditiva;
     private Boolean saudeServicoAtendimentoRedeReabilitacaoFisica;
@@ -24,7 +24,7 @@ public class Pestalozzi implements Serializable {
     private Boolean saudeOutrosServicosOficinaOrtopedica;
     private Boolean saudeOutrosServicosEstimulacaoPrecoce;
     private Boolean saudeOutrosServicosHidroTerapia;
-    private String saudeUsoOrteseProtese;
+    private Boolean saudeUsoOrteseProtese;
     private String saudeUsoOrteseProteseQuantoTempo;
     private String saudeUsoOrteseProteseQual;
     private Boolean saudeUsaEquipamentoOrtopedicoOrtese;
@@ -35,7 +35,7 @@ public class Pestalozzi implements Serializable {
     private Boolean saudeUsaEquipamentoOrtopedicoOculosAdaptado;
     private String saudeUsaEquipamentoOrtopedicoQuantoTempo;
     private String saudeUsaEquipamentoOrtopedicoEntidadeQueConcedeu;
-    private String saudeUsaEquipamentoOrtopedicoRealizouReabilitacao;
+    private Boolean saudeUsaEquipamentoOrtopedicoRealizouReabilitacao;
     private String saudeUsaEquipamentoOrtopedicoRealizouReabilitacaoOnde;
     private Boolean saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia;
     private String saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco;
@@ -56,11 +56,11 @@ public class Pestalozzi implements Serializable {
     private String educacaoTurno;
     private String educacaoEscolaEstaMatriculado;
     private String educacaoAcessoEscola;
-    private String educacaoEscolaFicaNoBairro;
+    private Boolean educacaoEscolaFicaNoBairro;
     private String educacaoEscolaQualBairro;
     private Boolean educacaoEscolaTemSalaDeRecurso;
-    private String educacaoRecebeApoioAuxiliarSala;
-    private String educacaoResponsavelParticipaReuniaoEscolar;
+    private Boolean educacaoRecebeApoioAuxiliarSala;
+    private Boolean educacaoResponsavelParticipaReuniaoEscolar;
     private Boolean educacaoAtividadeInstituconalPossui;
     private Boolean educacaoAtividadeInstituconalQualAEE;
     private Boolean educacaoAtividadeInstituconalQualEJA;
@@ -280,11 +280,11 @@ public class Pestalozzi implements Serializable {
         this.saudeOutrosServicosHidroTerapia = saudeOutrosServicosHidroTerapia;
     }
 
-    public String getSaudeUsoOrteseProtese() {
+    public Boolean getSaudeUsoOrteseProtese() {
         return saudeUsoOrteseProtese;
     }
 
-    public void setSaudeUsoOrteseProtese(String saudeUsoOrteseProtese) {
+    public void setSaudeUsoOrteseProtese(Boolean saudeUsoOrteseProtese) {
         this.saudeUsoOrteseProtese = saudeUsoOrteseProtese;
     }
 
@@ -368,11 +368,11 @@ public class Pestalozzi implements Serializable {
         this.saudeUsaEquipamentoOrtopedicoEntidadeQueConcedeu = saudeUsaEquipamentoOrtopedicoEntidadeQueConcedeu;
     }
 
-    public String getSaudeUsaEquipamentoOrtopedicoRealizouReabilitacao() {
+    public Boolean getSaudeUsaEquipamentoOrtopedicoRealizouReabilitacao() {
         return saudeUsaEquipamentoOrtopedicoRealizouReabilitacao;
     }
 
-    public void setSaudeUsaEquipamentoOrtopedicoRealizouReabilitacao(String saudeUsaEquipamentoOrtopedicoRealizouReabilitacao) {
+    public void setSaudeUsaEquipamentoOrtopedicoRealizouReabilitacao(Boolean saudeUsaEquipamentoOrtopedicoRealizouReabilitacao) {
         this.saudeUsaEquipamentoOrtopedicoRealizouReabilitacao = saudeUsaEquipamentoOrtopedicoRealizouReabilitacao;
     }
 
@@ -520,11 +520,11 @@ public class Pestalozzi implements Serializable {
         this.educacaoAcessoEscola = educacaoAcessoEscola;
     }
 
-    public String getEducacaoEscolaFicaNoBairro() {
+    public Boolean getEducacaoEscolaFicaNoBairro() {
         return educacaoEscolaFicaNoBairro;
     }
 
-    public void setEducacaoEscolaFicaNoBairro(String educacaoEscolaFicaNoBairro) {
+    public void setEducacaoEscolaFicaNoBairro(Boolean educacaoEscolaFicaNoBairro) {
         this.educacaoEscolaFicaNoBairro = educacaoEscolaFicaNoBairro;
     }
 
@@ -544,19 +544,19 @@ public class Pestalozzi implements Serializable {
         this.educacaoEscolaTemSalaDeRecurso = educacaoEscolaTemSalaDeRecurso;
     }
 
-    public String getEducacaoRecebeApoioAuxiliarSala() {
+    public Boolean getEducacaoRecebeApoioAuxiliarSala() {
         return educacaoRecebeApoioAuxiliarSala;
     }
 
-    public void setEducacaoRecebeApoioAuxiliarSala(String educacaoRecebeApoioAuxiliarSala) {
+    public void setEducacaoRecebeApoioAuxiliarSala(Boolean educacaoRecebeApoioAuxiliarSala) {
         this.educacaoRecebeApoioAuxiliarSala = educacaoRecebeApoioAuxiliarSala;
     }
 
-    public String getEducacaoResponsavelParticipaReuniaoEscolar() {
+    public Boolean getEducacaoResponsavelParticipaReuniaoEscolar() {
         return educacaoResponsavelParticipaReuniaoEscolar;
     }
 
-    public void setEducacaoResponsavelParticipaReuniaoEscolar(String educacaoResponsavelParticipaReuniaoEscolar) {
+    public void setEducacaoResponsavelParticipaReuniaoEscolar(Boolean educacaoResponsavelParticipaReuniaoEscolar) {
         this.educacaoResponsavelParticipaReuniaoEscolar = educacaoResponsavelParticipaReuniaoEscolar;
     }
 
@@ -1176,15 +1176,15 @@ public class Pestalozzi implements Serializable {
         this.parecerSocialEncaminhamento = parecerSocialEncaminhamento;
     }
 
-	public void setSaudeRealizaAtendimentoNestaInstituicao(String saudeRealizaAtendimentoNestaInstituicao) {
-		this.saudeRealizaAtendimentoNestaInstituicao = saudeRealizaAtendimentoNestaInstituicao;
-	}
+    public Boolean getSaudeRealizaAtendimentoNestaInstituicao() {
+        return saudeRealizaAtendimentoNestaInstituicao;
+    }
 
-	public String getSaudeRealizaAtendimentoNestaInstituicao() {
-		return saudeRealizaAtendimentoNestaInstituicao;
-	}
+    public void setSaudeRealizaAtendimentoNestaInstituicao(Boolean saudeRealizaAtendimentoNestaInstituicao) {
+        this.saudeRealizaAtendimentoNestaInstituicao = saudeRealizaAtendimentoNestaInstituicao;
+    }
 
-	public PacienteBean getPaciente() {
+    public PacienteBean getPaciente() {
 		return paciente;
 	}
 

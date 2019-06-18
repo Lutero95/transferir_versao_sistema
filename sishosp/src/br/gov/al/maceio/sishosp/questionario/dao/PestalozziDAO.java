@@ -154,8 +154,8 @@ public class PestalozziDAO {
             } else {
                 stmt.setNull(15, java.sql.Types.NULL);
             }
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getSaudeUsoOrteseProtese())) {
-                stmt.setString(16, p.getSaudeUsoOrteseProtese());
+            if (!VerificadorUtil.verificarSeObjetoNulo(p.getSaudeUsoOrteseProtese())) {
+                stmt.setBoolean(16, p.getSaudeUsoOrteseProtese());
             } else {
                 stmt.setNull(16, java.sql.Types.NULL);
             }
@@ -209,8 +209,8 @@ public class PestalozziDAO {
             } else {
                 stmt.setNull(26, java.sql.Types.NULL);
             }
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getSaudeUsaEquipamentoOrtopedicoRealizouReabilitacao())) {
-                stmt.setString(27, p.getSaudeUsaEquipamentoOrtopedicoRealizouReabilitacao());
+            if (!VerificadorUtil.verificarSeObjetoNulo(p.getSaudeUsaEquipamentoOrtopedicoRealizouReabilitacao())) {
+                stmt.setBoolean(27, p.getSaudeUsaEquipamentoOrtopedicoRealizouReabilitacao());
             } else {
                 stmt.setNull(27, java.sql.Types.NULL);
             }
@@ -322,8 +322,8 @@ public class PestalozziDAO {
             } else {
                 stmt.setNull(5, java.sql.Types.NULL);
             }
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getEducacaoEscolaFicaNoBairro())) {
-                stmt.setString(6, p.getEducacaoEscolaFicaNoBairro());
+            if (!VerificadorUtil.verificarSeObjetoNulo(p.getEducacaoEscolaFicaNoBairro())) {
+                stmt.setBoolean(6, p.getEducacaoEscolaFicaNoBairro());
             } else {
                 stmt.setNull(6, java.sql.Types.NULL);
             }
@@ -337,13 +337,13 @@ public class PestalozziDAO {
             } else {
                 stmt.setNull(8, java.sql.Types.NULL);
             }
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getEducacaoRecebeApoioAuxiliarSala())) {
-                stmt.setString(9, p.getEducacaoRecebeApoioAuxiliarSala());
+            if (!VerificadorUtil.verificarSeObjetoNulo(p.getEducacaoRecebeApoioAuxiliarSala())) {
+                stmt.setBoolean(9, p.getEducacaoRecebeApoioAuxiliarSala());
             } else {
                 stmt.setNull(9, java.sql.Types.NULL);
             }
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getEducacaoResponsavelParticipaReuniaoEscolar())) {
-                stmt.setString(10, p.getEducacaoResponsavelParticipaReuniaoEscolar());
+            if (!VerificadorUtil.verificarSeObjetoNulo(p.getEducacaoResponsavelParticipaReuniaoEscolar())) {
+                stmt.setBoolean(10, p.getEducacaoResponsavelParticipaReuniaoEscolar());
             } else {
                 stmt.setNull(10, java.sql.Types.NULL);
             }
@@ -794,4 +794,99 @@ public class PestalozziDAO {
         }
         return retorno;
     }
+
+    public Pestalozzi retornarQuestionario() throws ProjetoException{
+        String sql = "SELECT id, id_paciente, saude_realiza_atend_instituicao, saude_unidade_atend, saude_serv_atend_rede_reab_aud, saude_serv_atend_rede_reab_fis, saude_serv_atend_rede_reab_int, saude_serv_atend_rede_reab_vis, saude_serv_ambulatorio, saude_outros_serv_homecare, saude_outros_serv_equoterapia, saude_outros_serv_grupo_convivencia, saude_outros_serv_grupo_terap_fam, saude_outros_serv_orteseprotese, saude_outros_serv_oficina, saude_outros_serv_estimul_precoce, saude_outros_serv_hidroterapia, saude_uso_opm, saude_uso_opm_tempo, saude_uso_opm_qual, saude_uso_equip_ortese, saude_uso_equip_aasi, saude_uso_equip_aux_optico, saude_uso_equip_meios_aux_loc, saude_uso_equip_protese, saude_uso_equip_oculos_adapt, saude_uso_equip_quanto_tempo, saude_uso_equip_entidade_concedeu, saude_uso_equip_realizou_reab, saude_uso_equip_realizou_reab_onde, saude_uso_equip_alguem_fam_deficiencia, saude_uso_equip_alguem_fam_deficiencia_parentesco, saude_uso_equip_morbidade_cid, saude_uso_equip_morbidade_cid_quanto_tempo, saude_uso_equip_causa_doenca, saude_uso_equip_residencia_coberta_psf, saude_uso_equip_visita_agenda_saude, saude_uso_equip_como_atendido_doente, saude_uso_equip_posto_saude_regiao, saude_uso_equip_faz_uso_medicacao, saude_uso_equip_faz_uso_qual_medicacao, saude_medicacao_frequencia, educacao_matriculado, educacao_escolaridade, educacao_turno, educacao_escola_matriculado, educacao_acesso_escola, educacao_escola_fica_no_bairro, educacao_escola_qual_bairro, educacao_escola_tem_sala_recurso, educacao_recebe_apoio_aux_sala, educacao_resp_part_reuniao_escola, educacao_ativ_institucional_possui, educacao_qual_ativ_instit_aee, educacao_qual_ativ_instit_eja, educacao_qual_ativ_instit_esporte, educacao_qual_ativ_instit_oficina_prof, educacao_qual_ativ_instit_jovem_aprendiz, educacao_qual_ativ_instit_arte, educacao_ativ_complem_possui, educacao_ativ_complem_danca, educacao_ativ_complem_capoeira, educacao_ativ_complem_teatro, educacao_ativ_complem_percussao, educacao_ativ_complem_musica, educacao_ativ_complem_coral, benefsociais_possui_apos, benefsociais_tipo_apos, benefsociais_tempo_apos, benefsociais_valor_apos, benefsociais_benef_familia, benefsociais_benef_familia_tipobenef, benefsociais_tempo_benef_familia, benefsociais_valor_benef_familia, benefsociais_possui_benef_inss, benefsociais_tempo_benef_inss, benefsociais_tipo_benef_inss, benefsociais_valor_benef_inss, benefsociais_possui_prog_sociais, benefsociais_possui_prog_leite, benefsociais_possui_prog_sopa, benefsociais_possui_bolsa_fam, benefsociais_tempo_bolsa_fam, benefsociais_valor_bolsa_fam, benefsociais_possui_minhacasa_minhavida, benefsociais_possui_cad_unico, benefsociais_possui_numero_nis, benefsociais_numeronis, transporte_possui_cart_transp, transporte_cart_transp_acompanhante, transporte_tipo_carteira, transporte_utilizado_tratamento, transporte_qtd_onibus_ate_instituicao, transporte_acessibilidade_acesso_percurso_instit, rendafam_inserida_merc_trab, rendafam_profissao_funcao, rendafam_atividade_antes_agravo, rendafam_tempo_atividade_antes_agravo, rendafam_valor, rendafam_mantem_fam_usuario, rendafam_mantem_fam_pai, rendafam_mantem_fam_mae, rendafam_mantem_fam_irmao, rendafam_mantem_fam_avo, rendafam_mantem_fam_cuidador, rendafam_mantem_fam_tio, rendafam_mantem_fam_esposo, rendafam_mantem_fam_vizinho, rendafam_mantem_fam_filho, rendafam_mantem_fam_padastro_madastra, rendafam_mantem_fam_genro_nora, rendafam_mantem_fam_sobrinho, rendafam_mantem_fam_enteado, habitacao_situacao_moradia, habitacao_tipo_construcao, habitacao_tipo_residencia, habitacao_num_comodos, habitacao_abastecimento_agua, habitacao_tipo_iluminacao, habitacao_escoamento_sanitario, habitacao_destino_lixo, habitacao_residencia_adaptada, relato_vida, parecer_social_encaminhamentos, usuario_cadastro_entrevista, datahora_cadastro_entrevista, benefsociais_incapacidade, benefsociais_tipo_incapacidade, benefsociais_tempo_incapacidade, benefsociais_valor_incapacidade " +
+                "FROM questionario_social.questionario_social_pestalozzimaceio where id_paciente = ?;";
+
+        Pestalozzi p = new Pestalozzi();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+
+                //SAUDE
+                p.setSaudeRealizaAtendimentoNestaInstituicao(rs.getBoolean("saude_realiza_atend_instituicao"));
+                p.setSaudeUnidade(rs.getString("saude_unidade_atend"));
+                p.setSaudeServicoAtendimentoRedeReabilitacaoAuditiva(rs.getBoolean("saude_serv_atend_rede_reab_aud"));
+                p.setSaudeServicoAtendimentoRedeReabilitacaoFisica(rs.getBoolean("saude_serv_atend_rede_reab_fis"));
+                p.setSaudeServicoAtendimentoRedeReabilitacaoIntelectual(rs.getBoolean("saude_serv_atend_rede_reab_int"));
+                p.setSaudeServicoAtendimentoRedeReabilitacaoVisual(rs.getBoolean("saude_serv_atend_rede_reab_vis"));
+                p.setSaudeServicoAmbulatorio(rs.getString("saude_serv_ambulatorio"));
+                p.setSaudeOutrosServicosHomeCare(rs.getBoolean("saude_outros_serv_homecare, "));
+                p.setSaudeOutrosServicosEquoterapia(rs.getBoolean("saude_outros_serv_equoterapia"));
+                p.setSaudeOutrosServicosGrupoConvivencia(rs.getBoolean("saude_outros_serv_grupo_convivencia"));
+                p.setSaudeOutrosServicosGrupoTerapeuticoFamiliar(rs.getBoolean("saude_outros_serv_grupo_terap_fam"));
+                p.setSaudeOutrosServicosOrteseProtesesMeiosLocomocao(rs.getBoolean("saude_outros_serv_orteseprotese"));
+                p.setSaudeOutrosServicosOficinaOrtopedica(rs.getBoolean("saude_outros_serv_oficina"));
+                p.setSaudeOutrosServicosEstimulacaoPrecoce(rs.getBoolean("saude_outros_serv_estimul_precoce"));
+                p.setSaudeOutrosServicosHidroTerapia(rs.getBoolean("saude_outros_serv_hidroterapia"));
+                p.setSaudeUsoOrteseProtese(rs.getBoolean("saude_uso_opm"));
+                p.setSaudeUsoOrteseProteseQuantoTempo(rs.getString("saude_uso_opm_tempo"));
+                p.setSaudeUsoOrteseProteseQual(rs.getString("saude_uso_opm_qual"));
+                p.setSaudeUsaEquipamentoOrtopedicoOrtese(rs.getBoolean("saude_uso_equip_ortese"));
+                p.setSaudeUsaEquipamentoOrtopedicoAASI(rs.getBoolean("saude_uso_equip_aasi"));
+                p.setSaudeUsaEquipamentoOrtopedicoAuxilioOptico(rs.getBoolean("saude_uso_equip_aux_optico"));
+                p.setSaudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao(rs.getBoolean("saude_uso_equip_meios_aux_loc"));
+                p.setSaudeUsaEquipamentoOrtopedicoProtese(rs.getBoolean("saude_uso_equip_protese"));
+                p.setSaudeUsaEquipamentoOrtopedicoOculosAdaptado(rs.getBoolean("saude_uso_equip_oculos_adapt"));
+                p.setSaudeUsaEquipamentoOrtopedicoQuantoTempo(rs.getString("saude_uso_equip_quanto_tempo"));
+                p.setSaudeUsaEquipamentoOrtopedicoEntidadeQueConcedeu(rs.getString("saude_uso_equip_entidade_concedeu"));
+                p.setSaudeUsaEquipamentoOrtopedicoRealizouReabilitacao(rs.getBoolean("saude_uso_equip_realizou_reab"));
+                p.setSaudeUsaEquipamentoOrtopedicoRealizouReabilitacaoOnde(rs.getString("saude_uso_equip_realizou_reab_onde"));
+                p.setSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia(rs.getBoolean("saude_uso_equip_alguem_fam_deficiencia"));
+                p.setSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco(rs.getString("saude_uso_equip_alguem_fam_deficiencia_parentesco"));
+                p.setSaudeUsaEquipamentoOrtopedicoMorbidadeCID(rs.getString("saude_uso_equip_morbidade_cid"));
+                p.setSaudeUsaEquipamentoOrtopedicoMorbidadeCIDQuantoTempo(rs.getString("saude_uso_equip_morbidade_cid_quanto_tempo"));
+                p.setSaudeUsaEquipamentoOrtopedicoCausaDoencaDeficiencia(rs.getString("saude_uso_equip_causa_doenca"));
+                p.setSaudeUsaEquipamentoOrtopedicoResidenciaCobertaPSF(rs.getString("saude_uso_equip_residencia_coberta_psf"));
+                p.setSaudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude(rs.getBoolean("saude_uso_equip_visita_agenda_saude"));
+                p.setSaudeUsaEquipamentoOrtopedicoFazParaSerAtendidoDoente(rs.getString("saude_uso_equip_como_atendido_doente"));
+                p.setSaudeUsaEquipamentoOrtopedicoPostoSaudeRegiaoReside(rs.getString("saude_uso_equip_posto_saude_regiao"));
+                p.setSaudeUsaEquipamentoOrtopedicoUsoMedicacao(rs.getBoolean("saude_uso_equip_faz_uso_medicacao"));
+                p.setSaudeUsaEquipamentoOrtopedicoUsoMedicacaoQual(rs.getString("saude_uso_equip_faz_uso_qual_medicacao"));
+                p.setSaudeUsaEquipamentoOrtopedicoUsoMedicacaoFrequencia(rs.getString("saude_medicacao_frequencia"));
+
+                //EDUCACAO
+                p.setEducacaoMatriculado(rs.getBoolean("educacao_matriculado"));
+                p.setEducacaoEscolaridade(rs.getString("educacao_escolaridade"));
+                p.setEducacaoTurno(rs.getString("educacao_turno"));
+                p.setEducacaoEscolaEstaMatriculado(rs.getString("educacao_escola_matriculado"));
+                p.setEducacaoAcessoEscola(rs.getString("educacao_acesso_escola"));
+                p.setEducacaoEscolaFicaNoBairro(rs.getBoolean("educacao_escola_fica_no_bairro"));
+                p.setEducacaoEscolaQualBairro(rs.getString("educacao_escola_qual_bairro"));
+                p.setEducacaoEscolaTemSalaDeRecurso(rs.getBoolean("educacao_escola_tem_sala_recurso"));
+                p.setEducacaoRecebeApoioAuxiliarSala(rs.getBoolean("educacao_recebe_apoio_aux_sala"));
+                p.setEducacaoResponsavelParticipaReuniaoEscolar(rs.getBoolean("educacao_resp_part_reuniao_escola"));
+                p.setEducacaoAtividadeInstituconalPossui(rs.getBoolean("educacao_ativ_institucional_possui"));
+                p.setEducacaoAtividadeInstituconalQualAEE(rs.getBoolean("educacao_qual_ativ_instit_aee"));
+                p.setEducacaoAtividadeInstituconalQualEJA(rs.getBoolean("educacao_qual_ativ_instit_eja"));
+                p.setEducacaoAtividadeInstituconalQualEsporte(rs.getBoolean("educacao_qual_ativ_instit_esporte"));
+                p.setEducacaoAtividadeInstituconalQualJovemAprendiz(rs.getBoolean("educacao_qual_ativ_instit_jovem_aprendiz"));
+                p.setEducacaoAtividadeInstituconalQualArteCultura(rs.getBoolean("educacao_qual_ativ_instit_arte"));
+                p.setEducacaoAtividadeComplementaresPossui(rs.getBoolean("educacao_ativ_complem_possui"));
+                p.setEducacaoAtividadeComplementaresDanca(rs.getBoolean("educacao_ativ_complem_danca"));
+                p.setEducacaoAtividadeComplementaresCapoeira(rs.getBoolean("educacao_ativ_complem_capoeira"));
+                p.setEducacaoAtividadeComplementaresTeatro(rs.getBoolean("educacao_ativ_complem_teatro"));
+                p.setEducacaoAtividadeComplementaresPercussao(rs.getBoolean("educacao_ativ_complem_percussao"));
+                p.setEducacaoAtividadeComplementaresMusica(rs.getBoolean("educacao_ativ_complem_musica"));
+                p.setEducacaoAtividadeComplementaresCoral(rs.getBoolean("educacao_ativ_complem_coral"));
+
+                //BENEF SOCIAL
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return p;
+    }
+
 }

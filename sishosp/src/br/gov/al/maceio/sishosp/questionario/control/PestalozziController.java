@@ -59,7 +59,6 @@ public class PestalozziController implements Serializable {
         return RedirecionarUtil.redirectEditSemTipo(ENDERECO_CADASTRO, ENDERECO_ID, this.pestalozzi.getPaciente().getId_paciente());
     }
 
-
     public Pestalozzi getPestalozzi() {
         return pestalozzi;
     }
@@ -68,13 +67,9 @@ public class PestalozziController implements Serializable {
         this.pestalozzi = pestalozzi;
     }
 
-
-
     public void setCabecalho(String cabecalho) {
         this.cabecalho = cabecalho;
     }
-
-
 
     public ComposicaoFamiliar getComposicaoFamiliarAdd() {
         return composicaoFamiliarAdd;
