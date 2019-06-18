@@ -2,6 +2,8 @@ package br.gov.al.maceio.sishosp.questionario.control;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.hosp.control.EscolaridadeController;
+import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.questionario.dao.PestalozziDAO;
 import br.gov.al.maceio.sishosp.questionario.model.ComposicaoFamiliar;
 import br.gov.al.maceio.sishosp.questionario.model.Pestalozzi;
@@ -10,6 +12,7 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.util.List;
 
 @ManagedBean(name = "PestalozziController")
 @ViewScoped
@@ -22,6 +25,7 @@ public class PestalozziController implements Serializable {
     private PestalozziDAO pDao = new PestalozziDAO();
     private ComposicaoFamiliar composicaoFamiliarAdd = new ComposicaoFamiliar();
     private ComposicaoFamiliar composicaoFamiliarDel = new ComposicaoFamiliar();
+    private List<EscolaridadeBean> listaEscolaridade;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "questionariopestalozzi?faces-redirect=true";
@@ -48,6 +52,11 @@ public class PestalozziController implements Serializable {
     public void gravarQuestionario() throws ProjetoException {
         PestalozziDAO pestalozziDAO = new PestalozziDAO();
         pestalozziDAO.gravarQuestionario(pestalozzi, 1, 1);
+    }
+
+    public void iniciarListaEscolaridade() throws ProjetoException{
+        EscolaridadeController escolaridadeController = new EscolaridadeController();
+        listaEscolaridade = escolaridadeController.listarEscolaridades();
     }
 
     public String redirectEdit() {
