@@ -45,18 +45,14 @@
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Paciente:" severity="info"/>
         <p:outputPanel id="outPa">
-                                <p:autoComplete value="#{AgendaController.agenda.paciente}"
-                                                size="31" converter="conPaciente" 
+                                <p:inputText value="#{RelatoriosController.pacienteInstituicao.paciente.nome}"
+                                                size="31" disabled="true"
                                                 class="select-agendaEquipe4"
-                                                completeMethod="#{PacienteController.listaPacienteAutoComplete}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.nome}">
-                                    <p:ajax event="itemSelect"
-                                            update=":frm:outPa"
-                                            global="false"/>
+                                              
+                                                
+                                               />
+                                  
 
-                                </p:autoComplete>
 
                                 <p:commandButton id="btBPa" immediate="true"
                                                  action="#{GerenciarPacienteController.carregarPacientesInstituicao()}"
