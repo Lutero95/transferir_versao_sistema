@@ -44,8 +44,12 @@ public class PestalozziDAO {
                         if (gravarQuestionarioTransporte(pestalozzi, idInsercao, conexao)) {
                             if (gravarQuestionarioRendaFamilar(pestalozzi, idInsercao, conexao)) {
                                 if (gravarQuestionarioHabitacao(pestalozzi, idInsercao, conexao)) {
-                                    conexao.commit();
-                                    retorno = true;
+                                    if(gravarComposicaoFamiliar(pestalozzi.getListaComposicaoFamiliar(), idInsercao, conexao)){
+                                        conexao.commit();
+                                        retorno = true;
+                                    }else{
+                                        throw new SQLException();
+                                    }
                                 } else {
                                     throw new SQLException();
                                 }
@@ -890,7 +894,7 @@ public class PestalozziDAO {
                 "FROM questionario_social.questionario_social_pestalozzimaceio WHERE id_paciente = ? ORDER BY id DESC LIMIT 1";
 
         Pestalozzi p = new Pestalozzi();
-
+        Integer idQuestionario = null;
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
@@ -899,7 +903,7 @@ public class PestalozziDAO {
             p.getPaciente().setId_paciente(idPaciente);
             while (rs.next()) {
                 //SAUDE
-
+                idQuestionario =  rs.getInt("id");
                 if(!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_realiza_atend_instituicao"))){
                     p.setSaudeRealizaAtendimentoNestaInstituicao(rs.getBoolean("saude_realiza_atend_instituicao"));
                 }
@@ -1061,9 +1065,7 @@ public class PestalozziDAO {
 
                 //PARECER SOCIAL ENCAMINHAMENTOS
                 p.setParecerSocialEncaminhamento(rs.getString("parecer_social_encaminhamentos"));
-
-
-
+                p.setListaComposicaoFamiliar(this.retornarComposicaoFamiliar(idQuestionario, conexao));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
