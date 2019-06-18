@@ -106,14 +106,14 @@ public class Pestalozzi implements Serializable {
 
     //TRANSPORTE
     private Boolean transporteCarteiraTransportePossui;
-    private String transporteCarteiraTransporteAcompanhate;
+    private Boolean transporteCarteiraTransporteAcompanhate;
     private String transporteCarteiraTransporteTipo;
     private String transporteUtilizadoTratamento;
     private String transporteQuantidadeOnibusAteInstituicao;
-    private String transporteExisteAcessibilidadeAcessoPercusoInstituicao;
+    private Boolean transporteExisteAcessibilidadeAcessoPercusoInstituicao;
 
     //RENDA FAMILIAR
-    private String rendaFamiliarInseridoMercadoTrabalho;
+    private Boolean rendaFamiliarInseridoMercadoTrabalho;
     private String rendaFamiliarProfissaoFuncao;
     private String rendaFamiliarAtividadeAntesAgravo;
     private String rendaFamiliarTempoAntesAgravo;
@@ -131,13 +131,13 @@ public class Pestalozzi implements Serializable {
     private Boolean rendaFamiliarMantemPadastroMadastra;
     private Boolean rendaFamiliarMantemGenroNora;
     private Boolean rendaFamiliarMantemSobrinho;
-    private Boolean rendaFamiliarMantemEntenado;
+    private Boolean rendaFamiliarMantemEnteado;
 
     //HABITACAO
     private String habitacaoSitucaoMoradia;
     private String habitacaoTipoConstrucao;
     private String habitacaoTipoResidencia;
-    private String habitacaoNumeroComodo;
+    private Integer habitacaoNumeroComodo;
     private String habitacaoAbastecimentoDeAgua;
     private String habitacaoTipoIluminacao;
     private String habitacaoEscoamentoSanitario;
@@ -165,8 +165,6 @@ public class Pestalozzi implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-
-    
 
     public String getSaudeUnidade() {
         return saudeUnidade;
@@ -888,12 +886,28 @@ public class Pestalozzi implements Serializable {
         this.transporteCarteiraTransportePossui = transporteCarteiraTransportePossui;
     }
 
-    public String getTransporteCarteiraTransporteAcompanhate() {
+    public Boolean getTransporteCarteiraTransporteAcompanhate() {
         return transporteCarteiraTransporteAcompanhate;
     }
 
-    public void setTransporteCarteiraTransporteAcompanhate(String transporteCarteiraTransporteAcompanhate) {
+    public void setTransporteCarteiraTransporteAcompanhate(Boolean transporteCarteiraTransporteAcompanhate) {
         this.transporteCarteiraTransporteAcompanhate = transporteCarteiraTransporteAcompanhate;
+    }
+
+    public void setTransporteExisteAcessibilidadeAcessoPercusoInstituicao(Boolean transporteExisteAcessibilidadeAcessoPercusoInstituicao) {
+        this.transporteExisteAcessibilidadeAcessoPercusoInstituicao = transporteExisteAcessibilidadeAcessoPercusoInstituicao;
+    }
+
+    public Boolean getTransporteExisteAcessibilidadeAcessoPercusoInstituicao() {
+        return transporteExisteAcessibilidadeAcessoPercusoInstituicao;
+    }
+
+    public Boolean getRendaFamiliarInseridoMercadoTrabalho() {
+        return rendaFamiliarInseridoMercadoTrabalho;
+    }
+
+    public void setRendaFamiliarInseridoMercadoTrabalho(Boolean rendaFamiliarInseridoMercadoTrabalho) {
+        this.rendaFamiliarInseridoMercadoTrabalho = rendaFamiliarInseridoMercadoTrabalho;
     }
 
     public String getTransporteCarteiraTransporteTipo() {
@@ -918,22 +932,6 @@ public class Pestalozzi implements Serializable {
 
     public void setTransporteQuantidadeOnibusAteInstituicao(String transporteQuantidadeOnibusAteInstituicao) {
         this.transporteQuantidadeOnibusAteInstituicao = transporteQuantidadeOnibusAteInstituicao;
-    }
-
-    public String getTransporteExisteAcessibilidadeAcessoPercusoInstituicao() {
-        return transporteExisteAcessibilidadeAcessoPercusoInstituicao;
-    }
-
-    public void setTransporteExisteAcessibilidadeAcessoPercusoInstituicao(String transporteExisteAcessibilidadeAcessoPercusoInstituicao) {
-        this.transporteExisteAcessibilidadeAcessoPercusoInstituicao = transporteExisteAcessibilidadeAcessoPercusoInstituicao;
-    }
-
-    public String getRendaFamiliarInseridoMercadoTrabalho() {
-        return rendaFamiliarInseridoMercadoTrabalho;
-    }
-
-    public void setRendaFamiliarInseridoMercadoTrabalho(String rendaFamiliarInseridoMercadoTrabalho) {
-        this.rendaFamiliarInseridoMercadoTrabalho = rendaFamiliarInseridoMercadoTrabalho;
     }
 
     public String getRendaFamiliarProfissaoFuncao() {
@@ -1072,12 +1070,12 @@ public class Pestalozzi implements Serializable {
         this.rendaFamiliarMantemSobrinho = rendaFamiliarMantemSobrinho;
     }
 
-    public Boolean getRendaFamiliarMantemEntenado() {
-        return rendaFamiliarMantemEntenado;
+    public Boolean getRendaFamiliarMantemEnteado() {
+        return rendaFamiliarMantemEnteado;
     }
 
-    public void setRendaFamiliarMantemEntenado(Boolean rendaFamiliarMantemEntenado) {
-        this.rendaFamiliarMantemEntenado = rendaFamiliarMantemEntenado;
+    public void setRendaFamiliarMantemEnteado(Boolean rendaFamiliarMantemEnteado) {
+        this.rendaFamiliarMantemEnteado = rendaFamiliarMantemEnteado;
     }
 
     public String getHabitacaoSitucaoMoradia() {
@@ -1104,11 +1102,11 @@ public class Pestalozzi implements Serializable {
         this.habitacaoTipoResidencia = habitacaoTipoResidencia;
     }
 
-    public String getHabitacaoNumeroComodo() {
+    public Integer getHabitacaoNumeroComodo() {
         return habitacaoNumeroComodo;
     }
 
-    public void setHabitacaoNumeroComodo(String habitacaoNumeroComodo) {
+    public void setHabitacaoNumeroComodo(Integer habitacaoNumeroComodo) {
         this.habitacaoNumeroComodo = habitacaoNumeroComodo;
     }
 

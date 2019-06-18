@@ -585,8 +585,8 @@ public class PestalozziDAO {
             } else {
                 stmt.setNull(1, java.sql.Types.NULL);
             }
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getTransporteCarteiraTransporteAcompanhate())) {
-                stmt.setString(2, p.getTransporteCarteiraTransporteAcompanhate());
+            if (!VerificadorUtil.verificarSeObjetoNulo(p.getTransporteCarteiraTransporteAcompanhate())) {
+                stmt.setBoolean(2, p.getTransporteCarteiraTransporteAcompanhate());
             } else {
                 stmt.setNull(2, java.sql.Types.NULL);
             }
@@ -605,8 +605,8 @@ public class PestalozziDAO {
             } else {
                 stmt.setNull(5, java.sql.Types.NULL);
             }
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getTransporteExisteAcessibilidadeAcessoPercusoInstituicao())) {
-                stmt.setString(6, p.getTransporteExisteAcessibilidadeAcessoPercusoInstituicao());
+            if (!VerificadorUtil.verificarSeObjetoNulo(p.getTransporteExisteAcessibilidadeAcessoPercusoInstituicao())) {
+                stmt.setBoolean(6, p.getTransporteExisteAcessibilidadeAcessoPercusoInstituicao());
             } else {
                 stmt.setNull(6, java.sql.Types.NULL);
             }
@@ -629,8 +629,8 @@ public class PestalozziDAO {
             PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql);
 
 
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getRendaFamiliarInseridoMercadoTrabalho())) {
-                stmt.setString(1, p.getRendaFamiliarInseridoMercadoTrabalho());
+            if (!VerificadorUtil.verificarSeObjetoNulo(p.getRendaFamiliarInseridoMercadoTrabalho())) {
+                stmt.setBoolean(1, p.getRendaFamiliarInseridoMercadoTrabalho());
             } else {
                 stmt.setNull(1, java.sql.Types.NULL);
             }
@@ -719,8 +719,8 @@ public class PestalozziDAO {
             } else {
                 stmt.setNull(18, java.sql.Types.NULL);
             }
-            if (!VerificadorUtil.verificarSeObjetoNulo(p.getRendaFamiliarMantemEntenado())) {
-                stmt.setBoolean(19, p.getRendaFamiliarMantemEntenado());
+            if (!VerificadorUtil.verificarSeObjetoNulo(p.getRendaFamiliarMantemEnteado())) {
+                stmt.setBoolean(19, p.getRendaFamiliarMantemEnteado());
             } else {
                 stmt.setNull(19, java.sql.Types.NULL);
             }
@@ -756,8 +756,8 @@ public class PestalozziDAO {
             } else {
                 stmt.setNull(3, java.sql.Types.NULL);
             }
-            if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(p.getHabitacaoNumeroComodo())) {
-                stmt.setString(4, p.getHabitacaoNumeroComodo());
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(p.getHabitacaoNumeroComodo())) {
+                stmt.setInt(4, p.getHabitacaoNumeroComodo());
             } else {
                 stmt.setNull(4, java.sql.Types.NULL);
             }
@@ -875,6 +875,81 @@ public class PestalozziDAO {
                 p.setEducacaoAtividadeComplementaresCoral(rs.getBoolean("educacao_ativ_complem_coral"));
 
                 //BENEF SOCIAL
+                p.setBeneficioSocialAposentadoriaPossui(rs.getBoolean("benefsociais_possui_apos"));
+                p.setBeneficioSocialAposentadoriaTipo(rs.getString("benefsociais_tipo_apos"));
+                p.setBeneficioSocialAposentadoriaQuantoTempo(rs.getString("benefsociais_tempo_apos"));
+                p.setBeneficioSocialAposentadoriaValor(rs.getDouble("benefsociais_valor_apos"));
+                p.setBeneficioSocialBeneficioFamiliaPossui(rs.getBoolean("benefsociais_benef_familia"));
+                p.setBeneficioSocialBeneficioFamiliaTipo(rs.getString("benefsociais_benef_familia_tipobenef"));
+                p.setBeneficioSocialBeneficioFamiliaQuantoTempo(rs.getString("benefsociais_tempo_benef_familia"));
+                p.setBeneficioSocialBeneficioFamiliaValor(rs.getDouble("benefsociais_valor_benef_familia"));
+                p.setBeneficioSocialINSSPossui(rs.getBoolean("benefsociais_possui_benef_inss"));
+                p.setBeneficioSocialINSSTipo(rs.getString("benefsociais_tempo_benef_inss"));
+                p.setBeneficioSocialINSSQuantoTempo(rs.getString("benefsociais_tipo_benef_inss"));
+                p.setBeneficioSocialINSSValor(rs.getDouble("benefsociais_valor_benef_inss"));
+                p.setBeneficioSocialProgramaLeitePossui(rs.getString("benefsociais_possui_prog_leite"));
+                p.setBeneficioSocialProgramaSopaPossui(rs.getString("benefsociais_possui_prog_sopa"));
+                p.setBeneficioSocialBolsaFamiliaPossui(rs.getBoolean("benefsociais_possui_bolsa_fam"));
+                p.setBeneficioSocialBolsaFamiliaQuantoTempo(rs.getString("benefsociais_tempo_bolsa_fam"));
+                p.setBeneficioSocialBolsaFamiliaValor(rs.getDouble("benefsociais_valor_bolsa_fam"));
+                p.setBeneficioSocialMinhaCasaMinhaVidaPossui(rs.getBoolean("benefsociais_possui_minhacasa_minhavida"));
+                p.setBeneficioSocialCadastroUnico(rs.getString("benefsociais_possui_cad_unico"));
+                p.setBeneficioSocialNumeroNisPossui(rs.getString("benefsociais_possui_numero_nis"));
+                p.setBeneficioSocialNumeroNis(rs.getString("benefsociais_numeronis"));
+                p.setBeneficioSocialIncapacidadePossui(rs.getBoolean("benefsociais_incapacidade"));
+                p.setBeneficioSocialIncapacidadeTipo(rs.getString("benefsociais_tipo_incapacidade"));
+                p.setBeneficioSocialIncapacidadeQuantoTempo(rs.getString("benefsociais_tempo_incapacidade"));
+                p.setBeneficioSocialIncapacidadeValor(rs.getDouble("benefsociais_valor_incapacidade"));
+
+
+                //TRANSPORTE
+                p.setTransporteCarteiraTransportePossui(rs.getBoolean("transporte_possui_cart_transp"));
+                p.setTransporteCarteiraTransporteAcompanhate(rs.getBoolean("transporte_cart_transp_acompanhante"));
+                p.setTransporteCarteiraTransporteTipo(rs.getString("transporte_tipo_carteira"));
+                p.setTransporteUtilizadoTratamento(rs.getString("transporte_utilizado_tratamento"));
+                p.setTransporteQuantidadeOnibusAteInstituicao(rs.getString("transporte_qtd_onibus_ate_instituicao"));
+                p.setTransporteExisteAcessibilidadeAcessoPercusoInstituicao(rs.getBoolean("transporte_acessibilidade_acesso_percurso_instit"));
+
+                //RENDA FAMILIAR
+                p.setRendaFamiliarInseridoMercadoTrabalho(rs.getBoolean("rendafam_inserida_merc_trab"));
+                p.setRendaFamiliarProfissaoFuncao(rs.getString("rendafam_profissao_funcao"));
+                p.setRendaFamiliarAtividadeAntesAgravo(rs.getString("rendafam_atividade_antes_agravo"));
+                p.setRendaFamiliarTempoAntesAgravo(rs.getString("rendafam_tempo_atividade_antes_agravo"));
+                p.setRendaFamiliarValor(rs.getDouble("rendafam_valor"));
+                p.setRendaFamiliarMantemUsuario(rs.getBoolean("rendafam_mantem_fam_usuario"));
+                p.setRendaFamiliarMantemPai(rs.getBoolean("rendafam_mantem_fam_pai"));
+                p.setRendaFamiliarMantemMae(rs.getBoolean("rendafam_mantem_fam_mae"));
+                p.setRendaFamiliarMantemIrmao(rs.getBoolean("rendafam_mantem_fam_irmao"));
+                p.setRendaFamiliarMantemAvo(rs.getBoolean("rendafam_mantem_fam_avo"));
+                p.setRendaFamiliarMantemCuidador(rs.getBoolean("rendafam_mantem_fam_cuidador"));
+                p.setRendaFamiliarMantemTio(rs.getBoolean("rendafam_mantem_fam_tio"));
+                p.setRendaFamiliarMantemEsposo(rs.getBoolean("rendafam_mantem_fam_esposo"));
+                p.setRendaFamiliarMantemVizinho(rs.getBoolean("rendafam_mantem_fam_vizinho"));
+                p.setRendaFamiliarMantemFilho(rs.getBoolean("rendafam_mantem_fam_filho"));
+                p.setRendaFamiliarMantemPadastroMadastra(rs.getBoolean("rendafam_mantem_fam_padastro_madastra"));
+                p.setRendaFamiliarMantemGenroNora(rs.getBoolean("rendafam_mantem_fam_genro_nora"));
+                p.setRendaFamiliarMantemSobrinho(rs.getBoolean("rendafam_mantem_fam_sobrinho"));
+                p.setRendaFamiliarMantemEnteado(rs.getBoolean("rendafam_mantem_fam_enteado"));
+
+                //HABITACAO
+                p.setHabitacaoSitucaoMoradia(rs.getString("habitacao_situacao_moradia"));
+                p.setHabitacaoTipoConstrucao(rs.getString("habitacao_tipo_construcao"));
+                p.setHabitacaoTipoResidencia(rs.getString("habitacao_tipo_residencia"));
+                p.setHabitacaoNumeroComodo(rs.getInt("habitacao_num_comodos"));
+                p.setHabitacaoAbastecimentoDeAgua(rs.getString("habitacao_abastecimento_agua"));
+                p.setHabitacaoTipoIluminacao(rs.getString("habitacao_tipo_iluminacao"));
+                p.setHabitacaoEscoamentoSanitario(rs.getString("habitacao_escoamento_sanitario"));
+                p.setHabitacaoDestinoLixo(rs.getString("habitacao_destino_lixo"));
+                p.setHabitacaoResidenciaAdaptada(rs.getString("habitacao_residencia_adaptada"));
+
+                //RELATO DE VIDA
+                p.setRelatoVida(rs.getString("relato_vida"));
+
+                //PARECER SOCIAL ENCAMINHAMENTOS
+                p.setParecerSocialEncaminhamento(rs.getString("parecer_social_encaminhamentos"));
+
+
+
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

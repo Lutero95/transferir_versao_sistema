@@ -7,7 +7,10 @@
                 template="../../template/template.xhtml">
 
     <ui:define name="content">
-
+        <f:metadata>
+            <f:viewAction
+                    action="#{ParentescoController.iniciarDadosQuestionario()}"/>
+        </f:metadata>
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
                 <h:outputText value="Questionário Social"
@@ -1054,7 +1057,7 @@
 
                                 <p:outputLabel value="Enteado (a)"/>
                                 <p:selectBooleanCheckbox
-                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemEntenado}"
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemEnteado}"
                                         label="Basic"/>
                             </b:column>
                         </b:row>

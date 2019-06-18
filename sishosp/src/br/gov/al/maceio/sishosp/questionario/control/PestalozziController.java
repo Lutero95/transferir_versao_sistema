@@ -35,6 +35,11 @@ public class PestalozziController implements Serializable {
         this.pestalozzi = new Pestalozzi();
     }
 
+    public void iniciarDadosQuestionario() throws ProjetoException{
+        this.iniciarListaEscolaridade();
+    }
+
+
     public void adicionarComposicaoFamiliar(){
         this.pestalozzi.getListaComposicaoFamiliar().add(this.composicaoFamiliarAdd);
         composicaoFamiliarAdd = new ComposicaoFamiliar();
