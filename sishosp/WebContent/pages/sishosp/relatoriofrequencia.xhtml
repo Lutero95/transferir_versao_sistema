@@ -69,10 +69,10 @@
         <b:row rendered="#{RelatoriosController.atributoGenerico1=='I'}">
       <b:column span="3"
                                   class="label-position new-data-size new-comple1">
-<h:outputText class="select-agendaEquipe4" value="Programa: #{RelatoriosController.programa.descPrograma}" severity="info"/>
+<h:outputText class="select-agendaEquipe4" value="Programa: #{RelatoriosController.pacienteInstituicao.programa.descPrograma}" severity="info"/>
 <br/>
 <br/>
-<h:outputText class="select-agendaEquipe4" style="padding-bottom:20px !important" value="Grupo: #{RelatoriosController.grupo.descGrupo}" severity="info"/>
+<h:outputText class="select-agendaEquipe4" style="padding-bottom:20px !important" value="Grupo: #{RelatoriosController.pacienteInstituicao.grupo.descGrupo}" severity="info"/>
 <br/><br/>
                             <h:outputText class="select-agendaEquipe4" value="Procedimento: #{RelatoriosController.procedimento.nomeProc}" severity="info"/>
                         </b:column>
@@ -156,7 +156,7 @@
 					
 							<p:commandButton  icon="ui-icon-print" value="Imprimir"
 								target="_blank" style="font-size: 12px;  text-align: right;" update="grw"
-								actionListener="#{RelatoriosController.geraFrequencia(AgendaController.agenda.programa, AgendaController.agenda.grupo)}" ajax="false" />
+								actionListener="#{RelatoriosController.geraFrequencia(RelatoriosController.pacienteInstituicao, AgendaController.agenda.programa, AgendaController.agenda.grupo)}" ajax="false" />
 						
 					
 				</h:form>
@@ -302,13 +302,13 @@
                                 class="new-btn-acao-table acao-editar"
                                 onclick="PF('dlgConsuPac').hide();">
                             <f:setPropertyActionListener value="#{pacie.paciente}"
-                                                         target="#{AgendaController.agenda.paciente}"/>
+                                                         target="#{RelatoriosController.pacienteInstituicao.paciente}"/>
                             <f:setPropertyActionListener value="#{pacie.laudo.procedimentoPrimario}"
                                                          target="#{RelatoriosController.procedimento}"/>     
                             <f:setPropertyActionListener value="#{pacie.grupo}"
-                                                         target="#{RelatoriosController.grupo}"/>      
+                                                         target="#{RelatoriosController.pacienteInstituicao.grupo}"/>      
                             <f:setPropertyActionListener value="#{pacie.programa}"
-                                                         target="#{RelatoriosController.programa}"/>                                                                                                                                                                   
+                                                         target="#{RelatoriosController.pacienteInstituicao.programa}"/>                                                                                                                                                                   
                         </p:commandButton>
 
                     </h:column>

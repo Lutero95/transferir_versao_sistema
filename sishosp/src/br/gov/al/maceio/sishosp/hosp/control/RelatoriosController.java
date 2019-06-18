@@ -28,6 +28,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
+import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
@@ -50,6 +51,7 @@ public class RelatoriosController implements Serializable {
 	private ProgramaBean programa;
 	private PacienteBean paciente;
 	private GrupoBean grupo;
+	private GerenciarPacienteBean pacienteInstituicao;
 	private TipoAtendimentoBean tipo;
 	private ProcedimentoBean procedimento;
 	private FuncionarioBean prof;
@@ -90,6 +92,7 @@ public class RelatoriosController implements Serializable {
 		this.tipoAnalSint = new String("A");
 		this.dataDia = new String("DS");
 		this.dataEspec = null;
+		pacienteInstituicao = new GerenciarPacienteBean();
 
 	}
 
@@ -162,18 +165,20 @@ public class RelatoriosController implements Serializable {
 		}
 	}
 	
-	public void geraFrequencia(ProgramaBean programa, GrupoBean grupo, PacienteBean paciente) throws IOException,
+	public void geraFrequencia(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo) throws IOException,
 	ParseException, ProjetoException, NoSuchAlgorithmException {
 		//lista criada para ser populada e mostrar as linhas na frequencia
+		pacienteInstituicao.setPrograma(programa);
+		pacienteInstituicao.setGrupo(grupo);
 		List<Integer> lista = new ArrayList<Integer>();
 		lista.add(1);
 		lista.add(2);
 		int randomico = JSFUtil.geraNumeroRandomico();
 		RelatorioDAO rDao = new RelatorioDAO();
-		rDao.popularTabelaTemporariaFrequencia(randomico, grupo.getQtdFrequencia());
+		rDao.popularTabelaTemporariaFrequencia(randomico, pacienteInstituicao.getGrupo().getQtdFrequencia());
 		
 		JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(lista);
-	if ((programa==null) && (paciente==null)) {
+	if ((pacienteInstituicao.getPrograma()==null) && (pacienteInstituicao.getPaciente()==null)) {
 		 JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
 		}
 	else
@@ -184,14 +189,14 @@ public class RelatoriosController implements Serializable {
 	Map<String, Object> map = new HashMap<String, Object>();
 		map.put("chave", randomico);
 		map.put("codusuario", user_session.getCodigo());
-		if (programa!=null)
-		map.put("codprograma", programa.getIdPrograma());
+		if (pacienteInstituicao.getPrograma()!=null)
+		map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
 		
-		if (grupo!=null)
-		map.put("codgrupo", grupo.getIdGrupo());
+		if (pacienteInstituicao.getGrupo()!=null)
+		map.put("codgrupo", pacienteInstituicao.getGrupo().getIdGrupo());
 		
-		if (paciente!=null)
-		map.put("codpaciente",paciente.getId_paciente());
+		if (pacienteInstituicao.getId()!=null)
+		map.put("codpacienteinstituicao",pacienteInstituicao.getId());
 		
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
 				+ File.separator);
@@ -891,6 +896,22 @@ this.executeReport(relatorio, map, "relatorio.pdf");
 
 	public void setProcedimento(ProcedimentoBean procedimento) {
 		this.procedimento = procedimento;
+	}
+
+	public PacienteBean getPaciente() {
+		return paciente;
+	}
+
+	public GerenciarPacienteBean getPacienteInstituicao() {
+		return pacienteInstituicao;
+	}
+
+	public void setPaciente(PacienteBean paciente) {
+		this.paciente = paciente;
+	}
+
+	public void setPacienteInstituicao(GerenciarPacienteBean pacienteInstituicao) {
+		this.pacienteInstituicao = pacienteInstituicao;
 	}
 
 }

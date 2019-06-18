@@ -59,7 +59,7 @@
 		</queryString>
 	</subDataset>
 	<parameter name="codusuario" class="java.lang.Integer"/>
-	<parameter name="codpaciente" class="java.lang.Integer"/>
+	<parameter name="codpacienteinstituicao" class="java.lang.Integer"/>
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
 	<parameter name="chave" class="java.lang.Integer"/>
@@ -107,7 +107,7 @@ LEFT JOIN hosp.cid c3 ON c3.cod = l.cid3
 LEFT JOIN hosp.raca r ON r.id_raca = p.codraca
 WHERE 1=1
 and pi.status='A'
-and ((  $P{codpaciente}  is not null and pi.codpaciente= $P{codpaciente}) or (($P{codpaciente} =0 ) OR ($P{codpaciente} is null )))
+and ((  $P{codpacienteinstituicao}  is not null and pi.id= $P{codpacienteinstituicao}) or (($P{codpacienteinstituicao} =0 ) OR ($P{codpacienteinstituicao} is null )))
 and ((   $P{codprograma}   is not null and pi.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
 ) t
