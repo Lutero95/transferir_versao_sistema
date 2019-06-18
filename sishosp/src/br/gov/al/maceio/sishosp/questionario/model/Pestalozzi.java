@@ -3,10 +3,13 @@ package br.gov.al.maceio.sishosp.questionario.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
+
 public class Pestalozzi implements Serializable {
     private Integer id;
-    //SAÃšDE
-    private Boolean saudeRealizaAtendimentoNestaInstituicao;
+    private PacienteBean paciente;
+    //SAÚDE
+    private String saudeRealizaAtendimentoNestaInstituicao;
     private String saudeUnidade;
     private Boolean saudeServicoAtendimentoRedeReabilitacaoAuditiva;
     private Boolean saudeServicoAtendimentoRedeReabilitacaoFisica;
@@ -152,6 +155,7 @@ public class Pestalozzi implements Serializable {
 
     public Pestalozzi() {
         listaComposicaoFamiliar = new ArrayList<>();
+        paciente = new PacienteBean();
     }
 
     public Integer getId() {
@@ -162,13 +166,7 @@ public class Pestalozzi implements Serializable {
         this.id = id;
     }
 
-    public Boolean getSaudeRealizaAtendimentoNestaInstituicao() {
-        return saudeRealizaAtendimentoNestaInstituicao;
-    }
-
-    public void setSaudeRealizaAtendimentoNestaInstituicao(Boolean saudeRealizaAtendimentoNestaInstituicao) {
-        this.saudeRealizaAtendimentoNestaInstituicao = saudeRealizaAtendimentoNestaInstituicao;
-    }
+    
 
     public String getSaudeUnidade() {
         return saudeUnidade;
@@ -1177,4 +1175,20 @@ public class Pestalozzi implements Serializable {
     public void setParecerSocialEncaminhamento(String parecerSocialEncaminhamento) {
         this.parecerSocialEncaminhamento = parecerSocialEncaminhamento;
     }
+
+	public void setSaudeRealizaAtendimentoNestaInstituicao(String saudeRealizaAtendimentoNestaInstituicao) {
+		this.saudeRealizaAtendimentoNestaInstituicao = saudeRealizaAtendimentoNestaInstituicao;
+	}
+
+	public String getSaudeRealizaAtendimentoNestaInstituicao() {
+		return saudeRealizaAtendimentoNestaInstituicao;
+	}
+
+	public PacienteBean getPaciente() {
+		return paciente;
+	}
+
+	public void setPaciente(PacienteBean paciente) {
+		this.paciente = paciente;
+	}
 }

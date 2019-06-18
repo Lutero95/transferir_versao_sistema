@@ -10,7 +10,7 @@
 
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
-                <h:outputText value="#{PestalozziController.cabecalho}"
+                <h:outputText value="Questionário Social"
                               class="panel-title"></h:outputText>
             </div>
 
@@ -1244,12 +1244,9 @@
                                          update="msgPagina"
                                          class="btn-incluir"
                                          action="#{PestalozziController.gravarQuestionario()}"
-                                         rendered="#{PestalozziController.tipo == 1}"/>
+                                         />
 
-                        <p:commandButton action="#{OrteseProteseController.alterarOrteseIhProtese()}"
-                                         icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-                                         update="formInsercao" value="Alterar"
-                                         rendered="#{PestalozziController.tipo  == 2}"/>
+                        
 
  <p:commandButton value="Voltar" icon="glyphicon-arrow-left" action="/pages/sishosp/gerenciamentoquestionariopestalozzi.faces?faces-redirect=true"
                                          size="sm" immediate="true" look="info" class="btn-voltar"/>
