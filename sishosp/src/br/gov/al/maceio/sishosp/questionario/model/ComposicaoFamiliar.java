@@ -6,7 +6,7 @@ public class ComposicaoFamiliar implements Serializable {
     private String nome;
     private String sexo;
     private Integer idade;
-    private String parentesco;
+    private Integer parentesco;
     private String trabalha;
     private Double valor;
     private String pcd;
@@ -36,11 +36,11 @@ public class ComposicaoFamiliar implements Serializable {
         this.idade = idade;
     }
 
-    public String getParentesco() {
+    public Integer getParentesco() {
         return parentesco;
     }
 
-    public void setParentesco(String parentesco) {
+    public void setParentesco(Integer parentesco) {
         this.parentesco = parentesco;
     }
 

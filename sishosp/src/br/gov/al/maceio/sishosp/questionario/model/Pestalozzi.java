@@ -38,7 +38,7 @@ public class Pestalozzi implements Serializable {
     private Boolean saudeUsaEquipamentoOrtopedicoRealizouReabilitacao;
     private String saudeUsaEquipamentoOrtopedicoRealizouReabilitacaoOnde;
     private Boolean saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia;
-    private String saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco;
+    private Integer saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco;
     private String saudeUsaEquipamentoOrtopedicoMorbidadeCID;
     private String saudeUsaEquipamentoOrtopedicoMorbidadeCIDQuantoTempo;
     private String saudeUsaEquipamentoOrtopedicoCausaDoencaDeficiencia;
@@ -52,7 +52,7 @@ public class Pestalozzi implements Serializable {
 
     //EDUCACAO
     private Boolean educacaoMatriculado;
-    private String educacaoEscolaridade;
+    private Integer educacaoEscolaridade;
     private String educacaoTurno;
     private String educacaoEscolaEstaMatriculado;
     private String educacaoAcessoEscola;
@@ -390,11 +390,11 @@ public class Pestalozzi implements Serializable {
         this.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia = saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia;
     }
 
-    public String getSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco() {
+    public Integer getSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco() {
         return saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco;
     }
 
-    public void setSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco(String saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco) {
+    public void setSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco(Integer saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco) {
         this.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco = saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco;
     }
 
@@ -486,11 +486,11 @@ public class Pestalozzi implements Serializable {
         this.educacaoMatriculado = educacaoMatriculado;
     }
 
-    public String getEducacaoEscolaridade() {
+    public Integer getEducacaoEscolaridade() {
         return educacaoEscolaridade;
     }
 
-    public void setEducacaoEscolaridade(String educacaoEscolaridade) {
+    public void setEducacaoEscolaridade(Integer educacaoEscolaridade) {
         this.educacaoEscolaridade = educacaoEscolaridade;
     }
 
