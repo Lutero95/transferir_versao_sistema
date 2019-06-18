@@ -368,8 +368,12 @@ public class OrteseProteseDAO {
 
             ps.executeUpdate();
 
-            con.commit();
-            retorno = true;
+            if (retorno) {
+                retorno = gravarUltimaSituacaoValidaOrteseIhProtese(orteseProtese.getId(), StatusMovimentacaoOrteseProtese.ENCAMINHAMENTO_FORNECEDOR.getSigla(), con);
+                if (retorno) {
+                    con.commit();
+                }
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -439,7 +443,10 @@ public class OrteseProteseDAO {
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.MEDICAO_CANCELADA.getSigla(), id, con);
 
             if (retorno) {
-                con.commit();
+                retorno = gravarUltimaSituacaoValidaOrteseIhProtese(id, StatusMovimentacaoOrteseProtese.MEDICAO_EFETUADA.getSigla(), con);
+                if (retorno) {
+                    con.commit();
+                }
             }
 
         } catch (SQLException ex) {
@@ -469,6 +476,31 @@ public class OrteseProteseDAO {
             ps.execute();
 
             retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    private Boolean gravarUltimaSituacaoValidaOrteseIhProtese(Integer codOrteseIhProtese, String statusDecartar, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+        String sql = "UPDATE hosp.ortese_protese SET situacao = ? WHERE id = ?;";
+
+        try {
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setString(1, retornarUltimaSituacaoValida(codOrteseIhProtese, statusDecartar,conAuxiliar));
+            ps.setInt(2, codOrteseIhProtese);
+            ps.execute();
+
+            retorno = true;
+
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
@@ -566,6 +598,40 @@ public class OrteseProteseDAO {
         } finally {
             try {
                 con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public String retornarUltimaSituacaoValida(Integer id, String statusDescartar, Connection conAuxiliar)
+            throws ProjetoException {
+
+        String resultado = null;
+
+        PreparedStatement ps = null;
+
+        try {
+
+            String sql = "SELECT status FROM hosp.historico_movimentacao_ortese_protese WHERE cod_ortese_protese = ? " +
+                    "AND status NOT IN ('MC', 'EC') and status <> ? ORDER BY id DESC LIMIT 1;";
+
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.setString(2, statusDescartar);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                resultado = rs.getString("status");
+            }
+
+            return resultado;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
