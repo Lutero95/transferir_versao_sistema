@@ -368,8 +368,86 @@ public class OrteseProteseDAO {
 
             ps.executeUpdate();
 
-            con.commit();
-            retorno = true;
+            if (retorno) {
+                retorno = gravarUltimaSituacaoValidaOrteseIhProtese(orteseProtese.getId(), StatusMovimentacaoOrteseProtese.ENCAMINHAMENTO_FORNECEDOR.getSigla(), con);
+                if (retorno) {
+                    con.commit();
+                }
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean gravarMedicaoOrteseIhProtese(OrteseProtese orteseProtese) {
+
+        Boolean retorno = false;
+        String sql = "UPDATE hosp.ortese_protese SET medicao = ?, data_medicao = ? WHERE id = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, orteseProtese.getMedicao());
+
+            ps.setDate(2, DataUtil.converterDateUtilParaDateSql(orteseProtese.getDataMedicao()));
+
+            ps.setInt(3, orteseProtese.getId());
+
+            ps.executeUpdate();
+
+            retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.MEDICAO_EFETUADA.getSigla(), orteseProtese.getId(), con);
+
+            if (retorno) {
+                retorno = alterarSituacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.MEDICAO_EFETUADA.getSigla(), orteseProtese.getId(), con);
+                if (retorno) {
+                    con.commit();
+                }
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean cancelarMedicaoOrteseIhProtese(Integer id) {
+
+        Boolean retorno = false;
+        String sql = "UPDATE hosp.ortese_protese SET medicao = NULL, data_medicao = NULL WHERE id = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            ps.executeUpdate();
+
+            retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.MEDICAO_CANCELADA.getSigla(), id, con);
+
+            if (retorno) {
+                retorno = gravarUltimaSituacaoValidaOrteseIhProtese(id, StatusMovimentacaoOrteseProtese.MEDICAO_EFETUADA.getSigla(), con);
+                if (retorno) {
+                    con.commit();
+                }
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -409,4 +487,155 @@ public class OrteseProteseDAO {
             return retorno;
         }
     }
+
+    private Boolean gravarUltimaSituacaoValidaOrteseIhProtese(Integer codOrteseIhProtese, String statusDecartar, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+        String sql = "UPDATE hosp.ortese_protese SET situacao = ? WHERE id = ?;";
+
+        try {
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setString(1, retornarUltimaSituacaoValida(codOrteseIhProtese, statusDecartar,conAuxiliar));
+            ps.setInt(2, codOrteseIhProtese);
+            ps.execute();
+
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    private Boolean alterarSituacaoOrteseIhProtese(String statusMovimentacao, Integer codOrteseIhProtese, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+        String sql = "UPDATE hosp.ortese_protese SET situacao = ? WHERE id = ?";
+
+        try {
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setString(1, statusMovimentacao);
+            ps.setInt(2, codOrteseIhProtese);
+            ps.execute();
+
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean verificarSeExisteMedicao(Integer id) {
+
+        Boolean retorno = false;
+
+        String sql = "SELECT medicao FROM hosp.ortese_protese WHERE id = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(rs.getString("medicao"))) {
+                    retorno = true;
+                }
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public OrteseProtese carregarMedicaoPorIdOrteseProtese(Integer id)
+            throws ProjetoException {
+
+        PreparedStatement ps = null;
+        OrteseProtese orteseProtese = new OrteseProtese();
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            String sql = "SELECT id, medicao, data_medicao FROM hosp.ortese_protese WHERE id = ?; ";
+
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                orteseProtese.setId(rs.getInt("id"));
+                orteseProtese.setMedicao(rs.getString("medicao"));
+                orteseProtese.setDataMedicao(rs.getDate("data_medicao"));
+            }
+            return orteseProtese;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public String retornarUltimaSituacaoValida(Integer id, String statusDescartar, Connection conAuxiliar)
+            throws ProjetoException {
+
+        String resultado = null;
+
+        PreparedStatement ps = null;
+
+        try {
+
+            String sql = "SELECT status FROM hosp.historico_movimentacao_ortese_protese WHERE cod_ortese_protese = ? " +
+                    "AND status NOT IN ('MC', 'EC') and status <> ? ORDER BY id DESC LIMIT 1;";
+
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.setString(2, statusDescartar);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                resultado = rs.getString("status");
+            }
+
+            return resultado;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 }

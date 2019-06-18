@@ -1126,4 +1126,44 @@ public class PacienteDAO {
             }
         }
     }
+
+    public PacienteBean buscarPacientePorIdOrteseProtese(Integer id)
+            throws ProjetoException {
+
+        PreparedStatement ps = null;
+        PacienteBean p = new PacienteBean();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            String sql = "SELECT p.id_paciente, p.nome, p.cpf, p.cns, o.medicao, o.data_medicao " +
+                    "FROM hosp.pacientes p " +
+                    "LEFT JOIN hosp.laudo l ON (l.codpaciente = p.id_paciente) " +
+                    "LEFT JOIN hosp.ortese_protese o ON (o.cod_laudo = l.id_laudo) " +
+                    "WHERE o.id = ?; ";
+
+            ps = conexao.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                p.setId_paciente(rs.getInt("id_paciente"));
+                p.setNome(rs.getString("nome").toUpperCase());
+                p.setCpf(rs.getString("cpf"));
+                p.setCns(rs.getString("cns"));
+            }
+            return p;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }

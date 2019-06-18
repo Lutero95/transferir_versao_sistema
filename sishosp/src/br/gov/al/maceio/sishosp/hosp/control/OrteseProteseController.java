@@ -6,6 +6,7 @@ import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.OrteseProteseDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
@@ -31,6 +32,7 @@ public class OrteseProteseController implements Serializable {
     private String cabecalho;
     private List<OrteseProtese> listOrteseProtese;
     private Boolean renderizarBotaoAlterar;
+    private Boolean existeMedicao;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "orteseProtese?faces-redirect=true";
@@ -46,6 +48,7 @@ public class OrteseProteseController implements Serializable {
         temOrteseIhProteseCadastrado = false;
         listOrteseProtese = new ArrayList<>();
         renderizarBotaoAlterar = false;
+        existeMedicao = false;
     }
 
     public String redirectAlterar() {
@@ -168,6 +171,47 @@ public class OrteseProteseController implements Serializable {
         listarOrteseIhProtese();
     }
 
+    public void gravarMedicaoOrteseIhProtese() {
+        boolean gravou = oDao.gravarMedicaoOrteseIhProtese(orteseProtese);
+
+        if (gravou == true) {
+            JSFUtil.adicionarMensagemSucesso("Medição efetuada com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgMedicao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a gravação", "Erro");
+        }
+
+        listarOrteseIhProtese();
+    }
+
+    public void cancelarMedicaoOrteseIhProtese() {
+
+        boolean cancelou = oDao.cancelarMedicaoOrteseIhProtese(orteseProtese.getId());
+
+        if (cancelou == true) {
+            JSFUtil.adicionarMensagemSucesso("Medição cancelada com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgCancelar");
+            JSFUtil.fecharDialog("dlgMedicao");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cancelamento", "Erro");
+        }
+
+        listarOrteseIhProtese();
+    }
+
+    public void iniciarMedicao() throws ProjetoException {
+        existeMedicao = oDao.verificarSeExisteMedicao(orteseProtese.getId());
+        if(existeMedicao){
+            orteseProtese = oDao.carregarMedicaoPorIdOrteseProtese(orteseProtese.getId());
+        }
+        carregarDadosPacientePorOrteseIhProtese();
+        JSFUtil.abrirDialog("dlgMedicao");
+    }
+
+    public void carregarDadosPacientePorOrteseIhProtese() throws ProjetoException {
+        orteseProtese.getLaudo().setPaciente(new PacienteDAO().buscarPacientePorIdOrteseProtese(orteseProtese.getId()));
+    }
+
     public void listarOrteseIhProtese() {
         listOrteseProtese = oDao.listarOrteseIhProtese();
     }
@@ -223,5 +267,13 @@ public class OrteseProteseController implements Serializable {
 
     public void setRenderizarBotaoAlterar(Boolean renderizarBotaoAlterar) {
         this.renderizarBotaoAlterar = renderizarBotaoAlterar;
+    }
+
+    public Boolean getExisteMedicao() {
+        return existeMedicao;
+    }
+
+    public void setExisteMedicao(Boolean existeMedicao) {
+        this.existeMedicao = existeMedicao;
     }
 }
