@@ -212,6 +212,39 @@ public class OrteseProteseController implements Serializable {
     public void verificarEntrega() {
         String situacao = oDao.verificarSituacao(orteseProtese.getId());
 
+        if(situacao.equals(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_ENTREGUE.getSigla())){
+            JSFUtil.abrirDialog("dlgCancelarEntrega");
+        }
+        else{
+            JSFUtil.abrirDialog("dlgEntrega");
+        }
+    }
+
+    public void gravarEntregaOrteseIhProtese() {
+        boolean gravou = oDao.gravarEntregaOrteseIhProtese(orteseProtese.getId());
+
+        if (gravou == true) {
+            JSFUtil.adicionarMensagemSucesso("Entrega efetuada com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgEntrega");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a entrega!", "Erro");
+        }
+    }
+
+    public void cancelarEntregaOrteseIhProtese() {
+        boolean cancelou = oDao.cancelarEntregaOrteseIhProtese(orteseProtese.getId());
+
+        if (cancelou == true) {
+            JSFUtil.adicionarMensagemSucesso("Cancelamento efetuado com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgCancelarEntrega");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cancelamento!", "Erro");
+        }
+    }
+
+    public void verificarRecebimento() {
+        String situacao = oDao.verificarSituacao(orteseProtese.getId());
+
         if(situacao.equals(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla())){
             JSFUtil.abrirDialog("dlgCancelarRecebimento");
         }

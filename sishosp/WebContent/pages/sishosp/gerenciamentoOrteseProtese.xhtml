@@ -101,7 +101,7 @@
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null}"
                                                  class="btn-acao-table acao-desligar btn-new-padding2"
                                                  icon="glyphicon-save"
-                                                 action="#{OrteseProteseController.verificarEntrega}">
+                                                 action="#{OrteseProteseController.verificarRecebimento}">
                                 </b:commandButton>
                             </b:column>
 
@@ -111,7 +111,7 @@
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null}"
                                                  class="btn-acao-table acao-transfere btn-new-padding2"
                                                  icon="glyphicon-open"
-                                                 action="#{OrteseProteseController.iniciarMedicao}">
+                                                 action="#{OrteseProteseController.verificarEntrega}">
                                 </b:commandButton>
                             </b:column>
 
@@ -312,7 +312,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Recebimento" widgetVar="dlgCancelarRecebimento"
+        <p:dialog header="Cancelar Recebimento" widgetVar="dlgCancelarRecebimento"
                   modal="true" styleClass="topDialog">
             <h:form id="formCancelarRecebimento">
 
@@ -328,6 +328,54 @@
 
                     <p:commandButton value="Não"
                                      oncomplete="PF('dlgCancelarRecebimento').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"
+                                     class="btn-nao"/>
+
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Entrega" widgetVar="dlgEntrega"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formEntrega">
+
+                <div class="alert alert-warning" role="alert">Deseja realizar a entrega do equipamento?</div>
+
+                <div align="center">
+
+                    <p:separator/>
+                    <p:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{OrteseProteseController.gravarEntregaOrteseIhProtese}"
+                                     ajax="true" update="formGerenOrteseEProtese:msgPagina"
+                                     class="btn-sim" icon="glyphicon-ok"/>
+
+                    <p:commandButton value="Não"
+                                     oncomplete="PF('dlgEntrega').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"
+                                     class="btn-nao"/>
+
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Cancelar Entrega" widgetVar="dlgCancelarEntrega"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formCancelarEntrega">
+
+                <div class="alert alert-warning" role="alert">Deseja realizar o cancelamento da entrega?</div>
+
+                <div align="center">
+
+                    <p:separator/>
+                    <p:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{OrteseProteseController.cancelarEntregaOrteseIhProtese}"
+                                     ajax="true" update="formGerenOrteseEProtese:msgPagina"
+                                     class="btn-sim" icon="glyphicon-ok"/>
+
+                    <p:commandButton value="Não"
+                                     oncomplete="PF('dlgCancelarEntrega').hide();" look="info" ajax="true"
                                      icon="glyphicon-remove" style="margin-left:5px;float:right;"
                                      class="btn-nao"/>
 

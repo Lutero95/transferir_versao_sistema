@@ -519,6 +519,32 @@ public class OrteseProteseDAO {
         }
     }
 
+    private Boolean gravarUltimaSituacaoIhStatusValidaOrteseIhProtese(Integer codOrteseIhProtese, String statusDecartar, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+        String sql = "UPDATE hosp.ortese_protese SET situacao = ?, status = ? WHERE id = ?;";
+
+        try {
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setString(1, retornarUltimaSituacaoValida(codOrteseIhProtese, statusDecartar, conAuxiliar));
+            ps.setString(2, StatusPadraoOrteseProtese.PENDENTE.getSigla());
+            ps.setInt(3, codOrteseIhProtese);
+            ps.execute();
+
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
     private Boolean alterarSituacaoOrteseIhProtese(String statusMovimentacao, Integer codOrteseIhProtese, Connection conAuxiliar) {
 
         Boolean retorno = false;
@@ -690,6 +716,70 @@ public class OrteseProteseDAO {
 
             if (retorno) {
                 retorno = gravarUltimaSituacaoValidaOrteseIhProtese(id, StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla(), con);
+                if (retorno) {
+                    con.commit();
+                }
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean gravarEntregaOrteseIhProtese(Integer id) {
+
+        Boolean retorno = false;
+        String sql = "UPDATE hosp.ortese_protese SET situacao = ?, status = ?, data_hora_acao = CURRENT_TIMESTAMP WHERE id = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, StatusMovimentacaoOrteseProtese.EQUIPAMENTO_ENTREGUE.getSigla());
+            ps.setString(2, StatusPadraoOrteseProtese.ENTREGUE.getSigla());
+            ps.setInt(3, id);
+
+            ps.executeUpdate();
+
+            retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_ENTREGUE.getSigla(), id, con);
+
+            if (retorno) {
+                con.commit();
+            }
+
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean cancelarEntregaOrteseIhProtese(Integer id) {
+
+        Boolean retorno = false;
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.CANCELAR_ENTREGA.getSigla(), id, con);
+
+            if (retorno) {
+                retorno = gravarUltimaSituacaoIhStatusValidaOrteseIhProtese(id, StatusMovimentacaoOrteseProtese.EQUIPAMENTO_ENTREGUE.getSigla(), con);
                 if (retorno) {
                     con.commit();
                 }
