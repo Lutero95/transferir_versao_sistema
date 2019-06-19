@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.questionario.control;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.control.EscolaridadeController;
 import br.gov.al.maceio.sishosp.hosp.control.ParentescoController;
@@ -62,6 +63,7 @@ public class PestalozziController implements Serializable {
     public void adicionarComposicaoFamiliar(){
         this.pestalozzi.getListaComposicaoFamiliar().add(this.composicaoFamiliarAdd);
         composicaoFamiliarAdd = new ComposicaoFamiliar();
+        JSFUtil.fecharDialog("dlgAddComposicaoFamiliar");
     }
 
     public void deletarComposicaoFamiliar(){

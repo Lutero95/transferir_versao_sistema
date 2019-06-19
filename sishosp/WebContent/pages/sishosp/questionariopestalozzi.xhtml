@@ -270,7 +270,7 @@
                                          severity="info"/>
 
                                 <p:selectOneMenu filterMatchMode="startsWith" filter="true"
-                                                 class="mobile-label" required="true" requiredMessage="Compo Obrigatório: Parentesco"
+                                                 class="mobile-label"
                                                  value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco}" >
                                     <f:selectItem itemLabel="Selecione" itemValue="" />
                                     <f:selectItems var="parentesco"
@@ -1496,7 +1496,6 @@
                 <b:row>
                     <b:commandButton action="#{PestalozziController.adicionarComposicaoFamiliar()}"
                                      icon="glyphicon-ok" size="sm" class="btn-incluir"
-                                     oncomplete="PF('dlgAddComposicaoFamiliar').hide();"
                                      update=":formInsercao:tabComposicaoFamiliar, formAddComposicaoFamiliar"
                                      value="Incluir"/>
                 </b:row>
