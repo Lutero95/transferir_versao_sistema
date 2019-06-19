@@ -20,4 +20,16 @@ public class SessionUtil {
 
         return user_session;
     }
+
+    public static void adicionarNaSessao(Object objeto, String nomeObjetoSessao){
+        FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().put(nomeObjetoSessao, objeto);
+    }
+
+    public static Object resgatarDaSessao(String nomeObjetoSessao){
+        Object objeto = (Object) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get(nomeObjetoSessao);
+
+        return objeto;
+    }
 }

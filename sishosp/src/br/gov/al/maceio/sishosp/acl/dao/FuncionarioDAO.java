@@ -2,6 +2,8 @@ package br.gov.al.maceio.sishosp.acl.dao;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.ConnectionFactoryPublico;
+import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
@@ -39,6 +41,39 @@ public class FuncionarioDAO {
     private GrupoDAO gDao = new GrupoDAO();
     private ProcedimentoDAO procDao = new ProcedimentoDAO();
 
+    public Integer autenticarUsuarioInicialCodEmpresa(FuncionarioBean usuario)
+            throws ProjetoException {
+
+        String sql = "SELECT cod_empresa FROM acl.funcionarios WHERE (cpf = ?) AND (upper(senha) = ?) and ativo = 'S' ";
+
+        Integer codEmpresa = null;
+
+        try {
+            con = ConnectionFactoryPublico.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
+            pstmt.setString(2, usuario.getSenha().toUpperCase());
+
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                codEmpresa = rs.getInt("cod_empresa");
+            }
+
+            SessionUtil.adicionarNaSessao(codEmpresa, "codEmpresa");
+
+            return codEmpresa;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
     public FuncionarioBean autenticarUsuario(FuncionarioBean usuario)
             throws ProjetoException {
 

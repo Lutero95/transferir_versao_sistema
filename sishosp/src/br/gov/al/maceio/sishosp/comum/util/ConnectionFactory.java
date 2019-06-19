@@ -7,33 +7,39 @@ import java.sql.SQLException;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.enums.Empresas;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 public class ConnectionFactory {
 
     public static Connection getConnection() throws ProjetoException {
 
-    	//LOCAL
-        String url = "jdbc:postgresql://localhost:5432/ehosp";
+        Integer codEmpresa = (Integer) SessionUtil.resgatarDaSessao("codEmpresa");
+
+        String url = "jdbc:postgresql://localhost:5432/";
         String usuario = "postgres";
-        String senha  = "post";
-        // String senha  = "engetron";
-      
-    	/*
-    	String url = "jdbc:postgresql://72.55.172.244:5432/ehosp";
-        String usuario = "postgres";
-        String senha = "E2@spwxlmQo";
-        //String senha = "engetron";
-        */
-      
-    
+        String senha = "post";
+
+        if (codEmpresa == Empresas.LOCAL.getSigla()) {
+            url = url + "ehosp";
+        } else if (codEmpresa == Empresas.PESTALOZZI.getSigla()) {
+            url = url + "pestalozzi";
+        } else if (codEmpresa == Empresas.ADEFAL.getSigla()) {
+            url = url + "adefal";
+        }
+
         /*
-     	//NUVEM
-    	String url = "jdbc:postgresql://localhost:5432/airmobco_ehosp";
-        String usuario = "airmobco_data";
-        String senha = "ehosp2018$$";
-        
+        url = "jdbc:postgresql://72.55.172.244:5432/ehosp";
+        usuario = "postgres";
+        senha = "E2@spwxlmQo";
+        //senha = "engetron";
+
+        //NUVEM
+        url = "jdbc:postgresql://localhost:5432/airmobco_ehosp";
+        usuario = "airmobco_data";
+        senha = "ehosp2018$$";
         */
+
         try {
             Class.forName("org.postgresql.Driver");
             Connection con;
@@ -45,23 +51,23 @@ public class ConnectionFactory {
             FacesMessage msg = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
                     "Driver de conexao com o banco nao encontrado \n Mensagem original: "
-                    + cnf.getMessage(), "Erro");
-			// String msg =
+                            + cnf.getMessage(), "Erro");
+            // String msg =
             // "Driver de conexao com o banco nao encontrado \n Mensagem original: "
             // + cnf.getMessage();
 
             FacesContext.getCurrentInstance().addMessage(null, msg);
             throw new ProjetoException(msg.toString());
         } catch (SQLException sql) {
-        	System.out.println("nao abriu con");
-			// String msg =
+            System.out.println("nao abriu con");
+            // String msg =
             // "Nao foi possivel abrir a conexao com o banco \n Mensagem original: "
             // + sql.getMessage();
             FacesMessage msg = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
                     "Nao foi possivel abrir a conexao com o banco \n Mensagem original: "
-                    + sql.getMessage(), "Erro");
-			// String msg =
+                            + sql.getMessage(), "Erro");
+            // String msg =
             // "Driver de conexao com o banco nao encontrado \n Mensagem original: "
             // + cnf.getMessage();
 

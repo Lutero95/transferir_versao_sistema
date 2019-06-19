@@ -122,6 +122,8 @@ public class FuncionarioController implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
                 .put("expired", "N");
 
+        fDao.autenticarUsuarioInicialCodEmpresa(usuario);
+
         usuario.setAtivo(fDao.usuarioAtivo(usuario));
 
         usuarioLogado = fDao.autenticarUsuario(usuario);
