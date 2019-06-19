@@ -37,6 +37,11 @@ public class PestalozziDAO {
             while (rs.next()) {
                 idInsercao = rs.getInt("id");
             }
+            if (pestalozzi.getListaComposicaoFamiliar().size() > 0) {
+                if (gravarComposicaoFamiliar(pestalozzi.getListaComposicaoFamiliar(), idInsercao, conexao) == false) {
+                    throw new SQLException();
+                }
+            }
 
             if (gravarQuestionarioSaude(pestalozzi, idInsercao, conexao)) {
                 if (gravarQuestionarioEducacao(pestalozzi, idInsercao, conexao)) {
@@ -44,12 +49,8 @@ public class PestalozziDAO {
                         if (gravarQuestionarioTransporte(pestalozzi, idInsercao, conexao)) {
                             if (gravarQuestionarioRendaFamilar(pestalozzi, idInsercao, conexao)) {
                                 if (gravarQuestionarioHabitacao(pestalozzi, idInsercao, conexao)) {
-                                    if(gravarComposicaoFamiliar(pestalozzi.getListaComposicaoFamiliar(), idInsercao, conexao)){
-                                        conexao.commit();
-                                        retorno = true;
-                                    }else{
-                                        throw new SQLException();
-                                    }
+                                    conexao.commit();
+                                    retorno = true;
                                 } else {
                                     throw new SQLException();
                                 }
@@ -812,7 +813,7 @@ public class PestalozziDAO {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try {
             PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql);
-            for (ComposicaoFamiliar composicaoFamiliar : listaComposicaoFamiliar){
+            for (ComposicaoFamiliar composicaoFamiliar : listaComposicaoFamiliar) {
                 stmt.setInt(1, idInsercao);
                 if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(composicaoFamiliar.getNome())) {
                     stmt.setString(2, composicaoFamiliar.getNome());
@@ -903,8 +904,8 @@ public class PestalozziDAO {
             p.getPaciente().setId_paciente(idPaciente);
             while (rs.next()) {
                 //SAUDE
-                idQuestionario =  rs.getInt("id");
-                if(!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_realiza_atend_instituicao"))){
+                idQuestionario = rs.getInt("id");
+                if (!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_realiza_atend_instituicao"))) {
                     p.setSaudeRealizaAtendimentoNestaInstituicao(rs.getBoolean("saude_realiza_atend_instituicao"));
                 }
                 p.setSaudeUnidade(rs.getString("saude_unidade_atend"));
@@ -921,7 +922,7 @@ public class PestalozziDAO {
                 p.setSaudeOutrosServicosOficinaOrtopedica(rs.getBoolean("saude_outros_serv_oficina"));
                 p.setSaudeOutrosServicosEstimulacaoPrecoce(rs.getBoolean("saude_outros_serv_estimul_precoce"));
                 p.setSaudeOutrosServicosHidroTerapia(rs.getBoolean("saude_outros_serv_hidroterapia"));
-                if(!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_uso_opm"))){
+                if (!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_uso_opm"))) {
                     p.setSaudeUsoOrteseProtese(rs.getBoolean("saude_uso_opm"));
                 }
                 p.setSaudeUsoOrteseProteseQuantoTempo(rs.getString("saude_uso_opm_tempo"));
@@ -936,7 +937,7 @@ public class PestalozziDAO {
                 p.setSaudeUsaEquipamentoOrtopedicoEntidadeQueConcedeu(rs.getString("saude_uso_equip_entidade_concedeu"));
                 p.setSaudeUsaEquipamentoOrtopedicoRealizouReabilitacao(rs.getBoolean("saude_uso_equip_realizou_reab"));
                 p.setSaudeUsaEquipamentoOrtopedicoRealizouReabilitacaoOnde(rs.getString("saude_uso_equip_realizou_reab_onde"));
-                if(!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_uso_equip_alguem_fam_deficiencia"))){
+                if (!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_uso_equip_alguem_fam_deficiencia"))) {
                     p.setSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia(rs.getBoolean("saude_uso_equip_alguem_fam_deficiencia"));
                 }
                 p.setSaudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco(rs.getInt("saude_uso_equip_alguem_fam_deficiencia_parentesco"));
@@ -944,12 +945,12 @@ public class PestalozziDAO {
                 p.setSaudeUsaEquipamentoOrtopedicoMorbidadeCIDQuantoTempo(rs.getString("saude_uso_equip_morbidade_cid_quanto_tempo"));
                 p.setSaudeUsaEquipamentoOrtopedicoCausaDoencaDeficiencia(rs.getString("saude_uso_equip_causa_doenca"));
                 p.setSaudeUsaEquipamentoOrtopedicoResidenciaCobertaPSF(rs.getString("saude_uso_equip_residencia_coberta_psf"));
-                if(!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_uso_equip_visita_agenda_saude"))){
+                if (!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_uso_equip_visita_agenda_saude"))) {
                     p.setSaudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude(rs.getBoolean("saude_uso_equip_visita_agenda_saude"));
                 }
                 p.setSaudeUsaEquipamentoOrtopedicoFazParaSerAtendidoDoente(rs.getString("saude_uso_equip_como_atendido_doente"));
                 p.setSaudeUsaEquipamentoOrtopedicoPostoSaudeRegiaoReside(rs.getString("saude_uso_equip_posto_saude_regiao"));
-                if(!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_uso_equip_faz_uso_medicacao"))){
+                if (!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_uso_equip_faz_uso_medicacao"))) {
                     p.setSaudeUsaEquipamentoOrtopedicoUsoMedicacao(rs.getBoolean("saude_uso_equip_faz_uso_medicacao"));
                 }
                 p.setSaudeUsaEquipamentoOrtopedicoUsoMedicacaoQual(rs.getString("saude_uso_equip_faz_uso_qual_medicacao"));
@@ -984,26 +985,26 @@ public class PestalozziDAO {
                 p.setBeneficioSocialAposentadoriaPossui(rs.getBoolean("benefsociais_possui_apos"));
                 p.setBeneficioSocialAposentadoriaTipo(rs.getString("benefsociais_tipo_apos"));
                 p.setBeneficioSocialAposentadoriaQuantoTempo(rs.getString("benefsociais_tempo_apos"));
-                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("benefsociais_valor_apos"))){
+                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("benefsociais_valor_apos"))) {
                     p.setBeneficioSocialAposentadoriaValor(rs.getDouble("benefsociais_valor_apos"));
                 }
                 p.setBeneficioSocialBeneficioFamiliaPossui(rs.getBoolean("benefsociais_benef_familia"));
                 p.setBeneficioSocialBeneficioFamiliaTipo(rs.getString("benefsociais_benef_familia_tipobenef"));
                 p.setBeneficioSocialBeneficioFamiliaQuantoTempo(rs.getString("benefsociais_tempo_benef_familia"));
-                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("benefsociais_valor_benef_familia"))){
+                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("benefsociais_valor_benef_familia"))) {
                     p.setBeneficioSocialBeneficioFamiliaValor(rs.getDouble("benefsociais_valor_benef_familia"));
                 }
                 p.setBeneficioSocialINSSPossui(rs.getBoolean("benefsociais_possui_benef_inss"));
                 p.setBeneficioSocialINSSTipo(rs.getString("benefsociais_tempo_benef_inss"));
                 p.setBeneficioSocialINSSQuantoTempo(rs.getString("benefsociais_tipo_benef_inss"));
-                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("benefsociais_valor_benef_inss"))){
+                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("benefsociais_valor_benef_inss"))) {
                     p.setBeneficioSocialINSSValor(rs.getDouble("benefsociais_valor_benef_inss"));
                 }
                 p.setBeneficioSocialProgramaLeitePossui(rs.getString("benefsociais_possui_prog_leite"));
                 p.setBeneficioSocialProgramaSopaPossui(rs.getString("benefsociais_possui_prog_sopa"));
                 p.setBeneficioSocialBolsaFamiliaPossui(rs.getBoolean("benefsociais_possui_bolsa_fam"));
                 p.setBeneficioSocialBolsaFamiliaQuantoTempo(rs.getString("benefsociais_tempo_bolsa_fam"));
-                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("benefsociais_valor_bolsa_fam"))){
+                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("benefsociais_valor_bolsa_fam"))) {
                     p.setBeneficioSocialBolsaFamiliaValor(rs.getDouble("benefsociais_valor_bolsa_fam"));
                 }
                 p.setBeneficioSocialMinhaCasaMinhaVidaPossui(rs.getBoolean("benefsociais_possui_minhacasa_minhavida"));
@@ -1013,7 +1014,7 @@ public class PestalozziDAO {
                 p.setBeneficioSocialIncapacidadePossui(rs.getBoolean("benefsociais_incapacidade"));
                 p.setBeneficioSocialIncapacidadeTipo(rs.getString("benefsociais_tipo_incapacidade"));
                 p.setBeneficioSocialIncapacidadeQuantoTempo(rs.getString("benefsociais_tempo_incapacidade"));
-                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("benefsociais_valor_incapacidade"))){
+                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("benefsociais_valor_incapacidade"))) {
                     p.setBeneficioSocialIncapacidadeValor(rs.getDouble("benefsociais_valor_incapacidade"));
                 }
 
@@ -1031,7 +1032,7 @@ public class PestalozziDAO {
                 p.setRendaFamiliarProfissaoFuncao(rs.getString("rendafam_profissao_funcao"));
                 p.setRendaFamiliarAtividadeAntesAgravo(rs.getString("rendafam_atividade_antes_agravo"));
                 p.setRendaFamiliarTempoAntesAgravo(rs.getString("rendafam_tempo_atividade_antes_agravo"));
-                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("rendafam_valor"))){
+                if (!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getDouble("rendafam_valor"))) {
                     p.setRendaFamiliarValor(rs.getDouble("rendafam_valor"));
                 }
                 p.setRendaFamiliarMantemUsuario(rs.getBoolean("rendafam_mantem_fam_usuario"));

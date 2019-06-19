@@ -415,10 +415,6 @@
                                                    itemLabel="#{escolaridade.descescolaridade}"
                                                    itemValue="#{escolaridade.codescolaridade}" />
                                 </p:selectOneMenu>
-
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.educacaoEscolaridade}"
-                                        class="campo-laudoDig3"/>
                             </b:column>
 
                             <b:column span="2" class="label-position inserPacient">
@@ -1210,25 +1206,25 @@
                                 <f:facet name="header">
                                     PCD
                                 </f:facet>
-                                <p:outputLabel value="#{composicao.valor}"/>
+                                <p:outputLabel value="#{composicao.pcd}"/>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
                                     Benef
                                 </f:facet>
-                                <p:outputLabel value="#{composicao.valor}"/>
+                                <p:outputLabel value="#{composicao.pcd}"/>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
                                     Excluir
                                 </f:facet>
+
                                 <p:commandButton
                                         update=":formDelComposicaoFamiliar"
                                         onclick="PF('dlgDelComposicaoFamiliar').show();"
                                         class="new-btn-acao-table acao-editar" icon="ui-icon-delete"
                                         title="Excluir">
-                                    <f:setPropertyActionListener value="#{composicao}"
-                                                                 target="#{PestalozziController.composicaoFamiliarDel}"/>
+                                    <f:setPropertyActionListener value="#{composicao}" target="#{PestalozziController.composicaoFamiliarDel}"/>
                                 </p:commandButton>
                             </h:column>
 
@@ -1457,9 +1453,12 @@
                         <b:label value="Trabalha: " class="fire-label"
                                  severity="info"/>
 
-                        <h:inputText
-                                value="#{PestalozziController.composicaoFamiliarAdd.trabalha}"
-                                class="campo-laudoDig3"/>
+                        <p:selectOneRadio class="campo-laudoDig3"
+                                          value="#{PestalozziController.composicaoFamiliarAdd.trabalha}"
+                                          unselectable="true">
+                            <f:selectItem itemLabel="Sim" itemValue="S"/>
+                            <f:selectItem itemLabel="Não" itemValue="N"/>
+                        </p:selectOneRadio>
                     </b:column>
                     <b:column span="2" class="label-position inserPacient">
                         <b:label value="Valor: " class="fire-label"
@@ -1475,17 +1474,23 @@
                         <b:label value="PCD: " class="fire-label"
                                  severity="info"/>
 
-                        <h:inputText
-                                value="#{PestalozziController.composicaoFamiliarAdd.pcd}"
-                                class="campo-laudoDig3"/>
+                        <p:selectOneRadio class="campo-laudoDig3"
+                                          value="#{PestalozziController.composicaoFamiliarAdd.pcd}"
+                                          unselectable="true">
+                            <f:selectItem itemLabel="Sim" itemValue="S"/>
+                            <f:selectItem itemLabel="Não" itemValue="N"/>
+                        </p:selectOneRadio>
                     </b:column>
                     <b:column span="2" class="label-position inserPacient">
                         <b:label value="Benef: " class="fire-label"
                                  severity="info"/>
 
-                        <h:inputText
-                                value="#{PestalozziController.composicaoFamiliarAdd.benef}"
-                                class="campo-laudoDig3"/>
+                        <p:selectOneRadio class="campo-laudoDig3"
+                                          value="#{PestalozziController.composicaoFamiliarAdd.benef}"
+                                          unselectable="true">
+                            <f:selectItem itemLabel="Sim" itemValue="S"/>
+                            <f:selectItem itemLabel="Não" itemValue="N"/>
+                        </p:selectOneRadio>
                     </b:column>
                 </b:row>
                 <b:row>

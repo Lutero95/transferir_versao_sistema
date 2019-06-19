@@ -25,8 +25,8 @@ public class PestalozziController implements Serializable {
     private Pestalozzi pestalozzi;
     private String cabecalho;
     private PestalozziDAO pDao = new PestalozziDAO();
-    private ComposicaoFamiliar composicaoFamiliarAdd = new ComposicaoFamiliar();
-    private ComposicaoFamiliar composicaoFamiliarDel = new ComposicaoFamiliar();
+    private ComposicaoFamiliar composicaoFamiliarAdd;
+    private ComposicaoFamiliar composicaoFamiliarDel;
     private List<EscolaridadeBean> listaEscolaridade;
     private List<Parentesco> listaParentesco;
 
@@ -37,6 +37,8 @@ public class PestalozziController implements Serializable {
 
     public PestalozziController() {
         this.pestalozzi = new Pestalozzi();
+        composicaoFamiliarAdd = new ComposicaoFamiliar();
+        composicaoFamiliarDel = new ComposicaoFamiliar();
     }
 
     public void iniciarDadosQuestionario() throws ProjetoException {
@@ -54,8 +56,7 @@ public class PestalozziController implements Serializable {
     }
 
     public void iniciarQuestionario() throws ProjetoException{
-        PestalozziDAO pestalozziDAO = new PestalozziDAO();
-        pestalozzi = pestalozziDAO.retornarQuestionario(pestalozzi.getPaciente().getId_paciente());
+        pestalozzi = pDao.retornarQuestionario(pestalozzi.getPaciente().getId_paciente());
     }
 
     public void adicionarComposicaoFamiliar(){
@@ -69,8 +70,7 @@ public class PestalozziController implements Serializable {
     }
 
     public void gravarQuestionario() throws ProjetoException {
-        PestalozziDAO pestalozziDAO = new PestalozziDAO();
-        pestalozziDAO.gravarQuestionario(pestalozzi);
+        pDao.gravarQuestionario(pestalozzi);
     }
 
     public void iniciarListaEscolaridade() throws ProjetoException{
