@@ -14,7 +14,7 @@ public class ConnectionFactory {
     public static Connection getConnection() throws ProjetoException {
 
     	//LOCAL
-        String url = "jdbc:postgresql://localhost:5432/ehosp";
+        String url = "jdbc:postgresql://localhost:5434/ehosp";
         String usuario = "postgres";
         String senha  = "post";
         // String senha  = "engetron";

@@ -9,7 +9,7 @@
     <ui:define name="content">
         <f:metadata>
             <f:viewAction
-                    action="#{ParentescoController.iniciarDadosQuestionario()}"/>
+                    action="#{PestalozziController.iniciarDadosQuestionario()}"/>
         </f:metadata>
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
@@ -269,9 +269,15 @@
                                 <b:label value="Qual o parantesco?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneMenu filterMatchMode="startsWith" filter="true"
+                                                 class="mobile-label" required="true" requiredMessage="Compo Obrigatório: Parentesco"
+                                                 value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco}" >
+                                    <f:selectItem itemLabel="Selecione" itemValue="" />
+                                    <f:selectItems var="parentesco"
+                                                   value="#{PestalozziController.listaParentesco}"
+                                                   itemLabel="#{parentesco.descParentesco}"
+                                                   itemValue="#{parentesco.codParentesco}" />
+                                </p:selectOneMenu>
                             </b:column>
 
                             <b:column span="2" class="label-position inserPacient">
@@ -399,6 +405,16 @@
                             <b:column span="2" class="label-position inserPacient">
                                 <b:label value="Escolaridade:" class="fire-label"
                                          severity="info"/>
+
+                                <p:selectOneMenu filterMatchMode="startsWith" filter="true"
+                                                 class="mobile-label"
+                                                 value="#{PestalozziController.pestalozzi.educacaoEscolaridade}">
+                                    <f:selectItem itemLabel="Selecione" itemValue="" />
+                                    <f:selectItems var="escolaridade"
+                                                   value="#{PestalozziController.listaEscolaridade}"
+                                                   itemLabel="#{escolaridade.descescolaridade}"
+                                                   itemValue="#{escolaridade.codescolaridade}" />
+                                </p:selectOneMenu>
 
                                 <h:inputText
                                         value="#{PestalozziController.pestalozzi.educacaoEscolaridade}"
@@ -1424,9 +1440,16 @@
                         <b:label value="Parentesco:" class="fire-label"
                                  severity="info"/>
 
-                        <h:inputText required="true" requiredMessage="Compo Obrigatório: Parentesco"
-                                     value="#{PestalozziController.composicaoFamiliarAdd.parentesco}"
-                                     class="campo-laudoDig3"/>
+                        <p:selectOneMenu filterMatchMode="startsWith" filter="true"
+                                         class="mobile-label" required="true" requiredMessage="Compo Obrigatório: Parentesco"
+                                         value="#{PestalozziController.composicaoFamiliarAdd.parentesco}" >
+                            <f:selectItem itemLabel="Selecione" itemValue="" />
+                            <f:selectItems var="parentesco"
+                                           value="#{PestalozziController.listaParentesco}"
+                                           itemLabel="#{parentesco.descParentesco}"
+                                           itemValue="#{parentesco.codParentesco}" />
+                        </p:selectOneMenu>
+
                     </b:column>
                 </b:row>
                 <b:row>
