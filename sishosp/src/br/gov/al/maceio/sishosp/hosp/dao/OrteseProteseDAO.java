@@ -501,7 +501,7 @@ public class OrteseProteseDAO {
 
         try {
             ps = conAuxiliar.prepareStatement(sql);
-            ps.setString(1, retornarUltimaSituacaoValida(codOrteseIhProtese, statusDecartar,conAuxiliar));
+            ps.setString(1, retornarUltimaSituacaoValida(codOrteseIhProtese, statusDecartar, conAuxiliar));
             ps.setInt(2, codOrteseIhProtese);
             ps.execute();
 
@@ -610,8 +610,7 @@ public class OrteseProteseDAO {
         }
     }
 
-    public String retornarUltimaSituacaoValida(Integer id, String statusDescartar, Connection conAuxiliar)
-            throws ProjetoException {
+    public String retornarUltimaSituacaoValida(Integer id, String statusDescartar, Connection conAuxiliar) {
 
         String resultado = null;
 
@@ -620,7 +619,9 @@ public class OrteseProteseDAO {
         try {
 
             String sql = "SELECT status FROM hosp.historico_movimentacao_ortese_protese WHERE cod_ortese_protese = ? " +
-                    "AND status NOT IN ('MC', 'EC') and status <> ? ORDER BY id DESC LIMIT 1;";
+                    "AND status NOT IN ('MC', 'EC', 'RC', 'CE') and status <> ? ORDER BY id DESC LIMIT 1;";
+
+            //Ver o que significa as siglas na classe: StatusMovimentacaoOrteseProtese
 
             ps = conAuxiliar.prepareStatement(sql);
             ps.setInt(1, id);
@@ -641,6 +642,100 @@ public class OrteseProteseDAO {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+        }
+    }
+
+    public Boolean gravarRecebimentoOrteseIhProtese(Integer id) {
+
+        Boolean retorno = false;
+        String sql = "UPDATE hosp.ortese_protese SET situacao = ?, data_hora_acao = CURRENT_TIMESTAMP WHERE id = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla());
+            ps.setInt(2, id);
+
+            ps.executeUpdate();
+
+            retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla(), id, con);
+
+            if (retorno) {
+                con.commit();
+            }
+
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean cancelarRecebimentoOrteseIhProtese(Integer id) {
+
+        Boolean retorno = false;
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.RECEBIMENTO_CANCELADO.getSigla(), id, con);
+
+            if (retorno) {
+                retorno = gravarUltimaSituacaoValidaOrteseIhProtese(id, StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla(), con);
+                if (retorno) {
+                    con.commit();
+                }
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public String verificarSituacao(Integer id) {
+
+        String retorno = "";
+
+        String sql = "SELECT situacao FROM hosp.ortese_protese WHERE id = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                retorno = rs.getString("situacao");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            return retorno;
         }
     }
 

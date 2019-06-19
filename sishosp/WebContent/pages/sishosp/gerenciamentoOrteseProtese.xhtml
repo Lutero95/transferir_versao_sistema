@@ -68,7 +68,7 @@
                                                  id="btnAlterar" immediate="true"
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null}"
                                                  class="btn-acao-table acao-altera2 btn-new-padding2"
-                                                 icon="glyphicon-plus"
+                                                 icon="glyphicon-pencil"
                                                  action="#{OrteseProteseController.redirectAlterar}">
                                     <f:setPropertyActionListener value="2"
                                                                  target="#{OrteseProteseController.tipo}"/>
@@ -80,7 +80,7 @@
                                                  id="btnEncaminhar" immediate="true"
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null}"
                                                  class="btn-acao-table acao-limpar btn-new-padding2"
-                                                 icon="glyphicon-plus"
+                                                 icon="glyphicon-share-alt"
                                                  action="#{OrteseProteseController.redirectEncaminhar}">
                                 </b:commandButton>
                             </b:column>
@@ -90,7 +90,27 @@
                                                  id="btnMedicao" immediate="true"
                                                  disabled="#{OrteseProteseController.orteseProtese.id == null}"
                                                  class="btn-acao-table acao-pts btn-new-padding2"
-                                                 icon="glyphicon-plus"
+                                                 icon="glyphicon-tasks"
+                                                 action="#{OrteseProteseController.iniciarMedicao}">
+                                </b:commandButton>
+                            </b:column>
+
+                            <b:column span="2" class="new-span2">
+                                <b:commandButton value="Recebimento" style="margin-top:5px;"
+                                                 id="btnRecebimento" immediate="true"
+                                                 disabled="#{OrteseProteseController.orteseProtese.id == null}"
+                                                 class="btn-acao-table acao-desligar btn-new-padding2"
+                                                 icon="glyphicon-save"
+                                                 action="#{OrteseProteseController.verificarEntrega}">
+                                </b:commandButton>
+                            </b:column>
+
+                            <b:column span="2" class="new-span2">
+                                <b:commandButton value="Entrega" style="margin-top:5px;"
+                                                 id="btnEntrega" immediate="true"
+                                                 disabled="#{OrteseProteseController.orteseProtese.id == null}"
+                                                 class="btn-acao-table acao-transfere btn-new-padding2"
+                                                 icon="glyphicon-open"
                                                  action="#{OrteseProteseController.iniciarMedicao}">
                                 </b:commandButton>
                             </b:column>
@@ -110,7 +130,8 @@
                                      rowKey="#{opm.id}">
 
                             <p:ajax event="rowSelect"
-                                    update="formGerenOrteseEProtese:btnAlterar, formGerenOrteseEProtese:btnEncaminhar, formGerenOrteseEProtese:btnMedicao"/>
+                                    update="formGerenOrteseEProtese:btnAlterar, formGerenOrteseEProtese:btnEncaminhar, formGerenOrteseEProtese:btnMedicao,
+                                    formGerenOrteseEProtese:btnEntrega, formGerenOrteseEProtese:btnRecebimento"/>
 
                             <p:column width="20%">
                                 <f:facet name="header">
@@ -228,15 +249,15 @@
 
                 <div align="center">
 
-                    <p:separator />
+                    <p:separator/>
                     <b:commandButton look="success" value="Gravar" style="float:left;"
                                      action="#{OrteseProteseController.gravarMedicaoOrteseIhProtese}" ajax="true"
-                                     class="btn-sim" icon="glyphicon-ok" update="formGerenOrteseEProtese:msgPagina" />
+                                     class="btn-sim" icon="glyphicon-ok" update="formGerenOrteseEProtese:msgPagina"/>
 
                     <b:commandButton value="Fechar"
                                      oncomplete="PF('dlgMedicao').hide();" look="info" ajax="true"
                                      icon="glyphicon-remove" class="btn-nao"
-                                     style="margin-left:5px;float:right;" />
+                                     style="margin-left:5px;float:right;"/>
 
                 </div>
 
@@ -259,6 +280,54 @@
 
                     <p:commandButton value="Não"
                                      oncomplete="PF('dlgCancelar').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"
+                                     class="btn-nao"/>
+
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Recebimento" widgetVar="dlgRecebimento"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formRecebimento">
+
+                <div class="alert alert-warning" role="alert">Deseja realizar o recebimento do equipamento?</div>
+
+                <div align="center">
+
+                    <p:separator/>
+                    <p:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{OrteseProteseController.gravarRecebimentoOrteseIhProtese}"
+                                     ajax="true" update="formGerenOrteseEProtese:msgPagina"
+                                     class="btn-sim" icon="glyphicon-ok"/>
+
+                    <p:commandButton value="Não"
+                                     oncomplete="PF('dlgRecebimento').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"
+                                     class="btn-nao"/>
+
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Recebimento" widgetVar="dlgCancelarRecebimento"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formCancelarRecebimento">
+
+                <div class="alert alert-warning" role="alert">Deseja realizar o cancelamento do recebimento?</div>
+
+                <div align="center">
+
+                    <p:separator/>
+                    <p:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{OrteseProteseController.cancelarRecebimentoOrteseIhProtese}"
+                                     ajax="true" update="formGerenOrteseEProtese:msgPagina"
+                                     class="btn-sim" icon="glyphicon-ok"/>
+
+                    <p:commandButton value="Não"
+                                     oncomplete="PF('dlgCancelarRecebimento').hide();" look="info" ajax="true"
                                      icon="glyphicon-remove" style="margin-left:5px;float:right;"
                                      class="btn-nao"/>
 

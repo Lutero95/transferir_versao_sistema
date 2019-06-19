@@ -7,6 +7,7 @@ import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.OrteseProteseDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.StatusMovimentacaoOrteseProtese;
 import br.gov.al.maceio.sishosp.hosp.model.EquipamentoBean;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
@@ -208,6 +209,39 @@ public class OrteseProteseController implements Serializable {
         JSFUtil.abrirDialog("dlgMedicao");
     }
 
+    public void verificarEntrega() {
+        String situacao = oDao.verificarSituacao(orteseProtese.getId());
+
+        if(situacao.equals(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla())){
+            JSFUtil.abrirDialog("dlgCancelarRecebimento");
+        }
+        else{
+            JSFUtil.abrirDialog("dlgRecebimento");
+        }
+    }
+
+    public void gravarRecebimentoOrteseIhProtese() {
+        boolean gravou = oDao.gravarRecebimentoOrteseIhProtese(orteseProtese.getId());
+
+        if (gravou == true) {
+            JSFUtil.adicionarMensagemSucesso("Recebimento efetuado com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgRecebimento");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o recebimento!", "Erro");
+        }
+    }
+
+    public void cancelarRecebimentoOrteseIhProtese() {
+        boolean cancelou = oDao.cancelarRecebimentoOrteseIhProtese(orteseProtese.getId());
+
+        if (cancelou == true) {
+            JSFUtil.adicionarMensagemSucesso("Cancelamento efetuado com sucesso!", "Sucesso");
+            JSFUtil.fecharDialog("dlgCancelarRecebimento");
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cancelamento!", "Erro");
+        }
+    }
+
     public void carregarDadosPacientePorOrteseIhProtese() throws ProjetoException {
         orteseProtese.getLaudo().setPaciente(new PacienteDAO().buscarPacientePorIdOrteseProtese(orteseProtese.getId()));
     }
@@ -276,4 +310,5 @@ public class OrteseProteseController implements Serializable {
     public void setExisteMedicao(Boolean existeMedicao) {
         this.existeMedicao = existeMedicao;
     }
+
 }

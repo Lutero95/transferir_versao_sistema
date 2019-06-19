@@ -8,7 +8,9 @@ public enum StatusMovimentacaoOrteseProtese {
     MEDICAO_EFETUADA("ME"),
     MEDICAO_CANCELADA("MC"),
     EQUIPAMENTO_RECEBIDO("ER"),
-    EQUIPAMENTO_ENTREGUE("EE");
+    RECEBIMENTO_CANCELADO("RC"),
+    EQUIPAMENTO_ENTREGUE("EE"),
+    CANCELAR_ENTREGA("CE");
 
     private String sigla;
 
