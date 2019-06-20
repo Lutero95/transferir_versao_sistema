@@ -3,8 +3,10 @@ package br.gov.al.maceio.sishosp.questionario.control;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.control.EscolaridadeController;
 import br.gov.al.maceio.sishosp.hosp.control.ParentescoController;
+import br.gov.al.maceio.sishosp.hosp.dao.ParentescoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EscolaridadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.Parentesco;
 import br.gov.al.maceio.sishosp.questionario.dao.PestalozziDAO;
@@ -60,7 +62,9 @@ public class PestalozziController implements Serializable {
         pestalozzi = pDao.retornarQuestionario(pestalozzi.getPaciente().getId_paciente());
     }
 
-    public void adicionarComposicaoFamiliar(){
+    public void adicionarComposicaoFamiliar() throws ProjetoException {
+        ParentescoDAO parentescoDAO = new ParentescoDAO();
+        this.composicaoFamiliarAdd.setParentesco(parentescoDAO.buscaParentesCocodigo(this.composicaoFamiliarAdd.getParentesco().getCodParentesco()));
         this.pestalozzi.getListaComposicaoFamiliar().add(this.composicaoFamiliarAdd);
         composicaoFamiliarAdd = new ComposicaoFamiliar();
         JSFUtil.fecharDialog("dlgAddComposicaoFamiliar");
@@ -83,6 +87,28 @@ public class PestalozziController implements Serializable {
     public void iniciarListaParentesco() throws ProjetoException{
         ParentescoController parentescoController = new ParentescoController();
         listaParentesco = parentescoController.listarParentescos();
+    }
+
+    public String retonarSimNao(String sigla){
+        if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(sigla)){
+            if(sigla.equals("S")){
+                return "Sim";
+            }else{
+                return "Não";
+            }
+        }
+        return "";
+    }
+
+    public String retonarMasculinoFeminino(String sigla){
+        if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(sigla)) {
+            if (sigla.equals("M")) {
+                return "Masculino";
+            } else {
+                return "Feminino";
+            }
+        }
+        return "";
     }
 
     public String redirectEdit() {

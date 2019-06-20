@@ -236,9 +236,12 @@
                                 <b:label value="Já realizou algum tipo de Reabilitação?" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoRealizouReabilitacao}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoRealizouReabilitacao}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
                             </b:column>
 
                             <b:column span="2" class="label-position inserPacient">
@@ -892,9 +895,12 @@
                                 <b:label value="Com Acompanhante" class="fire-label"
                                          severity="info"/>
 
-                                <h:inputText
-                                        value="#{PestalozziController.pestalozzi.transporteCarteiraTransporteAcompanhate}"
-                                        class="campo-laudoDig3"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.transporteCarteiraTransporteAcompanhate}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
                             </b:column>
 
                             <b:column span="2" class="label-position inserPacient">
@@ -1176,7 +1182,7 @@
                                 <f:facet name="header">
                                     Sexo
                                 </f:facet>
-                                <p:outputLabel value="#{composicao.sexo}"/>
+                                <p:outputLabel value="#{PestalozziController.retonarMasculinoFeminino(composicao.sexo)}"/>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
@@ -1188,13 +1194,13 @@
                                 <f:facet name="header">
                                     Parentesco
                                 </f:facet>
-                                <p:outputLabel value="#{composicao.parentesco}"/>
+                                <p:outputLabel value="#{composicao.parentesco.descParentesco}"/>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
                                     Trabalha
                                 </f:facet>
-                                <p:outputLabel value="#{composicao.trabalha}"/>
+                                <p:outputLabel value="#{PestalozziController.retonarSimNao(composicao.trabalha)}"/>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
@@ -1206,13 +1212,13 @@
                                 <f:facet name="header">
                                     PCD
                                 </f:facet>
-                                <p:outputLabel value="#{composicao.pcd}"/>
+                                <p:outputLabel value="#{PestalozziController.retonarSimNao(composicao.pcd)}"/>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
                                     Benef
                                 </f:facet>
-                                <p:outputLabel value="#{composicao.pcd}"/>
+                                <p:outputLabel value="#{PestalozziController.retonarSimNao(composicao.benef)}"/>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
@@ -1438,7 +1444,7 @@
 
                         <p:selectOneMenu filterMatchMode="startsWith" filter="true"
                                          class="mobile-label" required="true" requiredMessage="Compo Obrigatório: Parentesco"
-                                         value="#{PestalozziController.composicaoFamiliarAdd.parentesco}" >
+                                         value="#{PestalozziController.composicaoFamiliarAdd.parentesco.codParentesco}" >
                             <f:selectItem itemLabel="Selecione" itemValue="" />
                             <f:selectItems var="parentesco"
                                            value="#{PestalozziController.listaParentesco}"

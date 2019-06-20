@@ -1,16 +1,21 @@
 package br.gov.al.maceio.sishosp.questionario.model;
 
+import br.gov.al.maceio.sishosp.hosp.model.Parentesco;
 import java.io.Serializable;
 
 public class ComposicaoFamiliar implements Serializable {
     private String nome;
     private String sexo;
     private Integer idade;
-    private Integer parentesco;
+    private Parentesco parentesco;
     private String trabalha;
     private Double valor;
     private String pcd;
     private String benef;
+
+    public ComposicaoFamiliar() {
+        this.parentesco = new Parentesco();
+    }
 
     public String getNome() {
         return nome;
@@ -36,11 +41,11 @@ public class ComposicaoFamiliar implements Serializable {
         this.idade = idade;
     }
 
-    public Integer getParentesco() {
+    public Parentesco getParentesco() {
         return parentesco;
     }
 
-    public void setParentesco(Integer parentesco) {
+    public void setParentesco(Parentesco parentesco) {
         this.parentesco = parentesco;
     }
 

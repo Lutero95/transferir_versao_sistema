@@ -3,6 +3,7 @@ package br.gov.al.maceio.sishosp.questionario.dao;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.hosp.dao.ParentescoDAO;
 import br.gov.al.maceio.sishosp.questionario.model.ComposicaoFamiliar;
 import br.gov.al.maceio.sishosp.questionario.model.Pestalozzi;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
@@ -831,7 +832,7 @@ public class PestalozziDAO {
                     stmt.setNull(4, java.sql.Types.NULL);
                 }
                 if (!VerificadorUtil.verificarSeObjetoNuloOuZero(composicaoFamiliar.getParentesco())) {
-                    stmt.setInt(5, composicaoFamiliar.getParentesco());
+                    stmt.setInt(5, composicaoFamiliar.getParentesco().getCodParentesco());
                 } else {
                     stmt.setNull(5, java.sql.Types.NULL);
                 }
@@ -872,12 +873,13 @@ public class PestalozziDAO {
             PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql);
             stmt.setInt(1, idQuestionarioSocial);
             ResultSet rs = stmt.executeQuery();
+            ParentescoDAO parentescoDAO = new ParentescoDAO();
             while (rs.next()) {
                 ComposicaoFamiliar composicaoFamiliar = new ComposicaoFamiliar();
                 composicaoFamiliar.setNome(rs.getString("nome"));
                 composicaoFamiliar.setSexo(rs.getString("sexo"));
                 composicaoFamiliar.setIdade(rs.getInt("idade"));
-                composicaoFamiliar.setParentesco(rs.getInt("codparentesco"));
+                composicaoFamiliar.setParentesco(parentescoDAO.buscaParentesCocodigo(rs.getInt("codparentesco")));
                 composicaoFamiliar.setTrabalha(rs.getString("trabalha"));
                 composicaoFamiliar.setValor(rs.getDouble("valor_salario"));
                 composicaoFamiliar.setPcd(rs.getString("pcd"));
