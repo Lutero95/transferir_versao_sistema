@@ -66,7 +66,9 @@
                             <b:column span="2" class="new-span2">
                                 <b:commandButton value="Alterar" style="margin-top:5px;"
                                                  id="btnAlterar" immediate="true"
-                                                 disabled="#{OrteseProteseController.orteseProtese.id == null}"
+                                                 disabled="#{OrteseProteseController.orteseProtese.id == null
+                                                 or OrteseProteseController.orteseProtese.statusMovimentacao == 'ER'
+                                                 or OrteseProteseController.orteseProtese.statusMovimentacao == 'EE'}"
                                                  class="btn-acao-table acao-altera2 btn-new-padding2"
                                                  icon="glyphicon-pencil"
                                                  action="#{OrteseProteseController.redirectAlterar}">
@@ -78,7 +80,9 @@
                             <b:column span="2" class="new-span2">
                                 <b:commandButton value="Encaminhar" style="margin-top:5px;"
                                                  id="btnEncaminhar" immediate="true"
-                                                 disabled="#{OrteseProteseController.orteseProtese.id == null}"
+                                                 disabled="#{OrteseProteseController.orteseProtese.id == null
+                                                 or OrteseProteseController.orteseProtese.statusMovimentacao == 'ER'
+                                                 or OrteseProteseController.orteseProtese.statusMovimentacao == 'EE'}"
                                                  class="btn-acao-table acao-limpar btn-new-padding2"
                                                  icon="glyphicon-share-alt"
                                                  action="#{OrteseProteseController.redirectEncaminhar}">
@@ -88,7 +92,9 @@
                             <b:column span="2" class="new-span2">
                                 <b:commandButton value="Medição" style="margin-top:5px;"
                                                  id="btnMedicao" immediate="true"
-                                                 disabled="#{OrteseProteseController.orteseProtese.id == null}"
+                                                 disabled="#{OrteseProteseController.orteseProtese.id == null
+                                                 or OrteseProteseController.orteseProtese.statusMovimentacao == 'ER'
+                                                 or OrteseProteseController.orteseProtese.statusMovimentacao == 'EE'}"
                                                  class="btn-acao-table acao-pts btn-new-padding2"
                                                  icon="glyphicon-tasks"
                                                  action="#{OrteseProteseController.iniciarMedicao}">
@@ -98,7 +104,8 @@
                             <b:column span="2" class="new-span2">
                                 <b:commandButton value="Recebimento" style="margin-top:5px;"
                                                  id="btnRecebimento" immediate="true"
-                                                 disabled="#{OrteseProteseController.orteseProtese.id == null}"
+                                                 disabled="#{OrteseProteseController.orteseProtese.id == null
+                                                 or OrteseProteseController.orteseProtese.statusMovimentacao == 'EE'}"
                                                  class="btn-acao-table acao-desligar btn-new-padding2"
                                                  icon="glyphicon-save"
                                                  action="#{OrteseProteseController.verificarRecebimento}">

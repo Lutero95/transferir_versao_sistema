@@ -202,7 +202,7 @@ public class OrteseProteseController implements Serializable {
 
     public void iniciarMedicao() throws ProjetoException {
         existeMedicao = oDao.verificarSeExisteMedicao(orteseProtese.getId());
-        if(existeMedicao){
+        if (existeMedicao) {
             orteseProtese = oDao.carregarMedicaoPorIdOrteseProtese(orteseProtese.getId());
         }
         carregarDadosPacientePorOrteseIhProtese();
@@ -212,10 +212,9 @@ public class OrteseProteseController implements Serializable {
     public void verificarEntrega() {
         String situacao = oDao.verificarSituacao(orteseProtese.getId());
 
-        if(situacao.equals(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_ENTREGUE.getSigla())){
+        if (situacao.equals(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_ENTREGUE.getSigla())) {
             JSFUtil.abrirDialog("dlgCancelarEntrega");
-        }
-        else{
+        } else {
             JSFUtil.abrirDialog("dlgEntrega");
         }
     }
@@ -229,6 +228,8 @@ public class OrteseProteseController implements Serializable {
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a entrega!", "Erro");
         }
+
+        listarOrteseIhProtese();
     }
 
     public void cancelarEntregaOrteseIhProtese() {
@@ -240,15 +241,16 @@ public class OrteseProteseController implements Serializable {
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cancelamento!", "Erro");
         }
+
+        listarOrteseIhProtese();
     }
 
     public void verificarRecebimento() {
         String situacao = oDao.verificarSituacao(orteseProtese.getId());
 
-        if(situacao.equals(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla())){
+        if (situacao.equals(StatusMovimentacaoOrteseProtese.EQUIPAMENTO_RECEBIDO.getSigla())) {
             JSFUtil.abrirDialog("dlgCancelarRecebimento");
-        }
-        else{
+        } else {
             JSFUtil.abrirDialog("dlgRecebimento");
         }
     }
@@ -262,6 +264,8 @@ public class OrteseProteseController implements Serializable {
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o recebimento!", "Erro");
         }
+
+        listarOrteseIhProtese();
     }
 
     public void cancelarRecebimentoOrteseIhProtese() {
@@ -273,6 +277,8 @@ public class OrteseProteseController implements Serializable {
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cancelamento!", "Erro");
         }
+
+        listarOrteseIhProtese();
     }
 
     public void carregarDadosPacientePorOrteseIhProtese() throws ProjetoException {
@@ -281,6 +287,13 @@ public class OrteseProteseController implements Serializable {
 
     public void listarOrteseIhProtese() {
         listOrteseProtese = oDao.listarOrteseIhProtese();
+        atualizarTabelaPrincipalIhBotoesOrteseIhProtese();
+    }
+
+    public void atualizarTabelaPrincipalIhBotoesOrteseIhProtese() {
+        JSFUtil.atualizarComponente("dtNovosAg");
+        JSFUtil.atualizarComponente("formGerenOrteseEProtese:btnAlterar, formGerenOrteseEProtese:btnEncaminhar, " +
+                "formGerenOrteseEProtese:btnMedicao, formGerenOrteseEProtese:btnEntrega, formGerenOrteseEProtese:btnRecebimento");
     }
 
     public OrteseProtese getOrteseProtese() {

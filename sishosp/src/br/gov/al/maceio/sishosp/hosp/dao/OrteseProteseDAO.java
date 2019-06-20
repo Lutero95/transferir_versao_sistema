@@ -142,7 +142,7 @@ public class OrteseProteseDAO {
 
         List<OrteseProtese> lista = new ArrayList<>();
 
-        String sql = "SELECT id, status, nota_fiscal, cod_laudo FROM hosp.ortese_protese WHERE cod_empresa = ?;";
+        String sql = "SELECT id, status, nota_fiscal, cod_laudo, situacao FROM hosp.ortese_protese WHERE cod_empresa = ? ORDER BY id;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -156,6 +156,7 @@ public class OrteseProteseDAO {
                 orteseProtese.setStatusPadrao(rs.getString("status"));
                 orteseProtese.getLaudo().setId(rs.getInt("cod_laudo"));
                 orteseProtese.setNotaFiscal(rs.getString("nota_fiscal"));
+                orteseProtese.setStatusMovimentacao(rs.getString("situacao"));
                 lista.add(orteseProtese);
             }
         } catch (SQLException | ProjetoException ex) {
