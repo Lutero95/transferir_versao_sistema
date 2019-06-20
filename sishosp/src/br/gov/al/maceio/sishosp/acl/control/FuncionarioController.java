@@ -122,85 +122,88 @@ public class FuncionarioController implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
                 .put("expired", "N");
 
-        fDao.autenticarUsuarioInicialCodEmpresa(usuario);
+        Integer codEmpresa = fDao.autenticarUsuarioInicialCodEmpresa(usuario);
 
-        usuario.setAtivo(fDao.usuarioAtivo(usuario));
-
-        usuarioLogado = fDao.autenticarUsuario(usuario);
-
-        if (usuarioLogado == null) {
-            JSFUtil.adicionarMensagemErro("Usuário ou senha inválido!!", "Erro");
-            JSFUtil.atualizarComponente("msgPagina");
+        if (VerificadorUtil.verificarSeObjetoNuloOuZero(codEmpresa)) {
+            JSFUtil.adicionarMensagemErro("Usuário ou senha inválida!!", "Erro");
             return null;
 
         } else {
 
-            FacesContext.getCurrentInstance().getExternalContext()
-                    .getSessionMap().put("obj_usuario", usuarioLogado);
+            usuarioLogado = fDao.autenticarUsuario(usuario);
 
-            // ACL =============================================================
+            if (usuarioLogado == null) {
+                JSFUtil.adicionarMensagemErro("Usuário ou senha inválida!!", "Erro");
+                return null;
 
-            List<Sistema> sistemas = fDao
-                    .carregarSistemasUsuario(usuarioLogado);
+            } else {
 
-            FacesContext.getCurrentInstance().getExternalContext()
-                    .getSessionMap().put("perms_usuario_sis", sistemas);
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .getSessionMap().put("obj_usuario", usuarioLogado);
 
-            List<Permissoes> permissoes = fDao
-                    .carregarPermissoes(usuarioLogado);
+                // ACL =============================================================
 
-            sistemaLogado.setDescricao("Sem Sistema");
-            sistemaLogado.setSigla("Sem Sistema");
-            FacesContext.getCurrentInstance().getExternalContext()
-                    .getSessionMap().put("sistema_logado", sistemaLogado);
+                List<Sistema> sistemas = fDao
+                        .carregarSistemasUsuario(usuarioLogado);
 
-            for (Sistema s : sistemas) {
-                Menu m = new Menu();
-                m.setDescricao("Principal");
-                m.setUrl(s.getUrl());
-                m.setTipo("injetado");
-                Permissoes perms = new Permissoes();
-                perms.setMenu(m);
-                permissoes.add(perms);
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .getSessionMap().put("perms_usuario_sis", sistemas);
+
+                List<Permissoes> permissoes = fDao
+                        .carregarPermissoes(usuarioLogado);
+
+                sistemaLogado.setDescricao("Sem Sistema");
+                sistemaLogado.setSigla("Sem Sistema");
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .getSessionMap().put("sistema_logado", sistemaLogado);
+
+                for (Sistema s : sistemas) {
+                    Menu m = new Menu();
+                    m.setDescricao("Principal");
+                    m.setUrl(s.getUrl());
+                    m.setTipo("injetado");
+                    Permissoes perms = new Permissoes();
+                    perms.setMenu(m);
+                    permissoes.add(perms);
+                }
+
+                for (Sistema s : sistemas) {
+                    Menu m = new Menu();
+                    m.setDescricao("Fale Conosco");
+                    m.setUrl(s.getUrl());
+                    m.setTipo("injetado");
+                    Permissoes perms = new Permissoes();
+                    perms.setMenu(m);
+                    permissoes.add(perms);
+                }
+
+                Permissoes perms2 = new Permissoes();
+                Menu m3 = new Menu();
+                m3.setDescricao("Primeiro Acesso");
+                m3.setUrl("/pages/comum/primeiroAcesso.faces");
+                m3.setTipo("injetado");
+                perms2.setMenu(m3);
+                permissoes.add(perms2);
+
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .getSessionMap().put("perms_usuario", permissoes);
+
+                HttpSession session = SessionUtil.getSession();
+                session.setAttribute("User", usuarioLogado.getId());
+
+                recoverDataFromSession();
+
+                String url = "";
+
+                if (sistemas.size() > 1) url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
+                else {
+                    recSistemaLogado(sistemas.get(0));
+                    gerarMenus(sistemaLogado);
+                    url = sistemas.get(0).getUrl() + "?faces-redirect=true";
+                }
+
+                return url;
             }
-
-            for (Sistema s : sistemas) {
-                Menu m = new Menu();
-                m.setDescricao("Fale Conosco");
-                m.setUrl(s.getUrl());
-                m.setTipo("injetado");
-                Permissoes perms = new Permissoes();
-                perms.setMenu(m);
-                permissoes.add(perms);
-            }
-
-            Permissoes perms2 = new Permissoes();
-            Menu m3 = new Menu();
-            m3.setDescricao("Primeiro Acesso");
-            m3.setUrl("/pages/comum/primeiroAcesso.faces");
-            m3.setTipo("injetado");
-            perms2.setMenu(m3);
-            permissoes.add(perms2);
-
-            FacesContext.getCurrentInstance().getExternalContext()
-                    .getSessionMap().put("perms_usuario", permissoes);
-
-            HttpSession session = SessionUtil.getSession();
-            session.setAttribute("User", usuarioLogado.getId());
-
-            recoverDataFromSession();
-
-            String url = "";
-
-            if(sistemas.size() > 1) url = "/pages/comum/selecaoSistema.faces?faces-redirect=true";
-            else {
-                recSistemaLogado(sistemas.get(0));
-                gerarMenus(sistemaLogado);
-                url = sistemas.get(0).getUrl() + "?faces-redirect=true";
-            }
-
-            return url;
-
         }
     }
 
@@ -235,9 +238,9 @@ public class FuncionarioController implements Serializable {
     }
 
     public void gerarMenus(Sistema sistema) {
-    	//FacesContext fc = FacesContext.getCurrentInstance();
-    	//HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
-    	//String contextPath = request.getServletContext().getContextPath();
+        //FacesContext fc = FacesContext.getCurrentInstance();
+        //HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
+        //String contextPath = request.getServletContext().getContextPath();
         limparMenuModel();
         List<DefaultSubMenu> menuPai = new ArrayList<>();
         List<DefaultSubMenu> submenu = new ArrayList<>();
@@ -252,7 +255,7 @@ public class FuncionarioController implements Serializable {
         DefaultMenuItem item1 = new DefaultMenuItem();
         item1.setValue("Início");
         //contextPath+
-        item1.setUrl( sistema.getUrl().replace("?faces-redirect=true", ""));
+        item1.setUrl(sistema.getUrl().replace("?faces-redirect=true", ""));
         menuModel.addElement(item1);
 
         for (Permissoes p : permsUsuarioLogado) {
@@ -732,7 +735,7 @@ public class FuncionarioController implements Serializable {
 
     }
 
-    public List<EmpresaBean> listarUnidadesDoFuncionario(){
+    public List<EmpresaBean> listarUnidadesDoFuncionario() {
 
         return fDao.listarUnidadesDoFuncionario();
     }
@@ -750,12 +753,11 @@ public class FuncionarioController implements Serializable {
                         existe = true;
                     }
                 }
-                if(existe == false){
+                if (existe == false) {
                     EmpresaDAO empresaDAO = new EmpresaDAO();
                     EmpresaBean empresaBean1 = empresaDAO.buscarEmpresaPorId(profissional.getUnidadeExtra().getCodEmpresa());
                     profissional.getListaUnidades().add(empresaBean1);
-                }
-                else{
+                } else {
                     JSFUtil.adicionarMensagemErro("Essa unidade já foi adicionada!", "Erro!");
                 }
             }
@@ -866,7 +868,7 @@ public class FuncionarioController implements Serializable {
     }
 
     public DualListModel<Menu> getListaMenusDual() throws ProjetoException, SQLException {
-        if (listaMenusDual == null ) {
+        if (listaMenusDual == null) {
             listaMenusSource = null;
             listaMenusTarget = new ArrayList<>();
             getListaMenusSource();
@@ -881,8 +883,7 @@ public class FuncionarioController implements Serializable {
                 Integer id = Integer.parseInt(params.get("id"));
                 listaMenusTarget = fDao.listarMenuItemTargetEditUser(id);
                 listaMenusSource = fDao.listarMenuItemSourcerEditUser(profissional.getPerfil().getId(), id);
-            }
-            else{
+            } else {
                 listaMenusTarget = fDao.listarMenuItemTargetEditUser(ConverterUtil.converterLongParaInt(profissional.getId()));
                 listaMenusSource = fDao.listarMenuItemSourcerEditUser(profissional.getPerfil().getId(), ConverterUtil.converterLongParaInt(profissional.getId()));
             }

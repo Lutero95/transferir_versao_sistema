@@ -15,7 +15,7 @@
 				</div>
 				<div class="row">
 					<div class="login-form pull-size">
-						<b:form id="fmrLogin">
+						<h:form id="fmrLogin">
 
 							<center>
 								<h2 class="texto-acesso">Acesse sua conta</h2>
@@ -40,16 +40,15 @@
 							<center>
 								<p:commandButton value="Entrar"
 									styleClass="btnLogin ui-priority-primary btn-lg"
-									action="#{MBFuncionarios.login}" update="@form"></p:commandButton>
+									action="#{MBFuncionarios.login}" update="msgPagina"></p:commandButton>
 
 							</center>
 
-						</b:form>
+							<div align="center">
+								<b:messages value="Error" id="msgPagina"></b:messages>
+							</div>
 
-
-						<div align="center">
-							<b:messages value="Error" id="msgError"></b:messages>
-						</div>
+						</h:form>
 
 					</div>
 					<div class="login-content">

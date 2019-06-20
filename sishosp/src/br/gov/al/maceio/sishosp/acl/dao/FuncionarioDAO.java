@@ -83,7 +83,7 @@ public class FuncionarioDAO {
                 + "pf.id as idperfil from acl.funcionarios us "
                 + "join acl.perfil pf on (pf.id = us.id_perfil) " +
                 " left join hosp.parametro p ON (p.cod_empresa = us.cod_empresa) "
-                + "where (us.cpf = ?) and (upper(us.senha) = ?) and (? = 'S')";
+                + "where (us.cpf = ?) and (upper(us.senha) = ?) and us.ativo = 'S'";
 
         FuncionarioBean ub = null;
         int count = 1;
@@ -94,7 +94,6 @@ public class FuncionarioDAO {
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
             pstmt.setString(2, usuario.getSenha().toUpperCase());
-            pstmt.setString(3, usuario.getAtivo());
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 ub = new FuncionarioBean();
@@ -122,37 +121,6 @@ public class FuncionarioDAO {
             FacesContext.getCurrentInstance().getExternalContext()
                     .getSessionMap().put("setores_usuario", setoresUsuario);
             return ub;
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    public String usuarioAtivo(FuncionarioBean usuario) throws ProjetoException {
-
-        String ativo = "";
-
-        String sql = "select ativo from acl.funcionarios where cpf = ? and senha = ?";
-
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
-            pstmt.setString(2, usuario.getSenha().toUpperCase());
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                ativo = rs.getString("ativo");
-
-            }
-
-            return ativo;
 
         } catch (SQLException ex) {
             ex.printStackTrace();
