@@ -12,6 +12,7 @@ import br.gov.al.maceio.sishosp.hosp.model.Parentesco;
 import br.gov.al.maceio.sishosp.questionario.dao.PestalozziDAO;
 import br.gov.al.maceio.sishosp.questionario.model.ComposicaoFamiliar;
 import br.gov.al.maceio.sishosp.questionario.model.Pestalozzi;
+import br.gov.al.maceio.sishosp.questionario.enums.ModeloSexo;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -102,9 +103,9 @@ public class PestalozziController implements Serializable {
 
     public String retonarMasculinoFeminino(String sigla){
         if(!VerificadorUtil.verificarSeObjetoNuloOuVazio(sigla)) {
-            if (sigla.equals("M")) {
+            if (sigla.equals(ModeloSexo.MASCULINO.getSigla())) {
                 return "Masculino";
-            } else {
+            } else if (sigla.equals(ModeloSexo.FEMININO.getSigla())){
                 return "Feminino";
             }
         }

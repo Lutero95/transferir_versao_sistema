@@ -8,7 +8,7 @@ import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 public class Pestalozzi implements Serializable {
     private Integer id;
     private PacienteBean paciente;
-    //SA�DE
+    //SAUDE
     private Boolean saudeRealizaAtendimentoNestaInstituicao;
     private String saudeUnidade;
     private Boolean saudeServicoAtendimentoRedeReabilitacaoAuditiva;
@@ -144,7 +144,7 @@ public class Pestalozzi implements Serializable {
     private String habitacaoDestinoLixo;
     private String habitacaoResidenciaAdaptada;
 
-    //COMPOSIcÃO FAMILIAR
+    //COMPOSICAO FAMILIAR
     private ArrayList<ComposicaoFamiliar> listaComposicaoFamiliar;
 
     //RELATO DE VIDA
