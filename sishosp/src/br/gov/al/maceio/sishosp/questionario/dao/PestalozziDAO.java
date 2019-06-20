@@ -979,7 +979,8 @@ public class PestalozziDAO {
             while (rs.next()) {
                 //SAUDE
                 idQuestionario = rs.getInt("id");
-                if (!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_realiza_atend_instituicao"))) {
+                //if (!VerificadorUtil.verificarSeObjetoNulo(rs.getBoolean("saude_realiza_atend_instituicao"))) {
+                if (rs.getString("saude_realiza_atend_instituicao")!=null) {
                     p.setSaudeRealizaAtendimentoNestaInstituicao(rs.getBoolean("saude_realiza_atend_instituicao"));
                 }
                 p.setSaudeUnidade(rs.getString("saude_unidade_atend"));
