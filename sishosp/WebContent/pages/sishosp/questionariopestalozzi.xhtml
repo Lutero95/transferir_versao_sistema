@@ -534,18 +534,18 @@
                                     <f:selectItem itemLabel="Não" itemValue="false"/>
                                 </p:selectOneRadio>
                             </b:column>
-                            <b:column span="3" class="label-position inserPacient">
+                            <b:column span="8" class="label-position inserPacient">
                                 <b:label value="Qual Atividade Institucional?" class="fire-label"
                                          severity="info"/>
                             
                             
                                 
-                                <p:selectBooleanCheckbox itemLabel="AEE"
+                                <p:selectBooleanCheckbox itemLabel="AEE" class="campo-laudoDig3"
                                         value="#{PestalozziController.pestalozzi.educacaoAtividadeInstituconalQualAEE}"
                                         label="Basic"/>
 
-                                <p:outputLabel value="EJA"/>
-                                <p:selectBooleanCheckbox
+
+                                <p:selectBooleanCheckbox itemLabel="EJA"
                                         value="#{PestalozziController.pestalozzi.educacaoAtividadeInstituconalQualEJA}"
                                         label="Basic"/>
 
