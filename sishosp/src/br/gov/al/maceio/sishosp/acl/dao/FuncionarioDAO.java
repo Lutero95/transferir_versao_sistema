@@ -1020,14 +1020,56 @@ public class FuncionarioDAO {
                 ps.execute();
             }
 
-            con.commit();
-            retorno = true;
+            retorno = gravarProfissionalBancoPublico(profissional, idProf);
+
+            if(retorno) {
+                con.commit();
+            }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
                 con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public boolean gravarProfissionalBancoPublico(FuncionarioBean profissional, Integer idProfissional) {
+
+        Boolean retorno = false;
+        Connection conexaoPublica = null;
+
+        String sql = "INSERT INTO acl.funcionarios(id_funcionario, cpf, senha, ativo, cod_empresa) "
+                + " VALUES (?, ?, ?, ?, ?);";
+        try {
+            conexaoPublica = ConnectionFactoryPublico.getConnection();
+            ps = conexaoPublica.prepareStatement(sql);
+
+            ps.setInt(1, idProfissional);
+
+            ps.setString(2, profissional.getCpf().replaceAll("[^0-9]", ""));
+
+            ps.setString(3, profissional.getSenha());
+
+            ps.setString(4, "S");
+
+            ps.setInt(5, profissional.getEmpresa().getCodEmpresa());
+
+            ps.executeQuery();
+
+            conexaoPublica.commit();
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexaoPublica.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -1450,8 +1492,11 @@ public class FuncionarioDAO {
                 ps.execute();
             }
 
-            con.commit();
-            retorno = true;
+            retorno = alterarProfissionalBancoPublico(profissional);
+
+            if(retorno) {
+                con.commit();
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -1459,6 +1504,36 @@ public class FuncionarioDAO {
         } finally {
             try {
                 con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public boolean alterarProfissionalBancoPublico(FuncionarioBean profissional) {
+
+        Connection conexaoPublica = null;
+
+        Boolean retorno = false;
+        String sql = "UPDATE acl.funcionarios SET senha = ?, ativo = ? WHERE id_funcionario = ?";
+
+        try {
+            conexaoPublica = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexaoPublica.prepareStatement(sql);
+
+            stmt.setString(1, profissional.getSenha().toUpperCase());
+            stmt.setString(2, profissional.getAtivo().toUpperCase());
+
+            conexaoPublica.commit();
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexaoPublica.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
