@@ -1060,7 +1060,7 @@ public class FuncionarioDAO {
 
             ps.setInt(5, profissional.getEmpresa().getCodEmpresa());
 
-            ps.executeQuery();
+            ps.execute();
 
             conexaoPublica.commit();
             retorno = true;
@@ -1386,7 +1386,7 @@ public class FuncionarioDAO {
 
         Boolean retorno = false;
         String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
-                + " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ? "
+                + " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, senha = ? "
                 + " where id_funcionario = ?";
 
         try {
@@ -1400,10 +1400,10 @@ public class FuncionarioDAO {
                     stmt.setInt(2, profissional.getEspecialidade()
                             .getCodEspecialidade());
                 } else {
-                    stmt.setInt(2, 0);
+                    stmt.setNull(2, Types.NULL);
                 }
             } else {
-                stmt.setInt(2, 0);
+                stmt.setNull(2, Types.NULL);
             }
 
             if (profissional.getCns() != null) {
@@ -1442,7 +1442,9 @@ public class FuncionarioDAO {
 
             stmt.setBoolean(10, profissional.getRealizaEncaixes());
 
-            stmt.setLong(11, profissional.getId());
+            stmt.setString(11, profissional.getSenha().toUpperCase());
+
+            stmt.setLong(12, profissional.getId());
 
             stmt.executeUpdate();
 
@@ -1519,11 +1521,14 @@ public class FuncionarioDAO {
         String sql = "UPDATE acl.funcionarios SET senha = ?, ativo = ? WHERE id_funcionario = ?";
 
         try {
-            conexaoPublica = ConnectionFactory.getConnection();
+            conexaoPublica = ConnectionFactoryPublico.getConnection();
             PreparedStatement stmt = conexaoPublica.prepareStatement(sql);
 
             stmt.setString(1, profissional.getSenha().toUpperCase());
             stmt.setString(2, profissional.getAtivo().toUpperCase());
+            stmt.setLong(3, profissional.getId());
+
+            stmt.executeUpdate();
 
             conexaoPublica.commit();
             retorno = true;
