@@ -116,7 +116,7 @@
                                     <f:selectItem itemLabel="Selecione"/>
                                     <f:selectItems value="#{perfilMB.listaPerfil}" var="perf"
                                                    itemLabel="#{perf.descricao}" itemValue="#{perf.id}"/>
-                                    <p:ajax event="change" process="@this"
+                                    <p:ajax event="change"
                                             listener="#{MBFuncionarios.limparDualCad()}" update="frmPrincipal:tbv:outPermissoes"/>
                                 </p:selectOneMenu>
                             </b:column>

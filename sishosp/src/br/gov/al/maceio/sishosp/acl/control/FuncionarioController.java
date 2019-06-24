@@ -682,7 +682,6 @@ public class FuncionarioController implements Serializable {
                 renderizarPermissoes = false;
             }
         } else {
-            profissional.setCpf(null);
             renderizarPermissoes = false;
             tipo = Integer.parseInt(params.get("tipo"));
         }
@@ -872,21 +871,6 @@ public class FuncionarioController implements Serializable {
             listaMenusSource = null;
             listaMenusTarget = new ArrayList<>();
             getListaMenusSource();
-            listaMenusDual = new DualListModel<>(listaMenusSource, listaMenusTarget);
-        }
-        if (listaMenusDual == null || (listaMenusTarget.size() > 0 || listaMenusSource.size() > 0)) {
-            listaMenusSource = null;
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            Map<String, String> params = facesContext.getExternalContext()
-                    .getRequestParameterMap();
-            if (params.get("id") != null) {
-                Integer id = Integer.parseInt(params.get("id"));
-                listaMenusTarget = fDao.listarMenuItemTargetEditUser(id);
-                listaMenusSource = fDao.listarMenuItemSourcerEditUser(profissional.getPerfil().getId(), id);
-            } else {
-                listaMenusTarget = fDao.listarMenuItemTargetEditUser(ConverterUtil.converterLongParaInt(profissional.getId()));
-                listaMenusSource = fDao.listarMenuItemSourcerEditUser(profissional.getPerfil().getId(), ConverterUtil.converterLongParaInt(profissional.getId()));
-            }
             listaMenusDual = new DualListModel<>(listaMenusSource, listaMenusTarget);
         }
         return listaMenusDual;
