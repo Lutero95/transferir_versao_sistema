@@ -72,8 +72,8 @@ public class FuncionarioController implements Serializable {
     private static final String ENDERECO_CADASTRO = "cadastroProfissional?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
-    private static final String CABECALHO_INCLUSAO = "Inclus√£o de Profissional";
-    private static final String CABECALHO_ALTERACAO = "Altera√ß√£o de Profissional";
+    private static final String CABECALHO_INCLUSAO = "Inclus„o de Profissional";
+    private static final String CABECALHO_ALTERACAO = "AlteraÁ„o de Profissional";
 
     public FuncionarioController() {
 
@@ -125,7 +125,7 @@ public class FuncionarioController implements Serializable {
         Integer codEmpresa = fDao.autenticarUsuarioInicialCodEmpresa(usuario);
 
         if (VerificadorUtil.verificarSeObjetoNuloOuZero(codEmpresa)) {
-            JSFUtil.adicionarMensagemErro("Usu√°rio ou senha inv√°lida!!", "Erro");
+            JSFUtil.adicionarMensagemErro("Usu·rio ou senha Inv·lida!!", "Erro");
             return null;
 
         } else {
@@ -133,7 +133,7 @@ public class FuncionarioController implements Serializable {
             usuarioLogado = fDao.autenticarUsuario(usuario);
 
             if (usuarioLogado == null) {
-                JSFUtil.adicionarMensagemErro("Usu√°rio ou senha inv√°lida!!", "Erro");
+                JSFUtil.adicionarMensagemErro("Usu·rio ou senha Inv·lida!!", "Erro");
                 return null;
 
             } else {
@@ -253,7 +253,7 @@ public class FuncionarioController implements Serializable {
 
         // Gerar menu in√≠cio.
         DefaultMenuItem item1 = new DefaultMenuItem();
-        item1.setValue("In√≠cio");
+        item1.setValue("InÌcio");
         //contextPath+
         item1.setUrl(sistema.getUrl().replace("?faces-redirect=true", ""));
         menuModel.addElement(item1);
@@ -452,7 +452,7 @@ public class FuncionarioController implements Serializable {
         return "/pages/comum/newLogin.faces?faces-redirect=true";
     }
 
-    // PROFISSIONAL IN√çCIO
+    // PROFISSIONAL INICIO
     public void limparDados() throws ProjetoException {
         this.profissional = new FuncionarioBean();
         this.listaProfissional = fDao.listarProfissionalAtendimento();
@@ -463,7 +463,7 @@ public class FuncionarioController implements Serializable {
     public void gravarProfissional() throws ProjetoException {
 
         if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.isEmpty()) {
-            JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigat√≥rios!");
+            JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatÛrios!");
         } else {
             List<Long> permissoes = new ArrayList<>();
             List<Menu> listaMenusAux = listaMenusDual.getTarget();
@@ -512,10 +512,10 @@ public class FuncionarioController implements Serializable {
 
         boolean excluiu = fDao.excluirProfissional(profissional);
         if (excluiu == true) {
-            JSFUtil.adicionarMensagemSucesso("Profissional exclu√≠do com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("Profissional excluÌdo com sucesso!", "Sucesso");
             JSFUtil.fecharDialog("dialogExclusao");
         } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclus√£o!", "Erro");
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclus„o!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
         this.listaProfissional = fDao.listarProfissionalAtendimento();
@@ -525,7 +525,7 @@ public class FuncionarioController implements Serializable {
 
         if (profissional.getRealizaAtendimento() == true
                 && listaGruposEProgramasProfissional.size() == 0) {
-            JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigat√≥rios!");
+            JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigatÛrios!");
         } else {
             List<Long> permissoes = new ArrayList<>();
             List<Menu> listaMenusAux = listaMenusDual.getTarget();
@@ -566,14 +566,14 @@ public class FuncionarioController implements Serializable {
                 JSFUtil.adicionarMensagemSucesso("Funcion√°rio alterado com sucesso!", "Sucesso");
 
             } else {
-                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a altera√ß√£o!", "Erro");
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteraÁ„o!", "Erro");
             }
         }
     }
 
     public void validaCns(String s) {
         if (!DocumentosUtil.validaCns(s)) {
-            JSFUtil.adicionarMensagemAdvertencia("Esse n√∫mero de CNS n√£o √© valido", "Advert√™ncia");
+            JSFUtil.adicionarMensagemAdvertencia("Esse n˙mero de CNS n„o È valido", "ADvertÍncia");
             profissional.setCns("");
         }
     }
@@ -604,7 +604,7 @@ public class FuncionarioController implements Serializable {
                 }
             }
             if (existe == true) {
-                JSFUtil.adicionarMensagemAdvertencia("Esse grupo j√° foi adicionado!", "Advert√™ncia");
+                JSFUtil.adicionarMensagemAdvertencia("Esse grupo j· foi adicionado!", "ADvertÍncia");
             } else {
                 listaGruposEProgramasProfissional
                         .add(profissional.getProgAdd());
@@ -659,7 +659,7 @@ public class FuncionarioController implements Serializable {
 
     // PROFISSIONAL FIM
 
-    // PROFISSIONAL GETTERS E SETTERS IN√çCIO
+    // PROFISSIONAL GETTERS E SETTERS INICIO
 
     public List<FuncionarioBean> getListaProfissional() {
         return listaProfissional;
@@ -758,7 +758,7 @@ public class FuncionarioController implements Serializable {
                     EmpresaBean empresaBean1 = empresaDAO.buscarEmpresaPorId(profissional.getUnidadeExtra().getCodEmpresa());
                     profissional.getListaUnidades().add(empresaBean1);
                 } else {
-                    JSFUtil.adicionarMensagemErro("Essa unidade j√° foi adicionada!", "Erro!");
+                    JSFUtil.adicionarMensagemErro("Essa unidade j· foi adicionada!", "Erro!");
                 }
             }
         } else {

@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/templategeral.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="body">
+		<div id="conteudo">
+			<div id="contMenuBar">
+				<!-- Começar edição -->
+				<f:view>
+
+
+					<center>
+					<div style="margin-top:10px">
+
+						<p:panel 
+							style="width:600px; text-align:left;">
+							<f:facet name="header">
+								<h:outputText value="Relatórios - Pagar" />
+							</f:facet>
+ 
+							<br />
+
+            <h:form>
+
+<p:panelGrid columns="1" styleClass="semBorda">
+
+</p:panelGrid>
+                <p:panelGrid columns="5" styleClass="semBorda">
+<h:outputText value="Agrupar por:" />
+                    <p:selectOneRadio id="console" 
+                                      value="#{reportController.agruparReceber}">
+
+                        <f:selectItem itemLabel="Cliente" itemValue="C" />
+                        <f:selectItem itemLabel="Tipo Documento" itemValue="T" />
+                        <f:selectItem itemLabel="Fonte de Receita" itemValue="F" />
+                        <f:selectItem itemLabel="Portador" itemValue="P" />
+<p:ajax event="click" update="@form"> </p:ajax>
+                    </p:selectOneRadio>
+
+
+
+                </p:panelGrid>
+ <p:panelGrid id="panelVenc" columns="5" styleClass="semBorda"
+                                >
+
+                        <h:outputText value="Período" />
+                        <p:calendar showOn="button"
+                                    value="#{reportController.dataInicio}" required="true" requiredMessage="Informe o período inicial"></p:calendar>
+                        <h:outputText value="a" />
+                        
+
+                        <p:calendar showOn="button" value="#{reportController.dataFim}" required="true" requiredMessage="Informe o período final"></p:calendar>
+                    </p:panelGrid>
+
+<p:panelGrid columns="5" styleClass="semBorda">
+<h:outputText value="Período referente a" />
+                    <p:selectOneRadio 
+                                      value="#{reportController.dataRef}">
+
+                        <f:selectItem itemLabel="Vencimento" itemValue="V" />
+                        <f:selectItem itemLabel="Emissão" itemValue="E" />
+                        <f:selectItem itemLabel="Previsão" itemValue="P" />
+                    </p:selectOneRadio>
+
+
+
+                </p:panelGrid>
+
+<p:panelGrid columns="4" styleClass="semBorda">
+<h:outputText value="Situação" />
+  <p:selectOneRadio value="#{reportController.situacao}" columns="3" tabindex="0">
+                            <f:selectItem itemLabel="Todos" itemValue="T" />
+
+                            <f:selectItem itemLabel="Em Aberto" itemValue="A" />
+                            <f:selectItem itemLabel="Quitados" itemValue="F" />
+
+                        </p:selectOneRadio>
+
+</p:panelGrid>
+
+                    <p:panelGrid id="panelCliente" columns="2" styleClass="semBorda"
+                                >
+
+                        <h:outputText value="Cliente :" />
+                        <p:selectOneMenu value="#{reportController.codCliente}" filter="true" filterMatchMode="contains"  style="width:300px">
+                        <f:selectItem itemLabel="Selecione" itemValue="" />
+                            <f:selectItems
+                                value="#{clienteController.listarClientes}"
+                                itemValue="#{x.codcliente}" var="x" itemLabel="#{x.nome}"></f:selectItems>
+                        </p:selectOneMenu>
+ <h:outputText value="Tipo Documento :" />
+                        <p:selectOneMenu value="#{reportController.codTipoDocumento}" filter="true" filterMatchMode="contains" style="width:300px">
+
+                            <f:selectItem itemValue="" itemLabel="Selecione" />
+                            <f:selectItems value="#{tipoDocumentoController.lstTipoDocs()}" 
+                                           itemValue="#{x.codtipodocumento}" itemLabel="#{x.descricao}"
+                                           var="x"></f:selectItems>
+
+                        </p:selectOneMenu>
+
+ <h:outputText value="Fonte de Receita :" />
+
+                        <p:selectOneMenu value="#{reportController.codfonRec}" filter="true" filterMatchMode="contains" style="width:300px">
+                                        <f:selectItem itemLabel="Selecione um item" />
+                                        <f:selectItems value="#{fonteReceitaController.listarFonteReceita()}" 
+                                            var="fr" itemLabel="#{fr.descricao}" itemValue="#{fr.id}" />
+                                    </p:selectOneMenu>
+                        
+
+                        
+<h:outputText value="Portador :" />
+
+                        <p:selectOneMenu value="#{reportController.codportador}" filter="true" filterMatchMode="contains" style="width:300px">
+<f:selectItem itemLabel="Selecione" itemValue="" />
+                            <f:selectItems value="#{financeiroController.lstPortador()}"
+                                           itemValue="#{x.codportador}" var="x" itemLabel="#{x.descricao}"></f:selectItems>
+
+                        </p:selectOneMenu>
+                        
+
+</p:panelGrid>
+                <br />
+                <p:outputPanel autoUpdate="true" id="out2">
+                    
+                    <hr />
+
+                    <center>
+
+                        <p:selectOneRadio value="#{reportController.tipoRelatorio}">
+
+                            <f:selectItem itemLabel="Sintético" itemValue="S" />
+                            <f:selectItem itemLabel="Analitíco" itemValue="A" />
+
+
+                            <p:ajax update="out2"></p:ajax>
+
+
+                        </p:selectOneRadio>
+                        <br />
+
+                      
+                    </center>
+
+                    <hr />
+                    <center>
+
+                       <p:outputPanel autoUpdate="true">
+                        <p:commandButton value="Gerar Relatório f" icon="ui-icon-print"
+                                         ajax="false"
+                                         rendered="#{reportController.agruparReceber == 'C'}"
+                                         actionListener="#{reportController.executeReceberCliente}"
+                                         style="margin-left:5px;"></p:commandButton>
+
+                     
+
+
+                        <p:commandButton value="Gerar Relatório t" icon="ui-icon-print"
+                                         ajax="false"
+                                        rendered="#{reportController.agruparReceber == 'T'}"
+                                         actionListener="#{reportController.pagarPorTipoDoc}"
+                                         style="margin-left:5px;"></p:commandButton>
+
+                       
+                        <p:commandButton value="Gerar Relatório" icon="ui-icon-print"
+                                         ajax="false"
+                                         rendered="#{reportController.agruparReceber == 'F'}"
+                                         actionListener="#{reportController.pagarPorCentro}"
+                                         style="margin-left:5px;"></p:commandButton>
+
+
+                        <p:commandButton value="Gerar Relatório" icon="ui-icon-print"
+                                         ajax="false"
+                                         rendered="#{reportController.agruparReceber == 'P'}"
+                                         actionListener="#{reportController}"
+                                         style="margin-left:5px;"></p:commandButton>
+
+                      
+</p:outputPanel>
+
+                    </center>
+                </p:outputPanel>
+            </h:form>
+
+
+
+
+						</p:panel>
+					</div>
+</center>
+				</f:view>
+				<!-- Terminar edição -->
+			</div>
+		</div>
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

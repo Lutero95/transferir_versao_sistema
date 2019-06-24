@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:b="http://bootsfaces.net/ui">
+
+    <ui:composition template="../../template/templategeral.xhtml">
+        
+        <ui:define name="head">
+            
+        </ui:define>
+        
+        <ui:define name="body">
+
+            <h:form id="formPrincipal" onkeypress="
+                if(event.keyCode == 13) {
+                    document.getElementById('formPrincipal:botaoBusca').click();
+                    return false;
+                }">                
+                
+                <h3 style="font-size: 22px; font-weight: bold">
+                    Gerenciamento de Fontes de Receita
+                </h3>
+                
+                <p:growl id="growl" showDetail="false" />
+                
+                <p:toolbar style="margin-bottom: 7px">
+                    <p:toolbarGroup>
+                        
+                        <p:outputPanel id="outBotoes">
+                            <h:panelGrid columns="3" styleClass="semBorda">
+                                <p:commandButton value="Novo" icon="ui-icon-plus" 
+                                    actionListener="#{fonteReceitaController.limparDados()}" 
+                                    onclick="PF('dlgCadFonteRec').show();" 
+                                    update=":formCFR:pnlCFR" process="@this,:formCFR" 
+                                    disabled="#{MBUsuarios.verificarPermComp('FC-73', MBUsuarios.sistemaLogado.id) == false}"/>
+
+                                <p:commandButton value="Editar" icon="ui-icon-pencil" 
+                                    style="margin-left:10px;" 
+                                    actionListener="#{fonteReceitaController.limparDados()}"
+                                    onclick="PF('dlgAltFonteRec').show();" 
+                                    update=":formAFR:pnlAFR" process="@this,formAFR" 
+                                    disabled="#{fonteReceitaController.fonteRecSelecionada == null 
+                                    or MBUsuarios.verificarPermComp('FC-74', MBUsuarios.sistemaLogado.id) == false}" />
+                                    
+                                <p:commandButton value="Excluir" icon="ui-icon-closethick" 
+                                    style="margin-left:10px;" onclick="PF('dlgExcFonteRec').show();" 
+                                    disabled="#{fonteReceitaController.fonteRecSelecionada == null 
+                                    or MBUsuarios.verificarPermComp('FC-75', MBUsuarios.sistemaLogado.id) == false}" />
+                            </h:panelGrid>
+                        </p:outputPanel>
+                        
+                    </p:toolbarGroup>
+                    
+                    <p:toolbarGroup align="right">
+                        
+                    </p:toolbarGroup>
+                </p:toolbar>
+				
+                <b:dataTable select="true"  id="tabela" value="#{fonteReceitaController.listarFonteReceita()}" 
+                    var="tab" selectionMode="single" 
+                    onselect="ajax: fonteReceitaController.onRowSelect(tab)"
+                    ondeselect="ajax: fonteReceitaController.onRowSelect(null)"
+                      customLangUrl="#{resource['pt-br.json']}">
+
+                    <b:dataTableColumn label="Id" style="text-align:left; width: 6%" value="#{tab.id}" />                    
+                    <b:dataTableColumn label="Descrição" value="#{tab.descricao}" />
+                    <b:dataTableColumn label="Código" style="text-align:left; width: 10%" value="#{tab.codFonteRec}" />
+                </b:dataTable>
+            </h:form>
+            
+            <p:dialog responsive="true"    widgetVar="dlgCadFonteRec" header="Cadastrar Fonte de Receita" 
+                resizable="false" modal="true" width="500px" height="auto">
+                    
+                <h:form id="formCFR">                   
+                    <p:panel id="pnlCFR">
+                        
+                        <p:panelGrid columns="2" styleClass="semBorda">                            
+                            <p:outputLabel value="Descrição: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:inputText value="#{fonteReceitaController.fonteRec.descricao}" 
+                                required="true" requiredMessage="Informe a descrição." 
+                                size="45" />
+                            
+                            <p:outputLabel value="Código: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:inputText value="#{fonteReceitaController.fonteRec.codFonteRec}" 
+                                required="true" requiredMessage="Informe o código." 
+                                size="15" />
+                        </p:panelGrid>
+                        
+                        <center>
+                            <p:separator />
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:outputLabel>
+                                    <font color="#FF0000">(*)</font>
+                                </p:outputLabel>
+                                <p:outputLabel value="Preenchimento Obrigatório" />                         
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:commandButton value="Gravar" icon="ui-icon-check" 
+                                    style="width:100px;" action="#{fonteReceitaController.cadastrarFonteRec()}" 
+                                    update=":formPrincipal:tabela, :formPrincipal:growl, 
+                                    :formPrincipal:outBotoes" />
+                                
+                                <p:commandButton value="Cancelar" icon="ui-icon-closethick" 
+                                    style="width:100px;" onclick="PF('dlgCadFonteRec').hide();" 
+                                    process="@this" />
+                            </p:panelGrid>                           
+                        </center>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog responsive="true"    widgetVar="dlgAltFonteRec" header="Alterar Fonte de Receita" 
+                resizable="false" modal="true" width="500px" height="auto">
+                    
+                <h:form id="formAFR">                   
+                    <p:panel id="pnlAFR">
+                        
+                        <p:panelGrid columns="2" styleClass="semBorda">                            
+                            <p:outputLabel value="Descrição: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:inputText value="#{fonteReceitaController.fonteRecSelecionada.descricao}" 
+                                required="true" requiredMessage="Informe a descrição." 
+                                size="45" />
+                            
+                            <p:outputLabel value="Código: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:inputText value="#{fonteReceitaController.fonteRecSelecionada.codFonteRec}" 
+                                required="true" requiredMessage="Informe o código." 
+                                size="15" />
+                        </p:panelGrid>
+                        
+                        <center>
+                            <p:separator />
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:outputLabel>
+                                    <font color="#FF0000">(*)</font>
+                                </p:outputLabel>
+                                <p:outputLabel value="Preenchimento Obrigatório" />                         
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:commandButton value="Gravar" icon="ui-icon-check" 
+                                    style="width:100px;" action="#{fonteReceitaController.alterarFonteRec()}" 
+                                    update=":formPrincipal:tabela, :formPrincipal:growl, 
+                                    :formPrincipal:outBotoes" />
+                                
+                                <p:commandButton value="Cancelar" icon="ui-icon-closethick" 
+                                    style="width:100px;" onclick="PF('dlgAltFonteRec').hide();" 
+                                    process="@this" />
+                            </p:panelGrid>                           
+                        </center>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog responsive="true"    widgetVar="dlgExcFonteRec" header="Excluir Fonte de Receita" 
+                resizable="false" modal="true" width="300px" height="auto">
+                    
+                <h:form id="formEFR">                   
+                    <p:panel id="pnlEFR">
+                        
+                        <p:panelGrid columns="2" styleClass="semBorda">
+                            <p:outputLabel value="Deseja realmente excluir?" />
+                        </p:panelGrid>
+                        
+                        <center>
+                            <p:separator />
+                            
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:commandButton value="Sim" icon="ui-icon-check" 
+                                    style="width:100px;" action="#{fonteReceitaController.excluirFonteRec()}" 
+                                    update=":formPrincipal:tabela, :formPrincipal:growl, 
+                                    :formPrincipal:outBotoes" />
+                                
+                                <p:commandButton value="Não" icon="ui-icon-closethick" 
+                                    style="width:100px;" onclick="PF('dlgExcFonteRec').hide();" 
+                                    process="@this" />
+                            </p:panelGrid>                           
+                        </center>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<p:dialog responsive="true"    id="mpat" widgetVar="dlgalt" modal="true" resizable="false"
+	height="370" width="750">
+
+	<f:facet name="header">
+		<h:outputText value="Lista de Clientes" />
+	</f:facet>
+	<h:form id="frminteralt">
+
+
+		<p:panelGrid columns="5" styleClass="semBorda">
+
+			<h:outputText style="font-size: 14px;" value="Nome " />
+
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnomeat" value="#{MBcliente.cli.nome}" />
+			<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+
+                        <p:inputMask mask="" style="width: 120px; font-size: 14px;" size="30"
+				id="searchcpfcnpjat" value="#{MBcliente.cli.cpfcnpj}" />
+
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{MBcliente.buscarClientes()}" update="outinteressadosat">
+			</p:commandButton>
+
+		</p:panelGrid>
+		<p:outputPanel id="outinteressadosat">
+
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom" value="#{MBcliente.listaclientes}"
+				var="cliente" paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{cliente.codcliente}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+
+					<h:outputText value="#{cliente.nome}">
+					</h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+				</p:column>
+
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+
+					<center>
+						<!--<p:commandButton style="font-size: 12px;"
+							update=":formInsert:tbview" value="Confirmar"
+							oncomplete="PF('dlg').hide();" icon="ui-icon-check">
+
+							<f:setPropertyActionListener value="#{cliente}"
+								target="#{financeiroController.funcBean.cliente}"></f:setPropertyActionListener>
+
+						</p:commandButton>-->
+                                            
+                                            <p:commandButton style="font-size: 12px;"
+                                                    value="Confirmar" update=":formEdit" oncomplete="PF('dlgalt').hide();" 
+                                                    icon="ui-icon-check">
+
+                                                    <f:setPropertyActionListener value="#{cliente}"
+                                                        target="#{financeiroController.rowBean.cliente}"></f:setPropertyActionListener>
+
+						</p:commandButton>
+
+					</center>
+
+				</p:column>
+
+			</p:dataTable>
+
+
+		</p:outputPanel>
+
+
+
+		<br />
+
+	</h:form>
+</p:dialog>
+
+
+</html>

@@ -1,0 +1,316 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:b="http://bootsfaces.net/ui">
+
+    <ui:composition template="../../template/template.xhtml">
+
+        <ui:define name="content">
+
+            <h:form id="formPrincipal" onkeypress="
+                if(event.keyCode == 13) {
+                    document.getElementById('formPrincipal:botaoBusca').click();
+                    return false;
+                }">                
+                
+                <h3 style="font-size: 22px; font-weight: bold">
+                    Gerenciamento de Bancos
+                </h3>
+                
+                
+                <p:growl id="growl" showDetail="false" />
+                
+                <p:toolbar style="margin-bottom: 7px">
+                    <p:toolbarGroup>
+                        
+                        <p:outputPanel id="outBotoes">
+                            <h:panelGrid columns="3" styleClass="semBorda">                        
+
+                                <p:commandButton value="Novo" icon="ui-icon-plus" 
+                                    actionListener="#{bancoController.limparDados()}" 
+                                    onclick="PF('dlgCadBanco').show();" 
+                                    update=":formCB:pnlCB" process="@this,:formCB" 
+                                    disabled="#{MBUsuarios.verificarPermComp('FC-64', MBUsuarios.sistemaLogado.id) == false}" />
+
+                                <p:commandButton value="Editar" icon="ui-icon-pencil" 
+                                    style="margin-left:10px;" 
+                                    actionListener="#{bancoController.limparDados()}" 
+                                    action="#{bancoController.verificaContaCaixaAlt()}" 
+                                    onclick="PF('dlgAltBanco').show();" 
+                                    update=":formAB:pnlAB" process="@this,formAB" 
+                                    disabled="#{bancoController.bancoSelecionado == null 
+                                    or MBUsuarios.verificarPermComp('FC-65', MBUsuarios.sistemaLogado.id) == false}"/>
+                                    
+                                <p:commandButton value="Excluir" icon="ui-icon-closethick" 
+                                    style="margin-left:10px;" onclick="PF('dlgExcBanco').show();" 
+                                    disabled="#{bancoController.bancoSelecionado == null 
+                                    or MBUsuarios.verificarPermComp('FC-66', MBUsuarios.sistemaLogado.id) == false}" />
+                            </h:panelGrid>
+                        </p:outputPanel>
+                        
+                    </p:toolbarGroup>
+                    
+                    <p:toolbarGroup align="right">
+                        
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <b:dataTable select="true"  id="tabela" value="#{bancoController.listaBancos}" 
+                    var="tab" selection-mode="single" 
+                    onselect="ajax:bancoController.onRowSelect(tab)"
+                    ondeselect="ajax:bancoController.onRowSelect(null)"
+                    customLangUrl="#{resource['pt-br.json']}"
+                     >
+
+                    <b:dataTableColumn label="ID" style="width:6%" value="#{tab.id}" />                    
+                    <b:dataTableColumn label="Nome" style="width:15%" value="#{tab.banco}" />
+                    <b:dataTableColumn label="Descrição" value="#{tab.descricao}" />
+                    <b:dataTableColumn label="Código" style="width:8%" value="#{tab.codbanco}" />					
+                    <b:dataTableColumn label="Agência" style="width:8%" value="#{tab.agencia}" />
+                    <b:dataTableColumn label="Conta" style="width:8%" value="#{tab.conta}" />
+                    <b:dataTableColumn label="Conta Caixa" style="width:10%" value="#{tab.contaCaixa == 'S' ? 'SIM' : 'NÃO'}" />
+                </b:dataTable>
+            </h:form>
+            
+            <p:dialog responsive="true"    widgetVar="dlgCadBanco" header="Cadastrar Banco" resizable="false" 
+                modal="true" width="500px" height="auto">
+                    
+                <h:form id="formCB">                   
+                    <p:panel id="pnlCB">
+                        
+                        <p:panelGrid columns="2" styleClass="semBorda">
+                            <p:outputLabel value="Nome: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:inputText value="#{bancoController.banco.banco}" 
+                                required="true" requiredMessage="Informe o nome do banco." 
+                                size="45" />
+                            
+                            <p:outputLabel value="Descrição: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:inputText value="#{bancoController.banco.descricao}" 
+                                required="true" requiredMessage="Informe a descrição." 
+                                size="45" />
+                            
+                            <p:outputPanel id="outCodBanco">
+                                <p:outputLabel value="Código: " rendered="#{bancoController.rendTipoConta == 1}">
+                                    <font color="#FF0000">*</font>
+                                </p:outputLabel>
+
+                                <p:outputLabel value="Código: " rendered="#{bancoController.rendTipoConta == 0}" />
+                            </p:outputPanel>
+
+                            <p:inputText value="#{bancoController.banco.codbanco}" 
+                                size="10" required="#{bancoController.rendTipoConta == 1}" 
+                                requiredMessage="Informe o código do banco." />
+
+                            <p:outputPanel id="outAgencia">
+                                <p:outputLabel value="Agência: " rendered="#{bancoController.rendTipoConta == 1}">
+                                    <font color="#FF0000">*</font>
+                                </p:outputLabel>
+
+                                <p:outputLabel value="Agência: " rendered="#{bancoController.rendTipoConta == 0}" />
+                            </p:outputPanel>
+
+                            <p:inputText value="#{bancoController.banco.agencia}" 
+                                size="10" required="#{bancoController.rendTipoConta == 1}" 
+                                requiredMessage="Informe o número da agência." />
+
+                            <p:outputPanel id="outConta">
+                                <p:outputLabel value="Conta: " rendered="#{bancoController.rendTipoConta == 1}">
+                                    <font color="#FF0000">*</font>
+                                </p:outputLabel>
+
+                                <p:outputLabel value="Conta: " rendered="#{bancoController.rendTipoConta == 0}" />
+                            </p:outputPanel>
+                            
+                            <p:inputText value="#{bancoController.banco.conta}" 
+                                size="10" required="#{bancoController.rendTipoConta == 1}" 
+                                requiredMessage="Informe o número da conta." />
+
+                            <p:outputLabel value="Conta Caixa: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:selectOneMenu value="#{bancoController.banco.contaCaixa}" 
+                                required="true" requiredMessage="Informe o tipo de conta.">
+                                
+                                <f:selectItem itemLabel="Sim" itemValue="S" />
+                                <f:selectItem itemLabel="Não" itemValue="N" />
+                                
+                                <p:ajax event="change" listener="#{bancoController.verificaContaCaixa()}" 
+                                    update=":formCB:outCodBanco, :formCB:outAgencia, 
+                                    :formCB:outConta" process="@this" />
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                        
+                        <center>
+                            <p:separator />
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:outputLabel>
+                                    <font color="#FF0000">(*)</font>
+                                </p:outputLabel>
+                                <p:outputLabel value="Preenchimento Obrigatório" />                         
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:commandButton value="Gravar" icon="ui-icon-check" 
+                                    style="width:100px;" action="#{bancoController.cadastrarBanco()}" 
+                                    update=":formPrincipal:tabela, :formPrincipal:growl, 
+                                    :formPrincipal:outBotoes" />
+                                
+                                <p:commandButton value="Cancelar" icon="ui-icon-closethick" 
+                                    style="width:100px;" onclick="PF('dlgCadBanco').hide();" 
+                                    process="@this" />
+                            </p:panelGrid>                           
+                        </center>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog responsive="true"    widgetVar="dlgAltBanco" header="Alterar Banco" resizable="false" 
+                modal="true" width="500px" height="auto">
+                    
+                <h:form id="formAB">                   
+                    <p:panel id="pnlAB">
+                        
+                        <p:panelGrid columns="2" styleClass="semBorda">
+                            <p:outputLabel value="Nome: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:inputText value="#{bancoController.bancoSelecionado.banco}" 
+                                required="true" requiredMessage="Informe o nome do banco." 
+                                size="45" />
+                            
+                            <p:outputLabel value="Descrição: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:inputText value="#{bancoController.bancoSelecionado.descricao}" 
+                                required="true" requiredMessage="Informe a descrição." 
+                                size="45" />
+                                
+                            <p:outputPanel id="outCodBanco">
+                                <p:outputLabel value="Código: " rendered="#{bancoController.rendTipoConta == 1}">
+                                    <font color="#FF0000">*</font>
+                                </p:outputLabel>
+
+                                <p:outputLabel value="Código: " rendered="#{bancoController.rendTipoConta == 0}" />
+                            </p:outputPanel>
+
+                            <p:inputText value="#{bancoController.bancoSelecionado.codbanco}" 
+                                size="10" required="#{bancoController.rendTipoConta == 1}" 
+                                requiredMessage="Informe o código do banco." />
+
+                            <p:outputPanel id="outAgencia">
+                                <p:outputLabel value="Agência: " rendered="#{bancoController.rendTipoConta == 1}">
+                                    <font color="#FF0000">*</font>
+                                </p:outputLabel>
+
+                                <p:outputLabel value="Agência: " rendered="#{bancoController.rendTipoConta == 0}" />
+                            </p:outputPanel>
+
+                            <p:inputText value="#{bancoController.bancoSelecionado.agencia}" 
+                                size="10" required="#{bancoController.rendTipoConta == 1}" 
+                                requiredMessage="Informe o número da agência." />
+
+                            <p:outputPanel id="outConta">
+                                <p:outputLabel value="Conta: " rendered="#{bancoController.rendTipoConta == 1}">
+                                    <font color="#FF0000">*</font>
+                                </p:outputLabel>
+
+                                <p:outputLabel value="Conta: " rendered="#{bancoController.rendTipoConta == 0}" />
+                            </p:outputPanel>
+                            
+                            <p:inputText value="#{bancoController.bancoSelecionado.conta}" 
+                                size="10" required="#{bancoController.rendTipoConta == 1}" 
+                                requiredMessage="Informe o número da conta." />
+                            
+                            <p:outputLabel value="Conta Caixa: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:selectOneMenu value="#{bancoController.bancoSelecionado.contaCaixa}" 
+                                required="true" requiredMessage="Informe o tipo de conta.">
+                                
+                                <f:selectItem itemLabel="Sim" itemValue="S" />
+                                <f:selectItem itemLabel="Não" itemValue="N" />
+                                
+                                <p:ajax event="change" listener="#{bancoController.verificaContaCaixaAlt()}" 
+                                    update=":formCB:outCodBanco, :formCB:outAgencia, 
+                                    :formCB:outConta" process="@this" />
+                            </p:selectOneMenu>
+                            
+                            <p:outputLabel value="Ativo: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:selectOneMenu value="#{bancoController.bancoSelecionado.ativo}">
+                                
+                                <f:selectItem itemLabel="Sim" itemValue="S" />
+                                <f:selectItem itemLabel="Não" itemValue="N" />
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                        
+                        <center>
+                            <p:separator />
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:outputLabel>
+                                    <font color="#FF0000">(*)</font>
+                                </p:outputLabel>
+                                <p:outputLabel value="Preenchimento Obrigatório" />                         
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:commandButton value="Gravar" icon="ui-icon-check" 
+                                    style="width:100px;" action="#{bancoController.alterarBanco()}" 
+                                    update=":formPrincipal:tabela, :formPrincipal:growl, 
+                                    :formPrincipal:outBotoes" />
+                                
+                                <p:commandButton value="Cancelar" icon="ui-icon-closethick" 
+                                    style="width:100px;" onclick="PF('dlgAltBanco').hide();" 
+                                    process="@this" />
+                            </p:panelGrid>                           
+                        </center>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog responsive="true"    widgetVar="dlgExcBanco" header="Excluir Banco" resizable="false" 
+                modal="true" width="300px" height="auto">
+                    
+                <h:form id="formEB">                   
+                    <p:panel id="pnlEB">
+                        
+                        <p:panelGrid columns="2" styleClass="semBorda">
+                            <p:outputLabel value="Deseja realmente excluir?" />
+                        </p:panelGrid>
+                        
+                        <center>
+                            <p:separator />
+                            
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:commandButton value="Sim" icon="ui-icon-check" 
+                                    style="width:100px;" action="#{bancoController.excluirBanco()}" 
+                                    update=":formPrincipal:tabela, :formPrincipal:growl, 
+                                    :formPrincipal:outBotoes" />
+                                
+                                <p:commandButton value="Não" icon="ui-icon-closethick" 
+                                    style="width:100px;" onclick="PF('dlgExcBanco').hide();" 
+                                    process="@this" />
+                            </p:panelGrid>                           
+                        </center>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

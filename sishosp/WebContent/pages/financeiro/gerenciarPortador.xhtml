@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/template.xhtml">
+	<ui:define name="content">
+	<p:growl id="grwgeral"/>
+		<h:form id="frm">
+			<h3 style="font-size: 22px; font-weight: bold">Gerenciamento Centro de Custo</h3>
+			<p:toolbar style="margin-bottom: 7px">
+				<p:toolbarGroup>
+					<h:panelGrid id="outBotoes" columns="4">
+						<p:commandButton id="btninc" value="Novo" update=":frminc:pnlinc"
+							oncomplete="PF('dlginc').show();" icon="ui-icon-plus" 
+                            disabled="#{MBUsuarios.verificarPermComp('FC-112', MBUsuarios.sistemaLogado.id) == false}">
+							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+						</p:commandButton>
+
+						<p:commandButton id="btnalt" value="Alterar"
+							style="margin-left :10px" update=":frmedit:pnledit :grwgeral"
+							action="#{centroDeCustoController.acaoEditar()}"
+							icon="ui-icon-wrench" 
+                            disabled="#{centroDeCustoController.rowBean == null or MBUsuarios.verificarPermComp('FC-113', MBUsuarios.sistemaLogado.id) == false}">
+
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-closethick" value="Excluir"
+							style="margin-left :10px"
+							action="#{centroDeCustoController.acaoExcluir()}"
+							update=":grwgeral" disabled="#{centroDeCustoController.rowBean == null or MBUsuarios.verificarPermComp('FC-114', MBUsuarios.sistemaLogado.id) == false}">
+						</p:commandButton>
+					</h:panelGrid>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<b:dataTable select="true"  id="tabela"
+				value="#{centroDeCustoController.listaCustos()}" var="m"2
+				selection-mode="single"
+				onselect="ajax:centroDeCustoController.onRowSelect(m)"
+				ondeselect="ajax:centroDeCustoController.onRowSelect(null)"
+				custom-lang-url="#{resource['/pt-br.json']}"
+				 >
+				
+				<b:dataTableColumn label="Descrição" style="width:80%" value="#{m.descricao}"/>
+			</b:dataTable>
+		</h:form>
+
+
+		<!--  Dialog Inclusao dados TipoDoc -->
+		<p:dialog responsive="true" widgetVar="dlginc" header="Dados do Centro de Custo" height="180"
+			resizable="false" width="400" modal="true">
+			<h:form id="frminc">
+				<p:growl id="msg" />
+
+				<br />
+				<br />
+				<p:outputPanel id="pnlinc">
+
+					<p:panelGrid columns="2" styleClass="semBorda" style="width:100%;">
+
+						<h:outputText value="Cód. Custo"></h:outputText>
+
+						
+
+						<h:outputText value="Descrição"></h:outputText>
+
+						<p:inputText required="true" requiredMessage="Informe a descrição"
+							size="30" value="#{centroDeCustoController.bean.descricao}" />
+
+					</p:panelGrid>
+					<br />
+					<br />
+					<center>
+						<p:commandButton value="Gravar"
+							actionListener="#{centroDeCustoController.salvar()}"
+							update=":frm:tabela :frminc:msg" icon="ui-icon-check">
+
+						</p:commandButton>
+
+						<p:commandButton value="Fechar" icon="ui-icon-closethick" style="margin-left:10px"
+							onclick="PF('dlginc').hide()" />
+					</center>
+
+				</p:outputPanel>
+			</h:form>
+
+		</p:dialog>
+
+
+
+
+		<!-- Dialog Edicao dados Filial -->
+		<p:dialog responsive="true"    widgetVar="dlgedit" header="Dados " height="180"
+			resizable="false" width="400" modal="true">
+			<h:form id="frmedit">
+				<br />
+				<br />
+				<p:outputPanel id="pnledit">
+
+					<p:panelGrid columns="2" styleClass="semBorda" style="width:100%;">
+
+						<h:outputText value="Cód. Custo"></h:outputText>
+
+					
+						<h:outputText value="Descrição"></h:outputText>
+
+						<p:inputText required="true" requiredMessage="Informe a descrição"
+							size="30" value="#{centroDeCustoController.rowBean.descricao}" />
+
+					</p:panelGrid>
+					<br />
+					<br />
+					<center>
+						<p:commandButton value="Editar"
+							action="#{centroDeCustoController.editar()}"
+							update=":frm:tabela :grwgeral" style="font-size: 14px"
+							icon="ui-icon-wrench">
+
+						</p:commandButton>
+
+						<p:commandButton value="Fechar"
+							style="font-size: 14px;margin-left:20px"
+							icon="ui-icon-closethick" onclick="PF('dlgedit').hide()" />
+					</center>
+
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+			
+
+
+		<p:dialog responsive="true"    widgetVar="dialogAtencao" modal="true" header="Atenção"
+			resizable="false">
+				<h:form>
+			<div class="alert alert-warning" role="alert">Deseja excluir
+				?</div>
+
+			<center>
+
+				<p:commandButton value="Sim" update=":frm:tabela :grwgeral"
+					actionListener="#{centroDeCustoController.excluir()}"
+					icon="ui-icon-check" style="font-size:14px;">
+				</p:commandButton>
+
+				<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
+					icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+
+			</center>
+
+
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

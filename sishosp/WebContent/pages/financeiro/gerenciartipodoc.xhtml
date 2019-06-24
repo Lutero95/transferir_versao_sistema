@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/template.xhtml">
+
+	<ui:define name="content">
+	<p:growl id="grwgeral"/>
+			<f:metadata>
+			<f:viewAction action="#{tituloPagarController.carregarBuscas()}" />
+		</f:metadata>
+
+		<h:form id="frm">
+
+			<h3 style="font-size: 22px; font-weight: bold">Gerenciamento
+				Tipo Documento</h3>
+
+			<p:toolbar style="margin-bottom: 7px">
+
+				<p:toolbarGroup>
+
+					<h:panelGrid id="outBotoes" columns="4">
+
+						<p:commandButton action="#{tipoDocumentoController.limpaobj()}"
+							id="btninc" value="Novo" update=":frminc:pnlinc"
+							oncomplete="PF('dlginc').show();" icon="ui-icon-plus"
+							disabled="#{MBUsuarios.verificarPermComp('FC-106', MBUsuarios.sistemaLogado.id) == false}">
+
+							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+
+						</p:commandButton>
+
+						<p:commandButton id="btnalt" value="Editar"
+							 style="margin-left :10px"
+							action="#{tipoDocumentoController.acaoEditar()}"
+							update=":frmedit:pnledit :grwgeral" icon="ui-icon-wrench"
+							disabled="#{tipoDocumentoController.rowBean == null or MBUsuarios.verificarPermComp('FC-107', MBUsuarios.sistemaLogado.id) == false}">
+
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-closethick" value="Excluir"
+							action="#{cidadeController.acaoExcluir()}"
+							style="margin-left :10px" update=":grwgeral"
+							disabled="#{tipoDocumentoController.rowBean == null or MBUsuarios.verificarPermComp('FC-108', MBUsuarios.sistemaLogado.id) == false}">
+						</p:commandButton>
+
+
+					</h:panelGrid>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<b:dataTable select="true"  id="tabela"
+				style="margin-top:20px;"
+				value="#{tipoDocumentoController.lstTipoDocs()}" var="m"
+				selectionMode="single"
+				onselect="ajax: tipoDocumentoController.onRowSelect(m)}"
+				ondeselect="ajax: tipoDocumentoController.onRowSelect(null)"
+				customLangUrl="#{resource['pt-br.json']}"  >
+
+				<b:dataTableColumn label="Código" style="width:20%" value="#{m.codtipodocumento}" />
+				<b:dataTableColumn label="Descrição" style="width:80%" value="#{m.descricao}" />
+				<b:dataTableColumn label="Devolução" style="width:80%" value="#{m.devolucao_venda  ? 'Sim' : 'Não'}" />
+			</b:dataTable>
+		</h:form>
+
+
+		<!--  Dialog Inclusao dados TipoDoc -->
+
+		<p:dialog responsive="true" widgetVar="dlginc"
+			header="Incluir Tipo de Documento" height="300" resizable="false"
+			width="400" modal="true">
+
+			<h:form id="frminc">
+
+				<p:growl id="msg" />
+
+				<br />
+				<br />
+
+				<p:outputPanel id="pnlinc">
+
+					<p:panelGrid columns="2" styleClass="semBorda">
+
+
+						<h:outputText value="Descrição"></h:outputText>
+
+						</p:panelGrid>
+
+					<br />
+					<br />
+
+					<center>
+
+						<p:commandButton value="Salvar"
+							actionListener="#{tipoDocumentoController.salvar()}"
+							update=":frm:tabela :frminc:msg" icon="ui-icon-check">
+
+						</p:commandButton>
+
+						<p:commandButton value="Fechar" icon="ui-icon-closethick"
+							onclick="PF('dlginc').hide()" />
+
+					</center>
+
+				</p:outputPanel>
+			</h:form>
+
+		</p:dialog>
+
+
+
+
+		<!-- Dialog Edicao dados Filial -->
+
+		<p:dialog responsive="true" widgetVar="dlgedit"
+			header="Alterar Tipo de Documento" height="300" resizable="false"
+			width="400" modal="true">
+
+			<h:form id="frmedit">
+				<br />
+				<br />
+
+				<p:outputPanel id="pnledit" autoUpdate="true">
+
+					<p:panelGrid columns="2" styleClass="semBorda" style="width:100%;">
+
+
+						<h:outputText value="Descrição"></h:outputText>
+
+						<p:inputText maxlength="25" required="true"
+							requiredMessage="Informe a descrição" size="30"
+							value="#{tipoDocumentoController.rowBean.descricao}" />
+
+					
+					</p:panelGrid>
+
+					<br />
+					<br />
+					<center>
+						<p:commandButton value="Salvar"
+							action="#{tipoDocumentoController.editar()}"
+							update=":frm:tabela :grwgeral" style="font-size: 14px"
+							icon="ui-icon-wrench">
+
+						</p:commandButton>
+
+						<p:commandButton value="Fechar"
+							style="font-size: 14px;margin-left:20px"
+							icon="ui-icon-closethick" onclick="PF('dlgedit').hide()" />
+					</center>
+
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+
+
+		<p:dialog responsive="true" widgetVar="dialogAtencao" modal="true"
+			header="Atenção" resizable="false">
+			<h:form>
+				<div class="alert alert-warning" role="alert">Deseja excluir ?</div>
+
+				<center>
+
+					<p:commandButton value="Sim" update=":frm:tabela :grwgeral"
+						actionListener="#{tipoDocumentoController.excluir()}"
+						icon="ui-icon-check" style="font-size:14px;">
+					</p:commandButton>
+
+					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
+						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+
+				</center>
+
+
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

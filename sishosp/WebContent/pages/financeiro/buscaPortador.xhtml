@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<p:dialog responsive="true"    id="mp9" widgetVar="dlg9" modal="true" resizable="false"
+	height="370" width="750">
+
+	<f:facet name="header">
+		<h:outputText value="Lista de Portadores" />
+	</f:facet>
+	<h:form id="frminter9">
+
+
+		<p:panelGrid columns="5" styleClass="semBorda">
+			<h:outputText style="font-size: 14px;" value="Nome " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnome" value="#{MBVenda.func}" />
+
+
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{MBVenda.buscaPortador()}" update="outinteressados9">
+
+			</p:commandButton>
+		</p:panelGrid>
+		<p:outputPanel id="outinteressados9">
+
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom" value="#{MBVenda.lstPortador}"
+				var="cliente" paginator="true" rows="7">
+
+
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{cliente.codportador}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+
+					<h:outputText value="#{cliente.descricao}">
+					</h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+				</p:column>
+
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+
+					<center>
+						<p:commandButton style="font-size: 12px;" process="@this"
+							value="Confirmar" oncomplete="PF('dlg9').hide();" icon="podeGravar">
+
+							<f:setPropertyActionListener value="#{cliente}"
+								target="#{MBVenda.portBean}"></f:setPropertyActionListener>
+
+						</p:commandButton>
+
+					</center>
+
+				</p:column>
+
+			</p:dataTable>
+
+
+		</p:outputPanel>
+
+
+
+		<br />
+
+	</h:form>
+</p:dialog>
+
+
+</html>

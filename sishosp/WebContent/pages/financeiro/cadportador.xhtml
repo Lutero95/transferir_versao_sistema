@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/template.xhtml">
+
+
+	<ui:define name="content">
+		<p:growl id="grwgeral"/>
+
+		<h:form id="formUsuarios">
+
+			<h3 style="font-size: 22px; font-weight: bold">Gerenciamento de
+				Portadores</h3>
+
+			<p:toolbar style="margin-bottom: 7px">
+
+				<p:toolbarGroup>
+
+					<h:panelGrid id="outBotoes" columns="4">
+
+						<p:commandButton value="Novo" icon="ui-icon-plus"
+							onclick="PF('novaProfissao').show();" update=":formInsert:out"
+							action="#{portadorController.valorInsert()}"
+							disabled="#{MBUsuarios.verificarPermComp('FC-100', MBUsuarios.sistemaLogado.id) == false}"></p:commandButton>
+
+						<p:commandButton icon="ui-icon-wrench"
+							update=":formInsert:out :grwgeral" value="Editar"
+							action="#{portadorController.acaoEditar()}"
+							disabled="#{portadorController.port == null or MBUsuarios.verificarPermComp('FC-101', MBUsuarios.sistemaLogado.id) == false}">
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-closethick" value="Excluir"
+							action="#{portadorController.acaoExcluir()}" update=":grwgeral"
+							disabled="#{portadorController.port == null or MBUsuarios.verificarPermComp('FC-102', MBUsuarios.sistemaLogado.id) == false}">
+						</p:commandButton>
+
+					</h:panelGrid>
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+
+					<p:commandButton value="Pesquisar" rendered="false"
+						style="margin-left:10px;"></p:commandButton>
+
+				</p:toolbarGroup>
+
+			</p:toolbar>
+
+			<b:dataTable select="true"  selectionMode="single"
+				onselect="ajax: portadorController.onRowSelect(m)"
+				ondeselect="ajax: portadorController.onRowSelect(null)"
+				value="#{portadorController.lstportador()}" id="dataTable" var="m"
+				customLangUrl="#{resource['pt-br.json']}"  >
+
+				<b:dataTableColumn label="Código" style="width:5%;" value="#{m.codportador}" />
+				<b:dataTableColumn label="Descrição" value="#{m.descricao}" />
+
+			</b:dataTable>
+		</h:form>
+
+		<p:dialog responsive="true" widgetVar="dialogAtencao" modal="true"
+			header="Atenção" resizable="false">
+			<h:form>
+				<h:panelGrid columns="1">
+					<div class="alert alert-warning" role="alert">Deseja excluir
+						?</div>
+				</h:panelGrid>
+
+				<hr />
+
+				<center>
+
+					<p:commandButton value="Sim" update=":formUsuarios:dataTable"
+						actionListener="#{portadorController.excluirPortador()}"
+						icon="ui-icon-check" style="font-size:14px;">
+					</p:commandButton>
+
+					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
+						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;"></p:commandButton>
+
+				</center>
+
+
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" widgetVar="novaProfissao" header="Dados"
+			width="550" modal="true" height="auto" styleClass="dialogs">
+			<h:form id="formInsert">
+
+				<p:growl id="msg" />
+
+				<p:outputPanel id="out">
+
+					<p:panel>
+
+						<p:panelGrid columns="4" styleClass="semBorda" id="pnlinc">
+
+							<h:outputText value="Descrição"></h:outputText>
+							<p:inputText maxlength="50"
+								value="#{portadorController.port.descricao}" />
+
+							
+
+						</p:panelGrid>
+
+						<center>
+
+							<p:commandButton value="Salvar" icon="ui-icon-check"
+								action="#{portadorController.gravar()}"
+								update="msg,:formUsuarios:dataTable"></p:commandButton>
+							<p:commandButton value="Cancelar" style="margin-left:5px;"
+								process="@this" onclick="PF('novaProfissao').hide();"
+								icon="ui-icon-closethick"></p:commandButton>
+						</center>
+
+					</p:panel>
+
+
+					<hr />
+
+				</p:outputPanel>
+
+			</h:form>
+
+		</p:dialog>
+
+
+
+
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

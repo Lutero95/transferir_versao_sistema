@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:b="http://bootsfaces.net/ui">
+
+    <ui:composition template="../../template/template.xhtml">
+        
+
+        
+        <ui:define name="content">
+
+            <h:form id="formPrincipal" onkeypress="
+                if(event.keyCode == 13) {
+                    document.getElementById('formPrincipal:botaoBusca').click();
+                    return false;
+                }">                
+                
+                <h3 style="font-size: 22px; font-weight: bold">
+                    Gerenciamento de Despesas
+                </h3>
+                
+                <p:growl id="growl" showDetail="false" />
+                
+                <p:toolbar style="margin-bottom: 7px">
+                    <p:toolbarGroup>
+                        
+                        <p:outputPanel id="outBotoes">
+                            <h:panelGrid columns="3" styleClass="semBorda">                        
+
+                                <p:commandButton value="Novo" icon="ui-icon-plus" 
+                                    actionListener="#{despesaController.limparDados()}" 
+                                    onclick="PF('dlgCadDespesa').show();" 
+                                    update=":formCD:pnlCD" process="@this,:formCD" 
+                                    disabled="#{MBUsuarios.verificarPermComp('FC-70', MBUsuarios.sistemaLogado.id) == false}"/>
+
+                                <p:commandButton value="Editar" icon="ui-icon-pencil" 
+                                    style="margin-left:10px;" 
+                                    actionListener="#{despesaController.limparDados()}"
+                                    onclick="PF('dlgAltDespesa').show();" 
+                                    update=":formAD:pnlAD" process="@this,formAD" 
+                                    disabled="#{despesaController.despesaSelecionada == null 
+                                    or MBUsuarios.verificarPermComp('FC-71', MBUsuarios.sistemaLogado.id) == false}" />
+                                    
+                                <p:commandButton value="Excluir" icon="ui-icon-closethick" 
+                                    style="margin-left:10px;" onclick="PF('dlgExcDespesa').show();" 
+                                    disabled="#{despesaController.despesaSelecionada == null 
+                                    or MBUsuarios.verificarPermComp('FC-72', MBUsuarios.sistemaLogado.id) == false}" />
+                            </h:panelGrid>
+                        </p:outputPanel>
+                        
+                    </p:toolbarGroup>
+                    
+                    <p:toolbarGroup align="right">
+                        
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <b:dataTable select="true"  id="tabela" value="#{despesaController.listaDespesas}" 
+                    var="tab" selectionMode="single" 
+                    onselect="ajax: despesaController.onRowSelect(tab)"
+                    ondeselect="ajax: despesaController.onRowSelect(null)"
+                      
+                    customLangUrl="#{resource['pt-br.json']}">
+
+                    <b:dataTableColumn label="Id" style="text-align:left; width: 6%" value="#{tab.id}" />                    
+                    <b:dataTableColumn label="Descrição" style="text-align:left;" value="#{tab.descricao}" />
+                </b:dataTable>
+            </h:form>
+            
+            <p:dialog responsive="true"    widgetVar="dlgCadDespesa" header="Cadastrar Despesa" resizable="false" 
+                modal="true" width="500px" height="auto">
+                    
+                <h:form id="formCD">                   
+                    <p:panel id="pnlCD">
+                        
+                        <p:panelGrid columns="2" styleClass="semBorda">                            
+                            <p:outputLabel value="Descrição: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:inputText value="#{despesaController.despesa.descricao}" 
+                                required="true" requiredMessage="Informe a descrição." 
+                                size="45" />
+                            
+                            <p:outputLabel value="Código: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                           
+                        </p:panelGrid>
+                        
+                        <center>
+                            <p:separator />
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:outputLabel>
+                                    <font color="#FF0000">(*)</font>
+                                </p:outputLabel>
+                                <p:outputLabel value="Preenchimento Obrigatório" />                         
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:commandButton value="Gravar" icon="ui-icon-check" 
+                                    style="width:100px;" action="#{despesaController.cadastrarDespesa()}" 
+                                    update=":formPrincipal:tabela, :formPrincipal:growl, 
+                                    :formPrincipal:outBotoes" />
+                                
+                                <p:commandButton value="Cancelar" icon="ui-icon-closethick" 
+                                    style="width:100px;" onclick="PF('dlgCadDespesa').hide();" 
+                                    process="@this" />
+                            </p:panelGrid>                           
+                        </center>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog responsive="true"    widgetVar="dlgAltDespesa" header="Alterar Despesa" resizable="false" 
+                modal="true" width="500px" height="auto">
+                    
+                <h:form id="formAD">                   
+                    <p:panel id="pnlAD">
+                        
+                        <p:panelGrid columns="2" styleClass="semBorda">                            
+                            <p:outputLabel value="Descrição: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                            <p:inputText value="#{despesaController.despesaSelecionada.descricao}" 
+                                required="true" requiredMessage="Informe a descrição." 
+                                size="45" />
+                            
+                            <p:outputLabel value="Código: ">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+                            
+                           
+                        </p:panelGrid>
+                        
+                        <center>
+                            <p:separator />
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:outputLabel>
+                                    <font color="#FF0000">(*)</font>
+                                </p:outputLabel>
+                                <p:outputLabel value="Preenchimento Obrigatório" />                         
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:commandButton value="Gravar" icon="ui-icon-check" 
+                                    style="width:100px;" action="#{despesaController.alterarDespesa()}" 
+                                    update=":formPrincipal:tabela, :formPrincipal:growl, 
+                                    :formPrincipal:outBotoes" />
+                                
+                                <p:commandButton value="Cancelar" icon="ui-icon-closethick" 
+                                    style="width:100px;" onclick="PF('dlgAltDespesa').hide();" 
+                                    process="@this" />
+                            </p:panelGrid>                           
+                        </center>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog responsive="true"    widgetVar="dlgExcDespesa" header="Excluir Despesa" resizable="false" 
+                modal="true" width="300px" height="auto">
+                    
+                <h:form id="formED">                   
+                    <p:panel id="pnlED">
+                        
+                        <p:panelGrid columns="2" styleClass="semBorda">
+                            <p:outputLabel value="Deseja realmente excluir?" />
+                        </p:panelGrid>
+                        
+                        <center>
+                            <p:separator />
+                            
+                            <p:panelGrid columns="2" styleClass="semBorda">
+                                <p:commandButton value="Sim" icon="ui-icon-check" 
+                                    style="width:100px;" action="#{despesaController.excluirDespesa()}" 
+                                    update=":formPrincipal:tabela, :formPrincipal:growl, 
+                                    :formPrincipal:outBotoes" />
+                                
+                                <p:commandButton value="Não" icon="ui-icon-closethick" 
+                                    style="width:100px;" onclick="PF('dlgExcDespesa').hide();" 
+                                    process="@this" />
+                            </p:panelGrid>                           
+                        </center>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,1397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="../../template/templategeral.xhtml">
+
+	<ui:define name="body">
+
+		<h:form id="infoCaixa">
+
+			<h3 style="font-size: 22px; font-weight: bold">Gerenciamento de
+				Caixa</h3>
+
+			<p:panelGrid columns="8" styleClass="semBorda"
+				style="margin-left:35px;margin-top:5px;padding:10px;">
+
+				<h:outputText value="CÓDIGO :" style="font-weight: bold;"></h:outputText>
+				<h:outputText value="#{caixaController.infoBean.codCaixaLoja} "></h:outputText>
+
+				<h:outputText value="DATA :" style="font-weight: bold;"></h:outputText>
+				<h:outputText value="#{caixaController.infoBean.dataAbertura}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+
+				<h:outputText value="TURNO :" style="font-weight: bold;"></h:outputText>
+				<h:outputText value="#{caixaController.infoBean.turno}"></h:outputText>
+
+				<h:outputText value="SALDO INICIAL :" style="font-weight: bold;"></h:outputText>
+				<h:outputText value="#{caixaController.infoBean.saldoInicial}"></h:outputText>
+
+			</p:panelGrid>
+
+		</h:form>
+
+		<hr />
+
+		<h:form id="form1">
+			<p:growl id="msgbotoes" />
+			<p:toolbar>
+
+				<p:toolbarGroup>
+
+					<h:panelGrid columns="4">
+						<p:outputPanel autoUpdate="true">
+							<p:commandButton value="Abrir Caixa" icon="ui-icon-cart"
+								update="btnCaixa"
+								rendered="#{caixaController.validacaoCaixa() == false}"
+								style="font-size:12px;" onclick="PF('dlgCaixa').show();"
+								disabled="#{MBUsuarios.verificarPermComp('FC-12', MBUsuarios.sistemaLogado.id) == false}">
+							</p:commandButton>
+
+							<p:commandButton value="Fechar Caixa" icon="ui-icon-close"
+								id="btnCaixa"
+								rendered="#{caixaController.validacaoCaixa() == true}"
+								style="font-size:12px;" onclick="PF('dlgFecCaixa').show();"
+								disabled="#{MBUsuarios.verificarPermComp('FC-14', MBUsuarios.sistemaLogado.id) == false}">
+							</p:commandButton>
+							<p:commandButton value="Lançar Débito " icon="ui-icon-plus"
+								update=":dtDebito:out" style="font-size:12px;margin-left:10px"
+								actionListener="#{caixaController.limparValoresDebito()}"
+								disabled="#{caixaController.validacaoCaixa()==false or MBUsuarios.verificarPermComp('FC-13', MBUsuarios.sistemaLogado.id) == false}"
+								onclick="PF('dlgDebito').show();">
+							</p:commandButton>
+							<p:commandButton rendered="false" value="Negociar Promissória"
+								icon="ui-icon-arrowthick-1-s"
+								update=":dtDebito:out :formNegProm:dtPagamento :formNegProm:datatable"
+								style="font-size:12px;margin-left:10px"
+								actionListener="#{caixaController.limparValoresDebito()}"
+								disabled="#{caixaController.validacaoCaixa()==false or MBUsuarios.verificarPermComp('FC-13', MBUsuarios.sistemaLogado.id) == false}"
+								onclick="PF('dlgnegpromis').show();">
+							</p:commandButton>
+
+							<p:commandButton value="Pagar Promissória"
+								icon="ui-icon-arrowthick-1-s"
+								style="font-size:12px;margin-left:10px"
+								disabled="#{caixaController.validacaoCaixa()==false or MBUsuarios.verificarPermComp('FC-13', MBUsuarios.sistemaLogado.id) == false}"
+								onclick="PF('dlgpagapromis').show();">
+							</p:commandButton>
+
+							<p:commandButton value="Imprimir Parcial" icon="ui-icon-print"
+								style="margin-left:10px" ajax="false"
+								actionListener="#{reportController.reportCaixaParcial()}"></p:commandButton>
+
+						</p:outputPanel>
+					</h:panelGrid>
+
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+
+				</p:toolbarGroup>
+
+			</p:toolbar>
+
+			<p:outputPanel style="margin-top:10px;" autoUpdate="true">
+				<p:panelGrid columns="3">
+					<p:dataTable var="caixa" id="tabela" scrollable="true"
+						scrollHeight="280" value="#{caixaController.lstCreditos()}"
+						emptyMessage="Nenhum Crédito">
+
+						<f:facet name="header">
+			
+			Créditos de Vendas
+			
+			</f:facet>
+
+						<p:column headerText="Cód. Venda" width="14%">
+
+							<h:outputText value="#{caixa.venda.codVenda}">
+
+							</h:outputText>
+
+						</p:column>
+
+						<p:column headerText="Valor Recebido" width="19%">
+							<h:outputText value="#{caixa.valor}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+
+						</p:column>
+
+						<p:column headerText="Cliente" width="33%">
+
+							<h:outputText value="#{caixa.cliente.nome}">
+							</h:outputText>
+
+						</p:column>
+
+						<p:column headerText="Forma de Recebimento" width="21%">
+
+							<h:outputText value="#{caixa.tippag.descricao}">
+
+							</h:outputText>
+
+						</p:column>
+
+						<p:column headerText="Forma de Pagamento" width="13%">
+							<center>
+								<p:commandButton value="Alterar" rendered="true"
+									action="#{caixaController.preparaAlterarPagamento()}"
+									update=":form1:msgbotoes" icon="ui-icon-pencil">
+
+									<f:setPropertyActionListener
+										target="#{caixaController.rowBean}" value="#{caixa}"></f:setPropertyActionListener>
+								</p:commandButton>
+							</center>
+						</p:column>
+
+					</p:dataTable>
+
+					<p:dataTable var="caixa" id="tabelacredrec" scrollable="true"
+						scrollHeight="280"
+						value="#{caixaController.lstCreditosPromissoriaReceber()}"
+						emptyMessage="Nenhum Crédito">
+
+						<f:facet name="header">
+			
+			Créditos de Promissórias
+			
+			</f:facet>
+
+						<p:column headerText="Cód. Venda" width="15%">
+
+							<h:outputText value="#{caixa.venda.codVenda}">
+
+							</h:outputText>
+
+						</p:column>
+						<p:column headerText="Valor Recebido" width="20%">
+							<h:outputText value="#{caixa.valor}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+
+
+						</p:column>
+
+						<p:column headerText="Cliente" width="30%">
+
+							<h:outputText value="#{caixa.cliente.nome}">
+							</h:outputText>
+
+						</p:column>
+
+
+						<p:column headerText="Forma de Recebimento" width="24%">
+
+							<h:outputText value="#{caixa.tippag.descricao}">
+
+							</h:outputText>
+
+						</p:column>
+
+						<p:column headerText="Forma de Pagamento" width="18%">
+							<center>
+								<p:commandButton value="Alterar" rendered="true"
+									action="#{caixaController.preparaAlterarPagamento()}"
+									update=":form1:msgbotoes" icon="ui-icon-pencil">
+
+									<f:setPropertyActionListener
+										target="#{caixaController.rowBean}" value="#{caixa}"></f:setPropertyActionListener>
+								</p:commandButton>
+							</center>
+						</p:column>
+
+					</p:dataTable>
+
+					<p:dataTable var="caixa" scrollable="true" scrollHeight="280"
+						value="#{caixaController.lstDebitos()}"
+						emptyMessage="Nenhum Débito">
+
+						<f:facet name="header">
+			
+			Débitos
+			
+			</f:facet>
+
+						<p:column headerText="Valor" width="25%">
+
+							<h:outputText value="#{caixa.valor}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+
+						</p:column>
+						<p:column headerText="Descrição" width="50%">
+
+							<h:outputText value="#{caixa.historico}">
+							</h:outputText>
+
+						</p:column>
+						<p:column headerText="Data " width="25%">
+							<h:outputText value="#{caixa.dt_confirmado}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+
+						</p:column>
+
+					</p:dataTable>
+
+				</p:panelGrid>
+
+			</p:outputPanel>
+
+		</h:form>
+
+		<h:form id="dtDebito">
+
+			<p:outputPanel id="out" autoUpdate="true">
+			</p:outputPanel>
+		</h:form>
+
+		<p:dialog responsive="true" widgetVar="dlgAlteraPagamento"
+			header="Alterar Forma de Pagamento" width="400" modal="true"
+			height="250">
+
+			<h:form id="formAlteraPagamento">
+
+				<p:growl id="msgAlteraPagamento"></p:growl>
+
+				<center>
+					<h:outputText value="Escolha o tipo de pagamento:"
+						style="font-size: 16px;font-weight:bold"></h:outputText>
+					<p:selectOneRadio id="console" style="margin-top:5px"
+						value="#{caixaController.tipoPagamento}" required="true"
+						requiredMessage="Informe a forma de pagamento">
+						<f:selectItem itemLabel="Cartão" itemValue="CT" />
+						<f:selectItem itemLabel="Cheque" itemValue="CH" />
+						<f:selectItem itemLabel="Dinheiro" itemValue="D" />
+						<p:ajax listener="#{caixaController.formaPagar}" event="click" />
+					</p:selectOneRadio>
+				</center>
+				<br></br>
+				<center>
+					<p:outputPanel autoUpdate="true">
+						<p:panelGrid style="margin-top:15px;font-size:12px;" columns="2"
+							styleClass="semBorda"
+							rendered="#{caixaController.tipoPagamento=='CT'}">
+							<h:outputText value="Bandeira:" style="font-size: 15px;"></h:outputText>
+							<p:selectOneMenu value="#{caixaController.codtippag}"
+								id="cartaotipo">
+								<f:selectItems value="#{MBtipo.listarCartao}"
+									itemLabel="#{x.descricao}" itemValue="#{x.codtippag}" var="x"></f:selectItems>
+							</p:selectOneMenu>
+							<h:outputText value="Nº Parcelas:" style="font-size: 15px;"></h:outputText>
+							<p:inputText value="#{caixaController.parcelas}"></p:inputText>
+						</p:panelGrid>
+
+						<p:panelGrid style="margin-top:15px;font-size:12px;" columns="2"
+							styleClass="semBorda"
+							rendered="#{caixaController.tipoPagamento=='CH'}">
+							<h:outputText value="Cheque:" style="font-size: 15px;"></h:outputText>
+							<p:selectOneMenu value="#{caixaController.codtippag}">
+								<f:selectItems value="#{MBtipo.listarCheque}"
+									itemLabel="#{x.descricao}" itemValue="#{x.codtippag}" var="x"></f:selectItems>
+							</p:selectOneMenu>
+							<h:outputText value="Nº Parcelas:" style="font-size: 15px;"></h:outputText>
+							<p:inputText value="#{caixaController.parcelas}"></p:inputText>
+						</p:panelGrid>
+
+						<p:panelGrid style="margin-top:15px;font-size:12px;" columns="2"
+							styleClass="semBorda"
+							rendered="#{caixaController.tipoPagamento=='D'}">
+							<h:outputText value="Moeda:" style="font-size: 15px;"></h:outputText>
+							<p:selectOneMenu value="#{caixaController.codtippag}">
+								<f:selectItems value="#{MBtipo.listarDinheiro}" var="din"
+									itemLabel="#{din.descricao}" itemValue="#{din.codtippag}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+
+					</p:outputPanel>
+
+				</center>
+
+				<br />
+
+				<br></br>
+
+				<center>
+
+					<p:commandButton value="Sim"
+						action="#{caixaController.alterarPagamento}" icon="ui-icon-check"
+						update="msgAlteraPagamento"></p:commandButton>
+
+					<p:commandButton style="margin-left:10px" value="não"
+						onclick="PF('dlgAlteraPagamento').hide()"
+						icon="ui-icon-closethick">
+					</p:commandButton>
+
+				</center>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgCaixa" header="Abrir Caixa"
+			width="350" height="120">
+
+			<h:form id="formCaixa">
+
+				<p:growl id="msg5"></p:growl>
+
+				<p:panelGrid columns="2" styleClass="semBorda">
+
+					<h:outputText value="Turno"></h:outputText>
+
+					<p:selectOneMenu value="#{caixaController.venda.caixaBean.turno}">
+
+						<f:selectItem itemValue="M" itemLabel="Matutino"></f:selectItem>
+						<f:selectItem itemValue="V" itemLabel="Vespertino"></f:selectItem>
+						<f:selectItem itemValue="N" itemLabel="Noturno"></f:selectItem>
+
+					</p:selectOneMenu>
+
+					<h:outputText value="Saldo Inicial"></h:outputText>
+
+					<p:inputText
+						value="#{caixaController.venda.caixaBean.saldoInicial}"
+						required="true" requiredMessage="Informe o Saldo inicial"></p:inputText>
+
+				</p:panelGrid>
+
+				<br></br>
+
+				<center>
+
+					<p:commandButton value="Abrir"
+						action="#{caixaController.venda.abrirCaixa()}"
+						icon="ui-icon-check" update="msg5, infoCaixa" />
+
+					<p:commandButton value="Fechar" style="margin-left:10px"
+						onclick="PF('dlgCaixa').hide()" icon="ui-icon-closethick" />
+
+				</center>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgDebito"
+			header="Lançamento de Débito no Caixa" modal="true" width="400"
+			height="200">
+
+			<h:form>
+
+				<p:growl id="msg" />
+
+				<p:outputPanel autoUpdate="true">
+
+					<h:panelGrid columns="2">
+
+						<h:outputText value="Valor"></h:outputText>
+
+						<p:inputText value="#{caixaController.valor}" size="8"
+							required="true" requiredMessage="Informe o Valor">
+
+							<f:convertNumber type="number" />
+
+						</p:inputText>
+
+						<h:outputText value="Despesa"></h:outputText>
+
+						<p:inputTextarea value="#{caixaController.despesa}"
+							required="true" requiredMessage="Informe a Descrição da despesa"
+							maxlength="80" cols="50" />
+
+					</h:panelGrid>
+
+				</p:outputPanel>
+
+				<hr />
+
+				<center>
+
+					<p:commandButton value="Gravar" icon="ui-icon-plus" update="msg"
+						action="#{caixaController.insertDebito()}"></p:commandButton>
+
+					<p:commandButton value="Cancelar" icon="ui-icon-closethick"
+						onclick="PF('dlgDebito').hide();"></p:commandButton>
+				</center>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgFecCaixa"
+			header="Fechar Caixa" width="200" modal="true" height="100">
+
+			<h:form id="formFecCaixa">
+
+				<p:growl id="msg5"></p:growl>
+
+				<center>
+					<h:outputText value="Deseja fechar o Caixa?"></h:outputText>
+
+					<br /> <br /> <br />
+
+					<p:commandButton value="Sim"
+						action="#{caixaController.venda.fecharCaixa()}"
+						icon="ui-icon-check" update="msg5, :infoCaixa"></p:commandButton>
+
+					<p:commandButton style="margin-left:10px" value="não"
+						onclick="PF('dlgFecCaixa').hide()" icon="ui-icon-closethick">
+					</p:commandButton>
+
+				</center>
+
+				<br />
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgestcred"
+			header="Estornar Recebimento?" width="250" modal="true" height="100">
+
+			<h:form id="frm">
+				<h:outputText value="Deseja estornar o crédito?" />
+				<hr />
+
+				<center>
+
+					<p:commandButton value="Sim"
+						action="#{caixaController.estornarRecebimentoCaixa()}"
+						icon="ui-icon-check" update="grwgeral" />
+
+					<p:commandButton value="Não" style="margin-left:10px"
+						onclick="PF('dlgestcred').hide()" icon="ui-icon-closethick" />
+
+				</center>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog responsive="true" header="Negociação de Promissória"
+			widgetVar="dlgnegpromis" modal="true" width="1200" height="530"
+			resizable="false">
+
+			<h:form id="formNegProm">
+				<p:outputPanel id="out" autoUpdate="false">
+					<p:panel id="pnlAnte" header="Filtro">
+
+						<p:panelGrid columns="4" styleClass="semBorda" id="pnl">
+
+							<h:outputText value="Cliente" style="font-weight:bold;"></h:outputText>
+							<p:commandButton icon="ui-icon-search"
+								onclick="PF('dlgBuscaClienteAnti').show();" />
+
+							<p:autoComplete value="#{caixaController.antecipaBean.cliente}"
+								size="45"
+								completeMethod="#{buscaController.completeBuscaCliente}"
+								var="theme" required="true" id="inputNomeAnti"
+								requiredMessage="Digite o nome do Cliente" forceSelection="true"
+								itemValue="#{theme}" itemLabel="#{theme.nome}"
+								converter="conCliente">
+								<p:ajax event="itemSelect"
+									listener="#{buscaController.onItemSelectCliente}" />
+							</p:autoComplete>
+
+
+							<p:commandButton value="Buscar Promissória" icon="ui-icon-search"
+								disabled="#{caixaController.lstPromissoriasNegociadas.size()>0}"
+								update=":frmpromab:dtPromissoriaAberto, :grwgeral, :formNegProm:out"
+								oncomplete="PF('dlgBuscaPromAb').show();"
+								action="#{caixaController.buscarTitulosNegociarPromissoria()}" />
+
+						</p:panelGrid>
+					</p:panel>
+
+					<br></br>
+
+					<p:commandButton value="Lançar" icon="ui-icon-closethick"
+						onclick="PF('dlgPagamento').show();" process="@this"
+						action="#{caixaController.calculaValorTotalPromissoria()}" />
+					<p:dataTable value="#{caixaController.lstPromissoriasNegociadas}"
+						var="x" paginatorAlwaysVisible="true" paginator="true"
+						id="datatable" paginatorPosition="bottom" rows="3"
+						rowKey="#{x.idFinanceiro}" style="margin-top:20px;"
+						emptyMessage="Nenhum título para antecipar.">
+
+						<f:facet name="header">
+
+                            Promissória a ser substituída
+
+                        </f:facet>
+
+						<p:ajax event="rowSelect"
+							listener="#{financeiroController.onRowSelect}" />
+
+						<p:column headerText="Cód." width="8%">
+
+							<center>
+								<h:outputText value="#{x.idFinanceiro}"></h:outputText>
+							</center>
+
+						</p:column>
+
+						<p:column headerText="Cliente" width="20%">
+							<h:outputText value="#{x.cliente.nome}"></h:outputText>
+
+						</p:column>
+						<p:column headerText="Portador" width="20%">
+
+							<h:outputText value="#{x.portador.descricao}"></h:outputText>
+
+						</p:column>
+
+						<p:column headerText="Vencimento" width="7%">
+							<h:outputText value="#{x.vencimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+
+						</p:column>
+
+						<p:column headerText="Valor2" width="12%">
+
+							<h:outputText value="R$ #{x.valoraberto}"></h:outputText>
+
+						</p:column>
+
+						<p:column headerText="Desconto" width="12%">
+
+							<h:outputText value="R$ #{x.desconto}"></h:outputText>
+
+						</p:column>
+
+						<p:column headerText="Status" width="8%">
+
+							<center>
+
+								<h:outputText value="Em aberto" rendered="#{x.status == 'A'}" />
+
+							</center>
+
+						</p:column>
+
+						<p:column width="6%">
+
+							<center>
+
+								<p:commandButton icon="ui-icon-trash"
+									update=":formNegProm:out, :grwgeral"
+									action="#{financeiroController.removeAntecipa()}">
+
+									<f:setPropertyActionListener value="#{x}"
+										target="#{financeiroController.tituloAntecipa}" />
+
+								</p:commandButton>
+
+							</center>
+
+						</p:column>
+
+					</p:dataTable>
+
+					<hr />
+
+					<p:dataTable id="dtPagamento"
+						value="#{caixaController.lstPagamento}" paginator="true"
+						emptyMessage="Nenhum título" paginatorPosition="bottom" var="x"
+						rows="3">
+
+						<f:facet name="header">
+
+                            Substituição
+
+                        </f:facet>
+
+						<p:column headerText="Tipo Pagamento">
+
+							<center>
+
+								<h:outputText value="#{x.descTipo}"></h:outputText>
+
+							</center>
+
+						</p:column>
+
+						<p:column headerText="Valor">
+
+							<center>
+
+								<h:outputText value="#{x.valor}">
+
+									<f:convertNumber type="currency" />
+
+								</h:outputText>
+
+							</center>
+
+						</p:column>
+
+						<p:column headerText="Nº Parcelas">
+
+							<center>
+
+								<h:outputText value="#{x.parcela}"></h:outputText>
+
+							</center>
+
+						</p:column>
+
+
+						<f:facet name="footer">
+
+							<h:outputText
+								value="Valor Total Pagamento #{caixaController.venda.vlrTotalOrcamento()}"></h:outputText>
+
+						</f:facet>
+
+					</p:dataTable>
+
+					<center>
+
+						<br></br> <br></br>
+
+						<p:commandButton value="Gravar"
+							action="#{caixaController.inserirVenda2Promissoria()}"
+							icon="ui-icon-check" update=":form1:tabela" />
+
+						<p:commandButton value="Cancelar" icon="ui-icon-closethick"
+							onclick="PF('dlgnegpromis').hide();" style="margin-left:5px;" />
+
+					</center>
+
+				</p:outputPanel>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog responsive="true" id="mp3" widgetVar="dlgBuscaClienteAnti"
+			modal="true" resizable="false" height="370" width="750">
+
+			<f:facet name="header">
+				<h:outputText value="Lista de Clientes" />
+			</f:facet>
+			<h:form id="frminter3">
+
+
+				<p:panelGrid columns="5" styleClass="semBorda">
+					<h:outputText style="font-size: 14px;" value="Nome " />
+					<p:inputText style="width: 250px; font-size: 14px;" size="30"
+						id="searchnome" value="#{MBcliente.cli.nome}" />
+					<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					<p:inputMask mask="" style="width: 120px; font-size: 14px;"
+						size="30" id="searchcpfcnpj" value="#{MBcliente.cli.cpfcnpj}" />
+
+					<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+						action="#{MBcliente.buscarClientes()}" update="outinteressados">
+
+					</p:commandButton>
+				</p:panelGrid>
+				<p:outputPanel id="outinteressados">
+
+					<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+						paginatorPosition="bottom" value="#{MBcliente.listaclientes}"
+						var="cliente" paginator="true" rows="7">
+						<p:column width="40">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Código" />
+							</f:facet>
+							<h:outputText value="#{cliente.codcliente}"></h:outputText>
+						</p:column>
+						<p:column width="200">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Nome" />
+							</f:facet>
+
+							<h:outputText value="#{cliente.nome}">
+							</h:outputText>
+						</p:column>
+						<p:column width="80" style="text-align:center;">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+							</f:facet>
+
+							<h:outputText value="#{cliente.cpfcnpj}">
+							</h:outputText>
+						</p:column>
+
+						<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+							<center>
+								<f:facet name="header">
+									<h:outputText style="font-size: 14px; text-align: center; "
+										value="Ação" />
+								</f:facet>
+							</center>
+
+							<center>
+
+								<p:commandButton style="font-size:12px;" value="Confirmar"
+									update=":formNegProm:inputNomeAnti :formNegProm:out"
+									oncomplete="PF('dlgBuscaClienteAnti').hide();"
+									icon="ui-icon-check">
+
+									<f:setPropertyActionListener value="#{cliente}"
+										target="#{caixaController.antecipaBean.cliente}"></f:setPropertyActionListener>
+
+								</p:commandButton>
+
+							</center>
+
+						</p:column>
+
+					</p:dataTable>
+
+
+				</p:outputPanel>
+
+
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgBuscaPromAb" modal="true"
+			resizable="false" height="370" width="1200">
+
+			<f:facet name="header">
+				<h:outputText value="Lista de Notas Promissórias em Aberto" />
+			</f:facet>
+			<h:form id="frmpromab">
+
+
+				<p:panelGrid columns="5" styleClass="semBorda" rendered="false">
+					<h:outputText style="font-size: 14px;" value="Nome " />
+					<p:inputText style="width: 250px; font-size: 14px;" size="30"
+						id="searchnome" value="#{MBcliente.cli.nome}" />
+					<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					<p:inputMask mask="" style="width: 120px; font-size: 14px;"
+						size="30" id="searchcpfcnpj" value="#{MBcliente.cli.cpfcnpj}" />
+
+					<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+						action="#{MBcliente.buscarClientes()}" update="outinteressados">
+
+					</p:commandButton>
+				</p:panelGrid>
+				<p:outputPanel id="outinteressados">
+
+					<p:dataTable value="#{caixaController.lstNegociacaoPromissoria}"
+						var="x" paginatorAlwaysVisible="true" paginator="true"
+						paginatorPosition="bottom" id="dtPromissoriaAberto" rows="3"
+						style="margin-top:20px;" emptyMessage="Nenhum título em aberto.">
+
+						<f:facet name="header">
+
+                            Notas Promissórias em aberto
+
+                        </f:facet>
+
+
+						<p:column headerText="Código" width="6%">
+
+							<center>
+								<h:outputText value="#{x.idFinanceiro}"></h:outputText>
+							</center>
+
+						</p:column>
+
+						<p:column headerText="Cliente" width="19%">
+							<h:outputText value="#{x.cliente.nome}"></h:outputText>
+
+						</p:column>
+						<p:column headerText="Portador" width="13%">
+							<center>
+								<h:outputText value="#{x.portador.descricao}"></h:outputText>
+							</center>
+						</p:column>
+
+						<p:column headerText="Vencimento" width="12%">
+							<center>
+								<h:outputText value="#{x.vencimento}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</center>
+						</p:column>
+
+						<p:column headerText="Valor" width="10%">
+							<center>
+								<h:outputText value="#{x.valoraberto}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</center>
+						</p:column>
+
+						<p:column headerText="Desconto" width="10%">
+							<center>
+								<h:outputText value="#{x.desconto}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</center>
+						</p:column>
+
+						<p:column headerText="Status" width="12%">
+							<center>
+
+								<h:outputText value="Em aberto" rendered="#{x.status == 'A'}" />
+								<h:outputText value="erro" rendered="#{x.status != 'A'}" />
+
+							</center>
+						</p:column>
+
+						<p:column headerText="Selecionar" width="10%">
+							<center>
+								<p:commandButton icon="ui-icon-plus" value="Selecionar"
+									title="Selecionar"
+									disabled="#{caixaController.lstPromissoriasNegociadas.size()>0}"
+									update=":formNegProm:out,  :grwgeral"
+									oncomplete="PF('dlgBuscaPromAb').hide();"
+									action="#{caixaController.addPromissoriaNegociar()}">
+
+									<f:setPropertyActionListener value="#{x}"
+										target="#{caixaController.promissoriaNegociada}" />
+								</p:commandButton>
+							</center>
+
+						</p:column>
+
+					</p:dataTable>
+
+
+
+
+				</p:outputPanel>
+
+
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" widgetVar="dlgPagamento" width="650"
+			height="520" resizable="false" style="font-size:12px;"
+			header="Pagamento da Venda">
+
+			<h:form id="formPag">
+
+				<p:outputPanel id="outpagto" autoUpdate="true">
+
+					<h:panelGrid columns="2" style="margin-left:3px;">
+
+						<h:outputText value="Valor Total: "
+							style="font-size:30px;font-weight:bold;" />
+						<h:outputText value="#{caixaController.venda.valorVenda}"
+							style="font-size:30px;font-weight:bold;" />
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="2" style="margin-left:3px;">
+
+						<h:outputText value="Em Aberto"
+							style="font-size:16px;font-weight:bold;color:#FF0000;" />
+						<h:outputText value="#{caixaController.venda.valorEmAberto}"
+							style="font-size:16px;font-weight:bold;margin-left:4px;color:#FF0000;" />
+
+					</h:panelGrid>
+
+				</p:outputPanel>
+
+				<hr />
+
+
+				<p:toolbar>
+					<p:toolbarGroup>
+						<p:commandButton value="Dinheiro" process="@this"
+							action="#{caixaController.venda.buscaPorDinheiro()}"
+							style="width:60px" update="out"></p:commandButton>
+
+						<p:commandButton value="Cartão" process="@this"
+							action="#{caixaController.venda.buscarPorCartao()}"
+							style="margin-left: 10px;width:60px" update="out"></p:commandButton>
+
+						<p:commandButton value="Cheque" process="@this"
+							action="#{caixaController.venda.buscarPorCheque()}"
+							style="margin-left: 10px;width:60px" update="out"></p:commandButton>
+
+					</p:toolbarGroup>
+					<p:toolbarGroup align="right">
+
+
+					</p:toolbarGroup>
+
+				</p:toolbar>
+
+				<p:outputPanel id="out">
+
+					<center>
+						<p:panelGrid style="margin-top:15px;font-size:12px;" columns="4"
+							styleClass="semBorda"
+							rendered="#{caixaController.venda.rendererDinheiro == 'S'}">
+
+							<h:outputText value="Tipo Moeda" />
+							<p:selectOneMenu
+								value="#{caixaController.venda.pagamentoBean.idTipo}">
+								<f:selectItems value="#{MBtipo.listarDinheiro}" var="din"
+									itemLabel="#{din.descricao}" itemValue="#{din.codtippag}" />
+							</p:selectOneMenu>
+
+							<h:outputText value="Valor"></h:outputText>
+							<p:inputText value="#{caixaController.venda.pagamentoBean.valor}"
+								required="true" requiredMessage="Informe o Valor">
+								<f:convertNumber type="number" />
+							</p:inputText>
+
+							<p:commandButton value="Adicionar" icon="ui-icon-check"
+								update="dtPagamento,btnPaga,out,:grwgeral,outpagto"
+								action="#{caixaController.venda.inserirNaListDinheiro()}" />
+						</p:panelGrid>
+					</center>
+
+					<center>
+
+						<p:panelGrid
+							rendered="#{caixaController.venda.rendererCheque == 'S'}"
+							styleClass="semBorda" style="margin-top:15px;font-size:12px;"
+							columns="4">
+
+							<h:outputText value="Tipo Cheque"></h:outputText>
+							<p:selectOneMenu
+								value="#{caixaController.venda.pagamentoBean.idTipo}">
+								<f:selectItems value="#{MBtipo.lstCheque()}"
+									itemLabel="#{x.descricao}" itemValue="#{x.codtippag}" var="x"></f:selectItems>
+							</p:selectOneMenu>
+
+							<h:outputText value="Valor"></h:outputText>
+							<p:inputText value="#{caixaController.venda.pagamentoBean.valor}"
+								required="true" requiredMessage="Informe o Valor" />
+
+							<h:outputText value="Parcelas"></h:outputText>
+							<p:inputText
+								value="#{caixaController.venda.pagamentoBean.parcela}"
+								required="true" requiredMessage="Informe o Número de Parcelas" />
+
+							<h:outputText value=""></h:outputText>
+
+							<h:outputText value=""></h:outputText>
+							<p:commandButton value="Adicionar" icon="ui-icon-check"
+								update="dtPagamento,btnPaga,out,:grwgeral,outpagto"
+								action="#{caixaController.venda.inserirNaListaCheque()}"></p:commandButton>
+
+
+						</p:panelGrid>
+					</center>
+
+					<center>
+						<p:panelGrid
+							rendered="#{caixaController.venda.rendererCartao == 'S'}"
+							styleClass="semBorda" style="margin-top:15px;font-size:12px;"
+							columns="4">
+
+							<h:outputText value="Tipo Cartão"></h:outputText>
+							<p:selectOneMenu
+								value="#{caixaController.venda.pagamentoBean.idTipo}">
+								<f:selectItems value="#{MBtipo.lstCartao()}"
+									itemLabel="#{x.descricao}" itemValue="#{x.codtippag}" var="x"></f:selectItems>
+							</p:selectOneMenu>
+
+							<h:outputText value="Valor"></h:outputText>
+							<p:inputText value="#{caixaController.venda.pagamentoBean.valor}"
+								required="true" requiredMessage="Informe o Valor" />
+							<h:outputText value="Parcelas"></h:outputText>
+							<p:inputText
+								value="#{caixaController.venda.pagamentoBean.parcela}"
+								required="true" requiredMessage="Informe o Número de Parcelas" />
+
+							<h:outputText value=""></h:outputText>
+
+							<h:outputText value=""></h:outputText>
+							<p:commandButton value="Adicionar" icon="ui-icon-check"
+								update="dtPagamento,btnPaga,out,:grwgeral,outpagto"
+								action="#{caixaController.venda.inserirNaListaCartao()}"></p:commandButton>
+						</p:panelGrid>
+					</center>
+
+				</p:outputPanel>
+
+				<hr />
+
+				<p:dataTable id="dtPagamento"
+					value="#{caixaController.venda.lstPagamento}" paginator="true"
+					paginatorPosition="bottom" var="x" rows="3">
+
+
+					<p:column headerText="Cód">
+						<center>
+							<h:outputText value="#{x.idTipo}"></h:outputText>
+							<h:outputText value="0" rendered="#{x.idTipo == null}"></h:outputText>
+
+						</center>
+					</p:column>
+
+					<p:column headerText="Tipo Pagamento">
+						<center>
+
+							<h:outputText value="#{x.descTipo}"></h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Valor">
+						<h:outputText value="#{x.valor}"></h:outputText>
+
+					</p:column>
+					<p:column headerText="Nº Parcelas">
+						<h:outputText value="#{x.parcela}"></h:outputText>
+
+					</p:column>
+					<p:column headerText="Ação">
+
+						<center>
+
+							<p:commandButton icon="ui-icon-closethick"
+								update="dtPagamento, formPag:outpagto"
+								action="#{caixaController.venda.removeDaListaPagamento()}">
+
+								<f:setPropertyActionListener value="#{x}"
+									target="#{caixaController.venda.removePagamentoObj}" />
+
+							</p:commandButton>
+
+						</center>
+
+					</p:column>
+
+					<f:facet name="footer">
+
+						<h:outputText
+							value="Valor Total Pagamento #{caixaController.venda.vlrTotalOrcamento()}"></h:outputText>
+					</f:facet>
+
+				</p:dataTable>
+
+				<hr />
+				<center>
+
+					<p:commandButton value="Pagar" icon="ui-icon-check" id="btnPaga"
+						disabled="#{caixaController.venda.lstPagamento.size() == 0}"
+						action="#{caixaController.insereRecebPromissoria()}"
+						update=":formNegProm:out :grwgeral :formPag:outpagto"
+						process="@this,:formPag" />
+					<p:commandButton value="Cancelar" icon="ui-icon-closethick"
+						onclick="PF('dlgPagamento').hide();" process="@this" />
+
+				</center>
+
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog responsive="true" header="Pagamento de Promissória"
+			widgetVar="dlgpagapromis" modal="true" width="970" height="530"
+			resizable="false">
+
+			<h:form id="formPagaProm">
+				<p:outputPanel id="out" autoUpdate="false">
+					<h:outputText value="Cliente:" style="font-weight:bold;" />
+
+					<p:autoComplete value="#{caixaController.buscaClienteProm}"
+						size="45" completeMethod="#{buscaController.completeBuscaCliente}"
+						var="theme" required="true" id="inputNomeAnti"
+						requiredMessage="Digite o nome do Cliente!" forceSelection="true"
+						itemValue="#{theme}" itemLabel="#{theme.nome}"
+						converter="conCliente" style="margin-left:10px">
+						<p:ajax event="itemSelect"
+							listener="#{buscaController.onItemSelectCliente}" />
+					</p:autoComplete>
+
+
+					<p:commandButton value="Buscar Promissórias" icon="ui-icon-search"
+						update="dataTable" style="margin-left:10px"
+						action="#{caixaController.listarPromissorias()}" />
+
+
+					<p:commandButton id="recibo" icon="ui-icon-print" value="Recibo"
+						style="font-size: 12px;margin-left:5px; float: right"
+						actionListener="#{caixaController.gerarRecibo()}"
+						update=":formImRe" ajax="false"
+						disabled="#{caixaController.pagamento==null||caixaController.pagamento.codigo==null}" />
+
+					<br />
+
+					<p:dataTable value="#{caixaController.lstPromissoria}" var="x"
+						paginatorAlwaysVisible="true" paginator="true" id="dataTable"
+						paginatorPosition="bottom" rows="5" rowKey="#{x.codigo}"
+						selectionMode="single" selection="#{caixaController.rowBeanProm}"
+						rowStyleClass="#{x.situacao == 'Aberto' ? 'rowRedBlood' : null}"
+						style="margin-top:20px;"
+						emptyMessage="Cliente não possui promissórias.">
+
+						<p:ajax event="rowSelect"
+							listener="#{caixaController.limpLstPagamento()}"
+							update="formPagaProm:dtPagamento :formPagaProm:recibo" />
+
+						<f:facet name="header">Promissórias</f:facet>
+
+						<p:column headerText="Código da Promissória" width="10%">
+							<h:outputText value="#{x.codigo}" />
+						</p:column>
+
+						<p:column headerText="Código da Venda" width="8%">
+							<h:outputText value="#{x.venda.codVenda}" />
+						</p:column>
+
+						<p:column headerText="Data da Venda" width="10%">
+							<h:outputText value="#{x.venda.dtEmissao}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Vencimento" width="10%">
+							<h:outputText value="#{x.vencimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Valor Total" width="12%">
+							<h:outputText value="#{x.valor}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Valor Pago" width="12%">
+							<h:outputText value="#{x.valorPago}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Valor Em Aberto" width="12%">
+							<h:outputText value="#{x.valorAberto}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Situação" width="18%">
+							<h:outputText value="#{x.situacao}" />
+						</p:column>
+
+						<p:column headerText="Pagar" width="8%">
+							<center>
+								<p:commandButton rendered="#{x.situacao=='Aberto'}"
+									icon="ui-icon-check" onclick="PF('dlgPagamento').show();">
+									<f:setPropertyActionListener
+										target="#{caixaController.rowBeanProm}" value="#{x}"></f:setPropertyActionListener>
+								</p:commandButton>
+							</center>
+						</p:column>
+					</p:dataTable>
+					<br />
+					<hr />
+
+					<p:dataTable id="dtPagamento"
+						value="#{caixaController.lstPagamentoPromissoria}" scrollRows="2"
+						selectionMode="single" selection="#{caixaController.pagamento}"
+						rowKey="#{x.codigo}" scrollable="true" scrollHeight="75"
+						emptyMessage="Nenhum pagamento!" var="x">
+
+						<p:ajax event="rowSelect" update=":formPagaProm:recibo " />
+
+						<f:facet name="header">Pagamentos da Promissória</f:facet>
+
+						<p:column headerText="Valor Pago" width="20%">
+							<h:outputText value="#{x.valorPago}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Nº Parcelas" width="10%">
+							<h:outputText value="#{x.parcelas}"></h:outputText>
+						</p:column>
+
+						<p:column headerText="Tipo de Pagamento" width="20%">
+							<h:outputText value="#{x.tipoPag.descricao}" />
+						</p:column>
+
+						<p:column headerText="Data do pagamento" width="20%">
+							<h:outputText value="#{x.dataPagamento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Operador" width="30%">
+							<h:outputText value="#{x.func.nome}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgPagamento"
+			header="Pagar Promissória" width="400" modal="true" height="250">
+
+			<h:form id="formPagamento">
+				<p:growl id="msgPagamento"></p:growl>
+
+				<center>
+					<h:outputText value="Escolha o tipo de pagamento:"
+						style="font-size: 16px;font-weight:bold"></h:outputText>
+					<p:selectOneRadio id="console" style="margin-top:5px"
+						value="#{caixaController.tipoPagamento}" required="true"
+						requiredMessage="Informe a forma de pagamento">
+						<f:selectItem itemLabel="Cartão" itemValue="CT" />
+						<f:selectItem itemLabel="Cheque" itemValue="CH" />
+						<f:selectItem itemLabel="Dinheiro" itemValue="D" />
+						<p:ajax listener="#{caixaController.formaPagar}" event="click" />
+					</p:selectOneRadio>
+				</center>
+				<br />
+
+				<center>
+					<p:outputPanel autoUpdate="true">
+						<p:panelGrid style="margin-top:15px;font-size:12px;" columns="2"
+							styleClass="semBorda"
+							rendered="#{caixaController.tipoPagamento=='CT'}">
+							<h:outputText value="Bandeira:" style="font-size: 15px;"></h:outputText>
+							<p:selectOneMenu value="#{caixaController.codtippag}"
+								id="cartaotipo">
+								<f:selectItems value="#{MBtipo.listarCartao}"
+									itemLabel="#{x.descricao}" itemValue="#{x.codtippag}" var="x"></f:selectItems>
+							</p:selectOneMenu>
+							<h:outputText value="Nº Parcelas:" style="font-size: 15px;"></h:outputText>
+							<p:spinner value="#{caixaController.parcelas}" min="1" size="5" />
+							<h:outputText value="Valor:" style="font-size: 15px;"></h:outputText>
+							<p:inputText value="#{caixaController.valor}"></p:inputText>
+
+						</p:panelGrid>
+
+						<p:panelGrid style="margin-top:15px;font-size:12px;" columns="2"
+							styleClass="semBorda"
+							rendered="#{caixaController.tipoPagamento=='CH'}">
+							<h:outputText value="Cheque:" style="font-size: 15px;"></h:outputText>
+							<p:selectOneMenu value="#{caixaController.codtippag}">
+								<f:selectItems value="#{MBtipo.listarCheque}"
+									itemLabel="#{x.descricao}" itemValue="#{x.codtippag}" var="x"></f:selectItems>
+							</p:selectOneMenu>
+							<h:outputText value="Nº Parcelas:" style="font-size: 15px;"></h:outputText>
+							<p:spinner value="#{caixaController.parcelas}" min="1" size="5" />
+							<h:outputText value="Valor:" style="font-size: 15px;"></h:outputText>
+							<p:inputText value="#{caixaController.valor}"></p:inputText>
+						</p:panelGrid>
+
+						<p:panelGrid style="margin-top:15px;font-size:12px;" columns="2"
+							styleClass="semBorda"
+							rendered="#{caixaController.tipoPagamento=='D'}">
+							<h:outputText value="Moeda:" style="font-size: 15px;"></h:outputText>
+							<p:selectOneMenu value="#{caixaController.codtippag}">
+								<f:selectItems value="#{MBtipo.listarDinheiro}" var="din"
+									itemLabel="#{din.descricao}" itemValue="#{din.codtippag}" />
+							</p:selectOneMenu>
+							<h:outputText value="Valor:" style="font-size: 15px;"></h:outputText>
+							<p:inputText value="#{caixaController.valor}"></p:inputText>
+						</p:panelGrid>
+					</p:outputPanel>
+				</center>
+				<br />
+				<br />
+
+				<center>
+					<p:commandButton value="Pagar" onclick="PF('dlgconfirmar').show()"
+						icon="ui-icon-check" />
+
+					<p:commandButton style="margin-left:10px" value="Cancelar"
+						actionListener="#{caixaController.limparPagamento()}"
+						onclick="PF('dlgPagamento').hide();" icon="ui-icon-closethick" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true" widgetVar="dlgconfirmar" modal="true"
+			resizable="false" height="120" width="300">
+			<f:facet name="header">
+				<h:outputText value="Confirmação" />
+			</f:facet>
+			<h:form id="frmdlgconfirmar">
+				<center>
+					<p:outputPanel id="outpresenca">
+						<h:outputText style="font-size: 14px;"
+							value="Deseja realizar o pagamento da promissória do cliente?" />
+					</p:outputPanel>
+					<hr />
+					<p:commandButton value="Sim"
+						action="#{caixaController.pagarPromissoria}" icon="ui-icon-check"
+						update=":formPagamento:msgPagamento, :formPagaProm" />
+
+					<p:commandButton style="margin-left:10px" value="Não"
+						actionListener="#{caixaController.limparPagamento()}"
+						icon="ui-icon-closethick" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<!-- Fechamento e Abertura do caixa Confirmação -->
+		<p:dialog responsive="true"
+			widgetVar="dlgFecharCaixaAgendaConfirmacao" header="Fechar Caixa"
+			width="200" modal="true" height="100">
+			<h:form id="formFecharCaixaAgendaConfirmacao">
+				<p:growl id="msg5"></p:growl>
+				<center>
+					<h:outputText value="Deseja fechar e abrir um novo caixa?"></h:outputText>
+					<br /> <br /> <br />
+					<p:commandButton value="Sim"
+						action="#{caixaController.venda.fecharCaixaAgenda()}"
+						icon="ui-icon-check" update="msg5"></p:commandButton>
+
+					<p:commandButton style="margin-left:10px" value="Não"
+						onclick="PF('dlgFecharCaixaAgendaConfirmacao').hide()"
+						icon="ui-icon-closethick">
+					</p:commandButton>
+
+				</center>
+				<br />
+			</h:form>
+		</p:dialog>
+
+		<!-- Fechamento e Abertura do caixa -->
+		<p:dialog responsive="true" widgetVar="dlgAberturaCaixaAgenda"
+			header="Abrir Caixa" width="350" height="120">
+			<h:form id="formAberturaCaixaAgenda">
+				<p:growl id="msg5"></p:growl>
+				<p:panelGrid columns="2" styleClass="semBorda">
+
+					<h:outputText value="Turno"></h:outputText>
+					<p:selectOneMenu value="#{caixaController.venda.caixaBean.turno}">
+						<f:selectItem itemValue="M" itemLabel="Matutino"></f:selectItem>
+						<f:selectItem itemValue="V" itemLabel="Vespertino"></f:selectItem>
+						<f:selectItem itemValue="N" itemLabel="Noturno"></f:selectItem>
+					</p:selectOneMenu>
+					<h:outputText value="Saldo Inicial"></h:outputText>
+					<p:inputText
+						value="#{caixaController.venda.caixaBean.saldoInicial}"
+						required="true" requiredMessage="Informe o Saldo inicial"></p:inputText>
+
+				</p:panelGrid>
+				<br />
+				<center>
+					<p:commandButton value="Abrir"
+						action="#{caixaController.venda.abrirCaixaAgenda()}"
+						icon="ui-icon-check"
+						onclick="PF('dlgAberturaCaixaAgenda').hide();" update="msg5" />
+
+					<p:commandButton value="Fechar" style="margin-left:10px"
+						onclick="PF('dlgAberturaCaixaAgenda').hide();"
+						icon="ui-icon-closethick" />
+
+				</center>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

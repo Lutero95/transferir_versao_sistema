@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<p:dialog responsive="true"    id="mpF" widgetVar="dlgF" modal="true" resizable="false"
+	height="370" width="750">
+
+	<f:facet name="header">
+		<h:outputText value="Lista de Fornecedores" />
+	</f:facet>
+	<h:form id="frminterF">
+
+
+		<p:panelGrid columns="5" styleClass="semBorda">
+
+			<h:outputText style="font-size: 14px;" value="Nome " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnome" value="#{tituloPagarController.fornecedorBean.nome}" />
+
+			<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+                       <p:inputMask mask="" style="width: 120px; font-size: 14px;" size="30"
+				id="searchcpfcnpj"
+				value="#{tituloPagarController.fornecedorBean.cnpj}" />
+
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{tituloPagarController.buscaFornecedor()}"
+				update="outinteressadosF">
+			</p:commandButton>
+
+
+		</p:panelGrid>
+		<p:outputPanel id="outinteressadosF">
+
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom"
+				value="#{tituloPagarController.lstFornecedor}" var="cliente"
+				paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{cliente.codforn}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+
+					<h:outputText value="#{cliente.nome}">
+					</h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+					<h:outputText value="#{cliente.cnpj}" />
+
+				</p:column>
+
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+
+					<center>
+
+						<p:commandButton style="font-size: 12px;"
+							update=":formInsert:tbview, :formInsert:msg" value="Confirmar"
+							oncomplete="PF('dlgF').hide();" icon="ui-icon-check">
+
+							<f:setPropertyActionListener value="#{cliente}"
+								target="#{tituloPagarController.fornecedorBean}"></f:setPropertyActionListener>
+
+						</p:commandButton>
+
+					</center>
+
+				</p:column>
+
+			</p:dataTable>
+
+
+		</p:outputPanel>
+
+
+
+		<br />
+
+	</h:form>
+</p:dialog>
+
+<p:dialog responsive="true"    id="mpAlt" widgetVar="dlgFA" modal="true" resizable="false"
+	height="370" width="750">
+
+	<f:facet name="header">
+		<h:outputText value="Lista de Fornecedores" />
+	</f:facet>
+	<h:form id="frminterFA">
+
+
+		<p:panelGrid columns="5" styleClass="semBorda">
+
+			<h:outputText style="font-size: 14px;" value="Nome " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+				id="searchnomealt" value="#{tituloPagarController.rowBean.forn.nome}" />
+			
+
+			<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+                          <p:inputMask mask="" style="width: 120px; font-size: 14px;" size="30"
+				id="searchcpfcnpj"
+				value="#{tituloPagarController.rowBean.forn.cnpj}" />
+
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{tituloPagarController.buscaFornecedorAlt()}"
+				update="outinteressadosFA">
+			</p:commandButton>
+
+
+		</p:panelGrid>
+		<p:outputPanel id="outinteressadosFA">
+
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom"
+				value="#{tituloPagarController.lstFornecedorAlt}" var="clientealt"
+				paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{clientealt.codforn}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+
+					<h:outputText value="#{clientealt.nome}">
+					</h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+					<h:outputText value="#{clientealt.cnpj}" />
+
+				</p:column>
+
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+
+					<center>
+
+						<p:commandButton style="font-size: 12px;"
+							update=":formEdit:tbViewEdit" value="Confirmar"
+							oncomplete="PF('dlgFA').hide();" icon="ui-icon-check">
+
+							<f:setPropertyActionListener value="#{clientealt}"
+								target="#{tituloPagarController.rowBean.forn}"></f:setPropertyActionListener>
+
+						</p:commandButton>
+
+					</center>
+
+				</p:column>
+
+			</p:dataTable>
+
+
+		</p:outputPanel>
+
+
+
+		<br />
+
+	</h:form>
+</p:dialog>
+
+
+</html>

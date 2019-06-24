@@ -10,6 +10,8 @@ import javax.faces.convert.FacesConverter;
 import br.gov.al.maceio.sishosp.hosp.dao.FornecedorDAO;
 import br.gov.al.maceio.sishosp.hosp.model.FornecedorBean;
 
+
+
 @FacesConverter(value = "conFornecedor")
 public class FornecedorConverter implements Converter {
 	FornecedorDAO f = new FornecedorDAO();

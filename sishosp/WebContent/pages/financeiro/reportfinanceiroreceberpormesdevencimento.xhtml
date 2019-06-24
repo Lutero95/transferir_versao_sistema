@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/templategeral.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="body">
+		<div id="conteudo">
+			<div id="contMenuBar">
+				<!-- Começar edição -->
+				<f:view>
+
+
+					<center>
+						<div style="margin-top: 10px">
+
+							<p:panel style="width:600px; text-align:left;">
+								<f:facet name="header">
+									<h:outputText value="Receber Por Mês de Vencimento" />
+								</f:facet>
+
+								<br />
+
+								<h:form id="frm">
+
+									<p:panelGrid columns="1" styleClass="semBorda">
+
+									</p:panelGrid>
+									<!-- TIREI O RADIO DE FORNECEDOR, TIPO DOC E CUSTO
+                <p:panelGrid columns="5" styleClass="semBorda">
+<h:outputText value="Agrupar por:" />
+                    <p:selectOneRadio id="console" 
+                                      value="#{reportController.agrupar}">
+
+                        <f:selectItem itemLabel="Fornecedor" itemValue="F" />
+                        <f:selectItem itemLabel="Tipo Documento" itemValue="T" />
+                        <f:selectItem itemLabel="C. Custo" itemValue="C" />
+                        
+<p:ajax event="click" update="@form"> </p:ajax>
+                    </p:selectOneRadio>
+
+
+
+                </p:panelGrid>-->
+									<p:panelGrid id="panelVenc" columns="5" styleClass="semBorda">
+
+										<h:outputLabel for="dti" styleClass="rotulosBold"
+											value="Data início:  " />
+										<p:calendar value="#{reportController.periodoinicial}"
+											pattern="dd/MM/yyyy" required="true" locale="pt"
+											requiredMessage="Campo Data início é obrigatório" id="dti"
+											style="width:200px">
+
+										</p:calendar>
+										<h:outputLabel for="dtf" styleClass="rotulosBold"
+											style="margin-left: 15px;" value="    		Data fim:  " />
+										<p:calendar value="#{reportController.periodofinal}"
+											pattern="dd/MM/yyyy" required="true" locale="pt"
+											requiredMessage="Campo Data fim é obrigatório" id="dtf"
+											style="width:200px">
+										</p:calendar>
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="2" styleClass="semBorda">
+										<h:outputText value="Tipo:" />
+
+										<p:selectOneRadio value="#{reportController.tipoRelatorio}">
+
+											<f:selectItem itemLabel="Sintético" itemValue="S" />
+											<f:selectItem itemLabel="Analítico" itemValue="A" />
+
+										</p:selectOneRadio>
+									</p:panelGrid>
+
+									<p:panelGrid columns="5" styleClass="semBorda">
+										<h:outputText value="Período referente a:" />
+										<p:selectOneRadio value="#{reportController.dataRef}">
+
+											<f:selectItem itemLabel="Vencimento" itemValue="V" />
+											<f:selectItem itemLabel="Emissão" itemValue="e" />
+											<f:selectItem itemLabel="Previsão" itemValue="P" />
+										</p:selectOneRadio>
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="4" styleClass="semBorda">
+										<h:outputText value="Situação:" />
+										<p:selectOneRadio value="#{reportController.situacao}"
+											columns="3" tabindex="0">
+											<f:selectItem itemLabel="Todos" itemValue="T" />
+
+											<f:selectItem itemLabel="Em Aberto" itemValue="A" />
+											<f:selectItem itemLabel="Quitados" itemValue="F" />
+
+										</p:selectOneRadio>
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="3" styleClass="semBorda">
+										<h:outputText value="Cliente:" />
+										<p:commandButton icon="ui-icon-search" process="@this"
+											style="margin-right:3px;" onclick="PF('dlgBuscaCli').show();"></p:commandButton>
+
+										<p:autoComplete value="#{reportController.clienteBean}"
+											size="30"
+											completeMethod="#{buscaController.completeBuscaCliente}"
+											var="theme" required="true"
+											requiredMessage="Informe o Cliente" forceSelection="true"
+											itemValue="#{theme}" itemLabel="#{theme.nome}"
+											converter="conCliente" style="width:222px;margin-left:0px">
+											<p:ajax event="itemSelect"
+												listener="#{buscaController.onItemSelectCliente}" />
+										</p:autoComplete>
+
+									</p:panelGrid>
+
+									<p:panelGrid id="panelCliente" columns="2"
+										styleClass="semBorda">
+
+										<h:outputText value="Tipo Documento:" />
+										<p:selectOneMenu value="#{reportController.codTipoDocumento}"
+											style="width:222px">
+
+											<f:selectItem itemValue="" itemLabel="Selecione" />
+											<f:selectItems
+												value="#{tipoDocumentoController.lstTipoDocs()}"
+												itemValue="#{x.codtipodocumento}" itemLabel="#{x.descricao}"
+												var="x"></f:selectItems>
+
+										</p:selectOneMenu>
+
+										<h:outputText value="Fonte de receita:" />
+
+										<p:selectOneMenu value="#{reportController.codfonRec}"
+											style="width:222px">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems
+												value="#{tituloPagarController.listCentroCusto()}"
+												itemValue="#{x.idccusto}" var="x" itemLabel="#{x.descricao}"></f:selectItems>
+
+										</p:selectOneMenu>
+
+
+										<h:outputText value="Portador:" />
+
+										<p:selectOneMenu value="#{reportController.codportador}"
+											style="width:222px">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems value="#{tituloPagarController.lstPortador()}"
+												itemValue="#{x.codportador}" var="x"
+												itemLabel="#{x.descricao}"></f:selectItems>
+
+										</p:selectOneMenu>
+
+
+									</p:panelGrid>
+									<br />
+									<p:outputPanel autoUpdate="true" id="out2">
+
+										<center>
+
+											<p:outputPanel autoUpdate="true">
+
+												<p:commandButton value="Imprimir" icon="ui-icon-print"
+													ajax="false" rendered="#{reportController.agrupar == 'F'}"
+													actionListener="#{reportController.receberPorMesDeVencimento}"
+													style="margin-left:5px;"></p:commandButton>
+
+											</p:outputPanel>
+
+										</center>
+
+									</p:outputPanel>
+
+								</h:form>
+
+							</p:panel>
+
+							<p:dialog responsive="true"    widgetVar="dlgBuscaCli" modal="true" resizable="false"
+								height="370" width="750">
+
+								<f:facet name="header">
+									<h:outputText value="Lista de Clientes" />
+								</f:facet>
+								<h:form id="frmBuscaCli">
+									<p:panelGrid columns="5" styleClass="semBorda">
+										<h:outputText style="font-size: 14px;" value="Nome " />
+										<p:inputText style="width: 250px; font-size: 14px;" size="30"
+											id="searchnome" value="#{MBcliente.cli.nome}" />
+
+										<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+										<p:inputMask mask="" style="width: 120px; font-size: 14px;"
+											size="30" id="searchcpfcnpj" value="#{MBcliente.cli.cpfcnpj}" />
+
+										<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+											action="#{MBcliente.buscarClientes()}" update="outBuscaCli">
+
+										</p:commandButton>
+									</p:panelGrid>
+									<p:outputPanel id="outBuscaCli">
+
+										<p:dataTable emptyMessage="Sem Dados"
+											style="font-size: 12px; " paginatorPosition="bottom"
+											value="#{MBcliente.listaclientes}" var="cliente"
+											paginator="true" rows="7">
+
+											<p:column width="40">
+												<f:facet name="header">
+													<h:outputText style="font-size: 14px;" value="Código" />
+												</f:facet>
+												<h:outputText value="#{cliente.codigo_alternativo}"></h:outputText>
+											</p:column>
+
+											<p:column width="200">
+												<f:facet name="header">
+													<h:outputText style="font-size: 14px;" value="Nome" />
+												</f:facet>
+												<h:outputText value="#{cliente.nome}">
+												</h:outputText>
+											</p:column>
+
+											<p:column width="80" style="text-align:center;">
+												<f:facet name="header">
+													<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+												</f:facet>
+												<h:outputText value="#{cliente.cpfcnpj}">
+												</h:outputText>
+
+											</p:column>
+
+											<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+												<center>
+													<f:facet name="header">
+														<h:outputText
+															style="font-size: 14px; text-align: center; "
+															value="Ação" />
+													</f:facet>
+												</center>
+
+												<center>
+
+													<p:commandButton style="font-size: 12px;"
+														process="@this @form" value="Confirmar" update=":frm"
+														oncomplete="PF('dlgBuscaCli').hide();"
+														icon="ui-icon-check">
+
+														<f:setPropertyActionListener value="#{cliente}"
+															target="#{reportController.clienteBean}" />
+
+													</p:commandButton>
+												</center>
+
+											</p:column>
+										</p:dataTable>
+									</p:outputPanel>
+									<br />
+
+								</h:form>
+							</p:dialog>
+
+						</div>
+					</center>
+				</f:view>
+				<!-- Terminar edição -->
+			</div>
+		</div>
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

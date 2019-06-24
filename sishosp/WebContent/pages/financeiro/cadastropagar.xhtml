@@ -1,0 +1,1198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<h:head>
+	<style>
+* {
+	font-size: 14px !important;
+}
+</style>
+
+</h:head>
+
+<ui:composition template="../../template/template.xhtml">
+
+	<ui:define name="content">
+		<p:growl id="grwgeral"/>
+
+		
+
+
+<h3 style="font-size:22px;font-weight:bold">Gerenciamento de Títulos a Pagar</h3>
+			
+			
+
+
+			
+
+			
+			 <h:form id="formInsert">
+
+				<p:growl id="msg" />
+				<p:outputPanel autoUpdate="false">
+				<p:tabView id="tbview">
+
+					<p:tab title="Documento">
+
+						<br />
+						
+						<p:panelGrid columns="4" styleClass="semBorda">
+
+							<h:outputText value="Documento"></h:outputText>
+							<p:inputText
+								value="#{tituloPagarController.tituloPagarBean.duplicata}"/>
+								
+								<h:outputText value="Tipo Doc."></h:outputText>
+
+							<p:selectOneMenu
+								value="#{tituloPagarController.tituloPagarBean.tipoDocumento.codtipodocumento}" required="true" 
+								requiredMessage="Informe o Tipo de documento" 
+								style="width:130px;">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems
+									value="#{tituloPagarController.listTipDoc()}"
+									itemValue="#{x.codtipodocumento}" var="x" itemLabel="#{x.descricao}" >
+								</f:selectItems>
+							
+								<p:ajax  update="formInsert" listener="#{tituloPagarController.verificarDevolucao()}" global="false"></p:ajax>
+								</p:selectOneMenu>
+								
+															
+							
+						
+							<h:outputText value="Nota Fiscal"></h:outputText>
+							<p:inputText maxlength="10"
+								value="#{tituloPagarController.tituloPagarBean.notaFiscal}"></p:inputText>
+
+						    <h:outputText value="Parcela"></h:outputText>
+							<p:inputText size="10" required="true" requiredMessage="Informe a Parcela" maxlength="2"
+								value="#{tituloPagarController.tituloPagarBean.parcela}"/>
+							 
+							
+							</p:panelGrid>
+					<p:outputPanel autoUpdate="false">
+						<p:panelGrid columns="8" styleClass="semBorda">
+							<h:outputText value="Devolução" rendered="#{tituloPagarController.tipoDoc.devolucao_venda}" />			
+							<p:commandButton icon="ui-icon-search" rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"				
+									onclick="PF('dlgDesistencia').show();" process="@this"></p:commandButton>
+									
+					
+							<h:outputText rendered="#{tituloPagarController.tipoDoc.devolucao_venda}" value="Cliente: "/>
+							<p:inputText  rendered="#{tituloPagarController.tipoDoc.devolucao_venda}" readonly="true" 
+							     value="#{tituloPagarController.funcBean.cliente.nome}"></p:inputText>
+							
+							
+							<h:outputText rendered="#{tituloPagarController.tipoDoc.devolucao_venda}" value="Valor: "/>
+							<p:inputText  rendered="#{tituloPagarController.tipoDoc.devolucao_venda}" readonly="true" 
+								value="#{tituloPagarController.pagamentoDesi.valor}"></p:inputText>
+							
+							<h:outputText rendered="#{tituloPagarController.tipoDoc.devolucao_venda}" value="Data Desistência: "/>
+							<p:inputText rendered="#{tituloPagarController.tipoDoc.devolucao_venda}" readonly="true" 
+								value="#{tituloPagarController.pagamentoDesi.dtCadastro}"></p:inputText>				
+							
+						</p:panelGrid>
+						<p:separator  rendered="#{tituloPagarController.tipoDoc.devolucao_venda}"/>
+					</p:outputPanel>
+					
+						
+						
+						<p:panelGrid columns="6" styleClass="semBorda">
+							  <h:outputText value="Fornecedor"></h:outputText>
+								<p:commandButton icon="ui-icon-search"
+									onclick="PF('dlgF').show();"></p:commandButton>
+
+								<p:autoComplete value="#{tituloPagarController.fornecedorBean}" size="30"
+  								completeMethod="#{buscaController.completeBuscaFornecedor}" var="theme"
+  								required="true" requiredMessage="Informe um fornecedor"
+  								forceSelection="true" itemValue="#{theme}" itemLabel="#{theme.nome}" converter="conFornecedorFinanceiro" >
+  							 	 <p:ajax event="itemSelect" listener="#{buscaController.onItemSelectFornecedor}" />
+  							  	</p:autoComplete>
+								
+								<h:outputText value="Data Emissão"></h:outputText>
+								<p:calendar
+								value="#{tituloPagarController.tituloPagarBean.dtemissao}"
+								pattern="dd/MM/yyyy" required="true" requiredMessage="Informe a data de Emissão." 
+								showOn="button" locale="pt"/>
+						</p:panelGrid>						
+	
+						<p:outputPanel>
+
+							<p:panelGrid columns="4" styleClass="semBorda" id="pnlBuscas">
+
+														<h:outputText value="C.Custo"></h:outputText>
+
+							<p:selectOneMenu
+								value="#{tituloPagarController.tituloPagarBean.ccusto.idccusto}" required="true" 
+								requiredMessage="Informe o centro de custo"
+								style="width:230px;">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems
+									value="#{tituloPagarController.listCentroCusto()}"
+									itemValue="#{x.idccusto}" var="x" itemLabel="#{x.descricao}" />
+	
+							</p:selectOneMenu>
+																
+							
+							<h:outputText value="Despesa"></h:outputText>
+
+							<p:selectOneMenu
+								value="#{tituloPagarController.tituloPagarBean.despesa.id}" required="true"
+								requiredMessage="Informe a despesa."
+								style="width:230px;">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems value="#{tituloPagarController.listDepesas()}"
+									itemValue="#{x.id}" var="x" itemLabel="#{x.descricao}"></f:selectItems>
+
+							</p:selectOneMenu>
+							</p:panelGrid>
+						</p:outputPanel>
+							<p:panelGrid columns="6" styleClass="semBorda" >
+
+	<h:outputText value="Portador"></h:outputText>
+	
+	<p:selectOneMenu
+								value="#{tituloPagarController.tituloPagarBean.portador.codportador}" required="true" 
+								requiredMessage="Informe o Tipo de documento" 
+								style="width:130px;">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems
+									value="#{tituloPagarController.lstPortador()}"
+									itemValue="#{x.codportador}" var="x" itemLabel="#{x.descricao}" >
+								</f:selectItems>
+								</p:selectOneMenu>
+								
+								
+								
+								<p:inputMask value="#{tituloPagarController.tituloPagarBean.dtcompete}" mask="99/9999"></p:inputMask>		
+						</p:panelGrid>
+						
+						<p:panelGrid columns="4" styleClass="semBorda">
+
+<h:outputText value="Vencimento"></h:outputText>
+
+							<p:calendar
+								value="#{tituloPagarController.tituloPagarBean.dtvcto}"
+								pattern="dd/MM/yyyy" required="true" requiredMessage="Informe a data de vencimento." 
+								showOn="button" locale="pt"/>
+<h:outputText value="Previsão Pagamento"></h:outputText>
+
+							<p:calendar
+								value="#{tituloPagarController.tituloPagarBean.dtprevisao}"
+								pattern="dd/MM/yyyy" required="false" requiredMessage="Informe a data de vencimento." 
+								showOn="button" locale="pt"/>
+
+
+							
+
+							</p:panelGrid>
+							<p:panelGrid columns="2" styleClass="semBorda">
+<h:outputText value="Histórico"></h:outputText>
+
+                                                        <p:inputTextarea cols="60"
+								value="#{tituloPagarController.tituloPagarBean.historico}"></p:inputTextarea>
+							</p:panelGrid>
+							<p:panelGrid columns="6" styleClass="semBorda">
+							
+
+
+							<h:outputText value="Valor"></h:outputText>
+							<pe:inputNumber decimalPlaces="2" symbol="R$ " required="true"
+								value="#{tituloPagarController.tituloPagarBean.valor}"
+                                                                requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+								<p:ajax update="panelTotal"
+									listener="#{tituloPagarController.valorTotal()}"></p:ajax>
+								</pe:inputNumber>
+							
+
+							<h:outputText value="Desconto"></h:outputText>
+
+                                                        <pe:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+								value="#{tituloPagarController.tituloPagarBean.desconto}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+								<p:ajax update="panelTotal"
+									listener="#{tituloPagarController.valorTotal()}"></p:ajax>
+								</pe:inputNumber>
+
+							<h:outputText value="Juros"></h:outputText>
+
+							<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+								value="#{tituloPagarController.tituloPagarBean.juros}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+								<p:ajax update="panelTotal"
+									listener="#{tituloPagarController.valorTotal()}"></p:ajax>
+								</pe:inputNumber>
+							<h:outputText value="Multa"></h:outputText>
+
+							<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+								value="#{tituloPagarController.tituloPagarBean.multa}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+								<p:ajax update="panelTotal"
+									listener="#{tituloPagarController.valorTotal()}"></p:ajax>
+								</pe:inputNumber>
+
+							
+
+							<h:outputText value="ICMS St."></h:outputText>
+
+							<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false"
+								value="#{tituloPagarController.tituloPagarBean.icmsst}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+								<p:ajax update="panelTotal"
+									listener="#{tituloPagarController.valorTotal()}"></p:ajax>
+								</pe:inputNumber>
+															
+							
+							<h:outputText value="Total"></h:outputText>
+
+							<p:outputPanel id="panelTotal">
+							
+								<p:outputLabel value="Total: R$ #{tituloPagarController.valorTotal()}">
+                   					<f:convertNumber type="currency" currencySymbol="R$"/>
+                   				</p:outputLabel>
+							</p:outputPanel>
+
+
+						</p:panelGrid>
+						
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<h:outputText value="Nominal"/>
+							<p:inputText value="#{tituloPagarController.tituloPagarBean.nominal}" size="60"/>
+						</p:panelGrid>
+					</p:tab>
+
+					<p:tab title="Retenção">
+
+
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:commandButton value="Incluir Novo" icon="ui-icon-plus"
+								action="#{tituloPagarController.verificaAdd()}"
+								onclick="PF('dlgNovoImposto').show();"></p:commandButton>
+						</p:panelGrid>
+
+
+						<p:outputPanel>
+							<p:dataTable value="#{tituloPagarController.lstImpostos}" var="x"
+								paginatorAlwaysVisible="true" paginator="true"
+								paginatorPosition="bottom" id="dtImposto" rows="4"
+								style="margin-top:10px;">
+
+
+								<p:column headerText="Imposto" width="auto">
+
+									<h:outputText value="#{x.descImposto}" />
+
+								</p:column>
+
+								<p:column headerText="%Retenção" width="auto">
+
+									<h:outputText value="#{x.pcRentencao}" />
+
+								</p:column>
+
+								<p:column headerText="Base(R$)" width="auto">
+
+									<h:outputText value="#{x.valorBase}" />
+
+								</p:column>
+								<p:column width="auto">
+
+									<center>
+										<p:commandButton icon="ui-icon-pencil"
+											onclick="PF('dlgEditRetencao').show();"
+											title="Editar retenção,base">
+
+											<f:setPropertyActionListener value="#{x}"
+												target="#{tituloPagarController.rowBeanImposto}"></f:setPropertyActionListener>
+
+										</p:commandButton>
+										
+										<p:commandButton icon="ui-icon-trash"
+											title="Remover retenção" 
+											action="#{tituloPagarController.removerRetencao()}" 
+											process="@this" update="formInsert">
+
+											<f:setPropertyActionListener value="#{x}"
+												target="#{tituloPagarController.rowBeanImposto}"></f:setPropertyActionListener>
+
+										</p:commandButton>
+									</center>
+
+								</p:column>
+
+							</p:dataTable>
+						</p:outputPanel>
+					</p:tab>
+
+				</p:tabView>
+
+
+				<hr />
+
+				<center>
+
+					<p:commandButton value="Salvar"
+						actionListener="#{tituloPagarController.verificarParcelas()}"
+						icon="ui-icon-check" update="msg, formInsert"></p:commandButton>
+
+					<p:commandButton value="Cancelar" onclick="PF('dlgNovo').hide();"
+						style="margin-left:5px;" icon="ui-icon-closethick"></p:commandButton>
+
+				</center>
+			</p:outputPanel>
+			</h:form>
+
+		
+
+
+	
+
+
+
+
+		<p:dialog responsive="true"    header="Editar Retenção" widgetVar="dlgEditRetencao">
+
+			<h:form id="idRetencao">
+
+				<p:outputPanel>
+					<p:panelGrid columns="2" styleClass="semBorda"
+						style="margin-top:10px;">
+						
+						<p:outputLabel value="Retenção">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+						<p:selectOneMenu value="#{tituloPagarController.rowBeanImposto.descImposto}" 
+                                required="true" requiredMessage="Informe o tipo da retenção.">
+
+                                <f:selectItems value="#{tituloPagarController.tipoImposto}"
+                                    var="ip" itemLabel="#{ip.descricao}" itemValue="#{ip.descricao}" />
+                            </p:selectOneMenu>
+
+
+						<h:outputText value="(%)Retenção" />
+						<p:inputText
+							value="#{tituloPagarController.rowBeanImposto.pcRentencao}">
+						</p:inputText>
+
+						<h:outputText value="(%)Base" />
+						<p:inputText
+							value="#{tituloPagarController.rowBeanImposto.valorBase}"></p:inputText>
+
+
+					</p:panelGrid>
+
+					<hr />
+
+					<center>
+
+						<p:commandButton value="Salvar" icon="ui-icon-check"
+							oncomplete="PF('dlgNovoImposto').hide();"
+							action="#{tituloPagarController.alterarRetencao()}"
+							update="idRetencao, :formInsert:tbview:dtImposto"></p:commandButton>
+
+						<p:commandButton value="Cancelar" style="margin-left:5px;"
+							onclick="PF('dlgEditRetencao').hide();" icon="ui-icon-closethick"></p:commandButton>
+
+					</center>
+
+				</p:outputPanel>
+			</h:form>
+
+		</p:dialog>
+	    <p:dialog responsive="true"    header="Dados" widgetVar="dlgDesistencia" width="800" position="top">
+	    		<h:form id="formDesistencia">
+	    			<p:outputPanel id="dadosvendainc" autoUpdate="true">
+
+                        <p:panelGrid columns="8" id="pnlVenda" styleClass="semBorda">
+
+                            <h:outputText value="Cliente"></h:outputText>
+
+                            <p:commandButton icon="ui-icon-search" process="@this"
+                                             style="margin-right:3px;" 
+                                             onclick="PF('dlg').show();"></p:commandButton>
+                            <h:inputHidden value="#{tituloPagarController.funcBean.cliente.codcliente}" required="true"
+                                           requiredMessage="Cliente obrigatório"/>
+                            <p:inputText size="60" readonly="true"
+                                         value="#{tituloPagarController.funcBean.cliente.nome}" style="margin-left: -30px"></p:inputText>
+
+
+                        </p:panelGrid>
+
+                    </p:outputPanel>
+	    
+	   			<p:outputPanel autoUpdate="true">
+	   			
+							<p:commandButton icon="ui-icon-search" value="Buscar"			
+									onclick="PF('dlgDesistencia').show();" action="#{tituloPagarController.listTodosCreditoDesistencia()}"></p:commandButton>
+						<p:dataTable value="#{tituloPagarController.lstDesistencia}" var="x"
+								paginatorAlwaysVisible="true" paginator="true"
+								paginatorPosition="bottom" id="dtDesistencia" rows="4"
+								style="margin-top:10px;">
+								
+								
+								<p:column headerText="Id desistência" width="auto">
+
+									<h:outputText value="#{x.id_desistencia}" />
+
+								</p:column>
+
+								<p:column headerText="Saldo" width="auto">
+
+									<h:outputText value="#{x.valor}" />
+
+								</p:column>
+								
+								<p:column headerText="Data de Desistência" width="auto">
+
+									<h:outputText value="#{x.dtCadastro}" />
+
+								</p:column>
+								
+								<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+								
+								<center>
+									<f:facet name="header">
+										<h:outputText style="font-size: 14px; text-align: center; "
+											value="Ação" />
+									</f:facet>
+								</center>
+								<center>
+									  <p:commandButton style="font-size: 12px;"  update="formInsert"
+                                                    value="Confirmar" oncomplete="PF('dlgDesistencia').hide();" 
+                                                    icon="ui-icon-check">
+                                                    <f:setPropertyActionListener value="#{x}"
+                                                        target="#{tituloPagarController.pagamentoDesi}"></f:setPropertyActionListener>						     
+										</p:commandButton>
+								</center>
+						</p:column>
+						</p:dataTable>
+				</p:outputPanel>
+				</h:form>
+	    </p:dialog>
+	  
+		
+		
+		<p:dialog responsive="true"    widgetVar="simounao" modal="true" header="Parcelas"
+	 resizable="false">
+
+	<h:form>
+			
+				<p:outputPanel autoUpdate="true">				
+					<h:outputLabel value="Deseja pagar em: #{tituloPagarController.tituloPagarBean.parcela} parcelas?" style="font-size:20px;"/>					
+					<hr/>
+				</p:outputPanel>
+	
+			<p:commandButton value="SIM"				
+				actionListener="#{tituloPagarController.salvarDocumentoPagar()}"
+				style="font-size:14px;margin-left:90px;" update=":formInsert">
+			</p:commandButton>
+		
+			<p:commandButton value="NÃO"
+				actionListener="#{tituloPagarController.salvarDocumentoPagarUnico()}"
+				style="font-size:14px;margin-left:10px;" update=":formInsert">
+			</p:commandButton>
+
+	</h:form>
+</p:dialog>
+
+
+		<p:dialog responsive="true"    header="Novo" widgetVar="dlgNovoImposto" modal="true">
+
+			<h:form id="formNovoImposto">
+
+				<p:panelGrid columns="2" styleClass="semBorda"
+					style="margin-top:10px;">
+
+					<h:outputText value="Imposto" />
+					<p:selectOneMenu
+						value="#{tituloPagarController.impostoBean.descImposto}">
+
+						<f:selectItems value="#{tituloPagarController.tipoImposto}" var="x"
+							itemLabel="#{x.descricao}" itemValue="#{x.descricao}" />
+
+
+					</p:selectOneMenu>
+
+					<h:outputText value="(%)Retenção" />
+					<p:inputText value="#{tituloPagarController.impostoBean.pcRentencao}">
+					</p:inputText>
+
+					<h:outputText value="(%)Base" />
+					<p:inputText value="#{tituloPagarController.impostoBean.valorBase}"></p:inputText>
+
+
+				</p:panelGrid>
+
+				<hr />
+
+				<center>
+
+					<p:commandButton value="Salvar" icon="ui-icon-check"
+						oncomplete="PF('dlgNovoImposto').hide();"
+						action="#{tituloPagarController.addNaListImpostos()}"
+						update="formNovoImposto, :grwgeral"></p:commandButton>
+
+					<p:commandButton value="Cancelar" style="margin-left:5px;"
+						onclick="PF('dlgNovoImposto').hide();" icon="ui-icon-closethick"></p:commandButton>
+
+				</center>
+			</h:form>
+
+		</p:dialog>
+		
+		<p:dialog responsive="true"    header="Editar Dados" widgetVar="dlgEditRet" resizable="false" draggable="false"
+			modal="true" width="800" height="500">
+			<h:form id="formEdit">
+				<p:growl id="msgEdit"/>
+					<p:tabView id="tbViewEdit" style="height:400px">
+	
+                        <p:tab title="Documento" id="tabDados">
+                        	
+                        		<p:panelGrid columns="4" styleClass="semBorda">
+
+							<h:outputText value="Documento"></h:outputText>
+							<p:inputText
+								value="#{tituloPagarController.rowBean.duplicata}"/>
+								
+															<h:outputText value="Parcela"></h:outputText>
+							<p:inputText size="10"
+								value="#{tituloPagarController.rowBean.parcela}" required="true" requiredMessage="Informe a parcela" maxlength="2"/>
+								
+						<h:outputText value="Tipo Doc."></h:outputText>
+
+							<p:selectOneMenu
+								value="#{tituloPagarController.rowBean.tipoDocumento.codtipodocumento}" required="true" 
+								requiredMessage="Informe o tipo de documento"
+								style="width:130px;">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems
+									value="#{tituloPagarController.listTipDoc()}"
+									itemValue="#{x.codtipodocumento}" var="x" itemLabel="#{x.descricao}" />
+	
+							</p:selectOneMenu>
+								<h:outputText value="Nota Fiscal"></h:outputText>
+
+							<p:inputText maxlength="10"
+								value="#{tituloPagarController.rowBean.notaFiscal}"></p:inputText>
+</p:panelGrid>
+
+<p:panelGrid styleClass="semBorda" columns="3">
+	                        			
+	                        			<p:outputLabel value="Fornecedor"/>
+	                        			<p:commandButton icon="ui-icon-search"
+										onclick="PF('dlgFA').show();"/>
+	                        			<p:inputText readonly="true" value="#{tituloPagarController.rowBean.forn.nome}" required="true" style="width:250px" requiredMessage="Informe o fornecedor."/>
+	                        			
+	                        			
+	               					</p:panelGrid>
+	               					
+	               					                                     	
+                        	<p:panelGrid columns="4" id="pnlInsert" styleClass="semBorda">
+
+
+							<h:outputText value="Data Emissão"></h:outputText>
+<p:calendar
+								value="#{tituloPagarController.rowBean.dtemissao}"
+								pattern="dd/MM/yyyy" required="true" requiredMessage="Informe a data de Emissão." 
+								showOn="button" locale="pt"/>
+							
+
+
+								<h:outputText value="Competência"></h:outputText>
+							<p:inputMask value="#{tituloPagarController.rowBean.dtcompete}" mask="99/9999"></p:inputMask>
+
+
+						</p:panelGrid>
+                        	
+                        
+                        		
+                        		
+                        		<p:outputPanel>
+	                        		<p:panelGrid styleClass="semBorda" columns="4">
+	                        			
+	                        				<p:outputLabel value="Centro de Custo"/>
+                   					<p:selectOneMenu value="#{tituloPagarController.rowBean.ccusto.idccusto}" required="true" 
+										requiredMessage="Informe o centro de custo"
+										style="width:230px;">
+										<f:selectItem itemLabel="Selecione"/>
+										<f:selectItems value="#{tituloPagarController.listCentroCusto()}"
+										itemValue="#{x.idccusto}" var="x" itemLabel="#{x.descricao}" />
+									</p:selectOneMenu>
+									<p:outputLabel value="Despesa"/>
+                        			
+                        			<p:selectOneMenu
+										value="#{tituloPagarController.rowBean.despesa.id}" required="true"
+										requiredMessage="Informe a despesa."
+										style="width:230px;">
+										<f:selectItems value="#{tituloPagarController.listDepesas()}"
+											itemValue="#{x.id}" var="x" itemLabel="#{x.descricao}" />
+									</p:selectOneMenu>
+									
+	                        			
+	               					</p:panelGrid>
+               					</p:outputPanel>
+               					
+               					  					 	               					               					 
+               					 <p:panelGrid columns="3" styleClass="semBorda">
+               					 <p:outputLabel value="Portador"/>
+	                      					<p:commandButton icon="ui-icon-search"
+										onclick="PF('dlgPA').show();"/>
+	                   					<p:inputText readonly="true" value="#{tituloPagarController.rowBean.portador.descricao}" required="true" style="width:300px;" requiredMessage="Informe o portador."/>
+                        			
+                        			</p:panelGrid>
+                        			
+                        			<p:panelGrid columns="4" styleClass="semBorda">
+
+<h:outputText value="Vencimento"></h:outputText>
+
+							<p:calendar
+								value="#{tituloPagarController.rowBean.dtvcto}"
+								pattern="dd/MM/yyyy" required="true" requiredMessage="Informe a data de vencimento." 
+								showOn="button" locale="pt"/>
+<h:outputText value="Previsão Pagamento"></h:outputText>
+
+							<p:calendar
+								value="#{tituloPagarController.rowBean.dtprevisao}"
+								pattern="dd/MM/yyyy" required="false" requiredMessage="Informe a data de vencimento." 
+								showOn="button" locale="pt"/>
+
+
+							
+
+							</p:panelGrid>
+								<p:panelGrid columns="2" styleClass="semBorda">
+<p:outputLabel value="Histórico"/>
+<p:inputTextarea value="#{tituloPagarController.rowBean.historico}" cols="60" rows="2"/>
+</p:panelGrid>
+									                        			
+                        			<p:panelGrid columns="4" styleClass="semBorda">
+                        		
+                        			
+                       			
+                        			
+                        			
+                        			
+									<p:outputLabel value="Valor"/>
+																			<pe:inputNumber decimalPlaces="2" symbol="R$ " emptyValue="0" 
+								value="#{tituloPagarController.rowBean.valor}"
+								 thousandSeparator="." decimalSeparator="," required="true" requiredMessage="Informe o valor.">
+										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal" process="@this"/>
+									</pe:inputNumber>
+									<p:outputLabel value="Desconto"/>
+																			<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+								value="#{tituloPagarController.rowBean.desconto}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
+										</pe:inputNumber>
+									
+									<p:outputLabel value="Juros"/>
+										<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+								value="#{tituloPagarController.rowBean.juros}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+
+										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
+</pe:inputNumber>									
+									
+									<p:outputLabel value="Multa"/>
+									<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+								value="#{tituloPagarController.rowBean.multa}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
+
+</pe:inputNumber>
+									
+									<p:outputLabel value="ICMS St."/>
+									<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+								value="#{tituloPagarController.rowBean.icmsst}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+
+</pe:inputNumber>									
+										
+                        			
+                        			
+                        			
+                        			<p:outputPanel>
+	                        			<center>
+	                        				<p:outputLabel value="Total: R$ #{tituloPagarController.valorTotalEdit()}" id="valorTotal" >
+	                        					<f:convertNumber type="currency"  currencySymbol="R$"/>
+	                        				</p:outputLabel>
+	                        			</center>
+                        			</p:outputPanel>
+                        		</p:panelGrid>
+                        	                        		
+                        	
+                        </p:tab>
+                        
+                        <p:tab title="Retenção" id="tabRet">
+                        	<p:commandButton value="Incluir Nova" icon="ui-icon-plus" onclick="PF('dlgNovaRetencaoAlt').show();"/>
+                        	
+                        		<p:dataTable value="#{tituloPagarController.lstImpostosAlt}" var="x"
+                        		paginator="true" id="tabRetAlt" emptyMessage="Nenhum imposto.">
+                        		
+                        			<p:column headerText="Imposto">
+                        				<p:outputLabel value="#{x.descImposto}"/>
+                        			</p:column>
+                        			
+                        			<p:column headerText="%Retenção">
+                        				<p:outputLabel value="#{x.pcRentencao}"/>
+                        			</p:column>
+                        			
+                        			<p:column headerText="Base(R$)">
+                        				<p:outputLabel value="#{x.valorBase}"/>
+                        			</p:column>
+                        			
+                        			<p:column headerText="Ações">
+                        				<center>
+	                        				<p:commandButton icon="ui-icon-pencil" onclick="PF('dlgAltRetencao').show();">                        					
+	                        					<f:setPropertyActionListener value="#{x}" target="#{tituloPagarController.rowBeanImposto}" />
+	                        				</p:commandButton>                        				
+	                        				
+	                        				<p:commandButton icon="ui-icon-trash" action="#{tituloPagarController.removerRetencaoAlt()}"
+	                        				update="formEdit" process="@this">
+	                        					<f:setPropertyActionListener value="#{x}" target="#{tituloPagarController.rowBeanImposto}"/>
+	                        				</p:commandButton>
+                        				</center>
+                        			</p:column>
+                        				
+                        		</p:dataTable>
+                        </p:tab>
+					</p:tabView>
+					<center>
+						<p:commandButton value="Salvar" icon="ui-icon-check" style="margin-top:50px"
+							update=":grwgeral" actionListener="#{tituloPagarController.editar()}"/>
+	
+						<p:commandButton value="Cancelar" onclick="PF('dlgEditRet').hide();"
+							style="margin-left:5px;" icon="ui-icon-closethick" />					
+					</center>
+			</h:form>
+		
+		</p:dialog>
+		
+		<p:dialog responsive="true"    header="Editar Retenção" widgetVar="dlgAltRetencao">
+
+			<h:form id="formAltRet">
+
+				<p:outputPanel>
+					<p:panelGrid columns="2" styleClass="semBorda"
+						style="margin-top:10px;">
+						<p:outputLabel value="Retenção">
+                                <font color="#FF0000">*</font>
+                            </p:outputLabel>
+						<p:selectOneMenu value="#{tituloPagarController.rowBeanImposto.descImposto}" 
+                                required="true" requiredMessage="Informe o tipo da retenção.">
+
+                                <f:selectItems value="#{tituloPagarController.tipoImposto}"
+                                    var="ip" itemLabel="#{ip.descricao}" itemValue="#{ip.descricao}" />
+                            </p:selectOneMenu>
+
+						<h:outputText value="(%)Retenção" />
+						<p:inputText
+							value="#{tituloPagarController.rowBeanImposto.pcRentencao}" required="true"
+							requiredMessage="Informe o valor da retenção.">
+						</p:inputText>
+
+						<h:outputText value="(%)Base" />
+						<p:inputText
+							value="#{tituloPagarController.rowBeanImposto.valorBase}"
+							required="true"
+							requiredMessage="Informe o valor da retenção."></p:inputText>
+					</p:panelGrid>
+
+					<hr />
+
+					<center>
+
+						<p:commandButton value="Salvar" icon="ui-icon-check"
+							action="#{tituloPagarController.alterarRetencaoAlt()}" 
+							update=":formEdit:tbViewEdit:tabRetAlt, formAltRet"/>
+
+						<p:commandButton value="Cancelar" style="margin-left:5px;"
+							onclick="PF('dlgAltRetencao').hide();" icon="ui-icon-closethick"></p:commandButton>
+
+					</center>
+
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog responsive="true"    header="Novo" widgetVar="dlgNovaRetencaoAlt" modal="true">
+
+			<h:form id="formRetencaoAlt">
+
+				<p:panelGrid columns="2" styleClass="semBorda"
+					style="margin-top:10px;">
+
+					<h:outputText value="Imposto" />
+					<p:selectOneMenu
+						value="#{tituloPagarController.rowBeanImposto.descImposto}">
+
+						<f:selectItems value="#{tituloPagarController.tipoImposto}" var="x"
+							itemLabel="#{x.descricao}" itemValue="#{x.descricao}" />
+					</p:selectOneMenu>
+
+					<h:outputText value="(%)Retenção" />
+					<p:inputText value="#{tituloPagarController.rowBeanImposto.pcRentencao}" required="true"
+							requiredMessage="Informe o valor da retenção."> 
+					</p:inputText>
+
+					<h:outputText value="(%)Base" />
+					<p:inputText value="#{tituloPagarController.rowBeanImposto.valorBase}" required="true"
+							requiredMessage="Informe o valor da retenção." />
+				</p:panelGrid>
+
+				<hr />
+
+				<center>
+
+					<p:commandButton value="Salvar" icon="ui-icon-check"
+						oncomplete="PF('dlgNovaRetencaoAlt').hide();"
+						action="#{tituloPagarController.addNaListImpostosAlt()}"
+						update=":formEdit, :formRetencaoAlt" />
+
+					<p:commandButton value="Cancelar" style="margin-left:5px;"
+						onclick="PF('dlgNovaRetencaoAlt').hide();" icon="ui-icon-closethick" />
+
+				</center>
+			</h:form>
+
+		</p:dialog>
+		
+		<p:dialog responsive="true"    id="mpFBusca" widgetVar="dlgFBusca" modal="true" resizable="false"
+	height="370" width="750">
+
+	<f:facet name="header">
+		<h:outputText value="Lista de Fornecedores" />
+	</f:facet>
+	<h:form id="frminterFBusca">
+
+
+		<p:panelGrid columns="5" styleClass="semBorda">
+
+			<h:outputText style="font-size: 14px;" value="Nome " />
+			<p:inputText style="width: 250px; font-size: 14px;" size="30"
+			value="#{tituloPagarController.fornecedorBean.nome}" />
+			
+
+			<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+                        <p:inputMask mask="" style="width: 120px; font-size: 14px;" size="30"	
+						value="#{tituloPagarController.fornecedorBean.cnpj}" />
+
+			<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+				action="#{tituloPagarController.buscaFornecedor()}"
+				update="outinteressadosF">
+			</p:commandButton>
+
+
+		</p:panelGrid>
+		<p:outputPanel id="outinteressadosF">
+
+			<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+				paginatorPosition="bottom"
+				value="#{tituloPagarController.lstFornecedor}" var="cliente"
+				paginator="true" rows="7">
+				<p:column width="40">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Código" />
+					</f:facet>
+					<h:outputText value="#{cliente.codforn}"></h:outputText>
+				</p:column>
+				<p:column width="200">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="Nome" />
+					</f:facet>
+
+					<h:outputText value="#{cliente.nome}">
+					</h:outputText>
+				</p:column>
+				<p:column width="80" style="text-align:center;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					</f:facet>
+					<h:outputText value="#{cliente.cnpj}" />
+
+				</p:column>
+
+				<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+					<center>
+						<f:facet name="header">
+							<h:outputText style="font-size: 14px; text-align: center; "
+								value="Ação" />
+						</f:facet>
+					</center>
+
+					<center>
+
+						<p:commandButton style="font-size: 12px;"
+							 value="Confirmar"
+							oncomplete="PF('dlgFBusca').hide();" icon="ui-icon-check" update=":formInsert:msg">
+
+							<f:setPropertyActionListener value="#{cliente}"
+								target="#{tituloPagarController.buscaPagar.fornecedor}"></f:setPropertyActionListener>
+
+						</p:commandButton>
+
+					</center>
+
+				</p:column>
+
+			</p:dataTable>
+
+
+		</p:outputPanel>
+
+
+
+		<br />
+
+	</h:form>
+</p:dialog>
+
+		<!-- Repetir Ultimo Registro -->
+
+		<p:dialog responsive="true"    header="Último Registro" widgetVar="dlgRepetir" resizable="false" draggable="false"
+			modal="true" width="800" height="500">
+			<h:form id="formRep">
+				<p:growl id="msgEdit"/>
+					<p:tabView id="tbViewEdit" style="height:400px">
+	
+                        <p:tab title="Documento" id="tabDados">
+                        	
+                        		<p:panelGrid columns="4" styleClass="semBorda">
+
+							<h:outputText value="Documento"></h:outputText>
+							<p:inputText
+								value="#{tituloPagarController.documentoParcelas}/#{tituloPagarController.parcelas}" disabled="true"/>
+								
+															<h:outputText value="Parcela"></h:outputText>
+							<p:inputText size="10"
+								value="#{tituloPagarController.parcelas}" required="true" requiredMessage="Informe a parcela" maxlength="2"/>
+								
+						<h:outputText value="Tipo Doc."></h:outputText>
+
+							<p:selectOneMenu
+								value="#{tituloPagarController.rowBean.tipoDocumento.codtipodocumento}" required="true" 
+								requiredMessage="Informe o tipo de documento"
+								style="width:130px;">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems
+									value="#{tituloPagarController.listTipDoc()}"
+									itemValue="#{x.codtipodocumento}" var="x" itemLabel="#{x.descricao}" />
+	
+							</p:selectOneMenu>
+								<h:outputText value="Nota Fiscal"></h:outputText>
+
+							<p:inputText maxlength="10"
+								value="#{tituloPagarController.rowBean.notaFiscal}"></p:inputText>
+</p:panelGrid>
+
+<p:panelGrid styleClass="semBorda" columns="3">
+	                        			
+	                        			<p:outputLabel value="Fornecedor"/>
+	                        			<p:commandButton icon="ui-icon-search"
+										onclick="PF('dlgFA').show();"/>
+	                        			<p:inputText readonly="true" value="#{tituloPagarController.rowBean.forn.nome}" required="true" style="width:250px" requiredMessage="Informe o fornecedor."/>
+	                        			
+	                        			
+	               					</p:panelGrid>
+	               					
+	               					                                     	
+                        	<p:panelGrid columns="4" id="pnlInsert" styleClass="semBorda">
+
+
+							<h:outputText value="Data Emissão"></h:outputText>
+<p:calendar
+								value="#{tituloPagarController.rowBean.dtemissao}"
+								pattern="dd/MM/yyyy" required="true" requiredMessage="Informe a data de Emissão." 
+								showOn="button" locale="pt"/>
+							
+
+
+								<h:outputText value="Competência"></h:outputText>
+							<p:inputMask value="#{tituloPagarController.rowBean.dtcompete}" mask="99/9999" disabled="true"></p:inputMask>
+
+
+						</p:panelGrid>
+                        	
+                        
+                        		
+                        		
+                        		<p:outputPanel>
+	                        		<p:panelGrid styleClass="semBorda" columns="4">
+	                        			
+	                        				<p:outputLabel value="Centro de Custo"/>
+                   					<p:selectOneMenu value="#{tituloPagarController.rowBean.ccusto.idccusto}" required="true" 
+										requiredMessage="Informe o centro de custo"
+										style="width:230px;">
+										<f:selectItem itemLabel="Selecione"/>
+										<f:selectItems value="#{tituloPagarController.listCentroCusto()}"
+										itemValue="#{x.idccusto}" var="x" itemLabel="#{x.descricao}" />
+									</p:selectOneMenu>
+									<p:outputLabel value="Despesa"/>
+                        			
+                        			<p:selectOneMenu
+										value="#{tituloPagarController.rowBean.despesa.id}" required="true"
+										requiredMessage="Informe a despesa."
+										style="width:230px;">
+										<f:selectItems value="#{tituloPagarController.listDepesas()}"
+											itemValue="#{x.id}" var="x" itemLabel="#{x.descricao}" />
+									</p:selectOneMenu>
+									
+	                        			
+	               					</p:panelGrid>
+               					</p:outputPanel>
+               					
+               					  					 	               					               					 
+               					 <p:panelGrid columns="3" styleClass="semBorda">
+               					 <p:outputLabel value="Portador"/>
+	                      					<p:commandButton icon="ui-icon-search"
+										onclick="PF('dlgPA').show();"/>
+	                   					<p:inputText readonly="true" value="#{tituloPagarController.rowBean.portador.descricao}" required="true" style="width:300px;" requiredMessage="Informe o portador."/>
+                        			
+                        			</p:panelGrid>
+                        			
+                        			<p:panelGrid columns="4" styleClass="semBorda">
+
+						<h:outputText value="Vencimento"></h:outputText>
+
+							<p:calendar
+								value="#{tituloPagarController.rowBean.dtvcto}"
+								pattern="dd/MM/yyyy" required="true" requiredMessage="Informe a data de vencimento." 
+								showOn="button" locale="pt"/>
+<h:outputText value="Previsão Pagamento"></h:outputText>
+
+							<p:calendar
+								value="#{tituloPagarController.rowBean.dtprevisao}"
+								pattern="dd/MM/yyyy" required="false" requiredMessage="Informe a data de vencimento." 
+								showOn="button" locale="pt"/>
+
+
+							
+
+							</p:panelGrid>
+								<p:panelGrid columns="2" styleClass="semBorda">
+<p:outputLabel value="Histórico"/>
+<p:inputTextarea value="#{tituloPagarController.rowBean.historico}" cols="60" rows="2"/>
+</p:panelGrid>
+									                        			
+                        			<p:panelGrid columns="4" styleClass="semBorda">
+                        		
+                        			
+                       			
+                        			
+                        			
+                        			
+									<p:outputLabel value="Valor"/>
+																			<pe:inputNumber decimalPlaces="2" symbol="R$ " emptyValue="0" 
+								value="#{tituloPagarController.rowBean.valor}"
+								 thousandSeparator="." decimalSeparator="," required="true" requiredMessage="Informe o valor.">
+										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal" process="@this"/>
+									</pe:inputNumber>
+									<p:outputLabel value="Desconto"/>
+																			<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+								value="#{tituloPagarController.rowBean.desconto}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
+										</pe:inputNumber>
+									
+									<p:outputLabel value="Juros"/>
+										<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+								value="#{tituloPagarController.rowBean.juros}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+
+										<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
+</pe:inputNumber>									
+									
+									<p:outputLabel value="Multa"/>
+									<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+								value="#{tituloPagarController.rowBean.multa}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+<p:ajax listener="#{tituloPagarController.valorTotalEdit()}" update="valorTotal"/>
+
+</pe:inputNumber>
+									
+									<p:outputLabel value="ICMS St."/>
+									<pe:inputNumber decimalPlaces="2" symbol="R$ " required="false" emptyValue="0" 
+								value="#{tituloPagarController.rowBean.icmsst}"
+								requiredMessage="Valor Obrigatório" thousandSeparator="." decimalSeparator=",">
+
+</pe:inputNumber>									
+										
+                        			
+                        			
+                        			
+                        			<p:outputPanel>
+	                        			<center>
+	                        				<p:outputLabel value="Total: R$ #{tituloPagarController.valorTotalEdit()}" id="valorTotal" >
+	                        					<f:convertNumber type="currency"  currencySymbol="R$"/>
+	                        				</p:outputLabel>
+	                        			</center>
+                        			</p:outputPanel>
+                        		</p:panelGrid>
+                        	                        		
+                        	
+                        </p:tab>
+                        
+                        <p:tab title="Retenção" id="tabRet">
+                        	<p:commandButton value="Incluir Nova" icon="ui-icon-plus" onclick="PF('dlgNovaRetencaoAlt').show();"/>
+                        	
+                        		<p:dataTable value="#{tituloPagarController.lstImpostosAlt}" var="x"
+                        		paginator="true" id="tabRetAlt" emptyMessage="Nenhum imposto.">
+                        		
+                        			<p:column headerText="Imposto">
+                        				<p:outputLabel value="#{x.descImposto}"/>
+                        			</p:column>
+                        			
+                        			<p:column headerText="%Retenção">
+                        				<p:outputLabel value="#{x.pcRentencao}"/>
+                        			</p:column>
+                        			
+                        			<p:column headerText="Base(R$)">
+                        				<p:outputLabel value="#{x.valorBase}"/>
+                        			</p:column>
+                        			
+                        			<p:column headerText="Ações">
+                        				<center>
+	                        				<p:commandButton icon="ui-icon-pencil" onclick="PF('dlgAltRetencao').show();">                        					
+	                        					<f:setPropertyActionListener value="#{x}" target="#{tituloPagarController.rowBeanImposto}" />
+	                        				</p:commandButton>                        				
+	                        				
+	                        				<p:commandButton icon="ui-icon-trash" action="#{tituloPagarController.removerRetencaoAlt()}"
+	                        				update="formRep" process="@this">
+	                        					<f:setPropertyActionListener value="#{x}" target="#{tituloPagarController.rowBeanImposto}"/>
+	                        				</p:commandButton>
+                        				</center>
+                        			</p:column>
+                        				
+                        		</p:dataTable>
+                        </p:tab>
+					</p:tabView>
+					<center>
+						<p:commandButton value="Salvar" icon="ui-icon-check" style="margin-top:50px"
+							update=":grwgeral, formRep"  actionListener="#{tituloPagarController.replicarDocumentoPagar()}"/>
+	
+						<p:commandButton value="Cancelar" onclick="PF('dlgRepetir').hide();"
+							style="margin-left:5px;" icon="ui-icon-closethick" />					
+					</center>
+			</h:form>
+		
+		</p:dialog>
+		
+
+
+		<ui:include src="/pages/financeiro/buscaClienteFinanceiro.xhtml"></ui:include>
+
+		<ui:include src="/pages/financeiro/buscaFornecedorFinanceiro.xhtml"></ui:include>
+
+		<ui:include src="/pages/financeiro/buscaPortadorFinanceiro.xhtml"></ui:include>
+
+	</ui:define>
+
+
+</ui:composition>
+</html>

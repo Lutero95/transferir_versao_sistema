@@ -1,0 +1,2481 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<h:head>
+	<style>
+* {
+	font-size: 14px !important;
+}
+</style>
+
+</h:head>
+
+<ui:composition template="../../template/templategeral.xhtml">
+
+	<ui:define name="body">
+
+		<h:form id="formPrincipal">
+			<p:messages id="msg" />
+			<p:growl id="growl" showDetail="false" />
+
+			<h3 style="font-size: 22px; font-weight: bold">Gerenciamento
+				de Documentos a Receber</h3>
+				
+			<p:panel id="pnlAnte" header="Filtro">
+
+				<div class="row">
+					<div class="col-md-4">
+					<p:panelGrid columns="4" styleClass="semBorda">
+						<h:outputText value="Periodo:" style="font-weight:bold;" />
+						<p:calendar id="button"
+							value="#{financeiroController.antecipaBean.dataEmissao}" size="8"
+							pattern="dd/MM/yyyy" showOn="button" />
+						<h:outputText value="a" style="margin-left: 5px" />
+						<p:calendar
+							value="#{financeiroController.antecipaBean.dataRecebimento}"
+							style="margin-left: 5px" size="8" pattern="dd/MM/yyyy"
+							showOn="button" />
+					 </p:panelGrid>
+					</div>
+					<div class="col-md-3">
+						<p:panelGrid columns="6" styleClass="semBorda" id="pnl">
+							<h:outputText value="Situação" style="font-weight:bold;" />
+
+							<p:selectOneRadio
+								value="#{financeiroController.antecipaBean.situacao}"
+								columns="3" tabindex="0">
+								<f:selectItem itemLabel="Todos" itemValue="T" />
+								<f:selectItem itemLabel="Em Aberto" itemValue="A" />
+								<f:selectItem itemLabel="Quitados" itemValue="F" />
+							</p:selectOneRadio>
+						</p:panelGrid>
+					</div>
+					<div class="col-md-4">
+						<p:panelGrid columns="2" styleClass="semBorda" id="pn2">
+							<h:outputText value="Tipo Documento: " style="font-weight:bold;" />
+
+							<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+								style="width:250px" required="false"
+								requiredMessage="Tipo do documento obrigatório"
+								value="#{financeiroController.antecipaBean.tipo.codtipodocumento}">
+
+								<f:selectItem itemLabel="Selecione um item" itemValue="#{0}" />
+								<f:selectItems value="#{tipoDocumentoController.lstTipoDocs()}"
+									var="doc" itemLabel="#{doc.descricao}"
+									itemValue="#{doc.codtipodocumento}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="col-md-4">
+						<p:panelGrid columns="4" styleClass="semBorda">
+	
+							<h:outputText value="Documento:" style="font-weight:bold;" />
+							<p:inputText size="10"
+								value="#{financeiroController.antecipaBean.tipoDoc}" />
+		
+							<h:outputText value="Codigo: " style="font-weight:bold;" />
+							<p:inputText size="10"
+								value="#{financeiroController.antecipaBean.codigo}" />
+	
+						</p:panelGrid>
+					</div>
+					<div class="col-md-4">
+						<p:panelGrid columns="5" styleClass="semBorda" id="pn3">
+	
+							<h:outputText value="Cliente" style="font-weight:bold;"></h:outputText>
+							<p:commandButton icon="ui-icon-search"
+								onclick="PF('dlgBuscaClienteAnti').show();" />
+							
+							 <p:autoComplete value="#{financeiroController.antecipaBean.cliente}" size="30"
+  								completeMethod="#{buscaController.completeBuscaCliente}" var="theme"
+  								forceSelection="true" itemValue="#{theme}" itemLabel="#{theme.nome}" converter="conCliente" >
+  							 	 <p:ajax event="itemSelect" listener="#{buscaController.onItemSelectCliente}" />
+  							  	</p:autoComplete>
+							
+		
+		
+							<p:commandButton value="Buscar" icon="ui-icon-search"
+								update=":formPrincipal:dt, :formPrincipal:growl"
+								action="#{financeiroController.buscarFinanceiro()}" />
+		
+							<p:commandButton value="Limpar" icon="ui-icon-search"
+								update=":formPrincipal:pnlAnte"
+								action="#{financeiroController.limparBuscaAntecipar()}" />
+					  </p:panelGrid>
+
+					</div>
+				
+				</div>
+
+
+				
+				
+			</p:panel>
+
+			<p:panelGrid columns="6" styleClass="semBorda"
+				style="margin-left:8px;">
+
+				<p:outputPanel autoUpdate="true">
+					<!-- <p:commandButton value="Novo" icon="ui-icon-plus"
+                            onclick="PF('dlgNovo').show();" 
+                            actionListener="#{financeiroController.limparDados()}" 
+                            update=":formInsert:tbview:pnlInsert, :formInsert:tbview:tabelaCadImp" 
+                            disabled="#{MBUsuarios.verificarPermComp('FC-18', MBUsuarios.sistemaLogado.id) == false}"/>
+					   -->
+					<p:commandButton icon="ui-icon-pencil" title="editar"
+						value="Editar"
+						actionListener="#{financeiroController.limparDadosRetAlt()}"
+						update=":formEdit:tbViewEdit:pnlEdit, :formEdit:tbViewEdit:tabelaAltImp"
+						onclick="PF('dlgEdit').show();"
+						disabled="#{financeiroController.rowBean.idFinanceiro == null 
+                                or financeiroController.rowBean.idFinanceiro == 0 
+                                or financeiroController.rowBean.status == 'F' or MBUsuarios.verificarPermComp('FC-19', MBUsuarios.sistemaLogado.id) == false}" />
+
+					<p:commandButton icon="ui-icon-circle-arrow-s" title="Baixa"
+						actionListener="#{financeiroController.limparDadosBaixa()}"
+						action="#{financeiroController.calculaValoresBaixa()}"
+						update=":formBaixa:tbView:pnlDados ,:formBaixa:tbView:pnlLiquida, 
+                            :formBaixa:tbView:tabelaImpBaixa :grwgeral"
+						value="Baixa"
+						disabled="#{financeiroController.rowBean.idFinanceiro == null 
+                                or financeiroController.rowBean.idFinanceiro == 0 
+                                or financeiroController.rowBean.status == 'F' or MBUsuarios.verificarPermComp('FC-20', MBUsuarios.sistemaLogado.id) == false}"
+						process="@this,:formBaixa" />
+
+					<p:splitButton value="Negociação" disabled="false">
+
+						<p:menuitem value="Normal" onclick="PF('dlgNegociar').show();" />
+						<p:menuitem value="Especial" onclick="PF('dlgNegociar2').show();" />
+
+					</p:splitButton>
+
+					<!-- #{MBUsuarios.verificarPermComp('FC-21', MBUsuarios.sistemaLogado.id) == false} -->
+
+					<p:commandButton icon="ui-icon-pencil" title="editar"
+						value="Antecipação"
+						update=":formAnte:pnlAnte,
+                                         :formAnte:datatable, :formAnte:dtAntecipaAberto"
+						onclick="PF('dlgAtencipacao').show();"
+						actionListener="#{financeiroController.limparDadosAntecipacao()}"
+						disabled="false" />
+
+					<!-- #{MBUsuarios.verificarPermComp('FC-22', MBUsuarios.sistemaLogado.id) == false} -->
+				</p:outputPanel>
+			</p:panelGrid>
+			
+			<p:dataTable value="#{financeiroController.todosAReceber()}"
+				var="tir" paginatorAlwaysVisible="true" paginator="true"
+				paginatorPosition="bottom" id="dt" rows="9" selectionMode="single"
+				selection="#{financeiroController.rowBean}"  lazy="true"
+				rowKey="#{tir.idFinanceiro}" style="margin-top:10px;">
+
+
+				<f:facet name="header">
+
+                        Lista de Documentos a receber
+
+                    </f:facet>
+				
+				<p:ajax event="rowSelect"
+					update=":formPrincipal:tbView, :formPrincipal:barBaixa"
+					listener="#{financeiroController.onRowSelect}">
+
+				</p:ajax>
+		
+
+				<p:column headerText="Cód" style="width:4%;">
+
+					<center>
+						<h:outputText value="#{tir.idFinanceiro}"></h:outputText>
+					</center>
+
+				</p:column>
+
+				<p:column headerText="Cliente" style="width:25%;">
+					<h:outputText value="#{tir.cliente.nome}"></h:outputText>
+
+				</p:column>
+				<p:column headerText="Portador">
+
+					<h:outputText value="#{tir.portador.descricao}"></h:outputText>
+
+				</p:column>
+
+				<p:column headerText="Emissão" style="text-align:right;width:10%;">
+					<h:outputText value="#{tir.dataEmissao}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+				</p:column>
+
+				<p:column headerText="Vencimento"
+					style="text-align:right;width:10%;">
+					<h:outputText value="#{tir.vencimento}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+				</p:column>
+
+
+				<p:column headerText="Valor em Aberto" style="text-align:right;">
+
+					<h:outputText value="R$ #{tir.valoraberto}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+
+				</p:column>
+
+				<p:column headerText="Valor" style="text-align:right;">
+
+					<h:outputText value="R$ #{tir.valor}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+
+				</p:column>
+
+				<p:column headerText="Desconto" style="text-align:right;">
+
+					<h:outputText value="R$ #{tir.desconto}">
+						<f:convertNumber type="currency" />
+					</h:outputText>
+
+				</p:column>
+
+				<p:column headerText="Status" style="text-align:center;width:5%;">
+					<center>
+						<h:outputText value="Aberto" rendered="#{tir.status == 'A'}" />
+						<h:outputText value="Finalizado" rendered="#{tir.status == 'AN'}" />
+						<h:outputText value="Finalizado" rendered="#{tir.status == 'F'}" />
+						<h:outputText value="Negociado" rendered="#{tir.status == 'NG'}" />
+						<h:outputText value="Desativado" rendered="#{tir.status == 'N'}" />
+					</center>
+				</p:column>
+
+
+
+			</p:dataTable>
+		
+
+			<p:notificationBar position="bottom" effect="slide" styleClass="top"
+				widgetVar="bar" id="barBaixa" 
+				style="height:  200px; min-height: 200px; background: rgba(81, 81, 81, 0.94) !important ">
+				
+				  <p:commandButton onclick="PF('bar').hide()" type="button" icon="ui-icon-close"
+					 style="left: 96%; height: 20px; width: 20px; position: fixed;" />
+								 
+				
+				<p:outputPanel id="tbView">		
+				
+				 <div class="container" style="width: 95%;">
+				 
+				 
+					<p:dataTable value="#{financeiroController.lstBaixa}"
+						var="tabbaixa" emptyMessage="Nenhuma baixa cadastrada"
+						paginator="false" paginatorPosition="bottom" scrollable="true" scrollHeight="100"
+						style="margin-bottom:60px">
+
+						<f:facet name="header">
+                                Lista de baixas
+                            </f:facet>
+
+						<p:column headerText="Tipo Baixa" style="text-align:left;">
+							<h:outputText value="Total"
+								rendered="#{tabbaixa.tipoBaixaString == '1'}" />
+							<h:outputText value="Parcial"
+								rendered="#{tabbaixa.tipoBaixaString == '2'}" />
+						</p:column>
+
+						<p:column headerText="Valor Baixa" width="10%"
+							style="text-align:right;">
+							<h:outputText value="#{tabbaixa.valorBaixado}">
+								<f:convertNumber type="currency" currencySymbol="R$" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Desconto" width="10%"
+							style="text-align:right;">
+							<h:outputText value="#{tabbaixa.desconto}">
+								<f:convertNumber type="currency" currencySymbol="R$" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Juros" width="10%" style="text-align:right;">
+							<h:outputText value="#{tabbaixa.juros}">
+								<f:convertNumber type="currency" currencySymbol="R$" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Multa" width="10%" style="text-align:right;">
+							<h:outputText value="#{tabbaixa.multa}">
+								<f:convertNumber type="currency" currencySymbol="R$" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Valor Atual" width="10%"
+							style="text-align:right;">
+							<h:outputText value="#{tabbaixa.valorAtual - tabbaixa.valorBaixado - tabbaixa.desconto}">
+								<f:convertNumber type="currency" currencySymbol="R$" />
+							</h:outputText>
+						</p:column>
+					</p:dataTable>
+				  </div>
+				</p:outputPanel>
+
+			</p:notificationBar>
+
+
+		</h:form>
+
+		<p:dialog responsive="true"    header="Antecipação" widgetVar="dlgAtencipacao" modal="true"
+			width="1200" height="530" resizable="false">
+
+			<h:form id="formAnte">
+
+				<p:panel id="pnlAnte" header="Filtro">
+
+					<p:panelGrid columns="6" styleClass="semBorda" id="pnl">
+
+						<h:outputText value="Periodo" style="font-weight:bold;" />
+						<p:calendar showOn="button"
+							value="#{financeiroController.antecipaBean.dataIniFiltro}"
+							pattern="dd/MM/yyyy" locale="pt" required="true"
+							requiredMessage="Informe o período inicial.">
+
+						</p:calendar>
+
+						<h:outputText value="a" style="font-weight:bold;" />
+						<p:calendar showOn="button"
+							value="#{financeiroController.antecipaBean.dataFimFiltro}"
+							pattern="dd/MM/yyyy" locale="pt" required="true"
+							requiredMessage="Informe o período final.">
+
+						</p:calendar>
+
+						<h:outputText value="Período referente a:"
+							style="font-weight:bold;" />
+						<p:selectOneRadio
+							value="#{financeiroController.antecipaBean.dataRef}">
+
+							<f:selectItem itemLabel="Vencimento" itemValue="V" />
+							<f:selectItem itemLabel="Emissão" itemValue="E" />
+						</p:selectOneRadio>
+
+					</p:panelGrid>
+					<p:panelGrid columns="4" styleClass="semBorda" id="pn2">
+
+
+						<h:outputText value="Tipo Documento: " style="font-weight:bold;" />
+
+						<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+							style="width:250px" required="true"
+							requiredMessage="Tipo do documento obrigatório"
+							value="#{financeiroController.antecipaBean.tipo.codtipodocumento}">
+
+							<f:selectItem itemLabel="Selecione um item" />
+							<f:selectItems value="#{tipoDocumentoController.lstTipoDocs()}"
+								var="doc" itemLabel="#{doc.descricao}"
+								itemValue="#{doc.codtipodocumento}" />
+						</p:selectOneMenu>
+
+
+
+					</p:panelGrid>
+					<p:panelGrid columns="4" styleClass="semBorda" id="pn3">
+
+						<h:outputText value="Cliente" style="font-weight:bold;"></h:outputText>
+						
+						<p:commandButton icon="ui-icon-search" process="@this"
+                                                 style="margin-right:3px;" onclick="PF('dlgBuscaClienteAnti').show();"></p:commandButton>
+						
+						 <p:autoComplete value="#{financeiroController.antecipaBean.cliente}" size="30"
+  								completeMethod="#{buscaController.completeBuscaCliente}" var="theme"
+  								forceSelection="true" itemValue="#{theme}" itemLabel="#{theme.nome}" converter="conCliente" >
+  							 	 <p:ajax event="itemSelect" listener="#{buscaController.onItemSelectCliente}" />
+  							  	</p:autoComplete>
+  						
+
+						<p:commandButton value="Buscar" icon="ui-icon-search"
+							update=":formAnte:dtAntecipaAberto, :formPrincipal:growl"
+							action="#{financeiroController.buscarTitulosAntecipar()}" />
+
+						<p:commandButton value="Limpar" icon="ui-icon-search"
+							update=":formAnte:dtAntecipaAberto, :formAnte:pnlAnte"
+							action="#{financeiroController.limparBuscaAntecipar()}" />
+
+
+
+					</p:panelGrid>
+				</p:panel>
+
+
+				<p:dataTable value="#{financeiroController.lstAntecipaAberto}"
+					var="x" paginatorAlwaysVisible="true" paginator="true"
+					paginatorPosition="bottom" id="dtAntecipaAberto" rows="3"
+					style="margin-top:20px;" emptyMessage="Nenhum título em aberto.">
+
+					<f:facet name="header">
+
+                            Títulos em aberto
+
+                        </f:facet>
+
+
+					<p:column headerText="Cód." width="8%">
+
+						<center>
+							<h:outputText value="#{x.idFinanceiro}"></h:outputText>
+						</center>
+
+					</p:column>
+
+					<p:column headerText="Cliente" width="20%">
+						<h:outputText value="#{x.cliente.nome}"></h:outputText>
+
+					</p:column>
+					<p:column headerText="Portador" width="20%">
+
+						<h:outputText value="#{x.portador.descricao}"></h:outputText>
+
+					</p:column>
+
+					<p:column headerText="Emissão" width="7%">
+						<h:outputText value="#{x.dataEmissao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Valor" style="text-align:right;" width="12%">
+
+						<h:outputText value="R$ #{x.valoraberto}"></h:outputText>
+
+					</p:column>
+
+					
+
+					<p:column headerText="Status" width="8%">
+						<center>
+
+							<h:outputText value="Em aberto" rendered="#{x.status == 'A'}" />
+							<h:outputText value="erro" rendered="#{x.status != 'A'}" />
+
+						</center>
+					</p:column>
+
+					<p:column width="6%">
+						<center>
+							<p:commandButton icon="ui-icon-plus" title="incluir"
+								update=":formAnte:datatable, :formAnte:dtAntecipaAberto, :formPrincipal:growl"
+								action="#{financeiroController.addTituloAntecipar()}">
+
+								<f:setPropertyActionListener value="#{x}"
+									target="#{financeiroController.tituloAntecipa}" />
+
+								<f:setPropertyActionListener value="#{x}"
+									target="#{financeiroController.rowBeanAntecipar}" />
+
+							</p:commandButton>
+
+
+						</center>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<p:dataTable value="#{financeiroController.lstTitulosAntecipar}"
+					var="x" paginatorAlwaysVisible="true" paginator="true"
+					id="datatable" paginatorPosition="bottom" rows="3"
+					selectionMode="single" selection="#{financeiroController.rowBean}"
+					rowKey="#{x.idFinanceiro}" style="margin-top:20px;"
+					emptyMessage="Nenhum título para antecipar.">
+
+
+					<f:facet name="header">
+
+                            Títulos a Antecipar
+
+                        </f:facet>
+
+					<p:ajax event="rowSelect" update=":formPrincipal:tbView"
+						listener="#{financeiroController.onRowSelect}" />
+
+					<p:column headerText="Cód." width="8%">
+
+						<center>
+							<h:outputText value="#{x.idFinanceiro}"></h:outputText>
+						</center>
+
+					</p:column>
+
+					<p:column headerText="Cliente" width="20%">
+						<h:outputText value="#{x.cliente.nome}"></h:outputText>
+
+					</p:column>
+					<p:column headerText="Portador" width="20%">
+
+						<h:outputText value="#{x.portador.descricao}"></h:outputText>
+
+					</p:column>
+
+					<p:column headerText="Emissão" width="7%">
+						<h:outputText value="#{x.dataEmissao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+					</p:column>
+
+					<p:column headerText="Valor" style="text-align:right;" width="12%">
+
+						<h:outputText value="R$ #{x.valoraberto}"></h:outputText>
+
+					</p:column>
+
+
+					<p:column headerText="Status" width="8%">
+						<center>
+
+							<h:outputText value="Em aberto" rendered="#{x.status == 'A'}" />
+							<h:outputText value="erro" rendered="#{x.status != 'A'}" />
+
+						</center>
+					</p:column>
+
+					<p:column width="6%">
+
+						<center>
+
+							<p:commandButton icon="ui-icon-trash"
+								update=":formAnte:datatable, :formAnte:dtAntecipaAberto, :formPrincipal:growl"
+								action="#{financeiroController.removeAntecipa()}">
+
+								<f:setPropertyActionListener value="#{x}"
+									target="#{financeiroController.tituloAntecipa}" />
+
+								<f:setPropertyActionListener value="#{x}"
+									target="#{financeiroController.rowBeanAntecipar}" />
+
+							</p:commandButton>
+
+						</center>
+					</p:column>
+
+				</p:dataTable>
+
+				<hr />
+
+				<p:outputPanel autoUpdate="true" id="outPanel"
+					style="margin-top:10px !important;">
+					<p:panelGrid columns="2" styleClass="semBorda" id="panelVlr">
+						<h:outputText value="Total Principal "
+							style="font-weight:bold;color:blue;font-size:18px;"></h:outputText>
+						<h:outputText value="R$ #{financeiroController.valorTotal()}"
+							style="font-weight:bold;color:blue;font-size:18px;"></h:outputText>
+
+					</p:panelGrid>
+				</p:outputPanel>
+
+				<center>
+					<p:outputPanel autoUpdate="true">
+						<p:commandButton value="Confirmar" icon="ui-icon-check"
+							onclick="PF('dlgDadosAntecipacao').show();"
+							action="#{financeiroController.valorAntecipado()}"
+							update=":formDadosAntecipacao"
+							disabled="#{financeiroController.rowBean.idFinanceiro == 0 or financeiroController.rowBean.idFinanceiro == null}">
+						</p:commandButton>
+
+						<p:commandButton value="Cancelar" icon="ui-icon-closethick"
+							action="#{financeiroController.limparAntecipa()}"
+							onclick="PF('dlgAtencipacao').hide();" style="margin-left:5px;" />
+					</p:outputPanel>
+				</center>
+			</h:form>
+		</p:dialog>
+
+
+
+
+
+		<p:dialog responsive="true"    header="Dados da Antecipação"
+			widgetVar="dlgDadosAntecipacao" modal="true" width="800" height="350"
+			resizable="false">
+
+			<h:form id="formDadosAntecipacao">
+
+				<p:growl id="msgDadosAntecipacao" />
+
+				<p:tabView id="tbViewDadosAntecipacao">
+
+					<p:tab title="Baixa">
+
+						<p:panel header="Dados do Documento" id="pnlDados">
+
+							<p:panelGrid columns="2" styleClass="semBorda">
+
+								<h:outputText value="CLIENTE" style="font-weight:bold;" />
+								<h:outputText
+									value="#{financeiroController.rowBean.cliente.nome}" />
+								<!--  
+                                    <h:outputText value="PORTADOR" style="font-weight:bold;" />
+                                    <h:outputText value="#{financeiroController.rowBean.portador.descricao}" />
+
+                                    <h:outputText value="TIPO DOC." style="font-weight:bold;" />
+                                    <h:outputText value="#{financeiroController.rowBean.tipoDocumento.descricao}" />
+
+                                    <h:outputText value="VALOR TÍTULO" style="font-weight:bold;" />
+                                    <h:outputText value="#{financeiroController.rowBean.valor}">
+                                        <f:convertNumber type="currency" currencySymbol="R$ " 
+                                            minFractionDigits="2" maxFractionDigits="2" />
+                                    </h:outputText>
+
+                                    <h:outputText value="VENCIMENTO" style="font-weight:bold;" />
+                                    <h:outputText value="#{financeiroController.rowBean.vencimento}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+								-->
+							</p:panelGrid>
+
+						</p:panel>
+
+						<p:panel id="pnlLiquida">
+							<p:outputPanel autoUpdate="false" id="outPanel">
+								<p:panelGrid columns="4" styleClass="semBorda">
+
+									<h:outputText value="Data de Emissão" style="font-weight:bold;" />
+									<p:calendar showOn="button"
+										value="#{financeiroController.antecipaBean.dataEmissao}"
+										pattern="dd/MM/yyyy" required="true"
+										requiredMessage="Informe a data de recebimento." />
+
+									<h:outputText value="Data de Recebimento"
+										style="font-weight:bold;" />
+									<p:calendar showOn="button"
+										value="#{financeiroController.antecipaBean.dataRecebimento}"
+										pattern="dd/MM/yyyy" required="true"
+										requiredMessage="Informe a data de recebimento." />
+
+
+
+									<h:outputText value="Conta Bancária" style="font-weight:bold;" />
+									<p:selectOneMenu
+										value="#{financeiroController.antecipaBean.banco.id}"
+										required="true" requiredMessage="Informe a conta bancária.">
+
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItems
+											value="#{financeiroController.lstBancosTotal()}" var="cb"
+											itemLabel="#{cb.descricao}" itemValue="#{cb.id}" />
+									</p:selectOneMenu>
+
+
+
+									<h:outputText value="Valor Antecipado"
+										style="font-weight:bold;" />
+									<h:outputText
+										value="R$ #{financeiroController.antecipaBean.valorAntecipado}"
+										id="valor" />
+
+
+									<h:outputText value="(-)Encargos" style="font-weight:bold;" />
+									<pe:inputNumber minValue="0"
+										value="#{financeiroController.antecipaBean.encargos}"
+										required="true"
+										requiredMessage="Informe o valor a ser baixado.">
+										<p:ajax update="liquido"
+											listener="#{financeiroController.totalLiquidoAntecipa()}"></p:ajax>
+									</pe:inputNumber>
+
+
+									<h:outputText value="Liquido a Receber"
+										style="font-weight:bold;" />
+									<h:outputText
+										value="R$ #{financeiroController.antecipaBean.liquidoReceber}"
+										id="liquido" />
+
+								</p:panelGrid>
+								<p:panelGrid columns="3" styleClass="semBorda">
+									<h:outputText value="Fornecedor"></h:outputText>
+									<p:commandButton icon="ui-icon-search"
+										onclick="PF('dlgFBusca').show();"></p:commandButton>
+
+									<p:inputText readonly="true"
+										value="#{financeiroController.antecipaBean.fornecedor.nome}"
+										id="forn" style="width:250px;"></p:inputText>
+									<h:inputHidden
+										value="#{financeiroController.antecipaBean.fornecedor.codforn}"
+										required="true" requiredMessage="Informe o Fornecedor" />
+								</p:panelGrid>
+							</p:outputPanel>
+
+						</p:panel>
+					</p:tab>
+				</p:tabView>
+
+				<center>
+
+					<br />
+
+					<p:commandButton value="Salvar" icon="ui-icon-check"
+						update=":formPrincipal:growl, :formPrincipal:dt"
+						action="#{financeiroController.salvarAntecipacao()}"
+						style="margin-right:3px;" />
+
+					<p:commandButton value="Cancelar" icon="ui-icon-closethick"
+						update=":formPrincipal:dt, :formPrincipal"
+						action="#{financeiroController.limparDadosAntecipa}"
+						onclick="PF('dlgDadosAntecipacao').hide();" process="@this" />
+
+				</center>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true"    id="mpFBusca" widgetVar="dlgFBusca" modal="true"
+			resizable="false" height="370" width="750">
+
+			<f:facet name="header">
+				<h:outputText value="Lista de Fornecedores" />
+			</f:facet>
+			<h:form id="frminterFBusca">
+
+
+				<p:panelGrid columns="5" styleClass="semBorda">
+
+					<h:outputText style="font-size: 14px;" value="Nome " />
+					<p:autoComplete value="#{tituloPagarController.fornecedorBean.nome}" 
+  					  completeMethod="#{buscaController.completeBuscaFornecedor}" size="30"/>
+
+					<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+					<p:inputMask mask="" style="width: 120px; font-size: 14px;"
+						size="30" value="#{tituloPagarController.fornecedorBean.cnpj}" />
+
+					<p:commandButton style="font-size: 14px" icon="ui-icon-search"
+						action="#{tituloPagarController.buscaFornecedor()}"
+						update="outinteressadosF">
+					</p:commandButton>
+
+
+				</p:panelGrid>
+				<p:outputPanel id="outinteressadosF">
+
+					<p:dataTable emptyMessage="Sem Dados" style="font-size: 12px; "
+						paginatorPosition="bottom"
+						value="#{tituloPagarController.lstFornecedor}" var="cliente"
+						paginator="true" rows="7">
+						<p:column width="40">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Código" />
+							</f:facet>
+							<h:outputText value="#{cliente.codforn}"></h:outputText>
+						</p:column>
+						<p:column width="200">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Nome" />
+							</f:facet>
+
+							<h:outputText value="#{cliente.nome}">
+							</h:outputText>
+						</p:column>
+						<p:column width="80" style="text-align:center;">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="CPF/CNPJ" />
+							</f:facet>
+							<h:outputText value="#{cliente.cnpj}" />
+
+						</p:column>
+
+						<p:column width="90" style="margin: 0 -10 0 -10 !important;">
+							<center>
+								<f:facet name="header">
+									<h:outputText style="font-size: 14px; text-align: center; "
+										value="Ação" />
+								</f:facet>
+							</center>
+
+							<center>
+
+								<p:commandButton style="font-size: 12px;" value="Confirmar"
+									update=":formDadosAntecipacao"
+									oncomplete="PF('dlgFBusca').hide();" icon="ui-icon-check">
+
+									<f:setPropertyActionListener value="#{cliente.codforn}"
+										target="#{financeiroController.antecipaBean.fornecedor.codforn}"></f:setPropertyActionListener>
+
+									<f:setPropertyActionListener value="#{cliente.nome}"
+										target="#{financeiroController.antecipaBean.fornecedor.nome}"></f:setPropertyActionListener>
+
+								</p:commandButton>
+
+							</center>
+
+						</p:column>
+
+					</p:dataTable>
+
+
+				</p:outputPanel>
+
+
+
+				<br />
+
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true"    header="Títulos em Atraso" widgetVar="dlgTitulos"
+			width="800" modal="true">
+
+			<h:form id="formTitulo">
+
+
+				<p:dataTable value="#{financeiroController.lstReceberPorCliente}"
+					var="x" paginatorAlwaysVisible="true" paginator="true"
+					id="dtTituloge" paginatorPosition="bottom" rows="3"
+					style="margin-top:20px;">
+
+
+					<f:facet name="header">
+
+                            Títulos atrasados
+
+                        </f:facet>
+
+					<p:ajax event="rowSelect" update=":formPrincipal:tbView"
+						listener="#{financeiroController.onRowSelect}" />
+
+					<p:column headerText="Código" style="width:8%;">
+
+						<center>
+							<h:outputText value="#{x.idFinanceiro}"></h:outputText>
+						</center>
+
+					</p:column>
+
+					<p:column headerText="Cliente" style="width:20%;">
+						<center>
+						<h:outputText value="#{x.cliente.nome}"></h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Portador"	style="width:13%;">
+						<center>
+						<h:outputText value="#{x.portador.descricao}"></h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Emissão" style="text-align:center;width:13%;">
+						<center>
+						<h:outputText value="#{x.dataEmissao}">
+						<f:convertDateTime pattern="dd/MM/yyyy"></f:convertDateTime>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Valor" style="text-align:center;">
+						<center>
+						<h:outputText value="#{x.valor}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Desconto" style="text-align:center;">
+						<center>
+						<h:outputText value="#{x.desconto}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Status" style="text-align:center;width:10%;">
+						<center>
+
+							<h:outputText value="Ativo" rendered="#{x.status == 'S'}" />
+
+							<h:outputText value="Desativado" rendered="#{x.status == 'N'}" />
+
+						</center>
+					</p:column>
+
+					<p:column>
+
+						<center>
+
+							<p:commandButton icon="ui-icon-plus"
+								onclick="PF('dlgTitulos').hide();"
+								update=":formNego:dtAtencipar"
+								action="#{financeiroController.addListaAntecipar()}">
+
+								<f:setPropertyActionListener value="#{x}"
+									target="#{financeiroController.rowBeanAntecipar}" />
+
+							</p:commandButton>
+
+						</center>
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+		</p:dialog>
+		
+		
+		
+		
+		<p:dialog responsive="true"    header="Títulos em Aberto" widgetVar="dlgTitulos2"
+			width="800" modal="true">
+
+			<h:form id="formTitulo2">
+
+				<p:outputPanel autoUpdate="true">
+				<p:dataTable value="#{financeiroController.lstReceberPorCliente2}"
+					var="x" paginatorAlwaysVisible="true" paginator="true"
+					id="dtTituloge2" paginatorPosition="bottom" rows="3"
+					style="margin-top:20px;">
+
+
+					<f:facet name="header">
+
+                            Títulos abertos
+
+                        </f:facet>
+
+					<p:ajax event="rowSelect" update=":formPrincipal:tbView"
+						listener="#{financeiroController.onRowSelect}" />
+
+					<p:column headerText="Código" style="width:8%;">
+
+						<center>
+							<h:outputText value="#{x.idFinanceiro}"></h:outputText>
+						</center>
+
+					</p:column>
+
+					<p:column headerText="Cliente" style="width:20%;">
+						<center>
+						<h:outputText value="#{x.cliente.nome}"></h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Portador" style="width:13%;">
+						<center>
+						<h:outputText value="#{x.portador.descricao}"></h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Emissão" style="text-align:center;width:13%;">
+						<center>
+						<h:outputText value="#{x.dataEmissao}">
+						<f:convertDateTime pattern="dd/MM/yyyy"></f:convertDateTime>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Valor" style="text-align:center;">
+						<center>
+						<h:outputText value="#{x.valor}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Desconto" style="text-align:center;">
+						<center>
+						<h:outputText value="#{x.desconto}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Status" style="text-align:center;width:10%;">
+						<center>
+
+							<h:outputText value="Ativo" rendered="#{x.status == 'S'}" />
+
+							<h:outputText value="Desativado" rendered="#{x.status == 'N'}" />
+
+						</center>
+					</p:column>
+
+					<p:column>
+
+						<center>
+
+							<p:commandButton icon="ui-icon-plus"
+								onclick="PF('dlgTitulos2').hide();"
+								update=":formNego2:dtAtencipar2"
+								action="#{financeiroController.addListaAntecipar()}">
+
+								<f:setPropertyActionListener value="#{x}"
+									target="#{financeiroController.rowBeanAntecipar}" />
+
+							</p:commandButton>
+
+						</center>
+					</p:column>
+
+				</p:dataTable>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true"    header="Negociação" widgetVar="dlgNegociar" width="850"
+			modal="true" height="650">
+
+			<h:form id="formNego">
+
+
+
+				<p:growl id="msg" />
+
+				<p:panelGrid columns="7" styleClass="semBorda">
+
+					<h:outputText value="Cliente" style="font-weight:bold;"></h:outputText>
+
+					<p:commandButton icon="ui-icon-search"
+						onclick="PF('dlgNego').show();"></p:commandButton>
+
+					 <p:autoComplete value="#{financeiroController.negociarBean.cliente}" size="30"
+  								completeMethod="#{buscaController.completeBuscaCliente}" var="theme" required="true" requiredMessage="Informe o cliente"
+  								forceSelection="true" itemValue="#{theme}" itemLabel="#{theme.nome}" converter="conCliente" >
+  							 	 <p:ajax event="itemSelect" listener="#{buscaController.onItemSelectCliente}" />
+  							  	</p:autoComplete>
+					
+					
+
+
+					<h:outputText
+						value="#{financeiroController.negociarBean.cliente.codcliente}"></h:outputText>
+
+
+				</p:panelGrid>
+
+				<p:commandButton icon="ui-icon-plus" value="Incluir"
+					style="margin-top:10px;" update="msg,:formTitulo:dtTituloge"
+					action="#{financeiroController.validarFiltro()}"></p:commandButton>
+
+				<p:dataTable value="#{financeiroController.lstTitulosAntecipar}"
+					var="x" paginatorAlwaysVisible="true" paginator="true"
+					id="dtAtencipar" paginatorPosition="bottom" rows="4"
+					emptyMessage="Sem títulos no momento"
+					style="margin-top:10px;">
+
+					<f:facet name="header">
+
+                            Títulos a Antecipar
+
+                        </f:facet>
+
+					<p:column headerText="Código" style="width:10%;">
+
+						<center>
+							<h:outputText value="#{x.idFinanceiro}"></h:outputText>
+						</center>
+
+					</p:column>
+
+					<p:column headerText="Cliente" style="width:25%;">
+						<center>
+						<h:outputText value="#{x.cliente.nome}"></h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Portador" style="width:20%;">
+						<center>
+						<h:outputText value="#{x.portador.descricao}"></h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Emissão" style="text-align:cente;width:10%;">
+						<h:outputText value="#{x.dataEmissao}">
+						<f:convertDateTime pattern="dd/MM/yyyy"></f:convertDateTime>
+						</h:outputText>
+
+					</p:column>
+
+					<p:column headerText="Valor" style="text-align:cente;width:15%;">
+						<center>
+						<h:outputText value="#{x.valor}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Desconto" style="text-align:cente;width:10%;">
+						<center>
+						<h:outputText value="#{x.desconto}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Status" style="text-align:center;width:10%;">
+						<center>
+
+							<h:outputText value="Ativo" rendered="#{x.status == 'S'}" />
+
+							<h:outputText value="Desativado" rendered="#{x.status == 'N'}" />
+
+						</center>
+					</p:column>
+
+					<p:column>
+
+						<center>
+
+							<p:commandButton icon="ui-icon-trash"
+								update="dtAtencipar,:formNego:outPanel"
+								action="#{financeiroController.removeAntecipar()}">
+
+								<f:setPropertyActionListener value="#{x}"
+									target="#{financeiroController.rowBeanRemoveAntecipar}" />
+
+							</p:commandButton>
+
+						</center>
+					</p:column>
+
+				</p:dataTable>
+
+
+
+
+				<p:panelGrid columns="6" styleClass="semBorda"
+					style="margin-top:20px;">
+
+					<h:outputText value="Multa" style="font-weight:bold"></h:outputText>
+					<p:inputText value="#{financeiroController.negociarBean.multa}">
+
+						<p:ajax update="vlrMulta"
+							listener="#{financeiroController.calculaMulta()}"></p:ajax>
+					</p:inputText>
+
+					<h:outputText id="vlrMulta"
+						value="% #{financeiroController.calculaMulta()}"
+						style="color:red;" />
+					<h:outputText value="Juros" style="font-weight:bold"></h:outputText>
+					<p:inputText value="#{financeiroController.negociarBean.juros}">
+						<p:ajax update="vlrJuros"
+							listener="#{financeiroController.calculaJuros()}"></p:ajax>
+					</p:inputText>
+
+					<h:outputText id="vlrJuros"
+						value="R$ #{financeiroController.calculaJuros()}"
+						style="color:red;" />
+
+				</p:panelGrid>
+
+				<p:commandButton value="Incluir" style="margin-top:10px;"
+					icon="ui-icon-plus" onclick="PF('dlgLiquidacao').show();"></p:commandButton>
+
+				<p:dataTable value="#{financeiroController.lstLiquidacao}" var="x"
+					paginatorAlwaysVisible="true" paginator="true" id="dtLiquidacao"
+					emptyMessage="Sem dados no momento"
+					paginatorPosition="bottom" rows="3" style="margin-top:10px;">
+
+					<f:facet name="header">
+                            Liquidação
+                        </f:facet>
+
+					<p:column headerText="Cliente" style="width:44%;">
+						<center>
+						<h:outputText value="#{x.cliente.nome}"></h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Valor" style="width:13%;">
+						<center>
+						<h:outputText value="#{x.valor}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Desconto" style="width:13%;">
+						<center>
+						<h:outputText value="#{x.desconto}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Status" style="width:10%;">
+						<center>
+
+							<h:outputText value="Ativo" rendered="#{x.status == 'S'}" />
+
+							<h:outputText value="Desativado" rendered="#{x.status == 'N'}" />
+
+						</center>
+					</p:column>
+
+					<p:column>
+
+						<center>
+
+							<p:commandButton icon="ui-icon-trash"></p:commandButton>
+
+						</center>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:outputPanel autoUpdate="true" id="outPanel"
+					style="margin-top:10px !important;">
+					<p:panelGrid columns="4" styleClass="semBorda" id="panelVlr">
+						<h:outputText value="Total Principal "
+							style="font-weight:bold;color:blue;font-size:18px;"></h:outputText>
+						<h:outputText value="R$ #{financeiroController.valorTotal()}"
+							style="font-weight:bold;color:blue;font-size:18px;"></h:outputText>
+
+						<h:outputText value="Total a Pagar"
+							style="font-weight:bold;color:red;font-size:18px;float:right;"></h:outputText>
+						<h:outputText
+							value="R$ #{financeiroController.valorTotalLiquidacao()}"
+							style="font-weight:bold;color:red;font-size:18px;float:right;"></h:outputText>
+
+					</p:panelGrid>
+				</p:outputPanel>
+
+
+
+				<hr />
+				<p:growl id="msgNego"></p:growl>
+				<center>
+
+					<p:commandButton value="Salvar" icon="ui-icon-check"
+						update="msgNego"
+						action="#{financeiroController.salvarNegociacao()}"></p:commandButton>
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgNegociar').hide();" style="margin-left:5px;"
+						icon="ui-icon-closethick"></p:commandButton>
+
+				</center>
+
+
+
+			</h:form>
+
+		</p:dialog>
+		
+		<!-- Argemiro Negociação especial -->
+		<p:dialog responsive="true"    header="Negociação Especial" widgetVar="dlgNegociar2" width="850"
+			modal="true" height="650">
+
+			<h:form id="formNego2">
+
+
+
+				<p:growl id="msg2" />
+
+				<p:panelGrid columns="7" styleClass="semBorda">
+
+					<h:outputText value="Cliente" style="font-weight:bold;"></h:outputText>
+
+					<p:commandButton icon="ui-icon-search"
+						onclick="PF('dlgNego2').show();"></p:commandButton>
+
+					 <p:autoComplete value="#{financeiroController.negociarBean.cliente}" size="30"
+  								completeMethod="#{buscaController.completeBuscaCliente}" var="theme" required="true" requiredMessage="Informe o cliente"
+  								forceSelection="true" itemValue="#{theme}" itemLabel="#{theme.nome}" converter="conCliente" >
+  							 	 <p:ajax event="itemSelect" listener="#{buscaController.onItemSelectCliente}" />
+  							  	</p:autoComplete>
+
+
+					<h:outputText
+						value="#{financeiroController.negociarBean.cliente.codcliente}"></h:outputText>
+
+
+				</p:panelGrid>
+
+				<p:commandButton icon="ui-icon-plus" value="Incluir"
+					style="margin-top:10px;" update="msg2,:formTitulo:dtTituloge"
+					action="#{financeiroController.validarFiltro2()}"></p:commandButton>
+
+				<p:dataTable value="#{financeiroController.lstTitulosAntecipar}"
+					var="x" paginatorAlwaysVisible="true" paginator="true"
+					id="dtAtencipar2" paginatorPosition="bottom" rows="4"
+					emptyMessage="Sem títulos no momento"
+					style="margin-top:10px;">
+
+					<f:facet name="header">
+
+                            Títulos a Anteciparb
+
+                        </f:facet>
+
+					<p:column headerText="Código" style="width:10%;">
+
+						<center>
+							<h:outputText value="#{x.idFinanceiro}"></h:outputText>
+						</center>
+
+					</p:column>
+
+					<p:column headerText="Cliente" style="width:25%;">
+						<center>
+						<h:outputText value="#{x.cliente.nome}"></h:outputText>
+						</center>
+					</p:column>
+					<p:column headerText="Portador" style="width:20%;">
+						<center>
+						<h:outputText value="#{x.portador.descricao}"></h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Emissão" style="text-align:center;width:10%;">
+						<h:outputText value="#{x.dataEmissao}"></h:outputText>
+
+					</p:column>
+
+					<p:column headerText="Valor" style="text-align:center;width:10%;">
+				
+						<h:outputText value="R$ #{x.valor}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+
+					</p:column>
+
+					<p:column headerText="Desconto" style="text-align:center;width:10%;">
+
+						<h:outputText value="R$ #{x.desconto}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+
+					</p:column>
+
+					<p:column headerText="Status" style="text-align:center;width:10%;">
+						<center>
+
+							<h:outputText value="Ativo" rendered="#{x.status == 'S'}" />
+
+							<h:outputText value="Desativado" rendered="#{x.status == 'N'}" />
+
+						</center>
+					</p:column>
+
+					<p:column>
+
+						<center>
+
+							<p:commandButton icon="ui-icon-trash"
+								update="dtAtencipar2,:formNego2:outPanel2"
+								action="#{financeiroController.removeAntecipar()}">
+
+								<f:setPropertyActionListener value="#{x}"
+									target="#{financeiroController.rowBeanRemoveAntecipar}" />
+
+							</p:commandButton>
+
+						</center>
+					</p:column>
+
+				</p:dataTable>
+
+
+
+
+				<p:panelGrid columns="6" styleClass="semBorda"
+					style="margin-top:20px;">
+
+					<h:outputText value="Multa" style="font-weight:bold"></h:outputText>
+					<p:inputText value="#{financeiroController.negociarBean.multa}">
+
+						<p:ajax update="vlrMulta"
+							listener="#{financeiroController.calculaMulta()}"></p:ajax>
+					</p:inputText>
+
+					<h:outputText id="vlrMulta"
+						value="% #{financeiroController.calculaMulta()}"
+						style="color:red;" />
+					<h:outputText value="Juros" style="font-weight:bold"></h:outputText>
+					<p:inputText value="#{financeiroController.negociarBean.juros}">
+						<p:ajax update="vlrJuros"
+							listener="#{financeiroController.calculaJuros()}"></p:ajax>
+					</p:inputText>
+
+					<h:outputText id="vlrJuros"
+						value="R$ #{financeiroController.calculaJuros()}"
+						style="color:red;" />
+
+				</p:panelGrid>
+
+				<p:commandButton value="Incluir" style="margin-top:10px;"
+					icon="ui-icon-plus" onclick="PF('dlgLiquidacao2').show();"></p:commandButton>
+
+				<p:outputPanel autoUpdate="true">
+
+				<p:dataTable value="#{financeiroController.lstLiquidacao}" var="x"
+					paginatorAlwaysVisible="true" paginator="true" id="dtLiquidacao"
+					emptyMessage="Sem dados no momento"
+					paginatorPosition="bottom" rows="3" style="margin-top:10px;">
+
+					<f:facet name="header">
+                            Liquidação
+                        </f:facet>
+
+					<p:column headerText="Cliente" style="width:44%;">
+					<center>
+						<h:outputText value="#{x.cliente.nome}"></h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Valor" style="width:13%;">
+						<center>
+						<h:outputText value="#{x.valor}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Desconto" style="width:13%;">
+						<center>
+						<h:outputText value="#{x.desconto}">
+						<f:convertNumber type="currency"/>
+						</h:outputText>
+						</center>
+					</p:column>
+
+					<p:column headerText="Status" width="15">
+						<center>
+
+							<h:outputText value="Ativo" rendered="#{x.status == 'S'}" />
+
+							<h:outputText value="Desativado" rendered="#{x.status == 'N'}" />
+
+						</center>
+					</p:column>
+
+					<p:column style="width:15%;">
+
+						<center>
+
+							<p:commandButton icon="ui-icon-trash"></p:commandButton>
+
+						</center>
+					</p:column>
+
+				</p:dataTable>
+				</p:outputPanel>
+				
+				<p:outputPanel autoUpdate="true" id="outPanel2"
+					style="margin-top:10px !important;">
+					<p:panelGrid columns="4" styleClass="semBorda" id="panelVlr2">
+						<h:outputText value="Total Principal "
+							style="font-weight:bold;color:blue;font-size:18px;"></h:outputText>
+						<h:outputText value="R$ #{financeiroController.valorTotal()}"
+							style="font-weight:bold;color:blue;font-size:18px;"></h:outputText>
+
+						<h:outputText value="Total a Pagar"
+							style="font-weight:bold;color:red;font-size:18px;float:right;"></h:outputText>
+						<h:outputText
+							value="R$ #{financeiroController.valorTotalLiquidacao()}"
+							style="font-weight:bold;color:red;font-size:18px;float:right;"></h:outputText>
+
+					</p:panelGrid>
+				</p:outputPanel>
+
+
+
+				<hr />
+				<p:growl id="msgNego2"></p:growl>
+				<center>
+
+					<p:commandButton value="Salvar" icon="ui-icon-check"
+						update="msgNego2"
+						action="#{financeiroController.salvarNegociacao()}"></p:commandButton>
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgNegociar2').hide();" style="margin-left:5px;"
+						icon="ui-icon-closethick"></p:commandButton>
+
+				</center>
+
+
+
+			</h:form>
+
+		</p:dialog>
+		
+
+		<p:dialog responsive="true"    header="Novo" widgetVar="dlgLiquidacao" height="150"
+			modal="true">
+
+			<h:form>
+
+				<p:growl id="msg" />
+
+				<p:panelGrid columns="4">
+
+					<h:outputText value="Portador" />
+					<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+						required="true" requiredMessage="Portador Obrigatório"
+						value="#{financeiroController.novoTituloLiquidacao.portador.codportador}">
+
+						<f:selectItem itemLabel="Selecione um item"></f:selectItem>
+						<f:selectItems value="#{financeiroController.lstPortador()}"
+							var="x" itemLabel="#{x.descricao}" itemValue="#{x.codportador}"></f:selectItems>
+
+
+					</p:selectOneMenu>
+
+					<h:outputText value="Tipo Documento"></h:outputText>
+
+					<p:selectOneMenu var="x" disabled="true">
+
+						<f:selectItem itemLabel="Selecione um item"></f:selectItem>
+
+					</p:selectOneMenu>
+
+					<h:outputText value="Valor " />
+					<p:inputText
+						value="#{financeiroController.novoTituloLiquidacao.valor}" />
+					<h:outputText value="Vencimento" />
+					<p:calendar showOn="button"
+						value="#{financeiroController.novoTituloLiquidacao.vencimento}"></p:calendar>
+
+				</p:panelGrid>
+
+				<hr />
+				<center>
+					<p:commandButton value="Salvar" icon="ui-icon-check"
+						update=":formNego:dtLiquidacao,msg"
+						action="#{financeiroController.addListaLiquidacao()}"></p:commandButton>
+					<p:commandButton value="Cancelar" style="margin-left:5px;"
+						onclick="PF('dlgLiquidacao').hide();" icon="ui-icon-closethick"></p:commandButton>
+
+				</center>
+
+
+			</h:form>
+
+
+
+
+		</p:dialog>
+		
+		
+		
+		<p:dialog responsive="true"    header="Novo" widgetVar="dlgLiquidacao2" height="150"
+			modal="true">
+
+			<h:form>
+
+				<p:growl id="msg2" />
+
+				<p:panelGrid columns="4">
+
+					<h:outputText value="Portador" />
+					<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+						required="true" requiredMessage="Portador Obrigatório"
+						value="#{financeiroController.novoTituloLiquidacao.portador.codportador}">
+
+						<f:selectItem itemLabel="Selecione um item"></f:selectItem>
+						<f:selectItems value="#{financeiroController.lstPortador()}"
+							var="x" itemLabel="#{x.descricao}" itemValue="#{x.codportador}"></f:selectItems>
+
+
+					</p:selectOneMenu>
+
+					<h:outputText value="Tipo Documento"></h:outputText>
+
+					<p:selectOneMenu var="x" disabled="true">
+
+						<f:selectItem itemLabel="Selecione um item"></f:selectItem>
+
+					</p:selectOneMenu>
+
+					<h:outputText value="Valor " />
+					<p:inputText
+						value="#{financeiroController.novoTituloLiquidacao.valor}" />
+					<h:outputText value="Vencimento" />
+					<p:calendar showOn="button"
+						value="#{financeiroController.novoTituloLiquidacao.vencimento}"></p:calendar>
+
+				</p:panelGrid>
+
+				<hr />
+				<center>
+					<p:commandButton value="Salvar" icon="ui-icon-check"
+						update=":formNego2:msg2"
+						action="#{financeiroController.addListaLiquidacao2()}"></p:commandButton>
+					<p:commandButton value="Cancelar" style="margin-left:5px;"
+						onclick="PF('dlgLiquidacao2').hide();" icon="ui-icon-closethick"></p:commandButton>
+
+				</center>
+
+
+			</h:form>
+
+
+
+
+		</p:dialog>
+		
+
+		<p:dialog responsive="true"    header="Baixa de Documentos" widgetVar="dlgBaixa"
+			modal="true" width="800" height="455" resizable="false">
+
+			<h:form id="formBaixa">
+
+				<p:growl id="msgBaixa" />
+
+				<p:tabView id="tbView">
+
+					<p:tab title="Baixa">
+
+						<p:panel header="Dados do Documento" id="pnlDados">
+
+							<p:panelGrid columns="4" styleClass="semBorda">
+
+								<h:outputText value="CLIENTE" style="font-weight:bold;" />
+								<h:outputText
+									value="#{financeiroController.rowBean.cliente.nome}" />
+
+								<h:outputText value="PORTADOR" style="font-weight:bold;" />
+								<h:outputText
+									value="#{financeiroController.rowBean.portador.descricao}" />
+
+								<h:outputText value="TIPO DOC." style="font-weight:bold;" />
+								<h:outputText
+									value="#{financeiroController.rowBean.tipoDocumento.descricao}" />
+
+								<h:outputText value="VALOR TÍTULO" style="font-weight:bold;" />
+								<h:outputText value="#{financeiroController.rowBean.valor}">
+									<f:convertNumber type="currency" currencySymbol="R$ "
+										minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+
+								<h:outputText value="VENCIMENTO" style="font-weight:bold;" />
+								<h:outputText value="#{financeiroController.rowBean.vencimento}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+
+							</p:panelGrid>
+
+						</p:panel>
+
+						<p:panel id="pnlLiquida">
+
+							<p:outputPanel autoUpdate="true">
+								<p:panelGrid columns="4" styleClass="semBorda">
+
+
+									<h:outputText value="Tipo Baixa" style="font-weight:bold;" />
+
+									<p:selectOneMenu
+										value="#{financeiroController.baixaReceber.tipoBaixaString}"
+										required="true" requiredMessage="Informe o tipo da baixa.">
+										<p:ajax
+											listener="#{financeiroController.calcularTotalParcial()}"
+											update=":formBaixa" />
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItem itemLabel="Total" itemValue="1" />
+										<f:selectItem itemLabel="Parcial" itemValue="2" />
+										
+
+									</p:selectOneMenu>
+
+									<h:outputText value="Juros" style="font-weight:bold;" />
+
+									<p:outputPanel autoUpdate="true">
+										<pe:inputNumber decimalPlaces="2" symbol="R$ "
+											thousandSeparator="." decimalSeparator=","
+											value="#{financeiroController.baixaReceber.juros}">
+											<p:ajax
+												listener="#{financeiroController.calculaValoresBaixa()}" />
+										</pe:inputNumber>
+									</p:outputPanel>
+
+									<h:outputText value="Data de Recebimento"
+										style="font-weight:bold;" />
+
+									<p:calendar showOn="button"
+										value="#{financeiroController.baixaReceber.dtRecebimento}"
+										pattern="dd/MM/yyyy" required="true"
+										requiredMessage="Informe a data de recebimento." />
+
+
+									<h:outputText value="Multa" style="font-weight:bold;" />
+
+
+
+
+									<pe:inputNumber decimalPlaces="2" symbol="R$ "
+										thousandSeparator="." decimalSeparator=","
+										value="#{financeiroController.baixaReceber.multa}">
+
+										<p:ajax
+											listener="#{financeiroController.calculaValoresBaixa()}" />
+									</pe:inputNumber>
+
+
+									<h:outputText value="Forma da Baixa" style="font-weight:bold;" />
+
+									<p:selectOneMenu
+										value="#{financeiroController.baixaReceber.formaBaixa}"
+										required="true" requiredMessage="Informe a forma da baixa.">
+
+										<!--  <f:selectItem itemLabel="Selecione" itemValue="" />-->
+										<f:selectItem itemLabel="Dinheiro" itemValue="1" />
+										<f:selectItem itemLabel="Cheque" itemValue="2" />
+										<f:selectItem itemLabel="Cartão" itemValue="3" />
+										<f:selectItem itemLabel="Sem Movimento" itemValue="4" />
+									</p:selectOneMenu>
+
+									<h:outputText value="Valor Recebido" style="font-weight:bold;" />
+
+									<p:outputLabel
+										value="#{financeiroController.baixaReceber.valorRecebido}"
+										required="false" requiredMessage="Informe o valor recebido."
+										readonly="true">
+
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</p:outputLabel>
+
+									<h:outputText value="Conta Bancária" style="font-weight:bold;" />
+
+									<p:selectOneMenu
+										value="#{financeiroController.baixaReceber.banco.id}"
+										required="true" requiredMessage="Informe a conta bancária.">
+
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItems
+											value="#{financeiroController.lstBancosTotal()}" var="cb"
+											itemLabel="#{cb.descricao}" itemValue="#{cb.id}" />
+									</p:selectOneMenu>
+
+									<h:outputText value="Valor Atual" style="font-weight:bold;" />
+
+
+									<p:outputLabel
+										value="#{financeiroController.baixaReceber.valorAtual}"
+										>
+
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</p:outputLabel>
+
+
+									<h:outputText value="Retenção" style="font-weight:bold;" />
+
+									<p:outputLabel
+										value="#{financeiroController.baixaReceber.valorRetencao}"
+										>
+
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</p:outputLabel>
+
+									<h:outputText value="Valor Em Aberto" style="font-weight:bold;" />
+
+
+									<p:outputLabel
+										value="#{financeiroController.baixaReceber.valorEmAberto}"
+										readonly="true">
+
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</p:outputLabel>
+
+
+									<h:outputText value="Desconto" style="font-weight:bold;" />
+
+									<pe:inputNumber decimalPlaces="2" symbol="R$ "
+										thousandSeparator="." decimalSeparator=","
+										value="#{financeiroController.baixaReceber.desconto}">
+
+										<p:ajax
+											listener="#{financeiroController.calculaValoresBaixa()}" />
+									</pe:inputNumber>
+
+									<h:outputText value="Valor Baixa" style="font-weight:bold;" />
+									<pe:inputNumber decimalPlaces="2" symbol="R$ "
+										thousandSeparator="." decimalSeparator=","
+										value="#{financeiroController.baixaReceber.valorBaixado}"
+										readonly="#{financeiroController.totalDisable}">
+
+										<p:ajax
+											listener="#{financeiroController.calculaValoresBaixa()}" />
+									</pe:inputNumber>
+
+
+
+									<!--  <h:outputText value="Valor Baixa" style="font-weight:bold;" />
+
+                                    <p:inputText value="#{financeiroController.baixaReceber.valorBaixado}" 
+                                                 required="true" requiredMessage="Informe o valor a ser baixado." >
+                                                      <f:convertNumber type="currency" currencySymbol="R$" />
+                                    </p:inputText>-->
+								</p:panelGrid>
+							</p:outputPanel>
+						</p:panel>
+					</p:tab>
+
+					<p:tab title="Retenção">
+
+						<p:dataTable value="#{financeiroController.listaRetencoesBaixa}"
+							var="ret" paginatorAlwaysVisible="true" paginator="true"
+							paginatorPosition="bottom" id="tabelaImpBaixa" rows="8"
+							emptyMessage="Nenhuma retenção." style="margin-top:10px;">
+
+							<p:column headerText="Retenção" style="text-align:left;">
+								<h:outputText value="#{ret.descImposto}" />
+							</p:column>
+
+							<p:column headerText="Percentual Retido" width="20%"
+								style="text-align:left;">
+
+								<h:outputText value="#{ret.pcRentencao} %" />
+							</p:column>
+						</p:dataTable>
+
+					</p:tab>
+				</p:tabView>
+
+				<center>
+
+					<br />
+					<p:commandButton value="Salvar" icon="ui-icon-check"
+						update=":formPrincipal:growl, :formPrincipal:dt"
+						action="#{financeiroController.salvarBaixa()}"
+						style="margin-right:3px;" />
+
+					<p:commandButton value="Cancelar" icon="ui-icon-closethick"
+						onclick="PF('dlgBaixa').hide();" process="@this"
+						style="margin-left:20px;" />
+
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true"    header="Novo Título" widgetVar="dlgNovo" height="450"
+			resizable="false" modal="true" width="auto">
+
+			<h:form id="formInsert">
+
+				<p:growl id="msg" />
+
+				<p:tabView id="tbview" style="height:400px">
+
+					<p:tab title="Documento">
+
+						<p:outputPanel id="pnlInsert">
+
+							<p:panelGrid columns="4" styleClass="semBorda">
+
+								<h:outputText value="Cliente" />
+
+								<p:outputPanel id="outcaus" autoUpdate="true">
+									<p:commandButton icon="ui-icon-search" process="@this"
+										style="margin-right:3px;" onclick="PF('dlg').show();" />
+
+									<h:inputHidden id="iphcu" required="true"
+										requiredMessage="Informe o cliente."
+										value="#{financeiroController.funcBean.cliente.nome}" />
+									<p:inputText size="30" readonly="true"
+										style="border:none;background-color:lightgray !important"
+										value="#{financeiroController.funcBean.cliente.nome}"
+										required="true" requiredMessage="Informe o cliente." />
+								</p:outputPanel>
+
+								<h:outputText value="Documento" />
+
+								<p:inputText value="#{financeiroController.funcBean.documento}" />
+
+								<h:outputText value="Parcela" />
+
+								<p:inputText size="10" required="true"
+									requiredMessage="Parcela obrigatória."
+									value="#{financeiroController.funcBean.parcela}" />
+
+								<h:outputText value="Data Emissão" />
+
+								<p:calendar mask="true" showOn="button" pattern="dd/MM/yyyy"
+									size="8" required="true"
+									requiredMessage="Data de emissão obrigatória."
+									value="#{financeiroController.funcBean.dataEmissao}" />
+
+								<h:outputText value="Vencimento" />
+
+								<p:calendar mask="true" showOn="button" pattern="dd/MM/yyyy"
+									size="8" required="true"
+									requiredMessage="Vencimento obrigatório"
+									value="#{financeiroController.funcBean.vencimento}" />
+
+								<h:outputText value="Competência" />
+
+								<p:inputMask
+									value="#{financeiroController.funcBean.competencia}"
+									mask="99/9999" size="10" />
+
+								<h:outputText value="Tipo Documento" />
+
+								<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+									style="width:250px" required="true"
+									requiredMessage="Tipo do documento obrigatório"
+									value="#{financeiroController.funcBean.tipoDocumento.codtipodocumento}">
+
+									<f:selectItem itemLabel="Selecione um item" />
+									<f:selectItems value="#{tipoDocumentoController.lstTipoDocs()}"
+										var="doc" itemLabel="#{doc.descricao}"
+										itemValue="#{doc.codtipodocumento}" />
+								</p:selectOneMenu>
+
+								<h:outputText value="Fonte de Receita" />
+
+								<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+									style="width:250px" required="true"
+									requiredMessage="Fonte de receita obrigatória"
+									value="#{financeiroController.funcBean.fonrec.id}">
+
+									<f:selectItem itemLabel="Selecione um item" />
+									<f:selectItems
+										value="#{fonteReceitaController.listarFonteReceita()}"
+										var="fr" itemLabel="#{fr.descricao}" itemValue="#{fr.id}" />
+								</p:selectOneMenu>
+
+								<h:outputText value="Portador" />
+
+								<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+									style="width:250px" required="true"
+									requiredMessage="Portador obrigatório"
+									value="#{financeiroController.funcBean.portador.codportador}">
+
+									<f:selectItem itemLabel="Selecione um item" itemValue="" />
+									<f:selectItems value="#{financeiroController.lstPortador()}"
+										var="pt" itemLabel="#{pt.descricao}"
+										itemValue="#{pt.codportador}" />
+								</p:selectOneMenu>
+
+								<h:outputText value="Fatura" />
+
+								<p:inputText
+									value="#{financeiroController.funcBean.descricaoFatura}" />
+
+								<h:outputText value="Valor" />
+
+								<pe:inputNumber decimalPlaces="2" symbol="R$ "
+									thousandSeparator="." decimalSeparator="," required="true"
+									requiredMessage="Valor obrigatório"
+									value="#{financeiroController.funcBean.valor}">
+
+									<p:ajax listener="#{financeiroController.vlrTotal}"
+										update="panelTotal" />
+								</pe:inputNumber>
+
+								<h:outputText value="Desconto" />
+
+								<pe:inputNumber decimalPlaces="2" symbol="R$ "
+									thousandSeparator="." decimalSeparator=","
+									value="#{financeiroController.funcBean.desconto}">
+
+									<p:ajax listener="#{financeiroController.vlrTotal}"
+										update="panelTotal" />
+								</pe:inputNumber>
+
+								<h:outputText value="Valor Taxa Adm." />
+
+								<pe:inputNumber decimalPlaces="2" symbol="R$ "
+									thousandSeparator="." decimalSeparator=","
+									value="#{financeiroController.funcBean.valortaxaadm}">
+
+									<p:ajax listener="#{financeiroController.vlrTotal}"
+										update="panelTotal" />
+								</pe:inputNumber>
+
+								<h:outputText value="Total" />
+
+								<p:outputPanel id="panelTotal">
+									<p:outputLabel value="R$ #{financeiroController.vlrTotal()}">
+										<f:convertNumber type="currency" currencySymbol="R$ "
+											minFractionDigits="2" maxFractionDigits="2" />
+									</p:outputLabel>
+								</p:outputPanel>
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" styleClass="semBorda">
+								<h:outputText value="Histórico" />
+
+								<p:inputTextarea
+									value="#{financeiroController.funcBean.historico}"
+									style="width:400px; margin-left:38px;" autoResize="false" />
+							</p:panelGrid>
+						</p:outputPanel>
+					</p:tab>
+
+					<p:tab title="Retenção">
+
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:commandButton value="Incluir Nova" icon="ui-icon-plus"
+								actionListener="#{financeiroController.limparDadosRet()}"
+								onclick="PF('dlgNovaRetencao').show();" update=":formCR:pnlCR"
+								process="@this,:formCR">
+
+								<f:setPropertyActionListener value="1"
+									target="#{financeiroController.opCadastro}" />
+							</p:commandButton>
+						</p:panelGrid>
+
+						<p:dataTable value="#{financeiroController.lstImpostos}"
+							var="retCad" paginatorAlwaysVisible="true" paginator="true"
+							paginatorPosition="bottom" id="tabelaCadImp" rows="5"
+							emptyMessage="Nenhuma retenção."
+							style="margin-top:10px; width:740px;">
+
+							<p:column headerText="Retenção" style="text-align:left;">
+								<h:outputText value="#{retCad.descImposto}" />
+							</p:column>
+
+							<p:column headerText="Valor Base" width="20%"
+								style="text-align:left;">
+
+								<h:outputText value="#{retCad.valorBase}">
+									<f:convertNumber type="currency" currencySymbol="R$ "
+										minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Percentual Retido" width="20%"
+								style="text-align:left;">
+
+								<h:outputText value="#{retCad.pcRentencao} %" />
+							</p:column>
+
+							<p:column headerText="Valor Retenção" width="20%"
+								style="text-align:left;">
+
+								<h:outputText value="#{retCad.valorRetencao}">
+									<f:convertNumber type="currency" currencySymbol="R$ "
+										minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Ações" width="15%">
+								<center>
+									<p:commandButton icon="ui-icon-pencil" immediate="true"
+										onclick="PF('dlgAltRetencao').show();" process="@this,formAR"
+										update=":formAR:pnlAR">
+
+										<f:setPropertyActionListener value="#{retCad}"
+											target="#{financeiroController.impostoBean}" />
+
+										<f:setPropertyActionListener value="1"
+											target="#{financeiroController.opCadastro}" />
+									</p:commandButton>
+
+									<p:commandButton icon="ui-icon-trash"
+										update=":formInsert:tbview:tabelaCadImp" process="@this"
+										action="#{financeiroController.removerRetencao(1)}">
+
+										<f:setPropertyActionListener value="#{retCad}"
+											target="#{financeiroController.impostoBean}" />
+									</p:commandButton>
+								</center>
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
+
+				<br />
+
+				<center>
+					<p:commandButton value="Salvar"
+						action="#{financeiroController.salvar()}" icon="ui-icon-check"
+						update="msg,:formPrincipal:dt" />
+
+					<p:commandButton value="Cancelar" onclick="PF('dlgNovo').hide();"
+						style="margin-left:5px;" icon="ui-icon-closethick" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true"    header="Editar Título" widgetVar="dlgEdit" height="450"
+			resizable="false" modal="true" width="auto">
+
+			<h:form id="formEdit">
+
+				<p:growl id="msg" />
+
+				<p:tabView id="tbViewEdit" style="height:400px">
+
+					<p:tab title="Documento">
+
+						<p:outputPanel id="pnlEdit">
+
+							<p:panelGrid columns="4" styleClass="semBorda">
+
+								<h:outputText value="Cliente" />
+
+								<p:outputPanel autoUpdate="false">
+									<p:commandButton icon="ui-icon-search" process="@this"
+										style="margin-right:3px;" onclick="PF('dlgalt').show();" />
+									
+									 <p:autoComplete value="#{financeiroController.rowBean.cliente}" size="30"
+  								completeMethod="#{buscaController.completeBuscaCliente}" var="theme"
+  								forceSelection="true" itemValue="#{theme}" itemLabel="#{theme.nome}" converter="conCliente" >
+  							 	 <p:ajax event="itemSelect" listener="#{buscaController.onItemSelectCliente}" />
+  							  	</p:autoComplete>
+									
+								</p:outputPanel>
+
+								<h:outputText value="Documento" />
+
+								<p:inputText value="#{financeiroController.rowBean.documento}" />
+
+								<h:outputText value="Parcela" />
+
+								<p:inputText size="10" required="true"
+									requiredMessage="Parcela obrigatória."
+									value="#{financeiroController.rowBean.parcela}" />
+
+								<h:outputText value="Data Emissão" />
+
+								<p:calendar mask="true" showOn="button" pattern="dd/MM/yyyy"
+									size="8" required="true"
+									requiredMessage="Data de emissão obrigatória."
+									value="#{financeiroController.rowBean.dataEmissao}" />
+
+								<h:outputText value="Vencimento" />
+
+								<p:calendar mask="true" showOn="button" pattern="dd/MM/yyyy"
+									size="8" required="true"
+									requiredMessage="Vencimento obrigatório"
+									value="#{financeiroController.rowBean.vencimento}" />
+
+								<h:outputText value="Competência" />
+
+								<p:inputMask value="#{financeiroController.rowBean.competencia}"
+									mask="99/9999" size="10" />
+
+								<h:outputText value="Tipo Documento" />
+
+								<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+									style="width:250px" required="true"
+									requiredMessage="Tipo do documento obrigatório"
+									value="#{financeiroController.rowBean.tipoDocumento.codtipodocumento}">
+
+									<f:selectItem itemLabel="Selecione um item" />
+									<f:selectItems value="#{tipoDocumentoController.lstTipoDocs()}"
+										var="doc" itemLabel="#{doc.descricao}"
+										itemValue="#{doc.codtipodocumento}" />
+								</p:selectOneMenu>
+
+								<h:outputText value="Fonte de Receita" />
+
+								<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+									style="width:250px" required="true"
+									requiredMessage="Fonte de receita obrigatória"
+									value="#{financeiroController.rowBean.fonrec.id}">
+
+									<f:selectItem itemLabel="Selecione um item" />
+									<f:selectItems
+										value="#{fonteReceitaController.listarFonteReceita()}"
+										var="fr" itemLabel="#{fr.descricao}" itemValue="#{fr.id}" />
+								</p:selectOneMenu>
+
+								<h:outputText value="Portador" />
+
+								<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+									style="width:250px" required="true"
+									requiredMessage="Portador obrigatório"
+									value="#{financeiroController.rowBean.portador.codportador}">
+
+									<f:selectItem itemLabel="Selecione um item" itemValue="" />
+									<f:selectItems value="#{financeiroController.lstPortador()}"
+										var="pt" itemLabel="#{pt.descricao}"
+										itemValue="#{pt.codportador}" />
+								</p:selectOneMenu>
+
+								<h:outputText value="Fatura" />
+
+								<p:inputText
+									value="#{financeiroController.rowBean.descricaoFatura}" />
+
+								<h:outputText value="Valor" />
+
+								<p:outputLabel value="#{financeiroController.rowBean.valor}"
+									required="true" requiredMessage="Valor obrigatório">
+
+									<f:convertNumber type="currency" currencySymbol="R$ "
+										minFractionDigits="2" maxFractionDigits="2" />
+
+								</p:outputLabel>
+
+								<h:outputText value="Desconto" />
+
+								<p:outputLabel value="#{financeiroController.rowBean.desconto}">
+
+									<f:convertNumber type="currency" currencySymbol="R$ "
+										minFractionDigits="2" maxFractionDigits="2" />
+								</p:outputLabel>
+
+								<h:outputText value="Valor Taxa Adm." />
+
+								<p:outputLabel
+									value="#{financeiroController.rowBean.valortaxaadm}">
+									<f:convertNumber type="currency" currencySymbol="R$ "
+										minFractionDigits="2" maxFractionDigits="2" />
+								</p:outputLabel>
+
+								<h:outputText value="Total" />
+
+								<p:outputPanel id="panelTotal">
+									<p:outputLabel
+										value="R$ #{financeiroController.vlrTotalEdit()}">
+										<f:convertNumber type="currency" currencySymbol="R$ "
+											minFractionDigits="2" maxFractionDigits="2" />
+									</p:outputLabel>
+								</p:outputPanel>
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" styleClass="semBorda">
+								<h:outputText value="Histórico" />
+
+								<p:inputTextarea
+									value="#{financeiroController.rowBean.historico}"
+									style="width:400px; margin-left:38px;" autoResize="false" />
+							</p:panelGrid>
+						</p:outputPanel>
+					</p:tab>
+
+					<p:tab title="Retenção">
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:commandButton value="Incluir Novo" icon="ui-icon-plus"
+								actionListener="#{financeiroController.limparDadosRet()}"
+								onclick="PF('dlgNovaRetencao').show();" update=":formCR:pnlCR"
+								process="@this,:formCR">
+
+								<f:setPropertyActionListener value="2"
+									target="#{financeiroController.opCadastro}" />
+							</p:commandButton>
+						</p:panelGrid>
+
+						<p:dataTable value="#{financeiroController.lstImpostosAlt}"
+							var="retAlt" paginatorAlwaysVisible="true" paginator="true"
+							paginatorPosition="bottom" id="tabelaAltImp" rows="5"
+							emptyMessage="Nenhuma retenção."
+							style="margin-top:10px; width:740px;">
+
+							<p:column headerText="Retenção" style="text-align:left;">
+								<h:outputText value="#{retAlt.descImposto}" />
+							</p:column>
+
+							<p:column headerText="Valor Base" width="20%"
+								style="text-align:left;">
+
+								<h:outputText value="#{retAlt.valorBase}">
+									<f:convertNumber type="currency" currencySymbol="R$ "
+										minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Percentual Retido" width="20%"
+								style="text-align:left;">
+
+								<h:outputText value="#{retAlt.pcRentencao} %" />
+							</p:column>
+
+							<p:column headerText="Valor Retenção" width="20%"
+								style="text-align:left;">
+
+								<h:outputText value="#{retAlt.valorRetencao}">
+									<f:convertNumber type="currency" currencySymbol="R$ "
+										minFractionDigits="2" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Ações" width="15%">
+								<center>
+									<p:commandButton icon="ui-icon-pencil" immediate="true"
+										onclick="PF('dlgAltRetencao').show();" process="@this,formAR"
+										update=":formAR:pnlAR">
+
+										<f:setPropertyActionListener value="#{retAlt}"
+											target="#{financeiroController.impostoBean}" />
+
+										<f:setPropertyActionListener value="1"
+											target="#{financeiroController.opCadastro}" />
+									</p:commandButton>
+
+									<p:commandButton icon="ui-icon-trash"
+										update=":formInsert:tbview:tabelaCadImp" process="@this"
+										action="#{financeiroController.removerRetencao(1)}">
+
+										<f:setPropertyActionListener value="#{retAlt}"
+											target="#{financeiroController.impostoBean}" />
+									</p:commandButton>
+								</center>
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
+
+				<br />
+
+				<center>
+					<p:commandButton value="Salvar"
+						action="#{financeiroController.editar()}" icon="ui-icon-check"
+						update="msg,:formPrincipal:dt" />
+
+					<p:commandButton value="Cancelar" onclick="PF('dlgEdit').hide();"
+						style="margin-left:5px;" icon="ui-icon-closethick" />
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true"    widgetVar="dlgNovaRetencao" header="Nova Retenção"
+			resizable="false" modal="true" width="500px" height="auto">
+
+			<h:form id="formCR">
+				<p:panel id="pnlCR">
+
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<p:outputLabel value="Retenção">
+							<font color="#FF0000">*</font>
+						</p:outputLabel>
+
+						<p:selectOneMenu
+							value="#{financeiroController.impostoBean.descImposto}"
+							required="true" requiredMessage="Informe o tipo da retenção.">
+
+							<f:selectItems value="#{financeiroController.tipoImposto}"
+								var="ip" itemLabel="#{ip.descricao}" itemValue="#{ip.descricao}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Valor Base">
+							<font color="#FF0000">*</font>
+						</p:outputLabel>
+
+						<pe:inputNumber decimalPlaces="2" symbol="R$ "
+							thousandSeparator="." decimalSeparator=","
+							value="#{financeiroController.impostoBean.valorBase}"
+							required="true" requiredMessage="Infome o valor base." />
+
+						<p:outputLabel value="Percentual Retido">
+							<font color="#FF0000">*</font>
+						</p:outputLabel>
+
+						<pe:inputNumber decimalPlaces="0" symbol=" %"
+							symbolPosition="right" thousandSeparator="." decimalSeparator=","
+							minValue="1" maxValue="100"
+							value="#{financeiroController.impostoBean.pcRentencao}"
+							required="true"
+							requiredMessage="Infome o percentual da retenção." />
+					</p:panelGrid>
+
+					<center>
+						<p:separator />
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:outputLabel>
+								<font color="#FF0000">(*)</font>
+							</p:outputLabel>
+							<p:outputLabel value="Preenchimento Obrigatório" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:commandButton value="OK" icon="ui-icon-check"
+								style="width:100px;"
+								action="#{financeiroController.adicionarRetencao(1)}"
+								update=":formInsert:tbview:tabelaCadImp, :formPrincipal:growl"
+								rendered="#{financeiroController.opCadastro == 1}" />
+
+							<p:commandButton value="OK" icon="ui-icon-check"
+								style="width:100px;"
+								action="#{financeiroController.adicionarRetencao(2)}"
+								update=":formEdit:tbViewEdit:tabelaAltImp, :formPrincipal:growl"
+								rendered="#{financeiroController.opCadastro == 2}" />
+
+							<p:commandButton value="Cancelar" icon="ui-icon-closethick"
+								style="width:100px;" onclick="PF('dlgNovaRetencao').hide();"
+								process="@this" />
+						</p:panelGrid>
+					</center>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog responsive="true"    widgetVar="dlgAltRetencao" header="Alterar Retenção"
+			resizable="false" modal="true" width="500px" height="auto">
+
+			<h:form id="formAR">
+				<p:panel id="pnlAR">
+
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<p:outputLabel value="Retenção">
+							<font color="#FF0000">*</font>
+						</p:outputLabel>
+
+						<p:selectOneMenu
+							value="#{financeiroController.impostoBean.descImposto}"
+							required="true" requiredMessage="Informe o tipo da retenção.">
+
+							<f:selectItems value="#{financeiroController.tipoImposto}"
+								var="ip" itemLabel="#{ip.descricao}" itemValue="#{ip.descricao}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Valor Base">
+							<font color="#FF0000">*</font>
+						</p:outputLabel>
+
+						<pe:inputNumber decimalPlaces="2" symbol="R$ "
+							thousandSeparator="." decimalSeparator=","
+							value="#{financeiroController.impostoBean.valorBase}"
+							required="true" requiredMessage="Infome o valor base." />
+
+						<p:outputLabel value="Percentual Retido">
+							<font color="#FF0000">*</font>
+						</p:outputLabel>
+
+						<pe:inputNumber decimalPlaces="0" symbol=" %"
+							symbolPosition="right" thousandSeparator="." decimalSeparator=","
+							minValue="1" maxValue="100"
+							value="#{financeiroController.impostoBean.pcRentencao}"
+							required="true"
+							requiredMessage="Infome o percentual da retenção." />
+					</p:panelGrid>
+
+					<center>
+						<p:separator />
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:outputLabel>
+								<font color="#FF0000">(*)</font>
+							</p:outputLabel>
+							<p:outputLabel value="Preenchimento Obrigatório" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" styleClass="semBorda">
+							<p:commandButton value="OK" icon="ui-icon-check"
+								style="width:100px;"
+								action="#{financeiroController.alterarRetencao(1)}"
+								update=":formInsert:tbview:tabelaCadImp, :formPrincipal:growl"
+								rendered="#{financeiroController.opCadastro == 1}" />
+
+							<p:commandButton value="OK" icon="ui-icon-check"
+								style="width:100px;"
+								action="#{financeiroController.alterarRetencao(2)}"
+								update=":formEdit:tbViewEdit:tabelaAltImp, :formPrincipal:growl"
+								rendered="#{financeiroController.opCadastro == 2}" />
+
+							<p:commandButton value="Cancelar" icon="ui-icon-closethick"
+								style="width:100px;" onclick="PF('dlgAltRetencao').hide();"
+								process="@this" />
+						</p:panelGrid>
+					</center>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<ui:include src="/pages/clin/buscaClienteFinanceiro.xhtml"></ui:include>
+		<ui:include src="/pages/clin/buscaClienteFinanceiroAlt.xhtml"></ui:include>
+		<ui:include src="/pages/clin/buscaClienteNegociacao.xhtml"></ui:include>
+		<ui:include src="/pages/clin/buscaClienteAntecipacao.xhtml"></ui:include>
+
+	</ui:define>
+</ui:composition>
+</html>

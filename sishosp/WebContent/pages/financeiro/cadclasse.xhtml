@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../../template/templategeral.xhtml">
+	<ui:define name="body">
+
+		<h:form id="frm">
+			<h3 style="font-size: 22px; font-weight: bold">Gerenciamento
+				Classe</h3>
+
+			<p:toolbar style="margin-bottom: 7px">
+				<p:toolbarGroup>
+					<h:panelGrid id="outBotoes" columns="4">
+						<p:commandButton id="btninc" value="Novo" style="height:25px"
+							update=":frminc:pnlinc" oncomplete="PF('dlginc').show();"
+							actionListener="#{classeController.limpaObj()}"
+							icon="ui-icon-plus"
+							disabled="#{MBUsuarios.verificarPermComp('FC-79', MBUsuarios.sistemaLogado.id) == false}">
+
+							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+						</p:commandButton>
+
+						<p:commandButton id="btnalt" value="Alterar"
+							update=":frmedit:pnledit :grwgeral"
+							action="#{classeController.alteraClasse()}" icon="ui-icon-wrench"
+							disabled="#{classeController.classe == null or classeController.classe.codclasse == null or classeController.classe.codclasse == 0 or MBUsuarios.verificarPermComp('FC-80', MBUsuarios.sistemaLogado.id) == false}">
+
+							<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-closethick" value="Excluir"
+							action="#{classeController.acaoExcluir()}" update=":grwgeral"
+							disabled="#{classeController.classe == null or classeController.classe.codclasse == null or classeController.classe.codclasse == 0 or MBUsuarios.verificarPermComp('FC-81', MBUsuarios.sistemaLogado.id) == false}">
+						</p:commandButton>
+					</h:panelGrid>
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+
+					<p:commandButton value="Pesquisar" rendered="false"
+						style="margin-left:10px;" icon="ui-icon-search"
+						onclick="PF('editDlg').show();">
+					</p:commandButton>
+
+				</p:toolbarGroup>
+
+			</p:toolbar>
+
+
+			<b:dataTable select="true" id="tabela" selectionMode="single"
+				onselect="ajax:classeController.onRowSelect(m)"
+				ondeselect="ajax:classeController.onRowSelect(null)"
+				value="#{classeController.listarClasse}" var="m"
+				custom-lang-url="#{resource['/pt-br.json']}">
+				<b:dataTableColumn label="Código" style="width:10%;"
+					value="#{m.codclasse}" />
+				<b:dataTableColumn label="Descrição" width="70%"
+					value="#{m.descricao}" />
+				<b:dataTableColumn label="Negativação" width="20%"
+					value="#{m.negativado}" />
+			</b:dataTable>
+		</h:form>
+
+		<!--  Dialog Inclusao dados classe -->
+		<p:dialog responsive="true" widgetVar="dlginc" header="Incluir Classe"
+			width="auto">
+			<h:form id="frminc">
+
+				<p:panelGrid columns="2" styleClass="semBorda" id="pnlinc">
+
+					<h:outputText value="Descrição"></h:outputText>
+
+					<p:inputText maxlength="50" size="50"
+						value="#{classeController.classe.descricao}" />
+
+					<h:outputText value="Negativar"></h:outputText>
+					<p:selectBooleanCheckbox
+						value="#{classeController.classe.negativar}"></p:selectBooleanCheckbox>
+
+				</p:panelGrid>
+				<hr />
+				<center>
+					<p:commandButton value="Gravar" icon="ui-icon-check"
+						actionListener="#{classeController.insereClasse()}"
+						update=":frm:tabela :grwgeral" />
+					<p:commandButton value="Fechar" style="margin-left:20px"
+						onclick="PF('dlginc').hide()" icon="ui-icon-closethick" />
+				</center>
+
+			</h:form>
+		</p:dialog>
+
+
+
+		<!-- Dialog Edicao dados SubGrupo -->
+
+		<p:dialog responsive="true" widgetVar="dlgedit" header="Editar Classe"
+			width="auto">
+			<h:form id="frmedit">
+				<p:panelGrid columns="2" styleClass="semBorda" id="pnledit">
+
+					<h:outputText value="Descrição"></h:outputText>
+
+					<p:inputText maxlength="50" size="50"
+						value="#{classeController.classe.descricao}" />
+
+					<h:outputText value="Negativar"></h:outputText>
+					<p:selectBooleanCheckbox
+						value="#{classeController.classe.negativar}"></p:selectBooleanCheckbox>
+
+				</p:panelGrid>
+
+				<hr />
+				<center>
+					<p:commandButton value="Gravar" icon="ui-icon-check"
+						action="#{classeController.editaClasse()}"
+						update=":frm:tabela :grwgeral"></p:commandButton>
+					<p:commandButton value="Fechar" style="margin-left:20px"
+						icon="ui-icon-closethick" onclick="PF('dlgedit').hide()" />
+				</center>
+
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog responsive="true" widgetVar="dialogAtencao" modal="true"
+			header="Atenção" resizable="false">
+
+			<h:form>
+
+				<h:panelGrid columns="1">
+
+					<div class="alert alert-warning" role="alert">Deseja excluir
+						esta Classe?</div>
+
+				</h:panelGrid>
+
+				<center>
+
+					<p:commandButton value="Sim" update=":frm:tabela" immediate="true"
+						action="#{classeController.excluirClasse()}" icon="ui-icon-check"
+						style="font-size:14px;">
+					</p:commandButton>
+
+					<p:commandButton value="Não" onclick="PF('dialogAtencao').hide();"
+						icon="ui-icon-closethick" style="font-size:14px;margin-left:5px;">
+					</p:commandButton>
+
+				</center>
+
+			</h:form>
+
+		</p:dialog>
+
+
+
+
+
+
+
+
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

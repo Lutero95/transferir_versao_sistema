@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/templategeral.xhtml"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="body">
+		<div id="conteudo">
+			<div id="contMenuBar">
+				<!-- Começar edição -->
+				<f:view>
+
+
+					<center>
+						<div style="margin-top: 10px">
+
+							<p:panel style="width:600px; text-align:left;">
+								<f:facet name="header">
+									<h:outputText value="Pagar" />
+								</f:facet>
+
+								<br />
+
+								<h:form>
+
+									<p:panelGrid columns="1" styleClass="semBorda">
+
+									</p:panelGrid>
+									
+									<p:panelGrid id="panelVenc" columns="5" styleClass="semBorda">
+
+										<h:outputText value="Período:" />
+										<p:calendar
+											value="#{reportController.dataInicio}" required="true"
+											requiredMessage="Informe o período inicial"></p:calendar>
+										<h:outputText value="a" />
+
+
+										<p:calendar
+											value="#{reportController.dataFim}" required="true"
+											requiredMessage="Informe o período final"></p:calendar>
+									</p:panelGrid>
+									<p:panelGrid columns="5" styleClass="semBorda">
+										<h:outputText value="Agrupar por:" />
+										<p:selectOneRadio id="console"
+											value="#{reportController.agrupar}">
+
+											<f:selectItem itemLabel="Fornecedor" itemValue="F" />
+											<f:selectItem itemLabel="Tipo Documento" itemValue="T" />
+											<f:selectItem itemLabel="C. Custo" itemValue="C" />
+
+											<p:ajax event="click" update="@form">
+											</p:ajax>
+										</p:selectOneRadio>
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="5" styleClass="semBorda">
+										<h:outputText value="Período referente a:" />
+										<p:selectOneRadio value="#{reportController.dataRef}">
+
+											<f:selectItem itemLabel="Vencimento" itemValue="V" />
+											<f:selectItem itemLabel="Emissão" itemValue="e" />
+											<f:selectItem itemLabel="Previsão" itemValue="P" />
+										</p:selectOneRadio>
+
+
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="4" styleClass="semBorda">
+										<h:outputText value="Situação:" />
+										<p:selectOneRadio value="#{reportController.situacao}"
+											columns="3" tabindex="0">
+											
+											<f:selectItem itemLabel="Todos" itemValue="T" />
+											<f:selectItem itemLabel="Em Aberto" itemValue="A" />
+											<f:selectItem itemLabel="Quitados" itemValue="F" />
+
+										</p:selectOneRadio>
+
+									</p:panelGrid>
+									
+									<p:panelGrid columns="2" styleClass="semBorda">
+									<h:outputText value="Tipo:" />
+										<p:selectOneRadio value="#{reportController.tipoRelatorio}">
+
+												<f:selectItem itemLabel="Sintético" itemValue="S" />
+												<f:selectItem itemLabel="Analitíco" itemValue="A" />
+											</p:selectOneRadio>
+									</p:panelGrid>
+
+									<p:panelGrid id="panelCliente" columns="2"
+										styleClass="semBorda">
+
+										<h:outputText value="Fornecedor:" />
+										<p:selectOneMenu value="#{reportController.codFornecedor}"
+											style="width:222px">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems
+												value="#{tituloPagarController.listDeFornecedores()}"
+												itemValue="#{x.codforn}" var="x" itemLabel="#{x.nome}"></f:selectItems>
+										</p:selectOneMenu>
+										<h:outputText value="Tipo Documento:" />
+										<p:selectOneMenu value="#{reportController.codTipoDocumento}"
+											style="width:222px">
+
+											<f:selectItem itemValue="" itemLabel="Selecione" />
+											<f:selectItems
+												value="#{tipoDocumentoController.lstTipoDocs()}"
+												itemValue="#{x.codtipodocumento}" itemLabel="#{x.descricao}"
+												var="x"></f:selectItems>
+
+										</p:selectOneMenu>
+
+										<h:outputText value="C.Custo:" />
+
+										<p:selectOneMenu value="#{reportController.codcccusto}"
+											style="width:222px">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems
+												value="#{tituloPagarController.listCentroCusto()}"
+												itemValue="#{x.idccusto}" var="x" itemLabel="#{x.descricao}"></f:selectItems>
+
+										</p:selectOneMenu>
+
+										<h:outputText value="Despesa:" />
+
+										<p:selectOneMenu value="#{reportController.coddespesa}"
+											style="width:222px">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems value="#{tituloPagarController.listDepesas()}"
+												itemValue="#{x.id}" var="x" itemLabel="#{x.descricao}"></f:selectItems>
+
+										</p:selectOneMenu>
+
+										<h:outputText value="Portador:" />
+
+										<p:selectOneMenu value="#{reportController.codportador}"
+											style="width:222px">
+											<f:selectItem itemLabel="Selecione" itemValue="" />
+											<f:selectItems value="#{tituloPagarController.lstPortador()}"
+												itemValue="#{x.codportador}" var="x"
+												itemLabel="#{x.descricao}"></f:selectItems>
+
+										</p:selectOneMenu>
+
+									</p:panelGrid>
+									<br />
+									<p:outputPanel autoUpdate="true" id="out2">
+
+										<center>
+
+											<p:outputPanel autoUpdate="true">
+												<p:commandButton value="Imprimir" icon="ui-icon-print"
+													ajax="false" rendered="#{reportController.agrupar == 'F'}"
+													actionListener="#{reportController.pagarporFornecedor}"
+													style="margin-left:5px;"></p:commandButton>
+
+
+
+
+												<p:commandButton value="Imprimir" icon="ui-icon-print"
+													ajax="false" rendered="#{reportController.agrupar == 'T'}"
+													actionListener="#{reportController.pagarPorTipoDoc}"
+													style="margin-left:5px;"></p:commandButton>
+
+
+												<p:commandButton value="Imprimir" icon="ui-icon-print"
+													ajax="false" rendered="#{reportController.agrupar == 'C'}"
+													actionListener="#{reportController.pagarPorCentro}"
+													style="margin-left:5px;"></p:commandButton>
+
+
+												<p:commandButton value="Imprimir" icon="ui-icon-print"
+													ajax="false" rendered="#{reportController.agrupar == 'P'}"
+													actionListener="#{reportController}"
+													style="margin-left:5px;"></p:commandButton>
+											</p:outputPanel>
+
+										</center>
+									</p:outputPanel>
+								</h:form>
+
+
+
+
+							</p:panel>
+						</div>
+					</center>
+				</f:view>
+				<!-- Terminar edição -->
+			</div>
+		</div>
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

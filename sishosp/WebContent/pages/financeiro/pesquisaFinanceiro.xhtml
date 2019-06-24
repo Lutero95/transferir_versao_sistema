@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<style>
+* {
+	font-size: 14px !important;
+}
+</style>
+
+</h:head>
+
+<ui:composition template="../../template/templategeral.xhtml">
+
+	<ui:define name="body">
+
+
+		<h3 style="margin-left: 15px; font-family: monospace;">Gerenciamento
+			Financeiro</h3>
+
+		<p:toolbar style="margin-top:20px;">
+
+
+			<p:toolbarGroup>
+
+				<p:commandButton value="Pesquisar" icon="ui-icon-search"></p:commandButton>
+
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+
+				<p:button value="Novo" icon="ui-icon-check"
+					outcome="gerenciamentoFinanceiro.xhtml" />
+
+
+			</p:toolbarGroup>
+
+
+		</p:toolbar>
+
+
+		<p:panelGrid columns="2" columnClasses="rotulo,campo"
+			style="width:100%;margin-top:20px;">
+
+
+			<h:outputText value="Cliente"></h:outputText>
+			<p:inputText size="50"></p:inputText>
+
+			<h:outputText value="Portador"></h:outputText>
+			<p:inputText size="50"></p:inputText>
+
+
+		</p:panelGrid>
+
+
+
+
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

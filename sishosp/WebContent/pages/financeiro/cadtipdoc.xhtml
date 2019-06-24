@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../../template/template.xhtml">
+	<ui:define name="content">
+
+		<h:form id="frmmensagem">
+
+
+			<ul class="nav nav-tabs">
+				<li role="presentation" class="active"><a href="#"
+					style="color: #428bca; font-size: 14px !important;">Tipo
+						Documento </a></li>
+			</ul>
+
+
+			<p:commandButton id="btninc" value="Incluir"
+				style="height:25px;margin-top:15px;margin-botton:15px;"
+				update=":frminc:pnlinc" oncomplete="PF('dlginc').show();"
+				icon="ui-icon-plus">
+
+				<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+			</p:commandButton>
+
+
+
+			<p:dataTable id="tabela"
+				value="#{tipoDocumentoController.lstTipoDocs()}" var="m"
+				paginator="true" paginatorPosition="bottom" rows="8"
+				emptyMessage="Nenhum Tipo de Documento">
+				<p:column headerText="Código">
+					<h:outputText value="#{m.codtipodocumento}" />
+				</p:column>
+				<p:column headerText="Empresa">
+					<h:outputText value="#{m.descricao}" />
+				</p:column>
+
+				<p:column>
+
+					<f:facet name="header">
+						<h:outputText styleClass="rotulosBold" value="Ação" />
+					</f:facet>
+					<p:commandButton id="btnedit" update=":frmedit:pnledit"
+						oncomplete="PF('dlgedit').show();" icon="ui-icon-comment">
+						<f:setPropertyActionListener value="#{m}"
+							target="#{tipoDocumentoController.doc}" />
+						<p:tooltip for="btnedit" value="Editar"></p:tooltip>
+					</p:commandButton>
+
+
+				</p:column>
+
+			</p:dataTable>
+
+
+
+
+		</h:form>
+
+
+		<!--  Dialog Inclusao dados TipoDoc -->
+
+		<p:dialog responsive="true"    widgetVar="dlginc" header="Incluir Tipo de Documento">
+			<h:form id="frminc">
+				<p:panel id="pnlinc"
+					style="border:none; height:350px; width: 720px;">
+
+					<table border="0" style="width: 100%">
+						<tr>
+							<td>Descrição</td>
+						</tr>
+						<tr>
+							<td width="20%"><p:inputText
+									value="#{tipoDocumentoController.doc.descricao}" /></td>
+						</tr>
+
+					</table>
+
+					<p:panel>
+
+					</p:panel>
+					<p:commandButton value="Salvar"
+						action="#{tipoDocumentoController.insereTipoDoc()}"></p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+
+
+		<!-- Dialog Edicao dados Filial -->
+
+		<p:dialog responsive="true"    widgetVar="dlgedit" header="Editar Empresa" height="300px">
+			<h:form id="frmedit">
+				<p:panel id="pnledit"
+					style="border:none; height:350px; width: 720px;">
+					<table border="0" style="width: 100%">
+						<tr>
+							<td>Descrição</td>
+
+
+
+						</tr>
+						<tr>
+							<td width="20%"><p:inputText
+									value="#{tipoDocumentoController.doc.descricao}" /></td>
+
+						</tr>
+
+					</table>
+
+					<p:panel>
+
+					</p:panel>
+					<p:commandButton value="Salvar"
+						action="#{tipoDocumentoController.editaTipoDoc()}"></p:commandButton>
+				</p:panel>
+
+			</h:form>
+		</p:dialog>
+
+
+
+
+
+	</ui:define>
+
+</ui:composition>
+
+</html>
