@@ -171,10 +171,6 @@ public class GerenciarPacienteController implements Serializable {
         return RedirecionarUtil.redirectEditSemTipo(ENDERECO_RENOVACAO, ENDERECO_ID, this.rowBean.getId());
     }
 
-    public String redirectPTS() {
-        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PTS, ENDERECO_ID, this.rowBean.getId());
-    }
-
     public String redirectTransferencia() {
         return RedirecionarUtil.redirectEditSemTipo(ENDERECO_TRANSFERENCIA, ENDERECO_ID, this.rowBean.getId());
     }

@@ -1,12 +1,13 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConverterUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
+import br.gov.al.maceio.sishosp.hosp.enums.FiltroBuscaVencimentoPTS;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 
@@ -26,11 +27,28 @@ public class PtsController implements Serializable {
     private Pts pts;
     private PtsArea ptsAreaAnterior;
     private List<EspecialidadeBean> listaEspecialidadesEquipe;
+    private List<Pts> listaPts;
+    private List<GrupoBean> listaGrupos;
     private Boolean existePts;
+    private String filtroTipoVencimento;
+    private Integer filtroMesVencimento;
+    private Integer filtroAnoVencimento;
+    private Pts rowBean;
+
+    //CONSTANTES
+    private static final String ENDERECO_PTS = "pts?faces-redirect=true";
+    private static final String ENDERECO_ID = "&amp;id=";
+    private static final String ENDERECO_TIPO = "&amp;tipo=";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de PTS";
+    private static final String CABECALHO_ALTERACAO = "Alteração de PTS";
 
     public PtsController() {
         pts = new Pts();
         ptsAreaAnterior = new PtsArea();
+        listaPts = new ArrayList<>();
+        listaGrupos = new ArrayList<>();
+        filtroTipoVencimento = FiltroBuscaVencimentoPTS.VINGENTES.getSigla();
+        rowBean = new Pts();
     }
 
     public void carregarPts() {
@@ -50,10 +68,24 @@ public class PtsController implements Serializable {
             } catch (ProjetoException e) {
                 e.printStackTrace();
             }
-        } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro!", "Erro");
         }
+    }
 
+    public void buscarPtsPacientesAtivos() throws ProjetoException {
+        listaPts = pDao.buscarPtsPacientesAtivos(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), filtroTipoVencimento, filtroMesVencimento, filtroAnoVencimento);
+    }
+
+    public void limparBusca(){
+        listaPts = new ArrayList<>();
+        pts = new Pts();
+    }
+
+    public String redirectEdit() {
+        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PTS, ENDERECO_ID, this.pts.getId());
+    }
+
+    public String redirectInsert() {
+        return RedirecionarUtil.redirectInsertSemTipo(ENDERECO_PTS);
     }
 
     public void abrirDialogInclusaoPts() {
@@ -77,8 +109,34 @@ public class PtsController implements Serializable {
         pts.setListaPtsArea(new ArrayList<>());
     }
 
+    public List<GrupoBean> listaGrupoAutoComplete(String query)
+            throws ProjetoException {
+
+        GrupoDAO grDao = new GrupoDAO();
+
+        if (pts.getPrograma().getIdPrograma() != null) {
+            return grDao.listarGruposNoAutoComplete(query,
+                    this.pts.getPrograma().getIdPrograma());
+        } else {
+            return null;
+        }
+
+    }
+
+    public void carregaGruposDoPrograma() throws ProjetoException {
+
+        GrupoDAO grDao = new GrupoDAO();
+        if (pts.getPrograma() != null) {
+            if (pts.getPrograma().getIdPrograma() != null) {
+                listaGrupos=  grDao.listarGruposPorPrograma(this.pts
+                        .getPrograma().getIdPrograma());
+            }
+        }
+
+    }
+
     private void addPtsNaLista() throws ProjetoException {
-        if(!VerificadorUtil.verificarSeObjetoNulo(ptsAreaAnterior)) {
+        if (!VerificadorUtil.verificarSeObjetoNulo(ptsAreaAnterior)) {
             removerPtsDaLista(ptsAreaAnterior);
         }
 
@@ -150,6 +208,54 @@ public class PtsController implements Serializable {
 
     public void setPtsAreaAnterior(PtsArea ptsAreaAnterior) {
         this.ptsAreaAnterior = ptsAreaAnterior;
+    }
+
+    public List<Pts> getListaPts() {
+        return listaPts;
+    }
+
+    public void setListaPts(List<Pts> listaPts) {
+        this.listaPts = listaPts;
+    }
+
+    public String getFiltroTipoVencimento() {
+        return filtroTipoVencimento;
+    }
+
+    public void setFiltroTipoVencimento(String filtroTipoVencimento) {
+        this.filtroTipoVencimento = filtroTipoVencimento;
+    }
+
+    public Integer getFiltroMesVencimento() {
+        return filtroMesVencimento;
+    }
+
+    public void setFiltroMesVencimento(Integer filtroMesVencimento) {
+        this.filtroMesVencimento = filtroMesVencimento;
+    }
+
+    public Integer getFiltroAnoVencimento() {
+        return filtroAnoVencimento;
+    }
+
+    public void setFiltroAnoVencimento(Integer filtroAnoVencimento) {
+        this.filtroAnoVencimento = filtroAnoVencimento;
+    }
+
+    public List<GrupoBean> getListaGrupos() {
+        return listaGrupos;
+    }
+
+    public void setListaGrupos(List<GrupoBean> listaGrupos) {
+        this.listaGrupos = listaGrupos;
+    }
+
+    public Pts getRowBean() {
+        return rowBean;
+    }
+
+    public void setRowBean(Pts rowBean) {
+        this.rowBean = rowBean;
     }
 
 }

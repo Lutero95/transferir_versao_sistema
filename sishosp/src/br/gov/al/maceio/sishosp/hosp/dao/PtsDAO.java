@@ -4,6 +4,9 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.FiltroBuscaVencimentoPTS;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.Pts;
 import br.gov.al.maceio.sishosp.hosp.model.PtsArea;
 
@@ -409,6 +412,86 @@ public class PtsDAO {
             }
         }
         return pts;
+    }
+
+    public List<Pts> buscarPtsPacientesAtivos(Integer codPrograma, Integer codGrupo, String tipoFiltroVencimento,
+                                              Integer filtroMesVencimento, Integer filtroAnoVencimento)
+            throws ProjetoException {
+
+        //Inicia com 2, pois é o número mínimo de parametros.
+        Integer contadorParametros = 2;
+
+        String sql = "SELECT p.id, p.data, p.data_vencimento, g.descgrupo, pr.descprograma, pa.nome, " +
+                "CASE WHEN p.status = 'A' THEN 'Ativo' WHEN p.status = 'C' THEN 'Cancelado' " +
+                "WHEN p.status = 'R' THEN 'Renovado' END AS status " +
+                "FROM hosp.paciente_instituicao pi " +
+                "LEFT JOIN hosp.programa pr ON (pr.id_programa = pi.codprograma) " +
+                "LEFT JOIN hosp.grupo g ON (g.id_grupo = pi.codgrupo) " +
+                "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = pi.codpaciente) " +
+                "LEFT JOIN hosp.pts p ON " +
+                "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente = pi.codpaciente) " +
+                "WHERE pi.status = 'A' AND pi.codgrupo = ? AND pi.codprograma = ? ";
+
+        if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.VINGENTES.getSigla())) {
+            sql = sql + " AND p.data_vencimento <= current_date";
+        }
+
+        if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.VENCIDOS.getSigla())) {
+            sql = sql + " AND p.data_vencimento > current_date";
+        }
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)){
+            sql = sql + " AND EXTRACT(month FROM p.data) = ? ";
+            contadorParametros++;
+        }
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)){
+            sql = sql + " AND EXTRACT(year FROM p.data) = ? ";
+            contadorParametros++;
+        }
+
+        sql = sql + " ORDER BY p.data ";
+
+        List<Pts> lista = new ArrayList<>();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, codGrupo);
+            stmt.setInt(2, codPrograma);
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)){
+               stmt.setInt(contadorParametros, filtroMesVencimento);
+            }
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)){
+                stmt.setInt(contadorParametros, filtroAnoVencimento);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Pts pts = new Pts();
+                pts.setId(rs.getInt("id"));
+                pts.setData(rs.getDate("data"));
+                pts.setDataVencimento(rs.getDate("data_vencimento"));
+                pts.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+                pts.getPrograma().setDescPrograma(rs.getString("descprograma"));
+                pts.getPaciente().setNome(rs.getString("nome"));
+                pts.setStatus(rs.getString("status"));
+                lista.add(pts);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
     }
 
 }

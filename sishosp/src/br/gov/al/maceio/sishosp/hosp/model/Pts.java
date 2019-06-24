@@ -13,6 +13,8 @@ public class Pts implements Serializable {
     private String diagnosticoFuncional;
     private String necessidadesIhDesejos;
     private Timestamp dataHoraOperacao;
+    private Date dataVencimento;
+    private String status;
 
     // HERDADOS
     private GrupoBean grupo;
@@ -119,4 +121,19 @@ public class Pts implements Serializable {
         this.listaPtsArea = listaPtsArea;
     }
 
+    public Date getDataVencimento() {
+        return dataVencimento;
+    }
+
+    public void setDataVencimento(Date dataVencimento) {
+        this.dataVencimento = dataVencimento;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
