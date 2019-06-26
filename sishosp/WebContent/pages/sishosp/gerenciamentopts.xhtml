@@ -214,7 +214,7 @@
                                      paginator="true" paginatorPosition="bottom" rows="12"
                                      resizableColumns="true" selectionMode="single"
                                      selection="#{PtsController.rowBean}"
-                                     rowKey="#{pts.insercao.id}">
+                                     rowKey="#{pts.gerenciarPaciente.id}">
 
                             <p:ajax event="rowSelect" listener="#{PtsController.verificarSeExistePtsParaProgramaGrupoPaciente()}"
                                     update=":formGerenPaci:btnInserir :formGerenPaci:btnAlterar :formGerenPaci:btnExcluir :formGerenPaci:btnRenovar"/>

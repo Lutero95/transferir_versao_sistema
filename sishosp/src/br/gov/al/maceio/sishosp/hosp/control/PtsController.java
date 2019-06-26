@@ -50,7 +50,7 @@ public class PtsController implements Serializable {
         renderizarBotaoNovo = false;
     }
 
-    public void carregarPts() {
+    public void carregarPts() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -59,7 +59,7 @@ public class PtsController implements Serializable {
             try {
                 existePts = pDao.verificarSeExistePts(id);
                 if (existePts) {
-                    this.pts = pDao.ptsCarregarPacientesInstituicaoIhPts(id);
+                    this.pts = pDao.ptsCarregarPtsPorId(id);
                 } else {
                     this.pts = pDao.ptsCarregarPacientesInstituicao(id);
                 }
@@ -69,7 +69,9 @@ public class PtsController implements Serializable {
             }
         }
         else{
+            existePts = false;
             pts = (Pts) SessionUtil.resgatarDaSessao("pts");
+            listaEspecialidadesEquipe = eDao.listarEspecialidadesEquipe(pts.getGerenciarPaciente().getId());
         }
     }
 
@@ -159,7 +161,7 @@ public class PtsController implements Serializable {
 
         if (cadastrou == true) {
             existePts = true;
-            this.pts = pDao.ptsCarregarPacientesInstituicaoIhPts(pts.getGerenciarPaciente().getId());
+            this.pts = pDao.ptsCarregarPtsPorProgramaGrupoPaciente(pts);
             JSFUtil.adicionarMensagemSucesso("PTS cadastrado com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
@@ -191,7 +193,7 @@ public class PtsController implements Serializable {
 
     public void verificarSeExistePtsParaProgramaGrupoPaciente() throws ProjetoException {
 
-        if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rowBean.getInsercao().getId())){
+        if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rowBean.getGerenciarPaciente().getId())){
             if(!pDao.verificarSeExistePtsParaProgramaGrupoPaciente(rowBean)){
                 renderizarBotaoNovo = true;
             }
