@@ -2,10 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.ConverterUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
-import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.FiltroBuscaVencimentoPTS;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
@@ -34,6 +31,7 @@ public class PtsController implements Serializable {
     private Integer filtroMesVencimento;
     private Integer filtroAnoVencimento;
     private Pts rowBean;
+    private Boolean renderizarBotaoNovo;
 
     //CONSTANTES
     private static final String ENDERECO_PTS = "pts?faces-redirect=true";
@@ -49,6 +47,7 @@ public class PtsController implements Serializable {
         listaGrupos = new ArrayList<>();
         filtroTipoVencimento = FiltroBuscaVencimentoPTS.VINGENTES.getSigla();
         rowBean = new Pts();
+        renderizarBotaoNovo = false;
     }
 
     public void carregarPts() {
@@ -69,6 +68,9 @@ public class PtsController implements Serializable {
                 e.printStackTrace();
             }
         }
+        else{
+            pts = (Pts) SessionUtil.resgatarDaSessao("pts");
+        }
     }
 
     public void buscarPtsPacientesAtivos() throws ProjetoException {
@@ -85,6 +87,7 @@ public class PtsController implements Serializable {
     }
 
     public String redirectInsert() {
+        SessionUtil.adicionarNaSessao(rowBean, "pts");
         return RedirecionarUtil.redirectInsertSemTipo(ENDERECO_PTS);
     }
 
@@ -186,6 +189,16 @@ public class PtsController implements Serializable {
         return pDao.carregarPtsDoPaciente(codPaciente);
     }
 
+    public void verificarSeExistePtsParaProgramaGrupoPaciente() throws ProjetoException {
+
+        if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rowBean.getInsercao().getId())){
+            if(!pDao.verificarSeExistePtsParaProgramaGrupoPaciente(rowBean)){
+                renderizarBotaoNovo = true;
+            }
+        }
+
+    }
+
     public Pts getPts() {
         return pts;
     }
@@ -258,4 +271,11 @@ public class PtsController implements Serializable {
         this.rowBean = rowBean;
     }
 
+    public Boolean getRenderizarBotaoNovo() {
+        return renderizarBotaoNovo;
+    }
+
+    public void setRenderizarBotaoNovo(Boolean renderizarBotaoNovo) {
+        this.renderizarBotaoNovo = renderizarBotaoNovo;
+    }
 }

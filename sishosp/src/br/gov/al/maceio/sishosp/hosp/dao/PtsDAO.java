@@ -249,9 +249,11 @@ public class PtsDAO {
     public Boolean gravarPts(Pts pts, Boolean ehParaDeletar) {
 
         Boolean retorno = false;
+        final Integer SEIS_MESES_VENCIMENTO = 180;
 
-        String sql1 = "INSERT INTO hosp.pts (id_paciente_instituicao, data, diagnostico_funcional, necessidades_e_desejos, id_funcionario, data_hora_operacao) " +
-                "values (?, ?, ?, ?, ?, CURRENT_TIMESTAMP) RETURNING id;";
+        String sql1 = "INSERT INTO hosp.pts (data, diagnostico_funcional, necessidades_e_desejos, id_funcionario, data_hora_operacao, " +
+                "data_vencimento, cod_programa, cod_grupo, cod_paciente) " +
+                "values (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id;";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -261,11 +263,14 @@ public class PtsDAO {
             }
 
             ps = conexao.prepareStatement(sql1);
-            ps.setInt(1, pts.getGerenciarPaciente().getId());
-            ps.setDate(2, DataUtil.converterDateUtilParaDateSql(pts.getData()));
-            ps.setString(3, pts.getDiagnosticoFuncional());
-            ps.setString(4, pts.getNecessidadesIhDesejos());
-            ps.setInt(5, user_session.getCodigo());
+            ps.setDate(1, DataUtil.converterDateUtilParaDateSql(pts.getData()));
+            ps.setString(2, pts.getDiagnosticoFuncional());
+            ps.setString(3, pts.getNecessidadesIhDesejos());
+            ps.setInt(4, user_session.getCodigo());
+            ps.setDate(5, DataUtil.converterDateUtilParaDateSql(DataUtil.adicionarDiasAData(pts.getData(), SEIS_MESES_VENCIMENTO)));
+            ps.setInt(6, pts.getPrograma().getIdPrograma());
+            ps.setInt(7, pts.getGrupo().getIdGrupo());
+            ps.setInt(8, pts.getPaciente().getId_paciente());
 
             ResultSet rs = ps.executeQuery();
             Integer codPts = null;
@@ -375,30 +380,23 @@ public class PtsDAO {
 
     }
 
-    public Pts carregarPtsDoPaciente(Integer codPaciente) throws ProjetoException {
+    public Boolean verificarSeExistePtsParaProgramaGrupoPaciente(Pts pts) throws ProjetoException {
 
-        String sql = "SELECT p.data, p.diagnostico_funcional, p.necessidades_e_desejos, p.id_paciente_instituicao " +
-                "FROM hosp.pts p " +
-                "LEFT JOIN hosp.paciente_instituicao pi ON (pi.id = p.id_paciente_instituicao) " +
-                "WHERE pi.codpaciente = ?";
+        Boolean retorno = false;
 
-
-        Pts pts = new Pts();
+        String sql = "SELECT id FROM hosp.pts WHERE cod_programa = ? AND cod_grupo = ? AND cod_paciente = ? AND status = 'A';";
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
-            stm.setInt(1, codPaciente);
+            stm.setInt(1, pts.getPrograma().getIdPrograma());
+            stm.setInt(2, pts.getGrupo().getIdGrupo());
+            stm.setInt(3, pts.getPaciente().getId_paciente());
 
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                pts.setData(rs.getDate("data"));
-                pts.setDiagnosticoFuncional(rs.getString("diagnostico_funcional"));
-                pts.setNecessidadesIhDesejos(rs.getString("necessidades_e_desejos"));
-                pts.getGerenciarPaciente().setId(rs.getInt("id_paciente_instituicao"));
-                pts.setListaPtsArea(carregarAreasPts(pts.getGerenciarPaciente().getId(), conexao));
-
+                retorno = true;
             }
 
         } catch (SQLException ex) {
@@ -411,7 +409,7 @@ public class PtsDAO {
                 ex.printStackTrace();
             }
         }
-        return pts;
+        return retorno;
     }
 
     public List<Pts> buscarPtsPacientesAtivos(Integer codPrograma, Integer codGrupo, String tipoFiltroVencimento,
@@ -421,9 +419,10 @@ public class PtsDAO {
         //Inicia com 2, pois é o número mínimo de parametros.
         Integer contadorParametros = 2;
 
-        String sql = "SELECT p.id, p.data, p.data_vencimento, g.descgrupo, pr.descprograma, pa.nome, " +
+        String sql = "SELECT p.id, pi.id as id_paciente_instituicao, p.data, p.data_vencimento, g.descgrupo, pr.descprograma, pa.nome, p.status, " +
+                "pi.codgrupo, pi.codprograma, pi.codpaciente, pa.cpf, pa.cns, " +
                 "CASE WHEN p.status = 'A' THEN 'Ativo' WHEN p.status = 'C' THEN 'Cancelado' " +
-                "WHEN p.status = 'R' THEN 'Renovado' END AS status " +
+                "WHEN p.status = 'R' THEN 'Renovado' END AS status_por_extenso " +
                 "FROM hosp.paciente_instituicao pi " +
                 "LEFT JOIN hosp.programa pr ON (pr.id_programa = pi.codprograma) " +
                 "LEFT JOIN hosp.grupo g ON (g.id_grupo = pi.codgrupo) " +
@@ -472,12 +471,19 @@ public class PtsDAO {
             while (rs.next()) {
                 Pts pts = new Pts();
                 pts.setId(rs.getInt("id"));
+                pts.getInsercao().setId(rs.getInt("id_paciente_instituicao"));
                 pts.setData(rs.getDate("data"));
                 pts.setDataVencimento(rs.getDate("data_vencimento"));
+                pts.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 pts.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+                pts.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 pts.getPrograma().setDescPrograma(rs.getString("descprograma"));
+                pts.getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 pts.getPaciente().setNome(rs.getString("nome"));
+                pts.getPaciente().setCns(rs.getString("cns"));
+                pts.getPaciente().setCpf(rs.getString("cpf"));
                 pts.setStatus(rs.getString("status"));
+                pts.setStatusPorExtenso(rs.getString("status_por_extenso"));
                 lista.add(pts);
             }
 
@@ -494,4 +500,42 @@ public class PtsDAO {
         return lista;
     }
 
+    public Pts carregarPtsDoPaciente(Integer codPaciente) throws ProjetoException {
+
+        String sql = "SELECT p.data, p.diagnostico_funcional, p.necessidades_e_desejos, p.id_paciente_instituicao " +
+                "FROM hosp.pts p " +
+                "LEFT JOIN hosp.paciente_instituicao pi ON (pi.id = p.id_paciente_instituicao) " +
+                "WHERE pi.codpaciente = ?";
+
+
+        Pts pts = new Pts();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setInt(1, codPaciente);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                pts.setData(rs.getDate("data"));
+                pts.setDiagnosticoFuncional(rs.getString("diagnostico_funcional"));
+                pts.setNecessidadesIhDesejos(rs.getString("necessidades_e_desejos"));
+                pts.getGerenciarPaciente().setId(rs.getInt("id_paciente_instituicao"));
+                pts.setListaPtsArea(carregarAreasPts(pts.getGerenciarPaciente().getId(), conexao));
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return pts;
+    }
 }

@@ -15,6 +15,7 @@ public class Pts implements Serializable {
     private Timestamp dataHoraOperacao;
     private Date dataVencimento;
     private String status;
+    private String statusPorExtenso;
 
     // HERDADOS
     private GrupoBean grupo;
@@ -23,6 +24,7 @@ public class Pts implements Serializable {
     private GerenciarPacienteBean gerenciarPaciente;
     private PtsArea ptsArea;
     private List<PtsArea> listaPtsArea;
+    private InsercaoPacienteBean insercao;
 
     public Pts() {
         grupo = new GrupoBean();
@@ -31,6 +33,7 @@ public class Pts implements Serializable {
         gerenciarPaciente = new GerenciarPacienteBean();
         ptsArea = new PtsArea();
         listaPtsArea = new ArrayList<>();
+        insercao = new InsercaoPacienteBean();
     }
 
     public Integer getId() {
@@ -135,5 +138,21 @@ public class Pts implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getStatusPorExtenso() {
+        return statusPorExtenso;
+    }
+
+    public void setStatusPorExtenso(String statusPorExtenso) {
+        this.statusPorExtenso = statusPorExtenso;
+    }
+
+    public InsercaoPacienteBean getInsercao() {
+        return insercao;
+    }
+
+    public void setInsercao(InsercaoPacienteBean insercao) {
+        this.insercao = insercao;
     }
 }

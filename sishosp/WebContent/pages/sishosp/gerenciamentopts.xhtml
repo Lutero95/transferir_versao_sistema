@@ -161,7 +161,7 @@
                             <b:column span="3" class="new-span2">
                                 <b:commandButton value="Novo" style="margin-top:5px;"
                                                  id="btnInserir" immediate="true"
-                                                 disabled="#{PtsController.rowBean.status != 'A'}"
+                                                 disabled="#{PtsController.renderizarBotaoNovo == false}"
                                                  class="btn-acao-table acao-confirmar btn-new-padding2"
                                                  update=":formGerenPaci, :frmEquipamentos:msgPagina"
                                                  icon="glyphicon-plus"
@@ -210,56 +210,56 @@
 
                         <p:dataTable emptyMessage="Nenhum Paciente" responsive="true"
                                      styleClass="table table-hover" id="dtNovosAg"
-                                     value="#{PtsController.listaPts}" var="pacie"
+                                     value="#{PtsController.listaPts}" var="pts"
                                      paginator="true" paginatorPosition="bottom" rows="12"
                                      resizableColumns="true" selectionMode="single"
-                                     selection="#{GerenciarPacienteController.rowBean}"
-                                     rowKey="#{pacie.id}">
+                                     selection="#{PtsController.rowBean}"
+                                     rowKey="#{pts.insercao.id}">
 
-                            <p:ajax event="rowSelect"
-                                    update=":formGerenPaci:btnAlterar :formGerenPaci:btnExcluir :formGerenPaci:btnRenovar"/>
+                            <p:ajax event="rowSelect" listener="#{PtsController.verificarSeExistePtsParaProgramaGrupoPaciente()}"
+                                    update=":formGerenPaci:btnInserir :formGerenPaci:btnAlterar :formGerenPaci:btnExcluir :formGerenPaci:btnRenovar"/>
 
 
                             <p:column width="20%">
                                 <f:facet name="header">
                                     <h:outputText style="font-size: 14px;" value="Paciente"/>
                                 </f:facet>
-                                <h:outputText value="#{pacie.paciente.nome}"></h:outputText>
+                                <h:outputText value="#{pts.paciente.nome}"></h:outputText>
                             </p:column>
 
                             <p:column width="20%">
                                 <f:facet name="header">
                                     <h:outputText style="font-size: 14px;" value="Programa"/>
                                 </f:facet>
-                                <h:outputText value="#{pacie.programa.descPrograma}"></h:outputText>
+                                <h:outputText value="#{pts.programa.descPrograma}"></h:outputText>
                             </p:column>
 
                             <p:column width="10%">
                                 <f:facet name="header">
                                     <h:outputText style="font-size: 14px;" value="Grupo"/>
                                 </f:facet>
-                                <h:outputText value="#{pacie.grupo.descGrupo}"></h:outputText>
+                                <h:outputText value="#{pts.grupo.descGrupo}"></h:outputText>
                             </p:column>
 
                             <p:column width="15%">
                                 <f:facet name="header">
                                     <h:outputText style="font-size: 14px;" value="Status PTS"/>
                                 </f:facet>
-                                <h:outputText value="#{pacie.status}"></h:outputText>
+                                <h:outputText value="#{pts.statusPorExtenso}"></h:outputText>
                             </p:column>
 
                             <p:column width="20%">
                                 <f:facet name="header">
                                     <h:outputText style="font-size: 14px;" value="Data PTS"/>
                                 </f:facet>
-                                <h:outputText value="#{pacie.data}"></h:outputText>
+                                <h:outputText value="#{pts.data}"></h:outputText>
                             </p:column>
 
                             <p:column width="20%">
                                 <f:facet name="header">
                                     <h:outputText style="font-size: 14px;" value="Data Vencimento PTS"/>
                                 </f:facet>
-                                <h:outputText value="#{pacie.dataVencimento}"></h:outputText>
+                                <h:outputText value="#{pts.dataVencimento}"></h:outputText>
                             </p:column>
 
                         </p:dataTable>
