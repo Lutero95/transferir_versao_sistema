@@ -28,7 +28,7 @@ public class PtsDAO {
 
         Boolean retorno = false;
 
-        String sql = "SELECT id FROM hosp.pts WHERE id_paciente_instituicao = ? ";
+        String sql = "SELECT id FROM hosp.pts WHERE id = ? ";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -128,12 +128,11 @@ public class PtsDAO {
 
             while (rs.next()) {
                 pts = new Pts();
-                pts.getGerenciarPaciente().setId(rs.getInt("id_paciente_instituicao"));
-                pts.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+                pts.getPrograma().setIdPrograma(rs.getInt("cod_programa"));
                 pts.getPrograma().setDescPrograma(rs.getString("descprograma"));
-                pts.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+                pts.getGrupo().setIdGrupo(rs.getInt("cod_grupo"));
                 pts.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-                pts.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+                pts.getPaciente().setId_paciente(rs.getInt("cod_paciente"));
                 pts.getPaciente().setNome(rs.getString("nome"));
                 pts.getPaciente().setCpf(rs.getString("cpf"));
                 pts.getPaciente().setCns(rs.getString("cns"));
@@ -181,12 +180,11 @@ public class PtsDAO {
 
             while (rs.next()) {
                 pts = new Pts();
-                pts.getGerenciarPaciente().setId(rs.getInt("id_paciente_instituicao"));
-                pts.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+                pts.getPrograma().setIdPrograma(rs.getInt("cod_programa"));
                 pts.getPrograma().setDescPrograma(rs.getString("descprograma"));
-                pts.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
+                pts.getGrupo().setIdGrupo(rs.getInt("cod_grupo"));
                 pts.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-                pts.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+                pts.getPaciente().setId_paciente(rs.getInt("cod_paciente"));
                 pts.getPaciente().setNome(rs.getString("nome"));
                 pts.getPaciente().setCpf(rs.getString("cpf"));
                 pts.getPaciente().setCns(rs.getString("cns"));
@@ -218,7 +216,7 @@ public class PtsDAO {
                 "FROM hosp.pts_area pa " +
                 "LEFT JOIN hosp.especialidade e ON (pa.id_area = e.id_especialidade) " +
                 "LEFT JOIN hosp.pts p ON (pa.id_pts = p.id) " +
-                "WHERE p.id_paciente_instituicao = ? ";
+                "WHERE p.id = ? ";
 
         List<PtsArea> lista = new ArrayList<>();
 
@@ -300,9 +298,10 @@ public class PtsDAO {
         return ptsArea;
     }
 
-    public Boolean gravarPts(Pts pts, Boolean ehParaDeletar) {
+    public Integer gravarPts(Pts pts, Boolean ehParaDeletar) {
 
-        Boolean retorno = false;
+        Integer retorno = null;
+
         final Integer SEIS_MESES_VENCIMENTO = 180;
 
         String sql1 = "INSERT INTO hosp.pts (data, diagnostico_funcional, necessidades_e_desejos, id_funcionario, data_hora_operacao, " +
@@ -356,7 +355,7 @@ public class PtsDAO {
 
             conexao.close();
 
-            retorno = true;
+            retorno = codPts;
 
         } catch (SQLException ex) {
             ex.printStackTrace();

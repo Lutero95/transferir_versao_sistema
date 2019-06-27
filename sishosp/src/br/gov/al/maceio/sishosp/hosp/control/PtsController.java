@@ -36,9 +36,6 @@ public class PtsController implements Serializable {
     //CONSTANTES
     private static final String ENDERECO_PTS = "pts?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
-    private static final String ENDERECO_TIPO = "&amp;tipo=";
-    private static final String CABECALHO_INCLUSAO = "Inclusão de PTS";
-    private static final String CABECALHO_ALTERACAO = "Alteração de PTS";
 
     public PtsController() {
         pts = new Pts();
@@ -56,7 +53,6 @@ public class PtsController implements Serializable {
                 .getRequestParameterMap();
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
-            try {
                 existePts = pDao.verificarSeExistePts(id);
                 if (existePts) {
                     this.pts = pDao.ptsCarregarPtsPorId(id);
@@ -64,9 +60,7 @@ public class PtsController implements Serializable {
                     this.pts = pDao.ptsCarregarPacientesInstituicao(id);
                 }
                 listaEspecialidadesEquipe = eDao.listarEspecialidadesEquipe(id);
-            } catch (ProjetoException e) {
-                e.printStackTrace();
-            }
+
         }
         else{
             existePts = false;
@@ -85,7 +79,11 @@ public class PtsController implements Serializable {
     }
 
     public String redirectEdit() {
-        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PTS, ENDERECO_ID, this.pts.getId());
+        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PTS, ENDERECO_ID, this.rowBean.getId());
+    }
+
+    public String redirectEditAposGravar(Integer novoIdPts) {
+        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PTS, ENDERECO_ID, novoIdPts);
     }
 
     public String redirectInsert() {
@@ -155,16 +153,17 @@ public class PtsController implements Serializable {
         pts.getListaPtsArea().remove(ptsRemover);
     }
 
-    public void gravarPts() throws ProjetoException {
+    public String gravarPts() {
 
-        boolean cadastrou = pDao.gravarPts(pts, existePts);
+        Integer novoIdPts = pDao.gravarPts(pts, existePts);
 
-        if (cadastrou == true) {
+        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(novoIdPts)) {
             existePts = true;
-            this.pts = pDao.ptsCarregarPtsPorProgramaGrupoPaciente(pts);
             JSFUtil.adicionarMensagemSucesso("PTS cadastrado com sucesso!", "Sucesso");
+            return redirectEditAposGravar(novoIdPts);
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+            return null;
         }
     }
 
