@@ -32,6 +32,7 @@ public class PtsController implements Serializable {
     private Integer filtroAnoVencimento;
     private Pts rowBean;
     private Boolean renderizarBotaoNovo;
+    private Integer idParametroEndereco;
 
     //CONSTANTES
     private static final String ENDERECO_PTS = "pts?faces-redirect=true";
@@ -53,6 +54,7 @@ public class PtsController implements Serializable {
                 .getRequestParameterMap();
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
+            idParametroEndereco = id;
                 existePts = pDao.verificarSeExistePts(id);
                 if (existePts) {
                     this.pts = pDao.ptsCarregarPtsPorId(id);
@@ -155,16 +157,23 @@ public class PtsController implements Serializable {
 
     public String gravarPts() {
 
+        String retorno = null;
+
         Integer novoIdPts = pDao.gravarPts(pts, existePts);
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(novoIdPts)) {
             existePts = true;
             JSFUtil.adicionarMensagemSucesso("PTS cadastrado com sucesso!", "Sucesso");
-            return redirectEditAposGravar(novoIdPts);
+
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(idParametroEndereco)){
+                retorno = redirectEditAposGravar(novoIdPts);
+            }
+
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-            return null;
         }
+
+        return retorno;
     }
 
     public void validarSenhaAdicionarAreaPts() throws ProjetoException {
