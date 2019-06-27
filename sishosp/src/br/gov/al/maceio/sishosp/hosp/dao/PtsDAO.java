@@ -493,12 +493,12 @@ public class PtsDAO {
             sql = sql + " AND p.data_vencimento < current_date";
         }
 
-        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)){
+        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)) {
             sql = sql + " AND EXTRACT(month FROM p.data) = ? ";
             contadorParametros++;
         }
 
-        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)){
+        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)) {
             sql = sql + " AND EXTRACT(year FROM p.data) = ? ";
             contadorParametros++;
         }
@@ -512,11 +512,11 @@ public class PtsDAO {
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setInt(1, codGrupo);
             stmt.setInt(2, codPrograma);
-            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)){
-               stmt.setInt(contadorParametros, filtroMesVencimento);
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroMesVencimento)) {
+                stmt.setInt(contadorParametros, filtroMesVencimento);
             }
 
-            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)){
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(filtroAnoVencimento)) {
                 stmt.setInt(contadorParametros, filtroAnoVencimento);
             }
 
@@ -591,5 +591,37 @@ public class PtsDAO {
             }
         }
         return pts;
+    }
+
+    public Boolean cancelarPts(Integer id) {
+
+        Boolean retorno = false;
+
+        String sql = "UPDATE hosp.pts SET status = ?, operador_cancelamento = ?, data_hora_cancelamento = CURRENT_TIMESTAMP WHERE id = ?;";
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, StatusPTS.CANCELADO.getSigla());
+            ps.setLong(2, user_session.getId());
+            ps.setInt(3, id);
+            ps.executeUpdate();
+
+            conexao.commit();
+
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
     }
 }

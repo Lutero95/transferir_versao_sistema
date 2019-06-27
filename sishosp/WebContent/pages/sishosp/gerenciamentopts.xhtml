@@ -137,7 +137,7 @@
                             <b:commandButton value="Buscar" icon="glyphicon-search"
                                              class="btn-acao-table acao-buscar" id="btnBusca"
                                              action="#{PtsController.buscarPtsPacientesAtivos}"
-                                             update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:msgPagina, :frmEquipamentos:dtNovosAg, btnInserir"></b:commandButton>
+                                             update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmMsg:msgPagina, :frmTabela:dtNovosAg, btnInserir"></b:commandButton>
 
                         </b:column>
 
@@ -146,7 +146,7 @@
                             <b:commandButton value="Limpar" icon="glyphicon-trash"
                                              class="btn-acao-table acao-limpar2"
                                              action="#{PtsController.limparBusca()}"
-                                             update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmEquipamentos:msgPagina, :frmEquipamentos:dtNovosAg"></b:commandButton>
+                                             update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmMsg:msgPagina, :frmTabela:dtNovosAg"></b:commandButton>
                         </b:column>
 
                     </b:row>
@@ -163,7 +163,7 @@
                                                  id="btnInserir" immediate="true"
                                                  disabled="#{PtsController.renderizarBotaoNovo == false}"
                                                  class="btn-acao-table acao-confirmar btn-new-padding2"
-                                                 update=":formGerenPaci, :frmEquipamentos:msgPagina"
+                                                 update=":formGerenPaci, :frmMsg:msgPagina"
                                                  icon="glyphicon-plus"
                                                  action="#{PtsController.redirectInsert}"/>
                             </b:column>
@@ -173,7 +173,7 @@
                                                  disabled="#{PtsController.rowBean.status != 'A'}"
                                                  id="btnAlterar" immediate="true"
                                                  class="btn-acao-table acao-altera2 btn-new-padding2"
-                                                 update=":formGerenPaci, :frmEquipamentos:msgPagina"
+                                                 update=":formGerenPaci, :frmMsg:msgPagina"
                                                  icon="glyphicon-pencil"
                                                  action="#{PtsController.redirectEdit()}"/>
                             </b:column>
@@ -183,19 +183,19 @@
                                                  disabled="#{PtsController.rowBean.status != 'A'}"
                                                  id="btnRenovar" immediate="true"
                                                  class="btn-acao-table acao-limpar btn-new-padding2"
-                                                 update=":formGerenPaci, :frmEquipamentos:msgPagina"
+                                                 update=":formGerenPaci, :frmMsg:msgPagina"
                                                  icon="glyphicon glyphicon-refresh"
                                                  action="#{GerenciarPacienteController.redirectRenovacao()}"/>
                             </b:column>
 
                             <b:column span="3" class="new-span2">
-                                <b:commandButton value="Desligar" style="margin-top:5px;"
+                                <b:commandButton value="Cancelar" style="margin-top:5px;"
                                                  disabled="#{PtsController.rowBean.status != 'A'}"
                                                  id="btnExcluir" immediate="true"
                                                  class="btn-acao-table acao-desligar btn-new-padding2"
-                                                 update=":formGerenPaci, :frmEquipamentos:msgPagina"
+                                                 update=":formGerenPaci, :frmMsg:msgPagina"
                                                  icon="glyphicon glyphicon-remove"
-                                                 action="#{GerenciarPacienteController.inicioDesligar()}"/>
+                                                 action="#{PtsController.abrirDialogCancelarPts()}"/>
                             </b:column>
 
                         </div>
@@ -204,7 +204,7 @@
 
                 </h:form>
 
-                <h:form id="frmEquipamentos">
+                <h:form id="frmTabela">
 
                     <b:column span="12" class="label-position1">
 
@@ -252,14 +252,18 @@
                                 <f:facet name="header">
                                     <h:outputText style="font-size: 14px;" value="Data PTS"/>
                                 </f:facet>
-                                <h:outputText value="#{pts.data}"></h:outputText>
+                                <h:outputText value="#{pts.data}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
                             </p:column>
 
                             <p:column width="20%">
                                 <f:facet name="header">
                                     <h:outputText style="font-size: 14px;" value="Data Vencimento PTS"/>
                                 </f:facet>
-                                <h:outputText value="#{pts.dataVencimento}"></h:outputText>
+                                <h:outputText value="#{pts.dataVencimento}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
                             </p:column>
 
                         </p:dataTable>
@@ -267,11 +271,13 @@
 
                     <br></br>
 
+                </h:form>
+
+                <h:form id="frmMsg">
+
                     <div align="center" class="new-padding-top">
                         <b:messages value="Error" id="msgPagina"></b:messages>
                     </div>
-
-                    <br></br>
 
                 </h:form>
             </div>
@@ -344,6 +350,28 @@
                     </h:column>
 
                 </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Cancelar Pts" widgetVar="dlgCancelarPts"
+                  width="400" height="auto" modal="true" responsive="true">
+
+            <h:form id="formCancelarPts">
+
+                <div class="alert alert-warning" role="alert">Deseja cancelar
+                    este PTS?</div>
+                <div align="center">
+                    <p:separator />
+
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{PtsController.cancelarPts}" ajax="true"
+                                     class="btn-sim" icon="glyphicon-ok" update=":formGerenPaci, :frmTabela, :frmMsg:msgPagina" />
+
+                    <b:commandButton value="Não" oncomplete="PF('dlgCancelarPts').hide();"
+                                     look="info" ajax="true" icon="glyphicon-remove" class="btn-nao"
+                                     style="margin-left:5px;float:right;" />
+                </div>
+
             </h:form>
         </p:dialog>
 
