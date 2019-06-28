@@ -25,7 +25,9 @@ public class PortadorController implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private PortadorBean port;
+	private PortadorBean rowBean;
 
+	
 	private ArrayList<PortadorBean> lstportador;
 	private String operacao;
 
@@ -225,5 +227,14 @@ public class PortadorController implements Serializable {
 	public void setOperacao(String operacao) {
 		this.operacao = operacao;
 	}
+	
+	public PortadorBean getRowBean() {
+		return rowBean;
+	}
+
+	public void setRowBean(PortadorBean rowBean) {
+		this.rowBean = rowBean;
+	}
+
 
 }

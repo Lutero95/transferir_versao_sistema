@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="receberporclinete" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="969e9a54-e1c4-4905-9a27-7119883c9978">
+	<property name="ireport.zoom" value="1.1000000000000005"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="datainicio" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="datafim" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="situacao" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="codfilial" class="java.lang.Integer"/>
+	<parameter name="filtro" class="java.lang.String"/>
+	<parameter name="referencia" class="java.lang.String"/>
+	<parameter name="tipoRelatorio" class="java.lang.String"/>
+	<parameter name="codportador" class="java.lang.Integer"/>
+	<parameter name="coddespesa" class="java.lang.Integer"/>
+	<parameter name="codccusto" class="java.lang.Integer"/>
+	<parameter name="codTipoDocumento" class="java.lang.Integer"/>
+	<parameter name="codFornecedor" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[(select sum(valor) valor, sum(pago) pago,sum(valor-pago) valorAberto,count(*) docs, codforn, nome, dtemissao, dtvcto, codigo, duplicata, parcela, historico,coddespesa, descdepesa,  codportador, descportador, desccusto, idccusto  from (select
+p.historico,
+p.dtemissao,
+p.dtvcto,
+
+p.codigo, p.duplicata,
+p.parcela,
+f.codforn,f.nome,d.coddespesa,d.descricao as descDepesa ,c.idccusto,c.descricao as descCusto,
+
+			pt.codportador , pt.descricao as descPortador ,p.valor
+            -coalesce(p.desconto,0)
+            +coalesce(p.juros,0)
+            +coalesce(p.multa,0) valor,
+           coalesce( (select sum(valorpago) from clin.pagdupbx bx where bx.codigo=p.codigo),0) pago
+		   from clin.pagdup p join clin.fornecedor f on
+
+
+		  (p.codforn = f.codforn) join clin.despesa d on (d.iddespesa = p.iddespesa )
+				  join clin.ccusto c on (c.idccusto = p.idccusto)
+				   left join clin.portador pt on(pt.codportador = p.codport )
+
+				where
+ (( $P{codFornecedor} is not null and p.codforn= $P{codFornecedor}) or (($P{codFornecedor} =0 ) OR ($P{codFornecedor} is null )))
+and
+ (($P{codTipoDocumento} is not null and p.codtipdoc =$P{codTipoDocumento}) or (($P{codTipoDocumento} =0 ) OR ($P{codTipoDocumento} is null )))
+and
+ (($P{codportador}  is not null and p.codport =$P{codportador}) or (($P{codportador} =0 ) OR ($P{codportador} is null )))
+and
+ (( $P{coddespesa} is not null and p.iddespesa =$P{coddespesa}) or (($P{coddespesa} =0 ) OR ($P{coddespesa} is null )))
+and
+ (($P{codccusto}  is not null and p.idccusto =$P{codccusto}) or (($P{codccusto} =0 ) OR ($P{codccusto} is null )))
+
+
+and p.codfilial=	$P{codfilial}
+
+and
+ (( $P{situacao} <>'T' and p.situacao =$P{situacao}) or ( $P{situacao}='T'))
+
+and (
+( $P{referencia} ='V' and p.dtvcto between  $P{datainicio} and  $P{datafim})
+or
+( $P{referencia} ='E' and p.dtemissao between  $P{datainicio} and  $P{datafim})
+or
+( $P{referencia} ='P' and p.dtprevisao between  $P{datainicio} and  $P{datafim})
+)
+
+
+order by  desccusto) t group by codforn, nome, dtemissao, dtvcto, codigo, duplicata, parcela, historico,coddespesa, descdepesa, codportador, descportador, desccusto, idccusto)]]>
+	</queryString>
+	<field name="valor" class="java.lang.Double"/>
+	<field name="pago" class="java.lang.Double"/>
+	<field name="valoraberto" class="java.lang.Double"/>
+	<field name="docs" class="java.lang.Long"/>
+	<field name="codforn" class="java.lang.Integer"/>
+	<field name="nome" class="java.lang.String"/>
+	<field name="dtemissao" class="java.sql.Date"/>
+	<field name="dtvcto" class="java.sql.Date"/>
+	<field name="codigo" class="java.lang.Integer"/>
+	<field name="duplicata" class="java.lang.String"/>
+	<field name="parcela" class="java.lang.String"/>
+	<field name="historico" class="java.lang.String"/>
+	<field name="coddespesa" class="java.lang.String"/>
+	<field name="descdepesa" class="java.lang.String"/>
+	<field name="codportador" class="java.lang.Integer"/>
+	<field name="descportador" class="java.lang.String"/>
+	<field name="desccusto" class="java.lang.String"/>
+	<field name="idccusto" class="java.lang.Integer"/>
+	<variable name="codigo_1" class="java.lang.Integer" resetType="Group" resetGroup="grpforn" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{codigo}]]></variableExpression>
+	</variable>
+	<variable name="valor_1" class="java.lang.Double" resetType="Group" resetGroup="grpforn" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<variable name="pago_1" class="java.lang.Double" resetType="Group" resetGroup="grpforn" calculation="Sum">
+		<variableExpression><![CDATA[$F{pago}]]></variableExpression>
+	</variable>
+	<variable name="codigo_2" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{codigo}]]></variableExpression>
+	</variable>
+	<variable name="valor_2" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<variable name="pago_2" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{pago}]]></variableExpression>
+	</variable>
+	<variable name="valor_3" class="java.lang.Double" resetType="Group" resetGroup="grpforn" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<variable name="pago_3" class="java.lang.Double" resetType="Group" resetGroup="grpforn" calculation="Sum">
+		<variableExpression><![CDATA[$F{pago}]]></variableExpression>
+	</variable>
+	<variable name="valoraberto_1" class="java.lang.Double" resetType="Group" resetGroup="grpforn" calculation="Sum">
+		<variableExpression><![CDATA[$F{valoraberto}]]></variableExpression>
+	</variable>
+	<variable name="docs_1" class="java.lang.Long" resetType="Group" resetGroup="grpforn" calculation="Sum">
+		<variableExpression><![CDATA[$F{docs}]]></variableExpression>
+	</variable>
+	<group name="grpforn">
+		<groupExpression><![CDATA[$F{idccusto}]]></groupExpression>
+		<groupHeader>
+			<band height="38">
+				<textField>
+					<reportElement uuid="d74ab0a5-cdce-4347-a645-14a81e4a29e0" mode="Opaque" x="2" y="0" width="750" height="36" backcolor="#D4D0C8"/>
+					<textElement>
+						<font fontName="DejaVu Sans"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{idccusto}+" - "+ $F{desccusto}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="grpforn" pattern="R$ #,##0.00">
+					<reportElement uuid="6a9ee60d-e3cd-4e36-8a8e-cb8ecfa2d4fb" x="411" y="6" width="53" height="26"/>
+					<textElement>
+						<font fontName="DejaVu Sans" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{valor_3}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="grpforn" pattern="R$ #,##0.00">
+					<reportElement uuid="85986d9a-c52b-4f5c-9991-11ba8a7bc67a" x="498" y="6" width="53" height="26"/>
+					<textElement>
+						<font fontName="DejaVu Sans" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{pago_3}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="grpforn" pattern="R$ #,##0.00">
+					<reportElement uuid="04d99fa6-5167-4351-8ba6-0d8b94ddad6a" x="585" y="4" width="53" height="26"/>
+					<textElement>
+						<font fontName="DejaVu Sans" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{valoraberto_1}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="72ae5a46-0c3a-4a02-a233-e067042fb55b" x="1" y="37" width="750" height="1"/>
+				</line>
+				<textField evaluationTime="Group" evaluationGroup="grpforn">
+					<reportElement uuid="28805cea-e6c8-4a5d-be1b-28458eacbe28" x="718" y="4" width="30" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$V{docs_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="2"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="129" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="bf584b2c-dae7-413c-8c15-2f2b52880969" key="staticText-102" x="10" y="33" width="454" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="DejaVu Sans" size="12" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Sistema de Gerenciamento Comercial]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="02d0b077-ea38-472b-9b68-ab39ccc004c1" key="staticText-101" x="10" y="10" width="387" height="23"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="DejaVu Sans" size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Beauty Clinic]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="423ef899-30af-4e31-97a8-10d14a4f1529" x="321" y="68" width="47" height="20"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{datainicio}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="45b50d52-8a18-4837-b74c-bb950dc285fc" x="397" y="68" width="100" height="20"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{datafim}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="89337aad-afb5-44fb-afa2-1481db411b66" x="230" y="68" width="79" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<text><![CDATA[De:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="78976ab9-6f91-4d96-ade1-5e85637251b8" x="368" y="68" width="29" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<text><![CDATA[a]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c5368030-d553-41fc-af6d-872578cc7b86" x="10" y="99" width="220" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="8"/>
+				</textElement>
+				<text><![CDATA[FILTRO: PAGAR POR CENTRO DE CUSTO SINTÉTICO]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="bd3ba12e-b957-4233-8a82-cfe8d38f958e" x="347" y="1" width="96" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bd3ba12e-b957-4233-8a82-cfe8d38f958e" x="468" y="1" width="67" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Valor Pago]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="72ae5a46-0c3a-4a02-a233-e067042fb55b" x="0" y="15" width="750" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="d80e7878-75a2-4021-a907-6178408e8ee6" x="549" y="0" width="89" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Valor em Aberto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dd9b8344-b8ef-4dd1-8501-18a14a145e60" x="681" y="0" width="51" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Qtd. docs]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="1" splitType="Stretch"/>
+	</detail>
+	<pageFooter>
+		<band height="29" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="HH:mm:ss" isBlankWhenNull="false">
+				<reportElement uuid="cf632a10-b2b0-4271-8932-c86581648698" key="textField-25" x="79" y="0" width="78" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="dd/MM/yyyy" isBlankWhenNull="false">
+				<reportElement uuid="4b8f8e74-193c-43bd-9d82-8e0052894437" key="textField-24" x="1" y="0" width="78" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="false">
+				<reportElement uuid="c666d4fd-3798-4bcb-9b6f-8ee896314d56" key="textField-26" x="691" y="10" width="27" height="18"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER} + ""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="6f1c6a42-faf3-42ea-ab51-dd54b6a19593" key="textField-27" x="624" y="10" width="67" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina : " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="1" splitType="Stretch"/>
+	</summary>
+</jasperReport>

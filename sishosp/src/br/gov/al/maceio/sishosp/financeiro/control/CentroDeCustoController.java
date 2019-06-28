@@ -39,6 +39,7 @@ public class CentroDeCustoController implements Serializable {
 		CentroCustoDAO dao = new CentroCustoDAO();
 		if (dao.salvarCentro(this.bean)) {
 			bean = new CentroCustoBean();
+			lstCustos = null;
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Centro de Custo Gravado com Sucesso",
 					"Centro de Custo Gravado com Sucesso");

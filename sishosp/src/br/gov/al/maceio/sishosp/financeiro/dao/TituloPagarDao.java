@@ -479,12 +479,12 @@ public class TituloPagarDao {
 				+ " case when dtvcto <=current_date then true else false end vencido,"
 				+ " case when dtvcto >current_date then true else false end vencer,"
 				+ " codigo,codforn,dtcompete,dtvcto,juros,multa,valor - coalesce(desconto,0) + coalesce(multa,0) + coalesce(juros,0) valor,processo,desconto,dtemissao,"
-				+ "  historico,duplicata,idccusto,coddespesa, situacao,parcela,icmssubt,"
+				+ "  historico,duplicata,idccusto, situacao,parcela,icmssubt,"
 				+ " nomeFornecedor,despesa,descCusto, portdesc,codportador, iddespesa,"
 				+ "  codtipdoc,   desctipdoc,nominal, dtprevisao,case when valoraberto<0 then 0 else valoraberto end valoraberto,totalpago"
 				+ "  from("
 				+ "select  p.codigo,p.codforn,p.dtcompete,p.dtvcto,p.juros,p.multa,p.valor,p.processo,p.desconto,p.dtemissao,"
-				+ "  p.historico,p.duplicata,c.idccusto,d.coddespesa, p.situacao,p.parcela,p.dtprevisao,p.icmssubt,"
+				+ "  p.historico,p.duplicata,c.idccusto, p.situacao,p.parcela,p.dtprevisao,p.icmssubt,"
 				+ "  f.nome as nomeFornecedor,d.descricao as despesa,c.descricao descCusto,pt.descricao portdesc,pt.codportador, d.iddespesa, "
 				+ "  p.codtipdoc,  td.descricao desctipdoc, p.nominal, "
 				+ "  p.valor - coalesce(p.desconto,0)+coalesce(p.juros,0)+coalesce(p.multa,0)-coalesce(p.vlr_retencao,0)"
@@ -670,12 +670,12 @@ public class TituloPagarDao {
 				+ " case when dtvcto <=current_date then true else false end vencido,"
 				+ " case when dtvcto >current_date then true else false end vencer,"
 				+ " codigo,codforn,dtcompete,dtvcto,juros,multa,valor - coalesce(desconto,0) + coalesce(multa,0) + coalesce(juros,0) valor,processo,desconto,dtemissao,"
-				+ "  historico,duplicata,idccusto,coddespesa, situacao,parcela,icmssubt,"
+				+ "  historico,duplicata,idccusto, situacao,parcela,icmssubt,"
 				+ " nomeFornecedor,despesa,descCusto, portdesc,codportador, iddespesa,"
 				+ "  codtipdoc,   desctipdoc,nominal, dtprevisao,case when valoraberto<0 then 0 else valoraberto end valoraberto,totalpago"
 				+ "  from("
 				+ "select  p.codigo,p.codforn,p.dtcompete,p.dtvcto,p.juros,p.multa,p.valor,p.processo,p.desconto,p.dtemissao,"
-				+ "  p.historico,p.duplicata,c.idccusto,d.coddespesa, p.situacao,p.parcela,p.dtprevisao,p.icmssubt,"
+				+ "  p.historico,p.duplicata,c.idccusto,d. p.situacao,p.parcela,p.dtprevisao,p.icmssubt,"
 				+ "  f.nome as nomeFornecedor,d.descricao as despesa,c.descricao descCusto,pt.descricao portdesc,pt.codportador, d.iddespesa, "
 				+ "  p.codtipdoc,  td.descricao desctipdoc, p.nominal, "
 				+ "  p.valor - coalesce(p.desconto,0)+coalesce(p.juros,0)+coalesce(p.multa,0)-coalesce(p.vlr_retencao,0)"
@@ -1101,7 +1101,7 @@ public class TituloPagarDao {
 			java.util.Date periodiFinal) throws ProjetoException {
 
 		String sql = " select  p.codigo,p.codforn,p.dtcompete,p.juros,p.multa,p.valor,p.processo,"
-				+ "  p.desconto,p.dtemissao,p.dtvcto,p.historico,p.duplicata,c.idccusto,d.coddespesa, "
+				+ "  p.desconto,p.dtemissao,p.dtvcto,p.historico,p.duplicata,c.idccusto, "
 				+ "  f.nome as nomeFornecedor,d.descricao as despesa,c.descricao descCusto,pt.descricao portdesc,pt.codportador, "
 				+ "  sum(valorpago) as valorpago, p.dtprevisao, p.parcela, "
 				+ "  p.valor - coalesce(p.desconto,0)+coalesce(p.juros,0)+coalesce(p.multa,0)-coalesce(p.vlr_retencao,0)"
@@ -1115,7 +1115,7 @@ public class TituloPagarDao {
 		if ((forn.getCodforn() != null) && (forn.getCodforn() > 0))
 			sql = sql + " and p.codforn=?";
 		sql = sql + " group by p.codigo,p.codforn,p.dtcompete,p.juros,p.multa,p.valor,p.processo,"
-				+ "  p.desconto,p.dtemissao,p.dtvcto,p.historico,p.duplicata,c.idccusto,d.coddespesa,p.vlr_retencao,nomeFornecedor,despesa,descCusto,portdesc,pt.codportador,p.parcela, p.dtprevisao ";
+				+ "  p.desconto,p.dtemissao,p.dtvcto,p.historico,p.duplicata,c.idccusto,p.vlr_retencao,nomeFornecedor,despesa,descCusto,portdesc,pt.codportador,p.parcela, p.dtprevisao ";
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
 

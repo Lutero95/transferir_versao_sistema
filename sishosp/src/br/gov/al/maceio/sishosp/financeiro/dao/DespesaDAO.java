@@ -20,7 +20,7 @@ public class DespesaDAO {
     public boolean cadastrarDespesa(DespesaBean despesa) throws ProjetoException {
         
         String sql = "insert into financeiro.despesa(descricao) "
-            + "values (?, ?)";
+            + "values (?)";
         
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance()
             .getExternalContext().getSessionMap().get("obj_usuario");
@@ -121,7 +121,7 @@ public class DespesaDAO {
     
     public ArrayList<DespesaBean> listarDespesas() throws ProjetoException {
         
-        String sql = "select iddespesa, descricao, coddespesa "
+        String sql = "select iddespesa, descricao "
             + "from financeiro.despesa  order by descricao";
         
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance()

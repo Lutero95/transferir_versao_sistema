@@ -11,7 +11,7 @@
 	<ui:define name="content">
 	<p:growl id="grwgeral"/>
 		<h:form id="frm">
-			<h3 style="font-size: 22px; font-weight: bold">Gerenciamento Centro de Custo</h3>
+			<h3 style="font-size: 22px; font-weight: bold">Gerenciamento de Portador</h3>
 			<p:toolbar style="margin-bottom: 7px">
 				<p:toolbarGroup>
 					<h:panelGrid id="outBotoes" columns="4">
@@ -23,26 +23,26 @@
 
 						<p:commandButton id="btnalt" value="Alterar"
 							style="margin-left :10px" update=":frmedit:pnledit :grwgeral"
-							action="#{centroDeCustoController.acaoEditar()}"
+							action="#{portadorController.acaoEditar()}"
 							icon="ui-icon-wrench" 
-                            disabled="#{centroDeCustoController.rowBean == null or MBUsuarios.verificarPermComp('FC-113', MBUsuarios.sistemaLogado.id) == false}">
+                            disabled="#{portadorController.rowBean == null or MBUsuarios.verificarPermComp('FC-113', MBUsuarios.sistemaLogado.id) == false}">
 
 						</p:commandButton>
 
 						<p:commandButton icon="ui-icon-closethick" value="Excluir"
 							style="margin-left :10px"
-							action="#{centroDeCustoController.acaoExcluir()}"
-							update=":grwgeral" disabled="#{centroDeCustoController.rowBean == null or MBUsuarios.verificarPermComp('FC-114', MBUsuarios.sistemaLogado.id) == false}">
+							action="#{portadorController.acaoExcluir()}"
+							update=":grwgeral" disabled="#{portadorController.rowBean == null or MBUsuarios.verificarPermComp('FC-114', MBUsuarios.sistemaLogado.id) == false}">
 						</p:commandButton>
 					</h:panelGrid>
 				</p:toolbarGroup>
 			</p:toolbar>
 
 			<b:dataTable select="true"  id="tabela"
-				value="#{centroDeCustoController.listaCustos()}" var="m"2
+				value="#{portadorController.lstportador()}" var="m"
 				selection-mode="single"
-				onselect="ajax:centroDeCustoController.onRowSelect(m)"
-				ondeselect="ajax:centroDeCustoController.onRowSelect(null)"
+				onselect="ajax:portadorController.onRowSelect(m)"
+				ondeselect="ajax:portadorController.onRowSelect(null)"
 				custom-lang-url="#{resource['/pt-br.json']}"
 				 >
 				
@@ -52,7 +52,7 @@
 
 
 		<!--  Dialog Inclusao dados TipoDoc -->
-		<p:dialog responsive="true" widgetVar="dlginc" header="Dados do Centro de Custo" height="180"
+		<p:dialog responsive="true" widgetVar="dlginc" header="Dados do Portador" height="180"
 			resizable="false" width="400" modal="true">
 			<h:form id="frminc">
 				<p:growl id="msg" />
@@ -63,21 +63,19 @@
 
 					<p:panelGrid columns="2" styleClass="semBorda" style="width:100%;">
 
-						<h:outputText value="Cód. Custo"></h:outputText>
-
 						
 
 						<h:outputText value="Descrição"></h:outputText>
 
 						<p:inputText required="true" requiredMessage="Informe a descrição"
-							size="30" value="#{centroDeCustoController.bean.descricao}" />
+							size="30" value="#{portadorController.port.descricao}" />
 
 					</p:panelGrid>
 					<br />
 					<br />
 					<center>
 						<p:commandButton value="Gravar"
-							actionListener="#{centroDeCustoController.salvar()}"
+							actionListener="#{portadorController.gravar()}"
 							update=":frm:tabela :frminc:msg" icon="ui-icon-check">
 
 						</p:commandButton>
@@ -104,20 +102,20 @@
 
 					<p:panelGrid columns="2" styleClass="semBorda" style="width:100%;">
 
-						<h:outputText value="Cód. Custo"></h:outputText>
+						
 
 					
 						<h:outputText value="Descrição"></h:outputText>
 
 						<p:inputText required="true" requiredMessage="Informe a descrição"
-							size="30" value="#{centroDeCustoController.rowBean.descricao}" />
+							size="30" value="#{portadorController.rowBean.descricao}" />
 
 					</p:panelGrid>
 					<br />
 					<br />
 					<center>
 						<p:commandButton value="Editar"
-							action="#{centroDeCustoController.editar()}"
+							action="#{portadorController.gravar()}"
 							update=":frm:tabela :grwgeral" style="font-size: 14px"
 							icon="ui-icon-wrench">
 
@@ -143,7 +141,7 @@
 			<center>
 
 				<p:commandButton value="Sim" update=":frm:tabela :grwgeral"
-					actionListener="#{centroDeCustoController.excluir()}"
+					actionListener="#{portadorController.excluirPortador()}"
 					icon="ui-icon-check" style="font-size:14px;">
 				</p:commandButton>
 
