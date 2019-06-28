@@ -131,8 +131,8 @@ public class GrupoController implements Serializable {
 
     }
 
-    public List<GrupoBean> listarGrupos() throws ProjetoException {
-        return gDao.listarGrupos();
+    public void listarGrupos() throws ProjetoException {
+        listaGrupos = gDao.listarGrupos();
     }
 
     public List<ProgramaBean> listarProgramasEGrupos() throws ProjetoException {

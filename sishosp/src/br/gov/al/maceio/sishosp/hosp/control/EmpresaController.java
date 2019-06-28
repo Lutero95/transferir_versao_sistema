@@ -30,6 +30,7 @@ public class EmpresaController implements Serializable {
     private ArrayList<String> listaEstados;
     private List<GrupoBean> listaGruposProgramas;
     private GrupoDAO gDao = new GrupoDAO();
+    private List<EmpresaBean> listaEmpresas;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroEmpresa?faces-redirect=true";
@@ -41,6 +42,7 @@ public class EmpresaController implements Serializable {
     public EmpresaController() {
         this.empresa = new EmpresaBean();
         this.cabecalho = "";
+        listaEmpresas = new ArrayList<>();
         listaGruposProgramas = new ArrayList<>();
         listaEstados = new ArrayList<>();
         listaEstados.add("AC");
@@ -135,8 +137,8 @@ public class EmpresaController implements Serializable {
         }
     }
 
-    public List<EmpresaBean> listarEmpresa() throws ProjetoException {
-        return eDao.listarEmpresa();
+    public void listarEmpresa() throws ProjetoException {
+        listaEmpresas = eDao.listarEmpresa();
     }
 
     public List<GrupoBean> listaGrupoAutoCompleteComPrograma(String query)
@@ -212,5 +214,13 @@ public class EmpresaController implements Serializable {
 
     public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
         this.listaGruposProgramas = listaGruposProgramas;
+    }
+
+    public List<EmpresaBean> getListaEmpresas() {
+        return listaEmpresas;
+    }
+
+    public void setListaEmpresas(List<EmpresaBean> listaEmpresas) {
+        this.listaEmpresas = listaEmpresas;
     }
 }

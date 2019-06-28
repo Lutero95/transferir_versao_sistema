@@ -1,96 +1,102 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="../../template/template.xhtml">
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-			<div class="panel panel-primary top-primary">
-			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Gerenciamento de Raça</h4>
-				</div>
-				
-				<div class="panel-body table-body">
-				
-				<h:form id="frmPrincipal">
+        <f:metadata>
+            <f:viewAction action="#{RacaController.listaRacas()}"/>
+        </f:metadata>
 
-				<b:commandButton id="btninc" value="Novo" size="sm"
-					action="#{RacaController.redirectInsert()}"
-					icon="glyphicon-plus" class="btn-addNovo">
-					<f:setPropertyActionListener value="1"
-						target="#{RacaController.tipo}" />
-					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Gerenciamento de Raça</h4>
+            </div>
 
-				<div align="center">
-					<b:messages value="Error" id="msgPagina"></b:messages>
-				</div>
+            <div class="panel-body table-body">
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela" var="tab"
-					value="#{RacaController.listaRacas()}" responsive="true">
-					<h:column>
-						<f:facet name="header">
-                        Descrição
-                    </f:facet>
+                <h:form id="frmPrincipal">
 
-						<h:outputText value="#{tab.descRaca}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">
-                        Ação
-                    </f:facet>
+                    <b:commandButton id="btninc" value="Novo" size="sm"
+                                     action="#{RacaController.redirectInsert()}"
+                                     icon="glyphicon-plus" class="btn-addNovo">
+                        <f:setPropertyActionListener value="1"
+                                                     target="#{RacaController.tipo}"/>
+                        <p:tooltip for="btninc" value="Incluir"></p:tooltip>
+                    </b:commandButton>
 
-						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							class="btn-acao-table acao-editar"
-							action="#{RacaController.redirectEdit()}">
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{RacaController.raca}" />
+                    <div align="center">
+                        <b:messages value="Error" id="msgPagina"></b:messages>
+                    </div>
 
-							<f:setPropertyActionListener value="2"
-								target="#{RacaController.tipo}" />
-						</b:commandButton>
+                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela" var="tab"
+                                 value="#{RacaController.listaRacas}" responsive="true">
+                        <h:column>
+                            <f:facet name="header">
+                                Descrição
+                            </f:facet>
 
-						<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
-							oncomplete="PF('dialogExclusao').show()">
+                            <h:outputText value="#{tab.descRaca}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                Ação
+                            </f:facet>
 
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{RacaController.raca}" />
-						</b:commandButton>
+                            <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+                                             class="btn-acao-table acao-editar"
+                                             action="#{RacaController.redirectEdit()}">
+                                <f:setPropertyActionListener value="#{tab}"
+                                                             target="#{RacaController.raca}"/>
 
-					</h:column>
+                                <f:setPropertyActionListener value="2"
+                                                             target="#{RacaController.tipo}"/>
+                            </b:commandButton>
 
-				</b:dataTable>
-		</h:form>
-		</div>
-		</div>
+                            <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+                                             size="sm" ajax="true" style="margin-left:10px"
+                                             class="btn-acao-table acao-excluir"
+                                             oncomplete="PF('dialogExclusao').show()">
 
-		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
-			resizable="false" showEffect="clip" hideEffect="clip">
+                                <f:setPropertyActionListener value="#{tab}"
+                                                             target="#{RacaController.raca}"/>
+                            </b:commandButton>
 
-			<h:form id="frmExcluir">
+                        </h:column>
 
-					<div class="alert alert-warning" role="alert">Deseja excluir
-						esta Raça?</div>
+                    </b:dataTable>
+                </h:form>
+            </div>
+        </div>
 
-				<div align="center">
-					<p:separator />
-					<b:commandButton look="success" value="Sim" style="float:left;"
-						action="#{RacaController.excluirRaca()}" ajax="true" class="btn-sim"
-						icon="glyphicon-ok" update="frmPrincipal" />
+        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+                  resizable="false" showEffect="clip" hideEffect="clip">
 
-					<b:commandButton value="Não" class="btn-nao"
-						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
+            <h:form id="frmExcluir">
 
-				</div>
+                <div class="alert alert-warning" role="alert">Deseja excluir
+                    esta Raça?
+                </div>
 
-			</h:form>
-		</p:dialog>
+                <div align="center">
+                    <p:separator/>
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{RacaController.excluirRaca()}" ajax="true" class="btn-sim"
+                                     icon="glyphicon-ok" update="frmPrincipal"/>
+
+                    <b:commandButton value="Não" class="btn-nao"
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
+
+                </div>
+
+            </h:form>
+        </p:dialog>
 
 
-	</ui:define>
+    </ui:define>
 </ui:composition>

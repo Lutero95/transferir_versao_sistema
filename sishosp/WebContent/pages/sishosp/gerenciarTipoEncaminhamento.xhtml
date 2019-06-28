@@ -8,6 +8,10 @@
 
     <ui:define name="content">
 
+        <f:metadata>
+            <f:viewAction action="#{EncaminhadoController.listarTiposDeEncaminhamento()}"/>
+        </f:metadata>
+
         <div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Gerenciamento de Tipo de Encaminhamento</h4>
@@ -30,7 +34,7 @@
                 </div>
 
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-                            responsive="true" value="#{EncaminhadoController.listarTiposDeEncaminhamento()}">
+                            responsive="true" value="#{EncaminhadoController.listaTiposEncaminhamento}">
 
                     <h:column>
                         <f:facet name="header">

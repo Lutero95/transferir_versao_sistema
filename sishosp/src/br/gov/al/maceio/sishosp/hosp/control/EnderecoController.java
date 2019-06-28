@@ -28,6 +28,7 @@ public class EnderecoController implements Serializable {
     private String bairro;
     private Integer codbairro;
     private List<EnderecoBean> listaMunicipios;
+    private List<EnderecoBean> listaBairros;
     private EnderecoDAO eDao = new EnderecoDAO();
 
     //CONSTANTES
@@ -47,6 +48,7 @@ public class EnderecoController implements Serializable {
         listaMunicipios = new ArrayList<>();
         listaMunicipios = null;
         endereco.setUf(eDao.retornarEstadoDaEmpresa());
+        listaBairros = new ArrayList<>();
     }
 
     public void limparDados() {
@@ -131,8 +133,8 @@ public class EnderecoController implements Serializable {
 
     }
 
-    public List<EnderecoBean> listarBairros() throws ProjetoException {
-        return eDao.listaBairros();
+    public void listarBairros() throws ProjetoException {
+        listaBairros = eDao.listaBairros();
     }
 
     public List<EnderecoBean> listarBairrosPorMunicipio(Integer codMunicipio) throws ProjetoException {
@@ -303,5 +305,14 @@ public class EnderecoController implements Serializable {
     public void setBairro(String bairro) {
         this.bairro = bairro;
     }
+
+    public List<EnderecoBean> getListaBairros() {
+        return listaBairros;
+    }
+
+    public void setListaBairros(List<EnderecoBean> listaBairros) {
+        this.listaBairros = listaBairros;
+    }
+
 
 }

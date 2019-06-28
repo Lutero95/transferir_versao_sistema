@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class MotivoDesligamentoController implements Serializable {
     private MotivoDesligamentoBean motivo;
     private int tipo;
     private String cabecalho;
+    private List<MotivoDesligamentoBean> listaMotivos;
     private MotivoDesligamentoDAO pDao = new MotivoDesligamentoDAO();
 
     //CONSTANTES
@@ -35,7 +37,7 @@ public class MotivoDesligamentoController implements Serializable {
     public MotivoDesligamentoController() {
         motivo = new MotivoDesligamentoBean();
         this.cabecalho = "";
-
+        listaMotivos = new ArrayList<>();
     }
 
     public String redirectEdit() {
@@ -65,8 +67,8 @@ public class MotivoDesligamentoController implements Serializable {
         motivo = new MotivoDesligamentoBean();
     }
 
-    public List<MotivoDesligamentoBean> listarMotivos() throws ProjetoException {
-        return pDao.listarMotivos();
+    public void listarMotivos() throws ProjetoException {
+        listaMotivos = pDao.listarMotivos();
     }
 
     public void gravarMotivo() {
@@ -132,4 +134,11 @@ public class MotivoDesligamentoController implements Serializable {
         return cabecalho;
     }
 
+    public List<MotivoDesligamentoBean> getListaMotivos() {
+        return listaMotivos;
+    }
+
+    public void setListaMotivos(List<MotivoDesligamentoBean> listaMotivos) {
+        this.listaMotivos = listaMotivos;
+    }
 }

@@ -106,13 +106,7 @@ public class EscolaridadeController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
-        listarEscolaridades();
-    }
-
-    public List<EscolaridadeBean> listarEscolaridades() throws ProjetoException {
-        listaEscolaridade = eDao.listaEscolaridade();
-
-        return listaEscolaridade;
+        buscarEscolaridades();
     }
 
     public void buscarEscolaridades() throws ProjetoException {
@@ -148,4 +142,11 @@ public class EscolaridadeController implements Serializable {
         this.tipo = tipo;
     }
 
+    public List<EscolaridadeBean> getListaEscolaridade() {
+        return listaEscolaridade;
+    }
+
+    public void setListaEscolaridade(List<EscolaridadeBean> listaEscolaridade) {
+        this.listaEscolaridade = listaEscolaridade;
+    }
 }

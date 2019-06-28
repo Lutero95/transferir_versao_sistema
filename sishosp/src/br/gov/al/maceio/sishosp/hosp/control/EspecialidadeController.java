@@ -97,18 +97,13 @@ public class EspecialidadeController implements Serializable {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
-        listarEspecialidades();
+        listarTodasEspecialidades();
     }
 
     public void listarTodasEspecialidades() throws ProjetoException {
         this.listaEspecialidade = eDao.listarEspecialidades();
     }
 
-    public List<EspecialidadeBean> listarEspecialidades()
-            throws ProjetoException {
-        this.listaEspecialidade = eDao.listarEspecialidades();
-        return listaEspecialidade;
-    }
 
     public List<EspecialidadeBean> listaEspecialidadeAutoComplete(String query)
             throws ProjetoException {

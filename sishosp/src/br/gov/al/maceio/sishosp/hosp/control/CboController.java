@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ public class CboController implements Serializable {
     private int tipo;
     private String cabecalho;
     private CboDAO cDao = new CboDAO();
+    private List<CboBean> listaCbo;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroCbo?faces-redirect=true";
@@ -34,6 +36,7 @@ public class CboController implements Serializable {
 
     public CboController() {
         this.cbo = new CboBean();
+        listaCbo = new ArrayList<>();
     }
 
     public String redirectEdit() {
@@ -102,8 +105,8 @@ public class CboController implements Serializable {
         }
     }
 
-    public List<CboBean> listarCbos() throws ProjetoException {
-        return cDao.listarCbo();
+    public void listarCbos() throws ProjetoException {
+        listaCbo = cDao.listarCbo();
     }
 
     public CboBean getCbo() {
@@ -135,4 +138,11 @@ public class CboController implements Serializable {
         this.tipo = tipo;
     }
 
+    public List<CboBean> getListaCbo() {
+        return listaCbo;
+    }
+
+    public void setListaCbo(List<CboBean> listaCbo) {
+        this.listaCbo = listaCbo;
+    }
 }

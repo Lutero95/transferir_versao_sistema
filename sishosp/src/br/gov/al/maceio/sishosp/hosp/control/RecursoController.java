@@ -23,6 +23,7 @@ public class RecursoController implements Serializable {
     private RecursoBean recurso;
     private int tipo;
     private String cabecalho;
+    private List<RecursoBean> listaRecursos;
     private RecursoDAO rDao = new RecursoDAO();
 
     //CONSTANTES
@@ -34,6 +35,7 @@ public class RecursoController implements Serializable {
 
     public RecursoController() {
         recurso = new RecursoBean();
+        listaRecursos = new ArrayList<>();
     }
 
     public String redirectEdit() {
@@ -103,8 +105,8 @@ public class RecursoController implements Serializable {
 
     }
 
-    public List<RecursoBean> listarRecursos() throws ProjetoException {
-        return rDao.listaRecursos();
+    public void listarRecursos() throws ProjetoException {
+        listaRecursos = rDao.listaRecursos();
     }
 
     public ArrayList<RecursoBean> listarRecurso(Integer id_proc) throws ProjetoException {
@@ -150,4 +152,11 @@ public class RecursoController implements Serializable {
         this.tipo = tipo;
     }
 
+    public List<RecursoBean> getListaRecursos() {
+        return listaRecursos;
+    }
+
+    public void setListaRecursos(List<RecursoBean> listaRecursos) {
+        this.listaRecursos = listaRecursos;
+    }
 }

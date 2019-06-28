@@ -8,6 +8,10 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:viewAction action="#{BloqueioController.listarBloqueios()}"/>
+		</f:metadata>
+
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Consulta de Bloqueio por Profissional</h4>
@@ -31,7 +35,7 @@
 					<p:outputPanel id="outBloq">
 
 						<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-							id="dtBloqueios" value="#{BloqueioController.listarBloqueios()}"
+							id="dtBloqueios" value="#{BloqueioController.listaBloqueio}"
 							var="bloqueio" responsive="true">
 
 							<h:column>

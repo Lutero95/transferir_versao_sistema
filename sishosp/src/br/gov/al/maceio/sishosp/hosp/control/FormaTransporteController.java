@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class FormaTransporteController implements Serializable {
     private FormaTransporteBean transporte;
     private String cabecalho;
     private int tipo;
+    private List<FormaTransporteBean> listaFormaTransporte;
     private FormaTransporteDAO fDao = new FormaTransporteDAO();
 
     //CONSTANTES
@@ -34,6 +36,7 @@ public class FormaTransporteController implements Serializable {
 
     public FormaTransporteController() {
         transporte = new FormaTransporteBean();
+        listaFormaTransporte = new ArrayList<>();
     }
 
     public String redirectEdit() {
@@ -101,8 +104,8 @@ public class FormaTransporteController implements Serializable {
         listarTransporte();
     }
 
-    public  List<FormaTransporteBean> listarTransporte() throws ProjetoException {
-        return fDao.listaTransportes();
+    public void listarTransporte() throws ProjetoException {
+        listaFormaTransporte = fDao.listaTransportes();
     }
 
     public FormaTransporteBean getTransporte() {
@@ -134,4 +137,11 @@ public class FormaTransporteController implements Serializable {
         this.tipo = tipo;
     }
 
+    public List<FormaTransporteBean> getListaFormaTransporte() {
+        return listaFormaTransporte;
+    }
+
+    public void setListaFormaTransporte(List<FormaTransporteBean> listaFormaTransporte) {
+        this.listaFormaTransporte = listaFormaTransporte;
+    }
 }

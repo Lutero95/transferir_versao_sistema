@@ -8,6 +8,10 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:viewAction action="#{EmpresaController.listarEmpresa()}"/>
+		</f:metadata>
+
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Gerenciamento de Empresas</h4>
@@ -33,7 +37,7 @@
 
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					id="dataTablePrincipal" var="tab" responsive="true"
-					value="#{EmpresaController.listarEmpresa()}">
+					value="#{EmpresaController.listaEmpresas}">
 
 					<h:column>
 						<f:facet name="header">

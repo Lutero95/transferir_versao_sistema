@@ -98,10 +98,8 @@ public class FeriadoController implements Serializable {
        listarFeriados();
     }
 
-    public List<FeriadoBean> listarFeriados() throws ProjetoException {
+    public void listarFeriados() throws ProjetoException {
         this.listaFeriados = fDao.listarFeriado();
-
-        return listaFeriados;
     }
 
     public FeriadoBean getFeriado() {
@@ -132,5 +130,13 @@ public class FeriadoController implements Serializable {
 
     public void setTipo(int tipo) {
         this.tipo = tipo;
+    }
+
+    public List<FeriadoBean> getListaFeriados() {
+        return listaFeriados;
+    }
+
+    public void setListaFeriados(List<FeriadoBean> listaFeriados) {
+        this.listaFeriados = listaFeriados;
     }
 }

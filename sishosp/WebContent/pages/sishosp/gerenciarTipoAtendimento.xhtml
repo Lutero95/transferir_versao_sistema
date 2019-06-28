@@ -8,6 +8,9 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:viewAction action="#{TipoAtendimentoController.listarTipos()}"/>
+		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
@@ -31,7 +34,7 @@
 				</div>
 
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-					responsive="true" var="tab" value="#{TipoAtendimentoController.listarTipos()}">
+					responsive="true" var="tab" value="#{TipoAtendimentoController.listaTipos}">
 
 					<h:column>
 						<f:facet name="header">

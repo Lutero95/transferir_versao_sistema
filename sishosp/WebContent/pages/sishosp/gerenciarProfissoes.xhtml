@@ -8,6 +8,10 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:viewAction action="#{ProfissaoController.listarProfissoes()}"/>
+		</f:metadata>
+
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Gerenciamento de Profissão</h4>
@@ -29,7 +33,7 @@
 				</div>
 
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-					responsive="true" var="tab" value="#{ProfissaoController.listarProfissoes()}">
+					responsive="true" var="tab" value="#{ProfissaoController.listaProfissoes}">
 
 					<h:column>
 						<f:facet name="header">

@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ public class RacaController implements Serializable {
 	private String cabecalho;
 	private RacaBean raca;
 	private int tipo;
+	private List<RacaBean> listaRacas;
 	private RacaDAO rDao = new RacaDAO();
 
 	//CONSTANTES
@@ -33,6 +35,7 @@ public class RacaController implements Serializable {
 	public RacaController() {
 		raca = new RacaBean();
 		this.cabecalho = "";
+		listaRacas = new ArrayList<>();
 	}
 
 	public void limparDados() {
@@ -103,8 +106,8 @@ public class RacaController implements Serializable {
 
 	}
 
-	public List<RacaBean> listaRacas() throws ProjetoException {
-			return rDao.listaCor();
+	public void listaRacas() throws ProjetoException {
+			listaRacas = rDao.listaCor();
 	}
 
 	public RacaBean getRaca() {
@@ -138,4 +141,11 @@ public class RacaController implements Serializable {
 		this.tipo = tipo;
 	}
 
+	public List<RacaBean> getListaRacas() {
+		return listaRacas;
+	}
+
+	public void setListaRacas(List<RacaBean> listaRacas) {
+		this.listaRacas = listaRacas;
+	}
 }

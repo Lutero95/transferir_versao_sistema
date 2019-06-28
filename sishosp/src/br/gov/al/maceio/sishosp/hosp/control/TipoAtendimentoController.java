@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ public class TipoAtendimentoController implements Serializable {
     private int tipo;
     private GrupoBean grupoSelecionado;
     private String cabecalho;
+    private List<TipoAtendimentoBean> listaTiposAtendimento;
     private TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
 
     //CONSTANTES
@@ -40,6 +42,7 @@ public class TipoAtendimentoController implements Serializable {
         this.tipoAtendimento = new TipoAtendimentoBean();
         this.listaTipos = null;
         this.grupoSelecionado = new GrupoBean();
+        listaTiposAtendimento = new ArrayList<>();
     }
 
     public void limparDados() throws ProjetoException {
@@ -121,8 +124,8 @@ public class TipoAtendimentoController implements Serializable {
         return tDao.listarTipoAtAutoComplete(query, this.grupoSelecionado);
     }
 
-    public List<TipoAtendimentoBean> listarTipos() throws ProjetoException {
-        return listaTipos = tDao.listarTipoAt();
+    public void listarTipos() throws ProjetoException {
+        listaTiposAtendimento = listaTipos = tDao.listarTipoAt();
 
     }
 
@@ -163,4 +166,12 @@ public class TipoAtendimentoController implements Serializable {
     public void setTipo(int tipo) {
         this.tipo = tipo;
     }
-};
+
+    public List<TipoAtendimentoBean> getListaTiposAtendimento() {
+        return listaTiposAtendimento;
+    }
+
+    public void setListaTiposAtendimento(List<TipoAtendimentoBean> listaTiposAtendimento) {
+        this.listaTiposAtendimento = listaTiposAtendimento;
+    }
+}

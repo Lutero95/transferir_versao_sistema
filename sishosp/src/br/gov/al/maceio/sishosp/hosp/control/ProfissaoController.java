@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class ProfissaoController implements Serializable {
     private ProfissaoBean profissao;
     private String cabecalho;
     private int tipo;
+    private List<ProfissaoBean> listaProfissoes;
     private ProfissaoDAO pDao = new ProfissaoDAO();
 
     //CONSTANTES
@@ -34,6 +36,7 @@ public class ProfissaoController implements Serializable {
 
     public ProfissaoController() {
         profissao = new ProfissaoBean();
+        listaProfissoes = new ArrayList<>();
     }
 
     public String redirectEdit() {
@@ -60,7 +63,7 @@ public class ProfissaoController implements Serializable {
 
     }
 
-    public void gravarProfissao() throws ProjetoException {
+    public void gravarProfissao() {
 
         boolean cadastrou = pDao.cadastrar(profissao);
         if (cadastrou == true) {
@@ -72,7 +75,7 @@ public class ProfissaoController implements Serializable {
 
     }
 
-    public void alterarProfissao() throws ProjetoException {
+    public void alterarProfissao() {
 
         boolean alterou = pDao.alterar(profissao);
         if (alterou == true) {
@@ -102,8 +105,8 @@ public class ProfissaoController implements Serializable {
 
     }
 
-    public List<ProfissaoBean> listarProfissoes() throws ProjetoException {
-        return pDao.listaProfissoes();
+    public void listarProfissoes() throws ProjetoException {
+        listaProfissoes = pDao.listaProfissoes();
 
     }
 
@@ -136,4 +139,11 @@ public class ProfissaoController implements Serializable {
         this.cabecalho = cabecalho;
     }
 
+    public List<ProfissaoBean> getListaProfissoes() {
+        return listaProfissoes;
+    }
+
+    public void setListaProfissoes(List<ProfissaoBean> listaProfissoes) {
+        this.listaProfissoes = listaProfissoes;
+    }
 }

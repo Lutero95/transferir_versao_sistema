@@ -8,6 +8,10 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:viewAction action="#{EnderecoController.listarMunicipios()}"/>
+		</f:metadata>
+
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Gerenciamento de Município</h4>
@@ -28,8 +32,8 @@
 						<b:messages value="Error" id="msgPagina"></b:messages>
 					</div>
 
-					<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-						var="tab" responsive="true" value="#{EnderecoController.listarMunicipiosCadastro()}">
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" rows="20"
+						var="tab" responsive="true" value="#{EnderecoController.listaMunicipios}">
 
 						<h:column>
 							<f:facet name="header">

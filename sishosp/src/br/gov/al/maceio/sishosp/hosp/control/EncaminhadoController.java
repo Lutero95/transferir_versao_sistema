@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class EncaminhadoController implements Serializable {
     private EncaminhadoBean encaminhado;
     private int tipo;
     private String cabecalho;
+    private List<EncaminhadoBean> listaTiposEncaminhamento;
     private EncaminhadoDAO eDao = new EncaminhadoDAO();
 
     //CONSTANTES
@@ -34,6 +36,7 @@ public class EncaminhadoController implements Serializable {
 
     public EncaminhadoController() {
         encaminhado = new EncaminhadoBean();
+        listaTiposEncaminhamento = new ArrayList<>();
     }
 
     public void limparDados() {
@@ -100,8 +103,8 @@ public class EncaminhadoController implements Serializable {
         }
     }
 
-    public List<EncaminhadoBean> listarTiposDeEncaminhamento() throws ProjetoException {
-        return eDao.listaEncaminhados();
+    public void listarTiposDeEncaminhamento() throws ProjetoException {
+        listaTiposEncaminhamento = eDao.listaEncaminhados();
     }
 
     public EncaminhadoBean getEncaminhado() {
@@ -133,4 +136,11 @@ public class EncaminhadoController implements Serializable {
         this.tipo = tipo;
     }
 
+    public List<EncaminhadoBean> getListaTiposEncaminhamento() {
+        return listaTiposEncaminhamento;
+    }
+
+    public void setListaTiposEncaminhamento(List<EncaminhadoBean> listaTiposEncaminhamento) {
+        this.listaTiposEncaminhamento = listaTiposEncaminhamento;
+    }
 }

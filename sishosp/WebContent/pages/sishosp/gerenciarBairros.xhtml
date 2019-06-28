@@ -8,6 +8,10 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:viewAction action="#{EnderecoController.listarBairros()}"/>
+		</f:metadata>
+
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Gerenciamento de Bairros</h4>
@@ -35,7 +39,7 @@
 
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						id="dataTablePrincipal" var="tab" responsive="true"
-						value="#{EnderecoController.listarBairros()}">
+						value="#{EnderecoController.listaBairros}">
 
 						<h:column>
 							<f:facet name="header">

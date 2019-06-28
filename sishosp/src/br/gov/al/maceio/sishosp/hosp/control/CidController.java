@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class CidController implements Serializable {
 	private int tipo;
 	private String cabecalho;
 	private CidDAO cDao = new CidDAO();
+	private List<CidBean> listaCid;
 
 	//CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroCid?faces-redirect=true";
@@ -34,6 +36,8 @@ public class CidController implements Serializable {
 	public CidController() {
 		this.cid = new CidBean();
 		this.cabecalho = "";
+		listaCid = new ArrayList<>();
+
 	}
 
 	public void limparDados() {
@@ -105,8 +109,8 @@ public class CidController implements Serializable {
 		return result;
 	}
 
-	public List<CidBean> listarCids() throws ProjetoException {
-		return cDao.listarCid();
+	public void listarCids() throws ProjetoException {
+		listaCid = cDao.listarCid();
     }
 
 	public String getCabecalho() {
@@ -138,4 +142,11 @@ public class CidController implements Serializable {
 		this.tipo = tipo;
 	}
 
+	public List<CidBean> getListaCid() {
+		return listaCid;
+	}
+
+	public void setListaCid(List<CidBean> listaCid) {
+		this.listaCid = listaCid;
+	}
 }

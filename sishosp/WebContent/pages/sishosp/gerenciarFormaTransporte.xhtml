@@ -8,6 +8,11 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:event type="preRenderView"
+					 listener="#{FormaTransporteController.listarTransporte()}"/>
+		</f:metadata>
+
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
 				<h4 class="panel-title">Gerenciamento de Forma de Transporte</h4>
@@ -30,7 +35,7 @@
 				</div>
 
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-					var="tab" responsive="true" value="#{FormaTransporteController.listarTransporte()}">
+					var="tab" responsive="true" value="#{FormaTransporteController.listaFormaTransporte}">
 
 
 					<h:column>

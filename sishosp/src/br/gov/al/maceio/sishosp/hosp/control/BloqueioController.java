@@ -22,6 +22,7 @@ public class BloqueioController implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private BloqueioBean bloqueio;
+    private List<BloqueioBean> listaBloqueio;
     private BloqueioDAO bDao = new BloqueioDAO();
 
     //CONSTANTES
@@ -109,8 +110,8 @@ public class BloqueioController implements Serializable {
         listarBloqueios();
     }
 
-    public List<BloqueioBean> listarBloqueios() throws ProjetoException {
-        return bDao.listarBloqueio();
+    public void listarBloqueios() throws ProjetoException {
+        listaBloqueio = bDao.listarBloqueio();
     }
 
     public BloqueioBean getBloqueio() {
@@ -121,4 +122,11 @@ public class BloqueioController implements Serializable {
         this.bloqueio = bloqueio;
     }
 
+    public List<BloqueioBean> getListaBloqueio() {
+        return listaBloqueio;
+    }
+
+    public void setListaBloqueio(List<BloqueioBean> listaBloqueio) {
+        this.listaBloqueio = listaBloqueio;
+    }
 }

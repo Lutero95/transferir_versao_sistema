@@ -71,11 +71,6 @@ public class EquipeController implements Serializable {
 		this.listaEquipe = eDao.listarEquipe();
 	}
 
-	public List<EquipeBean> listarEquipes() throws ProjetoException {
-		this.listaEquipe = eDao.listarEquipe();
-
-		return listaEquipe;
-	}
 
 	public void gravarEquipe() throws ProjetoException {
 		if (this.equipe.getProfissionais().isEmpty()) {
@@ -125,7 +120,7 @@ public class EquipeController implements Serializable {
 			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 			JSFUtil.fecharDialog("dialogExclusao");
 		}
-		listarEquipes();
+		ListarTodasEquipes();
 	}
 
 	public List<EquipeBean> listaEquipeAutoComplete(String query)
