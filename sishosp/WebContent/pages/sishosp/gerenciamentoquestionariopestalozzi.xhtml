@@ -1,0 +1,109 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<f:metadata>
+		<f:viewAction action="#{PacienteController.buscarPacientes()}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Gerenciamento do Questionário Social</h4>
+			</div>
+
+			<div class="panel-body table-body">
+
+				<h:form id="frmPrincipal">
+
+					
+
+					<div align="center">
+						<b:messages value="Error" id="msgError"></b:messages>
+					</div>
+
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+						id="tabelapacientes" var="tab" responsive="true"
+						value="#{PacienteController.listarPacientes()}">
+
+						<h:column>
+							<f:facet name="header">
+                            Nome
+                        </f:facet>
+
+							<h:outputText value="#{tab.nome}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                            CPF
+                        </f:facet>
+
+							<h:outputText value="#{tab.cpf}" />
+						</h:column>
+
+						<h:column>
+							<f:facet name="header">
+                            CNS
+                        </f:facet>
+
+							<h:outputText value="#{tab.cns}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+                            Ação
+                        </f:facet>
+
+							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+								size="sm" action="#{PestalozziController.redirectEdit()}"
+								class="btn-acao-table acao-editar">
+
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{PestalozziController.pestalozzi.paciente}" />
+							</b:commandButton>
+
+							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+								size="sm" ajax="true" style="margin-left:10px" 
+								class="btn-acao-table acao-excluir" oncomplete="PF('dialogExclusao').show()">
+								<f:setPropertyActionListener value="#{tab.id_paciente}"
+									target="#{PacienteController.paciente.id_paciente}" />
+							</b:commandButton>
+
+						</h:column>
+
+					</b:dataTable>
+
+				</h:form>
+			</div>
+
+		</div>
+
+		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+			resizable="false" showEffect="clip" hideEffect="clip">
+
+			<h:form id="frmExcluir">
+
+				<div class="alert alert-warning" role="alert">Deseja excluir
+					este Paciente?</div>
+
+				<div align="center">
+					<p:separator />
+					<b:commandButton look="success" value="Sim" style="float:left;"
+						action="#{PacienteController.excluirPaciente()}" ajax="true"
+						icon="glyphicon-ok" update=":frmPrincipal" class="btn-sim" />
+
+					<b:commandButton value="Não" class="btn-nao"
+						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
