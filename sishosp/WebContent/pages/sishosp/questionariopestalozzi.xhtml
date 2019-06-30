@@ -1,0 +1,1544 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
+
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewAction
+                    action="#{PestalozziController.iniciarDadosQuestionario()}"/>
+        </f:metadata>
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h:outputText value="Questionário Social"
+                              class="panel-title"></h:outputText>
+            </div>
+
+            <div class="panel-body table-body sub-table-body">
+
+                <h:form id="formInsercao">
+
+                    <p:fieldset legend="Saúde">
+                        <b:row>
+                            <b:column span="3" class="label-position inserPacient">
+                                <b:label value="Realiza Atendimento Nesta Instituição?" class="fire-label"
+                                         severity="info"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeRealizaAtendimentoNestaInstituicao}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+                            <b:column span="3" class="label-position inserPacient">
+                                <b:label value="Unidade" class="fire-label" severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUnidade}"
+                                        class="campo-laudoDig3" style="width:400px !important"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Serviço Atendimento Rede" class="fire-label" severity="info"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="8" class="label-position inserPacient">
+                                <p:selectBooleanCheckbox 
+                                itemLabel="Reabilitação Auditiva"
+                                        value="#{PestalozziController.pestalozzi.saudeServicoAtendimentoRedeReabilitacaoAuditiva}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Reabilitação Física"
+                                style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeServicoAtendimentoRedeReabilitacaoFisica}"
+                                        label="Basic"/>
+
+                                <p:selectBooleanCheckbox itemLabel="Reabilitação Intelectual"
+                                 style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeServicoAtendimentoRedeReabilitacaoIntelectual}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Reabilitação Visual"
+                                 style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeServicoAtendimentoRedeReabilitacaoVisual}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column class="label-position inserPacient">
+                                <b:label value="Serviço Ambulatorio" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeServicoAmbulatorio}"
+                                        class="campo-laudoDig3" style="width:100% !important"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Outros Serviços" class="fire-label" severity="info"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="8" class="label-position inserPacient">
+                                
+                                <p:selectBooleanCheckbox itemLabel="Home Care" 
+                                  style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosHomeCare}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Equoterapia"  style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosEquoterapia}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Grupo Convivencia"  style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosGrupoConvivencia}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox  itemLabel="Grupo Terapêutico"  style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosGrupoTerapeuticoFamiliar}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column class="label-position inserPacient">
+                                
+                                <p:selectBooleanCheckbox itemLabel="Órtese, Proteses e Meios de Locomoção"
+                                  style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosOrteseProtesesMeiosLocomocao}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Oficina Ortopedica"  style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosOficinaOrtopedica}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Estimulação Precoce"  style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosEstimulacaoPrecoce}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Hidro Terapia"  style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeOutrosServicosHidroTerapia}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="5" class="label-position inserPacient">
+                                <b:label value="Já faz uso de Órtese, Prótese e/ou meios auxiliares de locomoção?"
+                                         class="fire-label"
+                                         severity="info"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeUsoOrteseProtese}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há Quanto Tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsoOrteseProteseQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Qual?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsoOrteseProteseQual}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Usa Algum Equipamento Ortoédico?" class="fire-label" severity="info"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column class="label-position inserPacient">
+                                
+                                <p:selectBooleanCheckbox itemLabel="Ortese, Proteses e Meios de Locomoção"
+                                  style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoOrtese}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="AASI (Aparalho de Amplição Sonora Individua)"
+                                style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAASI}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Auxilio Óptico (Visual)"
+                                style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAuxilioOptico}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="6" class="label-position inserPacient">
+                                
+                                <p:selectBooleanCheckbox itemLabel="Meios Auxiliares de locomoção"
+                                style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoMeiosAuxiliaresDeLocomocao}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Prótese"
+                                style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoOculosAdaptado}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Óculos Adaptado"
+                                style="margin-left:30px"
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoOculosAdaptado}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há quanto tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Entidade que concedeu:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="3" class="label-position inserPacient">
+                                <b:label value="Já realizou algum tipo de Reabilitação?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoRealizouReabilitacao}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Onde?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoRealizouReabilitacaoOnde}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="3" class="label-position inserPacient">
+                                <b:label value="Há mais alguém na família com deficiência?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficiencia}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Qual o parantesco?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneMenu filterMatchMode="startsWith" filter="true"
+                                                 class="campo-laudoDig3" style="margin-top:0px !important; padding: 0px !important; width: 200px; !important"
+                                                 value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoAlguemNaFamiliaComDeficienciaParentesco}" >
+                                    <f:selectItem itemLabel="Selecione" itemValue="" />
+                                    <f:selectItems var="parentesco"
+                                                   value="#{PestalozziController.listaParentesco}"
+                                                   itemLabel="#{parentesco.descParentesco}"
+                                                   itemValue="#{parentesco.codParentesco}" />
+                                </p:selectOneMenu>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Morbidade/CID" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoMorbidadeCID}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há Quanto Tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoMorbidadeCIDQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="3" class="label-position inserPacient">
+                                <b:label value="Causa da Doença e ou Deficiencia:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoCausaDoencaDeficiencia}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Residência Coberta pelo PSF:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoResidenciaCobertaPSF}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="3" class="label-position inserPacient">
+                                <b:label value="Recebeu Visita do Agente de Saúde?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoRecebeuVisitaAgenteSaude}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="3" class="label-position inserPacient">
+                                <b:label value="Como faz para ser atendido quando doente?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoFazParaSerAtendidoDoente}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Qual o Posto de Saúde da região que reside?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoPostoSaudeRegiaoReside}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Faz uso de medicação?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoUsoMedicacao}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Qual Medicação?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoUsoMedicacaoQual}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Medicação com qual frequência?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.saudeUsaEquipamentoOrtopedicoUsoMedicacaoFrequencia}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                    </p:fieldset>
+	<br/>
+                    <p:fieldset legend="Educação">
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Matriculado(a) na escola?" class="fire-label"
+                                         severity="info"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoMatriculado}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2">
+                                <b:label value="Escolaridade:" class="fire-label" style="margin-left: 0px; !important"
+                                         severity="info"/>
+
+                                <p:selectOneMenu filterMatchMode="startsWith" filter="true"
+                                                
+                                                 value="#{PestalozziController.pestalozzi.educacaoEscolaridade}">
+                                    <f:selectItem itemLabel="Selecione" itemValue="" />
+                                    <f:selectItems var="escolaridade"
+                                                   value="#{PestalozziController.listaEscolaridade}"
+                                                   itemLabel="#{escolaridade.descescolaridade}"
+                                                   itemValue="#{escolaridade.codescolaridade}" />
+                                </p:selectOneMenu>
+                            </b:column>
+
+                            <b:column span="1" class="label-position inserPacient">
+                                <b:label value="Turno:" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneMenu value="#{PestalozziController.pestalozzi.educacaoTurno}"
+                                style="margin-left:-15px">
+                                    <f:selectItem itemLabel="Manhã" itemValue="M"/>
+                                    <f:selectItem itemLabel="Tarde" itemValue="T"/>
+                                    <f:selectItem itemLabel="Noite" itemValue="N"/>
+                                </p:selectOneMenu>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Qual escola está matriculado" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.educacaoEscolaEstaMatriculado}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Qual acesso a escola?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.educacaoAcessoEscola}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+
+                            <b:column span="3" class="label-position inserPacient">
+                                <b:label value="Escola em que estuda fica no bairro que reside?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoEscolaFicaNoBairro}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Escola em qual bairro?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.educacaoEscolaQualBairro}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Escola tem sala de recurso?" class="fire-label"
+                                         severity="info"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoEscolaTemSalaDeRecurso}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Recebe apoio auxiliar de sala?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoRecebeApoioAuxiliarSala}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Responsável participa das reuniões escolares?" class="fire-label"
+                                         severity="info"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoResponsavelParticipaReuniaoEscolar}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Atividade Institucional?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoAtividadeInstituconalPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+                            <b:column span="8" class="label-position inserPacient">
+                                <b:label value="Qual Atividade Institucional?" class="fire-label"
+                                         severity="info"/>
+                            
+                            
+                                
+                                <p:selectBooleanCheckbox itemLabel="AEE" class="campo-laudoDig3"
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeInstituconalQualAEE}"
+                                        label="Basic"/>
+
+
+                                <p:selectBooleanCheckbox itemLabel="EJA"
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeInstituconalQualEJA}"
+                                        label="Basic"/>
+
+
+                                <p:selectBooleanCheckbox  itemLabel="Esporte"
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeInstituconalQualEsporte}"
+                                        label="Basic"/>
+                                
+                                <p:selectBooleanCheckbox itemLabel="Oficina Profissionalizante"
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeInstituconalQualOficinaProf}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Jovem Aprendiz"
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeInstituconalQualJovemAprendiz}"
+                                        label="Basic"/>
+
+                                
+                                <p:selectBooleanCheckbox itemLabel="Arte/Cultura"
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeInstituconalQualArteCultura}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Atividade Complementares?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.educacaoAtividadeComplementaresPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+                            <b:column span="1" class="label-position inserPacient">
+                                <b:label value="Qual Atividade Complementares?" class="fire-label"
+                                         severity="info"/>
+                            </b:column>
+                            <b:column span="6" class="label-position inserPacient">
+                                <p:outputLabel value="Dança"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeComplementaresDanca}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Capoeira"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeComplementaresCapoeira}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Teatro"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeComplementaresTeatro}"
+                                        label="Basic"/>
+                                <p:outputLabel value="Percussão"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeComplementaresPercussao}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Música"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeComplementaresMusica}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Coral"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.educacaoAtividadeComplementaresCoral}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+                    </p:fieldset>
+
+                    <p:fieldset legend="Benefícios Sociais">
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Aposentadoria?" class="fire-label"
+                                         severity="info"/>
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialAposentadoriaPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Tipo Aposentadoria:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialAposentadoriaTipo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há Quanto Tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialAposentadoriaQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Valor?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialAposentadoriaValor}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Benefícios P/Familia?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialBeneficioFamiliaPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Tipo Benefício:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialBeneficioFamiliaTipo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há Quanto Tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialBeneficioFamiliaQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Valor?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialBeneficioFamiliaValor}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Benefício por Incapacidade?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialIncapacidadePossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Tipo Benefício Incapacidade:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialIncapacidadeTipo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há Quanto Tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialIncapacidadeQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Valor?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialIncapacidadeValor}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Benefício Operacionalizados Pelo INSS?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialINSSPossui}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Tipo Operacionalizados Pelo INSS:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialINSSTipo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há Quanto Tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialINSSQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Valor?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialINSSValor}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Programas Sociais?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialProgramaSociaisPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Programa de Leite" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialProgramaLeitePossui}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Programa da Sopa" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialProgramaSopaPossui}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Bolsa Família?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialBolsaFamiliaPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há Quanto Tempo?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialBolsaFamiliaQuantoTempo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Valor" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialBolsaFamiliaValor}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Minha casa minha vida?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.beneficioSocialMinhaCasaMinhaVidaPossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="CAD ÚNICO" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialCadastroUnico}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Possui número do NIS?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialNumeroNisPossui}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Número do NIS?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.beneficioSocialNumeroNis}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                    </p:fieldset>
+
+                    <p:fieldset legend="Transporte">
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Carteira Transporte?" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.transporteCarteiraTransportePossui}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Com Acompanhante" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.transporteCarteiraTransporteAcompanhate}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Tipo da Carteira:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.transporteCarteiraTransporteTipo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Transporte Utilizado para o Tratamento?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.transporteUtilizadoTratamento}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Quantos ônibus tem até a instituição?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.transporteQuantidadeOnibusAteInstituicao}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Existe acessibilidade no percurso até a instituição" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.transporteExisteAcessibilidadeAcessoPercusoInstituicao}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                    </p:fieldset>
+
+                    <p:fieldset legend="Renda Familiar">
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Inserido no mercado de Trabalho: " class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Profissão/Função: " class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarProfissaoFuncao}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Atividade que desempenhava antes do agravo: " class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarAtividadeAntesAgravo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Há quanto tempo desempenhava esta atividade?" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarTempoAntesAgravo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Renda Familiar:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarValor}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Quem mantém a renda familiar?" class="fire-label" severity="info"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="12" class="label-position inserPacient">
+                                <p:outputLabel value="Usúario"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemUsuario}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Pai"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemPai}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Mãe"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemMae}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Irmão (a)"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemIrmao}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Avó ou Avô"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemAvo}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Cuidador"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemCuidador}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="12" class="label-position inserPacient">
+                                <p:outputLabel value="Tia ou Tio"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemTio}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Esposo (a)"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemEsposo}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Vizinho"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemVizinho}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Filho (a)"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemFilho}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Padastro/Madastra"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemPadastroMadastra}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Genro ou Nora"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemGenroNora}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="12" class="label-position inserPacient">
+                                <p:outputLabel value="Sobrinho(a)"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemSobrinho}"
+                                        label="Basic"/>
+
+                                <p:outputLabel value="Enteado (a)"/>
+                                <p:selectBooleanCheckbox
+                                        value="#{PestalozziController.pestalozzi.rendaFamiliarMantemEnteado}"
+                                        label="Basic"/>
+                            </b:column>
+                        </b:row>
+                    </p:fieldset>
+
+                    <p:fieldset legend="Habitação">
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Situação de Moradia: " class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.habitacaoSitucaoMoradia}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Tipo de Construção: " class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.habitacaoTipoConstrucao}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Tipo Residência:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.habitacaoTipoResidencia}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Número de Cômodos: " class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.habitacaoNumeroComodo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Abastecimento e Água: " class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.habitacaoAbastecimentoDeAgua}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Tipo de Iluminação:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.habitacaoTipoIluminacao}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Escoamento Sanitário: " class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.habitacaoEscoamentoSanitario}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Destino do Lixo: " class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.habitacaoDestinoLixo}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Residência Adaptada:" class="fire-label"
+                                         severity="info"/>
+
+                                <h:inputText
+                                        value="#{PestalozziController.pestalozzi.habitacaoResidenciaAdaptada}"
+                                        class="campo-laudoDig3"/>
+                            </b:column>
+                        </b:row>
+                    </p:fieldset>
+
+                    <p:fieldset legend="Composição Familiar">
+                        <p:commandButton value="Adicionar Composição Familiar" size="sm"
+                                         class="btn-addNovo" onclick="PF('dlgAddComposicaoFamiliar').show();"
+                                         icon="glyphicon-plus">
+                        </p:commandButton>
+
+                        <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabComposicaoFamiliar"
+                                     value="#{PestalozziController.pestalozzi.listaComposicaoFamiliar}" var="composicao"
+                                     display="Nenhum Equipamento">
+
+                            <h:column>
+                                <f:facet name="header">
+                                    Nome
+                                </f:facet>
+                                <p:outputLabel value="#{composicao.nome}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    Sexo
+                                </f:facet>
+                                <p:outputLabel value="#{PestalozziController.retonarMasculinoFeminino(composicao.sexo)}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    Idade
+                                </f:facet>
+                                <p:outputLabel value="#{composicao.idade}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    Parentesco
+                                </f:facet>
+                                <p:outputLabel value="#{composicao.parentesco.descParentesco}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    Trabalha
+                                </f:facet>
+                                <p:outputLabel value="#{PestalozziController.retonarSimNao(composicao.trabalha)}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    Valor
+                                </f:facet>
+                                <p:outputLabel value="#{composicao.valor}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    PCD
+                                </f:facet>
+                                <p:outputLabel value="#{PestalozziController.retonarSimNao(composicao.pcd)}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    Benef
+                                </f:facet>
+                                <p:outputLabel value="#{PestalozziController.retonarSimNao(composicao.benef)}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    Excluir
+                                </f:facet>
+
+                                <p:commandButton
+                                        update=":formDelComposicaoFamiliar"
+                                        onclick="PF('dlgDelComposicaoFamiliar').show();"
+                                        class="new-btn-acao-table acao-editar" icon="ui-icon-delete"
+                                        title="Excluir">
+                                    <f:setPropertyActionListener value="#{composicao}" target="#{PestalozziController.composicaoFamiliarDel}"/>
+                                </p:commandButton>
+                            </h:column>
+
+                        </b:dataTable>
+                    </p:fieldset>
+
+                    <p:fieldset legend="Relato da Vida">
+                        <p:inputTextarea rows="15" cols="45" value="#{PestalozziController.pestalozzi.relatoVida}"/>
+
+                    </p:fieldset>
+
+                    <p:fieldset legend="Parecer Social/Encaminhamentos">
+                        <p:inputTextarea rows="8" cols="45"
+                                         value="#{PestalozziController.pestalozzi.parecerSocialEncaminhamento}"/>
+                    </p:fieldset>
+
+
+                    <!-- COMPONENTE DE MENSAGEM, SEMELHANTE AO GROWN -->
+                    <div align="center">
+                        <b:messages value="Error" id="msgPagina"></b:messages>
+                    </div>
+
+                    <br></br>
+
+
+                    <!-- BOTÕES DE SALVAR E VOLTAR(esse sem uso por enquanto) -->
+
+                    <div align="center">
+
+                        <p:commandButton value="Gravar" look="success" size="sm" id="b1"
+                                         icon="glyphicon-ok"
+                                         update="msgPagina"
+                                         class="btn-incluir"
+                                         action="#{PestalozziController.gravarQuestionario()}"
+                                         />
+
+                        
+
+ <p:commandButton value="Voltar" icon="glyphicon-arrow-left" action="/pages/sishosp/gerenciamentoquestionariopestalozzi.faces?faces-redirect=true"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"/>
+
+
+                    </div>
+                </h:form>
+            </div>
+        </div>
+
+
+        <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
+                  modal="true" id="laudo-id">
+            <h:form id="formConsuLaudo">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{InsercaoController.listaLaudosVigentes}" id="dtLaudo"
+                             var="insercao" display="Nenhum Laudo">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Paciente
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.paciente.nome}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            CNS
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.paciente.cns}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Vigência Inicial
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </p:outputLabel>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Vigência Final
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.vigenciaFinal}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </p:outputLabel>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton update=":formInsercao"
+                                         icon="ui-icon-check" title="Selecionar"
+                                         onclick="PF('dlgConsuLaudo').hide();"
+                                         class="new-btn-acao-table acao-editar">
+                            <f:setPropertyActionListener value="#{insercao.laudo}"
+                                                         target="#{OrteseProteseController.orteseProtese.laudo}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Equipamentos" widgetVar="dlgConsuEquip"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuEquip">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{EquipamentoController.listEquipamentos}" var="equi"
+                             display="Nenhum Equipamento">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
+                        <p:outputLabel value="#{equi.descEquipamento}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao:outEquipamento"
+                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                title="Selecionar"
+                                onclick="PF('dlgConsuEquip').hide();">
+                            <f:setPropertyActionListener value="#{equi}"
+                                                         target="#{OrteseProteseController.orteseProtese.equipamento}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Fornecedor" widgetVar="dlgConsuForn"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuForn">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{FornecedorController.listaFornecedores}" var="forn"
+                             display="Nenhum Fornecedor">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Descrição
+                        </f:facet>
+                        <p:outputLabel value="#{forn.descricao}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            CNPJ
+                        </f:facet>
+                        <p:outputLabel value="#{forn.cnpj}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formInsercao:outFornecedor"
+                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                title="Selecionar"
+                                onclick="PF('dlgConsuForn').hide();">
+                            <f:setPropertyActionListener value="#{forn}"
+                                                         target="#{OrteseProteseController.orteseProtese.fornecedor}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Adicionar Composição Familiar" widgetVar="dlgAddComposicaoFamiliar"
+                  modal="true" styleClass="topDialog" resizable="false">
+            <h:form id="formAddComposicaoFamiliar">
+                <b:row>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Nome: " class="fire-label"
+                                 severity="info"/>
+
+                        <h:inputText required="true" requiredMessage="Compo Obrigatório: Nome"
+                                     value="#{PestalozziController.composicaoFamiliarAdd.nome}"
+                                     class="campo-laudoDig3"/>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Sexo: " class="fire-label"
+                                 severity="info"/>
+                        <p:selectOneRadio class="campo-laudoDig3"
+                                          value="#{PestalozziController.composicaoFamiliarAdd.sexo}"
+                                          unselectable="true">
+                            <f:selectItem itemLabel="Masculino" itemValue="M"/>
+                            <f:selectItem itemLabel="Feminino" itemValue="F"/>
+                        </p:selectOneRadio>
+                    </b:column>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Idade: " class="fire-label"
+                                 severity="info"/>
+
+                        <h:inputText
+                                value="#{PestalozziController.composicaoFamiliarAdd.idade}"
+                                class="campo-laudoDig3"/>
+                    </b:column>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Parentesco:" class="fire-label"
+                                 severity="info"/>
+
+                        <p:selectOneMenu filterMatchMode="startsWith" filter="true"
+                                         required="true" requiredMessage="Compo Obrigatório: Parentesco"
+                                         value="#{PestalozziController.composicaoFamiliarAdd.parentesco.codParentesco}" >
+                            <f:selectItem itemLabel="Selecione" itemValue="" />
+                            <f:selectItems var="parentesco"
+                                           value="#{PestalozziController.listaParentesco}"
+                                           itemLabel="#{parentesco.descParentesco}"
+                                           itemValue="#{parentesco.codParentesco}" />
+                        </p:selectOneMenu>
+
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Trabalha: " class="fire-label"
+                                 severity="info"/>
+
+                        <p:selectOneRadio class="campo-laudoDig3"
+                                          value="#{PestalozziController.composicaoFamiliarAdd.trabalha}"
+                                          unselectable="true">
+                            <f:selectItem itemLabel="Sim" itemValue="S"/>
+                            <f:selectItem itemLabel="Não" itemValue="N"/>
+                        </p:selectOneRadio>
+                    </b:column>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Valor: " class="fire-label"
+                                 severity="info"/>
+
+                        <h:inputText
+                                value="#{PestalozziController.composicaoFamiliarAdd.valor}"
+                                class="campo-laudoDig3"/>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="PCD: " class="fire-label"
+                                 severity="info"/>
+
+                        <p:selectOneRadio class="campo-laudoDig3"
+                                          value="#{PestalozziController.composicaoFamiliarAdd.pcd}"
+                                          unselectable="true">
+                            <f:selectItem itemLabel="Sim" itemValue="S"/>
+                            <f:selectItem itemLabel="Não" itemValue="N"/>
+                        </p:selectOneRadio>
+                    </b:column>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Benef: " class="fire-label"
+                                 severity="info"/>
+
+                        <p:selectOneRadio class="campo-laudoDig3"
+                                          value="#{PestalozziController.composicaoFamiliarAdd.benef}"
+                                          unselectable="true">
+                            <f:selectItem itemLabel="Sim" itemValue="S"/>
+                            <f:selectItem itemLabel="Não" itemValue="N"/>
+                        </p:selectOneRadio>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:commandButton action="#{PestalozziController.adicionarComposicaoFamiliar()}"
+                                     icon="glyphicon-ok" size="sm" class="btn-incluir"
+                                     update=":formInsercao:tabComposicaoFamiliar, formAddComposicaoFamiliar"
+                                     value="Incluir"/>
+                </b:row>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Excluir Composição Familiar" widgetVar="dlgDelComposicaoFamiliar"
+                  modal="true" styleClass="topDialog" resizable="false">
+            <h:form id="formDelComposicaoFamiliar">
+                <b:row>
+                    <b:column span="2" class="label-position inserPacient">
+                        <b:label value="Deseja excluir #{PestalozziController.composicaoFamiliarDel.nome} ?"
+                                 severity="info"/>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <p:commandButton action="#{PestalozziController.deletarComposicaoFamiliar()}"
+                                     icon="glyphicon-ok" size="sm" class="btn-excluir"
+                                     oncomplete="PF('dlgDelComposicaoFamiliar').hide();"
+                                     update=":formInsercao:tabComposicaoFamiliar" value="Excluir"/>
+                    <p:commandButton size="sm" class="btn-excluir" onclick="PF('dlgDelComposicaoFamiliar').hide();"
+                                     value="Cancelar"/>
+                </b:row>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
