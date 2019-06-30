@@ -93,7 +93,6 @@ public class AgendaController implements Serializable {
 
 
     public AgendaController() {
-    	System.out.println("construtor AgendaController");
         this.agenda = new AgendaBean();
         grupoSelecionado = new GrupoBean();
         listaGruposProgramas = new ArrayList<GrupoBean>();
@@ -126,7 +125,6 @@ public class AgendaController implements Serializable {
     }
 
     public void limparDados() {
-    	System.out.println("limparDados");
         this.agenda = new AgendaBean();
         this.listaNovosAgendamentos = new ArrayList<AgendaBean>();
         this.listaAgendamentosData = new ArrayList<AgendaBean>();
@@ -164,7 +162,6 @@ public class AgendaController implements Serializable {
     
     
     public void preparaVerificarDisponibilidadeData() throws ProjetoException {
-    	System.out.println("preparaVerificarDisponibilidadeData");
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
             if (this.agenda.getPrograma().getIdPrograma() == null
                     || this.agenda.getPaciente().getId_paciente() == null
@@ -193,14 +190,11 @@ public class AgendaController implements Serializable {
     }
 
     public void setarQuantidadeIhMaximoComoNulos() {
-    	System.out.println("setarQuantidadeIhMaximoComoNulos");
         agenda.setQtd(null);
         agenda.setMax(null);
     }
 
     public void verificaDisponibilidadeDataUnica() throws ProjetoException {
-    	System.out.println("verificaDisponibilidadeDataUnica");
-
         if (verificarSeEhFeriadoDataUnica()) {
             JSFUtil.adicionarMensagemErro("Data com feriado, nÃ£o Ã© permitido fazer agendamento!", "Erro");
             setarQuantidadeIhMaximoComoNulos();
@@ -219,7 +213,6 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verificarTipoDeAtendimentoDataUnica() throws ProjetoException {
-    	System.out.println("verificarTipoDeAtendimentoDataUnica");
         Boolean retorno = false;
 
         if (agenda.getProfissional().getId() != null) {
@@ -234,8 +227,7 @@ public class AgendaController implements Serializable {
         return retorno;
     }
 
-    public void verificarDisponibilidadeDataEspecifica(Integer quantidade, Integer maxima) throws ProjetoException {
-System.out.println("verificarDisponibilidadeDataEspecifica");
+    public void verificarDisponibilidadeDataEspecifica(Integer quantidade, Integer maxima) {
         if (quantidade >= maxima) {
             JSFUtil.adicionarMensagemErro("JÃ¡ atingiu a quantidade mÃ¡xima para essa data especÃ­fica!", "Erro!");
         }
@@ -243,7 +235,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public Boolean verificarSeEhFeriadoDataUnica() throws ProjetoException {
-    	System.out.println("verificarSeEhFeriadoDataUnica");
         Boolean retorno = false;
 
         retorno = new FeriadoDAO().verificarSeEhFeriadoDataUnica(this.agenda.getDataAtendimento());
@@ -252,7 +243,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public Boolean verificarSeTemBloqueioDataUnica() throws ProjetoException {
-    	System.out.println("verificarSeTemBloqueioDataUnica");
         Boolean retorno = false;
 
         retorno = new BloqueioDAO().verificarBloqueioProfissionalDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
@@ -262,7 +252,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public Boolean verificarSeExisteTipoAtendimentoEspecificoDataUnica() throws ProjetoException {
-    	System.out.println("verificarSeExisteTipoAtendimentoEspecificoDataUnica");
         Boolean retorno = false;
 
         retorno = new ConfigAgendaDAO().verificarSeExisteTipoAtendimentoEspecificoDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
@@ -272,7 +261,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public Boolean verificarSeAtingiuLimitePorTipoDeAtendimento() throws ProjetoException {
-    	System.out.println("verificarSeAtingiuLimitePorTipoDeAtendimento");
 
         Boolean retorno = false;
 
@@ -294,7 +282,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public Boolean verificarSeExisteTipoAtendimentoEspecificoIntervaloDeDatas(Date data) throws ProjetoException {
-    	System.out.println("verificarSeExisteTipoAtendimentoEspecificoIntervaloDeDatas");
         Boolean retorno = false;
 
         retorno = new ConfigAgendaDAO().verificarSeExisteTipoAtendimentoEspecificoDataUnica(this.agenda.getProfissional().getId(), data,
@@ -304,7 +291,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public Boolean verificarSeAtingiuLimitePorTipoDeAtendimentoIntervaloDeDatas(Date data) throws ProjetoException {
-    	System.out.println("verificarSeAtingiuLimitePorTipoDeAtendimentoIntervaloDeDatas");
 
         Boolean retorno = false;
 
@@ -320,7 +306,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public Boolean podeAdicionarAposVerificarTipoDeAtendimentoIntervaloDeDatas(Date data) throws ProjetoException {
-    	System.out.println("podeAdicionarAposVerificarTipoDeAtendimentoIntervaloDeDatas");
         Boolean retorno = true;
 
         if (verificarSeExisteTipoAtendimentoEspecificoIntervaloDeDatas(data)) {
@@ -331,7 +316,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void verAgenda() throws ProjetoException {
-    	System.out.println("verAgenda");
 
         Boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
         Boolean diaSem = aDao.buscarDiaSemana(this.agenda);
@@ -356,7 +340,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void validarParaConfirmar() throws ProjetoException {
-    	System.out.println("validarParaConfirmar");
         if(verificarEncaixe()){
             preparaConfirmar();
         }
@@ -375,7 +358,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void preparaConfirmar() throws ProjetoException {
-    	System.out.println("preparaConfirmar");
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
             if (agenda.getMax() == null || agenda.getQtd() == null) {
                 JSFUtil.adicionarMensagemErro("NÃ£o existe disponibilidade de vaga para este dia!!", "Erro");
@@ -440,7 +422,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public List<Date> listarDatasBloqueadas(Date dataInicio, Date dataFinal) throws ProjetoException {
-    	System.out.println("listarDatasBloqueadas");
         BloqueioDAO bloqueioDAO = new BloqueioDAO();
 
         return bloqueioDAO.verificarBloqueioProfissionalIntervaloDeDatas(
@@ -448,7 +429,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public List<Date> listarDatasComFeriado(List<Date> listaDatasBloqueadas, Date dataInicio, Date dataFinal) throws ProjetoException {
-    	System.out.println("listarDatasComFeriado");
         FeriadoDAO feriadoDAO = new FeriadoDAO();
 
         List<Date> listaFeriado = feriadoDAO.verificarSeEhFeriadoIntervaloDeDatas(dataInicio, dataFinal);
@@ -461,7 +441,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public Boolean verAgendaIntervalo() throws ProjetoException {
-    	System.out.println("verAgendaIntervalo");
         if (this.agenda.getPaciente() == null
                 || this.agenda.getPrograma() == null
                 || this.agenda.getGrupo() == null
@@ -554,23 +533,19 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void carregarListaOcupados() {
-    	System.out.println("carregarListaOcupados");
         JSFUtil.abrirDialog("dlgOcupados");
         getListaHorariosOcupados();
     }
 
     public void addListaNovosAgendamentos() {
-    	System.out.println("addListaNovosAgendamentos");
         this.listaNovosAgendamentos.add(this.agenda);
     }
 
     public void listarAgendamentosData() throws ProjetoException {
-    	System.out.println("listarAgendamentosData");
         this.listaAgendamentosData = aDao.listarAgendamentosData(this.agenda);
     }
 
     public void verificarPacienteAtivoInstituicao() throws ProjetoException {
-    	System.out.println("verificarPacienteAtivoInstituicao");
         GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
         Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(agenda.getPaciente().getId_paciente());
@@ -590,7 +565,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void validarSenhaLiberacao() throws ProjetoException {
-    	System.out.println("validarSenhaLiberacao");
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
         Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(), ValidacaoSenhaAgenda.LIBERACAO.getSigla());
@@ -604,7 +578,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void validarSenhaEncaixe() throws ProjetoException {
-    	System.out.println("validarSenhaEncaixe");
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
         Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(), ValidacaoSenhaAgenda.ENCAIXE.getSigla());
@@ -618,7 +591,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public Boolean verificarEncaixe() {
-    	System.out.println("verificarEncaixe");
         Boolean retorno = false;
 
         if (agenda.getEncaixe()) {
@@ -638,7 +610,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void gravarAgenda(Integer funcionarioLiberacao) {
-    	System.out.println("gravarAgenda");
         // verificar se existe algum campo nao preenchido
         if (this.agenda.getPaciente() == null
                 || this.agenda.getPrograma() == null
@@ -681,7 +652,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
 
     public void consultarAgenda(String situacao) throws ProjetoException {
-    	System.out.println("consultarAgenda");
         if (this.dataAtendimentoC == null) {
             JSFUtil.adicionarMensagemErro("Selecione uma data de atendimento!", "Erro");
             return;
@@ -697,7 +667,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
     //SEM USO NO MOMENTO
     public void excluirAgendamento() {
-    	System.out.println("excluirAgendamento");
         boolean excluiu = aDao.excluirAgendamento(this.agenda);
         if (excluiu) {
             limparDados();
@@ -709,20 +678,18 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
     
     public void mudaStatusPresenca(AgendaBean agendaSelecionada) throws ProjetoException {
-    	System.out.println("statuspresencaagenda");
         boolean mudouStatusPresenca = aDao.mudaStatusPresenca(agendaSelecionada);
         if (mudouStatusPresenca) {
         	consultarAgenda(agenda.getPresenca());
         	rowBean =  new AgendaBean();
-            JSFUtil.adicionarMensagemSucesso("Ação concluída com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("Aï¿½ï¿½o concluï¿½da com sucesso!", "Sucesso");
         } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a ação!", "Erro");
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a aï¿½ï¿½o!", "Erro");
         }
         
     }
 
     public void limparNaBuscaPaciente() {
-    	System.out.println("limparNaBuscaPaciente");
         this.agenda.setTipoAt(null);
         this.agenda.setProfissional(new FuncionarioBean());
         this.agenda.setEquipe(new EquipeBean());
@@ -733,7 +700,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void limparNaBuscaPrograma() {
-    	System.out.println("limparNaBuscaPrograma");
         this.agenda.setGrupo(new GrupoBean());
         this.agenda.setTipoAt(new TipoAtendimentoBean());
         this.agenda.setProfissional(new FuncionarioBean());
@@ -748,7 +714,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void limparNaBuscaGrupo() {
-    	System.out.println("limparNaBuscaGrupo");
         this.agenda.setTipoAt(null);
         this.agenda.setProfissional(new FuncionarioBean());
         this.agenda.setEquipe(new EquipeBean());
@@ -759,7 +724,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void limparNaBuscaTipo() {
-    	System.out.println("limparNaBuscaTipo");
         this.agenda.setProfissional(new FuncionarioBean());
         this.agenda.setEquipe(new EquipeBean());
         this.agenda.setObservacao(new String());
@@ -769,7 +733,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void limparNaBuscaEquipeProf() throws ProjetoException {
-    	System.out.println("limparNaBuscaEquipeProf");
         this.agenda.setObservacao(new String());
         //this.agenda.setDataAtendimento(null);
         this.agenda.setQtd(null);
@@ -778,14 +741,12 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void selectPrograma(SelectEvent event) throws ProjetoException {
-    	System.out.println("selectPrograma");
         this.programaSelecionado = (ProgramaBean) event.getObject();
         atualizaListaGrupos(programaSelecionado);
         limparNaBuscaPrograma();
     }
 
     public void atualizaListaGrupos(ProgramaBean p) throws ProjetoException {
-    	System.out.println("atualizaListaGrupos");
         this.programaSelecionado = p;
         this.listaGruposProgramas = gDao.listarGruposPorPrograma(p
                 .getIdPrograma());
@@ -795,7 +756,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void atualizaListaTipos(GrupoBean g) throws ProjetoException {
-    	System.out.println("atualizaListaTipos");
         this.grupoSelecionado = g;
         this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
     }
@@ -805,7 +765,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
             throws ProjetoException {
 
         if (agenda.getPrograma().getIdPrograma() != null) {
-        	System.out.println("listaGrupoAutoComplete");
             return gDao.listarGruposAutoComplete(query,
                     this.agenda.getPrograma());
         } else {
@@ -815,7 +774,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void carregaListaGruposPorPrograma() throws ProjetoException {
-    	System.out.println("listaGruposPorPrograma");
         if (agenda.getPrograma() != null) {
             if (agenda.getPrograma().getIdPrograma() != null) {
                 listaGruposProgramas = gDao.listarGruposPorPrograma(agenda
@@ -827,7 +785,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
     public List<EquipeBean> listaEquipeAutoComplete(String query)
             throws ProjetoException {
-    	System.out.println("listaEquipeAutoComplete");
         List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
                 agenda.getGrupo().getIdGrupo());
         return result;
@@ -835,7 +792,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
     public void carregaListaEquipePorTipoAtendimento()
             throws ProjetoException {
-    	System.out.println("listaEquipePorTipoAtendimento");
         if (agenda.getTipoAt() != null) {
             if (agenda.getGrupo().getIdGrupo() != null) {
                 listaEquipePorTipoAtendimento = eDao
@@ -846,7 +802,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
     public List<FuncionarioBean> listaProfissionalPorGrupoAutoComplete(
             String query) throws ProjetoException {
-    	System.out.println("listaProfissionalPorGrupoAutoComplete");
         List<FuncionarioBean> result = fDao.listarProfissionalBuscaPorGrupo(
                 query, agenda.getGrupo().getIdGrupo());
         return result;
@@ -855,7 +810,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     public void carregaListaProfissionalPorGrupo()
             throws ProjetoException {
     	listaProfissionalPorGrupo = new ArrayList<FuncionarioBean>();
-    	System.out.println("listaProfissionalPorGrupo");
         if (agenda.getGrupo() != null) {
             if (agenda.getGrupo().getIdGrupo() != null) {
             	listaProfissionalPorGrupo = fDao
@@ -868,7 +822,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
     public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
             throws ProjetoException {
-    	System.out.println("listaTipoAtAutoComplete");
         List<TipoAtendimentoBean> lista = new ArrayList<>();
 
         if (agenda.getGrupo() != null) {
@@ -879,7 +832,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void validarTipoAtendimentoNaAgenda(SelectEvent event) throws ProjetoException {
-    	System.out.println("validarTipoAtendimentoNaAgenda");
         this.tipoAtendimentoSelecionado = (TipoAtendimentoBean) event.getObject();
 
         agenda.setTipoAt(new TipoAtendimentoDAO().listarInformacoesTipoAtendimentoEquieProgramaPorId(tipoAtendimentoSelecionado.getIdTipo()));
@@ -897,7 +849,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void listaDiasDeAtendimentoAtuais() throws ProjetoException {
-        System.out.println("listaDiasDeAtendimentoAtuais");
         if (agenda.getTipoAt() != null) {
             if (agenda.getTipoAt().getIdTipo() != null) {
                 if (agenda.getProfissional().getId() != null) {
@@ -913,7 +864,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
 
     public List<ProgramaBean> listaProgramaAutoCompleteUsuarioOutraUnidade(String query)
             throws ProjetoException {
-    	System.out.println("listaProgramaAutoCompleteUsuarioOutraUnidade");
         ProgramaDAO pDao = new ProgramaDAO();
         List<ProgramaBean> result = pDao.listarProgramasBuscaUsuarioOutraUnidade(query, agenda.getEmpresa().getCodEmpresa());
         return result;
@@ -922,7 +872,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     // LISTAS E AUTOCOMPLETES FINAL
 
     public void selectGrupo(SelectEvent event) throws ProjetoException {
-    	System.out.println("selectGrupo");
         this.grupoSelecionado = (GrupoBean) event.getObject();
         atualizaListaTipos(grupoSelecionado);
         atualizaListaProfPorGrupo();
@@ -930,7 +879,6 @@ System.out.println("verificarDisponibilidadeDataEspecifica");
     }
 
     public void atualizaListaProfPorGrupo() throws ProjetoException {
-    	System.out.println("atualizaListaProfPorGrupo");
         this.listaProfissional = fDao
                 .listarProfissionalPorGrupo(this.grupoSelecionado.getIdGrupo());
     }

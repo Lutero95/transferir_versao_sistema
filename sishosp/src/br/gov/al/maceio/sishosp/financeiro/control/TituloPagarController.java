@@ -1134,7 +1134,6 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 
 	public List<BaixaPagar> getLstBaixa() throws ProjetoException {
 		if ((idSelecionado > 0) && (lstBaixa.size()==0)) {
-           System.out.println("getLstBaixa");
             TituloPagarDao dao = new TituloPagarDao();
             lstBaixa = dao.lstBaixas(idSelecionado);
         }
@@ -1164,7 +1163,6 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 	public List<ImpostoBean> getLstImpostosAlt() throws SQLException, ProjetoException{
 		
 		if(lstImpostosAlt == null) {
-			System.out.println("getLstImpostosAlt");
 			TituloPagarDao tpdao = new TituloPagarDao();
 			lstImpostosAlt = tpdao.listaImposto(rowBean.getCodigo());
 		}

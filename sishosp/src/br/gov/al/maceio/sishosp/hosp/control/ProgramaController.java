@@ -39,7 +39,6 @@ public class ProgramaController implements Serializable {
     private static final String CABECALHO_ALTERACAO = "Alteração de Programa";
 
     public ProgramaController() {
-    	System.out.println("construror ProgramaController");
         this.prog = new ProgramaBean();
         this.listaProgramas = new ArrayList<ProgramaBean>();;
         buscalistaProgramas = new ArrayList<>();
@@ -57,7 +56,6 @@ public class ProgramaController implements Serializable {
 
 
     public void getEditProg() throws ProjetoException {
-    	System.out.println("getEditProg");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -73,13 +71,11 @@ public class ProgramaController implements Serializable {
     }
 
     public void limparDados() throws ProjetoException {
-    	System.out.println("limparDados programacontroller");
         prog = new ProgramaBean();
         listaProgramas = pDao.listarProgramas();
     }
 
     public void gravarPrograma() throws ProjetoException {
-    	System.out.println("gravarPrograma");
         if (this.prog.getGrupo().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um grupo!", "Advertência");
         } else {
@@ -96,7 +92,6 @@ public class ProgramaController implements Serializable {
     }
 
     public void alterarPrograma() {
-    	System.out.println("alterarPrograma");
         if (this.prog.getGrupo().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("É necessário ao menos um grupo!", "Advertência");
         } else {
@@ -110,7 +105,6 @@ public class ProgramaController implements Serializable {
     }
 
     public void excluirPrograma() throws ProjetoException {
-    	System.out.println("excluirPrograma");
         boolean excluiu = pDao.excluirPrograma(prog);
         if (excluiu == true) {
             JSFUtil.adicionarMensagemSucesso("Programa excluído com sucesso!", "Sucesso");
@@ -123,27 +117,23 @@ public class ProgramaController implements Serializable {
     }
 
     public void carregaListaProgramas() throws ProjetoException {
-    	System.out.println("listarProgramas");
     	listaProgramas = pDao.listarProgramas();
     }
 
     public List<ProgramaBean> listaProgramaAutoComplete(String query)
             throws ProjetoException {
-    	System.out.println("listaProgramaAutoComplete");
         List<ProgramaBean> result = pDao.listarProgramasBusca(query, 1);
         return result;
     }
 
     public List<ProgramaBean> listaProgramaAutoCompleteUsuario(String query)
             throws ProjetoException {
-    	System.out.println("listaProgramaAutoCompleteUsuario");
         List<ProgramaBean> result = pDao.listarProgramasBuscaUsuario(query, 1);
         return result;
     }
 
     public void carregaListaProgramasUsuario()
             throws ProjetoException {
-    	System.out.println("carregaListaProgramasUsuario");
        listaProgramasUsuario = pDao.listarProgramasUsuario();
     }
 
@@ -188,7 +178,6 @@ public class ProgramaController implements Serializable {
     }
 
     public List<ProgramaBean> getBuscalistaProgramas() throws ProjetoException {
-    	System.out.println("getBuscalistaProgramas");
         if (buscalistaProgramas == null) {
 
             buscalistaProgramas = pDao.BuscalistarProgramas();

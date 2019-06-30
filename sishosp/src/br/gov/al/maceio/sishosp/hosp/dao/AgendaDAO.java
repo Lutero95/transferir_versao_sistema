@@ -29,7 +29,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     public boolean gravarAgenda(AgendaBean agenda,
                                 List<AgendaBean> listaNovosAgendamentos, Integer funcionarioLiberacao) {
 
-        System.out.println("DAO gravarAgenda");
     	Boolean retorno = false;
         int idAtendimento = 0;
 
@@ -135,7 +134,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public boolean excluirAgendamento(AgendaBean agenda) {
-    	  System.out.println("DAO excluirAgendamento");
         Boolean retorno = false;
         String sql = "delete from hosp.atendimentos where id_atendimento = ?";
         try {
@@ -160,7 +158,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
     
     public boolean mudaStatusPresenca(AgendaBean agenda) {
-  	  System.out.println("DAO excluirAgendamento");
       Boolean retorno = false;
       String sql = "update hosp.atendimentos set presenca=? where id_atendimento = ?";
       try {
@@ -189,7 +186,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
     public void excluirTabelaAgendamentos1(AgendaBean agenda)
             throws ProjetoException {
-    	System.out.println("DAO excluirTabelaAgendamentos1");    	
         String sql = "delete from hosp.atendimentos1 where id_atendimento = ?";
         try {
             con = ConnectionFactory.getConnection();
@@ -210,7 +206,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public int verQtdMaxAgendaData(AgendaBean agenda) throws ProjetoException {
-    	System.out.println("DAO verQtdMaxAgendaData");    	
         int qtdMax = 0;
         String sqlPro = "select p.qtdmax " +
                 "from hosp.config_agenda_profissional p " +
@@ -254,7 +249,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public int verQtdAgendadosData(AgendaBean agenda) throws ProjetoException {
-    	System.out.println("DAO verQtdAgendadosData");
         int qtd = 0;
         String sqlPro = "select count(*) as qtd from hosp.atendimentos where codmedico = ? and dtaatende = ? and turno = ?;";
         String sqlEqui = "select count(*) as qtd from hosp.atendimentos where codequipe = ? and dtaatende = ? and turno = ?;";
@@ -291,7 +285,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
     public boolean buscarDataEspecifica(AgendaBean agenda)
             throws ProjetoException {
-    	System.out.println("DAO buscarDataEspecifica");
         int id = 0;
 
         String sqlPro = "select p.id_configagenda " +
@@ -340,7 +333,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
     public boolean buscarTabTipoAtendAgenda(AgendaBean agenda)
             throws ProjetoException {
-    	System.out.println("DAO buscarTabTipoAtendAgenda");
         int achou = 0;
         String sql = "select codtipoatendimento from hosp.tipo_atend_agenda "
                 + " where codtipoatendimento = ? and codprograma = ? and codgrupo = ?";
@@ -372,7 +364,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public boolean buscarDiaSemana(AgendaBean agenda) throws ProjetoException {
-    	System.out.println("DAO buscarDiaSemana");
         Calendar cal = Calendar.getInstance();
         cal.setTime(agenda.getDataAtendimento());
         int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
@@ -425,7 +416,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
     public List<AgendaBean> listarAgendamentosData(AgendaBean ag)
             throws ProjetoException {
-    	System.out.println("DAO listarAgendamentosData");
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
         StringBuilder sqlProf = new StringBuilder();
@@ -506,7 +496,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
     public List<AgendaBean> consultarAgenda(Date dataAgenda,
                                             Date dataAgendaFinal, Integer codEmpresa, String situacao) throws ProjetoException {
-    	System.out.println("DAO consultarAgenda");
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
         String sql = "SELECT a.id_atendimento, a.codpaciente, p.nome, p.cns, a.codmedico, m.descfuncionario, "
@@ -569,7 +558,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public int verQtdMaxAgendaGeral(AgendaBean agenda) throws ProjetoException {
-    	System.out.println("DAO verQtdMaxAgendaGeral");
         Calendar cal = Calendar.getInstance();
         cal.setTime(agenda.getDataAtendimento());
         int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
@@ -616,7 +604,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public int verQtdMaxAgendaEspec(AgendaBean agenda) throws ProjetoException {
-    	System.out.println("DAO verQtdMaxAgendaEspec");
         int diaSemana = DataUtil.extrairDiaDeData(agenda.getDataAtendimento());
         int mes = DataUtil.extrairMesDeData(agenda.getDataAtendimento());
         int ano = DataUtil.extrairAnoDeData(agenda.getDataAtendimento());
@@ -668,7 +655,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public int verQtdMaxAgendaEspecDataEspecifica(AgendaBean agenda) throws ProjetoException {
-    	System.out.println("DAO verQtdMaxAgendaEspecDataEspecifica");
         int qtdMax = 0;
 
         String sqlPro = "select p.qtdmax " +
@@ -715,7 +701,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public int verQtdAgendadosEspec(AgendaBean agenda) throws ProjetoException {
-    	System.out.println("DAO verQtdAgendadosEspec");
         int qtd = 0;
         String sqlPro = "select count(*) as qtd from hosp.atendimentos where codmedico = ? and dtaatende = ? and turno = ?;";
         String sqlEqui = "select count(*) as qtd from hosp.atendimentos where codequipe = ? and dtaatende = ? and turno = ?;";
@@ -752,7 +737,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
     public Boolean retornarIntervaloUltimoAgendamento(Integer codPaciente, Integer codTipoAtendimento, Integer intervaloMinimo)
             throws ProjetoException {
-    	System.out.println("DAO retornarIntervaloUltimoAgendamento");
         Boolean resultado = true;
 
         String sql = "SELECT CASE WHEN dtamarcacao - CURRENT_DATE > concat(?,' minutes')::INTERVAL THEN TRUE ELSE FALSE END AS intervalo " +
@@ -786,7 +770,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public List<ConfigAgendaParte1Bean> retornarDiaAtendimentoProfissional(Long codProfissional) throws ProjetoException {
-    	System.out.println("DAO retornarDiaAtendimentoProfissional");
         List<ConfigAgendaParte1Bean> lista = new ArrayList<ConfigAgendaParte1Bean>();
 
         StringBuilder sql = new StringBuilder();
@@ -854,7 +837,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public List<ConfigAgendaParte1Bean> retornarDiaAtendimentoEquipe(Integer codEquipe) throws ProjetoException {
-    	System.out.println("DAO retornarDiaAtendimentoEquipe");
         List<ConfigAgendaParte1Bean> lista = new ArrayList<ConfigAgendaParte1Bean>();
 
         StringBuilder sql = new StringBuilder();
@@ -908,7 +890,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public Boolean numeroAtendimentosEquipe(InsercaoPacienteBean insercao) {
-    	System.out.println("DAO numeroAtendimentosEquipe");
         Boolean resultado = false;
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -950,7 +931,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public Boolean numeroAtendimentosProfissional(InsercaoPacienteBean insercao) {
-    	System.out.println("DAO numeroAtendimentosProfissional");
         Boolean resultado = false;
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -1011,7 +991,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     }
 
     public List<AgendaBean> quantidadeDeAgendamentosDaEquipePorTurno() {
-    	System.out.println("DAO quantidadeDeAgendamentosDaEquipePorTurno");
         List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
@@ -1152,7 +1131,6 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
     public Integer contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(
             AgendaBean agenda, java.util.Date dataAtendimento)
             throws ProjetoException {
-    	System.out.println("DAO contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica");
         Integer qtd = null;
 
         String sql = "";

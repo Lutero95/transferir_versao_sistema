@@ -58,7 +58,6 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
     private List<EquipeBean> listaEquipePorGrupo;
     private String opcaoAtendimento;
-    private EmpresaDAO empresaDAO = new EmpresaDAO();
     private ArrayList<String> listaHorarios;
     private Boolean todosOsProfissionais;
     private Boolean renderizarAposLaudo;
@@ -140,7 +139,6 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void carregaListaEquipePorTipoAtendimento()
             throws ProjetoException {
-        System.out.println("listaEquipePorTipoAtendimento");
         if (insercao.getGrupo().getIdGrupo() != null) {
             listaEquipePorGrupo = eDao
                     .listarEquipePorGrupo(insercao.getGrupo().getIdGrupo());
