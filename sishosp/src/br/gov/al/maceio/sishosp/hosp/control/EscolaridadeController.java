@@ -113,6 +113,10 @@ public class EscolaridadeController implements Serializable {
         listaEscolaridade = eDao.listaEscolaridade();
     }
 
+    public List<EscolaridadeBean> listarEscolaridades() throws ProjetoException {
+        return eDao.listaEscolaridade();
+    }
+
     public EscolaridadeBean getEscolaridade() {
         return escolaridade;
     }
