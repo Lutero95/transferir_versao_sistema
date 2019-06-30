@@ -33,6 +33,7 @@ import org.primefaces.model.chart.HorizontalBarChartModel;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.financeiro.model.BancoBean;
 import br.gov.al.maceio.sishosp.financeiro.model.ClienteBean;
 import br.gov.al.maceio.sishosp.financeiro.model.FiltroBean;
@@ -147,7 +148,6 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
@@ -173,7 +173,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
@@ -197,7 +197,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
@@ -223,7 +223,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
@@ -247,7 +247,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
@@ -273,7 +273,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(periodoinicial.getTime()));
 			map.put("datafim", new java.sql.Date(periodofinal.getTime()));
@@ -297,7 +297,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
@@ -323,7 +323,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
@@ -347,7 +347,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
@@ -374,7 +374,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("id_cliente", clienteBean.getCodcliente());
 			map.put("datainicio", new java.sql.Date(periodoinicial.getTime()));
@@ -396,7 +396,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("id_cliente", clienteBean.getCodcliente());
 			map.put("datainicio", new java.sql.Date(periodoinicial.getTime()));
@@ -421,7 +421,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("id_cliente", clienteBean.getCodcliente());
 			map.put("datainicio", new java.sql.Date(periodoinicial.getTime()));
@@ -446,7 +446,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("id_cliente", clienteBean.getCodcliente());
 			map.put("datainicio", new java.sql.Date(periodoinicial.getTime()));
@@ -473,7 +473,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("id_cliente", clienteBean.getCodcliente());
 			map.put("datainicio", new java.sql.Date(periodoinicial.getTime()));
@@ -498,7 +498,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("id_cliente", clienteBean.getCodcliente());
 			map.put("datainicio", new java.sql.Date(periodoinicial.getTime()));
@@ -525,7 +525,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("id_cliente", clienteBean.getCodcliente());
 			map.put("datainicio", new java.sql.Date(periodoinicial.getTime()));
@@ -550,7 +550,7 @@ public class ReportController implements Serializable {
 					.getSessionMap().get("obj_usuario");
 
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("codfilial", user_session.getEmpresa().getCodfilial());
+			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("id_cliente", clienteBean.getCodcliente());
 			map.put("datainicio", new java.sql.Date(periodoinicial.getTime()));
@@ -587,7 +587,7 @@ public class ReportController implements Serializable {
 		// }
 		map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho) + File.separator);
 		;
-		map.put("codfilial", user_session.getEmpresa().getCodfilial());
+		
 		map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 		map.put("datainicio", new java.sql.Date(periodoinicial.getTime()));
 		map.put("datafim", new java.sql.Date(periodofinal.getTime()));
@@ -605,7 +605,7 @@ public class ReportController implements Serializable {
 				.get("obj_usuario");
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		map.put("codfilial", user_session.getEmpresa().getCodfilial());
+		
 		map.put("nomerel", "DÉBITOS POR FORNECEDOR");
 		map.put("filtro", "DÉBITOS POR FORNECEDOR");
 		map.put("datainicio", this.dataInicio);
@@ -627,7 +627,7 @@ public class ReportController implements Serializable {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
 
-		map.put("codfilial", user_session.getEmpresa().getCodfilial());
+		
 		map.put("nomerel", "DÉBITOS POR CENTRO DE CUSTO - ANALITICO");
 		map.put("filtro", "DÉBITOS POR CENTRO DE CUSTO");
 		map.put("datainicio", this.dataInicio);
@@ -649,7 +649,7 @@ public class ReportController implements Serializable {
 
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
-		map.put("codfilial", user_session.getEmpresa().getCodfilial());
+		
 		map.put("nomerel", "DÉBITOS POR FORNECEDOR");
 		map.put("filtro", "DÉBITOS POR FORNECEDOR");
 		map.put("datainicio", this.dataInicio);
@@ -669,7 +669,7 @@ public class ReportController implements Serializable {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("codfilial", user_session.getEmpresa().getCodfilial());
+		
 		map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 		this.executeReport(relatorio, map, "ListagemFornecedor.pdf");
 	}
@@ -681,7 +681,7 @@ public class ReportController implements Serializable {
 				.get("obj_usuario");
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		map.put("codfilial", user_session.getEmpresa().getCodfilial());
+		
 		map.put("nomerel", "CRÉDITOS POR CLIENTE");
 		map.put("filtro", "CRÉDITOS POR CLIENTE");
 		map.put("datainicio", this.dataInicio);
@@ -704,7 +704,7 @@ public class ReportController implements Serializable {
 		map.put("datafim", dataFim);
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("obj_usuario");
-		map.put("codfilial", user_session.getEmpresa().getCodfilial());
+		
 		map.put("nomerel", "DÉBITOS POR FORNECEDOR");
 		map.put("filtro", "DÉBITOS POR FORNECEDOR");
 
@@ -730,7 +730,7 @@ public class ReportController implements Serializable {
 		ServletOutputStream servletOutputStream = response.getOutputStream();
 
 		try {
-			Connection connection = ConnectFactory.getConnection();
+			Connection connection = ConnectionFactory.getConnection();
 
 			// JRProperties.setProperty("net.sf.jasperreports.awt.ignore.missing.font",
 			// "true");
@@ -775,9 +775,9 @@ public class ReportController implements Serializable {
 		return scontext;
 	}
 
-		private byte[] executeReportInternamente() throws IOException, ParseException, ProjetoException {
+	/*	private byte[] executeReportInternamente() throws IOException, ParseException, ProjetoException {
 
-		arquivo = null;
+		//arquivo = null;
 		Map<String, Object> parametros = new HashMap<String, Object>();
 		String nomeArquivoSaida = "";
 		// byte[] bytes = null;
@@ -786,7 +786,7 @@ public class ReportController implements Serializable {
 
 		Connection conexao = null;
 		try {
-			conexao = ConnectFactory.getConnection();
+			conexao = ConnectionFactory.getConnection();
 
 			// JasperReport jasperReport =
 			// JasperCompileManager.compileReport("/WEB-INF/relatorios/iprev/relCertNegativaNovo.jrxml");
@@ -817,6 +817,7 @@ public class ReportController implements Serializable {
 		return arquivo.getArquivo();
 	}
 
+*/
 	
 	public Integer getCodcccusto() {
 		return codcccusto;

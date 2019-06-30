@@ -2,12 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:stella="http://stella.caelum.com.br/faces2"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 
-<ui:composition template="../../template/templategeral.xhtml">
-	<ui:define name="body">
-
+<ui:composition template="../../template/template.xhtml">
+	<ui:define name="content">
+<p:growl id="grwgeral" showDetail="false" />
 
 		<h:form id="frm">
 			<h3 style="font-size: 22px; font-weight: bold">Gerenciamento de
@@ -25,30 +26,25 @@
 
 						<p:commandButton id="btnalt" value="Editar"
 							style="margin-left :10px" update=":frmedit:pnledit :grwgeral"
-							action="#{fornecedorController.acaoEditar()}"
+							action="#{fornecedorControllerFin.acaoEditar()}"
 							icon="ui-icon-wrench"
-							disabled="#{fornecedorController.rowBean == null or MBUsuarios.verificarPermComp('FC-77', MBUsuarios.sistemaLogado.id) == false}">
+							disabled="#{fornecedorControllerFin.rowBean == null or MBUsuarios.verificarPermComp('FC-77', MBUsuarios.sistemaLogado.id) == false}">
 						</p:commandButton>
 
 						<p:commandButton icon="ui-icon-closethick" value="Excluir"
 							style="margin-left :10px"
-							action="#{fornecedorController.acaoExcluir()}" update=":grwgeral"
-							disabled="#{fornecedorController.rowBean == null or MBUsuarios.verificarPermComp('FC-78', MBUsuarios.sistemaLogado.id) == false}">
+							action="#{fornecedorControllerFin.acaoExcluir()}" update=":grwgeral"
+							disabled="#{fornecedorControllerFin.rowBean == null or MBUsuarios.verificarPermComp('FC-78', MBUsuarios.sistemaLogado.id) == false}">
 						</p:commandButton>
 
-						<p:commandButton icon="ui-icon-print" value="Imprimir"
-							style="margin-left :10px" ajax="false"
-							actionListener="#{reportController.fornecedorListagem}"
-							update=":grwgeral">
-						</p:commandButton>
 					</h:panelGrid>
 				</p:toolbarGroup>
 			</p:toolbar>
 
-			<b:dataTable select="true"  id="tabela" value="#{fornecedorController.listAll()}"
+			<b:dataTable select="true"  id="tabela" value="#{fornecedorControllerFin.listAll()}"
 				var="m"	selectionMode="single" customLangUrl="#{resource['pt-br.json']}"
-				onselect="ajax: fornecedorController.onRowSelect(m)"
-				ondeselect="ajax: fornecedorController.onRowSelect(null)"
+				onselect="ajax: fornecedorControllerFin.onRowSelect(m)"
+				ondeselect="ajax: fornecedorControllerFin.onRowSelect(null)"
 				 >
 
 				<b:dataTableColumn label="Id" style="width:7%" value="#{m.codforn}" />
@@ -61,7 +57,7 @@
 		<!--  Dialog Inclusao dados TipoDoc -->
 
 		<p:dialog responsive="true" widgetVar="dlginc"
-			header="Dados do Fornecedor" height="250" width="770"
+			header="Dados do Fornecedor" height="300" width="770"
 			resizable="false" modal="true">
 
 			<h:form id="frminc">
@@ -73,45 +69,45 @@
 
 						<h:outputText value="Nome" style="font-weight:bold;"></h:outputText>
 						<p:inputText required="true" requiredMessage="Informe o nome"
-							size="40" value="#{fornecedorController.func.nome}" />
+							size="40" value="#{fornecedorControllerFin.func.nome}" />
 
 						<h:outputText value="Fantasia" style="font-weight:bold;"></h:outputText>
 						<p:inputText required="true" requiredMessage="Informe a fantasia"
-							size="30" value="#{fornecedorController.func.fantasia}" />
+							size="30" value="#{fornecedorControllerFin.func.fantasia}" />
 
 						<h:outputText value="CNPJ" style="font-weight:bold;"></h:outputText>
-						<p:inputMask mask="99.999.999/9999-99"
-							value="#{fornecedorController.func.cnpj}"
-							validator="CNPJValidator">
+						<p:inputMask mask="99.999.999/9999-99" required="true" requiredMessage="Informe o CNPJ"
+							value="#{fornecedorControllerFin.func.cnpj}">
+							<stella:validateCNPJ  formatted="true"  />
 						</p:inputMask>
 
 						<h:outputText value="Insc. Estadual" style="font-weight:bold;"></h:outputText>
-						<p:inputText value="#{fornecedorController.func.inscest}">
+						<p:inputText value="#{fornecedorControllerFin.func.inscest}">
 
 						</p:inputText>
 
 						<h:outputText value="Endereço" style="font-weight:bold;"></h:outputText>
-						<p:inputText value="#{fornecedorController.func.endereco}"
+						<p:inputText value="#{fornecedorControllerFin.func.endereco}"
 							size="40"></p:inputText>
 
 						<h:outputText value="Complemento" style="font-weight:bold;"></h:outputText>
-						<p:inputText value="#{fornecedorController.func.complemento}"></p:inputText>
+						<p:inputText value="#{fornecedorControllerFin.func.complemento}"></p:inputText>
 
 						<h:outputText value="CEP" style="font-weight:bold;"></h:outputText>
 
 						<p:inputMask mask="99999-999" maxlength="8"
-							value="#{fornecedorController.func.cep}"></p:inputMask>
+							value="#{fornecedorControllerFin.func.cep}"></p:inputMask>
 
 
 						<h:outputText value="Telefone" style="font-weight:bold;"></h:outputText>
 						<p:inputMask mask="(99)9999-9999"
-							value="#{fornecedorController.func.telefone}" />
+							value="#{fornecedorControllerFin.func.telefone}" />
 
 						<h:outputText value="Site" style="font-weight:bold;"></h:outputText>
-						<p:inputText value="#{fornecedorController.func.site}" size="40"></p:inputText>
+						<p:inputText value="#{fornecedorControllerFin.func.site}" size="40"></p:inputText>
 
 						<h:outputText value="Email" style="font-weight:bold;"></h:outputText>
-						<p:inputText value="#{fornecedorController.func.email}" size="40"></p:inputText>
+						<p:inputText value="#{fornecedorControllerFin.func.email}" size="40"></p:inputText>
 
 
 
@@ -121,7 +117,7 @@
 					<center>
 
 						<p:commandButton value="Salvar"
-							actionListener="#{fornecedorController.salvar()}"
+							actionListener="#{fornecedorControllerFin.salvar()}"
 							update=":frm:tabela :grwgeral" icon="ui-icon-check">
 						</p:commandButton>
 
@@ -151,46 +147,47 @@
 
 						<h:outputText value="Nome" style="font-weight:bold;"></h:outputText>
 						<p:inputText required="true" requiredMessage="Informe o nome"
-							size="40" value="#{fornecedorController.rowBean.nome}" />
+							size="40" value="#{fornecedorControllerFin.rowBean.nome}" />
 
 						<h:outputText value="Fantasia" style="font-weight:bold;"></h:outputText>
 						<p:inputText required="true" requiredMessage="Informe a fantasia"
-							size="40" value="#{fornecedorController.rowBean.fantasia}" />
+							size="40" value="#{fornecedorControllerFin.rowBean.fantasia}" />
 
 						<h:outputText value="CNPJ" style="font-weight:bold;"></h:outputText>
-						<p:inputMask mask="99.999.999/9999-99"
-							value="#{fornecedorController.rowBean.cnpj}"
-							validator="CNPJValidator">
+						<p:inputMask mask="99.999.999/9999-99" required="true" requiredMessage="Informe o CNPJ"
+							value="#{fornecedorControllerFin.rowBean.cnpj}"
+							>
+							<stella:validateCNPJ  formatted="true" />
 						</p:inputMask>
 
 
 
 						<h:outputText value="Insc. Estadual" style="font-weight:bold;"></h:outputText>
-						<p:inputText value="#{fornecedorController.rowBean.inscest}">
+						<p:inputText value="#{fornecedorControllerFin.rowBean.inscest}">
 
 						</p:inputText>
 						<h:outputText value="Endereço" style="font-weight:bold;"></h:outputText>
 						<p:inputText size="40"
-							value="#{fornecedorController.rowBean.endereco}"></p:inputText>
+							value="#{fornecedorControllerFin.rowBean.endereco}"></p:inputText>
 
 						<h:outputText value="Complemento" style="font-weight:bold;"></h:outputText>
-						<p:inputText value="#{fornecedorController.rowBean.complemento}"></p:inputText>
+						<p:inputText value="#{fornecedorControllerFin.rowBean.complemento}"></p:inputText>
 
 						<h:outputText value="CEP" style="font-weight:bold;"></h:outputText>
 						<p:inputMask mask="99999-999" maxlength="8"
-							value="#{fornecedorController.rowBean.cep}"></p:inputMask>
+							value="#{fornecedorControllerFin.rowBean.cep}"></p:inputMask>
 
 						<h:outputText value="Telefone" style="font-weight:bold;"></h:outputText>
 						<p:inputMask mask="(99)9999-9999"
-							value="#{fornecedorController.rowBean.telefone}" />
+							value="#{fornecedorControllerFin.rowBean.telefone}" />
 
 						<h:outputText value="Site" style="font-weight:bold;"></h:outputText>
 						<p:inputText size="40"
-							value="#{fornecedorController.rowBean.site}"></p:inputText>
+							value="#{fornecedorControllerFin.rowBean.site}"></p:inputText>
 
 						<h:outputText value="Email" style="font-weight:bold;"></h:outputText>
 						<p:inputText size="40"
-							value="#{fornecedorController.rowBean.email}"></p:inputText>
+							value="#{fornecedorControllerFin.rowBean.email}"></p:inputText>
 
 
 
@@ -200,7 +197,7 @@
 
 					<center>
 						<p:commandButton value="Salvar"
-							action="#{fornecedorController.editar()}"
+							action="#{fornecedorControllerFin.editar()}"
 							update=":frm:tabela :grwgeral" style="font-size: 14px"
 							icon="ui-icon-wrench">
 
@@ -225,7 +222,7 @@
 				<center>
 
 					<p:commandButton value="Sim"
-						actionListener="#{fornecedorController.excluir()}"
+						actionListener="#{fornecedorControllerFin.excluir()}"
 						update=":frm:tabela :grwgeral" icon="ui-icon-check"
 						style="font-size:14px;">
 					</p:commandButton>

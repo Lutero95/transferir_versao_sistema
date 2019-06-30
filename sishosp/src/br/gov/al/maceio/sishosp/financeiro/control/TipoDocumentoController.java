@@ -44,19 +44,20 @@ public class TipoDocumentoController implements Serializable {
 
 	public void salvar() throws ProjetoException {
 		TipoDocumentoDao dao = new TipoDocumentoDao();
-		dao.salvarDocumento(tipoDoc);
+		if (dao.salvarDocumento(tipoDoc)) {
 		RequestContext.getCurrentInstance().execute("PF('dlginc').hide();");
 		lstTipo = null;
 		FacesContext.getCurrentInstance().addMessage(
 				null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Salvo com sucesso!", "teste"));
+		}
 	}
 
 	public void editar() throws ProjetoException {
 
 		TipoDocumentoDao dao = new TipoDocumentoDao();
-		dao.editarTipoDocumento(rowBean);
+		if (dao.editarTipoDocumento(rowBean)) {
 		rowBean = null;
 		lstTipo = null;
 		RequestContext.getCurrentInstance().update("frm:outBotoes");
@@ -66,6 +67,21 @@ public class TipoDocumentoController implements Serializable {
 				null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Editado com sucesso!", "teste"));
+		}
+
+	}
+	
+	public void acaoExcluir() {
+		if (rowBean != null) {
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAtencao').show();");
+
+		} else {
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"SELECIONE UM TIPO DE DOCUMENTO ANTES!", "teste"));
+		}
 
 	}
 
@@ -74,6 +90,7 @@ public class TipoDocumentoController implements Serializable {
 		TipoDocumentoDao dao = new TipoDocumentoDao();
 		dao.excluirTipoDocumento(rowBean);
 		rowBean = null;
+		lstTipo = null;
 		RequestContext.getCurrentInstance().update("frm:outBotoes");
 		RequestContext.getCurrentInstance().execute("PF('dialogAtencao').hide();");
 

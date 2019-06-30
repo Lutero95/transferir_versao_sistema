@@ -69,6 +69,7 @@ public class CentroDeCustoController implements Serializable {
 
 		CentroCustoDAO dao = new CentroCustoDAO();
 		if (dao.deleteCusto(this.rowBean)) {
+			lstCustos = null;
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Centro de Custo Excluído com Sucesso",
 					"Centro de Custo Excluído com Sucesso");

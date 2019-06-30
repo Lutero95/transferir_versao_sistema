@@ -36,7 +36,7 @@ public class PortadorController implements Serializable {
 
 		operacao = "I";
 		
-		port = null;
+		port = new PortadorBean();
 		lstportador = new ArrayList<PortadorBean>();
 		lstportador = null;
 
@@ -53,7 +53,7 @@ public class PortadorController implements Serializable {
 	public void acaoEditar() {
 		if (port != null) {
 			RequestContext.getCurrentInstance().execute(
-					"PF('novaProfissao').show();");
+					"PF('dlgedit').show();");
 			
 			this.operacao = "E";
 		} else {
@@ -85,28 +85,65 @@ public class PortadorController implements Serializable {
 		this.operacao = "I";
 	}
 
-	public void gravar() throws ProjetoException {
+	public void gravaInclusao() throws ProjetoException {
 
-		{
+		
 
 			PortadorDAO dao = new PortadorDAO();
 
-			if (this.operacao.equals("E")) {
+			String retorno = "";
+			retorno = dao.inserePort(this.port);
+			
+			if (retorno != null) {
+				if (retorno.equals("OK")) {
+					port = new PortadorBean();
+					FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"CADASTRADO COM SUCESSO !", "teste"));
+
+					RequestContext.getCurrentInstance().execute(
+							"PF('dlginc').hide();");
+					lstportador = null;
+
+				}
+
+				else
+					FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Falha na tentativa de Gravação: "
+											+ retorno, "teste"));
+			} else {
+
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Falha na tentativa de Gravação: "
+										+ retorno, "teste"));
+			}
+	}
+	
+	public void gravaAlteracao() throws ProjetoException {
+
+
+			PortadorDAO dao = new PortadorDAO();
+
 
 				String retorno = "";
-				retorno = dao.atualizaPort(this.port);
+				retorno = dao.atualizaPort(this.rowBean);
 				
 				if (retorno != null) {
 					if (retorno.equals("OK")) {
-						port = null;
-						RequestContext.getCurrentInstance().update("formUsuarios:outBotoes");
+						port = new PortadorBean();
+						rowBean = null;
 						FacesContext.getCurrentInstance().addMessage(
 								null,
 								new FacesMessage(FacesMessage.SEVERITY_INFO,
 										"ALTERADO COM SUCESSO !", "teste"));
 
 						RequestContext.getCurrentInstance().execute(
-								"PF('novaProfissao').hide();");
+								"PF('dlgedit').hide();");
 						lstportador = null;
 
 					}
@@ -125,54 +162,23 @@ public class PortadorController implements Serializable {
 									"Falha na tentativa de Gravação: "
 											+ retorno, "teste"));
 				}
-			} else {
+			
+		
+	
 
-				String retorno = "";
-				retorno = dao.inserePort(this.port);
-				
-				if (retorno != null) {
-					if (retorno.equals("OK")) {
-						port = new PortadorBean();
-						FacesContext.getCurrentInstance().addMessage(
-								null,
-								new FacesMessage(FacesMessage.SEVERITY_INFO,
-										"CADASTRADO COM SUCESSO !", "teste"));
-
-						RequestContext.getCurrentInstance().execute(
-								"PF('novaProfissao').hide();");
-						lstportador = null;
-
-					}
-
-					else
-						FacesContext.getCurrentInstance().addMessage(
-								null,
-								new FacesMessage(FacesMessage.SEVERITY_INFO,
-										"Falha na tentativa de Gravação: "
-												+ retorno, "teste"));
-				} else {
-
-					FacesContext.getCurrentInstance().addMessage(
-							null,
-							new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Falha na tentativa de Gravação: "
-											+ retorno, "teste"));
-				}
-
-			}
-		}
 	}
+
 
 	// metodo para excluir PORTADOR.
 	public void excluirPortador() throws ProjetoException {
 
 		PortadorDAO dao = new PortadorDAO();
-		String retorno = dao.excluir(this.port);
+		String retorno = dao.excluir(this.rowBean);
 		if ((retorno.equals("OK"))) {
 
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAtencao').hide();");
-			port = null;
+			rowBean = null;
 			lstportador = null;
 			lstportador();
 			RequestContext.getCurrentInstance().update("formUsuarios:outBotoes");
@@ -198,8 +204,8 @@ public class PortadorController implements Serializable {
 	}
 	
 	public void onRowSelect(PortadorBean event) {
-		port = event;
-		RequestContext.getCurrentInstance().update("formUsuarios:outBotoes");
+		rowBean = event;
+		RequestContext.getCurrentInstance().update("frm:outBotoes");
 	}
 
 	/* Gets e Sets */

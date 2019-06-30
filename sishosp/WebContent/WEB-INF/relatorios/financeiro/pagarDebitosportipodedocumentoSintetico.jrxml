@@ -23,10 +23,12 @@
 	<parameter name="coddespesa" class="java.lang.Integer"/>
 	<parameter name="codportador" class="java.lang.Integer"/>
 	<parameter name="tipoRelatorio" class="java.lang.String"/>
+	<parameter name="codempresa" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[select sum(valor) valor, sum(pago) pago,sum(valor-pago) valorAberto,count(*) docs, codtipdoc , desctipdoc from (select
+		<![CDATA[select  nomeinstituicao,sum(valor) valor, sum(pago) pago,sum(valor-pago) valorAberto,count(*) docs, codtipdoc , desctipdoc from (select
 
 p.codtipdoc,
+empresa.nome_principal nomeinstituicao,
 p.valor
             -coalesce(p.desconto,0)
             +coalesce(p.juros,0)
@@ -36,6 +38,7 @@ p.valor
 
 
 		  (p.codforn = f.codforn) join financeiro.tipodocumento t on (t.codtipodocumento = p.codtipdoc)
+		  join hosp.empresa on empresa.cod_empresa =  $P{codempresa} 
 join financeiro.despesa d on (d.iddespesa = p.iddespesa )
 				  join financeiro.ccusto c on (c.idccusto = p.idccusto)
 				   left join financeiro.portador pt on(pt.codportador = p.codport )
@@ -66,8 +69,12 @@ or
 
 
 ) t
-group by codtipdoc, desctipdoc]]>
+group by codtipdoc, desctipdoc, nomeinstituicao]]>
 	</queryString>
+	<field name="nomeinstituicao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomeinstituicao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
 	<field name="valor" class="java.lang.Double">
 		<property name="com.jaspersoft.studio.field.label" value="valor"/>
 	</field>
@@ -124,37 +131,43 @@ group by codtipdoc, desctipdoc]]>
 	<group name="grpforn">
 		<groupExpression><![CDATA[$F{codtipdoc}]]></groupExpression>
 		<groupHeader>
-			<band height="38">
+			<band height="28">
 				<textField>
-					<reportElement mode="Opaque" x="2" y="0" width="750" height="36" backcolor="#D4D0C8" uuid="d74ab0a5-cdce-4347-a645-14a81e4a29e0"/>
+					<reportElement mode="Opaque" x="2" y="0" width="772" height="22" backcolor="rgba(212, 208, 200, 0.0)" uuid="d74ab0a5-cdce-4347-a645-14a81e4a29e0"/>
 					<textElement>
-						<font fontName="DejaVu Sans"/>
+						<font fontName="DejaVu Sans" size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{codtipdoc}+" - "+ $F{desctipdoc}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="grpforn" pattern="R$ #,##0.00">
-					<reportElement x="375" y="6" width="53" height="26" uuid="6a9ee60d-e3cd-4e36-8a8e-cb8ecfa2d4fb"/>
+					<reportElement x="375" y="6" width="75" height="22" uuid="6a9ee60d-e3cd-4e36-8a8e-cb8ecfa2d4fb">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<textElement>
-						<font fontName="DejaVu Sans" size="8"/>
+						<font fontName="DejaVu Sans" size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{valor_3}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="grpforn" pattern="R$ #,##0.00">
-					<reportElement x="482" y="6" width="53" height="26" uuid="85986d9a-c52b-4f5c-9991-11ba8a7bc67a"/>
+					<reportElement x="482" y="6" width="75" height="22" uuid="85986d9a-c52b-4f5c-9991-11ba8a7bc67a">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<textElement>
-						<font fontName="DejaVu Sans" size="8"/>
+						<font fontName="DejaVu Sans" size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{pago_3}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="grpforn" pattern="R$ #,##0.00">
-					<reportElement x="568" y="4" width="53" height="26" uuid="04d99fa6-5167-4351-8ba6-0d8b94ddad6a"/>
+					<reportElement x="568" y="4" width="75" height="22" uuid="04d99fa6-5167-4351-8ba6-0d8b94ddad6a">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
 					<textElement>
-						<font fontName="DejaVu Sans" size="8"/>
+						<font fontName="DejaVu Sans" size="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{valoraberto_1}]]></textFieldExpression>
 				</textField>
 				<line>
-					<reportElement x="1" y="37" width="750" height="1" uuid="72ae5a46-0c3a-4a02-a233-e067042fb55b"/>
+					<reportElement x="1" y="24" width="750" height="1" uuid="72ae5a46-0c3a-4a02-a233-e067042fb55b"/>
 				</line>
 				<textField evaluationTime="Group" evaluationGroup="grpforn">
 					<reportElement x="691" y="6" width="53" height="20" uuid="28805cea-e6c8-4a5d-be1b-28458eacbe28"/>
@@ -163,40 +176,14 @@ group by codtipdoc, desctipdoc]]>
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="2"/>
+			<band/>
 		</groupFooter>
 	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="129" splitType="Stretch">
-			<staticText>
-				<reportElement key="staticText-102" x="10" y="33" width="454" height="15" uuid="bf584b2c-dae7-413c-8c15-2f2b52880969"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font fontName="DejaVu Sans" size="12" isBold="false" pdfFontName="Helvetica"/>
-				</textElement>
-				<text><![CDATA[Sistema de Gerenciamento Comercial]]></text>
-			</staticText>
-			<staticText>
-				<reportElement key="staticText-101" x="10" y="10" width="387" height="23" uuid="02d0b077-ea38-472b-9b68-ab39ccc004c1"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font fontName="DejaVu Sans" size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
-				</textElement>
-				<text><![CDATA[Beauty Clinic]]></text>
-			</staticText>
+		<band height="123" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="321" y="68" width="47" height="20" uuid="423ef899-30af-4e31-97a8-10d14a4f1529"/>
 				<textElement>
@@ -231,6 +218,20 @@ group by codtipdoc, desctipdoc]]>
 					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
 				<text><![CDATA[FILTRO: PAGAR POR DOCUMENTO SINTÉTICO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="2" y="0" width="749" height="20" uuid="dd11a644-e283-4836-8b8e-5b9c4fc8f94c"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomeinstituicao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="30" width="751" height="20" uuid="b03bc959-280d-443d-ba78-b85a860fc8d0"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="10"/>
+				</textElement>
+				<text><![CDATA[PAGAR POR DOCUMENTO SINTÉTICO]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -270,7 +271,7 @@ group by codtipdoc, desctipdoc]]>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="1" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</detail>
 	<pageFooter>
 		<band height="29" splitType="Stretch">
@@ -333,21 +334,21 @@ group by codtipdoc, desctipdoc]]>
 			<textField pattern="¤ #,##0.00">
 				<reportElement x="375" y="6" width="64" height="20" uuid="1150330e-6325-47f5-978b-ead6f6d7a482"/>
 				<textElement>
-					<font fontName="DejaVu Sans" size="8"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{valor_4}]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤ #,##0.00">
 				<reportElement x="482" y="6" width="53" height="20" uuid="bb6b6976-711e-4de3-a9e8-2c2789848345"/>
 				<textElement>
-					<font fontName="DejaVu Sans" size="8"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{pago_4}]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤ #,##0.00">
 				<reportElement x="568" y="6" width="85" height="20" uuid="8e60ee80-1520-4324-9602-c212a55d68e5"/>
 				<textElement>
-					<font fontName="DejaVu Sans" size="8"/>
+					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{valoraberto_2}]]></textFieldExpression>
 			</textField>

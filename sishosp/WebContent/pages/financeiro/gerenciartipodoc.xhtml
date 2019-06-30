@@ -42,7 +42,7 @@
 						</p:commandButton>
 
 						<p:commandButton icon="ui-icon-closethick" value="Excluir"
-							action="#{cidadeController.acaoExcluir()}"
+							action="#{tipoDocumentoController.acaoExcluir()}"
 							style="margin-left :10px" update=":grwgeral"
 							disabled="#{tipoDocumentoController.rowBean == null or MBUsuarios.verificarPermComp('FC-108', MBUsuarios.sistemaLogado.id) == false}">
 						</p:commandButton>
@@ -86,7 +86,8 @@
 
 
 						<h:outputText value="Descrição"></h:outputText>
-
+<p:inputText required="true" requiredMessage="Informe a descrição do Tipo de Documento"
+									value="#{tipoDocumentoController.tipoDoc.descricao}" />
 						</p:panelGrid>
 
 					<br />

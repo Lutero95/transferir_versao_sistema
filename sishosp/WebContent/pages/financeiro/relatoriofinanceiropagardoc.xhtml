@@ -4,15 +4,14 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
-<ui:composition template="../../template/templategeral.xhtml"
+<ui:composition template="../../template/template.xhtml"
 	xmlns:p="http://primefaces.org/ui">
 
-	<ui:define name="body">
+	<ui:define name="content">
 		<div id="conteudo">
 			<div id="contMenuBar">
 				<!-- Começar edição -->
-				<f:view>
-
+			
 
 					<center>
 						<div style="margin-top: 10px">
@@ -26,25 +25,7 @@
 
 								<h:form>
 
-									<p:panelGrid columns="1" styleClass="semBorda">
 
-									</p:panelGrid>
-									<!-- TIREI O RADIO DE FORNECEDOR, TIPO DOC E CUSTO
-                <p:panelGrid columns="5" styleClass="semBorda">
-<h:outputText value="Agrupar por:" />
-                    <p:selectOneRadio id="console" 
-                                      value="#{reportController.agrupar}">
-
-                        <f:selectItem itemLabel="Fornecedor" itemValue="F" />
-                        <f:selectItem itemLabel="Tipo Documento" itemValue="T" />
-                        <f:selectItem itemLabel="C. Custo" itemValue="C" />
-                        
-<p:ajax event="click" update="@form"> </p:ajax>
-                    </p:selectOneRadio>
-
-
-
-                </p:panelGrid>-->
 									<p:panelGrid id="panelVenc" columns="5" styleClass="semBorda">
 
 										<h:outputText value="Período:" />
@@ -66,7 +47,7 @@
 											<f:selectItem itemLabel="Vencimento" itemValue="V" />
 											<f:selectItem itemLabel="Emissão" itemValue="e" />
 											<f:selectItem itemLabel="Previsão" itemValue="P" />
-										</p:selectOneRadio>
+										</p:selectOneRadio>	
 
 
 
@@ -200,7 +181,7 @@
 							</p:panel>
 						</div>
 					</center>
-				</f:view>
+			
 				<!-- Terminar edição -->
 			</div>
 		</div>
