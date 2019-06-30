@@ -177,8 +177,8 @@ public class ConfigAgendaController implements Serializable {
             throws ProjetoException {
         GrupoDAO gDao = new GrupoDAO();
         if (confParte2.getPrograma() != null) {
-            return gDao.listarGruposAutoComplete(query,
-                    confParte2.getPrograma());
+            return gDao.listarGruposNoAutoComplete(query,
+                    confParte2.getPrograma().getIdPrograma());
         } else {
             return null;
         }

@@ -176,8 +176,8 @@ public class GrupoController implements Serializable {
             throws ProjetoException {
 
         if (programaSelecionado.getIdPrograma() != null) {
-            return gDao.listarGruposAutoComplete(query,
-                    this.programaSelecionado);
+            return gDao.listarGruposNoAutoComplete(query,
+                    this.programaSelecionado.getIdPrograma());
         } else {
             return null;
         }
