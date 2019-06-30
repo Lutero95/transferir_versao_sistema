@@ -59,7 +59,7 @@ public class ConnectionFactory {
             FacesContext.getCurrentInstance().addMessage(null, msg);
             throw new ProjetoException(msg.toString());
         } catch (SQLException sql) {
-            System.out.println("nao abriu con");
+            System.out.println("Não abriu conexão");
             // String msg =
             // "Nao foi possivel abrir a conexao com o banco \n Mensagem original: "
             // + sql.getMessage();

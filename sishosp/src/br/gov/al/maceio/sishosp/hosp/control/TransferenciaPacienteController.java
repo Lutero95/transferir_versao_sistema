@@ -38,7 +38,6 @@ public class TransferenciaPacienteController implements Serializable {
     private ArrayList<FuncionarioBean> listaProfissionaisEquipe;
     private EquipeDAO eDao = new EquipeDAO();
     private FuncionarioBean funcionario;
-    private EmpresaDAO empresaDAO = new EmpresaDAO();
     private Boolean todosOsProfissionais;
     private AgendaDAO agendaDAO = new AgendaDAO();
     private List<AgendaBean> listaHorariosAgenda;
@@ -206,7 +205,6 @@ public class TransferenciaPacienteController implements Serializable {
     
     public void carregaListaEquipePorGrupo()
             throws ProjetoException {
-        System.out.println("listaEquipePorTipoAtendimento");
         if (insercao.getGrupo().getIdGrupo() != null) {
             listaEquipePorGrupo = eDao
                     .listarEquipePorGrupo(insercao.getGrupo().getIdGrupo());

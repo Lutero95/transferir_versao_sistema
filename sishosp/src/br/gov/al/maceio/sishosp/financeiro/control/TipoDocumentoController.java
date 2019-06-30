@@ -104,7 +104,6 @@ public class TipoDocumentoController implements Serializable {
 	public ArrayList<TipoDocumentoBean> lstTipoDocs() throws ProjetoException {
 		if (lstTipo==null) {
 		TipoDocumentoDao dao = new TipoDocumentoDao();
-System.out.println("lstTipo");
 		lstTipo=  (ArrayList<TipoDocumentoBean>) dao.lstTipoDocumento();
 		}
 		return lstTipo;

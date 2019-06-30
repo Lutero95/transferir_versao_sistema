@@ -158,7 +158,6 @@ public class TesourariaController implements Serializable {
     }
 
     public void onBancoSelect(SelectEvent event) throws ParseException, ProjetoException {
-    	System.out.println("onBancoSelect");
         Integer codagenda;
         idSelecionado = 0;
         idSelecionadoChequeReceb = 0;
