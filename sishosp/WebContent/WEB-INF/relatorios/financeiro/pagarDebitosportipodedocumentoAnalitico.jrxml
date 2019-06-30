@@ -172,7 +172,7 @@ order by  descTipodoc]]>
 		<groupHeader>
 			<band height="14">
 				<textField>
-					<reportElement mode="Opaque" x="0" y="0" width="752" height="14" backcolor="rgba(212, 208, 200, 0.0)" uuid="d74ab0a5-cdce-4347-a645-14a81e4a29e0"/>
+					<reportElement mode="Opaque" x="0" y="0" width="752" height="14" backcolor="#FFFFFF" uuid="d74ab0a5-cdce-4347-a645-14a81e4a29e0"/>
 					<textElement>
 						<font fontName="DejaVu Sans"/>
 					</textElement>

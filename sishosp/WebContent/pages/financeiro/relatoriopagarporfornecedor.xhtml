@@ -4,24 +4,18 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
-<ui:composition template="../../template/templategeral.xhtml"
+<ui:composition template="../../template/template.xhtml"
 	xmlns:p="http://primefaces.org/ui">
 
-	<ui:define name="body">
-		<div id="conteudo">
-			<div id="contMenuBar">
-				<!-- Começar edição -->
-				<f:view>
-
-
-					<center>
-						<div style="margin-top: 10px">
-
-							<p:panel style="width:600px; text-align:left;">
-								<f:facet name="header">
-									<h:outputText value="Pagar por Despesa" />
-								</f:facet>
-
+	<ui:define name="content">
+	<p:growl/>
+<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Relatório: Títulos a Pagar - Por Fornecedor </h4>
+			</div>
+			
+			<div class="panel-body table-body">
+						
 								<br />
 
 								<h:form>
@@ -29,38 +23,40 @@
 									<p:panelGrid columns="1" styleClass="semBorda">
 
 									</p:panelGrid>
-									<!-- TIREI O RADIO DE FORNECEDOR, TIPO DOC E CUSTO
-                <p:panelGrid columns="5" styleClass="semBorda">
-<h:outputText value="Agrupar por:" />
-                    <p:selectOneRadio id="console" 
-                                      value="#{reportController.agrupar}">
+									
+									<p:panelGrid columns="4" styleClass="semBorda">
 
-                        <f:selectItem itemLabel="Fornecedor" itemValue="F" />
-                        <f:selectItem itemLabel="Tipo Documento" itemValue="T" />
-                        <f:selectItem itemLabel="C. Custo" itemValue="C" />
-                        
-<p:ajax event="click" update="@form"> </p:ajax>
-                    </p:selectOneRadio>
+										<h:outputLabel for="dti" styleClass="rotulosBold"
+											value="Data início:  " />
+										<p:calendar value="#{reportController.dataInicio}"
+											pattern="dd/MM/yyyy" required="true" locale="pt"
+											requiredMessage="Campo Data início é obrigatório" id="dti"
+											style="width:200px">
 
+										</p:calendar>
+										<h:outputLabel for="dtf" styleClass="rotulosBold"
+											style="margin-left: 15px;" value="    		Data fim:  " />
+										<p:calendar value="#{reportController.dataFim}"
+											pattern="dd/MM/yyyy" required="true" locale="pt"
+											requiredMessage="Campo Data fim é obrigatório" id="dtf"
+											style="width:200px">
+										</p:calendar>
 
+									</p:panelGrid>
 
-                </p:panelGrid>-->
-									<p:panelGrid id="panelVenc" columns="5" styleClass="semBorda">
+									<p:panelGrid columns="2" styleClass="semBorda">
+										<h:outputText value="Tipo:" />
 
-										<h:outputText value="Período:" />
-										<p:calendar
-											value="#{reportController.dataInicio}" required="true"
-											requiredMessage="Informe o período inicial"></p:calendar>
-										<h:outputText value="a" />
+										<p:selectOneRadio value="#{reportController.tipoRelatorio}">
 
+											<f:selectItem itemLabel="Sintético" itemValue="S" />
+											<f:selectItem itemLabel="Analítico" itemValue="A" />
 
-										<p:calendar
-											value="#{reportController.dataFim}" required="true"
-											requiredMessage="Informe o período final"></p:calendar>
+										</p:selectOneRadio>
 									</p:panelGrid>
 
 									<p:panelGrid columns="5" styleClass="semBorda">
-										<h:outputText value="Período referente a:" />
+										<h:outputText value="Período referente a" />
 										<p:selectOneRadio value="#{reportController.dataRef}">
 
 											<f:selectItem itemLabel="Vencimento" itemValue="V" />
@@ -83,16 +79,6 @@
 
 										</p:selectOneRadio>
 
-									</p:panelGrid>
-									
-									<p:panelGrid columns="2" styleClass="semBorda">
-										<h:outputText value="Tipo:" />
-										<p:selectOneRadio value="#{reportController.tipoRelatorio}">
-
-												<f:selectItem itemLabel="Sintético" itemValue="S" />
-												<f:selectItem itemLabel="Analitíco" itemValue="A" />
-
-											</p:selectOneRadio>
 									</p:panelGrid>
 
 									<p:panelGrid id="panelCliente" columns="2"
@@ -155,54 +141,33 @@
 									<br />
 									<p:outputPanel autoUpdate="true" id="out2">
 
-										<center>
+										
 
 											<p:outputPanel autoUpdate="true">
 												<p:commandButton value="Imprimir"
 													icon="ui-icon-print" ajax="false"
-													rendered="#{reportController.agrupar == 'F'}"
-													actionListener="#{reportController.pagarPorDespesa}"
-													style="margin-left:5px;"></p:commandButton>
-
-
-
-
-												<p:commandButton value="Imprimir"
-													icon="ui-icon-print" ajax="false"
-													rendered="#{reportController.agrupar == 'T'}"
-													actionListener="#{reportController.pagarPorTipoDoc}"
-													style="margin-left:5px;"></p:commandButton>
-
-
-												<p:commandButton value="Imprimir"
-													icon="ui-icon-print" ajax="false"
-													rendered="#{reportController.agrupar == 'C'}"
-													actionListener="#{reportController.pagarPorCentro}"
-													style="margin-left:5px;"></p:commandButton>
-
-
-												<p:commandButton value="Imprimir"
-													icon="ui-icon-print" ajax="false"
-													rendered="#{reportController.agrupar == 'P'}"
-													actionListener="#{reportController}"
+													actionListener="#{reportController.pagarPorFornecedor}"
 													style="margin-left:5px;"></p:commandButton>
 
 											</p:outputPanel>
 
-										</center>
+									
+										
 									</p:outputPanel>
+									
 								</h:form>
 
-
-
-
-							</p:panel>
+							
+							
 						</div>
-					</center>
-				</f:view>
+						
+				
+				
 				<!-- Terminar edição -->
+				
 			</div>
-		</div>
+			
+		
 
 
 	</ui:define>

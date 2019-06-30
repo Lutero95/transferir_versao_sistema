@@ -165,7 +165,7 @@ order by  descdepesa]]>
 		<groupHeader>
 			<band height="14">
 				<textField>
-					<reportElement mode="Opaque" x="0" y="0" width="752" height="14" backcolor="rgba(212, 208, 200, 0.0)" uuid="d74ab0a5-cdce-4347-a645-14a81e4a29e0"/>
+					<reportElement mode="Opaque" x="0" y="0" width="752" height="14" backcolor="#FFFFFF" uuid="d74ab0a5-cdce-4347-a645-14a81e4a29e0"/>
 					<textElement>
 						<font fontName="DejaVu Sans" isBold="true"/>
 					</textElement>
@@ -246,18 +246,11 @@ order by  descdepesa]]>
 				<text><![CDATA[a]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="-1" y="96" width="220" height="20" uuid="a5b8f881-0e15-46a7-8e9f-6ac2af1d0fc7"/>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Sans" size="8"/>
-				</textElement>
-				<text><![CDATA[FILTRO: PAGAR POR DESPESA ANALÍTICO]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="0" y="30" width="751" height="20" uuid="885b4812-4f26-412a-bdff-565d24ccf2b1"/>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
-				<text><![CDATA[PAGAR POR DESPESA ANALÍTICO]]></text>
+				<text><![CDATA[PAGAR POR DESPESA - ANALÍTICO]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="2" y="0" width="749" height="20" uuid="ed1b9ba3-1130-46fe-8e54-c3460df33ce6"/>

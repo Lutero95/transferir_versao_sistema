@@ -163,6 +163,7 @@ public class ReportController implements Serializable {
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
+			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
 			map.put("codTipoDocumento", codTipoDocumento);
 			map.put("codccusto", codcccusto);
 			map.put("coddespesa", coddespesa);
@@ -188,6 +189,7 @@ public class ReportController implements Serializable {
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
 			map.put("codTipoDocumento", codTipoDocumento);
+			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
 			map.put("codccusto", codcccusto);
 			map.put("coddespesa", coddespesa);
 			map.put("codportador", codportador);
@@ -198,7 +200,7 @@ public class ReportController implements Serializable {
 
 	public void pagarPorFornecedor(ActionEvent e) throws IOException, ParseException {
 		if (tipoRelatorio.equals("S")) {
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = "/WEB-INF/relatorios/financeiro/";
 			String relatorio = "";
 			relatorio = caminho + "pagarFornecedorSintetico.jasper";
 
@@ -214,17 +216,18 @@ public class ReportController implements Serializable {
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
 			map.put("codTipoDocumento", codTipoDocumento);
+			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
 			map.put("codccusto", codcccusto);
 			map.put("coddespesa", coddespesa);
 			map.put("codportador", codportador);
 			map.put("tipoRelatorio", tipoRelatorio);
-			this.executeReport(relatorio, map, "PagarPorFornecedorSintetico.pdf");
+			this.executeReport(relatorio, map, "pagarFornecedorSintetico.pdf");
 		}
 
 		if (tipoRelatorio.equals("A")) {
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = "/WEB-INF/relatorios/financeiro/";
 			String relatorio = "";
-			relatorio = caminho + "pagarFornecedorSintetico.jasper";
+			relatorio = caminho + "pagarFornecedor.jasper";
 
 			FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 					.getSessionMap().get("obj_usuario");
@@ -239,6 +242,7 @@ public class ReportController implements Serializable {
 			map.put("codFornecedor", codFornecedor);
 			map.put("codTipoDocumento", codTipoDocumento);
 			map.put("codccusto", codcccusto);
+			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
 			map.put("coddespesa", coddespesa);
 			map.put("codportador", codportador);
 			map.put("tipoRelatorio", tipoRelatorio);
@@ -248,7 +252,7 @@ public class ReportController implements Serializable {
 
 	public void pagarPorPortador(ActionEvent e) throws IOException, ParseException {
 		if (tipoRelatorio.equals("S")) {
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = "/WEB-INF/relatorios/financeiro/";
 			String relatorio = "";
 			relatorio = caminho + "pagarDebitosporPortadorSintetico.jasper";
 
@@ -263,6 +267,7 @@ public class ReportController implements Serializable {
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
+			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
 			map.put("codTipoDocumento", codTipoDocumento);
 			map.put("codccusto", codcccusto);
 			map.put("coddespesa", coddespesa);
@@ -272,7 +277,7 @@ public class ReportController implements Serializable {
 		}
 
 		if (tipoRelatorio.equals("A")) {
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = "/WEB-INF/relatorios/financeiro/";
 			String relatorio = "";
 			relatorio = caminho + "pagarDebitosporPortadorAnalitico.jasper";
 
@@ -284,6 +289,7 @@ public class ReportController implements Serializable {
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
+			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
@@ -298,7 +304,7 @@ public class ReportController implements Serializable {
 
 	public void pagarPorDespesa(ActionEvent e) throws IOException, ParseException {
 		if (tipoRelatorio.equals("S")) {
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = "/WEB-INF/relatorios/financeiro/";
 			String relatorio = "";
 			relatorio = caminho + "pagarDebitosporDespesaSintetico.jasper";
 
@@ -310,6 +316,7 @@ public class ReportController implements Serializable {
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
+			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
@@ -322,7 +329,7 @@ public class ReportController implements Serializable {
 		}
 
 		if (tipoRelatorio.equals("A")) {
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = "/WEB-INF/relatorios/financeiro/";
 			String relatorio = "";
 			relatorio = caminho + "pagarDebitosporDespesaAnalitico.jasper";
 
@@ -333,6 +340,7 @@ public class ReportController implements Serializable {
 			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
+			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);

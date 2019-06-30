@@ -183,7 +183,7 @@ order by  descdepesa) t group by nomeinstituicao,codforn, nome, dtemissao, dtvct
 		<groupHeader>
 			<band height="38">
 				<textField>
-					<reportElement mode="Opaque" x="2" y="0" width="750" height="36" backcolor="rgba(212, 208, 200, 0.0)" uuid="d74ab0a5-cdce-4347-a645-14a81e4a29e0"/>
+					<reportElement mode="Opaque" x="2" y="0" width="750" height="36" backcolor="#FFFFFF" uuid="d74ab0a5-cdce-4347-a645-14a81e4a29e0"/>
 					<textElement>
 						<font fontName="DejaVu Sans"/>
 					</textElement>
@@ -268,7 +268,7 @@ order by  descdepesa) t group by nomeinstituicao,codforn, nome, dtemissao, dtvct
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans" size="10"/>
 				</textElement>
-				<text><![CDATA[PAGAR POR DESPESA SINTÉTICO]]></text>
+				<text><![CDATA[PAGAR POR DESPESA - SINTÉTICO]]></text>
 			</staticText>
 		</band>
 	</title>

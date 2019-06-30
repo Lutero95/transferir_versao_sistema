@@ -10,7 +10,7 @@
 	<ui:define name="content">
 <div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Relatório: Títulos a Pagar - Por Tipo de Documento </h4>
+				<h4 class="panel-title">Relatório: Títulos a Pagar - Por Fornecedor </h4>
 			</div>
 			
 			<div class="panel-body table-body">
@@ -38,39 +38,22 @@
 
 
                 </p:panelGrid>-->
-									<p:panelGrid columns="4" styleClass="semBorda">
+									<p:panelGrid id="panelVenc" columns="5" styleClass="semBorda">
 
-										<h:outputLabel for="dti" styleClass="rotulosBold"
-											value="Data início:  " />
-										<p:calendar value="#{reportController.dataInicio}"
-											pattern="dd/MM/yyyy" required="true" locale="pt"
-											requiredMessage="Campo Data início é obrigatório" id="dti"
-											style="width:200px">
+										<h:outputText value="Período:" />
+										<p:calendar
+											value="#{reportController.dataInicio}" required="true"
+											requiredMessage="Informe o período inicial"></p:calendar>
+										<h:outputText value="a" />
 
-										</p:calendar>
-										<h:outputLabel for="dtf" styleClass="rotulosBold"
-											style="margin-left: 15px;" value="    		Data fim:  " />
-										<p:calendar value="#{reportController.dataFim}"
-											pattern="dd/MM/yyyy" required="true" locale="pt"
-											requiredMessage="Campo Data fim é obrigatório" id="dtf"
-											style="width:200px">
-										</p:calendar>
 
-									</p:panelGrid>
-
-									<p:panelGrid columns="2" styleClass="semBorda">
-										<h:outputText value="Tipo:" />
-
-										<p:selectOneRadio value="#{reportController.tipoRelatorio}">
-
-											<f:selectItem itemLabel="Sintético" itemValue="S" />
-											<f:selectItem itemLabel="Analítico" itemValue="A" />
-
-										</p:selectOneRadio>
+										<p:calendar
+											value="#{reportController.dataFim}" required="true"
+											requiredMessage="Informe o período final"></p:calendar>
 									</p:panelGrid>
 
 									<p:panelGrid columns="5" styleClass="semBorda">
-										<h:outputText value="Período referente a" />
+										<h:outputText value="Período referente a:" />
 										<p:selectOneRadio value="#{reportController.dataRef}">
 
 											<f:selectItem itemLabel="Vencimento" itemValue="V" />
@@ -93,6 +76,16 @@
 
 										</p:selectOneRadio>
 
+									</p:panelGrid>
+									
+									<p:panelGrid columns="2" styleClass="semBorda">
+										<h:outputText value="Tipo:" />
+										<p:selectOneRadio value="#{reportController.tipoRelatorio}">
+
+												<f:selectItem itemLabel="Sintético" itemValue="S" />
+												<f:selectItem itemLabel="Analitíco" itemValue="A" />
+
+											</p:selectOneRadio>
 									</p:panelGrid>
 
 									<p:panelGrid id="panelCliente" columns="2"
@@ -155,31 +148,50 @@
 									<br />
 									<p:outputPanel autoUpdate="true" id="out2">
 
-										
+									
 
 											<p:outputPanel autoUpdate="true">
 												<p:commandButton value="Imprimir"
 													icon="ui-icon-print" ajax="false"
-													actionListener="#{reportController.pagarPorFornecedor}"
+													rendered="#{reportController.agrupar == 'F'}"
+													actionListener="#{reportController.pagarPorDespesa}"
+													style="margin-left:5px;"></p:commandButton>
+
+
+
+
+												<p:commandButton value="Imprimir"
+													icon="ui-icon-print" ajax="false"
+													rendered="#{reportController.agrupar == 'T'}"
+													actionListener="#{reportController.pagarPorTipoDoc}"
+													style="margin-left:5px;"></p:commandButton>
+
+
+												<p:commandButton value="Imprimir"
+													icon="ui-icon-print" ajax="false"
+													rendered="#{reportController.agrupar == 'C'}"
+													actionListener="#{reportController.pagarPorCentro}"
+													style="margin-left:5px;"></p:commandButton>
+
+
+												<p:commandButton value="Imprimir"
+													icon="ui-icon-print" ajax="false"
+													rendered="#{reportController.agrupar == 'P'}"
+													actionListener="#{reportController}"
 													style="margin-left:5px;"></p:commandButton>
 
 											</p:outputPanel>
 
 									
-										
 									</p:outputPanel>
-									
 								</h:form>
 
-							
-							
+
+
+
 						</div>
-						
-				
-				
-				<!-- Terminar edição -->
-				
-			</div>
+					
+
 			
 		</div>
 

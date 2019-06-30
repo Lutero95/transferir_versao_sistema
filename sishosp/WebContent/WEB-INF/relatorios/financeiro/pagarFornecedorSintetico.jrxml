@@ -179,7 +179,7 @@ order by  nome) t group by codforn, nome, dtemissao, dtvcto, codigo, duplicata, 
 		<groupHeader>
 			<band height="38">
 				<textField>
-					<reportElement mode="Opaque" x="2" y="0" width="750" height="36" backcolor="rgba(212, 208, 200, 0.0)" uuid="d74ab0a5-cdce-4347-a645-14a81e4a29e0"/>
+					<reportElement mode="Opaque" x="2" y="0" width="750" height="36" backcolor="#FFFFFF" uuid="d74ab0a5-cdce-4347-a645-14a81e4a29e0"/>
 					<textElement>
 						<font fontName="DejaVu Sans" isBold="true"/>
 					</textElement>
