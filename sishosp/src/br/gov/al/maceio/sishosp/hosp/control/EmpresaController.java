@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
@@ -24,7 +25,7 @@ public class EmpresaController implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private EmpresaBean empresa;
-    private int tipo;
+    private Integer tipo;
     private String cabecalho;
     private EmpresaDAO eDao = new EmpresaDAO();
     private ArrayList<String> listaEstados;
@@ -172,9 +173,9 @@ public class EmpresaController implements Serializable {
     }
 
     public String getCabecalho() {
-        if (this.tipo == 1) {
+        if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
             cabecalho = CABECALHO_INCLUSAO;
-        } else if (this.tipo == 2) {
+        } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
             cabecalho = CABECALHO_ALTERACAO;
         }
         return cabecalho;

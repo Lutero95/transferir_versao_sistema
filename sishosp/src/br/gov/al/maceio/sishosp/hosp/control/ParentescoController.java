@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
@@ -22,7 +23,7 @@ public class ParentescoController implements Serializable {
     private Parentesco parentesco;
     private List<Parentesco> listaParentescos;
     private String cabecalho;
-    private int tipo;
+    private Integer tipo;
     private ParentescoDAO pDao = new ParentescoDAO();
 
     //CONSTANTES
@@ -113,9 +114,9 @@ public class ParentescoController implements Serializable {
 
 
     public String getCabecalho() {
-        if (this.tipo == 1) {
+        if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
             cabecalho = CABECALHO_INCLUSAO;
-        } else if (this.tipo == 2) {
+        } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
             cabecalho = CABECALHO_ALTERACAO;
         }
         return cabecalho;

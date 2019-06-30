@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -23,7 +24,7 @@ public class EscolaridadeController implements Serializable {
     private static final long serialVersionUID = 1L;
     private EscolaridadeBean escolaridade;
     private String cabecalho;
-    private int tipo;
+    private Integer tipo;
     private List<EscolaridadeBean> listaEscolaridade;
     private EscolaridadeDAO eDao = new EscolaridadeDAO();
 
@@ -126,9 +127,9 @@ public class EscolaridadeController implements Serializable {
     }
 
     public String getCabecalho() {
-        if (this.tipo == 1) {
+        if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
             cabecalho = CABECALHO_INCLUSAO;
-        } else if (this.tipo == 2) {
+        } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
             cabecalho = CABECALHO_ALTERACAO;
         }
         return cabecalho;

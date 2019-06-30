@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
@@ -27,7 +28,7 @@ public class OrteseProteseController implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private OrteseProtese orteseProtese;
-    private int tipo;
+    private Integer tipo;
     private OrteseProteseDAO oDao = new OrteseProteseDAO();
     private Boolean temOrteseIhProteseCadastrado;
     private String cabecalho;
@@ -313,9 +314,9 @@ public class OrteseProteseController implements Serializable {
     }
 
     public String getCabecalho() {
-        if (this.tipo == 1) {
+        if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
             cabecalho = CABECALHO_INCLUSAO;
-        } else if (this.tipo == 2) {
+        } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
             cabecalho = CABECALHO_ALTERACAO;
         }
         return cabecalho;

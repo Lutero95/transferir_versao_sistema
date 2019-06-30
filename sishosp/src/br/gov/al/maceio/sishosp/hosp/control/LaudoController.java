@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
@@ -26,7 +27,7 @@ public class LaudoController implements Serializable {
     private static final long serialVersionUID = 1L;
     private LaudoBean laudo;
     private String cabecalho;
-    private int tipo;
+    private Integer tipo;
     private List<LaudoBean> listaLaudo;
     private List<CidBean> listaCids;
     private LaudoDAO lDao = new LaudoDAO();
@@ -170,10 +171,10 @@ public class LaudoController implements Serializable {
     }
 
     public String getCabecalho() {
-        if (this.tipo == 2) {
-            cabecalho = CABECALHO_ALTERACAO;
-        } else {
+        if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
             cabecalho = CABECALHO_INCLUSAO;
+        } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
+            cabecalho = CABECALHO_ALTERACAO;
         }
         return cabecalho;
     }

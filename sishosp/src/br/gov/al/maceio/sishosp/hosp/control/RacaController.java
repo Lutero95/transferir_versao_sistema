@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
@@ -21,7 +22,7 @@ public class RacaController implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String cabecalho;
 	private RacaBean raca;
-	private int tipo;
+	private Integer tipo;
 	private List<RacaBean> listaRacas;
 	private RacaDAO rDao = new RacaDAO();
 
@@ -120,9 +121,9 @@ public class RacaController implements Serializable {
 
 
 	public String getCabecalho() {
-		if (this.tipo == 1) {
+		if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
 			cabecalho = CABECALHO_INCLUSAO;
-		} else if (this.tipo == 2) {
+		} else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
 			cabecalho = CABECALHO_ALTERACAO;
 		}
 		return cabecalho;

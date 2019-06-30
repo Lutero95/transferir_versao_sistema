@@ -72,8 +72,8 @@ public class FuncionarioController implements Serializable {
     private static final String ENDERECO_CADASTRO = "cadastroProfissional?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
-    private static final String CABECALHO_INCLUSAO = "Inclus�o de Profissional";
-    private static final String CABECALHO_ALTERACAO = "Altera��o de Profissional";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de Profissional";
+    private static final String CABECALHO_ALTERACAO = "Alteração de Profissional";
 
     public FuncionarioController() {
 
