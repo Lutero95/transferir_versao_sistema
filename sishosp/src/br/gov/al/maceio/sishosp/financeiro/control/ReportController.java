@@ -1,24 +1,17 @@
 package br.gov.al.maceio.sishosp.financeiro.control;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -27,26 +20,14 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.primefaces.context.RequestContext;
-import org.primefaces.model.chart.ChartSeries;
-import org.primefaces.model.chart.HorizontalBarChartModel;
-
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.financeiro.model.BancoBean;
 import br.gov.al.maceio.sishosp.financeiro.model.ClienteBean;
 import br.gov.al.maceio.sishosp.financeiro.model.FiltroBean;
-import br.gov.al.maceio.sishosp.financeiro.model.TipoPagBean;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperRunManager;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 
 @ManagedBean
 @ViewScoped
@@ -115,7 +96,7 @@ public class ReportController implements Serializable {
 	}
 	public void pagarPorTipoDeDocumento(ActionEvent e) throws IOException, ParseException {
 		if (tipoRelatorio.equals("S")) {
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = "/WEB-INF/relatorios/financeiro/";
 			String relatorio = "";
 			relatorio = caminho + "pagarDebitosportipodedocumentoSintetico.jasper";
 
@@ -127,6 +108,7 @@ public class ReportController implements Serializable {
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
 			map.put("referencia", dataRef); // aspas - ireport, verde java
+			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
 			map.put("codTipoDocumento", codTipoDocumento);
@@ -140,7 +122,7 @@ public class ReportController implements Serializable {
 		}
 
 		if (tipoRelatorio.equals("A")) {
-			String caminho = "/WEB-INF/relatorios/";
+			String caminho = "/WEB-INF/relatorios/financeiro/";
 			String relatorio = "";
 			relatorio = caminho + "pagarDebitosportipodedocumentoAnalitico.jasper";
 
@@ -153,6 +135,7 @@ public class ReportController implements Serializable {
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);
+			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
 			map.put("codFornecedor", codFornecedor);
 			map.put("codTipoDocumento", codTipoDocumento);
 			map.put("codccusto", codcccusto);

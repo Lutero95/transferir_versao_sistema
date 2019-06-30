@@ -15,7 +15,6 @@
 	<parameter name="situacao" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="filtro" class="java.lang.String"/>
 	<parameter name="referencia" class="java.lang.String"/>
 	<parameter name="codFornecedor" class="java.lang.Integer"/>
 	<parameter name="codTipoDocumento" class="java.lang.Integer"/>
@@ -211,13 +210,6 @@ group by codtipdoc, desctipdoc, nomeinstituicao]]>
 					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
 				<text><![CDATA[a]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="10" y="98" width="204" height="20" uuid="56b388c7-417e-488a-8269-86e5c6571b9d"/>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Sans" size="8"/>
-				</textElement>
-				<text><![CDATA[FILTRO: PAGAR POR DOCUMENTO SINTÉTICO]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="2" y="0" width="749" height="20" uuid="dd11a644-e283-4836-8b8e-5b9c4fc8f94c"/>

@@ -253,13 +253,6 @@ order by  descTipodoc]]>
 				<text><![CDATA[a]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="88" width="204" height="20" uuid="452048de-cd62-499e-bffb-936d2cad6ac3"/>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Sans" size="8"/>
-				</textElement>
-				<text><![CDATA[FILTRO: PAGAR POR DOCUMENTO ANALÍTICO]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="0" y="30" width="751" height="20" uuid="2b285988-0928-4a7f-a4d1-f7ce40b49673"/>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans" size="10"/>

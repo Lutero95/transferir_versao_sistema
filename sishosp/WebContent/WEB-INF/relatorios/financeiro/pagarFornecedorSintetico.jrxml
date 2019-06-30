@@ -183,7 +183,7 @@ order by  nome) t group by codforn, nome, dtemissao, dtvcto, codigo, duplicata, 
 					<textElement>
 						<font fontName="DejaVu Sans" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[ $F{nome}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Group" evaluationGroup="grpforn" pattern="R$ #,##0.00">
 					<reportElement x="411" y="6" width="53" height="26" uuid="6a9ee60d-e3cd-4e36-8a8e-cb8ecfa2d4fb"/>
@@ -251,13 +251,6 @@ order by  nome) t group by codforn, nome, dtemissao, dtvcto, codigo, duplicata, 
 					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
 				<text><![CDATA[a]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="6" y="99" width="204" height="20" uuid="6d115592-9c67-46e7-a854-915ca7a598e1"/>
-				<textElement textAlignment="Center">
-					<font fontName="DejaVu Sans" size="8"/>
-				</textElement>
-				<text><![CDATA[FILTRO: PAGAR POR FORNECEDOR SINTÉTICO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="30" width="751" height="20" uuid="8d357780-7079-40e8-b3ca-91de7cf3a8c8"/>
