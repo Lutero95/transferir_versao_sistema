@@ -154,7 +154,7 @@ order by  nome]]>
 					<textElement>
 						<font fontName="DejaVu Sans" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[ $F{nome}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -230,13 +230,6 @@ order by  nome]]>
 				</textElement>
 				<text><![CDATA[a]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="2" y="102" width="100" height="20" uuid="52093368-0896-45cc-9e85-f386ff3eab57"/>
-				<textElement>
-					<font fontName="DejaVu Sans" size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{filtro}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="0" y="30" width="751" height="20" uuid="f50efb6a-d5cc-4743-82be-d5681d699465"/>
 				<textElement textAlignment="Center">

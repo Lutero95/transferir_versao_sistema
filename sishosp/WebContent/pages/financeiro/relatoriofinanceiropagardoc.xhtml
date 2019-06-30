@@ -8,19 +8,16 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<ui:define name="content">
-		<div id="conteudo">
-			<div id="contMenuBar">
-				<!-- Começar edição -->
+	
 			
-
-					<center>
-						<div style="margin-top: 10px">
-
-							<p:panel style="width:600px; text-align:left;">
-								<f:facet name="header">
-									<h:outputText value="Pagar por Documento" />
-								</f:facet>
-
+<p:growl/>
+	
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Relatório: Títulos a Pagar - Por Tipo de Documento </h4>
+			</div>
+			
+			<div class="panel-body table-body">
 								<br />
 
 								<h:form>
@@ -137,56 +134,33 @@
 									</p:panelGrid>
 									<br />
 									<p:outputPanel autoUpdate="true" id="out2">
-										<center>
+										
 
 											<p:outputPanel autoUpdate="true">
 												<p:commandButton value="Imprimir"
 													icon="ui-icon-print" ajax="false"
-													rendered="#{reportController.agrupar == 'F'}"
 													actionListener="#{reportController.pagarPorTipoDeDocumento}"
 													style="margin-left:5px;"></p:commandButton>
 
 
 
 
-												<p:commandButton value="Imprimir"
-													icon="ui-icon-print" ajax="false"
-													rendered="#{reportController.agrupar == 'T'}"
-													actionListener="#{reportController.pagarPorTipoDoc}"
-													style="margin-left:5px;"></p:commandButton>
-
-
-												<p:commandButton value="Imprimir"
-													icon="ui-icon-print" ajax="false"
-													rendered="#{reportController.agrupar == 'C'}"
-													actionListener="#{reportController.pagarPorCentro}"
-													style="margin-left:5px;"></p:commandButton>
-
-
-												<p:commandButton value="Imprimir"
-													icon="ui-icon-print" ajax="false"
-													rendered="#{reportController.agrupar == 'P'}"
-													actionListener="#{reportController}"
-													style="margin-left:5px;"></p:commandButton>
-
 											</p:outputPanel>
 
-										</center>
+										
 									</p:outputPanel>
 								</h:form>
 
 
 
 
-							</p:panel>
+							</div>
 						</div>
-					</center>
+					
 			
 				<!-- Terminar edição -->
-			</div>
-		</div>
-
-
+			
+	
 	</ui:define>
 
 </ui:composition>
