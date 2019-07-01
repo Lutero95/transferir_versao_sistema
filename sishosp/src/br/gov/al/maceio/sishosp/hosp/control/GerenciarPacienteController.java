@@ -81,8 +81,8 @@ public class GerenciarPacienteController implements Serializable {
         GrupoDAO grDao = new GrupoDAO();
 
         if (gerenciarpaciente.getPrograma().getIdPrograma() != null) {
-            return grDao.listarGruposAutoComplete(query,
-                    this.gerenciarpaciente.getPrograma());
+            return grDao.listarGruposNoAutoComplete(query,
+                    this.gerenciarpaciente.getPrograma().getIdPrograma());
         } else {
             return null;
         }

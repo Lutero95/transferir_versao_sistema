@@ -499,8 +499,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         GrupoDAO gDao = new GrupoDAO();
 
         if (insercao.getPrograma().getIdPrograma() != null) {
-            return gDao.listarGruposAutoComplete(query,
-                    this.insercao.getPrograma());
+            return gDao.listarGruposNoAutoComplete(query,
+                    this.insercao.getPrograma().getIdPrograma());
         } else {
             return null;
         }

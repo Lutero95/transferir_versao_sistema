@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.CEPUtil;
 import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -36,7 +37,7 @@ public class PacienteController implements Serializable {
     private EspecialidadeBean especialidade;
     private EncaminhamentoBean encaminhamento;
     private EncaminhadoBean encaminhado;
-    private int tipo;
+    private Integer tipo;
     PacienteDAO pDao = new PacienteDAO();
     EnderecoDAO eDao = new EnderecoDAO();
     EscolaDAO esDao = new EscolaDAO();
@@ -718,9 +719,9 @@ public class PacienteController implements Serializable {
     }
 
     public String getCabecalho() {
-        if (this.tipo == 1) {
+        if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
             cabecalho = CABECALHO_INCLUSAO;
-        } else if (this.tipo == 2) {
+        } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
             cabecalho = CABECALHO_ALTERACAO;
         }
         return cabecalho;

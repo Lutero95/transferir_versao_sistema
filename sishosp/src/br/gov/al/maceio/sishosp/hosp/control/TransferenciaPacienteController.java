@@ -367,8 +367,8 @@ public class TransferenciaPacienteController implements Serializable {
 
         if (insercao.getPrograma().getIdPrograma() != null) {
             GrupoDAO gDao = new GrupoDAO();
-            return gDao.listarGruposAutoComplete(query,
-                    this.insercao.getPrograma());
+            return gDao.listarGruposNoAutoComplete(query,
+                    this.insercao.getPrograma().getIdPrograma());
         } else {
             return null;
         }

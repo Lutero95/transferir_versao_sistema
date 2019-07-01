@@ -765,8 +765,8 @@ public class AgendaController implements Serializable {
             throws ProjetoException {
 
         if (agenda.getPrograma().getIdPrograma() != null) {
-            return gDao.listarGruposAutoComplete(query,
-                    this.agenda.getPrograma());
+            return gDao.listarGruposNoAutoComplete(query,
+                    this.agenda.getPrograma().getIdPrograma());
         } else {
             return null;
         }

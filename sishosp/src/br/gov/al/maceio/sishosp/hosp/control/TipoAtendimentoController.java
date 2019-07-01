@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
@@ -25,7 +26,7 @@ public class TipoAtendimentoController implements Serializable {
     private static final long serialVersionUID = 1L;
     private TipoAtendimentoBean tipoAtendimento;
     private List<TipoAtendimentoBean> listaTipos;
-    private int tipo;
+    private Integer tipo;
     private GrupoBean grupoSelecionado;
     private String cabecalho;
     private List<TipoAtendimentoBean> listaTiposAtendimento;
@@ -138,9 +139,9 @@ public class TipoAtendimentoController implements Serializable {
     }
 
     public String getCabecalho() {
-        if (this.tipo == 1) {
+        if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
             cabecalho = CABECALHO_INCLUSAO;
-        } else if (this.tipo == 2) {
+        } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
             cabecalho = CABECALHO_ALTERACAO;
         }
         return cabecalho;

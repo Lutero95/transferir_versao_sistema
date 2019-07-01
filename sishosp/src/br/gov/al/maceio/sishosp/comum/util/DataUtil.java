@@ -108,9 +108,9 @@ public final class DataUtil {
         int dia = 0;
         mes = mes - 1;
 
-        Date data = new Date();
-        data.setMonth(ajustarMes(mes));
-        data.setYear(ajustarAno(ano));
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, ajustarAno(ano));
+        cal.set(Calendar.MONTH, ajustarMes(mes));
 
         if(!ultimoDiaDoMes){
             Calendar calendar = Calendar.getInstance();
@@ -121,7 +121,8 @@ public final class DataUtil {
             dia = 1;
         }
 
-        data.setDate(dia);
+        cal.set(Calendar.DAY_OF_MONTH, dia);
+        Date data = cal.getTime();
 
 
         return data;
@@ -182,11 +183,12 @@ public final class DataUtil {
     }
 
     public static Date montarDataCompleta(Integer dia, Integer mes, Integer ano){
-        Date data = new Date();
 
-        data.setDate(dia);
-        data.setMonth(ajustarMes(mes));
-        data.setYear(ajustarAno(ano));
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, ajustarAno(ano));
+        cal.set(Calendar.MONTH, ajustarMes(mes));
+        cal.set(Calendar.DAY_OF_MONTH, dia);
+        Date data = cal.getTime();
 
         return data;
     }

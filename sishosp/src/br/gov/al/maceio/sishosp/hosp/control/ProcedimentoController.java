@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.RecursoDAO;
@@ -28,7 +29,7 @@ public class ProcedimentoController implements Serializable {
     private static final long serialVersionUID = 1L;
     private ProcedimentoBean proc;
     private List<ProcedimentoBean> listaProcedimentos;
-    private int tipo;
+    private Integer tipo;
     private String cabecalho;
     private CidBean cid;
     private CboBean cbo;
@@ -172,9 +173,9 @@ public class ProcedimentoController implements Serializable {
     }
 
     public String getCabecalho() {
-        if (this.tipo == 1) {
+        if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
             cabecalho = CABECALHO_INCLUSAO;
-        } else if (this.tipo == 2) {
+        } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
             cabecalho = CABECALHO_ALTERACAO;
         }
         return cabecalho;

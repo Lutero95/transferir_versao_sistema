@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
@@ -22,7 +23,7 @@ public class EnderecoController implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private EnderecoBean endereco;
-    private int tipo;
+    private Integer tipo;
     private String cabecalho;
     private String cabecalhoBairro;
     private String bairro;
@@ -261,9 +262,9 @@ public class EnderecoController implements Serializable {
     }
 
     public String getCabecalho() {
-        if (this.tipo == 1) {
+        if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
             cabecalho = CABECALHO_INCLUSAO_MUNICIPIO;
-        } else if (this.tipo == 2) {
+        } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
             cabecalho = CABECALHO_ALTERACAO_MUNICIPIO;
         }
         return cabecalho;
@@ -286,12 +287,12 @@ public class EnderecoController implements Serializable {
     }
 
     public String getCabecalhoBairro() {
-        if (this.tipo == 1) {
-            cabecalhoBairro = CABECALHO_INCLUSAO_BAIRRO;
-        } else if (this.tipo == 2) {
-            cabecalhoBairro = CABECALHO_ALTERACAO_BAIRRO;
+        if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
+            cabecalho = CABECALHO_INCLUSAO_BAIRRO;
+        } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
+            cabecalho = CABECALHO_ALTERACAO_BAIRRO;
         }
-        return cabecalhoBairro;
+        return cabecalho;
     }
 
     public void setCabecalhoBairro(String cabecalhoBairro) {
