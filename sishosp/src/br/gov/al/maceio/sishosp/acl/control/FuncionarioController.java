@@ -443,13 +443,13 @@ public class FuncionarioController implements Serializable {
                     .getSessionMap().put("expired", "S");
         } else {
             FacesContext.getCurrentInstance().getExternalContext()
-                    .redirect("/pages/comum/newLogin.faces");
+                    .redirect("/pages/comum/login.faces");
         }
     }
 
     public String logout() {
         SessionUtil.getSession().invalidate();
-        return "/pages/comum/newLogin.faces?faces-redirect=true";
+        return "/pages/comum/login.faces?faces-redirect=true";
     }
 
     // PROFISSIONAL INICIO

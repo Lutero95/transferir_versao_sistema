@@ -6,26 +6,26 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
+		xmlns:b="http://bootsfaces.net/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 
-<h:head>
-	<style>
-* {
-	font-size: 14px !important;
-}
-</style>
 
-</h:head>
 
 <ui:composition template="../../template/template.xhtml">
-
+		<f:metadata>
+			<f:viewAction action="#{tituloPagarController.getEditTitulo()}" />
+		</f:metadata>
 	<ui:define name="content">
 		<p:growl id="grwgeral"/>
 
 		
 
 
-<h3 style="font-size:22px;font-weight:bold">Gerenciamento de Títulos a Pagar</h3>
+	<div class="panel panel-primary new-top-primary">
+				<div class="panel-heading top-heading">
+					<h:outputText value="Gerenciamento de Títulos a Pagar"
+						class="panel-title"></h:outputText>
+				</div>
 			
 			
 
@@ -159,7 +159,7 @@
 	
 	<p:selectOneMenu
 								value="#{tituloPagarController.tituloPagarBean.portador.codportador}" required="true" 
-								requiredMessage="Informe o Tipo de documento" 
+								requiredMessage="Informe o Portador" 
 								style="width:130px;">
 								<f:selectItem itemLabel="Selecione" itemValue="" />
 								<f:selectItems
@@ -169,7 +169,8 @@
 								</p:selectOneMenu>
 								
 								
-								
+								<h:outputText value="Competência"></h:outputText>
+	
 								<p:inputMask value="#{tituloPagarController.tituloPagarBean.dtcompete}" mask="99/9999"></p:inputMask>		
 						</p:panelGrid>
 						
@@ -335,21 +336,30 @@
 
 				<hr />
 
-				<center>
+			<b:commandButton action="#{tituloPagarController.verificarParcelas()}"
+					icon="glyphicon-ok" size="sm" look="success" 
+					value="Incluir" class="btn-incluir new-bottom" update="msg, formInsert"
+					rendered="#{tituloPagarController.tipo == 1}" />
 
-					<p:commandButton value="Salvar"
-						actionListener="#{tituloPagarController.verificarParcelas()}"
-						icon="ui-icon-check" update="msg, formInsert"></p:commandButton>
+				<b:commandButton action="#{tituloPagarController.editar()}"
+					icon="glyphicon-ok" size="sm" 
+					value="Alterar" look="success" class="btn-incluir new-bottom"
+					rendered="#{tituloPagarController.tipo  == 2}" />
 
-					<p:commandButton value="Cancelar" onclick="PF('dlgNovo').hide();"
-						style="margin-left:5px;" icon="ui-icon-closethick"></p:commandButton>
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					class="btn-voltar new-bottom" size="sm" immediate="true"
+					look="info"
+					action="/pages/financeiro/gerenciamentopagar.faces?faces-redirect=true">
+				</b:commandButton>
 
-				</center>
+				
+
+				
 			</p:outputPanel>
 			</h:form>
 
-		
-
+		<hr/>
+</div>
 
 	
 

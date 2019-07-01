@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.financeiro.control;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -12,16 +13,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
-
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.financeiro.dao.BuscaDAO;
 import br.gov.al.maceio.sishosp.financeiro.dao.FornecedorDAO;
 import br.gov.al.maceio.sishosp.financeiro.dao.PortadorDAO;
@@ -44,9 +49,6 @@ import br.gov.al.maceio.sishosp.financeiro.model.TipoImposto;
 import br.gov.al.maceio.sishosp.financeiro.model.TituloPagarBean;
 import br.gov.al.maceio.sishosp.financeiro.model.TituloReceberBean;
 import br.gov.al.maceio.sishosp.financeiro.model.TotalizadorBeanPagar;
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 
 @ManagedBean
 @ViewScoped
@@ -56,6 +58,7 @@ public class TituloPagarController implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private TituloPagarDao pDao = new TituloPagarDao();
     private Date periodoInicial, periodoFinal;
 	private TotalizadorBeanPagar totBuscaPagar;
 	private TituloPagarBean tituloPagarBean;
@@ -149,10 +152,50 @@ public class TituloPagarController implements Serializable {
 		pagamentoDesi = new PagamentoBean();
 	}
 	
+    public void onRowSelectTitulo(TituloPagarBean titulo) throws ProjetoException {
+    	if(titulo != null) {
+    		rowBean = titulo;
+	        TituloPagarDao tpdao = new TituloPagarDao();
+	        idSelecionado = rowBean.getCodigo();
+	        lstBaixa = tpdao.lstBaixas(idSelecionado);
+    	}
+    	else {
+    		rowBean = null;
+    	}
+    	
+
+    }
+	
 	public String redirectInsert() {
 		return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
 	}
 
+	
+	public String redirectEdit() {
+		return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.rowBean.getCodigo(), ENDERECO_TIPO, tipo);
+	}
+	
+	public void getEditTitulo() throws ProjetoException {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Map<String, String> params = facesContext.getExternalContext()
+				.getRequestParameterMap();
+		if (params.get("id") != null) {
+			Integer id = Integer.parseInt(params.get("id"));
+			tipo = Integer.parseInt(params.get("tipo"));
+
+
+			this.tituloPagarBean = pDao.buscaTituloPorId(id);
+			fornecedorBean = tituloPagarBean.getForn();
+			portadorBean = tituloPagarBean.getPortador();
+		} else {
+
+			tipo = Integer.parseInt(params.get("tipo"));
+
+		}
+
+	}
+
+	
 	
 	public void limparDados(){
 		totBuscaPagar = new TotalizadorBeanPagar();
@@ -280,17 +323,17 @@ public class TituloPagarController implements Serializable {
 						
 						
 					}else{
-						JSFUtil.adicionarMensagemErro("Parcelas deve ser maior que 0.","Aten��o");
+						JSFUtil.adicionarMensagemErro("Parcelas deve ser maior que 0.","Atenção");
 					}
 					
 					
 				} else {
-					JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.","Aten��o");
+					JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.","Atenção");
 				}
 				
 				
 				if (valorTotal() <0){
-					JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.","Aten��o");
+					JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.","Atenção");
 				
 				}
 				else
@@ -306,7 +349,7 @@ public class TituloPagarController implements Serializable {
 				
 				} else {
 					
-					JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.","Aten��o");
+					JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.","Atenção");
 				}
 			}
 
@@ -384,20 +427,7 @@ public class TituloPagarController implements Serializable {
 					tituloPagarBean.setDtvcto(data); 
 					
 			
-			if(this.tipoDoc.getDevolucao_venda().equals(true)){
-			
-				if( this.tituloPagarBean.getValor() <= this.pagamentoDesi.getValor()){
 
-					podeSalvar = true;
-					
-				}else{
-					JSFUtil.adicionarMensagemErro("O valor não pode ser maior que o valor da desistência.","Aten��o");
-					podeSalvar = false;
-				}
-			}else{
-				this.pagamentoDesi.setId_desistencia(null);
-				podeSalvar = true;
-			}
 			
 			if(podeSalvar){
 				this.tituloPagarBean.setParcela(String.valueOf(i));
@@ -408,12 +438,12 @@ public class TituloPagarController implements Serializable {
 			}
 			}
 		} else {
-			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.","Aten��o");
+			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.","Atenção");
 		}
 		
 		
 		 if (valorTotal() <0){
-			 JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.","Aten��o");
+			 JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.","Atenção");
 		
 		}
 		else{
@@ -422,13 +452,13 @@ public class TituloPagarController implements Serializable {
 		RequestContext.getCurrentInstance().execute("PF('dlgNovo').hide();");
 	
 
-		JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!","Aten��o");
+		JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!","Atenção");
 		lstTitPagar = null;
 		
 		} else {
 			
 
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.","Aten��o");
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.","Atenção");
 		}
 		
 	}
@@ -464,12 +494,12 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 			}
 			
 		} else {
-			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.","Aten��o");
+			JSFUtil.adicionarMensagemErro("O valor deve ser maior que 0.","Atenção");
 		}
 		
 		
 		 if (valorTotal() <0){
-			JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.","Aten��o");
+			JSFUtil.adicionarMensagemErro("O valor total deve ser maior que 0.","Atenção");
 		
 		}
 		else{
@@ -479,12 +509,12 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 		RequestContext.getCurrentInstance().execute("PF('simounao').hide();");
 		
 
-		JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!","Aten��o");
+		JSFUtil.adicionarMensagemSucesso("Salvo com sucesso!","Atenção");
 		lstTitPagar = null;
 		
 		} else {
 			
-			JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.","Aten��o");
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro ao gravar.","Atenção");
 		}
 		}
 	}
@@ -496,41 +526,43 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 		if(excluiu == true) {
 			RequestContext.getCurrentInstance().execute("PF('dlgAt').hide();");
 
-			JSFUtil.adicionarMensagemSucesso("Excluído com sucesso!","Aten��o");
+			JSFUtil.adicionarMensagemSucesso("Excluído com sucesso!","Atenção");
 			lstTitPagar = null;
 		} else {
 			
-			JSFUtil.adicionarMensagemErro("Falha ao excluir!","Aten��o");
+			JSFUtil.adicionarMensagemErro("Falha ao excluir!","Atenção");
 		}
 
 	}
 	
 	
-	   public void editar() throws ProjetoException {
+	   public void editar() throws ProjetoException, IOException {
 	        TituloPagarDao dao = new TituloPagarDao();
 	        
-	        
-	        	if(rowBean.getValor() > 0) {
-	        		if(rowBean.getDespesa().getId() != null && rowBean.getCcusto().getIdccusto() != null){	        		
-	        	boolean alterou = dao.editar(this.rowBean, this.lstImpostosAlt);	        	
+	        ExternalContext ec = FacesContext.getCurrentInstance()
+	                .getExternalContext();
+	        	if(tituloPagarBean.getValor() > 0) {
+	        		if(tituloPagarBean.getDespesa().getId() != null && tituloPagarBean.getCcusto().getIdccusto() != null){	        		
+	        	boolean alterou = dao.editar(this.tituloPagarBean, this.lstImpostosAlt);	        	
 	        	 if(alterou) {
 	 	            
 	 	            lstTituloPagar = null;
 
-	 	           JSFUtil.adicionarMensagemSucesso("Editado com sucesso!","Aten��o");
+	 	           JSFUtil.adicionarMensagemSucesso("Editado com sucesso!","Atenção");
+	 	          ec.redirect(ec.getRequestContextPath()+ "/pages/financeiro/gerenciamentopagar.faces?faces-redirect=true");
 	 	            lstTitPagar = null;
 	 	            RequestContext.getCurrentInstance().execute("PF('dlgEditRet').hide();");
 	 	        } else {
-	 	            JSFUtil.adicionarMensagemErro("Erro ao realizar a alteração!","Aten��o");
+	 	            JSFUtil.adicionarMensagemErro("Erro ao realizar a alteração!","Atenção");
 	 	        	}
 	        	 
 	        } else {
-	        	JSFUtil.adicionarMensagemErro("Os campos Centro de Custo e Despesa não podem ser vazios.","Aten��o");	        	
+	        	JSFUtil.adicionarMensagemErro("Os campos Centro de Custo e Despesa não podem ser vazios.","Atenção");	        	
 	        	}
 	        		
 	        
 	        } else {
-	        	JSFUtil.adicionarMensagemErro("O valor não pode ser menor ou igual a 0.","Aten��o");
+	        	JSFUtil.adicionarMensagemErro("O valor não pode ser menor ou igual a 0.","Atenção");
 	        	}	
 	        
 	        
@@ -854,10 +886,7 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 	        
 	    }
 	 
-	 public void onRowSelect2(SelectEvent event) throws ProjetoException {
-	        
-	        
-	    }
+
 	 
 	 
 	 
@@ -901,7 +930,7 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 		  		
 		  	}
 		  	if(existe){
-		  		JSFUtil.adicionarMensagemErro("Imposto já incluso", "Aten��o");
+		  		JSFUtil.adicionarMensagemErro("Imposto já incluso", "Atenção");
 		  	} else {
 		  		lstImpostos.add(impostoBean);
 		  	}
@@ -921,7 +950,7 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 		  		
 		  	}
 		  	if(existe){
-		  		JSFUtil.adicionarMensagemErro("Imposto já incluso","Aten��o");
+		  		JSFUtil.adicionarMensagemErro("Imposto já incluso","Atenção");
 		  	} else {
 		  		lstImpostosAlt.add(rowBeanImposto);
 		  	}
@@ -1132,13 +1161,7 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 		this.listaAbertos = listaAbertos;
 	}
 
-	public List<BaixaPagar> getLstBaixa() throws ProjetoException {
-		if ((idSelecionado > 0) && (lstBaixa.size()==0)) {
-            TituloPagarDao dao = new TituloPagarDao();
-            lstBaixa = dao.lstBaixas(idSelecionado);
-        }
-        return lstBaixa;
-	}
+
 
 	public void setLstBaixa(List<BaixaPagar> lstBaixa) {
 		this.lstBaixa = lstBaixa;
@@ -1275,6 +1298,18 @@ public void salvarDocumentoPagarUnico() throws ProjetoException {
 
 	public void setLstTitPagar(ArrayList<TituloPagarBean> lstTitPagar) {
 		this.lstTitPagar = lstTitPagar;
+	}
+
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
+	}
+
+	public List<BaixaPagar> getLstBaixa() {
+		return lstBaixa;
 	}
 	
 	

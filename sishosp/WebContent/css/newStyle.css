@@ -515,7 +515,6 @@ body {
 		top: 50%;
 		left: 50%;
 		margin-right: -18%;
-		transform: translate(-28%, -50%);
 	}
 }
 
@@ -770,12 +769,12 @@ body {
 }
 
 .btn-incluir {
-	float: right;
+	float: left;
 	margin-bottom: 0px;
 }
 
 .btn-voltar {
-	float: left;
+	float: right;
 }
 
 .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th,

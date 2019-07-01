@@ -663,6 +663,137 @@ public class TituloPagarDao {
 
 		return lista;
 	}
+	
+	
+	public TituloPagarBean buscaTituloPorId(Integer id) throws ProjetoException {
+
+		String sql = " select  case when situacao='F' then true else false end pago,"
+				+ " case when dtvcto <=current_date then true else false end vencido,"
+				+ " case when dtvcto >current_date then true else false end vencer,"
+				+ " codigo,codforn,dtcompete,dtvcto,juros,multa,valor - coalesce(desconto,0) + coalesce(multa,0) + coalesce(juros,0) valor,processo,desconto,dtemissao,"
+				+ "  historico,duplicata,idccusto, situacao,parcela,icmssubt,"
+				+ " nomeFornecedor,despesa,descCusto, portdesc,codportador, iddespesa,"
+				+ "  codtipdoc,   desctipdoc,nominal, dtprevisao,case when valoraberto<0 then 0 else valoraberto end valoraberto,totalpago"
+				+ "  from("
+				+ "select  p.codigo,p.codforn,p.dtcompete,p.dtvcto,p.juros,p.multa,p.valor,p.processo,p.desconto,p.dtemissao,"
+				+ "  p.historico,p.duplicata,c.idccusto, p.situacao,p.parcela,p.dtprevisao,p.icmssubt,"
+				+ "  f.nome as nomeFornecedor,d.descricao as despesa,c.descricao descCusto,pt.descricao portdesc,pt.codportador, d.iddespesa, "
+				+ "  p.codtipdoc,  td.descricao desctipdoc, p.nominal, "
+				+ "  p.valor - coalesce(p.desconto,0)+coalesce(p.juros,0)+coalesce(p.multa,0)-coalesce(p.vlr_retencao,0)"
+				+ " - coalesce((select sum(coalesce(valorpago,0)-coalesce(vlrdesc,0)+coalesce(vlrjuros,0)+coalesce(vlrmulta,0)) from financeiro.pagdupbx"
+				+ " where pagdupbx.codigo=p.codigo),0) valoraberto,"
+				+ " coalesce((select sum(valorpago) from financeiro.pagdupbx where codigo=p.codigo),0) totalpago                  "
+				+ " from financeiro.pagdup p join financeiro.fornecedor f on (p.codforn = f.codforn) "
+				+ "  join financeiro.despesa d on (d.iddespesa = p.iddespesa) "
+				+ "  join financeiro.ccusto c on (c.idccusto = p.idccusto) "
+				+ " left join financeiro.tipodocumento td on td.codtipodocumento = p.codtipdoc"
+				+ "	 left join financeiro.portador pt on(pt.codportador = p.codport) where   p.codigo=?";//
+
+	
+
+		sql = sql + " )t";
+		
+
+		ArrayList<TituloPagarBean> lista = new ArrayList<TituloPagarBean>();
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+				.get("obj_usuario");
+
+		Connection con = null;
+		ResultSet set = null;
+		PreparedStatement ps = null;
+		PortadorBean portBean = new PortadorBean();
+		TituloPagarBean bean = new TituloPagarBean();
+		CentroCustoBean ccbean = new CentroCustoBean();
+		DespesaBean despesa = new DespesaBean();
+		FornecedorBean fornecedor = new FornecedorBean();
+		try {
+			con = ConnectionFactory.getConnection();
+
+			ps = con.prepareStatement(sql);
+
+			ps.setInt(1, id);
+
+		
+			set = ps.executeQuery();
+
+			while (set.next()) {
+
+
+
+				ccbean.setIdccusto(set.getInt("idccusto"));
+
+				ccbean.setDescricao(set.getString("descCusto"));
+
+				portBean.setCodportador(set.getInt("codportador"));
+
+				portBean.setDescricao(set.getString("portdesc"));
+
+				despesa.setId(set.getInt("iddespesa"));
+				despesa.setDescricao(set.getString("despesa"));
+				bean.setValor(set.getDouble("valor"));
+
+				bean.setDesconto(set.getDouble("desconto"));
+				bean.setVencido(set.getBoolean("vencido"));
+				bean.setVencer(set.getBoolean("vencer"));
+
+				bean.setPago(set.getBoolean("pago"));
+
+				bean.setDuplicata(set.getString("duplicata"));
+				bean.setDtcompete(set.getString("dtcompete"));
+
+				bean.setDtvcto(set.getDate("dtvcto"));
+				bean.setDtprevisao(set.getDate("dtprevisao"));
+				bean.setDtemissao(set.getDate("dtemissao"));
+
+				bean.setHistorico(set.getString("historico"));
+				bean.setParcela(set.getString("parcela"));
+
+				bean.setCodigo(set.getInt("codigo"));
+
+				bean.setNotaFiscal(set.getString("processo"));
+				bean.setIcmsst(set.getDouble("icmssubt"));
+				bean.setJuros(set.getDouble("juros"));
+				bean.setMulta(set.getDouble("multa"));
+				bean.setSituacao(set.getString("situacao"));
+				bean.setValoraberto(set.getDouble("valoraberto"));
+				bean.setTotalpago(set.getDouble("totalpago"));
+				fornecedor.setNome(set.getString("nomefornecedor"));
+				fornecedor.setCodforn(set.getInt("codforn"));
+				bean.getTipoDocumento().setCodtipodocumento(set.getInt("codtipdoc"));
+				bean.getTipoDocumento().setDescricao(set.getString("desctipdoc"));
+				/*
+				 * for (ImpostoBean impostoBean : listaImposto) {
+				 * imposto.setDescImposto(set.getString("imposto"));
+				 * imposto.setPcRentencao(set.getDouble("perc_ret"));
+				 * imposto.setValorBase(set.getDouble("base_ret"));
+				 * listaImposto.add(impostoBean); }
+				 * 
+				 * bean.setLstImposto(listaImposto);
+				 */
+				bean.setPortador(portBean);
+				bean.setCcusto(ccbean);
+				bean.setDespesa(despesa);
+				bean.setForn(fornecedor);
+
+
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				ps.close();
+				set.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return bean;
+	}
+
 
 	public ArrayList<TituloPagarBean> titulosEstornar(BuscaBeanPagar busca) throws ProjetoException {
 
