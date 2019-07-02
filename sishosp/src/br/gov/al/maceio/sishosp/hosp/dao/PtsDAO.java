@@ -102,66 +102,13 @@ public class PtsDAO {
         return pts;
     }
 
-    public Pts ptsCarregarPtsPorProgramaGrupoPaciente(Pts ptsParametro)
-            throws ProjetoException {
-
-        String sql = "SELECT p.id AS id_pts, p.data, p.diagnostico_funcional, p.necessidades_e_desejos, " +
-                "p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf " +
-                "FROM hosp.pts p " +
-                "LEFT JOIN hosp.programa pr ON (pr.id_programa = p.cod_programa) " +
-                "LEFT JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo) " +
-                "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = p.cod_paciente) " +
-                "WHERE p.cod_grupo = ? AND p.cod_programa = ? AND p.cod_paciente = ? AND p.status = 'A';";
-
-
-        Pts pts = new Pts();
-
-        try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
-
-            stmt.setInt(1, ptsParametro.getGrupo().getIdGrupo());
-            stmt.setInt(2, ptsParametro.getPrograma().getIdPrograma());
-            stmt.setInt(3, ptsParametro.getPaciente().getId_paciente());
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                pts = new Pts();
-                pts.getPrograma().setIdPrograma(rs.getInt("cod_programa"));
-                pts.getPrograma().setDescPrograma(rs.getString("descprograma"));
-                pts.getGrupo().setIdGrupo(rs.getInt("cod_grupo"));
-                pts.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-                pts.getPaciente().setId_paciente(rs.getInt("cod_paciente"));
-                pts.getPaciente().setNome(rs.getString("nome"));
-                pts.getPaciente().setCpf(rs.getString("cpf"));
-                pts.getPaciente().setCns(rs.getString("cns"));
-                pts.setId(rs.getInt("id_pts"));
-                pts.setData(rs.getDate("data"));
-                pts.setDiagnosticoFuncional(rs.getString("diagnostico_funcional"));
-                pts.setNecessidadesIhDesejos(rs.getString("necessidades_e_desejos"));
-                pts.setListaPtsArea(carregarAreasPts(pts.getId(), conexao));
-
-            }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                conexao.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return pts;
-    }
-
     public Pts ptsCarregarPtsPorId(Integer id)
             throws ProjetoException {
 
-        String sql = "SELECT p.id AS id_pts, p.data, p.diagnostico_funcional, p.necessidades_e_desejos, " +
-                "p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf " +
+        String sql = "SELECT p.id AS id_pts, p.data, p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf, " +
+                "p.incapacidades_funcionais, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.objetivos_gerais_multidisciplinar, " +
+                "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, " +
+                "novas_estrategias_tratamento, condulta_alta " +
                 "FROM hosp.pts p " +
                 "LEFT JOIN hosp.programa pr ON (pr.id_programa = p.cod_programa) " +
                 "LEFT JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo) " +
@@ -190,8 +137,16 @@ public class PtsDAO {
                 pts.getPaciente().setCns(rs.getString("cns"));
                 pts.setId(rs.getInt("id_pts"));
                 pts.setData(rs.getDate("data"));
-                pts.setDiagnosticoFuncional(rs.getString("diagnostico_funcional"));
-                pts.setNecessidadesIhDesejos(rs.getString("necessidades_e_desejos"));
+                pts.setIncapacidadesFuncionais(rs.getString("incapacidades_funcionais"));
+                pts.setCapacidadesFuncionais(rs.getString("capacidades_funcionais"));
+                pts.setObjetivosFamiliarPaciente(rs.getString("objetivos_familiar_paciente"));
+                pts.setObjetivosGeraisMultidisciplinar(rs.getString("objetivos_gerais_multidisciplinar"));
+                pts.setObjetivosGeraisCurtoPrazo(rs.getString("objetivos_gerais_curto_prazo"));
+                pts.setObjetivosGeraisMedioPrazo(rs.getString("objetivos_gerais_medio_prazo"));
+                pts.setObjetivosGeraisLongoPrazo(rs.getString("objetivos_gerais_longo_prazo"));
+                pts.setAnaliseDosResultadosDosObjetivosGerias(rs.getString("analise_resultados_objetivos_gerais"));
+                pts.setNovasEstrategiasDeTratamento(rs.getString("novas_estrategias_tratamento"));
+                pts.setCondultaAlta(rs.getString("condulta_alta"));
                 pts.setListaPtsArea(carregarAreasPts(id, conexao));
 
             }
@@ -304,9 +259,11 @@ public class PtsDAO {
 
         final Integer SEIS_MESES_VENCIMENTO = 180;
 
-        String sql1 = "INSERT INTO hosp.pts (data, diagnostico_funcional, necessidades_e_desejos, id_funcionario, data_hora_operacao, " +
-                "data_vencimento, cod_programa, cod_grupo, cod_paciente, status) " +
-                "values (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?) RETURNING id;";
+        String sql1 = "INSERT INTO hosp.pts (data, id_funcionario, data_hora_operacao, data_vencimento, cod_programa, cod_grupo, cod_paciente, status, " +
+                "incapacidades_funcionais, capacidades_funcionais, objetivos_familiar_paciente, objetivos_gerais_multidisciplinar, " +
+                "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, " +
+                "novas_estrategias_tratamento, condulta_alta) " +
+                "values (?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -317,14 +274,22 @@ public class PtsDAO {
 
             ps = conexao.prepareStatement(sql1);
             ps.setDate(1, DataUtil.converterDateUtilParaDateSql(pts.getData()));
-            ps.setString(2, pts.getDiagnosticoFuncional().toUpperCase());
-            ps.setString(3, pts.getNecessidadesIhDesejos().toUpperCase());
-            ps.setInt(4, user_session.getCodigo());
-            ps.setDate(5, DataUtil.converterDateUtilParaDateSql(DataUtil.adicionarDiasAData(pts.getData(), SEIS_MESES_VENCIMENTO)));
-            ps.setInt(6, pts.getPrograma().getIdPrograma());
-            ps.setInt(7, pts.getGrupo().getIdGrupo());
-            ps.setInt(8, pts.getPaciente().getId_paciente());
-            ps.setString(9, StatusPTS.ATIVO.getSigla());
+            ps.setInt(2, user_session.getCodigo());
+            ps.setDate(3, DataUtil.converterDateUtilParaDateSql(DataUtil.adicionarDiasAData(pts.getData(), SEIS_MESES_VENCIMENTO)));
+            ps.setInt(4, pts.getPrograma().getIdPrograma());
+            ps.setInt(5, pts.getGrupo().getIdGrupo());
+            ps.setInt(6, pts.getPaciente().getId_paciente());
+            ps.setString(7, StatusPTS.ATIVO.getSigla());
+            ps.setString(8, pts.getIncapacidadesFuncionais());
+            ps.setString(9, pts.getCapacidadesFuncionais());
+            ps.setString(10, pts.getObjetivosFamiliarPaciente());
+            ps.setString(11, pts.getObjetivosGeraisMultidisciplinar());
+            ps.setString(12, pts.getObjetivosGeraisCurtoPrazo());
+            ps.setString(13, pts.getObjetivosGeraisMedioPrazo());
+            ps.setString(14, pts.getObjetivosGeraisLongoPrazo());
+            ps.setString(15, pts.getAnaliseDosResultadosDosObjetivosGerias());
+            ps.setString(16, pts.getNovasEstrategiasDeTratamento());
+            ps.setString(17, pts.getCondultaAlta());
 
             ResultSet rs = ps.executeQuery();
             Integer codPts = null;
@@ -556,11 +521,14 @@ public class PtsDAO {
 
     public Pts carregarPtsDoPaciente(Integer codPaciente) throws ProjetoException {
 
-        String sql = "SELECT p.data, p.diagnostico_funcional, p.necessidades_e_desejos, p.id_paciente_instituicao " +
+
+        String sql = "SELECT p.id AS id_pts, p.data, p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf, " +
+                "p.incapacidades_funcionais, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.objetivos_gerais_multidisciplinar, " +
+                "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, " +
+                "novas_estrategias_tratamento, condulta_alta " +
                 "FROM hosp.pts p " +
                 "LEFT JOIN hosp.paciente_instituicao pi ON (pi.id = p.id_paciente_instituicao) " +
                 "WHERE pi.codpaciente = ?";
-
 
         Pts pts = new Pts();
 
@@ -572,10 +540,26 @@ public class PtsDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
+                pts.getPrograma().setIdPrograma(rs.getInt("cod_programa"));
+                pts.getPrograma().setDescPrograma(rs.getString("descprograma"));
+                pts.getGrupo().setIdGrupo(rs.getInt("cod_grupo"));
+                pts.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+                pts.getPaciente().setId_paciente(rs.getInt("cod_paciente"));
+                pts.getPaciente().setNome(rs.getString("nome"));
+                pts.getPaciente().setCpf(rs.getString("cpf"));
+                pts.getPaciente().setCns(rs.getString("cns"));
+                pts.setId(rs.getInt("id_pts"));
                 pts.setData(rs.getDate("data"));
-                pts.setDiagnosticoFuncional(rs.getString("diagnostico_funcional"));
-                pts.setNecessidadesIhDesejos(rs.getString("necessidades_e_desejos"));
-                pts.getGerenciarPaciente().setId(rs.getInt("id_paciente_instituicao"));
+                pts.setIncapacidadesFuncionais(rs.getString("incapacidades_funcionais"));
+                pts.setCapacidadesFuncionais(rs.getString("capacidades_funcionais"));
+                pts.setObjetivosFamiliarPaciente(rs.getString("objetivos_familiar_paciente"));
+                pts.setObjetivosGeraisMultidisciplinar(rs.getString("objetivos_gerais_multidisciplinar"));
+                pts.setObjetivosGeraisCurtoPrazo(rs.getString("objetivos_gerais_curto_prazo"));
+                pts.setObjetivosGeraisMedioPrazo(rs.getString("objetivos_gerais_medio_prazo"));
+                pts.setObjetivosGeraisLongoPrazo(rs.getString("objetivos_gerais_longo_prazo"));
+                pts.setAnaliseDosResultadosDosObjetivosGerias(rs.getString("analise_resultados_objetivos_gerais"));
+                pts.setNovasEstrategiasDeTratamento(rs.getString("novas_estrategias_tratamento"));
+                pts.setCondultaAlta(rs.getString("condulta_alta"));
                 pts.setListaPtsArea(carregarAreasPts(pts.getGerenciarPaciente().getId(), conexao));
 
             }

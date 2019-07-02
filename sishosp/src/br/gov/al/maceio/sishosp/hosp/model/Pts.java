@@ -10,8 +10,16 @@ public class Pts implements Serializable {
 
     private Integer id;
     private Date data;
-    private String diagnosticoFuncional;
-    private String necessidadesIhDesejos;
+    private String incapacidadesFuncionais;
+    private String capacidadesFuncionais;
+    private String objetivosFamiliarPaciente;
+    private String objetivosGeraisMultidisciplinar;
+    private String objetivosGeraisCurtoPrazo;
+    private String objetivosGeraisMedioPrazo;
+    private String objetivosGeraisLongoPrazo;
+    private String analiseDosResultadosDosObjetivosGerias;
+    private String novasEstrategiasDeTratamento;
+    private String condultaAlta;
     private Timestamp dataHoraOperacao;
     private Date dataVencimento;
     private String status;
@@ -44,30 +52,6 @@ public class Pts implements Serializable {
         this.id = id;
     }
 
-    public GrupoBean getGrupo() {
-        return grupo;
-    }
-
-    public void setGrupo(GrupoBean grupo) {
-        this.grupo = grupo;
-    }
-
-    public ProgramaBean getPrograma() {
-        return programa;
-    }
-
-    public void setPrograma(ProgramaBean programa) {
-        this.programa = programa;
-    }
-
-    public PacienteBean getPaciente() {
-        return paciente;
-    }
-
-    public void setPaciente(PacienteBean paciente) {
-        this.paciente = paciente;
-    }
-
     public Date getData() {
         return data;
     }
@@ -76,28 +60,84 @@ public class Pts implements Serializable {
         this.data = data;
     }
 
-    public String getDiagnosticoFuncional() {
-        return diagnosticoFuncional;
+    public String getIncapacidadesFuncionais() {
+        return incapacidadesFuncionais;
     }
 
-    public void setDiagnosticoFuncional(String diagnosticoFuncional) {
-        this.diagnosticoFuncional = diagnosticoFuncional;
+    public void setIncapacidadesFuncionais(String incapacidadesFuncionais) {
+        this.incapacidadesFuncionais = incapacidadesFuncionais;
     }
 
-    public String getNecessidadesIhDesejos() {
-        return necessidadesIhDesejos;
+    public String getCapacidadesFuncionais() {
+        return capacidadesFuncionais;
     }
 
-    public void setNecessidadesIhDesejos(String necessidadesIhDesejos) {
-        this.necessidadesIhDesejos = necessidadesIhDesejos;
+    public void setCapacidadesFuncionais(String capacidadesFuncionais) {
+        this.capacidadesFuncionais = capacidadesFuncionais;
     }
 
-    public GerenciarPacienteBean getGerenciarPaciente() {
-        return gerenciarPaciente;
+    public String getObjetivosFamiliarPaciente() {
+        return objetivosFamiliarPaciente;
     }
 
-    public void setGerenciarPaciente(GerenciarPacienteBean gerenciarPaciente) {
-        this.gerenciarPaciente = gerenciarPaciente;
+    public void setObjetivosFamiliarPaciente(String objetivosFamiliarPaciente) {
+        this.objetivosFamiliarPaciente = objetivosFamiliarPaciente;
+    }
+
+    public String getObjetivosGeraisMultidisciplinar() {
+        return objetivosGeraisMultidisciplinar;
+    }
+
+    public void setObjetivosGeraisMultidisciplinar(String objetivosGeraisMultidisciplinar) {
+        this.objetivosGeraisMultidisciplinar = objetivosGeraisMultidisciplinar;
+    }
+
+    public String getObjetivosGeraisCurtoPrazo() {
+        return objetivosGeraisCurtoPrazo;
+    }
+
+    public void setObjetivosGeraisCurtoPrazo(String objetivosGeraisCurtoPrazo) {
+        this.objetivosGeraisCurtoPrazo = objetivosGeraisCurtoPrazo;
+    }
+
+    public String getObjetivosGeraisMedioPrazo() {
+        return objetivosGeraisMedioPrazo;
+    }
+
+    public void setObjetivosGeraisMedioPrazo(String objetivosGeraisMedioPrazo) {
+        this.objetivosGeraisMedioPrazo = objetivosGeraisMedioPrazo;
+    }
+
+    public String getObjetivosGeraisLongoPrazo() {
+        return objetivosGeraisLongoPrazo;
+    }
+
+    public void setObjetivosGeraisLongoPrazo(String objetivosGeraisLongoPrazo) {
+        this.objetivosGeraisLongoPrazo = objetivosGeraisLongoPrazo;
+    }
+
+    public String getAnaliseDosResultadosDosObjetivosGerias() {
+        return analiseDosResultadosDosObjetivosGerias;
+    }
+
+    public void setAnaliseDosResultadosDosObjetivosGerias(String analiseDosResultadosDosObjetivosGerias) {
+        this.analiseDosResultadosDosObjetivosGerias = analiseDosResultadosDosObjetivosGerias;
+    }
+
+    public String getNovasEstrategiasDeTratamento() {
+        return novasEstrategiasDeTratamento;
+    }
+
+    public void setNovasEstrategiasDeTratamento(String novasEstrategiasDeTratamento) {
+        this.novasEstrategiasDeTratamento = novasEstrategiasDeTratamento;
+    }
+
+    public String getCondultaAlta() {
+        return condultaAlta;
+    }
+
+    public void setCondultaAlta(String condultaAlta) {
+        this.condultaAlta = condultaAlta;
     }
 
     public Timestamp getDataHoraOperacao() {
@@ -106,22 +146,6 @@ public class Pts implements Serializable {
 
     public void setDataHoraOperacao(Timestamp dataHoraOperacao) {
         this.dataHoraOperacao = dataHoraOperacao;
-    }
-
-    public PtsArea getPtsArea() {
-        return ptsArea;
-    }
-
-    public void setPtsArea(PtsArea ptsArea) {
-        this.ptsArea = ptsArea;
-    }
-
-    public List<PtsArea> getListaPtsArea() {
-        return listaPtsArea;
-    }
-
-    public void setListaPtsArea(List<PtsArea> listaPtsArea) {
-        this.listaPtsArea = listaPtsArea;
     }
 
     public Date getDataVencimento() {
@@ -146,6 +170,54 @@ public class Pts implements Serializable {
 
     public void setStatusPorExtenso(String statusPorExtenso) {
         this.statusPorExtenso = statusPorExtenso;
+    }
+
+    public GrupoBean getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(GrupoBean grupo) {
+        this.grupo = grupo;
+    }
+
+    public ProgramaBean getPrograma() {
+        return programa;
+    }
+
+    public void setPrograma(ProgramaBean programa) {
+        this.programa = programa;
+    }
+
+    public PacienteBean getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(PacienteBean paciente) {
+        this.paciente = paciente;
+    }
+
+    public GerenciarPacienteBean getGerenciarPaciente() {
+        return gerenciarPaciente;
+    }
+
+    public void setGerenciarPaciente(GerenciarPacienteBean gerenciarPaciente) {
+        this.gerenciarPaciente = gerenciarPaciente;
+    }
+
+    public PtsArea getPtsArea() {
+        return ptsArea;
+    }
+
+    public void setPtsArea(PtsArea ptsArea) {
+        this.ptsArea = ptsArea;
+    }
+
+    public List<PtsArea> getListaPtsArea() {
+        return listaPtsArea;
+    }
+
+    public void setListaPtsArea(List<PtsArea> listaPtsArea) {
+        this.listaPtsArea = listaPtsArea;
     }
 
     public InsercaoPacienteBean getInsercao() {

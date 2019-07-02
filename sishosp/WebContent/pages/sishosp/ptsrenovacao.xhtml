@@ -15,7 +15,7 @@
 
         <div class="panel panel-primary top-primary">
             <div class="panel-heading top-heading">
-                <h4 class="panel-title">Inclusão PTS</h4>
+                <h4 class="panel-title">Renovação PTS</h4>
             </div>
 
             <div class="panel-body table-body sub-table-body">
@@ -101,13 +101,13 @@
 
                         <b:column span="5" class="label-position data-size">
 
-                            <b:label value="1) Incapacidades Funcionais:" id="incapacidadesFuncionais"
+                            <b:label value="A) Diagnóstico Funcional:" id="diagnosticoFuncional"
                                      severity="info" class="fire-label"/>
 
                             <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
                                              required="true" rows="20" cols="89"
-                                             requiredMessage="Incapacidades Funcionais: Campo obrigatório!"
-                                             value="#{PtsController.pts.incapacidadesFuncionais}"></h:inputTextarea>
+                                             requiredMessage="Diagnóstico Funcional: Campo obrigatório!"
+                                             value="#{PtsController.pts.diagnosticoFuncional}"></h:inputTextarea>
 
                         </b:column>
 
@@ -115,87 +115,13 @@
 
                         <b:column span="5" class="label-position data-size">
 
-                            <b:label value="2) Capacidades Funcionais:" id="capacidadesFuncionais"
+                            <b:label value="B) Necessidades e Desejos:" id="necessidadesIhDesejos"
                                      severity="info" class="fire-label"/>
 
                             <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
                                              required="true" rows="20" cols="89"
-                                             requiredMessage="Capacidades Funcionais: Campo obrigatório!"
-                                             value="#{PtsController.pts.capacidadesFuncionais}"></h:inputTextarea>
-
-                        </b:column>
-
-                    </b:row>
-
-                    <br></br>
-
-                    <b:row>
-
-                        <b:column span="5" class="label-position data-size">
-
-                            <b:label value="3) Objetivos Familia/Paciente:" id="objetivosFamiliarPaciente"
-                                     severity="info" class="fire-label"/>
-
-                            <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
-                                             required="true" rows="20" cols="89"
-                                             requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
-                                             value="#{PtsController.pts.objetivosFamiliarPaciente}"></h:inputTextarea>
-
-                        </b:column>
-
-                        <b:column span="2"></b:column>
-
-                        <b:column span="5" class="label-position data-size">
-
-                            <b:label value="4) Objetivos Gerais/Multidisciplinar:" id="objetivosGeraisMultidisciplinar"
-                                     severity="info" class="fire-label"/>
-
-                            <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
-                                             required="true" rows="20" cols="89"
-                                             requiredMessage="Objetivos Gerais/Multidisciplinar: Campo obrigatório!"
-                                             value="#{PtsController.pts.objetivosGeraisMultidisciplinar}"></h:inputTextarea>
-
-                        </b:column>
-
-                    </b:row>
-
-                    <br></br>
-
-                    <b:row>
-
-                        <b:column span="4" class="label-position data-size">
-
-                            <b:label value="5) Objetivos Gerias (Curto Prazo):" id="objetivosGeraisCurtoPrazo"
-                                     severity="info" class="fire-label"/>
-
-                            <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
-                                             required="true" rows="20" cols="89"
-                                             requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
-                                             value="#{PtsController.pts.objetivosGeraisCurtoPrazo}"></h:inputTextarea>
-
-                        </b:column>
-
-                        <b:column span="4" class="label-position data-size">
-
-                            <b:label value="6) Objetivos Gerais (Médio Prazo):" id="objetivosGeraisMedioPrazo"
-                                     severity="info" class="fire-label"/>
-
-                            <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
-                                             required="true" rows="20" cols="89"
-                                             requiredMessage="Objetivos Gerais (Médio Prazo): Campo obrigatório!"
-                                             value="#{PtsController.pts.objetivosGeraisMedioPrazo}"></h:inputTextarea>
-
-                        </b:column>
-
-                        <b:column span="4" class="label-position data-size">
-
-                            <b:label value="7) Objetivos Gerais (Longo Prazo):" id="objetivosGeraisLongoPrazo"
-                                     severity="info" class="fire-label"/>
-
-                            <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
-                                             required="true" rows="20" cols="89"
-                                             requiredMessage="Objetivos Gerais (Longo Prazo): Campo obrigatório!"
-                                             value="#{PtsController.pts.objetivosGeraisLongoPrazo}"></h:inputTextarea>
+                                             requiredMessage="Necessidades e Desejos: Campo obrigatório!"
+                                             value="#{PtsController.pts.necessidadesIhDesejos}"></h:inputTextarea>
 
                         </b:column>
 
