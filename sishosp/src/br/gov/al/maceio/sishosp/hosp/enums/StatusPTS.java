@@ -4,7 +4,8 @@ public enum StatusPTS {
 
     ATIVO("A"),
     CANCELADO("C"),
-    RENOVADO("R");
+    RENOVADO("R"),
+    INVALIDADO("I");
 
     private String sigla;
 

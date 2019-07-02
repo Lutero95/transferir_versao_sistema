@@ -55,6 +55,38 @@ public class PtsDAO {
         return retorno;
     }
 
+    public String verificarStatusPts(Integer id)
+            throws ProjetoException {
+
+        String retorno = "";
+
+        String sql = "SELECT status FROM hosp.pts WHERE id = ? ";
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+
+            stmt.setInt(1, id);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                retorno = rs.getString("status");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+
     public Pts ptsCarregarPacientesInstituicao(Integer id)
             throws ProjetoException {
 
@@ -105,7 +137,7 @@ public class PtsDAO {
     public Pts ptsCarregarPtsPorId(Integer id)
             throws ProjetoException {
 
-        String sql = "SELECT p.id AS id_pts, p.data, p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf, " +
+        String sql = "SELECT p.id AS id_pts, pi.id, p.data, p.cod_programa, pr.descprograma, p.cod_grupo, g.descgrupo, p.cod_paciente, pa.nome, pa.cns, pa.cpf, " +
                 "p.incapacidades_funcionais, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.objetivos_gerais_multidisciplinar, " +
                 "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, " +
                 "novas_estrategias_tratamento, condulta_alta " +
@@ -113,7 +145,8 @@ public class PtsDAO {
                 "LEFT JOIN hosp.programa pr ON (pr.id_programa = p.cod_programa) " +
                 "LEFT JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo) " +
                 "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = p.cod_paciente) " +
-                "WHERE p.id = ?;";
+                "LEFT JOIN hosp.paciente_instituicao pi ON (pi.codgrupo = p.cod_grupo AND pi.codprograma = p.cod_programa AND p.cod_paciente = pi.codpaciente) " +
+                "WHERE pi.status = 'A' AND p.id = ?;";
 
         Pts pts = new Pts();
 
@@ -127,6 +160,7 @@ public class PtsDAO {
 
             while (rs.next()) {
                 pts = new Pts();
+                pts.getGerenciarPaciente().setId(rs.getInt("id"));
                 pts.getPrograma().setIdPrograma(rs.getInt("cod_programa"));
                 pts.getPrograma().setDescPrograma(rs.getString("descprograma"));
                 pts.getGrupo().setIdGrupo(rs.getInt("cod_grupo"));
@@ -253,7 +287,7 @@ public class PtsDAO {
         return ptsArea;
     }
 
-    public Integer gravarPts(Pts pts, Boolean ehParaDeletar) {
+    public Integer gravarPts(Pts pts, Boolean ehParaDeletar, String statusPTS) {
 
         Integer retorno = null;
 
@@ -279,7 +313,7 @@ public class PtsDAO {
             ps.setInt(4, pts.getPrograma().getIdPrograma());
             ps.setInt(5, pts.getGrupo().getIdGrupo());
             ps.setInt(6, pts.getPaciente().getId_paciente());
-            ps.setString(7, StatusPTS.ATIVO.getSigla());
+            ps.setString(7, statusPTS);
             ps.setString(8, pts.getIncapacidadesFuncionais());
             ps.setString(9, pts.getCapacidadesFuncionais());
             ps.setString(10, pts.getObjetivosFamiliarPaciente());
@@ -298,12 +332,49 @@ public class PtsDAO {
                 codPts = rs.getInt("id");
             }
 
-            String sql2 = "INSERT INTO hosp.pts_area (id_pts, id_area, objetivo_curto, objetivo_medio, objetivo_longo, plano_curto, plano_medio, plano_longo, " +
-                    "id_funcionario, data_hora_operacao) values (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP);";
+            if (inserirAreaPts(pts, codPts, conexao)) {
+                if (statusPTS.equals(StatusPTS.RENOVADO.getSigla())) {
+                    if (desativarPts(pts.getId(), conexao)) {
+                        conexao.commit();
+                    } else {
+                        codPts = null;
+                    }
+                } else {
+                    codPts = null;
+                }
+            } else {
+                codPts = null;
+            }
 
+            conexao.close();
+
+            retorno = codPts;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean inserirAreaPts(Pts pts, Integer codPts, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+
+        String sql = "INSERT INTO hosp.pts_area (id_pts, id_area, objetivo_curto, objetivo_medio, objetivo_longo, plano_curto, plano_medio, plano_longo, " +
+                "id_funcionario, data_hora_operacao) values (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP);";
+
+
+        try {
 
             for (int i = 0; i < pts.getListaPtsArea().size(); i++) {
-                PreparedStatement ps2 = conexao.prepareStatement(sql2);
+                PreparedStatement ps2 = conAuxiliar.prepareStatement(sql);
                 ps2.setInt(1, codPts);
                 ps2.setInt(2, pts.getListaPtsArea().get(i).getArea().getCodEspecialidade());
                 ps2.setString(3, pts.getListaPtsArea().get(i).getObjetivoCurto());
@@ -316,18 +387,40 @@ public class PtsDAO {
                 ps2.execute();
             }
 
-            conexao.commit();
-
-            conexao.close();
-
-            retorno = codPts;
+            retorno = true;
 
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
             try {
-                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean desativarPts(Integer codPts, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+
+        String sql = "UPDATE hosp.pts SET status = ? WHERE id = ?;";
+
+
+        try {
+            PreparedStatement ps = conAuxiliar.prepareStatement(sql);
+            ps.setString(1, StatusPTS.INVALIDADO.getSigla());
+            ps.setInt(2, codPts);
+            ps.execute();
+
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -403,7 +496,7 @@ public class PtsDAO {
 
         Boolean retorno = false;
 
-        String sql = "SELECT id FROM hosp.pts WHERE cod_programa = ? AND cod_grupo = ? AND cod_paciente = ? AND status = 'A';";
+        String sql = "SELECT id FROM hosp.pts WHERE cod_programa = ? AND cod_grupo = ? AND cod_paciente = ? AND status IN ('A', 'R');";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -448,7 +541,7 @@ public class PtsDAO {
                 "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = pi.codpaciente) " +
                 "LEFT JOIN hosp.pts p ON " +
                 "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente = pi.codpaciente) " +
-                "WHERE pi.status = 'A' AND pi.codgrupo = ? AND pi.codprograma = ? ";
+                "WHERE pi.status = 'A' AND pi.codgrupo = ? AND pi.codprograma = ? AND p.status <> 'I' ";
 
         if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.VINGENTES.getSigla())) {
             sql = sql + " AND p.data_vencimento >= current_date";
@@ -608,4 +701,5 @@ public class PtsDAO {
             return retorno;
         }
     }
+
 }

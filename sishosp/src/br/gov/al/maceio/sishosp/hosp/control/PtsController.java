@@ -5,6 +5,7 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.FiltroBuscaVencimentoPTS;
+import br.gov.al.maceio.sishosp.hosp.enums.StatusPTS;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 
@@ -33,9 +34,11 @@ public class PtsController implements Serializable {
     private Pts rowBean;
     private Boolean renderizarBotaoNovo;
     private Integer idParametroEndereco;
+    private String statusPts;
 
     //CONSTANTES
     private static final String ENDERECO_PTS = "pts?faces-redirect=true";
+    private static final String ENDERECO_RENOVACAO = "ptsrenovacao?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
 
     public PtsController() {
@@ -70,6 +73,26 @@ public class PtsController implements Serializable {
         }
     }
 
+    public void carregarPtsRenovacao() throws ProjetoException {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<String, String> params = facesContext.getExternalContext()
+                .getRequestParameterMap();
+        if (params.get("id") != null) {
+            Integer id = Integer.parseInt(params.get("id"));
+            idParametroEndereco = id;
+            statusPts = pDao.verificarStatusPts(id);
+            if (statusPts.equals(StatusPTS.RENOVADO.getSigla())) {
+                this.pts = pDao.ptsCarregarPtsPorId(id);
+            } else {
+                pts = (Pts) SessionUtil.resgatarDaSessao("pts");
+            }
+            listaEspecialidadesEquipe = eDao.listarEspecialidadesEquipe(pts.getGerenciarPaciente().getId());
+
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro!", "Erro");
+        }
+    }
+
     public void buscarPtsPacientesAtivos() throws ProjetoException {
         listaPts = pDao.buscarPtsPacientesAtivos(pts.getPrograma().getIdPrograma(), pts.getGrupo().getIdGrupo(), filtroTipoVencimento, filtroMesVencimento, filtroAnoVencimento);
     }
@@ -79,8 +102,16 @@ public class PtsController implements Serializable {
         pts = new Pts();
     }
 
-    public String redirectEdit() {
-        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PTS, ENDERECO_ID, this.rowBean.getId());
+    public String redirectEdit() throws ProjetoException {
+        String retorno = "";
+        statusPts = pDao.verificarStatusPts(rowBean.getId());
+        if (statusPts.equals(StatusPTS.RENOVADO.getSigla())) {
+            SessionUtil.adicionarNaSessao(rowBean, "pts");
+            retorno = RedirecionarUtil.redirectEditSemTipo(ENDERECO_RENOVACAO, ENDERECO_ID, this.rowBean.getId());
+        } else {
+            retorno = RedirecionarUtil.redirectEditSemTipo(ENDERECO_PTS, ENDERECO_ID, this.rowBean.getId());
+        }
+        return retorno;
     }
 
     public String redirectEditAposGravar(Integer novoIdPts) {
@@ -90,6 +121,11 @@ public class PtsController implements Serializable {
     public String redirectInsert() {
         SessionUtil.adicionarNaSessao(rowBean, "pts");
         return RedirecionarUtil.redirectInsertSemTipo(ENDERECO_PTS);
+    }
+
+    public String redirectRenovacao() {
+        SessionUtil.adicionarNaSessao(rowBean, "pts");
+        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_RENOVACAO, ENDERECO_ID, this.rowBean.getId());
     }
 
     public void abrirDialogInclusaoPts() {
@@ -162,7 +198,7 @@ public class PtsController implements Serializable {
 
         String retorno = null;
 
-        Integer novoIdPts = pDao.gravarPts(pts, existePts);
+        Integer novoIdPts = pDao.gravarPts(pts, existePts, StatusPTS.ATIVO.getSigla());
 
         if (!VerificadorUtil.verificarSeObjetoNuloOuZero(novoIdPts)) {
             existePts = true;
@@ -174,6 +210,33 @@ public class PtsController implements Serializable {
 
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
+        }
+
+        return retorno;
+    }
+
+    public String gravarRenovacaoPts() {
+
+        String retorno = null;
+
+        if (statusPts.equals(StatusPTS.RENOVADO.getSigla())) {
+            existePts = true;
+        } else {
+            existePts = false;
+        }
+
+        Integer novoIdPts = pDao.gravarPts(pts, existePts, StatusPTS.RENOVADO.getSigla());
+
+        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(novoIdPts)) {
+            existePts = true;
+            JSFUtil.adicionarMensagemSucesso("PTS renovado com sucesso!", "Sucesso");
+
+            if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idParametroEndereco)) {
+                retorno = redirectEditAposGravar(novoIdPts);
+            }
+
+        } else {
+            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a renovacao!", "Erro");
         }
 
         return retorno;

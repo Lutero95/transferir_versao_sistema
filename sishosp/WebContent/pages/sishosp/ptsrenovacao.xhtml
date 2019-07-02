@@ -8,7 +8,7 @@
 
     <f:metadata>
         <f:viewAction
-                action="#{PtsController.carregarPts()}"/>
+                action="#{PtsController.carregarPtsRenovacao()}"/>
     </f:metadata>
 
     <ui:define name="content">
@@ -101,13 +101,31 @@
 
                         <b:column span="5" class="label-position data-size">
 
-                            <b:label value="A) Diagnóstico Funcional:" id="diagnosticoFuncional"
+                            <b:label value="Análise Dos Resultados dos Objetivos Gerais:" id="analiseDosResultadosDosObjetivosGerias"
+                                     severity="info" class="fire-label"/>
+
+                            <h:inputTextarea style="margin-top: 10px;height:200px;width:820px" scrollHeight="100"
+                                             required="true" rows="20" cols="89"
+                                             requiredMessage="Análise Dos Resultados dos Objetivos Gerais: Campo obrigatório!"
+                                             value="#{PtsController.pts.analiseDosResultadosDosObjetivosGerias}"></h:inputTextarea>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+
+                        <b:column span="5" class="label-position data-size">
+
+                            <b:label value="Objetivos Familia/Paciente:" id="objetivosFamiliarPaciente"
                                      severity="info" class="fire-label"/>
 
                             <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
                                              required="true" rows="20" cols="89"
-                                             requiredMessage="Diagnóstico Funcional: Campo obrigatório!"
-                                             value="#{PtsController.pts.diagnosticoFuncional}"></h:inputTextarea>
+                                             requiredMessage="Objetivos Familia/Paciente: Campo obrigatório!"
+                                             value="#{PtsController.pts.objetivosFamiliarPaciente}"></h:inputTextarea>
 
                         </b:column>
 
@@ -115,13 +133,91 @@
 
                         <b:column span="5" class="label-position data-size">
 
-                            <b:label value="B) Necessidades e Desejos:" id="necessidadesIhDesejos"
+                            <b:label value="Objetivos do Tratamento:" id="objetivosGeraisMultidisciplinar"
                                      severity="info" class="fire-label"/>
 
                             <h:inputTextarea style="margin-top: 10px;height:200px;width:410px" scrollHeight="100"
                                              required="true" rows="20" cols="89"
-                                             requiredMessage="Necessidades e Desejos: Campo obrigatório!"
-                                             value="#{PtsController.pts.necessidadesIhDesejos}"></h:inputTextarea>
+                                             requiredMessage="Objetivos Gerais/Multidisciplinar: Campo obrigatório!"
+                                             value="#{PtsController.pts.objetivosGeraisMultidisciplinar}"></h:inputTextarea>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+
+                        <b:column span="5" class="label-position data-size">
+
+                            <b:label value="Novas Estratégias de Tratamento:" id="novasEstrategiasDeTratamento"
+                                     severity="info" class="fire-label"/>
+
+                            <h:inputTextarea style="margin-top: 10px;height:200px;width:820px" scrollHeight="100"
+                                             required="true" rows="20" cols="89"
+                                             requiredMessage="Novas Estratégias de Tratamento: Campo obrigatório!"
+                                             value="#{PtsController.pts.novasEstrategiasDeTratamento}"></h:inputTextarea>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+
+                        <b:column span="4" class="label-position data-size">
+
+                            <b:label value="Novas Estratégias (Curto Prazo):" id="objetivosGeraisCurtoPrazo"
+                                     severity="info" class="fire-label"/>
+
+                            <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
+                                             required="true" rows="20" cols="89"
+                                             requiredMessage="Novas Estratégias (Curto Prazo): Campo obrigatório!"
+                                             value="#{PtsController.pts.objetivosGeraisCurtoPrazo}"></h:inputTextarea>
+
+                        </b:column>
+
+                        <b:column span="4" class="label-position data-size">
+
+                            <b:label value="Novas Estratégias (Médio Prazo):" id="objetivosGeraisMedioPrazo"
+                                     severity="info" class="fire-label"/>
+
+                            <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
+                                             required="true" rows="20" cols="89"
+                                             requiredMessage="Novas Estratégias (Médio Prazo): Campo obrigatório!"
+                                             value="#{PtsController.pts.objetivosGeraisMedioPrazo}"></h:inputTextarea>
+
+                        </b:column>
+
+                        <b:column span="4" class="label-position data-size">
+
+                            <b:label value="Novas Estratégias (Longo Prazo):" id="objetivosGeraisLongoPrazo"
+                                     severity="info" class="fire-label"/>
+
+                            <h:inputTextarea style="margin-top: 10px;height:200px;width:210px" scrollHeight="100"
+                                             required="true" rows="20" cols="89"
+                                             requiredMessage="Novas Estratégias (Longo Prazo): Campo obrigatório!"
+                                             value="#{PtsController.pts.objetivosGeraisLongoPrazo}"></h:inputTextarea>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+
+                        <b:column span="5" class="label-position data-size">
+
+                            <b:label value="Condulta Alta:" id="condultaAlta"
+                                     severity="info" class="fire-label"/>
+
+                            <h:inputTextarea style="margin-top: 10px;height:200px;width:820px" scrollHeight="100"
+                                             required="true" rows="20" cols="89"
+                                             requiredMessage="Condulta Alta: Campo obrigatório!"
+                                             value="#{PtsController.pts.condultaAlta}"></h:inputTextarea>
 
                         </b:column>
 
@@ -221,7 +317,7 @@
                         <b:commandButton value="Gravar" look="success" size="sm" id="b1"
                                          icon="glyphicon-ok" update=":formPts:msgPagina, formPts"
                                          class="btn-incluir"
-                                         action="#{PtsController.gravarPts()}"/>
+                                         action="#{PtsController.gravarRenovacaoPts()}"/>
 
                         <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" look="info" class="btn-voltar"

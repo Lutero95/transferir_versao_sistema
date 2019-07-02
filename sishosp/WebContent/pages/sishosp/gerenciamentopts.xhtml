@@ -170,7 +170,7 @@
 
                             <b:column span="3" class="new-span2">
                                 <b:commandButton value="Alterar" style="margin-top:5px;"
-                                                 disabled="#{PtsController.rowBean.status != 'A'}"
+                                                 disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
                                                  id="btnAlterar" immediate="true"
                                                  class="btn-acao-table acao-altera2 btn-new-padding2"
                                                  update=":formGerenPaci, :frmMsg:msgPagina"
@@ -185,12 +185,12 @@
                                                  class="btn-acao-table acao-limpar btn-new-padding2"
                                                  update=":formGerenPaci, :frmMsg:msgPagina"
                                                  icon="glyphicon glyphicon-refresh"
-                                                 action="#{GerenciarPacienteController.redirectRenovacao()}"/>
+                                                 action="#{PtsController.redirectRenovacao()}"/>
                             </b:column>
 
                             <b:column span="3" class="new-span2">
                                 <b:commandButton value="Cancelar" style="margin-top:5px;"
-                                                 disabled="#{PtsController.rowBean.status != 'A'}"
+                                                 disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
                                                  id="btnExcluir" immediate="true"
                                                  class="btn-acao-table acao-desligar btn-new-padding2"
                                                  update=":formGerenPaci, :frmMsg:msgPagina"
