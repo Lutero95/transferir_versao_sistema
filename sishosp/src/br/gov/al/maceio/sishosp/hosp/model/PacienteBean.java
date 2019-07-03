@@ -11,12 +11,10 @@ public class PacienteBean implements Serializable {
     private String nome;
     private String estadoCivil;
     private Date dtanascimento;
-    private String sexo;
     private String nomeMae;
     private String nomePai;
     private String sangue;
     private String conjuge;
-    private String associado;
     private String trabalha;
     private String corRaca;
     private String localtrabalha;
@@ -26,7 +24,6 @@ public class PacienteBean implements Serializable {
     private String deficiencia;
     private String tipoDeficiencia;
     private Boolean necessitaNomeSocial;
-    private String motivoNomeSocial;
     private String nomeSocial;
 
     // ENCAMINHADO ATRIBUTOS
@@ -84,6 +81,8 @@ public class PacienteBean implements Serializable {
     private EncaminhadoBean encaminhado;
     private FormaTransporteBean formatransporte;
     private Telefone telefone;
+    private Sexo sexo;
+    private Religiao religiao;
 
     // LISTAS
     private List<Integer> listaCorRaca;
@@ -103,7 +102,8 @@ public class PacienteBean implements Serializable {
         profissao = new ProfissaoBean();
         deficiencia = "N";
         telefone = new Telefone();
-
+        sexo = new Sexo();
+        religiao = new Religiao();
     }
 
     public Integer getId_paciente() {
@@ -130,12 +130,20 @@ public class PacienteBean implements Serializable {
         this.estadoCivil = estadoCivil;
     }
 
-    public String getSexo() {
+    public Sexo getSexo() {
         return sexo;
     }
 
-    public void setSexo(String sexo) {
+    public void setSexo(Sexo sexo) {
         this.sexo = sexo;
+    }
+
+    public Religiao getReligiao() {
+        return religiao;
+    }
+
+    public void setReligiao(Religiao religiao) {
+        this.religiao = religiao;
     }
 
     public String getNomeMae() {
@@ -265,14 +273,6 @@ public class PacienteBean implements Serializable {
 
     public void setEndereco(EnderecoBean endereco) {
         this.endereco = endereco;
-    }
-
-    public String getAssociado() {
-        return associado;
-    }
-
-    public void setAssociado(String associado) {
-        this.associado = associado;
     }
 
     public String getTrabalha() {
@@ -601,14 +601,6 @@ public class PacienteBean implements Serializable {
 
     public void setNecessitaNomeSocial(Boolean necessitaNomeSocial) {
         this.necessitaNomeSocial = necessitaNomeSocial;
-    }
-
-    public String getMotivoNomeSocial() {
-        return motivoNomeSocial;
-    }
-
-    public void setMotivoNomeSocial(String motivoNomeSocial) {
-        this.motivoNomeSocial = motivoNomeSocial;
     }
 
     public String getNomeSocial() {

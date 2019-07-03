@@ -4,6 +4,7 @@ import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.ReligiaoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.Religiao;
 import br.gov.al.maceio.sishosp.hosp.model.Sexo;
@@ -13,6 +14,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +71,15 @@ public class ReligiaoController implements Serializable {
 
     public void listarReligioes() throws ProjetoException {
         listaReligioes = rDao.listarReligiao();
+    }
+
+    public List<Religiao> listarTodasAsReligioes() throws ProjetoException {
+
+        if(!VerificadorUtil.verificarSeListaNuloOuVazia(Collections.singletonList(listaReligioes))) {
+            listaReligioes = rDao.listarReligiao();
+        }
+
+        return listaReligioes;
     }
 
     public void gravarReligiao() {

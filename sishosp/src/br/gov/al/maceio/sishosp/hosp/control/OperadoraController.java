@@ -4,6 +4,7 @@ import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.OperadoraDAO;
 import br.gov.al.maceio.sishosp.hosp.model.Operadora;
 
@@ -12,6 +13,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +70,15 @@ public class OperadoraController implements Serializable {
 
     public void listarOperadoras() throws ProjetoException {
         listaOperadoras = oDao.listarOperadoras();
+    }
+
+    public List<Operadora> listarTodasAsOperadoras() throws ProjetoException {
+
+        if(!VerificadorUtil.verificarSeListaNuloOuVazia(Collections.singletonList(listaOperadoras))) {
+            listaOperadoras = listaOperadoras = oDao.listarOperadoras();
+        }
+
+        return listaOperadoras;
     }
 
     public void gravarOperadora() {

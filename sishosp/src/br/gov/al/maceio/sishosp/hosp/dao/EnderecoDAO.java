@@ -34,7 +34,7 @@ public class EnderecoDAO {
 
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            stmt.setString(1,StringUtil.removeAcentos( endereco.getBairro().toUpperCase().trim()));
+            stmt.setString(1, StringUtil.removeAcentos(endereco.getBairro().toUpperCase().trim()));
             stmt.setInt(2, endereco.getCodmunicipio());
 
             stmt.execute();
@@ -62,7 +62,7 @@ public class EnderecoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            stmt.setString(1,StringUtil.removeAcentos( endereco.getBairro().toUpperCase()));
+            stmt.setString(1, StringUtil.removeAcentos(endereco.getBairro().toUpperCase()));
             stmt.setInt(2, endereco.getCodmunicipio());
             stmt.setInt(3, endereco.getCodbairro());
             stmt.executeUpdate();
@@ -530,7 +530,7 @@ public class EnderecoDAO {
 
 
             while (rs.next()) {
-              uf = rs.getString("estado");
+                uf = rs.getString("estado");
 
             }
             return uf;
@@ -607,6 +607,37 @@ public class EnderecoDAO {
             }
         }
         return retorno;
+    }
+
+    public Integer inserirNovoBairro(EnderecoBean endereco, Connection conexaoAuxiliar) {
+
+        Integer novoBairro = null;
+
+        String sql = "INSERT INTO hosp.bairros(descbairro, codmunicipio) "
+                + " VALUES (?, ?) returning id_bairro;";
+
+        try {
+            PreparedStatement ps = conexaoAuxiliar.prepareStatement(sql);
+
+            ps.setString(1, StringUtil.removeAcentos(endereco.getBairro().toUpperCase()));
+            ps.setInt(2, endereco.getCodmunicipio());
+
+            ResultSet set = ps.executeQuery();
+
+            while (set.next()) {
+                novoBairro = set.getInt("id_bairro");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return novoBairro;
+        }
     }
 
 }

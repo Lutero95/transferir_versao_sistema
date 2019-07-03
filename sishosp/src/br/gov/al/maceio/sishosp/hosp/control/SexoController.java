@@ -4,6 +4,7 @@ import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.SexoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.Sexo;
 
@@ -12,6 +13,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +70,15 @@ public class SexoController implements Serializable {
 
     public void listarSexos() throws ProjetoException {
         listaSexos = sDao.listarSexos();
+    }
+
+    public List<Sexo> listarTodosOsSexos() throws ProjetoException {
+
+        if(!VerificadorUtil.verificarSeListaNuloOuVazia(Collections.singletonList(listaSexos))) {
+            listaSexos = sDao.listarSexos();
+        }
+
+        return listaSexos;
     }
 
     public void gravarSexo() {

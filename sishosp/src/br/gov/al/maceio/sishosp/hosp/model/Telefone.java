@@ -10,9 +10,11 @@ public class Telefone implements Serializable {
 	private Boolean whatsapp;
 	private String responsavel;
 	private Parentesco parentesco;
+	private Operadora operadora;
 
 	public Telefone() {
 		parentesco = new Parentesco();
+		operadora = new Operadora();
 	}
 
 	public Integer getIdTelefone() {
@@ -61,5 +63,13 @@ public class Telefone implements Serializable {
 
 	public void setParentesco(Parentesco parentesco) {
 		this.parentesco = parentesco;
+	}
+
+	public Operadora getOperadora() {
+		return operadora;
+	}
+
+	public void setOperadora(Operadora operadora) {
+		this.operadora = operadora;
 	}
 }
