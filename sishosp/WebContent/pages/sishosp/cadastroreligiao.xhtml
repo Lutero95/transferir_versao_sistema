@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{ReligiaoController.getEditReligiao()}" />
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{ReligiaoController.cabecalho}"
+					class="panel-title"></h:outputText>
+			</div>
+			
+			<div class="panel-body table-body sub-table-body">
+			
+			<h:form class="form-horizontal" id="frmPrincipal">
+
+				<b:row>
+
+					<b:column span="12" class="label-position">
+							<b:label for="inputname" value="Descrição" severity="info" />
+							
+						<b:inputText validator="CaractereEmBrancoValidator"
+							value="#{ReligiaoController.religiao.descricao}"
+							class="form-control" id="inputname" required="true"
+							requiredMessage="Descrição: Campo obrigatório!"
+							validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">
+							<f:validateLength minimum="2" maximum="50" />
+						</b:inputText>
+					</b:column>
+				</b:row>
+
+				<div align="center">
+					<b:messages value="Error" id="msgPagina"></b:messages>
+				</div>
+				
+				<br></br>
+
+				<div align="center">
+
+					<b:commandButton action="#{ReligiaoController.gravarReligiao()}"
+						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal" value="Incluir" 
+						rendered="#{ReligiaoController.tipo == 1}" />
+
+					<b:commandButton action="#{ReligiaoController.alterarReligiao()}"
+						icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+						value="Alterar" look="success" class="btn-incluir"
+						rendered="#{ReligiaoController.tipo  == 2}" />
+
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						class="btn-voltar" size="sm" immediate="true" look="info"
+						action="/pages/sishosp/gerenciarreligiao.faces?faces-redirect=true">
+					</b:commandButton>
+
+				</div>
+
+			</h:form>
+			</div>
+		</div>
+
+	</ui:define>
+</ui:composition>
