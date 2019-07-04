@@ -209,7 +209,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             }
 
             if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.TERCA.getSigla())) {
-                dias = dias + "TerÃ§a";
+                dias = dias + "Terça";
                 if (funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size() != i + 1) {
                     dias = dias + ", ";
                 }
@@ -237,7 +237,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             }
 
             if (funcionario.getListDiasSemana().get(i).equals(DiasDaSemana.SABADO.getSigla())) {
-                dias = dias + "SÃ¡bado";
+                dias = dias + "Sábado";
                 if (funcionario.getListDiasSemana().size() > 1 && funcionario.getListDiasSemana().size() != i + 1) {
                     dias = dias + ", ";
                 }
