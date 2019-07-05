@@ -142,7 +142,7 @@ public class PacienteController implements Serializable {
         bairroExiste = false;
         paciente.setEndereco(CEPUtil.encontraCEP(paciente.getEndereco().getCep()));
         EnderecoDAO enderecoDAO = new EnderecoDAO();
-        paciente.getEndereco().setCodbairro(enderecoDAO.verificarSeBairroExiste(paciente.getEndereco().getBairro()));
+        paciente.getEndereco().setCodbairro(enderecoDAO.verificarSeBairroExiste(paciente.getEndereco().getBairro(), paciente.getEndereco().getCodmunicipio()));
         if(paciente.getEndereco().getCodbairro() != null) {
             if (paciente.getEndereco().getCodbairro() > 0) {
                 bairroExiste = true;
@@ -163,7 +163,7 @@ public class PacienteController implements Serializable {
         }
     }
 
-    public void gravarPaciente() throws ProjetoException {
+    public void gravarPaciente() {
         if (escolaSuggestion != null)
             paciente.getEscola().setCodEscola(
                     escolaSuggestion.getCodEscola());
@@ -193,7 +193,7 @@ public class PacienteController implements Serializable {
 
         boolean cadastrou = false;
 
-        cadastrou = pDao.cadastrar(paciente, bairroExiste);
+        cadastrou = pDao.cadastrarPaciente(paciente, bairroExiste);
 
 
         if (cadastrou == true) {
@@ -250,7 +250,7 @@ public class PacienteController implements Serializable {
                     transporteSuggestion.getCodformatransporte());
         }
 
-        boolean alterou = pDao.alterar(paciente, bairroExiste);
+        boolean alterou = pDao.alterarPaciente(paciente, bairroExiste);
 
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Paciente alterado com sucesso!", "Sucesso");
@@ -486,14 +486,6 @@ public class PacienteController implements Serializable {
     public void listarTodosPaciente() throws ProjetoException {
         listaPacientesAgenda = pDao.listaPaciente();
     }
-
-    public void validaCns(String s) {
-        if (!DocumentosUtil.validaCns(s)) {
-            JSFUtil.adicionarMensagemAdvertencia("Esse número de CNS não é valido", "Advertência");
-            paciente.setCns("");
-        }
-    }
-
 
     public void validaPIS(String pis) {
         if (!DocumentosUtil.validaPIS(pis)) {

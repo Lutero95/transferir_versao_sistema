@@ -10,7 +10,6 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.StringUtil;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Telefone;
 
@@ -18,7 +17,7 @@ public class PacienteDAO {
     private Connection conexao = null;
     private PreparedStatement ps = null;
 
-    public Boolean cadastrar(PacienteBean paciente, Boolean bairroExiste) {
+    public Boolean cadastrarPaciente(PacienteBean paciente, Boolean bairroExiste) {
         boolean retorno = false;
 
         Integer idPaciente = null;
@@ -328,7 +327,6 @@ public class PacienteDAO {
                 retorno = true;
             }
 
-
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
@@ -342,39 +340,27 @@ public class PacienteDAO {
         }
     }
 
-    public Boolean alterar(PacienteBean paciente, boolean bairroExiste) {
+    public Boolean alterarPaciente(PacienteBean paciente, boolean bairroExiste) {
         boolean retorno = false;
 
         try {
             conexao = ConnectionFactory.getConnection();
+
             if (!bairroExiste) {
-                String sql2 = "INSERT INTO hosp.bairros(descbairro, codmunicipio) "
-                        + " VALUES (?, ?) returning id_bairro;";
-
-                PreparedStatement ps2 = conexao.prepareStatement(sql2);
-
-                ps2.setString(1, StringUtil.removeAcentos(paciente.getEndereco().getBairro()
-                        .toUpperCase()));
-                ps2.setInt(2, paciente.getEndereco().getCodmunicipio());
-
-                ResultSet set = ps2.executeQuery();
-                while (set.next()) {
-                    paciente.getEndereco().setCodbairro(set.getInt(1));
-                }
-
+                EnderecoDAO enderecoDAO = new EnderecoDAO();
+                paciente.getEndereco().setCodbairro(enderecoDAO.inserirNovoBairro(paciente.getEndereco(), conexao));
             }
 
-            String sql = "update hosp.pacientes set nome = ?, dtanascimento = ?, estcivil = ?, sexo = ? , sangue = ?, pai = ? "
-                    + ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, logradouro = ?, numero = ?"
-                    + ", complemento = ?, referencia = ? "
-                    + ", rg = ?,  oe = ?, dtaexpedicaorg = ?, cpf = ?, cns = ?, protreab = ?"
-                    + ", reservista = ?, ctps = ?, serie = ?, pis = ?, cartorio = ?, regnascimento = ?, livro = ?, folha = ?, dtaregistro = ?"
-                    + ", contribuinte = ?, id_escolaridade = ?, id_escola = ?, id_profissao = ?, trabalha = ?, localtrabalha = ?"
-                    + ", codparentesco = ?, nomeresp = ?, rgresp = ?, cpfresp = ?, dtanascimentoresp = ?, id_encaminhado = ?"
-                    + ", id_formatransporte = ?, deficiencia = ?, codmunicipio = ?"
-                    + ", deficienciafisica = ?, deficienciamental = ?, deficienciaauditiva = ?, deficienciavisual = ?, deficienciamultipla = ?"
-                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, id_religiao =?, codbairro=?  "
-                    + " where id_paciente = ?";
+            String sql = "update hosp.pacientes set nome = ?, dtanascimento = ?, estcivil = ?, id_sexo = ? , sangue = ?, pai = ? " //1 ao 6
+                    + ", mae = ?, conjuge = ?, codraca = ?, cep = ?, uf = ?, logradouro = ?, numero = ?" //7 ao 13
+                    + ", complemento = ?, referencia = ? , rg = ?,  oe = ?, dtaexpedicaorg = ?, cpf = ?, cns = ?, protreab = ?" //14 ao 21
+                    + ", reservista = ?, ctps = ?, serie = ?, pis = ?, cartorio = ?, regnascimento = ?, livro = ?, folha = ?, dtaregistro = ?" //22 ao 30
+                    + ", id_escolaridade = ?, id_escola = ?, id_profissao = ?, trabalha = ?, localtrabalha = ?" //31 ao 35
+                    + ", codparentesco = ?, nomeresp = ?, rgresp = ?, cpfresp = ?, dtanascimentoresp = ?, id_encaminhado = ?" //36 ao 41
+                    + ", id_formatransporte = ?, deficiencia = ?, codmunicipio = ?" //42 ao 44
+                    + ", deficienciafisica = ?, deficienciamental = ?, deficienciaauditiva = ?, deficienciavisual = ?, deficienciamultipla = ?" //45 ao 49
+                    + ", email = ?, facebook = ?, instagram = ?, nome_social = ?, necessita_nome_social = ?, id_religiao =?, codbairro=?  " //50 ao 56
+                    + " where id_paciente = ?"; //57
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, paciente.getNome());
@@ -429,115 +415,98 @@ public class PacienteDAO {
             }
 
             if (paciente.getEscolaridade().getCodescolaridade() != null)
-                stmt.setInt(32, paciente.getEscolaridade().getCodescolaridade());
+                stmt.setInt(31, paciente.getEscolaridade().getCodescolaridade());
+            else
+                stmt.setNull(31, Types.INTEGER);
+
+            if (paciente.getEscola().getCodEscola() != null)
+                stmt.setInt(32, paciente.getEscola().getCodEscola());
             else
                 stmt.setNull(32, Types.INTEGER);
 
-            if (paciente.getEscola().getCodEscola() != null)
-                stmt.setInt(33, paciente.getEscola().getCodEscola());
-            else
-                stmt.setNull(33, Types.INTEGER);
-
             if (paciente.getProfissao().getCodprofissao() == null) {
-                stmt.setNull(34, Types.INTEGER);
+                stmt.setNull(33, Types.INTEGER);
             } else {
-                stmt.setInt(34, paciente.getProfissao().getCodprofissao());
+                stmt.setInt(33, paciente.getProfissao().getCodprofissao());
             }
 
-            stmt.setString(35, paciente.getTrabalha());
-            stmt.setString(36, paciente.getLocaltrabalha());
+            stmt.setString(34, paciente.getTrabalha());
+            stmt.setString(35, paciente.getLocaltrabalha());
 
             if (paciente.getCodparentesco() != null) {
-                stmt.setInt(37, paciente.getCodparentesco());
+                stmt.setInt(36, paciente.getCodparentesco());
             } else {
-                stmt.setNull(37, Types.INTEGER);
+                stmt.setNull(36, Types.INTEGER);
             }
 
-            stmt.setString(38, paciente.getNomeresp());
-            stmt.setString(39, paciente.getRgresp());
-            stmt.setString(40, paciente.getCpfresp().replaceAll("[^0-9]", ""));
+            stmt.setString(37, paciente.getNomeresp());
+            stmt.setString(38, paciente.getRgresp());
+            stmt.setString(39, paciente.getCpfresp().replaceAll("[^0-9]", ""));
 
             if (paciente.getDataNascimentoresp() != null) {
-                stmt.setDate(41, new java.sql.Date(paciente
+                stmt.setDate(40, new java.sql.Date(paciente
                         .getDataNascimentoresp().getTime()));
             } else {
-                stmt.setNull(41, Types.DATE);
+                stmt.setNull(40, Types.DATE);
             }
 
             if (paciente.getEncaminhado().getCodencaminhado() != null)
-                stmt.setInt(42, paciente.getEncaminhado().getCodencaminhado());
+                stmt.setInt(41, paciente.getEncaminhado().getCodencaminhado());
             else
-                stmt.setNull(42, Types.INTEGER);
+                stmt.setNull(41, Types.INTEGER);
 
             if (paciente.getFormatransporte()
                     .getCodformatransporte() != null)
-                stmt.setInt(43, paciente.getFormatransporte()
+                stmt.setInt(42, paciente.getFormatransporte()
                         .getCodformatransporte());
             else
-                stmt.setNull(43, Types.INTEGER);
-            stmt.setString(44, paciente.getDeficiencia());
+                stmt.setNull(42, Types.INTEGER);
+            stmt.setString(43, paciente.getDeficiencia());
 
-            stmt.setInt(45, paciente.getEndereco().getCodmunicipio());
+            stmt.setInt(44, paciente.getEndereco().getCodmunicipio());
 
-            stmt.setBoolean(46, paciente.getDeficienciaFisica());
+            stmt.setBoolean(45, paciente.getDeficienciaFisica());
 
-            stmt.setBoolean(47, paciente.getDeficienciaMental());
+            stmt.setBoolean(46, paciente.getDeficienciaMental());
 
-            stmt.setBoolean(48, paciente.getDeficienciaAuditiva());
+            stmt.setBoolean(47, paciente.getDeficienciaAuditiva());
 
-            stmt.setBoolean(49, paciente.getDeficienciaVisual());
+            stmt.setBoolean(48, paciente.getDeficienciaVisual());
 
-            stmt.setBoolean(50, paciente.getDeficienciaMultipla());
+            stmt.setBoolean(49, paciente.getDeficienciaMultipla());
 
-            stmt.setString(51, paciente.getEmail());
+            stmt.setString(50, paciente.getEmail());
 
-            stmt.setString(52, paciente.getFacebook());
+            stmt.setString(51, paciente.getFacebook());
 
-            stmt.setString(53, paciente.getInstagram());
+            stmt.setString(52, paciente.getInstagram());
 
             if (paciente.getNomeSocial() == null) {
-                stmt.setNull(54, Types.CHAR);
+                stmt.setNull(53, Types.CHAR);
             } else {
-                stmt.setString(54, paciente.getNomeSocial().toUpperCase());
+                stmt.setString(53, paciente.getNomeSocial().toUpperCase());
             }
 
-            stmt.setBoolean(55, paciente.getNecessitaNomeSocial());
+            stmt.setBoolean(54, paciente.getNecessitaNomeSocial());
 
             if (paciente.getReligiao().getId() == null) {
-                stmt.setNull(56, Types.NULL);
+                stmt.setNull(55, Types.NULL);
             } else {
-                stmt.setInt(56, paciente.getReligiao().getId());
+                stmt.setInt(55, paciente.getReligiao().getId());
             }
 
-            stmt.setInt(57, paciente.getEndereco().getCodbairro());
+            stmt.setInt(56, paciente.getEndereco().getCodbairro());
 
-            stmt.setLong(58, paciente.getId_paciente());
+            stmt.setLong(57, paciente.getId_paciente());
 
             stmt.executeUpdate();
 
-            String sql2 = "delete from hosp.telefone_paciente where id_paciente = ?";
-            PreparedStatement stmt2 = conexao.prepareStatement(sql2);
-
-            stmt2.setInt(1, paciente.getId_paciente());
-            stmt2.execute();
-
-
-            String sql3 = "INSERT INTO hosp.telefone_paciente (ddd, telefone, whatsapp, responsavel, id_parentesco, id_paciente) VALUES (?, ?, ?, ?, ?, ?);";
-            PreparedStatement stmt3 = conexao.prepareStatement(sql3);
-
-            for (int i = 0; i < paciente.getListaTelefones().size(); i++) {
-                stmt3.setInt(1, paciente.getListaTelefones().get(i).getDdd());
-                stmt3.setInt(2, paciente.getListaTelefones().get(i).getTelefone());
-                stmt3.setBoolean(3, paciente.getListaTelefones().get(i).getWhatsapp());
-                stmt3.setString(4, paciente.getListaTelefones().get(i).getResponsavel());
-                stmt3.setInt(5, paciente.getListaTelefones().get(i).getParentesco().getCodParentesco());
-                stmt3.setInt(6, paciente.getId_paciente());
-                stmt3.execute();
+            if(deletarTelefone(paciente.getId_paciente(), conexao)) {
+                if (inserirTelefone(paciente.getListaTelefones(), paciente.getId_paciente(), conexao)) {
+                    conexao.commit();
+                    retorno = true;
+                }
             }
-
-            conexao.commit();
-
-            retorno = true;
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -689,7 +658,7 @@ public class PacienteDAO {
     }
 
     public List<PacienteBean> buscarPacienteAgenda(String tipo, String conteudo)
-            throws ProjetoException, SQLException {
+            throws ProjetoException {
 
         String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.id_sexo, pacientes.sangue, "
                 + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf,  "
@@ -1126,13 +1095,13 @@ public class PacienteDAO {
 
     public Boolean inserirTelefone(List<Telefone> lista, Integer idPaciente, Connection conexaoAuxiliar) {
 
-        Boolean retorno = null;
+        Boolean retorno = false;
 
-        String sql2 = "INSERT INTO hosp.telefone_paciente (ddd, telefone, whatsapp, responsavel, id_parentesco, id_paciente, id_operadora) " +
+        String sql = "INSERT INTO hosp.telefone_paciente (ddd, telefone, whatsapp, responsavel, id_parentesco, id_paciente, id_operadora) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?);";
 
         try {
-            PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql2);
+            PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql);
 
             for (int i = 0; i < lista.size(); i++) {
                 stmt.setInt(1, lista.get(i).getDdd());
@@ -1144,6 +1113,31 @@ public class PacienteDAO {
                 stmt.setInt(7, lista.get(i).getOperadora().getId());
                 stmt.execute();
             }
+
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean deletarTelefone(Integer idPaciente, Connection conexaoAuxiliar) {
+
+        Boolean retorno = false;
+
+        String sql = "delete from hosp.telefone_paciente where id_paciente = ?";
+
+        try {
+            PreparedStatement stmt = conexaoAuxiliar.prepareStatement(sql);
+            stmt.setInt(1, idPaciente);
+            stmt.execute();
 
             retorno = true;
 

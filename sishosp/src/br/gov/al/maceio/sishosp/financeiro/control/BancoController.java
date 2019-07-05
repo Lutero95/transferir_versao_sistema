@@ -52,7 +52,7 @@ public class BancoController implements Serializable {
             RequestContext.getCurrentInstance().execute("PF('dlgCadBanco').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Erro ao cadastrar!", "Erro");
+                "Erro ao cadastrarPaciente!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
@@ -74,7 +74,7 @@ public class BancoController implements Serializable {
             RequestContext.getCurrentInstance().execute("PF('dlgAltBanco').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Erro ao alterar!", "Erro");
+                "Erro ao alterarPaciente!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }

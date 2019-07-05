@@ -4,7 +4,6 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:stella="http://stella.caelum.com.br/faces2"
                 template="../../template/template.xhtml">
 
     <ui:define name="content">
@@ -122,6 +121,7 @@
                                                  requiredMessage="Informe o sangue" id="sangue"
                                                  value="#{PacienteController.paciente.sangue}">
                                     <f:selectItem itemLabel="Selecione" itemValue=""/>
+                                    <f:selectItem itemLabel="Não informou" itemValue="Não informou"/>
                                     <f:selectItem itemLabel="A+" itemValue="A+"/>
                                     <f:selectItem itemLabel="A-" itemValue="A-"/>
                                     <f:selectItem itemLabel="B+" itemValue="B+"/>
@@ -137,7 +137,7 @@
                             <b:column span="4" class="label-position">
                                 <b:label for="cor" value="Cor / Raça" severity="info"/>
 
-                                <b:selectOneMenu disable="true" required="true" requiredMessage="Informe a Raça"
+                                <b:selectOneMenu disable="true" required="true" requiredMessage="Raça: Campo obrigatório!"
                                                  value="#{PacienteController.paciente.codRaca}" id="cor">
                                     <f:selectItem itemLabel="Selecione" itemValue=""/>
                                     <f:selectItems value="#{PacienteController.listaRaca}"
@@ -185,7 +185,7 @@
                             <b:column span="4" class="label-position">
                                 <b:label for="religiao" value="Religião" severity="info"/>
 
-                                <b:selectOneMenu required="true" disable="true"
+                                <b:selectOneMenu required="false" disable="true"
                                                  requiredMessage="Religião: Campo obrigatório!" id="religiao"
                                                  value="#{PacienteController.paciente.religiao.id}">
                                     <f:selectItem itemLabel="Selecione" itemValue=""/>
@@ -371,7 +371,7 @@
 
                                 <p:outputPanel id="outBairro">
                                     <b:selectOneMenu id="bairro1"
-                                                     rendered="#{PacienteController.paciente.endereco.bairroUnico == true}"
+                                                     rendered="#{PacienteController.paciente.endereco.bairroUnico == false}"
                                                      required="true" requiredMessage="Bairro: Campo obrigatório!"
                                                      value="#{PacienteController.paciente.endereco.codbairro}">
                                         <f:selectItem itemLabel="Selecione" itemValue=""/>
@@ -381,8 +381,8 @@
                                                 itemValue="#{sis.codbairro}"/>
                                     </b:selectOneMenu>
 
-                                    <p:outputLabel id="bairro2" class="campo-laudoDig3"
-                                                   value="#{PacienteController.paciente.endereco.bairro}"></p:outputLabel>
+                                    <p:inputText id="bairro2" class="campo-laudoDig3" rendered="#{PacienteController.paciente.endereco.bairroUnico == true}"
+                                                 value="#{PacienteController.paciente.endereco.bairro}"></p:inputText>
                                 </p:outputPanel>
 
                             </b:column>
@@ -430,8 +430,8 @@
                                              value="#{PacienteController.paciente.cpf}"
                                              class="form-control select-agendaEquipe2"
                                              id="cpf" required="true"
+                                             validator="CPFValidator" validatorMessage="CPF inválido!"
                                              requiredMessage="CPF: Campo obrigatório!">
-                                    <stella:validateCPF formatted="true"/>
                                 </p:inputMask>
                             </b:column>
                         </b:row>
@@ -443,14 +443,11 @@
                             <b:column span="3" class="label-position">
                                 <b:label for="cns" value="CNS" severity="info"/>
 
-                                <p:inputText value="#{PacienteController.paciente.cns}"
+                                <p:inputText value="#{PacienteController.paciente.cns}" maxlength="15"
                                              class="form-control" id="cns" required="true"
-                                             requiredMessage="Informe o CNS"
-                                             validatorMessage="CNS deve conter entre 15 digitos.">
-                                    <p:ajax process="cns @this"
-                                            listener="#{PacienteController.validaCns(PacienteController.paciente.cns)}"
-                                            global="false" event="blur"
-                                            update=":frmPrincipal:msgPagina"/>
+                                             requiredMessage="CNS: Campo obrigatório!" validator="CNSValidator"
+                                             validatorMessage="CNS inválido!">
+                                    <f:validateLength minimum="15" maximum="15"/>
                                 </p:inputText>
                             </b:column>
 
@@ -497,11 +494,8 @@
                                 <b:label for="pis" value="PIS" severity="info"/>
 
                                 <b:inputText value="#{PacienteController.paciente.pis}"
-                                             class="form-control" id="pis" required="false">
-                                    <p:ajax
-                                            listener="#{PacienteController.validaPIS(PacienteController.paciente.pis)}"
-                                            global="false" event="blur"
-                                            update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:pis"/>
+                                             class="form-control" id="pis" required="false"
+                                             validator="PISValidator" validatorMessage="PIS inválido!">
                                 </b:inputText>
                             </b:column>
 
@@ -561,22 +555,6 @@
                     </p:tab>
 
                     <p:tab title="Complemento 1">
-
-                        <b:row>
-                            <b:column span="2" class="new-data-size2">
-                                <p:outputLabel value="Associado" style="margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-                            </b:column>
-
-                            <b:column span="3" class="btn-radio-table">
-                                <p:selectOneRadio
-                                        value="#{PacienteController.paciente.associado}">
-                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
-                                    <f:selectItem itemLabel="Não" itemValue="N"/>
-                                </p:selectOneRadio>
-                            </b:column>
-
-                        </b:row>
 
                         <b:row>
 
@@ -717,11 +695,8 @@
                                 <p:outputPanel>
                                     <p:inputMask mask="999.999.999-99" id="nome7"
                                                  class="form-control select-agendaEquipe2"
+                                                 validator="CPFValidator" validatorMessage="CPF inválido!"
                                                  value="#{PacienteController.paciente.cpfresp}">
-                                        <p:ajax
-                                                listener="#{PacienteController.validaCPF(PacienteController.paciente.cpfresp)}"
-                                                global="false" event="blur"
-                                                update=":frmPrincipal:msgPagina, :frmPrincipal:tbv:nome7"/>
                                     </p:inputMask>
 
                                 </p:outputPanel>

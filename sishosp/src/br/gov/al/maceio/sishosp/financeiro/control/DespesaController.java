@@ -49,7 +49,7 @@ public class DespesaController implements Serializable {
             RequestContext.getCurrentInstance().execute("PF('dlgCadDespesa').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Erro ao cadastrar!", "Erro");
+                "Erro ao cadastrarPaciente!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
@@ -71,7 +71,7 @@ public class DespesaController implements Serializable {
             RequestContext.getCurrentInstance().execute("PF('dlgAltDespesa').hide();");
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Erro ao alterar!", "Erro");
+                "Erro ao alterarPaciente!", "Erro");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }

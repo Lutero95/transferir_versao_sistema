@@ -9,4 +9,19 @@
 		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CaractereEmBrancoValidator</validator-class>
 	</validator>
 
+	<validator>
+		<validator-id>CNSValidator</validator-id>
+		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CNSValidator</validator-class>
+	</validator>
+
+	<validator>
+		<validator-id>CPFValidator</validator-id>
+		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CPFValidator</validator-class>
+	</validator>
+
+	<validator>
+		<validator-id>PISValidator</validator-id>
+		<validator-class>br.gov.al.maceio.sishosp.comum.validator.PISValidator</validator-class>
+	</validator>
+
 </faces-config>

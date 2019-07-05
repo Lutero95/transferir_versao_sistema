@@ -578,7 +578,7 @@ public class EnderecoDAO {
         return codCidade;
     }
 
-    public Integer verificarSeBairroExiste(String nomeBairro)
+    public Integer verificarSeBairroExiste(String nomeBairro, Integer codMunicipio)
             throws ProjetoException {
 
         Integer retorno = null;
@@ -586,10 +586,11 @@ public class EnderecoDAO {
         conexao = ConnectionFactory.getConnection();
 
         try {
-            String sql = "select id_bairro from hosp.bairros where descbairro = ? ";
+            String sql = "select id_bairro from hosp.bairros where descbairro = ? and codmunicipio = ? ";
 
             ps = conexao.prepareStatement(sql);
             ps.setString(1, StringUtil.removeAcentos(nomeBairro.toUpperCase()));
+            ps.setInt(2, codMunicipio);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

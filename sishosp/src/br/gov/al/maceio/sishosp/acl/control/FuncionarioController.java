@@ -572,7 +572,7 @@ public class FuncionarioController implements Serializable {
     }
 
     public void validaCns(String s) {
-        if (!DocumentosUtil.validaCns(s)) {
+        if (!DocumentosUtil.validaCNS(s)) {
             JSFUtil.adicionarMensagemAdvertencia("Esse n�mero de CNS n�o � valido", "ADvert�ncia");
             profissional.setCns("");
         }

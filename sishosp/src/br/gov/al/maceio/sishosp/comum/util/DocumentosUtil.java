@@ -3,18 +3,18 @@ package br.gov.al.maceio.sishosp.comum.util;
 
 public final class DocumentosUtil {
 
-    public static Boolean validaCns(String s) {
+    public static Boolean validaCNS(String s) {
         Boolean retorno = false;
 
         if (s.matches("[1-2]\\d{10}00[0-1]\\d") || s.matches("[7-9]\\d{14}")) {
-            if (somaPonderadaCns(s) % 11 == 0) {
+            if (somaPonderadaCNS(s) % 11 == 0) {
                 retorno = true;
             }
         }
         return retorno;
     }
 
-    private static int somaPonderadaCns(String s) {
+    private static int somaPonderadaCNS(String s) {
         char[] cs = s.toCharArray();
         int soma = 0;
         for (int i = 0; i < cs.length; i++) {
