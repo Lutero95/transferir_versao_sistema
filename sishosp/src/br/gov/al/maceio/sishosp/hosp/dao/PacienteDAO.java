@@ -553,9 +553,9 @@ public class PacienteDAO {
                 + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, municipio.codigo,  "
                 + "pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, "
                 + "pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
-                + "pacientes.protreab, "
+                + "pacientes.protreab, pacientes.codbairro, "
                 + "pacientes.reservista, pacientes.ctps, pacientes.serie, pacientes.pis, pacientes.cartorio, pacientes.regnascimento, pacientes.livro, "
-                + "pacientes.folha, pacientes.dtaregistro, pacientes.contribuinte, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
+                + "pacientes.folha, pacientes.dtaregistro, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
                 + "pacientes.trabalha, pacientes.localtrabalha, pacientes.codparentesco, "
                 + "pacientes.nomeresp, pacientes.rgresp, pacientes.cpfresp, pacientes.dtanascimentoresp, pacientes.id_encaminhado, "
                 + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
@@ -641,6 +641,7 @@ public class PacienteDAO {
                 p.getEndereco().setCodIbge(rs.getInt("codigo"));
                 p.setNomeSocial(rs.getString("nome_social"));
                 p.setNecessitaNomeSocial(rs.getBoolean("necessita_nome_social"));
+                p.getEndereco().setCodbairro(rs.getInt("codbairro"));
 
                 lista.add(p);
             }
@@ -666,7 +667,7 @@ public class PacienteDAO {
                 + "pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
                 + "pacientes.protreab, "
                 + "pacientes.reservista, pacientes.ctps, pacientes.serie, pacientes.pis, pacientes.cartorio, pacientes.regnascimento, pacientes.livro, "
-                + "pacientes.folha, pacientes.dtaregistro, pacientes.contribuinte, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
+                + "pacientes.folha, pacientes.dtaregistro, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
                 + "pacientes.trabalha, pacientes.localtrabalha, pacientes.codparentesco, "
                 + "pacientes.nomeresp, pacientes.rgresp, pacientes.cpfresp, pacientes.dtanascimentoresp, pacientes.id_encaminhado, "
                 + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
@@ -807,9 +808,9 @@ public class PacienteDAO {
                 + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, municipio.codigo, municipio.nome descmunicipio, "
                 + "pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, "
                 + "pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
-                + "pacientes.protreab, "
+                + "pacientes.protreab, pacientes.codbairro, "
                 + "pacientes.reservista, pacientes.ctps, pacientes.serie, pacientes.pis, pacientes.cartorio, pacientes.regnascimento, pacientes.livro, "
-                + "pacientes.folha, pacientes.dtaregistro, pacientes.contribuinte, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
+                + "pacientes.folha, pacientes.dtaregistro, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
                 + "pacientes.trabalha, pacientes.localtrabalha, pacientes.codparentesco, "
                 + "pacientes.nomeresp, pacientes.rgresp, pacientes.cpfresp, pacientes.dtanascimentoresp, pacientes.id_encaminhado, "
                 + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
@@ -922,6 +923,7 @@ public class PacienteDAO {
                 p.setNecessitaNomeSocial(rs.getBoolean("necessita_nome_social"));
                 p.setListaTelefones(listarTelefonesDoPaciente(id));
                 p.getEndereco().setCodmunicipio(rs.getInt("codmunicipio"));
+                p.getEndereco().setCodbairro(rs.getInt("codbairro"));
 
             }
 
@@ -947,7 +949,7 @@ public class PacienteDAO {
 
         try {
             conexao = ConnectionFactory.getConnection();
-            String sql = " select id, ddd, telefone, whatsapp, responsavel, id_parentesco " +
+            String sql = " select id, ddd, telefone, whatsapp, responsavel, id_parentesco, id_operadora " +
                     "from hosp.telefone_paciente where id_paciente = ? order by id";
 
             ps = conexao.prepareStatement(sql);
@@ -962,6 +964,7 @@ public class PacienteDAO {
                 t.setWhatsapp(rs.getBoolean("whatsapp"));
                 t.setResponsavel(rs.getString("responsavel"));
                 t.getParentesco().setCodParentesco(rs.getInt("id_parentesco"));
+                t.getOperadora().setId(rs.getInt("id_operadora"));
 
                 lista.add(t);
 

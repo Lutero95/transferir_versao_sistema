@@ -11,10 +11,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
-import br.gov.al.maceio.sishosp.comum.util.CEPUtil;
-import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.event.SelectEvent;
@@ -224,7 +221,7 @@ public class PacienteController implements Serializable {
 
     }
 
-    public void alterarPaciente() throws ProjetoException {
+    public void alterarPaciente() {
     	if ((paciente.getEndereco().getCodbairro() == null) && (paciente.getEndereco().getBairro() == null)) {
     	JSFUtil.adicionarMensagemAdvertencia("Informe o Bairro!", "Advertência");
     	}
@@ -248,6 +245,10 @@ public class PacienteController implements Serializable {
         if (transporteSuggestion != null) {
             paciente.getFormatransporte().setCodformatransporte(
                     transporteSuggestion.getCodformatransporte());
+        }
+
+        if(VerificadorUtil.verificarSeObjetoNulo(bairroExiste)){
+            bairroExiste = true;
         }
 
         boolean alterou = pDao.alterarPaciente(paciente, bairroExiste);

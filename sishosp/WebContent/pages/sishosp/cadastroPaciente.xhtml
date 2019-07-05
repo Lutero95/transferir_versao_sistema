@@ -121,7 +121,7 @@
                                                  requiredMessage="Informe o sangue" id="sangue"
                                                  value="#{PacienteController.paciente.sangue}">
                                     <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                    <f:selectItem itemLabel="Não informou" itemValue="Não informou"/>
+                                    <f:selectItem itemLabel="Não informou" itemValue="N"/>
                                     <f:selectItem itemLabel="A+" itemValue="A+"/>
                                     <f:selectItem itemLabel="A-" itemValue="A-"/>
                                     <f:selectItem itemLabel="B+" itemValue="B+"/>
@@ -371,7 +371,7 @@
 
                                 <p:outputPanel id="outBairro">
                                     <b:selectOneMenu id="bairro1"
-                                                     rendered="#{PacienteController.paciente.endereco.bairroUnico == false}"
+                                                     disabled="#{PacienteController.paciente.endereco.bairroUnico == true}"
                                                      required="true" requiredMessage="Bairro: Campo obrigatório!"
                                                      value="#{PacienteController.paciente.endereco.codbairro}">
                                         <f:selectItem itemLabel="Selecione" itemValue=""/>
