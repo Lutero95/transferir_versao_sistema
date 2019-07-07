@@ -40,13 +40,14 @@ public class PtsController implements Serializable {
     private static final String ENDERECO_PTS = "pts?faces-redirect=true";
     private static final String ENDERECO_RENOVACAO = "ptsrenovacao?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
+    private static final String ENDERECO_ID_GER_PAC_INSTITUICAO = "&amp;idgerpaciente=";    
 
     public PtsController() {
         pts = new Pts();
         ptsAreaAnterior = new PtsArea();
         listaPts = new ArrayList<>();
         listaGrupos = new ArrayList<>();
-        filtroTipoVencimento = FiltroBuscaVencimentoPTS.VINGENTES.getSigla();
+        filtroTipoVencimento = FiltroBuscaVencimentoPTS.TODOS.getSigla();
         rowBean = new Pts();
         renderizarBotaoNovo = false;
     }
@@ -57,6 +58,8 @@ public class PtsController implements Serializable {
                 .getRequestParameterMap();
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
+            Integer idGerenciamentoPaciente = Integer.parseInt(params.get("idgerpaciente"));
+            
             idParametroEndereco = id;
             existePts = pDao.verificarSeExistePts(id);
             if (existePts) {
@@ -64,7 +67,7 @@ public class PtsController implements Serializable {
             } else {
                 this.pts = pDao.ptsCarregarPacientesInstituicao(id);
             }
-            listaEspecialidadesEquipe = eDao.listarEspecialidadesEquipe(id);
+            listaEspecialidadesEquipe = eDao.listarEspecialidadesEquipe(idGerenciamentoPaciente);
 
         } else {
             existePts = false;
@@ -107,15 +110,15 @@ public class PtsController implements Serializable {
         statusPts = pDao.verificarStatusPts(rowBean.getId());
         if (statusPts.equals(StatusPTS.RENOVADO.getSigla())) {
             SessionUtil.adicionarNaSessao(rowBean, "pts");
-            retorno = RedirecionarUtil.redirectEditSemTipo(ENDERECO_RENOVACAO, ENDERECO_ID, this.rowBean.getId());
+            retorno = RedirecionarUtil.redirectEditSemTeipoComDoisParametros(ENDERECO_RENOVACAO, ENDERECO_ID, this.rowBean.getId(),ENDERECO_ID_GER_PAC_INSTITUICAO, this.rowBean.getGerenciarPaciente().getId());
         } else {
-            retorno = RedirecionarUtil.redirectEditSemTipo(ENDERECO_PTS, ENDERECO_ID, this.rowBean.getId());
+            retorno = RedirecionarUtil.redirectEditSemTeipoComDoisParametros(ENDERECO_PTS, ENDERECO_ID, this.rowBean.getId(),ENDERECO_ID_GER_PAC_INSTITUICAO, this.rowBean.getGerenciarPaciente().getId());
         }
         return retorno;
     }
 
-    public String redirectEditAposGravar(Integer novoIdPts) {
-        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PTS, ENDERECO_ID, novoIdPts);
+    public String redirectEditAposGravar(Integer novoIdPts, Integer PacienteInstituicao) {
+        return RedirecionarUtil.redirectEditSemTeipoComDoisParametros(ENDERECO_PTS, ENDERECO_ID, novoIdPts,ENDERECO_ID_GER_PAC_INSTITUICAO,PacienteInstituicao);
     }
 
     public String redirectInsert() {
@@ -125,7 +128,7 @@ public class PtsController implements Serializable {
 
     public String redirectRenovacao() {
         SessionUtil.adicionarNaSessao(rowBean, "pts");
-        return RedirecionarUtil.redirectEditSemTipo(ENDERECO_RENOVACAO, ENDERECO_ID, this.rowBean.getId());
+        return RedirecionarUtil.redirectEditSemTeipoComDoisParametros(ENDERECO_RENOVACAO, ENDERECO_ID, this.rowBean.getId(),ENDERECO_ID_GER_PAC_INSTITUICAO,this.rowBean.getGerenciarPaciente().getId());
     }
 
     public void abrirDialogInclusaoPts() {
@@ -205,7 +208,7 @@ public class PtsController implements Serializable {
             JSFUtil.adicionarMensagemSucesso("PTS cadastrado com sucesso!", "Sucesso");
 
             if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idParametroEndereco)) {
-                retorno = redirectEditAposGravar(novoIdPts);
+                retorno = redirectEditAposGravar(novoIdPts, pts.getGerenciarPaciente().getId());
             }
 
         } else {
@@ -232,7 +235,7 @@ public class PtsController implements Serializable {
             JSFUtil.adicionarMensagemSucesso("PTS renovado com sucesso!", "Sucesso");
 
             if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idParametroEndereco)) {
-                retorno = redirectEditAposGravar(novoIdPts);
+                retorno = redirectEditAposGravar(novoIdPts, null);
             }
 
         } else {

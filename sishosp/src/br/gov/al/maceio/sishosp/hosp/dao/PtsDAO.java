@@ -339,9 +339,13 @@ public class PtsDAO {
                     } else {
                         codPts = null;
                     }
-                } else {
-                    codPts = null;
+                } 
+                
+                else {
+                    //codPts = null;
+                	conexao.commit();
                 }
+                
             } else {
                 codPts = null;
             }
@@ -541,7 +545,7 @@ public class PtsDAO {
                 "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = pi.codpaciente) " +
                 "LEFT JOIN hosp.pts p ON " +
                 "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente = pi.codpaciente) " +
-                "WHERE pi.status = 'A' AND pi.codgrupo = ? AND pi.codprograma = ? AND p.status <> 'I' ";
+                "WHERE pi.status = 'A' AND pi.codgrupo = ? AND pi.codprograma = ?  AND coalesce(p.status,'') <> 'I' ";
 
         if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.VINGENTES.getSigla())) {
             sql = sql + " AND p.data_vencimento >= current_date";

@@ -13,6 +13,10 @@ public final class RedirecionarUtil {
 	public static String redirectEditSemTipo(String ENDERECO_CADASTRO, String ENDERECO_ID, Integer idObjeto) {
 		return ENDERECO_CADASTRO+ENDERECO_ID+idObjeto;
 	}
+	
+	public static String redirectEditSemTeipoComDoisParametros(String ENDERECO_CADASTRO, String ENDERECO_ID, Integer idObjeto,String ENDERECO_ID2, Integer idObjeto2) {
+		return ENDERECO_CADASTRO+ENDERECO_ID+idObjeto+ENDERECO_ID2+idObjeto2;
+	}
 
 	public static String redirectInsertSemTipo(String ENDERECO_CADASTRO) {
 		return ENDERECO_CADASTRO;

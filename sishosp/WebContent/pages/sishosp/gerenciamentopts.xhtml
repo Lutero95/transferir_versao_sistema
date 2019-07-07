@@ -78,9 +78,9 @@
                     <b:row>
 
                         <p:outputPanel>
-                            <b:column span="3" class="new-data-size3">
+                            <b:column span="2" class="new-data-size3" style="width:150px !important">
 
-                                <p:outputLabel value="Filtro por Vencimento PTS:"
+                                <p:outputLabel value="Validade do PTS:"
                                                style="margin-top: 8px;color:#2e84ce;">
                                 </p:outputLabel>
 
@@ -90,8 +90,8 @@
                                 <p:selectOneRadio required="false" style="margin-top: 10px"
                                                   requiredMessage="Escolha a situação!"
                                                   value="#{PtsController.filtroTipoVencimento}">
+                                    <f:selectItem itemLabel="Todos" itemValue="T"/>                                    
                                     <f:selectItem itemLabel="Vingentes" itemValue="VI"/>
-                                    <f:selectItem itemLabel="Todos" itemValue="T"/>
                                     <f:selectItem itemLabel="Vencidos" itemValue="VE"/>
                                 </p:selectOneRadio>
                             </b:column>
@@ -103,9 +103,9 @@
 
                     <b:row>
 
-                        <b:column span="2" class="new-data-size3">
+                        <b:column span="1" class="new-data-size3">
 
-                            <p:outputLabel value="Filtro por Ano:"
+                            <p:outputLabel value="Ano:"
                                            style="margin-top: 8px;color:#2e84ce;">
                             </p:outputLabel>
 
@@ -119,7 +119,7 @@
 
                         <b:column span="2" class="new-data-size3">
 
-                            <p:outputLabel value="Filtro por Mês:"
+                            <p:outputLabel value="Mês:"
                                            style="margin-top: 8px;color:#2e84ce;">
                             </p:outputLabel>
 

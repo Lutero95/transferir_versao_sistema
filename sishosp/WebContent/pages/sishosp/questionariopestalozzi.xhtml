@@ -401,6 +401,8 @@
                         </b:row>
                     </p:fieldset>
 	<br/>
+	<br/>
+	<br/>
                     <p:fieldset legend="Educação">
                         <b:row>
                             <b:column span="2" class="label-position inserPacient">
@@ -586,9 +588,9 @@
                                 <b:label value="Qual Atividade Complementares?" class="fire-label"
                                          severity="info"/>
                             </b:column>
-                            <b:column span="6" class="label-position inserPacient">
+                            <b:column span="6" style="margin-top:20px;margin-left:-120px;margin-top:30px">
                                 <p:outputLabel value="Dança"/>
-                                <p:selectBooleanCheckbox
+                                <p:selectBooleanCheckbox 
                                         value="#{PestalozziController.pestalozzi.educacaoAtividadeComplementaresDanca}"
                                         label="Basic"/>
 
@@ -618,6 +620,10 @@
                             </b:column>
                         </b:row>
                     </p:fieldset>
+                    
+	<br/>
+	<br/>
+	<br/>                    
 
                     <p:fieldset legend="Benefícios Sociais">
                         <b:row>
@@ -886,6 +892,10 @@
                             </b:column>
                         </b:row>
                     </p:fieldset>
+                    
+<br/>
+	<br/>
+	<br/>                    
 
                     <p:fieldset legend="Transporte">
                         <b:row>
@@ -953,6 +963,10 @@
                             </b:column>
                         </b:row>
                     </p:fieldset>
+                    
+<br/>
+	<br/>
+	<br/>                    
 
                     <p:fieldset legend="Renda Familiar">
                         <b:row>
@@ -1091,6 +1105,218 @@
                             </b:column>
                         </b:row>
                     </p:fieldset>
+                    
+<br/>
+	<br/>
+	<br/>                    
+                    <p:fieldset legend="Trabalho">
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Situação " class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Empregador" itemValue="true"/>
+                                    <f:selectItem itemLabel="Assalariado com carteira" itemValue="false"/>
+                                    <f:selectItem itemLabel="Assalariado com carteira" itemValue="false"/>
+                                    <f:selectItem itemLabel="Assalariado sem carteira" itemValue="false"/>
+                                    <f:selectItem itemLabel="Autônomo com previdência social" itemValue="false"/>
+                                    <f:selectItem itemLabel="Autônomo sem previdência social" itemValue="false"/>
+                                    <f:selectItem itemLabel="Aposentado/Pensionista" itemValue="false"/>
+                                    <f:selectItem itemLabel="Jovem Aprendiz" itemValue="false"/>
+                                    <f:selectItem itemLabel="Desempregado e não trabalha" itemValue="false"/>
+                                    <f:selectItem itemLabel="Outro" itemValue="false"/>
+                                </p:selectOneRadio>
+                            </b:column>
+
+
+                                                    </b:row>
+                    </p:fieldset>
+                    
+<br/>
+	<br/>
+	<br/>                    
+                    
+<p:fieldset legend="Moradia">
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Tipo de Casa " class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Tijolo" itemValue="true"/>
+                                    <f:selectItem itemLabel="Taipa Revestida" itemValue="false"/>
+                                    <f:selectItem itemLabel="Taipa não Revestida" itemValue="false"/>
+                                    <f:selectItem itemLabel="Madeira" itemValue="false"/>
+                                    <f:selectItem itemLabel="Material Aproveitado" itemValue="false"/>
+                                    <f:selectItem itemLabel="Outros" itemValue="false"/>
+                                </p:selectOneRadio>
+                                
+                            </b:column>
+                            
+                            </b:row>
+                            
+ <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Destino do Lixo " class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Coletado" itemValue="true"/>
+                                    <f:selectItem itemLabel="Queimado/Enterrado" itemValue="false"/>
+                                    <f:selectItem itemLabel="Céu aberto" itemValue="false"/>
+                                    
+                                </p:selectOneRadio>
+                                
+                            </b:column>
+                            
+                            </b:row>     
+                            
+                                                   <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Tratamento da água no domicílio " class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Filtração" itemValue="true"/>
+                                    <f:selectItem itemLabel="Fervura" itemValue="false"/>
+                                    <f:selectItem itemLabel="Cloração" itemValue="false"/>
+                                    <f:selectItem itemLabel="Sem Tratamento" itemValue="false"/>
+                                    
+                                </p:selectOneRadio>
+                                
+                            </b:column>
+                            
+                            </b:row>
+                            
+                            
+                     <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Abastecimento de água" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Rede Geral" itemValue="true"/>
+                                    <f:selectItem itemLabel="Poço ou Nascente" itemValue="false"/>
+                                    <f:selectItem itemLabel="Outros" itemValue="false"/>
+                                    
+                                    
+                                </p:selectOneRadio>
+                                
+                            </b:column>
+                            
+                            </b:row>
+                            
+                            
+                                                           <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Destino de fezes/urina" class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sistema de Esgoto" itemValue="true"/>
+                                    <f:selectItem itemLabel="Fossa" itemValue="false"/>
+                                    <f:selectItem itemLabel="Céu Aberto" itemValue="false"/>
+                                    
+                                    
+                                </p:selectOneRadio>
+                                
+                            </b:column>
+                            
+                            </b:row>  
+                    </p:fieldset>                     
+                    
+<br/>
+	<br/>
+	<br/>                    
+<p:fieldset legend="Assistência Social">
+                        <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Participa de algum grupo comunitário? " class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                                
+                            </b:column>
+                            
+                             <b:column span="6" class="label-position inserPacient">
+                               
+                                <p:outputLabel style="margin-top:25px; margin-left:20px" value="Qual?"/>
+                                <p:inputText/>
+                            </b:column>
+
+
+                                                    </b:row>
+  <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Possui plano de saúde privado? " class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                                
+                            </b:column>
+                            
+                            
+                             <b:column span="6" class="label-position inserPacient">
+                               
+                                <p:outputLabel style="margin-top:25px; margin-left:20px" value="Qual?"/>
+                                <p:inputText/>
+                            </b:column>
+
+
+                                                    </b:row>     
+                                                    
+                                                                                                   <b:row>
+                            <b:column span="2" class="label-position inserPacient">
+                                <b:label value="Membro de povo ou comunidade tradicional? " class="fire-label"
+                                         severity="info"/>
+
+                                <p:selectOneRadio class="campo-laudoDig3"
+                                                  value="#{PestalozziController.pestalozzi.rendaFamiliarInseridoMercadoTrabalho}"
+                                                  unselectable="true">
+                                    <f:selectItem itemLabel="Sim" itemValue="true"/>
+                                    <f:selectItem itemLabel="Não" itemValue="false"/>
+                                </p:selectOneRadio>
+                                
+                            </b:column>
+                            
+                            
+                             <b:column span="6" class="label-position inserPacient">
+                               
+                                <p:outputLabel style="margin-top:25px; margin-left:40px" value="Qual?"/>
+                                <p:inputText/>
+                            </b:column>
+
+
+                                                    </b:row> 
+                    </p:fieldset>
+                    
+                                        <br/>
+	<br/>
+	<br/>
+                    
 
                     <p:fieldset legend="Habitação">
                         <b:row>
@@ -1172,6 +1398,10 @@
                             </b:column>
                         </b:row>
                     </p:fieldset>
+                    
+<br/>
+	<br/>
+	<br/>                    
 
                     <p:fieldset legend="Composição Familiar">
                         <p:commandButton value="Adicionar Composição Familiar" size="sm"
@@ -1247,14 +1477,18 @@
 
                         </b:dataTable>
                     </p:fieldset>
+                    
+<br/>
+	<br/>
+	<br/>                    
 
                     <p:fieldset legend="Relato da Vida">
-                        <p:inputTextarea rows="15" cols="45" value="#{PestalozziController.pestalozzi.relatoVida}"/>
+                        <p:inputTextarea rows="15" style="width:100%" value="#{PestalozziController.pestalozzi.relatoVida}"/>
 
                     </p:fieldset>
 
                     <p:fieldset legend="Parecer Social/Encaminhamentos">
-                        <p:inputTextarea rows="8" cols="45"
+                        <p:inputTextarea rows="8"  style="width:100%"	
                                          value="#{PestalozziController.pestalozzi.parecerSocialEncaminhamento}"/>
                     </p:fieldset>
 
