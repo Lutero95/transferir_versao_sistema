@@ -572,8 +572,8 @@
                                             listener="#{PacienteController.onItemSelect2}"/>
                                 </p:autoComplete>
 
-                                <p:commandButton onclick="PF('dlgbuscaescolaridade').show();"
-                                                 icon="ui-icon-search" process="@this" style="margin-top: 5px;"/>
+                                <p:commandButton onclick="PF('dlgbuscaescolaridade').show();" actionListener="#{EscolaridadeController.buscarEscolaridades()}"
+                                                 icon="ui-icon-search" process="@this" style="margin-top: 5px;" update=":buscaescolaridade"/>
                             </b:column>
 
                         </b:row>
@@ -593,8 +593,8 @@
                                             listener="#{PacienteController.onItemSelect}"/>
                                 </p:autoComplete>
 
-                                <p:commandButton process="@this" style="margin-top: 5px;"
-                                                 onclick="PF('dlgbuscaescola').show();" icon="ui-icon-search"/>
+                                <p:commandButton process="@this" style="margin-top: 5px;" actionListener="#{EscolaController.buscarEscola()}"
+                                                 onclick="PF('dlgbuscaescola').show();" icon="ui-icon-search" update=":buscaescola"/>
                             </b:column>
                         </b:row>
 
@@ -613,8 +613,8 @@
                                             listener="#{PacienteController.onItemSelect6}"/>
                                 </p:autoComplete>
 
-                                <p:commandButton process="@this" style="margin-top: 5px;"
-                                                 onclick="PF('dlgbuscaprofissao').show();" icon="ui-icon-search"/>
+                                <p:commandButton process="@this" style="margin-top: 5px;" actionListener="#{ProfissaoController.listarProfissoes()}"
+                                                 onclick="PF('dlgbuscaprofissao').show();" icon="ui-icon-search" update=":buscaprofissao"/>
 
                             </b:column>
                         </b:row>
@@ -733,9 +733,9 @@
                                             listener="#{PacienteController.onItemSelect4}"/>
                                 </p:autoComplete>
 
-                                <p:commandButton process="@this" style="margin-top: 5px;"
+                                <p:commandButton process="@this" style="margin-top: 5px;" actionListener="#{EncaminhadoController.listarTiposDeEncaminhamento()}"
                                                  onclick="PF('dlgbuscaencaminhado').show();"
-                                                 icon="ui-icon-search"/>
+                                                 icon="ui-icon-search" update=":buscaencaminhado"/>
                             </b:column>
                         </b:row>
 
@@ -755,9 +755,9 @@
                                             listener="#{PacienteController.onItemSelect5}"/>
                                 </p:autoComplete>
 
-                                <p:commandButton process="@this" style="margin-top: 5px;"
+                                <p:commandButton process="@this" style="margin-top: 5px;" actionListener="#{FormaTransporteController.listarTransporte()}"
                                                  onclick="PF('dlgbuscacomochegou').show();"
-                                                 icon="ui-icon-search"/>
+                                                 icon="ui-icon-search" update=":buscatransporte"/>
                             </b:column>
                         </b:row>
 
@@ -906,7 +906,7 @@
                 <div align="center">
                     <p:outputPanel id="outinter">
                         <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                     value="#{PacienteController.listaEscolas}" var="busca"
+                                     value="#{EscolaController.listaEscolas}" var="busca"
                                      id="tableescola" display="Nenhuma Equipe">
 
                             <h:column>
@@ -948,7 +948,7 @@
                 <div align="center">
                     <p:outputPanel id="outinter2">
                         <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                     value="#{PacienteController.listaEscolaridade}" var="busca"
+                                     value="#{EscolaridadeController.listaEscolaridade}" var="busca"
                                      id="tableescolaridade" display="Nenhuma Escolaridade">
 
                             <h:column>
@@ -990,7 +990,7 @@
                 <div align="center">
                     <p:outputPanel id="outinter3">
                         <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                     value="#{PacienteController.listaProfissao}" var="busca"
+                                     value="#{ProfissaoController.listaProfissoes}" var="busca"
                                      id="tableprofissao" display="Nenhuma Profissão">
 
 
@@ -1034,7 +1034,7 @@
                 <div align="center">
                     <p:outputPanel id="outinter4">
                         <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                     value="#{PacienteController.listaEncaminhado}" var="busca"
+                                     value="#{EncaminhadoController.listaTiposEncaminhamento}" var="busca"
                                      id="tableencaminhado" display="Nenhum Tipo de Encaminhamento">
 
                             <h:column>
@@ -1076,7 +1076,7 @@
                 <div align="center">
                     <p:outputPanel id="outinter5">
                         <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                     value="#{PacienteController.listaTransporte}" var="busca"
+                                     value="#{FormaTransporteController.listaFormaTransporte}" var="busca"
                                      id="tabletransporte" display="Nenhuma Forma de Transporte">
 
                             <h:column>
