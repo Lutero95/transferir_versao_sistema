@@ -9,12 +9,12 @@
     <ui:define name="content">
 
         <f:metadata>
-            <f:viewAction action="#{SexoController.listarSexos}"/>
+            <f:viewAction action="#{GeneroController.listarGeneros}"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Gerenciamento de Sexos</h4>
+				<h4 class="panel-title">Gerenciamento de Gêneros</h4>
             </div>
             
             <div class="panel-body table-body">
@@ -22,10 +22,10 @@
             <h:form id="frmPrincipal">
 
                 <b:commandButton id="btninc" value="Novo" size="sm"
-                                 action="#{SexoController.redirectInsert}"
+                                 action="#{GeneroController.redirectInsert}"
                                  icon="glyphicon-plus" class="btn-addNovo">
                     <f:setPropertyActionListener value="1"
-                                                 target="#{SexoController.tipo}"/>
+                                                 target="#{GeneroController.tipo}"/>
                     <p:tooltip for="btninc" value="Incluir"></p:tooltip>
                 </b:commandButton>
 
@@ -34,7 +34,7 @@
                 </div>
 
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
-                             responsive="true" value="#{SexoController.listaSexos}">
+                             responsive="true" value="#{GeneroController.listaGeneros}">
 
                     <h:column>
                         <f:facet name="header">
@@ -50,12 +50,12 @@
 
                         <b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
                                          class="btn-acao-table acao-editar"
-                                         action="#{SexoController.redirectEdit()}">
+                                         action="#{GeneroController.redirectEdit()}">
                             <f:setPropertyActionListener value="#{tab}"
-                                                         target="#{SexoController.sexo}"/>
+                                                         target="#{GeneroController.genero}"/>
 
                             <f:setPropertyActionListener value="2"
-                                                         target="#{SexoController.tipo}"/>
+                                                         target="#{GeneroController.tipo}"/>
                         </b:commandButton>
 
                         <b:commandButton tooltip="Excluir" icon="glyphicon-trash" class="btn-acao-table acao-excluir"
@@ -63,7 +63,7 @@
                                          oncomplete="PF('dialogExclusao').show()">
 
                             <f:setPropertyActionListener value="#{tab}"
-                                                         target="#{SexoController.sexo}"/>
+                                                         target="#{GeneroController.genero}"/>
                         </b:commandButton>
 
                     </h:column>
@@ -79,13 +79,13 @@
 
             <h:form id="dlgexcluir">
                 <div class="alert alert-warning" role="alert">Deseja excluir
-                    esse Sexo?
+                    esse Gênero?
                 </div>
                 <div align="center">
 
                     <p:separator/>
                     <b:commandButton look="success" value="Sim" style="float:left;" class="btn-sim"
-                                     action="#{SexoController.excluirSexo()}" ajax="true"
+                                     action="#{GeneroController.excluirGenero()}" ajax="true"
                                      icon="glyphicon-ok" update="frmPrincipal"/>
 
                     <b:commandButton value="Não" class="btn-nao"

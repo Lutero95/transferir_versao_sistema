@@ -9,12 +9,12 @@
 	<ui:define name="content">
 
 		<f:metadata>
-			<f:viewAction action="#{SexoController.getEditSexo()}" />
+			<f:viewAction action="#{GeneroController.getEditGenero()}" />
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h:outputText value="#{SexoController.cabecalho}"
+				<h:outputText value="#{GeneroController.cabecalho}"
 					class="panel-title"></h:outputText>
 			</div>
 			
@@ -28,7 +28,7 @@
 							<b:label for="inputname" value="Descrição" severity="info" />
 							
 						<b:inputText validator="CaractereEmBrancoValidator"
-							value="#{SexoController.sexo.descricao}"
+							value="#{GeneroController.genero.descricao}"
 							class="form-control" id="inputname" required="true"
 							requiredMessage="Descrição: Campo obrigatório!"
 							validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">
@@ -45,19 +45,19 @@
 
 				<div align="center">
 
-					<b:commandButton action="#{SexoController.gravarSexo()}"
+					<b:commandButton action="#{GeneroController.gravarGenero()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
 						update=":frmPrincipal" value="Incluir" 
-						rendered="#{SexoController.tipo == 1}" />
+						rendered="#{GeneroController.tipo == 1}" />
 
-					<b:commandButton action="#{SexoController.alterarSexo()}"
+					<b:commandButton action="#{GeneroController.alterarGenero()}"
 						icon="glyphicon-ok" size="sm" update=":frmPrincipal"
 						value="Alterar" look="success" class="btn-incluir"
-						rendered="#{SexoController.tipo  == 2}" />
+						rendered="#{GeneroController.tipo  == 2}" />
 
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
 						class="btn-voltar" size="sm" immediate="true" look="info"
-						action="/pages/sishosp/gerenciarsexo.faces?faces-redirect=true">
+						action="/pages/sishosp/gerenciargenero.faces?faces-redirect=true">
 					</b:commandButton>
 
 				</div>

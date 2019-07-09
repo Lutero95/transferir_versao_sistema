@@ -57,10 +57,10 @@ public class PacienteDAO {
             } else {
                 stmt.setString(3, paciente.getEstadoCivil());
             }
-            if (paciente.getSexo() == null) {
+            if (paciente.getGenero() == null) {
                 stmt.setNull(4, Types.CHAR);
             } else {
-                stmt.setInt(4, paciente.getSexo().getId());
+                stmt.setInt(4, paciente.getGenero().getId());
             }
             if (paciente.getSangue() == null) {
                 stmt.setNull(5, Types.CHAR);
@@ -375,7 +375,7 @@ public class PacienteDAO {
             stmt.setDate(2, new java.sql.Date(paciente.getDtanascimento()
                     .getTime()));
             stmt.setString(3, paciente.getEstadoCivil());
-            stmt.setInt(4, paciente.getSexo().getId());
+            stmt.setInt(4, paciente.getGenero().getId());
             stmt.setString(5, paciente.getSangue());
             stmt.setString(6, paciente.getNomePai());
             stmt.setString(7, paciente.getNomeMae());
@@ -596,7 +596,7 @@ public class PacienteDAO {
                 p.setNome(rs.getString("nome").toUpperCase());
                 p.setDtanascimento(rs.getDate("dtanascimento"));
                 p.setEstadoCivil(rs.getString("estcivil"));
-                p.getSexo().setId(rs.getInt("id_sexo"));
+                p.getGenero().setId(rs.getInt("id_sexo"));
                 p.setSangue(rs.getString("sangue"));
                 p.setNomePai(rs.getString("pai"));
                 p.setNomeMae(rs.getString("mae"));
@@ -742,7 +742,7 @@ public class PacienteDAO {
                 p.setNome(rs.getString("nome").toUpperCase());
                 p.setDtanascimento(rs.getDate("dtanascimento"));
                 p.setEstadoCivil(rs.getString("estcivil"));
-                p.getSexo().setId(rs.getInt("sexo"));
+                p.getGenero().setId(rs.getInt("sexo"));
                 p.setSangue(rs.getString("sangue"));
                 p.setNomePai(rs.getString("pai"));
                 p.setNomeMae(rs.getString("mae"));
@@ -852,7 +852,7 @@ public class PacienteDAO {
                 p.setNome(rs.getString("nome").toUpperCase());
                 p.setDtanascimento(rs.getDate("dtanascimento"));
                 p.setEstadoCivil(rs.getString("estcivil"));
-                p.getSexo().setId(rs.getInt("id_sexo"));
+                p.getGenero().setId(rs.getInt("id_sexo"));
                 p.setSangue(rs.getString("sangue"));
                 p.setNomePai(rs.getString("pai"));
                 p.setNomeMae(rs.getString("mae"));

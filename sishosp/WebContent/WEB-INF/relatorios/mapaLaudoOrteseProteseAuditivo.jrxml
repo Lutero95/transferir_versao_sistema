@@ -83,7 +83,7 @@
 	</parameter>
 	<queryString>
 		<![CDATA[select rank() over (order by p.nome asc) as seq, p.cns as cns, p.nome as nome,
-p.dtanascimento as dtnascimento, p.sexo as sexo, p.codraca as codraca,
+p.dtanascimento as dtnascimento, p.genero as genero, p.codraca as codraca,
 
 a.codproc as codproc, pr.nome as nome_proc,
 pr.auditivo as eh_auditivo, pr.tipo_exame_auditivo,
@@ -114,7 +114,7 @@ and a.situacao = 'A' and
 	<field name="cns" class="java.lang.String"/>
 	<field name="nome" class="java.lang.String"/>
 	<field name="dtnascimento" class="java.sql.Timestamp"/>
-	<field name="sexo" class="java.lang.String"/>
+	<field name="genero" class="java.lang.String"/>
 	<field name="codraca" class="java.lang.Integer"/>
 	<field name="codproc" class="java.lang.Integer"/>
 	<field name="nome_proc" class="java.lang.String"/>
@@ -398,7 +398,7 @@ NASCIMENTO]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{sexo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{genero}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="368" y="0" width="41" height="15" uuid="f000a9cb-bcd9-4ebd-9fae-63b9a3b8750d"/>

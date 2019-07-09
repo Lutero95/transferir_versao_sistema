@@ -5,8 +5,8 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.SexoDAO;
-import br.gov.al.maceio.sishosp.hosp.model.Sexo;
+import br.gov.al.maceio.sishosp.hosp.dao.GeneroDAO;
+import br.gov.al.maceio.sishosp.hosp.model.Genero;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -17,46 +17,46 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@ManagedBean(name = "SexoController")
+@ManagedBean(name = "GeneroController")
 @ViewScoped
-public class SexoController implements Serializable {
+public class GeneroController implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Sexo sexo;
+    private Genero genero;
     private Integer tipo;
     private String cabecalho;
-    private List<Sexo> listaSexos;
-    private SexoDAO sDao = new SexoDAO();
+    private List<Genero> listaGeneros;
+    private GeneroDAO sDao = new GeneroDAO();
 
     //CONSTANTES
-    private static final String ENDERECO_CADASTRO = "cadastrosexo?faces-redirect=true";
+    private static final String ENDERECO_CADASTRO = "cadastrogenero?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
-    private static final String CABECALHO_INCLUSAO = "Inclusão de Sexo";
-    private static final String CABECALHO_ALTERACAO = "Alteração de Sexo";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de Gênero";
+    private static final String CABECALHO_ALTERACAO = "Alteração de Gênero";
 
-    public SexoController() {
-        sexo = new Sexo();
+    public GeneroController() {
+        genero = new Genero();
         this.cabecalho = "";
-        listaSexos = new ArrayList<>();
+        listaGeneros = new ArrayList<>();
     }
 
     public String redirectEdit() {
-        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.sexo.getId(), ENDERECO_TIPO, tipo);
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.genero.getId(), ENDERECO_TIPO, tipo);
     }
 
     public String redirectInsert() {
         return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
     }
 
-    public void getEditSexo() throws ProjetoException {
+    public void getEditGenero() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
-            this.sexo = sDao.buscaSexoPorId(id);
+            this.genero = sDao.buscaGeneroPorId(id);
         } else {
             tipo = Integer.parseInt(params.get("tipo"));
 
@@ -65,54 +65,54 @@ public class SexoController implements Serializable {
     }
 
     public void limparDados() {
-        sexo = new Sexo();
+        genero = new Genero();
     }
 
-    public void listarSexos() throws ProjetoException {
-        listaSexos = sDao.listarSexos();
+    public void listarGeneros() throws ProjetoException {
+        listaGeneros = sDao.listarGeneros();
     }
 
-    public List<Sexo> listarTodosOsSexos() throws ProjetoException {
+    public List<Genero> listarTodosOsGeneros() throws ProjetoException {
 
-        if(!VerificadorUtil.verificarSeListaNuloOuVazia(Collections.singletonList(listaSexos))) {
-            listaSexos = sDao.listarSexos();
+        if(!VerificadorUtil.verificarSeListaNuloOuVazia(Collections.singletonList(listaGeneros))) {
+            listaGeneros = sDao.listarGeneros();
         }
 
-        return listaSexos;
+        return listaGeneros;
     }
 
-    public void gravarSexo() {
-        boolean cadastrou = sDao.gravarSexo(sexo);
+    public void gravarGenero() {
+        boolean cadastrou = sDao.gravarGenero(genero);
 
         if (cadastrou == true) {
             limparDados();
-            JSFUtil.adicionarMensagemSucesso("Sexo cadastrado com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("Gênero cadastrado com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }
     }
 
-    public void alterarSexo() {
+    public void alterarGenero() {
 
-        boolean alterou = sDao.alterarSexo(sexo);
+        boolean alterou = sDao.alterarGenero(genero);
         if (alterou == true) {
-            JSFUtil.adicionarMensagemSucesso("Sexo alterado com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("Gênero alterado com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
         }
     }
 
-    public void excluirSexo() throws ProjetoException {
+    public void excluirGenero() throws ProjetoException {
 
-        boolean excluiu = sDao.excluirSexo(sexo.getId());
+        boolean excluiu = sDao.excluirGenero(genero.getId());
         if (excluiu == true) {
-            JSFUtil.adicionarMensagemSucesso("Sexo excluído com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("Gênero excluído com sucesso!", "Sucesso");
             JSFUtil.fecharDialog("dialogExclusao");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");
         }
-        listarSexos();
+        listarGeneros();
     }
 
 
@@ -129,12 +129,12 @@ public class SexoController implements Serializable {
         return cabecalho;
     }
 
-    public Sexo getSexo() {
-        return sexo;
+    public Genero getGenero() {
+        return genero;
     }
 
-    public void setSexo(Sexo sexo) {
-        this.sexo = sexo;
+    public void setGenero(Genero genero) {
+        this.genero = genero;
     }
 
     public Integer getTipo() {
@@ -145,11 +145,11 @@ public class SexoController implements Serializable {
         this.tipo = tipo;
     }
 
-    public List<Sexo> getListaSexos() {
-        return listaSexos;
+    public List<Genero> getListaGeneros() {
+        return listaGeneros;
     }
 
-    public void setListaSexos(List<Sexo> listaSexos) {
-        this.listaSexos = listaSexos;
+    public void setListaGeneros(List<Genero> listaGeneros) {
+        this.listaGeneros = listaGeneros;
     }
 }

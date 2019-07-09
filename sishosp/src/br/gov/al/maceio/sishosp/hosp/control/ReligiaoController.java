@@ -7,7 +7,6 @@ import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.ReligiaoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.Religiao;
-import br.gov.al.maceio.sishosp.hosp.model.Sexo;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;

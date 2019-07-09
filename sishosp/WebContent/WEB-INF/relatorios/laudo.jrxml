@@ -54,7 +54,7 @@ select
 	(select t1.id from hosp.telefone_paciente t1
 	where t1.id_paciente = p.id_paciente order by t1.id limit 1 ) tel_id1 , 
 	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes, l.data_solicitacao, l.obs, f.descfuncionario AS nomemedico,
-p.id_paciente, f.cns as cns_medico, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
+p.id_paciente, f.cns as cns_medico, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.genero, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
  p.logradouro|| ' '||COALESCE('',''||p.numero,'')|| ''||COALESCE('',''||p.complemento,'') AS endereco, 
  m.nome descmunicipio, b.descbairro, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
 l.codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
@@ -159,8 +159,8 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 		<property name="com.jaspersoft.studio.field.label" value="complemento"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
 	</field>
-	<field name="sexo" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="sexo"/>
+	<field name="genero" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="genero"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
 	</field>
 	<field name="cns" class="java.lang.String">
@@ -721,7 +721,7 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{sexo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{genero}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="2" y="52" width="202" height="14" uuid="e8250164-22a4-40ef-80d2-b6725e5e601d"/>

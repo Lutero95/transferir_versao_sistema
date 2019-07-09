@@ -2,7 +2,7 @@ package br.gov.al.maceio.sishosp.hosp.dao;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.hosp.model.Sexo;
+import br.gov.al.maceio.sishosp.hosp.model.Genero;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,19 +10,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class SexoDAO {
+public class GeneroDAO {
 	private Connection conexao = null;
 	Connection con = null;
 	PreparedStatement ps = null;
 
-	public boolean gravarSexo(Sexo sexo) {
+	public boolean gravarGenero(Genero genero) {
 		Boolean retorno = false;
-		String sql = "INSERT INTO hosp.sexo (descricao) VALUES (?);";
+		String sql = "INSERT INTO hosp.genero (descricao) VALUES (?);";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			ps.setString(1, sexo.getDescricao().toUpperCase());
+			ps.setString(1, genero.getDescricao().toUpperCase());
 			ps.execute();
 			con.commit();
 			retorno = true;
@@ -39,15 +39,15 @@ public class SexoDAO {
 		}
 	}
 
-	public Boolean alterarSexo(Sexo sexo) {
+	public Boolean alterarGenero(Genero genero) {
 		Boolean retorno = false;
-		String sql = "UPDATE hosp.sexo SET descricao = ? WHERE id = ?";
+		String sql = "UPDATE hosp.genero SET descricao = ? WHERE id = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, sexo.getDescricao().toUpperCase());
-			stmt.setInt(2, sexo.getId());
+			stmt.setString(1, genero.getDescricao().toUpperCase());
+			stmt.setInt(2, genero.getId());
 			stmt.executeUpdate();
 			con.commit();
 			retorno = true;
@@ -64,9 +64,9 @@ public class SexoDAO {
 		}
 	}
 
-	public Boolean excluirSexo(Integer id) {
+	public Boolean excluirGenero(Integer id) {
 		Boolean retorno = false;
-		String sql = "DELETE FROM hosp.sexo WHERE id = ?";
+		String sql = "DELETE FROM hosp.genero WHERE id = ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -88,11 +88,11 @@ public class SexoDAO {
 		}
 	}
 
-	public ArrayList<Sexo> listarSexos() throws ProjetoException {
+	public ArrayList<Genero> listarGeneros() throws ProjetoException {
 
-		String sql = "SELECT id, descricao FROM hosp.sexo ORDER BY descricao";
+		String sql = "SELECT id, descricao FROM hosp.genero ORDER BY descricao";
 
-		ArrayList<Sexo> lista = new ArrayList();
+		ArrayList<Genero> lista = new ArrayList();
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -100,11 +100,11 @@ public class SexoDAO {
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
-				Sexo s = new Sexo();
-				s.setId(rs.getInt("id"));
-				s.setDescricao(rs.getString("descricao"));
+				Genero g = new Genero();
+				g.setId(rs.getInt("id"));
+				g.setDescricao(rs.getString("descricao"));
 
-				lista.add(s);
+				lista.add(g);
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -119,22 +119,22 @@ public class SexoDAO {
 		return lista;
 	}
 
-	public Sexo buscaSexoPorId(Integer i)
+	public Genero buscaGeneroPorId(Integer i)
 			throws ProjetoException {
 		
-		String sql = "SELECT id, descricao FROM hosp.sexo WHERE id = ? ORDER BY descricao";
+		String sql = "SELECT id, descricao FROM hosp.genero WHERE id = ? ORDER BY descricao";
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, i);
 			ResultSet rs = ps.executeQuery();
-			Sexo m = new Sexo();
+			Genero g = new Genero();
 			while (rs.next()) {
-				m.setId(rs.getInt("id"));
-				m.setDescricao(rs.getString("descricao"));
+				g.setId(rs.getInt("id"));
+				g.setDescricao(rs.getString("descricao"));
 			}
 
-			return m;
+			return g;
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);

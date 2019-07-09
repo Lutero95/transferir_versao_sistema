@@ -81,7 +81,7 @@ public class PacienteBean implements Serializable {
     private EncaminhadoBean encaminhado;
     private FormaTransporteBean formatransporte;
     private Telefone telefone;
-    private Sexo sexo;
+    private Genero genero;
     private Religiao religiao;
 
     // LISTAS
@@ -102,7 +102,7 @@ public class PacienteBean implements Serializable {
         profissao = new ProfissaoBean();
         deficiencia = "N";
         telefone = new Telefone();
-        sexo = new Sexo();
+        genero = new Genero();
         religiao = new Religiao();
     }
 
@@ -130,12 +130,12 @@ public class PacienteBean implements Serializable {
         this.estadoCivil = estadoCivil;
     }
 
-    public Sexo getSexo() {
-        return sexo;
+    public Genero getGenero() {
+        return genero;
     }
 
-    public void setSexo(Sexo sexo) {
-        this.sexo = sexo;
+    public void setGenero(Genero genero) {
+        this.genero = genero;
     }
 
     public Religiao getReligiao() {

@@ -2,12 +2,12 @@ package br.gov.al.maceio.sishosp.hosp.model;
 
 import java.io.Serializable;
 
-public class Sexo implements Serializable {
+public class Genero implements Serializable {
 
 	private Integer id;
 	private String descricao;
 
-	public Sexo() {
+	public Genero() {
 
 	}
 

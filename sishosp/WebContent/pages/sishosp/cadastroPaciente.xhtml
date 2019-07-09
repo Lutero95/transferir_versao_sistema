@@ -102,11 +102,11 @@
                         <b:row>
 
                             <b:column span="4" class="label-position">
-                                <b:label for="sexo" value="Sexo" severity="info"/>
+                                <b:label for="genero" value="Sexo" severity="info"/>
 
                                 <b:selectOneMenu required="true" disable="true"
-                                                 requiredMessage="Sexo: Campo obrigatório!" id="sexo"
-                                                 value="#{PacienteController.paciente.sexo.id}">
+                                                 requiredMessage="Sexo: Campo obrigatório!" id="genero"
+                                                 value="#{PacienteController.paciente.genero.id}">
                                     <f:selectItem itemLabel="Selecione" itemValue=""/>
                                     <f:selectItems value="#{SexoController.listarTodosOsSexos()}"
                                                    var="sis" itemLabel="#{sis.descricao}"

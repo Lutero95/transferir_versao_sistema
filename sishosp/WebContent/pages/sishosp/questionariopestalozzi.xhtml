@@ -1423,7 +1423,7 @@
                                 <f:facet name="header">
                                     Sexo
                                 </f:facet>
-                                <p:outputLabel value="#{PestalozziController.retonarMasculinoFeminino(composicao.sexo)}"/>
+                                <p:outputLabel value="#{PestalozziController.retonarMasculinoFeminino(composicao.genero)}"/>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
@@ -1669,7 +1669,7 @@
                         <b:label value="Sexo: " class="fire-label"
                                  severity="info"/>
                         <p:selectOneRadio class="campo-laudoDig3"
-                                          value="#{PestalozziController.composicaoFamiliarAdd.sexo}"
+                                          value="#{PestalozziController.composicaoFamiliarAdd.genero}"
                                           unselectable="true">
                             <f:selectItem itemLabel="Masculino" itemValue="M"/>
                             <f:selectItem itemLabel="Feminino" itemValue="F"/>

@@ -1,7 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.converter;
 
-import br.gov.al.maceio.sishosp.hosp.dao.SexoDAO;
-import br.gov.al.maceio.sishosp.hosp.model.Sexo;
+import br.gov.al.maceio.sishosp.hosp.dao.GeneroDAO;
+import br.gov.al.maceio.sishosp.hosp.model.Genero;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -10,9 +10,9 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
-@FacesConverter(value = "conSexo")
-public class SexoConverter implements Converter {
-    SexoDAO s = new SexoDAO();
+@FacesConverter(value = "conGenero")
+public class GeneroConverter implements Converter {
+    GeneroDAO s = new GeneroDAO();
 
     public Object getAsObject(FacesContext contet, UIComponent component,
                               String value) {
@@ -22,11 +22,11 @@ public class SexoConverter implements Converter {
         }
         try {
             int id = Integer.parseInt(value);
-            return s.buscaSexoPorId(id);
+            return s.buscaGeneroPorId(id);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ConverterException(new FacesMessage(
-                    FacesMessage.SEVERITY_ERROR, "Sexo não válido", ""));
+                    FacesMessage.SEVERITY_ERROR, "Gênero não válido", ""));
         }
     }
 
@@ -34,6 +34,6 @@ public class SexoConverter implements Converter {
                               Object value) {
         if (value == null || value.equals(""))
             return null;
-        return String.valueOf(((Sexo) value).getId());
+        return String.valueOf(((Genero) value).getId());
     }
 }
