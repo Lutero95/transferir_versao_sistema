@@ -32,7 +32,6 @@ public class LaudoBean implements Serializable {
     private CidBean cid1;
     private CidBean cid2;
     private CidBean cid3;
-    private RecursoBean recurso;
 
     public LaudoBean() {
         paciente = new PacienteBean();
@@ -45,7 +44,6 @@ public class LaudoBean implements Serializable {
         cid1 = new CidBean();
         cid2 = new CidBean();
         cid3 = new CidBean();
-        recurso = new RecursoBean();
         situacao = SituacaoLaudo.PENDENTE.getSigla();
     }
 
@@ -214,14 +212,7 @@ public class LaudoBean implements Serializable {
         this.vigenciaFinal = vigenciaFinal;
     }
 
-    public RecursoBean getRecurso() {
-        return recurso;
-    }
-
-    public void setRecurso(RecursoBean recurso) {
-        this.recurso = recurso;
-    }
-
+   
     public Date getDataAutorizacao() {
         return dataAutorizacao;
     }

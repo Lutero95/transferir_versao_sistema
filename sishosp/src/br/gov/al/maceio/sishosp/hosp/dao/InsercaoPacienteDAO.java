@@ -72,7 +72,7 @@ public class InsercaoPacienteDAO {
 
         InsercaoPacienteBean insercao = new InsercaoPacienteBean();
 
-        String sql = "select l.id_laudo, l.codpaciente, p.nome, p.cns, l.id_recurso, descrecurso, l.data_solicitacao, l.mes_inicio, l.ano_inicio, "
+        String sql = "select l.id_laudo, l.codpaciente, p.nome, p.cns, l.data_solicitacao, l.mes_inicio, l.ano_inicio, "
                 + " l.mes_final, l.ano_final, l.periodo, "
                 + " l.codprocedimento_primario, pr.nome as procedimento, l.cid1, ci.desccid, "
                 + " to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') as datainicio,  "
@@ -81,7 +81,7 @@ public class InsercaoPacienteDAO {
                 + " left join hosp.pacientes p on (l.codpaciente = p.id_paciente) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
                 + " left join hosp.cid ci on (l.cid1 = cast(ci.cod as integer)) "
-                + " left join hosp.recurso r on (l.id_recurso = r.id) "
+                + "  "
                 + " where 1=1 "
                 //current_date >= to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') "
                 //+ " and current_date <= (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) "
@@ -102,8 +102,6 @@ public class InsercaoPacienteDAO {
                         .setId_paciente(rs.getInt("codpaciente"));
                 insercao.getLaudo().getPaciente().setNome(rs.getString("nome"));
                 insercao.getLaudo().getPaciente().setCns(rs.getString("cns"));
-                insercao.getLaudo().getRecurso().setIdRecurso(rs.getInt("id_recurso"));
-                insercao.getLaudo().getRecurso().setDescRecurso(rs.getString("descrecurso"));
                 insercao.getLaudo().setDataSolicitacao(
                         rs.getDate("data_solicitacao"));
                 insercao.getLaudo().setMesInicio(rs.getInt("mes_inicio"));

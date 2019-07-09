@@ -147,10 +147,10 @@ public class RelatoriosController implements Serializable {
 		if (atributoGenerico1.equals("N"))
 				relatorio = caminho + "laudosvencernominal.jasper";
 		else
-				relatorio = caminho + "laudo.jasper";
+				relatorio = caminho + "laudovencer.jasper";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("periodolaudovencer", this.atributoGenerico2);
-		map.put("codusuario", user_session.getCodigo());
+		map.put("codusuario", user_session.getEmpresa().getCodEmpresa());
 			if (programa!=null)
 			map.put("codprograma", programa.getIdPrograma());
 			
@@ -163,6 +163,19 @@ public class RelatoriosController implements Serializable {
 			
 		
 		}
+	}
+	
+	public void geraLaudo(Integer idLaudo) throws IOException,
+	ParseException, ProjetoException {
+
+		String caminho = "/WEB-INF/relatorios/";
+		String relatorio = "";
+		relatorio = caminho + "laudo.jasper";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("codempresa", user_session.getEmpresa().getCodEmpresa());
+		map.put("cod_laudo", idLaudo);
+		this.executeReport(relatorio, map, "laudo.pdf");
+
 	}
 	
 	public void geraFrequencia(GerenciarPacienteBean pacienteInstituicao, ProgramaBean programa, GrupoBean grupo) throws IOException,

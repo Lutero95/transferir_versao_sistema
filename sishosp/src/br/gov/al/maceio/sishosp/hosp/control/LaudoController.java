@@ -10,6 +10,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
@@ -33,6 +34,7 @@ public class LaudoController implements Serializable {
     private LaudoDAO lDao = new LaudoDAO();
     private CidDAO cDao = new CidDAO();
     private Boolean renderizarDataAutorizacao;
+    private Integer idLaudoGerado = null;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
@@ -74,6 +76,9 @@ public class LaudoController implements Serializable {
 
     }
 
+    public void setaValidadeProcPrimLaudo(Integer validade) {
+    	laudo.setPeriodo(validade);
+    }
     public void renderizarDadosDeAutorizacao(){
         if(laudo.getSituacao().equals(SituacaoLaudo.AUTORIZADO.getSigla())){
             renderizarDataAutorizacao = true;
@@ -85,8 +90,13 @@ public class LaudoController implements Serializable {
     }
 
     public void calcularPeriodoLaudo() {
-
-        if (laudo.getPeriodo() != null && laudo.getMesInicio() != null && laudo.getAnoInicio() != null) {
+    	laudo.setMesInicio(null);
+    	laudo.setMesFinal(null);
+    	if (laudo.getDataSolicitacao()!=null) {
+    	laudo.setMesInicio(DataUtil.extrairMesDeData(laudo.getDataSolicitacao()));
+    	laudo.setAnoInicio(DataUtil.extrairAnoDeData(laudo.getDataSolicitacao()));
+    	}
+        if (laudo.getPeriodo() != null && laudo.getPeriodo() != 0 && laudo.getMesInicio() != null && laudo.getAnoInicio() != null) {
 
             int periodo = (laudo.getPeriodo() / 30)-1; // o periodo do laudo considera o mes atual, por isso a inclusao do -1
             int mes = 0;
@@ -104,18 +114,18 @@ public class LaudoController implements Serializable {
             laudo.setAnoFinal(ano);
 
 
-        } else {
-            JSFUtil.adicionarMensagemAdvertencia("Informe o período do Laudo!", "Advertência");
-        }
+        } 
 
     }
 
     public void gravarLaudo() {
-        boolean cadastrou = lDao.cadastrarLaudo(laudo);
+    	idLaudoGerado = null;
+        idLaudoGerado = lDao.cadastrarLaudo(laudo);
 
-        if (cadastrou == true) {
+        if (idLaudoGerado != null) {
             limparDados();
             JSFUtil.adicionarMensagemSucesso("Laudo cadastrado com sucesso!", "Sucesso");
+            JSFUtil.abrirDialog("dlgImprimir");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }
@@ -214,4 +224,12 @@ public class LaudoController implements Serializable {
     public void setRenderizarDataAutorizacao(Boolean renderizarDataAutorizacao) {
         this.renderizarDataAutorizacao = renderizarDataAutorizacao;
     }
+
+	public Integer getIdLaudoGerado() {
+		return idLaudoGerado;
+	}
+
+	public void setIdLaudoGerado(Integer idLaudoGerado) {
+		this.idLaudoGerado = idLaudoGerado;
+	}
 }

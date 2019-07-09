@@ -79,7 +79,10 @@
                                         class="select-agendaEquipe2"
                                         requiredMessage="É necessário informar a data de solitação"
                                         value="#{LaudoController.laudo.dataSolicitacao}" mask="true"
-                                        pattern="dd/MM/yyyy" pages="1" showOn="button"/>
+                                        pattern="dd/MM/yyyy" pages="1" showOn="button">
+                                         <p:ajax event="dateSelect" listener="#{LaudoController.calcularPeriodoLaudo()}"
+                                            update=":formLaudo:outvalidade"/>
+                                            </p:calendar>
                         </b:column>
 
                        
@@ -116,45 +119,42 @@
 
                     <br></br>
 
+                   
+
+                    <br></br>
+
                     <b:row>
 
-                        <b:column span="1" style="color: #2e84ce;width:108px !important">
-                        <b:label value="Período:" severity="info"/>
-                            <p:selectOneRadio id="prorrogar" required="true"
-                                              layout="pageDirection" requiredMessage="Período é necessário!"
-                                              value="#{LaudoController.laudo.periodo}">
-                                <f:selectItem itemLabel="30 dias" itemValue="30"/>
-                                <f:selectItem itemLabel="90 dias" itemValue="90"/>
-                                <p:ajax listener="#{LaudoController.calcularPeriodoLaudo()}"
-                                        update="outMesFim" global="false" event="change"></p:ajax>
-                            </p:selectOneRadio>
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Procedimento Primário:" severity="info"/>
+
+                            <p:outputPanel id="outProcP1">
+                                <p:autoComplete
+                                        value="#{LaudoController.laudo.procedimentoPrimario}"
+                                        size="31" converter="conProcedimento" id="descProcP1"
+                                        required="true" class="select-agendaEquipe4"
+                                        requiredMessage="Escolha o procedimento primário!"
+                                        completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+                                        effect="fade" var="theme" forceSelection="true"
+                                        minQueryLength="1" itemValue="#{theme}"
+                                        itemLabel="#{theme.nomeProc}">
+                                    <p:ajax event="itemSelect" listener="#{LaudoController.setaValidadeProcPrimLaudo(LaudoController.laudo.procedimentoPrimario.validade_laudo)}"
+                                          update=":formLaudo:outvalidade"  ></p:ajax>
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusProcP1" icon="ui-icon-search"
+                                                 oncomplete="PF('dlgConsulProcPrimario').show();" immediate="true"
+                                                 actionListener="#{ProcedimentoController.listarProcedimentos()}"/>
+                            </p:outputPanel>
                         </b:column>
-                        <b:column span="2" class="label-position">
-                            <b:label value="Mês Início:" severity="info"/>
+ <b:column span="1" style="color: #2e84ce;width:108px !important">
+                        <b:label value="Validade Laudo" severity="info"/>
 
-                            <b:inputText value="#{LaudoController.laudo.mesInicio}"
-                                         class="select-agendaEquipe2" required="true"
-                                         requiredMessage="Escolha o ano início!">
-                                <p:ajax listener="#{LaudoController.calcularPeriodoLaudo()}"
-                                        update="outMesFim" global="false" event="blur"></p:ajax>
-                            </b:inputText>
-                        </b:column>
-
-                        <b:column span="2" class="label-position">
-                            <b:label value="Ano Início:" severity="info"/>
-
-                            <h:inputText value="#{LaudoController.laudo.anoInicio}"
-                                         class="select-agendaEquipe3" required="true"
-                                         requiredMessage="Escolha o ano início!">
-                                <p:ajax listener="#{LaudoController.calcularPeriodoLaudo()}"
-                                        update="outMesFim" global="false" event="blur"></p:ajax>
-                            </h:inputText>
-                        </b:column>
-
-                        <b:column span="3" class="label-position">
-                            <b:label value="Mês/Ano Fim:" severity="info"/>
-
-                            <p:outputPanel id="outMesFim" class="campo-laudoDig">
+                         <p:outputPanel id="outvalidade" class="campo-laudoDig" style="border:none !important">
+                        <h:outputText id="val30" value="30 dias"  rendered="#{LaudoController.laudo.periodo==30}" style="margin-left: 30px !important"/>
+                        <h:outputText id="val90" value="90 dias" rendered="#{LaudoController.laudo.periodo==90}" />
+                               <div>
                                 <h:outputLabel value="Janeiro/#{LaudoController.laudo.anoFinal}"
                                                rendered="#{LaudoController.laudo.mesFinal == 1}"/>
                                 <h:outputLabel value="Fevereiro/#{LaudoController.laudo.anoFinal}"
@@ -180,59 +180,11 @@
                                 <h:outputLabel value="Dezembro/#{LaudoController.laudo.anoFinal}"
                                                rendered="#{LaudoController.laudo.mesFinal == 12}"/>
 
-                            </p:outputPanel>
+                            </div>
+                          </p:outputPanel>
+                          
                         </b:column>
-
-
-                    </b:row>
-
-                    <br></br>
-
-                    <b:row>
-
-                        <b:column span="3"
-                                  class="label-position new-data-size new-comple1">
-                            <b:label value="Procedimento Primário:" severity="info"/>
-
-                            <p:outputPanel id="outProcP1">
-                                <p:autoComplete
-                                        value="#{LaudoController.laudo.procedimentoPrimario}"
-                                        size="31" converter="conProcedimento" id="descProcP1"
-                                        required="true" class="select-agendaEquipe4"
-                                        requiredMessage="Escolha o procedimento primário!"
-                                        completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
-                                        effect="fade" var="theme" forceSelection="true"
-                                        minQueryLength="1" itemValue="#{theme}"
-                                        itemLabel="#{theme.nomeProc}">
-                                    <p:ajax event="itemSelect"
-                                            update=":formLaudo:outRecurso, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3"></p:ajax>
-                                </p:autoComplete>
-
-                                <p:commandButton id="btBusProcP1" icon="ui-icon-search"
-                                                 oncomplete="PF('dlgConsulProcPrimario').show();" immediate="true"
-                                                 actionListener="#{ProcedimentoController.listarProcedimentos()}"/>
-                            </p:outputPanel>
-                        </b:column>
-
-                        <b:column span="3" class="label-position">
-                            <b:label value="Recurso:" severity="info"/>
-
-                            <p:outputPanel id="outRecurso">
-                                <b:selectOneMenu class="select-agendaEquipe2"
-                                                 disabled="#{LaudoController.laudo.procedimentoPrimario.idProc == null}"
-                                                 value="#{LaudoController.laudo.recurso.idRecurso}"
-                                                 required="true"
-                                                 requiredMessage="Informe o recurso.">
-
-                                    <f:selectItems
-                                            value="#{RecursoController.listarRecurso(LaudoController.laudo.procedimentoPrimario.idProc)}"
-                                            var="dir" itemLabel="#{dir.descRecurso}"
-                                            itemValue="#{dir.idRecurso}"/>
-                                </b:selectOneMenu>
-
-                            </p:outputPanel>
-                        </b:column>
-
+                        
                     </b:row>
 
                     <br></br>
@@ -565,10 +517,12 @@
                                 Adicionar
                             </f:facet>
                             <p:commandButton
-                                    update=":formLaudo:outProcP1, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3 :formLaudo:outRecurso"
+                                    update=":formLaudo:outvalidade :formLaudo:outProcP1, :formLaudo:outCid1, :formLaudo:outCid2, :formLaudo:outCid3"
                                     icon="ui-icon-check" title="Selecionar"
                                     class="new-btn-acao-table acao-editar"
-                                    onclick="PF('dlgConsulProcPrimario').hide();">
+                                     actionListener="#{LaudoController.setaValidadeProcPrimLaudo(proc.validade_laudo)}"
+                                          
+                                    oncomplete="PF('dlgConsulProcPrimario').hide();">
                                 <f:setPropertyActionListener value="#{proc}"
                                                              target="#{LaudoController.laudo.procedimentoPrimario}"/>
                             </p:commandButton>
@@ -868,5 +822,27 @@
             </h:form>
         </p:dialog>
 
+
+ 
+		<p:dialog widgetVar="dlgImprimir" modal="true" header="Atenção"
+			resizable="false" showEffect="clip" hideEffect="clip">
+
+			<h:form id="dlgexcluir">
+				<div class="alert alert-warning" role="alert">Deseja imprimir
+					este laudo?</div>
+				<div align="center">
+					<p:separator />
+
+					<b:commandButton look="success" value="Sim" style="float:left;"
+						action="#{RelatoriosController.geraLaudo(LaudoController.idLaudoGerado)}" ajax="false"
+						class="btn-sim" icon="glyphicon-ok"  />
+						
+
+					<b:commandButton value="Não" oncomplete="PF('dlgImprimir').hide();"
+						look="info" ajax="true" icon="glyphicon-remove" class="btn-nao"
+						style="margin-left:5px;float:right;" />
+				</div>
+			</h:form>
+		</p:dialog>
     </ui:define>
 </ui:composition>

@@ -26,35 +26,45 @@ public class LaudoDAO {
             .getCurrentInstance().getExternalContext().getSessionMap()
             .get("obj_usuario");
 
-    public Boolean cadastrarLaudo(LaudoBean laudo) {
+    public Integer cadastrarLaudo(LaudoBean laudo) {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
 
-        boolean retorno = false;
+        Integer idLaudoGerado = 0;
 
         String sql = "insert into hosp.laudo "
-                + "(codpaciente, id_recurso, data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
+                + "(codpaciente,  data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
                 + "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, "
                 + "cid1, cid2, cid3, obs, ativo, cod_empresa, data_hora_operacao, situacao ) "
-                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?)";
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?) returning id_laudo";
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setLong(1, laudo.getPaciente().getId_paciente());
-            stmt.setInt(2, laudo.getRecurso().getIdRecurso());
-            stmt.setDate(3, new java.sql.Date(laudo.getDataSolicitacao()
+            stmt.setDate(2, new java.sql.Date(laudo.getDataSolicitacao()
                     .getTime()));
-            stmt.setInt(4, laudo.getMesInicio());
-            stmt.setInt(5, laudo.getAnoInicio());
-            stmt.setInt(6, laudo.getMesFinal());
-            stmt.setInt(7, laudo.getAnoFinal());
-            stmt.setInt(8, laudo.getPeriodo());
-            stmt.setInt(9, laudo.getProcedimentoPrimario().getIdProc());
+            stmt.setInt(3, laudo.getMesInicio());
+            stmt.setInt(4, laudo.getAnoInicio());
+            stmt.setInt(5, laudo.getMesFinal());
+            stmt.setInt(6, laudo.getAnoFinal());
+            stmt.setInt(7, laudo.getPeriodo());
+            stmt.setInt(8, laudo.getProcedimentoPrimario().getIdProc());
             if (laudo.getProcedimentoSecundario1() != null) {
                 if (laudo.getProcedimentoSecundario1().getIdProc() != null) {
-                    stmt.setInt(10, laudo.getProcedimentoSecundario1()
+                    stmt.setInt(9, laudo.getProcedimentoSecundario1()
+                            .getIdProc());
+                } else {
+                    stmt.setNull(9, Types.NULL);
+                }
+            } else {
+                stmt.setNull(9, Types.NULL);
+            }
+
+            if (laudo.getProcedimentoSecundario2() != null) {
+                if (laudo.getProcedimentoSecundario2().getIdProc() != null) {
+                    stmt.setInt(10, laudo.getProcedimentoSecundario2()
                             .getIdProc());
                 } else {
                     stmt.setNull(10, Types.NULL);
@@ -63,9 +73,9 @@ public class LaudoDAO {
                 stmt.setNull(10, Types.NULL);
             }
 
-            if (laudo.getProcedimentoSecundario2() != null) {
-                if (laudo.getProcedimentoSecundario2().getIdProc() != null) {
-                    stmt.setInt(11, laudo.getProcedimentoSecundario2()
+            if (laudo.getProcedimentoSecundario3() != null) {
+                if (laudo.getProcedimentoSecundario3().getIdProc() != null) {
+                    stmt.setInt(11, laudo.getProcedimentoSecundario3()
                             .getIdProc());
                 } else {
                     stmt.setNull(11, Types.NULL);
@@ -74,9 +84,9 @@ public class LaudoDAO {
                 stmt.setNull(11, Types.NULL);
             }
 
-            if (laudo.getProcedimentoSecundario3() != null) {
-                if (laudo.getProcedimentoSecundario3().getIdProc() != null) {
-                    stmt.setInt(12, laudo.getProcedimentoSecundario3()
+            if (laudo.getProcedimentoSecundario4() != null) {
+                if (laudo.getProcedimentoSecundario4().getIdProc() != null) {
+                    stmt.setInt(12, laudo.getProcedimentoSecundario4()
                             .getIdProc());
                 } else {
                     stmt.setNull(12, Types.NULL);
@@ -85,21 +95,20 @@ public class LaudoDAO {
                 stmt.setNull(12, Types.NULL);
             }
 
-            if (laudo.getProcedimentoSecundario4() != null) {
-                if (laudo.getProcedimentoSecundario4().getIdProc() != null) {
-                    stmt.setInt(13, laudo.getProcedimentoSecundario4()
+            if (laudo.getProcedimentoSecundario5() != null) {
+                if (laudo.getProcedimentoSecundario5().getIdProc() != null) {
+                    stmt.setInt(13, laudo.getProcedimentoSecundario5()
                             .getIdProc());
                 } else {
                     stmt.setNull(13, Types.NULL);
                 }
             } else {
-                stmt.setNull(13, Types.NULL);
+                stmt.setNull(13	, Types.NULL);
             }
 
-            if (laudo.getProcedimentoSecundario5() != null) {
-                if (laudo.getProcedimentoSecundario5().getIdProc() != null) {
-                    stmt.setInt(14, laudo.getProcedimentoSecundario5()
-                            .getIdProc());
+            if (laudo.getCid1() != null) {
+                if (laudo.getCid1().getIdCid() != null) {
+                    stmt.setInt(14, laudo.getCid1().getIdCid());
                 } else {
                     stmt.setNull(14, Types.NULL);
                 }
@@ -107,9 +116,9 @@ public class LaudoDAO {
                 stmt.setNull(14, Types.NULL);
             }
 
-            if (laudo.getCid1() != null) {
-                if (laudo.getCid1().getIdCid() != null) {
-                    stmt.setInt(15, laudo.getCid1().getIdCid());
+            if (laudo.getCid2() != null) {
+                if (laudo.getCid2().getIdCid() != null) {
+                    stmt.setInt(15, laudo.getCid2().getIdCid());
                 } else {
                     stmt.setNull(15, Types.NULL);
                 }
@@ -117,9 +126,9 @@ public class LaudoDAO {
                 stmt.setNull(15, Types.NULL);
             }
 
-            if (laudo.getCid2() != null) {
-                if (laudo.getCid2().getIdCid() != null) {
-                    stmt.setInt(16, laudo.getCid2().getIdCid());
+            if (laudo.getCid3() != null) {
+                if (laudo.getCid3().getIdCid() != null) {
+                    stmt.setInt(16, laudo.getCid3().getIdCid());
                 } else {
                     stmt.setNull(16, Types.NULL);
                 }
@@ -127,29 +136,23 @@ public class LaudoDAO {
                 stmt.setNull(16, Types.NULL);
             }
 
-            if (laudo.getCid3() != null) {
-                if (laudo.getCid3().getIdCid() != null) {
-                    stmt.setInt(17, laudo.getCid3().getIdCid());
-                } else {
-                    stmt.setNull(17, Types.NULL);
-                }
-            } else {
-                stmt.setNull(17, Types.NULL);
-            }
-
             if (laudo.getObs() == null) {
-                stmt.setNull(18, Types.NULL);
+                stmt.setNull(17, Types.NULL);
             } else {
-                stmt.setString(18, laudo.getObs().toUpperCase().trim());
+                stmt.setString(17, laudo.getObs().toUpperCase().trim());
             }
 
-            stmt.setInt(19, user_session.getEmpresa().getCodEmpresa());
+            stmt.setInt(18, user_session.getEmpresa().getCodEmpresa());
 
-            stmt.setString(20, SituacaoLaudo.PENDENTE.getSigla());
+            stmt.setString(19, SituacaoLaudo.PENDENTE.getSigla());
 
-            stmt.execute();
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                idLaudoGerado = rs.getInt("id_laudo");
+            }
             conexao.commit();
-            retorno = true;
+            
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
@@ -159,13 +162,13 @@ public class LaudoDAO {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return retorno;
+            return idLaudoGerado;
         }
     }
 
     public Boolean alterarLaudo(LaudoBean laudo) {
         boolean retorno = false;
-        String sql = "update hosp.laudo set codpaciente = ?, id_recurso = ?, data_solicitacao = ?, mes_inicio = ?, ano_inicio = ?, mes_final = ?, ano_final = ?, " +
+        String sql = "update hosp.laudo set codpaciente = ?,  data_solicitacao = ?, mes_inicio = ?, ano_inicio = ?, mes_final = ?, ano_final = ?, " +
                 "periodo = ?, codprocedimento_primario = ?, codprocedimento_secundario1 = ?, codprocedimento_secundario2 = ?, codprocedimento_secundario3 = ?, " +
                 "codprocedimento_secundario4 = ?, codprocedimento_secundario5 = ?, cid1 = ?, cid2 = ?, cid3 = ?, obs = ?, " +
                 "situacao = ?, data_autorizacao = ?, usuario_autorizou = ?, data_hora_operacao = CURRENT_TIMESTAMP where id_laudo = ?";
@@ -174,18 +177,28 @@ public class LaudoDAO {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setLong(1, laudo.getPaciente().getId_paciente());
-            stmt.setInt(2, laudo.getRecurso().getIdRecurso());
-            stmt.setDate(3, new java.sql.Date(laudo.getDataSolicitacao()
+            stmt.setDate(2, new java.sql.Date(laudo.getDataSolicitacao()
                     .getTime()));
-            stmt.setInt(4, laudo.getMesInicio());
-            stmt.setInt(5, laudo.getAnoInicio());
-            stmt.setInt(6, laudo.getMesFinal());
-            stmt.setInt(7, laudo.getAnoFinal());
-            stmt.setInt(8, laudo.getPeriodo());
-            stmt.setInt(9, laudo.getProcedimentoPrimario().getIdProc());
+            stmt.setInt(3, laudo.getMesInicio());
+            stmt.setInt(4, laudo.getAnoInicio());
+            stmt.setInt(5, laudo.getMesFinal());
+            stmt.setInt(6, laudo.getAnoFinal());
+            stmt.setInt(7, laudo.getPeriodo());
+            stmt.setInt(8, laudo.getProcedimentoPrimario().getIdProc());
             if (laudo.getProcedimentoSecundario1() != null) {
                 if (laudo.getProcedimentoSecundario1().getIdProc() != null) {
-                    stmt.setInt(10, laudo.getProcedimentoSecundario1()
+                    stmt.setInt(9, laudo.getProcedimentoSecundario1()
+                            .getIdProc());
+                } else {
+                    stmt.setNull(9, Types.NULL);
+                }
+            } else {
+                stmt.setNull(9, Types.NULL);
+            }
+
+            if (laudo.getProcedimentoSecundario2() != null) {
+                if (laudo.getProcedimentoSecundario2().getIdProc() != null) {
+                    stmt.setInt(10, laudo.getProcedimentoSecundario2()
                             .getIdProc());
                 } else {
                     stmt.setNull(10, Types.NULL);
@@ -194,9 +207,9 @@ public class LaudoDAO {
                 stmt.setNull(10, Types.NULL);
             }
 
-            if (laudo.getProcedimentoSecundario2() != null) {
-                if (laudo.getProcedimentoSecundario2().getIdProc() != null) {
-                    stmt.setInt(11, laudo.getProcedimentoSecundario2()
+            if (laudo.getProcedimentoSecundario3() != null) {
+                if (laudo.getProcedimentoSecundario3().getIdProc() != null) {
+                    stmt.setInt(11, laudo.getProcedimentoSecundario3()
                             .getIdProc());
                 } else {
                     stmt.setNull(11, Types.NULL);
@@ -205,9 +218,9 @@ public class LaudoDAO {
                 stmt.setNull(11, Types.NULL);
             }
 
-            if (laudo.getProcedimentoSecundario3() != null) {
-                if (laudo.getProcedimentoSecundario3().getIdProc() != null) {
-                    stmt.setInt(12, laudo.getProcedimentoSecundario3()
+            if (laudo.getProcedimentoSecundario4() != null) {
+                if (laudo.getProcedimentoSecundario4().getIdProc() != null) {
+                    stmt.setInt(12, laudo.getProcedimentoSecundario4()
                             .getIdProc());
                 } else {
                     stmt.setNull(12, Types.NULL);
@@ -216,9 +229,9 @@ public class LaudoDAO {
                 stmt.setNull(12, Types.NULL);
             }
 
-            if (laudo.getProcedimentoSecundario4() != null) {
-                if (laudo.getProcedimentoSecundario4().getIdProc() != null) {
-                    stmt.setInt(13, laudo.getProcedimentoSecundario4()
+            if (laudo.getProcedimentoSecundario5() != null) {
+                if (laudo.getProcedimentoSecundario5().getIdProc() != null) {
+                    stmt.setInt(13, laudo.getProcedimentoSecundario5()
                             .getIdProc());
                 } else {
                     stmt.setNull(13, Types.NULL);
@@ -227,10 +240,9 @@ public class LaudoDAO {
                 stmt.setNull(13, Types.NULL);
             }
 
-            if (laudo.getProcedimentoSecundario5() != null) {
-                if (laudo.getProcedimentoSecundario5().getIdProc() != null) {
-                    stmt.setInt(14, laudo.getProcedimentoSecundario5()
-                            .getIdProc());
+            if (laudo.getCid1() != null) {
+                if (laudo.getCid1().getIdCid() != null) {
+                    stmt.setInt(14, laudo.getCid1().getIdCid());
                 } else {
                     stmt.setNull(14, Types.NULL);
                 }
@@ -238,9 +250,9 @@ public class LaudoDAO {
                 stmt.setNull(14, Types.NULL);
             }
 
-            if (laudo.getCid1() != null) {
-                if (laudo.getCid1().getIdCid() != null) {
-                    stmt.setInt(15, laudo.getCid1().getIdCid());
+            if (laudo.getCid2() != null) {
+                if (laudo.getCid2().getIdCid() != null) {
+                    stmt.setInt(15, laudo.getCid2().getIdCid());
                 } else {
                     stmt.setNull(15, Types.NULL);
                 }
@@ -248,9 +260,9 @@ public class LaudoDAO {
                 stmt.setNull(15, Types.NULL);
             }
 
-            if (laudo.getCid2() != null) {
-                if (laudo.getCid2().getIdCid() != null) {
-                    stmt.setInt(16, laudo.getCid2().getIdCid());
+            if (laudo.getCid3() != null) {
+                if (laudo.getCid3().getIdCid() != null) {
+                    stmt.setInt(16, laudo.getCid3().getIdCid());
                 } else {
                     stmt.setNull(16, Types.NULL);
                 }
@@ -258,33 +270,23 @@ public class LaudoDAO {
                 stmt.setNull(16, Types.NULL);
             }
 
-            if (laudo.getCid3() != null) {
-                if (laudo.getCid3().getIdCid() != null) {
-                    stmt.setInt(17, laudo.getCid3().getIdCid());
-                } else {
-                    stmt.setNull(17, Types.NULL);
-                }
-            } else {
-                stmt.setNull(17, Types.NULL);
-            }
-
             if (laudo.getObs() == null) {
-                stmt.setNull(18, Types.NULL);
+                stmt.setNull(17, Types.NULL);
             } else {
-                stmt.setString(18, laudo.getObs().toUpperCase().trim());
+                stmt.setString(17, laudo.getObs().toUpperCase().trim());
             }
 
-            stmt.setString(19, laudo.getSituacao().toUpperCase());
+            stmt.setString(18, laudo.getSituacao().toUpperCase());
 
             if (laudo.getSituacao() == null) {
-                stmt.setNull(20, Types.NULL);
+                stmt.setNull(19, Types.NULL);
             } else {
-                stmt.setDate(20, DataUtil.converterDateUtilParaDateSql(laudo.getDataAutorizacao()));
+                stmt.setDate(19, DataUtil.converterDateUtilParaDateSql(laudo.getDataAutorizacao()));
             }
 
-            stmt.setInt(21, user_session.getCodigo());
+            stmt.setInt(20, user_session.getCodigo());
 
-            stmt.setInt(22, laudo.getId());
+            stmt.setInt(21, laudo.getId());
 
             stmt.executeUpdate();
 
@@ -334,7 +336,7 @@ public class LaudoDAO {
 
     public ArrayList<LaudoBean> listaLaudos(String situacao) throws ProjetoException {
 
-        String sql = "select id_laudo, l.id_recurso, r.descrecurso, l.codpaciente, p.nome, " +
+        String sql = "select id_laudo,  l.codpaciente, p.nome, " +
                 "l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, l.periodo, " +
                 "l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, l.codprocedimento_secundario2, " +
                 "l.codprocedimento_secundario3, l.codprocedimento_secundario4, l.codprocedimento_secundario5, " +
@@ -343,7 +345,6 @@ public class LaudoDAO {
                 "from hosp.laudo l " +
                 "left join hosp.pacientes p on (p.id_paciente = l.codpaciente) " +
                 "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) " +
-                "left join hosp.recurso r on (l.id_recurso = r.id) " +
                 "LEFT JOIN hosp.cid c ON (c.cod = l.cid1) " +
                 "where l.ativo is true and l.cod_empresa = ? ";
 
@@ -372,8 +373,6 @@ public class LaudoDAO {
                 l.setId(rs.getInt("id_laudo"));
                 l.getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 l.getPaciente().setNome(rs.getString("nome"));
-                l.getRecurso().setIdRecurso(rs.getInt("id_recurso"));
-                l.getRecurso().setDescRecurso(rs.getString("descrecurso"));
                 l.setDataSolicitacao(rs.getDate("data_solicitacao"));
                 l.setMesInicio(rs.getInt("mes_inicio"));
                 l.setAnoInicio(rs.getInt("ano_inicio"));
@@ -416,7 +415,7 @@ public class LaudoDAO {
 
         LaudoBean l = new LaudoBean();
 
-        String sql = "select id_laudo, l.id_recurso, r.descrecurso, l.codpaciente, p.nome, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
+        String sql = "select id_laudo,l.codpaciente, p.nome, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
                 + " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, ps1.nome as nome1, "
                 + " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, " +
                 " l.codprocedimento_secundario4, ps4.nome as nome4, " +
@@ -432,7 +431,7 @@ public class LaudoDAO {
                 + " left join hosp.cid c1 on (c1.cod = l.cid1) "
                 + " left join hosp.cid c2 on (c2.cod = l.cid2) "
                 + " left join hosp.cid c3 on (c3.cod = l.cid3) "
-                + " left join hosp.recurso r on (l.id_recurso = r.id) where id_laudo = ?";
+                + "  where id_laudo = ?";
 
 
         try {
@@ -446,8 +445,6 @@ public class LaudoDAO {
                 l.setId(rs.getInt("id_laudo"));
                 l.getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 l.getPaciente().setNome(rs.getString("nome"));
-                l.getRecurso().setIdRecurso(rs.getInt("id_recurso"));
-                l.getRecurso().setDescRecurso(rs.getString("descrecurso"));
                 l.setDataSolicitacao(rs.getDate("data_solicitacao"));
                 l.setMesInicio(rs.getInt("mes_inicio"));
                 l.setAnoInicio(rs.getInt("ano_inicio"));
