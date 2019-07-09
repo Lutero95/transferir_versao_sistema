@@ -129,7 +129,7 @@
                                         required="true" requiredMessage="Empresa: Campo obrigatório!">
 
                                     <f:selectItem itemLabel="Selecione"/>
-                                    <f:selectItems value="#{EmpresaController.listarEmpresa()}"
+                                    <f:selectItems value="#{EmpresaController.listarTodasAsEmpresa()}"
                                                    var="emp" itemLabel="#{emp.nomeFantasia}"
                                                    itemValue="#{emp.codEmpresa}"/>
                                 </b:selectOneMenu>
@@ -152,7 +152,7 @@
                                                  value="#{MBFuncionarios.profissional.unidadeExtra.codEmpresa}">
 
                                     <f:selectItem itemLabel="Selecione"/>
-                                    <f:selectItems value="#{EmpresaController.listarEmpresa()}"
+                                    <f:selectItems value="#{EmpresaController.listarTodasAsEmpresa()}"
                                                    var="emp" itemLabel="#{emp.nomeFantasia}"
                                                    itemValue="#{emp.codEmpresa}"/>
                                 </b:selectOneMenu>

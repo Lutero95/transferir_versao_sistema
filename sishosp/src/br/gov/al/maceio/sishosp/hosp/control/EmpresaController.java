@@ -142,6 +142,10 @@ public class EmpresaController implements Serializable {
         listaEmpresas = eDao.listarEmpresa();
     }
 
+    public List<EmpresaBean> listarTodasAsEmpresa() throws ProjetoException {
+        return eDao.listarEmpresa();
+    }
+
     public List<GrupoBean> listaGrupoAutoCompleteComPrograma(String query)
             throws ProjetoException {
         List<GrupoBean> listaGrupo = new ArrayList<>();
