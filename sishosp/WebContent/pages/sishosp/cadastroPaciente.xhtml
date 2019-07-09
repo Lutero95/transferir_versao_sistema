@@ -83,7 +83,7 @@
                             <b:column span="3" class="label-position">
                                 <b:label for="genero" value="Gênero" severity="info"/>
 
-                                <b:selectOneMenu required="true" disable="true"
+                                <b:selectOneMenu required="false" disable="true"
                                                  requiredMessage="Gênero: Campo obrigatório!" id="genero"
                                                  value="#{PacienteController.paciente.genero.id}">
                                     <f:selectItem itemLabel="Selecione" itemValue=""/>
@@ -315,7 +315,7 @@
                         <b:row>
 
                             <b:column span="3" class="label-position">
-                                <b:label for="inputcomplemento" value="Complemento (Ex: Ao lado, em frente)"
+                                <b:label for="inputcomplemento" value="Complemento"
                                          severity="info"/>
 
                                 <b:inputText
@@ -325,7 +325,7 @@
                             </b:column>
 
                             <b:column span="8" class="label-position">
-                                <b:label for="referencia" value="Referência" severity="info"/>
+                                <b:label for="referencia" value="Referência  (Ex: Ao lado, em frente)" severity="info"/>
 
                                 <b:inputText
                                         value="#{PacienteController.paciente.endereco.referencia}"
