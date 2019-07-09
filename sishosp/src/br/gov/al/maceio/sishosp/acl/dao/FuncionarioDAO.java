@@ -222,7 +222,7 @@ public class FuncionarioDAO {
                 + "join acl.perm_geral pg on pg.id_permissao = pm.id "
                 + "join acl.funcao fun on fun.id = pg.id_funcao "
                 + "join acl.sistema si on si.id = fun.id_sistema where us.id_funcionario = ? and fun.ativa = true "
-                + "order by pmdesc, sid";
+                + "order by medesc, sid";
 
         List<Permissoes> lista = new ArrayList<>();
         //FacesContext fc = FacesContext.getCurrentInstance();
