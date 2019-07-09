@@ -25,6 +25,7 @@ public class PacienteBean implements Serializable {
     private String tipoDeficiencia;
     private Boolean necessitaNomeSocial;
     private String nomeSocial;
+    private String sexo;
 
     // ENCAMINHADO ATRIBUTOS
     private Integer codEnchaminhado;
@@ -625,5 +626,13 @@ public class PacienteBean implements Serializable {
 
     public void setTelefone(Telefone telefone) {
         this.telefone = telefone;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
 }
