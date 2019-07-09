@@ -202,6 +202,60 @@
 
                     </p:tab>
 
+                    <p:tab title="Programa e Grupo">
+
+                        <p:outputPanel id="outProgramaGrupo">
+
+                            <b:row>
+
+                                <b:column span="2" class="label-position">
+                                    <p:outputLabel value="Grupo:" style="margin-left:-15px; margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+                                    <p:commandButton process="@this" size="sm" immediate="true"
+                                                     tooltip="Incluir Profissional" icon="ui-icon-plus"
+                                                     class="new-btn-acao-table acao-editar"
+                                                     style="margin-left: 20px;"
+                                                     oncomplete="PF('dlgConsuGrupos').show();"/>
+                                </b:column>
+
+                                <b:column span="6" class="label-position">
+
+                                    <p:dataTable emptyMessage="Nenhum Programa/Grupo"
+                                                 styleClass="table table-hover" id="tabelagrupo"
+                                                 value="#{MBFuncionarios.listaGruposEProgramasProfissional}"
+                                                 var="programa" paginator="true" paginatorPosition="bottom"
+                                                 rows="12" resizableColumns="true">
+
+                                        <p:column headerText="Programa">
+                                            <p:outputLabel value="#{programa.descPrograma}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Grupo">
+                                            <p:outputLabel value="#{programa.grupoBean.descGrupo}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Ação">
+                                            <div align="center">
+                                                <p:commandButton immediate="true"
+                                                                 action="#{MBFuncionarios.removeListaGruposEProgramasProfissional()}"
+                                                                 icon="ui-icon-trash" update="tabelagrupo"
+                                                                 class="new-btn-acao-table acao-excluir">
+                                                    <f:setPropertyActionListener value="#{programa}"
+                                                                                 target="#{MBFuncionarios.profissional.progAdd}"/>
+                                                </p:commandButton>
+                                            </div>
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </b:column>
+
+                            </b:row>
+
+                        </p:outputPanel>
+
+                    </p:tab>
+
 
                     <p:tab title="Dados para Atendimento">
 
@@ -308,55 +362,6 @@
                                         </b:inputText>
 
                                     </p:outputPanel>
-                                </b:column>
-
-                            </b:row>
-
-                            <br></br>
-
-                            <b:row rendered="#{MBFuncionarios.profissional.realizaAtendimento == true}">
-
-                                <b:column span="2" class="label-position">
-                                    <p:outputLabel value="Grupo:" style="margin-left:-15px; margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-
-                                    <p:commandButton process="@this" size="sm" immediate="true"
-                                                     tooltip="Incluir Profissional" icon="ui-icon-plus"
-                                                     class="new-btn-acao-table acao-editar"
-                                                     style="margin-left: 20px;"
-                                                     oncomplete="PF('dlgConsuGrupos').show();"/>
-                                </b:column>
-
-                                <b:column span="6" class="label-position">
-
-                                    <p:dataTable emptyMessage="Nenhum Programa/Grupo"
-                                                 styleClass="table table-hover" id="tabelagrupo"
-                                                 value="#{MBFuncionarios.listaGruposEProgramasProfissional}"
-                                                 var="programa" paginator="true" paginatorPosition="bottom"
-                                                 rows="12" resizableColumns="true">
-
-                                        <p:column headerText="Programa">
-                                            <p:outputLabel value="#{programa.descPrograma}"/>
-                                        </p:column>
-
-                                        <p:column headerText="Grupo">
-                                            <p:outputLabel value="#{programa.grupoBean.descGrupo}"/>
-                                        </p:column>
-
-                                        <p:column headerText="Ação">
-                                            <div align="center">
-                                                <p:commandButton immediate="true"
-                                                                 action="#{MBFuncionarios.removeListaGruposEProgramasProfissional()}"
-                                                                 icon="ui-icon-trash" update="tabelagrupo"
-                                                                 class="new-btn-acao-table acao-excluir">
-                                                    <f:setPropertyActionListener value="#{programa}"
-                                                                                 target="#{MBFuncionarios.profissional.progAdd}"/>
-                                                </p:commandButton>
-                                            </div>
-                                        </p:column>
-                                    </p:dataTable>
-
-
                                 </b:column>
 
                             </b:row>
