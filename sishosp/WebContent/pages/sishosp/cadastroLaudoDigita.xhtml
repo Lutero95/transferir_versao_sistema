@@ -135,7 +135,7 @@
                                         size="31" converter="conProcedimento" id="descProcP1"
                                         required="true" class="select-agendaEquipe4"
                                         requiredMessage="Escolha o procedimento primário!"
-                                        completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+                                        completeMethod="#{ProcedimentoController.listaProcedimentoQueGeramLaudoAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
                                         itemLabel="#{theme.nomeProc}">
@@ -145,7 +145,7 @@
 
                                 <p:commandButton id="btBusProcP1" icon="ui-icon-search"
                                                  oncomplete="PF('dlgConsulProcPrimario').show();" immediate="true"
-                                                 actionListener="#{ProcedimentoController.listarProcedimentos()}"/>
+                                                 actionListener="#{ProcedimentoController.listarProcedimentosQueGeramLaudo()}"/>
                             </p:outputPanel>
                         </b:column>
  <b:column span="1" style="color: #2e84ce;width:108px !important">
@@ -200,7 +200,7 @@
                                         value="#{LaudoController.laudo.procedimentoSecundario1}"
                                         size="31" converter="conProcedimento" id="descProcS1"
                                         class="select-agendaEquipe4"
-                                        completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+                                        completeMethod="#{ProcedimentoController.listaProcedimentoQueGeramLaudoAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
                                         itemLabel="#{theme.nomeProc}">
@@ -209,7 +209,7 @@
                                 <p:commandButton id="btBusProcS1" icon="ui-icon-search"
                                                  onclick="PF('dlgConsulProcSecundario1').show();"
                                                  immediate="true"
-                                                 actionListener="#{ProcedimentoController.listarProcedimentos()}"/>
+                                                 actionListener="#{ProcedimentoController.listarProcedimentosQueGeramLaudo()}"/>
                             </p:outputPanel>
                         </b:column>
 
@@ -222,7 +222,7 @@
                                         value="#{LaudoController.laudo.procedimentoSecundario2}"
                                         size="31" converter="conProcedimento" id="descProcS2"
                                         class="select-agendaEquipe4"
-                                        completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+                                        completeMethod="#{ProcedimentoController.listaProcedimentoQueGeramLaudoAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         minQueryLength="1" itemValue="#{theme}"
                                         itemLabel="#{theme.nomeProc}">
@@ -231,7 +231,7 @@
                                 <p:commandButton id="btBusProcS2" icon="ui-icon-search"
                                                  onclick="PF('dlgConsulProcSecundario2').show();"
                                                  immediate="true"
-                                                 actionListener="#{ProcedimentoController.listarProcedimentos()}"/>
+                                                 actionListener="#{ProcedimentoController.listarProcedimentosQueGeramLaudo()}"/>
                             </p:outputPanel>
                         </b:column>
 
@@ -249,7 +249,7 @@
                                 <p:autoComplete
                                         value="#{LaudoController.laudo.procedimentoSecundario3}"
                                         size="31" converter="conProcedimento" id="descProcS3"
-                                        completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+                                        completeMethod="#{ProcedimentoController.listaProcedimentoQueGeramLaudoAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         class="select-agendaEquipe4"
                                         minQueryLength="1" itemValue="#{theme}"
@@ -259,7 +259,7 @@
                                 <p:commandButton id="btBusProcS3" icon="ui-icon-search"
                                                  onclick="PF('dlgConsulProcSecundario3').show();"
                                                  immediate="true"
-                                                 actionListener="#{ProcedimentoController.listarProcedimentos()}"/>
+                                                 actionListener="#{ProcedimentoController.listarProcedimentosQueGeramLaudo()}"/>
                             </p:outputPanel>
                         </b:column>
 
@@ -271,7 +271,7 @@
                                 <p:autoComplete
                                         value="#{LaudoController.laudo.procedimentoSecundario4}"
                                         size="31" converter="conProcedimento" id="descProcS4"
-                                        completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+                                        completeMethod="#{ProcedimentoController.listaProcedimentoQueGeramLaudoAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         class="select-agendaEquipe4"
                                         minQueryLength="1" itemValue="#{theme}"
@@ -281,7 +281,7 @@
                                 <p:commandButton id="btBusProcS4" icon="ui-icon-search"
                                                  onclick="PF('dlgConsulProcSecundario4').show();"
                                                  immediate="true"
-                                                 actionListener="#{ProcedimentoController.listarProcedimentos()}"/>
+                                                 actionListener="#{ProcedimentoController.listarProcedimentosQueGeramLaudo()}"/>
                             </p:outputPanel>
                         </b:column>
 
@@ -299,7 +299,7 @@
                                 <p:autoComplete
                                         value="#{LaudoController.laudo.procedimentoSecundario5}"
                                         size="31" converter="conProcedimento" id="descProcS5"
-                                        completeMethod="#{ProcedimentoController.listaProcedimentoAutoComplete}"
+                                        completeMethod="#{ProcedimentoController.listaProcedimentoQueGeramLaudoAutoComplete}"
                                         effect="fade" var="theme" forceSelection="true"
                                         class="select-agendaEquipe4"
                                         minQueryLength="1" itemValue="#{theme}"
@@ -309,7 +309,7 @@
                                 <p:commandButton id="btBusProcS5" icon="ui-icon-search"
                                                  onclick="PF('dlgConsulProcSecundario5').show();"
                                                  immediate="true"
-                                                 actionListener="#{ProcedimentoController.listarProcedimentos()}"/>
+                                                 actionListener="#{ProcedimentoController.listarProcedimentosQueGeramLaudo()}"/>
                             </p:outputPanel>
                         </b:column>
 

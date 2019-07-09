@@ -43,7 +43,7 @@
 
 							<b:inputText
 								value="#{TipoAtendimentoController.tipoAtendimento.intervaloMinimo}"
-								id="inputintervalo" required="true"
+								id="inputintervalo" required="false"
 								requiredMessage="Intervalo mínimo: Campo obrigatório!">
 							</b:inputText>
 
@@ -112,7 +112,7 @@
 
 					<b:row>
 						<b:column span="3">
-							<p:selectBooleanCheckbox label="Equipe" itemLabel="Equipe"
+							<p:selectBooleanCheckbox label="Equipe" itemLabel="Atendimento em Equipe"
 								style="color:#2e84ce;"
 								value="#{TipoAtendimentoController.tipoAtendimento.equipe}">
 							</p:selectBooleanCheckbox>

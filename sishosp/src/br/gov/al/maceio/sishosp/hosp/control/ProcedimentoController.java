@@ -207,6 +207,12 @@ public class ProcedimentoController implements Serializable {
     public void setCabecalho(String cabecalho) {
         this.cabecalho = cabecalho;
     }
+    
+    public List<ProcedimentoBean> listaProcedimentoQueGeramLaudoAutoComplete(String query)
+            throws ProjetoException {
+        List<ProcedimentoBean> result = pDao.listarProcedimentoQueGeramLaudoBusca(query, 1);
+        return result;
+    }
 
     public List<ProcedimentoBean> listaProcedimentoAutoComplete(String query)
             throws ProjetoException {
@@ -221,6 +227,11 @@ public class ProcedimentoController implements Serializable {
 
     public void listarProcedimentos() throws ProjetoException {
         this.listaProcedimentos = pDao.listarProcedimento();
+        
+    }
+    
+    public void listarProcedimentosQueGeramLaudo() throws ProjetoException {
+        this.listaProcedimentos = pDao.listarProcedimentoLaudo();
         
     }
 
