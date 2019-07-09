@@ -41,22 +41,9 @@ public class PacienteController implements Serializable {
     private Telefone telefone;
     private Boolean bairroExiste;
 
-    // AUTO COMPLETE
-    private EscolaBean escolaSuggestion;
-    private EscolaridadeBean escolaridadeSuggestion;
-    private EncaminhadoBean encaminhadoSuggestion;
-    private FormaTransporteBean transporteSuggestion;
-    private ProfissaoBean profissaoSuggestion;
-
     // LISTAS
     private List<PacienteBean> listaPacientes;
-    private List<RacaBean> listaRaca;
     private List<PacienteBean> listaPacientesParaAgenda;
-    private List<EscolaBean> listaEscolas;
-    private List<EscolaridadeBean> listaEscolaridade;
-    private List<ProfissaoBean> listaProfissao;
-    private List<EncaminhadoBean> listaEncaminhado;
-    private List<FormaTransporteBean> listaTransporte;
     private List<PacienteBean> listaPacientesAgenda;
 
     //CONSTANTES
@@ -75,21 +62,12 @@ public class PacienteController implements Serializable {
         encaminhamento = new EncaminhamentoBean();
         encaminhado = new EncaminhadoBean();
         cidadeDoCep = false;
-        escolaSuggestion = new EscolaBean();
-        transporteSuggestion = null;
         telefone = new Telefone();
 
         // LISTAS
         listaPacientes = new ArrayList<>();
         listaPacientesParaAgenda = new ArrayList<>();
-        listaEscolas = new ArrayList<>();
-        listaEscolaridade = new ArrayList<>();
-        listaProfissao = new ArrayList<>();
-        listaEncaminhado = new ArrayList<>();
-        listaTransporte = new ArrayList<>();
         listaPacientesAgenda = new ArrayList<PacienteBean>();
-        listaRaca = new ArrayList<>();
-        listaRaca = null;
         bairroExiste = null;
     }
 
@@ -109,12 +87,6 @@ public class PacienteController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
             this.paciente = pDao.listarPacientePorID(id);
-            escolaridadeSuggestion = paciente.getEscolaridade();
-            escolaSuggestion = paciente.getEscola();
-            profissaoSuggestion = paciente.getProfissao();
-            encaminhadoSuggestion = paciente.getEncaminhado();
-            encaminhadoSuggestion = paciente.getEncaminhado();
-            transporteSuggestion = paciente.getFormatransporte();
             if (paciente.getEndereco().getCep() != null) {
                 cidadeDoCep = true;
             }
@@ -140,15 +112,13 @@ public class PacienteController implements Serializable {
         paciente.setEndereco(CEPUtil.encontraCEP(paciente.getEndereco().getCep()));
         EnderecoDAO enderecoDAO = new EnderecoDAO();
         paciente.getEndereco().setCodbairro(enderecoDAO.verificarSeBairroExiste(paciente.getEndereco().getBairro(), paciente.getEndereco().getCodmunicipio()));
-        if(paciente.getEndereco().getCodbairro() != null) {
+        if (paciente.getEndereco().getCodbairro() != null) {
             if (paciente.getEndereco().getCodbairro() > 0) {
                 bairroExiste = true;
-            }
-            else{
+            } else {
                 bairroExiste = false;
             }
-        }
-        else{
+        } else {
             bairroExiste = false;
         }
         enderecoDAO.listaBairrosPorMunicipio(paciente.getEndereco().getCodmunicipio());
@@ -161,32 +131,6 @@ public class PacienteController implements Serializable {
     }
 
     public void gravarPaciente() {
-        if (escolaSuggestion != null)
-            paciente.getEscola().setCodEscola(
-                    escolaSuggestion.getCodEscola());
-        else
-            paciente.getEscola().setCodEscola(null);
-        if (escolaridadeSuggestion != null)
-            paciente.getEscolaridade().setCodescolaridade(
-                    escolaridadeSuggestion.getCodescolaridade());
-        else
-            paciente.getEscolaridade().setCodescolaridade(null);
-        if (profissaoSuggestion != null)
-            paciente.getProfissao().setCodprofissao(
-                    profissaoSuggestion.getCodprofissao());
-        else
-            paciente.getProfissao().setCodprofissao(null);
-
-        if (encaminhadoSuggestion != null)
-            paciente.getEncaminhado().setCodencaminhado(
-                    encaminhadoSuggestion.getCodencaminhado());
-        else
-            paciente.getEncaminhado().setCodencaminhado(null);
-        if (transporteSuggestion != null)
-            paciente.getFormatransporte().setCodformatransporte(
-                    transporteSuggestion.getCodformatransporte());
-        else
-            paciente.getFormatransporte().setCodformatransporte(null);
 
         boolean cadastrou = false;
 
@@ -222,43 +166,22 @@ public class PacienteController implements Serializable {
     }
 
     public void alterarPaciente() {
-    	if ((paciente.getEndereco().getCodbairro() == null) && (paciente.getEndereco().getBairro() == null)) {
-    	JSFUtil.adicionarMensagemAdvertencia("Informe o Bairro!", "Advertência");
-    	}
-    	else
-    	{
-        if (escolaSuggestion != null) {
-            paciente.getEscola().setCodEscola(escolaSuggestion.getCodEscola());
-        }
-        if (escolaridadeSuggestion != null) {
-            paciente.getEscolaridade().setCodescolaridade(
-                    escolaridadeSuggestion.getCodescolaridade());
-        }
-        if (profissaoSuggestion != null) {
-            paciente.getProfissao().setCodprofissao(
-                    profissaoSuggestion.getCodprofissao());
-        }
-        if (encaminhadoSuggestion != null) {
-            paciente.getEncaminhado().setCodencaminhado(
-                    encaminhadoSuggestion.getCodencaminhado());
-        }
-        if (transporteSuggestion != null) {
-            paciente.getFormatransporte().setCodformatransporte(
-                    transporteSuggestion.getCodformatransporte());
-        }
-
-        if(VerificadorUtil.verificarSeObjetoNulo(bairroExiste)){
-            bairroExiste = true;
-        }
-
-        boolean alterou = pDao.alterarPaciente(paciente, bairroExiste);
-
-        if (alterou == true) {
-            JSFUtil.adicionarMensagemSucesso("Paciente alterado com sucesso!", "Sucesso");
+        if ((paciente.getEndereco().getCodbairro() == null) && (paciente.getEndereco().getBairro() == null)) {
+            JSFUtil.adicionarMensagemAdvertencia("Informe o Bairro!", "Advertência");
         } else {
-            JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+
+            if (VerificadorUtil.verificarSeObjetoNulo(bairroExiste)) {
+                bairroExiste = true;
+            }
+
+            boolean alterou = pDao.alterarPaciente(paciente, bairroExiste);
+
+            if (alterou == true) {
+                JSFUtil.adicionarMensagemSucesso("Paciente alterado com sucesso!", "Sucesso");
+            } else {
+                JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
+            }
         }
-    	}
 
     }
 
@@ -307,8 +230,6 @@ public class PacienteController implements Serializable {
 
         ProfissaoDAO dao = new ProfissaoDAO();
         buscaProfissaoCod(prodsel.getCodprofissao());
-        profissaoSuggestion = new ProfissaoBean();
-        profissaoSuggestion = null;
     }
 
     public void buscaTransporteCod(Integer codformatransporte) throws Exception {
@@ -344,8 +265,6 @@ public class PacienteController implements Serializable {
 
         FormaTransporteDAO dao = new FormaTransporteDAO();
         buscaTransporteCod(prodsel.getCodformatransporte());
-        transporteSuggestion = new FormaTransporteBean();
-        transporteSuggestion = null;
     }
 
     public void buscaEncaminhadoCod(Integer codencaminhado) throws Exception {
@@ -382,8 +301,6 @@ public class PacienteController implements Serializable {
 
         EncaminhadoDAO dao = new EncaminhadoDAO();
         buscaEncaminhadoCod(prodsel.getCodencaminhado());
-        encaminhadoSuggestion = new EncaminhadoBean();
-        encaminhadoSuggestion = null;
     }
 
     public void buscaEscolaridadeCod(Integer codescolaridade) throws Exception {
@@ -426,8 +343,6 @@ public class PacienteController implements Serializable {
 
         EscolaridadeDAO dao = new EscolaridadeDAO();
         buscaEscolaridadeCod(prodsel.getCodescolaridade());
-        escolaridadeSuggestion = new EscolaridadeBean();
-        escolaridadeSuggestion = null;
     }
 
     public void buscaEscolaCod(Integer codescola) throws Exception {
@@ -459,17 +374,9 @@ public class PacienteController implements Serializable {
 
         buscaEscolaCod(prodsel.getCodEscola());
 
-        escolaSuggestion = new EscolaBean();
-        escolaSuggestion = null;
-
     }
 
     public void limparDados() {
-        transporteSuggestion = new FormaTransporteBean();
-        encaminhadoSuggestion = new EncaminhadoBean();
-        profissaoSuggestion = new ProfissaoBean();
-        escolaridadeSuggestion = new EscolaridadeBean();
-        escolaSuggestion = new EscolaBean();
         paciente = new PacienteBean();
         endereco = new EnderecoBean();
         escola = new EscolaBean();
@@ -519,8 +426,8 @@ public class PacienteController implements Serializable {
         this.paciente.getListaTelefones().remove(telefone);
     }
 
-    public void limparTelefone(){
-    	
+    public void limparTelefone() {
+
         telefone = new Telefone();
     }
 
@@ -572,48 +479,6 @@ public class PacienteController implements Serializable {
         this.encaminhamento = encaminhamento;
     }
 
-    public List<EscolaBean> getListaEscolas() throws ProjetoException {
-        if (listaEscolas == null) {
-
-            listaEscolas = esDao.listaEscolas();
-
-        }
-        return listaEscolas;
-    }
-
-    public void setListaEscolas(List<EscolaBean> listaEscolas) {
-        this.listaEscolas = listaEscolas;
-    }
-
-    public List<EscolaridadeBean> getListaEscolaridade()
-            throws ProjetoException {
-        if (listaEscolaridade == null) {
-
-            EscolaridadeDAO fdao = new EscolaridadeDAO();
-            listaEscolaridade = fdao.listaEscolaridade();
-
-        }
-        return listaEscolaridade;
-    }
-
-    public void setListaEscolaridade(List<EscolaridadeBean> listaEscolaridade) {
-        this.listaEscolaridade = listaEscolaridade;
-    }
-
-    public List<ProfissaoBean> getListaProfissao() throws ProjetoException {
-        if (listaProfissao == null) {
-
-            ProfissaoDAO fdao = new ProfissaoDAO();
-            listaProfissao = fdao.listaProfissoes();
-
-        }
-        return listaProfissao;
-    }
-
-    public void setListaProfissao(List<ProfissaoBean> listaProfissao) {
-        this.listaProfissao = listaProfissao;
-    }
-
     public EncaminhadoBean getEncaminhado() {
         return encaminhado;
     }
@@ -624,75 +489,6 @@ public class PacienteController implements Serializable {
 
     public void setListaPacientes(List<PacienteBean> listaPacientes) {
         this.listaPacientes = listaPacientes;
-    }
-
-    public List<EncaminhadoBean> getListaEncaminhado() throws ProjetoException {
-        if (listaEncaminhado == null) {
-            EncaminhadoDAO fdao = new EncaminhadoDAO();
-            listaEncaminhado = fdao.listaEncaminhados();
-
-        }
-        return listaEncaminhado;
-    }
-
-    public void setListaEncaminhado(List<EncaminhadoBean> listaEncaminhado) {
-        this.listaEncaminhado = listaEncaminhado;
-    }
-
-    public List<FormaTransporteBean> getListaTransporte()
-            throws ProjetoException {
-        if (listaTransporte == null) {
-
-            FormaTransporteDAO fdao = new FormaTransporteDAO();
-            listaTransporte = fdao.listaTransportes();
-
-        }
-        return listaTransporte;
-    }
-
-    public void setListaTransporte(List<FormaTransporteBean> listaTransporte) {
-        this.listaTransporte = listaTransporte;
-    }
-
-    public EscolaBean getEscolaSuggestion() {
-        return escolaSuggestion;
-    }
-
-    public void setEscolaSuggestion(EscolaBean escolaSuggestion) {
-        this.escolaSuggestion = escolaSuggestion;
-    }
-
-    public EscolaridadeBean getEscolaridadeSuggestion() {
-        return escolaridadeSuggestion;
-    }
-
-    public void setEscolaridadeSuggestion(
-            EscolaridadeBean escolaridadeSuggestion) {
-        this.escolaridadeSuggestion = escolaridadeSuggestion;
-    }
-
-    public EncaminhadoBean getEncaminhadoSuggestion() {
-        return encaminhadoSuggestion;
-    }
-
-    public void setEncaminhadoSuggestion(EncaminhadoBean encaminhadoSuggestion) {
-        this.encaminhadoSuggestion = encaminhadoSuggestion;
-    }
-
-    public FormaTransporteBean getTransporteSuggestion() {
-        return transporteSuggestion;
-    }
-
-    public void setTransporteSuggestion(FormaTransporteBean transporteSuggestion) {
-        this.transporteSuggestion = transporteSuggestion;
-    }
-
-    public ProfissaoBean getProfissaoSuggestion() {
-        return profissaoSuggestion;
-    }
-
-    public void setProfissaoSuggestion(ProfissaoBean profissaoSuggestion) {
-        this.profissaoSuggestion = profissaoSuggestion;
     }
 
     public String getDescricaoParaBuscar() {
@@ -754,18 +550,6 @@ public class PacienteController implements Serializable {
         this.cidadeDoCep = cidadeDoCep;
     }
 
-    public List<RacaBean> getListaRaca() throws ProjetoException {
-        if (listaRaca == null) {
-            RacaDAO rDao = new RacaDAO();
-            listaRaca = rDao.listaCor();
-        }
-        return listaRaca;
-    }
-
-    public void setListaRaca(List<RacaBean> listaRaca) {
-        this.listaRaca = listaRaca;
-    }
-
     public Telefone getTelefone() {
         return telefone;
     }
@@ -782,11 +566,11 @@ public class PacienteController implements Serializable {
         this.bairroExiste = bairroExiste;
     }
 
-	public List<PacienteBean> getListaPacientesAgenda() {
-		return listaPacientesAgenda;
-	}
+    public List<PacienteBean> getListaPacientesAgenda() {
+        return listaPacientesAgenda;
+    }
 
-	public void setListaPacientesAgenda(List<PacienteBean> listaPacientesAgenda) {
-		this.listaPacientesAgenda = listaPacientesAgenda;
-	}
+    public void setListaPacientesAgenda(List<PacienteBean> listaPacientesAgenda) {
+        this.listaPacientesAgenda = listaPacientesAgenda;
+    }
 }

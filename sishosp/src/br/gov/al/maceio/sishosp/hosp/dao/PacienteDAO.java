@@ -10,6 +10,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.Telefone;
 
@@ -184,21 +185,28 @@ public class PacienteDAO {
                 stmt.setDate(30, new java.sql.Date(paciente.getDataExpedicao2()
                         .getTime()));
             }
-            if (paciente.getEscolaridade().getCodescolaridade() == null) {
-                stmt.setNull(31, Types.INTEGER);
-            } else {
+
+            if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getEscolaridade()))
                 stmt.setInt(31, paciente.getEscolaridade().getCodescolaridade());
-            }
-            if (paciente.getEscola().getCodEscola() != null) {
+            else
+                stmt.setNull(31, Types.INTEGER);
+
+            if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getEscola()))
                 stmt.setInt(32, paciente.getEscola().getCodEscola());
+            else
+                stmt.setNull(32, Types.INTEGER);
+
+            if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getProfissao())) {
+                if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getProfissao().getCodprofissao())) {
+                    stmt.setNull(33, Types.INTEGER);
+                }
+                else{
+                    stmt.setInt(33, paciente.getProfissao().getCodprofissao());
+                }
             } else {
-                stmt.setNull(32, Types.NULL);
-            }
-            if (paciente.getProfissao().getCodprofissao() == null) {
                 stmt.setNull(33, Types.INTEGER);
-            } else {
-                stmt.setInt(33, paciente.getProfissao().getCodprofissao());
             }
+
             if (paciente.getTrabalha() == null) {
                 stmt.setNull(34, Types.CHAR);
             } else {
@@ -237,18 +245,18 @@ public class PacienteDAO {
                 stmt.setDate(40, new java.sql.Date(paciente
                         .getDataNascimentoresp().getTime()));
             }
-            if (paciente.getEncaminhado().getCodencaminhado() == null) {
-                stmt.setNull(41, Types.INTEGER);
-            } else {
-                stmt.setInt(41, paciente.getEncaminhado().getCodencaminhado());
-            }
 
-            if (paciente.getFormatransporte().getCodformatransporte() == null) {
-                stmt.setNull(42, Types.INTEGER);
-            } else {
+            if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getEncaminhado()))
+                stmt.setInt(41, paciente.getEncaminhado().getCodencaminhado());
+            else
+                stmt.setNull(41, Types.INTEGER);
+
+            if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getFormatransporte()))
                 stmt.setInt(42, paciente.getFormatransporte()
                         .getCodformatransporte());
-            }
+            else
+                stmt.setNull(42, Types.INTEGER);
+
             stmt.setString(43, paciente.getDeficiencia().toUpperCase().trim());
 
             stmt.setInt(44, paciente.getEndereco().getCodmunicipio());
@@ -414,20 +422,25 @@ public class PacienteDAO {
                 stmt.setNull(30, Types.DATE);
             }
 
-            if (paciente.getEscolaridade().getCodescolaridade() != null)
+            if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getEscolaridade()))
                 stmt.setInt(31, paciente.getEscolaridade().getCodescolaridade());
             else
                 stmt.setNull(31, Types.INTEGER);
 
-            if (paciente.getEscola().getCodEscola() != null)
+            if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getEscola()))
                 stmt.setInt(32, paciente.getEscola().getCodEscola());
             else
                 stmt.setNull(32, Types.INTEGER);
 
-            if (paciente.getProfissao().getCodprofissao() == null) {
-                stmt.setNull(33, Types.INTEGER);
+            if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getProfissao())) {
+                if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getProfissao().getCodprofissao())) {
+                    stmt.setNull(33, Types.INTEGER);
+                }
+                else{
+                    stmt.setInt(33, paciente.getProfissao().getCodprofissao());
+                }
             } else {
-                stmt.setInt(33, paciente.getProfissao().getCodprofissao());
+                stmt.setNull(33, Types.INTEGER);
             }
 
             stmt.setString(34, paciente.getTrabalha());
@@ -450,17 +463,17 @@ public class PacienteDAO {
                 stmt.setNull(40, Types.DATE);
             }
 
-            if (paciente.getEncaminhado().getCodencaminhado() != null)
+            if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getEncaminhado()))
                 stmt.setInt(41, paciente.getEncaminhado().getCodencaminhado());
             else
                 stmt.setNull(41, Types.INTEGER);
 
-            if (paciente.getFormatransporte()
-                    .getCodformatransporte() != null)
+            if (!VerificadorUtil.verificarSeObjetoNulo(paciente.getFormatransporte()))
                 stmt.setInt(42, paciente.getFormatransporte()
                         .getCodformatransporte());
             else
                 stmt.setNull(42, Types.INTEGER);
+
             stmt.setString(43, paciente.getDeficiencia());
 
             stmt.setInt(44, paciente.getEndereco().getCodmunicipio());
@@ -481,7 +494,7 @@ public class PacienteDAO {
 
             stmt.setString(52, paciente.getInstagram());
 
-            if (paciente.getNomeSocial() == null) {
+            if (VerificadorUtil.verificarSeObjetoNuloOuVazio(paciente.getNomeSocial())) {
                 stmt.setNull(53, Types.CHAR);
             } else {
                 stmt.setString(53, paciente.getNomeSocial().toUpperCase());

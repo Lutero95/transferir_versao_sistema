@@ -111,6 +111,10 @@ public class RacaController implements Serializable {
 			listaRacas = rDao.listaCor();
 	}
 
+	public List<RacaBean> listarRacas() throws ProjetoException {
+		return rDao.listaCor();
+	}
+
 	public RacaBean getRaca() {
 		return raca;
 	}

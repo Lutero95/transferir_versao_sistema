@@ -140,7 +140,7 @@
                                 <b:selectOneMenu disable="true" required="true" requiredMessage="Raça: Campo obrigatório!"
                                                  value="#{PacienteController.paciente.codRaca}" id="cor">
                                     <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                    <f:selectItems value="#{PacienteController.listaRaca}"
+                                    <f:selectItems value="#{RacaController.listarRacas()}"
                                                    var="sis" itemLabel="#{sis.descRaca}"
                                                    itemValue="#{sis.codRaca}"/>
                                 </b:selectOneMenu>
@@ -562,7 +562,7 @@
                                 <b:label value="Escolaridade:" severity="danger"/>
 
                                 <p:autoComplete id="escolacomplete1" class="select-agendaEquipe4"
-                                                value="#{PacienteController.escolaridadeSuggestion}" size="31"
+                                                value="#{PacienteController.paciente.escolaridade}" size="31"
                                                 completeMethod="#{PacienteController.completeText2}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
@@ -584,7 +584,7 @@
                                 <b:label value="Escola:" severity="danger" class="fire-label"/>
 
                                 <p:autoComplete id="escolacomplete2" class="select-agendaEquipe4"
-                                                value="#{PacienteController.escolaSuggestion}" size="31"
+                                                value="#{PacienteController.paciente.escola}" size="31"
                                                 completeMethod="#{PacienteController.completeText}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
@@ -604,7 +604,7 @@
                                 <b:label value="Profissão:" severity="danger" class="fire-label"/>
 
                                 <p:autoComplete id="escolacomplete3" class="select-agendaEquipe4"
-                                                value="#{PacienteController.profissaoSuggestion}" size="31"
+                                                value="#{PacienteController.paciente.profissao}" size="31"
                                                 completeMethod="#{PacienteController.completeText6}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
@@ -724,7 +724,7 @@
                                 <b:label value="Encaminhado: " severity="danger"/>
 
                                 <p:autoComplete id="escolacomplete4" class="select-agendaEquipe4"
-                                                value="#{PacienteController.encaminhadoSuggestion}" size="31"
+                                                value="#{PacienteController.paciente.encaminhado}" size="31"
                                                 completeMethod="#{PacienteController.completeText4}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
@@ -745,7 +745,7 @@
                                 <b:label value="Transporte: " severity="danger"/>
 
                                 <p:autoComplete id="escolacomplete5" class="select-agendaEquipe4"
-                                                value="#{PacienteController.transporteSuggestion}" size="31"
+                                                value="#{PacienteController.paciente.formatransporte}" size="31"
                                                 completeMethod="#{PacienteController.completeText5}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
