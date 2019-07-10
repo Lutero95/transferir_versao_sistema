@@ -54,7 +54,7 @@
                         <b:row>
 
                             <b:column span="3" class="label-position">
-                                <b:label for="estadocivil" value="Est. Civil" severity="info"/>
+                                <b:label for="estadocivil" value="Estado Civil" severity="info"/>
 
                                 <b:selectOneMenu
                                         value="#{PacienteController.paciente.estadoCivil}"
@@ -581,12 +581,12 @@
 
                     </p:tab>
 
-                    <p:tab title="Complemento 1">
+                    <p:tab title="Complemento">
 
                         <b:row>
 
                             <b:column span="3" class="label-position new-data-size new-comple1">
-                                <b:label value="Escolaridade:" severity="danger"/>
+                                <b:label value="Escolaridade" severity="info"/>
 
                                 <p:autoComplete id="escolacomplete1" class="select-agendaEquipe4"
                                                 value="#{PacienteController.paciente.escolaridade}" size="31"
@@ -603,12 +603,8 @@
                                                  icon="ui-icon-search" process="@this" style="margin-top: 5px;" update=":buscaescolaridade"/>
                             </b:column>
 
-                        </b:row>
-
-                        <b:row>
-
                             <b:column span="3" class="label-position new-data-size new-comple1">
-                                <b:label value="Escola:" severity="danger" class="fire-label"/>
+                                <b:label value="Escola" severity="info" class="fire-label"/>
 
                                 <p:autoComplete id="escolacomplete2" class="select-agendaEquipe4"
                                                 value="#{PacienteController.paciente.escola}" size="31"
@@ -623,12 +619,9 @@
                                 <p:commandButton process="@this" style="margin-top: 5px;" actionListener="#{EscolaController.buscarEscola()}"
                                                  onclick="PF('dlgbuscaescola').show();" icon="ui-icon-search" update=":buscaescola"/>
                             </b:column>
-                        </b:row>
-
-                        <b:row>
 
                             <b:column span="3" class="label-position new-data-size new-comple1">
-                                <b:label value="Profissão:" severity="danger" class="fire-label"/>
+                                <b:label value="Profissão" severity="info" class="fire-label"/>
 
                                 <p:autoComplete id="escolacomplete3" class="select-agendaEquipe4"
                                                 value="#{PacienteController.paciente.profissao}" size="31"
@@ -649,7 +642,7 @@
                         <b:row>
 
                             <b:column span="2" class="new-data-size2">
-                                <p:outputLabel value="Trabalha: " style="margin-top: 8px;
+                                <p:outputLabel value="Trabalha:" style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
                             </b:column>
 
@@ -661,22 +654,20 @@
                                 </p:selectOneRadio>
                             </b:column>
                         </b:row>
+
                         <b:row>
 
                             <b:column span="3" class="label-position">
-                                <b:label value="Local: " severity="danger"/>
+                                <b:label value="Local" severity="info"/>
 
                                 <p:outputPanel>
                                     <b:inputText id="nome4" size="45"
                                                  value="#{PacienteController.paciente.localtrabalha}"/>
                                 </p:outputPanel>
                             </b:column>
-                        </b:row>
-
-                        <b:row>
 
                             <b:column span="3" class="label-position">
-                                <b:label value="Responsável: " severity="danger"/>
+                                <b:label value="Responsável" severity="info"/>
 
                                 <b:selectOneMenu id="options3" required="false"
                                                  requiredMessage=" Parentesco: Campo obrigatório!"
@@ -688,12 +679,9 @@
                                             itemValue="#{sis.codParentesco}"/>
                                 </b:selectOneMenu>
                             </b:column>
-                        </b:row>
-
-                        <b:row>
 
                             <b:column span="3" class="label-position">
-                                <b:label value="Nome do Responsável: " severity="danger"/>
+                                <b:label value="Nome do Responsável" severity="info"/>
 
                                 <p:outputPanel>
                                     <b:inputText id="nome5" size="45"
@@ -705,19 +693,16 @@
                         <b:row>
 
                             <b:column span="3" class="label-position">
-                                <b:label value="RG: " severity="danger"/>
+                                <b:label value="RG Responsável" severity="info"/>
 
                                 <p:outputPanel>
                                     <b:inputText id="nome6" size="45"
                                                  value="#{PacienteController.paciente.rgresp}"/>
                                 </p:outputPanel>
                             </b:column>
-                        </b:row>
-
-                        <b:row>
 
                             <b:column span="3" class="label-position">
-                                <b:label value="CPF: " severity="danger"/>
+                                <b:label value="CPF Responsável" severity="info"/>
 
                                 <p:outputPanel>
                                     <p:inputMask mask="999.999.999-99" id="nome7"
@@ -728,12 +713,9 @@
 
                                 </p:outputPanel>
                             </b:column>
-                        </b:row>
-
-                        <b:row>
 
                             <b:column span="3" class="label-position new-data-size">
-                                <b:label value="Nascimento Resp.: " severity="danger"/>
+                                <b:label value="Data Nascimento Responsável" severity="info"/>
 
                                 <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
                                             yearRange="-111:+39" pages="1" showOn="button" size="31"
@@ -742,13 +724,11 @@
 
                             </b:column>
                         </b:row>
-                    </p:tab>
-                    <p:tab title="Complemento 2">
 
                         <b:row>
 
                             <b:column span="3" class="label-position new-data-size new-comple1">
-                                <b:label value="Encaminhado: " severity="danger"/>
+                                <b:label value="Encaminhado" severity="info"/>
 
                                 <p:autoComplete id="escolacomplete4" class="select-agendaEquipe4"
                                                 value="#{PacienteController.paciente.encaminhado}" size="31"
@@ -764,12 +744,9 @@
                                                  onclick="PF('dlgbuscaencaminhado').show();"
                                                  icon="ui-icon-search" update=":buscaencaminhado"/>
                             </b:column>
-                        </b:row>
-
-                        <b:row>
 
                             <b:column span="3" class="label-position new-data-size new-comple1">
-                                <b:label value="Transporte: " severity="danger"/>
+                                <b:label value="Transporte" severity="info" class="fire-label"/>
 
                                 <p:autoComplete id="escolacomplete5" class="select-agendaEquipe4"
                                                 value="#{PacienteController.paciente.formatransporte}" size="31"
@@ -787,11 +764,6 @@
                                                  icon="ui-icon-search" update=":buscatransporte"/>
                             </b:column>
                         </b:row>
-
-                    </p:tab>
-
-                    <p:tab title="Complemento 3">
-
 
                         <p:outputPanel id="outDeficiencia" autoUpdate="true">
                             <b:row>
@@ -843,7 +815,6 @@
                             </p:panel>
 
                         </p:outputPanel>
-
 
                     </p:tab>
 
