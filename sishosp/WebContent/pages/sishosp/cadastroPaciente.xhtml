@@ -395,7 +395,8 @@
 
                                 <p:outputPanel id="outBairro">
                                     <b:selectOneMenu id="bairro1"
-                                                     rendered="#{PacienteController.paciente.endereco.bairroUnico == false and PacienteController.bairroExiste == true}"
+                                                     rendered="#{(PacienteController.paciente.endereco.bairroUnico == false and PacienteController.bairroExiste == true)
+                                                     or PacienteController.bairroExiste == null}"
                                                      required="true" requiredMessage="Bairro: Campo obrigatório!"
                                                      value="#{PacienteController.paciente.endereco.codbairro}">
                                         <f:selectItem itemLabel="Selecione" itemValue=""/>
@@ -406,7 +407,8 @@
                                     </b:selectOneMenu>
 
                                     <p:inputText id="bairro2" class="campo-laudoDig3"
-                                                 rendered="#{PacienteController.paciente.endereco.bairroUnico == true or PacienteController.bairroExiste == false}"
+                                                 rendered="#{(PacienteController.paciente.endereco.bairroUnico == true or PacienteController.bairroExiste == false)
+                                                 and PacienteController.bairroExiste != null}"
                                                  value="#{PacienteController.paciente.endereco.bairro}"></p:inputText>
                                 </p:outputPanel>
 
