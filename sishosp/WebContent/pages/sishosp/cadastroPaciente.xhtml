@@ -358,7 +358,7 @@
                                     <f:selectItems
                                             value="#{EnderecoController.endereco.listaEstados}"/>
                                     <p:ajax
-                                            listener="#{EnderecoController.listarMunicipiosPorEstado()}"
+                                            listener="#{EnderecoController.listarMunicipiosPorEstadoGenerico(PacienteController.paciente.endereco.uf)}"
                                             update="outMunicipios"></p:ajax>
                                 </b:selectOneMenu>
                             </b:column>
@@ -379,9 +379,12 @@
                                                      value="#{PacienteController.paciente.endereco.codmunicipio}">
                                         <f:selectItem itemLabel="Selecione" itemValue=""/>
                                         <f:selectItems
-                                                value="#{EnderecoController.listarMunicipiosPorEstado()}"
+                                                value="#{EnderecoController.listarMunicipiosPorEstadoGenerico(PacienteController.paciente.endereco.uf)}"
                                                 var="sis" itemLabel="#{sis.municipio}"
                                                 itemValue="#{sis.codmunicipio}"/>
+                                        <p:ajax
+                                                listener="#{EnderecoController.listarBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
+                                                update="outBairro"></p:ajax>
                                     </b:selectOneMenu>
                                 </p:outputPanel>
 
@@ -392,7 +395,7 @@
 
                                 <p:outputPanel id="outBairro">
                                     <b:selectOneMenu id="bairro1"
-                                                     disabled="#{PacienteController.paciente.endereco.bairroUnico == true}"
+                                                     rendered="#{PacienteController.paciente.endereco.bairroUnico == false and PacienteController.bairroExiste == true}"
                                                      required="true" requiredMessage="Bairro: Campo obrigatório!"
                                                      value="#{PacienteController.paciente.endereco.codbairro}">
                                         <f:selectItem itemLabel="Selecione" itemValue=""/>
@@ -402,7 +405,8 @@
                                                 itemValue="#{sis.codbairro}"/>
                                     </b:selectOneMenu>
 
-                                    <p:inputText id="bairro2" class="campo-laudoDig3" rendered="#{PacienteController.paciente.endereco.bairroUnico == true}"
+                                    <p:inputText id="bairro2" class="campo-laudoDig3"
+                                                 rendered="#{PacienteController.paciente.endereco.bairroUnico == true or PacienteController.bairroExiste == false}"
                                                  value="#{PacienteController.paciente.endereco.bairro}"></p:inputText>
                                 </p:outputPanel>
 
