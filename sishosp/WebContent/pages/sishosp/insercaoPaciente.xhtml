@@ -527,10 +527,11 @@
         </div>
 
 
-        <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
-                  modal="true" id="laudo-id">
+        <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo" 
+                  modal="true" id="laudo-id" >
             <h:form id="formConsuLaudo">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}" page-length="5"
+               page-length-menu="5,10,20"
                              value="#{InsercaoController.listaLaudosVigentes}" id="dtLaudo"
                              var="insercao" display="Nenhum Laudo">
 
