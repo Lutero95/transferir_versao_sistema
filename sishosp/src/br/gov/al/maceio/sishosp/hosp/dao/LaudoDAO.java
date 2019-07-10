@@ -420,7 +420,7 @@ public class LaudoDAO {
                 + " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, " +
                 " l.codprocedimento_secundario4, ps4.nome as nome4, " +
                 " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1, l.cid2, c2.desccid as desccid2, " +
-                " l.cid3, c3.desccid as desccid3, l.obs "
+                " l.cid3, c3.desccid as desccid3, l.obs, data_autorizacao, situacao "
                 + " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
                 + " left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
                 + " left join hosp.proc ps1 on (ps1.id = l.codprocedimento_secundario1) "
@@ -446,6 +446,7 @@ public class LaudoDAO {
                 l.getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 l.getPaciente().setNome(rs.getString("nome"));
                 l.setDataSolicitacao(rs.getDate("data_solicitacao"));
+                l.setDataAutorizacao(rs.getDate("data_autorizacao"));
                 l.setMesInicio(rs.getInt("mes_inicio"));
                 l.setAnoInicio(rs.getInt("ano_inicio"));
                 l.setMesFinal(rs.getInt("mes_final"));
@@ -470,6 +471,7 @@ public class LaudoDAO {
                 l.getCid3().setIdCid(rs.getInt("cid3"));
                 l.getCid3().setDescCid(rs.getString("desccid3"));
                 l.setObs(rs.getString("obs"));
+                l.setSituacao(rs.getString("situacao"));
 
             }
         } catch (SQLException ex) {

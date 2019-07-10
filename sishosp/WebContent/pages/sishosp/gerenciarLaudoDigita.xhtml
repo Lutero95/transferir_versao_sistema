@@ -101,6 +101,14 @@
                                 <f:setPropertyActionListener value="2"
                                                              target="#{LaudoController.tipo}"/>
                             </b:commandButton>
+                            
+                            
+                             <b:commandButton tooltip="Imprimir Laudo" icon="glyphicon-print" size="sm"
+                                             class="btn-acao-table acao-editar" style="margin-left:10px"
+                                             action="#{RelatoriosController.geraLaudo(tab.id)}" ajax="false">
+                             
+                            </b:commandButton>
+                         
 
                             <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
                                              class="btn-acao-table acao-excluir"

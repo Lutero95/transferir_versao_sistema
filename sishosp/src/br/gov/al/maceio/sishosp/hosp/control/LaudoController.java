@@ -67,6 +67,7 @@ public class LaudoController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
             this.laudo = lDao.buscarLaudosPorId(id);
             tipo = Integer.parseInt(params.get("tipo"));
+            renderizarDadosDeAutorizacao();
 
         } else {
 
@@ -78,6 +79,7 @@ public class LaudoController implements Serializable {
 
     public void setaValidadeProcPrimLaudo(Integer validade) {
     	laudo.setPeriodo(validade);
+    	calcularPeriodoLaudo();
     }
     public void renderizarDadosDeAutorizacao(){
         if(laudo.getSituacao().equals(SituacaoLaudo.AUTORIZADO.getSigla())){

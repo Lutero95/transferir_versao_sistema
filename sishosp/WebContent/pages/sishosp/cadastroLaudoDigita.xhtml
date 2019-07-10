@@ -327,6 +327,7 @@
                                 <p:autoComplete
                                         disabled="#{LaudoController.laudo.procedimentoPrimario.idProc == null}"
                                         value="#{LaudoController.laudo.cid1}" size="25"
+                                        required="true" requiredMessage="Informe o CID Primário"
                                         converter="conCid" id="descCid1" class="select-agendaEquipe4"
                                         completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
                                         effect="fade" var="theme" forceSelection="true"
@@ -402,7 +403,7 @@
                             <b:label value="Observação:" severity="info"/>
 
                             <b:inputTextarea value="#{LaudoController.laudo.obs}"
-                                             scrollHeight="40" required="true" rows="6" cols="89"
+                                             scrollHeight="40" required="true"  requiredMessage="Informe a observação do Laudo" rows="6" cols="89"
                                              class="select-agendaEquipe2" style="height:80px;"></b:inputTextarea>
                         </b:column>
 
@@ -833,12 +834,12 @@
 				<div align="center">
 					<p:separator />
 
-					<b:commandButton look="success" value="Sim" style="float:left;"
+					<b:commandButton look="success" value="Imprimir" style="float:left;"
 						action="#{RelatoriosController.geraLaudo(LaudoController.idLaudoGerado)}" ajax="false"
-						class="btn-sim" icon="glyphicon-ok"  />
+						class="btn-sim" icon="glyphicon-print"  />
 						
 
-					<b:commandButton value="Não" oncomplete="PF('dlgImprimir').hide();"
+					<b:commandButton value="Fechar" oncomplete="PF('dlgImprimir').hide();"
 						look="info" ajax="true" icon="glyphicon-remove" class="btn-nao"
 						style="margin-left:5px;float:right;" />
 				</div>
