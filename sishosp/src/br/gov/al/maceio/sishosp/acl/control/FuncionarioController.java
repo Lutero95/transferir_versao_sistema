@@ -251,11 +251,12 @@ public class FuncionarioController implements Serializable {
         List<DefaultSubMenu> submenuAssSubMenuPai = new ArrayList<>();
         List<DefaultSubMenu> menusAssociados = new ArrayList<>();
 
-        // Gerar menu inÃ­cio.
+        // Gerar menu início.
         DefaultMenuItem item1 = new DefaultMenuItem();
-        item1.setValue("InÃ­cio");
+        item1.setValue("Início");
         //contextPath+
         item1.setUrl(sistema.getUrl().replace("?faces-redirect=true", ""));
+       // item1.setStyle("overflow: auto; !important");
         menuModel.addElement(item1);
 
         for (Permissoes p : permsUsuarioLogado) {
@@ -267,12 +268,19 @@ public class FuncionarioController implements Serializable {
                     && (p.getMenu().isAtivo() == true)) {
 
                 DefaultSubMenu mp = new DefaultSubMenu();
+                mp.setStyle("display: block;\n" + 
+                		"    z-index: 1017;\n" + 
+                		"    left: 0px;\n" + 
+                		"    top: 54px;\n" + 
+                		"    overflow: auto;\n" + 
+                		"    height: 312px;");
                 mp.setLabel(p.getMenu().getDescricao());// o nome(descriï¿½ï¿½o) que
                 // vai aparecer na
                 // interface
                 mp.setIcon(p.getMenu().getCodigo()); // faz a associaï¿½ï¿½o em que
                 // menu ele vai ficar
-                menuPai.add(mp); // adiciona o menu
+                menuPai.add(mp); 
+                
             }
 
             // Gerar submenu.
@@ -287,7 +295,13 @@ public class FuncionarioController implements Serializable {
                     // ids
                     && (p.getMenu().isAtivo() == true)) { // se for ativo
 
-                DefaultSubMenu sb = new DefaultSubMenu();// inicia a criaï¿½ï¿½o do
+                DefaultSubMenu sb = new DefaultSubMenu();
+                sb.setStyle("display: block;\n" + 
+                		"    z-index: 1017;\n" + 
+                		"    left: 0px;\n" + 
+                		"    top: 54px;\n" + 
+                		"    overflow: auto;\n" + 
+                		"    height: 312px;");// inicia a criaï¿½ï¿½o do
                 // submenu
                 sb.setLabel(p.getMenu().getDescricao());
                 sb.setIcon(p.getMenu().getCodigo());
