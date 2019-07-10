@@ -476,4 +476,36 @@ public class ProgramaDAO {
         return lista;
     }
 
+    public List<ProgramaBean> listarProgramasPorTipoAtend(int idTipo, Connection conAuxiliar) {
+
+        List<ProgramaBean> lista = new ArrayList<>();
+
+        String sql = "SELECT p.id_programa, p.descprograma " +
+                "FROM hosp.programa p " +
+                "JOIN hosp.tipoatendimento_programa t ON (t.codprograma = p.id_programa) " +
+                "WHERE t.codtipoatendimento = ? ORDER BY p.descprograma";
+        try {
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+            stm.setInt(1, idTipo);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProgramaBean programa = new ProgramaBean();
+                programa.setIdPrograma(rs.getInt("id_programa"));
+                programa.setDescPrograma(rs.getString("descprograma"));
+                lista.add(programa);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
 }

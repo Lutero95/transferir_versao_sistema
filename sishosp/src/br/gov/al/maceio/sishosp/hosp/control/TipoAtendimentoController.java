@@ -31,6 +31,7 @@ public class TipoAtendimentoController implements Serializable {
     private String cabecalho;
     private List<TipoAtendimentoBean> listaTiposAtendimento;
     private TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+    private String mensagemAvisoGrupoOuProgramaFaltando;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroTipoAtendimento?faces-redirect=true";
@@ -78,8 +79,8 @@ public class TipoAtendimentoController implements Serializable {
     }
 
     public void gravarTipo() throws ProjetoException {
-        if (this.tipoAtendimento.getGrupo().isEmpty()) {
-            JSFUtil.adicionarMensagemAdvertencia("É necessário no mínimo informar um grupo!", "Campos obrigatórios!");
+        if (!validarGrupoOuPrograma()) {
+            JSFUtil.adicionarMensagemAdvertencia(mensagemAvisoGrupoOuProgramaFaltando, "Campos obrigatórios!");
         } else {
             boolean cadastrou = tDao.gravarTipoAt(tipoAtendimento);
 
@@ -92,9 +93,29 @@ public class TipoAtendimentoController implements Serializable {
         }
     }
 
-    public void alterarTipo() throws ProjetoException {
-        if (this.tipoAtendimento.getGrupo().isEmpty()) {
-            JSFUtil.adicionarMensagemAdvertencia("É necessário no mínimo informar um grupo!", "Campos obrigatórios!");
+    public Boolean validarGrupoOuPrograma() {
+        Boolean retorno = false;
+
+        if (tipoAtendimento.isPrimeiroAt()) {
+            if (!tipoAtendimento.getListaPrograma().isEmpty()) {
+                retorno = true;
+            } else {
+                mensagemAvisoGrupoOuProgramaFaltando = "É necessário no mínimo informar um programa!";
+            }
+        } else {
+            if (!tipoAtendimento.getGrupo().isEmpty()) {
+                retorno = true;
+            } else {
+                mensagemAvisoGrupoOuProgramaFaltando = "É necessário no mínimo informar um grupo!";
+            }
+        }
+
+        return retorno;
+    }
+
+    public void alterarTipo() {
+        if (!validarGrupoOuPrograma()) {
+            JSFUtil.adicionarMensagemAdvertencia(mensagemAvisoGrupoOuProgramaFaltando, "Campos obrigatórios!");
         } else {
             boolean alterou = tDao.alterarTipo(this.tipoAtendimento);
             if (alterou == true) {

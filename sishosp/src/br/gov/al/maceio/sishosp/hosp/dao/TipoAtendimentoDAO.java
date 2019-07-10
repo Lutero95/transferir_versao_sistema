@@ -10,6 +10,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 public class TipoAtendimentoDAO {
@@ -31,9 +32,15 @@ public class TipoAtendimentoDAO {
             ps.setInt(4, tipo.getIntervaloMinimo());
             ResultSet rs = ps.executeQuery();
             int idTipo = 0;
+
             if (rs.next()) {
                 idTipo = rs.getInt("id");
-                retorno = insereTipoAtendimentoGrupo(idTipo, tipo.getGrupo(), con);
+
+                if (tipo.isPrimeiroAt()) {
+                    retorno = insereTipoAtendimentoPrograma(idTipo, tipo.getListaPrograma(), con);
+                } else {
+                    retorno = insereTipoAtendimentoGrupo(idTipo, tipo.getGrupo(), con);
+                }
             }
 
             if (retorno) {
@@ -68,10 +75,14 @@ public class TipoAtendimentoDAO {
             stmt.setInt(5, tipo.getIdTipo());
             stmt.executeUpdate();
 
-            retorno = excluirTipoGrupo(tipo.getIdTipo(), con);
-
-            if (retorno) {
-                retorno = insereTipoAtendimentoGrupo(tipo.getIdTipo(), tipo.getGrupoNovo(), con);
+            if (tipo.isPrimeiroAt()) {
+                if (excluirTipoPrograma(tipo.getIdTipo(), con)) {
+                    retorno = insereTipoAtendimentoPrograma(tipo.getIdTipo(), tipo.getListaPrograma(), con);
+                }
+            } else {
+                if (excluirTipoGrupo(tipo.getIdTipo(), con)) {
+                    retorno = insereTipoAtendimentoGrupo(tipo.getIdTipo(), tipo.getGrupo(), con);
+                }
             }
 
             if (retorno) {
@@ -102,6 +113,10 @@ public class TipoAtendimentoDAO {
             con = ConnectionFactory.getConnection();
 
             retorno = excluirTipoGrupo(tipo.getIdTipo(), con);
+
+            if (retorno) {
+                retorno = excluirTipoPrograma(tipo.getIdTipo(), con);
+            }
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setLong(1, tipo.getIdTipo());
@@ -149,6 +164,30 @@ public class TipoAtendimentoDAO {
         }
     }
 
+    public Boolean excluirTipoPrograma(int idTipo, Connection conn) {
+
+        Boolean retorno = false;
+
+        String sql = "delete from hosp.tipoatendimento_programa where codtipoatendimento = ?";
+        retorno = true;
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, idTipo);
+            stmt.execute();
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
     public Boolean insereTipoAtendimentoGrupo(int idTipo,
                                               List<GrupoBean> listaGrupo, Connection conn) {
 
@@ -158,6 +197,33 @@ public class TipoAtendimentoDAO {
             ps = conn.prepareStatement(sql);
             for (GrupoBean grupoBean : listaGrupo) {
                 ps.setInt(1, grupoBean.getIdGrupo());
+                ps.setInt(2, idTipo);
+
+                ps.execute();
+            }
+
+            retorno = true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean insereTipoAtendimentoPrograma(int idTipo,
+                                                 List<ProgramaBean> listaPrograma, Connection conn) {
+
+        Boolean retorno = false;
+        String sql = "insert into hosp.tipoatendimento_programa (codprograma, codtipoatendimento) values(?,?);";
+        try {
+            ps = conn.prepareStatement(sql);
+            for (ProgramaBean programaBean : listaPrograma) {
+                ps.setInt(1, programaBean.getIdPrograma());
                 ps.setInt(2, idTipo);
 
                 ps.execute();
@@ -336,6 +402,7 @@ public class TipoAtendimentoDAO {
             stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
             GrupoDAO gDao = new GrupoDAO();
+            ProgramaDAO pDao = new ProgramaDAO();
             TipoAtendimentoBean tipo = null;
             while (rs.next()) {
                 tipo = new TipoAtendimentoBean();
@@ -344,6 +411,7 @@ public class TipoAtendimentoDAO {
                 tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
                 tipo.setEquipe(rs.getBoolean("equipe_programa"));
                 tipo.setGrupo(gDao.listarGruposPorTipoAtend(tipo.getIdTipo(), con));
+                tipo.setListaPrograma(pDao.listarProgramasPorTipoAtend(tipo.getIdTipo(), con));
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
             }
             return tipo;
@@ -394,6 +462,37 @@ public class TipoAtendimentoDAO {
             }
         }
         return tipo;
+    }
+
+    public Boolean verificarSeExisteTipoDeAtendimentoComPrograma(int idPrograma) throws ProjetoException {
+
+        Boolean retorno = false;
+
+        String sql = "SELECT codtipoatendimento FROM hosp.tipoatendimento_programa WHERE codprograma = ?";
+        try {
+
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            stm.setInt(1, idPrograma);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                retorno = true;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
     }
 
 }
