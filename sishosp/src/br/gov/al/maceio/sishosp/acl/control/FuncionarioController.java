@@ -268,12 +268,13 @@ public class FuncionarioController implements Serializable {
                     && (p.getMenu().isAtivo() == true)) {
 
                 DefaultSubMenu mp = new DefaultSubMenu();
-                mp.setStyle("display: block;\n" + 
+            /*    mp.setStyle("display: block;\n" + 
                 		"    z-index: 1017;\n" + 
                 		"    left: 0px;\n" + 
                 		"    top: 54px;\n" + 
                 		"    overflow: auto;\n" + 
                 		"    height: 312px;");
+                		*/
                 mp.setLabel(p.getMenu().getDescricao());// o nome(descri��o) que
                 // vai aparecer na
                 // interface
@@ -296,12 +297,14 @@ public class FuncionarioController implements Serializable {
                     && (p.getMenu().isAtivo() == true)) { // se for ativo
 
                 DefaultSubMenu sb = new DefaultSubMenu();
-                sb.setStyle("display: block;\n" + 
+             /*   sb.setStyle("display: block;\n" + 
                 		"    z-index: 1017;\n" + 
                 		"    left: 0px;\n" + 
                 		"    top: 54px;\n" + 
                 		"    overflow: auto;\n" + 
-                		"    height: 312px;");// inicia a cria��o do
+                		"    height: 312px;");
+                		*/
+                		// inicia a cria��o do
                 // submenu
                 sb.setLabel(p.getMenu().getDescricao());
                 sb.setIcon(p.getMenu().getCodigo());
