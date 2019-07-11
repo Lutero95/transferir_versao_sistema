@@ -23,12 +23,14 @@ public class AgendaBean implements Serializable {
     private Integer qtdAtendimentosTarde[];
     private Boolean encaixe;
     private String presenca;
+    private Boolean avaliacao;
     
     // HERDADOS
     private PacienteBean paciente;
     private ProcedimentoBean procedimento;
     private GrupoBean grupo;
     private ProgramaBean programa;
+    private ProgramaBean programaAvaliacao;
     private TipoAtendimentoBean tipoAt;
     private FuncionarioBean profissional;
     private EquipeBean equipe;
@@ -39,6 +41,7 @@ public class AgendaBean implements Serializable {
         this.procedimento = null;
         this.grupo = new GrupoBean();
         this.programa = new ProgramaBean();
+        this.programaAvaliacao = new ProgramaBean();
         this.tipoAt = new TipoAtendimentoBean();
         this.profissional = new FuncionarioBean();
         this.equipe = new EquipeBean();
@@ -250,4 +253,20 @@ public class AgendaBean implements Serializable {
 	public void setPresenca(String presenca) {
 		this.presenca = presenca;
 	}
+
+    public Boolean getAvaliacao() {
+        return avaliacao;
+    }
+
+    public void setAvaliacao(Boolean avaliacao) {
+        this.avaliacao = avaliacao;
+    }
+
+    public ProgramaBean getProgramaAvaliacao() {
+        return programaAvaliacao;
+    }
+
+    public void setProgramaAvaliacao(ProgramaBean programaAvaliacao) {
+        this.programaAvaliacao = programaAvaliacao;
+    }
 }

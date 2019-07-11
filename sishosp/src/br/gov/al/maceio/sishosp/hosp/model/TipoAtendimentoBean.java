@@ -2,14 +2,12 @@ package br.gov.al.maceio.sishosp.hosp.model;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 
 public class TipoAtendimentoBean implements Serializable {
 
@@ -179,7 +177,7 @@ public class TipoAtendimentoBean implements Serializable {
     public void addProgramaLista() throws ProjetoException {
         boolean existe = false;
         TipoAtendimentoDAO tipoAtendimentoDAO = new TipoAtendimentoDAO();
-        if (tipoAtendimentoDAO.verificarSeExisteTipoDeAtendimentoComPrograma(programaParaAdd.getIdPrograma())) {
+        if (!VerificadorUtil.verificarSeObjetoNuloOuZero(tipoAtendimentoDAO.listarTipoDeAtendimentoDoPrograma(programaParaAdd.getIdPrograma()))) {
             JSFUtil.adicionarMensagemAdvertencia("Esse programa já está relacionado a outro tipo de atendimento!", "Advertência");
         } else {
             if (listaPrograma.size() == 0) {

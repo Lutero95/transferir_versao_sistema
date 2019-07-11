@@ -471,9 +471,9 @@ public class TipoAtendimentoDAO {
         return tipo;
     }
 
-    public Boolean verificarSeExisteTipoDeAtendimentoComPrograma(int idPrograma) throws ProjetoException {
+    public Integer listarTipoDeAtendimentoDoPrograma(int idPrograma) throws ProjetoException {
 
-        Boolean retorno = false;
+        Integer retorno = null;
 
         String sql = "SELECT codtipoatendimento FROM hosp.tipoatendimento_programa WHERE codprograma = ?";
         try {
@@ -486,7 +486,7 @@ public class TipoAtendimentoDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                retorno = true;
+                retorno = rs.getInt("codtipoatendimento");
             }
 
         } catch (SQLException ex) {

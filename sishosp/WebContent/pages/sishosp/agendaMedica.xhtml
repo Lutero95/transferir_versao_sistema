@@ -10,7 +10,7 @@
 
         <f:metadata>
             <f:viewAction
-                    action="#{AgendaController.carregarHorarioOuTurno()}" />
+                    action="#{AgendaController.carregarHorarioOuTurno()}"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
@@ -49,6 +49,19 @@
                     <p:growl id="growlMsg"></p:growl>
 
                     <b:row>
+
+                        <b:column span="3">
+                            <p:selectBooleanCheckbox label="Avaliação"
+                                                     itemLabel="Avaliação" style="color:#2e84ce;"
+                                                     value="#{AgendaController.agenda.avaliacao}">
+                                <p:ajax update="rowProgramaGrupoTipoAtendimento, rowProgramaTipoAtendimento"></p:ajax>
+                            </p:selectBooleanCheckbox>
+                        </b:column>
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
                         <b:column span="3"
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Paciente" severity="info"/>
@@ -76,97 +89,145 @@
                             </p:outputPanel>
                         </b:column>
 
-                        <b:column span="3"
-                                  class="label-position new-data-size new-comple1">
-                            <b:label value="Programa:" severity="info"/>
-
-                            <p:outputPanel id="outProg">
-                                <p:autoComplete value="#{AgendaController.agenda.programa}"
-                                                size="31" converter="conPrograma" required="true"
-                                                class="select-agendaEquipe4"
-                                                requiredMessage="Programa: Campo obrigatório!"
-                                                disabled="#{AgendaController.agenda.paciente==null}"
-                                                completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descPrograma}">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{AgendaController.selectPrograma}"
-                                            update="outProg, :formConsuGrop:dtGrupo, btBusGr, outGrupo, outTipoAt, outProfissional, outEquipeRow"/>
-                                 
-                                            
-                                </p:autoComplete>
-
-                                <p:commandButton id="btBusPr" immediate="true"
-                                                 disabled="#{AgendaController.agenda.paciente==null}"
-                                                 icon="ui-icon-search"
-                                                 action="#{AgendaController.limparNaBuscaPrograma()}"
-                                                 actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
-                                                 update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
-                            </p:outputPanel>
-                        </b:column>
-
                     </b:row>
 
-                    <b:row>
+                    <p:outputPanel id="rowProgramaTipoAtendimento">
+                        <b:row rendered="#{AgendaController.agenda.avaliacao == true}">
 
-                        <b:column span="3"
-                                  class="label-position new-data-size new-comple1">
-                            <b:label value="Grupo" severity="info"/>
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Programa" severity="info"/>
 
-                            <p:outputPanel id="outGrupo">
-                                <p:autoComplete value="#{AgendaController.agenda.grupo}"
-                                                size="31" converter="conGrupo" required="true"
-                                                requiredMessage="Grupo: Campo obrigatório!"
-                                                class="select-agendaEquipe4"
-                                                disabled="#{AgendaController.agenda.programa.idPrograma == null}"
-                                                completeMethod="#{AgendaController.listaGrupoAutoComplete}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descGrupo}">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{AgendaController.selectGrupo}"
-                                            update="outTipoAt, outGrupo, :formConsuTipoAt:dtTipoAt, btBusTi, outProfissional, outEquipeRow"/>
+                                <p:outputPanel id="outProg2">
+                                    <p:autoComplete value="#{AgendaController.agenda.programaAvaliacao}"
+                                                    size="31" converter="conPrograma" required="true"
+                                                    class="select-agendaEquipe4"
+                                                    requiredMessage="Programa: Campo obrigatório!"
+                                                    disabled="#{AgendaController.agenda.paciente==null}"
+                                                    completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                                    effect="fade" var="theme" forceSelection="true"
+                                                    minQueryLength="1" itemValue="#{theme}"
+                                                    itemLabel="#{theme.descPrograma}">
+                                        <p:ajax event="itemSelect"
+                                                listener="#{AgendaController.carregarTipoDeAtendimentoParaProgramaAvaliacao}"
+                                                update="outTip2"/>
 
-                                </p:autoComplete>
 
-                                <p:commandButton id="btBusGr" immediate="true"
-                                                 icon="ui-icon-search"
-                                                 disabled="#{AgendaController.agenda.programa.idPrograma == null}"
-                                                 action="#{AgendaController.limparNaBuscaGrupo()}"
-                                                 update=":formAgendaMedica" onclick="PF('dlgConsuGrop').show();"/>
-                            </p:outputPanel>
-                        </b:column>
+                                    </p:autoComplete>
 
-                        <b:column span="3"
-                                  class="label-position new-data-size new-comple1">
-                            <b:label value="Tipo Atendimento" severity="info"/>
+                                    <p:commandButton id="btBusPr2" immediate="true"
+                                                     disabled="#{AgendaController.agenda.paciente==null}"
+                                                     icon="ui-icon-search"
+                                                     action="#{AgendaController.limparNaBuscaPrograma()}"
+                                                     actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
+                                                     update=":formConsuProg2" onclick="PF('dlgConsuProg2').show();"/>
+                                </p:outputPanel>
+                            </b:column>
 
-                            <p:outputPanel id="outTipoAt">
-                                <p:autoComplete  value="#{AgendaController.agenda.tipoAt}"
-                                                size="31" converter="conTipoAtendimento" required="true"
-                                                requiredMessage="Tipo Atendimento: Campo obrigatório!"
-                                                class="select-agendaEquipe4"
-                                                disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
-                                                completeMethod="#{AgendaController.listaTipoAtAutoComplete}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descTipoAt}">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"
-                                            update=":formAgendaMedica, msgPagina, outTipoAt, outProfissional, outEquipeRow, outProf, autoCompleteProfissional"/>
-                                </p:autoComplete>
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Tipo Atendimento" severity="info"/>
 
-                                <p:commandButton id="btBusTi" immediate="true"
-                                                 icon="ui-icon-search"
-                                                 disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
-                                                 action="#{AgendaController.limparNaBuscaTipo()}"
-                                                 update=":formAgendaMedica"
-                                                 onclick="PF('dlgConsuTipoAt').show();"/>
-                            </p:outputPanel>
-                        </b:column>
+                                <b:inputText id="outTip2" value="#{AgendaController.agenda.tipoAt.descTipoAt}"
+                                             class="select-agendaEquipe2" readonly="true"/>
 
-                    </b:row>
+                            </b:column>
+
+                        </b:row>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="rowProgramaGrupoTipoAtendimento">
+                        <b:row rendered="#{AgendaController.agenda.avaliacao != true}">
+
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Programa" severity="info"/>
+
+                                <p:outputPanel id="outProg">
+                                    <p:autoComplete value="#{AgendaController.agenda.programa}"
+                                                    size="31" converter="conPrograma" required="true"
+                                                    class="select-agendaEquipe4"
+                                                    requiredMessage="Programa: Campo obrigatório!"
+                                                    disabled="#{AgendaController.agenda.paciente==null}"
+                                                    completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                                    effect="fade" var="theme" forceSelection="true"
+                                                    minQueryLength="1" itemValue="#{theme}"
+                                                    itemLabel="#{theme.descPrograma}">
+                                        <p:ajax event="itemSelect"
+                                                listener="#{AgendaController.selectPrograma}"
+                                                update="outProg, :formConsuGrop:dtGrupo, btBusGr, outGrupo, outTipoAt, outProfissional, outEquipeRow"/>
+
+
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusPr" immediate="true"
+                                                     disabled="#{AgendaController.agenda.paciente==null}"
+                                                     icon="ui-icon-search"
+                                                     action="#{AgendaController.limparNaBuscaPrograma()}"
+                                                     actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
+                                                     update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
+                                </p:outputPanel>
+                            </b:column>
+
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Grupo" severity="info"/>
+
+                                <p:outputPanel id="outGrupo">
+                                    <p:autoComplete value="#{AgendaController.agenda.grupo}"
+                                                    size="31" converter="conGrupo" required="true"
+                                                    requiredMessage="Grupo: Campo obrigatório!"
+                                                    class="select-agendaEquipe4"
+                                                    disabled="#{AgendaController.agenda.programa.idPrograma == null}"
+                                                    completeMethod="#{AgendaController.listaGrupoAutoComplete}"
+                                                    effect="fade" var="theme" forceSelection="true"
+                                                    minQueryLength="1" itemValue="#{theme}"
+                                                    itemLabel="#{theme.descGrupo}">
+                                        <p:ajax event="itemSelect"
+                                                listener="#{AgendaController.selectGrupo}"
+                                                update="outTipoAt, outGrupo, :formConsuTipoAt:dtTipoAt, btBusTi, outProfissional, outEquipeRow"/>
+
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusGr" immediate="true"
+                                                     icon="ui-icon-search"
+                                                     disabled="#{AgendaController.agenda.programa.idPrograma == null}"
+                                                     action="#{AgendaController.limparNaBuscaGrupo()}"
+                                                     update=":formAgendaMedica" onclick="PF('dlgConsuGrop').show();"/>
+                                </p:outputPanel>
+                            </b:column>
+
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Tipo Atendimento" severity="info"/>
+
+                                <p:outputPanel id="outTipoAt">
+                                    <p:autoComplete value="#{AgendaController.agenda.tipoAt}"
+                                                    size="31" converter="conTipoAtendimento" required="true"
+                                                    requiredMessage="Tipo Atendimento: Campo obrigatório!"
+                                                    class="select-agendaEquipe4"
+                                                    disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
+                                                    completeMethod="#{AgendaController.listaTipoAtAutoComplete}"
+                                                    effect="fade" var="theme" forceSelection="true"
+                                                    minQueryLength="1" itemValue="#{theme}"
+                                                    itemLabel="#{theme.descTipoAt}">
+                                        <p:ajax event="itemSelect"
+                                                listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"
+                                                update=":formAgendaMedica, msgPagina, outTipoAt, outProfissional, outEquipeRow, outProf, autoCompleteProfissional"/>
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusTi" immediate="true"
+                                                     icon="ui-icon-search"
+                                                     disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
+                                                     action="#{AgendaController.limparNaBuscaTipo()}"
+                                                     update=":formAgendaMedica"
+                                                     onclick="PF('dlgConsuTipoAt').show();"/>
+                                </p:outputPanel>
+                            </b:column>
+
+                        </b:row>
+
+                    </p:outputPanel>
 
                     <p:outputPanel id="outProfissional">
                         <b:row rendered="#{AgendaController.agenda.tipoAt.profissional==true}">
@@ -177,7 +238,8 @@
 
                                 <p:outputPanel id="outProf"
                                                rendered="#{AgendaController.agenda.tipoAt.profissional==true}">
-                                    <p:autoComplete value="#{AgendaController.agenda.profissional}" id="autoCompleteProfissional"
+                                    <p:autoComplete value="#{AgendaController.agenda.profissional}"
+                                                    id="autoCompleteProfissional"
                                                     size="31" converter="conFuncionario" required="true"
                                                     requiredMessage="Profissional: Campo obrigatório!"
                                                     class="select-agendaEquipe4"
@@ -185,10 +247,10 @@
                                                     effect="fade" var="theme" forceSelection="true"
                                                     minQueryLength="1" itemValue="#{theme}"
                                                     itemLabel="#{theme.nome}">
-                                        <p:ajax event="itemSelect"  
-                                                listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}" 
+                                        <p:ajax event="itemSelect"
+                                                listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
                                                 update=":formAgendaMedica, msgPagina, outQtdIhMax, outHorariosProfissional"></p:ajax>
- 										                                                        
+
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusProf" icon="ui-icon-search"
@@ -224,13 +286,13 @@
                                         <p:ajax event="itemSelect"
                                                 listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
                                                 update=":formAgendaMedica, outHorariosEquipe, msgPagina, outQtdIhMax"></p:ajax>
-                                               
+
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusEqui" immediate="true"
                                                      disabled="#{AgendaController.agenda.tipoAt==null}"
                                                      icon="ui-icon-search" oncomplete="PF('dlgConsuEquipe').show();"
-                                                     action="#{AgendaController.carregaListaEquipePorTipoAtendimento()}"    
+                                                     action="#{AgendaController.carregaListaEquipePorTipoAtendimento()}"
                                                      update=":formConsuEquipe"
                                                      rendered="#{AgendaController.agenda.tipoAt.equipe==true}"/>
                                 </p:outputPanel>
@@ -242,7 +304,7 @@
                     <br></br>
 
                     <p:outputPanel id="outHorariosEquipe">
-                    
+
                         <b:row rendered="#{AgendaController.agenda.equipe.codEquipe!=null}">
                             <b:column span="12">
                                 <div align="center">
@@ -562,7 +624,7 @@
 
                         <p:commandButton value="Gravar" look="success" size="sm" id="b1"
                                          icon="glyphicon-ok"
-                                        
+
                                          action="#{AgendaController.verificarPacienteAtivoInstituicao()}"
                                          update=":formAgendaMedica, :frmSenha, outProf" class="btn-incluir"/>
 
@@ -637,7 +699,7 @@
         </p:dialog>
 
         <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
-        dynamic="true"
+                  dynamic="true"
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuProg">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -671,14 +733,48 @@
             </h:form>
         </p:dialog>
 
+        <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg2"
+                  dynamic="true"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuProg2">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+                             display="Nenhum Programa">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Programa
+                        </f:facet>
+                        <p:outputLabel value="#{prog.descPrograma}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formAgendaMedica:outProg2, :formAgendaMedica:outTip2"
+                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                title="Selecionar"
+                                action="#{AgendaController.carregarTipoDeAtendimentoParaProgramaAvaliacao()}"
+                                oncomplete="PF('dlgConsuProg2').hide();">
+                            <f:setPropertyActionListener value="#{prog}"
+                                                         target="#{AgendaController.agenda.programaAvaliacao}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
         <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
                   modal="true" styleClass="topDialog" dynamic="true">
             <h:form id="formConsuGrop">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}" 
-                			ajax="true"
-                			responsive="true"
-                			save-state="false"
-                			saveState="false"
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             ajax="true"
+                             responsive="true"
+                             save-state="false"
+                             saveState="false"
                              value="#{AgendaController.listaGruposProgramas}" id="dtGrupo"
                              var="grupo" display="Nenhum Grupo">
 
@@ -767,11 +863,11 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton
-                         action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
-                                         update=":formAgendaMedica" 
-                                         icon="ui-icon-check" title="Selecionar"
-                                         class="new-btn-acao-table acao-editar"
-                                         oncomplete="PF('dlgConsuEquipe').hide();">
+                                action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
+                                update=":formAgendaMedica"
+                                icon="ui-icon-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                oncomplete="PF('dlgConsuEquipe').hide();">
                             <f:setPropertyActionListener value="#{equipe}"
                                                          target="#{AgendaController.agenda.equipe}"/>
                         </p:commandButton>
@@ -801,16 +897,16 @@
                         </f:facet>
                         <p:commandButton icon="ui-icon-check" title="Selecionar"
                                          class="new-btn-acao-table acao-editar"
-                                        
-                                         update=":formAgendaMedica"                
-                                          action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
-                                        oncomplete="PF('dlgConsuProf').hide();"
-                                        >
-                                          
+
+                                         update=":formAgendaMedica"
+                                         action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
+                                         oncomplete="PF('dlgConsuProf').hide();"
+                        >
+
                             <f:setPropertyActionListener value="#{profi}"
                                                          target="#{AgendaController.agenda.profissional}"/>
-                                                          <f:ajax 
-                                            execute="#AgendaController.listaDiasDeAtendimentoAtuais()}"  />
+                            <f:ajax
+                                    execute="#AgendaController.listaDiasDeAtendimentoAtuais()}"/>
                         </p:commandButton>
                     </h:column>
 
@@ -901,13 +997,15 @@
 
                 <div align="center">
                     <p:commandButton value="Liberar" look="success" size="sm" id="b1" style="margin-top:10px"
-                                     icon="ui-icon-check" update=":formAgendaMedica, :formAgendaMedica:growlMsg," action="#{AgendaController.validarSenhaLiberacao()}"/>
+                                     icon="ui-icon-check" update=":formAgendaMedica, :formAgendaMedica:growlMsg,"
+                                     action="#{AgendaController.validarSenhaLiberacao()}"/>
                 </div>
 
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Digite a senha" widgetVar="dlgSenhaEncaixe" modal="true" styleClass="topDialog" dynamic="true">
+        <p:dialog header="Digite a senha" widgetVar="dlgSenhaEncaixe" modal="true" styleClass="topDialog"
+                  dynamic="true">
             <h:form id="frmSenhaEncaixe">
                 <h:panelGrid columns="1" cellpadding="3">
 

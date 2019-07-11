@@ -713,6 +713,12 @@ public class AgendaController implements Serializable {
         this.agenda.getTipoAt().setProfissional(false);
     }
 
+    public void carregarTipoDeAtendimentoParaProgramaAvaliacao() throws ProjetoException {
+        TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+        int tipoAtendimento = tDao.listarTipoDeAtendimentoDoPrograma(agenda.getProgramaAvaliacao().getIdPrograma());
+        agenda.setTipoAt(tDao.listarTipoPorId(tipoAtendimento));
+    }
+
     public void limparNaBuscaGrupo() {
         this.agenda.setTipoAt(null);
         this.agenda.setProfissional(new FuncionarioBean());
