@@ -1,14 +1,12 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
@@ -29,7 +27,12 @@ public class TipoAtendimentoDAO {
             ps.setString(1, tipo.getDescTipoAt().toUpperCase());
             ps.setBoolean(2, tipo.isPrimeiroAt());
             ps.setBoolean(3, tipo.getEquipe());
-            ps.setInt(4, tipo.getIntervaloMinimo());
+            if (VerificadorUtil.verificarSeObjetoNulo(tipo.getIntervaloMinimo())) {
+                ps.setNull(4, Types.NULL);
+            } else {
+                ps.setInt(4, tipo.getIntervaloMinimo());
+            }
+
             ResultSet rs = ps.executeQuery();
             int idTipo = 0;
 
@@ -71,7 +74,11 @@ public class TipoAtendimentoDAO {
             stmt.setString(1, tipo.getDescTipoAt().toUpperCase());
             stmt.setBoolean(2, tipo.isPrimeiroAt());
             stmt.setBoolean(3, tipo.getEquipe());
-            stmt.setInt(4, tipo.getIntervaloMinimo());
+            if (VerificadorUtil.verificarSeObjetoNulo(tipo.getIntervaloMinimo())) {
+                stmt.setNull(4, Types.NULL);
+            } else {
+                stmt.setInt(4, tipo.getIntervaloMinimo());
+            }
             stmt.setInt(5, tipo.getIdTipo());
             stmt.executeUpdate();
 
