@@ -51,7 +51,7 @@ public class TipoAtendimentoDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

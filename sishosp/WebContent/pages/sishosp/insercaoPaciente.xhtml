@@ -528,7 +528,7 @@
 
 
         <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo" 
-                  modal="true" id="laudo-id" >
+                  modal="true" id="laudo-id" styleClass="topDialog">
             <h:form id="formConsuLaudo">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" page-length="5"
                page-length-menu="5,10,20"
@@ -586,7 +586,7 @@
         </p:dialog>
 
         <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
-                  modal="true">
+                  modal="true" styleClass="topDialog">
             <h:form id="formDiasAtendimento">
                 <p:selectManyCheckbox layout="grid" columns="7" required="true"
                                       requiredMessage="Escolha ao menos um dia da semana!"
@@ -703,7 +703,7 @@
         </p:dialog>
 
         <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-                  modal="true" styleClass="topDialog" dynamic="true">
+                  modal="true" styleClass="topDialog" dynamic="true" width="auto" height="auto">
             <h:form id="formConsuGrop">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
                              ajax="true"

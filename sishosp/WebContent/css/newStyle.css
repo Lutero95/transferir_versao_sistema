@@ -1569,6 +1569,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 .topDialog {
     z-index: 1080 !important;
     top: 46px !important;
+   margin-top: 3%;
 }
 
 .topDialog2 {
