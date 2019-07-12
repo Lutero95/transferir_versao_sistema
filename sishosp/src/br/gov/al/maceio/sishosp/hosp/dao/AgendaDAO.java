@@ -205,7 +205,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
     }
 
-    public int verQtdMaxAgendaData(AgendaBean agenda) throws ProjetoException {
+    public int verQtdMaxAgendaData(AgendaBean agenda, String tipoConfig) throws ProjetoException {
         int qtdMax = 0;
         String sqlPro = "select p.qtdmax " +
                 "from hosp.config_agenda_profissional p " +
