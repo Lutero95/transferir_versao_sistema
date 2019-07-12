@@ -319,10 +319,10 @@ public class AgendaController implements Serializable {
 
         Boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
         Boolean diaSem = aDao.buscarDiaSemana(this.agenda);
-
+        ajustar aqui
         if (dtEspecifica) {
             listarAgendamentosData();
-            this.agenda.setMax(aDao.verQtdMaxAgendaData(this.agenda));
+            this.agenda.setMax(aDao.verQtdMaxAgendaDataEspecifica(this.agenda));
             this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
 
             verificarDisponibilidadeDataEspecifica(agenda.getQtd(), agenda.getMax());
@@ -476,10 +476,10 @@ public class AgendaController implements Serializable {
                 }
 
                 agenda.setDataAtendimento(c.getTime());
-
+                tem que ajustar aqui
                 dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
                 diaSem = aDao.buscarDiaSemana(this.agenda);
-
+                
                 if (dtEspecifica == true || diaSem == true) {
                     temData = true;
                     if (diaSem) {
@@ -490,7 +490,7 @@ public class AgendaController implements Serializable {
                     }
                     if (dtEspecifica) {
                         this.agenda.setMax(aDao
-                                .verQtdMaxAgendaData(this.agenda));
+                                .verQtdMaxAgendaDataEspecifica(this.agenda));
                         this.agenda.setQtd(aDao
                                 .verQtdAgendadosData(this.agenda));
                     }

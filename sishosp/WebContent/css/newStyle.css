@@ -553,11 +553,13 @@ body {
 
  .ui-menu .ui-menu-parent .ui-menu-child {
    height: auto;
-    overflow-x: hidden;
+    /*overflow-x: scroll;*/
+    /*overflow-y: auto;*/
     position : fixed;
     max-height: 500px;
+    
     padding: 0px 0;
-    z-index:1003;
+    /*z-index:1003;*/
     width: 210px;
 }
 

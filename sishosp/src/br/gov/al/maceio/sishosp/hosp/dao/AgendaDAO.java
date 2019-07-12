@@ -205,7 +205,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
     }
 
-    public int verQtdMaxAgendaData(AgendaBean agenda, String tipoConfig) throws ProjetoException {
+    public int verQtdMaxAgendaDataEspecifica(AgendaBean agenda) throws ProjetoException {
         int qtdMax = 0;
         String sqlPro = "select p.qtdmax " +
                 "from hosp.config_agenda_profissional p " +
@@ -603,7 +603,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
     }
 
-    public int verQtdMaxAgendaEspec(AgendaBean agenda) throws ProjetoException {
+    public int verQtdMaxAgendaMesAnoEspecifico(AgendaBean agenda) throws ProjetoException {
         int diaSemana = DataUtil.extrairDiaDeData(agenda.getDataAtendimento());
         int mes = DataUtil.extrairMesDeData(agenda.getDataAtendimento());
         int ano = DataUtil.extrairAnoDeData(agenda.getDataAtendimento());
@@ -612,12 +612,12 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlPro = "select p.qtdmax " +
                 "from hosp.config_agenda_profissional p " +
                 "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
-                "where p.codmedico = ? and d.dia = ? and d.turno = ? AND p.mes = ? AND p.ano = ?;";
+                "where p.codmedico = ? and d.dia = ? and d.turno = ? AND p.mes = ? AND p.ano = ? and p.tipo='E";
 
         String sqlEqui = "select e.qtdmax " +
                 "from hosp.config_agenda_equipe e " +
                 "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
-                "where e.codequipe = ? and d.dia = ? and d.turno = ? AND e.mes = ? AND e.ano = ?;";
+                "where e.codequipe = ? and d.dia = ? and d.turno = ? AND e.mes = ? AND e.ano = ? and e.tipo='E";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -654,6 +654,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
     }
 
+    
+    
+    
     public int verQtdMaxAgendaEspecDataEspecifica(AgendaBean agenda) throws ProjetoException {
         int qtdMax = 0;
 
