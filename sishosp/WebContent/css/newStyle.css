@@ -551,6 +551,21 @@ body {
 	width: 15em;
 }
 
+ .ui-menu .ui-menu-parent .ui-menu-child {
+   height: auto;
+    overflow-x: hidden;
+    position : fixed;
+    max-height: 500px;
+    padding: 0px 0;
+    z-index:1003;
+    width: 210px;
+}
+
+
+.ui-menu.ui-widget .ui-menuitem-link .ui-menuitem-text {
+    margin-left: 0.8em;
+}
+
 .ui-menu.ui-widget li>.ui-menuitem-link.ui-state-hover {
 	color: #ffffff;
 	text-decoration: none;
