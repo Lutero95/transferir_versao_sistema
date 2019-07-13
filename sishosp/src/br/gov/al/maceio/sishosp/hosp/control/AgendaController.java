@@ -261,7 +261,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verificarSeAtingiuLimitePorTipoDeAtendimento() throws ProjetoException {
-
+    	
         Boolean retorno = false;
 
         Integer limite = aDao.contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(this.agenda, this.agenda.getDataAtendimento());
@@ -271,7 +271,10 @@ public class AgendaController implements Serializable {
         maximo = aDao.verQtdMaxAgendaEspecDataEspecifica(this.agenda);
 
         if (maximo == 0) {
-            aDao.verQtdMaxAgendaEspec(this.agenda);
+        	
+            aDao.verQtdMaxAgendaEspecDataEspecifica(this.agenda);
+            
+          //  verQtdMaxAgendaEspec
         }
 
         if (limite >= maximo && limite > 0) {
@@ -295,8 +298,9 @@ public class AgendaController implements Serializable {
         Boolean retorno = false;
 
         Integer limite = aDao.contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(this.agenda, data);
-
-        Integer maximo = aDao.verQtdMaxAgendaEspec(this.agenda);
+//VERIFICAR ABAIXO WALTER
+        //Integer maximo = aDao.verQtdMaxAgendaEspec(this.agenda);
+        Integer maximo = aDao.verQtdMaxAgendaEspecDataEspecifica(this.agenda);
 
         if (limite >= maximo) {
             retorno = true;
@@ -318,8 +322,8 @@ public class AgendaController implements Serializable {
     public void verAgenda() throws ProjetoException {
 
         Boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
-        Boolean diaSem = aDao.buscarDiaSemana(this.agenda);
-        ajustar aqui
+        Boolean diaSemEspecifico = aDao.buscarDiaSemanaMesAnoEspecifico(this.agenda);
+        
         if (dtEspecifica) {
             listarAgendamentosData();
             this.agenda.setMax(aDao.verQtdMaxAgendaDataEspecifica(this.agenda));
@@ -327,9 +331,11 @@ public class AgendaController implements Serializable {
 
             verificarDisponibilidadeDataEspecifica(agenda.getQtd(), agenda.getMax());
 
-        } else if (diaSem) {
+        } else if (diaSemEspecifico) {
             listarAgendamentosData();
-            this.agenda.setMax(aDao.verQtdMaxAgendaEspec(this.agenda));
+            //verificar abaixo walter
+            //this.agenda.setMax(aDao.verQtdMaxAgenda(this.agenda));
+            this.agenda.setMax(aDao.verQtdMaxAgendaDataEspecifica(this.agenda));
             this.agenda.setQtd(aDao.verQtdAgendadosEspec(this.agenda));
         } else {
             listarAgendamentosData();
@@ -476,15 +482,14 @@ public class AgendaController implements Serializable {
                 }
 
                 agenda.setDataAtendimento(c.getTime());
-                tem que ajustar aqui
                 dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
-                diaSem = aDao.buscarDiaSemana(this.agenda);
+                diaSem = aDao.buscarDiaSemanaMesAnoEspecifico(this.agenda);
                 
                 if (dtEspecifica == true || diaSem == true) {
                     temData = true;
                     if (diaSem) {
                         this.agenda.setMax(aDao
-                                .verQtdMaxAgendaEspec(this.agenda));
+                                .verQtdMaxAgendaEspecDataEspecifica(this.agenda));
                         this.agenda.setQtd(aDao
                                 .verQtdAgendadosEspec(this.agenda));
                     }

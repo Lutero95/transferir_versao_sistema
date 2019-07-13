@@ -363,22 +363,23 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         }
     }
 
-    public boolean buscarDiaSemana(AgendaBean agenda) throws ProjetoException {
+    public boolean buscarDiaSemanaMesAnoEspecifico(AgendaBean agenda) throws ProjetoException {
         Calendar cal = Calendar.getInstance();
         cal.setTime(agenda.getDataAtendimento());
         int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
         int mes = cal.get(Calendar.MONTH);
+        int ano = cal.get(Calendar.YEAR);
         int id = 0;
 
         String sqlPro = "select p.id_configagenda " +
                 "from hosp.config_agenda_profissional p " +
                 "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
-                "where p.codmedico = ? and d.dia = ? and d.turno = ? and p.mes = ?;";
+                "where p.codmedico = ? and d.dia = ? and d.turno = ? and p.mes = ? and p.ano=? and p.tipo='E'";
 
         String sqlEqui = "select e.id_configagenda " +
                 "from hosp.config_agenda_equipe e " +
                 "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
-                "where e.codequipe = ? and d.dia = ? and d.turno = ? and e.mes = ?;";
+                "where e.codequipe = ? and d.dia = ? and d.turno = ? and e.mes = ?  and e.ano=? and e.tipo='E'";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -393,6 +394,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stm.setInt(2, diaSemana);
             stm.setString(3, agenda.getTurno().toUpperCase());
             stm.setInt(4, mes + 1);
+            stm.setInt(5, ano);
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -413,6 +415,59 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             }
         }
     }
+    
+    public boolean buscarDiaSemanaMesAnoGeral(AgendaBean agenda) throws ProjetoException {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(agenda.getDataAtendimento());
+        int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
+        int mes = cal.get(Calendar.MONTH);
+        int ano = cal.get(Calendar.YEAR);
+        int id = 0;
+
+        String sqlPro = "select p.id_configagenda " +
+                "from hosp.config_agenda_profissional p " +
+                "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
+                "where p.codmedico = ? and d.turno = ? and p.tipo='G'";
+
+        String sqlEqui = "select e.id_configagenda " +
+                "from hosp.config_agenda_equipe e " +
+                "left join hosp.config_agenda_equipe_dias d on (e.id_configagenda = d.id_config_agenda_equipe) " +
+                "where e.codequipe = ? and d.dia = ? and d.turno = ? and e.tipo='G'";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = null;
+            if (agenda.getProfissional().getId() != null) {
+                stm = con.prepareStatement(sqlPro);
+                stm.setLong(1, agenda.getProfissional().getId());
+            } else if (agenda.getEquipe().getCodEquipe() != null) {
+                stm = con.prepareStatement(sqlEqui);
+                stm.setInt(1, agenda.getEquipe().getCodEquipe());
+            }
+            stm.setInt(2, diaSemana);
+            stm.setString(3, agenda.getTurno().toUpperCase());
+            stm.setInt(4, mes + 1);
+            stm.setInt(5, ano);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                id = rs.getInt("id_configagenda");
+            }
+            if (id == 0) {
+                return false;
+            } else
+                return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }    
 
     public List<AgendaBean> listarAgendamentosData(AgendaBean ag)
             throws ProjetoException {
