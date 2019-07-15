@@ -9,7 +9,8 @@
 	<ui:define name="content">
 
 		<f:metadata>
-			<f:viewAction action="#{ConfigAgendaController.getEditAgendaProfissional()}" />
+			<f:viewAction
+				action="#{ConfigAgendaController.getEditAgendaProfissional()}" />
 		</f:metadata>
 
 		<h:form id="formConfiAgenda">
@@ -23,6 +24,43 @@
 
 					<p:tab title="Geral">
 
+						<b:row>
+
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Tipo de Configuração" severity="info"
+									class="label-position new-data-size new-comple1" />
+								<p:selectOneRadio style="margin-top:5px"
+									value="#{ConfigAgendaController.confParte1.opcao}">
+									<f:selectItem itemLabel="Padrão" itemValue="1" />
+									<f:selectItem itemLabel="Específica" itemValue="2" />
+									<p:ajax update="panelDias, panelData, panelMesAno"
+										event="change" />
+								</p:selectOneRadio>
+							</b:column>
+						</b:row>
+
+						<b:row>
+
+							<b:column span="2" class="new-data-size2">
+
+								<p:outputLabel value="Opção:"
+									style="margin-top: 8px;
+    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
+
+							</b:column>
+
+							<b:column span="3" class="btn-radio-table">
+								<p:selectOneRadio
+									value="#{ConfigAgendaController.confParte1.opcao}">
+									<f:selectItem itemLabel="Data Específica" itemValue="1" />
+									<f:selectItem itemLabel="Dias da Semana" itemValue="2" />
+									<p:ajax update="panelDias, panelData, panelMesAno"
+										event="change" />
+								</p:selectOneRadio>
+							</b:column>
+
+						</b:row>
 						<b:row>
 							<p:outputPanel id="pnlAcPro">
 
@@ -58,27 +96,7 @@
 
 						<br></br>
 
-						<b:row>
 
-							<b:column span="2" class="new-data-size2">
-
-								<p:outputLabel value="Opção:"
-									style="margin-top: 8px;
-    									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-
-							</b:column>
-
-							<b:column span="3" class="btn-radio-table">
-								<p:selectOneRadio
-									value="#{ConfigAgendaController.confParte1.opcao}">
-									<f:selectItem itemLabel="Data Específica" itemValue="1" />
-									<f:selectItem itemLabel="Dias Semana" itemValue="2" />
-									<p:ajax update="panelDias, panelData, panelMesAno"
-										event="change" />
-								</p:selectOneRadio>
-							</b:column>
-
-						</b:row>
 
 						<br></br>
 
@@ -215,7 +233,7 @@
 										itemLabel="#{theme.descPrograma}">
 										<p:ajax event="itemSelect"
 											listener="#{ConfigAgendaController.selectGrupo}"
-                                                update=":formConfiAgenda:tbview:outGrupo, :formConfiAgenda:tbview:outProg, :formConfiAgenda:tbview:btBusGr, :formConsuGrop:dtGrupo" />
+											update=":formConfiAgenda:tbview:outGrupo, :formConfiAgenda:tbview:outProg, :formConfiAgenda:tbview:btBusGr, :formConsuGrop:dtGrupo" />
 									</p:autoComplete>
 
 									<p:commandButton icon="ui-icon-search" immediate="true"
@@ -245,7 +263,7 @@
 										itemLabel="#{theme.descGrupo}">
 										<p:ajax event="itemSelect"
 											listener="#{ConfigAgendaController.selectTipoAtendimento}"
-                                                update=":formConfiAgenda:tbview:outGrupo, :formConfiAgenda:tbview:outTipoAt, :formConfiAgenda:tbview:btBusGr, :formConfiAgenda:tbview:btBusTi" />
+											update=":formConfiAgenda:tbview:outGrupo, :formConfiAgenda:tbview:outTipoAt, :formConfiAgenda:tbview:btBusGr, :formConfiAgenda:tbview:btBusTi" />
 									</p:autoComplete>
 
 									<p:commandButton id="btBusGr" process="@this"
@@ -253,7 +271,8 @@
 										disabled="#{ConfigAgendaController.confParte2.programa==null}"
 										action="#{ConfigAgendaController.limparBuscaGrupo()}"
 										actionListener="#{ConfigAgendaController.selectGrupo()}"
-										update=":formConsuGrop" oncomplete="PF('dlgConsuGrop').show();" />
+										update=":formConsuGrop"
+										oncomplete="PF('dlgConsuGrop').show();" />
 								</p:outputPanel>
 							</b:column>
 
@@ -289,11 +308,10 @@
 							</b:column>
 
 							<b:column span="2" class="label-position">
-								<b:label value="Quantidade:" severity="info"/>
-								
-							<b:inputText class="select-agendaEquipe2"
-								value="#{ConfigAgendaController.confParte2.qtd}"
-									id="idQtd"
+								<b:label value="Quantidade:" severity="info" />
+
+								<b:inputText class="select-agendaEquipe2"
+									value="#{ConfigAgendaController.confParte2.qtd}" id="idQtd"
 									required="false" requiredMessage="Informe a Quantidade" />
 							</b:column>
 
@@ -317,31 +335,32 @@
 
 						<b:row>
 							<b:column span="12">
-							<p:dataTable value="#{ConfigAgendaController.listaTipos}"
-								id="dtConfi" resizableColumns="true" var="tipo"
-								emptyMessage="Sem dados inseridos.">
-								<p:column headerText="Programa">
-									<p:outputLabel value="#{tipo.programa.descPrograma}" />
-								</p:column>
+								<p:dataTable value="#{ConfigAgendaController.listaTipos}"
+									id="dtConfi" resizableColumns="true" var="tipo"
+									emptyMessage="Sem dados inseridos.">
+									<p:column headerText="Programa">
+										<p:outputLabel value="#{tipo.programa.descPrograma}" />
+									</p:column>
 
-								<p:column headerText="Tipo de Atendimento">
-									<p:outputLabel value="#{tipo.tipoAt.descTipoAt}" />
-								</p:column>
+									<p:column headerText="Tipo de Atendimento">
+										<p:outputLabel value="#{tipo.tipoAt.descTipoAt}" />
+									</p:column>
 
-								<p:column headerText="Quantidade">
-									<p:outputLabel value="#{tipo.qtd}" />
-								</p:column>
+									<p:column headerText="Quantidade">
+										<p:outputLabel value="#{tipo.qtd}" />
+									</p:column>
 
-								<p:column headerText="Ação">
-									<p:commandButton process="@this" class="new-btn-acao-table acao-excluir"
-										action="#{ConfigAgendaController.removeNaLista()}"
-										icon="ui-icon-trash" update=":formConfiAgenda:tbview:dtConfi">
-										<f:setPropertyActionListener value="#{tipo}"
-											target="#{ConfigAgendaController.confParte2}" />
-									</p:commandButton>
-								</p:column>
+									<p:column headerText="Ação">
+										<p:commandButton process="@this"
+											class="new-btn-acao-table acao-excluir"
+											action="#{ConfigAgendaController.removeNaLista()}"
+											icon="ui-icon-trash" update=":formConfiAgenda:tbview:dtConfi">
+											<f:setPropertyActionListener value="#{tipo}"
+												target="#{ConfigAgendaController.confParte2}" />
+										</p:commandButton>
+									</p:column>
 
-							</p:dataTable>
+								</p:dataTable>
 							</b:column>
 						</b:row>
 
@@ -353,21 +372,22 @@
 			<div align="center">
 				<b:messages value="Error" id="msgPagina"></b:messages>
 			</div>
-			
+
 			<br></br>
 
 			<div align="center">
 
 				<b:commandButton
 					action="#{ConfigAgendaController.validarConfiguracoesAgendaProfissional()}"
-					icon="glyphicon-ok" id="b1" update="msgPagina" class="btn-incluir bottom-agenda"
-					value="Gravar" look="success" size="sm" />
+					icon="glyphicon-ok" id="b1" update="msgPagina"
+					class="btn-incluir bottom-agenda" value="Gravar" look="success"
+					size="sm" />
 
 				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-					size="sm" immediate="true" look="info" class="btn-voltar bottom-agenda" id="b4"
-					update=":formConfiAgenda"
+					size="sm" immediate="true" look="info"
+					class="btn-voltar bottom-agenda" id="b4" update=":formConfiAgenda"
 					actionListener="#{ConfigAgendaController.limparDados()}"
-                                 action="consConfAgendaProfissional.xhtml?faces-redirect=true">
+					action="consConfAgendaProfissional.xhtml?faces-redirect=true">
 				</b:commandButton>
 
 			</div>
@@ -482,9 +502,8 @@
 			<h:form id="formConsultProf">
 				<p:outputPanel>
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						value="#{MBFuncionarios.listaProfissional}"
-						id="dtTipoAt" resizableColumns="true" var="profi"
-						display="Nenhum Profissional">
+						value="#{MBFuncionarios.listaProfissional}" id="dtTipoAt"
+						resizableColumns="true" var="profi" display="Nenhum Profissional">
 
 						<h:column>
 							<f:facet name="header">
