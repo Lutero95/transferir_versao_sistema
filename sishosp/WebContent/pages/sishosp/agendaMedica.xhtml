@@ -110,8 +110,7 @@
                                                     itemLabel="#{theme.descPrograma}">
                                         <p:ajax event="itemSelect"
                                                 listener="#{AgendaController.carregarTipoDeAtendimentoParaProgramaAvaliacao}"
-                                                update="outTip2"/>
-
+                                                update="outTip2, :formAgendaMedica, msgPagina, outTipoAt, outEquipeAvaliacaoRow"/>
 
                                     </p:autoComplete>
 
@@ -295,6 +294,44 @@
                                                      action="#{AgendaController.carregaListaEquipePorTipoAtendimento()}"
                                                      update=":formConsuEquipe"
                                                      rendered="#{AgendaController.agenda.tipoAt.equipe==true}"/>
+                                </p:outputPanel>
+                            </b:column>
+
+                        </b:row>
+                    </p:outputPanel>
+
+                    <br></br>
+
+                    <p:outputPanel id="outEquipeAvaliacaoRow">
+                        <b:row rendered="#{AgendaController.agenda.tipoAt.primeiroAt==true}">
+
+                            <b:column span="3"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Equipe" severity="info"
+                                         rendered="#{AgendaController.agenda.tipoAt.primeiroAt==true}"/>
+
+                                <p:outputPanel id="outEquipeAvaliacao"
+                                               rendered="#{AgendaController.agenda.tipoAt.primeiroAt==true}">
+                                    <p:autoComplete value="#{AgendaController.agenda.equipe}"
+                                                    size="31" converter="conEquipe" required="true"
+                                                    requiredMessage="Equipe: Campo obrigatório!"
+                                                    class="select-agendaEquipe4"
+                                                    completeMethod="#{AgendaController.listaEquipePorProgramaAutoComplete}"
+                                                    effect="fade" var="theme" forceSelection="true"
+                                                    minQueryLength="1" itemValue="#{theme}"
+                                                    itemLabel="#{theme.descEquipe}">
+                                        <p:ajax event="itemSelect"
+                                                listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
+                                                update=":formAgendaMedica, outHorariosEquipe, msgPagina, outQtdIhMax"></p:ajax>
+
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btBusEquiAvaliacao" immediate="true"
+                                                     disabled="#{AgendaController.agenda.tipoAt==null}"
+                                                     icon="ui-icon-search" oncomplete="PF('dlgConsuEquipe').show();"
+                                                     action="#{AgendaController.carregaListaEquipePorTipoAtendimento()}"
+                                                     update=":formConsuEquipe"
+                                                     rendered="#{AgendaController.agenda.tipoAt.primeiroAt==true}"/>
                                 </p:outputPanel>
                             </b:column>
 
@@ -622,9 +659,8 @@
 
                     <div align="center">
 
-                        <p:commandButton value="Gravar" look="success" size="sm" id="b1"
+                        <p:commandButton value="Gravar" look="success" size="sm" id="bgravar"
                                          icon="glyphicon-ok"
-
                                          action="#{AgendaController.verificarPacienteAtivoInstituicao()}"
                                          update=":formAgendaMedica, :frmSenha, outProf" class="btn-incluir"/>
 

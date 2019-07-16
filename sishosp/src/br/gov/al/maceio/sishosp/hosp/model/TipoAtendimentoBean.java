@@ -19,6 +19,7 @@ public class TipoAtendimentoBean implements Serializable {
     private Integer codEmpresa;
     private Integer intervaloMinimo;
 
+
     // LISTAS
     private List<GrupoBean> grupo;
     private List<GrupoBean> grupoNovo;

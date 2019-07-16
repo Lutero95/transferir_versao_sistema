@@ -12,15 +12,12 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import br.gov.al.maceio.sishosp.comum.util.*;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ConfigAgendaDAO;
@@ -53,15 +50,16 @@ public class AgendaController implements Serializable {
     private String cnsC;
     private Integer protuarioC;
     private AgendaBean rowBean;
+
     public AgendaBean getRowBean() {
-		return rowBean;
-	}
+        return rowBean;
+    }
 
-	public void setRowBean(AgendaBean rowBean) {
-		this.rowBean = rowBean;
-	}
+    public void setRowBean(AgendaBean rowBean) {
+        this.rowBean = rowBean;
+    }
 
-	private TipoAtendimentoBean tipoC;
+    private TipoAtendimentoBean tipoC;
     private ProgramaBean programaSelecionado;
     private List<AgendaBean> listaNovosAgendamentos;
     private List<AgendaBean> listaAgendamentosData;
@@ -143,24 +141,52 @@ public class AgendaController implements Serializable {
     }
 
     public void preparaVerificarDisponibilidadeDataECarregarDiasAtendimento() throws ProjetoException {
-    	preparaVerificarDisponibilidadeData();
-    	listaDiasDeAtendimentoAtuais();
+        preparaVerificarDisponibilidadeData();
+        listaDiasDeAtendimentoAtuais();
     }
 
     public void carregarHorarioOuTurno() throws ProjetoException, ParseException {
         opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoEmpresa();
 
-        if(opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())){
+        if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
             gerarHorariosAtendimento();
         }
 
     }
 
+    public void carregarTipoDeAtendimentoParaProgramaAvaliacao() throws ProjetoException {
+        TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+        int tipoAtendimento = tDao.listarTipoDeAtendimentoDoPrograma(agenda.getProgramaAvaliacao().getIdPrograma());
+        agenda.setTipoAt(tDao.listarTipoPorId(tipoAtendimento));
+        agenda.getTipoAt().setProfissional(false);
+        validarTipoAtendimentoNaAgenda(null);
+    }
+
+    public void validarTipoAtendimentoNaAgenda(SelectEvent event) throws ProjetoException {
+        if (!VerificadorUtil.verificarSeObjetoNulo(event)) {
+            this.tipoAtendimentoSelecionado = (TipoAtendimentoBean) event.getObject();
+
+            agenda.setTipoAt(new TipoAtendimentoDAO().listarInformacoesTipoAtendimentoEquieProgramaPorId(tipoAtendimentoSelecionado.getIdTipo()));
+
+        }
+
+        if (agenda.getTipoAt().getIntervaloMinimo() > 0) {
+
+            Boolean intervalo = aDao.retornarIntervaloUltimoAgendamento(agenda.getPaciente().getId_paciente(), agenda.getTipoAt().getIdTipo(), agenda.getTipoAt().getIntervaloMinimo());
+
+            if (!intervalo) {
+                JSFUtil.adicionarMensagemErro("Paciente tem agendamento inferior ao mínimo para esse tipo de atendimento!", "Erro");
+
+                agenda.setTipoAt(new TipoAtendimentoBean());
+            }
+        }
+    }
+
     private void gerarHorariosAtendimento() throws ParseException {
         listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
-    
-    
+
+
     public void preparaVerificarDisponibilidadeData() throws ProjetoException {
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
             if (this.agenda.getPrograma().getIdPrograma() == null
@@ -261,7 +287,7 @@ public class AgendaController implements Serializable {
     }
 
     public Boolean verificarSeAtingiuLimitePorTipoDeAtendimento() throws ProjetoException {
-    	
+
         Boolean retorno = false;
 
         Integer limite = aDao.contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(this.agenda, this.agenda.getDataAtendimento());
@@ -271,10 +297,10 @@ public class AgendaController implements Serializable {
         maximo = aDao.verQtdMaxAgendaEspecDataEspecifica(this.agenda);
 
         if (maximo == 0) {
-        	
+
             aDao.verQtdMaxAgendaEspecDataEspecifica(this.agenda);
-            
-          //  verQtdMaxAgendaEspec
+
+            //  verQtdMaxAgendaEspec
         }
 
         if (limite >= maximo && limite > 0) {
@@ -323,7 +349,7 @@ public class AgendaController implements Serializable {
 
         Boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
         Boolean diaSemEspecifico = aDao.buscarDiaSemanaMesAnoEspecifico(this.agenda);
-        
+
         if (dtEspecifica) {
             listarAgendamentosData();
             this.agenda.setMax(aDao.verQtdMaxAgendaDataEspecifica(this.agenda));
@@ -346,17 +372,16 @@ public class AgendaController implements Serializable {
     }
 
     public void validarParaConfirmar() throws ProjetoException {
-        if(verificarEncaixe()){
+        if (verificarEncaixe()) {
             preparaConfirmar();
-        }
-        else{
+        } else {
             JSFUtil.abrirDialog("dlgSenhaEncaixe");
         }
     }
 
     public Boolean verificarSeFoiAdicionadoODiaNaLista() {
-        for(int i=0; i<listaNovosAgendamentos.size(); i++){
-            if(agenda == listaNovosAgendamentos.get(i)){
+        for (int i = 0; i < listaNovosAgendamentos.size(); i++) {
+            if (agenda == listaNovosAgendamentos.get(i)) {
                 return true;
             }
         }
@@ -365,9 +390,9 @@ public class AgendaController implements Serializable {
 
     public void preparaConfirmar() throws ProjetoException {
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
-            if (agenda.getMax() == null || agenda.getQtd() == null) {
+            if ((agenda.getMax() == null || agenda.getQtd() == null) && !agenda.getEncaixe()) {
                 JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
-            } else if ((agenda.getMax() == 0 || agenda.getQtd() >= agenda.getMax()) && !agenda.getEncaixe()) {
+            } else if ((VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getMax()) || agenda.getQtd() >= agenda.getMax()) && !agenda.getEncaixe()) {
                 JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
             } else {
                 addListaNovosAgendamentos();
@@ -484,7 +509,7 @@ public class AgendaController implements Serializable {
                 agenda.setDataAtendimento(c.getTime());
                 dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
                 diaSem = aDao.buscarDiaSemanaMesAnoEspecifico(this.agenda);
-                
+
                 if (dtEspecifica == true || diaSem == true) {
                     temData = true;
                     if (diaSem) {
@@ -555,6 +580,10 @@ public class AgendaController implements Serializable {
 
         Boolean pacienteAtivo = gerenciarPacienteDAO.verificarPacienteAtivoInstituicao(agenda.getPaciente().getId_paciente());
 
+        if(VerificadorUtil.verificarSeObjetoNulo(agenda.getMax()) && VerificadorUtil.verificarSeObjetoNulo(agenda.getQtd())){
+            zerarValoresAgendaMaximoIhQuantidade();
+        }
+
         if (agenda.getEquipe().getCodEquipe() != null) {
 
             if (pacienteAtivo) {
@@ -567,6 +596,11 @@ public class AgendaController implements Serializable {
         if (agenda.getProfissional().getId() != null) {
             gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
         }
+    }
+
+    public void zerarValoresAgendaMaximoIhQuantidade(){
+        agenda.setQtd(0);
+        agenda.setMax(0);
     }
 
     public void validarSenhaLiberacao() throws ProjetoException {
@@ -601,13 +635,10 @@ public class AgendaController implements Serializable {
         if (agenda.getEncaixe()) {
             if (SessionUtil.recuperarDadosSessao().getRealizaEncaixes()) {
                 retorno = true;
+            } else {
+                JSFUtil.adicionarMensagemAdvertencia("Usuário não tem permissão para fazer encaixe!", "Atenção");
             }
-            else
-            {
-            	JSFUtil.adicionarMensagemAdvertencia("Usuário não tem permissão para fazer encaixe!", "Atenção");
-            }
-        }
-        else{
+        } else {
             retorno = true;
         }
 
@@ -626,7 +657,7 @@ public class AgendaController implements Serializable {
         }
 
         // verificar as quantidades de vagas
-        if ((this.agenda.getMax() <= 0) && ( !agenda.getEncaixe())) {
+        if ((this.agenda.getMax() <= 0) && (!agenda.getEncaixe())) {
             JSFUtil.adicionarMensagemErro("Quantidade máxima inválida!", "Erro");
             return;
         }
@@ -664,10 +695,10 @@ public class AgendaController implements Serializable {
         this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC,
                 dataAtendimentoFinalC, agenda.getEmpresa().getCodEmpresa(), situacao);
     }
-    
+
     public void resetaParametrosConsultaAgenda() {
-    	agenda.setPresenca("T");
-    	
+        agenda.setPresenca("T");
+
     }
 
     //SEM USO NO MOMENTO
@@ -681,17 +712,17 @@ public class AgendaController implements Serializable {
         }
         limparDados();
     }
-    
+
     public void mudaStatusPresenca(AgendaBean agendaSelecionada) throws ProjetoException {
         boolean mudouStatusPresenca = aDao.mudaStatusPresenca(agendaSelecionada);
         if (mudouStatusPresenca) {
-        	consultarAgenda(agenda.getPresenca());
-        	rowBean =  new AgendaBean();
+            consultarAgenda(agenda.getPresenca());
+            rowBean = new AgendaBean();
             JSFUtil.adicionarMensagemSucesso("A��o conclu�da com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a a��o!", "Erro");
         }
-        
+
     }
 
     public void limparNaBuscaPaciente() {
@@ -795,6 +826,13 @@ public class AgendaController implements Serializable {
         return result;
     }
 
+    public List<EquipeBean> listaEquipePorProgramaAutoComplete(String query)
+            throws ProjetoException {
+        List<EquipeBean> result = eDao.listarEquipePorProgramaAutoComplete(query,
+                agenda.getProgramaAvaliacao().getIdPrograma());
+        return result;
+    }
+
     public void carregaListaEquipePorTipoAtendimento()
             throws ProjetoException {
         if (agenda.getTipoAt() != null) {
@@ -814,10 +852,10 @@ public class AgendaController implements Serializable {
 
     public void carregaListaProfissionalPorGrupo()
             throws ProjetoException {
-    	listaProfissionalPorGrupo = new ArrayList<FuncionarioBean>();
+        listaProfissionalPorGrupo = new ArrayList<FuncionarioBean>();
         if (agenda.getGrupo() != null) {
             if (agenda.getGrupo().getIdGrupo() != null) {
-            	listaProfissionalPorGrupo = fDao
+                listaProfissionalPorGrupo = fDao
                         .listarProfissionalPorGrupo(agenda.getGrupo()
                                 .getIdGrupo());
             }
@@ -836,22 +874,6 @@ public class AgendaController implements Serializable {
         return lista;
     }
 
-    public void validarTipoAtendimentoNaAgenda(SelectEvent event) throws ProjetoException {
-        this.tipoAtendimentoSelecionado = (TipoAtendimentoBean) event.getObject();
-
-        agenda.setTipoAt(new TipoAtendimentoDAO().listarInformacoesTipoAtendimentoEquieProgramaPorId(tipoAtendimentoSelecionado.getIdTipo()));
-
-        if (agenda.getTipoAt().getIntervaloMinimo() > 0) {
-
-            Boolean intervalo = aDao.retornarIntervaloUltimoAgendamento(agenda.getPaciente().getId_paciente(), agenda.getTipoAt().getIdTipo(), agenda.getTipoAt().getIntervaloMinimo());
-
-            if (!intervalo) {
-                JSFUtil.adicionarMensagemErro("Paciente tem agendamento inferior ao mínimo para esse tipo de atendimento!", "Erro");
-
-                agenda.setTipoAt(new TipoAtendimentoBean());
-            }
-        }
-    }
 
     public void listaDiasDeAtendimentoAtuais() throws ProjetoException {
         if (agenda.getTipoAt() != null) {
@@ -1083,93 +1105,93 @@ public class AgendaController implements Serializable {
     }
 
 
-	public List<EquipeBean> getListaEquipePorTipoAtendimento() {
-		return listaEquipePorTipoAtendimento;
-	}
+    public List<EquipeBean> getListaEquipePorTipoAtendimento() {
+        return listaEquipePorTipoAtendimento;
+    }
 
-	public void setListaEquipePorTipoAtendimento(List<EquipeBean> listaEquipePorTipoAtendimento) {
-		this.listaEquipePorTipoAtendimento = listaEquipePorTipoAtendimento;
-	}
+    public void setListaEquipePorTipoAtendimento(List<EquipeBean> listaEquipePorTipoAtendimento) {
+        this.listaEquipePorTipoAtendimento = listaEquipePorTipoAtendimento;
+    }
 
-	public FuncionarioDAO getfDao() {
-		return fDao;
-	}
+    public FuncionarioDAO getfDao() {
+        return fDao;
+    }
 
-	public void setfDao(FuncionarioDAO fDao) {
-		this.fDao = fDao;
-	}
+    public void setfDao(FuncionarioDAO fDao) {
+        this.fDao = fDao;
+    }
 
-	public TipoAtendimentoDAO gettDao() {
-		return tDao;
-	}
+    public TipoAtendimentoDAO gettDao() {
+        return tDao;
+    }
 
-	public void settDao(TipoAtendimentoDAO tDao) {
-		this.tDao = tDao;
-	}
+    public void settDao(TipoAtendimentoDAO tDao) {
+        this.tDao = tDao;
+    }
 
-	public AgendaDAO getaDao() {
-		return aDao;
-	}
+    public AgendaDAO getaDao() {
+        return aDao;
+    }
 
-	public void setaDao(AgendaDAO aDao) {
-		this.aDao = aDao;
-	}
+    public void setaDao(AgendaDAO aDao) {
+        this.aDao = aDao;
+    }
 
-	public GrupoDAO getgDao() {
-		return gDao;
-	}
+    public GrupoDAO getgDao() {
+        return gDao;
+    }
 
-	public void setgDao(GrupoDAO gDao) {
-		this.gDao = gDao;
-	}
+    public void setgDao(GrupoDAO gDao) {
+        this.gDao = gDao;
+    }
 
-	public EquipeDAO geteDao() {
-		return eDao;
-	}
+    public EquipeDAO geteDao() {
+        return eDao;
+    }
 
-	public void seteDao(EquipeDAO eDao) {
-		this.eDao = eDao;
-	}
+    public void seteDao(EquipeDAO eDao) {
+        this.eDao = eDao;
+    }
 
-	public TipoAtendimentoBean getTipoAtendimentoSelecionado() {
-		return tipoAtendimentoSelecionado;
-	}
+    public TipoAtendimentoBean getTipoAtendimentoSelecionado() {
+        return tipoAtendimentoSelecionado;
+    }
 
-	public void setTipoAtendimentoSelecionado(TipoAtendimentoBean tipoAtendimentoSelecionado) {
-		this.tipoAtendimentoSelecionado = tipoAtendimentoSelecionado;
-	}
+    public void setTipoAtendimentoSelecionado(TipoAtendimentoBean tipoAtendimentoSelecionado) {
+        this.tipoAtendimentoSelecionado = tipoAtendimentoSelecionado;
+    }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
 
-	public static Integer getSemFuncionarioLiberacao() {
-		return SEM_FUNCIONARIO_LIBERACAO;
-	}
+    public static Integer getSemFuncionarioLiberacao() {
+        return SEM_FUNCIONARIO_LIBERACAO;
+    }
 
-	public List<ConfigAgendaParte1Bean> getListaConfigAgenda() {
-		return listaConfigAgenda;
-	}
+    public List<ConfigAgendaParte1Bean> getListaConfigAgenda() {
+        return listaConfigAgenda;
+    }
 
-	public void setListaConfigAgenda(List<ConfigAgendaParte1Bean> listaConfigAgenda) {
-		this.listaConfigAgenda = listaConfigAgenda;
-	}
+    public void setListaConfigAgenda(List<ConfigAgendaParte1Bean> listaConfigAgenda) {
+        this.listaConfigAgenda = listaConfigAgenda;
+    }
 
-	public List<GrupoBean> getListaDeGruposFiltrada() {
-		return listaDeGruposFiltrada;
-	}
+    public List<GrupoBean> getListaDeGruposFiltrada() {
+        return listaDeGruposFiltrada;
+    }
 
-	public void setListaDeGruposFiltrada(List<GrupoBean> listaDeGruposFiltrada) {
-		this.listaDeGruposFiltrada = listaDeGruposFiltrada;
-	}
+    public void setListaDeGruposFiltrada(List<GrupoBean> listaDeGruposFiltrada) {
+        this.listaDeGruposFiltrada = listaDeGruposFiltrada;
+    }
 
-	public List<FuncionarioBean> getListaProfissionalPorGrupo() {
-		return listaProfissionalPorGrupo;
-	}
+    public List<FuncionarioBean> getListaProfissionalPorGrupo() {
+        return listaProfissionalPorGrupo;
+    }
 
-	public void setListaProfissionalPorGrupo(List<FuncionarioBean> listaProfissionalPorGrupo) {
-		this.listaProfissionalPorGrupo = listaProfissionalPorGrupo;
-	}
+    public void setListaProfissionalPorGrupo(List<FuncionarioBean> listaProfissionalPorGrupo) {
+        this.listaProfissionalPorGrupo = listaProfissionalPorGrupo;
+    }
 
     public String getOpcaoAtendimento() {
         return opcaoAtendimento;

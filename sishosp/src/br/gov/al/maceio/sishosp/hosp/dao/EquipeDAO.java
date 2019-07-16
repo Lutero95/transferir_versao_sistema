@@ -182,6 +182,42 @@ public class EquipeDAO {
         return lista;
     }
 
+    public List<EquipeBean> listarEquipePorProgramaAutoComplete(String descricao,
+                                                             Integer codPrograma) throws ProjetoException {
+        List<EquipeBean> lista = new ArrayList<>();
+        String sql = "select distinct e.id_equipe, e.id_equipe ||'-'|| e.descequipe as descequipe "
+                + "from hosp.equipe e "
+                + "left join hosp.equipe_grupo eg on (e.id_equipe = eg.codequipe) "
+                + "LEFT JOIN hosp.grupo_programa gp ON (gp.codgrupo = eg.id_grupo)"
+                + "where gp.codprograma = ? and descequipe like ? order by descequipe ";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codPrograma);
+            stm.setString(2, "%" + descricao.toUpperCase() + "%");
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                EquipeBean equipe = new EquipeBean();
+                equipe.setCodEquipe(rs.getInt("id_equipe"));
+                equipe.setDescEquipe(rs.getString("descequipe"));
+
+                lista.add(equipe);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
     public List<EquipeBean> listarEquipePorGrupo(Integer codgrupo)
             throws ProjetoException {
         List<EquipeBean> lista = new ArrayList<>();

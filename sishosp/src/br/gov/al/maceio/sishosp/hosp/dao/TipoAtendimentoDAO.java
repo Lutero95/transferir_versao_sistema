@@ -401,7 +401,8 @@ public class TipoAtendimentoDAO {
     }
 
     public TipoAtendimentoBean listarTipoPorId(int id) throws ProjetoException {
-        String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa, intervalo_minimo "
+        String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa, intervalo_minimo, equipe_programa,  "
+        + "CASE WHEN equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
                 + " from hosp.tipoatendimento WHERE id = ?";
         try {
             con = ConnectionFactory.getConnection();
@@ -420,6 +421,8 @@ public class TipoAtendimentoDAO {
                 tipo.setGrupo(gDao.listarGruposPorTipoAtend(tipo.getIdTipo(), con));
                 tipo.setListaPrograma(pDao.listarProgramasPorTipoAtend(tipo.getIdTipo(), con));
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
+                tipo.setEquipe(rs.getBoolean("equipe_programa"));
+                tipo.setProfissional(rs.getBoolean("profissional"));
             }
             return tipo;
         } catch (SQLException ex) {
