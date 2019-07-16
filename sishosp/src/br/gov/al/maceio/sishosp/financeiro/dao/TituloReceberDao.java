@@ -1042,7 +1042,7 @@ public class TituloReceberDao {
 			stmt.setInt(1, a.getBanco().getId());
 			stmt.setDouble(2, a.getValorAntecipado());
 			stmt.setDate(3, new java.sql.Date(a.getDataEmissao().getTime()));
-			stmt.setString(4, "ANTECIPAÇÃO DE RECEB�?VEIS");
+			stmt.setString(4, "ANTECIPAÇÃO DE RECEBÍVEIS");
 			stmt.setString(5, "CD");
 			stmt.setLong(6, caixa.getSeqcaixadiario());
 			stmt.execute();
