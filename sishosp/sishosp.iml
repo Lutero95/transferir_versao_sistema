@@ -23,51 +23,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="bootstrap-1.0.8" level="project" />
-    <orderEntry type="library" name="bridj-0.7.0" level="project" />
-    <orderEntry type="library" name="caelum-stella-core-2.0-beta1" level="project" />
-    <orderEntry type="library" name="caelum-stella-faces-2.0-beta1" level="project" />
-    <orderEntry type="library" name="common-annotations" level="project" />
-    <orderEntry type="library" name="commons-beanutils" level="project" />
-    <orderEntry type="library" name="commons-collections-3.2.1" level="project" />
-    <orderEntry type="library" name="commons-collections" level="project" />
-    <orderEntry type="library" name="commons-digester" level="project" />
-    <orderEntry type="library" name="commons-io-2.3" level="project" />
-    <orderEntry type="library" name="commons-fileupload-1.2.2" level="project" />
-    <orderEntry type="library" name="commons-lang3-3.1" level="project" />
-    <orderEntry type="library" name="commons-logging-1.0.4" level="project" />
-    <orderEntry type="library" name="commons-logging" level="project" />
-    <orderEntry type="library" name="core-3.2.0" level="project" />
-    <orderEntry type="library" name="dom4j-1.6.1" level="project" />
-    <orderEntry type="library" name="gson-2.2.4" level="project" />
-    <orderEntry type="library" name="iText-2.1.4" level="project" />
-    <orderEntry type="library" name="jackson-annotations-2.0.2" level="project" />
-    <orderEntry type="library" name="jackson-core-2.0.2" level="project" />
-    <orderEntry type="library" name="jackson-core-2.2.3" level="project" />
-    <orderEntry type="library" name="jackson-core-asl-1.9.2" level="project" />
-    <orderEntry type="library" name="jackson-databind-2.0.2" level="project" />
-    <orderEntry type="library" name="jackson-jaxrs-1.9.2" level="project" />
-    <orderEntry type="library" name="jasperreports-5.5.0" level="project" />
-    <orderEntry type="library" name="jackson-mapper-asl-1.9.2" level="project" />
-    <orderEntry type="library" name="jackson-xc-1.9.2" level="project" />
-    <orderEntry type="library" name="jasperreports-fonts-5.5.0" level="project" />
-    <orderEntry type="library" name="jstl-api-1.2" level="project" />
-    <orderEntry type="library" name="jstl-impl-1.2" level="project" />
-    <orderEntry type="library" name="jstl" level="project" />
-    <orderEntry type="library" name="log4j-1.2.17" level="project" />
-    <orderEntry type="library" name="org-netbeans-core" level="project" />
-    <orderEntry type="library" name="pepper-grinder-1.0.10" level="project" />
-    <orderEntry type="library" name="postgresql-8.3-604.jdbc4" level="project" />
-    <orderEntry type="library" name="primefaces-extensions-3.1.0" level="project" />
-    <orderEntry type="library" name="servlet-api" level="project" />
-    <orderEntry type="library" name="slf4j-api-1.7.13" level="project" />
-    <orderEntry type="library" name="slf4j-simple-1.7.13" level="project" />
-    <orderEntry type="library" name="smoothness-1.0.10" level="project" />
-    <orderEntry type="library" name="standard" level="project" />
-    <orderEntry type="library" name="bootsfaces-1.1.2" level="project" />
-    <orderEntry type="library" name="javax.faces" level="project" />
-    <orderEntry type="library" name="primefaces-5.2" level="project" />
-    <orderEntry type="library" name="Maven: org.primefaces.themes:bootstrap:1.0.10" level="project" />
+    <orderEntry type="library" name="Maven: com.lowagie:itext:2.1.7.js6" level="project" />
+    <orderEntry type="library" name="Maven: org.primefaces:primefaces:5.2" level="project" />
     <orderEntry type="library" name="Maven: com.nativelibs4java:bridj:0.7.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.android.tools:dx:1.7" level="project" />
     <orderEntry type="library" name="Maven: net.bootsfaces:bootsfaces:1.4.1" level="project" />
@@ -88,7 +45,10 @@
     <orderEntry type="library" name="Maven: com.google.zxing:core:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.zenframework.z8.dependencies.commons:dom4j-1.6.1:sources:2.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.2.4" level="project" />
-    <orderEntry type="library" name="Maven: com.lowagie:itext:2.1.7.js6" level="project" />
+    <orderEntry type="library" name="Maven: org.primefaces.themes:bootstrap:1.0.10" level="project" />
+    <orderEntry type="library" name="Maven: com.lowagie:itext:2.1.4" level="project" />
+    <orderEntry type="library" name="Maven: bouncycastle:bcmail-jdk14:138" level="project" />
+    <orderEntry type="library" name="Maven: bouncycastle:bcprov-jdk14:138" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.0.2" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.2" level="project" />
@@ -111,42 +71,11 @@
     <orderEntry type="library" name="Maven: org.glassfish.web:jstl-impl:1.2" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" name="Maven: org.postgresql:postgresql:42.2.4" level="project" />
-    <orderEntry type="library" name="Maven: org.primefaces:primefaces:5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.primefaces:primefaces:6.2" level="project" />
     <orderEntry type="library" name="Maven: org.primefaces.extensions:primefaces-extensions:3.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-servlet-api:9.0.19" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-servlet-api:7.0.34" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.13" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.13" level="project" />
     <orderEntry type="library" name="Maven: taglibs:standard:1.1.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-i18n-ko:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-el-api:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-i18n-es:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-websocket:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-juli:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-jasper:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-jasper-el:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-util:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-i18n-de:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-storeconfig:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-jsp-api:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-tribes:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-i18n-cs:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-catalina:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-jni:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-i18n-pt-BR:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-websocket-api:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jdt:ecj:3.16.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-coyote:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-catalina-ha:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-api:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-annotations-api:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-jaspic-api:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-i18n-zh-CN:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-catalina-ant:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-util-scan:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-i18n-ja:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-i18n-ru:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-jdbc:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-i18n-fr:9.0.19" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-dbcp:9.0.19" level="project" />
   </component>
 </module>
