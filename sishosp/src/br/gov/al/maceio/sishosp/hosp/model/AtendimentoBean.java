@@ -16,7 +16,8 @@ public class AtendimentoBean implements Serializable {
     private String situacao;
     private String ehEquipe;
     private String evolucao;
-    
+    private Boolean avaliacao;
+    private String perfil;
 
     // HERDADOS
     private PacienteBean paciente;
@@ -27,6 +28,7 @@ public class AtendimentoBean implements Serializable {
     private EquipeBean equipe;
     private CboBean cbo;
     private EmpresaBean empresa;
+    private InsercaoPacienteBean insercaoPacienteBean;
 
     public AtendimentoBean() {
         this.paciente = new PacienteBean();
@@ -37,6 +39,7 @@ public class AtendimentoBean implements Serializable {
         this.equipe = new EquipeBean();
         this.cbo = new CboBean();
         this.empresa = new EmpresaBean();
+        this.insercaoPacienteBean = new InsercaoPacienteBean();
     }
 
     public Integer getId() {
@@ -173,5 +176,29 @@ public class AtendimentoBean implements Serializable {
 
     public void setEvolucao(String evolucao) {
         this.evolucao = evolucao;
+    }
+
+    public Boolean getAvaliacao() {
+        return avaliacao;
+    }
+
+    public void setAvaliacao(Boolean avaliacao) {
+        this.avaliacao = avaliacao;
+    }
+
+    public InsercaoPacienteBean getInsercaoPacienteBean() {
+        return insercaoPacienteBean;
+    }
+
+    public void setInsercaoPacienteBean(InsercaoPacienteBean insercaoPacienteBean) {
+        this.insercaoPacienteBean = insercaoPacienteBean;
+    }
+
+    public String getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(String perfil) {
+        this.perfil = perfil;
     }
 }

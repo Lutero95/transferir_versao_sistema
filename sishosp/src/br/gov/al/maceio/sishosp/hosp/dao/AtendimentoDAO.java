@@ -359,7 +359,7 @@ public class AtendimentoDAO {
 
         AtendimentoBean at = new AtendimentoBean();
         String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, a1.codprocedimento, " +
-                "pr.nome as procedimento, a1.situacao, a1.evolucao " +
+                "pr.nome as procedimento, a1.situacao, a1.evolucao, a.avaliacao " +
                 "from hosp.atendimentos a " +
                 "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " +
                 "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) " +
@@ -383,6 +383,7 @@ public class AtendimentoDAO {
                 at.getFuncionario().setNome(rs.getString("descfuncionario"));
                 at.setStatus(rs.getString("situacao"));
                 at.setEvolucao(rs.getString("evolucao"));
+                at.setAvaliacao(rs.getBoolean("avaliacao"));
             }
 
         } catch (SQLException ex) {

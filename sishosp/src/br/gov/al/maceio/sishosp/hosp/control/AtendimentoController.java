@@ -13,6 +13,7 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.event.CellEditEvent;
 
@@ -306,6 +307,12 @@ public class AtendimentoController implements Serializable {
 
     public void carregarPtsDoPaciente(Integer codPaciente) throws ProjetoException {
         pts = new PtsController().carregarPtsPaciente(codPaciente);
+    }
+
+    public ArrayList<InsercaoPacienteBean> listarLaudosVigentesPaciente()
+            throws ProjetoException {
+        LaudoDAO laudoDAO = new LaudoDAO();
+        return laudoDAO.listarLaudosVigentesParaPaciente(atendimento.getPaciente().getId_paciente());
     }
 
     public AtendimentoBean getAtendimento() {
