@@ -553,7 +553,7 @@ body {
 
  .ui-menu .ui-menu-parent .ui-menu-child {
    height: auto;
-    /*overflow-x: scroll;*/
+    overflow-x: scroll;
     /*overflow-y: auto;*/
     position : fixed;
     max-height: 500px;

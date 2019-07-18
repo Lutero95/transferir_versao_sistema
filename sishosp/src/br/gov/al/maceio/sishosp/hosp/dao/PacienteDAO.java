@@ -46,7 +46,7 @@ public class PacienteDAO {
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //21 ao 30
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //31 ao 40
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //41 ao 50
-                    + "?, ?, ?, ?, ?, ?) returning id_paciente"; //51 ao 56
+                    + "?, ?, ?, ?, ?, ?,?) returning id_paciente"; //51 ao 57
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, paciente.getNome().toUpperCase().trim());
@@ -322,8 +322,8 @@ public class PacienteDAO {
                 stmt.setInt(56, paciente.getReligiao().getId());
             }
 
-            if (paciente.getGenero() == null) {
-                stmt.setNull(57, Types.CHAR);
+            if (paciente.getGenero().getId() == null) {
+                stmt.setNull(57, Types.NULL);
             } else {
                 stmt.setInt(57, paciente.getGenero().getId());
             }
@@ -338,7 +338,7 @@ public class PacienteDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

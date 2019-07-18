@@ -31,7 +31,7 @@
 								<b:label value="Tipo de Configuração" severity="info"
 									class="label-position new-data-size new-comple1" />
 								<p:selectOneRadio style="margin-top:5px"
-									value="#{ConfigAgendaController.confParte1.opcao}">
+									value="#{ConfigAgendaController.confParte1.tipo}">
 									<f:selectItem itemLabel="Padrão" itemValue="1" />
 									<f:selectItem itemLabel="Específica" itemValue="2" />
 									<p:ajax update="panelDias, panelData, panelMesAno"
@@ -42,15 +42,15 @@
 
 						<b:row>
 
-							<b:column span="2" class="new-data-size2">
+							<b:column span="1">
 
-								<p:outputLabel value="Opção:"
+								<p:outputLabel value="Tipo:"
 									style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
 							</b:column>
 
-							<b:column span="3" class="btn-radio-table">
+							<b:column span="2" class="btn-radio-table" >
 								<p:selectOneRadio
 									value="#{ConfigAgendaController.confParte1.opcao}">
 									<f:selectItem itemLabel="Data Específica" itemValue="1" />

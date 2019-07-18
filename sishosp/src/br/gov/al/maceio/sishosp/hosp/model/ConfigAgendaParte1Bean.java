@@ -20,6 +20,7 @@ public class ConfigAgendaParte1Bean implements Serializable {
     private Integer qtdMax;
     private Integer diaDaSemana;
     private String opcao;
+    private String tipo;
     private String diaSemana;
 
     public ConfigAgendaParte1Bean() {
@@ -27,6 +28,7 @@ public class ConfigAgendaParte1Bean implements Serializable {
         this.equipe = new EquipeBean();
         this.diasSemana = new ArrayList<String>();
         opcao = "1";
+        tipo = "G"; 
     }
 
     public ConfigAgendaParte1Bean(Integer mes, Integer ano,
@@ -140,4 +142,12 @@ public class ConfigAgendaParte1Bean implements Serializable {
     public void setDiaSemana(String diaSemana) {
         this.diaSemana = diaSemana;
     }
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
 }

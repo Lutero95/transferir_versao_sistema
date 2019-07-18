@@ -458,7 +458,7 @@
                                              class="form-control select-agendaEquipe2"
                                              id="cpf" required="true"
                                              validator="CPFValidator" validatorMessage="CPF inválido!"
-                                             requiredMessage="CPF: Campo obrigatório!">
+                                             requiredMessage="CPF do Paciente: Campo obrigatório!">
                                 </p:inputMask>
                             </b:column>
                         </b:row>
@@ -707,7 +707,7 @@
                                 <p:outputPanel>
                                     <p:inputMask mask="999.999.999-99" id="nome7"
                                                  class="form-control select-agendaEquipe2"
-                                                 validator="CPFValidator" validatorMessage="CPF inválido!"
+                                                 validator="CPFValidator" validatorMessage="CPF do responsável inválido!"
                                                  value="#{PacienteController.paciente.cpfresp}">
                                     </p:inputMask>
 
