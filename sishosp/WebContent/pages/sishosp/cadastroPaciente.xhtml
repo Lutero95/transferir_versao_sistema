@@ -923,7 +923,7 @@
                                                  update=":frmPrincipal:tbv:escolacomplete2"
                                                  class="new-btn-acao-table acao-editar">
                                     <f:setPropertyActionListener value="#{busca}"
-                                                                 target="#{PacienteController.escolaSuggestion}"/>
+                                                                 target="#{PacienteController.paciente.escola}"/>
                                     <p:tooltip for="confirmar" value="Selecionar Escola"></p:tooltip>
                                 </p:commandButton>
                             </h:column>
@@ -965,7 +965,7 @@
                                                  update=":frmPrincipal:tbv:escolacomplete1"
                                                  class="new-btn-acao-table acao-editar">
                                     <f:setPropertyActionListener value="#{busca}"
-                                                                 target="#{PacienteController.escolaridadeSuggestion}"/>
+                                                                 target="#{PacienteController.paciente.escolaridade}"/>
                                     <p:tooltip for="confirmar" value="Selecionar Escolaridade2"></p:tooltip>
                                 </p:commandButton>
                             </h:column>
@@ -1008,7 +1008,7 @@
                                                  class="new-btn-acao-table acao-editar"
                                                  update=":frmPrincipal:tbv:escolacomplete3">
                                     <f:setPropertyActionListener value="#{busca}"
-                                                                 target="#{PacienteController.profissaoSuggestion}"/>
+                                                                 target="#{PacienteController.paciente.profissao}"/>
                                     <p:tooltip for="confirmar" value="Selecionar Profissão"></p:tooltip>
                                 </p:commandButton>
                             </h:column>
@@ -1051,7 +1051,7 @@
                                                  class="new-btn-acao-table acao-editar"
                                                  update=":frmPrincipal:tbv:escolacomplete4">
                                     <f:setPropertyActionListener value="#{busca}"
-                                                                 target="#{PacienteController.encaminhadoSuggestion}"/>
+                                                                 target="#{PacienteController.paciente.encaminhado}"/>
                                     <p:tooltip for="confirmar" value="Selecionar Encaminhado"></p:tooltip>
                                 </p:commandButton>
                             </h:column>
@@ -1093,7 +1093,7 @@
                                                  class="new-btn-acao-table acao-editar"
                                                  update=":frmPrincipal:tbv:escolacomplete5">
                                     <f:setPropertyActionListener value="#{busca}"
-                                                                 target="#{PacienteController.transporteSuggestion}"/>
+                                                                 target="#{PacienteController.paciente.formatransporte}"/>
                                     <p:tooltip for="confirmar" value="Selecionar Transporte"></p:tooltip>
                                 </p:commandButton>
                             </h:column>
