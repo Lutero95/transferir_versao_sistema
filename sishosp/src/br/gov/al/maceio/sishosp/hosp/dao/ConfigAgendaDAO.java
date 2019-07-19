@@ -75,8 +75,8 @@ public class ConfigAgendaDAO {
         Integer idConfigAgenda = null;
 
         try {
-            String sql = "INSERT INTO hosp.config_agenda_profissional(codmedico, qtdmax, mes, ano, cod_empresa, opcao) "
-                    + " VALUES (?, ?, ?, ?, ?, ?) RETURNING id_configagenda;";
+            String sql = "INSERT INTO hosp.config_agenda_profissional(codmedico, qtdmax, mes, ano, cod_empresa, opcao, tipo) "
+                    + " VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id_configagenda;";
 
             PreparedStatement ps = conAuxiliar.prepareStatement(sql);
 
@@ -101,6 +101,7 @@ public class ConfigAgendaDAO {
             ps.setInt(5, user_session.getEmpresa().getCodEmpresa());
 
             ps.setString(6, confParte1.getOpcao());
+            ps.setString(7, confParte1.getTipo());
 
             rs = ps.executeQuery();
 

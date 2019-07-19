@@ -193,20 +193,39 @@ public class ConfigAgendaController implements Serializable {
             throws ProjetoException {
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
         if (confParte2.getGrupo() != null) {
-            return tDao.listarTipoAtAutoComplete(query, confParte2.getGrupo());
+            return tDao.listarTipoAtAutoComplete(query, confParte2.getGrupo(), null);
         } else {
             return null;
         }
     }
+    
+    public List<TipoAtendimentoBean> listaTipoAtEquipeAutoComplete(String query)
+            throws ProjetoException {
+        TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+        if (confParte2.getGrupo() != null) {
+            return tDao.listarTipoAtAutoComplete(query, confParte2.getGrupo(), "E");
+        } else {
+            return null;
+        }
+    }    
+    
+    public List<TipoAtendimentoBean> listaTipoAtProfissionalAutoComplete(String query)
+            throws ProjetoException {
+        TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+        if (confParte2.getGrupo() != null) {
+            return tDao.listarTipoAtAutoComplete(query, confParte2.getGrupo(), "P");
+        } else {
+            return null;
+        }
+    }        
 
-    public void carregaListaTipoAtendimento()
+    public void carregaListaTipoAtendimento(String tipo)
             throws ProjetoException {
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
         if (confParte2.getGrupo() != null) {
             listaTipoAtendimentosGrupo = tDao.listarTipoAtPorGrupo(confParte2
-                    .getGrupo().getIdGrupo());
+                    .getGrupo().getIdGrupo(), tipo);
         }
-
     }
 
     // FINAL TIPOATENDIMENTOBEAN

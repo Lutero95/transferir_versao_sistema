@@ -7,6 +7,7 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
@@ -249,13 +250,18 @@ public class TipoAtendimentoDAO {
         }
     }
 
-    public List<TipoAtendimentoBean> listarTipoAtPorGrupo(int codGrupo)
+    public List<TipoAtendimentoBean> listarTipoAtPorGrupo(int codGrupo, String tipoAtendimento)
             throws ProjetoException {
         List<TipoAtendimentoBean> lista = new ArrayList<>();
         String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.intervalo_minimo, " +
                 "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
                 + " from hosp.tipoatendimento t left join hosp.tipoatendimento_grupo tg on (t.id = tg.codtipoatendimento) "
-                + " where tg.codgrupo = ? order by t.desctipoatendimento";
+                + " where tg.codgrupo = ?";
+        	if (tipoAtendimento.equals(TipoAtendimento.EQUIPE.getSigla()))
+        		sql = sql +" and coalesce(t.equipe_programa,false) is true";
+        	if (tipoAtendimento.equals(TipoAtendimento.PROFISSIONAL.getSigla()))
+        		sql = sql +" and coalesce(t.equipe_programa, false) is false";        	
+        	sql = sql +" order by t.desctipoatendimento";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -357,18 +363,22 @@ public class TipoAtendimentoDAO {
     }
 
     public List<TipoAtendimentoBean> listarTipoAtAutoComplete(String descricao,
-                                                              GrupoBean grupo) throws ProjetoException {
+                                                              GrupoBean grupo, String tipoAtendimento) throws ProjetoException {
 
         PreparedStatement stm = null;
         con = ConnectionFactory.getConnection();
         List<TipoAtendimentoBean> lista = new ArrayList<>();
 
         try {
-            String sql = "SELECT t.id, t.desctipoatendimento, t.primeiroatendimento, t.intervalo_minimo, t.equipe_programa, "
-                    + "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
-                    + "FROM hosp.tipoatendimento t LEFT JOIN hosp.tipoatendimento_grupo tg ON (t.id = tg.codtipoatendimento) "
-                    + "WHERE tg.codgrupo = ? AND upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? "
-                    + "ORDER BY t.desctipoatendimento";
+			String sql = "SELECT t.id, t.desctipoatendimento, t.primeiroatendimento, t.intervalo_minimo, t.equipe_programa, "
+					+ "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
+					+ "FROM hosp.tipoatendimento t LEFT JOIN hosp.tipoatendimento_grupo tg ON (t.id = tg.codtipoatendimento) "
+					+ "WHERE tg.codgrupo = ? AND upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? ";
+			if (tipoAtendimento.equals(TipoAtendimento.EQUIPE.getSigla()))
+				sql = sql + " and coalesce(equipe_programa,false) is true";
+			if (tipoAtendimento.equals(TipoAtendimento.PROFISSIONAL.getSigla()))
+				sql = sql + " and coalesce(equipe_programa,false) is false";
+			sql = sql + "ORDER BY t.desctipoatendimento";
 
             stm = con.prepareStatement(sql);
             stm.setInt(1, grupo.getIdGrupo());

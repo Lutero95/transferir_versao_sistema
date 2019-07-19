@@ -3,7 +3,8 @@ package br.gov.al.maceio.sishosp.hosp.enums;
 public enum TipoAtendimento {
 
     PROFISSIONAL("P"),
-    EQUIPE("E");
+    EQUIPE("E"),
+	TODOS("T");
 
     private String sigla;
 

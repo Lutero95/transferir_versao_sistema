@@ -27,7 +27,7 @@ public class ConfigAgendaParte1Bean implements Serializable {
         this.profissional = new FuncionarioBean();
         this.equipe = new EquipeBean();
         this.diasSemana = new ArrayList<String>();
-        opcao = "1";
+        opcao = "2";
         tipo = "G"; 
     }
 
