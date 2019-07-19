@@ -201,7 +201,7 @@ public class AtendimentoDAO {
         }
     }
 
-    public Boolean realizaAtendimentoEquipe(List<AtendimentoBean> lista)
+    public Boolean realizaAtendimentoEquipe(List<AtendimentoBean> lista, Integer idLaudo)
             throws ProjetoException {
         boolean alterou = false;
         con = ConnectionFactory.getConnection();
@@ -209,14 +209,16 @@ public class AtendimentoDAO {
 
             for (int i = 0; i < lista.size(); i++) {
 
-                String sql = "delete from hosp.atendimentos1 where id_atendimento = ?";
+                if(i==0) {
+                    String sql = "delete from hosp.atendimentos1 where id_atendimento = ?";
 
-                PreparedStatement stmt = con.prepareStatement(sql);
-                stmt.setLong(1, lista.get(i).getId());
-                stmt.execute();
+                    PreparedStatement stmt = con.prepareStatement(sql);
+                    stmt.setLong(1, lista.get(i).getId());
+                    stmt.execute();
+                }
 
                 String sql2 = "INSERT INTO hosp.atendimentos1(dtaatendido, codprofissionalatendimento, id_atendimento, "
-                        + " cbo, codprocedimento, situacao, evolucao) VALUES (current_timestamp, ?, ?, ?, ?, ?, ?);";
+                        + " cbo, codprocedimento, situacao, evolucao, perfil_avaliacao) VALUES (current_timestamp, ?, ?, ?, ?, ?, ?, ?);";
 
                 PreparedStatement stmt2 = con.prepareStatement(sql2);
                 stmt2.setLong(1, lista.get(i).getFuncionario().getId());
@@ -225,7 +227,15 @@ public class AtendimentoDAO {
                 stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
                 stmt2.setString(5, lista.get(i).getStatus());
                 stmt2.setString(6, lista.get(i).getEvolucao());
+                stmt2.setString(7, lista.get(i).getPerfil());
                 stmt2.executeUpdate();
+
+                String sql3 = "update hosp.atendimentos set cod_laudo = ? where id_atendimento = ?";
+
+                PreparedStatement stmt3 = con.prepareStatement(sql3);
+                stmt3.setInt(1, idLaudo);
+                stmt3.setInt(2, lista.get(0).getId());
+                stmt3.executeUpdate();
 
             }
             con.commit();
@@ -359,7 +369,7 @@ public class AtendimentoDAO {
 
         AtendimentoBean at = new AtendimentoBean();
         String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, a1.codprocedimento, " +
-                "pr.nome as procedimento, a1.situacao, a1.evolucao, a.avaliacao " +
+                "pr.nome as procedimento, a1.situacao, a1.evolucao, a.avaliacao, a.cod_laudo " +
                 "from hosp.atendimentos a " +
                 "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " +
                 "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) " +
@@ -384,6 +394,7 @@ public class AtendimentoDAO {
                 at.setStatus(rs.getString("situacao"));
                 at.setEvolucao(rs.getString("evolucao"));
                 at.setAvaliacao(rs.getBoolean("avaliacao"));
+                at.getInsercaoPacienteBean().getLaudo().setId(rs.getInt("cod_laudo"));
             }
 
         } catch (SQLException ex) {
@@ -403,7 +414,7 @@ public class AtendimentoDAO {
             throws ProjetoException {
 
         String sql = "select a1.id_atendimentos1, a1.id_atendimento, a1.codprofissionalatendimento, f.descfuncionario, f.cns,"
-                + " f.codcbo, c.descricao, a1.situacao, pr.id, a1.codprocedimento, pr.nome as procedimento, a1.evolucao "
+                + " f.codcbo, c.descricao, a1.situacao, pr.id, a1.codprocedimento, pr.nome as procedimento, a1.evolucao, a1.perfil_avaliacao "
                 + " from hosp.atendimentos1 a1"
                 + " left join acl.funcionarios f on (f.id_funcionario = a1.codprofissionalatendimento)"
                 + " left join hosp.cbo c on (f.codcbo = c.id)"
@@ -435,6 +446,7 @@ public class AtendimentoDAO {
                 at.getProcedimento().setNomeProc(rs.getString("procedimento"));
                 at.getProcedimento().setIdProc(rs.getInt("id"));
                 at.setEvolucao(rs.getString("evolucao"));
+                at.setPerfil(rs.getString("perfil_avaliacao"));
 
                 lista.add(at);
             }

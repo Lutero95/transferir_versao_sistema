@@ -45,6 +45,8 @@ public class AtendimentoController implements Serializable {
     private List<AtendimentoBean> listaEvolucoes;
     private PacienteBean paciente;
     private Pts pts;
+    private Boolean renderizarDialogLaudo;
+    private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
 
     //CONSTANTES
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
@@ -69,6 +71,7 @@ public class AtendimentoController implements Serializable {
         atendimento.setDataAtendimentoFinal(DataUtil.retornarDataAtual());
         paciente = new PacienteBean();
         pts = new Pts();
+        renderizarDialogLaudo = false;
     }
 
 
@@ -115,8 +118,26 @@ public class AtendimentoController implements Serializable {
             Integer id = Integer.parseInt(params.get("id"));
 
             this.atendimento = aDao.listarAtendimentoProfissionalPorId(id);
+
+            verificarSeRenderizaDialogDeLaudo();
+
             listarAtendimentosEquipe();
         }
+    }
+
+    private void verificarSeRenderizaDialogDeLaudo() throws ProjetoException {
+        if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getInsercaoPacienteBean().getLaudo().getId()) && atendimento.getAvaliacao()){
+            renderizarDialogLaudo = true;
+            listarLaudosVigentesPaciente();
+        }
+        else{
+            carregarDadosLaudo();
+        }
+    }
+
+    private void carregarDadosLaudo() throws ProjetoException {
+        LaudoDAO laudoDAO = new LaudoDAO();
+        atendimento.getInsercaoPacienteBean().setLaudo(laudoDAO.listarLaudosVigentesPorId(atendimento.getInsercaoPacienteBean().getLaudo().getId()));
     }
 
     public void realizarAtendimentoProfissional() throws ProjetoException {
@@ -179,7 +200,7 @@ public class AtendimentoController implements Serializable {
         primeiraVez = false;
         listarAtendimentosEquipe();
 
-        atendimento = new AtendimentoBean();
+        //atendimento = new AtendimentoBean();
         procedimento = new ProcedimentoBean();
         funcionario = null;
 
@@ -269,11 +290,20 @@ public class AtendimentoController implements Serializable {
         this.listaProcedimentos = pDao.listarProcedimento();
     }
 
-    private Boolean validarStatusDoAtendimentoForamInformados() {
+    private Boolean validarDadosDoAtendimentoForamInformados() {
 
-        for(int i=0; i<listAtendimentosEquipe.size(); i++){
-            if(VerificadorUtil.verificarSeObjetoNuloOuVazio(listAtendimentosEquipe.get(i).getStatus())){
-                return false;
+        if(atendimento.getAvaliacao()){
+            for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+                if (VerificadorUtil.verificarSeObjetoNuloOuVazio(listAtendimentosEquipe.get(i).getPerfil())) {
+                    return false;
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < listAtendimentosEquipe.size(); i++) {
+                if (VerificadorUtil.verificarSeObjetoNuloOuVazio(listAtendimentosEquipe.get(i).getStatus())) {
+                    return false;
+                }
             }
         }
 
@@ -281,11 +311,11 @@ public class AtendimentoController implements Serializable {
     }
 
     public void realizarAtendimentoEquipe() throws ProjetoException {
-        if(validarStatusDoAtendimentoForamInformados()) {
+        if(validarDadosDoAtendimentoForamInformados()) {
             boolean verificou = aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
 
             if (verificou) {
-                boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe);
+                boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId());
                 if (alterou) {
                     JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
                 } else {
@@ -309,10 +339,10 @@ public class AtendimentoController implements Serializable {
         pts = new PtsController().carregarPtsPaciente(codPaciente);
     }
 
-    public ArrayList<InsercaoPacienteBean> listarLaudosVigentesPaciente()
+    public void listarLaudosVigentesPaciente()
             throws ProjetoException {
         LaudoDAO laudoDAO = new LaudoDAO();
-        return laudoDAO.listarLaudosVigentesParaPaciente(atendimento.getPaciente().getId_paciente());
+        listaLaudosVigentes = laudoDAO.listarLaudosVigentesParaPaciente(atendimento.getPaciente().getId_paciente());
     }
 
     public AtendimentoBean getAtendimento() {
@@ -404,5 +434,21 @@ public class AtendimentoController implements Serializable {
 
     public void setPts(Pts pts) {
         this.pts = pts;
+    }
+
+    public Boolean getRenderizarDialogLaudo() {
+        return renderizarDialogLaudo;
+    }
+
+    public void setRenderizarDialogLaudo(Boolean renderizarDialogLaudo) {
+        this.renderizarDialogLaudo = renderizarDialogLaudo;
+    }
+
+    public ArrayList<InsercaoPacienteBean> getListaLaudosVigentes() {
+        return listaLaudosVigentes;
+    }
+
+    public void setListaLaudosVigentes(ArrayList<InsercaoPacienteBean> listaLaudosVigentes) {
+        this.listaLaudosVigentes = listaLaudosVigentes;
     }
 }

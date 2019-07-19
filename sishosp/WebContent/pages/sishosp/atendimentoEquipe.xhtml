@@ -19,7 +19,41 @@
 
             <div class="panel-body table-body">
 
-                <h:form>
+                <h:form id="frmInicial">
+
+                    <b:row>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Número Laudo:" class="fire-label" severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{AtendimentoController.atendimento.insercaoPacienteBean.laudo.id}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Vigência Inicial:" class="fire-label"
+                                     severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{AtendimentoController.atendimento.insercaoPacienteBean.laudo.vigenciaInicial}"
+                                    class="campo-laudoDig3">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </b:column>
+
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Vigência Final" class="fire-label"
+                                     severity="info"/>
+
+                            <h:outputLabel
+                                    value="#{AtendimentoController.atendimento.insercaoPacienteBean.laudo.vigenciaFinal}"
+                                    class="campo-laudoDig3">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </b:column>
+
+                    </b:row>
 
                     <b:row>
                         <div align="center">
@@ -208,7 +242,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Consultar Procedimento" widgetVar="dlgConsulProc1"
+        <p:dialog header="Consultar Procedimentos" widgetVar="dlgConsulProc1"
                   modal="true" width="750px" styleClass="topDialog">
             <h:form id="formConsulProc1">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -478,7 +512,7 @@
         </p:dialog>
 
         <p:dialog header="Escolha o laudo" widgetVar="dlgEscolherLaudo" closable="false" draggable="false"
-                  visible="#{AtendimentoController.atendimento.avaliacao == true}"
+                  visible="#{AtendimentoController.renderizarDialogLaudo == true}"
                   modal="true" width="750px" styleClass="topDialog">
             <h:form id="formEscolherLaudo">
 
@@ -486,7 +520,7 @@
 
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}" page-length="5"
                                  page-length-menu="5,10,20"
-                                 value="#{AtendimentoController.listarLaudosVigentesPaciente()}" id="dtLaudo"
+                                 value="#{AtendimentoController.listaLaudosVigentes}" id="dtLaudo"
                                  var="insercao" display="Nenhum Laudo">
 
                         <h:column>
@@ -525,7 +559,7 @@
                             <f:facet name="header">
                                 Adicionar
                             </f:facet>
-                            <p:commandButton icon="ui-icon-check" title="Selecionar"
+                            <p:commandButton icon="ui-icon-check" title="Selecionar" update=":frmInicial"
                                              oncomplete="PF('dlgEscolherLaudo').hide();"
                                              class="new-btn-acao-table acao-editar">
                                 <f:setPropertyActionListener value="#{insercao}"
