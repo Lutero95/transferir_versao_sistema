@@ -110,7 +110,7 @@
 
 									<b:selectOneMenu class="select-agendaEquipe2"
 									rendered="#{ConfigAgendaController.confParte1.opcao==2 and  ConfigAgendaController.confParte1.tipo=='E'}"
-										value="#{ConfigAgendaController.confParte1.mes}">
+										value="#{ConfigAgendaController.confParte1.mes}" required="true" requiredMessage="Mês: Campo obrigatório">
 										<f:selectItem itemLabel="Janeiro" itemValue="1" />
 										<f:selectItem itemLabel="Fevereiro" itemValue="2" />
 										<f:selectItem itemLabel="Março" itemValue="3" />
@@ -124,6 +124,7 @@
 										<f:selectItem itemLabel="Novembro" itemValue="11" />
 										<f:selectItem itemLabel="Dezembro" itemValue="12" />
 									</b:selectOneMenu>
+							
 								</b:column>
 
 								<b:column span="3" class="label-position">
