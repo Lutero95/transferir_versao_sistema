@@ -1,6 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,12 +15,17 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import br.gov.al.maceio.sishosp.comum.util.*;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ConfigAgendaDAO;
@@ -28,6 +36,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.Turno;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
@@ -43,7 +52,8 @@ import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 public class AgendaController implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    List<ConfigAgendaParte1Bean> listaConfigAgenda = new ArrayList<>();
+    List<ConfigAgendaParte1Bean> listaConfigAgendaGeral = new ArrayList<>();
+    List<ConfigAgendaParte1Bean> listaConfigAgendaMesAtual = new ArrayList<>();
     private AgendaBean agenda;
     private Date dataAtendimentoC;
     private Date dataAtendimentoFinalC;
@@ -144,6 +154,8 @@ public class AgendaController implements Serializable {
         preparaVerificarDisponibilidadeData();
         listaDiasDeAtendimentoAtuais();
     }
+    
+
 
     public void carregarHorarioOuTurno() throws ProjetoException, ParseException {
         opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoEmpresa();
@@ -229,20 +241,20 @@ public class AgendaController implements Serializable {
             JSFUtil.adicionarMensagemErro("Data com bloqueio, não é permitido fazer agendamento!", "Erro");
             setarQuantidadeIhMaximoComoNulos();
 
-        } else if (verificarTipoDeAtendimentoDataUnica() && !agenda.getEncaixe()) {
+        } else if (verificarSeAtingiuLimiteTipoDeAtendimentoDataUnica() && !agenda.getEncaixe()) {
             JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
             setarQuantidadeIhMaximoComoNulos();
         } else {
-            verAgenda();
+        	verConfigAgenda();
         }
 
     }
 
-    public Boolean verificarTipoDeAtendimentoDataUnica() throws ProjetoException {
+    public Boolean verificarSeAtingiuLimiteTipoDeAtendimentoDataUnica() throws ProjetoException {
         Boolean retorno = false;
 
         if (agenda.getProfissional().getId() != null) {
-            if (verificarSeExisteTipoAtendimentoEspecificoDataUnica()) {
+            if (verificarSeExisteTipoAtendimentoEspecifico()) {
 
                 if (verificarSeAtingiuLimitePorTipoDeAtendimento()) {
                     retorno = true;
@@ -252,6 +264,7 @@ public class AgendaController implements Serializable {
 
         return retorno;
     }
+    
 
     public void verificarDisponibilidadeDataEspecifica(Integer quantidade, Integer maxima) {
         if (quantidade >= maxima) {
@@ -277,31 +290,30 @@ public class AgendaController implements Serializable {
         return retorno;
     }
 
-    public Boolean verificarSeExisteTipoAtendimentoEspecificoDataUnica() throws ProjetoException {
+    public Boolean verificarSeExisteTipoAtendimentoEspecifico() throws ProjetoException {
         Boolean retorno = false;
 
-        retorno = new ConfigAgendaDAO().verificarSeExisteTipoAtendimentoEspecificoDataUnica(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
+        retorno = aDao.verificarSeExisteConfigAgendaPorTipoAtendimento(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
                 this.agenda.getTurno());
 
         return retorno;
     }
 
     public Boolean verificarSeAtingiuLimitePorTipoDeAtendimento() throws ProjetoException {
-
         Boolean retorno = false;
 
         Integer limite = aDao.contarAtendimentosPorTipoAtendimentoPorProfissionalDataUnica(this.agenda, this.agenda.getDataAtendimento());
 
         Integer maximo = 0;
-
+        
+        //primeiro vai verificar se existe quantidade por tipo de atendimento para o mes atual, caso nao existe prossegue
+        //com a verificacao da quantidade por tipo de atendimento geral
+        maximo = aDao.contaConfigEspecificaQtdMaxTipoAtendimentoProfissional(this.agenda.getProfissional().getId(), this.agenda.getDataAtendimento(),
+        		this.agenda.getTurno(), this.agenda.getTipoAt().getIdTipo());
+        if (maximo==0)
+            maximo = aDao.contaConfigGeralQtdMaxTipoAtendimentoProfissional(this.agenda.getProfissional().getId(), 
+            		this.agenda.getTurno(), this.agenda.getTipoAt().getIdTipo());        	
         maximo = aDao.verQtdMaxAgendaEspecDataEspecifica(this.agenda);
-
-        if (maximo == 0) {
-
-            aDao.verQtdMaxAgendaEspecDataEspecifica(this.agenda);
-
-            //  verQtdMaxAgendaEspec
-        }
 
         if (limite >= maximo && limite > 0) {
             retorno = true;
@@ -313,8 +325,8 @@ public class AgendaController implements Serializable {
     public Boolean verificarSeExisteTipoAtendimentoEspecificoIntervaloDeDatas(Date data) throws ProjetoException {
         Boolean retorno = false;
 
-        retorno = new ConfigAgendaDAO().verificarSeExisteTipoAtendimentoEspecificoDataUnica(this.agenda.getProfissional().getId(), data,
-                this.agenda.getTurno());
+       // retorno = aDao.verificarSeExisteTipoAtendimentoEspecificoDataUnica(this.agenda.getProfissional().getId(), data,
+                //this.agenda.getTurno());
 
         return retorno;
     }
@@ -345,13 +357,19 @@ public class AgendaController implements Serializable {
         return retorno;
     }
 
-    public void verAgenda() throws ProjetoException {
+    public void verConfigAgenda() throws ProjetoException {
 
         Boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
         Boolean diaSemEspecifico = aDao.buscarDiaSemanaMesAnoEspecifico(this.agenda);
 
         if (dtEspecifica) {
             listarAgendamentosData();
+            if (aDao.verificarSeExisteConfigAgendaDataEspecificaPorTipoAtendimento(this.agenda.getProfissional().getId(),
+            		this.agenda.getDataAtendimento(),
+                this.agenda.getTurno(), this.agenda.getTipoAt().getIdTipo())) {
+            	this.agenda.setMax(aDao.verQtdMaxAgendaDataEspecificaPorTipoAtendimento(this.agenda));
+            }
+            else
             this.agenda.setMax(aDao.verQtdMaxAgendaDataEspecifica(this.agenda));
             this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
 
@@ -359,20 +377,25 @@ public class AgendaController implements Serializable {
 
         } else if (diaSemEspecifico) {
             listarAgendamentosData();
-            //verificar abaixo walter
-            //this.agenda.setMax(aDao.verQtdMaxAgenda(this.agenda));
-            this.agenda.setMax(aDao.verQtdMaxAgendaDataEspecifica(this.agenda));
+            if (aDao.verificarSeExisteConfigAgendaDiaSemanaEspecificaPorTipoAtendimento(this.agenda)) 
+           	this.agenda.setMax(aDao.verQtdMaxConfigAgendaDiaSemanaEspecificaPorTipoAtendimento(this.agenda));
+            else
+            	this.agenda.setMax(aDao.verQtdMaxConfigAgendaDiaSemanaEspecifica(this.agenda));	
             this.agenda.setQtd(aDao.verQtdAgendadosEspec(this.agenda));
         } else {
             listarAgendamentosData();
-            this.agenda.setMax(aDao.verQtdMaxAgendaGeral(this.agenda));
+            if (aDao.verificarSeExisteConfigAgendaDiaSemanaGeralPorTipoAtendimento(this.agenda.getProfissional().getId(),
+                this.agenda.getTurno(), this.agenda.getTipoAt().getIdTipo())) 
+            	this.agenda.setMax(aDao.verQtdMaxConfigAgendaDiaSemanaGeralPorTipoAtendimento(this.agenda));
+            else
+            this.agenda.setMax(aDao.verQtdMaxConfigAgendaDiaSemanaGeral(this.agenda));
             this.agenda.setQtd(aDao.verQtdAgendadosData(this.agenda));
         }
 
     }
 
     public void validarParaConfirmar() throws ProjetoException {
-        if (verificarEncaixe()) {
+    	if (verificarEncaixe()) {
             preparaConfirmar();
         } else {
             JSFUtil.abrirDialog("dlgSenhaEncaixe");
@@ -793,7 +816,7 @@ public class AgendaController implements Serializable {
 
     public void atualizaListaTipos(GrupoBean g) throws ProjetoException {
         this.grupoSelecionado = g;
-        this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo());
+        this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo(), TipoAtendimento.TODOS.getSigla());
     }
 
     // LISTAS E AUTOCOMPLETES INICIO
@@ -868,7 +891,7 @@ public class AgendaController implements Serializable {
         List<TipoAtendimentoBean> lista = new ArrayList<>();
 
         if (agenda.getGrupo() != null) {
-            lista = tDao.listarTipoAtAutoComplete(query, this.agenda.getGrupo());
+            lista = tDao.listarTipoAtAutoComplete(query, this.agenda.getGrupo(), TipoAtendimento.TODOS.getSigla());
         } else
             return null;
         return lista;
@@ -879,10 +902,11 @@ public class AgendaController implements Serializable {
         if (agenda.getTipoAt() != null) {
             if (agenda.getTipoAt().getIdTipo() != null) {
                 if (agenda.getProfissional().getId() != null) {
-                    listaConfigAgenda = aDao.retornarDiaAtendimentoProfissional(agenda.getProfissional().getId());
+                	listaConfigAgendaGeral = aDao.retornarDiaAtendimentoProfissionalGeral(agenda.getProfissional().getId());
+                	listaConfigAgendaMesAtual = aDao.retornarDiaAtendimentoProfissionalMesAtual(agenda.getProfissional().getId());
                 } else {
                     if (agenda.getEquipe().getCodEquipe() != null) {
-                        listaConfigAgenda = aDao.retornarDiaAtendimentoEquipe(agenda.getEquipe().getCodEquipe());
+                        listaConfigAgendaGeral = aDao.retornarDiaAtendimentoEquipe(agenda.getEquipe().getCodEquipe());
                     }
                 }
             }
@@ -1169,13 +1193,6 @@ public class AgendaController implements Serializable {
         return SEM_FUNCIONARIO_LIBERACAO;
     }
 
-    public List<ConfigAgendaParte1Bean> getListaConfigAgenda() {
-        return listaConfigAgenda;
-    }
-
-    public void setListaConfigAgenda(List<ConfigAgendaParte1Bean> listaConfigAgenda) {
-        this.listaConfigAgenda = listaConfigAgenda;
-    }
 
     public List<GrupoBean> getListaDeGruposFiltrada() {
         return listaDeGruposFiltrada;
@@ -1208,4 +1225,20 @@ public class AgendaController implements Serializable {
     public void setListaHorarios(ArrayList<String> listaHorarios) {
         this.listaHorarios = listaHorarios;
     }
+
+	public List<ConfigAgendaParte1Bean> getListaConfigAgendaGeral() {
+		return listaConfigAgendaGeral;
+	}
+
+	public List<ConfigAgendaParte1Bean> getListaConfigAgendaMesAtual() {
+		return listaConfigAgendaMesAtual;
+	}
+
+	public void setListaConfigAgendaGeral(List<ConfigAgendaParte1Bean> listaConfigAgendaGeral) {
+		this.listaConfigAgendaGeral = listaConfigAgendaGeral;
+	}
+
+	public void setListaConfigAgendaMesAtual(List<ConfigAgendaParte1Bean> listaConfigAgendaMesAtual) {
+		this.listaConfigAgendaMesAtual = listaConfigAgendaMesAtual;
+	}
 }

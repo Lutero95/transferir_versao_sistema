@@ -153,7 +153,6 @@ public class ConfigAgendaController implements Serializable {
             JSFUtil.adicionarMensagemErro("Insira o grupo!", "Erro");
         } else {
             this.listaTipos.add(confParte2);
-            JSFUtil.adicionarMensagemSucesso("Dados inseridos na tabela!", "Sucesso");
         }
         this.confParte2 = new ConfigAgendaParte2Bean();
     }
