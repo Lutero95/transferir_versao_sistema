@@ -292,7 +292,7 @@
 										itemLabel="#{theme.descPrograma}">
 										<p:ajax event="itemSelect"
 											listener="#{ConfigAgendaController.selectGrupo}"
-											update=":formConfiAgenda:tbview:outGrupotipoat, :formConfiAgenda:tbview:outProgtipoat, :formConfiAgenda:tbview:btBusGr, :formConsuGrop:dtGrupo" />
+											update=":formConsuGrop:dtGrupo" />
 									</p:autoComplete>
 
 									<p:commandButton icon="ui-icon-search" immediate="true"
@@ -322,10 +322,10 @@
 										itemLabel="#{theme.descGrupo}">
 										<p:ajax event="itemSelect"
 											listener="#{ConfigAgendaController.selectTipoAtendimento}"
-											update=":formConfiAgenda:tbview:outGrupotipoat, :formConfiAgenda:tbview:outTipoAt, :formConfiAgenda:tbview:btBusGr, :formConfiAgenda:tbview:btBusTi" />
+											 />
 									</p:autoComplete>
 
-									<p:commandButton id="btBusGr" process="@this"
+									<p:commandButton id="btBusGr2" process="@this"
 										icon="ui-icon-search"
 										disabled="#{ConfigAgendaController.confParte2.programa==null}"
 										action="#{ConfigAgendaController.limparBuscaGrupo()}"
@@ -353,7 +353,7 @@
 										minQueryLength="1" itemValue="#{theme}"
 										itemLabel="#{theme.descTipoAt}">
 										<p:ajax event="itemSelect"
-											update=":formConfiAgenda:tbview:outTipoAt, :formConfiAgenda:tbview:btBusTi" />
+											 />
 									</p:autoComplete>
 
 									<p:commandButton id="btBusTi" process="@this"
@@ -361,7 +361,6 @@
 										action="#{ConfigAgendaController.limparBuscaGrupo()}"
 										actionListener="#{ConfigAgendaController.carregaListaTipoAtendimento('P')}"
 										disabled="#{ConfigAgendaController.confParte2.programa==null}"
-										update="formConsuTipoAt"
 										oncomplete="PF('dlgConsuTipoAt').show();" />
 								</p:outputPanel>
 							</b:column>
@@ -379,7 +378,7 @@
 									style="margin-top: 20px;margin-left: -15px;"
 									class="btn btn-default btn-acao-table acao-confirmar"
 									action="#{ConfigAgendaController.addNaLista()}" id="b5"
-									update="formConfiAgenda:msgPagina, outTipoAt, outGrupo, outProg, idQtd, dtConfi" />
+									update="outTipoAt, outGrupo, outProg, idQtd, dtConfi" />
 							</b:column>
 						</b:row>
 
@@ -467,7 +466,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton
-							update=":formConfiAgendaEquipe:outProg, :formConfiAgendaEquipe:outGrupo, :formConfiAgendaEquipe:btBusGr"
+							update=":formConfiAgendaEquipe:tbview:outProg, :formConfiAgendaEquipe:tbview:outGrupo, :formConfiAgendaEquipe:tbview:btBusGr"
 							icon="ui-icon-check" title="Selecionar"
 							class="new-btn-acao-table acao-editar"
 							onclick="PF('dlgConsultProg').hide();">
