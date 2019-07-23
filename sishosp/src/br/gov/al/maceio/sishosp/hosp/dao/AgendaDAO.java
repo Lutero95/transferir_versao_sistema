@@ -275,7 +275,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         int qtdMax = 0;
         String sqlPro = "SELECT distinct t.qtd FROM hosp.config_agenda_profissional c \n" + 
         		"LEFT JOIN hosp.config_agenda_profissional_dias d on (c.id_configagenda = d.id_config_agenda_profissional) \n" + 
-        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda) \n" + 
+        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda_profissional) \n" + 
         		"WHERE c.codmedico = ? AND d.turno = ? AND d.data_especifica = ? and t.codtipoatendimento=?";
 
         String sqlEqui = "select e.qtdmax " +
@@ -328,7 +328,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         sql = "SELECT distinct coalesce(t.qtd) qtd FROM hosp.config_agenda_profissional c \n" + 
         		"LEFT JOIN hosp.config_agenda_profissional_dias d on (c.id_configagenda = d.id_config_agenda_profissional) \n" + 
-        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda) \n" + 
+        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda_profissional) \n" + 
         		"WHERE c.codmedico = ? AND d.turno = ?  and c.tipo='G' and t.codtipoatendimento=?";
 
         try {
@@ -368,7 +368,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlPro = "select distinct t.qtd " +
                 "from hosp.config_agenda_profissional p " +
                 "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
-                " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda) "+
+                " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda_profissional) "+
                 "where p.codmedico = ? and d.dia = ? and d.turno = ? and p.mes = ? and p.ano=? and p.tipo='E' and t.codtipoatendimento=?";
 
         String sqlEqui = "select e.id_configagenda " +
@@ -470,7 +470,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlPro = "select distinct t.qtd " +
                 "from hosp.config_agenda_profissional p " +
                 "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
-                " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda) "+
+                " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda_profissional) "+
                 "where p.codmedico = ? and d.dia = ? and d.turno = ? and p.mes = ? and p.ano=? and p.tipo='E' and t.codtipoatendimento=?";
 
         String sqlEqui = "select e.id_configagenda " +
@@ -570,7 +570,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         String sqlPro = "select distinct t.qtd " +
                 "from hosp.config_agenda_profissional p " +
                 "left join hosp.config_agenda_profissional_dias d on (p.id_configagenda = d.id_config_agenda_profissional) " +
-                " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda) "+
+                " JOIN hosp.tipo_atend_agenda t ON (p.id_configagenda = t.cod_config_agenda_profissional) "+
                 "where p.codmedico = ? and d.dia = ? and d.turno = ?   and p.tipo='G' and t.codtipoatendimento=?";
 
         String sqlEqui = "select e.id_configagenda " +
@@ -705,12 +705,12 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         sql = "SELECT distinct c.id_configagenda FROM hosp.config_agenda_profissional c \n" + 
         		"LEFT JOIN hosp.config_agenda_profissional_dias d on (c.id_configagenda = d.id_config_agenda_profissional) \n" + 
-        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda) \n" + 
+        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda_profissional) \n" + 
         		"WHERE c.codmedico = ? AND d.turno =?  and c.tipo='G'\n" + 
         		"union all\n" + 
         		"SELECT distinct c.id_configagenda FROM hosp.config_agenda_profissional c \n" + 
         		"LEFT JOIN hosp.config_agenda_profissional_dias d on (c.id_configagenda = d.id_config_agenda_profissional) \n" + 
-        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda) \n" + 
+        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda_profissional) \n" + 
         		"WHERE c.codmedico = ? AND d.turno = ? AND (d.data_especifica = ? OR d.dia = ? AND c.mes = ? AND c.ano = ?)";
 
         try {
@@ -753,7 +753,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         sql = "SELECT distinct c.id_configagenda FROM hosp.config_agenda_profissional c \n" + 
         		"LEFT JOIN hosp.config_agenda_profissional_dias d on (c.id_configagenda = d.id_config_agenda_profissional) \n" + 
-        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda) \n" + 
+        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda_profissional) \n" + 
         		"WHERE c.codmedico =? AND d.turno = ? AND d.data_especifica = ? and t.codtipoatendimento=?";
 
         try {
@@ -791,7 +791,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         sql = "SELECT distinct coalesce(t.qtd) qtd FROM hosp.config_agenda_profissional c \n" + 
         		"LEFT JOIN hosp.config_agenda_profissional_dias d on (c.id_configagenda = d.id_config_agenda_profissional) \n" + 
-        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda) \n" + 
+        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda_profissional) \n" + 
         		"WHERE c.codmedico = ? AND d.turno = ?  and c.tipo='G' and t.codtipoatendimento=?";
 
         try {
@@ -832,7 +832,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         sql = "SELECT distinct coalesce(t.qtd) qtd FROM hosp.config_agenda_profissional c \n" + 
         		"LEFT JOIN hosp.config_agenda_profissional_dias d on (c.id_configagenda = d.id_config_agenda_profissional) \n" + 
-        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda) \n" + 
+        		"JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda_profissional) \n" + 
         		"WHERE c.codmedico = ? AND d.turno = ? AND (d.data_especifica = ? OR d.dia = ? AND c.mes = ? AND c.ano = ?) and t.codtipoatendimento=?";
 
         try {
@@ -878,7 +878,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         sql = "SELECT c.id_configagenda FROM hosp.config_agenda_profissional c " +
                 "LEFT JOIN hosp.config_agenda_profissional_dias d on (c.id_configagenda = d.id_config_agenda_profissional) " +
-                "LEFT JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda) " +
+                "LEFT JOIN hosp.tipo_atend_agenda t ON (c.id_configagenda = t.cod_config_agenda_profissional) " +
                 "WHERE c.codmedico = ? AND d.turno = ? ";
 
         if(tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {

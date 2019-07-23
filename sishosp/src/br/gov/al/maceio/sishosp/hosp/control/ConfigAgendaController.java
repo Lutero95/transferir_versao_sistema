@@ -26,6 +26,7 @@ import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 @ManagedBean(name = "ConfigAgendaController")
@@ -144,7 +145,17 @@ public class ConfigAgendaController implements Serializable {
 
     }
 
-    public void addNaLista() {
+    
+    public List<TipoAtendimentoBean> selectTipoAtendimento(String tipoAtendimento)
+            throws ProjetoException {
+        TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+        if (confParte2.getGrupo() != null) {
+            listaTipoAtendimentosGrupo = tDao.listarTipoAtPorGrupo(confParte2
+                    .getGrupo().getIdGrupo(),tipoAtendimento);
+        }
+        return listaTipoAtendimentosGrupo;
+    }
+    public void addNaListaConfigProfissional() {
         if (confParte2.getQtd() == null) {
             JSFUtil.adicionarMensagemErro("Insira a quantidade!", "Erro");
         } else if (confParte2.getPrograma() == null) {
@@ -156,6 +167,25 @@ public class ConfigAgendaController implements Serializable {
         }
         this.confParte2 = new ConfigAgendaParte2Bean();
     }
+    
+    public void addNaListaConfigEquipe() {
+    	ProgramaBean programaSelecionado = new ProgramaBean();
+    	GrupoBean grupoSelecionado = new GrupoBean();
+        if (confParte2.getQtd() == null) {
+            JSFUtil.adicionarMensagemErro("Insira a quantidade!", "Erro");
+        } else if (confParte2.getPrograma() == null) {
+            JSFUtil.adicionarMensagemErro("Insira o programa!", "Erro");
+        } else if (confParte2.getGrupo() == null) {
+            JSFUtil.adicionarMensagemErro("Insira o grupo!", "Erro");
+        } else {
+        	programaSelecionado = confParte2.getPrograma();
+        	grupoSelecionado = confParte2.getGrupo();
+            this.listaTipos.add(confParte2);
+        }
+        this.confParte2 = new ConfigAgendaParte2Bean();
+        confParte2.setPrograma(programaSelecionado);
+        confParte2.setGrupo(grupoSelecionado);
+    }    
 
     public void removeNaLista() {
         this.listaTipos.remove(confParte2);
@@ -341,17 +371,50 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void validarGravarConfigAgendaEquipe() throws ProjetoException, SQLException {
-        if (tipo == 1) {
-            gravarConfigAgendaEquipe();
-        } else {
-            alterarConfigAgendaEquipe();
+        int somatorio = 0;
+        for (ConfigAgendaParte2Bean conf : listaTipos) {
+            somatorio += conf.getQtd();
         }
+
+        if (confParte1.getQtdMax() != null && listaTipos.size() > 0) {
+            if (somatorio > confParte1.getQtdMax()) {
+                JSFUtil.adicionarMensagemAdvertencia("Quantidade de tipos de atendimento superior a quantidade máxima!", "Advertência");
+                return;
+            }
+        }
+
+        if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DATA_ESPECIFICA.getSigla())
+                && this.confParte1.getDataEspecifica() == null) {
+            JSFUtil.adicionarMensagemErro("Escolha uma data específica!", "Erro");
+            return;
+        }
+
+        if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())
+                && this.confParte1.getDiasSemana().size() == 0) {
+            JSFUtil.adicionarMensagemErro("Escolha no mínimo um dia da semana!", "Erro");
+            return;
+        }
+
+        if  ((confParte1.getTipo().equals("E"))  && confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla()) && this.confParte1.getAno() == null) {
+            JSFUtil.adicionarMensagemErro("Ano: Campo obrigatório!", "Erro");
+            return;
+        } else {
+            if (tipo == 1) {
+            	gravarConfigAgendaEquipe();
+            } else {
+            	alterarConfigAgendaEquipe();
+            }
+        }    	
+    	
+    	
+    	
+       
     }
 
     public void gravarConfigAgendaEquipe() throws ProjetoException, SQLException {
         boolean gravou = false;
 
-        gravou = cDao.gravarConfiguracaoAgendaEquipeInicio(confParte1, confParte2);
+        gravou = cDao.gravarConfiguracaoAgendaEquipeInicio(confParte1, confParte2, listaTipos);
 
         if (gravou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");
@@ -366,7 +429,7 @@ public class ConfigAgendaController implements Serializable {
             ProjetoException {
         boolean alterou = false;
 
-        alterou = cDao.alterarConfiguracaoAgendaEquipeInicio(confParte1, confParte2);
+        alterou = cDao.alterarConfiguracaoAgendaEquipeInicio(confParte1, confParte2, listaTipos);
 
         if (alterou) {
             JSFUtil.adicionarMensagemSucesso("Configuração cadastrada com sucesso!", "Sucesso");

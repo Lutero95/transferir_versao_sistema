@@ -5,8 +5,10 @@ public enum Empresas {
     LOCAL(1),
     PESTALOZZI(2),
     ADEFAL(3),
-    AAPE(4),
-    APAE(5);
+    AAPPEMACEIO(4),
+    APAEMACEIO(5),
+    APAEPALMEIRA(6),
+    APAEMARAGOGI(7);
 
     private Integer sigla;
 
