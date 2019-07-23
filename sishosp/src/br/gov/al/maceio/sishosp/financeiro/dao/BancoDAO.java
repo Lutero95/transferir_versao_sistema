@@ -43,7 +43,7 @@ public class BancoDAO {
             cadastrou = true;
             
             pstm.close();
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             
             throw new RuntimeException(ex);
         } finally {
@@ -86,7 +86,7 @@ public class BancoDAO {
             alterou = true;
             
             pstm.close();
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             
             throw new RuntimeException(ex);
         } finally {
@@ -118,7 +118,7 @@ public class BancoDAO {
             excluiu = true;
             
             pstm.close();
-        } catch(SQLException ex) {           
+        } catch(Exception ex) {
             throw new ProjetoException(ex);
         } finally {
             try {
@@ -164,7 +164,7 @@ public class BancoDAO {
             
             rs.close();
             pstm.close();
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -219,7 +219,7 @@ public class BancoDAO {
 	            pstm.close();
 	            
 	            return b;
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -266,7 +266,7 @@ public class BancoDAO {
             
             pstm.close();
             rs.close();
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {

@@ -28,7 +28,7 @@ public class FormaTransporteDAO {
             stmt.execute();
             conexao.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -54,7 +54,7 @@ public class FormaTransporteDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -79,7 +79,7 @@ public class FormaTransporteDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -113,7 +113,7 @@ public class FormaTransporteDAO {
 
                 lista.add(p);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -147,7 +147,7 @@ public class FormaTransporteDAO {
 
             }
             return transporte;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -185,7 +185,7 @@ public class FormaTransporteDAO {
 
             }
             return colecao;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

@@ -27,7 +27,7 @@ public class EquipamentoDAO {
 
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -57,7 +57,7 @@ public class EquipamentoDAO {
                 lista.add(e);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -84,7 +84,7 @@ public class EquipamentoDAO {
             con.commit();
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -109,7 +109,7 @@ public class EquipamentoDAO {
             con.commit();
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -166,7 +166,7 @@ public class EquipamentoDAO {
 
                 lista.add(equipamento);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

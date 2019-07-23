@@ -41,7 +41,7 @@ public class EnderecoDAO {
             conexao.commit();
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -71,7 +71,7 @@ public class EnderecoDAO {
 
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -97,7 +97,7 @@ public class EnderecoDAO {
 
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -131,7 +131,7 @@ public class EnderecoDAO {
                 end.setCodmunicipio(rs.getInt("id_municipio"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -168,7 +168,7 @@ public class EnderecoDAO {
 
                 lista.add(end);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -206,7 +206,7 @@ public class EnderecoDAO {
 
                 lista.add(end);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -239,7 +239,7 @@ public class EnderecoDAO {
 
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -307,7 +307,7 @@ public class EnderecoDAO {
             conexao.commit();
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -336,7 +336,7 @@ public class EnderecoDAO {
 
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -363,7 +363,7 @@ public class EnderecoDAO {
 
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -397,7 +397,7 @@ public class EnderecoDAO {
 
                 lista.add(p);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -432,7 +432,7 @@ public class EnderecoDAO {
 
                 lista.add(p);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -464,7 +464,7 @@ public class EnderecoDAO {
                 end.setUf(rs.getString("uf"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -500,7 +500,7 @@ public class EnderecoDAO {
 
             }
             return lista;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -534,7 +534,7 @@ public class EnderecoDAO {
 
             }
             return uf;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -565,7 +565,7 @@ public class EnderecoDAO {
 
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -597,7 +597,7 @@ public class EnderecoDAO {
                 retorno = rs.getInt("id_bairro");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -629,7 +629,7 @@ public class EnderecoDAO {
                 novoBairro = set.getInt("id_bairro");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

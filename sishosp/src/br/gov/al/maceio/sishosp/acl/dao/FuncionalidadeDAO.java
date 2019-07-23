@@ -60,7 +60,7 @@ public class FuncionalidadeDAO {
 			conexao.commit();
 
 			cadastrou = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -116,7 +116,7 @@ public class FuncionalidadeDAO {
 			conexao.commit();
 
 			alterou = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -144,7 +144,7 @@ public class FuncionalidadeDAO {
 			conexao.commit();
 
 			excluiu = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -184,7 +184,7 @@ public class FuncionalidadeDAO {
 
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -221,7 +221,7 @@ public class FuncionalidadeDAO {
 				f.setAtivo(rs.getBoolean("ativo"));
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -255,7 +255,7 @@ public class FuncionalidadeDAO {
 				m.setAtivo(rs.getBoolean("ativo"));
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -301,7 +301,7 @@ public class FuncionalidadeDAO {
 				m.setIndiceAux(rs.getString("descricao"));
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -337,7 +337,7 @@ public class FuncionalidadeDAO {
 				m.setAtivo(rs.getBoolean("ativo"));
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -393,7 +393,7 @@ public class FuncionalidadeDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -458,7 +458,7 @@ public class FuncionalidadeDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -519,7 +519,7 @@ public class FuncionalidadeDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
@@ -574,7 +574,7 @@ public class FuncionalidadeDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -612,7 +612,7 @@ public class FuncionalidadeDAO {
 				r.setId(rs.getLong("id_menu"));
 				lista.add(r);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -648,7 +648,7 @@ public class FuncionalidadeDAO {
 				s.setDescricao(rs.getString("descricao"));
 				lista.add(s);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -682,7 +682,7 @@ public class FuncionalidadeDAO {
 				s.setDescricao(rs.getString("descricao"));
 				lista.add(s);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -749,7 +749,7 @@ public class FuncionalidadeDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -825,7 +825,7 @@ public class FuncionalidadeDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -883,7 +883,7 @@ public class FuncionalidadeDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -930,7 +930,7 @@ public class FuncionalidadeDAO {
 				// f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -976,7 +976,7 @@ public class FuncionalidadeDAO {
 				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
@@ -1034,7 +1034,7 @@ public class FuncionalidadeDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {

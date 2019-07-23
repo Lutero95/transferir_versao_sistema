@@ -27,7 +27,7 @@ public class EscolaDAO {
             stmt.execute();
             conexao.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -53,7 +53,7 @@ public class EscolaDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -78,7 +78,7 @@ public class EscolaDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -111,7 +111,7 @@ public class EscolaDAO {
 
                 lista.add(p);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -144,7 +144,7 @@ public class EscolaDAO {
 
             }
             return escola;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -180,7 +180,7 @@ public class EscolaDAO {
 
             }
             return colecao;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -212,7 +212,7 @@ public class EscolaDAO {
 
                 lista.add(p);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

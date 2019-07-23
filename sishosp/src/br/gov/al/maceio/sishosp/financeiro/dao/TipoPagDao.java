@@ -356,14 +356,14 @@ public class TipoPagDao {
 
 				lista.add(tipBean);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
 				ps.close();
 				rs.close();
 				con.close();
-			} catch (SQLException ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -394,14 +394,14 @@ public class TipoPagDao {
 
 				lista.add(tipBean);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
 				ps.close();
 				rs.close();
 				con.close();
-			} catch (SQLException ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -440,14 +440,14 @@ public class TipoPagDao {
 
 				lista.add(tipBean);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
 				ps.close();
 				rs.close();
 				con.close();
-			} catch (SQLException ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -484,14 +484,14 @@ public class TipoPagDao {
 
 				lista.add(tipBean);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
 				ps.close();
 				rs.close();
 				con.close();
-			} catch (SQLException ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}

@@ -91,7 +91,7 @@ public class ProcedimentoDAO {
 
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -180,7 +180,7 @@ public class ProcedimentoDAO {
 
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -222,7 +222,7 @@ public class ProcedimentoDAO {
 
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -265,7 +265,7 @@ public class ProcedimentoDAO {
 
                 lista.add(proc);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -308,7 +308,7 @@ public class ProcedimentoDAO {
 
                 lista.add(proc);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -348,7 +348,7 @@ public class ProcedimentoDAO {
                 proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
                 proc.setSexo(rs.getString("sexo"));
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -397,7 +397,7 @@ public class ProcedimentoDAO {
 
                 lista.add(proc);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -445,7 +445,7 @@ public class ProcedimentoDAO {
 
                 lista.add(proc);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -478,7 +478,7 @@ public class ProcedimentoDAO {
 
                 lista.add(cid);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -510,7 +510,7 @@ public class ProcedimentoDAO {
 
                 lista.add(cbo);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -549,7 +549,7 @@ public class ProcedimentoDAO {
                 proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
                 proc.setSexo(rs.getString("sexo"));
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

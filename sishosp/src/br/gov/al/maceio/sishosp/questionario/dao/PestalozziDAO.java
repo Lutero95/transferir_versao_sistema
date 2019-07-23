@@ -72,7 +72,7 @@ public class PestalozziDAO {
                 throw new SQLException();
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -308,7 +308,7 @@ public class PestalozziDAO {
 
             stmt.executeUpdate();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
         return retorno;
@@ -453,7 +453,7 @@ public class PestalozziDAO {
 
             stmt.executeUpdate();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
         return retorno;
@@ -607,7 +607,7 @@ public class PestalozziDAO {
             stmt.setInt(27, idInsercao);
             stmt.executeUpdate();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
         return retorno;
@@ -655,7 +655,7 @@ public class PestalozziDAO {
             stmt.setInt(7, idInsercao);
             stmt.executeUpdate();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
         return retorno;
@@ -774,7 +774,7 @@ public class PestalozziDAO {
             stmt.setInt(20, idInsercao);
             stmt.executeUpdate();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
         return retorno;
@@ -838,7 +838,7 @@ public class PestalozziDAO {
             stmt.setInt(10, idInsercao);
             stmt.executeUpdate();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
         return retorno;
@@ -896,7 +896,7 @@ public class PestalozziDAO {
                 stmt.executeUpdate();
             }
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
         return retorno;
@@ -929,7 +929,7 @@ public class PestalozziDAO {
                 composicaoFamiliar.setBenef(rs.getString("benef"));
                 listaComposicaoFamiliar.add(composicaoFamiliar);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
         return listaComposicaoFamiliar;
@@ -1274,7 +1274,7 @@ public class PestalozziDAO {
                 p.setParecerSocialEncaminhamento(rs.getString("parecer_social_encaminhamentos"));
                 p.setListaComposicaoFamiliar(this.retornarComposicaoFamiliar(idQuestionario, conexao));
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

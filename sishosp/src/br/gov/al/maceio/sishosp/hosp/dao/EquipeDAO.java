@@ -48,7 +48,7 @@ public class EquipeDAO {
                 con.commit();
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -74,7 +74,7 @@ public class EquipeDAO {
             }
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -103,7 +103,7 @@ public class EquipeDAO {
                 equipe.setCodEmpresa(rs.getInt("cod_empresa"));
                 lista.add(equipe);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -136,7 +136,7 @@ public class EquipeDAO {
                 equipe.setCodEmpresa(rs.getInt("cod_empresa"));
                 lista.add(equipe);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -169,7 +169,7 @@ public class EquipeDAO {
 
                 lista.add(equipe);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -205,7 +205,7 @@ public class EquipeDAO {
 
                 lista.add(equipe);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -237,7 +237,7 @@ public class EquipeDAO {
 
                 lista.add(equipe);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -272,7 +272,7 @@ public class EquipeDAO {
             }
 
             return true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -294,7 +294,7 @@ public class EquipeDAO {
             ps.setLong(1, id);
             ps.execute();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -321,7 +321,7 @@ public class EquipeDAO {
                 con.commit();
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -355,7 +355,7 @@ public class EquipeDAO {
             }
 
             return equipe;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -391,7 +391,7 @@ public class EquipeDAO {
 
                 lista.add(func);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -445,7 +445,7 @@ public class EquipeDAO {
 
                 lista.add(func);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

@@ -26,7 +26,7 @@ public class MotivoDesligamentoDAO {
 			ps.execute();
 			con.commit();
 			retorno = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -51,7 +51,7 @@ public class MotivoDesligamentoDAO {
 			stmt.executeUpdate();
 			con.commit();
 			retorno = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -75,7 +75,7 @@ public class MotivoDesligamentoDAO {
 			stmt.execute();
 			con.commit();
 			retorno = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -106,7 +106,7 @@ public class MotivoDesligamentoDAO {
 
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -136,7 +136,7 @@ public class MotivoDesligamentoDAO {
 			}
 
 			return m;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {

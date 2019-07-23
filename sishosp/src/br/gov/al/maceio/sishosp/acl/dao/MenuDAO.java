@@ -78,7 +78,7 @@ public class MenuDAO {
 			conexao.commit();
 
 			cadastrou = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -136,7 +136,7 @@ public class MenuDAO {
 
 				alterou = true;
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -163,7 +163,7 @@ public class MenuDAO {
 			conexao.commit();
 
 			excluiu = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -226,7 +226,7 @@ public class MenuDAO {
 
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -289,7 +289,7 @@ public class MenuDAO {
 
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -323,7 +323,7 @@ public class MenuDAO {
 				m.setAtivo(rs.getBoolean("ativo"));
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -369,7 +369,7 @@ public class MenuDAO {
 				m.setIndiceAux(rs.getString("descricao"));
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -405,7 +405,7 @@ public class MenuDAO {
 				m.setAtivo(rs.getBoolean("ativo"));
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -461,7 +461,7 @@ public class MenuDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -526,7 +526,7 @@ public class MenuDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -587,7 +587,7 @@ public class MenuDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
@@ -642,7 +642,7 @@ public class MenuDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -680,7 +680,7 @@ public class MenuDAO {
 				r.setId(rs.getLong("id_menu"));
 				lista.add(r);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -716,7 +716,7 @@ public class MenuDAO {
 				s.setDescricao(rs.getString("descricao"));
 				lista.add(s);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -750,7 +750,7 @@ public class MenuDAO {
 				s.setDescricao(rs.getString("descricao"));
 				lista.add(s);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -817,7 +817,7 @@ public class MenuDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -893,7 +893,7 @@ public class MenuDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -951,7 +951,7 @@ public class MenuDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -1009,7 +1009,7 @@ public class MenuDAO {
 				m.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(m);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {

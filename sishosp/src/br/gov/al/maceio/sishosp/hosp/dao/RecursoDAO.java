@@ -35,7 +35,7 @@ public class RecursoDAO {
             stmt.execute();
             conexao.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -65,7 +65,7 @@ public class RecursoDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -93,7 +93,7 @@ public class RecursoDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -127,7 +127,7 @@ public class RecursoDAO {
                 lista.add(r);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -162,7 +162,7 @@ public class RecursoDAO {
                 lista.add(r);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -195,7 +195,7 @@ public class RecursoDAO {
 
             }
             return recurso;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -234,7 +234,7 @@ public class RecursoDAO {
 
             }
             return colecao;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

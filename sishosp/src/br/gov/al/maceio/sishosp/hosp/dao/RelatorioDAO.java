@@ -24,7 +24,7 @@ public class RelatorioDAO {
             conexao.commit();
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -50,7 +50,7 @@ public class RelatorioDAO {
             conexao.commit();
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

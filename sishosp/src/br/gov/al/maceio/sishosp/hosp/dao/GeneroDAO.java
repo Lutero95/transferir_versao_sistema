@@ -26,7 +26,7 @@ public class GeneroDAO {
 			ps.execute();
 			con.commit();
 			retorno = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -51,7 +51,7 @@ public class GeneroDAO {
 			stmt.executeUpdate();
 			con.commit();
 			retorno = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -75,7 +75,7 @@ public class GeneroDAO {
 			stmt.execute();
 			con.commit();
 			retorno = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -106,7 +106,7 @@ public class GeneroDAO {
 
 				lista.add(g);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -135,7 +135,7 @@ public class GeneroDAO {
 			}
 
 			return g;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {

@@ -60,7 +60,7 @@ public class FuncaoDAO {
 			conexao.commit();
 
 			cadastrou = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -92,7 +92,7 @@ public class FuncaoDAO {
 			conexao.commit();
 
 			alterou = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -120,7 +120,7 @@ public class FuncaoDAO {
 			conexao.commit();
 
 			excluiu = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -160,7 +160,7 @@ public class FuncaoDAO {
 				f.setDescSistema(rs.getString("sis_desc"));
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -202,7 +202,7 @@ public class FuncaoDAO {
 				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -252,7 +252,7 @@ public class FuncaoDAO {
 				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -297,7 +297,7 @@ public class FuncaoDAO {
 				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -343,7 +343,7 @@ public class FuncaoDAO {
 				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -390,7 +390,7 @@ public class FuncaoDAO {
 				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -447,7 +447,7 @@ public class FuncaoDAO {
 				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -492,7 +492,7 @@ public class FuncaoDAO {
 				f.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(f);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {

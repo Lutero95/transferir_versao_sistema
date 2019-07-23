@@ -159,7 +159,7 @@ public class EmpresaDAO {
             con.commit();
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -211,7 +211,7 @@ public class EmpresaDAO {
 
                 lista.add(empresa);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -279,7 +279,7 @@ public class EmpresaDAO {
             con.commit();
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -306,7 +306,7 @@ public class EmpresaDAO {
             con.commit();
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -357,7 +357,7 @@ public class EmpresaDAO {
                 empresa.setParametro(carregarParametro(id, con));
 
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -407,7 +407,7 @@ public class EmpresaDAO {
                 }
 
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -438,7 +438,7 @@ public class EmpresaDAO {
                 retorno = rs.getString("opcao_atendimento");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

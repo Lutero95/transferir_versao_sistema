@@ -66,7 +66,7 @@ public class RenovacaoPacienteDAO {
 
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -111,7 +111,7 @@ public class RenovacaoPacienteDAO {
 
                 lista.add(ge);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -143,7 +143,7 @@ public class RenovacaoPacienteDAO {
             while (rs.next()) {
                 lista.add(rs.getString("dia_semana"));
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -306,7 +306,7 @@ public class RenovacaoPacienteDAO {
             }
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -430,7 +430,7 @@ public class RenovacaoPacienteDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

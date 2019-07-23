@@ -62,7 +62,7 @@ public class FuncionarioDAO {
 
             return codEmpresa;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -121,7 +121,7 @@ public class FuncionarioDAO {
                     .getSessionMap().put("setores_usuario", setoresUsuario);
             return ub;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -162,7 +162,7 @@ public class FuncionarioDAO {
                 s.setAtivo(rs.getBoolean("ativo"));
                 listaSistemas.add(s);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -276,7 +276,7 @@ public class FuncionarioDAO {
 
                 lista.add(p);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -338,7 +338,7 @@ public class FuncionarioDAO {
 
             con.commit();
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -381,7 +381,7 @@ public class FuncionarioDAO {
                     stmt2 = con.prepareStatement(sql);
                     stmt2.setLong(1, usuario.getCodigo());
                     stmt2.execute();
-                } catch (SQLException ex) {
+                } catch (Exception ex) {
                     ex.getMessage();
                     throw new RuntimeException(ex);
                 }
@@ -394,7 +394,7 @@ public class FuncionarioDAO {
                             stmt2.execute();
                         }
                         associouSis = true;
-                    } catch (SQLException ex) {
+                    } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }
                 }
@@ -408,13 +408,13 @@ public class FuncionarioDAO {
                     stmt3.setLong(1, usuario.getCodigo());
                     stmt3.execute();
                     associouPerm = true;
-                } catch (SQLException ex) {
+                } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
             }
 
             con.commit();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -491,7 +491,7 @@ public class FuncionarioDAO {
 
             rs.close();
             stmt.close();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             con.close();
@@ -544,7 +544,7 @@ public class FuncionarioDAO {
 
             rs.close();
             stmt.close();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             con.close();
@@ -580,7 +580,7 @@ public class FuncionarioDAO {
 
                 lista.add(n);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -614,7 +614,7 @@ public class FuncionarioDAO {
             rs.close();
             stmt.close();
             con.close();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -652,7 +652,7 @@ public class FuncionarioDAO {
             rs.close();
             stmt.close();
             con.close();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -689,7 +689,7 @@ public class FuncionarioDAO {
             rs.close();
             stmt.close();
             con.close();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -728,7 +728,7 @@ public class FuncionarioDAO {
             rs.close();
             stmt.close();
             con.close();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -772,7 +772,7 @@ public class FuncionarioDAO {
             rs.close();
             stmt.close();
             con.close();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -810,7 +810,7 @@ public class FuncionarioDAO {
             rs.close();
             stmt.close();
             con.close();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -838,7 +838,7 @@ public class FuncionarioDAO {
             stmt.close();
             con.close();
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -865,7 +865,7 @@ public class FuncionarioDAO {
                 isExist = "S";
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -896,7 +896,7 @@ public class FuncionarioDAO {
                 isExist = "S";
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1025,7 +1025,7 @@ public class FuncionarioDAO {
                 con.commit();
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1063,7 +1063,7 @@ public class FuncionarioDAO {
 
             conexaoPublica.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1121,7 +1121,7 @@ public class FuncionarioDAO {
 
                 lista.add(prof);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1179,7 +1179,7 @@ public class FuncionarioDAO {
 
                 lista.add(prof);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1228,7 +1228,7 @@ public class FuncionarioDAO {
 
                 listaProf.add(prof);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1277,7 +1277,7 @@ public class FuncionarioDAO {
 
                 listaProf.add(prof);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1322,7 +1322,7 @@ public class FuncionarioDAO {
                 prof.setCbo(cbo);
                 listaProf.add(prof);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1367,7 +1367,7 @@ public class FuncionarioDAO {
             con.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1499,7 +1499,7 @@ public class FuncionarioDAO {
                 con.commit();
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1532,7 +1532,7 @@ public class FuncionarioDAO {
             conexaoPublica.commit();
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1583,7 +1583,7 @@ public class FuncionarioDAO {
             }
             return prof;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1631,7 +1631,7 @@ public class FuncionarioDAO {
             }
 
             return prof;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1655,7 +1655,7 @@ public class FuncionarioDAO {
             while (rs.next()) {
                 lista.add(pDao.buscarProfissionalPorId(rs.getInt("medico")));
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1678,7 +1678,7 @@ public class FuncionarioDAO {
             while (rs.next()) {
                 lista.add(progDao.listarProgramaPorId(rs.getInt("codprograma")));
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1702,7 +1702,7 @@ public class FuncionarioDAO {
             while (rs.next()) {
                 lista.add(gDao.listarGrupoPorId(rs.getInt("codgrupo")));
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1738,7 +1738,7 @@ public class FuncionarioDAO {
 
                 lista.add(p);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1779,7 +1779,7 @@ public class FuncionarioDAO {
                 lista.add(empresaBean);
 
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1832,7 +1832,7 @@ public class FuncionarioDAO {
                 lista.add(empresaBean);
 
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1871,7 +1871,7 @@ public class FuncionarioDAO {
                 idFuncionario = rs.getInt("id_funcionario");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

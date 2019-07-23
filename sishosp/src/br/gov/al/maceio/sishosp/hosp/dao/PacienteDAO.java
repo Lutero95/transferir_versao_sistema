@@ -556,7 +556,7 @@ public class PacienteDAO {
 
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -668,7 +668,7 @@ public class PacienteDAO {
 
                 lista.add(p);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -812,7 +812,7 @@ public class PacienteDAO {
                 p.setNecessitaNomeSocial(rs.getBoolean("necessita_nome_social"));
                 listaP.add(p);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -953,7 +953,7 @@ public class PacienteDAO {
             }
 
             return p;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -995,7 +995,7 @@ public class PacienteDAO {
 
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1032,7 +1032,7 @@ public class PacienteDAO {
 
             }
             return lista;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1069,7 +1069,7 @@ public class PacienteDAO {
 
             }
             return lista;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1109,7 +1109,7 @@ public class PacienteDAO {
             }
             return p;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1144,7 +1144,7 @@ public class PacienteDAO {
 
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1169,7 +1169,7 @@ public class PacienteDAO {
 
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

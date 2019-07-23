@@ -38,7 +38,7 @@ public class DespesaDAO {
             cadastrou = true;
             
             pstm.close();
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             
             throw new RuntimeException(ex);
         } finally {
@@ -74,7 +74,7 @@ public class DespesaDAO {
             alterou = true;
             
             pstm.close();
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             
             throw new RuntimeException(ex);
         } finally {
@@ -106,7 +106,7 @@ public class DespesaDAO {
             excluiu = true;
             
             pstm.close();
-        } catch(SQLException ex) {           
+        } catch(Exception ex) {
             throw new ProjetoException(ex);
         } finally {
             try {
@@ -145,7 +145,7 @@ public class DespesaDAO {
             
             rs.close();
             pstm.close();
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {

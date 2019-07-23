@@ -28,7 +28,7 @@ public class CidDAO {
             ps.execute();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -57,7 +57,7 @@ public class CidDAO {
 
                 lista.add(cid);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -82,7 +82,7 @@ public class CidDAO {
             stmt.executeUpdate();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -106,7 +106,7 @@ public class CidDAO {
             stmt.execute();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -167,7 +167,7 @@ public class CidDAO {
 
                 lista.add(c);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -202,7 +202,7 @@ public class CidDAO {
 
                 lista.add(c);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {
@@ -236,7 +236,7 @@ public class CidDAO {
 
                 lista.add(c);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {

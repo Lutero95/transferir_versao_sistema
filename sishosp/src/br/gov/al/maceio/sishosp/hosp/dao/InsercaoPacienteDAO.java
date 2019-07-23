@@ -55,7 +55,7 @@ public class InsercaoPacienteDAO {
 
                 lista.add(insercao);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -122,7 +122,7 @@ public class InsercaoPacienteDAO {
                 insercao.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -267,7 +267,7 @@ public class InsercaoPacienteDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -381,7 +381,7 @@ public class InsercaoPacienteDAO {
             }
 
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -414,7 +414,7 @@ public class InsercaoPacienteDAO {
                 data = rs.getDate("datafinal");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -446,7 +446,7 @@ public class InsercaoPacienteDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -481,7 +481,7 @@ public class InsercaoPacienteDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -516,7 +516,7 @@ public class InsercaoPacienteDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

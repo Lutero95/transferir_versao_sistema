@@ -51,7 +51,7 @@ public class FornecedorDAO {
             con.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -92,7 +92,7 @@ public class FornecedorDAO {
                 lista.add(fornecedor);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -130,7 +130,7 @@ public class FornecedorDAO {
             con.commit();
             retorno = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -156,7 +156,7 @@ public class FornecedorDAO {
             con.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -194,7 +194,7 @@ public class FornecedorDAO {
                 fornecedor.setIe(rs.getString("ie"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -227,7 +227,7 @@ public class FornecedorDAO {
 
                 lista.add(f);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

@@ -34,7 +34,7 @@ public class SistemaDAO {
 			conexao.commit();
 
 			return true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -64,7 +64,7 @@ public class SistemaDAO {
 			conexao.commit();
 
 			alterou = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -91,7 +91,7 @@ public class SistemaDAO {
 			conexao.commit();
 
 			excluiu = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -134,7 +134,7 @@ public class SistemaDAO {
 				s.setAtivo(rs.getBoolean("ativo"));
 				lista.add(s);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -174,7 +174,7 @@ public class SistemaDAO {
 				s.setAtivo(rs.getBoolean("ativo"));
 				lista.add(s);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -204,7 +204,7 @@ public class SistemaDAO {
 				s.setSigla(rs.getString("sigla").toLowerCase());
 				lista.add(s);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -239,7 +239,7 @@ public class SistemaDAO {
 				s.setDescricao(rs.getString("descricao"));
 				lista.add(s);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -274,7 +274,7 @@ public class SistemaDAO {
 				s.setDescricao(rs.getString("descricao"));
 				lista.add(s);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -315,7 +315,7 @@ public class SistemaDAO {
 				sis.setVersao(rs.getString("versao"));
 				sis.setAtivo(rs.getBoolean("ativo"));
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -345,7 +345,7 @@ public class SistemaDAO {
 				s.setDescricao(rs.getString("descricao"));
 				lista.add(s);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {

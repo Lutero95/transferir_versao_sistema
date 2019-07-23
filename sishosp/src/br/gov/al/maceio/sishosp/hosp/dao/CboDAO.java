@@ -27,7 +27,7 @@ public class CboDAO {
             ps.execute();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -55,7 +55,7 @@ public class CboDAO {
                 cbo.setCodigo(rs.getString("codigo"));
                 lista.add(cbo);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -84,7 +84,7 @@ public class CboDAO {
                 cbo.setCodigo(rs.getString("codigo"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -116,7 +116,7 @@ public class CboDAO {
 
                 lista.add(cbo);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -142,7 +142,7 @@ public class CboDAO {
             stmt.executeUpdate();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -165,7 +165,7 @@ public class CboDAO {
             stmt.execute();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

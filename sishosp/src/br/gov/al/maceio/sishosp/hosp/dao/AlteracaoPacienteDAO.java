@@ -82,7 +82,7 @@ public class AlteracaoPacienteDAO {
 
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -128,7 +128,7 @@ public class AlteracaoPacienteDAO {
 
                 lista.add(ge);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -160,7 +160,7 @@ public class AlteracaoPacienteDAO {
             while (rs.next()) {
                 lista.add(rs.getString("dia_semana"));
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -299,7 +299,7 @@ public class AlteracaoPacienteDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -424,7 +424,7 @@ public class AlteracaoPacienteDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -461,7 +461,7 @@ public class AlteracaoPacienteDAO {
 
                 lista.add(ge);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -494,7 +494,7 @@ public class AlteracaoPacienteDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -526,7 +526,7 @@ public class AlteracaoPacienteDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

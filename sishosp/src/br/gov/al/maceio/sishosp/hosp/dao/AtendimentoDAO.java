@@ -63,7 +63,7 @@ public class AtendimentoDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -113,7 +113,7 @@ public class AtendimentoDAO {
 
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -144,7 +144,7 @@ public class AtendimentoDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -188,7 +188,7 @@ public class AtendimentoDAO {
 
             alterou = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -242,7 +242,7 @@ public class AtendimentoDAO {
 
             alterou = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -274,7 +274,7 @@ public class AtendimentoDAO {
 
             alterou = true;
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -351,7 +351,7 @@ public class AtendimentoDAO {
                 lista.add(at);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -397,7 +397,7 @@ public class AtendimentoDAO {
                 at.getInsercaoPacienteBean().getLaudo().setId(rs.getInt("cod_laudo"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -451,7 +451,7 @@ public class AtendimentoDAO {
                 lista.add(at);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -493,7 +493,7 @@ public class AtendimentoDAO {
                 lista.add(at);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

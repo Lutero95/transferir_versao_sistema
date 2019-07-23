@@ -47,7 +47,7 @@ public class EncaminhamentoDAO {
 			conexao.close();
 
 			return cadastrou;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 	}
@@ -67,7 +67,7 @@ public class EncaminhamentoDAO {
 			alterou = true;
 
 			return alterou;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -93,7 +93,7 @@ public class EncaminhamentoDAO {
 			excluir = true;
 
 			return excluir;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -124,7 +124,7 @@ public class EncaminhamentoDAO {
 
 				lista.add(p);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {

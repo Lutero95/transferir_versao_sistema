@@ -44,7 +44,7 @@ public class PerfilDAO {
 			conexao.commit();
 
 			cadastrou = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -91,7 +91,7 @@ public class PerfilDAO {
 
 				alterou = true;
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -124,7 +124,7 @@ public class PerfilDAO {
 			conexao.commit();
 
 			excluiu = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -153,7 +153,7 @@ public class PerfilDAO {
 				p.setDescricao(rs.getString("descricao"));
 				lista.add(p);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -185,7 +185,7 @@ public class PerfilDAO {
 				p.setDescricao(rs.getString("descricao"));
 				lista.add(p);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -227,7 +227,7 @@ public class PerfilDAO {
 			associou = true;
 
 			conexao.commit();
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -269,7 +269,7 @@ public class PerfilDAO {
 			associou = true;
 
 			conexao.commit();
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -307,7 +307,7 @@ public class PerfilDAO {
 				associou = true;
 
 				conexao.commit();
-			} catch (SQLException ex) {
+			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			} finally {
 				try {
@@ -353,7 +353,7 @@ public class PerfilDAO {
 				associou = true;
 
 				conexao.commit();
-			} catch (SQLException ex) {
+			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			} finally {
 				try {

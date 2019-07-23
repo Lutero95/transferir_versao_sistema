@@ -132,14 +132,14 @@ public class TituloReceberDao {
 				conexao.commit();
 			}
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
 				cs.close();
 				if (comitar)
 					conexao.close();
-			} catch (SQLException ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -229,13 +229,13 @@ public class TituloReceberDao {
 			conexao.commit();
 
 			return true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
 				ps.close();
 				conexao.close();
-			} catch (SQLException ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -268,14 +268,14 @@ public class TituloReceberDao {
 
 				lista.add(ip);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
 				ps.close();
 				rs.close();
 				conexao.close();
-			} catch (SQLException ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -300,14 +300,14 @@ public class TituloReceberDao {
 			while (rs.next()) {
 				valorTotal = +rs.getDouble("total");
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
 				ps.close();
 				rs.close();
 				conexao.close();
-			} catch (SQLException ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -575,8 +575,8 @@ public class TituloReceberDao {
 	 * 
 	 * conexao.commit();
 	 * 
-	 * return true; } catch (SQLException ex) { ex.printStackTrace(); } finally {
-	 * try { conexao.close(); } catch (SQLException ex) { ex.printStackTrace(); } }
+	 * return true; } catch (Exception ex) { ex.printStackTrace(); } finally {
+	 * try { conexao.close(); } catch (Exception ex) { ex.printStackTrace(); } }
 	 * return false; }
 	 */
 
@@ -591,7 +591,7 @@ public class TituloReceberDao {
 			ps.executeUpdate();
 
 			return true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
@@ -626,7 +626,7 @@ public class TituloReceberDao {
 				aberto = rs.getDouble("abertofinal");
 			}
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
@@ -659,7 +659,7 @@ public class TituloReceberDao {
 			while (rs.next()) {
 				cod = rs.getInt("cod_banco_tesouraria");
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
@@ -691,7 +691,7 @@ public class TituloReceberDao {
 			while (rs.next()) {
 				valor = rs.getDouble("valorPago");
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
@@ -723,7 +723,7 @@ public class TituloReceberDao {
 			while (rs.next()) {
 				valor = rs.getDouble("valorJuros");
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
@@ -755,7 +755,7 @@ public class TituloReceberDao {
 			while (rs.next()) {
 				valor = rs.getDouble("valorMulta");
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
@@ -787,7 +787,7 @@ public class TituloReceberDao {
 			while (rs.next()) {
 				valor = rs.getDouble("valorDesconto");
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
@@ -1198,7 +1198,7 @@ public class TituloReceberDao {
 
 			return true;
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -1596,14 +1596,14 @@ public class TituloReceberDao {
 				lista.add(bx);
 			}
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			try {
 				stmt.close();
 				rs.close();
 				conexao.close();
-			} catch (SQLException ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}

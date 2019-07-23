@@ -34,7 +34,7 @@ public class PermissaoDAO {
 				p.setDescricao(rs.getString("descricao"));
 				lista.add(p);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -64,7 +64,7 @@ public class PermissaoDAO {
 				p.setDescricao(rs.getString("descricao"));
 				lista.add(p);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -111,7 +111,7 @@ public class PermissaoDAO {
 				p.setSiglaSistema(rs.getString("sigla_sis").toUpperCase());
 				lista.add(p);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -146,7 +146,7 @@ public class PermissaoDAO {
 				p.setDescricao(rs.getString("descricao"));
 				lista.add(p);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -181,7 +181,7 @@ public class PermissaoDAO {
 				p.setDescricao(rs.getString("descricao"));
 				lista.add(p);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -213,7 +213,7 @@ public class PermissaoDAO {
 			while (rs.next()) {
 				lista.add(rs.getLong("permid"));
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -241,7 +241,7 @@ public class PermissaoDAO {
 			while (rs.next()) {
 				perm = rs.getLong("id_permissao");
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -269,7 +269,7 @@ public class PermissaoDAO {
 			while (rs.next()) {
 				perm = rs.getLong("id_permissao");
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -298,7 +298,7 @@ public class PermissaoDAO {
 			while (rs.next()) {
 				perm = rs.getLong("id_permissao");
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {

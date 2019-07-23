@@ -89,7 +89,7 @@ public class BloqueioDAO {
             } while (condicao);
 
             condicao = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -120,7 +120,7 @@ public class BloqueioDAO {
             stmt.executeUpdate();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -145,7 +145,7 @@ public class BloqueioDAO {
             stmt.execute();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -179,7 +179,7 @@ public class BloqueioDAO {
                 bloqueio.setDescBloqueio(rs.getString("descricao"));
                 lista.add(bloqueio);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -211,7 +211,7 @@ public class BloqueioDAO {
                 bloqueio.getProf().setNome(rs.getString("descfuncionario"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -249,7 +249,7 @@ public class BloqueioDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -289,7 +289,7 @@ public class BloqueioDAO {
                 lista.add(data);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

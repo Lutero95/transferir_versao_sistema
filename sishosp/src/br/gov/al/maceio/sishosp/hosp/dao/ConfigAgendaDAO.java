@@ -53,7 +53,7 @@ public class ConfigAgendaDAO {
 
 			}
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -110,7 +110,7 @@ public class ConfigAgendaDAO {
 				insereTipoAtendAgendaProfissional(idConfigAgenda, confParte1, listaTipos, conAuxiliar);
 			}
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -139,7 +139,7 @@ public class ConfigAgendaDAO {
 				ps1.execute();
 			}
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -167,7 +167,7 @@ public class ConfigAgendaDAO {
 				ps1.execute();
 			}
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -256,7 +256,7 @@ public class ConfigAgendaDAO {
 
 			retorno = true;
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -301,7 +301,7 @@ public class ConfigAgendaDAO {
 				}
 			}
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -361,7 +361,7 @@ public class ConfigAgendaDAO {
 				insereTipoAtendAgendaEquipe(idConfigAgenda, confParte1, listaTipos, conAuxiliar);
 			}
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -451,7 +451,7 @@ public class ConfigAgendaDAO {
 
 			retorno = true;
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -545,7 +545,7 @@ public class ConfigAgendaDAO {
 				lista.add(conf);
 
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -635,7 +635,7 @@ public class ConfigAgendaDAO {
 				lista.add(conf);
 
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -678,7 +678,7 @@ public class ConfigAgendaDAO {
 
 				lista.add(conf);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -723,7 +723,7 @@ public class ConfigAgendaDAO {
 				conf.setAno(rs.getInt("ano"));
 				lista.add(conf);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -752,7 +752,7 @@ public class ConfigAgendaDAO {
 				codgrupo = rs.getInt("codgrupo");
 
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -799,7 +799,7 @@ public class ConfigAgendaDAO {
 				conf.setOpcao(rs.getString("opcao"));
 
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -842,7 +842,7 @@ public class ConfigAgendaDAO {
 				conf.setOpcao(rs.getString("opcao"));
 
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -878,7 +878,7 @@ public class ConfigAgendaDAO {
 
 			}
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -921,7 +921,7 @@ public class ConfigAgendaDAO {
 
 				lista.add(conf);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -947,7 +947,7 @@ public class ConfigAgendaDAO {
 			stmt.execute();
 			con.commit();
 			return true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -976,7 +976,7 @@ public class ConfigAgendaDAO {
 			con.commit();
 			retorno = true;
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
@@ -1002,7 +1002,7 @@ public class ConfigAgendaDAO {
 			stmt2.execute();
 			retorno = true;
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -1028,7 +1028,7 @@ public class ConfigAgendaDAO {
 			stmt.execute();
 			retorno = true;
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -1049,7 +1049,7 @@ public class ConfigAgendaDAO {
 			stmt.setLong(1, id);
 			stmt.execute();
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -1069,7 +1069,7 @@ public class ConfigAgendaDAO {
 			stmt.setLong(1, id);
 			stmt.execute();
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -1089,7 +1089,7 @@ public class ConfigAgendaDAO {
 			stmt.setLong(1, id);
 			stmt.execute();
 
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -1171,7 +1171,7 @@ public class ConfigAgendaDAO {
 			insereTipoAtendAgendaProfissional(confParte1.getIdConfiAgenda(), confParte1, listaTipos, conAuxiliar);
 
 			retorno = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -1259,7 +1259,7 @@ public class ConfigAgendaDAO {
 			insereTipoAtendAgendaEquipe(confParte1.getIdConfiAgenda(), confParte1, listaTipos, conAuxiliar);
 
 			retorno = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -1284,7 +1284,7 @@ public class ConfigAgendaDAO {
 				String dia = rs.getString("dia");
 				lista.add(dia);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -1310,7 +1310,7 @@ public class ConfigAgendaDAO {
 				String dia = rs.getString("dia");
 				lista.add(dia);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -1361,7 +1361,7 @@ public class ConfigAgendaDAO {
 
 				lista.add(conf);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -1412,7 +1412,7 @@ public class ConfigAgendaDAO {
 
 				lista.add(conf);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {

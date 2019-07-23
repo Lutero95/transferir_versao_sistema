@@ -30,7 +30,7 @@ public class FeriadoDAO {
             ps.execute();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -56,7 +56,7 @@ public class FeriadoDAO {
             stmt.executeUpdate();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -79,7 +79,7 @@ public class FeriadoDAO {
             stmt.execute();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -108,7 +108,7 @@ public class FeriadoDAO {
 
                 lista.add(feriado);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -137,7 +137,7 @@ public class FeriadoDAO {
                 feriado.setDataFeriado(rs.getDate("dataferiado"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -171,7 +171,7 @@ public class FeriadoDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -206,7 +206,7 @@ public class FeriadoDAO {
                 lista.add(data);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

@@ -27,7 +27,7 @@ public class EspecialidadeDAO {
             con.commit();
             con.close();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -51,7 +51,7 @@ public class EspecialidadeDAO {
             stmt.executeUpdate();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -74,7 +74,7 @@ public class EspecialidadeDAO {
             stmt.execute();
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -103,7 +103,7 @@ public class EspecialidadeDAO {
 
                 lista.add(esp);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -136,7 +136,7 @@ public class EspecialidadeDAO {
 
                 lista.add(esp);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -165,7 +165,7 @@ public class EspecialidadeDAO {
                 esp.setDescEspecialidade(rs.getString("descespecialidade"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -204,7 +204,7 @@ public class EspecialidadeDAO {
 
                 lista.add(esp);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

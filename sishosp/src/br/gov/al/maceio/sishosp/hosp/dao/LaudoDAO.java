@@ -153,7 +153,7 @@ public class LaudoDAO {
             }
             conexao.commit();
             
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -293,7 +293,7 @@ public class LaudoDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -321,7 +321,7 @@ public class LaudoDAO {
             conexao.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -398,7 +398,7 @@ public class LaudoDAO {
 
                 lista.add(l);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -474,7 +474,7 @@ public class LaudoDAO {
                 l.setSituacao(rs.getString("situacao"));
 
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -528,7 +528,7 @@ public class LaudoDAO {
 
                 lista.add(insercao);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -559,7 +559,7 @@ public class LaudoDAO {
                 laudo.setAnoInicio(rs.getInt("ano_inicio"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -611,7 +611,7 @@ public class LaudoDAO {
                 laudoBean.setAnoInicio(rs.getInt("ano_inicio"));
 
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

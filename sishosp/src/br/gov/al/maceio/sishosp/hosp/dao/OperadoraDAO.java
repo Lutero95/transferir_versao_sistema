@@ -26,7 +26,7 @@ public class OperadoraDAO {
 			ps.execute();
 			con.commit();
 			retorno = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -51,7 +51,7 @@ public class OperadoraDAO {
 			stmt.executeUpdate();
 			con.commit();
 			retorno = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -75,7 +75,7 @@ public class OperadoraDAO {
 			stmt.execute();
 			con.commit();
 			retorno = true;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -106,7 +106,7 @@ public class OperadoraDAO {
 
 				lista.add(o);
 			}
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {
@@ -135,7 +135,7 @@ public class OperadoraDAO {
 			}
 
 			return r;
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		} finally {

@@ -54,7 +54,7 @@ public class ProgramaDAO {
             con.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -100,7 +100,7 @@ public class ProgramaDAO {
             con.commit();
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -132,7 +132,7 @@ public class ProgramaDAO {
 
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -167,7 +167,7 @@ public class ProgramaDAO {
                 programa.setProcedimento(new ProcedimentoDAO().listarProcedimentoPorIdComConexao(rs.getInt("cod_procedimento"), con));
                 lista.add(programa);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -207,7 +207,7 @@ public class ProgramaDAO {
                         .getInt("id_programa"), con));
                 lista.add(programa);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -247,7 +247,7 @@ public class ProgramaDAO {
 
                 lista.add(programa);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -287,7 +287,7 @@ public class ProgramaDAO {
 
                 lista.add(programa);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -325,7 +325,7 @@ public class ProgramaDAO {
 
                 lista.add(programa);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -357,7 +357,7 @@ public class ProgramaDAO {
                         .getInt("id_programa"), con));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -385,7 +385,7 @@ public class ProgramaDAO {
                 programa.setDescPrograma(rs.getString("descprograma"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -421,7 +421,7 @@ public class ProgramaDAO {
 
                 lista.add(programa);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -463,7 +463,7 @@ public class ProgramaDAO {
 
                 lista.add(programa);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -496,7 +496,7 @@ public class ProgramaDAO {
                 lista.add(programa);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

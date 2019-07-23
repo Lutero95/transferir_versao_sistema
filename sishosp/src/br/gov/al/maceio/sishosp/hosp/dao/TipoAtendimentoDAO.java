@@ -98,7 +98,7 @@ public class TipoAtendimentoDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -135,7 +135,7 @@ public class TipoAtendimentoDAO {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -160,7 +160,7 @@ public class TipoAtendimentoDAO {
             stmt.setLong(1, idTipo);
             stmt.execute();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -184,7 +184,7 @@ public class TipoAtendimentoDAO {
             stmt.setLong(1, idTipo);
             stmt.execute();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -211,7 +211,7 @@ public class TipoAtendimentoDAO {
             }
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -238,7 +238,7 @@ public class TipoAtendimentoDAO {
             }
 
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -279,7 +279,7 @@ public class TipoAtendimentoDAO {
 
                 lista.add(tipo);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -312,7 +312,7 @@ public class TipoAtendimentoDAO {
 
                 lista.add(tipo);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -349,7 +349,7 @@ public class TipoAtendimentoDAO {
 
                 lista.add(tipo1);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -397,7 +397,7 @@ public class TipoAtendimentoDAO {
 
                 lista.add(tipo1);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -435,7 +435,7 @@ public class TipoAtendimentoDAO {
                 tipo.setProfissional(rs.getBoolean("profissional"));
             }
             return tipo;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -471,7 +471,7 @@ public class TipoAtendimentoDAO {
                 tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
                 tipo.setProfissional(rs.getBoolean("profissional"));
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -502,7 +502,7 @@ public class TipoAtendimentoDAO {
                 retorno = rs.getInt("codtipoatendimento");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

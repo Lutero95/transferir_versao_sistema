@@ -42,7 +42,7 @@ public class FonteReceitaDAO {
             cadastrou = true;
             
             pstm.close();
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             
             throw new RuntimeException(ex);
         } finally {
@@ -79,7 +79,7 @@ public class FonteReceitaDAO {
             alterou = true;
             
             pstm.close();
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             
             throw new RuntimeException(ex);
         } finally {
@@ -110,7 +110,7 @@ public class FonteReceitaDAO {
 
 			excluiu = true;
 			pstm.close();
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			throw new ProjetoException(ex);
 		} finally {
 			try {
@@ -154,7 +154,7 @@ public class FonteReceitaDAO {
             ps.close();
             return colecao;
             
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             throw new RuntimeException(ex);
         } finally {
             try {

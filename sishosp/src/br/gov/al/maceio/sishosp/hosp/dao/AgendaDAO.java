@@ -167,7 +167,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             con.commit();
             excluirTabelaAgendamentos1(agenda);
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -194,7 +194,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
           stmt.execute();
           con.commit();
           retorno = true;
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
           ex.printStackTrace();
           throw new RuntimeException(ex);
       } finally {
@@ -216,7 +216,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             stmt.setLong(1, agenda.getIdAgenda());
             stmt.execute();
             con.commit();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -259,7 +259,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtdMax = rs.getInt("qtdmax");
             }
             return qtdMax;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -307,7 +307,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtdMax = rs.getInt("qtd");
             }
             return qtdMax;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -343,7 +343,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -397,7 +397,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             	retorno = true;
             }
              return retorno;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -447,7 +447,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtdmax");
             }
              return qtd;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -499,7 +499,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtd");
             }
              return qtd;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -547,7 +547,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtdmax");
             }
              return qtd;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -597,7 +597,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtd");
             }
              return qtd;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -632,7 +632,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtd");
             }
             return qtd;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -680,7 +680,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 return false;
             } else
                 return true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -731,7 +731,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -769,7 +769,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -806,7 +806,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = rs.getInt("qtd");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -852,7 +852,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = rs.getInt("qtd");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -907,7 +907,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 retorno = true;
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -940,7 +940,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 return false;
             } else
                 return true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -992,7 +992,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 return false;
             } else
                 return true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1045,7 +1045,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 return false;
             } else
                 return true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1124,7 +1124,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 agenda.setAtivo(rs.getString("ativo"));
                 lista.add(agenda);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1187,7 +1187,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 agenda.setPresenca(rs.getString("presenca"));
                 lista.add(agenda);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1240,7 +1240,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtdMax = rs.getInt("qtdmax");
             }
             return qtdMax;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1289,7 +1289,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtdMax = rs.getInt("qtdmax");
             }
             return qtdMax;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1324,7 +1324,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtd");
             }
             return qtd;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1357,7 +1357,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 resultado = rs.getBoolean("intervalo");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1411,7 +1411,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 lista.add(configAgendaParte1Bean);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1477,7 +1477,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 lista.add(configAgendaParte1Bean);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1532,7 +1532,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 lista.add(configAgendaParte1Bean);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1571,11 +1571,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 resultado = rs.getBoolean("pode_marcar");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
-        } catch (ProjetoException e) {
-            e.printStackTrace();
         } finally {
             try {
                 con.close();
@@ -1631,11 +1629,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 resultado = rs.getBoolean("pode_marcar");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
-        } catch (ProjetoException e) {
-            e.printStackTrace();
         } finally {
             try {
                 con.close();
@@ -1769,11 +1765,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 lista.add(agendaBean);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
-        } catch (ProjetoException e) {
-            e.printStackTrace();
         } finally {
             try {
                 con.close();
@@ -1810,7 +1804,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 qtd = rs.getInt("qtd");
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1841,7 +1835,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 dia = rs.getString("dia_semana");
                 lista.add(dia);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1883,7 +1877,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 lista.add(funcionario);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1926,7 +1920,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
                 lista.add(funcionario);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -1958,7 +1952,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 dia = rs.getString("dia_semana");
                 lista.add(dia);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {

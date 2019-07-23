@@ -61,7 +61,7 @@ public class GrupoDAO {
 
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -111,7 +111,7 @@ public class GrupoDAO {
 
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -141,7 +141,7 @@ public class GrupoDAO {
 
             con.commit();
             retorno = true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -172,7 +172,7 @@ public class GrupoDAO {
                 equipe.setDescEquipe(rs.getString("descequipe"));
                 lista.add(equipe);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -212,7 +212,7 @@ public class GrupoDAO {
                 lista.add(grupo);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -252,7 +252,7 @@ public class GrupoDAO {
                 lista.add(grupo);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -287,7 +287,7 @@ public class GrupoDAO {
                 lista.add(grupo);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -318,7 +318,7 @@ public class GrupoDAO {
                         .getBoolean("insercao_pac_institut"));
                 lista.add(grupo);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -350,7 +350,7 @@ public class GrupoDAO {
                 grupo.setDescGrupo(rs.getString("descgrupo"));
                 lista.add(grupo);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -390,7 +390,7 @@ public class GrupoDAO {
                         .getBoolean("insercao_pac_institut"));
                 lista.add(grupo);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -428,7 +428,7 @@ public class GrupoDAO {
                         .getBoolean("insercao_pac_institut"));
                 lista.add(grupo);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -462,7 +462,7 @@ public class GrupoDAO {
                 grupo.setEquipes(listarEquipesDoGrupo(rs.getInt("id_grupo"), con));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -490,7 +490,7 @@ public class GrupoDAO {
                 grupo.setAuditivo(rs.getBoolean("auditivo"));
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
@@ -526,7 +526,7 @@ public class GrupoDAO {
                         .getBoolean("insercao_pac_institut"));
                 lista.add(grupo);
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
