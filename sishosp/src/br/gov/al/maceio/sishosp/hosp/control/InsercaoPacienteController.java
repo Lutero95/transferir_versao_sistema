@@ -12,6 +12,7 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -62,6 +63,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private Boolean todosOsProfissionais;
     private Boolean renderizarAposLaudo;
     private List<AgendaBean> listaHorariosDaEquipe;
+    private Boolean liberacao;
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -78,12 +80,13 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         renderizarAposLaudo = false;
         listaEquipePorGrupo = new ArrayList<>();
         listaProfissionais = new ArrayList<>();
+        liberacao = false;
     }
 
     public void carregarHorarioOuTurnoInsercao() throws ProjetoException, ParseException {
         opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoEmpresa();
 
-        if(opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())){
+        if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
             gerarHorariosAtendimento();
         }
     }
@@ -91,7 +94,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     public String carregarHorarioOuTurno() throws ProjetoException, ParseException {
         opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoEmpresa();
 
-        if(opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())){
+        if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
             gerarHorariosAtendimento();
         }
 
@@ -146,15 +149,57 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
 
-    public void carregarLaudoPaciente() throws ProjetoException {
+    public void validarCarregarLaudoPaciente() throws ProjetoException {
         int id = insercao.getLaudo().getId();
-        limparDados();
-        insercao = iDao.carregarLaudoPaciente(id);
-        renderizarAposLaudo = true;
+
+        if (validarCarregamentoDoLaudo(id)) {
+            carregarLaudoPaciente(id);
+        }
 
     }
 
-    // VALIDAÃ‡ÃƒO DE NÃƒO REPETIR O PROFISSIONAL
+    private void carregarLaudoPaciente(int id) throws ProjetoException {
+        limparDados();
+        insercao = iDao.carregarLaudoPaciente(id);
+        renderizarAposLaudo = true;
+    }
+
+    public Boolean validarCarregamentoDoLaudo(Integer idLaudo) throws ProjetoException {
+
+        Boolean retorno = true;
+
+        if (iDao.verificarSeLaudoConstaNoAtendimento(idLaudo)) {
+            if (iDao.verificarSeAlgumAtendimentoNaoFoiLancadoPerfil(idLaudo)) {
+                JSFUtil.adicionarMensagemErro(
+                        "Avaliação incompleta, preencha totalmente a avaliação que esse laudo está relacionada para poder selecionar esse laudo na inserção!",
+                        "Erro");
+                retorno = false;
+            } else {
+                if (!iDao.verificarSeAlgumAtendimentoDoLaudoTemPerfilAvaliacao(idLaudo)) {
+                    JSFUtil.abrirDialog("dlgSenha");
+                    retorno = false;
+                }
+            }
+        }
+
+        return retorno;
+    }
+
+    public void validarSenhaLiberacao() throws ProjetoException {
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+
+        Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(), ValidacaoSenhaAgenda.LIBERACAO_PACIENTES_SEM_PERFIL.getSigla());
+
+        if (idFuncionario > 0) {
+            liberacao = true;
+            JSFUtil.fecharDialog("dlgSenha");
+            carregarLaudoPaciente(insercao.getLaudo().getId());
+        } else {
+            JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
+        }
+    }
+
+    // VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL
     public void validarAdicionarFuncionario() {
         Boolean existe = false;
         if (listaProfissionaisAdicionados.size() == 0) {
@@ -425,7 +470,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
 
                 cadastrou = iDao.gravarInsercaoEquipe(insercao,
-                        listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal);
+                        listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal, liberacao, funcionario);
             }
             if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
@@ -457,7 +502,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void visualizarHorariosEquipe() {
-    	listaHorariosDaEquipe=  agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
+        listaHorariosDaEquipe = agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
 
     // AUTOCOMPLETE INÃ�CIO
@@ -631,11 +676,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         this.listaProfissionais = listaProfissionais;
     }
 
-	public List<AgendaBean> getListaHorariosDaEquipe() {
-		return listaHorariosDaEquipe;
-	}
+    public List<AgendaBean> getListaHorariosDaEquipe() {
+        return listaHorariosDaEquipe;
+    }
 
-	public void setListaHorariosDaEquipe(List<AgendaBean> listaHorariosDaEquipe) {
-		this.listaHorariosDaEquipe = listaHorariosDaEquipe;
-	}
+    public void setListaHorariosDaEquipe(List<AgendaBean> listaHorariosDaEquipe) {
+        this.listaHorariosDaEquipe = listaHorariosDaEquipe;
+    }
 }

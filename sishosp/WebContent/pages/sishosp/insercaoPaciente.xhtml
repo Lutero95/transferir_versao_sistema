@@ -575,7 +575,7 @@
                                          icon="ui-icon-check" title="Selecionar"
                                          onclick="PF('dlgConsuLaudo').hide();"
                                          class="new-btn-acao-table acao-editar"
-                                         action="#{InsercaoController.carregarLaudoPaciente()}">
+                                         action="#{InsercaoController.validarCarregarLaudoPaciente()}">
                             <f:setPropertyActionListener value="#{insercao}"
                                                          target="#{InsercaoController.insercao}"/>
                         </p:commandButton>
@@ -803,6 +803,35 @@
                     </h:column>
 
                 </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Digite a senha para liberação" widgetVar="dlgSenha" modal="true"
+                  styleClass="topDialog" dynamic="true">
+            <h:form id="frmSenha">
+                <p:growl id="grwSenha"></p:growl>
+                <h:panelGrid columns="1" cellpadding="3">
+
+                    <b:inputText mask="999-999-999-99" style="padding:10px;"
+                                 required="true" value="#{InsercaoController.funcionario.cpf}"
+                                 placeholder="Digite o CPF" render-label="true"
+                                 requiredMessage="CPF obrigatório" />
+                    <b:message for="@previous" />
+
+                    <b:inputSecret style="padding:10px;margin-top:10px" required="true"
+                                   placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
+                                   value="#{InsercaoController.funcionario.senha}"></b:inputSecret>
+                    <b:message for="@previous" />
+
+                </h:panelGrid>
+
+                <div align="center">
+                    <p:commandButton value="Liberar" look="success" size="sm" id="b1"
+                                     style="margin-top:10px" icon="ui-icon-check"
+                                     update=":formInsercao, :formInsercao2, grwSenha"
+                                     action="#{InsercaoController.validarSenhaLiberacao()}" />
+                </div>
+
             </h:form>
         </p:dialog>
 

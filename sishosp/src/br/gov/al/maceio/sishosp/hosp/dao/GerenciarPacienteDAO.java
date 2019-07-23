@@ -382,4 +382,36 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
+    public Boolean gravarLiberacao(Integer idPacienteInstituicao, String motivo, Long usuarioLiberacao, Integer codAtendimento, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+
+        String sql = "INSERT INTO hosp.liberacoes (motivo, usuario_liberacao, data_hora_liberacao, codatendimento, codpaciente_instituicao) "
+                + " VALUES  (?, ?, CURRENT_TIMESTAMP, ?, ?)";
+
+        try {
+            ps = null;
+            ps = conAuxiliar.prepareStatement(sql);
+
+            ps.setString(1, motivo);
+            ps.setLong(2, usuarioLiberacao);
+            ps.setInt(3, codAtendimento);
+            ps.setInt(4, idPacienteInstituicao);
+
+            ps.executeUpdate();
+
+            retorno = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+
 }

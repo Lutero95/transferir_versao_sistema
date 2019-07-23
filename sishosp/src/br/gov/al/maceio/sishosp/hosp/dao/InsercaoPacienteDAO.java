@@ -9,6 +9,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 
 import javax.faces.context.FacesContext;
@@ -135,12 +136,14 @@ public class InsercaoPacienteDAO {
     }
 
     public boolean gravarInsercaoEquipe(InsercaoPacienteBean insercao,
-                                        List<FuncionarioBean> lista, ArrayList<InsercaoPacienteBean> listaAgendamento) throws ProjetoException {
+                                        List<FuncionarioBean> lista, ArrayList<InsercaoPacienteBean> listaAgendamento,
+                                        Boolean liberacao, FuncionarioBean funcionario) throws ProjetoException {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
 
         Boolean retorno = false;
+        int idAtendimento = 0;
 
         GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
@@ -195,10 +198,9 @@ public class InsercaoPacienteDAO {
                         .getAgenda().getDataMarcacao()));
                 ps3.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
 
-                if(insercao.getAgenda().getTurno() != null) {
+                if (insercao.getAgenda().getTurno() != null) {
                     ps3.setString(5, insercao.getAgenda().getTurno());
-                }
-                else{
+                } else {
                     ps3.setNull(5, Types.NULL);
                 }
 
@@ -206,54 +208,61 @@ public class InsercaoPacienteDAO {
                 ps3.setInt(7, id);
                 ps3.setInt(8, user_session.getEmpresa().getCodEmpresa());
 
-                if(insercao.getAgenda().getHorario() != null) {
+                if (insercao.getAgenda().getHorario() != null) {
                     ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
-                }
-                else{
+                } else {
                     ps3.setNull(9, Types.NULL);
                 }
 
                 ps3.setBoolean(10, insercao.getEncaixe());
 
                 ps3.setInt(11, user_session.getCodigo());
-                
+
                 ps3.setLong(12, insercao.getPrograma().getIdPrograma());
-                
+
                 ps3.setLong(13, insercao.getGrupo().getIdGrupo());
-                
+
                 rs = ps3.executeQuery();
 
-                int idAtendimento = 0;
+                idAtendimento = 0;
                 if (rs.next()) {
                     idAtendimento = rs.getInt("id_atendimento");
                 }
 
-                for(int j=0; j<lista.size(); j++) {
+                for (int j = 0; j < lista.size(); j++) {
 
                     for (int h = 0; h < lista.get(j).getListDiasSemana().size(); h++) {
 
                         if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getAgenda().getDataMarcacao()) ==
                                 Integer.parseInt(lista.get(j).getListDiasSemana().get(h))) {
 
-                        String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
+                            String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
-                        PreparedStatement ps4 = null;
-                        ps4 = con.prepareStatement(sql4);
+                            PreparedStatement ps4 = null;
+                            ps4 = con.prepareStatement(sql4);
 
-                        ps4.setLong(1, lista.get(j).getId());
-                        ps4.setInt(2, idAtendimento);
-                        ps4.setInt(3, lista.get(j).getCbo().getCodCbo());
-                        ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+                            ps4.setLong(1, lista.get(j).getId());
+                            ps4.setInt(2, idAtendimento);
+                            ps4.setInt(3, lista.get(j).getCbo().getCodCbo());
+                            ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
 
-                        ps4.executeUpdate();
+                            ps4.executeUpdate();
                         }
                     }
                 }
 
             }
 
-            if(gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id, insercao.getObservacao(), "I", con)){
-                con.commit();
+            if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id, insercao.getObservacao(), "I", con)) {
+
+                if (liberacao) {
+                    GerenciarPacienteDAO gDao = new GerenciarPacienteDAO();
+                    if (gDao.gravarLiberacao(id, MotivoLiberacao.SEM_PERFIL_AVALIACAO.getSigla(), funcionario.getId(), idAtendimento, con)) {
+                        con.commit();
+                    }
+                } else {
+                    con.commit();
+                }
 
                 retorno = true;
             }
@@ -336,10 +345,9 @@ public class InsercaoPacienteDAO {
                 ps3.setString(6, insercao.getObservacao());
                 ps3.setInt(7, id);
                 ps3.setInt(8, user_session.getEmpresa().getCodEmpresa());
-                if(insercao.getAgenda().getHorario() != null) {
+                if (insercao.getAgenda().getHorario() != null) {
                     ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
-                }
-                else{
+                } else {
                     ps3.setNull(9, Types.NULL);
                 }
 
@@ -366,7 +374,7 @@ public class InsercaoPacienteDAO {
 
             }
 
-            if(gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id, insercao.getObservacao(), "I", con)){
+            if (gerenciarPacienteDAO.gravarHistoricoAcaoPaciente(id, insercao.getObservacao(), "I", con)) {
                 con.commit();
 
                 retorno = true;
@@ -417,6 +425,108 @@ public class InsercaoPacienteDAO {
             }
         }
         return data;
+    }
+
+    public Boolean verificarSeLaudoConstaNoAtendimento(int codLaudo) throws ProjetoException {
+
+        Boolean retorno = false;
+
+        String sql = "SELECT id_atendimento FROM hosp.atendimentos WHERE cod_laudo = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            stm.setInt(1, codLaudo);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                retorno = true;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+
+    public Boolean verificarSeAlgumAtendimentoDoLaudoTemPerfilAvaliacao(int codLaudo) throws ProjetoException {
+
+        Boolean retorno = false;
+
+        String sql = "SELECT a.id_atendimento " +
+                "FROM hosp.atendimentos a " +
+                "JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento) " +
+                "WHERE cod_laudo = ? AND a1.perfil_avaliacao = 'S';";
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            stm.setInt(1, codLaudo);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                retorno = true;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+
+    public Boolean verificarSeAlgumAtendimentoNaoFoiLancadoPerfil(int codLaudo) throws ProjetoException {
+
+        Boolean retorno = false;
+
+        String sql = "SELECT a.id_atendimento " +
+                "FROM hosp.atendimentos a " +
+                "JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento) " +
+                "WHERE cod_laudo = ? AND (a1.perfil_avaliacao = '' OR a1.perfil_avaliacao IS NULL);";
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            stm.setInt(1, codLaudo);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                retorno = true;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
     }
 
 }

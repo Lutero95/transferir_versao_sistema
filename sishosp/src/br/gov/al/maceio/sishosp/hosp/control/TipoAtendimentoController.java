@@ -141,10 +141,7 @@ public class TipoAtendimentoController implements Serializable {
         listarTipos();
     }
 
-    public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
-            throws ProjetoException {
-        return tDao.listarTipoAtAutoComplete(query, this.grupoSelecionado);
-    }
+
 
     public void listarTipos() throws ProjetoException {
         listaTiposAtendimento = listaTipos = tDao.listarTipoAt();
