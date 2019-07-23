@@ -241,9 +241,15 @@
                                                  resizableColumns="true" responsive="true">
 
                                         <p:column headerText="Telefone" style="font-weight:bold;"
-                                                  width="35%">
+                                                  width="100">
                                             <h:outputText value="#{tab.telefone}"/>
                                         </p:column>
+                                        
+
+                                        <p:column headerText="Parentesco" style="font-weight:bold;"
+                                                  width="150">
+                                            <h:outputText value="#{tab.parentesco.descParentesco}"/>
+                                        </p:column>                                        
 
                                         <p:column headerText="Responsável" style="font-weight:bold;"
                                                   width="35%">
@@ -251,7 +257,7 @@
                                         </p:column>
 
                                         <p:column headerText="Whatsapp" style="font-weight:bold;"
-                                                  width="20%">
+                                                  width="100">
                                             <h:outputText value="Sim" rendered="#{tab.whatsapp == true}"/>
                                             <h:outputText value="Não" rendered="#{tab.whatsapp != true}"/>
                                         </p:column>
@@ -785,17 +791,18 @@
                             </b:row>
 
                             <p:panel
-                                    style="height:auto; width:120px; background-color: #F5F5F5;"
+                                    style="height:auto; width:170px; background-color: #F5F5F5;"
                                     rendered="#{PacienteController.paciente.deficiencia == 'S'}">
 
                                 <p:outputLabel value="Tipo:" style="margin-bottom:5px;"
                                                class="tipo-deficiencia"></p:outputLabel>
+                                               <br/>
 
                                 <p:selectBooleanCheckbox label="Física" itemLabel="Física"
                                                          rendered="#{PacienteController.paciente.deficiencia == 'S'}"
                                                          value="#{PacienteController.paciente.deficienciaFisica}"
                                                          class="tipo-deficiencia"/>
-                                <p:selectBooleanCheckbox label="Mental" itemLabel="Mental"
+                                <p:selectBooleanCheckbox label="Intelectual" itemLabel="Intelectual"
                                                          rendered="#{PacienteController.paciente.deficiencia == 'S'}"
                                                          value="#{PacienteController.paciente.deficienciaMental}"
                                                          class="tipo-deficiencia"/>
@@ -1174,7 +1181,7 @@
                             <b:label value="DDD" severity="info" class="label-add-tel"/>
 
                             <b:inputText mask="99" class="form-control label-tel" id="inputDdd"
-                                         required="true" requiredMessage=" DDD: Campo obrigatório!"
+                                         required="false" requiredMessage=" DDD: Campo obrigatório!"
                                          value="#{PacienteController.telefone.ddd}"/>
                         </b:column>
 
@@ -1202,7 +1209,7 @@
                         <b:column span="4" class="label-position">
                             <b:label value="Operadora" severity="info" class="label-add-tel"/>
 
-                            <b:selectOneMenu id="inputOperadora" required="true" class="label-tel"
+                            <b:selectOneMenu id="inputOperadora" required="false" class="label-tel"
                                              requiredMessage=" Operadora: Campo obrigatório!"
                                              value="#{PacienteController.telefone.operadora.id}">
                                 <f:selectItem itemLabel="Selecione" itemValue=""/>
@@ -1217,7 +1224,7 @@
                             <b:label value="Responsável " severity="info" class="label-add-tel"/>
 
                             <b:inputText class="form-control label-tel" id="inputResponsavel"
-                                         required="true"
+                                         required="false"
                                          requiredMessage=" Responsável: Campo obrigatório!"
                                          value="#{PacienteController.telefone.responsavel}"/>
                         </b:column>
@@ -1225,7 +1232,7 @@
                         <b:column span="4" class="label-position">
                             <b:label value="Parentesco" severity="info" class="label-add-tel"/>
 
-                            <b:selectOneMenu id="inputParentesco" required="true" class="label-tel"
+                            <b:selectOneMenu id="inputParentesco" required="false" class="label-tel"
                                              requiredMessage=" Parentesco: Campo obrigatório!"
                                              value="#{PacienteController.telefone.parentesco.codParentesco}">
                                 <f:selectItem itemLabel="Selecione" itemValue=""/>

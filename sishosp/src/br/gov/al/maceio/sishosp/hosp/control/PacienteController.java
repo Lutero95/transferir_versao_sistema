@@ -417,7 +417,13 @@ public class PacienteController implements Serializable {
         return result;
     }
 
-    public void addListaTelefone() {
+    public void addListaTelefone() throws ProjetoException {
+    	ParentescoDAO pDAo = new ParentescoDAO();
+    	if (telefone.getParentesco().getCodParentesco()!=null) {
+    		Parentesco parente =  new Parentesco();
+    		parente = pDAo.buscaParentesCocodigo(telefone.getParentesco().getCodParentesco());
+    		telefone.getParentesco().setDescParentesco(parente.getDescParentesco());
+    	}
         paciente.getListaTelefones().add(telefone);
         limparTelefone();
     }

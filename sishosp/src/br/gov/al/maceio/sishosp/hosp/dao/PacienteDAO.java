@@ -26,7 +26,7 @@ public class PacienteDAO {
         try {
             conexao = ConnectionFactory.getConnection();
 
-            if (!bairroExiste) {
+            if ((!bairroExiste) && (bairroExiste!=null)) {
                 EnderecoDAO enderecoDAO = new EnderecoDAO();
                 paciente.getEndereco().setCodbairro(enderecoDAO.inserirNovoBairro(paciente.getEndereco(), conexao));
             }
@@ -511,8 +511,13 @@ public class PacienteDAO {
             }
 
             stmt.setInt(56, paciente.getEndereco().getCodbairro());
+            
+            if (paciente.getGenero().getId() == null) {
+                stmt.setNull(57, Types.NULL);
+            } else {
+                stmt.setInt(57, paciente.getGenero().getId());
+            }            
 
-            stmt.setInt(57, paciente.getGenero().getId());
 
             stmt.setLong(58, paciente.getId_paciente());
 
@@ -525,7 +530,7 @@ public class PacienteDAO {
                 }
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         } finally {
