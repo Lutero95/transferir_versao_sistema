@@ -27,8 +27,8 @@ public class EmpresaDAO {
         Integer codEmpresa = null;
 
         String sql = "INSERT INTO hosp.empresa(nome_principal, nome_fantasia, cnpj, rua, bairro, numero, cep, cidade, " +
-                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, matriz, ativo) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true) returning cod_empresa;";
+                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, matriz, ativo, unidade) " +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true,?) returning cod_empresa";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -75,6 +75,8 @@ public class EmpresaDAO {
             else{
                 ps.setNull(17, Types.NULL);
             }
+            
+            ps.setString(18, empresa.getNomeUnidade());
 
             ResultSet rs = ps.executeQuery();
 
@@ -229,7 +231,7 @@ public class EmpresaDAO {
         Boolean retorno = false;
         String sql = "UPDATE hosp.empresa SET nome_principal=?, nome_fantasia=?, cnpj=?, rua=?, " +
                 " bairro=?, numero=?, cep=?, cidade=?, estado=?, ddd_1=?, telefone_1=?, " +
-                " ddd_2=?, telefone_2=?, email=?, site=?, matriz=?, complemento=? " +
+                " ddd_2=?, telefone_2=?, email=?, site=?, matriz=?, complemento=?, nome_unidade=? " +
                 " WHERE cod_empresa = ?;";
         try {
             con = ConnectionFactory.getConnection();
@@ -252,7 +254,8 @@ public class EmpresaDAO {
             ps.setString(15, empresa.getSite());
             ps.setBoolean(16, empresa.getMatriz());
             ps.setString(17, empresa.getComplemento());
-            ps.setInt(18, empresa.getCodEmpresa());
+            ps.setString(18, empresa.getNomeUnidade());
+            ps.setInt(19, empresa.getCodEmpresa());
             ps.executeUpdate();
 
             sql = "UPDATE hosp.parametro SET motivo_padrao_desligamento_opm = ?, opcao_atendimento = ?, " +
@@ -324,7 +327,7 @@ public class EmpresaDAO {
         EmpresaBean empresa = new EmpresaBean();
         String sql = "SELECT cod_empresa, nome_principal, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
-                " email, site, matriz, ativo " +
+                " email, site, matriz, ativo , nome_unidade" +
                 " FROM hosp.empresa where cod_empresa = ?;";
 
         try {
@@ -355,6 +358,7 @@ public class EmpresaDAO {
                 empresa.setMatriz(rs.getBoolean("matriz"));
                 empresa.setAtivo(rs.getBoolean("ativo"));
                 empresa.setParametro(carregarParametro(id, con));
+                empresa.setNomeUnidade(rs.getString("nome_unidade"));
 
             }
         } catch (Exception ex) {

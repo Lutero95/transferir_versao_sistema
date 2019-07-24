@@ -49,6 +49,18 @@
                             </b:inputText>
                         </b:column>
                     </b:row>
+                    <b:row>
+                        <b:column span="12" class="label-position new-col12">
+                            <b:label value="Nome Unidade" severity="info"/>
+
+                            <b:inputText value="#{EmpresaController.empresa.nomeUnidade}"
+                                         class="form-control" required="true" validator="CaractereEmBrancoValidator"
+                                         requiredMessage="Nome Fantasia: Campo obrigatório!"
+                                         validatorMessage="Nome Fantasia deve conter entre 2 e 100 caracteres.">
+                                <f:validateLength minimum="2" maximum="100"/>
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
 
                     <b:row>
                         <b:column span="5" class="label-position new-col5">

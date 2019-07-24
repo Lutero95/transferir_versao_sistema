@@ -1,5 +1,14 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
@@ -9,15 +18,6 @@ import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @ManagedBean(name = "EmpresaController")
 @ViewScoped

@@ -29,7 +29,7 @@ public class TipoAtendimentoController implements Serializable {
     private Integer tipo;
     private GrupoBean grupoSelecionado;
     private String cabecalho;
-    private List<TipoAtendimentoBean> listaTiposAtendimento;
+    private ArrayList<TipoAtendimentoBean> listaTiposAtendimento;
     private TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
     private String mensagemAvisoGrupoOuProgramaFaltando;
 
@@ -143,9 +143,10 @@ public class TipoAtendimentoController implements Serializable {
 
 
 
-    public void listarTipos() throws ProjetoException {
-        listaTiposAtendimento = listaTipos = tDao.listarTipoAt();
-
+    public ArrayList<TipoAtendimentoBean> listarTipos() throws ProjetoException {
+    	if (listaTiposAtendimento.size()==0)
+        listaTiposAtendimento =  tDao.listarTipoAt();
+    	return listaTiposAtendimento;
     }
 
     public TipoAtendimentoBean getTipoAtendimento() {
@@ -186,11 +187,5 @@ public class TipoAtendimentoController implements Serializable {
         this.tipo = tipo;
     }
 
-    public List<TipoAtendimentoBean> getListaTiposAtendimento() {
-        return listaTiposAtendimento;
-    }
 
-    public void setListaTiposAtendimento(List<TipoAtendimentoBean> listaTiposAtendimento) {
-        this.listaTiposAtendimento = listaTiposAtendimento;
-    }
 }
