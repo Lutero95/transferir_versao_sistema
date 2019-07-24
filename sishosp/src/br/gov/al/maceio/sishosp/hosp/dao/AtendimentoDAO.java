@@ -10,7 +10,9 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.AtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 
 import javax.faces.context.FacesContext;
 
@@ -201,7 +203,7 @@ public class AtendimentoDAO {
         }
     }
 
-    public Boolean realizaAtendimentoEquipe(List<AtendimentoBean> lista, Integer idLaudo)
+    public Boolean realizaAtendimentoEquipe(List<AtendimentoBean> lista, Integer idLaudo, Integer grupoAvaliacao)
             throws ProjetoException {
         boolean alterou = false;
         con = ConnectionFactory.getConnection();
@@ -230,14 +232,18 @@ public class AtendimentoDAO {
                 stmt2.setString(7, lista.get(i).getPerfil());
                 stmt2.executeUpdate();
 
-                String sql3 = "update hosp.atendimentos set cod_laudo = ? where id_atendimento = ?";
+            }
+
+            if(!VerificadorUtil.verificarSeObjetoNuloOuZero(grupoAvaliacao)) {
+                String sql3 = "update hosp.atendimentos set cod_laudo = ?, grupo_avaliacao = ? where id_atendimento = ?";
 
                 PreparedStatement stmt3 = con.prepareStatement(sql3);
                 stmt3.setInt(1, idLaudo);
-                stmt3.setInt(2, lista.get(0).getId());
+                stmt3.setInt(2, grupoAvaliacao);
+                stmt3.setInt(3, lista.get(0).getId());
                 stmt3.executeUpdate();
-
             }
+
             con.commit();
 
             alterou = true;

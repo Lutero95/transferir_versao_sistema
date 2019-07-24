@@ -441,6 +441,43 @@ public class GrupoDAO {
         return lista;
     }
 
+    public List<GrupoBean> listarGruposGeralAutoComplete(String descricao) throws ProjetoException {
+        List<GrupoBean> lista = new ArrayList<>();
+        String sql = "select distinct g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut  "
+                + " from hosp.grupo g left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)"
+                + " where g.cod_empresa = ? and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? order by descgrupo ";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setString(2, "%" + descricao.toUpperCase() + "%");
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                GrupoBean grupo = new GrupoBean();
+                grupo.setIdGrupo(rs.getInt("id_grupo"));
+                grupo.setDescGrupo(rs.getString("descgrupo"));
+                grupo.setQtdFrequencia(rs.getInt("qtdfrequencia"));
+                grupo.setAuditivo(rs.getBoolean("auditivo"));
+                grupo.setEquipeSim(rs.getBoolean("equipe"));
+                grupo.setinsercao_pac_institut(rs
+                        .getBoolean("insercao_pac_institut"));
+                lista.add(grupo);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
 
     public GrupoBean listarGrupoPorId(int id) throws ProjetoException {
 

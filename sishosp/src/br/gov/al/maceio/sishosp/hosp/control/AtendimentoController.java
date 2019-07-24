@@ -47,6 +47,7 @@ public class AtendimentoController implements Serializable {
     private Pts pts;
     private Boolean renderizarDialogLaudo;
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
+    private GrupoBean grupoAvaliacao;
 
     //CONSTANTES
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
@@ -72,6 +73,7 @@ public class AtendimentoController implements Serializable {
         paciente = new PacienteBean();
         pts = new Pts();
         renderizarDialogLaudo = false;
+        grupoAvaliacao = new GrupoBean();
     }
 
 
@@ -290,6 +292,16 @@ public class AtendimentoController implements Serializable {
         this.listaProcedimentos = pDao.listarProcedimento();
     }
 
+    private Boolean validarSeEhNecessarioInformarGrupo(){
+        Boolean retorno = false;
+
+        if(atendimento.getAvaliacao() && validarDadosDoAtendimentoForamInformados() && VerificadorUtil.verificarSeObjetoNuloOuZero(grupoAvaliacao.getIdGrupo())){
+            retorno = true;
+        }
+
+        return retorno;
+    }
+
     private Boolean validarDadosDoAtendimentoForamInformados() {
 
         if(atendimento.getAvaliacao()){
@@ -311,11 +323,12 @@ public class AtendimentoController implements Serializable {
     }
 
     public void realizarAtendimentoEquipe() throws ProjetoException {
-        if(validarDadosDoAtendimentoForamInformados()) {
+        if(!validarSeEhNecessarioInformarGrupo()) {
             boolean verificou = aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
 
             if (verificou) {
-                boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId());
+                boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId(),
+                        grupoAvaliacao.getIdGrupo());
                 if (alterou) {
                     JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
                 } else {
@@ -327,7 +340,7 @@ public class AtendimentoController implements Serializable {
             }
         }
         else{
-            JSFUtil.adicionarMensagemErro("Informe o status de cada profissional!", "Erro!");
+            JSFUtil.adicionarMensagemErro("Informe o grupo da avaliação!", "Erro!");
         }
     }
 
@@ -450,5 +463,13 @@ public class AtendimentoController implements Serializable {
 
     public void setListaLaudosVigentes(ArrayList<InsercaoPacienteBean> listaLaudosVigentes) {
         this.listaLaudosVigentes = listaLaudosVigentes;
+    }
+
+    public GrupoBean getGrupoAvaliacao() {
+        return grupoAvaliacao;
+    }
+
+    public void setGrupoAvaliacao(GrupoBean grupoAvaliacao) {
+        this.grupoAvaliacao = grupoAvaliacao;
     }
 }
