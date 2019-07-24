@@ -18,8 +18,19 @@ public class ConnectionFactory {
 
         String url = "jdbc:postgresql://localhost:5432/";
         String usuario = "postgres";
-        String senha = "post";
+        String senha = "engetron";
+      
+        
 
+/*
+  
+        String url = "jdbc:postgresql://72.55.172.244:5432/";
+        String usuario = "postgres";
+        String senha = "E2@spwxlmQo";
+  */      
+  
+         //senha = "engetron";
+  
         if (codEmpresa == Empresas.LOCAL.getSigla()) {
             url = url + "ehosp";
         } else if (codEmpresa == Empresas.PESTALOZZI.getSigla()) {
@@ -27,12 +38,21 @@ public class ConnectionFactory {
         } else if (codEmpresa == Empresas.ADEFAL.getSigla()) {
             url = url + "adefal";
         }
+	     else if (codEmpresa == Empresas.AAPPEMACEIO.getSigla()) {
+		        url = url + "null";
+		    }   
+	     else if (codEmpresa == Empresas.APAEMACEIO.getSigla()) {
+		        url = url + "apae_maceio";
+		    }            
+	     else if (codEmpresa == Empresas.APAEPALMEIRA.getSigla()) {
+	        url = url + "apae_palmeira";
+	    }       
+	     else if (codEmpresa == Empresas.APAEMARAGOGI.getSigla()) {
+		        url = url + "apae_maragogi";
+		    }               
 
+        
         /*
-        url = "jdbc:postgresql://72.55.172.244:5432/ehosp";
-        usuario = "postgres";
-        senha = "E2@spwxlmQo";
-        //senha = "engetron";
 
         //NUVEM
         url = "jdbc:postgresql://localhost:5432/airmobco_ehosp";
