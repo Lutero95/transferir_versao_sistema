@@ -13,17 +13,17 @@ public class ConnectionFactoryPublico {
     public static Connection getConnection() throws ProjetoException {
 
     	//LOCAL
-    	
+    	/*
         String url = "jdbc:postgresql://localhost:5432/publico";
         String usuario = "postgres";
         String senha  = "engetron";
         // String senha  = "engetron";
-        
-        /* 
+        */
+         
         String url = "jdbc:postgresql://72.55.172.244:5432/publico";
         String usuario = "postgres";
         String senha = "E2@spwxlmQo";
-        */
+        
         
 
         try {
