@@ -302,6 +302,22 @@ public class PacienteController implements Serializable {
         EncaminhadoDAO dao = new EncaminhadoDAO();
         buscaEncaminhadoCod(prodsel.getCodencaminhado());
     }
+    
+    public void verificaGrauParentescoResponsavel(SelectEvent event) throws Exception {
+    	System.out.println("verificaGrauParentescoResponsavel");
+        Parentesco parentesco = new Parentesco();
+        Integer codParentesco= (Integer) event.getObject();
+
+        ParentescoDAO dao = new ParentescoDAO();
+        parentesco = dao.buscaParentesCocodigo(codParentesco);
+        if (parentesco.getTipoParentesco().equals("M")) {
+        	paciente.setNomeresp(paciente.getNomeMae());
+        }
+        
+        if (parentesco.getTipoParentesco().equals("P")) {
+        	paciente.setNomeresp(paciente.getNomePai());
+        }        
+    }    
 
     public void buscaEscolaridadeCod(Integer codescolaridade) throws Exception {
         EscolaridadeBean escolaridade = new EscolaridadeBean();

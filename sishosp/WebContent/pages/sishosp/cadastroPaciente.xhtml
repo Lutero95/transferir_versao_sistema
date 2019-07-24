@@ -197,7 +197,7 @@
                                 <b:label for="mae" value="Mãe" severity="info"/>
 
                                 <b:inputText value="#{PacienteController.paciente.nomeMae}"
-                                             class="form-control" id="mae" required="true"
+                                                                            class="form-control" id="mae" required="true"
                                              requiredMessage="Mãe: Campo obrigatório!"
                                              validatorMessage="Nome da Mãe deve conter entre 2 e 60 caracteres.">
                                     <f:validateLength minimum="2" maximum="60"/>
@@ -675,7 +675,7 @@
                             <b:column span="3" class="label-position">
                                 <b:label value="Responsável" severity="info"/>
 
-                                <b:selectOneMenu id="options3" required="false"
+                                <p:selectOneMenu id="options3" required="false"
                                                  requiredMessage=" Parentesco: Campo obrigatório!"
                                                  value="#{PacienteController.paciente.codparentesco}">
                                     <f:selectItem itemLabel="Selecione" itemValue=""/>
@@ -683,13 +683,16 @@
                                             value="#{ParentescoController.listarParentescos()}" var="sis"
                                             itemLabel="#{sis.descParentesco}"
                                             itemValue="#{sis.codParentesco}"/>
-                                </b:selectOneMenu>
+                                            <p:ajax event="itemSelect"  update="outnomeresp"
+                                            process="mae pai"
+                                            listener="#{PacienteController.verificaGrauParentescoResponsavel}"/>
+                                </p:selectOneMenu>
                             </b:column>
 
                             <b:column span="3" class="label-position">
                                 <b:label value="Nome do Responsável" severity="info"/>
 
-                                <p:outputPanel>
+                                <p:outputPanel id="outnomeresp">
                                     <b:inputText id="nome5" size="45"
                                                  value="#{PacienteController.paciente.nomeresp}"/>
                                 </p:outputPanel>

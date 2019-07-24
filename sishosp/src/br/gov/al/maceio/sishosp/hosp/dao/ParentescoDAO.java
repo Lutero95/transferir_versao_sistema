@@ -129,7 +129,7 @@ public class ParentescoDAO {
 
         try {
 
-            String sql = "select id_parentesco, descparentesco from hosp.parentesco where id_parentesco=? order by descparentesco";
+            String sql = "select id_parentesco, descparentesco, coalesce(tipo,'O') tipoparentesco from hosp.parentesco where id_parentesco=? order by descparentesco";
 
             ps = conexao.prepareStatement(sql);
             ps.setInt(1, cod);
@@ -140,6 +140,7 @@ public class ParentescoDAO {
 
                 parentesco.setCodParentesco(rs.getInt("id_parentesco"));
                 parentesco.setDescParentesco(rs.getString("descparentesco"));
+                parentesco.setTipoParentesco(rs.getString("tipoparentesco"));
 
             }
             return parentesco;

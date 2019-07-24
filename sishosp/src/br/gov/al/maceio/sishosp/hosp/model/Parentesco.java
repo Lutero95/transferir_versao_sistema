@@ -6,6 +6,7 @@ public class Parentesco implements Serializable {
 
 	private Integer codParentesco;
 	private String descParentesco;
+	private String tipoParentesco;
 
 	public Parentesco() {
 
@@ -25,5 +26,13 @@ public class Parentesco implements Serializable {
 
 	public void setDescParentesco(String descParentesco) {
 		this.descParentesco = descParentesco;
+	}
+
+	public String getTipoParentesco() {
+		return tipoParentesco;
+	}
+
+	public void setTipoParentesco(String tipoParentesco) {
+		this.tipoParentesco = tipoParentesco;
 	}
 }
