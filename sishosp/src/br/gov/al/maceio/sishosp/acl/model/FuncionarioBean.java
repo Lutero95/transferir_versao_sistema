@@ -1,7 +1,5 @@
 package br.gov.al.maceio.sishosp.acl.model;
 
-import br.gov.al.maceio.sishosp.hosp.model.*;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +7,13 @@ import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+
+import br.gov.al.maceio.sishosp.hosp.model.CboBean;
+import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 
 public class FuncionarioBean implements Serializable {
 
@@ -28,14 +33,15 @@ public class FuncionarioBean implements Serializable {
     private String diasSemana;
     private ArrayList<String> listDiasSemana;
     private Integer diaSemana;
-    private EmpresaBean unidadeExtra;
+    private UnidadeBean unidadeExtra;
+    private String nomeBancoAcesso;
 
     // LISTAS
     private List<ProgramaBean> programa;
     private List<ProgramaBean> programaNovo;
     private List<GrupoBean> grupo;
     private List<GrupoBean> grupoNovo;
-    private List<EmpresaBean> listaUnidades;
+    private List<UnidadeBean> listaUnidades;
 
     // HERDADOS
     private EspecialidadeBean especialidade;
@@ -47,7 +53,7 @@ public class FuncionarioBean implements Serializable {
     private ProgramaBean progRmv;
     private GrupoBean grupoRmv;
     private PermissoesBean permissao;
-    private EmpresaBean empresa;
+    private UnidadeBean unidade;
 
     // ACL
     private Perfil perfil;
@@ -72,13 +78,13 @@ public class FuncionarioBean implements Serializable {
         this.grupoAdd = new GrupoBean();
         this.progRmv = new ProgramaBean();
         this.grupoRmv = new GrupoBean();
-        this.empresa = new EmpresaBean();
+        this.unidade = new UnidadeBean();
         this.perfil = new Perfil();
         listDiasSemana = new ArrayList<String>();
         this.realizaAtendimento = false;
         this.realizaLiberacoes = false;
         listaUnidades = new ArrayList<>();
-        unidadeExtra = new EmpresaBean();
+        unidadeExtra = new UnidadeBean();
     }
 
     public Integer getCodigo() {
@@ -396,29 +402,7 @@ public class FuncionarioBean implements Serializable {
         this.perfil = perfil;
     }
 
-    public EmpresaBean getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(EmpresaBean empresa) {
-        this.empresa = empresa;
-    }
-
-    public List<EmpresaBean> getListaUnidades() {
-        return listaUnidades;
-    }
-
-    public void setListaUnidades(List<EmpresaBean> listaUnidades) {
-        this.listaUnidades = listaUnidades;
-    }
-
-    public EmpresaBean getUnidadeExtra() {
-        return unidadeExtra;
-    }
-
-    public void setUnidadeExtra(EmpresaBean unidadeExtra) {
-        this.unidadeExtra = unidadeExtra;
-    }
+    
 
     public Boolean getRealizaLiberacoes() {
         return realizaLiberacoes;
@@ -435,4 +419,40 @@ public class FuncionarioBean implements Serializable {
     public void setRealizaEncaixes(Boolean realizaEncaixes) {
         this.realizaEncaixes = realizaEncaixes;
     }
+
+	public String getNomeBancoAcesso() {
+		return nomeBancoAcesso;
+	}
+
+	public void setNomeBancoAcesso(String nomeBancoAcesso) {
+		this.nomeBancoAcesso = nomeBancoAcesso;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public UnidadeBean getUnidadeExtra() {
+		return unidadeExtra;
+	}
+
+	public void setUnidadeExtra(UnidadeBean unidadeExtra) {
+		this.unidadeExtra = unidadeExtra;
+	}
+
+	public List<UnidadeBean> getListaUnidades() {
+		return listaUnidades;
+	}
+
+	public void setListaUnidades(List<UnidadeBean> listaUnidades) {
+		this.listaUnidades = listaUnidades;
+	}
+
+	public UnidadeBean getUnidade() {
+		return unidade;
+	}
+
+	public void setUnidade(UnidadeBean unidade) {
+		this.unidade = unidade;
+	}
 }

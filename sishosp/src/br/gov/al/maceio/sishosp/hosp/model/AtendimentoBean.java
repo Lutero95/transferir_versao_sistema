@@ -27,7 +27,7 @@ public class AtendimentoBean implements Serializable {
     private FuncionarioBean funcionario;
     private EquipeBean equipe;
     private CboBean cbo;
-    private EmpresaBean empresa;
+    private UnidadeBean unidade;
     private InsercaoPacienteBean insercaoPacienteBean;
 
     public AtendimentoBean() {
@@ -38,7 +38,7 @@ public class AtendimentoBean implements Serializable {
         this.funcionario = new FuncionarioBean();
         this.equipe = new EquipeBean();
         this.cbo = new CboBean();
-        this.empresa = new EmpresaBean();
+        this.unidade = new UnidadeBean();
         this.insercaoPacienteBean = new InsercaoPacienteBean();
     }
 
@@ -162,13 +162,7 @@ public class AtendimentoBean implements Serializable {
         this.cbo = cbo;
     }
 
-    public EmpresaBean getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(EmpresaBean empresa) {
-        this.empresa = empresa;
-    }
+    
 
     public String getEvolucao() {
         return evolucao;
@@ -201,4 +195,12 @@ public class AtendimentoBean implements Serializable {
     public void setPerfil(String perfil) {
         this.perfil = perfil;
     }
+
+	public UnidadeBean getUnidade() {
+		return unidade;
+	}
+
+	public void setUnidade(UnidadeBean unidade) {
+		this.unidade = unidade;
+	}
 }

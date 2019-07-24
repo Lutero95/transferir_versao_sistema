@@ -11,7 +11,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
-import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.acl.model.Menu;
@@ -40,12 +40,12 @@ public class FuncionarioDAO {
     private GrupoDAO gDao = new GrupoDAO();
     private ProcedimentoDAO procDao = new ProcedimentoDAO();
 
-    public Integer autenticarUsuarioInicialCodEmpresa(FuncionarioBean usuario)
+    public String autenticarUsuarioInicialNomeBancoAcesso(FuncionarioBean usuario)
             throws ProjetoException {
 
-        String sql = "SELECT cod_empresa FROM acl.funcionarios WHERE (cpf = ?) AND (upper(senha) = ?) and ativo = 'S' ";
+        String sql = "SELECT banco_acesso FROM acl.funcionarios WHERE (cpf = ?) AND (upper(senha) = ?) and ativo = 'S' ";
 
-        Integer codEmpresa = null;
+        String nomeBancoAcesso = null;
 
         try {
             con = ConnectionFactoryPublico.getConnection();
@@ -55,12 +55,12 @@ public class FuncionarioDAO {
 
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                codEmpresa = rs.getInt("cod_empresa");
+            	nomeBancoAcesso = rs.getString("banco_acesso");
             }
 
-            SessionUtil.adicionarNaSessao(codEmpresa, "codEmpresa");
+            SessionUtil.adicionarNaSessao(nomeBancoAcesso, "nomeBancoAcesso");
 
-            return codEmpresa;
+            return nomeBancoAcesso;
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -77,11 +77,11 @@ public class FuncionarioDAO {
             throws ProjetoException {
 
         String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, permite_encaixe, "
-                + "pf.descricao as descperfil, us.cod_empresa, p.tipo_atendimento_terapia,  case when us.ativo = 'S' "
+                + "pf.descricao as descperfil, us.codunidade, p.tipo_atendimento_terapia,  case when us.ativo = 'S' "
                 + "then true else false end as usuarioativo, "
                 + "pf.id as idperfil from acl.funcionarios us "
                 + "join acl.perfil pf on (pf.id = us.id_perfil) " +
-                " left join hosp.parametro p ON (p.cod_empresa = us.cod_empresa) "
+                " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
                 + "where (us.cpf = ?) and (upper(us.senha) = ?) and us.ativo = 'S'";
 
         FuncionarioBean ub = null;
@@ -100,10 +100,10 @@ public class FuncionarioDAO {
                 ub.setNome(rs.getString("descfuncionario"));
                 ub.setSenha(rs.getString("senha"));
                 ub.setEmail(rs.getString("email"));
-                ub.getEmpresa().setCodEmpresa(rs.getInt("cod_empresa"));
+                ub.getUnidade().setId(rs.getInt("codunidade"));
                 ub.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
                 ub.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
-                ub.getEmpresa().getParametro().getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
+                ub.getUnidade().getParametro().getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
 
                 // ACL
                 ub.setId(rs.getLong("id_funcionario"));
@@ -292,7 +292,7 @@ public class FuncionarioDAO {
     public Boolean alterar(FuncionarioBean usuario) {
         boolean retorno = false;
         String sql = "update acl.funcionario set descfuncionario = ?, cpf = ?, email = ?, "
-                + "senha = ?, id_perfil = ?, ativo = ?, cod_empresa = ? where id_funcionario = ?";
+                + "senha = ?, id_perfil = ?, ativo = ?, codunidade = ? where id_funcionario = ?";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -302,7 +302,7 @@ public class FuncionarioDAO {
             stmt.setString(4, usuario.getSenha());
             stmt.setLong(5, usuario.getPerfil().getId());
             stmt.setString(6, usuario.getAtivo());
-            stmt.setInt(7, usuario.getEmpresa().getCodEmpresa());
+            stmt.setInt(7, usuario.getUnidade().getId());
             stmt.setLong(8, usuario.getCodigo());
             stmt.executeUpdate();
 
@@ -557,14 +557,14 @@ public class FuncionarioDAO {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
 
-        String sql = "select * from acl.funcionarios u where cod_empresa = ? order by ativo,descfuncionario";
+        String sql = "select * from acl.funcionarios u where codunidade = ? order by ativo,descfuncionario";
 
         ArrayList<FuncionarioBean> lista = new ArrayList();
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -920,7 +920,7 @@ public class FuncionarioDAO {
         Boolean retorno = false;
 
         String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
-                + " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, cod_empresa, permite_liberacao, permite_encaixe) "
+                + " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, permite_liberacao, permite_encaixe) "
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_date, false, ?, ?, ?, ?) returning id_funcionario;";
         try {
             con = ConnectionFactory.getConnection();
@@ -976,7 +976,7 @@ public class FuncionarioDAO {
 
             ps.setLong(11, profissional.getPerfil().getId());
 
-            ps.setInt(12, profissional.getEmpresa().getCodEmpresa());
+            ps.setInt(12, profissional.getUnidade().getId());
 
             ps.setBoolean(13, profissional.getRealizaLiberacoes());
 
@@ -990,10 +990,10 @@ public class FuncionarioDAO {
             }
 
             for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
-                String sql2 = "INSERT INTO hosp.funcionario_unidades (cod_empresa, cod_funcionario) VALUES (?, ?);";
+                String sql2 = "INSERT INTO hosp.funcionario_unidades (codunidade, cod_funcionario) VALUES (?, ?);";
                 ps = con.prepareStatement(sql2);
 
-                ps.setInt(1, profissional.getListaUnidades().get(i).getCodEmpresa());
+                ps.setInt(1, profissional.getListaUnidades().get(i).getId());
                 ps.setInt(2, idProf);
 
                 ps.executeUpdate();
@@ -1043,8 +1043,8 @@ public class FuncionarioDAO {
         Boolean retorno = false;
         Connection conexaoPublica = null;
 
-        String sql = "INSERT INTO acl.funcionarios(id_funcionario, cpf, senha, ativo, cod_empresa) "
-                + " VALUES (?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO acl.funcionarios(id_funcionario, cpf, senha, ativo, banco_acesso, admin) "
+                + " VALUES (?, ?, ?, ?, ?, false);";
         try {
             conexaoPublica = ConnectionFactoryPublico.getConnection();
             ps = conexaoPublica.prepareStatement(sql);
@@ -1057,7 +1057,7 @@ public class FuncionarioDAO {
 
             ps.setString(4, "S");
 
-            ps.setInt(5, profissional.getEmpresa().getCodEmpresa());
+            ps.setString(5, profissional.getNomeBancoAcesso());
 
             ps.execute();
 
@@ -1091,7 +1091,7 @@ public class FuncionarioDAO {
                 "LEFT JOIN hosp.cbo c ON (f.codcbo = c.id) ";
 
         if (tipoBuscar == 1) {
-            sql += " where upper(f.id_funcionario ||' - '|| f.descfuncionario) LIKE ? and f.realiza_atendimento is true and f.cod_empresa = ? " +
+            sql += " where upper(f.id_funcionario ||' - '|| f.descfuncionario) LIKE ? and f.realiza_atendimento is true and f.codunidade = ? " +
                     "order by f.descfuncionario";
         }
 
@@ -1099,7 +1099,7 @@ public class FuncionarioDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
-            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(2, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -1201,11 +1201,11 @@ public class FuncionarioDAO {
 
         String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, " +
                 " codprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe "
-                + " from acl.funcionarios where cod_empresa = ? AND realiza_atendimento IS TRUE order by descfuncionario";
+                + " from acl.funcionarios where codunidade = ? AND realiza_atendimento IS TRUE order by descfuncionario";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -1250,11 +1250,11 @@ public class FuncionarioDAO {
 
         String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, " +
                 " codprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe "
-                + " from acl.funcionarios where cod_empresa = ? order by descfuncionario";
+                + " from acl.funcionarios where codunidade = ? order by descfuncionario";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -1453,10 +1453,10 @@ public class FuncionarioDAO {
             stmt.executeUpdate();
 
             for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
-                String sql3 = "INSERT INTO hosp.funcionario_unidades (cod_empresa, cod_funcionario) VALUES (?, ?);";
+                String sql3 = "INSERT INTO hosp.funcionario_unidades (codunidade, cod_funcionario) VALUES (?, ?);";
                 stmt = con.prepareStatement(sql3);
 
-                stmt.setInt(1, profissional.getListaUnidades().get(i).getCodEmpresa());
+                stmt.setInt(1, profissional.getListaUnidades().get(i).getId());
                 stmt.setLong(2, profissional.getId());
 
                 stmt.executeUpdate();
@@ -1550,7 +1550,7 @@ public class FuncionarioDAO {
         FuncionarioBean prof = null;
 
         String sql = "select id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, codprocedimentopadrao,"
-                + " cpf, senha, realiza_atendimento, id_perfil, cod_empresa, permite_liberacao, permite_encaixe "
+                + " cpf, senha, realiza_atendimento, id_perfil, codunidade, permite_liberacao, permite_encaixe "
                 + " from acl.funcionarios where id_funcionario = ? and ativo = 'S' order by descfuncionario";
 
         try {
@@ -1576,7 +1576,7 @@ public class FuncionarioDAO {
                 prof.setProc1(procDao.listarProcedimentoPorId(rs
                         .getInt("codprocedimentopadrao")));
                 prof.getPerfil().setId(rs.getLong("id_perfil"));
-                prof.getEmpresa().setCodEmpresa(rs.getInt("cod_empresa"));
+                prof.getUnidade().setId(rs.getInt("codunidade"));
                 prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
                 prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 
@@ -1751,16 +1751,16 @@ public class FuncionarioDAO {
         }
     }
 
-    public List<EmpresaBean> listarUnidadesUsuarioVisualiza(int idFuncionario) {
+    public List<UnidadeBean> listarUnidadesUsuarioVisualiza(int idFuncionario) {
 
-        List<EmpresaBean> lista = new ArrayList<EmpresaBean>();
+        List<UnidadeBean> lista = new ArrayList<UnidadeBean>();
         PreparedStatement stm = null;
 
         StringBuilder sql = new StringBuilder();
 
-        sql.append("SELECT f.cod_empresa, e.nome_principal, e.nome_fantasia ");
-        sql.append("FROM hosp.empresa e ");
-        sql.append("LEFT JOIN hosp.funcionario_unidades f ON (e.cod_empresa = f.cod_empresa) ");
+        sql.append("SELECT f.codunidade, e.nome, e.nome_principal, e.nome_fantasia ");
+        sql.append("FROM hosp.unidade e ");
+        sql.append("LEFT JOIN hosp.funcionario_unidades f ON (e.codunidade = f.codunidade) ");
         sql.append("WHERE f.cod_funcionario = ? ");
 
         try {
@@ -1772,11 +1772,12 @@ public class FuncionarioDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                EmpresaBean empresaBean = new EmpresaBean();
-                empresaBean.setCodEmpresa(rs.getInt("cod_empresa"));
-                empresaBean.setNomeEmpresa(rs.getString("nome_principal"));
-                empresaBean.setNomeFantasia(rs.getString("nome_fantasia"));
-                lista.add(empresaBean);
+                UnidadeBean UnidadeBean = new UnidadeBean();
+                UnidadeBean.setId(rs.getInt("codunidade"));
+                UnidadeBean.setNomeUnidade(rs.getString("nome"));
+                UnidadeBean.setNomeEmpresa(rs.getString("nome_principal"));
+                UnidadeBean.setNomeFantasia(rs.getString("nome_fantasia"));
+                lista.add(UnidadeBean);
 
             }
         } catch (Exception ex) {
@@ -1792,25 +1793,25 @@ public class FuncionarioDAO {
         }
     }
 
-    public List<EmpresaBean> listarUnidadesDoFuncionario() {
+    public List<UnidadeBean> listarUnidadesDoFuncionario() {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
 
-        List<EmpresaBean> lista = new ArrayList<EmpresaBean>();
+        List<UnidadeBean> lista = new ArrayList<UnidadeBean>();
         PreparedStatement stm = null;
 
         StringBuilder sql = new StringBuilder();
 
-        sql.append("SELECT cod_empresa, nome_principal, nome_fantasia, padrao FROM ( ");
-        sql.append("SELECT func.cod_empresa, ee.nome_principal, ee.nome_fantasia, TRUE AS padrao ");
+        sql.append("SELECT codunidade, nome, nome_principal, nome_fantasia, padrao FROM ( ");
+        sql.append("SELECT func.codunidade, ee.nome_principal, ee.nome_fantasia, TRUE AS padrao ");
         sql.append("FROM acl.funcionarios func ");
-        sql.append("LEFT JOIN hosp.empresa ee ON (ee.cod_empresa = func.cod_empresa) ");
+        sql.append("LEFT JOIN hosp.unidade ee ON (ee.id = func.codunidade) ");
         sql.append("WHERE func.id_funcionario = ? ");
         sql.append("UNION ");
-        sql.append("SELECT f.cod_empresa, e.nome_principal, e.nome_fantasia, FALSE AS padrao ");
-        sql.append("FROM hosp.empresa e ");
-        sql.append("LEFT JOIN hosp.funcionario_unidades f ON (e.cod_empresa = f.cod_empresa) ");
+        sql.append("SELECT f.codunidade, e.nome_principal, e.nome_fantasia, FALSE AS padrao ");
+        sql.append("FROM hosp.unidade e ");
+        sql.append("LEFT JOIN hosp.funcionario_unidades f ON (e.id = f.codunidade) ");
         sql.append("WHERE f.cod_funcionario = ? ) ");
         sql.append("a ");
         sql.append("ORDER BY padrao DESC ");
@@ -1825,11 +1826,12 @@ public class FuncionarioDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                EmpresaBean empresaBean = new EmpresaBean();
-                empresaBean.setCodEmpresa(rs.getInt("cod_empresa"));
-                empresaBean.setNomeEmpresa(rs.getString("nome_principal"));
-                empresaBean.setNomeFantasia(rs.getString("nome_fantasia"));
-                lista.add(empresaBean);
+                UnidadeBean UnidadeBean = new UnidadeBean();
+                UnidadeBean.setId(rs.getInt("codunidade"));
+                UnidadeBean.setNomeUnidade(rs.getString("nome"));                
+                UnidadeBean.setNomeEmpresa(rs.getString("nome_principal"));
+                UnidadeBean.setNomeFantasia(rs.getString("nome_fantasia"));
+                lista.add(UnidadeBean);
 
             }
         } catch (Exception ex) {

@@ -34,7 +34,7 @@ public class AgendaBean implements Serializable {
     private TipoAtendimentoBean tipoAt;
     private FuncionarioBean profissional;
     private EquipeBean equipe;
-    private EmpresaBean empresa;
+    private UnidadeBean unidade;
 
     public AgendaBean() {
         this.paciente = new PacienteBean();
@@ -56,7 +56,7 @@ public class AgendaBean implements Serializable {
         this.qtd = null;
         this.max = null;
         this.idAgenda = null;
-        this.empresa = new EmpresaBean();
+        this.unidade = new UnidadeBean();
         qtdAtendimentosManha = new Integer [5];
         qtdAtendimentosTarde = new Integer [5];
         encaixe = false;
@@ -206,13 +206,7 @@ public class AgendaBean implements Serializable {
         this.dataAtendimentoFinal = dataAtendimentoFinal;
     }
 
-    public EmpresaBean getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(EmpresaBean empresa) {
-        this.empresa = empresa;
-    }
+  
 
     public String getHorario() {
         return horario;
@@ -269,4 +263,12 @@ public class AgendaBean implements Serializable {
     public void setProgramaAvaliacao(ProgramaBean programaAvaliacao) {
         this.programaAvaliacao = programaAvaliacao;
     }
+
+	public UnidadeBean getUnidade() {
+		return unidade;
+	}
+
+	public void setUnidade(UnidadeBean unidade) {
+		this.unidade = unidade;
+	}
 }

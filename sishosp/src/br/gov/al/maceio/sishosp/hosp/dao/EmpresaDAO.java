@@ -27,8 +27,8 @@ public class EmpresaDAO {
         Integer codEmpresa = null;
 
         String sql = "INSERT INTO hosp.empresa(nome_principal, nome_fantasia, cnpj, rua, bairro, numero, cep, cidade, " +
-                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, matriz, ativo, unidade) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true,?) returning cod_empresa";
+                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, ativo) " +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  true) returning cod_empresa";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -69,14 +69,7 @@ public class EmpresaDAO {
             else{
                 ps.setNull(16, Types.NULL);
             }
-            if(empresa.getMatriz() != null) {
-                ps.setBoolean(17, empresa.getMatriz());
-            }
-            else{
-                ps.setNull(17, Types.NULL);
-            }
-            
-            ps.setString(18, empresa.getNomeUnidade());
+
 
             ResultSet rs = ps.executeQuery();
 
@@ -84,79 +77,6 @@ public class EmpresaDAO {
                 codEmpresa = rs.getInt("cod_empresa");
             }
 
-            sql = "INSERT INTO hosp.parametro(motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, " +
-                    "qtd_simultanea_atendimento_equipe, cod_empresa, horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, " +
-                    "programa_ortese_protese, grupo_ortese_protese) " +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            ps = con.prepareStatement(sql);
-
-            if(empresa.getParametro().getMotivoDesligamento() != null) {
-                ps.setInt(1, empresa.getParametro().getMotivoDesligamento());
-            }
-            else{
-                ps.setNull(1, Types.NULL);
-            }
-            if(empresa.getParametro().getOpcaoAtendimento() != null) {
-                ps.setString(2, empresa.getParametro().getOpcaoAtendimento());
-            }
-            else{
-                ps.setNull(2, Types.NULL);
-            }
-            if(empresa.getParametro().getQuantidadeSimultaneaProfissional() != null) {
-                ps.setInt(3, empresa.getParametro().getQuantidadeSimultaneaProfissional());
-            }
-            else{
-                ps.setNull(3, Types.NULL);
-            }
-            if(empresa.getParametro().getQuantidadeSimultaneaEquipe() != null) {
-                ps.setInt(4, empresa.getParametro().getQuantidadeSimultaneaEquipe());
-            }
-            else{
-                ps.setNull(4, Types.NULL);
-            }
-            ps.setInt(5, codEmpresa);
-
-            if(empresa.getParametro().getHorarioInicial() != null) {
-                ps.setTime(6, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioInicial()));
-            }
-            else{
-                ps.setNull(6, Types.NULL);
-            }
-
-            if(empresa.getParametro().getHorarioFinal() != null) {
-                ps.setTime(7, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioFinal()));
-            }
-            else{
-                ps.setNull(7, Types.NULL);
-            }
-
-            if(empresa.getParametro().getIntervalo() != null) {
-                ps.setInt(8, empresa.getParametro().getIntervalo());
-            }
-            else{
-                ps.setNull(8, Types.NULL);
-            }
-            if(empresa.getParametro().getTipoAtendimento().getIdTipo() != null) {
-                ps.setInt(9, empresa.getParametro().getTipoAtendimento().getIdTipo());
-            }
-            else{
-                ps.setNull(9, Types.NULL);
-            }
-            if(empresa.getParametro().getOrteseProtese().getPrograma().getIdPrograma() != null) {
-                ps.setInt(10, empresa.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
-            }
-            else{
-                ps.setNull(10, Types.NULL);
-            }
-            if(empresa.getParametro().getOrteseProtese().getGrupo().getIdGrupo() != null) {
-                ps.setInt(11, empresa.getParametro().getOrteseProtese().getGrupo().getIdGrupo());
-            }
-            else{
-                ps.setNull(11, Types.NULL);
-            }
-
-            ps.execute();
 
             con.commit();
             retorno = true;
@@ -179,7 +99,7 @@ public class EmpresaDAO {
         List<EmpresaBean> lista = new ArrayList<>();
         String sql = "SELECT cod_empresa, nome_principal, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
-                " email, site, matriz, ativo, case when matriz is true then 'Matriz' else 'Filial' end as tipo " +
+                " email, site,  ativo  " +
                 " FROM hosp.empresa where ativo is true;";
 
         try {
@@ -206,11 +126,8 @@ public class EmpresaDAO {
                 empresa.setTelefone2(rs.getInt("telefone_2"));
                 empresa.setEmail(rs.getString("email"));
                 empresa.setSite(rs.getString("site"));
-                empresa.setMatriz(rs.getBoolean("matriz"));
                 empresa.setAtivo(rs.getBoolean("ativo"));
                 empresa.setTipoString(rs.getString("tipo"));
-                empresa.setParametro(carregarParametro(empresa.getCodEmpresa(), con));
-
                 lista.add(empresa);
             }
         } catch (Exception ex) {
@@ -231,7 +148,7 @@ public class EmpresaDAO {
         Boolean retorno = false;
         String sql = "UPDATE hosp.empresa SET nome_principal=?, nome_fantasia=?, cnpj=?, rua=?, " +
                 " bairro=?, numero=?, cep=?, cidade=?, estado=?, ddd_1=?, telefone_1=?, " +
-                " ddd_2=?, telefone_2=?, email=?, site=?, matriz=?, complemento=?, nome_unidade=? " +
+                " ddd_2=?, telefone_2=?, email=?, site=?, complemento=?  " +
                 " WHERE cod_empresa = ?;";
         try {
             con = ConnectionFactory.getConnection();
@@ -252,31 +169,8 @@ public class EmpresaDAO {
             ps.setInt(13, empresa.getTelefone2());
             ps.setString(14, empresa.getEmail());
             ps.setString(15, empresa.getSite());
-            ps.setBoolean(16, empresa.getMatriz());
-            ps.setString(17, empresa.getComplemento());
-            ps.setString(18, empresa.getNomeUnidade());
-            ps.setInt(19, empresa.getCodEmpresa());
-            ps.executeUpdate();
-
-            sql = "UPDATE hosp.parametro SET motivo_padrao_desligamento_opm = ?, opcao_atendimento = ?, " +
-                    "qtd_simultanea_atendimento_profissional = ?, qtd_simultanea_atendimento_equipe = ?, " +
-                    "horario_inicial = ?, horario_final = ?, intervalo = ?, tipo_atendimento_terapia = ?, " +
-                    "programa_ortese_protese = ?, grupo_ortese_protese = ? " +
-                    "WHERE cod_empresa = ?";
-
-            ps = con.prepareStatement(sql);
-
-            ps.setInt(1, empresa.getParametro().getMotivoDesligamento());
-            ps.setString(2, empresa.getParametro().getOpcaoAtendimento());
-            ps.setInt(3, empresa.getParametro().getQuantidadeSimultaneaProfissional());
-            ps.setInt(4, empresa.getParametro().getQuantidadeSimultaneaEquipe());
-            ps.setTime(5, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioInicial()));
-            ps.setTime(6, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioFinal()));
-            ps.setInt(7, empresa.getParametro().getIntervalo());
-            ps.setInt(8, empresa.getParametro().getTipoAtendimento().getIdTipo());
-            ps.setInt(9, empresa.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
-            ps.setInt(10, empresa.getParametro().getOrteseProtese().getGrupo().getIdGrupo());
-            ps.setInt(11, empresa.getCodEmpresa());
+            ps.setString(16, empresa.getComplemento());
+            ps.setInt(17, empresa.getCodEmpresa());
             ps.executeUpdate();
 
             con.commit();
@@ -327,7 +221,7 @@ public class EmpresaDAO {
         EmpresaBean empresa = new EmpresaBean();
         String sql = "SELECT cod_empresa, nome_principal, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
-                " email, site, matriz, ativo , nome_unidade" +
+                " email, site, ativo  " +
                 " FROM hosp.empresa where cod_empresa = ?;";
 
         try {
@@ -355,10 +249,7 @@ public class EmpresaDAO {
                 empresa.setTelefone2(rs.getInt("telefone_2"));
                 empresa.setEmail(rs.getString("email"));
                 empresa.setSite(rs.getString("site"));
-                empresa.setMatriz(rs.getBoolean("matriz"));
                 empresa.setAtivo(rs.getBoolean("ativo"));
-                empresa.setParametro(carregarParametro(id, con));
-                empresa.setNomeUnidade(rs.getString("nome_unidade"));
 
             }
         } catch (Exception ex) {
@@ -435,7 +326,7 @@ public class EmpresaDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -466,7 +357,7 @@ public class EmpresaDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

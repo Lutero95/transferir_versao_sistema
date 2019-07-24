@@ -337,8 +337,8 @@
 
                                     <p:commandButton id="btBusPr" immediate="true" style="margin-left: 5px"
                                                      icon="ui-icon-search"
-                                                     actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
-                                                     update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
+                                                     actionListener="#{ProgramaController.carregaListaProgramas()}"
+                                                     update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();"/>
                                 </b:column>
 
                                 <b:column span="5" class="label-position new-col5">
@@ -414,7 +414,7 @@
                   modal="true" styleClass="topDialog">
             <h:form id="formConsuProg">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+                             value="#{ProgramaController.listaProgramas}" var="prog"
                              display="Nenhum Programa">
 
                     <h:column>
