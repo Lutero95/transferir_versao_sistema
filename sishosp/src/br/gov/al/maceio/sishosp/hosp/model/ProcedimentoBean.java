@@ -19,7 +19,7 @@ public class ProcedimentoBean implements Serializable {
     private Integer qtdMaxima;
     private Integer prazoMinimoNovaExecucao;
     private String sexo;
-    private UnidadeBean unidade;
+    private Integer codUnidade;
 
     // HERDADOS
     private EquipamentoBean equipamento;
@@ -47,7 +47,6 @@ public class ProcedimentoBean implements Serializable {
         listaCid = new ArrayList<CidBean>();
         listaCbo = new ArrayList<CboBean>();
         listaRecurso = new ArrayList<RecursoBean>();
-        unidade = new UnidadeBean();
 
     }
 
@@ -194,4 +193,12 @@ public class ProcedimentoBean implements Serializable {
     public void setListaRecurso(ArrayList<RecursoBean> listaRecurso) {
         this.listaRecurso = listaRecurso;
     }
+
+	public Integer getCodUnidade() {
+		return codUnidade;
+	}
+
+	public void setCodUnidade(Integer codUnidade) {
+		this.codUnidade = codUnidade;
+	}
 }

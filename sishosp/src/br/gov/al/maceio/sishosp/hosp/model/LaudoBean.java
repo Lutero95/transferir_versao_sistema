@@ -20,7 +20,7 @@ public class LaudoBean implements Serializable {
     private Date dataAutorizacao;
     private String situacao;
     private String vencimento;
-    private UnidadeBean unidade = new UnidadeBean();
+    private Integer codUnidade;
 
     // HERDADOS
     private PacienteBean paciente;
@@ -238,11 +238,13 @@ public class LaudoBean implements Serializable {
         this.vencimento = vencimento;
     }
 
-	public UnidadeBean getUnidade() {
-		return unidade;
+	public Integer getCodUnidade() {
+		return codUnidade;
 	}
 
-	public void setUnidade(UnidadeBean unidade) {
-		this.unidade = unidade;
+	public void setCodUnidade(Integer codUnidade) {
+		this.codUnidade = codUnidade;
 	}
+
+	
 }

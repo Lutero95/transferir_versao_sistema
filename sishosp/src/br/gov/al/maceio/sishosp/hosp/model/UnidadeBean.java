@@ -20,11 +20,13 @@ public class UnidadeBean extends EmpresaBean{
     private Integer intervalo;
     private TipoAtendimentoBean tipoAtendimento;
     private OrteseProtese orteseProtese;
+    private ParametroBean parametro;
 
 
     public UnidadeBean() {
-       //  tipoAtendimento = new TipoAtendimentoBean();
+         tipoAtendimento = new TipoAtendimentoBean();
         orteseProtese = new OrteseProtese();
+        parametro = new ParametroBean();
     }
 
 	public Integer getId() {
@@ -128,6 +130,14 @@ public class UnidadeBean extends EmpresaBean{
 
 	public void setOrteseProtese(OrteseProtese orteseProtese) {
 		this.orteseProtese = orteseProtese;
+	}
+
+	public ParametroBean getParametro() {
+		return parametro;
+	}
+
+	public void setParametro(ParametroBean parametro) {
+		this.parametro = parametro;
 	}
 
 	

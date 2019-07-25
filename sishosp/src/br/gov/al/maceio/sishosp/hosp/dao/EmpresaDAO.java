@@ -7,7 +7,6 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ParametroBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 import javax.faces.context.FacesContext;
@@ -265,121 +264,7 @@ public class EmpresaDAO {
         return empresa;
     }
 
-    public ParametroBean carregarParametro(Integer id, Connection conAuxiliar) throws ProjetoException {
 
-        ParametroBean parametro = new ParametroBean();
 
-        String sql = "SELECT id, motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
-                "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, programa_ortese_protese, grupo_ortese_protese " +
-                " FROM hosp.parametro where cod_empresa = ?;";
-
-        try {
-            PreparedStatement ps = conAuxiliar.prepareStatement(sql);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                parametro.setMotivoDesligamento(rs.getInt("motivo_padrao_desligamento_opm"));
-                parametro.setOpcaoAtendimento(rs.getString("opcao_atendimento"));
-                parametro.setQuantidadeSimultaneaProfissional(rs.getInt("qtd_simultanea_atendimento_profissional"));
-                parametro.setQuantidadeSimultaneaEquipe(rs.getInt("qtd_simultanea_atendimento_equipe"));
-                parametro.setHorarioInicial(rs.getTime("horario_inicial"));
-                parametro.setHorarioFinal(rs.getTime("horario_final"));
-                parametro.setIntervalo(rs.getInt("intervalo"));
-                parametro.getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
-                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("programa_ortese_protese"))) {
-                    parametro.getOrteseProtese().setPrograma(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("programa_ortese_protese"), conAuxiliar));
-                }
-                else{
-                    parametro.getOrteseProtese().setPrograma(new ProgramaBean());
-                }
-                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("grupo_ortese_protese"))) {
-                    parametro.getOrteseProtese().setGrupo(new GrupoDAO().listarGrupoPorIdComConexao(rs.getInt("grupo_ortese_protese"), conAuxiliar));
-                }
-                else{
-                    parametro.getOrteseProtese().setGrupo(new GrupoBean());
-                }
-
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return parametro;
-    }
-
-    public String carregarOpcaoAtendimentoDaEmpresa() throws ProjetoException {
-
-        String retorno = null;
-
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
-
-        String sql = "SELECT opcao_atendimento FROM hosp.parametro where cod_empresa = ?;";
-
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, user_session.getUnidade().getId());
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                retorno = rs.getString("opcao_atendimento");
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return retorno;
-    }
-
-    public ParametroBean carregarDetalhesAtendimentoDaEmpresa() {
-
-        ParametroBean parametro = new ParametroBean();
-
-        String sql = "SELECT qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
-                "horario_inicial, horario_final, intervalo " +
-                " FROM hosp.parametro where cod_empresa = ?;";
-
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, user_session.getUnidade().getId());
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                parametro.setQuantidadeSimultaneaProfissional(rs.getInt("qtd_simultanea_atendimento_profissional"));
-                parametro.setQuantidadeSimultaneaEquipe(rs.getInt("qtd_simultanea_atendimento_equipe"));
-                parametro.setHorarioInicial(rs.getTime("horario_inicial"));
-                parametro.setHorarioFinal(rs.getTime("horario_final"));
-                parametro.setIntervalo(rs.getInt("intervalo"));
-
-            }
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return parametro;
-    }
 
 }

@@ -2,6 +2,7 @@ package br.gov.al.maceio.sishosp.comum.util;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.ParametroBean;
 
@@ -15,9 +16,9 @@ import java.util.GregorianCalendar;
 public final class HorarioOuTurnoUtil {
 
     public static String retornarOpcaoAtendimentoEmpresa() throws ProjetoException {
-        EmpresaDAO empresaDAO = new EmpresaDAO();
+        	 unidadeDAO = new UnidadeDAO();
 
-        String opcaoAtendimento = empresaDAO.carregarOpcaoAtendimentoDaEmpresa();
+        String opcaoAtendimento = unidadeDAO.carregarOpcaoAtendimentoDaUnidade();
 
         opcaoAtendimento = !opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla()) ? opcaoAtendimento : OpcaoAtendimento.SOMENTE_TURNO.getSigla();
 

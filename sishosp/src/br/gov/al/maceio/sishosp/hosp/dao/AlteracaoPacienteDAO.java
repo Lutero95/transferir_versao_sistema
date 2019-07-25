@@ -224,7 +224,7 @@ public class AlteracaoPacienteDAO {
                     ps7.setNull(2, Types.NULL);
                     ps7.setDate(3, DataUtil.converterDateUtilParaDateSql(listAgendamentoProfissional.get(i).getAgenda()
                             .getDataMarcacao()));
-                    ps7.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
+                    ps7.setInt(4, user_session.getUnidade().getTipoAtendimento().getIdTipo());
 
                     if (insercao.getAgenda().getTurno() != null) {
                         ps7.setString(5, insercao.getAgenda().getTurno());
@@ -390,7 +390,7 @@ public class AlteracaoPacienteDAO {
                     ps6.setLong(2, insercao.getFuncionario().getId());
                     ps6.setDate(3, new java.sql.Date(listaAgendamento.get(i)
                             .getAgenda().getDataMarcacao().getTime()));
-                    ps6.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
+                    ps6.setInt(4, user_session.getUnidade().getTipoAtendimento().getIdTipo());
                     ps6.setString(5, insercao.getAgenda().getTurno());
                     ps6.setString(6, insercao.getObservacao());
                     ps6.setInt(7, id_paciente);
