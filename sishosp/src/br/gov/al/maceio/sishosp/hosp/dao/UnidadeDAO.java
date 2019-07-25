@@ -26,7 +26,7 @@ public class UnidadeDAO {
         Boolean retorno = false;
         Integer codUnidade = null;
 
-        String sql = "INSERT INTO hosp.unidade(nome_principal, nome_fantasia, cnpj, rua, bairro, numero, cep, cidade, " +
+        String sql = "INSERT INTO hosp.unidade(nome_empresa, nome_fantasia, cnpj, rua, bairro, numero, cep, cidade, " +
                 " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, matriz, ativo, nome) " +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?) returning id";
 
@@ -178,7 +178,7 @@ public class UnidadeDAO {
     public List<UnidadeBean> listarUnidade() throws ProjetoException {
 
         List<UnidadeBean> lista = new ArrayList<>();
-        String sql = "SELECT id,nome,  nome_principal, nome_fantasia, cnpj, rua, bairro, " +
+        String sql = "SELECT id,nome,  nome_empresa, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
                 " email, site, matriz, ativo, case when matriz is true then 'Matriz' else 'Filial' end as tipo " +
                 " FROM hosp.unidade where ativo is true;";
@@ -192,7 +192,7 @@ public class UnidadeDAO {
                 UnidadeBean unidade = new UnidadeBean();
                 unidade.setId(rs.getInt("id"));
                 unidade.setNomeUnidade(rs.getString("nome"));
-                unidade.setNomeEmpresa(rs.getString("nome_principal"));
+                unidade.setNomeEmpresa(rs.getString("nome_empresa"));
                 unidade.setNomeFantasia(rs.getString("nome_fantasia"));
                 unidade.setCnpj(rs.getString("cnpj"));
                 unidade.setRua(rs.getString("rua"));
@@ -231,7 +231,7 @@ public class UnidadeDAO {
     public Boolean alterarUnidade(UnidadeBean unidade) {
 
         Boolean retorno = false;
-        String sql = "UPDATE hosp.unidade SET nome_principal=?, nome_fantasia=?, cnpj=?, rua=?, " +
+        String sql = "UPDATE hosp.unidade SET nome_empresa=?, nome_fantasia=?, cnpj=?, rua=?, " +
                 " bairro=?, numero=?, cep=?, cidade=?, estado=?, ddd_1=?, telefone_1=?, " +
                 " ddd_2=?, telefone_2=?, email=?, site=?, matriz=?, complemento=?, nome=? " +
                 " WHERE id = ?;";
@@ -327,7 +327,7 @@ public class UnidadeDAO {
     public UnidadeBean buscarUnidadePorId(Integer id) throws ProjetoException {
 
         UnidadeBean unidade = new UnidadeBean();
-        String sql = "SELECT id,nome, nome_principal, nome_fantasia, cnpj, rua, bairro, " +
+        String sql = "SELECT id,nome, nome_empresa, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
                 " email, site, matriz, ativo , nome_unidade" +
                 " FROM hosp.unidade where cod_unidade = ?;";
@@ -341,7 +341,8 @@ public class UnidadeDAO {
             while (rs.next()) {
 
             	unidade.setId(rs.getInt("id"));
-            	unidade.setNomeUnidade(rs.getString("nome_principal"));
+            	unidade.setNomeUnidade(rs.getString("nome"));
+            	unidade.setNomeEmpresa(rs.getString("nome_empresa"));
             	unidade.setNomeFantasia(rs.getString("nome_fantasia"));
             	unidade.setCnpj(rs.getString("cnpj"));
                 unidade.setRua(rs.getString("rua"));

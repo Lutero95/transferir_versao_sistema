@@ -37,13 +37,24 @@ public class EmpresaDAO {
             ps.setString(3, empresa.getCnpj());
             ps.setString(4, empresa.getRua());
             ps.setString(5, empresa.getBairro());
-            ps.setInt(6, empresa.getNumero());
+            if(empresa.getNumero() != null) 
+                ps.setInt(6, empresa.getNumero());
+            else
+                ps.setNull(6, Types.NULL);
             ps.setString(7, empresa.getCep());
             ps.setString(8, empresa.getCidade());
             ps.setString(9, empresa.getEstado());
             ps.setString(10, empresa.getComplemento());
-            ps.setInt(11, empresa.getDdd1());
-            ps.setInt(12, empresa.getTelefone1());
+            if(empresa.getDdd1() != null) 
+                ps.setInt(11, empresa.getDdd1());
+            else
+                ps.setNull(11, Types.NULL);
+            
+            if(empresa.getTelefone1() != null) 
+                ps.setInt(12, empresa.getTelefone1());
+            else
+                ps.setNull(12, Types.NULL);
+            
             if(empresa.getDdd2() != null) {
                 ps.setInt(13, empresa.getDdd2());
             }
@@ -126,7 +137,6 @@ public class EmpresaDAO {
                 empresa.setEmail(rs.getString("email"));
                 empresa.setSite(rs.getString("site"));
                 empresa.setAtivo(rs.getBoolean("ativo"));
-                empresa.setTipoString(rs.getString("tipo"));
                 lista.add(empresa);
             }
         } catch (Exception ex) {

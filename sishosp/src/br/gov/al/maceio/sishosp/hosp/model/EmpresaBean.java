@@ -7,7 +7,6 @@ public class EmpresaBean implements Serializable {
     private Integer codEmpresa;
     private String nomeEmpresa;
     private String nomeFantasia;
-    private String nomeUnidade;
     private String cnpj;
     private String rua;
     private String bairro;
@@ -194,11 +193,5 @@ public class EmpresaBean implements Serializable {
 
     
 
-	public String getNomeUnidade() {
-		return nomeUnidade;
-	}
 
-	public void setNomeUnidade(String nomeUnidade) {
-		this.nomeUnidade = nomeUnidade;
-	}
 }

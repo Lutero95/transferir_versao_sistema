@@ -16,7 +16,7 @@ import java.util.GregorianCalendar;
 public final class HorarioOuTurnoUtil {
 
     public static String retornarOpcaoAtendimentoEmpresa() throws ProjetoException {
-        	 unidadeDAO = new UnidadeDAO();
+        	 UnidadeDAO unidadeDAO = new UnidadeDAO();
 
         String opcaoAtendimento = unidadeDAO.carregarOpcaoAtendimentoDaUnidade();
 
@@ -28,9 +28,9 @@ public final class HorarioOuTurnoUtil {
     public static ArrayList<String> gerarHorariosAtendimento() throws ParseException {
         ParametroBean parametroBean = new ParametroBean();
         ArrayList<String> listaHorarios = new ArrayList<>();
-        EmpresaDAO empresaDAO = new EmpresaDAO();
+        UnidadeDAO unidadeDAO = new UnidadeDAO();
 
-        parametroBean = empresaDAO.carregarDetalhesAtendimentoDaEmpresa();
+        parametroBean = unidadeDAO.carregarDetalhesAtendimentoDaUnidade();
 
         java.sql.Time novahora = (Time) parametroBean.getHorarioInicial();
         String horario = null;

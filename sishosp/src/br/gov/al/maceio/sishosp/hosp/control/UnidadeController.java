@@ -20,7 +20,7 @@ import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 
-@ManagedBean(name = "EmpresaController")
+@ManagedBean(name = "UnidadeController")
 @ViewScoped
 public class UnidadeController implements Serializable {
 
