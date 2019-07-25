@@ -16,7 +16,6 @@ public class TipoAtendimentoBean implements Serializable {
     private Boolean equipe;
     private Boolean profissional;
     private boolean primeiroAt;
-    private Integer codEmpresa;
     private Integer intervaloMinimo;
 
 
@@ -29,7 +28,8 @@ public class TipoAtendimentoBean implements Serializable {
     // HERDADOS
     private GrupoBean grupoParaAdd;
     private ProgramaBean programaParaAdd;
-
+    private UnidadeBean unidade;// = new UnidadeBean();
+    
     public TipoAtendimentoBean() {
         this.grupo = new ArrayList<GrupoBean>();
         this.grupoNovo = new ArrayList<GrupoBean>();
@@ -41,6 +41,7 @@ public class TipoAtendimentoBean implements Serializable {
         this.profissional = false;
         programaParaAdd = new ProgramaBean();
         listaPrograma = new ArrayList<>();
+        unidade = new UnidadeBean();
 
     }
 
@@ -76,13 +77,7 @@ public class TipoAtendimentoBean implements Serializable {
         this.idTipo = idTipo;
     }
 
-    public Integer getCodEmpresa() {
-        return codEmpresa;
-    }
 
-    public void setCodEmpresa(Integer codEmpresa) {
-        this.codEmpresa = codEmpresa;
-    }
 
     public GrupoBean getGrupoParaAdd() {
         return grupoParaAdd;
@@ -197,4 +192,12 @@ public class TipoAtendimentoBean implements Serializable {
             }
         }
     }
+
+	public UnidadeBean getUnidade() {
+		return unidade;
+	}
+
+	public void setUnidade(UnidadeBean unidade) {
+		this.unidade = unidade;
+	}
 }

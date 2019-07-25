@@ -123,7 +123,7 @@ public class AgendaController implements Serializable {
         listaHorariosOcupados = new ArrayList<AgendaBean>();
         agendamentosConfirmados = false;
         dataAtual = DataUtil.mesIhAnoAtual();
-        agenda.getEmpresa().setCodEmpresa(SessionUtil.recuperarDadosSessao().getEmpresa().getCodEmpresa());
+        agenda.getUnidade().setId(SessionUtil.recuperarDadosSessao().getUnidade().getId());
         tipoAtendimentoSelecionado = new TipoAtendimentoBean();
         agenda.setTurno("M");
         listaNaoPermitidosIntervaloDeDatas = new ArrayList<>();
@@ -145,7 +145,7 @@ public class AgendaController implements Serializable {
         this.situacao = new String();
         agenda.setTurno(Turno.MANHA.getSigla());
         rowBean = new AgendaBean();
-        agenda.getEmpresa().setCodEmpresa(SessionUtil.recuperarDadosSessao().getEmpresa().getCodEmpresa());
+        agenda.getUnidade().setId(SessionUtil.recuperarDadosSessao().getUnidade().getId());
         this.agenda.setProfissional(null);
         this.agenda.setProfissional(new FuncionarioBean());
     }
@@ -716,7 +716,7 @@ public class AgendaController implements Serializable {
             return;
         }
         this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC,
-                dataAtendimentoFinalC, agenda.getEmpresa().getCodEmpresa(), situacao);
+                dataAtendimentoFinalC, agenda.getUnidade().getId(), situacao);
     }
 
     public void resetaParametrosConsultaAgenda() {
@@ -916,7 +916,7 @@ public class AgendaController implements Serializable {
     public List<ProgramaBean> listaProgramaAutoCompleteUsuarioOutraUnidade(String query)
             throws ProjetoException {
         ProgramaDAO pDao = new ProgramaDAO();
-        List<ProgramaBean> result = pDao.listarProgramasBuscaUsuarioOutraUnidade(query, agenda.getEmpresa().getCodEmpresa());
+        List<ProgramaBean> result = pDao.listarProgramasBuscaUsuarioOutraUnidade(query, agenda.getUnidade().getId());
         return result;
     }
 

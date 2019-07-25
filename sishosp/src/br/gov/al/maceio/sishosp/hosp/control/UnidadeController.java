@@ -14,24 +14,25 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 
 @ManagedBean(name = "EmpresaController")
 @ViewScoped
-public class EmpresaController implements Serializable {
+public class UnidadeController implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private EmpresaBean empresa;
+    private UnidadeBean unidade;
     private Integer tipo;
     private String cabecalho;
-    private EmpresaDAO eDao = new EmpresaDAO();
+    private UnidadeDAO eDao = new UnidadeDAO();
     private ArrayList<String> listaEstados;
     private List<GrupoBean> listaGruposProgramas;
     private GrupoDAO gDao = new GrupoDAO();
-    private List<EmpresaBean> listaEmpresas;
+    private List<UnidadeBean> listaUnidades;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroEmpresa?faces-redirect=true";
@@ -40,10 +41,10 @@ public class EmpresaController implements Serializable {
     private static final String CABECALHO_INCLUSAO = "Inclusão de Empresa";
     private static final String CABECALHO_ALTERACAO = "Alteração de Empresa";
 
-    public EmpresaController() {
-        this.empresa = new EmpresaBean();
+    public UnidadeController() {
+        this.unidade = new UnidadeBean();
         this.cabecalho = "";
-        listaEmpresas = new ArrayList<>();
+        listaUnidades = new ArrayList<>();
         listaGruposProgramas = new ArrayList<>();
         listaEstados = new ArrayList<>();
         listaEstados.add("AC");
@@ -77,11 +78,11 @@ public class EmpresaController implements Serializable {
     }
 
     public void limparDados() {
-        this.empresa = new EmpresaBean();
+        this.unidade = new UnidadeBean();
     }
 
     public String redirectEdit() {
-        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.empresa.getCodEmpresa(), ENDERECO_TIPO, tipo);
+        return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO, ENDERECO_ID, this.unidade.getId(), ENDERECO_TIPO, tipo);
     }
 
     public String redirectInsert() {
@@ -95,7 +96,7 @@ public class EmpresaController implements Serializable {
         if (params.get("id") != null) {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
-            this.empresa = eDao.buscarEmpresaPorId(id);
+            this.unidade = eDao.buscarUnidadePorId(id);
         } else {
 
             tipo = Integer.parseInt(params.get("tipo"));
@@ -104,9 +105,9 @@ public class EmpresaController implements Serializable {
 
     }
 
-    public void gravarEmpresa() {
+    public void gravarUnidade() {
 
-        boolean cadastrou = eDao.gravarEmpresa(empresa);
+        boolean cadastrou = eDao.gravarUnidade(unidade);
 
         if (cadastrou == true) {
             limparDados();
@@ -117,7 +118,7 @@ public class EmpresaController implements Serializable {
     }
 
     public void alterarEmpresa() {
-        boolean alterou = eDao.alterarEmpresa(empresa);
+        boolean alterou = eDao.alterarUnidade(unidade);
 
         if (alterou == true) {
             JSFUtil.adicionarMensagemSucesso("Empresa alterada com sucesso!", "Sucesso");
@@ -127,7 +128,7 @@ public class EmpresaController implements Serializable {
     }
 
     public void desativarEmpresa() {
-        boolean desativou = eDao.desativarEmpresa(empresa);
+        boolean desativou = eDao.desativarUnidade(unidade);
 
         if (desativou == true) {
             JSFUtil.adicionarMensagemSucesso("Empresa desativada com sucesso!", "Sucesso");
@@ -139,14 +140,32 @@ public class EmpresaController implements Serializable {
     }
 
     public void listarEmpresa() throws ProjetoException {
-        listaEmpresas = eDao.listarEmpresa();
+        listaUnidades = eDao.listarUnidade();
     }
 
-    public List<EmpresaBean> listarTodasAsEmpresa() throws ProjetoException {
-        return eDao.listarEmpresa();
+    public List<UnidadeBean> listarTodasAsUnidades() throws ProjetoException {
+        return eDao.listarUnidade();
     }
 
-    
+    public List<GrupoBean> listaGrupoAutoCompleteComPrograma(String query)
+            throws ProjetoException {
+        List<GrupoBean> listaGrupo = new ArrayList<>();
+
+        if(verificarProgramaPreenchido(unidade.getParametro().getOrteseProtese().getPrograma().getIdPrograma())) {
+            listaGrupo = gDao.listarGruposNoAutoComplete(query, unidade.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
+        }
+
+        return listaGrupo;
+    }
+
+    public void listaGrupoPorPrograma(Integer codPrograma)
+            throws ProjetoException {
+
+        if(verificarProgramaPreenchido(codPrograma)) {
+            listaGruposProgramas = gDao.listarGruposPorPrograma(codPrograma);
+        }
+
+    }
 
     private Boolean verificarProgramaPreenchido(Integer idPrograma){
         Boolean retorno = false;
@@ -171,13 +190,7 @@ public class EmpresaController implements Serializable {
         this.cabecalho = cabecalho;
     }
 
-    public EmpresaBean getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(EmpresaBean empresa) {
-        this.empresa = empresa;
-    }
+   
 
     public int getTipo() {
         return tipo;
@@ -203,11 +216,41 @@ public class EmpresaController implements Serializable {
         this.listaGruposProgramas = listaGruposProgramas;
     }
 
-    public List<EmpresaBean> getListaEmpresas() {
-        return listaEmpresas;
-    }
+   
 
-    public void setListaEmpresas(List<EmpresaBean> listaEmpresas) {
-        this.listaEmpresas = listaEmpresas;
-    }
+	public UnidadeBean getUnidade() {
+		return unidade;
+	}
+
+	public UnidadeDAO geteDao() {
+		return eDao;
+	}
+
+	public GrupoDAO getgDao() {
+		return gDao;
+	}
+
+	public List<UnidadeBean> getListaUnidades() {
+		return listaUnidades;
+	}
+
+	public void setUnidade(UnidadeBean unidade) {
+		this.unidade = unidade;
+	}
+
+	public void setTipo(Integer tipo) {
+		this.tipo = tipo;
+	}
+
+	public void seteDao(UnidadeDAO eDao) {
+		this.eDao = eDao;
+	}
+
+	public void setgDao(GrupoDAO gDao) {
+		this.gDao = gDao;
+	}
+
+	public void setListaUnidades(List<UnidadeBean> listaUnidades) {
+		this.listaUnidades = listaUnidades;
+	}
 }

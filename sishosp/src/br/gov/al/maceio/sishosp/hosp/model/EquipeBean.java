@@ -14,7 +14,7 @@ public class EquipeBean implements Serializable {
 
 	private Integer codEquipe;
 	private String descEquipe;
-	private Integer codEmpresa;
+	private Integer codUnidade;
 
 	// LISTAS
 	private List<FuncionarioBean> profissionais;
@@ -46,13 +46,7 @@ public class EquipeBean implements Serializable {
 		this.descEquipe = descEquipe;
 	}
 
-	public Integer getCodEmpresa() {
-		return codEmpresa;
-	}
-
-	public void setCodEmpresa(Integer codEmpresa) {
-		this.codEmpresa = codEmpresa;
-	}
+	
 
 	public List<FuncionarioBean> getProfissionais() {
 		return profissionais;
@@ -103,5 +97,13 @@ public class EquipeBean implements Serializable {
 
 	public void removeProfList() {
 		this.profissionais.remove(this.profAdd);
+	}
+
+	public Integer getCodUnidade() {
+		return codUnidade;
+	}
+
+	public void setCodUnidade(Integer codUnidade) {
+		this.codUnidade = codUnidade;
 	}
 }

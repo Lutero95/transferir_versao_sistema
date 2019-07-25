@@ -15,6 +15,7 @@ public class GrupoBean implements Serializable {
 	private boolean auditivo;
 	private boolean equipeSim;
 	private boolean insercao_pac_institut;
+	private UnidadeBean unidade;
 	
 
 	// LISTAS
@@ -31,6 +32,7 @@ public class GrupoBean implements Serializable {
 		this.equipesNovo = new ArrayList<EquipeBean>();
 		this.equipeAdd = null;
 		equipeSim = false;
+		unidade = new UnidadeBean();
 		
 	}
 
@@ -133,6 +135,22 @@ public class GrupoBean implements Serializable {
 
 	public void setEquipeSim(boolean equipeSim) {
 		this.equipeSim = equipeSim;
+	}
+
+	public boolean isInsercao_pac_institut() {
+		return insercao_pac_institut;
+	}
+
+	public UnidadeBean getUnidade() {
+		return unidade;
+	}
+
+	public void setInsercao_pac_institut(boolean insercao_pac_institut) {
+		this.insercao_pac_institut = insercao_pac_institut;
+	}
+
+	public void setUnidade(UnidadeBean unidade) {
+		this.unidade = unidade;
 	}
 
 }

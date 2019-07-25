@@ -77,7 +77,7 @@ public class BloqueioDAO {
                     ps.setDate(2, new java.sql.Date(dataInicio.getTime()));
                     ps.setString(3, turno.toUpperCase());
                     ps.setString(4, bloqueio.getDescBloqueio().toUpperCase());
-                    ps.setInt(5, user_session.getEmpresa().getCodEmpresa());
+                    ps.setInt(5, user_session.getUnidade().getId());
                     ps.execute();
                     condicao = true;
                     calendarData.setTime(dataInicio);
@@ -166,7 +166,7 @@ public class BloqueioDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

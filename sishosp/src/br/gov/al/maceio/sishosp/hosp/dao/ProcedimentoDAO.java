@@ -56,7 +56,7 @@ public class ProcedimentoDAO {
             ps.setInt(10, proc.getQtdMaxima());
             ps.setInt(11, proc.getPrazoMinimoNovaExecucao());
             ps.setString(12, proc.getSexo());
-            ps.setInt(13, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(13, user_session.getUnidade().getId());
 
             ResultSet rs = ps.executeQuery();
 
@@ -244,7 +244,7 @@ public class ProcedimentoDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -287,7 +287,7 @@ public class ProcedimentoDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -376,7 +376,7 @@ public class ProcedimentoDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
-            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(2, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -424,7 +424,7 @@ public class ProcedimentoDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setString(1, "%" + descricaoBusca.toUpperCase() + "%");
-            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(2, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

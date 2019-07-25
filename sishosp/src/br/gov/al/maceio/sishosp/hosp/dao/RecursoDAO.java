@@ -30,7 +30,7 @@ public class RecursoDAO {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, recurso.getDescRecurso().toUpperCase().trim());
-            stmt.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stmt.setInt(2, user_session.getUnidade().getId());
 
             stmt.execute();
             conexao.commit();
@@ -115,7 +115,7 @@ public class RecursoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -219,7 +219,7 @@ public class RecursoDAO {
 
             ps = conexao.prepareStatement(sql);
             ps.setString(1, "%" + s.toUpperCase() + "%");
-            ps.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(2, user_session.getUnidade().getId());
             ResultSet rs = ps.executeQuery();
 
             List<RecursoBean> colecao = new ArrayList<RecursoBean>();

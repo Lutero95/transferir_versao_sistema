@@ -142,7 +142,7 @@ public class LaudoDAO {
                 stmt.setString(17, laudo.getObs().toUpperCase().trim());
             }
 
-            stmt.setInt(18, user_session.getEmpresa().getCodEmpresa());
+            stmt.setInt(18, user_session.getUnidade().getId());
 
             stmt.setString(19, SituacaoLaudo.PENDENTE.getSigla());
 
@@ -359,7 +359,7 @@ public class LaudoDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
 
             if (!situacao.equals(SituacaoLaudo.TODOS.getSigla())) {
                 stm.setString(2, situacao);

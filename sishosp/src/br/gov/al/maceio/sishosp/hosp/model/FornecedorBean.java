@@ -12,12 +12,13 @@ public class FornecedorBean implements Serializable {
 	private String telefone2;
 	private String inscricaoEstadual;
 	private String ie;
-
+	private UnidadeBean unidade;
 	//HERDADOS
 	private EnderecoBean endereco;
 
 	public FornecedorBean() {
 		endereco = new EnderecoBean();
+		unidade = new UnidadeBean();
 	}
 
 	public Integer getId() {
@@ -90,6 +91,14 @@ public class FornecedorBean implements Serializable {
 
 	public void setIe(String ie) {
 		this.ie = ie;
+	}
+
+	public UnidadeBean getUnidade() {
+		return unidade;
+	}
+
+	public void setUnidade(UnidadeBean unidade) {
+		this.unidade = unidade;
 	}
 
 }

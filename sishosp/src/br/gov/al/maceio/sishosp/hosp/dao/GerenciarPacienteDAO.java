@@ -43,7 +43,7 @@ public class GerenciarPacienteDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
-            stmt.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stmt.setInt(1, user_session.getUnidade().getId());
 
             ResultSet rs = stmt.executeQuery();
 

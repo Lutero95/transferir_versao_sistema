@@ -159,7 +159,7 @@ public class InsercaoPacienteDAO {
             ps.setString(5, "A");
             ps.setInt(6, insercao.getLaudo().getId());
             ps.setString(7, insercao.getObservacao());
-            ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(8, user_session.getUnidade().getId());
             ps.setDate(9, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
             ResultSet rs = ps.executeQuery();
             int id = 0;
@@ -178,7 +178,7 @@ public class InsercaoPacienteDAO {
                             3,
                             Integer.parseInt(lista.get(i).getListDiasSemana()
                                     .get(j)));
-                    ps.setInt(4, user_session.getEmpresa().getCodEmpresa());
+                    ps.setInt(4, user_session.getUnidade().getId());
                     ps.executeUpdate();
                 }
             }
@@ -196,7 +196,7 @@ public class InsercaoPacienteDAO {
                 ps3.setLong(2, insercao.getEquipe().getCodEquipe());
                 ps3.setDate(3, DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i)
                         .getAgenda().getDataMarcacao()));
-                ps3.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
+                ps3.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
                 if (insercao.getAgenda().getTurno() != null) {
                     ps3.setString(5, insercao.getAgenda().getTurno());
@@ -206,7 +206,7 @@ public class InsercaoPacienteDAO {
 
                 ps3.setString(6, insercao.getObservacao());
                 ps3.setInt(7, id);
-                ps3.setInt(8, user_session.getEmpresa().getCodEmpresa());
+                ps3.setInt(8, user_session.getUnidade().getId());
 
                 if (insercao.getAgenda().getHorario() != null) {
                     ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
@@ -302,7 +302,7 @@ public class InsercaoPacienteDAO {
             ps.setString(4, insercao.getObservacao());
             ps.setDate(5, new java.sql.Date(insercao.getDataSolicitacao()
                     .getTime()));
-            ps.setInt(6, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(6, user_session.getUnidade().getId());
 
             ResultSet rs = ps.executeQuery();
             int id = 0;
@@ -322,7 +322,7 @@ public class InsercaoPacienteDAO {
                         3,
                         Integer.parseInt(insercao.getFuncionario()
                                 .getListDiasSemana().get(i)));
-                ps2.setInt(4, user_session.getEmpresa().getCodEmpresa());
+                ps2.setInt(4, user_session.getUnidade().getId());
                 ps2.executeUpdate();
 
             }
@@ -340,11 +340,11 @@ public class InsercaoPacienteDAO {
                 ps3.setLong(2, insercao.getFuncionario().getId());
                 ps3.setDate(3, DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i)
                         .getAgenda().getDataMarcacao()));
-                ps3.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
+                ps3.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
                 ps3.setString(5, insercao.getAgenda().getTurno());
                 ps3.setString(6, insercao.getObservacao());
                 ps3.setInt(7, id);
-                ps3.setInt(8, user_session.getEmpresa().getCodEmpresa());
+                ps3.setInt(8, user_session.getUnidade().getId());
                 if (insercao.getAgenda().getHorario() != null) {
                     ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
                 } else {

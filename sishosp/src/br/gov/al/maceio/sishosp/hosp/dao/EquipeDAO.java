@@ -31,13 +31,13 @@ public class EquipeDAO {
                 .getSessionMap().get("obj_funcionario");
 
         Boolean retorno = false;
-        String sql = "insert into hosp.equipe (descequipe, cod_empresa) values (?, ?) RETURNING id_equipe;";
+        String sql = "insert into hosp.equipe (descequipe, cod_unidade) values (?, ?) RETURNING id_equipe;";
 
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, equipe.getDescEquipe().toUpperCase());
-            ps.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(2, user_session.getUnidade().getId());
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -88,19 +88,19 @@ public class EquipeDAO {
 
     public List<EquipeBean> listarEquipe() throws ProjetoException {
         List<EquipeBean> lista = new ArrayList<>();
-        String sql = "select id_equipe, descequipe, cod_empresa from hosp.equipe where cod_empresa = ? order by descequipe";
+        String sql = "select id_equipe, descequipe, cod_unidade from hosp.equipe where cod_unidade = ? order by descequipe";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
                 EquipeBean equipe = new EquipeBean();
                 equipe.setCodEquipe(rs.getInt("id_equipe"));
                 equipe.setDescEquipe(rs.getString("descequipe"));
-                equipe.setCodEmpresa(rs.getInt("cod_empresa"));
+                equipe.setCodUnidade(rs.getInt("cod_unidade"));
                 lista.add(equipe);
             }
         } catch (Exception ex) {
@@ -119,21 +119,21 @@ public class EquipeDAO {
     public List<EquipeBean> listarEquipeBusca(String descricao)
             throws ProjetoException {
         List<EquipeBean> lista = new ArrayList<>();
-        String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, cod_empresa from hosp.equipe " +
-                "where upper(id_equipe ||'-'|| descequipe) LIKE ? and cod_empresa = ? order by descequipe";
+        String sql = "select id_equipe,id_equipe ||'-'|| descequipe as descequipe, cod_unidade from hosp.equipe " +
+                "where upper(id_equipe ||'-'|| descequipe) LIKE ? and cod_unidade = ? order by descequipe";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setString(1, "%" + descricao.toUpperCase() + "%");
-            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(2, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
                 EquipeBean equipe = new EquipeBean();
                 equipe.setCodEquipe(rs.getInt("id_equipe"));
                 equipe.setDescEquipe(rs.getString("descequipe"));
-                equipe.setCodEmpresa(rs.getInt("cod_empresa"));
+                equipe.setCodUnidade(rs.getInt("cod_unidade"));
                 lista.add(equipe);
             }
         } catch (Exception ex) {
@@ -337,7 +337,7 @@ public class EquipeDAO {
     public EquipeBean buscarEquipePorID(Integer id) throws ProjetoException {
         EquipeBean equipe = null;
 
-        String sql = "select id_equipe, descequipe, cod_empresa from hosp.equipe where id_equipe = ?";
+        String sql = "select id_equipe, descequipe, cod_unidade from hosp.equipe where id_equipe = ?";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -351,7 +351,7 @@ public class EquipeDAO {
                 equipe.setDescEquipe(rs.getString("descequipe"));
                 equipe.setProfissionais(pDao.listarProfissionaisPorEquipe(rs
                         .getInt("id_equipe"), con));
-                equipe.setCodEmpresa(rs.getInt("cod_empresa"));
+                equipe.setCodUnidade(rs.getInt("cod_unidade"));
             }
 
             return equipe;
@@ -414,7 +414,7 @@ public class EquipeDAO {
             sql = "select distinct e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo "
                     + "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
                     + "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
-                    + " where cod_empresa = ? order by f.descfuncionario ";
+                    + " where cod_unidade = ? order by f.descfuncionario ";
         }
         else {
             sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo "
@@ -428,7 +428,7 @@ public class EquipeDAO {
             PreparedStatement stm = con.prepareStatement(sql);
 
             if(todosOsProfissionais) {
-                stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+                stm.setInt(1, user_session.getUnidade().getId());
             }
             else{
                 stm.setInt(1, codequipe);

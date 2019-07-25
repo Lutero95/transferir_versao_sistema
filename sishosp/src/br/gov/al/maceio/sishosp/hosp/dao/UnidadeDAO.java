@@ -330,7 +330,7 @@ public class UnidadeDAO {
         String sql = "SELECT id,nome, nome_principal, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
                 " email, site, matriz, ativo , nome_unidade" +
-                " FROM hosp.empresa where cod_empresa = ?;";
+                " FROM hosp.unidade where cod_unidade = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -457,13 +457,13 @@ public class UnidadeDAO {
         return retorno;
     }
 
-    public ParametroBean carregarDetalhesAtendimentoDaEmpresa() {
+    public ParametroBean carregarDetalhesAtendimentoDaUnidade() {
 
         ParametroBean parametro = new ParametroBean();
 
         String sql = "SELECT qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
                 "horario_inicial, horario_final, intervalo " +
-                " FROM hosp.parametro where cod_empresa = ?;";
+                " FROM hosp.parametro where cod_unidade = ?;";
 
         try {
             con = ConnectionFactory.getConnection();

@@ -1,0 +1,125 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{EmpresaController.listarEmpresa()}"/>
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h4 class="panel-title">Gerenciamento de Empresas</h4>
+			</div>
+			
+			<div class="panel-body table-body">
+
+			<h:form id="frmPrincipal">
+
+				<b:commandButton id="btninc" value="Novo" size="sm"
+					action="#{EmpresaController.redirectInsert()}"
+					icon="glyphicon-plus" class="btn-addNovo">
+					<f:setPropertyActionListener value="1"
+						target="#{EmpresaController.tipo}" />
+					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+				</b:commandButton>
+				
+				<div align="center">
+					<b:messages value="Error" id="msgPagina"></b:messages>
+				</div>
+				
+				<br></br>
+
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					id="dataTablePrincipal" var="tab" responsive="true"
+					value="#{EmpresaController.listaEmpresas}">
+
+					<h:column>
+						<f:facet name="header">
+                            Nome Principal
+                        </f:facet>
+
+						<h:outputText value="#{tab.nomeEmpresa}" />
+					</h:column>
+
+
+					<h:column>
+						<f:facet name="header">
+                            Nome Fantasia
+                        </f:facet>
+
+						<h:outputText value="#{tab.nomeFantasia}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            CNPJ
+                        </f:facet>
+
+						<h:outputText value="#{tab.cnpj}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Tipo
+                        </f:facet>
+
+						<h:outputText value="#{tab.tipoString}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Ação
+                        </f:facet>
+
+						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
+							action="#{EmpresaController.redirectEdit()}" class="btn-acao-table acao-editar">
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{EmpresaController.empresa}" />
+
+							<f:setPropertyActionListener value="2"
+								target="#{EmpresaController.tipo}" />
+						</b:commandButton>
+
+						<b:commandButton tooltip="Desativar" icon="glyphicon-trash"
+							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
+							oncomplete="PF('dialogExclusao').show()">
+
+							<f:setPropertyActionListener value="#{tab}"
+								target="#{EmpresaController.empresa}" />
+						</b:commandButton>
+
+					</h:column>
+				</b:dataTable>
+
+			</h:form>
+			</div>
+
+		</div>
+
+		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+			resizable="false" showEffect="clip" hideEffect="clip">
+
+			<h:form id="frmExcluir">
+				<div class="alert alert-warning" role="alert">Deseja desativar
+					esta Empresa?</div>
+				<div align="center">
+					<p:separator />
+					<b:commandButton look="success" value="Sim" style="float:left;"
+						action="#{EmpresaController.desativarEmpresa()}" ajax="true"
+						icon="glyphicon-ok" update=":frmPrincipal" class="btn-sim"/>
+
+					<b:commandButton value="Não" class="btn-nao"
+						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

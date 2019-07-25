@@ -525,7 +525,7 @@ public class EnderecoDAO {
             String sql = " select estado from hosp.empresa where cod_empresa = ?";
 
             ps = conexao.prepareStatement(sql);
-            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = ps.executeQuery();
 
 

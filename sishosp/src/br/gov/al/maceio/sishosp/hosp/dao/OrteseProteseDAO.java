@@ -34,7 +34,7 @@ public class OrteseProteseDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -147,7 +147,7 @@ public class OrteseProteseDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -207,7 +207,7 @@ public class OrteseProteseDAO {
 
             ps.setInt(8, user_session.getCodigo());
 
-            ps.setInt(9, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(9, user_session.getUnidade().getId());
 
             Integer codOrteseIhProtese = null;
             ResultSet rs = ps.executeQuery();

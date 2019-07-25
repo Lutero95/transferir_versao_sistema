@@ -17,6 +17,7 @@ public class OrteseProtese implements Serializable {
     private Date dataCancelamento;
     private String medicao;
     private Date dataMedicao;
+    private UnidadeBean unidade;
 
     //HERDADOS
     private ProgramaBean programa;
@@ -32,6 +33,7 @@ public class OrteseProtese implements Serializable {
         laudo = new LaudoBean();
         fornecedor = new FornecedorBean();
         dataEncaminhamento = DataUtil.retornarDataAtual();
+        unidade = new UnidadeBean();
     }
 
     public Integer getId() {
