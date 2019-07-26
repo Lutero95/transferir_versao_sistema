@@ -81,19 +81,16 @@
                 </b:row>
 
 
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
 
 
                 <div align="center">
                     <b:commandButton action="#{EquipeController.gravarEquipe()}"
-                                     icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal"
+                                     icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal msgPagina"
                                      value="Incluir" class="btn-incluir"
                                      rendered="#{EquipeController.tipo == 1}"/>
 
                     <b:commandButton action="#{EquipeController.alterarEquipe()}"
-                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal" value="Alterar"
+                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina" value="Alterar"
                                      look="success" class="btn-incluir"
                                      rendered="#{EquipeController.tipo  == 2}"/>
 
@@ -133,7 +130,7 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton process="@this" class="new-btn-acao-table acao-editar"
-                                         update=":frmPrincipal:tabela, :frmPrincipal:msgPagina"
+                                         update=":frmPrincipal:tabela, :msgPagina"
                                          icon="ui-icon-check" title="Selecionar"
                                          action="#{EquipeController.equipe.addProfList()}"
                                          onclick="PF('dlgConsuProfE').hide();">

@@ -30,13 +30,13 @@ public class ProcedimentoDAO {
         Boolean retorno = false;
 
         String sql = "INSERT INTO hosp.proc (codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
-                + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo, cod_empresa)"
+                + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo, cod_unidade)"
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
 
-            ps.setInt(1, proc.getCodProc());
+            ps.setString(1, proc.getCodProc());
             ps.setString(2, proc.getNomeProc().toUpperCase());
             ps.setBoolean(3, proc.getAuditivo());
             ps.setString(4, proc.getTipoExameAuditivo().toUpperCase());
@@ -51,10 +51,32 @@ public class ProcedimentoDAO {
             } else {
                 ps.setInt(7, proc.getValidade_laudo());
             }
-            ps.setInt(8, proc.getIdadeMinima());
-            ps.setInt(9, proc.getIdadeMaxima());
-            ps.setInt(10, proc.getQtdMaxima());
-            ps.setInt(11, proc.getPrazoMinimoNovaExecucao());
+            
+            if (proc.getIdadeMinima() == null) {
+                ps.setNull(8, Types.NULL);
+            } else {
+                ps.setInt(8, proc.getIdadeMinima());
+            }
+            
+            if (proc.getIdadeMaxima() == null) {
+                ps.setNull(9, Types.NULL);
+            } else {
+                ps.setInt(9, proc.getIdadeMaxima());
+            }
+
+            if (proc.getQtdMaxima() == null) {
+                ps.setNull(10, Types.NULL);
+            } else {
+                ps.setInt(10, proc.getQtdMaxima());
+            }
+
+            if (proc.getPrazoMinimoNovaExecucao() == null) {
+                ps.setNull(11, Types.NULL);
+            } else {
+                ps.setInt(11, proc.getPrazoMinimoNovaExecucao());
+            }            
+
+
             ps.setString(12, proc.getSexo());
             ps.setInt(13, user_session.getUnidade().getId());
 
@@ -129,7 +151,7 @@ public class ProcedimentoDAO {
             } else {
                 stmt.setInt(6, proc.getValidade_laudo());
             }
-            stmt.setInt(7, proc.getCodProc());
+            stmt.setString(7, proc.getCodProc());
             stmt.setInt(8, proc.getIdadeMinima());
             stmt.setInt(9, proc.getIdadeMaxima());
             stmt.setInt(10, proc.getQtdMaxima());
@@ -239,7 +261,7 @@ public class ProcedimentoDAO {
         List<ProcedimentoBean> lista = new ArrayList<>();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + " from hosp.proc where cod_empresa = ? order by nome";
+                + " from hosp.proc where cod_unidade = ? order by nome";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -250,7 +272,7 @@ public class ProcedimentoDAO {
             while (rs.next()) {
                 ProcedimentoBean proc = new ProcedimentoBean();
                 proc.setIdProc(rs.getInt("id"));
-                proc.setCodProc(rs.getInt("codproc"));
+                proc.setCodProc(rs.getString("codproc"));
                 proc.setNomeProc(rs.getString("nome"));
                 proc.setAuditivo(rs.getBoolean("auditivo"));
                 proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
@@ -282,7 +304,7 @@ public class ProcedimentoDAO {
         List<ProcedimentoBean> lista = new ArrayList<>();
         String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
                 + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
-                + " from hosp.proc where cod_empresa = ? and gera_laudo_digita is true order by nome";
+                + " from hosp.proc where cod_unidade = ? and gera_laudo_digita is true order by nome";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -293,7 +315,7 @@ public class ProcedimentoDAO {
             while (rs.next()) {
                 ProcedimentoBean proc = new ProcedimentoBean();
                 proc.setIdProc(rs.getInt("id"));
-                proc.setCodProc(rs.getInt("codproc"));
+                proc.setCodProc(rs.getString("codproc"));
                 proc.setNomeProc(rs.getString("nome"));
                 proc.setAuditivo(rs.getBoolean("auditivo"));
                 proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
@@ -335,7 +357,7 @@ public class ProcedimentoDAO {
             while (rs.next()) {
                 proc = new ProcedimentoBean();
                 proc.setIdProc(rs.getInt("id"));
-                proc.setCodProc(rs.getInt("codproc"));
+                proc.setCodProc(rs.getString("codproc"));
                 proc.setNomeProc(rs.getString("nome"));
                 proc.setAuditivo(rs.getBoolean("auditivo"));
                 proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
@@ -370,7 +392,7 @@ public class ProcedimentoDAO {
                 + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo  "
                 + "from hosp.proc ";
         if (tipoBuscar == 1) {
-            sql += " where upper(codproc ||' - '|| nome) LIKE ? and cod_empresa = ? order by nome";
+            sql += " where upper(codproc ||' - '|| nome) LIKE ? and cod_unidade = ? order by nome";
         }
         try {
             con = ConnectionFactory.getConnection();
@@ -383,7 +405,7 @@ public class ProcedimentoDAO {
                 ProcedimentoBean proc = new ProcedimentoBean();
                 proc.setIdProc(rs.getInt("id"));
                 proc.setNomeProc(rs.getString("nome"));
-                proc.setCodProc(rs.getInt("codproc"));
+                proc.setCodProc(rs.getString("codproc"));
                 proc.setAuditivo(rs.getBoolean("auditivo"));
                 proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
                 proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
@@ -418,7 +440,7 @@ public class ProcedimentoDAO {
                 + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo  "
                 + "from hosp.proc ";
         if (tipoBuscar == 1) {
-            sql += " where upper(codproc ||' - '|| nome) LIKE ? and cod_empresa = ? and gera_laudo_digita is true order by nome";
+            sql += " where upper(codproc ||' - '|| nome) LIKE ? and cod_unidade = ? and gera_laudo_digita is true order by nome";
         }
         try {
             con = ConnectionFactory.getConnection();
@@ -431,7 +453,7 @@ public class ProcedimentoDAO {
                 ProcedimentoBean proc = new ProcedimentoBean();
                 proc.setIdProc(rs.getInt("id"));
                 proc.setNomeProc(rs.getString("nome"));
-                proc.setCodProc(rs.getInt("codproc"));
+                proc.setCodProc(rs.getString("codproc"));
                 proc.setAuditivo(rs.getBoolean("auditivo"));
                 proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
                 proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
@@ -536,7 +558,7 @@ public class ProcedimentoDAO {
             while (rs.next()) {
                 proc = new ProcedimentoBean();
                 proc.setIdProc(rs.getInt("id"));
-                proc.setCodProc(rs.getInt("codproc"));
+                proc.setCodProc(rs.getString("codproc"));
                 proc.setNomeProc(rs.getString("nome"));
                 proc.setAuditivo(rs.getBoolean("auditivo"));
                 proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));

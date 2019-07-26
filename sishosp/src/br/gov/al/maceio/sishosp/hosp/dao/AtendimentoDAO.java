@@ -450,7 +450,7 @@ public class AtendimentoDAO {
                 at.getCbo().setCodCbo(rs.getInt("codcbo"));
                 at.getCbo().setDescCbo(rs.getString("descricao"));
                 at.setStatus(rs.getString("situacao"));
-                at.getProcedimento().setCodProc(rs.getInt("codprocedimento"));
+                at.getProcedimento().setCodProc(rs.getString("codprocedimento"));
                 at.getProcedimento().setNomeProc(rs.getString("procedimento"));
                 at.getProcedimento().setIdProc(rs.getInt("id"));
                 at.setEvolucao(rs.getString("evolucao"));

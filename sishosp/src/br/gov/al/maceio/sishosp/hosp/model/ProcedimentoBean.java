@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class ProcedimentoBean implements Serializable {
 
     private Integer idProc;
-    private Integer codProc;
+    private String codProc;
     private String nomeProc;
     private Boolean auditivo;
     private String tipoExameAuditivo;
@@ -58,13 +58,6 @@ public class ProcedimentoBean implements Serializable {
         this.idProc = idProc;
     }
 
-    public Integer getCodProc() {
-        return codProc;
-    }
-
-    public void setCodProc(Integer codProc) {
-        this.codProc = codProc;
-    }
 
     public String getNomeProc() {
         return nomeProc;
@@ -200,5 +193,13 @@ public class ProcedimentoBean implements Serializable {
 
 	public void setCodUnidade(Integer codUnidade) {
 		this.codUnidade = codUnidade;
+	}
+
+	public String getCodProc() {
+		return codProc;
+	}
+
+	public void setCodProc(String codProc) {
+		this.codProc = codProc;
 	}
 }

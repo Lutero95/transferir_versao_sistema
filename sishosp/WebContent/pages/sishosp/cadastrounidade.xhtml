@@ -28,7 +28,7 @@
 						<b:column span="12" class="label-position new-col12">
 							<b:label value="Nome Unidade" severity="info" />
 
-							<b:inputText value="#{UnidadeController.unidade.nomeEmpresa}"
+							<b:inputText value="#{UnidadeController.unidade.nomeUnidade}"
 								validator="CaractereEmBrancoValidator" class="form-control"
 								required="true"
 								requiredMessage="Nome Unidade Campo obrigatório!"
@@ -137,10 +137,10 @@
 						<b:column span="1" class="label-position new-col1">
 							<b:label value="Estado" severity="info" />
 
-							<b:selectOneMenu size="10" required="false"
+							<b:selectOneMenu size="10" required="false" 
 								requiredMessage="Estado: Campo obrigatório!"
 								value="#{UnidadeController.unidade.estado}">
-								<f:selectItems value="#{EmpresaController.listaEstados}"></f:selectItems>
+								<f:selectItems value="#{UnidadeController.listaEstados}"></f:selectItems>
 							</b:selectOneMenu>
 
 						</b:column>
@@ -320,7 +320,7 @@
 						<b:column span="5" class="label-position new-col5">
 							<b:label value="Tipo de Atendimento para Terapia" severity="info" />
 
-							<b:selectOneMenu size="10" required="true"
+							<b:selectOneMenu size="10" required="false"
 								requiredMessage="Opção de atendimento: Campo obrigatório!"
 								value="#{UnidadeController.unidade.parametro.tipoAtendimento.idTipo}">
 								<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
@@ -417,7 +417,7 @@
 
 					<b:commandButton action="#{UnidadeController.alterarUnidade()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-						update=":frmPrincipal" value="Alterar"
+						update=":frmPrincipal msgPagina" value="Alterar"
 						rendered="#{UnidadeController.tipo  == 2}" />
 
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"

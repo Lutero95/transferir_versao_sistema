@@ -42,7 +42,7 @@
 					<b:row>
 
 						<b:column span="11" class="label-position">
-							<b:label value="Código:" severity="info" />
+							<b:label value="Código do Procedimento:" severity="info" />
 
 							<b:inputText value="#{ProcedimentoController.proc.codProc}"
 								required="true" requiredMessage="Código: Campo obrigatório!" />
@@ -56,7 +56,7 @@
 							<b:label value="Idade Mínima:" severity="info" />
 
 							<b:inputText value="#{ProcedimentoController.proc.idadeMinima}"
-								required="true"
+								required="false"
 								requiredMessage="Idade mínima: Campo obrigatório!" />
 						</b:column>
 
@@ -64,7 +64,7 @@
 							<b:label value="Idade Máxima:" severity="info" />
 
 							<b:inputText value="#{ProcedimentoController.proc.idadeMaxima}"
-								required="true"
+								required="false"
 								requiredMessage="Idade máxima: Campo obrigatório!" />
 						</b:column>
 
@@ -76,7 +76,7 @@
 							<b:label value="Quantidade Máxima:" severity="info" />
 
 							<b:inputText value="#{ProcedimentoController.proc.qtdMaxima}"
-								required="true"
+								required="false"
 								requiredMessage="Quantidade máxima em meses: Campo obrigatório!" />
 						</b:column>
 
@@ -85,7 +85,7 @@
 
 							<b:inputText
 								value="#{ProcedimentoController.proc.prazoMinimoNovaExecucao}"
-								required="true"
+								required="false"
 								requiredMessage="Prazo mínimo para nova execução: Campo obrigatório!" />
 						</b:column>
 
@@ -221,7 +221,7 @@
 								<p:commandButton size="sm" immediate="true"
 									action="#{ProcedimentoController.addCid()}"
 									tooltip="Adicionar Cid" icon="ui-icon-plus"
-									update="tabelaCid, outCid1, :frmCadProc:msgPagina" />
+									update="tabelaCid, outCid1, :msgPagina" />
 							</p:outputPanel>
 						</b:column>
 
@@ -281,7 +281,7 @@
 								<p:commandButton size="sm" immediate="true"
 									action="#{ProcedimentoController.addCbo()}"
 									tooltip="Adicionar CBO" icon="ui-icon-plus"
-									update="tabelaCbo, outCbo, :frmCadProc:msgPagina" />
+									update="tabelaCbo, outCbo, :msgPagina" />
 
 							</p:outputPanel>
 						</b:column>
@@ -342,7 +342,7 @@
 								<p:commandButton size="sm" immediate="true"
 									action="#{ProcedimentoController.addRecurso()}"
 									tooltip="Adicionar Recurso" icon="ui-icon-plus"
-									update="tabelaRecurso, outRecurso, :frmCadProc:msgPagina" />
+									update="tabelaRecurso, outRecurso, :msgPagina" />
 
 							</p:outputPanel>
 						</b:column>
@@ -380,9 +380,7 @@
 
 					</b:row>
 
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
+
 					
 					<br></br>
 
@@ -390,13 +388,13 @@
 
 						<b:commandButton
 							action="#{ProcedimentoController.gravarProcedimento()}"
-							icon="glyphicon-ok" size="sm" look="success" update="frmCadProc"
+							icon="glyphicon-ok" size="sm" look="success" update="frmCadProc msgPagina"
 							class="btn-incluir" value="Incluir"
 							rendered="#{ProcedimentoController.tipo == 1}" />
 
 						<b:commandButton
 							action="#{ProcedimentoController.alterarProcedimento()}"
-							icon="glyphicon-ok" size="sm" update="frmCadProc" value="Alterar"
+							icon="glyphicon-ok" size="sm" update="frmCadProc msgPagina" value="Alterar"
 							class="btn-incluir" look="success"
 							rendered="#{ProcedimentoController.tipo  == 2}" />
 

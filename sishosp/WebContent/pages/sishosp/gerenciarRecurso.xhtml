@@ -28,9 +28,7 @@
                     <p:tooltip for="btninc" value="Incluir"></p:tooltip>
                 </b:commandButton>
 
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
+
 
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela"
                              value="#{RecursoController.listaRecursos}"
@@ -92,7 +90,7 @@
                 <div align="center">
                     <b:commandButton look="success" value="Sim" style="float:left;" class="btn-sim"
                                      action="#{RecursoController.excluirRecurso()}" ajax="true"
-                                     icon="glyphicon-ok" update="frmPrincipal"/>
+                                     icon="glyphicon-ok" update="frmPrincipal msgPagina"/>
 
                     <b:commandButton value="Não" class="btn-nao"
                                      oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"

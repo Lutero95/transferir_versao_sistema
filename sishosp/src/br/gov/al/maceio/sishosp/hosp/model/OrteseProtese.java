@@ -1,9 +1,9 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 
 public class OrteseProtese implements Serializable {
 

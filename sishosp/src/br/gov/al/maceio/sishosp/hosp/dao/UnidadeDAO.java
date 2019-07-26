@@ -27,8 +27,8 @@ public class UnidadeDAO {
         Integer codUnidade = null;
 
         String sql = "INSERT INTO hosp.unidade(nome_empresa, nome_fantasia, cnpj, rua, bairro, numero, cep, cidade, " +
-                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, matriz, ativo, nome) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?) returning id";
+                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, matriz, ativo, nome, cnes) " +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, ?) returning id";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -38,13 +38,30 @@ public class UnidadeDAO {
             ps.setString(3, unidade.getCnpj());
             ps.setString(4, unidade.getRua());
             ps.setString(5, unidade.getBairro());
-            ps.setInt(6, unidade.getNumero());
+            if(unidade.getNumero() != null) {
+                ps.setInt(6, unidade.getNumero());
+            }
+            else{
+                ps.setNull(6, Types.NULL);
+            }            
             ps.setString(7, unidade.getCep());
             ps.setString(8, unidade.getCidade());
             ps.setString(9, unidade.getEstado());
             ps.setString(10, unidade.getComplemento());
-            ps.setInt(11, unidade.getDdd1());
-            ps.setInt(12, unidade.getTelefone1());
+            if(unidade.getDdd1() != null) {
+                ps.setInt(11, unidade.getDdd1());
+            }
+            else{
+                ps.setNull(11, Types.NULL);
+            }   
+            
+            if(unidade.getTelefone1() != null) {
+                ps.setInt(12, unidade.getTelefone1());
+            }
+            else{
+                ps.setNull(12, Types.NULL);
+            }  
+
             if(unidade.getDdd2() != null) {
                 ps.setInt(13, unidade.getDdd2());
             }
@@ -77,6 +94,8 @@ public class UnidadeDAO {
             }
             
             ps.setString(18, unidade.getNomeUnidade());
+            
+            ps.setString(19, unidade.getCnes());            
             
 
             ResultSet rs = ps.executeQuery();
@@ -144,13 +163,13 @@ public class UnidadeDAO {
             else{
                 ps.setNull(9, Types.NULL);
             }
-            if(unidade.getParametro().getOrteseProtese().getPrograma().getIdPrograma() != null) {
+            if((unidade.getParametro().getOrteseProtese().getPrograma() != null) && (unidade.getParametro().getOrteseProtese().getPrograma().getIdPrograma() != null)) {
                 ps.setInt(10, unidade.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
             }
             else{
                 ps.setNull(10, Types.NULL);
             }
-            if(unidade.getParametro().getOrteseProtese().getGrupo().getIdGrupo() != null) {
+            if ((unidade.getParametro().getOrteseProtese().getGrupo() != null) && (unidade.getParametro().getOrteseProtese().getGrupo().getIdGrupo() != null) ){
                 ps.setInt(11, unidade.getParametro().getOrteseProtese().getGrupo().getIdGrupo());
             }
             else{
@@ -233,7 +252,7 @@ public class UnidadeDAO {
         Boolean retorno = false;
         String sql = "UPDATE hosp.unidade SET nome_empresa=?, nome_fantasia=?, cnpj=?, rua=?, " +
                 " bairro=?, numero=?, cep=?, cidade=?, estado=?, ddd_1=?, telefone_1=?, " +
-                " ddd_2=?, telefone_2=?, email=?, site=?, matriz=?, complemento=?, nome=? " +
+                " ddd_2=?, telefone_2=?, email=?, site=?, matriz=?, complemento=?, nome=?, cnes=? " +
                 " WHERE id = ?;";
         try {
             con = ConnectionFactory.getConnection();
@@ -244,20 +263,53 @@ public class UnidadeDAO {
             ps.setString(3, unidade.getCnpj());
             ps.setString(4, unidade.getRua());
             ps.setString(5, unidade.getBairro());
-            ps.setInt(6, unidade.getNumero());
+            if (unidade.getNumero()!=null){
+                ps.setInt(6, unidade.getNumero());
+            }
+            else{
+                ps.setNull(6, Types.NULL);
+            }   
+
             ps.setString(7, unidade.getCep());
             ps.setString(8, unidade.getCidade());
             ps.setString(9, unidade.getEstado());
-            ps.setInt(10, unidade.getDdd1());
-            ps.setInt(11, unidade.getTelefone1());
-            ps.setInt(12, unidade.getDdd2());
-            ps.setInt(13, unidade.getTelefone2());
+            if (unidade.getDdd1()!=null){
+                ps.setInt(10, unidade.getDdd1());
+            }
+            else{
+                ps.setNull(10, Types.NULL);
+            }     
+            
+            if (unidade.getTelefone1()!=null){
+                ps.setInt(11, unidade.getTelefone1());
+            }
+            else{
+                ps.setNull(11, Types.NULL);
+            }     
+            
+            if (unidade.getDdd2()!=null){
+                ps.setInt(12, unidade.getDdd2());
+            }
+            else{
+                ps.setNull(12, Types.NULL);
+            }     
+            
+            if (unidade.getTelefone2()!=null){
+                ps.setInt(13, unidade.getTelefone2());
+            }
+            else{
+                ps.setNull(13, Types.NULL);
+            }                
+
+            
+            
             ps.setString(14, unidade.getEmail());
             ps.setString(15, unidade.getSite());
             ps.setBoolean(16, unidade.getMatriz());
             ps.setString(17, unidade.getComplemento());
             ps.setString(18, unidade.getNomeUnidade());
-            ps.setInt(19, unidade.getId());
+            ps.setString(19, unidade.getCnes());
+            ps.setInt(20, unidade.getId());
             ps.executeUpdate();
 
             sql = "UPDATE hosp.parametro SET motivo_padrao_desligamento_opm = ?, opcao_atendimento = ?, " +
@@ -275,9 +327,28 @@ public class UnidadeDAO {
             ps.setTime(5, DataUtil.transformarDateEmTime(unidade.getParametro().getHorarioInicial()));
             ps.setTime(6, DataUtil.transformarDateEmTime(unidade.getParametro().getHorarioFinal()));
             ps.setInt(7, unidade.getParametro().getIntervalo());
-            ps.setInt(8, unidade.getParametro().getTipoAtendimento().getIdTipo());
-            ps.setInt(9, unidade.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
-            ps.setInt(10, unidade.getParametro().getOrteseProtese().getGrupo().getIdGrupo());
+            if ((unidade.getParametro().getTipoAtendimento() != null) && (unidade.getParametro().getTipoAtendimento().getIdTipo() != null)){
+                ps.setInt(8, unidade.getParametro().getTipoAtendimento().getIdTipo());
+            }
+            else{
+                ps.setNull(8, Types.NULL);
+            }   
+            
+            if ((unidade.getParametro().getOrteseProtese().getPrograma() != null) && (unidade.getParametro().getOrteseProtese().getPrograma().getIdPrograma() != null)){
+                ps.setInt(9, unidade.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
+            }
+            else{
+                ps.setNull(9, Types.NULL);
+            }   
+            
+
+            if (( unidade.getParametro().getOrteseProtese().getGrupo() != null) && ( unidade.getParametro().getOrteseProtese().getGrupo().getIdGrupo() != null)){
+                ps.setInt(10,  unidade.getParametro().getOrteseProtese().getGrupo().getIdGrupo());
+            }
+            else{
+                ps.setNull(10, Types.NULL);
+            }               
+
             ps.setInt(11, unidade.getId());
             ps.executeUpdate();
 
@@ -329,8 +400,8 @@ public class UnidadeDAO {
         UnidadeBean unidade = new UnidadeBean();
         String sql = "SELECT id,nome, nome_empresa, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
-                " email, site, matriz, ativo , nome_unidade" +
-                " FROM hosp.unidade where cod_unidade = ?;";
+                " email, site, matriz, ativo " +
+                " FROM hosp.unidade where id = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -361,7 +432,7 @@ public class UnidadeDAO {
                 unidade.setMatriz(rs.getBoolean("matriz"));
                 unidade.setAtivo(rs.getBoolean("ativo"));
                 unidade.setParametro(carregarParametro(id, con));
-                unidade.setNomeUnidade(rs.getString("nome_unidade"));
+                unidade.setNomeUnidade(rs.getString("nome"));
 
             }
         } catch (Exception ex) {

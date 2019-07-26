@@ -69,7 +69,7 @@ public class GerenciarPacienteDAO {
                 gp.setObservacao(rs.getString("observacao"));
                 gp.setData_cadastro(rs.getDate("data_cadastro"));
                 gp.getLaudo().getProcedimentoPrimario().setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
-                gp.getLaudo().getProcedimentoPrimario().setCodProc(rs.getInt("codproc"));
+                gp.getLaudo().getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
                 gp.getLaudo().getProcedimentoPrimario().setNomeProc(rs.getString("nomeproc"));
 
                 lista.add(gp);
