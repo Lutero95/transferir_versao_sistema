@@ -297,7 +297,7 @@
 
                                     <p:ajax listener="#{PacienteController.encontraCEP}"
                                             update="outBairro, bairro1, bairro2, inputrua, estado, outMunicipios,
-                                            frmPrincipal:msgPagina"
+                                            :msgPagina"
                                             global="false" event="blur"></p:ajax>
                                 </p:inputMask>
                             </b:column>
@@ -684,7 +684,7 @@
                                             value="#{ParentescoController.listarParentescos()}" var="sis"
                                             itemLabel="#{sis.descParentesco}"
                                             itemValue="#{sis.codParentesco}"/>
-                                            <p:ajax event="change"  update="outnomeresp grw"
+                                            <p:ajax event="change"  update="outnomeresp msgPagina"
                                             
                                             listener="#{PacienteController.verificaGrauParentescoResponsavel}"/>
                                 </p:selectOneMenu>
@@ -876,20 +876,17 @@
 
                 </p:tabView>
             </div>
-            <div align="center">
-                <b:messages value="Error" id="msgPagina"></b:messages>
-            </div>
 
             <br></br>
 
             <div align="center">
                 <b:commandButton action="#{PacienteController.gravarPaciente()}"
-                                 icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal grw"
+                                 icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal msgPagina"
                                  value="Incluir" class="btn-incluir new-bottom"
                                  rendered="#{PacienteController.tipo == 1}"/>
 
                 <b:commandButton action="#{PacienteController.alterarPaciente()}"
-                                 icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+                                 icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
                                  value="Alterar" look="success" class="btn-incluir new-bottom"
                                  rendered="#{PacienteController.tipo  == 2}"/>
 

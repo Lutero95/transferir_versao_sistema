@@ -283,6 +283,7 @@ public class PerfilMB implements Serializable {
 	}
 
 	public void onTransferMenuAlt(TransferEvent event) {
+		System.out.println("onTransferMenuAlt");
 		StringBuilder builder = new StringBuilder();
 
 		for (Object item : event.getItems()) {

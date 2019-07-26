@@ -543,7 +543,7 @@ public class MenuDAO {
 	public ArrayList<Menu> listarMenuItemTargetEdit(Integer idPerfil)
 			throws ProjetoException {
 
-		String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
+		String sql = "select distinct me.id, me.descricao, me.codigo, me.indice, me.tipo, "
 				+ "me.ativo, diretorio, desc_pagina, extensao, si.id as id_sis, "
 				+ "si.descricao as desc_sis, si.sigla as sigla_sis from acl.menu me "
 				+ "join acl.perm_geral pg on pg.id_menu = me.id "
