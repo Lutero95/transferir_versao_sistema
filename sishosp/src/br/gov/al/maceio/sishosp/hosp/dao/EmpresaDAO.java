@@ -183,8 +183,8 @@ public class EmpresaDAO {
             ps.setString(14, empresa.getEmail());
             ps.setString(15, empresa.getSite());
             ps.setString(16, empresa.getComplemento());
-            ps.setInt(17, empresa.getCodEmpresa());
-            ps.setString(18, empresa.getCnes());            
+            ps.setString(17, empresa.getCnes());
+            ps.setInt(18, empresa.getCodEmpresa());            
             ps.executeUpdate();
 
             con.commit();
