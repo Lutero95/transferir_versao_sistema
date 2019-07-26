@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.comum.enums.Empresas;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 
 public class ConnectionFactory {
@@ -16,31 +15,21 @@ public class ConnectionFactory {
 
         String nomeBancoAcesso = (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso");
 
+        //LOCAL
         String url = "jdbc:postgresql://localhost:5432/";
         String usuario = "postgres";
         String senha = "engetron";
-      
-/*      
+        //String senha = "post";
 
 
-  
+        //PRODUÇÃO
+        /*
         String url = "jdbc:postgresql://72.55.172.244:5432/";
         String usuario = "postgres";
         String senha = "E2@spwxlmQo";
-  */    
-  
-         //senha = "engetron";
-  
-            url = url + nomeBancoAcesso;
-
-        
-        /*
-
-        //NUVEM
-        url = "jdbc:postgresql://localhost:5432/airmobco_ehosp";
-        usuario = "airmobco_data";
-        senha = "ehosp2018$$";
         */
+
+        url = url + nomeBancoAcesso;
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -54,27 +43,20 @@ public class ConnectionFactory {
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
                     "Driver de conexao com o banco nao encontrado \n Mensagem original: "
                             + cnf.getMessage(), "Erro");
-            // String msg =
-            // "Driver de conexao com o banco nao encontrado \n Mensagem original: "
-            // + cnf.getMessage();
 
             FacesContext.getCurrentInstance().addMessage(null, msg);
             throw new ProjetoException(msg.toString());
+
         } catch (SQLException sql) {
             System.out.println("Não abriu conexão");
-            // String msg =
-            // "Nao foi possivel abrir a conexao com o banco \n Mensagem original: "
-            // + sql.getMessage();
             FacesMessage msg = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
                     "Nao foi possivel abrir a conexao com o banco \n Mensagem original: "
                             + sql.getMessage(), "Erro");
-            // String msg =
-            // "Driver de conexao com o banco nao encontrado \n Mensagem original: "
-            // + cnf.getMessage();
 
             FacesContext.getCurrentInstance().addMessage(null, msg);
             throw new ProjetoException(sql.getMessage());
+
         }
     }
 }
