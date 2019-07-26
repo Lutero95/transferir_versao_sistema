@@ -28,7 +28,7 @@ public class GrupoDAO {
     public boolean gravarGrupo(GrupoBean grupo) {
 
         Boolean retorno = false;
-        String sql = "insert into hosp.grupo (descgrupo, qtdfrequencia, auditivo, insercao_pac_institut, cod_empresa) values (?, ?, ?, ?, ?) RETURNING id_grupo;";
+        String sql = "insert into hosp.grupo (descgrupo, qtdfrequencia, auditivo, insercao_pac_institut, cod_unidade) values (?, ?, ?, ?, ?) RETURNING id_grupo;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -269,7 +269,7 @@ public class GrupoDAO {
         List<GrupoBean> lista = new ArrayList<>();
         String sql = "select g.id_grupo, g.descgrupo, g.qtdfrequencia, g.auditivo, g.insercao_pac_institut from hosp.grupo g, "
                 + " hosp.tipoatendimento_grupo tg, hosp.tipoatendimento t"
-                + " where t.id = ? and g.cod_empresa = ? and g.id_grupo = tg.codgrupo and t.id = tg.codtipoatendimento order by g.descgrupo";
+                + " where t.id = ? and g.cod_unidade = ? and g.id_grupo = tg.codgrupo and t.id = tg.codtipoatendimento order by g.descgrupo";
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, idTipo);
@@ -301,7 +301,7 @@ public class GrupoDAO {
 
     public List<GrupoBean> listarGrupos() throws ProjetoException {
         List<GrupoBean> lista = new ArrayList<>();
-        String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, insercao_pac_institut from hosp.grupo where cod_empresa = ? order by descgrupo";
+        String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, insercao_pac_institut from hosp.grupo where cod_unidade = ? order by descgrupo";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -369,7 +369,7 @@ public class GrupoDAO {
         List<GrupoBean> lista = new ArrayList<>();
         String sql = "select distinct g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut  "
                 + " from hosp.grupo g left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)"
-                + " where p.id_programa = ? and g.cod_empresa = ? and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? order by descgrupo ";
+                + " where p.id_programa = ? and g.cod_unidade = ? and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? order by descgrupo ";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -407,7 +407,7 @@ public class GrupoDAO {
         List<GrupoBean> lista = new ArrayList<>();
         String sql = "select distinct g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut  "
                 + " from hosp.grupo g left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)"
-                + " where p.id_programa = ? and g.cod_empresa = ? and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? order by descgrupo ";
+                + " where p.id_programa = ? and g.cod_unidade = ? and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? order by descgrupo ";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -445,7 +445,7 @@ public class GrupoDAO {
         List<GrupoBean> lista = new ArrayList<>();
         String sql = "select distinct g.id_grupo, g.id_grupo ||'-'|| g.descgrupo as descgrupo , g.qtdfrequencia, g.auditivo, g.equipe, g.insercao_pac_institut  "
                 + " from hosp.grupo g left join hosp.grupo_programa gp on (g.id_grupo = gp.codgrupo) left join hosp.programa p on (gp.codprograma = p.id_programa)"
-                + " where g.cod_empresa = ? and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? order by descgrupo ";
+                + " where g.cod_unidade = ? and upper(g.id_grupo ||'-'|| g.descgrupo) LIKE ? order by descgrupo ";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -544,7 +544,7 @@ public class GrupoDAO {
         List<GrupoBean> lista = new ArrayList<>();
 
         String sql = "select id_grupo, descgrupo, qtdfrequencia, auditivo, insercao_pac_institut from hosp.grupo  "
-                + "where descgrupo LIKE ? and cod_empresa = ? order by descgrupo";
+                + "where descgrupo LIKE ? and cod_unidade = ? order by descgrupo";
 
         try {
             con = ConnectionFactory.getConnection();

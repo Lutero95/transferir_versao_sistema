@@ -16,7 +16,6 @@ import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
-import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 
@@ -35,11 +34,11 @@ public class UnidadeController implements Serializable {
     private List<UnidadeBean> listaUnidades;
 
     //CONSTANTES
-    private static final String ENDERECO_CADASTRO = "cadastroEmpresa?faces-redirect=true";
+    private static final String ENDERECO_CADASTRO = "cadastrounidade?faces-redirect=true";
     private static final String ENDERECO_TIPO = "&amp;tipo=";
     private static final String ENDERECO_ID = "&amp;id=";
-    private static final String CABECALHO_INCLUSAO = "Inclusão de Empresa";
-    private static final String CABECALHO_ALTERACAO = "Alteração de Empresa";
+    private static final String CABECALHO_INCLUSAO = "Inclusão de Unidade";
+    private static final String CABECALHO_ALTERACAO = "Alteração de Unidade";
 
     public UnidadeController() {
         this.unidade = new UnidadeBean();
@@ -89,7 +88,7 @@ public class UnidadeController implements Serializable {
         return RedirecionarUtil.redirectInsert(ENDERECO_CADASTRO, ENDERECO_TIPO, tipo);
     }
 
-    public void getEditEmpresa() throws ProjetoException {
+    public void getEditUnidade() throws ProjetoException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -111,27 +110,27 @@ public class UnidadeController implements Serializable {
 
         if (cadastrou == true) {
             limparDados();
-            JSFUtil.adicionarMensagemSucesso("Empresa cadastrada com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("Unidade cadastrada com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }
     }
 
-    public void alterarEmpresa() {
+    public void alterarUnidade() {
         boolean alterou = eDao.alterarUnidade(unidade);
 
         if (alterou == true) {
-            JSFUtil.adicionarMensagemSucesso("Empresa alterada com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("Unidade alterada com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
         }
     }
 
-    public void desativarEmpresa() {
+    public void desativarUnidade() {
         boolean desativou = eDao.desativarUnidade(unidade);
 
         if (desativou == true) {
-            JSFUtil.adicionarMensagemSucesso("Empresa desativada com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("Unidade desativada com sucesso!", "Sucesso");
             JSFUtil.fecharDialog("dialogExclusao");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
@@ -139,12 +138,16 @@ public class UnidadeController implements Serializable {
         }
     }
 
-    public void listarEmpresa() throws ProjetoException {
+    public void listarUnidade() throws ProjetoException {
         listaUnidades = eDao.listarUnidade();
     }
 
     public List<UnidadeBean> listarTodasAsUnidades() throws ProjetoException {
-        return eDao.listarUnidade();
+        if (listaUnidades.isEmpty()) {
+    	listaUnidades =  eDao.listarUnidade();
+        System.out.println("carrega listarTodasAsUnidades");
+        }
+        return listaUnidades;
     }
 
     public List<GrupoBean> listaGrupoAutoCompleteComPrograma(String query)

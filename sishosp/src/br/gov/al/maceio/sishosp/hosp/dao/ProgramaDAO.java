@@ -26,7 +26,7 @@ public class ProgramaDAO {
         Boolean retorno = false;
         PreparedStatement ps = null;
 
-        String sql = "insert into hosp.programa (descprograma, cod_empresa, cod_procedimento) values (?, ?, ?) RETURNING id_programa;";
+        String sql = "insert into hosp.programa (descprograma, cod_unidade, cod_procedimento) values (?, ?, ?) RETURNING id_programa;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -149,7 +149,7 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "SELECT DISTINCT id_programa, descprograma, cod_procedimento "
                 + "FROM hosp.programa LEFT JOIN hosp.profissional_programa_grupo ON programa.id_programa = profissional_programa_grupo.codprograma "
-                + "WHERE cod_empresa = ? ORDER BY descprograma";
+                + "WHERE cod_unidade = ? ORDER BY descprograma";
 
 
         GrupoDAO gDao = new GrupoDAO();
@@ -188,7 +188,7 @@ public class ProgramaDAO {
 
         String sql = "select id_programa, descprograma, cod_procedimento from hosp.programa "
                 + "join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
-                + "where programa.cod_empresa = ? "
+                + "where programa.cod_unidade = ? "
                 + "order by descprograma";
         GrupoDAO gDao = new GrupoDAO();
         ArrayList<ProgramaBean> lista = new ArrayList();
@@ -228,7 +228,7 @@ public class ProgramaDAO {
 
 
         if (tipo == 1) {
-            sql += " and upper(id_programa ||'-'|| descprograma) LIKE ? and cod_empresa = ? order by descprograma";
+            sql += " and upper(id_programa ||'-'|| descprograma) LIKE ? and cod_unidade = ? order by descprograma";
         }
         try {
             con = ConnectionFactory.getConnection();
@@ -403,7 +403,7 @@ public class ProgramaDAO {
                 + "from hosp.grupo_programa gp "
                 + "left join hosp.programa p on (gp.codprograma = p.id_programa) "
                 + "left join hosp.grupo g on (gp.codgrupo = g.id_grupo) "
-                + "where p.cod_empresa = ? order by p.descprograma";
+                + "where p.cod_unidade = ? order by p.descprograma";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -438,7 +438,7 @@ public class ProgramaDAO {
         List<ProgramaBean> lista = new ArrayList<>();
         String sql = "select id_programa,id_programa ||'-'|| descprograma as descprograma, cod_procedimento from hosp.programa "
                 + "left join hosp.profissional_programa_grupo on programa.id_programa = profissional_programa_grupo.codprograma "
-                + "where codprofissional = ? and cod_empresa = ?"
+                + "where codprofissional = ? and cod_unidade = ?"
                 + "and upper(id_programa ||'-'|| descprograma) LIKE ? order by descprograma";
 
         try {

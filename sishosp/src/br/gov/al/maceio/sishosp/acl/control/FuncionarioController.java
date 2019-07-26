@@ -960,4 +960,12 @@ public class FuncionarioController implements Serializable {
         this.renderizarPermissoes = renderizarPermissoes;
     }
 
+	public UnidadeBean getUnidadeBean() {
+		return unidadeBean;
+	}
+
+	public void setUnidadeBean(UnidadeBean unidadeBean) {
+		this.unidadeBean = unidadeBean;
+	}
+
 }

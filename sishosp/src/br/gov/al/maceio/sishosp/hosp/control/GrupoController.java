@@ -136,11 +136,10 @@ public class GrupoController implements Serializable {
         listaGrupos = gDao.listarGrupos();
     }
 
-    public List<ProgramaBean> listarProgramasEGrupos() throws ProjetoException {
+    public void listarProgramasEGrupos() throws ProjetoException {
         ProgramaDAO pDao = new ProgramaDAO();
         listaProgramasEGrupos = pDao.listarProgramasEGrupos();
 
-        return listaProgramasEGrupos;
     }
 
     public GrupoBean getGrupo() {
@@ -210,5 +209,13 @@ public class GrupoController implements Serializable {
     public void setProg(ProgramaBean prog) {
         this.prog = prog;
     }
+
+	public List<ProgramaBean> getListaProgramasEGrupos() {
+		return listaProgramasEGrupos;
+	}
+
+	public void setListaProgramasEGrupos(List<ProgramaBean> listaProgramasEGrupos) {
+		this.listaProgramasEGrupos = listaProgramasEGrupos;
+	}
 
 }

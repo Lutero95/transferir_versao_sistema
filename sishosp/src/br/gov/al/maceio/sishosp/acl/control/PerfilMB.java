@@ -374,6 +374,7 @@ public class PerfilMB implements Serializable {
 
 	public List<Perfil> getListaPerfil() throws ProjetoException {
 		if (listaPerfil == null) {
+			System.out.println("lista getListaPerfil");
 			PerfilDAO pdao = new PerfilDAO();
 			listaPerfil = pdao.listarPerfil();
 		}

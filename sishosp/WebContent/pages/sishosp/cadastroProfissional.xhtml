@@ -122,16 +122,16 @@
                             </b:column>
 
                             <b:column span="3" class="label-position">
-                                <b:label value="Empresa Padrão" severity="info"/>
+                                <b:label value="Unidade Padrão" severity="info"/>
 
                                 <b:selectOneMenu
-                                        value="#{MBFuncionarios.profissional.empresa.codEmpresa}"
-                                        required="true" requiredMessage="Empresa: Campo obrigatório!">
+                                        value="#{MBFuncionarios.profissional.unidade.id}"
+                                        required="true" requiredMessage="Unidade Padrão: Campo obrigatório!">
 
                                     <f:selectItem itemLabel="Selecione"/>
-                                    <f:selectItems value="#{EmpresaController.listarTodasAsEmpresa()}"
-                                                   var="emp" itemLabel="#{emp.nomeFantasia}"
-                                                   itemValue="#{emp.codEmpresa}"/>
+                                    <f:selectItems value="#{UnidadeController.listarTodasAsUnidades()}"
+                                                   var="emp" itemLabel="#{emp.nomeUnidade}"
+                                                   itemValue="#{emp.id}"/>
                                 </b:selectOneMenu>
                             </b:column>
 
@@ -149,12 +149,12 @@
                                 <b:label value="Unidade" severity="info"/>
 
                                 <b:selectOneMenu id="unidadeExtra"
-                                                 value="#{MBFuncionarios.profissional.unidadeExtra.codEmpresa}">
+                                                 value="#{MBFuncionarios.profissional.unidadeExtra.id}">
 
                                     <f:selectItem itemLabel="Selecione"/>
-                                    <f:selectItems value="#{EmpresaController.listarTodasAsEmpresa()}"
-                                                   var="emp" itemLabel="#{emp.nomeFantasia}"
-                                                   itemValue="#{emp.codEmpresa}"/>
+                                    <f:selectItems value="#{UnidadeController.listarTodasAsUnidades()}"
+                                                   var="emp" itemLabel="#{emp.nomeUnidade}"
+                                                   itemValue="#{emp.id}"/>
                                 </b:selectOneMenu>
                             </b:column>
 
@@ -163,7 +163,7 @@
                                                  action="#{MBFuncionarios.addUnidadeExtra()}"
                                                  class="btn-acao-table acao-confirmar"
                                                  icon="ui-icon-plus" style="margin-top: 20px;"
-                                                 update="tabelaunidades, :frmPrincipal:msgPagina"></p:commandButton>
+                                                 update="tabelaunidades, :msgPagina"></p:commandButton>
                             </b:column>
                         </b:row>
 
@@ -175,11 +175,11 @@
                                 <p:dataTable emptyMessage="Nenhuma unidade adicionada"
                                              styleClass="table table-hover" id="tabelaunidades"
                                              value="#{MBFuncionarios.profissional.listaUnidades}"
-                                             var="empresa" paginator="true" paginatorPosition="bottom"
+                                             var="unidade" paginator="true" paginatorPosition="bottom"
                                              rows="12" resizableColumns="true">
 
                                     <p:column headerText="Unidade">
-                                        <p:outputLabel value="#{empresa.nomeFantasia}"/>
+                                        <p:outputLabel value="#{unidade.nomeUnidade}"/>
                                     </p:column>
 
                                     <p:column headerText="Ação">
@@ -188,8 +188,8 @@
                                                              class="new-btn-acao-table acao-excluir"
                                                              action="#{MBFuncionarios.removerUnidadeExtra()}"
                                                              icon="ui-icon-trash" update="tabelaunidades">
-                                                <f:setPropertyActionListener value="#{empresa}"
-                                                                             target="#{MBFuncionarios.empresaBean}"/>
+                                                <f:setPropertyActionListener value="#{unidade}"
+                                                                             target="#{MBFuncionarios.unidadeBean}"/>
                                             </p:commandButton>
                                         </div>
                                     </p:column>
@@ -216,6 +216,7 @@
                                                      tooltip="Incluir Profissional" icon="ui-icon-plus"
                                                      class="new-btn-acao-table acao-editar"
                                                      style="margin-left: 20px;"
+                                                     actionListener="#{GrupoController.listarProgramasEGrupos}"
                                                      oncomplete="PF('dlgConsuGrupos').show();"/>
                                 </b:column>
 
@@ -314,9 +315,10 @@
                                                         itemLabel="#{theme.descCbo}">
                                         </p:autoComplete>
 
-                                        <p:commandButton id="btBusCbo" icon="ui-icon-search"
+                                        <p:commandButton id="btBusCbo" icon="ui-icon-search" update=":formConsulCbo"
                                                          style="margin-top: 5px;" immediate="true"
-                                                         onclick="PF('dlgConsulCbo').show();"/>
+                                                         actionListener="#{CboController.listarCbos()}"
+                                                         oncomplete="PF('dlgConsulCbo').show();"/>
 
                                     </p:outputPanel>
 
@@ -358,7 +360,7 @@
                                             <p:ajax
                                                     listener="#{MBFuncionarios.validaCns(MBFuncionarios.profissional.cns)}"
                                                     global="false" event="blur" immediate="true"
-                                                    update=":frmPrincipal:msgPagina"/>
+                                                    update=":msgPagina"/>
                                         </b:inputText>
 
                                     </p:outputPanel>
@@ -433,9 +435,7 @@
 
                 </p:tabView>
 
-                <div align="center">
-                    <b:messages value="Error" id="msgPagina"></b:messages>
-                </div>
+
 
                 <br></br>
 
@@ -499,7 +499,7 @@
                   modal="true" styleClass="topDialog">
             <h:form id="formConsulCbo">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{CboController.listarCbos()}" var="cbo" page-length="5"
+                             value="#{CboController.listaCbo}" var="cbo" page-length="5"
                              page-length-menu="5,10,20" display="Nenhum C.B.O.">
 
                     <h:column>
@@ -594,7 +594,7 @@
             <h:form id="formConsuGrops">
                 <p:outputPanel autoUpdate="true">
                     <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                 value="#{GrupoController.listarProgramasEGrupos()}" id="dtGrupos"
+                                 value="#{GrupoController.listaProgramasEGrupos}" id="dtGrupos"
                                  var="programa">
 
 
@@ -618,7 +618,7 @@
                                 Adicionar
                             </f:facet>
                             <p:commandButton
-                                    update=":frmPrincipal:tbv:tabelagrupo :frmPrincipal:msgPagina"
+                                    update=":frmPrincipal:tbv:tabelagrupo :msgPagina"
                                     icon="ui-icon-check" title="Selecionar"
                                     class="new-btn-acao-table acao-editar"
                                     onclick="PF('dlgConsuGrupos').hide();"

@@ -1,7 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +10,9 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
-
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
@@ -186,6 +184,14 @@ public class TipoAtendimentoController implements Serializable {
     public void setTipo(int tipo) {
         this.tipo = tipo;
     }
+
+	public ArrayList<TipoAtendimentoBean> getListaTiposAtendimento() {
+		return listaTiposAtendimento;
+	}
+
+	public void setListaTiposAtendimento(ArrayList<TipoAtendimentoBean> listaTiposAtendimento) {
+		this.listaTiposAtendimento = listaTiposAtendimento;
+	}
 
 
 }

@@ -9,95 +9,100 @@
 	<ui:define name="content">
 
 		<f:metadata>
-			<f:viewAction action="#{EmpresaController.listarEmpresa()}"/>
+			<f:viewAction action="#{UnidadeController.listarUnidade()}" />
 		</f:metadata>
 
 		<div class="panel panel-primary top-primary">
 			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Gerenciamento de Empresas</h4>
+				<h4 class="panel-title">Gerenciamento de Unidades</h4>
 			</div>
-			
+
 			<div class="panel-body table-body">
 
-			<h:form id="frmPrincipal">
+				<h:form id="frmPrincipal">
 
-				<b:commandButton id="btninc" value="Novo" size="sm"
-					action="#{EmpresaController.redirectInsert()}"
-					icon="glyphicon-plus" class="btn-addNovo">
-					<f:setPropertyActionListener value="1"
-						target="#{EmpresaController.tipo}" />
-					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-				</b:commandButton>
-				
-				<div align="center">
-					<b:messages value="Error" id="msgPagina"></b:messages>
-				</div>
-				
-				<br></br>
+					<b:commandButton id="btninc" value="Novo" size="sm"
+						action="#{UnidadeController.redirectInsert()}"
+						icon="glyphicon-plus" class="btn-addNovo">
+						<f:setPropertyActionListener value="1"
+							target="#{UnidadeController.tipo}" />
+						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
+					</b:commandButton>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					id="dataTablePrincipal" var="tab" responsive="true"
-					value="#{EmpresaController.listaEmpresas}">
+					<div align="center">
+						<b:messages value="Error" id="msgPagina"></b:messages>
+					</div>
 
-					<h:column>
-						<f:facet name="header">
-                            Nome Principal
+					<br></br>
+
+					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+						id="dataTablePrincipal" var="tab" responsive="true"
+						value="#{UnidadeController.listaUnidades}">
+
+						<h:column>
+							<f:facet name="header">
+                            Nome Unidade
                         </f:facet>
 
-						<h:outputText value="#{tab.nomeEmpresa}" />
-					</h:column>
+							<h:outputText value="#{tab.nomeUnidade}" />
+						</h:column>
 
 
-					<h:column>
-						<f:facet name="header">
+						<h:column>
+							<f:facet name="header">
+                            Nome Empresa
+                        </f:facet>
+
+							<h:outputText value="#{tab.nomeEmpresa}" />
+						</h:column>
+
+
+						<h:column>
+							<f:facet name="header">
                             Nome Fantasia
                         </f:facet>
 
-						<h:outputText value="#{tab.nomeFantasia}" />
-					</h:column>
+							<h:outputText value="#{tab.nomeFantasia}" />
+						</h:column>
 
-					<h:column>
-						<f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                             CNPJ
                         </f:facet>
 
-						<h:outputText value="#{tab.cnpj}" />
-					</h:column>
+							<h:outputText value="#{tab.cnpj}" />
+						</h:column>
 
-					<h:column>
-						<f:facet name="header">
-                            Tipo
-                        </f:facet>
+					
 
-						<h:outputText value="#{tab.tipoString}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
+						<h:column>
+							<f:facet name="header">
                             Ação
                         </f:facet>
 
-						<b:commandButton tooltip="Alterar" icon="glyphicon-edit" size="sm"
-							action="#{EmpresaController.redirectEdit()}" class="btn-acao-table acao-editar">
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{EmpresaController.empresa}" />
+							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+								size="sm" action="#{UnidadeController.redirectEdit()}"
+								class="btn-acao-table acao-editar">
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{UnidadeController.unidade}" />
 
-							<f:setPropertyActionListener value="2"
-								target="#{EmpresaController.tipo}" />
-						</b:commandButton>
+								<f:setPropertyActionListener value="2"
+									target="#{UnidadeController.tipo}" />
+							</b:commandButton>
 
-						<b:commandButton tooltip="Desativar" icon="glyphicon-trash"
-							size="sm" ajax="true" style="margin-left:10px" class="btn-acao-table acao-excluir"
-							oncomplete="PF('dialogExclusao').show()">
+							<b:commandButton tooltip="Desativar" icon="glyphicon-trash"
+								size="sm" ajax="true" style="margin-left:10px"
+								class="btn-acao-table acao-excluir"
+								oncomplete="PF('dialogExclusao').show()">
 
-							<f:setPropertyActionListener value="#{tab}"
-								target="#{EmpresaController.empresa}" />
-						</b:commandButton>
+								<f:setPropertyActionListener value="#{tab}"
+									target="#{UnidadeController.unidade}" />
+							</b:commandButton>
 
-					</h:column>
-				</b:dataTable>
+						</h:column>
+					</b:dataTable>
 
-			</h:form>
+				</h:form>
 			</div>
 
 		</div>
@@ -107,12 +112,12 @@
 
 			<h:form id="frmExcluir">
 				<div class="alert alert-warning" role="alert">Deseja desativar
-					esta Empresa?</div>
+					esta Unidade?</div>
 				<div align="center">
 					<p:separator />
 					<b:commandButton look="success" value="Sim" style="float:left;"
-						action="#{EmpresaController.desativarEmpresa()}" ajax="true"
-						icon="glyphicon-ok" update=":frmPrincipal" class="btn-sim"/>
+						action="#{UnidadeController.desativarUnidade()}" ajax="true"
+						icon="glyphicon-ok" update=":frmPrincipal" class="btn-sim" />
 
 					<b:commandButton value="Não" class="btn-nao"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
