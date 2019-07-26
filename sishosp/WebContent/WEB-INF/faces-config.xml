@@ -29,4 +29,8 @@
 		<validator-class>br.gov.al.maceio.sishosp.comum.validator.PISValidator</validator-class>
 	</validator>
 
+	<lifecycle>
+		<phase-listener>br.gov.al.maceio.sishosp.comum.util.AuthorizationListener</phase-listener>
+	</lifecycle>
+
 </faces-config>
