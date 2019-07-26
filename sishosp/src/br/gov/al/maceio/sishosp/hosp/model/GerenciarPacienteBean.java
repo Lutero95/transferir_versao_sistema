@@ -24,6 +24,7 @@ public class GerenciarPacienteBean implements Serializable {
 	private FuncionarioBean funcionario;
 	private EquipeBean equipe;
 	private LaudoBean laudo;
+	private UnidadeBean unidade;
 
 	public GerenciarPacienteBean() {
 		grupo = new GrupoBean();
@@ -32,6 +33,7 @@ public class GerenciarPacienteBean implements Serializable {
 		funcionario = new FuncionarioBean();
 		equipe = new EquipeBean();
 		laudo = new LaudoBean();
+		unidade = new UnidadeBean();
 	}
 
 	public Integer getId() {

@@ -19,6 +19,7 @@ public class ProcedimentoBean implements Serializable {
     private Integer qtdMaxima;
     private Integer prazoMinimoNovaExecucao;
     private String sexo;
+    private Integer codUnidade;
 
     // HERDADOS
     private EquipamentoBean equipamento;
@@ -192,4 +193,12 @@ public class ProcedimentoBean implements Serializable {
     public void setListaRecurso(ArrayList<RecursoBean> listaRecurso) {
         this.listaRecurso = listaRecurso;
     }
+
+	public Integer getCodUnidade() {
+		return codUnidade;
+	}
+
+	public void setCodUnidade(Integer codUnidade) {
+		this.codUnidade = codUnidade;
+	}
 }

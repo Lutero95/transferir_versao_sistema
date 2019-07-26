@@ -292,8 +292,8 @@ public class TipoAtendimentoDAO {
         return lista;
     }
 
-    public List<TipoAtendimentoBean> listarTipoAt() throws ProjetoException {
-        List<TipoAtendimentoBean> lista = new ArrayList<>();
+    public ArrayList<TipoAtendimentoBean> listarTipoAt() throws ProjetoException {
+    	ArrayList<TipoAtendimentoBean> lista = new ArrayList<>();
         String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa, intervalo_minimo from hosp.tipoatendimento order by desctipoatendimento";
         GrupoDAO gDao = new GrupoDAO();
         try {

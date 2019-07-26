@@ -17,6 +17,7 @@ public class OrteseProtese implements Serializable {
     private Date dataCancelamento;
     private String medicao;
     private Date dataMedicao;
+    private Integer codUnidade;
 
     //HERDADOS
     private ProgramaBean programa;
@@ -153,4 +154,12 @@ public class OrteseProtese implements Serializable {
     public void setDataMedicao(Date dataMedicao) {
         this.dataMedicao = dataMedicao;
     }
+
+	public Integer getCodUnidade() {
+		return codUnidade;
+	}
+
+	public void setCodUnidade(Integer codUnidade) {
+		this.codUnidade = codUnidade;
+	}
 }

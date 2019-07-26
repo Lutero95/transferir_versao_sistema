@@ -12,7 +12,7 @@ public class BloqueioBean implements Serializable {
 	private Date dataFim;
 	private String turno;
 	private String descBloqueio;
-	private Integer codEmpresa;
+	private Integer codUnidade;
 
 	// HERDADO
 	private FuncionarioBean prof;
@@ -72,12 +72,13 @@ public class BloqueioBean implements Serializable {
 		this.descBloqueio = descBloqueio;
 	}
 
-	public Integer getCodEmpresa() {
-		return codEmpresa;
+	public Integer getCodUnidade() {
+		return codUnidade;
 	}
 
-	public void setCodEmpresa(Integer codEmpresa) {
-		this.codEmpresa = codEmpresa;
+	public void setCodUnidade(Integer codUnidade) {
+		this.codUnidade = codUnidade;
 	}
 
+	
 }

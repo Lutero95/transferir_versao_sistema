@@ -108,7 +108,7 @@ public class ReportController implements Serializable {
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
 			map.put("referencia", dataRef); // aspas - ireport, verde java
-			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
+			map.put("codempresa", user_session.getUnidade().getId()); 
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
 			map.put("codTipoDocumento", codTipoDocumento);
@@ -135,7 +135,7 @@ public class ReportController implements Serializable {
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);
-			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
+			map.put("codempresa", user_session.getUnidade().getId()); 
 			map.put("codFornecedor", codFornecedor);
 			map.put("codTipoDocumento", codTipoDocumento);
 			map.put("codccusto", codcccusto);
@@ -163,7 +163,7 @@ public class ReportController implements Serializable {
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
-			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
+			map.put("codempresa", user_session.getUnidade().getId()); 
 			map.put("codTipoDocumento", codTipoDocumento);
 			map.put("codccusto", codcccusto);
 			map.put("coddespesa", coddespesa);
@@ -189,7 +189,7 @@ public class ReportController implements Serializable {
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
 			map.put("codTipoDocumento", codTipoDocumento);
-			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
+			map.put("codempresa", user_session.getUnidade().getId()); 
 			map.put("codccusto", codcccusto);
 			map.put("coddespesa", coddespesa);
 			map.put("codportador", codportador);
@@ -216,7 +216,7 @@ public class ReportController implements Serializable {
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
 			map.put("codTipoDocumento", codTipoDocumento);
-			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
+			map.put("codempresa", user_session.getUnidade().getId()); 
 			map.put("codccusto", codcccusto);
 			map.put("coddespesa", coddespesa);
 			map.put("codportador", codportador);
@@ -242,7 +242,7 @@ public class ReportController implements Serializable {
 			map.put("codFornecedor", codFornecedor);
 			map.put("codTipoDocumento", codTipoDocumento);
 			map.put("codccusto", codcccusto);
-			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
+			map.put("codempresa", user_session.getUnidade().getId()); 
 			map.put("coddespesa", coddespesa);
 			map.put("codportador", codportador);
 			map.put("tipoRelatorio", tipoRelatorio);
@@ -267,7 +267,7 @@ public class ReportController implements Serializable {
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
-			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
+			map.put("codempresa", user_session.getUnidade().getId()); 
 			map.put("codTipoDocumento", codTipoDocumento);
 			map.put("codccusto", codcccusto);
 			map.put("coddespesa", coddespesa);
@@ -289,7 +289,7 @@ public class ReportController implements Serializable {
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
-			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
+			map.put("codempresa", user_session.getUnidade().getId()); 
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
@@ -316,7 +316,7 @@ public class ReportController implements Serializable {
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
-			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
+			map.put("codempresa", user_session.getUnidade().getId()); 
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);
 			map.put("codFornecedor", codFornecedor);
@@ -340,7 +340,7 @@ public class ReportController implements Serializable {
 			
 			map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 			map.put("datainicio", new java.sql.Date(dataInicio.getTime()));
-			map.put("codempresa", user_session.getEmpresa().getCodEmpresa()); 
+			map.put("codempresa", user_session.getUnidade().getId()); 
 			map.put("datafim", new java.sql.Date(dataFim.getTime()));
 			map.put("referencia", dataRef); // aspas - ireport, verde java
 			map.put("situacao", situacao);

@@ -41,7 +41,7 @@ public class GrupoDAO {
             } else {
                 ps.setBoolean(4, grupo.isinsercao_pac_institut());
             }
-            ps.setInt(5, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(5, user_session.getUnidade().getId());
             ResultSet rs = ps.executeQuery();
 
             Integer idGrupo = 0;
@@ -273,7 +273,7 @@ public class GrupoDAO {
         try {
             PreparedStatement stm = conAuxiliar.prepareStatement(sql);
             stm.setInt(1, idTipo);
-            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(2, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -305,7 +305,7 @@ public class GrupoDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -375,7 +375,7 @@ public class GrupoDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1, prog.getIdPrograma());
-            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(2, user_session.getUnidade().getId());
             stm.setString(3, "%" + descricao.toUpperCase() + "%");
             ResultSet rs = stm.executeQuery();
 
@@ -413,7 +413,7 @@ public class GrupoDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setInt(1, codPrograma);
-            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(2, user_session.getUnidade().getId());
             stm.setString(3, "%" + descricao.toUpperCase() + "%");
             ResultSet rs = stm.executeQuery();
 
@@ -450,7 +450,7 @@ public class GrupoDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             stm.setString(2, "%" + descricao.toUpperCase() + "%");
             ResultSet rs = stm.executeQuery();
 
@@ -550,7 +550,7 @@ public class GrupoDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setString(1, "%" + descricao.toUpperCase() + "%");
-            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(2, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

@@ -22,6 +22,7 @@ public class ConfigAgendaParte1Bean implements Serializable {
     private String opcao;
     private String tipo;
     private String diaSemana;
+    private UnidadeBean unidade;
 
     public ConfigAgendaParte1Bean() {
         this.profissional = new FuncionarioBean();
@@ -29,6 +30,7 @@ public class ConfigAgendaParte1Bean implements Serializable {
         this.diasSemana = new ArrayList<String>();
         opcao = "2";
         tipo = "G"; 
+        unidade = new UnidadeBean();
     }
 
     public ConfigAgendaParte1Bean(Integer mes, Integer ano,
@@ -149,5 +151,13 @@ public class ConfigAgendaParte1Bean implements Serializable {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public UnidadeBean getUnidade() {
+		return unidade;
+	}
+
+	public void setUnidade(UnidadeBean unidade) {
+		this.unidade = unidade;
 	}
 }

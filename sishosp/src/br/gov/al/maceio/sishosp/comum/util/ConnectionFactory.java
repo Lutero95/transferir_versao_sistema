@@ -14,25 +14,27 @@ public class ConnectionFactory {
 
     public static Connection getConnection() throws ProjetoException {
 
-        Integer codEmpresa = (Integer) SessionUtil.resgatarDaSessao("codEmpresa");
+        String nomeBancoAcesso = (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso");
 
         String url = "jdbc:postgresql://localhost:5432/";
         String usuario = "postgres";
-        String senha = "post";
+        String senha = "engetron";
+      
+/*      
 
-        if (codEmpresa == Empresas.LOCAL.getSigla()) {
-            url = url + "ehosp";
-        } else if (codEmpresa == Empresas.PESTALOZZI.getSigla()) {
-            url = url + "pestalozzi";
-        } else if (codEmpresa == Empresas.ADEFAL.getSigla()) {
-            url = url + "adefal";
-        }
 
+  
+        String url = "jdbc:postgresql://72.55.172.244:5432/";
+        String usuario = "postgres";
+        String senha = "E2@spwxlmQo";
+  */    
+  
+         //senha = "engetron";
+  
+            url = url + nomeBancoAcesso;
+
+        
         /*
-        url = "jdbc:postgresql://72.55.172.244:5432/ehosp";
-        usuario = "postgres";
-        senha = "E2@spwxlmQo";
-        //senha = "engetron";
 
         //NUVEM
         url = "jdbc:postgresql://localhost:5432/airmobco_ehosp";

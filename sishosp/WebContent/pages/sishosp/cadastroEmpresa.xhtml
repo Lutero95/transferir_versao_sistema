@@ -1,477 +1,304 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
-
-    <ui:define name="content">
-
-        <f:metadata>
-            <f:viewAction action="#{EmpresaController.getEditEmpresa()}"/>
-        </f:metadata>
-
-        <div class="panel panel-primary top-primary">
-            <div class="panel-heading top-heading">
-                <h:outputText value="#{EmpresaController.cabecalho}"
-                              class="panel-title"></h:outputText>
-            </div>
-
-            <div class="panel-body table-body sub-table-body">
-
-                <h:form class="form-horizontal" id="frmPrincipal">
-
-                    <b:row>
-                        <b:column span="12" class="label-position new-col12">
-                            <b:label value="Nome Principal" severity="info"/>
-
-                            <b:inputText value="#{EmpresaController.empresa.nomeEmpresa}"
-                                         validator="CaractereEmBrancoValidator"
-                                         class="form-control" required="true"
-                                         requiredMessage="Nome Principal: Campo obrigatório!"
-                                         validatorMessage="Nome Principal deve conter entre 2 e 100 caracteres.">
-                                <f:validateLength minimum="2" maximum="100"/>
-                            </b:inputText>
-                        </b:column>
-
-                    </b:row>
-
-                    <b:row>
-                        <b:column span="12" class="label-position new-col12">
-                            <b:label value="Nome Fantasia" severity="info"/>
-
-                            <b:inputText value="#{EmpresaController.empresa.nomeFantasia}"
-                                         class="form-control" required="true" validator="CaractereEmBrancoValidator"
-                                         requiredMessage="Nome Fantasia: Campo obrigatório!"
-                                         validatorMessage="Nome Fantasia deve conter entre 2 e 100 caracteres.">
-                                <f:validateLength minimum="2" maximum="100"/>
-                            </b:inputText>
-                        </b:column>
-                    </b:row>
-
-                    <b:row>
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="CNPJ" severity="info"/>
-
-                            <b:inputText value="#{EmpresaController.empresa.cnpj}"
-                                         validator="CaractereEmBrancoValidator"
-                                         class="form-control" required="true"
-                                         requiredMessage="CNPJ: Campo obrigatório!">
-                            </b:inputText>
-                        </b:column>
-
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="CEP" severity="info"/>
-
-                            <b:inputText value="#{EmpresaController.empresa.cep}" validator="CaractereEmBrancoValidator"
-                                         class="form-control" required="true"
-                                         requiredMessage="CEP: Campo obrigatório!">
-                            </b:inputText>
-                        </b:column>
-                    </b:row>
-
-                    <b:row>
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Rua" severity="info"/>
-
-                            <b:inputText value="#{EmpresaController.empresa.rua}" validator="CaractereEmBrancoValidator"
-                                         class="form-control" required="true"
-                                         requiredMessage="Rua: Campo obrigatório!">
-                            </b:inputText>
-                        </b:column>
-
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Bairro" severity="info"/>
-
-                            <b:inputText value="#{EmpresaController.empresa.bairro}"
-                                         validator="CaractereEmBrancoValidator"
-                                         class="form-control" required="true"
-                                         requiredMessage="Bairro: Campo obrigatório!">
-                            </b:inputText>
-                        </b:column>
-                    </b:row>
-
-                    <b:row>
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Número" severity="info"/>
-
-                            <b:inputText value="#{EmpresaController.empresa.numero}"
-                                         class="form-control" required="true"
-                                         requiredMessage="Número: Campo obrigatório!">
-                            </b:inputText>
-                        </b:column>
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{EmpresaController.getEditEmpresa()}" />
+		</f:metadata>
+
+		<div class="panel panel-primary top-primary">
+			<div class="panel-heading top-heading">
+				<h:outputText value="#{EmpresaController.cabecalho}"
+					class="panel-title"></h:outputText>
+			</div>
+
+			<div class="panel-body table-body sub-table-body">
+
+				<h:form class="form-horizontal" id="frmPrincipal">
+
+					<b:row>
+						<b:column span="4" class="label-position new-col4">
+							<b:label value="Razão Social" severity="info" />
+
+							<b:inputText value="#{EmpresaController.empresa.nomeEmpresa}"
+								validator="CaractereEmBrancoValidator" class="form-control"
+								required="true"
+								requiredMessage="Nome Principal: Campo obrigatório!"
+								validatorMessage="Nome Principal deve conter entre 2 e 100 caracteres.">
+								<f:validateLength minimum="2" maximum="100" />
+							</b:inputText>
+						</b:column>
+
+						<b:column span="3" class="label-position new-col3">
+							<b:label value="Nome Fantasia" severity="info" />
+
+							<b:inputText value="#{EmpresaController.empresa.nomeFantasia}"
+								class="form-control" required="true"
+								validator="CaractereEmBrancoValidator"
+								requiredMessage="Nome Fantasia: Campo obrigatório!"
+								validatorMessage="Nome Fantasia deve conter entre 2 e 100 caracteres.">
+								<f:validateLength minimum="2" maximum="100" />
+							</b:inputText>
+						</b:column>
+
+						<b:column span="1" class="label-position new-col1">
+							<b:label value="CNPJ" severity="info" />
+
+							<p:inputMask mask="99.999.999/9999-99"
+								value="#{EmpresaController.empresa.cnpj}" id="cnpj"
+								style="margin-left:-15px; width:150px" validator="CNPJValidator"
+								validatorMessage="CNPJ inválido!" class="form-control"
+								required="true" requiredMessage="CNPJ: Campo obrigatório!">
+							</p:inputMask>
+
+						</b:column>
+						
+						<b:column span="1" class="label-position new-col1" style="margin-left:80px">
+							<b:label value="CNES" severity="info" />
+
+							<p:inputText
+								value="#{EmpresaController.empresa.cnes}" id="cnes"
+								style="margin-left:-15px; width:150px" 
+								class="form-control"
+								/>
+							
+
+						</b:column>						
+
+
+
+					</b:row>
+
+
+					<b:row>
+
+						<b:column span="5" class="label-position new-col5">
+							<b:label value="Rua" severity="info" />
+
+							<b:inputText value="#{EmpresaController.empresa.rua}"
+								class="form-control" required="false"
+								requiredMessage="Rua: Campo obrigatório!">
+							</b:inputText>
+						</b:column>
+						<b:column span="1" class="label-position new-col1">
+							<b:label value="Número" severity="info" />
+
+							<b:inputText value="#{EmpresaController.empresa.numero}"
+								class="form-control" required="false"
+								requiredMessage="Número: Campo obrigatório!">
+							</b:inputText>
+						</b:column>
+						
+						<b:column span="4" class="label-position new-col4">
+							<b:label value="Complemento" severity="info" />
+
+							<b:inputText value="#{EmpresaController.empresa.complemento}"
+								class="form-control">
+							</b:inputText>
+						</b:column>
+						</b:row>
+						<b:row>
+						<b:column span="3" class="label-position new-col3">
+							<b:label value="Bairro" severity="info" />
 
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Complemento" severity="info"/>
+							<b:inputText value="#{EmpresaController.empresa.bairro}"
+								class="form-control" required="false"
+								requiredMessage="Bairro: Campo obrigatório!">
+							</b:inputText>
+						</b:column>
+						<b:column span="3" class="label-position new-col3">
+							<b:label value="Cidade" severity="info" />
 
-                            <b:inputText value="#{EmpresaController.empresa.complemento}"
-                                         validator="CaractereEmBrancoValidator"
-                                         class="form-control">
-                            </b:inputText>
-                        </b:column>
+							<b:inputText value="#{EmpresaController.empresa.cidade}"
+								class="form-control" required="false"
+								requiredMessage="Cidade: Campo obrigatório!">
+							</b:inputText>
+						</b:column>
 
-                    </b:row>
+						<b:column span="1" class="label-position new-col1">
+							<b:label value="Estado" severity="info" />
 
-                    <b:row>
+							<b:selectOneMenu size="10" required="false"
+								requiredMessage="Estado: Campo obrigatório!"
+								value="#{EmpresaController.empresa.estado}">
+								<f:selectItems value="#{EmpresaController.listaEstados}"></f:selectItems>
+							</b:selectOneMenu>
 
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Cidade" severity="info"/>
+						</b:column>
+						<b:column span="1" class="label-position new-col1">
+							<b:label value="CEP" severity="info" />
 
-                            <b:inputText value="#{EmpresaController.empresa.cidade}"
-                                         validator="CaractereEmBrancoValidator"
-                                         class="form-control" required="true"
-                                         requiredMessage="Cidade: Campo obrigatório!">
-                            </b:inputText>
-                        </b:column>
+							<p:inputMask mask="99999-999"
+								style="margin-left:-15px; width:150px"
+								value="#{EmpresaController.empresa.cep}" class="form-control">
+							</p:inputMask>
 
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Estado" severity="info"/>
+							
+						</b:column>
+					</b:row>
 
-                            <b:selectOneMenu size="10" required="true"
-                                             requiredMessage="Estado: Campo obrigatório!"
-                                             value="#{EmpresaController.empresa.estado}">
-                                <f:selectItems value="#{EmpresaController.listaEstados}"></f:selectItems>
-                            </b:selectOneMenu>
+					
 
-                        </b:column>
 
-                    </b:row>
+					
 
-                    <b:row>
-                        <b:column span="2" class="label-position new-col2">
-                            <b:label value="DDD 1" severity="info"/>
+					<b:row>
+						<b:column span="2" class="label-position new-col2">
+							<b:label value="DDD 1" severity="info" />
 
-                            <b:inputText value="#{EmpresaController.empresa.ddd1}"
-                                         class="form-control" required="true"
-                                         requiredMessage="DDD1: Campo obrigatório!">
-                            </b:inputText>
-                        </b:column>
+							<b:inputText value="#{EmpresaController.empresa.ddd1}"
+								class="form-control" required="false"
+								requiredMessage="DDD1: Campo obrigatório!">
+							</b:inputText>
+						</b:column>
 
-                        <b:column span="2" class="label-position new-col2">
-                            <b:label value="Telefone 1" severity="info"/>
+						<b:column span="2" class="label-position new-col2">
+							<b:label value="Telefone 1" severity="info" />
 
-                            <b:inputText value="#{EmpresaController.empresa.telefone1}"
-                                         required="true" requiredMessage="Telefone 1: Campo obrigatório!">
-                            </b:inputText>
-                        </b:column>
+							<b:inputText value="#{EmpresaController.empresa.telefone1}"
+								required="false"
+								requiredMessage="Telefone 1: Campo obrigatório!">
+							</b:inputText>
+						</b:column>
 
-                        <b:column span="2" class="label-position new-col2">
-                            <b:label value="DDD 2" severity="info"/>
+						<b:column span="2" class="label-position new-col2">
+							<b:label value="DDD 2" severity="info" />
 
-                            <b:inputText value="#{EmpresaController.empresa.ddd2}"
-                                         class="form-control">
-                            </b:inputText>
-                        </b:column>
+							<b:inputText value="#{EmpresaController.empresa.ddd2}"
+								class="form-control">
+							</b:inputText>
+						</b:column>
 
-                        <b:column span="2" class="label-position new-col2">
-                            <b:label value="Telefone 2" severity="info"/>
+						<b:column span="2" class="label-position new-col2">
+							<b:label value="Telefone 2" severity="info" />
 
-                            <b:inputText value="#{EmpresaController.empresa.telefone2}"
-                                         class="form-control">
-                            </b:inputText>
-                        </b:column>
-                    </b:row>
-
-                    <b:row>
+							<b:inputText value="#{EmpresaController.empresa.telefone2}"
+								class="form-control">
+							</b:inputText>
+						</b:column>
+					</b:row>
 
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Email" severity="info"/>
+					<b:row>
 
-                            <b:inputText value="#{EmpresaController.empresa.email}"
-                                         class="form-control">
-                            </b:inputText>
-                        </b:column>
+						<b:column span="5" class="label-position new-col5">
+							<b:label value="Email" severity="info" />
 
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Site" severity="info"/>
+							<b:inputText value="#{EmpresaController.empresa.email}"
+								class="form-control">
+							</b:inputText>
+						</b:column>
 
-                            <b:inputText value="#{EmpresaController.empresa.site}"
-                                         class="form-control">
-                            </b:inputText>
-                        </b:column>
+						<b:column span="5" class="label-position new-col5">
+							<b:label value="Site" severity="info" />
 
-                    </b:row>
+							<b:inputText value="#{EmpresaController.empresa.site}"
+								class="form-control">
+							</b:inputText>
+						</b:column>
 
-                    <b:row>
+					</b:row>
 
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Motivo padrão de Desligamento" severity="info"/>
 
-                            <b:selectOneMenu size="10" required="true"
-                                             requiredMessage="Motivo padrão de Desligamento: Campo obrigatório!"
-                                             value="#{EmpresaController.empresa.parametro.motivoDesligamento}">
-                                <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-                                <f:selectItems value="#{MotivoController.listarMotivos()}"
-                                               var="sis" itemLabel="#{sis.motivo_desligamento}"
-                                               itemValue="#{sis.id_motivo}"/>
-                            </b:selectOneMenu>
 
-                        </b:column>
 
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Opção de Atendimento" severity="info"/>
+					<br></br>
 
-                            <b:selectOneMenu size="10" required="true"
-                                             requiredMessage="Opção de atendimento: Campo obrigatório!"
-                                             value="#{EmpresaController.empresa.parametro.opcaoAtendimento}">
-                                <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-                                <f:selectItem itemLabel="Somente Turno" itemValue="T"></f:selectItem>
-                                <f:selectItem itemLabel="Somente Horário" itemValue="H"></f:selectItem>
-                                <f:selectItem itemLabel="Ambos" itemValue="A"></f:selectItem>
-                            </b:selectOneMenu>
 
-                        </b:column>
 
-                    </b:row>
+					<b:commandButton action="#{EmpresaController.gravarEmpresa()}"
+						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Incluir"
+						rendered="#{EmpresaController.tipo == 1}" />
 
-                    <b:row>
+					<b:commandButton action="#{EmpresaController.alterarEmpresa()}"
+						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+						update=":frmPrincipal msgPagina" value="Alterar"
+						rendered="#{EmpresaController.tipo  == 2}" />
 
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Quantidade Simultânea Profissional" severity="info"/>
+					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" look="info" class="btn-voltar"
+						action="/pages/sishosp/gerenciarEmpresa.faces?faces-redirect=true">
+					</b:commandButton>
 
-                            <b:inputText value="#{EmpresaController.empresa.parametro.quantidadeSimultaneaProfissional}"
-                                         required="true"
-                                         requiredMessage="Quantidade Simultânea Profissional: Campo obrigatório!"
-                                         class="form-control">
-                            </b:inputText>
-                        </b:column>
+				</h:form>
+			</div>
 
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Quantidade Simultânea Equipe" severity="info"/>
+		</div>
 
-                            <b:inputText value="#{EmpresaController.empresa.parametro.quantidadeSimultaneaEquipe}"
-                                         required="true"
-                                         requiredMessage="Quantidade Simultânea Equipe: Campo obrigatório!"
-                                         class="form-control">
-                            </b:inputText>
-                        </b:column>
+		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+			modal="true" styleClass="topDialog">
+			<h:form id="formConsuProg">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{ProgramaController.listaProgramas}" var="prog"
+					display="Nenhum Programa">
 
-                    </b:row>
-
-                    <b:row>
-
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Horário Inicial" severity="info"/>
-
-                            <p:inputMask mask="99:99" class="form-control select-agendaEquipe2"
-                                         value="#{EmpresaController.empresa.parametro.horarioInicial}"
-                                         size="6" required="true"
-                                         requiredMessage="Horário Inicial: Campo Obrigatório!">
-                                <f:convertDateTime type="time" pattern="HH:mm" timeZone="GMT-3"/>
-                            </p:inputMask>
-                        </b:column>
-
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Horário Final" severity="info"/>
-
-                            <p:inputMask mask="99:99" class="form-control select-agendaEquipe2"
-                                         value="#{EmpresaController.empresa.parametro.horarioFinal}"
-                                         size="6" required="true"
-                                         requiredMessage="Horário Final: Campo Obrigatório!">
-                                <f:convertDateTime type="time" pattern="HH:mm" timeZone="GMT-3"/>
-                            </p:inputMask>
-                        </b:column>
-
-                    </b:row>
-
-                    <b:row>
-
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Intervalo (em minutos)" severity="info"/>
-
-                            <b:inputText value="#{EmpresaController.empresa.parametro.intervalo}"
-                                         required="true" requiredMessage="Intervalo: Campo obrigatório!"
-                                         class="form-control">
-                            </b:inputText>
-                        </b:column>
-
-                        <b:column span="5" class="label-position new-col5">
-                            <b:label value="Tipo de Atendimento para Terapia" severity="info"/>
-
-                            <b:selectOneMenu size="10" required="true"
-                                             requiredMessage="Opção de atendimento: Campo obrigatório!"
-                                             value="#{EmpresaController.empresa.parametro.tipoAtendimento.idTipo}">
-                                <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-                                <f:selectItems value="#{TipoAtendimentoController.listarTipos()}" var="tipo"
-                                               itemLabel="#{tipo.descTipoAt}" itemValue="#{tipo.idTipo}"/>
-                            </b:selectOneMenu>
-
-                        </b:column>
-
-                    </b:row>
-
-                    <br></br>
-
-                    <b:row>
-
-                        <p:fieldset legend="Órtese e Prótese">
-
-                            <p:outputPanel id="idOrteseProtese">
-                                <b:column span="5" class="label-position new-col5">
-                                    <b:label value="Programa Padrão" class="fire-label" severity="info"/>
-
-                                    <p:autoComplete
-                                            value="#{EmpresaController.empresa.parametro.orteseProtese.programa}"
-                                            size="31"
-                                            converter="conPrograma" class="select-agendaEquipe4"
-                                            completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-                                            effect="fade" var="theme" forceSelection="true"
-                                            minQueryLength="1" itemValue="#{theme}"
-                                            itemLabel="#{theme.descPrograma}">
-                                        <p:ajax event="itemSelect" update="grupo"/>
-
-                                    </p:autoComplete>
-
-                                    <p:commandButton id="btBusPr" immediate="true" style="margin-left: 5px"
-                                                     icon="ui-icon-search"
-                                                     actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
-                                                     update=":formConsuProg" onclick="PF('dlgConsuProg').show();"/>
-                                </b:column>
-
-                                <b:column span="5" class="label-position new-col5">
-                                    <b:label value="Grupo Padrão" severity="info" class="fire-label"/>
-
-                                    <p:autoComplete value="#{EmpresaController.empresa.parametro.orteseProtese.grupo}"
-                                                    size="31" id="grupo"
-                                                    converter="conGrupo" class="select-agendaEquipe4"
-                                                    completeMethod="#{EmpresaController.listaGrupoAutoCompleteComPrograma}"
-                                                    effect="fade" var="theme" forceSelection="true"
-                                                    minQueryLength="1" itemValue="#{theme}"
-                                                    itemLabel="#{theme.descGrupo}">
-                                        <p:ajax event="itemSelect"/>
-
-                                    </p:autoComplete>
-
-                                    <p:commandButton id="btBusGr" immediate="true" style="margin-left: 5px"
-                                                     icon="ui-icon-search"
-                                                     action="#{EmpresaController.listaGrupoPorPrograma(EmpresaController.empresa.parametro.orteseProtese.programa.idPrograma)}"
-                                                     update=":formConsuGrop" onclick="PF('dlgConsuGrop').show();"/>
-
-                                </b:column>
-
-                            </p:outputPanel>
-
-                        </p:fieldset>
-
-                    </b:row>
-
-                    <br></br>
-
-                    <b:row>
-
-                        <b:column span="5">
-
-                            <p:selectBooleanCheckbox label="Matriz" itemLabel="Matriz"
-                                                     value="#{EmpresaController.empresa.matriz}"
-                                                     style="margin-rigth: 10px;color:#2e84ce;">
-                            </p:selectBooleanCheckbox>
-                        </b:column>
-
-                    </b:row>
-
-                    <br></br>
-
-                    <div align="center">
-                        <b:messages value="Error" id="msgPagina"></b:messages>
-                    </div>
-
-                    <br></br>
-
-                    <b:commandButton action="#{EmpresaController.gravarEmpresa()}"
-                                     icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-                                     update=":frmPrincipal :frmPrincipal" value="Incluir"
-                                     rendered="#{EmpresaController.tipo == 1}"/>
-
-                    <b:commandButton action="#{EmpresaController.alterarEmpresa()}"
-                                     icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-                                     update=":frmPrincipal :frmPrincipal" value="Alterar"
-                                     rendered="#{EmpresaController.tipo  == 2}"/>
-
-                    <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                     size="sm" immediate="true" look="info" class="btn-voltar"
-                                     action="/pages/sishosp/gerenciarEmpresa.faces?faces-redirect=true">
-                    </b:commandButton>
-
-                </h:form>
-            </div>
-
-        </div>
-
-        <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
-                  modal="true" styleClass="topDialog">
-            <h:form id="formConsuProg">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
-                             display="Nenhum Programa">
-
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Programa
                         </f:facet>
-                        <p:outputLabel value="#{prog.descPrograma}"/>
-                    </h:column>
+						<p:outputLabel value="#{prog.descPrograma}" />
+					</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton
-                                update=":frmPrincipal:idOrteseProtese"
-                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
-                                title="Selecionar"
-                                onclick="PF('dlgConsuProg').hide();">
-                            <f:setPropertyActionListener value="#{prog}"
-                                                         target="#{EmpresaController.empresa.parametro.orteseProtese.programa}"/>
-                        </p:commandButton>
-                    </h:column>
+						<p:commandButton update=":frmPrincipal:idOrteseProtese"
+							class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+							title="Selecionar" onclick="PF('dlgConsuProg').hide();">
+							<f:setPropertyActionListener value="#{prog}"
+								target="#{EmpresaController.empresa.parametro.orteseProtese.programa}" />
+						</p:commandButton>
+					</h:column>
 
-                </b:dataTable>
-            </h:form>
-        </p:dialog>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
 
-        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-                  modal="true" styleClass="topDialog" dynamic="true">
-            <h:form id="formConsuGrop">
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                             ajax="true"
-                             responsive="true"
-                             save-state="false"
-                             saveState="false"
-                             value="#{EmpresaController.listaGruposProgramas}" id="dtGrupo"
-                             var="grupo" display="Nenhum Grupo">
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+			modal="true" styleClass="topDialog" dynamic="true">
+			<h:form id="formConsuGrop">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
+					responsive="true" save-state="false" saveState="false"
+					value="#{EmpresaController.listaGruposProgramas}" id="dtGrupo"
+					var="grupo" display="Nenhum Grupo">
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Grupo
                         </f:facet>
-                        <p:outputLabel value="#{grupo.descGrupo}"/>
-                    </h:column>
+						<p:outputLabel value="#{grupo.descGrupo}" />
+					</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Quantidade Frequência
                         </f:facet>
-                        <p:outputLabel value="#{grupo.qtdFrequencia}"/>
-                    </h:column>
+						<p:outputLabel value="#{grupo.qtdFrequencia}" />
+					</h:column>
 
-                    <h:column>
-                        <f:facet name="header">
+					<h:column>
+						<f:facet name="header">
                             Adicionar
                         </f:facet>
-                        <p:commandButton
-                                update=":frmPrincipal:idOrteseProtese"
-                                icon="ui-icon-check" title="Selecionar"
-                                class="new-btn-acao-table acao-editar"
-                                onclick="PF('dlgConsuGrop').hide();">
-                            <f:setPropertyActionListener value="#{grupo}"
-                                                         target="#{EmpresaController.empresa.parametro.orteseProtese.grupo}"/>
-                        </p:commandButton>
-                    </h:column>
+						<p:commandButton update=":frmPrincipal:idOrteseProtese"
+							icon="ui-icon-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar"
+							onclick="PF('dlgConsuGrop').hide();">
+							<f:setPropertyActionListener value="#{grupo}"
+								target="#{EmpresaController.empresa.parametro.orteseProtese.grupo}" />
+						</p:commandButton>
+					</h:column>
 
-                </b:dataTable>
-            </h:form>
-        </p:dialog>
+				</b:dataTable>
+			</h:form>
+		</p:dialog>
 
-    </ui:define>
+	</ui:define>
 </ui:composition>

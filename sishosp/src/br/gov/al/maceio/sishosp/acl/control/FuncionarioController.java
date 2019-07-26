@@ -18,9 +18,9 @@ import javax.servlet.http.HttpSession;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.*;
-import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
-import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
+import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 
@@ -43,7 +43,7 @@ public class FuncionarioController implements Serializable {
     private int tipo;
     private ArrayList<ProgramaBean> listaGruposEProgramasProfissional;
     private FuncionarioDAO fDao = new FuncionarioDAO();
-    private EmpresaBean empresaBean;
+    private UnidadeBean unidadeBean;
 
     // SESSÃO
     private FuncionarioBean usuarioLogado;
@@ -122,9 +122,9 @@ public class FuncionarioController implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
                 .put("expired", "N");
 
-        Integer codEmpresa = fDao.autenticarUsuarioInicialCodEmpresa(usuario);
+        String nomeBancoAcesso = fDao.autenticarUsuarioInicialNomeBancoAcesso(usuario);
 
-        if (VerificadorUtil.verificarSeObjetoNuloOuZero(codEmpresa)) {
+        if (VerificadorUtil.verificarSeObjetoNuloOuZero(nomeBancoAcesso)) {
             JSFUtil.adicionarMensagemErro("Usuário ou senha Inválida!!", "Erro");
             return null;
 
@@ -621,7 +621,7 @@ public class FuncionarioController implements Serializable {
                 }
             }
             if (existe == true) {
-                JSFUtil.adicionarMensagemAdvertencia("Esse grupo j� foi adicionado!", "ADvert�ncia");
+                JSFUtil.adicionarMensagemAdvertencia("Esse grupo já foi adicionado!", "ADvert�ncia");
             } else {
                 listaGruposEProgramasProfissional
                         .add(profissional.getProgAdd());
@@ -751,30 +751,30 @@ public class FuncionarioController implements Serializable {
 
     }
 
-    public List<EmpresaBean> listarUnidadesDoFuncionario() {
+    public List<UnidadeBean> listarUnidadesDoFuncionario() {
 
         return fDao.listarUnidadesDoFuncionario();
     }
 
     public void addUnidadeExtra() throws ProjetoException {
-        if (profissional.getUnidadeExtra().getCodEmpresa() != null) {
+        if (profissional.getUnidadeExtra().getId() != null) {
             if (profissional.getListaUnidades().size() == 0) {
-                EmpresaDAO empresaDAO = new EmpresaDAO();
-                EmpresaBean empresaBean1 = empresaDAO.buscarEmpresaPorId(profissional.getUnidadeExtra().getCodEmpresa());
-                profissional.getListaUnidades().add(empresaBean1);
+                UnidadeDAO unidadeDAO = new UnidadeDAO();
+                UnidadeBean unidadeBean1 = unidadeDAO.buscarUnidadePorId(profissional.getUnidadeExtra().getId());
+                profissional.getListaUnidades().add(unidadeBean1);
             } else {
                 Boolean existe = false;
                 for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
-                    if (profissional.getListaUnidades().get(i).getCodEmpresa() == profissional.getUnidadeExtra().getCodEmpresa()) {
+                    if (profissional.getListaUnidades().get(i).getId() == profissional.getUnidadeExtra().getId()) {
                         existe = true;
                     }
                 }
                 if (existe == false) {
-                    EmpresaDAO empresaDAO = new EmpresaDAO();
-                    EmpresaBean empresaBean1 = empresaDAO.buscarEmpresaPorId(profissional.getUnidadeExtra().getCodEmpresa());
-                    profissional.getListaUnidades().add(empresaBean1);
+                	UnidadeDAO unidadeDAO = new UnidadeDAO();
+                    UnidadeBean unidadeBean1 = unidadeDAO.buscarUnidadePorId(profissional.getUnidadeExtra().getId());
+                    profissional.getListaUnidades().add(unidadeBean1);
                 } else {
-                    JSFUtil.adicionarMensagemErro("Essa unidade j� foi adicionada!", "Erro!");
+                    JSFUtil.adicionarMensagemErro("Essa unidade já foi adicionada!", "Erro!");
                 }
             }
         } else {
@@ -783,7 +783,7 @@ public class FuncionarioController implements Serializable {
     }
 
     public void removerUnidadeExtra() {
-        profissional.getListaUnidades().remove(empresaBean);
+        profissional.getListaUnidades().remove(unidadeBean);
     }
 
     public FuncionarioBean getProfissional() {
@@ -960,11 +960,4 @@ public class FuncionarioController implements Serializable {
         this.renderizarPermissoes = renderizarPermissoes;
     }
 
-    public EmpresaBean getEmpresaBean() {
-        return empresaBean;
-    }
-
-    public void setEmpresaBean(EmpresaBean empresaBean) {
-        this.empresaBean = empresaBean;
-    }
 }

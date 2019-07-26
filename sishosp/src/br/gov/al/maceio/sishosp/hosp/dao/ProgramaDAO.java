@@ -31,7 +31,7 @@ public class ProgramaDAO {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, prog.getDescPrograma().toUpperCase());
-            ps.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(2, user_session.getUnidade().getId());
             ps.setInt(3, prog.getProcedimento().getIdProc());
             ResultSet rs = ps.executeQuery();
 
@@ -156,7 +156,7 @@ public class ProgramaDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
 
             ResultSet rs = stm.executeQuery();
 
@@ -194,7 +194,7 @@ public class ProgramaDAO {
         ArrayList<ProgramaBean> lista = new ArrayList();
         try {
             ps = con.prepareStatement(sql);
-            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(1, user_session.getUnidade().getId());
 
             ResultSet rs = ps.executeQuery();
 
@@ -235,7 +235,7 @@ public class ProgramaDAO {
             PreparedStatement stm = con.prepareStatement(sql);
 
             stm.setString(1, "%" + descricao.toUpperCase() + "%");
-            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(2, user_session.getUnidade().getId());
 
             ResultSet rs = stm.executeQuery();
 
@@ -408,7 +408,7 @@ public class ProgramaDAO {
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

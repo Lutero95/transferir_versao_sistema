@@ -12,7 +12,7 @@ public class FornecedorBean implements Serializable {
 	private String telefone2;
 	private String inscricaoEstadual;
 	private String ie;
-
+	private Integer codUnidade;
 	//HERDADOS
 	private EnderecoBean endereco;
 
@@ -91,5 +91,15 @@ public class FornecedorBean implements Serializable {
 	public void setIe(String ie) {
 		this.ie = ie;
 	}
+
+	public Integer getCodUnidade() {
+		return codUnidade;
+	}
+
+	public void setCodUnidade(Integer codUnidade) {
+		this.codUnidade = codUnidade;
+	}
+
+	
 
 }

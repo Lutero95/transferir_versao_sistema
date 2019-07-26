@@ -7,7 +7,6 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.model.EmpresaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ParametroBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 
 import javax.faces.context.FacesContext;
@@ -27,24 +26,38 @@ public class EmpresaDAO {
         Integer codEmpresa = null;
 
         String sql = "INSERT INTO hosp.empresa(nome_principal, nome_fantasia, cnpj, rua, bairro, numero, cep, cidade, " +
-                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, matriz, ativo) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true) returning cod_empresa;";
+                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, ativo, cnes) " +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  true, ?) returning cod_empresa";
 
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, empresa.getNomeEmpresa());
             ps.setString(2, empresa.getNomeFantasia());
-            ps.setString(3, empresa.getCnpj());
+            ps.setString(3, empresa.getCnpj().replaceAll("[^0-9]", ""));
             ps.setString(4, empresa.getRua());
             ps.setString(5, empresa.getBairro());
-            ps.setInt(6, empresa.getNumero());
-            ps.setString(7, empresa.getCep());
+            if(empresa.getNumero() != null) 
+                ps.setInt(6, empresa.getNumero());
+            else
+                ps.setNull(6, Types.NULL);
+            if(empresa.getCep() != null) 
+                ps.setString(7, empresa.getCep().replaceAll("[^0-9]", ""));
+            else
+                ps.setNull(7, Types.NULL);            
             ps.setString(8, empresa.getCidade());
             ps.setString(9, empresa.getEstado());
             ps.setString(10, empresa.getComplemento());
-            ps.setInt(11, empresa.getDdd1());
-            ps.setInt(12, empresa.getTelefone1());
+            if(empresa.getDdd1() != null) 
+                ps.setInt(11, empresa.getDdd1());
+            else
+                ps.setNull(11, Types.NULL);
+            
+            if(empresa.getTelefone1() != null) 
+                ps.setInt(12, empresa.getTelefone1());
+            else
+                ps.setNull(12, Types.NULL);
+            
             if(empresa.getDdd2() != null) {
                 ps.setInt(13, empresa.getDdd2());
             }
@@ -69,12 +82,8 @@ public class EmpresaDAO {
             else{
                 ps.setNull(16, Types.NULL);
             }
-            if(empresa.getMatriz() != null) {
-                ps.setBoolean(17, empresa.getMatriz());
-            }
-            else{
-                ps.setNull(17, Types.NULL);
-            }
+
+            ps.setString(17, empresa.getCnes());
 
             ResultSet rs = ps.executeQuery();
 
@@ -82,79 +91,6 @@ public class EmpresaDAO {
                 codEmpresa = rs.getInt("cod_empresa");
             }
 
-            sql = "INSERT INTO hosp.parametro(motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, " +
-                    "qtd_simultanea_atendimento_equipe, cod_empresa, horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, " +
-                    "programa_ortese_protese, grupo_ortese_protese) " +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            ps = con.prepareStatement(sql);
-
-            if(empresa.getParametro().getMotivoDesligamento() != null) {
-                ps.setInt(1, empresa.getParametro().getMotivoDesligamento());
-            }
-            else{
-                ps.setNull(1, Types.NULL);
-            }
-            if(empresa.getParametro().getOpcaoAtendimento() != null) {
-                ps.setString(2, empresa.getParametro().getOpcaoAtendimento());
-            }
-            else{
-                ps.setNull(2, Types.NULL);
-            }
-            if(empresa.getParametro().getQuantidadeSimultaneaProfissional() != null) {
-                ps.setInt(3, empresa.getParametro().getQuantidadeSimultaneaProfissional());
-            }
-            else{
-                ps.setNull(3, Types.NULL);
-            }
-            if(empresa.getParametro().getQuantidadeSimultaneaEquipe() != null) {
-                ps.setInt(4, empresa.getParametro().getQuantidadeSimultaneaEquipe());
-            }
-            else{
-                ps.setNull(4, Types.NULL);
-            }
-            ps.setInt(5, codEmpresa);
-
-            if(empresa.getParametro().getHorarioInicial() != null) {
-                ps.setTime(6, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioInicial()));
-            }
-            else{
-                ps.setNull(6, Types.NULL);
-            }
-
-            if(empresa.getParametro().getHorarioFinal() != null) {
-                ps.setTime(7, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioFinal()));
-            }
-            else{
-                ps.setNull(7, Types.NULL);
-            }
-
-            if(empresa.getParametro().getIntervalo() != null) {
-                ps.setInt(8, empresa.getParametro().getIntervalo());
-            }
-            else{
-                ps.setNull(8, Types.NULL);
-            }
-            if(empresa.getParametro().getTipoAtendimento().getIdTipo() != null) {
-                ps.setInt(9, empresa.getParametro().getTipoAtendimento().getIdTipo());
-            }
-            else{
-                ps.setNull(9, Types.NULL);
-            }
-            if(empresa.getParametro().getOrteseProtese().getPrograma().getIdPrograma() != null) {
-                ps.setInt(10, empresa.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
-            }
-            else{
-                ps.setNull(10, Types.NULL);
-            }
-            if(empresa.getParametro().getOrteseProtese().getGrupo().getIdGrupo() != null) {
-                ps.setInt(11, empresa.getParametro().getOrteseProtese().getGrupo().getIdGrupo());
-            }
-            else{
-                ps.setNull(11, Types.NULL);
-            }
-
-            ps.execute();
 
             con.commit();
             retorno = true;
@@ -177,7 +113,7 @@ public class EmpresaDAO {
         List<EmpresaBean> lista = new ArrayList<>();
         String sql = "SELECT cod_empresa, nome_principal, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
-                " email, site, matriz, ativo, case when matriz is true then 'Matriz' else 'Filial' end as tipo " +
+                " email, site,  ativo  " +
                 " FROM hosp.empresa where ativo is true;";
 
         try {
@@ -204,11 +140,7 @@ public class EmpresaDAO {
                 empresa.setTelefone2(rs.getInt("telefone_2"));
                 empresa.setEmail(rs.getString("email"));
                 empresa.setSite(rs.getString("site"));
-                empresa.setMatriz(rs.getBoolean("matriz"));
                 empresa.setAtivo(rs.getBoolean("ativo"));
-                empresa.setTipoString(rs.getString("tipo"));
-                empresa.setParametro(carregarParametro(empresa.getCodEmpresa(), con));
-
                 lista.add(empresa);
             }
         } catch (Exception ex) {
@@ -229,7 +161,7 @@ public class EmpresaDAO {
         Boolean retorno = false;
         String sql = "UPDATE hosp.empresa SET nome_principal=?, nome_fantasia=?, cnpj=?, rua=?, " +
                 " bairro=?, numero=?, cep=?, cidade=?, estado=?, ddd_1=?, telefone_1=?, " +
-                " ddd_2=?, telefone_2=?, email=?, site=?, matriz=?, complemento=? " +
+                " ddd_2=?, telefone_2=?, email=?, site=?, complemento=?, cnes=?  " +
                 " WHERE cod_empresa = ?;";
         try {
             con = ConnectionFactory.getConnection();
@@ -237,11 +169,11 @@ public class EmpresaDAO {
 
             ps.setString(1, empresa.getNomeEmpresa());
             ps.setString(2, empresa.getNomeFantasia());
-            ps.setString(3, empresa.getCnpj());
+            ps.setString(3, empresa.getCnpj().replaceAll("[^0-9]", ""));
             ps.setString(4, empresa.getRua());
             ps.setString(5, empresa.getBairro());
             ps.setInt(6, empresa.getNumero());
-            ps.setString(7, empresa.getCep());
+            ps.setString(7, empresa.getCep().replaceAll("[^0-9]", ""));
             ps.setString(8, empresa.getCidade());
             ps.setString(9, empresa.getEstado());
             ps.setInt(10, empresa.getDdd1());
@@ -250,30 +182,9 @@ public class EmpresaDAO {
             ps.setInt(13, empresa.getTelefone2());
             ps.setString(14, empresa.getEmail());
             ps.setString(15, empresa.getSite());
-            ps.setBoolean(16, empresa.getMatriz());
-            ps.setString(17, empresa.getComplemento());
-            ps.setInt(18, empresa.getCodEmpresa());
-            ps.executeUpdate();
-
-            sql = "UPDATE hosp.parametro SET motivo_padrao_desligamento_opm = ?, opcao_atendimento = ?, " +
-                    "qtd_simultanea_atendimento_profissional = ?, qtd_simultanea_atendimento_equipe = ?, " +
-                    "horario_inicial = ?, horario_final = ?, intervalo = ?, tipo_atendimento_terapia = ?, " +
-                    "programa_ortese_protese = ?, grupo_ortese_protese = ? " +
-                    "WHERE cod_empresa = ?";
-
-            ps = con.prepareStatement(sql);
-
-            ps.setInt(1, empresa.getParametro().getMotivoDesligamento());
-            ps.setString(2, empresa.getParametro().getOpcaoAtendimento());
-            ps.setInt(3, empresa.getParametro().getQuantidadeSimultaneaProfissional());
-            ps.setInt(4, empresa.getParametro().getQuantidadeSimultaneaEquipe());
-            ps.setTime(5, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioInicial()));
-            ps.setTime(6, DataUtil.transformarDateEmTime(empresa.getParametro().getHorarioFinal()));
-            ps.setInt(7, empresa.getParametro().getIntervalo());
-            ps.setInt(8, empresa.getParametro().getTipoAtendimento().getIdTipo());
-            ps.setInt(9, empresa.getParametro().getOrteseProtese().getPrograma().getIdPrograma());
-            ps.setInt(10, empresa.getParametro().getOrteseProtese().getGrupo().getIdGrupo());
-            ps.setInt(11, empresa.getCodEmpresa());
+            ps.setString(16, empresa.getComplemento());
+            ps.setInt(17, empresa.getCodEmpresa());
+            ps.setString(18, empresa.getCnes());            
             ps.executeUpdate();
 
             con.commit();
@@ -324,7 +235,7 @@ public class EmpresaDAO {
         EmpresaBean empresa = new EmpresaBean();
         String sql = "SELECT cod_empresa, nome_principal, nome_fantasia, cnpj, rua, bairro, " +
                 " numero, complemento, cep, cidade, estado, ddd_1, telefone_1, ddd_2, telefone_2, " +
-                " email, site, matriz, ativo " +
+                " email, site, ativo  " +
                 " FROM hosp.empresa where cod_empresa = ?;";
 
         try {
@@ -352,9 +263,7 @@ public class EmpresaDAO {
                 empresa.setTelefone2(rs.getInt("telefone_2"));
                 empresa.setEmail(rs.getString("email"));
                 empresa.setSite(rs.getString("site"));
-                empresa.setMatriz(rs.getBoolean("matriz"));
                 empresa.setAtivo(rs.getBoolean("ativo"));
-                empresa.setParametro(carregarParametro(id, con));
 
             }
         } catch (Exception ex) {
@@ -370,121 +279,7 @@ public class EmpresaDAO {
         return empresa;
     }
 
-    public ParametroBean carregarParametro(Integer id, Connection conAuxiliar) throws ProjetoException {
 
-        ParametroBean parametro = new ParametroBean();
 
-        String sql = "SELECT id, motivo_padrao_desligamento_opm, opcao_atendimento, qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
-                "horario_inicial, horario_final, intervalo, tipo_atendimento_terapia, programa_ortese_protese, grupo_ortese_protese " +
-                " FROM hosp.parametro where cod_empresa = ?;";
-
-        try {
-            PreparedStatement ps = conAuxiliar.prepareStatement(sql);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                parametro.setMotivoDesligamento(rs.getInt("motivo_padrao_desligamento_opm"));
-                parametro.setOpcaoAtendimento(rs.getString("opcao_atendimento"));
-                parametro.setQuantidadeSimultaneaProfissional(rs.getInt("qtd_simultanea_atendimento_profissional"));
-                parametro.setQuantidadeSimultaneaEquipe(rs.getInt("qtd_simultanea_atendimento_equipe"));
-                parametro.setHorarioInicial(rs.getTime("horario_inicial"));
-                parametro.setHorarioFinal(rs.getTime("horario_final"));
-                parametro.setIntervalo(rs.getInt("intervalo"));
-                parametro.getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
-                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("programa_ortese_protese"))) {
-                    parametro.getOrteseProtese().setPrograma(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("programa_ortese_protese"), conAuxiliar));
-                }
-                else{
-                    parametro.getOrteseProtese().setPrograma(new ProgramaBean());
-                }
-                if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("grupo_ortese_protese"))) {
-                    parametro.getOrteseProtese().setGrupo(new GrupoDAO().listarGrupoPorIdComConexao(rs.getInt("grupo_ortese_protese"), conAuxiliar));
-                }
-                else{
-                    parametro.getOrteseProtese().setGrupo(new GrupoBean());
-                }
-
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return parametro;
-    }
-
-    public String carregarOpcaoAtendimentoDaEmpresa() throws ProjetoException {
-
-        String retorno = null;
-
-        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("obj_funcionario");
-
-        String sql = "SELECT opcao_atendimento FROM hosp.parametro where cod_empresa = ?;";
-
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                retorno = rs.getString("opcao_atendimento");
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return retorno;
-    }
-
-    public ParametroBean carregarDetalhesAtendimentoDaEmpresa() {
-
-        ParametroBean parametro = new ParametroBean();
-
-        String sql = "SELECT qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
-                "horario_inicial, horario_final, intervalo " +
-                " FROM hosp.parametro where cod_empresa = ?;";
-
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, user_session.getEmpresa().getCodEmpresa());
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                parametro.setQuantidadeSimultaneaProfissional(rs.getInt("qtd_simultanea_atendimento_profissional"));
-                parametro.setQuantidadeSimultaneaEquipe(rs.getInt("qtd_simultanea_atendimento_equipe"));
-                parametro.setHorarioInicial(rs.getTime("horario_inicial"));
-                parametro.setHorarioFinal(rs.getTime("horario_final"));
-                parametro.setIntervalo(rs.getInt("intervalo"));
-
-            }
-        } catch (SQLException | ProjetoException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return parametro;
-    }
 
 }

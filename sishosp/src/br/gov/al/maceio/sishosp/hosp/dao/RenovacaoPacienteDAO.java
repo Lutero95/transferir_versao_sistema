@@ -190,7 +190,7 @@ public class RenovacaoPacienteDAO {
             ps2.setString(5, "A");
             ps2.setInt(6, insercaoParaLaudo.getLaudo().getId());
             ps2.setString(7, insercao.getObservacao());
-            ps2.setInt(8, user_session.getEmpresa().getCodEmpresa());
+            ps2.setInt(8, user_session.getUnidade().getId());
             ps2.setDate(9, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
             rs = ps2.executeQuery();
             int idPacienteInstituicao = 0;
@@ -208,7 +208,7 @@ public class RenovacaoPacienteDAO {
                 for (int j = 0; j < listaProfissionais.get(i).getListDiasSemana().size(); j++) {
                 	ps8.setInt(3,
                             Integer.parseInt(listaProfissionais.get(i).getListDiasSemana().get(j)));
-                	ps8.setInt(4, user_session.getEmpresa().getCodEmpresa());
+                	ps8.setInt(4, user_session.getUnidade().getId());
                 	ps8.executeUpdate();
                 }
             }
@@ -230,7 +230,7 @@ public class RenovacaoPacienteDAO {
                         .getId());
                 ps3.setDate(3, new java.sql.Date(listAgendamentoProfissional.get(i).getAgenda()
                         .getDataMarcacao().getTime()));
-                ps3.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
+                ps3.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
                 if (insercao.getAgenda().getTurno() != null) {
                     ps3.setString(5, insercao.getAgenda().getTurno());
@@ -240,7 +240,7 @@ public class RenovacaoPacienteDAO {
 
                 ps3.setString(6, insercao.getObservacao());
                 ps3.setInt(7, idPacienteInstituicao);
-                ps3.setInt(8, user_session.getEmpresa().getCodEmpresa());
+                ps3.setInt(8, user_session.getUnidade().getId());
 
                 if (insercao.getAgenda().getHorario() != null) {
                     ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
@@ -351,7 +351,7 @@ public class RenovacaoPacienteDAO {
             ps2.setString(5, "A");
             ps2.setInt(6, insercaoParaLaudo.getLaudo().getId());
             ps2.setString(7, insercao.getObservacao());
-            ps2.setInt(8, user_session.getEmpresa().getCodEmpresa());
+            ps2.setInt(8, user_session.getUnidade().getId());
             ps2.setDate(9, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
             rs = ps2.executeQuery();
             int idPacienteInstituicao = 0;
@@ -371,7 +371,7 @@ public class RenovacaoPacienteDAO {
                         3,
                         Integer.parseInt(insercao.getFuncionario()
                                 .getListDiasSemana().get(i)));
-                ps3.setInt(4, user_session.getEmpresa().getCodEmpresa());
+                ps3.setInt(4, user_session.getUnidade().getId());
                 ps3.executeUpdate();
 
             }
@@ -389,11 +389,11 @@ public class RenovacaoPacienteDAO {
                 ps4.setLong(2, insercao.getFuncionario().getId());
                 ps4.setDate(3, DataUtil.converterDateUtilParaDateSql(listaAgendamento.get(i)
                         .getAgenda().getDataMarcacao()));
-                ps4.setInt(4, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
+                ps4.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
                 ps4.setString(5, insercao.getAgenda().getTurno());
                 ps4.setString(6, insercao.getObservacao());
                 ps4.setInt(7, idPacienteInstituicao);
-                ps4.setInt(8, user_session.getEmpresa().getCodEmpresa());
+                ps4.setInt(8, user_session.getUnidade().getId());
                 if(insercao.getAgenda().getHorario() != null) {
                     ps4.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
                 }

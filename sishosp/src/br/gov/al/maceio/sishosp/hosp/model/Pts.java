@@ -33,6 +33,7 @@ public class Pts implements Serializable {
     private PtsArea ptsArea;
     private List<PtsArea> listaPtsArea;
     private InsercaoPacienteBean insercao;
+    private UnidadeBean unidade;
 
     public Pts() {
         grupo = new GrupoBean();
@@ -42,6 +43,7 @@ public class Pts implements Serializable {
         ptsArea = new PtsArea();
         listaPtsArea = new ArrayList<>();
         insercao = new InsercaoPacienteBean();
+        unidade = new UnidadeBean();
     }
 
     public Integer getId() {

@@ -25,7 +25,7 @@ public class MotivoDesligamentoController implements Serializable {
     private MotivoDesligamentoBean motivo;
     private Integer tipo;
     private String cabecalho;
-    private List<MotivoDesligamentoBean> listaMotivos;
+    private ArrayList<MotivoDesligamentoBean> listaMotivos;
     private MotivoDesligamentoDAO pDao = new MotivoDesligamentoDAO();
 
     //CONSTANTES
@@ -68,8 +68,10 @@ public class MotivoDesligamentoController implements Serializable {
         motivo = new MotivoDesligamentoBean();
     }
 
-    public void listarMotivos() throws ProjetoException {
-        listaMotivos = pDao.listarMotivos();
+    public ArrayList<MotivoDesligamentoBean> listarMotivos() throws ProjetoException {
+        if (listaMotivos.size()==0)
+        	listaMotivos = pDao.listarMotivos();
+        return listaMotivos;
     }
 
     public void gravarMotivo() {
@@ -135,11 +137,5 @@ public class MotivoDesligamentoController implements Serializable {
         return cabecalho;
     }
 
-    public List<MotivoDesligamentoBean> getListaMotivos() {
-        return listaMotivos;
-    }
 
-    public void setListaMotivos(List<MotivoDesligamentoBean> listaMotivos) {
-        this.listaMotivos = listaMotivos;
-    }
 }

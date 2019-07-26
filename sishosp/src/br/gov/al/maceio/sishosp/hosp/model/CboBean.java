@@ -6,16 +6,14 @@ public class CboBean implements Serializable {
 
     private Integer codCbo;
     private String descCbo;
-    private Integer codEmpresa;
     private String codigo;
 
     public CboBean() {
     }
 
-    public CboBean(Integer codCbo, String descCbo, Integer codEmpresa) {
+    public CboBean(Integer codCbo, String descCbo, Integer codUnidade) {
         this.codCbo = codCbo;
         this.descCbo = descCbo;
-        this.codEmpresa = codEmpresa;
     }
 
     public Integer getCodCbo() {
@@ -34,13 +32,6 @@ public class CboBean implements Serializable {
         this.descCbo = descCbo;
     }
 
-    public Integer getCodEmpresa() {
-        return codEmpresa;
-    }
-
-    public void setCodEmpresa(Integer codEmpresa) {
-        this.codEmpresa = codEmpresa;
-    }
 
     public String getCodigo() {
         return codigo;
@@ -49,5 +40,7 @@ public class CboBean implements Serializable {
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
+
+	
 
 }

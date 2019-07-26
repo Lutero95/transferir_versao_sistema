@@ -18,6 +18,11 @@
 		<validator-id>CPFValidator</validator-id>
 		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CPFValidator</validator-class>
 	</validator>
+	
+	<validator>
+		<validator-id>CNPJValidator</validator-id>
+		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CNPJValidator</validator-class>
+	</validator>	
 
 	<validator>
 		<validator-id>PISValidator</validator-id>

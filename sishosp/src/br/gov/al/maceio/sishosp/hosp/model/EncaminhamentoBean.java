@@ -21,9 +21,9 @@ public class EncaminhamentoBean implements Serializable {
 	private Integer codprograma;
 	private Date datarecebido;
 	private String sta;
+	private Integer codUnidade;
 
 	public EncaminhamentoBean() {
-
 	}
 
 	public Integer getCod() {
@@ -153,5 +153,15 @@ public class EncaminhamentoBean implements Serializable {
 	public void setSta(String sta) {
 		this.sta = sta;
 	}
+
+	public Integer getCodUnidade() {
+		return codUnidade;
+	}
+
+	public void setCodUnidade(Integer codUnidade) {
+		this.codUnidade = codUnidade;
+	}
+
+
 
 }

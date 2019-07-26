@@ -65,7 +65,7 @@ public class AtendimentoController implements Serializable {
         listaProcedimentos = new ArrayList<ProcedimentoBean>();
         primeiraVez = true;
         listaEvolucoes = new ArrayList<>();
-        atendimento.getEmpresa().setCodEmpresa(user_session.getCodigo());
+        atendimento.getUnidade().setId(user_session.getCodigo());
         atendimento.setDataAtendimentoInicio(DataUtil.retornarDataAtual());
         atendimento.setDataAtendimentoFinal(DataUtil.retornarDataAtual());
         paciente = new PacienteBean();
@@ -193,7 +193,7 @@ public class AtendimentoController implements Serializable {
 
     public void listarAtendimentos() throws ProjetoException {
         this.listAtendimentos = aDao
-                .carregaAtendimentos(atendimento, atendimento.getEmpresa().getCodEmpresa());
+                .carregaAtendimentos(atendimento, atendimento.getUnidade().getId());
     }
 
     public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {

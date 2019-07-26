@@ -170,7 +170,7 @@ public class TransferenciaPacienteDAO {
                 ps.setString(5, "A");
                 ps.setInt(6, insercao.getLaudo().getId());
                 ps.setString(7, insercao.getObservacao());
-                ps.setInt(8, user_session.getEmpresa().getCodEmpresa());
+                ps.setInt(8, user_session.getUnidade().getId());
 
                 rs = ps.executeQuery();
                 int idPacienteInstituicaoNovo = 0;
@@ -189,7 +189,7 @@ public class TransferenciaPacienteDAO {
                 for (int j = 0; j < listaProfissionais.get(i).getListDiasSemana().size(); j++) {
                 	ps8.setInt(3,
                             Integer.parseInt(listaProfissionais.get(i).getListDiasSemana().get(j)));
-                	ps8.setInt(4, user_session.getEmpresa().getCodEmpresa());
+                	ps8.setInt(4, user_session.getUnidade().getId());
                 	ps8.executeUpdate();
                 }
             }
@@ -207,7 +207,7 @@ public class TransferenciaPacienteDAO {
                         .getId_paciente());
             	ps9.setDate(2, new Date(listAgendamentoProfissional.get(i).getAgenda()
                         .getDataMarcacao().getTime()));
-            	ps9.setInt(3, user_session.getEmpresa().getParametro().getTipoAtendimento().getIdTipo());
+            	ps9.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
                 if(insercao.getAgenda().getTurno() != null) {
                 	ps9.setString(4, insercao.getAgenda().getTurno());
@@ -218,7 +218,7 @@ public class TransferenciaPacienteDAO {
 
                 ps9.setString(5, insercao.getObservacao());
                 ps9.setInt(6, idPacienteInstituicaoNovo);
-                ps9.setInt(7, user_session.getEmpresa().getCodEmpresa());
+                ps9.setInt(7, user_session.getUnidade().getId());
 
                 if(insercao.getAgenda().getHorario() != null) {
                 	ps9.setTime(8, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));

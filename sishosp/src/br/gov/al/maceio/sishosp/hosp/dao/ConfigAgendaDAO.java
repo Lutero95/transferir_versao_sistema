@@ -98,7 +98,7 @@ public class ConfigAgendaDAO {
 				ps.setNull(4, Types.NULL);
 			}
 
-			ps.setInt(5, user_session.getEmpresa().getCodEmpresa());
+			ps.setInt(5, user_session.getUnidade().getId());
 
 			ps.setString(6, confParte1.getOpcao());
 			ps.setString(7, confParte1.getTipo());
@@ -346,7 +346,7 @@ public class ConfigAgendaDAO {
 				ps.setNull(4, Types.NULL);
 			}
 
-			ps.setInt(5, user_session.getEmpresa().getCodEmpresa());
+			ps.setInt(5, user_session.getUnidade().getId());
 
 			ps.setString(6, confParte1.getOpcao());
 
@@ -502,7 +502,7 @@ public class ConfigAgendaDAO {
 
 			stm.setLong(i, codmedico);
 			i = i + 1;
-			stm.setInt(i, user_session.getEmpresa().getCodEmpresa());
+			stm.setInt(i, user_session.getUnidade().getId());
 
 			if (config != null) {
 				if (config.getAno() != null) {
@@ -594,7 +594,7 @@ public class ConfigAgendaDAO {
 			int i = 1;
 
 			stm.setInt(i, codequipe);
-			stm.setInt(i + 1, user_session.getEmpresa().getCodEmpresa());
+			stm.setInt(i + 1, user_session.getUnidade().getId());
 
 			if (config != null) {
 				if (config.getAno() != null) {
@@ -660,7 +660,7 @@ public class ConfigAgendaDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+			stm.setInt(1, user_session.getUnidade().getId());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {

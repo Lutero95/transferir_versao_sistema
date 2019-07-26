@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import br.gov.al.maceio.sishosp.comum.enums.TipoCabecalho;
 import br.gov.al.maceio.sishosp.comum.util.*;
@@ -303,13 +304,15 @@ public class PacienteController implements Serializable {
         buscaEncaminhadoCod(prodsel.getCodencaminhado());
     }
     
-    public void verificaGrauParentescoResponsavel(SelectEvent event) throws Exception {
+    public void verificaGrauParentescoResponsavel() throws Exception {
     	System.out.println("verificaGrauParentescoResponsavel");
         Parentesco parentesco = new Parentesco();
-        Integer codParentesco= (Integer) event.getObject();
-
+      //  Integer codParentesco= (Integer) event.getObject();
+        HttpServletRequest request = (HttpServletRequest) FacesContext
+        		.getCurrentInstance().getExternalContext().getRequest();
+        		String nome = request.getParameter(":frmPrincipal:tbv:mae");
         ParentescoDAO dao = new ParentescoDAO();
-        parentesco = dao.buscaParentesCocodigo(codParentesco);
+        parentesco = dao.buscaParentesCocodigo(paciente.getCodparentesco());
         if (parentesco.getTipoParentesco().equals("M")) {
         	paciente.setNomeresp(paciente.getNomeMae());
         }

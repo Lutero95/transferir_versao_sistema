@@ -36,7 +36,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
         String sql = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, codprograma,"
                 + " dtaatende, situacao, dtamarcacao, codtipoatendimento,"
-                + " turno, codequipe, observacao, ativo, cod_empresa, codgrupo, encaixe, funcionario_liberacao, horario, avaliacao)"
+                + " turno, codequipe, observacao, ativo, cod_unidade, codgrupo, encaixe, funcionario_liberacao, horario, avaliacao)"
                 + " VALUES "
                 + "(?, ?, ?, ?, ?,"
                 + " ?, ?, ?, ?, ?,"
@@ -77,7 +77,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 }
                 ps.setString(10, agenda.getObservacao().toUpperCase());
                 ps.setString(11, "S");
-                ps.setInt(12, agenda.getEmpresa().getCodEmpresa());
+                ps.setInt(12, agenda.getUnidade().getId());
 
                 if(!VerificadorUtil.verificarSeObjetoNulo(agenda.getGrupo().getIdGrupo())) {
                     ps.setInt(13, agenda.getGrupo().getIdGrupo());
@@ -1149,7 +1149,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
                 + " LEFT JOIN acl.funcionarios m ON (m.id_funcionario = a.codmedico) "
                 + " LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) "
                 + " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) "
-                + " WHERE a.cod_empresa = ? AND a.dtaatende >= ? AND a.dtaatende <= ?";
+                + " WHERE a.cod_unidade = ? AND a.dtaatende >= ? AND a.dtaatende <= ?";
         if (!situacao.equals("T"))
         	sql = sql + " and coalesce(a.presenca,'N')=?";
         sql = sql + " order by a.dtaatende, p.nome";
@@ -1557,14 +1557,14 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         sql.append("CASE WHEN (SELECT count(id_atendimento) FROM hosp.atendimentos WHERE ");
         sql.append("dtaatende = ? AND codequipe = ?) < p.qtd_simultanea_atendimento_equipe ");
         sql.append("THEN TRUE ELSE FALSE END AS pode_marcar ");
-        sql.append("FROM hosp.parametro p WHERE p.cod_empresa = ?");
+        sql.append("FROM hosp.parametro p WHERE p.codunidade = ?");
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql.toString());
             stm.setDate(1, DataUtil.converterDateUtilParaDateSql(insercao.getDataSolicitacao()));
             stm.setInt(2, insercao.getEquipe().getCodEquipe());
-            stm.setInt(3, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(3, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -1597,7 +1597,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             sql.append("CASE WHEN (SELECT count(id_atendimento) FROM hosp.atendimentos WHERE horario = ? ");
             sql.append("AND dtaatende = ? AND codmedico = ?) < p.qtd_simultanea_atendimento_profissional ");
             sql.append("THEN TRUE ELSE FALSE END AS pode_marcar ");
-            sql.append("FROM hosp.parametro p WHERE p.cod_empresa = ?");
+            sql.append("FROM hosp.parametro p WHERE p.codunidade = ?");
         }
 
         if(insercao.getAgenda().getTurno() != null) {
@@ -1605,7 +1605,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             sql.append("CASE WHEN (SELECT count(id_atendimento) FROM hosp.atendimentos WHERE turno = ? ");
             sql.append("AND dtaatende = ? AND codmedico = ?) < p.qtd_simultanea_atendimento_profissional ");
             sql.append("THEN TRUE ELSE FALSE END AS pode_marcar ");
-            sql.append("FROM hosp.parametro p WHERE p.cod_empresa = ?");
+            sql.append("FROM hosp.parametro p WHERE p.codunidade = ?");
         }
 
         try {
@@ -1622,7 +1622,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 
             stm.setDate(2, DataUtil.converterDateUtilParaDateSql(insercao.getDataSolicitacao()));
             stm.setLong(3, insercao.getFuncionario().getId());
-            stm.setInt(4, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(4, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -1733,7 +1733,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
         sql.append("AND pda.dia_semana = 6 ) a1) AS qtd_tarde_sexta ");
         sql.append("FROM hosp.atendimentos a ");
         sql.append("LEFT JOIN hosp.equipe e ON (a.codequipe = e.id_equipe) ");
-        sql.append("WHERE a.codequipe IS NOT NULL AND a.cod_empresa = ? ");
+        sql.append("WHERE a.codequipe IS NOT NULL AND a.cod_unidade = ? ");
         sql.append("ORDER BY e.descequipe ");
 
         try {
@@ -1741,7 +1741,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
             PreparedStatement stm = null;
             stm = con.prepareStatement(sql.toString());
 
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
 
             ResultSet rs = stm.executeQuery();
 

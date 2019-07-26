@@ -44,7 +44,7 @@ public class FornecedorDAO {
             ps.setString(8, fornecedor.getTelefone1().toUpperCase());
             ps.setString(9, fornecedor.getTelefone2().toUpperCase());
             ps.setString(10, fornecedor.getIe().toUpperCase());
-            ps.setInt(11, user_session.getEmpresa().getCodEmpresa());
+            ps.setInt(11, user_session.getUnidade().getId());
             ps.setDouble(12, fornecedor.getValor());
 
             ps.execute();
@@ -72,7 +72,7 @@ public class FornecedorDAO {
 
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -217,7 +217,7 @@ public class FornecedorDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setString(1, "%" + descricao.toUpperCase() + "%");
-            stm.setInt(2, user_session.getEmpresa().getCodEmpresa());
+            stm.setInt(2, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

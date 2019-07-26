@@ -22,13 +22,12 @@ public class EmpresaBean implements Serializable {
     private Byte[] logomarca;
     private String email;
     private String site;
-    private Boolean matriz;
     private Boolean ativo;
     private String tipoString;
-    private ParametroBean parametro;
+    private String cnes;
+
 
     public EmpresaBean() {
-        parametro = new ParametroBean();
     }
 
     public Integer getCodEmpresa() {
@@ -175,13 +174,7 @@ public class EmpresaBean implements Serializable {
         this.site = site;
     }
 
-    public Boolean getMatriz() {
-        return matriz;
-    }
-
-    public void setMatriz(Boolean matriz) {
-        this.matriz = matriz;
-    }
+   
 
     public Boolean getAtivo() {
         return ativo;
@@ -199,11 +192,15 @@ public class EmpresaBean implements Serializable {
         this.tipoString = tipoString;
     }
 
-    public ParametroBean getParametro() {
-        return parametro;
-    }
+	public String getCnes() {
+		return cnes;
+	}
 
-    public void setParametro(ParametroBean parametro) {
-        this.parametro = parametro;
-    }
+	public void setCnes(String cnes) {
+		this.cnes = cnes;
+	}
+
+    
+
+
 }
