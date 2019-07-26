@@ -147,6 +147,10 @@ public class TipoAtendimentoController implements Serializable {
     	return listaTiposAtendimento;
     }
 
+    public void carregaTiposAtendimento() throws ProjetoException {
+        listaTiposAtendimento =  tDao.listarTipoAt();
+    }    
+    
     public TipoAtendimentoBean getTipoAtendimento() {
         return tipoAtendimento;
     }
