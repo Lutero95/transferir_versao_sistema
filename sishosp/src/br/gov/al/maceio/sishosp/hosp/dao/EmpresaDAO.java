@@ -26,22 +26,25 @@ public class EmpresaDAO {
         Integer codEmpresa = null;
 
         String sql = "INSERT INTO hosp.empresa(nome_principal, nome_fantasia, cnpj, rua, bairro, numero, cep, cidade, " +
-                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, ativo) " +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  true) returning cod_empresa";
+                " estado, complemento, ddd_1, telefone_1, ddd_2, telefone_2, email, site, ativo, cnes) " +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  true, ?) returning cod_empresa";
 
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, empresa.getNomeEmpresa());
             ps.setString(2, empresa.getNomeFantasia());
-            ps.setString(3, empresa.getCnpj());
+            ps.setString(3, empresa.getCnpj().replaceAll("[^0-9]", ""));
             ps.setString(4, empresa.getRua());
             ps.setString(5, empresa.getBairro());
             if(empresa.getNumero() != null) 
                 ps.setInt(6, empresa.getNumero());
             else
                 ps.setNull(6, Types.NULL);
-            ps.setString(7, empresa.getCep());
+            if(empresa.getCep() != null) 
+                ps.setString(7, empresa.getCep().replaceAll("[^0-9]", ""));
+            else
+                ps.setNull(7, Types.NULL);            
             ps.setString(8, empresa.getCidade());
             ps.setString(9, empresa.getEstado());
             ps.setString(10, empresa.getComplemento());
@@ -80,6 +83,7 @@ public class EmpresaDAO {
                 ps.setNull(16, Types.NULL);
             }
 
+            ps.setString(17, empresa.getCnes());
 
             ResultSet rs = ps.executeQuery();
 
@@ -157,7 +161,7 @@ public class EmpresaDAO {
         Boolean retorno = false;
         String sql = "UPDATE hosp.empresa SET nome_principal=?, nome_fantasia=?, cnpj=?, rua=?, " +
                 " bairro=?, numero=?, cep=?, cidade=?, estado=?, ddd_1=?, telefone_1=?, " +
-                " ddd_2=?, telefone_2=?, email=?, site=?, complemento=?  " +
+                " ddd_2=?, telefone_2=?, email=?, site=?, complemento=?, cnes=?  " +
                 " WHERE cod_empresa = ?;";
         try {
             con = ConnectionFactory.getConnection();
@@ -165,11 +169,11 @@ public class EmpresaDAO {
 
             ps.setString(1, empresa.getNomeEmpresa());
             ps.setString(2, empresa.getNomeFantasia());
-            ps.setString(3, empresa.getCnpj());
+            ps.setString(3, empresa.getCnpj().replaceAll("[^0-9]", ""));
             ps.setString(4, empresa.getRua());
             ps.setString(5, empresa.getBairro());
             ps.setInt(6, empresa.getNumero());
-            ps.setString(7, empresa.getCep());
+            ps.setString(7, empresa.getCep().replaceAll("[^0-9]", ""));
             ps.setString(8, empresa.getCidade());
             ps.setString(9, empresa.getEstado());
             ps.setInt(10, empresa.getDdd1());
@@ -180,6 +184,7 @@ public class EmpresaDAO {
             ps.setString(15, empresa.getSite());
             ps.setString(16, empresa.getComplemento());
             ps.setInt(17, empresa.getCodEmpresa());
+            ps.setString(18, empresa.getCnes());            
             ps.executeUpdate();
 
             con.commit();

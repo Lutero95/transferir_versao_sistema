@@ -24,6 +24,7 @@ public class EmpresaBean implements Serializable {
     private String site;
     private Boolean ativo;
     private String tipoString;
+    private String cnes;
 
 
     public EmpresaBean() {
@@ -190,6 +191,14 @@ public class EmpresaBean implements Serializable {
     public void setTipoString(String tipoString) {
         this.tipoString = tipoString;
     }
+
+	public String getCnes() {
+		return cnes;
+	}
+
+	public void setCnes(String cnes) {
+		this.cnes = cnes;
+	}
 
     
 
