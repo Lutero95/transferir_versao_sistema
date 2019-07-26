@@ -164,14 +164,6 @@ public class AtendimentoBean implements Serializable {
         this.cbo = cbo;
     }
 
-    public EmpresaBean getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(EmpresaBean empresa) {
-        this.empresa = empresa;
-    }
-
     public String getEvolucao() {
         return evolucao;
     }
