@@ -171,6 +171,7 @@
                                              rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
 
                                     <p:autoComplete value="#{InsercaoController.insercao.programa}"
+                                                    readonly="#{InsercaoController.ehAvaliacao == true}"
                                                     rendered="#{InsercaoController.tipo == 'E'}" size="31"
                                                     converter="conPrograma" class="select-agendaEquipe4"
                                                     completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
@@ -184,6 +185,7 @@
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusPr" immediate="true" style="margin-left: 5px"
+                                                     disabled="#{InsercaoController.ehAvaliacao == true}"
                                                      icon="ui-icon-search" rendered="#{InsercaoController.tipo == 'E'}"
                                                      actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
                                                      action="#{InsercaoController.limparNaBuscaPrograma()}"
@@ -203,7 +205,7 @@
                                              class="fire-label"
                                              rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
 
-                                    <p:autoComplete value="#{InsercaoController.insercao.grupo}"
+                                    <p:autoComplete value="#{InsercaoController.insercao.grupo}" readonly="#{InsercaoController.ehAvaliacao == true}"
                                                     rendered="#{InsercaoController.tipo == 'E'}" size="31"
                                                     converter="conGrupo" class="select-agendaEquipe4"
                                                     disabled="#{InsercaoController.insercao.programa==null}"
@@ -219,7 +221,7 @@
 
                                     <p:commandButton id="btBusGr" immediate="true" style="margin-left: 5px"
                                                      icon="ui-icon-search" rendered="#{InsercaoController.tipo == 'E'}"
-                                                     disabled="#{InsercaoController.insercao.programa.idPrograma == null}"
+                                                     disabled="#{InsercaoController.insercao.programa.idPrograma == null || InsercaoController.ehAvaliacao == true}"
                                                      update=":formConsuProg" onclick="PF('dlgConsuGrop').show();"/>
 
                                 </b:column>
@@ -238,6 +240,7 @@
                                              rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
 
                                     <p:autoComplete value="#{InsercaoController.insercao.equipe}"
+                                                    readonly="#{InsercaoController.ehAvaliacao == true}"
                                                     size="31" converter="conEquipe" class="select-agendaEquipe4"
                                                     rendered="#{InsercaoController.tipo == 'E'}"
                                                     disabled="#{InsercaoController.insercao.grupo==null}"
@@ -249,7 +252,7 @@
                                     </p:autoComplete>
 
                                     <p:commandButton id="btBusEqui" immediate="true" style="margin-left: 5px"
-                                                     disabled="#{InsercaoController.insercao.grupo.idGrupo == null}"
+                                                     disabled="#{InsercaoController.insercao.grupo.idGrupo == null || InsercaoController.ehAvaliacao == true}"
                                                      icon="ui-icon-search" oncomplete="PF('dlgConsuEquipe').show();"
                                                      actionListener="#{InsercaoController.carregaListaEquipePorTipoAtendimento()}"
                                                      update=":formConsuEquipe"
@@ -258,6 +261,7 @@
                                 <b:column span="3" class="label-position5 carregar-margin">
                                     <p:commandButton icon="ui-icon-search" process="@this"
                                                      value="Carregar Profissionais"
+                                                     disabled="#{InsercaoController.ehAvaliacao == true}"
                                                      style="margin-top:20px; margin-bottom:10px;"
                                                      class="btn-acao-table acao-confirmar"
                                                      update="dtEquipe, :formInsercao:msgPagina" immediate="true"
@@ -276,7 +280,7 @@
 
                         </b:row>
 
-                        <b:row rendered="#{InsercaoController.tipo == 'E'}">
+                        <b:row rendered="#{InsercaoController.tipo == 'E' and InsercaoController.ehAvaliacao == false}">
 
                             <b:column span="5" class="label-position">
 

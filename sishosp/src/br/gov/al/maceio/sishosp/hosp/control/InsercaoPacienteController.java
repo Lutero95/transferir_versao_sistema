@@ -13,6 +13,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
+import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
 import org.primefaces.event.SelectEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
@@ -64,6 +65,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private Boolean renderizarAposLaudo;
     private List<AgendaBean> listaHorariosDaEquipe;
     private Boolean liberacao;
+    private Boolean ehAvaliacao;
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -81,6 +83,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaEquipePorGrupo = new ArrayList<>();
         listaProfissionais = new ArrayList<>();
         liberacao = false;
+        ehAvaliacao = false;
     }
 
     public void carregarHorarioOuTurnoInsercao() throws ProjetoException, ParseException {
@@ -162,6 +165,18 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         limparDados();
         insercao = iDao.carregarLaudoPaciente(id);
         renderizarAposLaudo = true;
+
+        if(ehAvaliacao){
+            carregarDadosAvaliacao();
+        }
+    }
+
+    private void carregarDadosAvaliacao(){
+        AvaliacaoInsercaoDTO avaliacaoInsercaoDTO = iDao.carregarAtendimentoAvaliacao(insercao.getLaudo().getId());
+        insercao.setPrograma(avaliacaoInsercaoDTO.getProgramaBean());
+        insercao.setGrupo(avaliacaoInsercaoDTO.getGrupoBean());
+        insercao.setEquipe(avaliacaoInsercaoDTO.getEquipeBean());
+        listaProfissionaisEquipe = avaliacaoInsercaoDTO.getListaProfissionais();
     }
 
     public Boolean validarCarregamentoDoLaudo(Integer idLaudo) throws ProjetoException {
@@ -169,6 +184,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         Boolean retorno = true;
 
         if (iDao.verificarSeLaudoConstaNoAtendimento(idLaudo)) {
+            ehAvaliacao = true;
             if (iDao.verificarSeAlgumAtendimentoNaoFoiLancadoPerfil(idLaudo)) {
                 JSFUtil.adicionarMensagemErro(
                         "Avaliação incompleta, preencha totalmente a avaliação que esse laudo está relacionada para poder selecionar esse laudo na inserção!",
@@ -682,5 +698,13 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void setListaHorariosDaEquipe(List<AgendaBean> listaHorariosDaEquipe) {
         this.listaHorariosDaEquipe = listaHorariosDaEquipe;
+    }
+
+    public Boolean getEhAvaliacao() {
+        return ehAvaliacao;
+    }
+
+    public void setEhAvaliacao(Boolean ehAvaliacao) {
+        this.ehAvaliacao = ehAvaliacao;
     }
 }

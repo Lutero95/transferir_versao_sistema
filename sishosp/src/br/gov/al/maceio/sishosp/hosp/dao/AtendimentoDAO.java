@@ -375,7 +375,7 @@ public class AtendimentoDAO {
 
         AtendimentoBean at = new AtendimentoBean();
         String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, a.codmedico, f.descfuncionario, a1.codprocedimento, " +
-                "pr.nome as procedimento, a1.situacao, a1.evolucao, a.avaliacao, a.cod_laudo " +
+                "pr.nome as procedimento, a1.situacao, a1.evolucao, a.avaliacao, a.cod_laudo, a.grupo_avaliacao, a.codprograma " +
                 "from hosp.atendimentos a " +
                 "join hosp.atendimentos1 a1 on a1.id_atendimento = a.id_atendimento " +
                 "left join hosp.pacientes p on (p.id_paciente = a.codpaciente) " +
@@ -401,6 +401,8 @@ public class AtendimentoDAO {
                 at.setEvolucao(rs.getString("evolucao"));
                 at.setAvaliacao(rs.getBoolean("avaliacao"));
                 at.getInsercaoPacienteBean().getLaudo().setId(rs.getInt("cod_laudo"));
+                at.setGrupoAvaliacao(new GrupoDAO().listarGrupoPorIdComConexao(rs.getInt("grupo_avaliacao"), con));
+                at.setPrograma(new ProgramaDAO().listarProgramaPorIdComConexao(rs.getInt("codprograma"), con));
             }
 
         } catch (Exception ex) {

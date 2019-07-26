@@ -10,7 +10,11 @@ import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.MotivoLiberacao;
+import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
+import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
 
 import javax.faces.context.FacesContext;
 
@@ -527,6 +531,87 @@ public class InsercaoPacienteDAO {
             }
         }
         return retorno;
+    }
+
+    public AvaliacaoInsercaoDTO carregarAtendimentoAvaliacao(int codLaudo) {
+
+        AvaliacaoInsercaoDTO avaliacaoInsercaoDTO = new AvaliacaoInsercaoDTO();
+
+        String sql = "SELECT codprograma, grupo_avaliacao, codequipe FROM hosp.atendimentos WHERE cod_laudo = ?;";
+
+        try {
+            con = ConnectionFactory.getConnection();
+
+            PreparedStatement stm = con.prepareStatement(sql);
+
+            stm.setInt(1, codLaudo);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProgramaDAO programaDAO = new ProgramaDAO();
+                GrupoDAO grupoDAO = new GrupoDAO();
+                EquipeDAO equipeDAO = new EquipeDAO();
+
+                avaliacaoInsercaoDTO.setProgramaBean(programaDAO.listarProgramaPorIdComConexao(rs.getInt("codprograma"), con));
+                avaliacaoInsercaoDTO.setGrupoBean(grupoDAO.listarGrupoPorIdComConexao(rs.getInt("grupo_avaliacao"), con));
+                avaliacaoInsercaoDTO.setEquipeBean(equipeDAO.buscarEquipePorIDComConexao(rs.getInt("codequipe"), con));
+                avaliacaoInsercaoDTO.setListaProfissionais(listarProfissionaisDaAvaliacaoQueOPacienteTemPerfil(codLaudo, con));
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return avaliacaoInsercaoDTO;
+    }
+
+    public ArrayList<FuncionarioBean> listarProfissionaisDaAvaliacaoQueOPacienteTemPerfil(int codLaudo, Connection conAuxiliar) {
+
+        ArrayList<FuncionarioBean> lista = new ArrayList<>();
+
+        String sql = "SELECT a1.codprofissionalatendimento, f.descfuncionario, e.descespecialidade, f.codespecialidade " +
+                "FROM hosp.atendimentos a " +
+                "JOIN hosp.atendimentos1 a1 ON (a.id_atendimento = a1.id_atendimento) " +
+                "JOIN acl.funcionarios f ON (a1.codprofissionalatendimento = f.id_funcionario) " +
+                "JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) " +
+                "WHERE a.cod_laudo = ? AND a1.perfil_avaliacao = 'S' " +
+                "ORDER BY f.descfuncionario";
+
+        try {
+
+            PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+
+            stm.setInt(1, codLaudo);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+               FuncionarioBean funcionarioBean = new FuncionarioBean();
+               funcionarioBean.setNome(rs.getString("descfuncionario"));
+               funcionarioBean.setId(rs.getLong("codprofissionalatendimento"));
+               funcionarioBean.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+               funcionarioBean.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+
+               lista.add(funcionarioBean);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
     }
 
 }

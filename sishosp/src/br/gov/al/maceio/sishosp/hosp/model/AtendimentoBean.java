@@ -29,6 +29,7 @@ public class AtendimentoBean implements Serializable {
     private CboBean cbo;
     private EmpresaBean empresa;
     private InsercaoPacienteBean insercaoPacienteBean;
+    private GrupoBean grupoAvaliacao;
 
     public AtendimentoBean() {
         this.paciente = new PacienteBean();
@@ -40,6 +41,7 @@ public class AtendimentoBean implements Serializable {
         this.cbo = new CboBean();
         this.empresa = new EmpresaBean();
         this.insercaoPacienteBean = new InsercaoPacienteBean();
+        this.grupoAvaliacao = new GrupoBean();
     }
 
     public Integer getId() {
@@ -200,5 +202,13 @@ public class AtendimentoBean implements Serializable {
 
     public void setPerfil(String perfil) {
         this.perfil = perfil;
+    }
+
+    public GrupoBean getGrupoAvaliacao() {
+        return grupoAvaliacao;
+    }
+
+    public void setGrupoAvaliacao(GrupoBean grupoAvaliacao) {
+        this.grupoAvaliacao = grupoAvaliacao;
     }
 }

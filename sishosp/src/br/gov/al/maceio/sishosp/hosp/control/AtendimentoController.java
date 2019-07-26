@@ -13,16 +13,13 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.LaudoDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 import org.primefaces.event.CellEditEvent;
 
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.hosp.dao.AtendimentoDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.CboDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 
 @ManagedBean(name = "AtendimentoController")
 @ViewScoped
@@ -41,13 +38,14 @@ public class AtendimentoController implements Serializable {
     private FuncionarioDAO fDao = new FuncionarioDAO();
     private AtendimentoDAO aDao = new AtendimentoDAO();
     private ProcedimentoDAO pDao = new ProcedimentoDAO();
+    private GrupoDAO gDao = new GrupoDAO();
     private Integer idAtendimento1;
     private List<AtendimentoBean> listaEvolucoes;
     private PacienteBean paciente;
     private Pts pts;
     private Boolean renderizarDialogLaudo;
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
-    private GrupoBean grupoAvaliacao;
+    private List<GrupoBean> listaGrupos;
 
     //CONSTANTES
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
@@ -73,7 +71,7 @@ public class AtendimentoController implements Serializable {
         paciente = new PacienteBean();
         pts = new Pts();
         renderizarDialogLaudo = false;
-        grupoAvaliacao = new GrupoBean();
+        listaGrupos = new ArrayList<>();
     }
 
 
@@ -295,7 +293,8 @@ public class AtendimentoController implements Serializable {
     private Boolean validarSeEhNecessarioInformarGrupo(){
         Boolean retorno = false;
 
-        if(atendimento.getAvaliacao() && validarDadosDoAtendimentoForamInformados() && VerificadorUtil.verificarSeObjetoNuloOuZero(grupoAvaliacao.getIdGrupo())){
+        if(atendimento.getAvaliacao() && validarDadosDoAtendimentoForamInformados() && VerificadorUtil.verificarSeObjetoNuloOuZero(
+                atendimento.getGrupoAvaliacao().getIdGrupo())){
             retorno = true;
         }
 
@@ -328,7 +327,7 @@ public class AtendimentoController implements Serializable {
 
             if (verificou) {
                 boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId(),
-                        grupoAvaliacao.getIdGrupo());
+                        atendimento.getGrupoAvaliacao().getIdGrupo());
                 if (alterou) {
                     JSFUtil.adicionarMensagemSucesso("Atendimento realizado com sucesso!", "Sucesso");
                 } else {
@@ -356,6 +355,21 @@ public class AtendimentoController implements Serializable {
             throws ProjetoException {
         LaudoDAO laudoDAO = new LaudoDAO();
         listaLaudosVigentes = laudoDAO.listarLaudosVigentesParaPaciente(atendimento.getPaciente().getId_paciente());
+    }
+
+    public List<GrupoBean> listaGrupoAutoComplete(String query)
+            throws ProjetoException {
+        if (atendimento.getPrograma().getIdPrograma() != null) {
+            return gDao.listarGruposNoAutoComplete(query,
+                    this.atendimento.getPrograma().getIdPrograma());
+        } else {
+            return null;
+        }
+
+    }
+
+    public void listarGruposPorProgramas() throws ProjetoException {
+        listaGrupos = gDao.listarGruposPorPrograma(atendimento.getPrograma().getIdPrograma());
     }
 
     public AtendimentoBean getAtendimento() {
@@ -465,11 +479,11 @@ public class AtendimentoController implements Serializable {
         this.listaLaudosVigentes = listaLaudosVigentes;
     }
 
-    public GrupoBean getGrupoAvaliacao() {
-        return grupoAvaliacao;
+    public List<GrupoBean> getListaGrupos() {
+        return listaGrupos;
     }
 
-    public void setGrupoAvaliacao(GrupoBean grupoAvaliacao) {
-        this.grupoAvaliacao = grupoAvaliacao;
+    public void setListaGrupos(List<GrupoBean> listaGrupos) {
+        this.listaGrupos = listaGrupos;
     }
 }

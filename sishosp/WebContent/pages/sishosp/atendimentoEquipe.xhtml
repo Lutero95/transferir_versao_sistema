@@ -58,11 +58,11 @@
                             <b:label value="Grupo Avaliação" severity="info" />
 
                             <p:outputPanel id="outGrupo">
-                                <p:autoComplete value="#{AtendimentoController.grupoAvaliacao}"
+                                <p:autoComplete value="#{AtendimentoController.atendimento.grupoAvaliacao}"
                                                 size="31" converter="conGrupo" required="true"
                                                 requiredMessage="Grupo: Campo obrigatório!"
                                                 class="select-agendaEquipe4"
-                                                completeMethod="#{GrupoController.listaGrupoGeralAutoComplete}"
+                                                completeMethod="#{AtendimentoController.listaGrupoAutoComplete}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
                                                 itemLabel="#{theme.descGrupo}">
@@ -72,7 +72,7 @@
 
                                 <p:commandButton id="btBusGr" immediate="true"
                                                  icon="ui-icon-search"
-                                                 action="#{GrupoController.listarGrupos()}"
+                                                 action="#{AtendimentoController.listarGruposPorProgramas()}"
                                                  update=":formConsuGrop"
                                                  onclick="PF('dlgConsuGrop').show();" />
                             </p:outputPanel>
@@ -606,7 +606,7 @@
             <h:form id="formConsuGrop">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
                              responsive="true" save-state="false" saveState="false"
-                             value="#{GrupoController.listaGrupos}" id="dtGrupo"
+                             value="#{AtendimentoController.listaGrupos}" id="dtGrupo"
                              var="grupo" display="Nenhum Grupo">
 
                     <h:column>
@@ -633,7 +633,7 @@
                                 class="new-btn-acao-table acao-editar"
                                 onclick="PF('dlgConsuGrop').hide();">
                             <f:setPropertyActionListener value="#{grupo}"
-                                                         target="#{AtendimentoController.grupoAvaliacao}" />
+                                                         target="#{AtendimentoController.atendimento.grupoAvaliacao}" />
                         </p:commandButton>
                     </h:column>
 
