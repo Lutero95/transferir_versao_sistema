@@ -4,6 +4,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
+
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
@@ -16,12 +19,13 @@ public class TipoAtendimentoDAO {
 
     Connection con = null;
     PreparedStatement ps = null;
-
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+            .getSessionMap().get("obj_funcionario");
     public boolean gravarTipoAt(TipoAtendimentoBean tipo) {
 
         Boolean retorno = false;
-        String sql = "insert into hosp.tipoatendimento (desctipoatendimento, primeiroatendimento, equipe_programa, id, intervalo_minimo) "
-                + " values (?, ?, ?, DEFAULT, ?) RETURNING id;";
+        String sql = "insert into hosp.tipoatendimento (desctipoatendimento, primeiroatendimento, equipe_programa, id, intervalo_minimo, cod_unidade) "
+                + " values (?, ?, ?, DEFAULT, ?,?) RETURNING id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -33,6 +37,8 @@ public class TipoAtendimentoDAO {
             } else {
                 ps.setInt(4, tipo.getIntervaloMinimo());
             }
+            
+            ps.setInt(5, user_session.getUnidade().getId());
 
             ResultSet rs = ps.executeQuery();
             int idTipo = 0;
@@ -294,11 +300,12 @@ public class TipoAtendimentoDAO {
 
     public ArrayList<TipoAtendimentoBean> listarTipoAt() throws ProjetoException {
     	ArrayList<TipoAtendimentoBean> lista = new ArrayList<>();
-        String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa, intervalo_minimo from hosp.tipoatendimento order by desctipoatendimento";
+        String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa, intervalo_minimo from hosp.tipoatendimento where cod_unidade=? order by desctipoatendimento";
         GrupoDAO gDao = new GrupoDAO();
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -329,14 +336,15 @@ public class TipoAtendimentoDAO {
                                                        Integer tipo) throws ProjetoException {
         List<TipoAtendimentoBean> lista = new ArrayList<>();
         String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa, intervalo_minimo "
-                + " from hosp.tipoatendimento";
+                + " from hosp.tipoatendimento where cod_unidade=? ";
         if (tipo == 1) {
-            sql += " where desctipoatendimento LIKE ?  order by desctipoatendimento";
+            sql += " and desctipoatendimento LIKE ?  order by desctipoatendimento";
         }
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setString(1, "%" + descricao.toUpperCase() + "%");
+            stm.setInt(1, user_session.getUnidade().getId());            
+            stm.setString(2, "%" + descricao.toUpperCase() + "%");
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -373,7 +381,7 @@ public class TipoAtendimentoDAO {
 			String sql = "SELECT t.id, t.desctipoatendimento, t.primeiroatendimento, t.intervalo_minimo, t.equipe_programa, "
 					+ "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
 					+ "FROM hosp.tipoatendimento t LEFT JOIN hosp.tipoatendimento_grupo tg ON (t.id = tg.codtipoatendimento) "
-					+ "WHERE tg.codgrupo = ? AND upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? ";
+					+ "WHERE t.cod_unidade=? and tg.codgrupo = ? AND upper(t.id ||' - '|| t.desctipoatendimento) LIKE ? ";
 			if (tipoAtendimento.equals(TipoAtendimento.EQUIPE.getSigla()))
 				sql = sql + " and coalesce(equipe_programa,false) is true";
 			if (tipoAtendimento.equals(TipoAtendimento.PROFISSIONAL.getSigla()))
@@ -381,8 +389,9 @@ public class TipoAtendimentoDAO {
 			sql = sql + "ORDER BY t.desctipoatendimento";
 
             stm = con.prepareStatement(sql);
-            stm.setInt(1, grupo.getIdGrupo());
-            stm.setString(2, "%" + descricao.toUpperCase() + "%");
+            stm.setInt(1, user_session.getUnidade().getId());
+            stm.setInt(2, grupo.getIdGrupo());
+            stm.setString(3, "%" + descricao.toUpperCase() + "%");
             ResultSet rs = stm.executeQuery();
 
 
