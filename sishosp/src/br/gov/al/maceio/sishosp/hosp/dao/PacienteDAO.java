@@ -419,7 +419,11 @@ public class PacienteDAO {
             }
 
             stmt.setString(22, paciente.getReservista().toUpperCase());
-            stmt.setInt(23, paciente.getCtps());
+            if (paciente.getCtps() != null) {
+                stmt.setInt(23, paciente.getCtps());
+            } else {
+                stmt.setNull(23, Types.DATE);
+            }
             stmt.setString(24, paciente.getSerie());
             stmt.setString(25, paciente.getPis());
             stmt.setString(26, paciente.getCartorio().toUpperCase());

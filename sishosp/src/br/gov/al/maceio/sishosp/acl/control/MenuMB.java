@@ -243,8 +243,6 @@ public class MenuMB implements Serializable {
 		List<Menu> listaMenusPI = mdao.listarMenuPaiSubmenuComSis();
 
 		for(Menu mp : listaMenusAux) {
-			if (mp.getCodigo().equals("MN-60")) {
-			}
 			for(Menu mn1 : listaMenusPI) {
 				Menu menuAux = new Menu();
 				if(mp.getIndice()!=null){
@@ -270,6 +268,8 @@ public class MenuMB implements Serializable {
 						}
 					}
 				}
+				else
+					listaVerificada.add(mp);
 			}
 		}
 		return listaVerificada;

@@ -252,7 +252,7 @@ public class FuncionarioDAO {
                 m.setAction(rs.getString("action_rel"));
                 m.setOnclick(rs.getString("onclick_rel"));
 
-                if (rs.getString("tipo").equals("menuItem")) {
+                if ((rs.getString("tipo").equals("menuItem")) || (rs.getString("tipo").equals("rotinaInterna"))) {
                     //contextPath
                     m.setUrl("/pages/" + m.getDiretorio() + "/"
                             + m.getDescPagina() + m.getExtensao());
@@ -478,7 +478,7 @@ public class FuncionarioDAO {
                 m.setDescPagina(rs.getString("desc_pagina"));
                 m.setExtensao(rs.getString("extensao"));
 
-                if (rs.getString("tipo").equals("menuItem")) {
+                if ((rs.getString("tipo").equals("menuItem")) || (rs.getString("tipo").equals("rotinaInterna"))) {
                     m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                 }
                 m.setIndiceAux(rs.getString("codigo"));
@@ -531,7 +531,7 @@ public class FuncionarioDAO {
                 m.setDescPagina(rs.getString("desc_pagina"));
                 m.setExtensao(rs.getString("extensao"));
 
-                if (rs.getString("tipo").equals("menuItem")) {
+                if ((rs.getString("tipo").equals("menuItem")) || (rs.getString("tipo").equals("rotinaInterna"))) {
                     m.setUrl("/pages/" + m.getDiretorio() + "/" + m.getDescPagina() + m.getExtensao());
                 }
                 m.setIndiceAux(rs.getString("codigo"));

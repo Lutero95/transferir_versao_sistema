@@ -28,7 +28,7 @@ public class FornecedorDAO {
         Boolean retorno = false;
 
         String sql = "INSERT INTO hosp.fornecedor (descfornecedor, cnpj, endereco, bairro, cep, cod_municipio, estado, " +
-                "telefone1, telefone2, ie, cod_empresa, valor) " +
+                "telefone1, telefone2, ie, cod_unidade, valor) " +
                 "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try {
 
@@ -67,7 +67,7 @@ public class FornecedorDAO {
     public List<FornecedorBean> listarFornecedores() throws ProjetoException {
         List<FornecedorBean> lista = new ArrayList<>();
         String sql = "SELECT id_fornecedor, descfornecedor, cnpj, endereco, valor, bairro, cep, cod_municipio, estado, " +
-                "telefone1, telefone2, ie FROM hosp.fornecedor WHERE cod_empresa = ? ORDER BY descfornecedor";
+                "telefone1, telefone2, ie FROM hosp.fornecedor WHERE cod_unidade = ? ORDER BY descfornecedor";
         try {
 
             con = ConnectionFactory.getConnection();
@@ -211,7 +211,7 @@ public class FornecedorDAO {
     public List<FornecedorBean> listarFornecedorBusca(String descricao)
             throws ProjetoException {
         List<FornecedorBean> lista = new ArrayList<>();
-        String sql = "SELECT id_fornecedor, descfornecedor FROM hosp.fornecedor WHERE descfornecedor LIKE ? AND cod_empresa = ? ORDER BY descfornecedor";
+        String sql = "SELECT id_fornecedor, descfornecedor FROM hosp.fornecedor WHERE descfornecedor LIKE ? AND cod_unidade = ? ORDER BY descfornecedor";
 
         try {
             con = ConnectionFactory.getConnection();

@@ -10,8 +10,9 @@
 
 <body>
 <ui:composition>
-    <p:sidebar widgetVar="dlguser" style="z-index:1000000 !important; display: block !important; ">
-        <h1 style="font-weight:normal">Opções para o usuário</h1>
+    <p:sidebar widgetVar="dlguser" style="z-index:1000000 !important; display: block !important;border:none !important ">
+        
+        <h2 style="font-weight:normal; font-size:14px">Opções para o usuário</h2>
         <p:panelGrid columns="1" style="border:none !important;">
             <p:outputLabel class="user-index"
                            value="Perfil: #{MBFuncionarios.usuarioLogado.perfil.descricao}"
@@ -19,14 +20,18 @@
                            style="cursor: default !important;margin-top: 10px"/>
             <p:commandButton value="Alterar Senha" icon="ui-icon-key" action="#{MBFuncionarios.abrirDialogAlterarSenha()}"
                              style="margin-top: 10px"/>
-            <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dlguser').hide()"
-                             style="margin-top: 10px"/>
+					
+					
+			<hr/>			
+           <b:commandButton value="Fechar" class="btn-nao"
+						oncomplete="PF('dlguser').hide();"  ajax="true"
+						 />
         </p:panelGrid>
     </p:sidebar>
     <b:navBar brand="EHosp" fixed="top" inverse="true" class="texto" style="z-index:0 !important"
               rendered="#{MBFuncionarios.usuarioLogado.codigo != null}">
         <p:outputPanel autoUpdate="true">
-
+	
             <h:form>
                 <b:navbarLinks class="new-menu-usuario">
 

@@ -822,6 +822,7 @@ public class FuncionarioController implements Serializable {
     }
 
     public void abrirDialogAlterarSenha(){
+    	usuario.setSenha(null);
         JSFUtil.abrirDialog("dlgAlterarSenha");
     }
 
@@ -847,6 +848,7 @@ public class FuncionarioController implements Serializable {
         if(alterou) {
             JSFUtil.adicionarMensagemSucesso("Senha alterada com sucesso!", "Sucesso!");
             JSFUtil.fecharDialog("dlgAlterarSenha");
+            usuario =  new FuncionarioBean();
         }
         else{
             JSFUtil.adicionarMensagemErro("Erro ao alterar a senha!", "Erro!");

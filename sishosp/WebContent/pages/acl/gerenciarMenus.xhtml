@@ -150,6 +150,7 @@
 											<f:selectItem itemLabel="Menu Pai" itemValue="menuPai" />
 											<f:selectItem itemLabel="Submenu" itemValue="submenu" />
 											<f:selectItem itemLabel="Menu Item" itemValue="menuItem" />
+											<f:selectItem itemLabel="Rotina Interna" itemValue="rotinaInterna" />
 											<f:selectItem itemLabel="Menu Item Relatório"
 												itemValue="menuItemRel" />
 
@@ -171,7 +172,7 @@
 
 								</b:row>
 
-								<b:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
+								<b:row rendered="#{menuMB.menu.tipo == 'menuItem' or menuMB.menu.tipo == 'rotinaInterna'}">
 									<b:column span="5" class="label-position4">
 										<b:label value="Diretório: " severity="danger" />
 
@@ -205,7 +206,7 @@
 									</b:column>
 								</b:row>
 
-								<b:row>
+								<b:row >
 									<b:column span="12" class="label-position4">
 										<b:label value="Descrição menu: " severity="danger" />
 
@@ -216,7 +217,7 @@
 									</b:column>
 								</b:row>
 
-								<b:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
+								<b:row rendered="#{menuMB.menu.tipo == 'menuItem' or menuMB.menu.tipo == 'rotinaInterna'}">
 									<b:column span="12" class="label-position4">
 										<b:label value="Página: " severity="danger" />
 
@@ -226,7 +227,7 @@
 									</b:column>
 								</b:row>
 
-								<b:row rendered="#{menuMB.menu.tipo == 'menuItem'}">
+								<b:row rendered="#{menuMB.menu.tipo == 'menuItem' or menuMB.menu.tipo == 'rotinaInterna'}">
 									<p:column span="2" class="new-data-size2">
 										<p:outputLabel style="margin-bottom: 15px;color:#2e84ce;"
 											value="Extensão página: ">

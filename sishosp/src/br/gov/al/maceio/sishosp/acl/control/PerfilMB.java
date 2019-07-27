@@ -162,6 +162,8 @@ public class PerfilMB implements Serializable {
 
 			PermissaoDAO pmdao = new PermissaoDAO();
 			for (Menu m : listaFiltrada) {
+				if (m.getId()==60)
+					System.out.println("menu "+m.getId());
 				permissoes.add(pmdao.recIdPermissoesMenu(m.getId()));
 			}
 			for (Funcao f : listaFuncoesAux) {

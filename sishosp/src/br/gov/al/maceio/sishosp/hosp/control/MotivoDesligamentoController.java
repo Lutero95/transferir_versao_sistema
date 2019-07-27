@@ -73,6 +73,10 @@ public class MotivoDesligamentoController implements Serializable {
         	listaMotivos = pDao.listarMotivos();
         return listaMotivos;
     }
+    
+    public void carregaMotivosDesligamento() throws ProjetoException {
+        	listaMotivos = pDao.listarMotivos();
+    }
 
     public void gravarMotivo() {
         boolean cadastrou = pDao.gravarMotivo(motivo);
@@ -136,6 +140,14 @@ public class MotivoDesligamentoController implements Serializable {
         }
         return cabecalho;
     }
+
+	public ArrayList<MotivoDesligamentoBean> getListaMotivos() {
+		return listaMotivos;
+	}
+
+	public void setListaMotivos(ArrayList<MotivoDesligamentoBean> listaMotivos) {
+		this.listaMotivos = listaMotivos;
+	}
 
 
 }

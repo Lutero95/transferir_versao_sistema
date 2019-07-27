@@ -491,8 +491,8 @@ public class MenuDAO {
 				+ "join acl.menu me on me.id = pg.id_menu "
 				+ "join acl.menu_sistema ms on ms.id_menu = me.id "
 				+ "join acl.sistema si on si.id = ms.id_sistema "
-				+ "where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') and pf.id = ?) "
-				+ "and (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') order by me.descricao";
+				+ "where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel' or me.tipo = 'rotinaInterna') and pf.id = ?) "
+				+ "and (me.tipo = 'menuItem' or me.tipo = 'menuItemRel' or me.tipo = 'rotinaInterna') order by me.descricao";
 
 		ArrayList<Menu> lista = new ArrayList();
 		try {

@@ -61,6 +61,51 @@
 
 </h:head>
 <h:body>
+	<p:dialog header="Alteração de senha" widgetVar="dlgAlterarSenha"
+			modal="true" styleClass="topDialog" dynamic="true">
+			<h:form id="frmAlterarSenha">
+				<p:growl id="msgAlterarSenha"></p:growl>
+				<h:panelGrid columns="1" cellpadding="3">
+					<b:label value="Senha Atual" severity="info" style="margin-left:5px;"/>
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+						placeholder="Senha Atual"
+						requiredMessage="Antiga Senha: Campo obrigatório"
+						value="#{MBFuncionarios.usuario.senha}"></b:inputSecret>
+					<b:message for="@previous" />
+<br/>
+					<b:label value="Nova Senha" severity="info" style="margin-left:5px;" />
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+						placeholder="Senha Nova"
+						requiredMessage="Nova Senha: Campo obrigatório"
+						value="#{MBFuncionarios.usuario.novaSenha}"></b:inputSecret>
+					<b:message for="@previous" />
+<br/>
+					<b:label value="Confirmação de Nova Senha" severity="info"  style="margin-left:5px;"/>
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+						placeholder="Confirmação Senha Nova"
+						requiredMessage="Confirmação Nova Senha: Campo obrigatório"
+						value="#{MBFuncionarios.usuario.confirmacaoNovaSenha}"></b:inputSecret>
+					<b:message for="@previous" />
+
+				</h:panelGrid>
+
+				<div align="center">
+				
+						<br/>
+							   <b:commandButton value="Alterar Senha" class="btn-sim"
+							   update=":frmAlterarSenha:msgAlterarSenha"  
+						action="#{MBFuncionarios.alterarSenhaFuncionario()}"
+						ajax="true"
+						 />
+						
+						   <b:commandButton value="Fechar" class="btn-nao"  style="margin-left:20px;margin-top:-14px;"
+						oncomplete="PF('dlgAlterarSenha').hide();"  ajax="true"
+						 />
+				</div>
+
+			</h:form>
+		</p:dialog>
+
 <p:growl id="msgPagina"/>
 	<p:ajaxStatus onstart="PF('statusDialog').show();"
 		onsuccess="PF('statusDialog').hide();" />
