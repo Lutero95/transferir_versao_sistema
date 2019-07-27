@@ -521,7 +521,7 @@ body {
 /* ---------- Menu Sistema 2 -------------------- */
 .ui-menu.ui-widget {
 	background: transparent;
-	border: none;
+	border: none !important;
 	margin-right: 0px !important;
 	padding: 0px 0;
 }
@@ -1517,7 +1517,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 }
 
 .ui-panelgrid .ui-panelgrid-cell {
-	border: none;
+	border: none !important;
 	padding: 0px;
 }
 
