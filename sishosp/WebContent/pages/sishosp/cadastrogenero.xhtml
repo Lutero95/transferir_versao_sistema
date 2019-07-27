@@ -37,9 +37,7 @@
 					</b:column>
 				</b:row>
 
-				<div align="center">
-					<b:messages value="Error" id="msgPagina"></b:messages>
-				</div>
+
 				
 				<br></br>
 
@@ -47,11 +45,11 @@
 
 					<b:commandButton action="#{GeneroController.gravarGenero()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-						update=":frmPrincipal" value="Incluir" 
+						update=":frmPrincipal msgPagina" value="Incluir" 
 						rendered="#{GeneroController.tipo == 1}" />
 
 					<b:commandButton action="#{GeneroController.alterarGenero()}"
-						icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+						icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 						value="Alterar" look="success" class="btn-incluir"
 						rendered="#{GeneroController.tipo  == 2}" />
 

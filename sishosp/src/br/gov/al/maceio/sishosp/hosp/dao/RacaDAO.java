@@ -15,12 +15,13 @@ public class RacaDAO {
 
     public Boolean cadastrar(RacaBean raca) {
         Boolean retorno = false;
-        String sql = "insert into hosp.raca (descraca) values (?)";
+        String sql = "insert into hosp.raca (descraca, codraca) values (?, ?)";
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, raca.getDescRaca().toUpperCase().trim());
+            stmt.setString(2, raca.getCodigoIbge().toUpperCase().trim());            
             stmt.execute();
             conexao.commit();
             retorno = true;
@@ -40,13 +41,14 @@ public class RacaDAO {
 
     public Boolean alterar(RacaBean raca) {
         Boolean retorno = false;
-        String sql = "update hosp.raca set descraca = ? where id_raca = ?";
+        String sql = "update hosp.raca set descraca = ?, codraca=? where id_raca = ?";
 
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, raca.getDescRaca().toUpperCase());
-            stmt.setInt(2, raca.getCodRaca());
+            stmt.setString(2, raca.getCodigoIbge().toUpperCase());
+            stmt.setInt(3, raca.getCodRaca());
             stmt.executeUpdate();
 
             conexao.commit();
@@ -95,7 +97,7 @@ public class RacaDAO {
 
     public ArrayList<RacaBean> listaCor() throws ProjetoException {
 
-        String sql = "select  id_raca, descraca from hosp.raca order by descraca";
+        String sql = "select  id_raca, descraca, codraca from hosp.raca order by descraca";
 
         ArrayList<RacaBean> lista = new ArrayList();
 
@@ -108,6 +110,7 @@ public class RacaDAO {
                 RacaBean p = new RacaBean();
                 p.setCodRaca(rs.getInt("id_raca"));
                 p.setDescRaca(rs.getString("descraca").toUpperCase());
+                p.setCodigoIbge(rs.getString("codraca").toUpperCase());
 
                 lista.add(p);
             }
@@ -126,7 +129,7 @@ public class RacaDAO {
 
 
     public RacaBean listarRacaPorID(int id) throws ProjetoException {
-        String sql = "select  id_raca, descraca from hosp.raca where id_raca = ? order by descraca";
+        String sql = "select  id_raca, descraca, codraca from hosp.raca where id_raca = ? order by descraca";
 
         ArrayList<RacaBean> lista = new ArrayList<RacaBean>();
 
@@ -139,6 +142,7 @@ public class RacaDAO {
             while (rs.next()) {
                 raca.setCodRaca(rs.getInt("id_raca"));
                 raca.setDescRaca(rs.getString("descraca").toUpperCase());
+                raca.setCodigoIbge(rs.getString("codraca").toUpperCase());
             }
             return raca;
         } catch (Exception ex) {

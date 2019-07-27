@@ -23,8 +23,20 @@
 				<h:form class="form-horizontal" id="frmPrincipal">
 
                 <b:row>
+  <b:column span="4" class="label-position">
+							<b:label for="codigo" value="Código IBGE" severity="info" />
+							
+                        <b:inputText value="#{RacaController.raca.codigoIbge}" validator="CaractereEmBrancoValidator"
+                                     class="form-control" id="codigo" required="true"
+                                     validatorMessage="Código deve conter 2 números."
+                                     requiredMessage="Código IBGE: Campo obrigatório!">
+                            <f:validateLength minimum="2" maximum="2"/>
 
-                    <b:column span="12" class="label-position">
+                        </b:inputText>
+
+                    </b:column>
+
+                    <b:column span="8" class="label-position">
 							<b:label for="inputname" value="Descrição" severity="info" />
 							
                         <b:inputText value="#{RacaController.raca.descRaca}" validator="CaractereEmBrancoValidator"
@@ -39,9 +51,7 @@
 
                 </b:row>
                 
-                <div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
+
 
 					<br></br>
 
@@ -50,12 +60,12 @@
 						<b:commandButton
 							action="#{RacaController.gravarRaca()}"
 							icon="glyphicon-ok" size="sm" look="success"
-							update=":frmPrincipal" value="Incluir" class="btn-incluir"
+							update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
 							rendered="#{RacaController.tipo == 1}" />
 
 						<b:commandButton
-							action="#{RacaController.gravarRaca()}"
-							icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+							action="#{RacaController.alterarRaca()}"
+							icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 							value="Alterar" look="success" class="btn-incluir"
 							rendered="#{RacaController.tipo == 2}"/>
 

@@ -28,9 +28,7 @@
 					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 				</b:commandButton>
 
-				<div align="center">
-					<b:messages value="Error" id="msgPagina"></b:messages>
-				</div>
+
 
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
 					responsive="true" var="tab" value="#{ProfissaoController.listaProfissoes}">
@@ -88,7 +86,7 @@
 					<p:separator />
 					<b:commandButton look="success" value="Sim" style="float:left;"
 						action="#{ProfissaoController.excluirProfissao()}" ajax="true"
-						class="btn-sim" icon="glyphicon-ok" update="frmPrincipal" />
+						class="btn-sim" icon="glyphicon-ok" update="frmPrincipal msgPagina" />
 
 					<b:commandButton value="Não" class="btn-nao" 
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"

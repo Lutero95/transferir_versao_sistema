@@ -167,9 +167,11 @@ public class PacienteController implements Serializable {
     }
 
     public void alterarPaciente() {
-        if ((paciente.getEndereco().getCodbairro() == null) && (paciente.getEndereco().getBairro() == null)) {
+       /*
+    	if ((paciente.getEndereco().getCodbairro() == null) && (paciente.getEndereco().getBairro() == null)) {
             JSFUtil.adicionarMensagemAdvertencia("Informe o Bairro!", "Advertência");
         } else {
+        */
 
             if (VerificadorUtil.verificarSeObjetoNulo(bairroExiste)) {
                 bairroExiste = true;
@@ -182,7 +184,7 @@ public class PacienteController implements Serializable {
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
             }
-        }
+       
 
     }
 

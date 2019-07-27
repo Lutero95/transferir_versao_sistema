@@ -6,6 +6,7 @@ public class RacaBean implements Serializable {
 
 	private Integer codRaca;
 	private String descRaca;
+	private String codigoIbge;
 
 	public RacaBean() {
 
@@ -25,6 +26,14 @@ public class RacaBean implements Serializable {
 
 	public void setDescRaca(String descRaca) {
 		this.descRaca = descRaca;
+	}
+
+	public String getCodigoIbge() {
+		return codigoIbge;
+	}
+
+	public void setCodigoIbge(String codigoIbge) {
+		this.codigoIbge = codigoIbge;
 	}
 
 }

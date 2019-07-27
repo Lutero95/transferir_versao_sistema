@@ -48,7 +48,7 @@ public class PacienteBean implements Serializable {
     private String pis;
     private String cns;
     private Integer protant;
-    private Integer serie;
+    private String serie;
     private Date dataExpedicao1;
 
     //DADOS INTERNET
@@ -67,7 +67,7 @@ public class PacienteBean implements Serializable {
     private String cartorio;
     private String numeroCartorio;
     private String livro;
-    private Integer folha;
+    private String folha;
     private Date dataregistro;
     private Date dataExpedicao2;
 
@@ -460,13 +460,7 @@ public class PacienteBean implements Serializable {
         this.protant = protant;
     }
 
-    public Integer getSerie() {
-        return serie;
-    }
-
-    public void setSerie(Integer serie) {
-        this.serie = serie;
-    }
+    
 
     public Date getDataregistro() {
         return dataregistro;
@@ -476,13 +470,7 @@ public class PacienteBean implements Serializable {
         this.dataregistro = dataregistro;
     }
 
-    public Integer getFolha() {
-        return folha;
-    }
-
-    public void setFolha(Integer folha) {
-        this.folha = folha;
-    }
+ 
 
     public Date getDtanascimento() {
         return dtanascimento;
@@ -635,4 +623,20 @@ public class PacienteBean implements Serializable {
     public void setSexo(String sexo) {
         this.sexo = sexo;
     }
+
+	public String getFolha() {
+		return folha;
+	}
+
+	public void setFolha(String folha) {
+		this.folha = folha;
+	}
+
+	public String getSerie() {
+		return serie;
+	}
+
+	public void setSerie(String serie) {
+		this.serie = serie;
+	}
 }

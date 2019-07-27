@@ -327,6 +327,7 @@
                                 <b:inputText
                                         value="#{PacienteController.paciente.endereco.complemento}"
                                         class="form-control" id="inputcomplemento">
+                                        <f:validateLength maximum="50"/>
                                 </b:inputText>
                             </b:column>
 
@@ -336,6 +337,7 @@
                                 <b:inputText
                                         value="#{PacienteController.paciente.endereco.referencia}"
                                         class="form-control" id="referencia">
+                                        <f:validateLength maximum="200"/>
                                 </b:inputText>
                             </b:column>
 
@@ -351,6 +353,7 @@
                                 <b:inputText
                                         value="#{PacienteController.paciente.endereco.numero}"
                                         class="form-control" id="numero">
+                                        <f:validateLength maximum="20"/>
                                 </b:inputText>
                             </b:column>
 
@@ -434,6 +437,7 @@
                                 <b:inputText disable="true"
                                              value="#{PacienteController.paciente.rg}" class="form-control"
                                              id="rg" validatorMessage="RG deve conter entre 8 digitos.">
+                                             <f:validateLength maximum="20"/>
                                 </b:inputText>
                             </b:column>
 
@@ -442,6 +446,7 @@
 
                                 <b:inputText value="#{PacienteController.paciente.oe}"
                                              class="form-control" id="oe">
+                                             <f:validateLength maximum="10"/>
                                 </b:inputText>
                             </b:column>
 
@@ -498,6 +503,7 @@
                                 <b:inputText value="#{PacienteController.paciente.reservista}"
                                              class="form-control" id="reservista"
                                              validatorMessage="Numero da Reservista deve conter entre 12 digitos.">
+                                             <f:validateLength maximum="20"/>
                                 </b:inputText>
                             </b:column>
 
@@ -529,6 +535,7 @@
                                 <b:inputText value="#{PacienteController.paciente.pis}"
                                              class="form-control" id="pis" required="false"
                                              validator="PISValidator" validatorMessage="PIS inválido!">
+                                             <f:validateLength maximum="15"/>
                                 </b:inputText>
                             </b:column>
 
@@ -538,6 +545,7 @@
                                 <b:inputText
                                         value="#{PacienteController.paciente.numeroCartorio}"
                                         class="form-control" id="numero2">
+                                        <f:validateLength maximum="20"/>
                                 </b:inputText>
                             </b:column>
 
@@ -547,6 +555,7 @@
 
                                 <b:inputText value="#{PacienteController.paciente.cartorio}"
                                              class="form-control" id="cartorio">
+                                             <f:validateLength maximum="20"/>
                                 </b:inputText>
                             </b:column>
 
@@ -561,6 +570,7 @@
 
                                 <b:inputText value="#{PacienteController.paciente.livro}"
                                              class="form-control" id="livro">
+                                             <f:validateLength maximum="10"/>
                                 </b:inputText>
                             </b:column>
 
@@ -603,6 +613,7 @@
                                                 converter="conEscolaridade">
                                     <p:ajax event="itemSelect"
                                             listener="#{PacienteController.onItemSelect2}"/>
+                                            
                                 </p:autoComplete>
 
                                 <p:commandButton onclick="PF('dlgbuscaescolaridade').show();" actionListener="#{EscolaridadeController.buscarEscolaridades()}"
@@ -668,7 +679,9 @@
 
                                 <p:outputPanel>
                                     <b:inputText id="nome4" size="45"
-                                                 value="#{PacienteController.paciente.localtrabalha}"/>
+                                                 value="#{PacienteController.paciente.localtrabalha}">
+                                        <f:validateLength maximum="100"/>
+                                        </b:inputText>          
                                 </p:outputPanel>
                             </b:column>
 
@@ -707,7 +720,9 @@
 
                                 <p:outputPanel>
                                     <b:inputText id="nome6" size="45"
-                                                 value="#{PacienteController.paciente.rgresp}"/>
+                                                 value="#{PacienteController.paciente.rgresp}">
+                                                 <f:validateLength maximum="20"/>
+                                                 </b:inputText>
                                 </p:outputPanel>
                             </b:column>
 

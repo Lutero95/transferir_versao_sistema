@@ -88,6 +88,7 @@ public class ParentescoController implements Serializable {
     public void excluirParentesco() throws ProjetoException {
 
         boolean excluiu = pDao.excluir(parentesco);
+        buscarParentesco();        
 
         if (excluiu == true) {
             JSFUtil.adicionarMensagemSucesso("Parentesco excluído com sucesso!", "Sucesso");

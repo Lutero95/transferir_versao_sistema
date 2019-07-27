@@ -72,6 +72,7 @@ public class EncaminhadoController implements Serializable {
         boolean cadastrou = eDao.cadastrar(encaminhado);
 
         if (cadastrou == true) {
+        	encaminhado = new EncaminhadoBean();
             JSFUtil.adicionarMensagemSucesso("Tipo de Encaminhamento cadastrado com sucesso!", "Sucesso");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
@@ -91,11 +92,12 @@ public class EncaminhadoController implements Serializable {
         }
     }
 
-    public void excluirEncaminhado() {
+    public void excluirEncaminhado() throws ProjetoException {
 
         boolean excluiu = eDao.excluir(encaminhado);
 
         if (excluiu == true) {
+        	listarTiposDeEncaminhamento();
             JSFUtil.adicionarMensagemSucesso("Tipo de Encaminhamento excluído com sucesso!", "Sucesso");
             JSFUtil.fecharDialog("dialogExclusao");
         } else {

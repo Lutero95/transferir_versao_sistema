@@ -38,9 +38,6 @@
 					</b:row>
 
 
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
 
 					<br></br>
 
@@ -49,12 +46,12 @@
 						<b:commandButton
 							action="#{EscolaridadeController.gravarEscolaridade()}"
 							icon="glyphicon-ok" size="sm" look="success"
-							update=":frmPrincipal" value="Incluir" class="btn-incluir"
+							update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
 							rendered="#{EscolaridadeController.tipo == 1}" />
 
 						<b:commandButton
 							action="#{EscolaridadeController.alterarEscolaridade()}"
-							icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+							icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 							value="Alterar" look="success" class="btn-incluir"
 							rendered="#{EscolaridadeController.tipo  == 2}" />
 
