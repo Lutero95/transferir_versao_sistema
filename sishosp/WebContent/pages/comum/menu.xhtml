@@ -1,48 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <body>
-	<ui:composition>
-<p:sidebar widgetVar="dlguser" style="z-index:1000000 !important; display: block !important; ">
-    <h1 style="font-weight:normal">Left Sidebar</h1>
-    <p:commandButton value="Cancel" oncomplete="PF('dlguser').hide()"/>
-</p:sidebar>
-		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto" style="z-index:0 !important"
-				rendered="#{MBFuncionarios.usuarioLogado.codigo != null}">
-<p:commandButton icon="fa-user" oncomplete="PF('dlguser').show()" />
-			<p:outputPanel autoUpdate="true">
+<ui:composition>
+    <p:sidebar widgetVar="dlguser" style="z-index:1000000 !important; display: block !important; ">
+        <h1 style="font-weight:normal">Opções para o usuário</h1>
+        <p:panelGrid columns="1" style="border:none !important;">
+            <p:outputLabel class="user-index"
+                           value="Perfil: #{MBFuncionarios.usuarioLogado.perfil.descricao}"
+                           rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
+                           style="cursor: default !important;margin-top: 10px"/>
+            <p:commandButton value="Alterar Senha" icon="ui-icon-key" action="#{MBFuncionarios.abrirDialogAlterarSenha()}"
+                             style="margin-top: 10px"/>
+            <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dlguser').hide()"
+                             style="margin-top: 10px"/>
+        </p:panelGrid>
+    </p:sidebar>
+    <b:navBar brand="EHosp" fixed="top" inverse="true" class="texto" style="z-index:0 !important"
+              rendered="#{MBFuncionarios.usuarioLogado.codigo != null}">
+        <p:commandButton icon="fa-user" oncomplete="PF('dlguser').show()"/>
+        <p:outputPanel autoUpdate="true">
 
-				<h:form>
-					<b:navbarLinks class="new-menu-usuario">
+            <h:form>
+                <b:navbarLinks class="new-menu-usuario">
 
-						<b:navLink class="user-index"
-							value="#{MBFuncionarios.usuarioLogado.nome}" iconAwesome="user"
-							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
-							style="cursor: default !important;" />
+                    <b:navLink class="user-index"
+                               value="#{MBFuncionarios.usuarioLogado.nome}" iconAwesome="user"
+                               rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
+                               style="cursor: default !important;"/>
 
-						<b:navLink class="user-index"
-							value="Perfil: #{MBFuncionarios.usuarioLogado.perfil.descricao}"
-							rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
-							style="cursor: default !important;" />
+                </b:navbarLinks>
 
-					</b:navbarLinks>
+            </h:form>
 
-				</h:form>
-				
-				<p:menubar styleClass="menu-sistema" model="#{MBFuncionarios.menuModel}"  />
+            <p:menubar styleClass="menu-sistema" model="#{MBFuncionarios.menuModel}"/>
 
-			</p:outputPanel>
+        </p:outputPanel>
 
-		</b:navBar>
+    </b:navBar>
 
-	</ui:composition>
+</ui:composition>
 </body>
 
 

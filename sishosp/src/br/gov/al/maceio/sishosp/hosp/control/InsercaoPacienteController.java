@@ -12,7 +12,7 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
 import org.primefaces.event.SelectEvent;
 
@@ -24,7 +24,6 @@ import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.abstracts.VetorDiaSemanaAbstract;
 import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.BloqueioDAO;
-import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.FeriadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
@@ -204,7 +203,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     public void validarSenhaLiberacao() throws ProjetoException {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
-        Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(), ValidacaoSenhaAgenda.LIBERACAO_PACIENTES_SEM_PERFIL.getSigla());
+        Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(), ValidacaoSenha.LIBERACAO_PACIENTES_SEM_PERFIL.getSigla());
 
         if (idFuncionario > 0) {
             liberacao = true;

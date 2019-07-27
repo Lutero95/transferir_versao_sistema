@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
@@ -818,6 +819,48 @@ public class FuncionarioController implements Serializable {
     public void setListaGruposEProgramasProfissional(
             ArrayList<ProgramaBean> listaGruposEProgramasProfissional) {
         this.listaGruposEProgramasProfissional = listaGruposEProgramasProfissional;
+    }
+
+    public void abrirDialogAlterarSenha(){
+        JSFUtil.abrirDialog("dlgAlterarSenha");
+    }
+
+    public void alterarSenhaFuncionario() {
+
+        if(validarSeNovasSenhasSãoIguais()) {
+
+            Integer idFuncionario = fDao.validarIdIhSenha(usuario.getSenha());
+
+            if (idFuncionario > 0) {
+                realizarAlteracaoSenha();
+            } else {
+                JSFUtil.adicionarMensagemErro("Senha errada!", "Erro!");
+            }
+        }
+        else{
+            JSFUtil.adicionarMensagemErro("A nova senha e a confirmação de nova senha estão diferentes!", "Erro");
+        }
+    }
+
+    private void realizarAlteracaoSenha() {
+        Boolean alterou = fDao.alterarSenha(usuario);
+        if(alterou) {
+            JSFUtil.adicionarMensagemSucesso("Senha alterada com sucesso!", "Sucesso!");
+            JSFUtil.fecharDialog("dlgAlterarSenha");
+        }
+        else{
+            JSFUtil.adicionarMensagemErro("Erro ao alterar a senha!", "Erro!");
+        }
+    }
+
+    public Boolean validarSeNovasSenhasSãoIguais(){
+        boolean retorno = false;
+
+        if(usuario.getNovaSenha().equals(usuario.getConfirmacaoNovaSenha())){
+            retorno = true;
+        }
+
+        return retorno;
     }
 
     // PROFISSIONAL GETTES E SETTERS FIM

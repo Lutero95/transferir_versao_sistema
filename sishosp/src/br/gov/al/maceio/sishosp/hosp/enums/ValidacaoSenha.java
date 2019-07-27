@@ -1,6 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.enums;
 
-public enum ValidacaoSenhaAgenda {
+public enum ValidacaoSenha {
 
     LIBERACAO("L"),
     LIBERACAO_PACIENTES_SEM_PERFIL("S"),
@@ -9,7 +9,7 @@ public enum ValidacaoSenhaAgenda {
 
     private String sigla;
 
-    ValidacaoSenhaAgenda(String sigla) {
+    ValidacaoSenha(String sigla) {
         this.sigla = sigla;
     }
 

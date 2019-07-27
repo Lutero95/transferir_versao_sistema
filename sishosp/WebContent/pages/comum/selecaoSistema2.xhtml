@@ -90,6 +90,38 @@
 
 		</h:form>
 
+		<p:dialog header="Alteação de senha" widgetVar="dlgAlterarSenha" modal="true"
+				  styleClass="topDialog" dynamic="true">
+			<h:form id="frmAlterarSenha">
+				<p:growl id="msgAlterarSenha"></p:growl>
+				<h:panelGrid columns="1" cellpadding="3">
+
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+								   placeholder="Senha Atual" requiredMessage="Antiga Senha: Campo obrigatório"
+								   value="#{MBFuncionarios.usuario.senha}"></b:inputSecret>
+					<b:message for="@previous" />
+
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+								   placeholder="Senha Nova" requiredMessage="Nova Senha: Campo obrigatório"
+								   value="#{MBFuncionarios.usuario.novaSenha}"></b:inputSecret>
+					<b:message for="@previous" />
+
+					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+								   placeholder="Confirmação Senha Nova" requiredMessage="Confirmação Nova Senha: Campo obrigatório"
+								   value="#{MBFuncionarios.usuario.confirmacaoNovaSenha}"></b:inputSecret>
+					<b:message for="@previous" />
+
+				</h:panelGrid>
+
+				<div align="center">
+					<p:commandButton value="Alterar Senha" look="success" size="sm" id="b1"
+									 style="margin-top:10px" icon="ui-icon-check"
+									 update=":frmAlterarSenha:msgAlterarSenha"
+									 action="#{MBFuncionarios.alterarSenhaFuncionario()}" />
+				</div>
+
+			</h:form>
+		</p:dialog>
 
 	</ui:define>
 </ui:composition>

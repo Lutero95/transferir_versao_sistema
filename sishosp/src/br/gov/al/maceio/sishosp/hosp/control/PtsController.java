@@ -6,7 +6,7 @@ import br.gov.al.maceio.sishosp.comum.util.*;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.FiltroBuscaVencimentoPTS;
 import br.gov.al.maceio.sishosp.hosp.enums.StatusPTS;
-import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 
 import javax.faces.bean.ManagedBean;
@@ -263,7 +263,7 @@ public class PtsController implements Serializable {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
         Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(pts.getPtsArea().getFuncionario().getCpf(),
-                pts.getPtsArea().getFuncionario().getSenha(), ValidacaoSenhaAgenda.ADICIONAR_AREA_PTS.getSigla());
+                pts.getPtsArea().getFuncionario().getSenha(), ValidacaoSenha.ADICIONAR_AREA_PTS.getSigla());
 
         if (idFuncionario > 0) {
             pts.getPtsArea().getFuncionario().setId(ConverterUtil.converterIntParaLong(idFuncionario));

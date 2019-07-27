@@ -9,7 +9,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.EspecialidadeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
-import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenhaAgenda;
+import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
@@ -825,18 +825,58 @@ public class FuncionarioDAO {
 
     public Boolean alterarSenha(FuncionarioBean usuario) {
 
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
         Boolean retorno = false;
+
         String sql = "update acl.funcionarios set senha = ? where id_funcionario = ?";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setString(1, usuario.getSenha());
-            stmt.setLong(2, usuario.getCodigo());
+            stmt.setString(1, usuario.getNovaSenha());
+            stmt.setLong(2, user_session.getId());
             stmt.executeUpdate();
             con.commit();
-            stmt.close();
-            con.close();
+
+            retorno = true;
+
+            if(retorno){
+                retorno = alterarSenhaBancoPublico(usuario);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return retorno;
+        }
+    }
+
+    public Boolean alterarSenhaBancoPublico(FuncionarioBean usuario) {
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
+        Boolean retorno = false;
+
+        String sql = "update acl.funcionarios set senha = ? where id_funcionario = ?";
+
+        try {
+            con = ConnectionFactoryPublico.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, usuario.getNovaSenha());
+            stmt.setLong(2, user_session.getId());
+            stmt.executeUpdate();
+            con.commit();
+
+            retorno = true;
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1853,10 +1893,10 @@ public class FuncionarioDAO {
 
         String sql = "SELECT id_funcionario FROM acl.funcionarios WHERE cpf = ? AND senha = ? ";
 
-        if (tipoValidacao.equals(ValidacaoSenhaAgenda.LIBERACAO.getSigla())) {
+        if (tipoValidacao.equals(ValidacaoSenha.LIBERACAO.getSigla())) {
             sql = sql + " AND permite_liberacao IS TRUE;";
         }
-        if (tipoValidacao.equals(ValidacaoSenhaAgenda.ENCAIXE.getSigla())) {
+        if (tipoValidacao.equals(ValidacaoSenha.ENCAIXE.getSigla())) {
             sql = sql + " AND permite_encaixe IS TRUE;";
         }
 
@@ -1865,6 +1905,41 @@ public class FuncionarioDAO {
             PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setString(1, cpf.replaceAll("[^0-9]", ""));
+            stmt.setString(2, senha);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                idFuncionario = rs.getInt("id_funcionario");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return idFuncionario;
+    }
+
+    public Integer validarIdIhSenha(String senha) {
+
+        Integer idFuncionario = 0;
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
+
+        String sql = "SELECT id_funcionario FROM acl.funcionarios WHERE id_funcionario = ? AND senha = ? ";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setLong(1, user_session.getId());
             stmt.setString(2, senha);
 
             ResultSet rs = stmt.executeQuery();

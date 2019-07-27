@@ -21,6 +21,8 @@ public class FuncionarioBean implements Serializable {
     private Integer codigo;
     private String nome;
     private String senha;
+    private String novaSenha;
+    private String confirmacaoNovaSenha;
     private Date datacriacao;
     private String ativo;
     private String email;
@@ -85,6 +87,9 @@ public class FuncionarioBean implements Serializable {
         this.realizaLiberacoes = false;
         listaUnidades = new ArrayList<>();
         unidadeExtra = new UnidadeBean();
+        senha = "";
+        novaSenha = "";
+        confirmacaoNovaSenha = "";
     }
 
     public Integer getCodigo() {
@@ -455,4 +460,21 @@ public class FuncionarioBean implements Serializable {
 	public void setUnidade(UnidadeBean unidade) {
 		this.unidade = unidade;
 	}
+
+    public String getNovaSenha() {
+        return novaSenha;
+    }
+
+    public void setNovaSenha(String novaSenha) {
+        this.novaSenha = novaSenha;
+    }
+
+    public String getConfirmacaoNovaSenha() {
+        return confirmacaoNovaSenha;
+    }
+
+    public void setConfirmacaoNovaSenha(String confirmacaoNovaSenha) {
+        this.confirmacaoNovaSenha = confirmacaoNovaSenha;
+    }
+
 }
