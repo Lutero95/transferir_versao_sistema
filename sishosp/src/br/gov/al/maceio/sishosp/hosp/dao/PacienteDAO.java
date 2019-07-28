@@ -422,7 +422,7 @@ public class PacienteDAO {
             if (paciente.getCtps() != null) {
                 stmt.setInt(23, paciente.getCtps());
             } else {
-                stmt.setNull(23, Types.DATE);
+                stmt.setNull(23, Types.NULL);
             }
             stmt.setString(24, paciente.getSerie());
             stmt.setString(25, paciente.getPis());

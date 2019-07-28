@@ -72,14 +72,15 @@
 
                             <b:column span="3" class="label-position">
                                 <b:label for="cpf" value="CPF: " severity="info"/>
-
+                                
                                 <p:inputMask mask="999.999.999-99"
                                              value="#{MBFuncionarios.profissional.cpf}"
-                                             class="form-control new-size-cpf2 select-agendaEquipe2"
-                                             id="cpf" required="true"
-                                             requiredMessage="CPF: Campo obrigatório!">
-                                    <stella:validateCPF formatted="true"/>
+                                             class="form-control select-agendaEquipe2"
+                                             id="cpf" required="false"
+                                             validator="CPFValidator" validatorMessage="CPF inválido!"
+                                             requiredMessage="CPF do Profissional Campo obrigatório!">
                                 </p:inputMask>
+
                             </b:column>
                         </b:row>
 
@@ -442,11 +443,11 @@
                 <div align="center">
                     <b:commandButton action="#{MBFuncionarios.gravarProfissional()}"
                                      icon="glyphicon-ok" size="sm" look="success"
-                                     update=":frmPrincipal" class="btn-incluir new-bottom"
+                                     update=":frmPrincipal msgPagina" class="btn-incluir new-bottom"
                                      value="Incluir" rendered="#{MBFuncionarios.tipo == 1}"/>
 
                     <b:commandButton action="#{MBFuncionarios.alterarProfissional()}"
-                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+                                     icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
                                      value="Alterar" look="success" class="btn-incluir new-bottom"
                                      rendered="#{MBFuncionarios.tipo  == 2}"/>
 

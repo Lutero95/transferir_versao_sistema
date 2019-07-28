@@ -482,7 +482,9 @@ public class FuncionarioController implements Serializable {
 
         if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigat�rios!");
-        } else {
+        } else
+        
+        {
             List<Long> permissoes = new ArrayList<>();
             List<Menu> listaMenusAux = listaMenusDual.getTarget();
             List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();

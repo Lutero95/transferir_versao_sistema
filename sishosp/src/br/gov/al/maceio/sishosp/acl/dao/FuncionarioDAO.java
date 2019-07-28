@@ -39,6 +39,9 @@ public class FuncionarioDAO {
     private CboDAO cDao = new CboDAO();
     private GrupoDAO gDao = new GrupoDAO();
     private ProcedimentoDAO procDao = new ProcedimentoDAO();
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext
+            .getCurrentInstance().getExternalContext().getSessionMap()
+            .get("obj_usuario");
 
     public String autenticarUsuarioInicialNomeBancoAcesso(FuncionarioBean usuario)
             throws ProjetoException {
@@ -961,7 +964,7 @@ public class FuncionarioDAO {
 
         String sql = "INSERT INTO acl.funcionarios(descfuncionario, cpf, senha, log_user, codespecialidade, cns, codcbo, "
                 + " codprocedimentopadrao, ativo, realiza_atendimento, datacriacao, primeiroacesso, id_perfil, codunidade, permite_liberacao, permite_encaixe) "
-                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_date, false, ?, ?, ?, ?) returning id_funcionario;";
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, false, ?, ?, ?, ?) returning id_funcionario;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
@@ -1083,8 +1086,8 @@ public class FuncionarioDAO {
         Boolean retorno = false;
         Connection conexaoPublica = null;
 
-        String sql = "INSERT INTO acl.funcionarios(id_funcionario, cpf, senha, ativo, banco_acesso, admin) "
-                + " VALUES (?, ?, ?, ?, ?, false);";
+        String sql = "INSERT INTO acl.funcionarios(id_funcionario, cpf, senha, ativo, banco_acesso, admin, datacriacao, descfuncionario) "
+                + " VALUES (?, ?, ?, ?, ?, false, current_timestamp,?);";
         try {
             conexaoPublica = ConnectionFactoryPublico.getConnection();
             ps = conexaoPublica.prepareStatement(sql);
@@ -1097,7 +1100,10 @@ public class FuncionarioDAO {
 
             ps.setString(4, "S");
 
-            ps.setString(5, profissional.getNomeBancoAcesso());
+            ps.setString(5, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
+            
+            ps.setString(6, profissional.getNome());
+            
 
             ps.execute();
 
@@ -1288,13 +1294,12 @@ public class FuncionarioDAO {
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
 
-        String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, " +
-                " codprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe "
-                + " from acl.funcionarios where codunidade = ? order by descfuncionario";
+        String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, funcionarios.ativo, codcbo, " +
+                " codprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe, unidade.nome nomeunidade "
+                + " from acl.funcionarios join hosp.unidade on unidade.id = funcionarios.codunidade order by descfuncionario";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
-            stm.setInt(1, user_session.getUnidade().getId());
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -1314,6 +1319,7 @@ public class FuncionarioDAO {
                 prof.getPerfil().setId(rs.getLong("id_perfil"));
                 prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
                 prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
+                prof.getUnidade().setNomeUnidade(rs.getString("nomeunidade"));
 
                 listaProf.add(prof);
             }
@@ -1557,7 +1563,7 @@ public class FuncionarioDAO {
         Connection conexaoPublica = null;
 
         Boolean retorno = false;
-        String sql = "UPDATE acl.funcionarios SET senha = ?, ativo = ? WHERE id_funcionario = ?";
+        String sql = "UPDATE acl.funcionarios SET senha = ?, ativo = ? , descfuncionario=? WHERE id_funcionario = ?";
 
         try {
             conexaoPublica = ConnectionFactoryPublico.getConnection();
@@ -1565,7 +1571,9 @@ public class FuncionarioDAO {
 
             stmt.setString(1, profissional.getSenha().toUpperCase());
             stmt.setString(2, profissional.getAtivo().toUpperCase());
-            stmt.setLong(3, profissional.getId());
+            stmt.setString(3, profissional.getNome());
+            stmt.setLong(4, profissional.getId());
+
 
             stmt.executeUpdate();
 
