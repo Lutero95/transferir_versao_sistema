@@ -1296,7 +1296,7 @@ public class FuncionarioDAO {
 
         String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, funcionarios.ativo, codcbo, " +
                 " codprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe, unidade.nome nomeunidade "
-                + " from acl.funcionarios join hosp.unidade on unidade.id = funcionarios.codunidade order by descfuncionario";
+                + " from acl.funcionarios join hosp.unidade on unidade.id = funcionarios.codunidade where coalesce(admin,false) is false order by descfuncionario";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
@@ -1463,20 +1463,20 @@ public class FuncionarioDAO {
                 if (profissional.getCbo().getCodCbo() != null) {
                     stmt.setInt(5, profissional.getCbo().getCodCbo());
                 } else {
-                    stmt.setInt(5, 0);
+                	 stmt.setNull(5, Types.NULL);
                 }
             } else {
-                stmt.setInt(5, 0);
+            	stmt.setNull(5, Types.NULL);
             }
 
             if (profissional.getProc1() != null) {
                 if (profissional.getProc1().getCodProc() != null) {
                     stmt.setInt(6, profissional.getProc1().getIdProc());
                 } else {
-                    stmt.setInt(6, 0);
+                	stmt.setNull(6, Types.NULL);
                 }
             } else {
-                stmt.setInt(6, 0);
+            	stmt.setNull(6, Types.NULL);
             }
 
             stmt.setLong(7, profissional.getPerfil().getId());
@@ -1563,7 +1563,7 @@ public class FuncionarioDAO {
         Connection conexaoPublica = null;
 
         Boolean retorno = false;
-        String sql = "UPDATE acl.funcionarios SET senha = ?, ativo = ? , descfuncionario=? WHERE id_funcionario = ?";
+        String sql = "UPDATE acl.funcionarios SET senha = ?, ativo = ? , descfuncionario=? WHERE id_funcionario = ? and banco_acesso=?";
 
         try {
             conexaoPublica = ConnectionFactoryPublico.getConnection();
@@ -1573,6 +1573,7 @@ public class FuncionarioDAO {
             stmt.setString(2, profissional.getAtivo().toUpperCase());
             stmt.setString(3, profissional.getNome());
             stmt.setLong(4, profissional.getId());
+            stmt.setString(5, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
 
 
             stmt.executeUpdate();

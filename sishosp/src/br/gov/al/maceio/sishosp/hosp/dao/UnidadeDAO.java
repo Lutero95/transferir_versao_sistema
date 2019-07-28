@@ -56,7 +56,7 @@ public class UnidadeDAO {
             }   
             
             if(unidade.getTelefone1() != null) {
-                ps.setInt(12, unidade.getTelefone1());
+                ps.setString(12, unidade.getTelefone1());
             }
             else{
                 ps.setNull(12, Types.NULL);
@@ -69,7 +69,7 @@ public class UnidadeDAO {
                 ps.setNull(13, Types.NULL);
             }
             if(unidade.getTelefone2() != null) {
-                ps.setInt(14, unidade.getTelefone2());
+                ps.setString(14, unidade.getTelefone2());
             }
             else{
                 ps.setNull(14, Types.NULL);
@@ -222,9 +222,9 @@ public class UnidadeDAO {
                 unidade.setCidade(rs.getString("cidade"));
                 unidade.setEstado(rs.getString("estado"));
                 unidade.setDdd1(rs.getInt("ddd_1"));
-                unidade.setTelefone1(rs.getInt("telefone_1"));
+                unidade.setTelefone1(rs.getString("telefone_1"));
                 unidade.setDdd2(rs.getInt("ddd_2"));
-                unidade.setTelefone2(rs.getInt("telefone_2"));
+                unidade.setTelefone2(rs.getString("telefone_2"));
                 unidade.setEmail(rs.getString("email"));
                 unidade.setSite(rs.getString("site"));
                 unidade.setMatriz(rs.getBoolean("matriz"));
@@ -281,7 +281,7 @@ public class UnidadeDAO {
             }     
             
             if (unidade.getTelefone1()!=null){
-                ps.setInt(11, unidade.getTelefone1());
+                ps.setString(11, unidade.getTelefone1());
             }
             else{
                 ps.setNull(11, Types.NULL);
@@ -295,7 +295,7 @@ public class UnidadeDAO {
             }     
             
             if (unidade.getTelefone2()!=null){
-                ps.setInt(13, unidade.getTelefone2());
+                ps.setString(13, unidade.getTelefone2());
             }
             else{
                 ps.setNull(13, Types.NULL);
@@ -424,9 +424,9 @@ public class UnidadeDAO {
                 unidade.setCidade(rs.getString("cidade"));
                 unidade.setEstado(rs.getString("estado"));
                 unidade.setDdd1(rs.getInt("ddd_1"));
-                unidade.setTelefone1(rs.getInt("telefone_1"));
+                unidade.setTelefone1(rs.getString("telefone_1"));
                 unidade.setDdd2(rs.getInt("ddd_2"));
-                unidade.setTelefone2(rs.getInt("telefone_2"));
+                unidade.setTelefone2(rs.getString("telefone_2"));
                 unidade.setEmail(rs.getString("email"));
                 unidade.setSite(rs.getString("site"));
                 unidade.setMatriz(rs.getBoolean("matriz"));

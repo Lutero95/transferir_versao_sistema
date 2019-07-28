@@ -16,9 +16,9 @@ public class EmpresaBean implements Serializable {
     private String cidade;
     private String estado;
     private Integer ddd1;
-    private Integer telefone1;
+    private String telefone1;
     private Integer ddd2;
-    private Integer telefone2;
+    private String telefone2;
     private Byte[] logomarca;
     private String email;
     private String site;
@@ -126,13 +126,7 @@ public class EmpresaBean implements Serializable {
         this.ddd1 = ddd1;
     }
 
-    public Integer getTelefone1() {
-        return telefone1;
-    }
 
-    public void setTelefone1(Integer telefone1) {
-        this.telefone1 = telefone1;
-    }
 
     public Integer getDdd2() {
         return ddd2;
@@ -142,13 +136,7 @@ public class EmpresaBean implements Serializable {
         this.ddd2 = ddd2;
     }
 
-    public Integer getTelefone2() {
-        return telefone2;
-    }
-
-    public void setTelefone2(Integer telefone2) {
-        this.telefone2 = telefone2;
-    }
+   
 
     public Byte[] getLogomarca() {
         return logomarca;
@@ -198,6 +186,22 @@ public class EmpresaBean implements Serializable {
 
 	public void setCnes(String cnes) {
 		this.cnes = cnes;
+	}
+
+	public String getTelefone1() {
+		return telefone1;
+	}
+
+	public String getTelefone2() {
+		return telefone2;
+	}
+
+	public void setTelefone1(String telefone1) {
+		this.telefone1 = telefone1;
+	}
+
+	public void setTelefone2(String telefone2) {
+		this.telefone2 = telefone2;
 	}
 
     

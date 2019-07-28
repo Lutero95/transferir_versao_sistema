@@ -54,7 +54,7 @@ public class EmpresaDAO {
                 ps.setNull(11, Types.NULL);
             
             if(empresa.getTelefone1() != null) 
-                ps.setInt(12, empresa.getTelefone1());
+                ps.setString(12, empresa.getTelefone1());
             else
                 ps.setNull(12, Types.NULL);
             
@@ -65,7 +65,7 @@ public class EmpresaDAO {
                 ps.setNull(13, Types.NULL);
             }
             if(empresa.getTelefone2() != null) {
-                ps.setInt(14, empresa.getTelefone2());
+                ps.setString(14, empresa.getTelefone2());
             }
             else{
                 ps.setNull(14, Types.NULL);
@@ -135,9 +135,9 @@ public class EmpresaDAO {
                 empresa.setCidade(rs.getString("cidade"));
                 empresa.setEstado(rs.getString("estado"));
                 empresa.setDdd1(rs.getInt("ddd_1"));
-                empresa.setTelefone1(rs.getInt("telefone_1"));
+                empresa.setTelefone1(rs.getString("telefone_1"));
                 empresa.setDdd2(rs.getInt("ddd_2"));
-                empresa.setTelefone2(rs.getInt("telefone_2"));
+                empresa.setTelefone2(rs.getString("telefone_2"));
                 empresa.setEmail(rs.getString("email"));
                 empresa.setSite(rs.getString("site"));
                 empresa.setAtivo(rs.getBoolean("ativo"));
@@ -177,9 +177,9 @@ public class EmpresaDAO {
             ps.setString(8, empresa.getCidade());
             ps.setString(9, empresa.getEstado());
             ps.setInt(10, empresa.getDdd1());
-            ps.setInt(11, empresa.getTelefone1());
+            ps.setString(11, empresa.getTelefone1());
             ps.setInt(12, empresa.getDdd2());
-            ps.setInt(13, empresa.getTelefone2());
+            ps.setString(13, empresa.getTelefone2());
             ps.setString(14, empresa.getEmail());
             ps.setString(15, empresa.getSite());
             ps.setString(16, empresa.getComplemento());
@@ -258,9 +258,9 @@ public class EmpresaDAO {
                 empresa.setCidade(rs.getString("cidade"));
                 empresa.setEstado(rs.getString("estado"));
                 empresa.setDdd1(rs.getInt("ddd_1"));
-                empresa.setTelefone1(rs.getInt("telefone_1"));
+                empresa.setTelefone1(rs.getString("telefone_1"));
                 empresa.setDdd2(rs.getInt("ddd_2"));
-                empresa.setTelefone2(rs.getInt("telefone_2"));
+                empresa.setTelefone2(rs.getString("telefone_2"));
                 empresa.setEmail(rs.getString("email"));
                 empresa.setSite(rs.getString("site"));
                 empresa.setAtivo(rs.getBoolean("ativo"));
