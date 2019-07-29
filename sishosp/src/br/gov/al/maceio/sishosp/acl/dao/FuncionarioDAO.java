@@ -1061,6 +1061,15 @@ public class FuncionarioDAO {
                 ps.setLong(2, idPerm);
                 ps.execute();
             }
+            
+            String sql5 = "insert into acl.perm_sistema (id_usuario, id_sistema) values (?, ?)";
+            List<Integer> listaIdSistemas = profissional.getListaIdSistemas();
+            ps = con.prepareStatement(sql5);
+            for (Integer idSistema : listaIdSistemas) {
+                ps.setLong(1, idProf);
+                ps.setLong(2, idSistema);
+                ps.execute();
+            }
 
             retorno = gravarProfissionalBancoPublico(profissional, idProf);
 

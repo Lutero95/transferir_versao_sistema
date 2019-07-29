@@ -1,8 +1,5 @@
 package br.gov.al.maceio.sishosp.acl.control;
 
-import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
-import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
-import br.gov.al.maceio.sishosp.acl.model.*;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -16,21 +13,31 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
-import br.gov.al.maceio.sishosp.comum.util.*;
-import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
-import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
-import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
-import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
-
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
+
+import br.gov.al.maceio.sishosp.acl.dao.FuncaoDAO;
+import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
+import br.gov.al.maceio.sishosp.acl.dao.MenuDAO;
+import br.gov.al.maceio.sishosp.acl.dao.PermissaoDAO;
+import br.gov.al.maceio.sishosp.acl.model.Funcao;
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.acl.model.Menu;
+import br.gov.al.maceio.sishosp.acl.model.Permissoes;
+import br.gov.al.maceio.sishosp.acl.model.Sistema;
+import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.RedirecionarUtil;
+import br.gov.al.maceio.sishosp.comum.util.SessionUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.UnidadeDAO;
+import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 
 @ManagedBean(name = "MBFuncionarios")
 @SessionScoped
@@ -65,6 +72,13 @@ public class FuncionarioController implements Serializable {
     private List<Funcao> listaFuncoesTarget;
 
     private Boolean renderizarPermissoes;
+    
+    // Dual Sistema
+    private DualListModel<Sistema> listaSistemasDual;
+    private List<Sistema> listaSistemasSoucer;
+    private List<Sistema> listaSistemasTarget;
+    private List<Integer> codigoSistema;
+
 
     // MENU
     private MenuModel menuModel;
@@ -98,6 +112,11 @@ public class FuncionarioController implements Serializable {
         listaMenusDual = null;
         listaMenusSource = new ArrayList<>();
         listaMenusTarget = new ArrayList<>();
+        
+        listaSistemasDual = null;
+        listaSistemasSoucer = new ArrayList<>();
+        listaSistemasTarget = new ArrayList<>();
+        codigoSistema = new ArrayList<>();
 
         listaFuncoesDual = null;
         listaFuncoesSource = new ArrayList<>();
@@ -206,6 +225,22 @@ public class FuncionarioController implements Serializable {
                 return url;
             }
         }
+    }
+    
+    
+    public DualListModel<Sistema> getListaSistemasDual() {
+        if (listaSistemasDual == null) {
+            listaSistemasSoucer = null;
+            listaSistemasTarget = new ArrayList<>();
+            getListaSistemasSoucer();
+            getListaSistemasTarget();
+            listaSistemasDual = new DualListModel<>(listaSistemasSoucer, listaSistemasTarget);
+        }
+        return listaSistemasDual;
+    }
+
+    public void setListaSistemasDual(DualListModel<Sistema> listaSistemasDual) {
+        this.listaSistemasDual = listaSistemasDual;
     }
 
     public String redirecionar(String url) {
@@ -483,8 +518,12 @@ public class FuncionarioController implements Serializable {
         if (profissional.getRealizaAtendimento() == true && listaGruposEProgramasProfissional.isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigat�rios!");
         } else
-        
+        	if(listaSistemasDual.getTarget().size() == 0){
+        		JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!", "Campos obrigat�rios!");
+        	}
+        	else
         {
+        	List<Integer> listaSis = new ArrayList<>();
             List<Long> permissoes = new ArrayList<>();
             List<Menu> listaMenusAux = listaMenusDual.getTarget();
             List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
@@ -502,6 +541,10 @@ public class FuncionarioController implements Serializable {
                     }
                 }
             }
+            
+            for(Sistema s : listaSistemasDual.getTarget()) {
+                listaSis.add(s.getId());
+            }
 
             PermissaoDAO pmdao = new PermissaoDAO();
             for (Menu m : listaFiltrada) {
@@ -513,6 +556,7 @@ public class FuncionarioController implements Serializable {
             }
 
             profissional.setListaIdPermissoes(permissoes);
+            profissional.setListaIdSistemas(listaSis);
 
 
             boolean cadastrou = fDao.gravarProfissional(profissional,
@@ -1013,6 +1057,70 @@ public class FuncionarioController implements Serializable {
 
 	public void setUnidadeBean(UnidadeBean unidadeBean) {
 		this.unidadeBean = unidadeBean;
+	}
+
+	public FuncionarioDAO getfDao() {
+		return fDao;
+	}
+
+	public void setfDao(FuncionarioDAO fDao) {
+		this.fDao = fDao;
+	}
+
+	public List<Permissoes> getListaPerms() {
+		return listaPerms;
+	}
+
+	public void setListaPerms(List<Permissoes> listaPerms) {
+		this.listaPerms = listaPerms;
+	}
+
+	public List<Sistema> getListaSistemasSoucer() {
+		return listaSistemasSoucer;
+	}
+
+	public void setListaSistemasSoucer(List<Sistema> listaSistemasSoucer) {
+		this.listaSistemasSoucer = listaSistemasSoucer;
+	}
+
+	public List<Sistema> getListaSistemasTarget() {
+		return listaSistemasTarget;
+	}
+
+	public void setListaSistemasTarget(List<Sistema> listaSistemasTarget) {
+		this.listaSistemasTarget = listaSistemasTarget;
+	}
+
+	public List<Integer> getCodigoSistema() {
+		return codigoSistema;
+	}
+
+	public void setCodigoSistema(List<Integer> codigoSistema) {
+		this.codigoSistema = codigoSistema;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public static String getEnderecoCadastro() {
+		return ENDERECO_CADASTRO;
+	}
+
+	public static String getEnderecoTipo() {
+		return ENDERECO_TIPO;
+	}
+
+	public static String getEnderecoId() {
+		return ENDERECO_ID;
+	}
+
+	public static String getCabecalhoInclusao() {
+		return CABECALHO_INCLUSAO;
+	}
+
+	public static String getCabecalhoAlteracao() {
+		return CABECALHO_ALTERACAO;
 	}
 
 }
