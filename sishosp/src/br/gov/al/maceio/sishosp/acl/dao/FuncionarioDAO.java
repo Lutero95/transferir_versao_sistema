@@ -596,114 +596,9 @@ public class FuncionarioDAO {
         return lista;
     }
 
-    public List<Sistema> recListaSisSoucerCad() throws ProjetoException {
+  
 
-        String sql = "select id, descricao from acl.sistema "
-                + "where ativo = true order by descricao";
 
-        List<Sistema> listaSistemas = new ArrayList<>();
-
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stmt = con.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Sistema s = new Sistema();
-                s.setId(rs.getInt("id"));
-                s.setDescricao(rs.getString("descricao"));
-                listaSistemas.add(s);
-            }
-            rs.close();
-            stmt.close();
-            con.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return listaSistemas;
-    }
-
-    public List<Sistema> recListaSisSoucer(Long id) throws ProjetoException {
-
-        String sql = "select id, descricao from acl.sistema "
-                + "where id not in(select si.id from acl.perm_sistema ps "
-                + "join acl.sistema si on si.id = ps.id_sistema "
-                + "join acl.funcionarios us on us.id_funcionario = ps.id_usuario "
-                + "where us.id_funcionario = ?) and ativo = 'S' order by descricao";
-
-        List<Sistema> listaSistemas = new ArrayList<>();
-
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Sistema s = new Sistema();
-                s.setId(rs.getInt("id"));
-                s.setDescricao(rs.getString("descricao"));
-                listaSistemas.add(s);
-            }
-            rs.close();
-            stmt.close();
-            con.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return listaSistemas;
-    }
-
-    public List<Sistema> recListaSisTarget(Long id) throws ProjetoException {
-
-        String sql = "select si.id, si.descricao from acl.perm_sistema ps "
-                + "join acl.sistema si on si.id = ps.id_sistema "
-                + "join acl.funcionarios us on us.id_funcionario = ps.id_usuario "
-                + "where us.id_funcionario = ? and us.ativo = 'S' order by si.descricao";
-
-        List<Sistema> listaSistemas = new ArrayList<>();
-
-        try {
-            con = ConnectionFactory.getConnection();
-            PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Sistema s = new Sistema();
-                s.setId(rs.getInt("id"));
-                s.setDescricao(rs.getString("descricao"));
-                listaSistemas.add(s);
-            }
-            rs.close();
-            stmt.close();
-            con.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                con.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return listaSistemas;
-    }
 
     public ArrayList<Permissao> listarPermSemPerfSource(Integer id)
             throws ProjetoException {
@@ -1506,6 +1401,8 @@ public class FuncionarioDAO {
             stmt = con.prepareStatement(sql2);
             stmt.setLong(1, profissional.getId());
             stmt.executeUpdate();
+            
+
 
             for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
                 String sql3 = "INSERT INTO hosp.funcionario_unidades (codunidade, cod_funcionario) VALUES (?, ?);";
@@ -1547,6 +1444,21 @@ public class FuncionarioDAO {
                 ps.setLong(2, idPerm);
                 ps.execute();
             }
+            
+            String sql8 = "delete from acl.perm_sistema where id_usuario = ?";
+            stmt = con.prepareStatement(sql8);
+            stmt.setLong(1, profissional.getId());
+            stmt.executeUpdate();
+            
+
+            String sql9 = "insert into acl.perm_sistema (id_usuario, id_sistema) values (?, ?)";
+            List<Integer> listaIdSistemas = profissional.getListaIdSistemas();
+            ps = con.prepareStatement(sql9);
+            for (Integer idSistema : listaIdSistemas) {
+                ps.setLong(1, profissional.getId());
+                ps.setLong(2, idSistema);
+                ps.execute();
+            }
 
             retorno = alterarProfissionalBancoPublico(profissional);
 
@@ -1566,7 +1478,115 @@ public class FuncionarioDAO {
             return retorno;
         }
     }
+    
+    
+    public List<Sistema> carregaSistemasListaSourceAlteracao(Long id) throws ProjetoException {
 
+        String sql =" select id, descricao from acl.sistema where sistema.id not in ("+
+        		" select si.id from acl.perm_sistema ps"+ 
+        		" join acl.sistema si on si.id = ps.id_sistema"+ 
+        		" join acl.funcionarios us on us.id_funcionario = ps.id_usuario"+ 
+        		" where us.id_funcionario = ? and us.ativo = 'S')  order by descricao";
+
+        List<Sistema> listaSistemas = new ArrayList<>();
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Sistema s = new Sistema();
+                s.setId(rs.getInt("id"));
+                s.setDescricao(rs.getString("descricao"));
+                listaSistemas.add(s);
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+
+        }
+        return listaSistemas;
+    }
+    
+    public List<Sistema> carregaListaSistemasSoucerInclusao() throws ProjetoException {
+
+        String sql = "select id, descricao from acl.sistema "
+                + "where ativo = true and coalesce(restrito,false) is false order by descricao";
+
+        List<Sistema> listaSistemas = new ArrayList<>();
+
+        try {
+        	con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Sistema s = new Sistema();
+                s.setId(rs.getInt("id"));
+                s.setDescricao(rs.getString("descricao"));
+                listaSistemas.add(s);
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }finally {
+            try {
+            	con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+
+        }
+        return listaSistemas;
+    }
+
+    public List<Sistema> carregaListaSistemasTargetAlteracao(Long idFuncionario) throws ProjetoException {
+
+
+        String sql = "select si.id, si.descricao from acl.perm_sistema ps "
+                + "join acl.sistema si on si.id = ps.id_sistema "
+                + "join acl.funcionarios us on us.id_funcionario = ps.id_usuario "
+                + "where us.id_funcionario= ? and us.ativo = 'S' and coalesce(restrito,false) is false order by si.descricao";
+
+        List<Sistema> listaSistemas = new ArrayList<>();
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setLong(1, idFuncionario);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Sistema s = new Sistema();
+                s.setId(rs.getInt("id"));
+                s.setDescricao(rs.getString("descricao"));
+                listaSistemas.add(s);
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }finally {
+            try {
+                con.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+
+        }
+        return listaSistemas;
+    }    
+    
     public boolean alterarProfissionalBancoPublico(FuncionarioBean profissional) {
 
         Connection conexaoPublica = null;
@@ -1816,10 +1836,11 @@ public class FuncionarioDAO {
 
         StringBuilder sql = new StringBuilder();
 
-        sql.append("SELECT f.codunidade, e.nome, e.nome_principal, e.nome_fantasia ");
-        sql.append("FROM hosp.unidade e ");
-        sql.append("LEFT JOIN hosp.funcionario_unidades f ON (e.codunidade = f.codunidade) ");
-        sql.append("WHERE f.cod_funcionario = ? ");
+        sql.append("SELECT fun.codunidade, e.nome nomeunidade ");
+        sql.append(" FROM hosp.funcionario_unidades f");
+        sql.append(" join acl.funcionarios fun on fun.id_funcionario = f.cod_funcionario");
+        sql.append(" join hosp.unidade e  ON (e.id = fun.codunidade) ");
+        sql.append(" WHERE f.cod_funcionario = ?");
 
         try {
 

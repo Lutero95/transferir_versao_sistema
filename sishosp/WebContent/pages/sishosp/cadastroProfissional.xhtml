@@ -381,9 +381,9 @@
 
 					<p:tab title="Associar Sistemas">
 						<center>
-							<p:panelGrid columns="2" styleClass="semBorda">
+							<p:panelGrid columns="2" style="border:none">
 								<p:pickList id="pick"
-									value="#{MBUsuarioCadastro.listaSistemasDual}" var="sis"
+									value="#{MBFuncionarios.listaSistemasDual}" var="sis"
 									itemLabel="#{sis.descricao}" itemValue="#{sis}"
 									showCheckbox="true" converter="conPickListSistema"
 									required="true"
@@ -391,11 +391,11 @@
 									showSourceFilter="true" showTargetFilter="true"
 									filterMatchMode="contains">
 
-									<f:facet name="sourceCaption">Sistemas não associados</f:facet>
-									<f:facet name="targetCaption">Sistemas associados</f:facet>
+									<f:facet name="sourceCaption"><h:outputText value="Sistemas não associados" style="color:black"/></f:facet>
+									<f:facet name="targetCaption"><h:outputText value="Sistemas Associados" style="color:black"/></f:facet>
 
 									<p:ajax event="transfer"
-										listener="#{MBUsuarioCadastro.onTransferSistema}" />
+										listener="#{MBFuncionarios.onTransferSistema}" />
 								</p:pickList>
 							</p:panelGrid>
 						</center>
