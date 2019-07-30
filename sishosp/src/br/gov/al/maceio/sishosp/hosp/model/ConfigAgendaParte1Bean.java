@@ -23,6 +23,7 @@ public class ConfigAgendaParte1Bean implements Serializable {
     private String tipo;
     private String diaSemana;
     private UnidadeBean unidade;
+    private String diasPorExtenso;
 
     public ConfigAgendaParte1Bean() {
         this.profissional = new FuncionarioBean();
@@ -160,4 +161,12 @@ public class ConfigAgendaParte1Bean implements Serializable {
 	public void setUnidade(UnidadeBean unidade) {
 		this.unidade = unidade;
 	}
+
+    public String getDiasPorExtenso() {
+        return diasPorExtenso;
+    }
+
+    public void setDiasPorExtenso(String diasPorExtenso) {
+        this.diasPorExtenso = diasPorExtenso;
+    }
 }

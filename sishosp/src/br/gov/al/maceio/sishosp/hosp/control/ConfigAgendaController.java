@@ -21,7 +21,6 @@ import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoConfiguracaoAgenda;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte1Bean;
 import br.gov.al.maceio.sishosp.hosp.model.ConfigAgendaParte2Bean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
@@ -49,6 +48,8 @@ public class ConfigAgendaController implements Serializable {
 
     private List<GrupoBean> listaGruposProgramas;
     private List<TipoAtendimentoBean> listaTipoAtendimentosGrupo;
+    private List<ConfigAgendaParte1Bean> listaProfissionalConfiguracaoGeral;
+    private List<ConfigAgendaParte1Bean> listaProfissionalConfiguracaoEspecifica;
 
     private ConfigAgendaDAO cDao = new ConfigAgendaDAO();
     private FuncionarioDAO fDao = new FuncionarioDAO();
@@ -72,7 +73,8 @@ public class ConfigAgendaController implements Serializable {
         this.listaEquipes = null;
         this.listaGruposProgramas = new ArrayList<>();
         this.listaTipoAtendimentosGrupo = new ArrayList<>();
-
+        this.listaProfissionalConfiguracaoGeral = new ArrayList<>();
+        this.listaProfissionalConfiguracaoEspecifica = new ArrayList<>();
     }
 
     public void limparDados() {
@@ -99,6 +101,11 @@ public class ConfigAgendaController implements Serializable {
 
     public String redirectEditEquipe() {
         return RedirecionarUtil.redirectEdit(ENDERECO_CADASTRO_EQUIPE, ENDERECO_ID, this.confParte1.getIdConfiAgenda(), ENDERECO_TIPO, tipo);
+    }
+
+    public void inicializarConfiguracaoAgendaProfissional(){
+        carregarListaConfiguracaoGeral();
+        carregarListaConfiguracaoEspecifica();
     }
 
     public void getEditAgendaProfissional() throws ProjetoException {
@@ -583,6 +590,14 @@ public class ConfigAgendaController implements Serializable {
 
     }
 
+    public void carregarListaConfiguracaoGeral(){
+        listaProfissionalConfiguracaoGeral = cDao.listarHorariosPorProfissionalGeral();
+    }
+
+    public void carregarListaConfiguracaoEspecifica(){
+        listaProfissionalConfiguracaoEspecifica = cDao.listarHorariosPorProfissionalEspecifica();
+    }
+
     public List<EquipeBean> getListaEquipes() {
 		return listaEquipes;
 	}
@@ -623,4 +638,19 @@ public class ConfigAgendaController implements Serializable {
         this.listaTipoAtendimentosGrupo = listaTipoAtendimentosGrupo;
     }
 
+    public List<ConfigAgendaParte1Bean> getListaProfissionalConfiguracaoGeral() {
+        return listaProfissionalConfiguracaoGeral;
+    }
+
+    public void setListaProfissionalConfiguracaoGeral(List<ConfigAgendaParte1Bean> listaProfissionalConfiguracaoGeral) {
+        this.listaProfissionalConfiguracaoGeral = listaProfissionalConfiguracaoGeral;
+    }
+
+    public List<ConfigAgendaParte1Bean> getListaProfissionalConfiguracaoEspecifica() {
+        return listaProfissionalConfiguracaoEspecifica;
+    }
+
+    public void setListaProfissionalConfiguracaoEspecifica(List<ConfigAgendaParte1Bean> listaProfissionalConfiguracaoEspecifica) {
+        this.listaProfissionalConfiguracaoEspecifica = listaProfissionalConfiguracaoEspecifica;
+    }
 }

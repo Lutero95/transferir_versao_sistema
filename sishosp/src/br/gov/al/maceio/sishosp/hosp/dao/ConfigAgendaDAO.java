@@ -8,6 +8,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.comum.util.ProfissionalDiasUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoConfiguracaoAgenda;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
@@ -75,7 +76,7 @@ public class ConfigAgendaDAO {
 		Integer idConfigAgenda = null;
 
 		try {
-			String sql = "INSERT INTO hosp.config_agenda_profissional(codmedico, qtdmax, mes, ano, cod_empresa, opcao, tipo) "
+			String sql = "INSERT INTO hosp.config_agenda_profissional(codmedico, qtdmax, mes, ano, cod_unidade, opcao, tipo) "
 					+ " VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id_configagenda;";
 
 			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
@@ -1423,6 +1424,120 @@ public class ConfigAgendaDAO {
 			}
 		}
 		return lista;
-	}	
+	}
+
+	public List<ConfigAgendaParte1Bean> listarHorariosPorProfissionalGeral() {
+
+		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
+
+		String sql = "SELECT DISTINCT c.id_configagenda, c.codmedico, f.descfuncionario, f.cns, f.codcbo, f.codprocedimentopadrao, e.descespecialidade "
+				+ "FROM hosp.config_agenda_profissional c "
+				+ "LEFT JOIN hosp.config_agenda_profissional_dias d ON (c.id_configagenda = d.id_config_agenda_profissional) "
+				+ "LEFT JOIN acl.funcionarios f ON (c.codmedico = f.id_funcionario) "
+				+ "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) "
+				+ "WHERE c.tipo = 'G';";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
+				conf.setIdConfiAgenda(rs.getInt("id_configagenda"));
+				conf.getProfissional().setId(rs.getLong("codmedico"));
+				conf.getProfissional().setNome(rs.getString("descfuncionario"));
+				conf.getProfissional().setCns(rs.getString("cns"));
+				conf.getProfissional().getCbo().setCodCbo(rs.getInt("codcbo"));
+				conf.getProfissional().getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+				conf.getProfissional().getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+				conf.setDiasPorExtenso(ProfissionalDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoProfissional(conf.getIdConfiAgenda(), con)));
+				lista.add(conf);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
+	public List<ConfigAgendaParte1Bean> listarHorariosPorProfissionalEspecifica() {
+
+		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
+
+		String sql = "SELECT DISTINCT c.id_configagenda, c.codmedico, d.data_especifica, f.descfuncionario, f.cns, f.codcbo, "
+				+ "f.codprocedimentopadrao, e.descespecialidade, c.mes, c.ano "
+				+ "FROM hosp.config_agenda_profissional c "
+				+ "LEFT JOIN hosp.config_agenda_profissional_dias d ON (c.id_configagenda = d.id_config_agenda_profissional) "
+				+ "LEFT JOIN acl.funcionarios f ON (c.codmedico = f.id_funcionario) "
+				+ "LEFT JOIN hosp.especialidade e ON (f.codespecialidade = e.id_especialidade) "
+				+ "WHERE c.tipo = 'E';";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
+				conf.setIdConfiAgenda(rs.getInt("id_configagenda"));
+				conf.getProfissional().setId(rs.getLong("codmedico"));
+				conf.getProfissional().setNome(rs.getString("descfuncionario"));
+				conf.getProfissional().setCns(rs.getString("cns"));
+				conf.getProfissional().getCbo().setCodCbo(rs.getInt("codcbo"));
+				conf.getProfissional().getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+				conf.setDataEspecifica(rs.getDate("data_especifica"));
+				conf.setMes(rs.getInt("mes"));
+				conf.setAno(rs.getInt("ano"));
+				conf.getProfissional().getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+				conf.setDiasPorExtenso(ProfissionalDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoProfissional(conf.getIdConfiAgenda(), con)));
+				lista.add(conf);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
+	public List<String> listarDiasAtendimentoProfissional(Integer id, Connection conAuxiliar) {
+
+		List<String> lista = new ArrayList<>();
+
+		String sql = "SELECT dia FROM hosp.config_agenda_profissional_dias WHERE id_config_agenda_profissional =?";
+
+		try {
+			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				Integer dia = rs.getInt("dia");
+				lista.add(dia.toString());
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
 
 }
