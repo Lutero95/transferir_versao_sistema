@@ -800,7 +800,7 @@ to {
 .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th,
 	.table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td,
 	.table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
-	border: 1px solid #2e84ce;
+	border: 1px solid #4682B4;
 }
 
 .table-striped>tbody>tr:nth-of-type(odd), .ui-datatable-odd {
@@ -919,7 +919,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 }
 
 .label-info {
-	background-color: #2e84ce;
+	background-color: #4682B4;
 }
 
 .label {
@@ -1212,7 +1212,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 
 .btn-radio-table {
 	width: 40%;
-	color: #2e84ce;
+	color: #4682B4;
 	margin-bottom: 10px;
 }
 
@@ -1234,12 +1234,12 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 }
 
 .tipo-deficiencia {
-	color: #2e84ce;
+	color: #4682B4;
 	margin-bottom: 5px;
 }
 
 .modelo-auditivo {
-	color: #2e84ce;
+	color: #4682B4;
 	margin-bottom: 5px;
 }
 
@@ -1355,7 +1355,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 
 .btn-radio-table2 {
 	width: 25%;
-	color: #2e84ce;
+	color: #4682B4;
 	margin-bottom: 10px;
 }
 
@@ -1655,7 +1655,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 
 .btn-radio-table3 {
 	width: 65%;
-	color: #2e84ce;
+	color: #4682B4;
 	margin-bottom: 10px;
 }
 

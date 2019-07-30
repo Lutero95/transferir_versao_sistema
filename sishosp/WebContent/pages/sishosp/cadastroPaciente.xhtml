@@ -1,1279 +1,1318 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="../../template/template.xhtml">
-
-    <ui:define name="content">
-
-        <f:metadata>
-            <f:viewAction action="#{PacienteController.getEditPaciente()}"/>
-        </f:metadata>
-		
-        <h:form class="form-horizontal" id="frmPrincipal">
-
-            <div class="panel panel-primary new-top-primary">
-                <div class="panel-heading top-heading">
-                    <h:outputText value="#{PacienteController.cabecalho}"
-                                  class="panel-title"></h:outputText>
-                </div>
-
-                <p:tabView style="height:auto; width:auto;" id="tbv">
-
-                    <p:tab title="Dados Pessoais">
-
-                        <b:row>
-
-                            <b:column span="6" class="label-position new-label-nome">
-                                <b:label for="inputname" value="Nome" severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.nome}"
-                                             validator="CaractereEmBrancoValidator"
-                                             class="form-control" id="inputname" required="true"
-                                             validatorMessage="Nome deve conter entre 2 e 60 caracteres."
-                                             requiredMessage="Nome: Campo obrigatório!">
-                                    <f:validateLength minimum="2" maximum="60"/>
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="2" class="label-position data-size new-label-nome">
-                                <b:label value="Nascimento" severity="info" class="fire-label"/>
-
-                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-                                            yearRange="-111:+39" pages="1" showOn="button" size="15"
-                                            requiredMessage="Nascimento: Campo obrigatório!"
-                                            required="true" class="select-agendaEquipe2"
-                                            value="#{PacienteController.paciente.dtanascimento}"
-                                            locale="pt"/>
-                            </b:column>
-
-                        </b:row>
-
-                        <b:row>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="estadocivil" value="Estado Civil" severity="info"/>
-
-                                <b:selectOneMenu
-                                        value="#{PacienteController.paciente.estadoCivil}"
-                                        disable="true" id="estadocivil">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                    <f:selectItem itemLabel="Solteiro" itemValue="S"/>
-                                    <f:selectItem itemLabel="Casado" itemValue="C"/>
-                                    <f:selectItem itemLabel="Viúvo" itemValue="V"/>
-                                    <f:selectItem itemLabel="Divorciado" itemValue="D"/>
-                                    <f:selectItem itemLabel="Outros" itemValue="O"/>
-                                </b:selectOneMenu>
-                            </b:column>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="sexo" value="Sexo" severity="info" />
-
-                                <b:selectOneMenu required="true" disable="true"
-                                                 requiredMessage="Sexo: Campo obrigatório!" id="sexo"
-                                                 value="#{PacienteController.paciente.sexo}">
-                                    <f:selectItem itemLabel="Selecione" itemValue="" />
-                                    <f:selectItem itemLabel="Masculino" itemValue="M" />
-                                    <f:selectItem itemLabel="Feminino" itemValue="F" />
-                                </b:selectOneMenu>
-                            </b:column>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="genero" value="Gênero" severity="info"/>
-
-                                <b:selectOneMenu required="false" disable="true"
-                                                 requiredMessage="Gênero: Campo obrigatório!" id="genero"
-                                                 value="#{PacienteController.paciente.genero.id}">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                    <f:selectItems value="#{GeneroController.listarTodosOsGeneros()}"
-                                                   var="sis" itemLabel="#{sis.descricao}"
-                                                   itemValue="#{sis.id}"/>
-                                </b:selectOneMenu>
-                            </b:column>
-
-                        </b:row>
-
-                        <b:row>
-
-                            <p:outputPanel id="outNomeSocial">
-                                <b:column span="2" class="size-nomeSocial">
-                                    <p:selectBooleanCheckbox label="Necessita nome social"
-                                                             itemLabel="Necessita nome social" style="color:#2e84ce;"
-                                                             value="#{PacienteController.paciente.necessitaNomeSocial}">
-                                        <p:ajax update="outNomeSocial"></p:ajax>
-                                    </p:selectBooleanCheckbox>
-                                </b:column>
-
-                                <br></br>
-
-                                <b:column span="5" class="label-position">
-                                    <b:label for="inputnamesocial" value="Nome Social"
-                                             severity="info" id="idnomesociallabel" class="label-nomeSocial"
-                                             rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"/>
-
-                                    <b:inputText value="#{PacienteController.paciente.nomeSocial}"
-                                                 rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
-                                                 class="form-control" id="inputnamesocial" required="true"
-                                                 validatorMessage="Nome deve conter entre 2 e 60 caracteres."
-                                                 requiredMessage="Nome: Campo obrigatório!">
-                                        <f:validateLength minimum="2" maximum="60"/>
-                                    </b:inputText>
-                                </b:column>
-
-                            </p:outputPanel>
-
-                        </b:row>
-
-                        <br></br>
-
-                        <b:row>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="sangue" value="Sangue" severity="info"/>
-
-                                <b:selectOneMenu required="false" disable="true"
-                                                 requiredMessage="Informe o sangue" id="sangue"
-                                                 value="#{PacienteController.paciente.sangue}">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                    <f:selectItem itemLabel="Não informou" itemValue="N"/>
-                                    <f:selectItem itemLabel="A+" itemValue="A+"/>
-                                    <f:selectItem itemLabel="A-" itemValue="A-"/>
-                                    <f:selectItem itemLabel="B+" itemValue="B+"/>
-                                    <f:selectItem itemLabel="B-" itemValue="B-"/>
-                                    <f:selectItem itemLabel="AB+" itemValue="AB+"/>
-                                    <f:selectItem itemLabel="AB-" itemValue="AB-"/>
-                                    <f:selectItem itemLabel="O+" itemValue="O+"/>
-                                    <f:selectItem itemLabel="O-" itemValue="O-"/>
-
-                                </b:selectOneMenu>
-                            </b:column>
-
-                            <b:column span="4" class="label-position">
-                                <b:label for="cor" value="Cor / Raça" severity="info"/>
-
-                                <b:selectOneMenu disable="true" required="true" requiredMessage="Raça: Campo obrigatório!"
-                                                 value="#{PacienteController.paciente.codRaca}" id="cor">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                    <f:selectItems value="#{RacaController.listarRacas()}"
-                                                   var="sis" itemLabel="#{sis.descRaca}"
-                                                   itemValue="#{sis.codRaca}"/>
-                                </b:selectOneMenu>
-                            </b:column>
-
-                        </b:row>
-
-                        <br></br>
-
-                        <b:row>
-
-                            <b:column span="4" class="label-position">
-                                <b:label for="religiao" value="Religião" severity="info"/>
-
-                                <b:selectOneMenu required="false" disable="true"
-                                                 requiredMessage="Religião: Campo obrigatório!" id="religiao"
-                                                 value="#{PacienteController.paciente.religiao.id}">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                    <f:selectItems value="#{ReligiaoController.listarTodasAsReligioes()}"
-                                                   var="sis" itemLabel="#{sis.descricao}"
-                                                   itemValue="#{sis.id}"/>
-                                </b:selectOneMenu>
-                            </b:column>
-
-                            <b:column span="5" class="label-position new-col5">
-                                <b:label for="conjuge" value="Cônjuge" severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.conjuge}"
-                                             class="form-control" id="conjuge">
-                                </b:inputText>
-                            </b:column>
-
-                        </b:row>
-
-                        <b:row>
-
-                            <b:column span="5" class="label-position new-col5">
-                                <b:label for="mae" value="Mãe" severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.nomeMae}"
-                                                                            class="form-control" id="mae" required="true"
-                                             requiredMessage="Mãe: Campo obrigatório!"
-                                             validatorMessage="Nome da Mãe deve conter entre 2 e 60 caracteres.">
-                                    <f:validateLength minimum="2" maximum="60"/>
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="5" class="label-position new-col5">
-                                <b:label for="pai" value="Pai" severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.nomePai}"
-                                             class="form-control" id="pai">
-                                </b:inputText>
-                            </b:column>
-
-                        </b:row>
-
-                        <br></br>
-
-                        <b:row>
-
-                            <b:column span="12" class="label-position">
-                                <p:commandButton style="margin-top:20px;margin-left: -15px;"
-                                                 value="Adicionar Telefone" class="btn-acao-table acao-confirmar"
-                                                 actionListener="#{PacienteController.limparTelefone}"
-                                                 onclick="PF('dlgTelefone').show();" icon="ui-icon-plus"
-                                                 update=":frmPrincipal:tbv:outTabelaTelefones">
-                                </p:commandButton>
-                            </b:column>
-
-                        </b:row>
-
-                        <b:row>
-
-                            <b:column span="12">
-
-                                <p:outputPanel id="outTabelaTelefones">
-                                    <p:dataTable emptyMessage="Nenhum telefone adicionado"
-                                                 styleClass="table table-hover" id="tabela"
-                                                 value="#{PacienteController.paciente.listaTelefones}"
-                                                 var="tab" paginator="true" paginatorPosition="bottom" rows="5"
-                                                 resizableColumns="true" responsive="true">
-
-                                        <p:column headerText="Telefone" style="font-weight:bold;"
-                                                  width="100">
-                                            <h:outputText value="#{tab.telefone}"/>
-                                        </p:column>
-                                        
-
-                                        <p:column headerText="Parentesco" style="font-weight:bold;"
-                                                  width="150">
-                                            <h:outputText value="#{tab.parentesco.descParentesco}"/>
-                                        </p:column>                                        
-
-                                        <p:column headerText="Responsável" style="font-weight:bold;"
-                                                  width="35%">
-                                            <h:outputText value="#{tab.responsavel}"/>
-                                        </p:column>
-
-                                        <p:column headerText="Whatsapp" style="font-weight:bold;"
-                                                  width="100">
-                                            <h:outputText value="Sim" rendered="#{tab.whatsapp == true}"/>
-                                            <h:outputText value="Não" rendered="#{tab.whatsapp != true}"/>
-                                        </p:column>
-
-                                        <p:column headerText="Ação" style="font-weight:bold;" width="10%">
-                                            <div align="center">
-                                                <p:commandButton process="@this"
-                                                                 action="#{PacienteController.removeListaTelefone()}"
-                                                                 icon="ui-icon-trash"
-                                                                 class="new-btn-acao-table acao-excluir"
-                                                                 update=":frmPrincipal:tbv:outTabelaTelefones">
-                                                    <f:setPropertyActionListener value="#{tab}"
-                                                                                 target="#{PacienteController.telefone}"/>
-                                                </p:commandButton>
-                                            </div>
-                                        </p:column>
-                                    </p:dataTable>
-                                </p:outputPanel>
-
-                            </b:column>
-
-                        </b:row>
-
-                    </p:tab>
-
-                    <p:tab title="Endereço">
-
-                        <b:row>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="inputcep" value="CEP" severity="info"/>
-
-                                <p:inputMask mask="99999-999" id="inputcep"
-                                             value="#{PacienteController.paciente.endereco.cep}"
-                                             class="form-control select-agendaEquipe2" required="false"
-                                             requiredMessage="CEP: Campo obrigatório!">
-
-                                    <p:ajax listener="#{PacienteController.encontraCEP}"
-                                            update="outBairro, bairro1, bairro2, inputrua, estado, outMunicipios,
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="../../template/template.xhtml">
+
+	<ui:define name="content">
+
+		<f:metadata>
+			<f:viewAction action="#{PacienteController.getEditPaciente()}" />
+		</f:metadata>
+
+		<h:form class="form-horizontal" id="frmPrincipal">
+
+			<div class="panel panel-primary new-top-primary">
+				<div class="panel-heading top-heading">
+					<h:outputText value="#{PacienteController.cabecalho}"
+						class="panel-title"></h:outputText>
+				</div>
+
+				<p:tabView style="height:auto; width:auto;" id="tbv">
+
+					<p:tab title="Dados Pessoais">
+
+						<b:row>
+
+							<b:column span="6" class="label-position new-label-nome">
+								<b:label for="inputname" value="Nome" severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.nome}"
+									validator="CaractereEmBrancoValidator" class="form-control"
+									id="inputname" required="true"
+									validatorMessage="Nome deve conter entre 2 e 60 caracteres."
+									requiredMessage="Nome: Campo obrigatório!">
+									<f:validateLength minimum="2" maximum="60" />
+								</b:inputText>
+							</b:column>
+
+							<b:column span="2"
+								class="label-position data-size new-label-nome">
+								<b:label value="Nascimento" severity="info" class="fire-label" />
+
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									yearRange="-111:+39" pages="1" showOn="button" size="15"
+									requiredMessage="Nascimento: Campo obrigatório!"
+									required="true" class="select-agendaEquipe2"
+									value="#{PacienteController.paciente.dtanascimento}"
+									locale="pt" />
+							</b:column>
+
+						</b:row>
+
+						<b:row>
+
+							<b:column span="3" class="label-position">
+								<b:label for="estadocivil" value="Estado Civil" severity="info" />
+
+								<b:selectOneMenu
+									value="#{PacienteController.paciente.estadoCivil}"
+									disable="true" id="estadocivil">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItem itemLabel="Solteiro" itemValue="S" />
+									<f:selectItem itemLabel="Casado" itemValue="C" />
+									<f:selectItem itemLabel="Viúvo" itemValue="V" />
+									<f:selectItem itemLabel="Divorciado" itemValue="D" />
+									<f:selectItem itemLabel="Outros" itemValue="O" />
+								</b:selectOneMenu>
+							</b:column>
+
+							<b:column span="3" class="label-position">
+								<b:label for="sexo" value="Sexo" severity="info" />
+
+								<b:selectOneMenu required="true" disable="true"
+									requiredMessage="Sexo: Campo obrigatório!" id="sexo"
+									value="#{PacienteController.paciente.sexo}">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItem itemLabel="Masculino" itemValue="M" />
+									<f:selectItem itemLabel="Feminino" itemValue="F" />
+								</b:selectOneMenu>
+							</b:column>
+
+							<b:column span="3" class="label-position">
+								<b:label for="genero" value="Gênero" severity="info" />
+
+								<b:selectOneMenu required="false" disable="true"
+									requiredMessage="Gênero: Campo obrigatório!" id="genero"
+									value="#{PacienteController.paciente.genero.id}">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItems
+										value="#{GeneroController.listarTodosOsGeneros()}" var="sis"
+										itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
+								</b:selectOneMenu>
+							</b:column>
+
+						</b:row>
+
+						<b:row>
+
+							<p:outputPanel id="outNomeSocial">
+								<b:column span="2" class="size-nomeSocial">
+									<p:selectBooleanCheckbox label="Necessita nome social"
+										itemLabel="Necessita nome social" style="color:#2e84ce;"
+										value="#{PacienteController.paciente.necessitaNomeSocial}">
+										<p:ajax update="outNomeSocial"></p:ajax>
+									</p:selectBooleanCheckbox>
+								</b:column>
+
+								<br></br>
+
+								<b:column span="5" class="label-position">
+									<b:label for="inputnamesocial" value="Nome Social"
+										severity="info" id="idnomesociallabel"
+										class="label-nomeSocial"
+										rendered="#{PacienteController.paciente.necessitaNomeSocial == true}" />
+
+									<b:inputText value="#{PacienteController.paciente.nomeSocial}"
+										rendered="#{PacienteController.paciente.necessitaNomeSocial == true}"
+										class="form-control" id="inputnamesocial" required="true"
+										validatorMessage="Nome deve conter entre 2 e 60 caracteres."
+										requiredMessage="Nome: Campo obrigatório!">
+										<f:validateLength minimum="2" maximum="60" />
+									</b:inputText>
+								</b:column>
+
+							</p:outputPanel>
+
+						</b:row>
+
+						<br></br>
+
+						<b:row>
+
+							<b:column span="3" class="label-position">
+								<b:label for="sangue" value="Sangue" severity="info" />
+
+								<b:selectOneMenu required="false" disable="true"
+									requiredMessage="Informe o sangue" id="sangue"
+									value="#{PacienteController.paciente.sangue}">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItem itemLabel="Não informou" itemValue="N" />
+									<f:selectItem itemLabel="A+" itemValue="A+" />
+									<f:selectItem itemLabel="A-" itemValue="A-" />
+									<f:selectItem itemLabel="B+" itemValue="B+" />
+									<f:selectItem itemLabel="B-" itemValue="B-" />
+									<f:selectItem itemLabel="AB+" itemValue="AB+" />
+									<f:selectItem itemLabel="AB-" itemValue="AB-" />
+									<f:selectItem itemLabel="O+" itemValue="O+" />
+									<f:selectItem itemLabel="O-" itemValue="O-" />
+
+								</b:selectOneMenu>
+							</b:column>
+
+							<b:column span="4" class="label-position">
+								<b:label for="cor" value="Cor / Raça" severity="info" />
+
+								<b:selectOneMenu disable="true" required="true"
+									requiredMessage="Raça: Campo obrigatório!"
+									value="#{PacienteController.paciente.codRaca}" id="cor">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItems value="#{RacaController.listarRacas()}"
+										var="sis" itemLabel="#{sis.descRaca}"
+										itemValue="#{sis.codRaca}" />
+								</b:selectOneMenu>
+							</b:column>
+
+						</b:row>
+
+						<br></br>
+
+						<b:row>
+
+							<b:column span="4" class="label-position">
+								<b:label for="religiao" value="Religião" severity="info" />
+
+								<b:selectOneMenu required="false" disable="true"
+									requiredMessage="Religião: Campo obrigatório!" id="religiao"
+									value="#{PacienteController.paciente.religiao.id}">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItems
+										value="#{ReligiaoController.listarTodasAsReligioes()}"
+										var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
+								</b:selectOneMenu>
+							</b:column>
+
+							<b:column span="5" class="label-position new-col5">
+								<b:label for="conjuge" value="Cônjuge" severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.conjuge}"
+									class="form-control" id="conjuge">
+								</b:inputText>
+							</b:column>
+
+						</b:row>
+
+						<b:row>
+
+							<b:column span="5" class="label-position new-col5">
+								<b:label for="mae" value="Mãe" severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.nomeMae}"
+									class="form-control" id="mae" required="true"
+									requiredMessage="Mãe: Campo obrigatório!"
+									validatorMessage="Nome da Mãe deve conter entre 2 e 60 caracteres.">
+									<f:validateLength minimum="2" maximum="60" />
+								</b:inputText>
+							</b:column>
+
+							<b:column span="5" class="label-position new-col5">
+								<b:label for="pai" value="Pai" severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.nomePai}"
+									class="form-control" id="pai">
+								</b:inputText>
+							</b:column>
+
+						</b:row>
+
+						<br></br>
+
+						<b:row>
+
+							<b:column span="12" class="label-position">
+								<p:commandButton style="margin-top:20px;margin-left: -15px;"
+									value="Adicionar Telefone"
+									class="btn-acao-table acao-confirmar"
+									actionListener="#{PacienteController.limparTelefone}"
+									onclick="PF('dlgTelefone').show();" icon="ui-icon-plus"
+									update=":frmPrincipal:tbv:outTabelaTelefones">
+								</p:commandButton>
+							</b:column>
+
+						</b:row>
+
+						<b:row>
+
+							<b:column span="12">
+
+								<p:outputPanel id="outTabelaTelefones">
+									<p:dataTable emptyMessage="Nenhum telefone adicionado"
+										styleClass="table table-hover" id="tabela"
+										value="#{PacienteController.paciente.listaTelefones}"
+										var="tab" paginator="true" paginatorPosition="bottom" rows="5"
+										resizableColumns="true" responsive="true">
+
+										<p:column headerText="Telefone" style="font-weight:bold;"
+											width="100">
+											<h:outputText value="#{tab.telefone}" />
+										</p:column>
+
+
+										<p:column headerText="Parentesco" style="font-weight:bold;"
+											width="150">
+											<h:outputText value="#{tab.parentesco.descParentesco}" />
+										</p:column>
+
+										<p:column headerText="Responsável" style="font-weight:bold;"
+											width="35%">
+											<h:outputText value="#{tab.responsavel}" />
+										</p:column>
+
+										<p:column headerText="Whatsapp" style="font-weight:bold;"
+											width="100">
+											<h:outputText value="Sim" rendered="#{tab.whatsapp == true}" />
+											<h:outputText value="Não" rendered="#{tab.whatsapp != true}" />
+										</p:column>
+
+										<p:column headerText="Ação" style="font-weight:bold;"
+											width="10%">
+											<div align="center">
+												<p:commandButton process="@this"
+													action="#{PacienteController.removeListaTelefone()}"
+													icon="ui-icon-trash"
+													class="new-btn-acao-table acao-excluir"
+													update=":frmPrincipal:tbv:outTabelaTelefones">
+													<f:setPropertyActionListener value="#{tab}"
+														target="#{PacienteController.telefone}" />
+												</p:commandButton>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</p:outputPanel>
+
+							</b:column>
+
+						</b:row>
+
+					</p:tab>
+
+					<p:tab title="Endereço">
+
+						<b:row>
+
+							<b:column span="3" class="label-position">
+								<b:label for="inputcep" value="CEP" severity="info" />
+
+								<p:inputMask mask="99999-999" id="inputcep"
+									value="#{PacienteController.paciente.endereco.cep}"
+									class="form-control select-agendaEquipe2" required="false"
+									requiredMessage="CEP: Campo obrigatório!">
+
+									<p:ajax listener="#{PacienteController.encontraCEP}"
+										update="outBairro, bairro1, bairro2, inputrua, estado, outMunicipios,
                                             :msgPagina"
-                                            global="false" event="blur"></p:ajax>
-                                </p:inputMask>
-                            </b:column>
+										global="false" event="blur"></p:ajax>
+								</p:inputMask>
+							</b:column>
 
-                            <b:column span="8" class="label-position">
-                                <b:label for="inputrua" value="Logradouro" severity="info"/>
+							<b:column span="8" class="label-position">
+								<b:label for="inputrua" value="Logradouro" severity="info" />
 
-                                <b:inputText
-                                        value="#{PacienteController.paciente.endereco.logradouro}"
-                                        required="false"
-                                        requiredMessage="Logradouro: Campo obrigatório!"
-                                        class="form-control" id="inputrua"
-                                        validatorMessage="Logradouro deve conter entre 2 e 50 caracteres.">
-                                    <f:validateLength minimum="2" maximum="50"/>
-                                </b:inputText>
-                            </b:column>
+								<b:inputText
+									value="#{PacienteController.paciente.endereco.logradouro}"
+									required="false"
+									requiredMessage="Logradouro: Campo obrigatório!"
+									class="form-control" id="inputrua"
+									validatorMessage="Logradouro deve conter entre 2 e 50 caracteres.">
+									<f:validateLength minimum="2" maximum="50" />
+								</b:inputText>
+							</b:column>
 
-                        </b:row>
-                        <br></br>
+						</b:row>
+						<br></br>
 
-                        <b:row>
+						<b:row>
 
-                            <b:column span="3" class="label-position">
-                                <b:label for="inputcomplemento" value="Complemento"
-                                         severity="info"/>
+							<b:column span="3" class="label-position">
+								<b:label for="inputcomplemento" value="Complemento"
+									severity="info" />
 
-                                <b:inputText
-                                        value="#{PacienteController.paciente.endereco.complemento}"
-                                        class="form-control" id="inputcomplemento">
-                                        <f:validateLength maximum="50"/>
-                                </b:inputText>
-                            </b:column>
+								<b:inputText
+									value="#{PacienteController.paciente.endereco.complemento}"
+									class="form-control" id="inputcomplemento">
+									<f:validateLength maximum="50" />
+								</b:inputText>
+							</b:column>
 
-                            <b:column span="8" class="label-position">
-                                <b:label for="referencia" value="Referência  (Ex: Ao lado, em frente)" severity="info"/>
+							<b:column span="8" class="label-position">
+								<b:label for="referencia"
+									value="Referência  (Ex: Ao lado, em frente)" severity="info" />
 
-                                <b:inputText
-                                        value="#{PacienteController.paciente.endereco.referencia}"
-                                        class="form-control" id="referencia">
-                                        <f:validateLength maximum="200"/>
-                                </b:inputText>
-                            </b:column>
+								<b:inputText
+									value="#{PacienteController.paciente.endereco.referencia}"
+									class="form-control" id="referencia">
+									<f:validateLength maximum="200" />
+								</b:inputText>
+							</b:column>
 
-                        </b:row>
+						</b:row>
 
-                        <br></br>
+						<br></br>
 
-                        <b:row>
+						<b:row>
 
-                            <b:column span="3" class="label-position">
-                                <b:label for="numero" value="Número" severity="info"/>
+							<b:column span="3" class="label-position">
+								<b:label for="numero" value="Número" severity="info" />
 
-                                <b:inputText
-                                        value="#{PacienteController.paciente.endereco.numero}"
-                                        class="form-control" id="numero">
-                                        <f:validateLength maximum="20"/>
-                                </b:inputText>
-                            </b:column>
+								<b:inputText
+									value="#{PacienteController.paciente.endereco.numero}"
+									class="form-control" id="numero">
+									<f:validateLength maximum="20" />
+								</b:inputText>
+							</b:column>
 
-                            <b:column span="3" class="label-position">
-                                <b:label for="estado" value="Estado" severity="info"/>
+							<b:column span="3" class="label-position">
+								<b:label for="estado" value="Estado" severity="info" />
 
-                                <b:selectOneMenu required="false"
-                                                 requiredMessage="Estado: Campo obrigatório!"
-                                                 value="#{PacienteController.paciente.endereco.uf}" id="estado">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                    <f:selectItems
-                                            value="#{EnderecoController.endereco.listaEstados}"/>
-                                    <p:ajax
-                                            listener="#{EnderecoController.listarMunicipiosPorEstadoGenerico(PacienteController.paciente.endereco.uf)}"
-                                            update="outMunicipios"></p:ajax>
-                                </b:selectOneMenu>
-                            </b:column>
+								<b:selectOneMenu required="false"
+									requiredMessage="Estado: Campo obrigatório!"
+									value="#{PacienteController.paciente.endereco.uf}" id="estado">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItems
+										value="#{EnderecoController.endereco.listaEstados}" />
+									<p:ajax
+										listener="#{EnderecoController.listarMunicipiosPorEstadoGenerico(PacienteController.paciente.endereco.uf)}"
+										update="outMunicipios"></p:ajax>
+								</b:selectOneMenu>
+							</b:column>
 
-                        </b:row>
+						</b:row>
 
-                        <br></br>
+						<br></br>
 
-                        <b:row>
+						<b:row>
 
-                            <b:column span="3" class="label-position">
-                                <b:label value="Município" severity="info"/>
+							<b:column span="3" class="label-position">
+								<b:label value="Município" severity="info" />
 
-                                <p:outputPanel id="outMunicipios">
+								<p:outputPanel id="outMunicipios">
 
-                                    <b:selectOneMenu required="false"
-                                                     requiredMessage="Município: Campo obrigatório!"
-                                                     value="#{PacienteController.paciente.endereco.codmunicipio}">
-                                        <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                        <f:selectItems
-                                                value="#{EnderecoController.listarMunicipiosPorEstadoGenerico(PacienteController.paciente.endereco.uf)}"
-                                                var="sis" itemLabel="#{sis.municipio}"
-                                                itemValue="#{sis.codmunicipio}"/>
-                                        <p:ajax
-                                                listener="#{EnderecoController.listarBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
-                                                update="outBairro"></p:ajax>
-                                    </b:selectOneMenu>
-                                </p:outputPanel>
+									<b:selectOneMenu required="false"
+										requiredMessage="Município: Campo obrigatório!"
+										value="#{PacienteController.paciente.endereco.codmunicipio}">
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItems
+											value="#{EnderecoController.listarMunicipiosPorEstadoGenerico(PacienteController.paciente.endereco.uf)}"
+											var="sis" itemLabel="#{sis.municipio}"
+											itemValue="#{sis.codmunicipio}" />
+										<p:ajax
+											listener="#{EnderecoController.listarBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
+											update="outBairro"></p:ajax>
+									</b:selectOneMenu>
+								</p:outputPanel>
 
-                            </b:column>
+							</b:column>
 
-                            <b:column span="3" class="label-position">
-                                <b:label value="Bairro" severity="info"/>
+							<b:column span="3" class="label-position">
+								<b:label value="Bairro" severity="info" />
 
-                                <p:outputPanel id="outBairro">
-                                    <b:selectOneMenu id="bairro1"
-                                                     rendered="#{(PacienteController.paciente.endereco.bairroUnico == false and PacienteController.bairroExiste == true)
+								<p:outputPanel id="outBairro">
+									<b:selectOneMenu id="bairro1"
+										rendered="#{(PacienteController.paciente.endereco.bairroUnico == false and PacienteController.bairroExiste == true)
                                                      or PacienteController.bairroExiste == null}"
-                                                     required="false" requiredMessage="Bairro: Campo obrigatório!"
-                                                     value="#{PacienteController.paciente.endereco.codbairro}">
-                                        <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                        <f:selectItems
-                                                value="#{EnderecoController.listarBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
-                                                var="sis" itemLabel="#{sis.bairro}"
-                                                itemValue="#{sis.codbairro}"/>
-                                    </b:selectOneMenu>
+										required="false" requiredMessage="Bairro: Campo obrigatório!"
+										value="#{PacienteController.paciente.endereco.codbairro}">
+										<f:selectItem itemLabel="Selecione" itemValue="" />
+										<f:selectItems
+											value="#{EnderecoController.listarBairrosPorMunicipio(PacienteController.paciente.endereco.codmunicipio)}"
+											var="sis" itemLabel="#{sis.bairro}"
+											itemValue="#{sis.codbairro}" />
+									</b:selectOneMenu>
 
-                                    <p:inputText id="bairro2" class="campo-laudoDig3"
-                                                 rendered="#{(PacienteController.paciente.endereco.bairroUnico == true or PacienteController.bairroExiste == false)
+									<p:inputText id="bairro2" class="campo-laudoDig3"
+										rendered="#{(PacienteController.paciente.endereco.bairroUnico == true or PacienteController.bairroExiste == false)
                                                  and PacienteController.bairroExiste != null}"
-                                                 value="#{PacienteController.paciente.endereco.bairro}"></p:inputText>
-                                </p:outputPanel>
+										value="#{PacienteController.paciente.endereco.bairro}"></p:inputText>
+								</p:outputPanel>
 
-                            </b:column>
-                        </b:row>
-
-
-                    </p:tab>
-
-                    <p:tab title="Documentos">
-
-                        <b:row>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="rg" value="RG Número" severity="info"/>
-
-                                <b:inputText disable="true"
-                                             value="#{PacienteController.paciente.rg}" class="form-control"
-                                             id="rg" validatorMessage="RG deve conter entre 8 digitos.">
-                                             <f:validateLength maximum="20"/>
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="2" class="label-position">
-                                <b:label for="oe" value="RG Órgão Expeditor" severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.oe}"
-                                             class="form-control" id="oe">
-                                             <f:validateLength maximum="10"/>
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="3" class="label-position data-size new-label-nome">
-                                <b:label for="dtaexpedicao" value="RG Dta.Expedição"
-                                         severity="info" class="fire-label"/>
-
-                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-                                            id="dtaexpedicao" yearRange="-111:+39" pages="1"
-                                            showOn="button" size="15" class="select-agendaEquipe2"
-                                            value="#{PacienteController.paciente.dataExpedicao1}"
-                                            locale="pt"/>
-                            </b:column>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="cpf" value="CPF" severity="info"/>
-
-                                <p:inputMask mask="999.999.999-99"
-                                             value="#{PacienteController.paciente.cpf}"
-                                             class="form-control select-agendaEquipe2"
-                                             id="cpf" required="false"
-                                             validator="CPFValidator" validatorMessage="CPF inválido!"
-                                             requiredMessage="CPF do Paciente: Campo obrigatório!">
-                                </p:inputMask>
-                            </b:column>
-                        </b:row>
-
-                        <br></br>
-
-                        <b:row>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="cns" value="CNS" severity="info"/>
-
-                                <p:inputText value="#{PacienteController.paciente.cns}" maxlength="15"
-                                             class="form-control" id="cns" required="true"
-                                             requiredMessage="CNS: Campo obrigatório!" validator="CNSValidator"
-                                             validatorMessage="CNS inválido!">
-                                    <f:validateLength minimum="15" maximum="15"/>
-                                </p:inputText>
-                            </b:column>
-
-                            <b:column span="2" class="label-position">
-                                <b:label for="protant" value="Prot.Ant" severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.protant}"
-                                             class="form-control" id="protant">
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="2" class="label-position">
-                                <b:label for="reservista" value="Reservista" severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.reservista}"
-                                             class="form-control" id="reservista"
-                                             validatorMessage="Numero da Reservista deve conter entre 12 digitos.">
-                                             <f:validateLength maximum="20"/>
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="carttrabalho" value="CTPS Núm." severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.ctps}"
-                                             class="form-control" id="carttrabalho">
-                                </b:inputText>
-                            </b:column>
-
-                        </b:row>
-
-                        <br></br>
-
-                        <b:row>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="serie" value="CTPS Série" severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.serie}"
-                                             class="form-control" id="serie">
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="2" class="label-position">
-                                <b:label for="pis" value="PIS" severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.pis}"
-                                             class="form-control" id="pis" required="false"
-                                             validator="PISValidator" validatorMessage="PIS inválido!">
-                                             <f:validateLength maximum="15"/>
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="2" class="label-position">
-                                <b:label for="numero2" value="Reg. Nasc. Núm" severity="info"/>
-
-                                <b:inputText
-                                        value="#{PacienteController.paciente.numeroCartorio}"
-                                        class="form-control" id="numero2">
-                                        <f:validateLength maximum="20"/>
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="cartorio" value="Reg. Nasc. Cartório"
-                                         severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.cartorio}"
-                                             class="form-control" id="cartorio">
-                                             <f:validateLength maximum="20"/>
-                                </b:inputText>
-                            </b:column>
-
-                        </b:row>
-
-                        <br></br>
-
-                        <b:row>
-
-                            <b:column span="3" class="label-position">
-                                <b:label for="livro" value="Reg. Nasc. Livro" severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.livro}"
-                                             class="form-control" id="livro">
-                                             <f:validateLength maximum="10"/>
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="2" class="label-position">
-                                <b:label for="folha" value="Reg. Nasc. Folha" severity="info"/>
-
-                                <b:inputText value="#{PacienteController.paciente.folha}"
-                                             class="form-control" id="folha">
-                                </b:inputText>
-                            </b:column>
-
-                            <b:column span="3" class="label-position data-size">
-                                <b:label for="dtaexpedicao2" value="Dta.Expedição"
-                                         severity="info" class="fire-label"/>
-
-                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-                                            yearRange="-111:+39" pages="1" showOn="button" size="15"
-                                            id="dtaexpedicao2" class="select-agendaEquipe2"
-                                            value="#{PacienteController.paciente.dataExpedicao2}"
-                                            locale="pt"/>
-                            </b:column>
-                        </b:row>
+							</b:column>
+						</b:row>
 
 
-                    </p:tab>
+					</p:tab>
 
-                    <p:tab title="Complemento">
+					<p:tab title="Documentos">
 
-                        <b:row>
+						<b:row>
 
-                            <b:column span="3" class="label-position new-data-size new-comple1">
-                                <b:label value="Escolaridade" severity="info"/>
+							<b:column span="3" class="label-position">
+								<b:label for="rg" value="RG Número" severity="info" />
 
-                                <p:autoComplete id="escolacomplete1" class="select-agendaEquipe4"
-                                                value="#{PacienteController.paciente.escolaridade}" size="31"
-                                                completeMethod="#{PacienteController.completeText2}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descescolaridade}"
-                                                converter="conEscolaridade">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{PacienteController.onItemSelect2}"/>
-                                            
-                                </p:autoComplete>
+								<b:inputText disable="true"
+									value="#{PacienteController.paciente.rg}" class="form-control"
+									id="rg" validatorMessage="RG deve conter entre 8 digitos.">
+									<f:validateLength maximum="20" />
+								</b:inputText>
+							</b:column>
 
-                                <p:commandButton onclick="PF('dlgbuscaescolaridade').show();" actionListener="#{EscolaridadeController.buscarEscolaridades()}"
-                                                 icon="ui-icon-search" process="@this" style="margin-top: 5px;" update=":buscaescolaridade"/>
-                            </b:column>
+							<b:column span="2" class="label-position">
+								<b:label for="oe" value="RG Órgão Expeditor" severity="info" />
 
-                            <b:column span="3" class="label-position new-data-size new-comple1">
-                                <b:label value="Escola" severity="info" class="fire-label"/>
+								<b:inputText value="#{PacienteController.paciente.oe}"
+									class="form-control" id="oe">
+									<f:validateLength maximum="10" />
+								</b:inputText>
+							</b:column>
 
-                                <p:autoComplete id="escolacomplete2" class="select-agendaEquipe4"
-                                                value="#{PacienteController.paciente.escola}" size="31"
-                                                completeMethod="#{PacienteController.completeText}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descescola}" converter="conEscola">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{PacienteController.onItemSelect}"/>
-                                </p:autoComplete>
+							<b:column span="3"
+								class="label-position data-size new-label-nome">
+								<b:label for="dtaexpedicao" value="RG Dta.Expedição"
+									severity="info" class="fire-label" />
 
-                                <p:commandButton process="@this" style="margin-top: 5px;" actionListener="#{EscolaController.buscarEscola()}"
-                                                 onclick="PF('dlgbuscaescola').show();" icon="ui-icon-search" update=":buscaescola"/>
-                            </b:column>
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									id="dtaexpedicao" yearRange="-111:+39" pages="1"
+									showOn="button" size="15" class="select-agendaEquipe2"
+									value="#{PacienteController.paciente.dataExpedicao1}"
+									locale="pt" />
+							</b:column>
 
-                            <b:column span="3" class="label-position new-data-size new-comple1">
-                                <b:label value="Profissão" severity="info" class="fire-label"/>
+							<b:column span="3" class="label-position">
+								<b:label for="cpf" value="CPF" severity="info" />
 
-                                <p:autoComplete id="escolacomplete3" class="select-agendaEquipe4"
-                                                value="#{PacienteController.paciente.profissao}" size="31"
-                                                completeMethod="#{PacienteController.completeText6}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descprofissao}" converter="conProfissao">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{PacienteController.onItemSelect6}"/>
-                                </p:autoComplete>
+								<p:inputMask mask="999.999.999-99"
+									value="#{PacienteController.paciente.cpf}"
+									class="form-control select-agendaEquipe2" id="cpf"
+									required="false" validator="CPFValidator"
+									validatorMessage="CPF inválido!"
+									requiredMessage="CPF do Paciente: Campo obrigatório!">
+								</p:inputMask>
+							</b:column>
+						</b:row>
 
-                                <p:commandButton process="@this" style="margin-top: 5px;" actionListener="#{ProfissaoController.listarProfissoes()}"
-                                                 onclick="PF('dlgbuscaprofissao').show();" icon="ui-icon-search" update=":buscaprofissao"/>
+						<br></br>
 
-                            </b:column>
-                        </b:row>
+						<b:row>
 
-                        <b:row>
+							<b:column span="3" class="label-position">
+								<b:label for="cns" value="CNS" severity="info" />
 
-                            <b:column span="2" class="new-data-size2">
-                                <p:outputLabel value="Trabalha:" style="margin-top: 8px;
+								<p:inputText value="#{PacienteController.paciente.cns}"
+									maxlength="15" class="form-control" id="cns" required="true"
+									requiredMessage="CNS: Campo obrigatório!"
+									validator="CNSValidator" validatorMessage="CNS inválido!">
+									<f:validateLength minimum="15" maximum="15" />
+								</p:inputText>
+							</b:column>
+
+							<b:column span="2" class="label-position">
+								<b:label for="protant" value="Prot.Ant" severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.protant}"
+									class="form-control" id="protant">
+								</b:inputText>
+							</b:column>
+
+							<b:column span="2" class="label-position">
+								<b:label for="reservista" value="Reservista" severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.reservista}"
+									class="form-control" id="reservista"
+									validatorMessage="Numero da Reservista deve conter entre 12 digitos.">
+									<f:validateLength maximum="20" />
+								</b:inputText>
+							</b:column>
+
+							<b:column span="3" class="label-position">
+								<b:label for="carttrabalho" value="CTPS Núm." severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.ctps}"
+									class="form-control" id="carttrabalho">
+								</b:inputText>
+							</b:column>
+
+						</b:row>
+
+						<br></br>
+
+						<b:row>
+
+							<b:column span="3" class="label-position">
+								<b:label for="serie" value="CTPS Série" severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.serie}"
+									class="form-control" id="serie">
+								</b:inputText>
+							</b:column>
+
+							<b:column span="2" class="label-position">
+								<b:label for="pis" value="PIS" severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.pis}"
+									class="form-control" id="pis" required="false"
+									validator="PISValidator" validatorMessage="PIS inválido!">
+									<f:validateLength maximum="15" />
+								</b:inputText>
+							</b:column>
+
+							<b:column span="2" class="label-position">
+								<b:label for="numero2" value="Reg. Nasc. Núm" severity="info" />
+
+								<b:inputText
+									value="#{PacienteController.paciente.numeroCartorio}"
+									class="form-control" id="numero2">
+									<f:validateLength maximum="20" />
+								</b:inputText>
+							</b:column>
+
+							<b:column span="3" class="label-position">
+								<b:label for="cartorio" value="Reg. Nasc. Cartório"
+									severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.cartorio}"
+									class="form-control" id="cartorio">
+									<f:validateLength maximum="20" />
+								</b:inputText>
+							</b:column>
+
+						</b:row>
+
+						<br></br>
+
+						<b:row>
+
+							<b:column span="3" class="label-position">
+								<b:label for="livro" value="Reg. Nasc. Livro" severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.livro}"
+									class="form-control" id="livro">
+									<f:validateLength maximum="10" />
+								</b:inputText>
+							</b:column>
+
+							<b:column span="2" class="label-position">
+								<b:label for="folha" value="Reg. Nasc. Folha" severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.folha}"
+									class="form-control" id="folha">
+								</b:inputText>
+							</b:column>
+
+							<b:column span="3" class="label-position data-size">
+								<b:label for="dtaexpedicao2" value="Dta.Expedição"
+									severity="info" class="fire-label" />
+
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									yearRange="-111:+39" pages="1" showOn="button" size="15"
+									id="dtaexpedicao2" class="select-agendaEquipe2"
+									value="#{PacienteController.paciente.dataExpedicao2}"
+									locale="pt" />
+							</b:column>
+						</b:row>
+
+
+					</p:tab>
+
+					<p:tab title="Complemento">
+
+						<b:row>
+
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Escolaridade" severity="info" />
+
+								<p:autoComplete id="escolacomplete1"
+									class="select-agendaEquipe4"
+									value="#{PacienteController.paciente.escolaridade}" size="31"
+									completeMethod="#{PacienteController.completeText2}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descescolaridade}"
+									converter="conEscolaridade">
+									<p:ajax event="itemSelect"
+										listener="#{PacienteController.onItemSelect2}" />
+
+								</p:autoComplete>
+
+								<p:commandButton onclick="PF('dlgbuscaescolaridade').show();"
+									actionListener="#{EscolaridadeController.buscarEscolaridades()}"
+									icon="ui-icon-search" process="@this" style="margin-top: 5px;"
+									update=":buscaescolaridade" />
+							</b:column>
+
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Escola" severity="info" class="fire-label" />
+
+								<p:autoComplete id="escolacomplete2"
+									class="select-agendaEquipe4"
+									value="#{PacienteController.paciente.escola}" size="31"
+									completeMethod="#{PacienteController.completeText}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descescola}" converter="conEscola">
+									<p:ajax event="itemSelect"
+										listener="#{PacienteController.onItemSelect}" />
+								</p:autoComplete>
+
+								<p:commandButton process="@this" style="margin-top: 5px;"
+									actionListener="#{EscolaController.buscarEscola()}"
+									onclick="PF('dlgbuscaescola').show();" icon="ui-icon-search"
+									update=":buscaescola" />
+							</b:column>
+
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Profissão" severity="info" class="fire-label" />
+
+								<p:autoComplete id="escolacomplete3"
+									class="select-agendaEquipe4"
+									value="#{PacienteController.paciente.profissao}" size="31"
+									completeMethod="#{PacienteController.completeText6}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descprofissao}" converter="conProfissao">
+									<p:ajax event="itemSelect"
+										listener="#{PacienteController.onItemSelect6}" />
+								</p:autoComplete>
+
+								<p:commandButton process="@this" style="margin-top: 5px;"
+									actionListener="#{ProfissaoController.listarProfissoes()}"
+									onclick="PF('dlgbuscaprofissao').show();" icon="ui-icon-search"
+									update=":buscaprofissao" />
+
+							</b:column>
+						</b:row>
+
+						<b:row>
+
+							<b:column span="2" class="new-data-size2">
+								<p:outputLabel value="Trabalha:"
+									style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-                            </b:column>
+    									<p:selectOneRadio id="options2" style="margin-top:-15px;color: #2e84ce;"
+									value="#{PacienteController.paciente.trabalha}">
+									<f:selectItem itemLabel="Sim" itemValue="S" />
+									<f:selectItem itemLabel="Não" itemValue="N" />
+								</p:selectOneRadio>
+							</b:column>
 
-                            <b:column span="3" class="btn-radio-table">
-                                <p:selectOneRadio id="options2"
-                                                  value="#{PacienteController.paciente.trabalha}">
-                                    <f:selectItem itemLabel="Sim" itemValue="S"/>
-                                    <f:selectItem itemLabel="Não" itemValue="N"/>
-                                </p:selectOneRadio>
-                            </b:column>
-                        </b:row>
+							
 
-                        <b:row>
+							<b:column span="3" class="label-position">
+								<b:label value="Local" severity="info" />
 
-                            <b:column span="3" class="label-position">
-                                <b:label value="Local" severity="info"/>
+								<p:outputPanel>
+									<b:inputText id="nome4" size="45"
+										value="#{PacienteController.paciente.localtrabalha}">
+										<f:validateLength maximum="100" />
+									</b:inputText>
+								</p:outputPanel>
+							</b:column>
+						</b:row>
+			
+						<b:row>
 
-                                <p:outputPanel>
-                                    <b:inputText id="nome4" size="45"
-                                                 value="#{PacienteController.paciente.localtrabalha}">
-                                        <f:validateLength maximum="100"/>
-                                        </b:inputText>          
-                                </p:outputPanel>
-                            </b:column>
+	
+							<b:column span="2" class="label-position">
+								<b:label value="Grau de Relação Responsável" severity="info" />
 
-                            <b:column span="3" class="label-position">
-                                <b:label value="Responsável" severity="info"/>
+								<p:selectOneMenu id="options3" required="false"
+									style="margin-left:-185px;margin-top:18px;"
+									requiredMessage=" Parentesco: Campo obrigatório!"
+									value="#{PacienteController.paciente.codparentesco}">
+									<f:selectItem itemLabel="Selecione" itemValue="" />
+									<f:selectItems
+										value="#{ParentescoController.listarParentescos()}" var="sis"
+										itemLabel="#{sis.descParentesco}"
+										itemValue="#{sis.codParentesco}" />
+									<p:ajax event="change" update="outnomeresp msgPagina"
+										listener="#{PacienteController.verificaGrauParentescoResponsavel}" />
+								</p:selectOneMenu>
+							</b:column>
 
-                                <p:selectOneMenu id="options3" required="false"
-                                style="margin-left:-88px;margin-top:18px;"
-                                                 requiredMessage=" Parentesco: Campo obrigatório!"
-                                                 value="#{PacienteController.paciente.codparentesco}">
-                                    <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                    <f:selectItems
-                                            value="#{ParentescoController.listarParentescos()}" var="sis"
-                                            itemLabel="#{sis.descParentesco}"
-                                            itemValue="#{sis.codParentesco}"/>
-                                            <p:ajax event="change"  update="outnomeresp msgPagina"
-                                            
-                                            listener="#{PacienteController.verificaGrauParentescoResponsavel}"/>
-                                </p:selectOneMenu>
-                            </b:column>
+							<b:column span="3" class="label-position">
+								<b:label value="Nome do Responsável" severity="info" />
 
-                            <b:column span="3" class="label-position">
-                                <b:label value="Nome do Responsável" severity="info"/>
+								<p:outputPanel id="outnomeresp">
+									<b:inputText id="nome5" size="45"
+										value="#{PacienteController.paciente.nomeresp}" />
+								</p:outputPanel>
+							</b:column>
+				
+						</b:row>
 
-                                <p:outputPanel id="outnomeresp">
-                                    <b:inputText id="nome5" size="45"
-                                                 value="#{PacienteController.paciente.nomeresp}"/>
-                                </p:outputPanel>
-                            </b:column>
-                        </b:row>
+						<b:row>
 
-                        <b:row>
+							<b:column span="2" class="label-position">
+								<b:label value="RG Responsável" severity="info" />
 
-                            <b:column span="3" class="label-position">
-                                <b:label value="RG Responsável" severity="info"/>
+								<p:outputPanel>
+									<b:inputText id="nome6" style="width:120px"
+										value="#{PacienteController.paciente.rgresp}">
+										<f:validateLength maximum="20" />
+									</b:inputText>
+								</p:outputPanel>
+							</b:column>
 
-                                <p:outputPanel>
-                                    <b:inputText id="nome6" size="45"
-                                                 value="#{PacienteController.paciente.rgresp}">
-                                                 <f:validateLength maximum="20"/>
-                                                 </b:inputText>
-                                </p:outputPanel>
-                            </b:column>
+							<b:column span="2" class="label-position">
+								<b:label value="CPF Responsável" severity="info" />
 
-                            <b:column span="3" class="label-position">
-                                <b:label value="CPF Responsável" severity="info"/>
+								<p:outputPanel>
+									<p:inputMask mask="999.999.999-99" id="nome7"
+										class="form-control select-agendaEquipe2" style="width:120px"
+										validator="CPFValidator"
+										validatorMessage="CPF do responsável inválido!"
+										value="#{PacienteController.paciente.cpfresp}">
+									</p:inputMask>
 
-                                <p:outputPanel>
-                                    <p:inputMask mask="999.999.999-99" id="nome7"
-                                                 class="form-control select-agendaEquipe2"
-                                                 validator="CPFValidator" validatorMessage="CPF do responsável inválido!"
-                                                 value="#{PacienteController.paciente.cpfresp}">
-                                    </p:inputMask>
+								</p:outputPanel>
+							</b:column>
 
-                                </p:outputPanel>
-                            </b:column>
+							<b:column span="2" class="label-position new-data-size">
+								<b:label value="Data Nascimento Responsável" severity="info" />
 
-                            <b:column span="3" class="label-position new-data-size">
-                                <b:label value="Data Nascimento Responsável" severity="info"/>
+								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+									yearRange="-111:+39" pages="1" showOn="button" size="15"
+									value="#{PacienteController.paciente.dataNascimentoresp}"
+									locale="pt" class="select-agendaEquipe2" />
 
-                                <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-                                            yearRange="-111:+39" pages="1" showOn="button" size="31"
-                                            value="#{PacienteController.paciente.dataNascimentoresp}"
-                                            locale="pt" class="select-agendaEquipe2"/>
+							</b:column>
+						</b:row>
+		<b:row>
 
-                            </b:column>
-                        </b:row>
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Encaminhado" severity="info" />
 
-                        <b:row>
+								<p:autoComplete id="escolacomplete4"
+									class="select-agendaEquipe4"
+									value="#{PacienteController.paciente.encaminhado}" size="31"
+									completeMethod="#{PacienteController.completeText4}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descencaminhado}" converter="conEncaminhado">
+									<p:ajax event="itemSelect"
+										listener="#{PacienteController.onItemSelect4}" />
+								</p:autoComplete>
 
-                            <b:column span="3" class="label-position new-data-size new-comple1">
-                                <b:label value="Encaminhado" severity="info"/>
+								<p:commandButton process="@this" style="margin-top: 5px;"
+									actionListener="#{EncaminhadoController.listarTiposDeEncaminhamento()}"
+									onclick="PF('dlgbuscaencaminhado').show();"
+									icon="ui-icon-search" update=":buscaencaminhado" />
+							</b:column>
 
-                                <p:autoComplete id="escolacomplete4" class="select-agendaEquipe4"
-                                                value="#{PacienteController.paciente.encaminhado}" size="31"
-                                                completeMethod="#{PacienteController.completeText4}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descencaminhado}" converter="conEncaminhado">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{PacienteController.onItemSelect4}"/>
-                                </p:autoComplete>
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Transporte" severity="info" class="fire-label" />
 
-                                <p:commandButton process="@this" style="margin-top: 5px;" actionListener="#{EncaminhadoController.listarTiposDeEncaminhamento()}"
-                                                 onclick="PF('dlgbuscaencaminhado').show();"
-                                                 icon="ui-icon-search" update=":buscaencaminhado"/>
-                            </b:column>
+								<p:autoComplete id="escolacomplete5"
+									class="select-agendaEquipe4"
+									value="#{PacienteController.paciente.formatransporte}"
+									size="31" completeMethod="#{PacienteController.completeText5}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.descformatransporte}"
+									converter="conFormaTransporte">
+									<p:ajax event="itemSelect"
+										listener="#{PacienteController.onItemSelect5}" />
+								</p:autoComplete>
 
-                            <b:column span="3" class="label-position new-data-size new-comple1">
-                                <b:label value="Transporte" severity="info" class="fire-label"/>
+								<p:commandButton process="@this" style="margin-top: 5px;"
+									actionListener="#{FormaTransporteController.listarTransporte()}"
+									onclick="PF('dlgbuscacomochegou').show();"
+									icon="ui-icon-search" update=":buscatransporte" />
+							</b:column>
+						</b:row>
 
-                                <p:autoComplete id="escolacomplete5" class="select-agendaEquipe4"
-                                                value="#{PacienteController.paciente.formatransporte}" size="31"
-                                                completeMethod="#{PacienteController.completeText5}"
-                                                effect="fade" var="theme" forceSelection="true"
-                                                minQueryLength="1" itemValue="#{theme}"
-                                                itemLabel="#{theme.descformatransporte}"
-                                                converter="conFormaTransporte">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{PacienteController.onItemSelect5}"/>
-                                </p:autoComplete>
+						<p:outputPanel id="outDeficiencia" autoUpdate="true">
+							<b:row>
 
-                                <p:commandButton process="@this" style="margin-top: 5px;" actionListener="#{FormaTransporteController.listarTransporte()}"
-                                                 onclick="PF('dlgbuscacomochegou').show();"
-                                                 icon="ui-icon-search" update=":buscatransporte"/>
-                            </b:column>
-                        </b:row>
-
-                        <p:outputPanel id="outDeficiencia" autoUpdate="true">
-                            <b:row>
-
-                                <b:column span="2" class="new-col-lg2">
-                                    <p:outputLabel value="Apresenta Deficiência: "
-                                                   style="margin-top: 8px;
+								<b:column span="2" class="new-col-lg2">
+									<p:outputLabel value="Apresenta Deficiência: "
+										style="margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
-                                </b:column>
+								</b:column>
 
-                                <b:column span="3" class="btn-radio-table">
-                                    <p:selectOneRadio
-                                            value="#{PacienteController.paciente.deficiencia}">
-                                        <f:selectItem itemLabel="Sim" itemValue="S"/>
-                                        <f:selectItem itemLabel="Não" itemValue="N"/>
-                                        <p:ajax update="outDeficiencia"></p:ajax>
-                                    </p:selectOneRadio>
-                                </b:column>
-                            </b:row>
+								<b:column span="3" class="btn-radio-table">
+									<p:selectOneRadio
+										value="#{PacienteController.paciente.deficiencia}">
+										<f:selectItem itemLabel="Sim" itemValue="S" />
+										<f:selectItem itemLabel="Não" itemValue="N" />
+										<p:ajax update="outDeficiencia"></p:ajax>
+									</p:selectOneRadio>
+								</b:column>
+							</b:row>
 
-                            <p:panel
-                                    style="height:auto; width:170px; background-color: #F5F5F5;"
-                                    rendered="#{PacienteController.paciente.deficiencia == 'S'}">
+							<p:panel
+								style="height:auto; width:170px; background-color: #F5F5F5;"
+								rendered="#{PacienteController.paciente.deficiencia == 'S'}">
 
-                                <p:outputLabel value="Tipo:" style="margin-bottom:5px;"
-                                               class="tipo-deficiencia"></p:outputLabel>
-                                               <br/>
+								<p:outputLabel value="Tipo:" style="margin-bottom:5px;"
+									class="tipo-deficiencia"></p:outputLabel>
+								<br />
 
-                                <p:selectBooleanCheckbox label="Física" itemLabel="Física"
-                                                         rendered="#{PacienteController.paciente.deficiencia == 'S'}"
-                                                         value="#{PacienteController.paciente.deficienciaFisica}"
-                                                         class="tipo-deficiencia"/>
-                                <p:selectBooleanCheckbox label="Intelectual" itemLabel="Intelectual"
-                                                         rendered="#{PacienteController.paciente.deficiencia == 'S'}"
-                                                         value="#{PacienteController.paciente.deficienciaMental}"
-                                                         class="tipo-deficiencia"/>
-                                <p:selectBooleanCheckbox label="Auditiva" itemLabel="Auditiva"
-                                                         rendered="#{PacienteController.paciente.deficiencia == 'S'}"
-                                                         value="#{PacienteController.paciente.deficienciaAuditiva}"
-                                                         class="tipo-deficiencia"/>
-                                <p:selectBooleanCheckbox label="Visual" itemLabel="Visual"
-                                                         rendered="#{PacienteController.paciente.deficiencia == 'S'}"
-                                                         value="#{PacienteController.paciente.deficienciaVisual}"
-                                                         class="tipo-deficiencia"/>
-                                <p:selectBooleanCheckbox label="Múltipla" itemLabel="Múltipla"
-                                                         rendered="#{PacienteController.paciente.deficiencia == 'S'}"
-                                                         value="#{PacienteController.paciente.deficienciaMultipla}"
-                                                         class="tipo-deficiencia"/>
+								<p:selectBooleanCheckbox label="Física" itemLabel="Física"
+									rendered="#{PacienteController.paciente.deficiencia == 'S'}"
+									value="#{PacienteController.paciente.deficienciaFisica}"
+									class="tipo-deficiencia" />
+								<p:selectBooleanCheckbox label="Intelectual"
+									itemLabel="Intelectual"
+									rendered="#{PacienteController.paciente.deficiencia == 'S'}"
+									value="#{PacienteController.paciente.deficienciaMental}"
+									class="tipo-deficiencia" />
+								<p:selectBooleanCheckbox label="Auditiva" itemLabel="Auditiva"
+									rendered="#{PacienteController.paciente.deficiencia == 'S'}"
+									value="#{PacienteController.paciente.deficienciaAuditiva}"
+									class="tipo-deficiencia" />
+								<p:selectBooleanCheckbox label="Visual" itemLabel="Visual"
+									rendered="#{PacienteController.paciente.deficiencia == 'S'}"
+									value="#{PacienteController.paciente.deficienciaVisual}"
+									class="tipo-deficiencia" />
+								<p:selectBooleanCheckbox label="Múltipla" itemLabel="Múltipla"
+									rendered="#{PacienteController.paciente.deficiencia == 'S'}"
+									value="#{PacienteController.paciente.deficienciaMultipla}"
+									class="tipo-deficiencia" />
 
-                            </p:panel>
+							</p:panel>
 
-                        </p:outputPanel>
+						</p:outputPanel>
 
-                    </p:tab>
+					</p:tab>
 
-                    <p:tab title="Dados Internet">
-
-
-                        <p:outputPanel id="outDadosInternet" autoUpdate="true">
-                            <b:row>
-
-                                <b:column span="6" class="label-position">
-                                    <b:label value="E-mail " severity="info"/>
-
-                                    <b:inputText value="#{PacienteController.paciente.email}"
-                                                 class="form-control" id="inputemail">
-                                    </b:inputText>
-                                </b:column>
-
-                            </b:row>
-
-                            <b:row>
-
-                                <b:column span="6" class="label-position">
-                                    <b:label value="Facebook " severity="info"/>
-
-                                    <b:inputText value="#{PacienteController.paciente.facebook}"
-                                                 class="form-control" id="inputfacebook">
-                                    </b:inputText>
-                                </b:column>
-
-                            </b:row>
-
-                            <b:row>
-
-                                <b:column span="6" class="label-position">
-                                    <b:label value="Instagram" severity="info"/>
-
-                                    <b:inputText value="#{PacienteController.paciente.instagram}"
-                                                 class="form-control" id="inputinstagram">
-                                    </b:inputText>
-                                </b:column>
-
-                            </b:row>
-
-                        </p:outputPanel>
+					<p:tab title="Dados Internet">
 
 
-                    </p:tab>
+						<p:outputPanel id="outDadosInternet" autoUpdate="true">
+							<b:row>
 
-                </p:tabView>
-            </div>
+								<b:column span="6" class="label-position">
+									<b:label value="E-mail " severity="info" />
 
-            <br></br>
+									<b:inputText value="#{PacienteController.paciente.email}"
+										class="form-control" id="inputemail">
+									</b:inputText>
+								</b:column>
 
-            <div align="center">
-                <b:commandButton action="#{PacienteController.gravarPaciente()}"
-                                 icon="glyphicon-ok" size="sm" look="success" update=":frmPrincipal msgPagina"
-                                 value="Incluir" class="btn-incluir new-bottom"
-                                 rendered="#{PacienteController.tipo == 1}"/>
+							</b:row>
 
-                <b:commandButton action="#{PacienteController.alterarPaciente()}"
-                                 icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
-                                 value="Alterar" look="success" class="btn-incluir new-bottom"
-                                 rendered="#{PacienteController.tipo  == 2}"/>
+							<b:row>
 
-                <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-                                 class="btn-voltar new-bottom" size="sm" immediate="true"
-                                 look="info"
-                                 action="/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true">
-                </b:commandButton>
+								<b:column span="6" class="label-position">
+									<b:label value="Facebook " severity="info" />
 
-            </div>
+									<b:inputText value="#{PacienteController.paciente.facebook}"
+										class="form-control" id="inputfacebook">
+									</b:inputText>
+								</b:column>
 
-        </h:form>
+							</b:row>
+
+							<b:row>
+
+								<b:column span="6" class="label-position">
+									<b:label value="Instagram" severity="info" />
+
+									<b:inputText value="#{PacienteController.paciente.instagram}"
+										class="form-control" id="inputinstagram">
+									</b:inputText>
+								</b:column>
+
+							</b:row>
+
+						</p:outputPanel>
 
 
-        <p:dialog widgetVar="dlgbuscaescola" modal="true" resizable="false" styleClass="topDialog">
+					</p:tab>
 
-            <f:facet name="header">
-                <h:panelGroup>
-                    <h:outputText id="n27" value="Consultar Escolas"></h:outputText>
-                </h:panelGroup>
-            </f:facet>
-            <h:form id="buscaescola">
-                <div align="center">
-                    <p:outputPanel id="outinter">
-                        <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                     value="#{EscolaController.listaEscolas}" var="busca"
-                                     id="tableescola" display="Nenhuma Equipe">
+				</p:tabView>
+			</div>
 
-                            <h:column>
-                                <f:facet name="header">
+			<br></br>
+
+			<div align="center">
+				<b:commandButton action="#{PacienteController.gravarPaciente()}"
+					icon="glyphicon-ok" size="sm" look="success"
+					update=":frmPrincipal msgPagina" value="Incluir"
+					class="btn-incluir new-bottom"
+					rendered="#{PacienteController.tipo == 1}" />
+
+				<b:commandButton action="#{PacienteController.alterarPaciente()}"
+					icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
+					value="Alterar" look="success" class="btn-incluir new-bottom"
+					rendered="#{PacienteController.tipo  == 2}" />
+
+				<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+					class="btn-voltar new-bottom" size="sm" immediate="true"
+					look="info"
+					action="/pages/sishosp/gerenciarPaciente.faces?faces-redirect=true">
+				</b:commandButton>
+
+			</div>
+
+		</h:form>
+
+
+		<p:dialog widgetVar="dlgbuscaescola" modal="true" resizable="false"
+			styleClass="topDialog">
+
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText id="n27" value="Consultar Escolas"></h:outputText>
+				</h:panelGroup>
+			</f:facet>
+			<h:form id="buscaescola">
+				<div align="center">
+					<p:outputPanel id="outinter">
+						<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+							value="#{EscolaController.listaEscolas}" var="busca"
+							id="tableescola" display="Nenhuma Equipe">
+
+							<h:column>
+								<f:facet name="header">
                                     Escola
                                 </f:facet>
-                                <p:outputLabel value="#{busca.descescola}"/>
-                            </h:column>
+								<p:outputLabel value="#{busca.descescola}" />
+							</h:column>
 
-                            <h:column>
-                                <f:facet name="header">
+							<h:column>
+								<f:facet name="header">
                                     Adicionar
                                 </f:facet>
-                                <p:commandButton oncomplete="PF('dlgbuscaescola').hide()"
-                                                 process="@this" icon="ui-icon-check" id="confirmar"
-                                                 update=":frmPrincipal:tbv:escolacomplete2"
-                                                 class="new-btn-acao-table acao-editar">
-                                    <f:setPropertyActionListener value="#{busca}"
-                                                                 target="#{PacienteController.paciente.escola}"/>
-                                    <p:tooltip for="confirmar" value="Selecionar Escola"></p:tooltip>
-                                </p:commandButton>
-                            </h:column>
+								<p:commandButton oncomplete="PF('dlgbuscaescola').hide()"
+									process="@this" icon="ui-icon-check" id="confirmar"
+									update=":frmPrincipal:tbv:escolacomplete2"
+									class="new-btn-acao-table acao-editar">
+									<f:setPropertyActionListener value="#{busca}"
+										target="#{PacienteController.paciente.escola}" />
+									<p:tooltip for="confirmar" value="Selecionar Escola"></p:tooltip>
+								</p:commandButton>
+							</h:column>
 
-                        </b:dataTable>
-                    </p:outputPanel>
-                </div>
-            </h:form>
-        </p:dialog>
+						</b:dataTable>
+					</p:outputPanel>
+				</div>
+			</h:form>
+		</p:dialog>
 
-        <p:dialog widgetVar="dlgbuscaescolaridade" modal="true" resizable="false" styleClass="topDialog">
+		<p:dialog widgetVar="dlgbuscaescolaridade" modal="true"
+			resizable="false" styleClass="topDialog">
 
-            <f:facet name="header">
-                <h:panelGroup>
-                    <h:outputText id="n2" value="Consultar Escolaridades"></h:outputText>
-                </h:panelGroup>
-            </f:facet>
-            <h:form id="buscaescolaridade">
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText id="n2" value="Consultar Escolaridades"></h:outputText>
+				</h:panelGroup>
+			</f:facet>
+			<h:form id="buscaescolaridade">
 
-                <div align="center">
-                    <p:outputPanel id="outinter2">
-                        <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                     value="#{EscolaridadeController.listaEscolaridade}" var="busca"
-                                     id="tableescolaridade" display="Nenhuma Escolaridade">
+				<div align="center">
+					<p:outputPanel id="outinter2">
+						<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+							value="#{EscolaridadeController.listaEscolaridade}" var="busca"
+							id="tableescolaridade" display="Nenhuma Escolaridade">
 
-                            <h:column>
-                                <f:facet name="header">
+							<h:column>
+								<f:facet name="header">
                                     Escolaridade
                                 </f:facet>
-                                <p:outputLabel value="#{busca.descescolaridade}"/>
-                            </h:column>
+								<p:outputLabel value="#{busca.descescolaridade}" />
+							</h:column>
 
-                            <h:column>
-                                <f:facet name="header">
+							<h:column>
+								<f:facet name="header">
                                     Adicionar
                                 </f:facet>
-                                <p:commandButton oncomplete="PF('dlgbuscaescolaridade').hide();"
-                                                 process="@this" icon="ui-icon-check" id="confirmar"
-                                                 update=":frmPrincipal:tbv:escolacomplete1"
-                                                 class="new-btn-acao-table acao-editar">
-                                    <f:setPropertyActionListener value="#{busca}"
-                                                                 target="#{PacienteController.paciente.escolaridade}"/>
-                                    <p:tooltip for="confirmar" value="Selecionar Escolaridade2"></p:tooltip>
-                                </p:commandButton>
-                            </h:column>
+								<p:commandButton oncomplete="PF('dlgbuscaescolaridade').hide();"
+									process="@this" icon="ui-icon-check" id="confirmar"
+									update=":frmPrincipal:tbv:escolacomplete1"
+									class="new-btn-acao-table acao-editar">
+									<f:setPropertyActionListener value="#{busca}"
+										target="#{PacienteController.paciente.escolaridade}" />
+									<p:tooltip for="confirmar" value="Selecionar Escolaridade2"></p:tooltip>
+								</p:commandButton>
+							</h:column>
 
-                        </b:dataTable>
-                    </p:outputPanel>
-                </div>
-            </h:form>
-        </p:dialog>
+						</b:dataTable>
+					</p:outputPanel>
+				</div>
+			</h:form>
+		</p:dialog>
 
-        <p:dialog widgetVar="dlgbuscaprofissao" modal="true" resizable="false" styleClass="topDialog">
+		<p:dialog widgetVar="dlgbuscaprofissao" modal="true" resizable="false"
+			styleClass="topDialog">
 
-            <f:facet name="header">
-                <h:panelGroup>
-                    <h:outputText id="n17" value="Consultar Profissões"></h:outputText>
-                </h:panelGroup>
-            </f:facet>
-            <h:form id="buscaprofissao">
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText id="n17" value="Consultar Profissões"></h:outputText>
+				</h:panelGroup>
+			</f:facet>
+			<h:form id="buscaprofissao">
 
-                <div align="center">
-                    <p:outputPanel id="outinter3">
-                        <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                     value="#{ProfissaoController.listaProfissoes}" var="busca"
-                                     id="tableprofissao" display="Nenhuma Profissão">
+				<div align="center">
+					<p:outputPanel id="outinter3">
+						<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+							value="#{ProfissaoController.listaProfissoes}" var="busca"
+							id="tableprofissao" display="Nenhuma Profissão">
 
 
-                            <h:column>
-                                <f:facet name="header">
+							<h:column>
+								<f:facet name="header">
                                     Profissão
                                 </f:facet>
-                                <p:outputLabel value="#{busca.descprofissao}"/>
-                            </h:column>
+								<p:outputLabel value="#{busca.descprofissao}" />
+							</h:column>
 
-                            <h:column>
-                                <f:facet name="header">
+							<h:column>
+								<f:facet name="header">
                                     Adicionar
                                 </f:facet>
-                                <p:commandButton oncomplete="PF('dlgbuscaprofissao').hide()"
-                                                 icon="ui-icon-check" id="confirmar"
-                                                 class="new-btn-acao-table acao-editar"
-                                                 update=":frmPrincipal:tbv:escolacomplete3">
-                                    <f:setPropertyActionListener value="#{busca}"
-                                                                 target="#{PacienteController.paciente.profissao}"/>
-                                    <p:tooltip for="confirmar" value="Selecionar Profissão"></p:tooltip>
-                                </p:commandButton>
-                            </h:column>
+								<p:commandButton oncomplete="PF('dlgbuscaprofissao').hide()"
+									icon="ui-icon-check" id="confirmar"
+									class="new-btn-acao-table acao-editar"
+									update=":frmPrincipal:tbv:escolacomplete3">
+									<f:setPropertyActionListener value="#{busca}"
+										target="#{PacienteController.paciente.profissao}" />
+									<p:tooltip for="confirmar" value="Selecionar Profissão"></p:tooltip>
+								</p:commandButton>
+							</h:column>
 
-                        </b:dataTable>
-                    </p:outputPanel>
-                </div>
-            </h:form>
-        </p:dialog>
+						</b:dataTable>
+					</p:outputPanel>
+				</div>
+			</h:form>
+		</p:dialog>
 
 
-        <p:dialog widgetVar="dlgbuscaencaminhado" modal="true" resizable="false" styleClass="topDialog">
+		<p:dialog widgetVar="dlgbuscaencaminhado" modal="true"
+			resizable="false" styleClass="topDialog">
 
-            <f:facet name="header">
-                <h:panelGroup>
-                    <h:outputText id="n46" value="Consultar Tipo de Encaminhamento"></h:outputText>
-                </h:panelGroup>
-            </f:facet>
-            <h:form id="buscaencaminhado">
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText id="n46" value="Consultar Tipo de Encaminhamento"></h:outputText>
+				</h:panelGroup>
+			</f:facet>
+			<h:form id="buscaencaminhado">
 
-                <div align="center">
-                    <p:outputPanel id="outinter4">
-                        <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                     value="#{EncaminhadoController.listaTiposEncaminhamento}" var="busca"
-                                     id="tableencaminhado" display="Nenhum Tipo de Encaminhamento">
+				<div align="center">
+					<p:outputPanel id="outinter4">
+						<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+							value="#{EncaminhadoController.listaTiposEncaminhamento}"
+							var="busca" id="tableencaminhado"
+							display="Nenhum Tipo de Encaminhamento">
 
-                            <h:column>
-                                <f:facet name="header">
+							<h:column>
+								<f:facet name="header">
                                     Tipo de Encaminhamento
                                 </f:facet>
-                                <p:outputLabel value="#{busca.descencaminhado}"/>
-                            </h:column>
+								<p:outputLabel value="#{busca.descencaminhado}" />
+							</h:column>
 
-                            <h:column>
-                                <f:facet name="header">
+							<h:column>
+								<f:facet name="header">
                                     Adicionar
                                 </f:facet>
-                                <p:commandButton oncomplete="PF('dlgbuscaencaminhado').hide()"
-                                                 icon="ui-icon-check" id="confirmar"
-                                                 class="new-btn-acao-table acao-editar"
-                                                 update=":frmPrincipal:tbv:escolacomplete4">
-                                    <f:setPropertyActionListener value="#{busca}"
-                                                                 target="#{PacienteController.paciente.encaminhado}"/>
-                                    <p:tooltip for="confirmar" value="Selecionar Encaminhado"></p:tooltip>
-                                </p:commandButton>
-                            </h:column>
+								<p:commandButton oncomplete="PF('dlgbuscaencaminhado').hide()"
+									icon="ui-icon-check" id="confirmar"
+									class="new-btn-acao-table acao-editar"
+									update=":frmPrincipal:tbv:escolacomplete4">
+									<f:setPropertyActionListener value="#{busca}"
+										target="#{PacienteController.paciente.encaminhado}" />
+									<p:tooltip for="confirmar" value="Selecionar Encaminhado"></p:tooltip>
+								</p:commandButton>
+							</h:column>
 
-                        </b:dataTable>
-                    </p:outputPanel>
-                </div>
-            </h:form>
-        </p:dialog>
+						</b:dataTable>
+					</p:outputPanel>
+				</div>
+			</h:form>
+		</p:dialog>
 
-        <p:dialog widgetVar="dlgbuscacomochegou" modal="true" resizable="false" styleClass="topDialog">
+		<p:dialog widgetVar="dlgbuscacomochegou" modal="true"
+			resizable="false" styleClass="topDialog">
 
-            <f:facet name="header">
-                <h:panelGroup>
-                    <h:outputText id="n61" value="Consultar Formas de Transporte"></h:outputText>
-                </h:panelGroup>
-            </f:facet>
-            <h:form id="buscatransporte">
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText id="n61" value="Consultar Formas de Transporte"></h:outputText>
+				</h:panelGroup>
+			</f:facet>
+			<h:form id="buscatransporte">
 
-                <div align="center">
-                    <p:outputPanel id="outinter5">
-                        <b:dataTable customLangUrl="#{resource['pt-br.json']}"
-                                     value="#{FormaTransporteController.listaFormaTransporte}" var="busca"
-                                     id="tabletransporte" display="Nenhuma Forma de Transporte">
+				<div align="center">
+					<p:outputPanel id="outinter5">
+						<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+							value="#{FormaTransporteController.listaFormaTransporte}"
+							var="busca" id="tabletransporte"
+							display="Nenhuma Forma de Transporte">
 
-                            <h:column>
-                                <f:facet name="header">
+							<h:column>
+								<f:facet name="header">
                                     Transporte
                                 </f:facet>
-                                <p:outputLabel value="#{busca.descformatransporte}"/>
-                            </h:column>
+								<p:outputLabel value="#{busca.descformatransporte}" />
+							</h:column>
 
-                            <h:column>
-                                <f:facet name="header">
+							<h:column>
+								<f:facet name="header">
                                     Adicionar
                                 </f:facet>
-                                <p:commandButton oncomplete="PF('dlgbuscacomochegou').hide();"
-                                                 icon="ui-icon-check" id="confirmar"
-                                                 class="new-btn-acao-table acao-editar"
-                                                 update=":frmPrincipal:tbv:escolacomplete5">
-                                    <f:setPropertyActionListener value="#{busca}"
-                                                                 target="#{PacienteController.paciente.formatransporte}"/>
-                                    <p:tooltip for="confirmar" value="Selecionar Transporte"></p:tooltip>
-                                </p:commandButton>
-                            </h:column>
+								<p:commandButton oncomplete="PF('dlgbuscacomochegou').hide();"
+									icon="ui-icon-check" id="confirmar"
+									class="new-btn-acao-table acao-editar"
+									update=":frmPrincipal:tbv:escolacomplete5">
+									<f:setPropertyActionListener value="#{busca}"
+										target="#{PacienteController.paciente.formatransporte}" />
+									<p:tooltip for="confirmar" value="Selecionar Transporte"></p:tooltip>
+								</p:commandButton>
+							</h:column>
 
-                        </b:dataTable>
-                    </p:outputPanel>
-                </div>
-            </h:form>
-        </p:dialog>
+						</b:dataTable>
+					</p:outputPanel>
+				</div>
+			</h:form>
+		</p:dialog>
 
 
-        <p:dialog style="font-size: 12px;" widgetVar="dlgbuscaatendimento"
-                  width="550px" height="200px" modal="true" resizable="false" styleClass="topDialog">
+		<p:dialog style="font-size: 12px;" widgetVar="dlgbuscaatendimento"
+			width="550px" height="200px" modal="true" resizable="false"
+			styleClass="topDialog">
 
-            <f:facet name="header">
-                <h:panelGroup>
-                    <h:outputText id="n400" value="Lista de Deficiências"></h:outputText>
-                </h:panelGroup>
-            </f:facet>
-            <h:form id="buscadeficiencia">
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText id="n400" value="Lista de Deficiências"></h:outputText>
+				</h:panelGroup>
+			</f:facet>
+			<h:form id="buscadeficiencia">
 
-                <div align="center">
-                    <p:outputPanel id="outinter6">
-                        <p:dataTable value="#{MBUsuarioCadastro.buscapessoa}" var="busca"
-                                     paginator="true" paginatorPosition="bottom" id="tabledeficiencia"
-                                     emptyMessage="Nenhum Interessado" sortMode="single"
-                                     scrollRows="3" scrollHeight="150" class="fonteForm"
-                                     widgetVar="800">
+				<div align="center">
+					<p:outputPanel id="outinter6">
+						<p:dataTable value="#{MBUsuarioCadastro.buscapessoa}" var="busca"
+							paginator="true" paginatorPosition="bottom" id="tabledeficiencia"
+							emptyMessage="Nenhum Interessado" sortMode="single"
+							scrollRows="3" scrollHeight="150" class="fonteForm"
+							widgetVar="800">
 
-                            <p:column id="n81" style="width:380px">
-                                <f:facet name="header">
-                                    <h:outputText id="n82" value="Nome Deficiência"
-                                                  class="fonteForm"/>
-                                </f:facet>
-                                <h:outputText id="n83" class="fonteForm" value="#{busca.nome}"/>
-                            </p:column>
-                            <p:column id="n84" style=" width:100px;text-align:center;">
-                                <f:facet name="header">
-                                    <h:outputText id="n85" value="Codigo" class="fonteForm"/>
-                                </f:facet>
-                                <h:outputText id="n86" class="fonteForm" value="#{busca.cpf}"/>
-                            </p:column>
+							<p:column id="n81" style="width:380px">
+								<f:facet name="header">
+									<h:outputText id="n82" value="Nome Deficiência"
+										class="fonteForm" />
+								</f:facet>
+								<h:outputText id="n83" class="fonteForm" value="#{busca.nome}" />
+							</p:column>
+							<p:column id="n84" style=" width:100px;text-align:center;">
+								<f:facet name="header">
+									<h:outputText id="n85" value="Codigo" class="fonteForm" />
+								</f:facet>
+								<h:outputText id="n86" class="fonteForm" value="#{busca.cpf}" />
+							</p:column>
 
-                            <p:column id="n87" style="width:50px">
-                                <f:facet name="header">
-                                    <h:outputText id="n88" value="Ação" class="fonteForm"/>
-                                </f:facet>
+							<p:column id="n87" style="width:50px">
+								<f:facet name="header">
+									<h:outputText id="n88" value="Ação" class="fonteForm" />
+								</f:facet>
 
-                                <p:commandButton oncomplete="PF('dlgbuscaatendimento').hide()"
-                                                 icon="ui-icon-check" id="confirmar">
+								<p:commandButton oncomplete="PF('dlgbuscaatendimento').hide()"
+									icon="ui-icon-check" id="confirmar">
 
-                                    <f:setPropertyActionListener value="#{busca.id_pessoa}"
-                                                                 target="#{MBUsuarioCadastro.usuario.idpessoa}"/>
-                                    <f:setPropertyActionListener value="#{busca.nome}"
-                                                                 target="#{MBUsuarioCadastro.usuario.nome}"/>
-                                    <f:setPropertyActionListener value="#{busca.cpf}"
-                                                                 target="#{MBUsuarioCadastro.usuario.cpf}"/>
-                                    <p:tooltip for="confirmar" value="Selecionar Deficiência"></p:tooltip>
-                                </p:commandButton>
-                            </p:column>
+									<f:setPropertyActionListener value="#{busca.id_pessoa}"
+										target="#{MBUsuarioCadastro.usuario.idpessoa}" />
+									<f:setPropertyActionListener value="#{busca.nome}"
+										target="#{MBUsuarioCadastro.usuario.nome}" />
+									<f:setPropertyActionListener value="#{busca.cpf}"
+										target="#{MBUsuarioCadastro.usuario.cpf}" />
+									<p:tooltip for="confirmar" value="Selecionar Deficiência"></p:tooltip>
+								</p:commandButton>
+							</p:column>
 
-                        </p:dataTable>
-                    </p:outputPanel>
-                </div>
-            </h:form>
-        </p:dialog>
+						</p:dataTable>
+					</p:outputPanel>
+				</div>
+			</h:form>
+		</p:dialog>
 
-        <p:dialog widgetVar="dlgTelefone" styleClass="topDialog"
-                  header="Adicionar telefones" width="auto" height="auto"
-                  modal="true" resizable="false">
+		<p:dialog widgetVar="dlgTelefone" styleClass="topDialog"
+			header="Adicionar telefones" width="auto" height="auto" modal="true"
+			resizable="false">
 
-            <h:form id="formTelefonesPaciente">
-                <p:outputPanel id="outTelefonePaciente">
+			<h:form id="formTelefonesPaciente">
+				<p:outputPanel id="outTelefonePaciente">
 
-                    <b:row>
+					<b:row>
 
-                        <b:column span="3" class="label-position">
-                            <b:label value="DDD" severity="info" class="label-add-tel"/>
+						<b:column span="3" class="label-position">
+							<b:label value="DDD" severity="info" class="label-add-tel" />
 
-                            <b:inputText mask="99" class="form-control label-tel" id="inputDdd"
-                                         required="false" requiredMessage=" DDD: Campo obrigatório!"
-                                         value="#{PacienteController.telefone.ddd}"/>
-                        </b:column>
+							<b:inputText mask="99" class="form-control label-tel"
+								id="inputDdd" required="false"
+								requiredMessage=" DDD: Campo obrigatório!"
+								value="#{PacienteController.telefone.ddd}" />
+						</b:column>
 
-                        <b:column span="4" class="label-position">
-                            <b:label value="Telefone" severity="info" class="label-add-tel"/>
+						<b:column span="4" class="label-position">
+							<b:label value="Telefone" severity="info" class="label-add-tel" />
 
-                            <b:inputText class="form-control label-tel" id="inputTelefone"
-                                         required="true" requiredMessage=" Telefone: Campo obrigatório!"
-                                         value="#{PacienteController.telefone.telefone}"/>
-                        </b:column>
+							<b:inputText class="form-control label-tel" id="inputTelefone"
+								required="true" requiredMessage=" Telefone: Campo obrigatório!"
+								value="#{PacienteController.telefone.telefone}" />
+						</b:column>
 
-                        <b:column span="3">
-                            <p:selectBooleanCheckbox label="Whatsapp" itemLabel="Whatsapp"
-                                                     id="inputWhatsapp" style="margin-top: 25px;color:#2e84ce;"
-                                                     value="#{PacienteController.telefone.whatsapp}">
-                            </p:selectBooleanCheckbox>
-                        </b:column>
+						<b:column span="3">
+							<p:selectBooleanCheckbox label="Whatsapp" itemLabel="Whatsapp"
+								id="inputWhatsapp" style="margin-top: 25px;color:#2e84ce;"
+								value="#{PacienteController.telefone.whatsapp}">
+							</p:selectBooleanCheckbox>
+						</b:column>
 
-                    </b:row>
+					</b:row>
 
-                    <br></br>
+					<br></br>
 
-                    <b:row>
+					<b:row>
 
-                        <b:column span="4" class="label-position">
-                            <b:label value="Operadora" severity="info" class="label-add-tel"/>
+						<b:column span="4" class="label-position">
+							<b:label value="Operadora" severity="info" class="label-add-tel" />
 
-                            <b:selectOneMenu id="inputOperadora" required="false" class="label-tel"
-                                             requiredMessage=" Operadora: Campo obrigatório!"
-                                             value="#{PacienteController.telefone.operadora.id}">
-                                <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                <f:selectItems
-                                        value="#{OperadoraController.listarTodasAsOperadoras()}" var="sis"
-                                        itemLabel="#{sis.descricao}"
-                                        itemValue="#{sis.id}"/>
-                            </b:selectOneMenu>
-                        </b:column>
+							<b:selectOneMenu id="inputOperadora" required="false"
+								class="label-tel"
+								requiredMessage=" Operadora: Campo obrigatório!"
+								value="#{PacienteController.telefone.operadora.id}">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems
+									value="#{OperadoraController.listarTodasAsOperadoras()}"
+									var="sis" itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
+							</b:selectOneMenu>
+						</b:column>
 
-                        <b:column span="4" class="label-position">
-                            <b:label value="Responsável " severity="info" class="label-add-tel"/>
+						<b:column span="4" class="label-position">
+							<b:label value="Responsável " severity="info"
+								class="label-add-tel" />
 
-                            <b:inputText class="form-control label-tel" id="inputResponsavel"
-                                         required="false"
-                                         requiredMessage=" Responsável: Campo obrigatório!"
-                                         value="#{PacienteController.telefone.responsavel}"/>
-                        </b:column>
+							<b:inputText class="form-control label-tel" id="inputResponsavel"
+								required="false"
+								requiredMessage=" Responsável: Campo obrigatório!"
+								value="#{PacienteController.telefone.responsavel}" />
+						</b:column>
 
-                        <b:column span="4" class="label-position">
-                            <b:label value="Parentesco" severity="info" class="label-add-tel"/>
+						<b:column span="4" class="label-position">
+							<b:label value="Parentesco" severity="info" class="label-add-tel" />
 
-                            <b:selectOneMenu id="inputParentesco" required="false" class="label-tel"
-                                             requiredMessage=" Parentesco: Campo obrigatório!"
-                                             value="#{PacienteController.telefone.parentesco.codParentesco}">
-                                <f:selectItem itemLabel="Selecione" itemValue=""/>
-                                <f:selectItems
-                                        value="#{ParentescoController.listarParentescos()}" var="sis"
-                                        itemLabel="#{sis.descParentesco}"
-                                        itemValue="#{sis.codParentesco}"/>
-                            </b:selectOneMenu>
-                        </b:column>
+							<b:selectOneMenu id="inputParentesco" required="false"
+								class="label-tel"
+								requiredMessage=" Parentesco: Campo obrigatório!"
+								value="#{PacienteController.telefone.parentesco.codParentesco}">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems
+									value="#{ParentescoController.listarParentescos()}" var="sis"
+									itemLabel="#{sis.descParentesco}"
+									itemValue="#{sis.codParentesco}" />
+							</b:selectOneMenu>
+						</b:column>
 
-                    </b:row>
+					</b:row>
 
-                    <b:row>
-                        <b:column span="2">
-                            <p:commandButton style="margin-top: 20px" value="Adicionar"
-                                             action="#{PacienteController.addListaTelefone()}"
-                                             icon="ui-icon-plus" class="btn-acao-table acao-confirmar"
-                                             update=":frmPrincipal:tbv:outTabelaTelefones, outTelefonePaciente">
-                            </p:commandButton>
-                        </b:column>
-                    </b:row>
+					<b:row>
+						<b:column span="2">
+							<p:commandButton style="margin-top: 20px" value="Adicionar"
+								action="#{PacienteController.addListaTelefone()}"
+								icon="ui-icon-plus" class="btn-acao-table acao-confirmar"
+								update=":frmPrincipal:tbv:outTabelaTelefones, outTelefonePaciente">
+							</p:commandButton>
+						</b:column>
+					</b:row>
 
-                </p:outputPanel>
-            </h:form>
-        </p:dialog>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
 
-    </ui:define>
+	</ui:define>
 </ui:composition>
