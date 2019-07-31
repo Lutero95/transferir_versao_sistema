@@ -8,6 +8,9 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
+
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
@@ -18,6 +21,10 @@ public class PacienteDAO {
     private Connection conexao = null;
     private PreparedStatement ps = null;
 
+    FuncionarioBean user_session = (FuncionarioBean) FacesContext
+            .getCurrentInstance().getExternalContext().getSessionMap()
+            .get("obj_usuario");
+    
     public Boolean cadastrarPaciente(PacienteBean paciente, Boolean bairroExiste) {
         boolean retorno = false;
 
@@ -39,14 +46,14 @@ public class PacienteDAO {
                     + "dtaregistro, id_escolaridade, id_escola, id_profissao, trabalha, localtrabalha, codparentesco, nomeresp, rgresp, "  //30 ao 38
                     + "cpfresp, dtanascimentoresp, id_encaminhado, id_formatransporte ,deficiencia, " //39 a 43
                     + "codmunicipio, deficienciafisica, deficienciamental, deficienciaauditiva, deficienciavisual, " //44 ao 48
-                    + "deficienciamultipla, codbairro, email, facebook, instagram, nome_social, necessita_nome_social, id_religiao, id_genero)" //49 ao 57
+                    + "deficienciamultipla, codbairro, email, facebook, instagram, nome_social, necessita_nome_social, id_religiao, id_genero, codigo_usuario_cadastro)" //49 ao 58
                     + " values (CURRENT_TIMESTAMP, "
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //1 ao 10
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //11 ao 20
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //21 ao 30
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //31 ao 40
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "  //41 ao 50
-                    + "?, ?, ?, ?, ?, ?,?) returning id_paciente"; //51 ao 57
+                    + "?, ?, ?, ?, ?, ?,?,?) returning id_paciente"; //51 ao 58
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             stmt.setString(1, paciente.getNome().toUpperCase().trim());
@@ -337,6 +344,7 @@ public class PacienteDAO {
                 stmt.setInt(57, paciente.getGenero().getId());
             }
 
+            stmt.setInt(58, user_session.getCodigo());
             ResultSet set = stmt.executeQuery();
             while (set.next()) {
                 idPaciente = set.getInt("id_paciente");
