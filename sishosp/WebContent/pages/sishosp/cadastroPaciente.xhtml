@@ -297,7 +297,7 @@
 
 								<p:inputMask mask="99999-999" id="inputcep"
 									value="#{PacienteController.paciente.endereco.cep}"
-									class="form-control select-agendaEquipe2" required="false"
+									class="form-control select-agendaEquipe2" required="true"
 									requiredMessage="CEP: Campo obrigatório!">
 
 									<p:ajax listener="#{PacienteController.encontraCEP}"
@@ -312,7 +312,7 @@
 
 								<b:inputText
 									value="#{PacienteController.paciente.endereco.logradouro}"
-									required="false"
+									required="true"
 									requiredMessage="Logradouro: Campo obrigatório!"
 									class="form-control" id="inputrua"
 									validatorMessage="Logradouro deve conter entre 2 e 50 caracteres.">
@@ -356,7 +356,7 @@
 							<b:column span="3" class="label-position">
 								<b:label for="numero" value="Número" severity="info" />
 
-								<b:inputText
+								<b:inputText required="true" requiredMessage="Informe o número!"
 									value="#{PacienteController.paciente.endereco.numero}"
 									class="form-control" id="numero">
 									<f:validateLength maximum="20" />
@@ -366,7 +366,7 @@
 							<b:column span="3" class="label-position">
 								<b:label for="estado" value="Estado" severity="info" />
 
-								<b:selectOneMenu required="false"
+								<b:selectOneMenu required="true"
 									requiredMessage="Estado: Campo obrigatório!"
 									value="#{PacienteController.paciente.endereco.uf}" id="estado">
 									<f:selectItem itemLabel="Selecione" itemValue="" />
@@ -389,7 +389,7 @@
 
 								<p:outputPanel id="outMunicipios">
 
-									<b:selectOneMenu required="false"
+									<b:selectOneMenu required="true"
 										requiredMessage="Município: Campo obrigatório!"
 										value="#{PacienteController.paciente.endereco.codmunicipio}">
 										<f:selectItem itemLabel="Selecione" itemValue="" />
@@ -412,7 +412,7 @@
 									<b:selectOneMenu id="bairro1"
 										rendered="#{(PacienteController.paciente.endereco.bairroUnico == false and PacienteController.bairroExiste == true)
                                                      or PacienteController.bairroExiste == null}"
-										required="false" requiredMessage="Bairro: Campo obrigatório!"
+										required="true" requiredMessage="Bairro: Campo obrigatório!"
 										value="#{PacienteController.paciente.endereco.codbairro}">
 										<f:selectItem itemLabel="Selecione" itemValue="" />
 										<f:selectItems

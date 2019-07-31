@@ -9,23 +9,23 @@ import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
-
 public class CNPJValidator implements Validator {
-    @Override
-    public void validate(FacesContext arg0, UIComponent arg1, Object valorTela) {
+	@Override
+	public void validate(FacesContext arg0, UIComponent arg1, Object valorTela) {
 
-        String valorTelaString = (String) valorTela;
+		String valorTelaString = (String) valorTela;
+		if (valorTelaString!=null) {
+			if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(valorTelaString)) {
+				valorTelaString = valorTelaString.replaceAll(" ", "").replaceAll("[^0-9]", "");
 
-        if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(valorTelaString)) {
-            valorTelaString = valorTelaString.replaceAll(" ", "").replaceAll("[^0-9]", "");
-
-            if (!DocumentosUtil.validaCNPJ(valorTelaString)) {
-                FacesMessage message = new FacesMessage();
-                message.setSeverity(FacesMessage.SEVERITY_ERROR);
-                message.setSummary("CNPJ não válido!");
-                throw new ValidatorException(message);
-            }
-        }
-    }
+				if (!DocumentosUtil.validaCNPJ(valorTelaString)) {
+					FacesMessage message = new FacesMessage();
+					message.setSeverity(FacesMessage.SEVERITY_ERROR);
+					message.setSummary("CNPJ não válido!");
+					throw new ValidatorException(message);
+				}
+			}
+		}
+	}
 
 }

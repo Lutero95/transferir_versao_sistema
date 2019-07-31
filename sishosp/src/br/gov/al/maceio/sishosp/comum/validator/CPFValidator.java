@@ -19,15 +19,17 @@ public class CPFValidator implements Validator {
 	public void validate(FacesContext arg0, UIComponent arg1, Object valorTela) {
 
 		String valorTelaString = (String) valorTela;
+		if (valorTelaString!=null) {
+			if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(valorTelaString)) {
+				valorTelaString = valorTelaString.replaceAll(" ", "").replaceAll("[^0-9]", "");
 
-		if (!VerificadorUtil.verificarSeObjetoNuloOuVazio(valorTelaString)) {
-			valorTelaString = valorTelaString.replaceAll(" ", "").replaceAll("[^0-9]", "");
+				if (!DocumentosUtil.validaCPF(valorTelaString)) {
+					FacesMessage message = new FacesMessage();
+					message.setSeverity(FacesMessage.SEVERITY_ERROR);
+					message.setSummary("CPF não válido!");
+					throw new ValidatorException(message);
+				}
 
-			if (!DocumentosUtil.validaCPF(valorTelaString)) {
-				FacesMessage message = new FacesMessage();
-				message.setSeverity(FacesMessage.SEVERITY_ERROR);
-				message.setSummary("CPF não válido!");
-				throw new ValidatorException(message);
 			}
 		}
 	}
