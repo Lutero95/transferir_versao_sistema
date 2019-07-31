@@ -575,10 +575,17 @@ public class PacienteDAO {
 
     public Boolean excluir(PacienteBean paciente) {
         boolean retorno = false;
-        String sql = "delete from hosp.pacientes where id_paciente = ?";
+        String sql =""; 
         try {
+        	sql = "delete from hosp.telefone_paciente where id_paciente = ?";
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setLong(1, paciente.getId_paciente());
+            stmt.executeUpdate();
+        	
+        	sql = "delete from hosp.pacientes where id_paciente = ?";
+            conexao = ConnectionFactory.getConnection();
+            stmt = conexao.prepareStatement(sql);
             stmt.setLong(1, paciente.getId_paciente());
             stmt.executeUpdate();
 

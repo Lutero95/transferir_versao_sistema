@@ -82,9 +82,10 @@ public class FuncionarioDAO {
         String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, permite_encaixe, "
                 + "pf.descricao as descperfil, us.codunidade, p.tipo_atendimento_terapia,  case when us.ativo = 'S' "
                 + "then true else false end as usuarioativo, "
-                + "pf.id as idperfil from acl.funcionarios us "
+                + "pf.id as idperfil, u.id codunidade,u.nome nomeunidade, u.nome_empresa,u.nome_fantasia  from acl.funcionarios us "
                 + "join acl.perfil pf on (pf.id = us.id_perfil) " +
-                " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
+                " left join hosp.parametro p ON (p.codunidade = us.codunidade) "+
+                " join hosp.unidade u on u.id = us.codunidade "
                 + "where (us.cpf = ?) and ((us.senha) = ?) and us.ativo = 'S'";
 
         FuncionarioBean ub = null;
@@ -104,6 +105,9 @@ public class FuncionarioDAO {
                 ub.setSenha(rs.getString("senha"));
                 ub.setEmail(rs.getString("email"));
                 ub.getUnidade().setId(rs.getInt("codunidade"));
+                ub.getUnidade().setNomeUnidade(rs.getString("nomeunidade"));
+                ub.getUnidade().setNomeEmpresa(rs.getString("nome_empresa"));
+                ub.getUnidade().setNomeFantasia(rs.getString("nome_fantasia"));
                 ub.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
                 ub.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
                 ub.getUnidade().getParametro().getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
