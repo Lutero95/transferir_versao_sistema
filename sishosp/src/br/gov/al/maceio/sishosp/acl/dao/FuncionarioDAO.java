@@ -46,7 +46,7 @@ public class FuncionarioDAO {
     public String autenticarUsuarioInicialNomeBancoAcesso(FuncionarioBean usuario)
             throws ProjetoException {
 
-        String sql = "SELECT banco_acesso FROM acl.funcionarios WHERE (cpf = ?) AND (upper(senha) = ?) and ativo = 'S' ";
+        String sql = "SELECT banco_acesso FROM acl.funcionarios WHERE (cpf = ?) AND ((senha) = ?) and ativo = 'S' ";
 
         String nomeBancoAcesso = null;
 
@@ -54,7 +54,7 @@ public class FuncionarioDAO {
             con = ConnectionFactoryPublico.getConnection();
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
-            pstmt.setString(2, usuario.getSenha().toUpperCase());
+            pstmt.setString(2, usuario.getSenha());
 
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -85,7 +85,7 @@ public class FuncionarioDAO {
                 + "pf.id as idperfil from acl.funcionarios us "
                 + "join acl.perfil pf on (pf.id = us.id_perfil) " +
                 " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
-                + "where (us.cpf = ?) and (upper(us.senha) = ?) and us.ativo = 'S'";
+                + "where (us.cpf = ?) and ((us.senha) = ?) and us.ativo = 'S'";
 
         FuncionarioBean ub = null;
         int count = 1;
@@ -95,7 +95,7 @@ public class FuncionarioDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, usuario.getCpf().replaceAll("[^0-9]", ""));
-            pstmt.setString(2, usuario.getSenha().toUpperCase());
+            pstmt.setString(2, usuario.getSenha());
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 ub = new FuncionarioBean();
@@ -728,7 +728,7 @@ public class FuncionarioDAO {
 
         Boolean retorno = false;
 
-        String sql = "update acl.funcionarios set senha = ? where id_funcionario = ?";
+        String sql = "update acl.funcionarios set senha = ? where id_funcionario = ? ";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -764,13 +764,14 @@ public class FuncionarioDAO {
 
         Boolean retorno = false;
 
-        String sql = "update acl.funcionarios set senha = ? where id_funcionario = ?";
+        String sql = "update acl.funcionarios set senha = ? where id_funcionario = ? and banco_acesso=?";
 
         try {
             con = ConnectionFactoryPublico.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, usuario.getNovaSenha());
             stmt.setLong(2, user_session.getId());
+            stmt.setString(3,  (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
             stmt.executeUpdate();
             con.commit();
 
@@ -1391,7 +1392,7 @@ public class FuncionarioDAO {
 
             stmt.setBoolean(10, profissional.getRealizaEncaixes());
 
-            stmt.setString(11, profissional.getSenha().toUpperCase());
+            stmt.setString(11, profissional.getSenha());
             
             stmt.setString(12, profissional.getCpf().toUpperCase().replaceAll("[^0-9]", ""));
 
@@ -1600,7 +1601,7 @@ public class FuncionarioDAO {
             conexaoPublica = ConnectionFactoryPublico.getConnection();
             PreparedStatement stmt = conexaoPublica.prepareStatement(sql);
 
-            stmt.setString(1, profissional.getSenha().toUpperCase());
+            stmt.setString(1, profissional.getSenha());
             stmt.setString(2, profissional.getAtivo().toUpperCase());
             stmt.setString(3, profissional.getNome());
             stmt.setString(4, profissional.getCpf().replaceAll("[^0-9]", ""));
