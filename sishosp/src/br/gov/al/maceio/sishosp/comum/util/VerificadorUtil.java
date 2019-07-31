@@ -17,8 +17,6 @@ public final class VerificadorUtil {
     public static Boolean verificarSeObjetoNuloOuVazio(Object object) {
         Boolean retorno = true;
 
-        object = object.toString();
-
         if(object != null && !object.equals("")){
             retorno = false;
         }

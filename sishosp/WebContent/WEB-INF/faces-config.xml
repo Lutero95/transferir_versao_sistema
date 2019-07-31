@@ -27,8 +27,13 @@
 	<validator>
 		<validator-id>PISValidator</validator-id>
 		<validator-class>br.gov.al.maceio.sishosp.comum.validator.PISValidator</validator-class>
-	</validator>
+	</validator>	
 	
+	
+	<validator>
+		<validator-id>CPFPacienteValidator</validator-id>
+		<validator-class>br.gov.al.maceio.sishosp.comum.validator.CPFPacienteValidator</validator-class>
+	</validator>
 
 	<lifecycle>
 		<phase-listener>br.gov.al.maceio.sishosp.comum.util.AuthorizationListener</phase-listener>
