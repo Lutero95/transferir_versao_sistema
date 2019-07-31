@@ -29,9 +29,7 @@
 						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 					</b:commandButton>
 
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
+
 
 					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 						id="dataTablePrincipal" var="tab" responsive="true"
@@ -96,7 +94,7 @@
 					<p:separator />
 					<b:commandButton look="success" value="Sim" style="float:left;"
 						action="#{CidController.excluirCid()}" ajax="true"
-						icon="glyphicon-ok" update=":frmPrincipal" class="btn-sim" />
+						icon="glyphicon-ok" update=":frmPrincipal msgPagina" class="btn-sim" />
 
 					<b:commandButton value="Não"
 						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"

@@ -37,9 +37,7 @@
 					</b:column>
 				</b:row>
 
-				<div align="center">
-					<b:messages value="Error" id="msgPagina"></b:messages>
-				</div>
+
 				
 				<br></br>
 
@@ -47,11 +45,11 @@
 
 					<b:commandButton action="#{OperadoraController.gravarOperadora()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-						update=":frmPrincipal" value="Incluir" 
+						update=":frmPrincipal msgPagina" value="Incluir" 
 						rendered="#{OperadoraController.tipo == 1}" />
 
 					<b:commandButton action="#{OperadoraController.alterarOperadora()}"
-						icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+						icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 						value="Alterar" look="success" class="btn-incluir"
 						rendered="#{OperadoraController.tipo  == 2}" />
 

@@ -29,9 +29,7 @@
 					<p:tooltip for="btninc" value="Incluir"></p:tooltip>
 				</b:commandButton>
 
-				<div align="center">
-					<b:messages value="Error" id="msgPagina"></b:messages>
-				</div>
+
 
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
 					var="tab" responsive="true" value="#{CboController.listaCbo}">
@@ -94,7 +92,7 @@
 
 					<b:commandButton look="success" value="Sim" style="float:left;"
 						action="#{CboController.excluirCbo()}" ajax="true"
-						class="btn-sim" icon="glyphicon-ok" update=":frmPrincipal" />
+						class="btn-sim" icon="glyphicon-ok" update=":frmPrincipal msgPagina" />
 
 					<b:commandButton value="Não" oncomplete="PF('dlgExclusao').hide();"
 						look="info" ajax="true" icon="glyphicon-remove" class="btn-nao"

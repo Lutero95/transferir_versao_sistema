@@ -63,19 +63,16 @@
 							
 					</b:row>
 
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
 					
 					<br></br>
 
 					<b:commandButton action="#{FeriadoController.gravarFeriado()}"
-						icon="glyphicon-ok" update=":frmPrincipal" value="Cadastrar"
+						icon="glyphicon-ok" update=":frmPrincipal msgPagina" value="Cadastrar"
 						look="success" class="btn-incluir" size="sm"
 						rendered="#{FeriadoController.tipo == 1}" />
 
 					<b:commandButton action="#{FeriadoController.alterarFeriado()}"
-						icon="glyphicon-ok" update=":frmPrincipal" value="Alterar"
+						icon="glyphicon-ok" update=":frmPrincipal msgPagina" value="Alterar"
 						look="success" class="btn-incluir" size="sm"
 						rendered="#{FeriadoController.tipo  == 2}" />
 

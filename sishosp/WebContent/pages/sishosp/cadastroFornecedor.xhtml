@@ -48,12 +48,16 @@
                     <b:row>
                         <b:column span="5" class="label-position new-col5">
                             <b:label value="CNPJ" severity="info"/>
+                            
+                            <p:inputMask mask="99.999.999-9999/99"
+									value="#{FornecedorController.fornecedor.cnpj}"
+									class="form-control" 
+									required="true" validator="CNPJValidator"
+									
+									requiredMessage="CNPJ do Fornecedor: Campo obrigatório!">
+								</p:inputMask>
 
-                            <b:inputText value="#{FornecedorController.fornecedor.cnpj}"
-                                         validator="CaractereEmBrancoValidator"
-                                         class="form-control" required="true"
-                                         requiredMessage="CNPJ: Campo obrigatório!">
-                            </b:inputText>
+
                         </b:column>
 
                         <b:column span="5" class="label-position new-col5">
@@ -158,20 +162,17 @@
                         </b:column>
                     </b:row>
 
-                    <div align="center">
-                        <b:messages value="Error" id="msgPagina"></b:messages>
-                    </div>
 
                     <br></br>
 
                     <p:commandButton action="#{FornecedorController.gravarFornecedor()}"
                                      icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-                                     update=":frmPrincipal" value="Incluir"
+                                     update=":frmPrincipal msgPagina" value="Incluir"
                                      rendered="#{FornecedorController.tipo == 1}"/>
 
                     <p:commandButton action="#{FornecedorController.alterarFornecedor()}"
                                      icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-                                     update=":frmPrincipal :frmPrincipal" value="Alterar"
+                                     update=":frmPrincipal msgPagina" value="Alterar"
                                      rendered="#{FornecedorController.tipo  == 2}"/>
 
                     <p:commandButton value="Voltar" icon="glyphicon-arrow-left"

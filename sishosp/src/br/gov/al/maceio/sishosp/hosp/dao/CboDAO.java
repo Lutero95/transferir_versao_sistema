@@ -9,6 +9,7 @@ import java.util.List;
 
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
 
 public class CboDAO {
@@ -29,6 +30,7 @@ public class CboDAO {
             retorno = true;
         } catch (Exception ex) {
             ex.printStackTrace();
+            JSFUtil.adicionarMensagemErro(ex.getMessage(),"Atenção");
             throw new RuntimeException(ex);
         } finally {
             try {

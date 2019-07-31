@@ -37,9 +37,7 @@
 						</b:column>
 					</b:row>
 
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
+
 
 					<br></br>
 
@@ -47,12 +45,12 @@
 						<b:commandButton
 							action="#{EspecialidadeController.gravarEspecialidade()}"
 							icon="glyphicon-ok" size="sm" look="success"
-							update=":frmPrincipal" value="Incluir" class="btn-incluir"
+							update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"
 							rendered="#{EspecialidadeController.tipo == 1}" />
 
 						<b:commandButton
 							action="#{EspecialidadeController.alterarEspecialidade()}"
-							icon="glyphicon-ok" size="sm" update=":frmPrincipal"
+							icon="glyphicon-ok" size="sm" update=":frmPrincipal msgPagina"
 							value="Alterar" look="success" class="btn-incluir"
 							rendered="#{EspecialidadeController.tipo  == 2}" />
 

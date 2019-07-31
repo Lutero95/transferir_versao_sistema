@@ -14,7 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
-public class CPFValidator implements Validator {
+public class CPFPacienteValidator implements Validator {
 	@Override
 	public void validate(FacesContext arg0, UIComponent arg1, Object valorTela) {
 
@@ -28,6 +28,22 @@ public class CPFValidator implements Validator {
 				message.setSeverity(FacesMessage.SEVERITY_ERROR);
 				message.setSummary("CPF não válido!");
 				throw new ValidatorException(message);
+			} else {
+				PacienteDAO pDAo = new PacienteDAO();
+				PacienteBean pacienteRetorno;
+				Integer idPaciente = null;
+				if (PacienteController.getParamIdPaciente() != null) 
+					idPaciente = PacienteController.getParamIdPaciente();
+					pacienteRetorno = pDAo.verificaExisteCpfCadastrado(valorTelaString, idPaciente); // se tiver retorno
+																										// entao existe
+					// cpf
+					if (pacienteRetorno != null) {
+						FacesMessage message = new FacesMessage();
+						message.setSeverity(FacesMessage.SEVERITY_ERROR);
+						message.setSummary("Já existe cpf cadastrado para o paciente " + pacienteRetorno.getNome());
+						throw new ValidatorException(message);
+					}
+				
 			}
 		}
 	}

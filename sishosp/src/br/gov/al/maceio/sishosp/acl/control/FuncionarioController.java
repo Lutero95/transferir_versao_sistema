@@ -294,7 +294,7 @@ public class FuncionarioController implements Serializable {
 		List<DefaultSubMenu> submenuAssSubMenuPai = new ArrayList<>();
 		List<DefaultSubMenu> menusAssociados = new ArrayList<>();
 
-		// Gerar menu in�cio.
+		// Gerar menu inicio.
 		DefaultMenuItem item1 = new DefaultMenuItem();
 		item1.setValue("Início");
 		// contextPath+
@@ -313,10 +313,10 @@ public class FuncionarioController implements Serializable {
 				 * mp.setStyle("display: block;\n" + "    z-index: 1017;\n" + "    left: 0px;\n"
 				 * + "    top: 54px;\n" + "    overflow: auto;\n" + "    height: 312px;");
 				 */
-				mp.setLabel(p.getMenu().getDescricao());// o nome(descri��o) que
+				mp.setLabel(p.getMenu().getDescricao());// o nome(descricao) que
 				// vai aparecer na
 				// interface
-				mp.setIcon(p.getMenu().getCodigo()); // faz a associa��o em que
+				mp.setIcon(p.getMenu().getCodigo()); // faz a associacao em que
 				// menu ele vai ficar
 				menuPai.add(mp);
 
@@ -327,7 +327,7 @@ public class FuncionarioController implements Serializable {
 					&& (p.getMenu().getTipo().equals("submenu")) // compara o
 					// tipo para
 					// verificar
-					// se �
+					// se 
 					// submenu
 					&& (p.getIdSistema().equals(sistema.getId())) // compara os
 					// ids
@@ -338,7 +338,7 @@ public class FuncionarioController implements Serializable {
 				 * sb.setStyle("display: block;\n" + "    z-index: 1017;\n" + "    left: 0px;\n"
 				 * + "    top: 54px;\n" + "    overflow: auto;\n" + "    height: 312px;");
 				 */
-				// inicia a cria��o do
+				// inicia a cria�o do
 				// submenu
 				sb.setLabel(p.getMenu().getDescricao());
 				sb.setIcon(p.getMenu().getCodigo());
@@ -564,10 +564,10 @@ public class FuncionarioController implements Serializable {
 
 		boolean excluiu = fDao.excluirProfissional(profissional);
 		if (excluiu == true) {
-			JSFUtil.adicionarMensagemSucesso("Profissional exclu�do com sucesso!", "Sucesso");
+			JSFUtil.adicionarMensagemSucesso("Profissional excluído com sucesso!", "Sucesso");
 			JSFUtil.fecharDialog("dialogExclusao");
 		} else {
-			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclus�o!", "Erro");
+			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
 			JSFUtil.fecharDialog("dialogExclusao");
 		}
 		this.listaProfissional = fDao.listarProfissionalAtendimento();
@@ -579,6 +579,7 @@ public class FuncionarioController implements Serializable {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Programa e um Grupo!",
 					"Campos obrigatórios!");
 		}
+		else
 		if (listaSistemasDual.getTarget().size() == 0) {
 			JSFUtil.adicionarMensagemAdvertencia("Deve ser informado pelo menos um Sistema!", "Campo obrigatório!");
 		} else {
@@ -626,14 +627,14 @@ public class FuncionarioController implements Serializable {
 				JSFUtil.adicionarMensagemSucesso("Funcionário alterado com sucesso!", "Sucesso");
 
 			} else {
-				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a altera��o!", "Erro");
+				JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a alteração!", "Erro");
 			}
 		}
 	}
 
 	public void validaCns(String s) {
 		if (!DocumentosUtil.validaCNS(s)) {
-			JSFUtil.adicionarMensagemAdvertencia("Esse n�mero de CNS n�o � valido", "ADvert�ncia");
+			JSFUtil.adicionarMensagemAdvertencia("Esse número de CNS não é valido", "ADvertência");
 			profissional.setCns("");
 		}
 	}
@@ -661,7 +662,7 @@ public class FuncionarioController implements Serializable {
 				}
 			}
 			if (existe == true) {
-				JSFUtil.adicionarMensagemAdvertencia("Esse grupo já foi adicionado!", "ADvert�ncia");
+				JSFUtil.adicionarMensagemAdvertencia("Esse grupo já foi adicionado!", "ADvertência");
 			} else {
 				listaGruposEProgramasProfissional.add(profissional.getProgAdd());
 			}

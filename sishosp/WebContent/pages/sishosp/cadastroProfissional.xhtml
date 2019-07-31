@@ -174,29 +174,31 @@
 
 						<b:row>
 							<b:column span="9">
+								<p:outputPanel autoUpdate="true">
+									<p:dataTable emptyMessage="Nenhuma unidade adicionada"
+										styleClass="table table-hover" id="tabelaunidades"
+										value="#{MBFuncionarios.profissional.listaUnidades}"
+										var="unidade" paginator="true" paginatorPosition="bottom"
+										rows="12" resizableColumns="true">
 
-								<p:dataTable emptyMessage="Nenhuma unidade adicionada"
-									styleClass="table table-hover" id="tabelaunidades"
-									value="#{MBFuncionarios.profissional.listaUnidades}"
-									var="unidade" paginator="true" paginatorPosition="bottom"
-									rows="12" resizableColumns="true">
+										<p:column headerText="Unidade">
+											<p:outputLabel value="#{unidade.nomeUnidade}" />
+										</p:column>
 
-									<p:column headerText="Unidade">
-										<p:outputLabel value="#{unidade.nomeUnidade}" />
-									</p:column>
+										<p:column headerText="Ação">
+											<div align="center">
+												<p:commandButton immediate="true"
+													class="new-btn-acao-table acao-excluir"
+													action="#{MBFuncionarios.removerUnidadeExtra()}"
+													icon="ui-icon-trash" update="tabelaunidades">
+													<f:setPropertyActionListener value="#{unidade}"
+														target="#{MBFuncionarios.unidadeBean}" />
+												</p:commandButton>
+											</div>
+										</p:column>
+									</p:dataTable>
 
-									<p:column headerText="Ação">
-										<div align="center">
-											<p:commandButton immediate="true"
-												class="new-btn-acao-table acao-excluir"
-												action="#{MBFuncionarios.removerUnidadeExtra()}"
-												icon="ui-icon-trash" update="tabelaunidades">
-												<f:setPropertyActionListener value="#{unidade}"
-													target="#{MBFuncionarios.unidadeBean}" />
-											</p:commandButton>
-										</div>
-									</p:column>
-								</p:dataTable>
+								</p:outputPanel>
 
 
 							</b:column>
@@ -391,8 +393,13 @@
 									showSourceFilter="true" showTargetFilter="true"
 									filterMatchMode="contains">
 
-									<f:facet name="sourceCaption"><h:outputText value="Sistemas não associados" style="color:black"/></f:facet>
-									<f:facet name="targetCaption"><h:outputText value="Sistemas Associados" style="color:black"/></f:facet>
+									<f:facet name="sourceCaption">
+										<h:outputText value="Sistemas não associados"
+											style="color:black" />
+									</f:facet>
+									<f:facet name="targetCaption">
+										<h:outputText value="Sistemas Associados" style="color:black" />
+									</f:facet>
 
 									<p:ajax event="transfer"
 										listener="#{MBFuncionarios.onTransferSistema}" />

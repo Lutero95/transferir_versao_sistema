@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class FornecedorDAO {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, fornecedor.getDescricao().toUpperCase());
-            ps.setString(2, fornecedor.getCnpj().toUpperCase());
+            ps.setString(2, fornecedor.getCnpj().toUpperCase().replaceAll("[^0-9]", ""));
             ps.setString(3, fornecedor.getEndereco().getLogradouro().toUpperCase());
             ps.setString(4, fornecedor.getEndereco().getBairro().toUpperCase());
             ps.setString(5, fornecedor.getEndereco().getCep().toUpperCase());
@@ -45,7 +46,11 @@ public class FornecedorDAO {
             ps.setString(9, fornecedor.getTelefone2().toUpperCase());
             ps.setString(10, fornecedor.getIe().toUpperCase());
             ps.setInt(11, user_session.getUnidade().getId());
-            ps.setDouble(12, fornecedor.getValor());
+            if (fornecedor.getValor() == null) {
+            	ps.setNull(12, Types.NULL);
+            } else {
+            	ps.setDouble(12,fornecedor.getValor());
+            }
 
             ps.execute();
             con.commit();
@@ -124,7 +129,11 @@ public class FornecedorDAO {
             ps.setString(8, fornecedor.getTelefone1().toUpperCase());
             ps.setString(9, fornecedor.getTelefone2().toUpperCase());
             ps.setString(10, fornecedor.getIe().toUpperCase());
-            ps.setDouble(11, fornecedor.getValor());
+            if (fornecedor.getValor() == null) {
+            	ps.setNull(11, Types.NULL);
+            } else {
+            	ps.setDouble(11,fornecedor.getValor());
+            }
             ps.setInt(12, fornecedor.getId());
             ps.executeUpdate();
             con.commit();
@@ -182,7 +191,7 @@ public class FornecedorDAO {
             while (rs.next()) {
                 fornecedor.setId(rs.getInt("id_fornecedor"));
                 fornecedor.setDescricao(rs.getString("descfornecedor"));
-                fornecedor.setCnpj(rs.getString("cnpj"));
+                fornecedor.setCnpj(rs.getString("cnpj").replaceAll("[^0-9]", ""));
                 fornecedor.getEndereco().setLogradouro(rs.getString("endereco"));
                 fornecedor.setValor(rs.getDouble("valor"));
                 fornecedor.getEndereco().setBairro(rs.getString("bairro"));

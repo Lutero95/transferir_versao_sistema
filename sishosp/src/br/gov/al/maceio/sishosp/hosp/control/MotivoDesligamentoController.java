@@ -105,6 +105,7 @@ public class MotivoDesligamentoController implements Serializable {
         if (excluiu == true) {
             JSFUtil.adicionarMensagemSucesso("Motivo de Desligamento excluído com sucesso!", "Sucesso");
             JSFUtil.fecharDialog("dialogExclusao");
+            carregaMotivosDesligamento();
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");

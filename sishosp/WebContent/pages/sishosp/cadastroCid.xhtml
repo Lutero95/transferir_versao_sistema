@@ -45,20 +45,18 @@
 						</b:column>
 					</b:row>
 
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
+
 					
 					<br></br>
 
 					<b:commandButton action="#{CidController.gravarCid()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-						update=":frmPrincipal :frmPrincipal:incDesc" value="Incluir"
+						update=":frmPrincipal msgPagina" value="Incluir"
 						rendered="#{CidController.tipo == 1}" />
 
 					<b:commandButton action="#{CidController.alterarCid()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-						update=":frmPrincipal :frmPrincipal:incDesc" value="Alterar"
+						update=":frmPrincipal msgPagina" value="Alterar"
 						rendered="#{CidController.tipo  == 2}" />
 
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"

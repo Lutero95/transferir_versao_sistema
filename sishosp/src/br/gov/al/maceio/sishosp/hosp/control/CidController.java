@@ -92,12 +92,13 @@ public class CidController implements Serializable {
 		}
 	}
 
-	public void excluirCid() {
+	public void excluirCid() throws ProjetoException {
 		boolean ok = cDao.excluirCid(cid);
 
 		if (ok == true) {
             JSFUtil.adicionarMensagemSucesso("CID excluído com sucesso!", "Sucesso");
 			JSFUtil.fecharDialog("dialogExclusao");
+			listarCids();
 		} else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante a exclusão!", "Erro");
             JSFUtil.fecharDialog("dialogExclusao");

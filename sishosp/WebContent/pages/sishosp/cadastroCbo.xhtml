@@ -47,20 +47,18 @@
 						</b:column>
 					</b:row>
 
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
+
 
 					<br></br>
 
 					<b:commandButton action="#{CboController.gravarCbo()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-						update=":frmPrincipal :frmPrincipal:incDesc" value="Incluir"
+						update=":frmPrincipal :frmPrincipal:incDesc msgPagina" value="Incluir"
 						rendered="#{CboController.tipo == 1}" />
 
 					<b:commandButton action="#{CboController.alterarCbo()}"
 						icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
-						update=":frmPrincipal :frmPrincipal:incDesc" value="Alterar"
+						update=":frmPrincipal :frmPrincipal:incDesc msgPagina" value="Alterar"
 						rendered="#{CboController.tipo  == 2}" />
 
 					<b:commandButton value="Voltar" icon="glyphicon-arrow-left"

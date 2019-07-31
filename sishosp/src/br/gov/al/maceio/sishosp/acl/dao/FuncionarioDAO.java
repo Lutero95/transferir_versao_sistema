@@ -1335,7 +1335,7 @@ public class FuncionarioDAO {
 
         Boolean retorno = false;
         String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
-                + " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, senha = ? "
+                + " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, senha = ?, cpf=? "
                 + " where id_funcionario = ?";
 
         try {
@@ -1392,8 +1392,10 @@ public class FuncionarioDAO {
             stmt.setBoolean(10, profissional.getRealizaEncaixes());
 
             stmt.setString(11, profissional.getSenha().toUpperCase());
+            
+            stmt.setString(12, profissional.getCpf().toUpperCase().replaceAll("[^0-9]", ""));
 
-            stmt.setLong(12, profissional.getId());
+            stmt.setLong(13, profissional.getId());
 
             stmt.executeUpdate();
 
@@ -1405,7 +1407,7 @@ public class FuncionarioDAO {
 
 
             for (int i = 0; i < profissional.getListaUnidades().size(); i++) {
-                String sql3 = "INSERT INTO hosp.funcionario_unidades (codunidade, cod_funcionario) VALUES (?, ?);";
+                String sql3 = "INSERT INTO hosp.funcionario_unidades (cod_unidade, cod_funcionario) VALUES (?, ?);";
                 stmt = con.prepareStatement(sql3);
 
                 stmt.setInt(1, profissional.getListaUnidades().get(i).getId());
@@ -1486,7 +1488,7 @@ public class FuncionarioDAO {
         		" select si.id from acl.perm_sistema ps"+ 
         		" join acl.sistema si on si.id = ps.id_sistema"+ 
         		" join acl.funcionarios us on us.id_funcionario = ps.id_usuario"+ 
-        		" where us.id_funcionario = ? and us.ativo = 'S')  order by descricao";
+        		" where us.id_funcionario = ? and us.ativo = 'S') and coalesce(restrito,false) is false order by descricao";
 
         List<Sistema> listaSistemas = new ArrayList<>();
 
@@ -1592,7 +1594,7 @@ public class FuncionarioDAO {
         Connection conexaoPublica = null;
 
         Boolean retorno = false;
-        String sql = "UPDATE acl.funcionarios SET senha = ?, ativo = ? , descfuncionario=? WHERE id_funcionario = ? and banco_acesso=?";
+        String sql = "UPDATE acl.funcionarios SET senha = ?, ativo = ? , descfuncionario=? , cpf=? WHERE id_funcionario = ? and banco_acesso=?";
 
         try {
             conexaoPublica = ConnectionFactoryPublico.getConnection();
@@ -1601,9 +1603,13 @@ public class FuncionarioDAO {
             stmt.setString(1, profissional.getSenha().toUpperCase());
             stmt.setString(2, profissional.getAtivo().toUpperCase());
             stmt.setString(3, profissional.getNome());
-            stmt.setLong(4, profissional.getId());
-            stmt.setString(5, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
+            stmt.setString(4, profissional.getCpf().replaceAll("[^0-9]", ""));
+            stmt.setLong(5, profissional.getId());
+            stmt.setString(6, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
+            
 
+            
+            
 
             stmt.executeUpdate();
 
@@ -1839,7 +1845,7 @@ public class FuncionarioDAO {
         sql.append("SELECT fun.codunidade, e.nome nomeunidade ");
         sql.append(" FROM hosp.funcionario_unidades f");
         sql.append(" join acl.funcionarios fun on fun.id_funcionario = f.cod_funcionario");
-        sql.append(" join hosp.unidade e  ON (e.id = fun.codunidade) ");
+        sql.append(" join hosp.unidade e  ON (e.id = f.cod_unidade) ");
         sql.append(" WHERE f.cod_funcionario = ?");
 
         try {
@@ -1853,9 +1859,7 @@ public class FuncionarioDAO {
             while (rs.next()) {
                 UnidadeBean UnidadeBean = new UnidadeBean();
                 UnidadeBean.setId(rs.getInt("codunidade"));
-                UnidadeBean.setNomeUnidade(rs.getString("nome"));
-                UnidadeBean.setNomeEmpresa(rs.getString("nome_principal"));
-                UnidadeBean.setNomeFantasia(rs.getString("nome_fantasia"));
+                UnidadeBean.setNomeUnidade(rs.getString("nomeunidade"));
                 lista.add(UnidadeBean);
 
             }

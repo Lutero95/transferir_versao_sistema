@@ -21,13 +21,13 @@ public class ConnectionFactory {
         String senha = "engetron";
         //String senha = "post";
 
-
+/*
         //PRODUÇÃO
-        /*
+  
         String url = "jdbc:postgresql://72.55.172.244:5432/";
         String usuario = "postgres";
         String senha = "E2@spwxlmQo";
-        */
+  */      
 
         url = url + nomeBancoAcesso;
 
