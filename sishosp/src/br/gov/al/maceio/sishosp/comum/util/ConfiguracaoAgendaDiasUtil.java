@@ -4,7 +4,7 @@ import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
 
 import java.util.List;
 
-public final class ProfissionalDiasUtil {
+public final class ConfiguracaoAgendaDiasUtil {
 
     public static String retornarDiasDeAtendimentoPorExtenso(List<String> listaDias) {
         StringBuilder dias = new StringBuilder();

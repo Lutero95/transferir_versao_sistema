@@ -7,10 +7,9 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
-import br.gov.al.maceio.sishosp.comum.util.DataUtil;
-import br.gov.al.maceio.sishosp.comum.util.ProfissionalDiasUtil;
+import br.gov.al.maceio.sishosp.comum.util.ConfiguracaoAgendaDiasUtil;
+import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.OpcaoConfiguracaoAgenda;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoDataAgenda;
 import br.gov.al.maceio.sishosp.hosp.model.*;
 
 import javax.faces.context.FacesContext;
@@ -324,8 +323,8 @@ public class ConfigAgendaDAO {
 		Integer idConfigAgenda = null;
 
 		try {
-			String sql = "INSERT INTO hosp.config_agenda_equipe(codequipe, qtdmax, mes, ano, cod_empresa, opcao, codprograma, codgrupo) "
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id_configagenda;";
+			String sql = "INSERT INTO hosp.config_agenda_equipe(codequipe, qtdmax, mes, ano, cod_unidade, opcao, codprograma, codgrupo, tipo) "
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id_configagenda;";
 
 			PreparedStatement ps = conAuxiliar.prepareStatement(sql);
 
@@ -354,6 +353,8 @@ public class ConfigAgendaDAO {
 			ps.setInt(7, confParte2.getPrograma().getIdPrograma());
 
 			ps.setInt(8, confParte2.getGrupo().getIdGrupo());
+
+			ps.setString(9, confParte1.getTipo());
 
 			rs = ps.executeQuery();
 
@@ -1451,7 +1452,7 @@ public class ConfigAgendaDAO {
 				conf.getProfissional().getCbo().setCodCbo(rs.getInt("codcbo"));
 				conf.getProfissional().getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				conf.getProfissional().getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-				conf.setDiasPorExtenso(ProfissionalDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoProfissional(conf.getIdConfiAgenda(), con)));
+				conf.setDiasPorExtenso(ConfiguracaoAgendaDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoProfissional(conf.getIdConfiAgenda(), con)));
 				lista.add(conf);
 			}
 		} catch (Exception ex) {
@@ -1493,10 +1494,14 @@ public class ConfigAgendaDAO {
 				conf.getProfissional().getCbo().setCodCbo(rs.getInt("codcbo"));
 				conf.getProfissional().getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 				conf.setDataEspecifica(rs.getDate("data_especifica"));
-				conf.setMes(rs.getInt("mes"));
-				conf.setAno(rs.getInt("ano"));
+				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("mes"))){
+					conf.setMes(rs.getInt("mes"));
+				}
+				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("ano"))){
+					conf.setAno(rs.getInt("ano"));
+				}
 				conf.getProfissional().getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-				conf.setDiasPorExtenso(ProfissionalDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoProfissional(conf.getIdConfiAgenda(), con)));
+				conf.setDiasPorExtenso(ConfiguracaoAgendaDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoProfissional(conf.getIdConfiAgenda(), con)));
 				lista.add(conf);
 			}
 		} catch (Exception ex) {
@@ -1533,6 +1538,113 @@ public class ConfigAgendaDAO {
 			throw new RuntimeException(ex);
 		} finally {
 			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
+	public List<String> listarDiasAtendimentoEquipe(Integer id, Connection conAuxiliar) {
+
+		List<String> lista = new ArrayList<>();
+
+		String sql = "SELECT dia FROM hosp.config_agenda_equipe_dias WHERE id_config_agenda_equipe =?";
+
+		try {
+			PreparedStatement stm = conAuxiliar.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				Integer dia = rs.getInt("dia");
+				lista.add(dia.toString());
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
+	public List<ConfigAgendaParte1Bean> listarHorariosPorEquipeEspecifica() {
+		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
+
+		String sql = "SELECT DISTINCT c.id_configagenda, c.codequipe, d.data_especifica, c.mes, c.ano, e.descequipe "
+				+ "FROM hosp.config_agenda_equipe c "
+				+ "LEFT JOIN hosp.config_agenda_equipe_dias d ON (c.id_configagenda = d.id_config_agenda_equipe) "
+				+ "LEFT JOIN hosp.equipe e ON (c.codequipe = e.id_equipe) "
+				+ "WHERE c.tipo = 'E' ORDER BY c.id_configagenda";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
+				conf.setIdConfiAgenda(rs.getInt("id_configagenda"));
+				conf.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+				conf.getEquipe().setDescEquipe(rs.getString("descequipe"));
+				conf.setDataEspecifica(rs.getDate("data_especifica"));
+				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("mes"))){
+					conf.setMes(rs.getInt("mes"));
+				}
+				if(!VerificadorUtil.verificarSeObjetoNuloOuZero(rs.getInt("ano"))){
+					conf.setAno(rs.getInt("ano"));
+				}
+				conf.setDiasPorExtenso(ConfiguracaoAgendaDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoEquipe(conf.getIdConfiAgenda(), con)));
+
+				lista.add(conf);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return lista;
+	}
+
+	public List<ConfigAgendaParte1Bean> listarHorariosPorEquipeGeral() {
+		List<ConfigAgendaParte1Bean> lista = new ArrayList<>();
+
+		String sql = "SELECT DISTINCT c.id_configagenda, c.codequipe, e.descequipe "
+				+ "FROM hosp.config_agenda_equipe c "
+				+ "LEFT JOIN hosp.config_agenda_equipe_dias d ON (c.id_configagenda = d.id_config_agenda_equipe) "
+				+ "LEFT JOIN hosp.equipe e ON (c.codequipe = e.id_equipe) "
+				+ "WHERE c.tipo = 'G' ORDER BY c.id_configagenda";
+
+		try {
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
+				conf.setIdConfiAgenda(rs.getInt("id_configagenda"));
+				conf.getEquipe().setCodEquipe(rs.getInt("codequipe"));
+				conf.getEquipe().setDescEquipe(rs.getString("descequipe"));
+				conf.setDiasPorExtenso(ConfiguracaoAgendaDiasUtil.retornarDiasDeAtendimentoPorExtenso(listarDiasAtendimentoEquipe(conf.getIdConfiAgenda(), con)));
+
+				lista.add(conf);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

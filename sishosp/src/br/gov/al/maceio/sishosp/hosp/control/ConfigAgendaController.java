@@ -50,6 +50,8 @@ public class ConfigAgendaController implements Serializable {
     private List<TipoAtendimentoBean> listaTipoAtendimentosGrupo;
     private List<ConfigAgendaParte1Bean> listaProfissionalConfiguracaoGeral;
     private List<ConfigAgendaParte1Bean> listaProfissionalConfiguracaoEspecifica;
+    private List<ConfigAgendaParte1Bean> listaEquipeConfiguracaoGeral;
+    private List<ConfigAgendaParte1Bean> listaEquipeConfiguracaoEspecifica;
 
     private ConfigAgendaDAO cDao = new ConfigAgendaDAO();
     private FuncionarioDAO fDao = new FuncionarioDAO();
@@ -75,6 +77,8 @@ public class ConfigAgendaController implements Serializable {
         this.listaTipoAtendimentosGrupo = new ArrayList<>();
         this.listaProfissionalConfiguracaoGeral = new ArrayList<>();
         this.listaProfissionalConfiguracaoEspecifica = new ArrayList<>();
+        this.listaEquipeConfiguracaoGeral = new ArrayList<>();
+        this.listaEquipeConfiguracaoEspecifica = new ArrayList<>();
     }
 
     public void limparDados() {
@@ -104,8 +108,13 @@ public class ConfigAgendaController implements Serializable {
     }
 
     public void inicializarConfiguracaoAgendaProfissional(){
-        carregarListaConfiguracaoGeral();
-        carregarListaConfiguracaoEspecifica();
+        carregarListaConfiguracaoProfissionalGeral();
+        carregarListaConfiguracaoProfissionalEspecifica();
+    }
+
+    public void inicializarConfiguracaoAgendaEquipe(){
+        carregarListaConfiguracaoEquipeGeral();
+        carregarListaConfiguracaoEquipeEspecificaa();
     }
 
     public void getEditAgendaProfissional() throws ProjetoException {
@@ -590,12 +599,20 @@ public class ConfigAgendaController implements Serializable {
 
     }
 
-    public void carregarListaConfiguracaoGeral(){
+    private void carregarListaConfiguracaoProfissionalGeral(){
         listaProfissionalConfiguracaoGeral = cDao.listarHorariosPorProfissionalGeral();
     }
 
-    public void carregarListaConfiguracaoEspecifica(){
+    private void carregarListaConfiguracaoProfissionalEspecifica(){
         listaProfissionalConfiguracaoEspecifica = cDao.listarHorariosPorProfissionalEspecifica();
+    }
+
+    private void carregarListaConfiguracaoEquipeGeral(){
+        listaEquipeConfiguracaoGeral = cDao.listarHorariosPorEquipeGeral();
+    }
+
+    private void carregarListaConfiguracaoEquipeEspecificaa(){
+        listaEquipeConfiguracaoEspecifica = cDao.listarHorariosPorEquipeEspecifica();
     }
 
     public List<EquipeBean> getListaEquipes() {
@@ -652,5 +669,21 @@ public class ConfigAgendaController implements Serializable {
 
     public void setListaProfissionalConfiguracaoEspecifica(List<ConfigAgendaParte1Bean> listaProfissionalConfiguracaoEspecifica) {
         this.listaProfissionalConfiguracaoEspecifica = listaProfissionalConfiguracaoEspecifica;
+    }
+
+    public List<ConfigAgendaParte1Bean> getListaEquipeConfiguracaoGeral() {
+        return listaEquipeConfiguracaoGeral;
+    }
+
+    public void setListaEquipeConfiguracaoGeral(List<ConfigAgendaParte1Bean> listaEquipeConfiguracaoGeral) {
+        this.listaEquipeConfiguracaoGeral = listaEquipeConfiguracaoGeral;
+    }
+
+    public List<ConfigAgendaParte1Bean> getListaEquipeConfiguracaoEspecifica() {
+        return listaEquipeConfiguracaoEspecifica;
+    }
+
+    public void setListaEquipeConfiguracaoEspecifica(List<ConfigAgendaParte1Bean> listaEquipeConfiguracaoEspecifica) {
+        this.listaEquipeConfiguracaoEspecifica = listaEquipeConfiguracaoEspecifica;
     }
 }

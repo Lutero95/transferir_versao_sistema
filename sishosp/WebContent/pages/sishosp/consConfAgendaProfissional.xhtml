@@ -135,7 +135,20 @@
                                         Mês
                                     </f:facet>
 
-                                    <h:outputText value="#{tab.mes}"/>
+                                    <div align="center">
+                                        <p:outputLabel value="Janeiro" rendered="#{tab.mes == 1}" />
+                                        <p:outputLabel value="Fevereiro" rendered="#{tab.mes == 2}" />
+                                        <p:outputLabel value="Março" rendered="#{tab.mes == 3}" />
+                                        <p:outputLabel value="Abril" rendered="#{tab.mes == 4}" />
+                                        <p:outputLabel value="Maio" rendered="#{tab.mes == 5}" />
+                                        <p:outputLabel value="Junho" rendered="#{tab.mes == 6}" />
+                                        <p:outputLabel value="Julho" rendered="#{tab.mes == 7}" />
+                                        <p:outputLabel value="Agosto" rendered="#{tab.mes == 8}" />
+                                        <p:outputLabel value="Setembro" rendered="#{tab.mes == 9}" />
+                                        <p:outputLabel value="Outubro" rendered="#{tab.mes == 10}" />
+                                        <p:outputLabel value="Novembro" rendered="#{tab.mes == 11}" />
+                                        <p:outputLabel value="Dezembro" rendered="#{tab.mes == 12}" />
+                                    </div>
                                 </h:column>
 
                                 <h:column width="30%">
