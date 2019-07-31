@@ -2,6 +2,9 @@ package br.gov.al.maceio.sishosp.comum.validator;
 
 import br.gov.al.maceio.sishosp.comum.util.DocumentosUtil;
 import br.gov.al.maceio.sishosp.comum.util.VerificadorUtil;
+import br.gov.al.maceio.sishosp.hosp.control.PacienteController;
+import br.gov.al.maceio.sishosp.hosp.dao.PacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -22,6 +25,20 @@ public class CNSValidator implements Validator {
 				FacesMessage message = new FacesMessage();
 				message.setSeverity(FacesMessage.SEVERITY_ERROR);
 				message.setSummary("CNS não válida!");
+				throw new ValidatorException(message);
+			}
+			
+			PacienteDAO pDAo = new PacienteDAO();
+			PacienteBean pacienteRetorno;
+			Integer idPaciente = null;
+			if (PacienteController.getParamIdPaciente()!=null) 
+				 idPaciente =  PacienteController.getParamIdPaciente();
+				pacienteRetorno = pDAo.verificaExisteCnsCadastrado(valorTelaString,idPaciente); // se tiver retorno entao existe
+																						// cpf
+			if (pacienteRetorno != null) {
+				FacesMessage message = new FacesMessage();
+				message.setSeverity(FacesMessage.SEVERITY_ERROR);
+				message.setSummary("Já existe cns cadastrado para o paciente " + pacienteRetorno.getNome());
 				throw new ValidatorException(message);
 			}
 		}

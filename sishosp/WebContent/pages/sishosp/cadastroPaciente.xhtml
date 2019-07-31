@@ -475,7 +475,7 @@
 									value="#{PacienteController.paciente.cpf}"
 									class="form-control select-agendaEquipe2" id="cpf"
 									required="false" validator="CPFValidator"
-									validatorMessage="CPF inválido!"
+									
 									requiredMessage="CPF do Paciente: Campo obrigatório!">
 								</p:inputMask>
 							</b:column>
@@ -491,7 +491,7 @@
 								<p:inputText value="#{PacienteController.paciente.cns}"
 									maxlength="15" class="form-control" id="cns" required="true"
 									requiredMessage="CNS: Campo obrigatório!"
-									validator="CNSValidator" validatorMessage="CNS inválido!">
+									validator="CNSValidator" >
 									<f:validateLength minimum="15" maximum="15" />
 								</p:inputText>
 							</b:column>

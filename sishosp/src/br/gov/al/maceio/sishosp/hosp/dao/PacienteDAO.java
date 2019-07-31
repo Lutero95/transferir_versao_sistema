@@ -1226,4 +1226,70 @@ public class PacienteDAO {
             return retorno;
         }
     }
+    
+    public PacienteBean verificaExisteCpfCadastrado(String cpfPaciente, Integer idPaciente) {
+
+    	PacienteBean pacienteRetorno = null;
+
+        String sql = "select nome from hosp.pacientes where cpf=?";
+        if (idPaciente!=null)
+        	sql  = sql +" and id_paciente<>?";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, cpfPaciente);
+            if (idPaciente!=null)
+            	stmt.setInt(2, idPaciente);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+            	pacienteRetorno = new PacienteBean();
+            	pacienteRetorno.setNome(rs.getString("nome"));
+            }
+            
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return pacienteRetorno;
+        }
+    }    
+    
+    public PacienteBean verificaExisteCnsCadastrado(String cnsPaciente, Integer idPaciente) {
+
+    	PacienteBean pacienteRetorno = null;
+
+        String sql = "select nome from hosp.pacientes where cns=?";
+        if (idPaciente!=null)
+        	sql  = sql +" and id_paciente<>?";
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, cnsPaciente);
+            if (idPaciente!=null)
+            	stmt.setInt(2, idPaciente);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+            	pacienteRetorno = new PacienteBean();
+            	pacienteRetorno.setNome(rs.getString("nome"));
+            }
+            
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return pacienteRetorno;
+        }
+    }        
 }
