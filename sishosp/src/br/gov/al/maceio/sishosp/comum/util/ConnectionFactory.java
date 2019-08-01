@@ -18,16 +18,16 @@ public class ConnectionFactory {
         //LOCAL
         String url = "jdbc:postgresql://localhost:5432/";
         String usuario = "postgres";
-        String senha = "engetron";
-        //String senha = "post";
+        //String senha = "engetron";
+        String senha = "post";
 
-/*
+
         //PRODUÇÃO
-  
+        /*
         String url = "jdbc:postgresql://72.55.172.244:5432/";
         String usuario = "postgres";
         String senha = "E2@spwxlmQo";
-  */      
+        */
 
         url = url + nomeBancoAcesso;
 
