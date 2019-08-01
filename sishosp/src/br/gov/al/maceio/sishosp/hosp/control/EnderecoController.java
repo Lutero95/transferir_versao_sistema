@@ -137,6 +137,11 @@ public class EnderecoController implements Serializable {
     public void listarBairros() throws ProjetoException {
         listaBairros = eDao.listaBairros();
     }
+    
+    public void atualizarListaDeMunicipios(Integer codMunicipio) throws ProjetoException {
+    	JSFUtil.fecharDialog("dlgcadastrobairro");
+    	listarBairrosPorMunicipio(codMunicipio);
+    }
 
     public List<EnderecoBean> listarBairrosPorMunicipio(Integer codMunicipio) throws ProjetoException {
         List<EnderecoBean> listaBairrosPorMunicpio = new ArrayList<>();

@@ -433,7 +433,7 @@
                             <b:column span="1" class="label-position">
 
                                 <p:commandButton icon="ui-icon-plus" actionListener="#{EnderecoController.limparDados}"
-                                                 update=":frmcadbairro:outcadbairro"
+                                                 update=":frmcadbairro:outcadbairro" style="margin-top:17px;"
                                                  oncomplete="PF('dlgcadastrobairro').show()"/>
 
                             </b:column>
@@ -1392,10 +1392,10 @@
 
                     <div align="center">
                         <p:commandButton actionListener="#{EnderecoController.gravarBairros()}"
-                                         action="#{EnderecoController.listarBairrosPorMunicipio(EnderecoController.endereco.codmunicipio)}"
+                                         action="#{EnderecoController.atualizarListaDeMunicipios(EnderecoController.endereco.codmunicipio)}"
                                          icon="glyphicon-ok" size="sm" class="btn-incluir"
                                          update=":frmcadbairro:msgBairro, frmPrincipal:tbv:outBairro"
-                                         value="Incluir" oncomplete="PF('dlgcadastrobairro').hide()"/>
+                                         value="Incluir"/>
 
                         <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" class="btn-voltar"

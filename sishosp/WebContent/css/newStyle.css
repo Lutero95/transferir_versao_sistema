@@ -92,8 +92,9 @@ body {
 	animation: cor_fonte 3s alternate infinite ease-in-out;
 }
 
-@
-keyframes cor_fonte {from { filter:drop-shadow(000var ( --cor-neon));
+@keyframes cor_fonte {
+	from {
+	 filter:drop-shadow(000var ( --cor-neon));
 	
 }
 

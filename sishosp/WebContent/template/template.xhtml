@@ -20,7 +20,8 @@
 	<link rel="shortcut icon" href="../../imgs/favicon.png" />
 
 	<link rel="styleSheet" type="text/css" href="../../css/newStyle.css" />
-	<link rel="styleSheet" type="text/css" href="../../css/font-awesome.css" />
+	<link rel="styleSheet" type="text/css"
+		href="../../css/font-awesome.css" />
 	<link rel="stylesheet" type="text/css" href="../../css/datatable.css" />
 
 		type="text/javascript" />
@@ -61,51 +62,51 @@
 </h:head>
 <h:body>
 	<p:dialog header="Alteração de senha" widgetVar="dlgAlterarSenha"
-			modal="true" styleClass="topDialog" dynamic="true">
-			<h:form id="frmAlterarSenha">
-				<p:growl id="msgAlterarSenha"></p:growl>
-				<h:panelGrid columns="1" cellpadding="3">
-					<b:label value="Senha Atual" severity="info" style="margin-left:5px;"/>
-					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
-						placeholder="Senha Atual"
-						requiredMessage="Antiga Senha: Campo obrigatório"
-						value="#{MBFuncionarios.usuario.senha}"></b:inputSecret>
-					<b:message for="@previous" />
-<br/>
-					<b:label value="Nova Senha" severity="info" style="margin-left:5px;" />
-					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
-						placeholder="Senha Nova"
-						requiredMessage="Nova Senha: Campo obrigatório"
-						value="#{MBFuncionarios.usuario.novaSenha}"></b:inputSecret>
-					<b:message for="@previous" />
-<br/>
-					<b:label value="Confirmação de Nova Senha" severity="info"  style="margin-left:5px;"/>
-					<b:inputSecret style="padding:10px;margin-top:10px" required="true"
-						placeholder="Confirmação Senha Nova"
-						requiredMessage="Confirmação Nova Senha: Campo obrigatório"
-						value="#{MBFuncionarios.usuario.confirmacaoNovaSenha}"></b:inputSecret>
-					<b:message for="@previous" />
+		modal="true" styleClass="topDialog" dynamic="true">
+		<h:form id="frmAlterarSenha">
+			<p:growl id="msgAlterarSenha"></p:growl>
+			<h:panelGrid columns="1" cellpadding="3">
+				<b:label value="Senha Atual" severity="info"
+					style="margin-left:5px;" />
+				<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+					placeholder="Senha Atual"
+					requiredMessage="Antiga Senha: Campo obrigatório"
+					value="#{MBFuncionarios.usuario.senha}"></b:inputSecret>
+				<b:message for="@previous" />
+				<br />
+				<b:label value="Nova Senha" severity="info" style="margin-left:5px;" />
+				<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+					placeholder="Senha Nova"
+					requiredMessage="Nova Senha: Campo obrigatório"
+					value="#{MBFuncionarios.usuario.novaSenha}"></b:inputSecret>
+				<b:message for="@previous" />
+				<br />
+				<b:label value="Confirmação de Nova Senha" severity="info"
+					style="margin-left:5px;" />
+				<b:inputSecret style="padding:10px;margin-top:10px" required="true"
+					placeholder="Confirmação Senha Nova"
+					requiredMessage="Confirmação Nova Senha: Campo obrigatório"
+					value="#{MBFuncionarios.usuario.confirmacaoNovaSenha}"></b:inputSecret>
+				<b:message for="@previous" />
 
-				</h:panelGrid>
+			</h:panelGrid>
 
-				<div align="center">
-				
-						<br/>
-							   <b:commandButton value="Alterar Senha" class="btn-sim"
-							   update=":frmAlterarSenha:msgAlterarSenha"  
-						action="#{MBFuncionarios.alterarSenhaFuncionario()}"
-						ajax="true"
-						 />
-						
-						   <b:commandButton value="Fechar" class="btn-nao"  style="margin-left:20px;margin-top:-14px;"
-						oncomplete="PF('dlgAlterarSenha').hide();"  ajax="true"
-						 />
-				</div>
+			<div align="center">
 
-			</h:form>
-		</p:dialog>
+				<br />
+				<b:commandButton value="Alterar Senha" class="btn-sim"
+					update=":frmAlterarSenha:msgAlterarSenha"
+					action="#{MBFuncionarios.alterarSenhaFuncionario()}" ajax="true" />
 
-<p:growl id="msgPagina"/>
+				<b:commandButton value="Fechar" class="btn-nao"
+					style="margin-left:20px;margin-top:-14px;"
+					oncomplete="PF('dlgAlterarSenha').hide();" ajax="true" />
+			</div>
+
+		</h:form>
+	</p:dialog>
+
+	<p:growl id="msgPagina" />
 	<p:ajaxStatus onstart="PF('statusDialog').show();"
 		onsuccess="PF('statusDialog').hide();" />
 	<p:dialog id="myDialogId" styleClass="process_msg" modal="true"
@@ -120,16 +121,30 @@
 	<div id="header">
 		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto">
 			<h:form id="mainFormtempSist">
-		<h:outputText  style="position:absolute;z-index:1000"
-                               value="#{MBFuncionarios.usuarioLogado.nome}" 
-                              
-                               rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
-                               />
+			<p:row>
+				<p:column>
+					<h:outputText
+						style="position:absolute;z-index:1000;margin-top:20px;color:white;"
+						value="#{MBFuncionarios.usuarioLogado.nome}"
+						rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
+				</p:column>
+				<p:column>
 
-			<p:commandLink styleClass="editUSer" oncomplete="PF('dlguser').show()" style="position:absolute;z-index:1000" id="linkuser" title="Opções para o usuário">
-			<h:graphicImage value="../../imgs/edit-user.png" style="width:35px;margin-top:10px;margin-left:-155px;position:absolute;z-index:1000"></h:graphicImage>
-			
-</p:commandLink>
+					<h:outputText
+						style="position:absolute;z-index:1000;margin-top:35px;color:white;position:absolute"
+						value="#{MBFuncionarios.usuarioLogado.unidade.nomeEmpresa}"
+						rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
+				</p:column>
+				</p:row>
+				<p:commandLink styleClass="editUSer"
+					oncomplete="PF('dlguser').show()"
+					style="position:absolute;z-index:1000" id="linkuser"
+					title="Opções para o usuário">
+					<h:graphicImage value="../../imgs/edit-user.png"
+						style="width:35px;margin-top:10px;margin-left:-155px;position:absolute;z-index:1000"></h:graphicImage>
+
+				</p:commandLink>
+
 				<ui:include src="/pages/comum/menu.xhtml" />
 			</h:form>
 		</b:navBar>
@@ -149,7 +164,8 @@
 			<a href="#" target="_blank"> <img src="../../imgs/twitter.png" /></a>
 		</div>
 		<div class="foot-text">
-			<p>© 2019 EHosp Sistemas Inteligentes. Todos os direitos reservados.</p>
+			<p>© 2019 EHosp Sistemas Inteligentes. Todos os direitos
+				reservados.</p>
 			<p>Versão: 1.1.1</p>
 		</div>
 	</div>
