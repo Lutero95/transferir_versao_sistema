@@ -28,27 +28,11 @@
 						 />
         </p:panelGrid>
     </p:sidebar>
-    <b:navBar brand="EHosp" fixed="top" inverse="true" class="texto" style="z-index:0 !important"
-              rendered="#{MBFuncionarios.usuarioLogado.codigo != null}">
-        <p:outputPanel autoUpdate="true">
-	
-            <h:form>
-                <b:navbarLinks class="new-menu-usuario">
 
-                    <b:navLink class="user-index"
-                               value="#{MBFuncionarios.usuarioLogado.nome}" iconAwesome="user"
-                               rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
-                               style="cursor: default !important;"/>
-
-                </b:navbarLinks>
-
-            </h:form>
-
+ 
             <p:menubar styleClass="menu-sistema" model="#{MBFuncionarios.menuModel}"/>
 
-        </p:outputPanel>
 
-    </b:navBar>
 
 </ui:composition>
 </body>

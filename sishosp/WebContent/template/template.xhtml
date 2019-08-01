@@ -120,6 +120,12 @@
 	<div id="header">
 		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto">
 			<h:form id="mainFormtempSist">
+		<h:outputText  style="position:absolute;z-index:1000"
+                               value="#{MBFuncionarios.usuarioLogado.nome}" 
+                              
+                               rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
+                               />
+
 			<p:commandLink styleClass="editUSer" oncomplete="PF('dlguser').show()" style="position:absolute;z-index:1000" id="linkuser" title="Opções para o usuário">
 			<h:graphicImage value="../../imgs/edit-user.png" style="width:35px;margin-top:10px;margin-left:-155px;position:absolute;z-index:1000"></h:graphicImage>
 			
