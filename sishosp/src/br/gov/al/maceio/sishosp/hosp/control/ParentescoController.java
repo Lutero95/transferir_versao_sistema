@@ -105,6 +105,11 @@ public class ParentescoController implements Serializable {
 
     }
 
+    public void atualizarListaDeParentescos() throws ProjetoException {
+        JSFUtil.fecharDialog("dlgcadastroparentesco");
+        listarParentescos();
+    }
+
     public List<Parentesco> listarParentescos() throws ProjetoException {
         return pDao.listaParentescos();
     }
