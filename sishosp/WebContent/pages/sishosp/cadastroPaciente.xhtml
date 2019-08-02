@@ -96,20 +96,21 @@
 										value="#{GeneroController.listarTodosOsGeneros()}" var="sis"
 										itemLabel="#{sis.descricao}" itemValue="#{sis.id}" />
 								</b:selectOneMenu>
-								</b:column>
-							<b:column span="1" style="width:10px;margin-left:-2%;margin-top:15px">
-							
-								<p:commandButton icon="ui-icon-plus"  title="Incluir Gênero"
+							</b:column>
+							<b:column span="1"
+								style="width:10px;margin-left:-2%;margin-top:15px">
+
+								<p:commandButton icon="ui-icon-plus" title="Incluir Gênero"
 									update=":frmcadgenero:outgenero"
 									oncomplete="PF('dlgcadastrogenero').show()" />
-									
 
-							
-							
+
+
+
 							</b:column>
-							
 
-							
+
+
 
 						</b:row>
 
@@ -464,7 +465,7 @@
 
 							</b:column>
 
-							<b:column span="1" class="label-position">
+							<b:column span="2" style="margin-top: 5px;">
 
 								<p:commandButton icon="ui-icon-plus"
 									actionListener="#{EnderecoController.limparDados}"
@@ -655,7 +656,7 @@
 
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
-								<b:label value="Escolaridade" severity="info" style="float:left"/>
+								<b:label value="Escolaridade" severity="info" />
 
 								<p:autoComplete id="escolacomplete1"
 									class="select-agendaEquipe4"
@@ -676,9 +677,9 @@
 									update=":buscaescolaridade" />
 							</b:column>
 
-							<b:column span="1" style="width:10px;margin-left:-2%;margin-top:10px">
+							<b:column span="1" >
 
-								<p:commandButton icon="ui-icon-plus" 
+								<p:commandButton icon="ui-icon-plus"
 									actionListener="#{EscolaridadeController.limparDados}"
 									update=":frmcadescolaridade:outescolaridade"
 									style="margin-top:17px;" title="incluir Escolaridade"
@@ -686,9 +687,9 @@
 
 							</b:column>
 
-
-							<b:column span="3" class="label-position">
-								<b:label value="Escola" severity="info" class="fire-label" />
+							<b:column span="3"
+								class="label-position new-data-size new-comple1">
+								<b:label value="Escola" severity="info"  class="fire-label"  />
 
 								<p:autoComplete id="escolacomplete2"
 									class="select-agendaEquipe4"
@@ -707,7 +708,7 @@
 									update=":buscaescola" />
 							</b:column>
 
-							<b:column span="1" style="width:10px;margin-left:-2%;margin-top:15px">
+							<b:column span="2" style="width:5px">
 
 								<p:commandButton icon="ui-icon-plus" title="Incluir Escola"
 									actionListener="#{EscolaController.limparDados}"
@@ -716,9 +717,12 @@
 
 							</b:column>
 
+
+							
+
 						</b:row>
 
-						<b:row>	
+						<b:row>
 
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
@@ -742,10 +746,11 @@
 
 							</b:column>
 
-							<b:column span="1" style="width:10px;margin-left:-2%;margin-top:15px">
+							<b:column span="2" style="width:5px">
 
 								<p:commandButton icon="ui-icon-plus"
-									actionListener="#{ProfissaoController.limparDados}" title="Incluir Profissão"
+									actionListener="#{ProfissaoController.limparDados}"
+									title="Incluir Profissão"
 									update=":frmcadprofissao:outprofissao" style="margin-top:17px;"
 									oncomplete="PF('dlgcadastroprofissao').show()" />
 
@@ -862,7 +867,7 @@
 
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
-								<b:label value="Encaminhado" severity="info" />
+								<b:label value="Encaminhamento" severity="info" />
 
 								<p:autoComplete id="escolacomplete4"
 									class="select-agendaEquipe4"
@@ -881,7 +886,8 @@
 									icon="ui-icon-search" update=":buscaencaminhado" />
 							</b:column>
 
-							<b:column span="1" style="width:10px;margin-left:-2%;margin-top:15px">
+							<b:column span="1"
+>
 
 								<p:commandButton icon="ui-icon-plus"
 									actionListener="#{EncaminhadoController.limparDados}"
@@ -893,9 +899,9 @@
 
 							<b:column span="3"
 								class="label-position new-data-size new-comple1">
-								<b:label value="Transporte" severity="info" class="fire-label" />
+								<b:label value="Meio de Transporte" severity="info" class="fire-label" />
 
-								<p:autoComplete id="escolacomplete5" 
+								<p:autoComplete id="escolacomplete5"
 									class="select-agendaEquipe4"
 									value="#{PacienteController.paciente.formatransporte}"
 									size="31" completeMethod="#{PacienteController.completeText5}"
@@ -913,7 +919,8 @@
 									icon="ui-icon-search" update=":buscatransporte" />
 							</b:column>
 
-							<b:column span="1" style="width:10px;margin-left:-2%;margin-top:15px">
+							<b:column span="1"
+								>
 
 								<p:commandButton icon="ui-icon-plus"
 									actionListener="#{FormaTransporteController.limparDados}"
@@ -1440,7 +1447,8 @@
 					<p:outputPanel id="outcadbairro">
 						<b:row>
 							<b:column span="5" class="label-position">
-								<b:label for="inputbairro" value="Bairro" severity="info"  style="float:left"/>
+								<b:label for="inputbairro" value="Bairro" severity="info"
+									style="float:left" />
 
 								<b:inputText value="#{EnderecoController.bairro}"
 									validator="CaractereEmBrancoValidator" class="form-control"
@@ -1454,7 +1462,7 @@
 
 						<b:row>
 							<b:column span="5" class="label-position">
-								<b:label value="Estado" severity="info"  style="float:left"/>
+								<b:label value="Estado" severity="info" style="float:left" />
 
 								<b:selectOneMenu required="true"
 									requiredMessage="Estado: Campo obrigatório!"
@@ -1471,7 +1479,7 @@
 
 						<b:row>
 							<b:column span="5" class="label-position">
-								<b:label value="Município" severity="info"  style="float:left" />
+								<b:label value="Município" severity="info" style="float:left" />
 
 								<p:outputPanel id="outMunicipioscadBairro">
 
@@ -1493,25 +1501,24 @@
 					<br></br>
 
 					<b:commandButton
-								actionListener="#{EnderecoController.gravarBairros()}"
-								style="float:left"
-								action="#{EnderecoController.atualizarListaDeMunicipios(EnderecoController.endereco.codmunicipio)}"
-								icon="glyphicon-ok" size="sm" look="success"
-								update=":frmcadbairro:msgBairro, frmPrincipal:tbv:outBairro"
-								value="Incluir"  />
-								
-								<p:commandButton value="Voltar" style="padding:3px" icon="glyphicon-arrow-left"
-								 process="@this" immediate="true" 
-								 class="btn-voltar"
-								ajax="true"
-								onclick="PF('dlgcadastrobairro').hide()">
-							</p:commandButton>
-					
+						actionListener="#{EnderecoController.gravarBairros()}"
+						style="float:left"
+						action="#{EnderecoController.atualizarListaDeMunicipios(EnderecoController.endereco.codmunicipio)}"
+						icon="glyphicon-ok" size="sm" look="success"
+						update=":frmcadbairro:msgBairro, frmPrincipal:tbv:outBairro"
+						value="Incluir" />
+
+					<p:commandButton value="Voltar" style="padding:3px"
+						icon="glyphicon-arrow-left" process="@this" immediate="true"
+						class="btn-voltar" ajax="true"
+						onclick="PF('dlgcadastrobairro').hide()">
+					</p:commandButton>
 
 
-					</div>
 
-				
+				</div>
+
+
 			</h:form>
 		</p:dialog>
 
@@ -1569,7 +1576,8 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgcadastroprofissao" modal="true" resizable="false" responsive="true">
+		<p:dialog widgetVar="dlgcadastroprofissao" modal="true"
+			resizable="false" responsive="true">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1585,10 +1593,10 @@
 						<b:row>
 
 							<b:column span="10" class="label-position">
-								<b:label for="inputname" value="Descrição" severity="info" style="float:left" />
+								<b:label for="inputname" value="Descrição" severity="info"
+									style="float:left" />
 
-								<b:inputText validator="CaractereEmBrancoValidator"
-								size="30"
+								<b:inputText validator="CaractereEmBrancoValidator" size="30"
 									value="#{ProfissaoController.profissao.descprofissao}"
 									class="form-control" id="inputname" required="true"
 									requiredMessage="Descrição: Campo obrigatório!"
@@ -1604,19 +1612,19 @@
 					</p:outputPanel>
 
 					<br></br>
-					
+
 					<b:commandButton
-							actionListener="#{ProfissaoController.gravarProfissao()}"
-							action="#{ProfissaoController.atualizarListaDeProfissoes()}"
-							icon="glyphicon-ok" size="sm" look="success" style="float:left"
-							update=":frmPrincipal, msgPagina" value="Incluir" />
+						actionListener="#{ProfissaoController.gravarProfissao()}"
+						action="#{ProfissaoController.atualizarListaDeProfissoes()}"
+						icon="glyphicon-ok" size="sm" look="success" style="float:left"
+						update=":frmPrincipal, msgPagina" value="Incluir" />
 
 
-						<p:commandButton value="Fechar" 
-							size="sm" immediate="true" class="btn-voltar" style="float:right;padding:5px"
-							oncomplete="PF('dlgcadastroprofissao').hide()" />
+					<p:commandButton value="Fechar" size="sm" immediate="true"
+						class="btn-voltar" style="float:right;padding:5px"
+						oncomplete="PF('dlgcadastroprofissao').hide()" />
 
-					</div>
+				</div>
 
 			</h:form>
 		</p:dialog>
@@ -1639,7 +1647,8 @@
 						<b:row>
 
 							<b:column span="10" class="label-position" style="float:left">
-								<b:label for="inputname" value="Descrição" severity="info" style="float:left" />
+								<b:label for="inputname" value="Descrição" severity="info"
+									style="float:left" />
 
 								<b:inputText validator="CaractereEmBrancoValidator" size="30"
 									value="#{EncaminhadoController.encaminhado.descencaminhado}"
@@ -1658,21 +1667,21 @@
 					<br></br>
 
 					<b:commandButton
-							actionListener="#{EncaminhadoController.gravarEncaminhado()}"
-							action="#{EncaminhadoController.atualizarListaDeTiposDeEncaminhamento()}"
-							icon="glyphicon-ok" size="sm" look="success" style="float:left"
-							update=":frmPrincipal, msgPagina" value="Incluir" />
+						actionListener="#{EncaminhadoController.gravarEncaminhado()}"
+						action="#{EncaminhadoController.atualizarListaDeTiposDeEncaminhamento()}"
+						icon="glyphicon-ok" size="sm" look="success" style="float:left"
+						update=":frmPrincipal, msgPagina" value="Incluir" />
 
-						<p:commandButton value="Fechar" 
-							size="sm" immediate="true" class="btn-voltar" style="float:right; padding:5px"
-							oncomplete="PF('dlgcadastrotipoencaminhamento').hide()" />
-					</div>
+					<p:commandButton value="Fechar" size="sm" immediate="true"
+						class="btn-voltar" style="float:right; padding:5px"
+						oncomplete="PF('dlgcadastrotipoencaminhamento').hide()" />
+				</div>
 
 			</h:form>
 		</p:dialog>
 
 		<p:dialog widgetVar="dlgcadastroformatransporte" modal="true"
-			 resizable="false" responsive="true">
+			resizable="false" responsive="true">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1688,7 +1697,8 @@
 
 						<b:row>
 							<b:column span="10" class="label-position">
-								<b:label for="inputname" value="Descrição" severity="info"  style="float:left"/>
+								<b:label for="inputname" value="Descrição" severity="info"
+									style="float:left" />
 
 								<b:inputText validator="CaractereEmBrancoValidator" size="30"
 									value="#{FormaTransporteController.transporte.descformatransporte}"
@@ -1705,23 +1715,23 @@
 					<br></br>
 
 					<b:commandButton
-							actionListener="#{FormaTransporteController.gravarTransporte()}"
-							action="#{FormaTransporteController.atualizarListaFormaTransporte()}"
-							icon="glyphicon-ok" size="sm" look="success" style="float:left"
-							update=":frmPrincipal, msgPagina" value="Incluir" />
-							
-						<p:commandButton value="Fechar" style="float:right;padding:5px"
-							size="sm" immediate="true" class="btn-voltar"
-							oncomplete="PF('dlgcadastroformatransporte').hide()" />
+						actionListener="#{FormaTransporteController.gravarTransporte()}"
+						action="#{FormaTransporteController.atualizarListaFormaTransporte()}"
+						icon="glyphicon-ok" size="sm" look="success" style="float:left"
+						update=":frmPrincipal, msgPagina" value="Incluir" />
 
-					</div>
+					<p:commandButton value="Fechar" style="float:right;padding:5px"
+						size="sm" immediate="true" class="btn-voltar"
+						oncomplete="PF('dlgcadastroformatransporte').hide()" />
 
-			
+				</div>
+
+
 			</h:form>
 		</p:dialog>
 
 		<p:dialog widgetVar="dlgcadastroescolaridade" modal="true"
-			 resizable="false" responsive="true">
+			resizable="false" responsive="true">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1730,19 +1740,19 @@
 				</h:panelGroup>
 			</f:facet>
 			<h:form id="frmcadescolaridade">
-	
+
 				<div align="center">
 
 					<p:outputPanel id="outescolaridade">
 
 						<b:row>
 							<b:column span="10" class="label-position">
-								<b:label for="inputname" value="Descrição" severity="info" style="float:left"/>
+								<b:label for="inputname" value="Descrição" severity="info"
+									style="float:left" />
 
 								<b:inputText validator="CaractereEmBrancoValidator"
 									value="#{EscolaridadeController.escolaridade.descescolaridade}"
-									class="form-control" id="inputname" required="true"
-									size="30"
+									class="form-control" id="inputname" required="true" size="30"
 									validatorMessage="Escolaridade deve conter entre 2 e 50 caracteres."
 									requiredMessage="Escolaridade: Campo Obrigatório!">
 									<f:validateLength minimum="2" maximum="50" />
@@ -1753,18 +1763,18 @@
 					</p:outputPanel>
 
 					<br></br>
-					
-						<b:commandButton
-							actionListener="#{EscolaridadeController.gravarEscolaridade()}"
-							action="#{EscolaridadeController.atualizarListaDeEscolaridade()}"
-							icon="glyphicon-ok" size="sm" look="success" style="float:left"
-							update=":frmPrincipal, msgPagina" value="Incluir" />
 
-						
+					<b:commandButton
+						actionListener="#{EscolaridadeController.gravarEscolaridade()}"
+						action="#{EscolaridadeController.atualizarListaDeEscolaridade()}"
+						icon="glyphicon-ok" size="sm" look="success" style="float:left"
+						update=":frmPrincipal, msgPagina" value="Incluir" />
 
-						<p:commandButton value="Fechar" style="float:right;padding:5px" 
-							size="sm" immediate="true" class="btn-voltar"
-							oncomplete="PF('dlgcadastroescolaridade').hide()" />
+
+
+					<p:commandButton value="Fechar" style="float:right;padding:5px"
+						size="sm" immediate="true" class="btn-voltar"
+						oncomplete="PF('dlgcadastroescolaridade').hide()" />
 
 
 
@@ -1772,7 +1782,8 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgcadastroescola" modal="true" resizable="false"  responsive="true">
+		<p:dialog widgetVar="dlgcadastroescola" modal="true" resizable="false"
+			responsive="true">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1788,11 +1799,12 @@
 						<b:row>
 
 							<b:column span="10" class="label-position">
-								<b:label for="inputname" value="Descrição" severity="info" style="float:left" />
+								<b:label for="inputname" value="Descrição" severity="info"
+									style="float:left" />
 
 								<b:inputText value="#{EscolaController.escola.descescola}"
 									validator="CaractereEmBrancoValidator" class="form-control"
-									id=	"inputname" required="true" size="30"
+									id="inputname" required="true" size="30"
 									validatorMessage="Nome deve conter entre 2 e 50 caracteres."
 									requiredMessage="Descrição: Campo obrigatório!">
 									<f:validateLength minimum="2" maximum="50" />
@@ -1805,17 +1817,18 @@
 					</p:outputPanel>
 
 					<br></br>
-					
-					<b:commandButton
-							actionListener="#{EscolaController.gravarEscola()}"
-							action="#{EscolaController.atualizarListaDeEscolas()}"
-							icon="glyphicon-ok" size="sm" look="success" style="float:left"
-							update=":frmPrincipal, msgPagina" value="Incluir" />
 
-					
-						<p:commandButton value="Fechar" icon="glyphicon-arrow-left"
-							size="sm" immediate="true" class="btn-voltar" style="padding:5px;float:right"
-							oncomplete="PF('dlgcadastroescola').hide()" />
+					<b:commandButton
+						actionListener="#{EscolaController.gravarEscola()}"
+						action="#{EscolaController.atualizarListaDeEscolas()}"
+						icon="glyphicon-ok" size="sm" look="success" style="float:left"
+						update=":frmPrincipal, msgPagina" value="Incluir" />
+
+
+					<p:commandButton value="Fechar" icon="glyphicon-arrow-left"
+						size="sm" immediate="true" class="btn-voltar"
+						style="padding:5px;float:right"
+						oncomplete="PF('dlgcadastroescola').hide()" />
 
 
 
@@ -1823,8 +1836,8 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgcadastrogenero" modal="true" 
-			 resizable="false" responsive="true">
+		<p:dialog widgetVar="dlgcadastrogenero" modal="true" resizable="false"
+			responsive="true">
 
 			<f:facet name="header">
 				<h:panelGroup>
@@ -1840,11 +1853,11 @@
 						<b:row>
 
 							<b:column span="10" class="label-position">
-								<b:label for="inputname" value="Descrição" severity="info" style="float:left"/>
+								<b:label for="inputname" value="Descrição" severity="info"
+									style="float:left" />
 
 								<b:inputText validator="CaractereEmBrancoValidator"
-								style="float:left"
-									value="#{GeneroController.genero.descricao}"
+									style="float:left" value="#{GeneroController.genero.descricao}"
 									class="form-control" id="inputname" required="true"
 									requiredMessage="Descrição: Campo obrigatório!"
 									validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">
@@ -1858,19 +1871,16 @@
 					<br></br>
 
 					<div align="center">
-					<b:commandButton
-								actionListener="#{GeneroController.gravarGenero()}"
+						<b:commandButton
+							actionListener="#{GeneroController.gravarGenero()}"
 							action="#{GeneroController.atualizarListaDeGeneros()}"
-								style="float:left"
-								
-								icon="glyphicon-ok" size="sm" look="success"
-								update=":frmPrincipal msgPagina"
-								value="Incluir"  />
-					
-					
+							style="float:left" icon="glyphicon-ok" size="sm" look="success"
+							update=":frmPrincipal msgPagina" value="Incluir" />
+
+
 
 						<p:commandButton value="Voltar" style="padding:5px"
-							 immediate="true" class="btn-voltar"
+							immediate="true" class="btn-voltar"
 							oncomplete="PF('dlgcadastrogenero').hide()" />
 
 					</div>
@@ -1879,7 +1889,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgcadastroreligiao" modal="true" 
+		<p:dialog widgetVar="dlgcadastroreligiao" modal="true"
 			resizable="false" responsive="true">
 
 			<f:facet name="header">
@@ -1896,7 +1906,8 @@
 						<b:row>
 
 							<b:column span="10" class="label-position">
-								<b:label for="inputname" value="Descrição" severity="info" style="float:left"/>
+								<b:label for="inputname" value="Descrição" severity="info"
+									style="float:left" />
 
 								<b:inputText validator="CaractereEmBrancoValidator"
 									value="#{ReligiaoController.religiao.descricao}"
