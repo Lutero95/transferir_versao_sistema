@@ -114,6 +114,11 @@ public class EscolaridadeController implements Serializable {
         listaEscolaridade = eDao.listaEscolaridade();
     }
 
+    public void atualizarListaDeEscolaridade() throws ProjetoException {
+        JSFUtil.fecharDialog("dlgcadastroescolaridade");
+        listaEscolaridade = eDao.listaEscolaridade();
+    }
+
     public List<EscolaridadeBean> listarEscolaridades() throws ProjetoException {
         return eDao.listaEscolaridade();
     }
