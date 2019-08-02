@@ -822,6 +822,14 @@
                                                  icon="ui-icon-search" update=":buscaencaminhado"/>
                             </b:column>
 
+                            <b:column span="1" class="label-position">
+
+                                <p:commandButton icon="ui-icon-plus" actionListener="#{EncaminhadoController.limparDados}"
+                                                 update=":frmcadtipoencaminhamento:outtipoencaminhamento" style="margin-top:17px;"
+                                                 oncomplete="PF('dlgcadastrotipoencaminhamento').show()"/>
+
+                            </b:column>
+
                             <b:column span="3"
                                       class="label-position new-data-size new-comple1">
                                 <b:label value="Transporte" severity="info" class="fire-label"/>
@@ -1525,6 +1533,59 @@
                         <b:commandButton value="Fechar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" class="btn-voltar"
                                          oncomplete="PF('dlgcadastroprofissao').hide()">
+                        </b:commandButton>
+
+                    </div>
+
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgcadastrotipoencaminhamento" modal="true" width="500px" height="300px"
+                  resizable="false" styleClass="topDialog">
+
+            <f:facet name="header">
+                <h:panelGroup>
+                    <h:outputText id="optcadtipoencaminhamento" value="Cadastro de Profissões"></h:outputText>
+                </h:panelGroup>
+            </f:facet>
+            <h:form id="frmcadtipoencaminhamento">
+
+                <div align="center">
+
+                    <p:outputPanel id="outtipoencaminhamento">
+
+                        <b:row>
+
+                            <b:column span="12" class="label-position">
+                                <b:label for="inputname" value="Descrição" severity="info" />
+
+                                <b:inputText validator="CaractereEmBrancoValidator"
+                                             value="#{EncaminhadoController.encaminhado.descencaminhado}"
+                                             class="form-control" id="inputname" required="true"
+                                             requiredMessage="Descrição: Campo obrigatório!"
+                                             validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">
+                                    <f:validateLength minimum="2" maximum="50" />
+
+                                </b:inputText>
+                            </b:column>
+
+                        </b:row>
+
+                    </p:outputPanel>
+
+                    <br></br>
+
+                    <div align="center">
+                        <b:commandButton
+                                actionListener="#{EncaminhadoController.gravarEncaminhado()}"
+                                action="#{EncaminhadoController.atualizarListaDeTiposDeEncaminhamento()}"
+                                icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+                                update=":frmPrincipal msgPagina" value="Incluir" />
+
+                        <b:commandButton value="Fechar" icon="glyphicon-arrow-left"
+                                         size="sm" immediate="true" class="btn-voltar"
+                                         oncomplete="PF('dlgcadastrotipoencaminhamento').hide()">
                         </b:commandButton>
 
                     </div>

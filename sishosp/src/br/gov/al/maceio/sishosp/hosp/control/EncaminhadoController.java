@@ -110,6 +110,11 @@ public class EncaminhadoController implements Serializable {
         listaTiposEncaminhamento = eDao.listaEncaminhados();
     }
 
+    public void atualizarListaDeTiposDeEncaminhamento() throws ProjetoException {
+        JSFUtil.fecharDialog("dlgcadastrotipoencaminhamento");
+        listaTiposEncaminhamento = eDao.listaEncaminhados();
+    }
+
     public EncaminhadoBean getEncaminhado() {
         return encaminhado;
     }
