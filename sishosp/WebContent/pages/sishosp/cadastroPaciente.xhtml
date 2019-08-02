@@ -191,6 +191,13 @@
                                 </b:selectOneMenu>
                             </b:column>
 
+                            <b:column span="1" class="label-position">
+
+                                <p:commandButton icon="ui-icon-plus" actionListener="#{ReligiaoController.limparDados}"
+                                                 update=":frmcadreligiao:outreligiao" style="margin-top:17px;" oncomplete="PF('dlgcadastroreligiao').show()"/>
+
+                            </b:column>
+
                             <b:column span="5" class="label-position new-col5">
                                 <b:label for="conjuge" value="Cônjuge" severity="info"/>
 
@@ -1812,6 +1819,56 @@
                     <div align="center">
                         <p:commandButton actionListener="#{GeneroController.gravarGenero()}"
                                          action="#{GeneroController.atualizarListaDeGeneros()}"
+                                         icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
+                                         update=":frmPrincipal msgPagina" value="Incluir" />
+
+                        <p:commandButton value="Fechar" icon="glyphicon-arrow-left"
+                                         size="sm" immediate="true" class="btn-voltar"
+                                         oncomplete="PF('dlgcadastrogenero').hide()"/>
+
+                    </div>
+
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgcadastroreligiao" modal="true" width="500px" height="300px"
+                  resizable="false" styleClass="topDialog">
+
+            <f:facet name="header">
+                <h:panelGroup>
+                    <h:outputText id="optcadreligiao" value="Cadastro de Religião"></h:outputText>
+                </h:panelGroup>
+            </f:facet>
+            <h:form id="frmcadreligiao">
+
+                <div align="center">
+
+                    <p:outputPanel id="outreligiao">
+
+                        <b:row>
+
+                            <b:column span="12" class="label-position">
+                                <b:label for="inputname" value="Descrição" severity="info" />
+
+                                <b:inputText validator="CaractereEmBrancoValidator"
+                                             value="#{ReligiaoController.religiao.descricao}"
+                                             class="form-control" id="inputname" required="true"
+                                             requiredMessage="Descrição: Campo obrigatório!"
+                                             validatorMessage="Descrição deve conter entre 2 e 50 caracteres.">
+                                    <f:validateLength minimum="2" maximum="50" />
+                                </b:inputText>
+                            </b:column>
+
+                        </b:row>
+
+                    </p:outputPanel>
+
+                    <br></br>
+
+                    <div align="center">
+                        <p:commandButton actionListener="#{ReligiaoController.gravarReligiao()}"
+                                         action="#{ReligiaoController.atualizarListaDeReligioes()}"
                                          icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
                                          update=":frmPrincipal msgPagina" value="Incluir" />
 

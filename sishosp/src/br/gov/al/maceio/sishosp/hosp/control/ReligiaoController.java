@@ -72,6 +72,11 @@ public class ReligiaoController implements Serializable {
         listaReligioes = rDao.listarReligiao();
     }
 
+    public void atualizarListaDeReligioes() throws ProjetoException {
+        JSFUtil.fecharDialog("dlgcadastroreligiao");
+        listarTodasAsReligioes();
+    }
+
     public List<Religiao> listarTodasAsReligioes() throws ProjetoException {
 
         if(!VerificadorUtil.verificarSeListaNuloOuVazia(Collections.singletonList(listaReligioes))) {
