@@ -111,6 +111,12 @@ public class ProfissaoController implements Serializable {
 
     }
 
+    public void atualizarListaDeProfissoes() throws ProjetoException {
+        JSFUtil.fecharDialog("dlgcadastroprofissao");
+        listaProfissoes = pDao.listaProfissoes();
+
+    }
+
     public ProfissaoBean getProfissao() {
         return profissao;
     }
