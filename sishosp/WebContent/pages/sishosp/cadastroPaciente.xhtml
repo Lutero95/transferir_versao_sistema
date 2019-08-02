@@ -851,6 +851,15 @@
                                                  onclick="PF('dlgbuscacomochegou').show();"
                                                  icon="ui-icon-search" update=":buscatransporte"/>
                             </b:column>
+
+                            <b:column span="1" class="label-position">
+
+                                <p:commandButton icon="ui-icon-plus" actionListener="#{FormaTransporteController.limparDados}"
+                                                 update=":frmcadformatransporte:outformatransporte" style="margin-top:17px;"
+                                                 oncomplete="PF('dlgcadastroformatransporte').show()"/>
+
+                            </b:column>
+
                         </b:row>
 
                         <p:outputPanel id="outDeficiencia" autoUpdate="true">
@@ -1420,16 +1429,15 @@
                     <br></br>
 
                     <div align="center">
-                        <b:commandButton actionListener="#{EnderecoController.gravarBairros()}"
+                        <p:commandButton actionListener="#{EnderecoController.gravarBairros()}"
                                          action="#{EnderecoController.atualizarListaDeMunicipios(EnderecoController.endereco.codmunicipio)}"
                                          icon="glyphicon-ok" size="sm" class="btn-incluir"
                                          update=":frmcadbairro:msgBairro, frmPrincipal:tbv:outBairro"
                                          value="Incluir"/>
 
-                        <b:commandButton value="Fechar" icon="glyphicon-arrow-left"
+                        <p:commandButton value="Fechar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" class="btn-voltar"
-                                         oncomplete="PF('dlgcadastrobairro').hide()">
-                        </b:commandButton>
+                                         oncomplete="PF('dlgcadastrobairro').hide()"/>
 
                     </div>
 
@@ -1472,15 +1480,14 @@
                     <br></br>
 
                     <div align="center">
-                        <b:commandButton actionListener="#{ParentescoController.gravarParentesco()}"
+                        <p:commandButton actionListener="#{ParentescoController.gravarParentesco()}"
                                          action="#{ParentescoController.atualizarListaDeParentescos()}"
                                          icon="glyphicon-ok" size="sm" look="success"
                                          update=":frmPrincipal, msgPagina" value="Incluir" class="btn-incluir"/>
 
-                        <b:commandButton value="Fechar" icon="glyphicon-arrow-left"
+                        <p:commandButton value="Fechar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" class="btn-voltar"
-                                         oncomplete="PF('dlgcadastroparentesco').hide()">
-                        </b:commandButton>
+                                         oncomplete="PF('dlgcadastroparentesco').hide()"/>
 
                     </div>
 
@@ -1525,15 +1532,14 @@
                     <br></br>
 
                     <div align="center">
-                        <b:commandButton actionListener="#{ProfissaoController.gravarProfissao()}"
+                        <p:commandButton actionListener="#{ProfissaoController.gravarProfissao()}"
                                          action="#{ProfissaoController.atualizarListaDeProfissoes()}"
                                          icon="glyphicon-ok" size="sm" look="success"
                                          update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir"/>
 
-                        <b:commandButton value="Fechar" icon="glyphicon-arrow-left"
+                        <p:commandButton value="Fechar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" class="btn-voltar"
-                                         oncomplete="PF('dlgcadastroprofissao').hide()">
-                        </b:commandButton>
+                                         oncomplete="PF('dlgcadastroprofissao').hide()"/>
 
                     </div>
 
@@ -1577,16 +1583,63 @@
                     <br></br>
 
                     <div align="center">
-                        <b:commandButton
+                        <p:commandButton
                                 actionListener="#{EncaminhadoController.gravarEncaminhado()}"
                                 action="#{EncaminhadoController.atualizarListaDeTiposDeEncaminhamento()}"
                                 icon="glyphicon-ok" size="sm" look="success" class="btn-incluir"
                                 update=":frmPrincipal msgPagina" value="Incluir" />
 
-                        <b:commandButton value="Fechar" icon="glyphicon-arrow-left"
+                        <p:commandButton value="Fechar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" class="btn-voltar"
-                                         oncomplete="PF('dlgcadastrotipoencaminhamento').hide()">
-                        </b:commandButton>
+                                         oncomplete="PF('dlgcadastrotipoencaminhamento').hide()"/>
+                    </div>
+
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgcadastroformatransporte" modal="true" width="500px" height="300px"
+                  resizable="false" styleClass="topDialog">
+
+            <f:facet name="header">
+                <h:panelGroup>
+                    <h:outputText id="optcadformatransporte" value="Cadastro de Profissões"></h:outputText>
+                </h:panelGroup>
+            </f:facet>
+            <h:form id="frmcadformatransporte">
+
+                <div align="center">
+
+                    <p:outputPanel id="outformatransporte">
+
+                        <b:row>
+                            <b:column span="12" class="label-position">
+                                <b:label for="inputname" value="Descrição" severity="info" />
+
+                                <b:inputText validator="CaractereEmBrancoValidator"
+                                             value="#{FormaTransporteController.transporte.descformatransporte}"
+                                             class="form-control" id="inputname" required="true"
+                                             validatorMessage="Forma de Transporte deve conter entre 2 e 50 caracteres."
+                                             requiredMessage="Descrição: Campo obrigatório!">
+                                    <f:validateLength minimum="2" maximum="50" />
+                                </b:inputText>
+                            </b:column>
+                        </b:row>
+
+                    </p:outputPanel>
+
+                    <br></br>
+
+                    <div align="center">
+                        <p:commandButton
+                                actionListener="#{FormaTransporteController.gravarTransporte()}"
+                                action="#{FormaTransporteController.atualizarListaFormaTransporte()}"
+                                icon="glyphicon-ok" size="sm" look="success"
+                                update=":frmPrincipal msgPagina" value="Incluir" class="btn-incluir" />
+
+                        <p:commandButton value="Fechar" icon="glyphicon-arrow-left"
+                                         size="sm" immediate="true" class="btn-voltar"
+                                         oncomplete="PF('dlgcadastroformatransporte').hide()"/>
 
                     </div>
 

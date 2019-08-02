@@ -109,6 +109,11 @@ public class FormaTransporteController implements Serializable {
         listaFormaTransporte = fDao.listaTransportes();
     }
 
+    public void atualizarListaFormaTransporte() throws ProjetoException {
+        JSFUtil.fecharDialog("dlgcadastroformatransporte");
+        listaFormaTransporte = fDao.listaTransportes();
+    }
+
     public FormaTransporteBean getTransporte() {
         return transporte;
     }
