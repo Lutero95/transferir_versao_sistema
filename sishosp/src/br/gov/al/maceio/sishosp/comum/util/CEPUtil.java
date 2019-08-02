@@ -30,6 +30,7 @@ public final class CEPUtil {
 
         } else {
             endereco.setCepValido(false);
+            
         }
         return endereco;
     }

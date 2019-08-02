@@ -134,25 +134,29 @@ public class PacienteController implements Serializable {
 
 	public void encontraCEP() throws ProjetoException {
 		bairroExiste = false;
-		paciente.setEndereco(CEPUtil.encontraCEP(paciente.getEndereco().getCep()));
-		EnderecoDAO enderecoDAO = new EnderecoDAO();
-		paciente.getEndereco().setCodbairro(enderecoDAO.verificarSeBairroExiste(paciente.getEndereco().getBairro(),
-				paciente.getEndereco().getCodmunicipio()));
-		if (paciente.getEndereco().getCodbairro() != null) {
-			if (paciente.getEndereco().getCodbairro() > 0) {
-				bairroExiste = true;
-			} else {
-				bairroExiste = false;
+		if (!paciente.getEndereco().getCep() .equals("")) {
+			paciente.setEndereco(CEPUtil.encontraCEP(paciente.getEndereco().getCep()));
+			EnderecoDAO enderecoDAO = new EnderecoDAO();
+			if (paciente.getEndereco().getCepValido() == true) {
+				paciente.getEndereco().setCodbairro(enderecoDAO.verificarSeBairroExiste(
+						paciente.getEndereco().getBairro(), paciente.getEndereco().getCodmunicipio()));
+				if (paciente.getEndereco().getCodbairro() != null) {
+					if (paciente.getEndereco().getCodbairro() > 0) {
+						bairroExiste = true;
+					} else {
+						bairroExiste = false;
+					}
+				} else {
+					bairroExiste = false;
+				}
+				enderecoDAO.listaBairrosPorMunicipio(paciente.getEndereco().getCodmunicipio());
 			}
-		} else {
-			bairroExiste = false;
-		}
-		enderecoDAO.listaBairrosPorMunicipio(paciente.getEndereco().getCodmunicipio());
-		if (paciente.getEndereco().getCepValido()) {
-			cidadeDoCep = true;
-		} else {
-			cidadeDoCep = false;
-			JSFUtil.adicionarMensagemAdvertencia("CEP inválido!", "Advertência");
+			if (paciente.getEndereco().getCepValido()) {
+				cidadeDoCep = true;
+			} else {
+				cidadeDoCep = false;
+				JSFUtil.adicionarMensagemAdvertencia("CEP inválido!", "Advertência");
+			}
 		}
 	}
 

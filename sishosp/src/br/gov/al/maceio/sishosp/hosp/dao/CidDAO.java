@@ -10,6 +10,8 @@ import java.util.List;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.comum.util.TratamentoErrosUtil;
 import br.gov.al.maceio.sishosp.hosp.model.CidBean;
 
 public class CidDAO {
@@ -18,31 +20,32 @@ public class CidDAO {
 	PreparedStatement ps = null;
 
 
-	public boolean gravarCid(CidBean cid) throws Exception, SQLException{
+	public boolean gravarCid(CidBean cid) throws ProjetoException{
 		Boolean retorno = false;
-		String sql = "insert into hosp.cid (desccid) values (?);";
+		String sql = "insert into hosp.cid (cid,desccid) values (?,?);";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
-			FuncionarioBean func = null;
-			func.getNome();
-			ps.setString(1, null);
-			//ps.setString(2, cid.getCid().toUpperCase());
+			//FuncionarioBean func = null;
+		//	func.getNome();
+			ps.setString(1, cid.getCid().toUpperCase());
+			ps.setString(2, cid.getDescCid().toUpperCase());
 			ps.execute();
 			con.commit();
 			retorno = true;
 		 
     } 
-	catch(SQLException sqle)
-	{
-		//System.out.println(sqle.getErrorCode());
-		//System.out.println(sqle.getLocalizedMessage());
-		//System.out.println(sqle.getSQLState());
-		//System.out.println(sqle.getCause());
-		//System.out.println(sqle.getSuppressed());
+		catch (NullPointerException | SQLException sqle ) {
+			sqle.printStackTrace();
+        
+		System.out.println(((SQLException) sqle).getErrorCode());
+		System.out.println(sqle.getLocalizedMessage());
+		System.out.println(((SQLException) sqle).getSQLState());
+		System.out.println(sqle.getCause());
+		System.out.println(sqle.getSuppressed());
 		sqle.printStackTrace();
-		 throw new Exception(sqle);
+		 throw new ProjetoException(TratamentoErrosUtil.retornarMensagemDeErro(((SQLException) sqle).getSQLState()));
 	}finally
 	{
 		try {

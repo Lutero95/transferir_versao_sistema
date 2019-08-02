@@ -331,9 +331,8 @@
 									requiredMessage="CEP: Campo obrigatório!">
 
 									<p:ajax listener="#{PacienteController.encontraCEP}"
-										update="outBairro, bairro1, bairro2, inputrua, estado, outMunicipios,
-                                            :msgPagina"
-										global="false" event="blur"></p:ajax>
+										update="outBairro, bairro1, bairro2, inputrua, estado, outMunicipios, msgPagina"
+										global="true" event="blur"></p:ajax>
 								</p:inputMask>
 							</b:column>
 
@@ -445,8 +444,8 @@
 
 								<p:outputPanel id="outBairro">
 									<b:selectOneMenu id="bairro1"
-										rendered="#{(PacienteController.paciente.endereco.bairroUnico == false and PacienteController.bairroExiste == true)
-                                                     or PacienteController.bairroExiste == null}"
+										rendered="#{(PacienteController.bairroExiste == true)
+                                                     or PacienteController.bairroExiste == null or  PacienteController.paciente.endereco.cepValido == false or  PacienteController.paciente.endereco.bairroUnico == true}"
 										required="true" requiredMessage="Bairro: Campo obrigatório!"
 										value="#{PacienteController.paciente.endereco.codbairro}">
 										<f:selectItem itemLabel="Selecione" itemValue="" />
@@ -456,10 +455,11 @@
 											itemValue="#{sis.codbairro}" />
 									</b:selectOneMenu>
 
-									<p:inputText id="bairro2" class="campo-laudoDig3"
-										rendered="#{(PacienteController.paciente.endereco.bairroUnico == true or PacienteController.bairroExiste == false)
-                                                 and PacienteController.bairroExiste != null}"
-										value="#{PacienteController.paciente.endereco.bairro}"></p:inputText>
+									<p:outputLabel id="bairro2" class="campo-laudoDig3"
+										rendered="#{(PacienteController.bairroExiste == false and PacienteController.paciente.endereco.bairroUnico == false)
+                                                 and PacienteController.bairroExiste != null and PacienteController.paciente.endereco.cepValido == true}"
+										value="#{PacienteController.paciente.endereco.bairro}">
+										</p:outputLabel>
 
 								</p:outputPanel>
 

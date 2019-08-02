@@ -77,9 +77,7 @@ public class CidController implements Serializable {
 		if (cadastrou == true) {
 			limparDados();
 			JSFUtil.adicionarMensagemSucesso("CID cadastrado com sucesso!", "Sucesso");
-		} else {
-			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-		}
+		} 
 	}
 
 	public void alterarCid() {

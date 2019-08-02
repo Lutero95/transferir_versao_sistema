@@ -1,4 +1,7 @@
 package br.gov.al.maceio.sishosp.comum.exception;
+
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+
 public class ProjetoException extends Exception{
     /**
 	 * 
@@ -8,7 +11,7 @@ public class ProjetoException extends Exception{
 	public ProjetoException() {
     }
      public ProjetoException(String arg) {
-        super(arg);    
+        JSFUtil.adicionarMensagemErro(arg,"ERRO");    
     }
 
     public ProjetoException(Throwable arg) {
