@@ -72,6 +72,11 @@ public class GeneroController implements Serializable {
         listaGeneros = sDao.listarGeneros();
     }
 
+    public void atualizarListaDeGeneros() throws ProjetoException {
+        JSFUtil.fecharDialog("dlgcadastrogenero");
+       listarTodosOsGeneros();
+    }
+
     public List<Genero> listarTodosOsGeneros() throws ProjetoException {
 
         if(!VerificadorUtil.verificarSeListaNuloOuVazia(Collections.singletonList(listaGeneros))) {
