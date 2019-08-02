@@ -670,6 +670,13 @@
                                                  update=":buscaescola"/>
                             </b:column>
 
+                            <b:column span="1" class="label-position">
+
+                                <p:commandButton icon="ui-icon-plus" actionListener="#{EscolaController.limparDados}"
+                                                 update=":frmcadescola:outescola" style="margin-top:17px;" oncomplete="PF('dlgcadastroescola').show()"/>
+
+                            </b:column>
+
                         </b:row>
 
                         <b:row>
@@ -1705,6 +1712,56 @@
                         <p:commandButton value="Fechar" icon="glyphicon-arrow-left"
                                          size="sm" immediate="true" class="btn-voltar"
                                          oncomplete="PF('dlgcadastroescolaridade').hide()"/>
+
+                    </div>
+
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgcadastroescola" modal="true" width="500px" height="300px"
+                  resizable="false" styleClass="topDialog">
+
+            <f:facet name="header">
+                <h:panelGroup>
+                    <h:outputText id="optcadescola" value="Cadastro de Escola"></h:outputText>
+                </h:panelGroup>
+            </f:facet>
+            <h:form id="frmcadescola">
+
+                <div align="center">
+
+                    <p:outputPanel id="outescola">
+
+                        <b:row>
+
+                            <b:column span="12" class="label-position">
+                                <b:label for="inputname" value="Descrição" severity="info" />
+
+                                <b:inputText value="#{EscolaController.escola.descescola}" validator="CaractereEmBrancoValidator"
+                                             class="form-control" id="inputname" required="true"
+                                             validatorMessage="Nome deve conter entre 2 e 50 caracteres."
+                                             requiredMessage="Descrição: Campo obrigatório!">
+                                    <f:validateLength minimum="2" maximum="50" />
+
+                                </b:inputText>
+                            </b:column>
+
+                        </b:row>
+
+                    </p:outputPanel>
+
+                    <br></br>
+
+                    <div align="center">
+                        <p:commandButton actionListener="#{EscolaController.gravarEscola()}"
+                                         action="#{EscolaController.atualizarListaDeEscolas()}"
+                                         icon="glyphicon-ok" size="sm" look="success"
+                                         update=":frmPrincipal, msgPagina" value="Incluir" />
+
+                        <p:commandButton value="Fechar" icon="glyphicon-arrow-left"
+                                         size="sm" immediate="true" class="btn-voltar"
+                                         oncomplete="PF('dlgcadastroescola').hide()"/>
 
                     </div>
 

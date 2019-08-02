@@ -113,6 +113,11 @@ public class EscolaController implements Serializable {
         listaEscolas = eDao.listaEscolas();
     }
 
+    public void atualizarListaDeEscolas() throws ProjetoException {
+        JSFUtil.fecharDialog("dlgcadastroescola");
+        listaEscolas = eDao.listaEscolas();
+    }
+
 
     public EscolaBean getEscola() {
         return escola;
