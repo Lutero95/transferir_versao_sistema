@@ -70,7 +70,7 @@ public class CidController implements Serializable {
 
 	}
 
-	public void gravarCid() {
+	public void gravarCid() throws Exception {
 
 		boolean cadastrou = cDao.gravarCid(cid);
 
