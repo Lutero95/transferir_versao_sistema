@@ -608,25 +608,8 @@ public class PacienteDAO {
 
     public ArrayList<PacienteBean> listaPacientes() throws ProjetoException {
 
-        String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.dtanascimento, pacientes.estcivil, pacientes.sexo, pacientes.sangue, "
-                + "pacientes.pai, pacientes.mae, pacientes.conjuge,pacientes.codraca, pacientes.cep, pacientes.uf, municipio.codigo,  "
-                + "pacientes.logradouro, pacientes.numero, pacientes.complemento, pacientes.referencia, "
-                + "pacientes.rg, pacientes.oe, pacientes.dtaexpedicaorg, pacientes.cpf, pacientes.cns, "
-                + "pacientes.protreab, pacientes.codbairro, "
-                + "pacientes.reservista, pacientes.ctps, pacientes.serie, pacientes.pis, pacientes.cartorio, pacientes.regnascimento, pacientes.livro, "
-                + "pacientes.folha, pacientes.dtaregistro, pacientes.id_escolaridade, pacientes.id_escola, pacientes.id_profissao, "
-                + "pacientes.trabalha, pacientes.localtrabalha, pacientes.codparentesco, "
-                + "pacientes.nomeresp, pacientes.rgresp, pacientes.cpfresp, pacientes.dtanascimentoresp, pacientes.id_encaminhado, "
-                + "pacientes.id_formatransporte ,pacientes.deficiencia, pacientes.email, pacientes.facebook, pacientes.instagram, "
-                + "escolaridade.descescolaridade, escola.descescola, profissao.descprofissao, "
-                + "encaminhado.descencaminhado, formatransporte.descformatransporte, pacientes.nome_social, pacientes.necessita_nome_social, pacientes.id_genero  "
-                + "from hosp.pacientes left join hosp.escolaridade on pacientes.id_escolaridade=escolaridade.id_escolaridade "
-                + " left join hosp.escola on pacientes.id_escola=escola.id_escola "
-                + "left join hosp.profissao on pacientes.id_profissao=profissao.id_profissao "
-                + "left join hosp.encaminhado on pacientes.id_encaminhado=encaminhado.id_encaminhado "
-                + "left join hosp.formatransporte on pacientes.id_formatransporte=formatransporte.id_formatransporte "
-                + " left join hosp.municipio on pacientes.codmunicipio = municipio.id_municipio "
-                + " order by pacientes.nome ";
+        String sql = "select pacientes.id_paciente, pacientes.nome, pacientes.cpf, pacientes.cns "
+                + " from hosp.pacientes where id_paciente is not null order by pacientes.nome ";
 
         ArrayList<PacienteBean> lista = new ArrayList();
 
@@ -640,69 +623,8 @@ public class PacienteDAO {
 
                 p.setId_paciente(rs.getInt("id_paciente"));
                 p.setNome(rs.getString("nome").toUpperCase());
-                p.setDtanascimento(rs.getDate("dtanascimento"));
-                p.setEstadoCivil(rs.getString("estcivil"));
-                p.setSexo(rs.getString("sexo"));
-                p.getGenero().setId(rs.getInt("id_genero"));
-                p.setSangue(rs.getString("sangue"));
-                p.setNomePai(rs.getString("pai"));
-                p.setNomeMae(rs.getString("mae"));
-                p.setConjuge(rs.getString("conjuge"));
-                p.setCodRaca(rs.getInt("codraca"));
-                p.getEndereco().setCep(rs.getString("cep"));
-                p.getEndereco().setUf(rs.getString("uf"));
-                p.getEndereco().setLogradouro(rs.getString("logradouro"));
-                p.getEndereco().setNumero(rs.getString("numero"));
-                p.getEndereco().setComplemento(rs.getString("complemento"));
-                p.getEndereco().setReferencia(rs.getString("referencia"));
-                p.setRg(rs.getString("rg").toUpperCase());
-                p.setOe(rs.getString("oe").toUpperCase());
-                p.setDataExpedicao1(rs.getDate("dtaexpedicaorg"));
                 p.setCpf(rs.getString("cpf"));
                 p.setCns(rs.getString("cns"));
-                p.setProtant(rs.getInt("protreab"));
-                p.setReservista(rs.getString("reservista"));
-                p.setCtps(rs.getInt("ctps"));
-                p.setSerie(rs.getString("serie"));
-                p.setPis(rs.getString("pis"));
-                p.setCartorio(rs.getString("cartorio"));
-                p.setNumeroCartorio(rs.getString("regnascimento"));
-                p.setLivro(rs.getString("livro"));
-                p.setFolha(rs.getString("folha"));
-                p.setDataExpedicao2(rs.getDate("dtaregistro"));
-                p.getEscolaridade().setCodescolaridade(
-                        rs.getInt("id_escolaridade"));
-                p.getEscolaridade().setDescescolaridade(
-                        rs.getString("descescolaridade"));
-                p.getEscola().setCodEscola(rs.getInt("id_escola"));
-                p.getProfissao().setCodprofissao(rs.getInt("id_profissao"));
-                p.setTrabalha(rs.getString("trabalha"));
-                p.setLocaltrabalha(rs.getString("localtrabalha"));
-                p.setCodparentesco(rs.getInt("codparentesco"));
-                p.setNomeresp(rs.getString("nomeresp"));
-                p.setRgresp(rs.getString("rgresp"));
-                p.setCpfresp(rs.getString("cpfresp"));
-                p.setDataNascimentoresp(rs.getDate("dtanascimentoresp"));
-                p.getEncaminhado().setCodencaminhado(
-                        rs.getInt("id_encaminhado"));
-                p.getFormatransporte().setCodformatransporte(
-                        rs.getInt("id_formatransporte"));
-                p.setDeficiencia(rs.getString("deficiencia"));
-                p.setEmail(rs.getString("email"));
-                p.setFacebook(rs.getString("facebook"));
-                p.setInstagram(rs.getString("instagram"));
-                p.getEscola().setDescescola(rs.getString("descescola"));
-                p.getProfissao()
-                        .setDescprofissao(rs.getString("descprofissao"));
-                p.getEncaminhado().setDescencaminhado(
-                        rs.getString("descencaminhado"));
-                p.getFormatransporte().setDescformatransporte(
-                        rs.getString("descformatransporte"));
-                p.getEndereco().setCodIbge(rs.getInt("codigo"));
-                p.setNomeSocial(rs.getString("nome_social"));
-                p.setNecessitaNomeSocial(rs.getBoolean("necessita_nome_social"));
-                p.getEndereco().setCodbairro(rs.getInt("codbairro"));
-
                 lista.add(p);
             }
         } catch (Exception ex) {
@@ -915,7 +837,9 @@ public class PacienteDAO {
                 p.getEndereco().setComplemento(rs.getString("complemento"));
                 p.getEndereco().setReferencia(rs.getString("referencia"));
                 p.getEndereco().setBairro(rs.getString("descbairro"));
+                if (rs.getString("rg") != null) 
                 p.setRg(rs.getString("rg").toUpperCase());
+                if (rs.getString("oe") != null)
                 p.setOe(rs.getString("oe").toUpperCase());
                 p.setDataExpedicao1(rs.getDate("dtaexpedicaorg"));
                 p.setCpf(rs.getString("cpf"));
