@@ -36,7 +36,7 @@ public class LaudoDAO {
         String sql = "insert into hosp.laudo "
                 + "(codpaciente,  data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
                 + "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, "
-                + "cid1, cid2, cid3, obs, ativo, cod_empresa, data_hora_operacao, situacao ) "
+                + "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao ) "
                 + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?) returning id_laudo";
 
         try {
@@ -346,7 +346,7 @@ public class LaudoDAO {
                 "left join hosp.pacientes p on (p.id_paciente = l.codpaciente) " +
                 "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) " +
                 "LEFT JOIN hosp.cid c ON (c.cod = l.cid1) " +
-                "where l.ativo is true and l.cod_empresa = ? ";
+                "where l.ativo is true and l.cod_unidade = ? ";
 
         if (!situacao.equals(SituacaoLaudo.TODOS.getSigla())) {
             sql = sql + " AND l.situacao = ? ";

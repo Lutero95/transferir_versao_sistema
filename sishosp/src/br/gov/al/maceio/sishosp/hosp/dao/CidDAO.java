@@ -198,21 +198,22 @@ public class CidDAO {
 	public List<CidBean> listarCidsBuscaPorProcedimentoAutoComplete(String descricao, Integer id_proc)
 			throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select c.cod, c.desccid, c.cid from hosp.cid c left join hosp.proc_cid p on (p.id_cid = c.cod) "
-				+ " where p.id_proc = ? and desccid LIKE ? order by c.desccid";
+		String sql = "select c.cod, c.desccidabrev, c.cid from hosp.cid c left join hosp.proc_cid p on (p.id_cid = c.cod) "
+			//	+ " where c.cod = ? and desccid LIKE ? order by c.desccid";
+				+ " where 1=1  and desccid LIKE ? order by c.desccid";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, id_proc);
-			stm.setString(2, "%" + descricao.toUpperCase() + "%");
+		//	stm.setInt(1, id_proc);
+			stm.setString(1, "%" + descricao.toUpperCase() + "%");
 
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
 				CidBean c = new CidBean();
 				c.setIdCid(rs.getInt("cod"));
-				c.setDescCid(rs.getString("desccid"));
+				c.setDescCid(rs.getString("desccidabrev"));
 				c.setCid(rs.getString("cid"));
 
 				lista.add(c);
@@ -232,20 +233,21 @@ public class CidDAO {
 
 	public List<CidBean> listarCidsBuscaPorProcedimento(Integer id_proc) throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select c.cod, c.desccid, c.cid from hosp.cid c left join hosp.proc_cid p on (p.id_cid = c.cod) "
-				+ " where p.id_proc = ? order by c.desccid";
+		String sql = "select c.cod, c.desccidabrev, c.cid from hosp.cid c left join hosp.proc_cid p on (p.id_cid = c.cod) "
+//				+ " where c.cod = ? order by c.desccid";
+				+ " order by c.desccid";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
-			stm.setInt(1, id_proc);
+			//stm.setInt(1, id_proc);
 
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
 				CidBean c = new CidBean();
 				c.setIdCid(rs.getInt("cod"));
-				c.setDescCid(rs.getString("desccid"));
+				c.setDescCid(rs.getString("desccidabrev"));
 				c.setCid(rs.getString("cid"));
 
 				lista.add(c);

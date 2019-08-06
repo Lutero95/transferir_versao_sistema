@@ -440,7 +440,7 @@ public class ProcedimentoDAO {
                 + "idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo  "
                 + "from hosp.proc ";
         if (tipoBuscar == 1) {
-            sql += " where upper(codproc ||' - '|| nome) LIKE ? and cod_unidade = ? and gera_laudo_digita is true order by nome";
+            sql += " where (codproc ||' - '|| nome) ILIKE ? and cod_unidade = ? and gera_laudo_digita is true order by nome";
         }
         try {
             con = ConnectionFactory.getConnection();

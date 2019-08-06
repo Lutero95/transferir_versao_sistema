@@ -692,7 +692,11 @@
                   modal="true">
             <h:form id="formConsulCid1">
                 <p:outputPanel autoUpdate="true">
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                    <p:dataTable  emptyMessage="Nenhum Cid Cadastrado"
+                    rows="10"
+                 paginator="true"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="5,10,15"
                                  value="#{LaudoController.listaCids}" var="tab">
 
                         <h:column>
@@ -728,7 +732,7 @@
 
                         </h:column>
 
-                    </b:dataTable>
+                    </p:dataTable>
                 </p:outputPanel>
             </h:form>
         </p:dialog>
