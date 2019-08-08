@@ -70,6 +70,11 @@
     <param-value>true</param-value>
 </context-param>
 
+<context-param>
+   <param-name>primefaces.FONT_AWESOME</param-name>
+   <param-value>true</param-value>
+   </context-param>
+
 	<listener>
     <listener-class>
         br.gov.al.maceio.sishosp.comum.util.MyServletContextListener
