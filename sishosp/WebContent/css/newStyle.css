@@ -1634,6 +1634,10 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 	right: 2px;
 }
 
+.ui-icon.limpar {
+	background-image: url("../imgs/limpar.png") !important;
+}
+
 .ui-picklist .ui-picklist-filter {
 	padding-right: 15px;
 	width: 100%;

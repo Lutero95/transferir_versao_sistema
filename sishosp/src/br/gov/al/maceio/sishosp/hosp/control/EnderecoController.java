@@ -31,6 +31,7 @@ public class EnderecoController implements Serializable {
     private List<EnderecoBean> listaMunicipios;
     private List<EnderecoBean> listaBairros;
     private EnderecoDAO eDao = new EnderecoDAO();
+    private String campoBusca;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO_BAIRRO = "cadastroBairros?faces-redirect=true";
@@ -136,6 +137,10 @@ public class EnderecoController implements Serializable {
 
     public void listarBairros() throws ProjetoException {
         listaBairros = eDao.listaBairros();
+    }
+
+    public void buscarBairros() throws ProjetoException {
+        listaBairros = eDao.buscarBairros(campoBusca);
     }
     
     public void atualizarListaDeMunicipios(Integer codMunicipio) throws ProjetoException {
@@ -320,5 +325,12 @@ public class EnderecoController implements Serializable {
         this.listaBairros = listaBairros;
     }
 
+    public String getCampoBusca() {
+        return campoBusca;
+    }
+
+    public void setCampoBusca(String campoBusca) {
+        this.campoBusca = campoBusca;
+    }
 
 }

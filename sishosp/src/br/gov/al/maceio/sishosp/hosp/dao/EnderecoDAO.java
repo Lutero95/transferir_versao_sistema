@@ -181,6 +181,44 @@ public class EnderecoDAO {
         return lista;
     }
 
+    public ArrayList<EnderecoBean> buscarBairros(String campoBusca) {
+
+        String sql = "select b.id_bairro, b.descbairro, b.codmunicipio, m.nome, m.uf, m.id_municipio from hosp.bairros b "
+                + "left join hosp.municipio m on (b.codmunicipio = m.id_municipio) where b.descbairro like ? order by b.descbairro";
+
+        ArrayList<EnderecoBean> lista = new ArrayList();
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            PreparedStatement stm = conexao.prepareStatement(sql);
+            stm.setString(1, "%" + campoBusca.toUpperCase() + "%");
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                EnderecoBean end = new EnderecoBean();
+                end = new EnderecoBean();
+                end.setCodbairro(rs.getInt("id_bairro"));
+                end.setBairro(rs.getString("descbairro"));
+                end.setCodmunicipio(rs.getInt("codmunicipio"));
+                end.setMunicipio(rs.getString("nome"));
+                end.setUf(rs.getString("uf"));
+                end.setCodmunicipio(rs.getInt("id_municipio"));
+
+                lista.add(end);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
     public ArrayList<EnderecoBean> listaBairrosPorMunicipio(Integer codMunicipio) throws ProjetoException {
 
         String sql = "select b.id_bairro, b.descbairro, b.codmunicipio, m.nome, m.uf, m.id_municipio from hosp.bairros b "

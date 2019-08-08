@@ -37,27 +37,44 @@
 
 					<br></br>
 
-					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						id="dataTablePrincipal" var="tab" responsive="true"
+					<p:row>
+
+						<p:panelGrid columns="4">
+
+							<p:outputLabel value="Bairro:"/>
+
+							<p:inputText value="#{EnderecoController.campoBusca}" placeholder="Digite aqui a busca" style="margin-left: 10px"/>
+
+							<p:commandButton action="#{EnderecoController.buscarBairros()}" update="dataTablePrincipal"
+											 icon="ui-icon-search" style="margin-left: 10px"/>
+
+							<p:commandButton action="#{EnderecoController.listarBairros()}" update="dataTablePrincipal"
+											 icon="limpar" style="margin-left: 10px"/>
+
+						</p:panelGrid>
+
+					</p:row>
+
+					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" paginator="true" rows="20" style="margin-top: 10px"
 						value="#{EnderecoController.listaBairros}">
 
-						<h:column>
+						<p:column>
 							<f:facet name="header">
                             Bairro
                         </f:facet>
 							<h:outputText value="#{tab.bairro}" />
-						</h:column>
+						</p:column>
 
 
-						<h:column>
+						<p:column>
 							<f:facet name="header">
                             Descrição
                         </f:facet>
 							<h:outputText value="#{tab.municipio}" />
-						</h:column>
+						</p:column>
 
 
-						<h:column>
+						<p:column>
 							<f:facet name="header">
                             Ação
                         </f:facet>
@@ -79,9 +96,9 @@
 								<f:setPropertyActionListener value="#{tab}"
 									target="#{EnderecoController.endereco}" />
 							</b:commandButton>
-						</h:column>
+						</p:column>
 
-					</b:dataTable>
+					</p:dataTable>
 				</h:form>
 			</div>
 
