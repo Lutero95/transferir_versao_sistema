@@ -26,6 +26,8 @@ public class CidController implements Serializable {
 	private String cabecalho;
 	private CidDAO cDao = new CidDAO();
 	private List<CidBean> listaCid;
+	private String tipoBusca;
+	private String campoBusca;
 
 	//CONSTANTES
 	private static final String ENDERECO_CADASTRO = "cadastroCid?faces-redirect=true";
@@ -80,6 +82,10 @@ public class CidController implements Serializable {
 		} 
 	}
 
+	public void limparCampoBusca(){
+		campoBusca = "";
+	}
+
 	public void alterarCid() {
 		boolean alterou = cDao.alterarCid(cid);
 
@@ -112,6 +118,10 @@ public class CidController implements Serializable {
 	public void listarCids() throws ProjetoException {
 		listaCid = cDao.listarCid();
     }
+
+	public void buscarCids() throws ProjetoException {
+		listaCid = cDao.buscarCid(campoBusca, tipoBusca);
+	}
 
 	public String getCabecalho() {
 		if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
@@ -148,5 +158,21 @@ public class CidController implements Serializable {
 
 	public void setListaCid(List<CidBean> listaCid) {
 		this.listaCid = listaCid;
+	}
+
+	public String getCampoBusca() {
+		return campoBusca;
+	}
+
+	public void setCampoBusca(String campoBusca) {
+		this.campoBusca = campoBusca;
+	}
+
+	public String getTipoBusca() {
+		return tipoBusca;
+	}
+
+	public void setTipoBusca(String tipoBusca) {
+		this.tipoBusca = tipoBusca;
 	}
 }

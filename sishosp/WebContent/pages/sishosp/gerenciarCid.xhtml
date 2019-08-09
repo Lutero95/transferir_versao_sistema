@@ -30,30 +30,51 @@
 					</b:commandButton>
 
 
+					<p:row>
 
-					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						id="dataTablePrincipal" var="tab" responsive="true"
-						value="#{CidController.listaCid}">
+						<p:panelGrid columns="4" id="panelBusca">
 
-						<h:column>
+							<p:selectOneMenu value="#{CidController.tipoBusca}" style="margin-top: -13px">
+								<f:selectItem itemLabel="CID" itemValue="cid" />
+								<f:selectItem itemLabel="Descrição" itemValue="descricao" />
+							</p:selectOneMenu>
+
+							<p:inputText value="#{CidController.campoBusca}" placeholder="Digite aqui a busca" style="margin-left: 10px"/>
+
+							<p:commandButton action="#{CidController.buscarCids()}" update="dataTablePrincipal"
+											 icon="ui-icon-search" style="margin-left: 10px"/>
+
+							<p:commandButton action="#{CidController.listarCids()}"
+											 actionListener="#{CidController.limparCampoBusca()}"
+											 update="dataTablePrincipal, panelBusca"
+											 icon="limpar" style="margin-left: 10px"/>
+
+						</p:panelGrid>
+
+					</p:row>
+
+					<p:dataTable id="dataTablePrincipal" var="tab" responsive="true" rows="20" style="margin-top: 10px"
+						value="#{CidController.listaCid}" paginator="true">
+
+						<p:column>
 							<f:facet name="header">
                             Descrição
                         </f:facet>
 
 							<h:outputText value="#{tab.descCid}" />
-						</h:column>
+						</p:column>
 
 
-						<h:column>
+						<p:column>
 							<f:facet name="header">
                             CID
                         </f:facet>
 
 							<h:outputText value="#{tab.cid}" />
-						</h:column>
+						</p:column>
 
 
-						<h:column>
+						<p:column>
 							<f:facet name="header">
                             Ação
                         </f:facet>
@@ -76,8 +97,8 @@
 									target="#{CidController.cid}" />
 							</b:commandButton>
 
-						</h:column>
-					</b:dataTable>
+						</p:column>
+					</p:dataTable>
 
 				</h:form>
 
