@@ -94,7 +94,7 @@ public class CidDAO {
 			sql = sql + "cid like ?";
 		}
 		else if(tipo.equals("descricao")){
-			sql = sql + "desccid like ?";
+			sql = sql + "desccid ilike ?";
 		}
 
 		sql = sql + "order by cod";
