@@ -740,14 +740,15 @@ public class FuncionarioDAO {
 
 		Boolean retorno = false;
 
-		String sql = "update acl.funcionarios set senha = ? where id_funcionario = ? and banco_acesso=?";
+		String sql = "update acl.funcionarios set senha = ?, cpf=? where id_funcionario = ? and banco_acesso=?";
 
 		try {
 			con = ConnectionFactoryPublico.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, usuario.getNovaSenha());
-			stmt.setLong(2, user_session.getId());
-			stmt.setString(3, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
+			stmt.setString(2, usuario.getCpf());
+			stmt.setLong(3, user_session.getId());
+			stmt.setString(4, (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso"));
 			stmt.executeUpdate();
 			con.commit();
 
@@ -1303,7 +1304,8 @@ public class FuncionarioDAO {
 
 		Boolean retorno = false;
 		String sql = "update acl.funcionarios set descfuncionario = ?, codespecialidade = ?, cns = ?, ativo = ?,"
-				+ " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, senha = ?, cpf=? "
+				+ " codcbo = ?, codprocedimentopadrao = ?, id_perfil = ?, permite_liberacao = ?, realiza_atendimento = ?, permite_encaixe = ?, senha = ?, cpf=?, "
+				+ " codunidade=?"
 				+ " where id_funcionario = ?";
 
 		try {
@@ -1354,15 +1356,17 @@ public class FuncionarioDAO {
 
 			stmt.setBoolean(8, profissional.getRealizaLiberacoes());
 
-			stmt.setBoolean(9, profissional.getRealizaLiberacoes());
+			stmt.setBoolean(9, profissional.getRealizaAtendimento());
 
 			stmt.setBoolean(10, profissional.getRealizaEncaixes());
 
 			stmt.setString(11, profissional.getSenha());
 
-			stmt.setString(12, profissional.getCpf().toUpperCase().replaceAll("[^0-9]", ""));
+			stmt.setString(12, profissional.getCpf().replaceAll("[^0-9]", ""));
 
-			stmt.setLong(13, profissional.getId());
+			stmt.setLong(13, profissional.getUnidade().getId());
+			
+			stmt.setLong(14, profissional.getId());
 
 			stmt.executeUpdate();
 

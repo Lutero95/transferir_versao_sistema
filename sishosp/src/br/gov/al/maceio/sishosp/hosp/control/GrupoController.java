@@ -85,10 +85,12 @@ public class GrupoController implements Serializable {
     }
 
     public void gravarGrupo() throws ProjetoException {
-
+/*
         if (grupo.getEquipes().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("Escolha ao menos 1 equipe!", "Advertência");
-        } else {
+        } else 
+        */
+        {
             boolean cadastrou = gDao.gravarGrupo(grupo);
 
             if (cadastrou == true) {
@@ -102,9 +104,12 @@ public class GrupoController implements Serializable {
     }
 
     public void alterarGrupo() {
-        if (grupo.getEquipes().isEmpty()) {
+        /*
+    	if (grupo.getEquipes().isEmpty()) {
             JSFUtil.adicionarMensagemAdvertencia("Escolha ao menos 1 equipe!", "Advertência");
-        } else {
+        } else
+        */
+        {
             boolean alterou = gDao.alterarGrupo(grupo);
             if (alterou == true) {
                 JSFUtil.adicionarMensagemSucesso("Grupo alterado com sucesso!", "Sucesso");

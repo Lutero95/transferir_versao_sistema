@@ -163,10 +163,14 @@ public class AgendaController implements Serializable {
 
     public void carregarTipoDeAtendimentoParaProgramaAvaliacao() throws ProjetoException {
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
-        int tipoAtendimento = tDao.listarTipoDeAtendimentoDoPrograma(agenda.getProgramaAvaliacao().getIdPrograma());
+        Integer tipoAtendimento = tDao.listarTipoDeAtendimentoDoPrograma(agenda.getProgramaAvaliacao().getIdPrograma());
+        if (tipoAtendimento!=null) {
         agenda.setTipoAt(tDao.listarTipoPorId(tipoAtendimento));
         agenda.getTipoAt().setProfissional(false);
         validarTipoAtendimentoNaAgenda(null);
+        }
+        else
+        	JSFUtil.adicionarMensagemAdvertencia("Não existe tipo de atendimento do tipo 'Avaliação' associado ao Programa selecionado! Verifique o Cadastro.","ATENÇÃO");
     }
 
     public void validarTipoAtendimentoNaAgenda(SelectEvent event) throws ProjetoException {
@@ -408,7 +412,10 @@ public class AgendaController implements Serializable {
 
     public void preparaConfirmar() throws ProjetoException {
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
-            if ((agenda.getMax() == null || agenda.getQtd() == null) && !agenda.getEncaixe()) {
+        	if ((agenda.getAvaliacao()==true) && (agenda.getTipoAt().getIdTipo()==null)) {
+        			JSFUtil.adicionarMensagemErro("Não existe tipo de atendimento relacionado ao Programa! Verifique o Cadastro!!", "Erro");
+        	}
+        	else  if ((agenda.getMax() == null || agenda.getQtd() == null) && !agenda.getEncaixe()) {
                 JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
             } else if ((VerificadorUtil.verificarSeObjetoNuloOuZero(agenda.getMax()) || agenda.getQtd() >= agenda.getMax()) && !agenda.getEncaixe()) {
                 JSFUtil.adicionarMensagemErro("Não existe disponibilidade de vaga para este dia!!", "Erro");
@@ -417,7 +424,6 @@ public class AgendaController implements Serializable {
                 agendamentosConfirmados = true;
             }
         }
-        agenda.getTipoAt().getProfissional();
         if (tipoData.equals(TipoDataAgenda.INTERVALO_DE_DATAS.getSigla())) {
 
             List<Date> listaAgendamentoPermitidos = new ArrayList<>();
@@ -611,7 +617,7 @@ public class AgendaController implements Serializable {
                 JSFUtil.abrirDialog("dlgSenha");
             }
         }
-        if (agenda.getProfissional().getId() != null) {
+        else if ((agenda.getProfissional().getId() != null) || (agenda.getAvaliacao()==true)) {
             gravarAgenda(SEM_FUNCIONARIO_LIBERACAO);
         }
     }
@@ -668,7 +674,7 @@ public class AgendaController implements Serializable {
         if (this.agenda.getPaciente() == null
                 || this.agenda.getPrograma() == null
                 || this.agenda.getGrupo() == null
-                || this.agenda.getTipoAt() == null
+                || ((this.agenda.getTipoAt() == null) && (this.agenda.getAvaliacao()==false))
                 || this.agenda.getDataAtendimento() == null) {
             JSFUtil.adicionarMensagemErro("Campo(s) obrigatório(s) em falta!", "Erro");
             return;

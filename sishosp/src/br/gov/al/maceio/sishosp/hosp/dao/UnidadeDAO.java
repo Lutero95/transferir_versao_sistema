@@ -530,13 +530,13 @@ public class UnidadeDAO {
 
         String sql = "SELECT qtd_simultanea_atendimento_profissional, qtd_simultanea_atendimento_equipe, " +
                 "horario_inicial, horario_final, intervalo " +
-                " FROM hosp.parametro where cod_unidade = ?;";
+                " FROM hosp.parametro where codunidade = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, user_session.getUnidade().getId());
-            ResultSet rs = ps.executeQuery();
+	            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
 
