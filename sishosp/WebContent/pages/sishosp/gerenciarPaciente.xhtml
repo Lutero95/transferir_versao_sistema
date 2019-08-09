@@ -1,159 +1,136 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="../../template/template.xhtml">
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
 
-	<f:metadata>
-		<f:viewAction action="#{PacienteController.buscarPacientes()}" />
-	</f:metadata>
+    <f:metadata>
+        <f:viewAction action="#{PacienteController.buscarPacientes()}"/>
+    </f:metadata>
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-		<div class="panel panel-primary top-primary">
-			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Gerenciamento de Paciente</h4>
-			</div>
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Gerenciamento de Paciente</h4>
+            </div>
 
-			<div class="panel-body table-body">
+            <div class="panel-body table-body">
 
-				<h:form id="frmPrincipal">
-					<b:commandButton id="btninc" value="Novo" size="sm"
-						action="#{PacienteController.redirectInsert()}"
-						icon="glyphicon-plus" class="btn-addNovo">
-						<f:setPropertyActionListener value="1"
-							target="#{PacienteController.tipo}" />
-						<p:tooltip for="btninc" value="Incluir"></p:tooltip>
-					</b:commandButton>
+                <h:form id="frmPrincipal">
+                    <b:commandButton id="btninc" value="Novo" size="sm"
+                                     action="#{PacienteController.redirectInsert()}"
+                                     icon="glyphicon-plus" class="btn-addNovo">
+                        <f:setPropertyActionListener value="1"
+                                                     target="#{PacienteController.tipo}"/>
+                        <p:tooltip for="btninc" value="Incluir"></p:tooltip>
+                    </b:commandButton>
 
-<b:row>
+                    <p:row>
 
-                        <p:outputPanel>
-                            <b:column span="2" class="new-data-size3" style="width: 100px !important">
+                        <p:panelGrid columns="4">
 
-                                <p:outputLabel value="Situação:"
-                                               style="margin-top: 8px;color:#2e84ce;">
-                                </p:outputLabel>
+                            <p:selectOneMenu value="#{PacienteController.tipoBusca}" style="margin-top: -13px">
+                                <f:selectItem itemLabel="Nome" itemValue="nome" />
+                                <f:selectItem itemLabel="CPF" itemValue="cpf" />
+                                <f:selectItem itemLabel="CNS" itemValue="cns" />
+                            </p:selectOneMenu>
 
-                            </b:column>
+                            <p:inputText value="#{PacienteController.campoBusca}" placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
 
-                            <b:column span="3" class="btn-radio-table2 width-radio">
-                                <p:selectOneRadio required="true" style="margin-top: 10px"
-                                                  requiredMessage="Escolha a situação!"
-                                                  value="#{AgendaController.agenda.presenca}">
-                                    <f:selectItem itemLabel="Todos" itemValue="T"/>
-                                    <f:selectItem itemLabel="Com Presença" itemValue="S"/>
-                                    <f:selectItem itemLabel="Sem Presença" itemValue="N"/>
-                                </p:selectOneRadio>
-                            </b:column>
-                        </p:outputPanel>
+                            <p:commandButton action="#{PacienteController.buscarPacientesPorTipo()}" update="tabelapacientes"
+                                             icon="ui-icon-search" style="margin-left: 10px;"/>
 
-                        <br></br>
+                            <p:commandButton action="#{PacienteController.listarPacientes()}" update="tabelapacientes"
+                                             icon="limpar" style="margin-left: 10px;"/>
 
+                        </p:panelGrid>
 
-                        <b:column span="2" class="col-md-2-new new-span1"
-                                  style="margin-bottom:10px;">
+                    </p:row>
 
-                            <p:commandButton value="Buscar"  icon="fa-search"
-                                             class="btn-acao-table acao-buscar fa-search"
-                                             action="#{AgendaController.consultarAgenda(AgendaController.agenda.presenca)}"
-                                             update=":frmPrincipal"
-										></p:commandButton>
+                    <p:dataTable id="tabelapacientes" var="tab" responsive="true" style="margin-top: 10px"
+                                 value="#{PacienteController.listaPacientes}" paginator="true">
 
-                        </b:column>
+                        <p:column>
+                            <f:facet name="header">
+                                Nome
+                            </f:facet>
 
-                        <b:column span="2" class="new-span1">
+                            <h:outputText value="#{tab.nome}"/>
+                        </p:column>
 
-                            <b:commandButton value="Limpar" icon="glyphicon-trash"
-                                             class="btn-acao-table acao-limpar2"
-                                             action="#{GerenciarPacienteController.limparBusca()}"
-                                             update=":frmPrincipal"></b:commandButton>
-                        </b:column>
+                        <p:column>
+                            <f:facet name="header">
+                                CPF
+                            </f:facet>
 
-                    </b:row>
+                            <h:outputText value="#{tab.cpf}"/>
+                        </p:column>
 
+                        <p:column>
+                            <f:facet name="header">
+                                CNS
+                            </f:facet>
 
-					<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-						id="tabelapacientes" var="tab" responsive="true"
-						value="#{PacienteController.listaPacientes}">
+                            <h:outputText value="#{tab.cns}"/>
+                        </p:column>
 
-						<h:column>
-							<f:facet name="header">
-                            Nome
-                        </f:facet>
+                        <p:column>
+                            <f:facet name="header">
+                                Ação
+                            </f:facet>
 
-							<h:outputText value="#{tab.nome}" />
-						</h:column>
+                            <b:commandButton tooltip="Alterar" icon="glyphicon-edit"
+                                             size="sm" action="#{PacienteController.redirectEdit()}"
+                                             class="btn-acao-table acao-editar">
 
-						<h:column>
-							<f:facet name="header">
-                            CPF
-                        </f:facet>
+                                <f:setPropertyActionListener value="#{tab}"
+                                                             target="#{PacienteController.paciente}"/>
+                                <f:setPropertyActionListener value="2"
+                                                             target="#{PacienteController.tipo}"/>
+                            </b:commandButton>
 
-							<h:outputText value="#{tab.cpf}" />
-						</h:column>
+                            <b:commandButton tooltip="Excluir" icon="glyphicon-trash"
+                                             size="sm" ajax="true" style="margin-left:10px"
+                                             class="btn-acao-table acao-excluir"
+                                             oncomplete="PF('dialogExclusao').show()">
+                                <f:setPropertyActionListener value="#{tab.id_paciente}"
+                                                             target="#{PacienteController.paciente.id_paciente}"/>
+                            </b:commandButton>
 
-						<h:column>
-							<f:facet name="header">
-                            CNS
-                        </f:facet>
+                        </p:column>
 
-							<h:outputText value="#{tab.cns}" />
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-                            Ação
-                        </f:facet>
+                    </p:dataTable>
 
-							<b:commandButton tooltip="Alterar" icon="glyphicon-edit"
-								size="sm" action="#{PacienteController.redirectEdit()}"
-								class="btn-acao-table acao-editar">
+                </h:form>
+            </div>
 
-								<f:setPropertyActionListener value="#{tab}"
-									target="#{PacienteController.paciente}" />
-								<f:setPropertyActionListener value="2"
-									target="#{PacienteController.tipo}" />
-							</b:commandButton>
+        </div>
 
-							<b:commandButton tooltip="Excluir" icon="glyphicon-trash"
-								size="sm" ajax="true" style="margin-left:10px" 
-								class="btn-acao-table acao-excluir" oncomplete="PF('dialogExclusao').show()">
-								<f:setPropertyActionListener value="#{tab.id_paciente}"
-									target="#{PacienteController.paciente.id_paciente}" />
-							</b:commandButton>
+        <p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
+                  resizable="false" showEffect="clip" hideEffect="clip">
 
-						</h:column>
+            <h:form id="frmExcluir">
 
-					</b:dataTable>
+                <div class="alert alert-warning" role="alert">Deseja excluir
+                    este Paciente?
+                </div>
 
-				</h:form>
-			</div>
+                <div align="center">
+                    <p:separator/>
+                    <b:commandButton look="success" value="Sim" style="float:left;"
+                                     action="#{PacienteController.excluirPaciente()}" ajax="true"
+                                     icon="glyphicon-ok" update=":frmPrincipal msgPagina" class="btn-sim"/>
 
-		</div>
+                    <b:commandButton value="Não" class="btn-nao"
+                                     oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
+                                     icon="glyphicon-remove" style="margin-left:5px;float:right;"/>
+                </div>
 
-		<p:dialog widgetVar="dialogExclusao" modal="true" header="Atenção"
-			resizable="false" showEffect="clip" hideEffect="clip">
+            </h:form>
+        </p:dialog>
 
-			<h:form id="frmExcluir">
-
-				<div class="alert alert-warning" role="alert">Deseja excluir
-					este Paciente?</div>
-
-				<div align="center">
-					<p:separator />
-					<b:commandButton look="success" value="Sim" style="float:left;"
-						action="#{PacienteController.excluirPaciente()}" ajax="true"
-						icon="glyphicon-ok" update=":frmPrincipal msgPagina" class="btn-sim" />
-
-					<b:commandButton value="Não" class="btn-nao"
-						oncomplete="PF('dialogExclusao').hide();" look="info" ajax="true"
-						icon="glyphicon-remove" style="margin-left:5px;float:right;" />
-				</div>
-
-			</h:form>
-		</p:dialog>
-
-	</ui:define>
+    </ui:define>
 </ui:composition>

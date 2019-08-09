@@ -46,7 +46,6 @@ public class PacienteController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static Integer paramIdPaciente;
-	private String tipoBuscar;
 	private String descricaoParaBuscar;
 	private String cabecalho;
 	private Boolean cidadeDoCep;
@@ -58,11 +57,13 @@ public class PacienteController implements Serializable {
 	private EncaminhamentoBean encaminhamento;
 	private EncaminhadoBean encaminhado;
 	private Integer tipo;
-	PacienteDAO pDao = new PacienteDAO();
-	EnderecoDAO eDao = new EnderecoDAO();
-	EscolaDAO esDao = new EscolaDAO();
+	private PacienteDAO pDao = new PacienteDAO();
+	private EnderecoDAO eDao = new EnderecoDAO();
+	private EscolaDAO esDao = new EscolaDAO();
 	private Telefone telefone;
 	private Boolean bairroExiste;
+	private String tipoBusca;
+	private String campoBusca;
 
 	// LISTAS
 	private List<PacienteBean> listaPacientes;
@@ -132,6 +133,10 @@ public class PacienteController implements Serializable {
 		return listaPacientes;
 	}
 
+	public void buscarPacientesPorTipo() throws ProjetoException {
+		listaPacientes = pDao.buscarPacientes(campoBusca, tipoBusca);
+	}
+
 	public void encontraCEP() throws ProjetoException {
 		bairroExiste = false;
 		if (!paciente.getEndereco().getCep() .equals("")) {
@@ -172,22 +177,6 @@ public class PacienteController implements Serializable {
 			JSFUtil.selecionarTabEspecifica("tbv", "1");
 		} else {
 			JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
-		}
-
-	}
-
-	public void buscarPaciente() throws ProjetoException, SQLException {
-		if (tipoBuscar.equals("VAZIO") || descricaoParaBuscar.isEmpty()) {
-			JSFUtil.adicionarMensagemAdvertencia("Escolha uma opção válida e insira uma descrição!",
-					"Escolha uma opção válida e insira uma descrição!");
-		} else {
-			this.listaPacientesParaAgenda = new ArrayList<PacienteBean>();
-			this.listaPacientesParaAgenda = pDao.buscarPacienteAgenda(tipoBuscar, descricaoParaBuscar);
-
-			if (this.listaPacientesParaAgenda.isEmpty()) {
-				JSFUtil.adicionarMensagemAdvertencia("Não existe paciente com essa descrição!",
-						"Paciente não encontrado");
-			}
 		}
 
 	}
@@ -419,7 +408,7 @@ public class PacienteController implements Serializable {
 		encaminhamento = new EncaminhamentoBean();
 		encaminhado = new EncaminhadoBean();
 
-		tipoBuscar = "";
+		tipoBusca = "";
 		descricaoParaBuscar = "";
 		listaPacientesParaAgenda = new ArrayList<>();
 
@@ -529,14 +518,6 @@ public class PacienteController implements Serializable {
 		this.descricaoParaBuscar = descricaoParaBuscar;
 	}
 
-	public String getTipoBuscar() {
-		return tipoBuscar;
-	}
-
-	public void setTipoBuscar(String tipoBuscar) {
-		this.tipoBuscar = tipoBuscar;
-	}
-
 	public String getCabecalho() {
 		if (this.tipo.equals(TipoCabecalho.INCLUSAO.getSigla())) {
 			cabecalho = CABECALHO_INCLUSAO;
@@ -609,5 +590,21 @@ public class PacienteController implements Serializable {
 
 	public static void setParamIdPaciente(Integer paramIdPaciente) {
 		PacienteController.paramIdPaciente = paramIdPaciente;
+	}
+
+	public String getTipoBusca() {
+		return tipoBusca;
+	}
+
+	public void setTipoBusca(String tipoBusca) {
+		this.tipoBusca = tipoBusca;
+	}
+
+	public String getCampoBusca() {
+		return campoBusca;
+	}
+
+	public void setCampoBusca(String campoBusca) {
+		this.campoBusca = campoBusca;
 	}
 }

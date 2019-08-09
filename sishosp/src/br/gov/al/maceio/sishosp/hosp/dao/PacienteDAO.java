@@ -1017,6 +1017,54 @@ public class PacienteDAO {
         }
     }
 
+    public List<PacienteBean> buscarPacientes(String campoBusca, String tipo) {
+        PreparedStatement ps = null;
+
+        try {
+            conexao = ConnectionFactory.getConnection();
+            String sql = " select id_paciente, nome, cpf, cns from hosp.pacientes where ";
+
+            if(tipo.equals("nome")){
+                sql = sql + "nome like ?";
+            }
+            else if(tipo.equals("cpf")){
+                sql = sql + "cpf like ?";
+            }
+            else if(tipo.equals("cns")){
+                sql = sql + "cns like ?";
+            }
+
+            sql = sql + " order by nome";
+
+            ps = conexao.prepareStatement(sql);
+            ps.setString(1, "%" + campoBusca.toUpperCase() + "%");
+            ResultSet rs = ps.executeQuery();
+
+            List<PacienteBean> lista = new ArrayList<PacienteBean>();
+
+            while (rs.next()) {
+                PacienteBean p = new PacienteBean();
+                p.setId_paciente(rs.getInt("id_paciente"));
+                p.setNome(rs.getString("nome").toUpperCase());
+                p.setCpf(rs.getString("cpf"));
+                p.setCns(rs.getString("cns"));
+
+                lista.add(p);
+
+            }
+            return lista;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                conexao.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     public List<PacienteBean> buscaPacienteAutoCompleteOk(String str)
             throws ProjetoException {
         PreparedStatement ps = null;
