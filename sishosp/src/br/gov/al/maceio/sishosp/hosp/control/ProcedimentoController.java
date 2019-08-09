@@ -35,6 +35,8 @@ public class ProcedimentoController implements Serializable {
     private CboBean cbo;
     private RecursoBean recurso;
     private ProcedimentoDAO pDao = new ProcedimentoDAO();
+    private String tipoBusca;
+    private String campoBusca;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroProcedimento?faces-redirect=true";
@@ -229,6 +231,15 @@ public class ProcedimentoController implements Serializable {
         this.listaProcedimentos = pDao.listarProcedimento();
         
     }
+
+    public void buscarProcedimentosPorTipo() throws ProjetoException {
+        this.listaProcedimentos = pDao.buscarProcedimento(campoBusca, tipoBusca);
+
+    }
+
+    public void limparCampoBusca(){
+        campoBusca = "";
+    }
     
     public void listarProcedimentosQueGeramLaudo() throws ProjetoException {
         this.listaProcedimentos = pDao.listarProcedimentoLaudo();
@@ -281,5 +292,21 @@ public class ProcedimentoController implements Serializable {
 
     public void setRecurso(RecursoBean recurso) {
         this.recurso = recurso;
+    }
+
+    public String getTipoBusca() {
+        return tipoBusca;
+    }
+
+    public void setTipoBusca(String tipoBusca) {
+        this.tipoBusca = tipoBusca;
+    }
+
+    public String getCampoBusca() {
+        return campoBusca;
+    }
+
+    public void setCampoBusca(String campoBusca) {
+        this.campoBusca = campoBusca;
     }
 }

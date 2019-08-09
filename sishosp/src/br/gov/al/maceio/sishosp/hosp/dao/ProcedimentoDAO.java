@@ -299,6 +299,59 @@ public class ProcedimentoDAO {
         }
         return lista;
     }
+
+    public List<ProcedimentoBean> buscarProcedimento(String campoBusca, String tipo) throws ProjetoException {
+        List<ProcedimentoBean> lista = new ArrayList<>();
+        String sql = "select id, codproc, nome, auditivo, tipo_exame_auditivo, utiliza_equipamento, gera_laudo_digita, validade_laudo, "
+                + " idade_minima, idade_maxima, qtd_maxima, prazo_minimo_nova_execucao, sexo "
+                + " from hosp.proc where cod_unidade = ? ";
+
+        if(tipo.equals("descricao")){
+            sql = sql + "and nome ilike ? ";
+        }
+        else if (tipo.equals("codigo")){
+            sql = sql + "and codproc ilike ? ";
+        }
+
+        sql = sql + "order by nome";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, user_session.getUnidade().getId());
+            stm.setString(2, "%" + campoBusca.toUpperCase() + "%");
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                ProcedimentoBean proc = new ProcedimentoBean();
+                proc.setIdProc(rs.getInt("id"));
+                proc.setCodProc(rs.getString("codproc"));
+                proc.setNomeProc(rs.getString("nome"));
+                proc.setAuditivo(rs.getBoolean("auditivo"));
+                proc.setTipoExameAuditivo(rs.getString("tipo_exame_auditivo"));
+                proc.setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
+                proc.setGera_laudo_digita(rs.getBoolean("gera_laudo_digita"));
+                proc.setValidade_laudo(rs.getInt("validade_laudo"));
+                proc.setIdadeMinima(rs.getInt("idade_minima"));
+                proc.setIdadeMaxima(rs.getInt("idade_maxima"));
+                proc.setQtdMaxima(rs.getInt("qtd_maxima"));
+                proc.setPrazoMinimoNovaExecucao(rs.getInt("prazo_minimo_nova_execucao"));
+                proc.setSexo(rs.getString("sexo"));
+
+                lista.add(proc);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
     
     public List<ProcedimentoBean> listarProcedimentoLaudo() throws ProjetoException {
         List<ProcedimentoBean> lista = new ArrayList<>();

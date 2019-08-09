@@ -32,16 +32,49 @@
                     <b:messages value="Error" id="msgPagina"></b:messages>
                 </div>
 
-                <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt" var="tab"
+                <p:row>
+
+                    <p:panelGrid columns="4" id="panelBusca">
+
+                        <p:selectOneMenu value="#{ProcedimentoController.tipoBusca}" style="margin-top: -13px">
+                            <f:selectItem itemLabel="Descrição" itemValue="descricao" />
+                            <f:selectItem itemLabel="Código" itemValue="codigo" />
+                        </p:selectOneMenu>
+
+                        <p:inputText value="#{ProcedimentoController.campoBusca}" placeholder="Digite aqui a busca" style="margin-left: 10px"/>
+
+                        <p:commandButton action="#{ProcedimentoController.buscarProcedimentosPorTipo()}" update="dt"
+                                         icon="ui-icon-search" style="margin-left: 10px"/>
+
+                        <p:commandButton action="#{ProcedimentoController.listarProcedimentos()}"
+                                         actionListener="#{ProcedimentoController.limparCampoBusca()}"
+                                         update="dt, panelBusca"
+                                         icon="limpar" style="margin-left: 10px"/>
+
+                    </p:panelGrid>
+
+                </p:row>
+
+                <p:dataTable id="dt" var="tab" rows="20" paginator="true" style="margin-top: 10px"
                              responsive="true" value="#{ProcedimentoController.listaProcedimentos}">
-                    <h:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            Código
+                        </f:facet>
+
+                        <h:outputText value="#{tab.codProc}" />
+                    </p:column>
+
+                    <p:column>
                         <f:facet name="header">
                             Descrição
                         </f:facet>
 
                         <h:outputText value="#{tab.nomeProc}"/>
-                    </h:column>
-                    <h:column>
+                    </p:column>
+
+                    <p:column>
                         <f:facet name="header">
                             Ação
                         </f:facet>
@@ -64,9 +97,9 @@
                                                          target="#{ProcedimentoController.proc}"/>
                         </b:commandButton>
 
-                    </h:column>
+                    </p:column>
 
-                </b:dataTable>
+                </p:dataTable>
 
             </h:form>
             </div>
