@@ -27,7 +27,7 @@
 							<b:label value="Unidade:" severity="info" />
 
 							<b:selectOneMenu class="select-agendaEquipe2"
-								value="#{AgendaController.agenda.empresa.codEmpresa}">
+								value="#{AgendaController.agenda.unidade.id}">
 								<f:selectItems
 									value="#{MBFuncionarios.listarUnidadesDoFuncionario()}"
 									var="emp" itemLabel="#{emp.nomeFantasia}"
@@ -76,13 +76,13 @@
 									minQueryLength="1" itemValue="#{theme}"
 									itemLabel="#{theme.nome}">
 									<p:ajax event="itemSelect"
-										update=":formAgendaMedica:outPa, :formAgendaMedica:outTipoAt, :formAgendaMedica:outProfissional, :formAgendaMedica:outEquipeRow"
+										update="msgPagina :formAgendaMedica:outPa, :formAgendaMedica:outTipoAt, :formAgendaMedica:outProfissional, :formAgendaMedica:outEquipeRow"
 										global="false" />
 
 								</p:autoComplete>
 
 								<p:commandButton id="btBPa" immediate="true"
-									action="#{AgendaController.limparNaBuscaPaciente()}"
+									
 									actionListener="#{PacienteController.listarTodosPaciente()}"
 									icon="ui-icon-search" update=":formConsuPac"
 									oncomplete="PF('dlgConsuPac').show();" />

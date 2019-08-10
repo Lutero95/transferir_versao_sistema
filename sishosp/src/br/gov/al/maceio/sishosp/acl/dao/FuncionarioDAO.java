@@ -1841,7 +1841,7 @@ public class FuncionarioDAO {
 
         sql.append("SELECT f.cod_unidade, e.nome, FALSE AS padrao \n"); 
         sql.append(		"FROM hosp.funcionario_unidades f\n") ; 
-        sql.append(		"join hosp.unidade e on (e.id = f.codunidade) \n") ; 
+        sql.append(		"join hosp.unidade e on (e.id = f.cod_unidade) \n") ; 
         sql.append(		"WHERE f.cod_funcionario = ? \n") ;
         sql.append( 		"ORDER BY e.nome"); 
 
