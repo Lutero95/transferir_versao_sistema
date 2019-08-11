@@ -167,6 +167,7 @@ public class AgendaController implements Serializable {
         if (tipoAtendimento!=null) {
         agenda.setTipoAt(tDao.listarTipoPorId(tipoAtendimento));
         agenda.getTipoAt().setProfissional(false);
+        agenda.getTipoAt().setPrimeiroAt(true);
         validarTipoAtendimentoNaAgenda(null);
         }
         else
@@ -200,12 +201,13 @@ public class AgendaController implements Serializable {
 
     public void preparaVerificarDisponibilidadeData() throws ProjetoException {
         if (tipoData.equals(TipoDataAgenda.DATA_UNICA.getSigla())) {
-            if (this.agenda.getPrograma().getIdPrograma() == null
+            if ((this.agenda.getAvaliacao()==null || this.agenda.getAvaliacao()==false) && this.agenda.getPrograma().getIdPrograma() == null
+            		|| (this.agenda.getAvaliacao()!=null && this.agenda.getAvaliacao()==true) && this.agenda.getProgramaAvaliacao().getIdPrograma() == null
                    // || this.agenda.getPaciente().getId_paciente() == null
-                    || this.agenda.getGrupo().getIdGrupo() == null
+                    || ((this.agenda.getAvaliacao()==null || this.agenda.getAvaliacao()==false) && this.agenda.getGrupo().getIdGrupo() == null)
                     || this.agenda.getTipoAt().getIdTipo() == null
                     || this.agenda.getDataAtendimento() == null
-                    || (this.agenda.getProfissional().getId() == null && this.agenda.getEquipe().getCodEquipe() == null)) {
+                    || ((this.agenda.getAvaliacao()==null || this.agenda.getAvaliacao()==false) && this.agenda.getProfissional().getId() == null && this.agenda.getEquipe().getCodEquipe() == null)) {
                 return;
             } else {
                 verificaDisponibilidadeDataUnica();
@@ -241,7 +243,7 @@ public class AgendaController implements Serializable {
             setarQuantidadeIhMaximoComoNulos();
 
         } else if (verificarSeAtingiuLimiteTipoDeAtendimentoDataUnica() && !agenda.getEncaixe()) {
-            JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e profissional!", "Erro");
+            JSFUtil.adicionarMensagemErro("Atingiu o limite máximo para esse tipo de atendimento e Profissional/Equipe!", "Erro");
             setarQuantidadeIhMaximoComoNulos();
         } else {
         	verConfigAgenda();
@@ -252,7 +254,7 @@ public class AgendaController implements Serializable {
     public Boolean verificarSeAtingiuLimiteTipoDeAtendimentoDataUnica() throws ProjetoException {
         Boolean retorno = false;
 
-        if (agenda.getProfissional().getId() != null) {
+        if ((agenda.getTipoAt().getProfissional()) && (agenda.getProfissional().getId() != null)) {
             if (verificarSeExisteTipoAtendimentoEspecificoProfissional()) {
 
                 if (verificarSeAtingiuLimitePorTipoDeAtendimentoPorProfissional()) {
@@ -261,8 +263,17 @@ public class AgendaController implements Serializable {
             }
         }
         
-        if (agenda.getEquipe().getCodEquipe() != null) {
+        if ((agenda.getTipoAt().getEquipe()) &&  (agenda.getEquipe().getCodEquipe() != null)) {
             if (verificarSeExisteTipoAtendimentoEspecificoEquipe()) {
+
+                if (verificarSeAtingiuLimitePorTipoDeAtendimentoPorEquipe()) {
+                    retorno = true;
+                }
+            }
+        }
+        
+        if   ((agenda.getTipoAt().getPrimeiroAt()) &&  (agenda.getEquipe().getCodEquipe() != null)) {
+            if (verificarSeExisteTipoAtendimentoEspecificoAvaliacao()) {
 
                 if (verificarSeAtingiuLimitePorTipoDeAtendimentoPorEquipe()) {
                     retorno = true;
@@ -315,6 +326,15 @@ public class AgendaController implements Serializable {
 
         return retorno;
     }
+    
+    public Boolean verificarSeExisteTipoAtendimentoEspecificoAvaliacao() throws ProjetoException {
+        Boolean retorno = false;
+
+        retorno = aDao.verificarSeExisteConfigAgendaEquipeAvaliacao(this.agenda.getEquipe().getCodEquipe(), this.agenda.getDataAtendimento(),
+                this.agenda.getTurno());
+
+        return retorno;
+    }
 
     public Boolean verificarSeAtingiuLimitePorTipoDeAtendimentoPorProfissional() throws ProjetoException {
         Boolean retorno = false;
@@ -332,7 +352,7 @@ public class AgendaController implements Serializable {
             		this.agenda.getTurno(), this.agenda.getTipoAt().getIdTipo());        	
         maximo = aDao.verQtdMaxAgendaEspecDataEspecifica(this.agenda);
 
-        if (limite >= maximo && limite > 0) {
+        if (maximo!=null && limite >= maximo && limite > 0) {
             retorno = true;
         }
 
@@ -350,12 +370,12 @@ public class AgendaController implements Serializable {
         //com a verificacao da quantidade por tipo de atendimento geral
         maximo = aDao.contaConfigEspecificaQtdMaxTipoAtendimentoEquipe(this.agenda.getEquipe().getCodEquipe(), this.agenda.getDataAtendimento(),
         		this.agenda.getTurno(), this.agenda.getTipoAt().getIdTipo());
-        if (maximo==0)
+        if ((maximo!=null) && (maximo==0))
             maximo = aDao.contaConfigGeralQtdMaxTipoAtendimentoEquipe(this.agenda.getEquipe().getCodEquipe(), 
             		this.agenda.getTurno(), this.agenda.getTipoAt().getIdTipo());        	
         maximo = aDao.verQtdMaxAgendaEspecDataEspecifica(this.agenda);
 
-        if (limite >= maximo && limite > 0) {
+        if (maximo!=null && limite >= maximo && limite > 0) {
             retorno = true;
         }
 
@@ -400,7 +420,6 @@ public class AgendaController implements Serializable {
     public void verConfigAgenda() throws ProjetoException {
         Boolean dtEspecifica = aDao.buscarDataEspecifica(this.agenda);
         Boolean diaSemEspecifico = aDao.buscarDiaSemanaMesAnoEspecifico(this.agenda);
-
         if (dtEspecifica) {
             listarAgendamentosData();
             if (aDao.verificarSeExisteConfigAgendaDataEspecificaPorTipoAtendimento(this.agenda)) {
@@ -421,7 +440,7 @@ public class AgendaController implements Serializable {
             this.agenda.setQtd(aDao.verQtdAgendadosEspec(this.agenda));
         } else {
             listarAgendamentosData();
-            if (aDao.verificarSeExisteConfigAgendaDiaSemanaGeralPorTipoAtendimento(this.agenda) )
+            if (aDao.verificarSeExisteConfigAgendaDiaSemanaGeralPorTipoAtendimento(this.agenda) ) 
             	this.agenda.setMax(aDao.verQtdMaxConfigAgendaDiaSemanaGeralPorTipoAtendimento(this.agenda));
             else
             this.agenda.setMax(aDao.verQtdMaxConfigAgendaDiaSemanaGeral(this.agenda));
@@ -809,6 +828,21 @@ public class AgendaController implements Serializable {
         this.agenda.getTipoAt().setEquipe(false);
         this.agenda.getTipoAt().setProfissional(false);
     }
+    
+    public void limparNaBuscaAvaliacao() {
+        this.agenda.setPrograma(new ProgramaBean());
+    	this.agenda.setGrupo(new GrupoBean());
+        this.agenda.setTipoAt(new TipoAtendimentoBean());
+        this.agenda.setProfissional(new FuncionarioBean());
+        this.agenda.setEquipe(new EquipeBean());
+        this.agenda.setObservacao(new String());
+        this.agenda.setDataAtendimento(null);
+        this.agenda.setDataAtendimentoFinal(null);
+        this.agenda.setQtd(null);
+        this.agenda.setMax(null);
+        this.agenda.getTipoAt().setEquipe(false);
+        this.agenda.getTipoAt().setProfissional(false);
+    }
 
     public void limparNaBuscaGrupo() {
         this.agenda.setTipoAt(null);
@@ -887,9 +921,9 @@ public class AgendaController implements Serializable {
         return result;
     }
 
-    public List<EquipeBean> listaEquipePorProgramaAutoComplete(String query)
+    public List<EquipeBean> listaEquipeAvaliacaoAutoComplete(String query)
             throws ProjetoException {
-        List<EquipeBean> result = eDao.listarEquipePorProgramaAutoComplete(query,
+        List<EquipeBean> result = eDao.listarEquipeAvaliacaoPorProgramaAutoComplete(query,
                 agenda.getProgramaAvaliacao().getIdPrograma());
         return result;
     }
@@ -903,6 +937,17 @@ public class AgendaController implements Serializable {
             }
         }
     }
+    
+    public void carregaListaEquipeAvaliacao()
+            throws ProjetoException {
+        if (agenda.getTipoAt() != null) {
+            if (agenda.getProgramaAvaliacao().getIdPrograma() != null) {
+                listaEquipePorTipoAtendimento = eDao
+                        .listarEquipeAvaliacaoPorPrograma(agenda.getProgramaAvaliacao().getIdPrograma());
+            }
+        }
+    }  
+    
 
     public List<FuncionarioBean> listaProfissionalPorGrupoAutoComplete(
             String query) throws ProjetoException {

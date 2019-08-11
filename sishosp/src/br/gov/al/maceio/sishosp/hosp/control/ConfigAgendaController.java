@@ -149,6 +149,7 @@ public class ConfigAgendaController implements Serializable {
 
             this.confParte1 = cDao.listarHorariosPorIDEquipeEdit(id);
             this.confParte2 = cDao.listarHorariosPorIDEquipeEditParte2(id);
+            listaTipos	 = cDao.listarTipoAtendimentoConfiguracaoAgendaEquipe(id);
 
             if (confParte1.getOpcao().equals(OpcaoConfiguracaoAgenda.DIA_DA_SEMANA.getSigla())) {
                 confParte1.setDiasSemana(cDao.listarDiasAtendimentoEquipePorId(id));
@@ -270,6 +271,16 @@ public class ConfigAgendaController implements Serializable {
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
         if (confParte2.getGrupo() != null) {
             listaTipoAtendimentosGrupo = tDao.listarTipoAtPorGrupo(confParte2
+                    .getGrupo().getIdGrupo(), tipo);
+        }
+    }
+    
+    public void carregaListaTipoAtendimentoPorProgramaEGrupo(String tipo)
+            throws ProjetoException {
+        TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+        if (confParte2.getGrupo() != null) {
+            listaTipoAtendimentosGrupo = tDao.listarTipoAtPorProgramaEGrupo(confParte2
+                    .getPrograma().getIdPrograma(),confParte2
                     .getGrupo().getIdGrupo(), tipo);
         }
     }

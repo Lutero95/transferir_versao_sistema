@@ -300,7 +300,7 @@
                                         <p:commandButton id="btBusTi" process="@this"
                                                          icon="ui-icon-search"
                                                          action="#{ConfigAgendaController.limparBuscaGrupo()}"
-                                                         actionListener="#{ConfigAgendaController.carregaListaTipoAtendimento('E')}"
+                                                         actionListener="#{ConfigAgendaController.carregaListaTipoAtendimentoPorProgramaEGrupo('E')}"
                                                          disabled="#{ConfigAgendaController.confParte2.programa==null}"
                                                          oncomplete="PF('dlgConsuTipoAt').show();"/>
                                     </p:outputPanel>
@@ -371,7 +371,7 @@
                     <div align="center">
 
                         <b:commandButton
-                                update=":formConfiAgendaEquipe, :formConfiAgendaEquipe"
+                                update="msgPagina :formConfiAgendaEquipe, :formConfiAgendaEquipe"
                                 action="#{ConfigAgendaController.validarGravarConfigAgendaEquipe()}"
                                 icon="glyphicon-ok" id="b1" class="btn-incluir" value="Gravar"
                                 look="success" size="sm"/>

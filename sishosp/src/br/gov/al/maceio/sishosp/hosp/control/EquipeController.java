@@ -81,7 +81,7 @@ public class EquipeController implements Serializable {
 		else {
 			boolean cadastrou = eDao.gravarEquipe(this.equipe);
 
-			if (cadastrou == true) {
+			if (cadastrou == true) {	
 				limparDados();
 				JSFUtil.adicionarMensagemSucesso("Equipe cadastrada com sucesso!", "Sucesso");
 				JSFUtil.atualizarComponente("msgPagina");

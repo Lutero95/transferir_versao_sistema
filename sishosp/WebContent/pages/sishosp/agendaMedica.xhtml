@@ -51,10 +51,11 @@
 
 						<b:column span="3">
 							<p:selectBooleanCheckbox label="Avaliação" itemLabel="Avaliação"
-								style="color:#2e84ce;"
+								style="color:#2e84ce;" 
 								value="#{AgendaController.agenda.avaliacao}">
-								<p:ajax
-									update="rowProgramaGrupoTipoAtendimento, rowProgramaTipoAtendimento"></p:ajax>
+								<p:ajax listener="#{AgendaController.limparNaBuscaPrograma()}"
+								event="change"
+									update=":formAgendaMedica"></p:ajax>
 							</p:selectBooleanCheckbox>
 						</b:column>
 					</b:row>
@@ -82,7 +83,6 @@
 								</p:autoComplete>
 
 								<p:commandButton id="btBPa" immediate="true"
-									
 									actionListener="#{PacienteController.listarTodosPaciente()}"
 									icon="ui-icon-search" update=":formConsuPac"
 									oncomplete="PF('dlgConsuPac').show();" />
@@ -111,7 +111,7 @@
 										itemLabel="#{theme.descPrograma}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.carregarTipoDeAtendimentoParaProgramaAvaliacao}"
-											update="outTip2, :formAgendaMedica, msgPagina, outTipoAt, outEquipeAvaliacaoRow" />
+											update="outTip2, :formAgendaMedica, msgPagina, outTipoAt, :formAgendaMedica:outEquipeAvaliacaoRow" />
 
 									</p:autoComplete>
 
@@ -300,14 +300,13 @@
 
 
 								</p:outputPanel>
-								</b:column>
-								<b:column span="2">
+							</b:column>
+							<b:column span="2">
 								<p:outputPanel id="outHorariosProfissionalGeral"
 									rendered="#{(AgendaController.agenda.profissional.id!=null)  and (AgendaController.listaConfigAgendaGeral.size()	>0)}">
 
 									<div align="left">
-										<h:outputText style="font-weight:bold"
-											value="Agenda Padrão" />
+										<h:outputText style="font-weight:bold" value="Agenda Padrão" />
 									</div>
 									<p:dataTable id="dtDiasAtendimentoProfissionalGeral"
 										resizableColumns="true"
@@ -315,11 +314,11 @@
 										emptyMessage="Sem registros.">
 
 
-										<p:column headerText="Dia da Semana"  width="21">
+										<p:column headerText="Dia da Semana" width="21">
 											<h:outputLabel value="#{agend.diaSemana}" />
 										</p:column>
 
-										<p:column headerText="Turno"  width="5">
+										<p:column headerText="Turno" width="5">
 											<h:outputLabel value="#{agend.turno}" />
 										</p:column>
 
@@ -336,7 +335,7 @@
 					<p:outputPanel id="outEquipeRow">
 						<b:row rendered="#{AgendaController.agenda.tipoAt.equipe==true}">
 
-							<b:column span="3"
+							<b:column span="2"
 								class="label-position new-data-size new-comple1">
 								<b:label value="Equipe" severity="info"
 									rendered="#{AgendaController.agenda.tipoAt.equipe==true}" />
@@ -353,7 +352,7 @@
 										itemLabel="#{theme.descEquipe}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
-											update=":formAgendaMedica, outHorariosEquipe, msgPagina, outQtdIhMax"></p:ajax>
+											update=":formAgendaMedica, outHorariosEquipeEspecifico outHorariosEquipeGeral, msgPagina, outQtdIhMax"></p:ajax>
 
 									</p:autoComplete>
 
@@ -367,11 +366,79 @@
 								</p:outputPanel>
 							</b:column>
 
+
+							<b:column span="2"
+								rendered="#{(AgendaController.agenda.equipe.codEquipe!=null)  and (AgendaController.listaConfigAgendaGeral.size()	>0)}">
+								<p:outputPanel id="outHorariosEquipeGeral">
+
+									<div align="left">
+										<h:outputText style="font-weight:bold" value="Agenda Padrão" />
+									</div>
+									<p:dataTable id="dtDiasAtendimentoEquipeGeral"
+										resizableColumns="true"
+										value="#{AgendaController.listaConfigAgendaGeral}" var="agend"
+										emptyMessage="Sem registros.">
+
+
+										<p:column headerText="Dia da Semana" width="20">
+											<h:outputLabel value="#{agend.diaSemana}" />
+										</p:column>
+
+										<p:column headerText="Turno" width="5">
+											<h:outputLabel value="#{agend.turno}" />
+										</p:column>
+
+
+
+									</p:dataTable>
+
+
+								</p:outputPanel>
+							</b:column>
+
+							<b:column span="2"
+								rendered="#{(AgendaController.agenda.equipe.codEquipe!=null) and (AgendaController.listaConfigAgendaMesAtual.size()>0) }">
+
+								<p:outputPanel id="outHorariosEquipeEspecifico">
+
+									<div>
+										<h:outputText
+											value="Agenda Específica #{AgendaController.dataAtual}"
+											style="font-weight:bold" />
+									</div>
+									<p:dataTable id="dtDiasAtendimentoEquipeEspecifico"
+										resizableColumns="true"
+										value="#{AgendaController.listaConfigAgendaMesAtual}"
+										var="agend" emptyMessage="Sem registros.">
+
+
+										<p:column headerText="Dia da Semana" width="21">
+											<h:outputLabel value="#{agend.diaSemana}" />
+										</p:column>
+
+										<p:column headerText="Turno" width="5">
+											<h:outputLabel value="#{agend.turno}" />
+										</p:column>
+
+										<p:column headerText="Data" width="7">
+											<h:outputLabel value="#{agend.dataEspecifica}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputLabel>
+										</p:column>
+
+									</p:dataTable>
+
+
+
+								</p:outputPanel>
+							</b:column>
+
+
 						</b:row>
 					</p:outputPanel>
 
 
-					<p:outputPanel id="outEquipeAvaliacaoRow">
+					<p:outputPanel id="outEquipeAvaliacaoRow" >
 						<b:row
 							rendered="#{AgendaController.agenda.tipoAt.primeiroAt==true}">
 
@@ -386,13 +453,13 @@
 										size="31" converter="conEquipe" required="true"
 										requiredMessage="Equipe: Campo obrigatório!"
 										class="select-agendaEquipe4"
-										completeMethod="#{AgendaController.listaEquipePorProgramaAutoComplete}"
+										completeMethod="#{AgendaController.listaEquipeAvaliacaoAutoComplete}"
 										effect="fade" var="theme" forceSelection="true"
 										minQueryLength="1" itemValue="#{theme}"
 										itemLabel="#{theme.descEquipe}">
 										<p:ajax event="itemSelect"
 											listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
-											update=":formAgendaMedica, outHorariosEquipe, msgPagina, outQtdIhMax"></p:ajax>
+											update=":formAgendaMedica, outHorariosEquipeEspecifico outHorariosEquipeGeral, msgPagina, outQtdIhMax"></p:ajax>
 
 									</p:autoComplete>
 
@@ -400,7 +467,7 @@
 										disabled="#{AgendaController.agenda.tipoAt==null}"
 										icon="ui-icon-search"
 										oncomplete="PF('dlgConsuEquipe').show();"
-										action="#{AgendaController.carregaListaEquipePorTipoAtendimento()}"
+										action="#{AgendaController.carregaListaEquipeAvaliacao()}"
 										update=":formConsuEquipe"
 										rendered="#{AgendaController.agenda.tipoAt.primeiroAt==true}" />
 								</p:outputPanel>
@@ -410,36 +477,9 @@
 					</p:outputPanel>
 
 
-					<p:outputPanel id="outHorariosEquipe">
 
-						<b:row
-							rendered="#{AgendaController.agenda.equipe.codEquipe!=null}">
-							<b:column span="12">
-								<div align="center">
-									<p:panel header="#{AgendaController.dataAtual}"></p:panel>
-								</div>
-								<p:dataTable id="dtDiasAtendimentoEquipe"
-									resizableColumns="true"
-									value="#{AgendaController.listaConfigAgendaMesAtual}"
-									var="agend" emptyMessage="Sem registros.">
-									<p:column headerText="Equipe">
-										<h:outputLabel value="#{agend.equipe.descEquipe}">
-										</h:outputLabel>
-									</p:column>
 
-									<p:column headerText="Dia da Semana">
-										<h:outputLabel value="#{agend.diaSemana}" />
-									</p:column>
 
-									<p:column headerText="Turno">
-										<h:outputLabel value="#{agend.turno}" />
-									</p:column>
-
-								</p:dataTable>
-
-							</b:column>
-						</b:row>
-					</p:outputPanel>
 
 
 
@@ -688,7 +728,7 @@
 
 					<br></br>
 
-		
+
 
 					<br></br>
 
@@ -824,7 +864,7 @@
                             Adicionar
                         </f:facet>
 						<p:commandButton
-							update=":formAgendaMedica:outProg2, :formAgendaMedica:outTip2 :msgPagina"
+							update=":formAgendaMedica:outProg2, :formAgendaMedica:outTip2 :msgPagina :formAgendaMedica:outEquipeAvaliacaoRow"
 							class="new-btn-acao-table acao-editar" icon="ui-icon-check"
 							title="Selecionar"
 							action="#{AgendaController.carregarTipoDeAtendimentoParaProgramaAvaliacao()}"
@@ -1045,6 +1085,8 @@
 		<p:dialog header="Digite a senha" widgetVar="dlgSenha" modal="true"
 			responsive="true" dynamic="true">
 			<h:form id="frmSenha">
+			<div class="alert alert-warning" role="alert">Você está tentando agendar um paciente que ainda não faz parte da equipe! Digite a senha para liberação!
+					</div>
 				<h:panelGrid columns="1" cellpadding="3">
 
 					<b:inputText mask="999-999-999-99" style="padding:10px;"
@@ -1073,6 +1115,8 @@
 		<p:dialog header="Digite a senha" widgetVar="dlgSenhaEncaixe"
 			modal="true" responsive="true" dynamic="true">
 			<h:form id="frmSenhaEncaixe">
+			<div class="alert alert-warning" role="alert">Para permitir o encaixe do Paciente digite a senha para liberação!
+					</div>
 				<h:panelGrid columns="1" cellpadding="3">
 
 					<b:inputText mask="999-999-999-99" style="padding:10px;"

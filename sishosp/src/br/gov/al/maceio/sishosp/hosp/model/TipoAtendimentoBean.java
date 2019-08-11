@@ -15,7 +15,7 @@ public class TipoAtendimentoBean implements Serializable {
     private String descTipoAt;
     private Boolean equipe;
     private Boolean profissional;
-    private boolean primeiroAt;
+    private Boolean primeiroAt;
     private Integer intervaloMinimo;
 
 
@@ -198,6 +198,14 @@ public class TipoAtendimentoBean implements Serializable {
 
 	public void setCodUnidade(Integer codUnidade) {
 		this.codUnidade = codUnidade;
+	}
+
+	public Boolean getPrimeiroAt() {
+		return primeiroAt;
+	}
+
+	public void setPrimeiroAt(Boolean primeiroAt) {
+		this.primeiroAt = primeiroAt;
 	}
 
 	

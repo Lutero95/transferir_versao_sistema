@@ -297,6 +297,56 @@ public class TipoAtendimentoDAO {
         }
         return lista;
     }
+    
+    
+    public List<TipoAtendimentoBean> listarTipoAtPorProgramaEGrupo(int codPrograma, int codGrupo, String tipoAtendimento)
+            throws ProjetoException {
+        List<TipoAtendimentoBean> lista = new ArrayList<>();
+        String sql = "select t.id, t.desctipoatendimento, t.primeiroatendimento, t.equipe_programa, t.intervalo_minimo, " +
+                "CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
+                + " from hosp.tipoatendimento t left join hosp.tipoatendimento_grupo tg on (t.id = tg.codtipoatendimento) "
+                + " where tg.codgrupo = ?";
+        	if (tipoAtendimento.equals(TipoAtendimento.EQUIPE.getSigla()))
+        		sql = sql +" and coalesce(t.equipe_programa,false) is true";
+
+        	if (tipoAtendimento.equals(TipoAtendimento.PROFISSIONAL.getSigla()))
+        		sql = sql +" and coalesce(t.equipe_programa, false) is false"; 
+        	
+        	sql = sql +" union SELECT codtipoatendimento, desctipoatendimento,t.primeiroatendimento, t.equipe_programa, t.intervalo_minimo, \n" + 
+        			"CASE WHEN t.equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional  FROM hosp.tipoatendimento_programa \n" + 
+        			" join hosp.tipoatendimento t on t.id = tipoatendimento_programa.codtipoatendimento\n" + 
+        			" WHERE codprograma =?";
+        	sql = sql +" order by desctipoatendimento";
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setInt(1, codGrupo);
+            stm.setInt(2, codPrograma);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                TipoAtendimentoBean tipo = new TipoAtendimentoBean();
+                tipo.setIdTipo(rs.getInt("id"));
+                tipo.setDescTipoAt(rs.getString("desctipoatendimento"));
+                tipo.setPrimeiroAt(rs.getBoolean("primeiroatendimento"));
+                tipo.setEquipe(rs.getBoolean("equipe_programa"));
+                tipo.setIntervaloMinimo(rs.getInt("intervalo_minimo"));
+                tipo.setProfissional(rs.getBoolean("profissional"));
+
+                lista.add(tipo);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
 
     public ArrayList<TipoAtendimentoBean> listarTipoAt() throws ProjetoException {
     	ArrayList<TipoAtendimentoBean> lista = new ArrayList<>();
@@ -420,7 +470,7 @@ public class TipoAtendimentoDAO {
     }
 
     public TipoAtendimentoBean listarTipoPorId(int id) throws ProjetoException {
-        String sql = "select id, desctipoatendimento, primeiroatendimento, equipe_programa, intervalo_minimo, equipe_programa,  "
+        String sql = "select id, desctipoatendimento, coalesce(primeiroatendimento, false) primeiroatendimento, equipe_programa, intervalo_minimo, equipe_programa,  "
         + "CASE WHEN equipe_programa IS NOT TRUE THEN true ELSE FALSE END AS profissional "
                 + " from hosp.tipoatendimento WHERE id = ?";
         try {
