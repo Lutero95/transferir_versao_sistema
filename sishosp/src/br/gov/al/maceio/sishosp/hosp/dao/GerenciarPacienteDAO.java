@@ -36,7 +36,7 @@ public class GerenciarPacienteDAO {
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo)"
                 + " left join hosp.programa  on (programa.id_programa = p.codprograma)"
-                + " where p.cod_empresa = ? AND p.status = 'A' ";
+                + " where p.cod_unidade = ? AND p.status = 'A' ";
 
         List<GerenciarPacienteBean> lista = new ArrayList<>();
 
