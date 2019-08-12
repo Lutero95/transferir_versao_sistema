@@ -293,7 +293,7 @@ public class AtendimentoDAO {
         }
     }
 
-    public List<AtendimentoBean> carregaAtendimentos(AtendimentoBean atendimento, Integer codEmpresa)
+    public List<AtendimentoBean> carregaAtendimentos(AtendimentoBean atendimento)
             throws ProjetoException {
 
         String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
@@ -318,10 +318,13 @@ public class AtendimentoDAO {
                 + " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
                 + " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
                 + " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
-                + " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_empresa = ?"
+                + " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?"
                 + " order by a.dtaatende";
 
         ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
+
+        FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("obj_funcionario");
 
         try {
             con = ConnectionFactory.getConnection();
@@ -330,7 +333,7 @@ public class AtendimentoDAO {
                     .getDataAtendimentoInicio().getTime()));
             stm.setDate(2, new java.sql.Date(atendimento
                     .getDataAtendimentoFinal().getTime()));
-            stm.setInt(3, codEmpresa);
+            stm.setInt(3, user_session.getUnidade().getId());
 
             ResultSet rs = stm.executeQuery();
 

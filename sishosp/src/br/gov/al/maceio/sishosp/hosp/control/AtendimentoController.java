@@ -193,7 +193,7 @@ public class AtendimentoController implements Serializable {
 
     public void listarAtendimentos() throws ProjetoException {
         this.listAtendimentos = aDao
-                .carregaAtendimentos(atendimento, atendimento.getUnidade().getId());
+                .carregaAtendimentos(atendimento);
     }
 
     public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {
