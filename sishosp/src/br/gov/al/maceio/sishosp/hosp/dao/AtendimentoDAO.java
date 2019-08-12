@@ -1,9 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -225,7 +222,12 @@ public class AtendimentoDAO {
                 PreparedStatement stmt2 = con.prepareStatement(sql2);
                 stmt2.setLong(1, lista.get(i).getFuncionario().getId());
                 stmt2.setInt(2, lista.get(i).getId());
-                stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
+                if(VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(i).getCbo().getCodCbo())){
+                    stmt2.setNull(3, Types.NULL);
+                }
+                else {
+                    stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
+                }
                 stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
                 stmt2.setString(5, lista.get(i).getStatus());
                 stmt2.setString(6, lista.get(i).getEvolucao());

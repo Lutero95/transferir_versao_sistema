@@ -323,7 +323,7 @@ public class AtendimentoController implements Serializable {
 
     public void realizarAtendimentoEquipe() throws ProjetoException {
         if(!validarSeEhNecessarioInformarGrupo()) {
-            boolean verificou = aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
+            boolean verificou = true; //aDao.verificarSeCboEhDoProfissionalPorEquipe(listAtendimentosEquipe);
 
             if (verificou) {
                 boolean alterou = aDao.realizaAtendimentoEquipe(listAtendimentosEquipe, atendimento.getInsercaoPacienteBean().getLaudo().getId(),
