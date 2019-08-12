@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.comum.util;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -101,6 +102,12 @@ public final class DataUtil {
         Date date = new Date();
         calendar.setTime(date);
         return calendar.getTime();
+    }
+
+    public static Timestamp retornarDataIhHoraAtual(){
+        Timestamp dataDeHoje = new Timestamp(System.currentTimeMillis());
+
+        return dataDeHoje;
     }
 
     public static Date adicionarMesIhAnoEmDate(Integer mes, Integer ano, Boolean ultimoDiaDoMes){

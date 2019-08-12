@@ -1,6 +1,7 @@
 package br.gov.al.maceio.sishosp.hosp.control;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,7 +13,9 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
+import br.gov.al.maceio.sishosp.comum.util.DataUtil;
+import br.gov.al.maceio.sishosp.hosp.enums.*;
+import br.gov.al.maceio.sishosp.hosp.model.*;
 import br.gov.al.maceio.sishosp.hosp.model.dto.AvaliacaoInsercaoDTO;
 import org.primefaces.event.SelectEvent;
 
@@ -29,15 +32,6 @@ import br.gov.al.maceio.sishosp.hosp.dao.FeriadoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
-import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
-import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
-import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
-import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
 
 @ManagedBean(name = "InsercaoController")
 @ViewScoped
@@ -65,6 +59,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private List<AgendaBean> listaHorariosDaEquipe;
     private Boolean liberacao;
     private Boolean ehAvaliacao;
+    private ArrayList<Liberacao> listaLiberacao;
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -83,6 +78,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaProfissionais = new ArrayList<>();
         liberacao = false;
         ehAvaliacao = false;
+        listaLiberacao = new ArrayList<>();
     }
 
     public void carregarHorarioOuTurnoInsercao() throws ProjetoException, ParseException {
@@ -200,7 +196,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         return retorno;
     }
 
-    public void validarSenhaLiberacao() throws ProjetoException {
+    public void validarSenhaIhRealizarLiberacao() throws ProjetoException {
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
         Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(), ValidacaoSenha.LIBERACAO_PACIENTES_SEM_PERFIL.getSigla());
@@ -208,10 +204,21 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         if (idFuncionario > 0) {
             liberacao = true;
             JSFUtil.fecharDialog("dlgSenha");
+            adicionarLiberacaoNaLista(montarLiberacao(LiberacaoMotivos.AVALIACAO.getSigla(), idFuncionario, LiberacaoRotinas.INSERCAO.getSigla()));
             carregarLaudoPaciente(insercao.getLaudo().getId());
+            listarProfissionaisEquipe();
         } else {
             JSFUtil.adicionarMensagemErro("Funcionário com senha errada ou sem liberação!", "Erro!");
         }
+    }
+
+    public Liberacao montarLiberacao(String motivo, Integer idUsuarioLiberacao, String rotina){
+        Liberacao liberacao = null;
+        return liberacao = new Liberacao(motivo, idUsuarioLiberacao, DataUtil.retornarDataIhHoraAtual(), rotina);
+    }
+
+    public void adicionarLiberacaoNaLista(Liberacao liberacao){
+        listaLiberacao.add(liberacao);
     }
 
     // VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL
@@ -485,7 +492,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
 
                 cadastrou = iDao.gravarInsercaoEquipe(insercao,
-                        listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal, liberacao, funcionario);
+                        listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal, listaLiberacao);
             }
             if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 

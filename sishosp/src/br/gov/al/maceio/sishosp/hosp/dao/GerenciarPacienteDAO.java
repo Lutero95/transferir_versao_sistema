@@ -11,6 +11,7 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.Liberacao;
 
 import javax.faces.context.FacesContext;
 
@@ -382,23 +383,27 @@ public class GerenciarPacienteDAO {
         return retorno;
     }
 
-    public Boolean gravarLiberacao(Integer idPacienteInstituicao, String motivo, Long usuarioLiberacao, Integer codAtendimento, Connection conAuxiliar) {
+    public Boolean gravarLiberacao(Integer idPacienteInstituicao, ArrayList<Liberacao> listaLiberacao, Integer codAtendimento, Connection conAuxiliar) {
 
         Boolean retorno = false;
 
-        String sql = "INSERT INTO hosp.liberacoes (motivo, usuario_liberacao, data_hora_liberacao, codatendimento, codpaciente_instituicao) "
-                + " VALUES  (?, ?, CURRENT_TIMESTAMP, ?, ?)";
+        String sql = "INSERT INTO hosp.liberacoes (motivo, usuario_liberacao, data_hora_liberacao, codatendimento, codpaciente_instituicao, cod_unidade) "
+                + " VALUES  (?, ?, CURRENT_TIMESTAMP, ?, ?, ?)";
 
         try {
             ps = null;
-            ps = conAuxiliar.prepareStatement(sql);
 
-            ps.setString(1, motivo);
-            ps.setLong(2, usuarioLiberacao);
-            ps.setInt(3, codAtendimento);
-            ps.setInt(4, idPacienteInstituicao);
+            for(int i=0; i<listaLiberacao.size(); i++) {
+                ps = conAuxiliar.prepareStatement(sql);
 
-            ps.executeUpdate();
+                ps.setString(1, listaLiberacao.get(i).getMotivo());
+                ps.setLong(2, listaLiberacao.get(i).getIdUsuarioLiberacao());
+                ps.setInt(3, codAtendimento);
+                ps.setInt(4, idPacienteInstituicao);
+                ps.setInt(5, user_session.getUnidade().getId());
+
+                ps.executeUpdate();
+            }
 
             retorno = true;
 
