@@ -235,10 +235,11 @@ public class CidDAO {
 		return lista;
 	}
 
-	public List<CidBean> listarCidsBuscaPorProcedimentoAutoComplete(String descricao, Integer id_proc)
+	public List<CidBean> listarCidsBuscaPorProcedimentoAutoComplete(String descricao)
 			throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select c.cod, c.desccidabrev, c.cid from hosp.cid c left join hosp.proc_cid p on (p.id_cid = c.cod) "
+		String sql = "select c.cod, c.desccid, c.cid from hosp.cid c "
+				//"left join hosp.proc_cid p on (p.id_cid = c.cod) "
 			//	+ " where c.cod = ? and desccid LIKE ? order by c.desccid";
 				+ " where 1=1  and desccid LIKE ? order by c.desccid";
 
@@ -253,7 +254,7 @@ public class CidDAO {
 			while (rs.next()) {
 				CidBean c = new CidBean();
 				c.setIdCid(rs.getInt("cod"));
-				c.setDescCid(rs.getString("desccidabrev"));
+				c.setDescCid(rs.getString("desccid"));
 				c.setCid(rs.getString("cid"));
 
 				lista.add(c);
@@ -271,9 +272,9 @@ public class CidDAO {
 		return lista;
 	}
 
-	public List<CidBean> listarCidsBuscaPorProcedimento(Integer id_proc) throws ProjetoException {
+	public List<CidBean> listarCidsBusca() throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select c.cod, c.desccidabrev, c.cid from hosp.cid c left join hosp.proc_cid p on (p.id_cid = c.cod) "
+		String sql = "select c.cod, c.desccid, c.cid from hosp.cid c  "
 //				+ " where c.cod = ? order by c.desccid";
 				+ " order by c.desccid";
 
@@ -287,7 +288,7 @@ public class CidDAO {
 			while (rs.next()) {
 				CidBean c = new CidBean();
 				c.setIdCid(rs.getInt("cod"));
-				c.setDescCid(rs.getString("desccidabrev"));
+				c.setDescCid(rs.getString("desccid"));
 				c.setCid(rs.getString("cid"));
 
 				lista.add(c);

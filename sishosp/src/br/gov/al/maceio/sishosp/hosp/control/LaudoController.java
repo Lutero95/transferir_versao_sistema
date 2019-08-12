@@ -78,11 +78,12 @@ public class LaudoController implements Serializable {
     }
 
     public void setaValidadeProcPrimLaudo(Integer validade) {
-    	laudo.setPeriodo(validade);
-    	calcularPeriodoLaudo();
+        laudo.setPeriodo(validade);
+        calcularPeriodoLaudo();
     }
-    public void renderizarDadosDeAutorizacao(){
-        if(laudo.getSituacao().equals(SituacaoLaudo.AUTORIZADO.getSigla())){
+
+    public void renderizarDadosDeAutorizacao() {
+        if (laudo.getSituacao().equals(SituacaoLaudo.AUTORIZADO.getSigla())) {
             renderizarDataAutorizacao = true;
         }
     }
@@ -92,15 +93,15 @@ public class LaudoController implements Serializable {
     }
 
     public void calcularPeriodoLaudo() {
-    	laudo.setMesInicio(null);
-    	laudo.setMesFinal(null);
-    	if (laudo.getDataSolicitacao()!=null) {
-    	laudo.setMesInicio(DataUtil.extrairMesDeData(laudo.getDataSolicitacao()));
-    	laudo.setAnoInicio(DataUtil.extrairAnoDeData(laudo.getDataSolicitacao()));
-    	}
+        laudo.setMesInicio(null);
+        laudo.setMesFinal(null);
+        if (laudo.getDataSolicitacao() != null) {
+            laudo.setMesInicio(DataUtil.extrairMesDeData(laudo.getDataSolicitacao()));
+            laudo.setAnoInicio(DataUtil.extrairAnoDeData(laudo.getDataSolicitacao()));
+        }
         if (laudo.getPeriodo() != null && laudo.getPeriodo() != 0 && laudo.getMesInicio() != null && laudo.getAnoInicio() != null) {
 
-            int periodo = (laudo.getPeriodo() / 30)-1; // o periodo do laudo considera o mes atual, por isso a inclusao do -1
+            int periodo = (laudo.getPeriodo() / 30) - 1; // o periodo do laudo considera o mes atual, por isso a inclusao do -1
             int mes = 0;
             int ano = 0;
 
@@ -116,12 +117,12 @@ public class LaudoController implements Serializable {
             laudo.setAnoFinal(ano);
 
 
-        } 
+        }
 
     }
 
     public void gravarLaudo() {
-    	idLaudoGerado = null;
+        idLaudoGerado = null;
         idLaudoGerado = lDao.cadastrarLaudo(laudo);
 
         if (idLaudoGerado != null) {
@@ -164,14 +165,12 @@ public class LaudoController implements Serializable {
 
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query)
             throws ProjetoException {
-        List<CidBean> result = cDao.listarCidsBuscaPorProcedimentoAutoComplete(query, laudo.getProcedimentoPrimario().getIdProc());
+        List<CidBean> result = cDao.listarCidsBuscaPorProcedimentoAutoComplete(query);
         return result;
     }
 
-    public void listarCidsPorProcedimento() throws ProjetoException {
-        if (laudo.getProcedimentoPrimario().getIdProc() != null) {
-            listaCids =  cDao.listarCidsBuscaPorProcedimento(laudo.getProcedimentoPrimario().getIdProc());
-        }
+    public void listarCids() throws ProjetoException {
+        listaCids = cDao.listarCidsBusca();
     }
 
     public LaudoBean getLaudo() {
@@ -211,13 +210,13 @@ public class LaudoController implements Serializable {
         this.tipo = tipo;
     }
 
-	public List<CidBean> getListaCids() {
-		return listaCids;
-	}
+    public List<CidBean> getListaCids() {
+        return listaCids;
+    }
 
-	public void setListaCids(List<CidBean> listaCids) {
-		this.listaCids = listaCids;
-	}
+    public void setListaCids(List<CidBean> listaCids) {
+        this.listaCids = listaCids;
+    }
 
     public Boolean getRenderizarDataAutorizacao() {
         return renderizarDataAutorizacao;
@@ -227,11 +226,11 @@ public class LaudoController implements Serializable {
         this.renderizarDataAutorizacao = renderizarDataAutorizacao;
     }
 
-	public Integer getIdLaudoGerado() {
-		return idLaudoGerado;
-	}
+    public Integer getIdLaudoGerado() {
+        return idLaudoGerado;
+    }
 
-	public void setIdLaudoGerado(Integer idLaudoGerado) {
-		this.idLaudoGerado = idLaudoGerado;
-	}
+    public void setIdLaudoGerado(Integer idLaudoGerado) {
+        this.idLaudoGerado = idLaudoGerado;
+    }
 }
