@@ -298,7 +298,7 @@ public class AtendimentoDAO {
 
         String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
                 + " a.codprograma, pr.descprograma, a.codtipoatendimento, t.desctipoatendimento,"
-                + " a.codequipe, e.descequipe,"
+                + " a.codequipe, e.descequipe, a.avaliacao,  "
                 + " case when t.equipe_programa is true then 'Sim' else 'Não' end as ehEquipe,"
 
                 + " case when "
@@ -356,6 +356,7 @@ public class AtendimentoDAO {
                 at.getEquipe().setCodEquipe(rs.getInt("codequipe"));
                 at.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 at.setEhEquipe(rs.getString("ehEquipe"));
+                at.setAvaliacao(rs.getBoolean("avaliacao"));
 
                 lista.add(at);
             }

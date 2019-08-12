@@ -85,7 +85,7 @@ public class AtendimentoController implements Serializable {
     }
 
     public String redirectAtendimento() {
-        if (atendimento.getEhEquipe().equals("Sim")) {
+        if (atendimento.getEhEquipe().equals("Sim") || atendimento.getAvaliacao()) {
             return RedirecionarUtil.redirectEditSemTipo(ENDERECO_EQUIPE, ENDERECO_ID, this.atendimento.getId());
         } else {
             return RedirecionarUtil.redirectEditSemTipo(ENDERECO_PROFISSIONAL, ENDERECO_ID, this.atendimento.getId());
