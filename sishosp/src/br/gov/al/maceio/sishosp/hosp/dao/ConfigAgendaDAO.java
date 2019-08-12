@@ -818,7 +818,7 @@ public class ConfigAgendaDAO {
 
 		ConfigAgendaParte1Bean conf = new ConfigAgendaParte1Bean();
 
-		String sql = "SELECT DISTINCT c.id_configagenda, c.codequipe, c.qtdmax, d.data_especifica,  c.mes, c.ano, e.descequipe, c.opcao, "
+		String sql = "SELECT DISTINCT c.id_configagenda, c.tipo, c.codequipe, c.qtdmax, d.data_especifica,  c.mes, c.ano, e.descequipe, c.opcao, "
 				+ "CASE WHEN " + "(SELECT count(DISTINCT turno) FROM hosp.config_agenda_equipe cc "
 				+ "LEFT JOIN hosp.config_agenda_equipe_dias dd ON (cc.id_configagenda = dd.id_config_agenda_equipe) "
 				+ "WHERE cc   .id_configagenda = c.id_configagenda) > 1 then 'A' " + "ELSE d.turno END AS turno "
@@ -842,7 +842,7 @@ public class ConfigAgendaDAO {
 				conf.setMes(rs.getInt("mes"));
 				conf.setAno(rs.getInt("ano"));
 				conf.setOpcao(rs.getString("opcao"));
-
+				conf.setTipo(rs.getString("tipo"));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -861,7 +861,7 @@ public class ConfigAgendaDAO {
 
 		ConfigAgendaParte2Bean conf = new ConfigAgendaParte2Bean();
 
-		String sql = "SELECT c.codprograma, c.codgrupo, p.descprograma, g.descgrupo "
+		String sql = "SELECT c.codprograma, c.codgrupo, p.descprograma, g.descgrupo, c.tipo "
 				+ "FROM hosp.config_agenda_equipe c " + "LEFT JOIN hosp.grupo g ON (c.codgrupo = g.id_grupo) "
 				+ "LEFT JOIN hosp.programa p ON (c.codprograma = p.id_programa) " + "WHERE c.id_configagenda = ?";
 
@@ -877,7 +877,6 @@ public class ConfigAgendaDAO {
 				conf.getPrograma().setDescPrograma(rs.getString("descprograma"));
 				conf.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
 				conf.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-
 			}
 
 		} catch (Exception ex) {
