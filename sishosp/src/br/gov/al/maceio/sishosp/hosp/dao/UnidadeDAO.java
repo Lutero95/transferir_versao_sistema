@@ -560,4 +560,45 @@ public class UnidadeDAO {
         return parametro;
     }
 
+    public List<UnidadeBean> carregarUnidadesDoFuncionario() {
+
+        List<UnidadeBean> lista = new ArrayList<>();
+
+        String sql = "SELECT u.nome, fu.cod_unidade " +
+                "FROM hosp.funcionario_unidades fu " +
+                "JOIN hosp.unidade u ON (fu.cod_unidade = u.id) " +
+                "WHERE fu.cod_funcionario = ? " +
+                "UNION  " +
+                "SELECT u.nome, f.codunidade " +
+                "FROM acl.funcionarios f " +
+                "JOIN hosp.unidade u ON (f.codunidade = u.id) " +
+                "WHERE f.id_funcionario = ?";
+
+        try {
+            con = ConnectionFactory.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setLong(1, user_session.getId());
+            ps.setLong(2, user_session.getId());
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                UnidadeBean unidade = new UnidadeBean();
+                unidade.setId(rs.getInt("cod_unidade"));
+                unidade.setNomeUnidade(rs.getString("nome"));
+                lista.add(unidade);
+            }
+
+        } catch (SQLException | ProjetoException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
 }

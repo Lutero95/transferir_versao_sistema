@@ -150,6 +150,10 @@ public class UnidadeController implements Serializable {
         return listaUnidades;
     }
 
+    public List<UnidadeBean> listarUnidadesDoFuncionario() {
+        return eDao.carregarUnidadesDoFuncionario();
+    }
+
     public List<GrupoBean> listaGrupoAutoCompleteComPrograma(String query)
             throws ProjetoException {
         List<GrupoBean> listaGrupo = new ArrayList<>();

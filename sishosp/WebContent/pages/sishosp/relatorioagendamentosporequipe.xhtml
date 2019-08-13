@@ -1,0 +1,361 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../../template/template.xhtml">
+
+    <f:metadata>
+        <f:viewAction
+                action="#{RelatoriosController.preparaRelFrequencia()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <br/>
+        <br/>
+
+
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Relatório: Agendamentos por Equipe</h4>
+            </div>
+            <p:growl id="grw"/>
+            <div class="panel-body table-body">
+                <h:form id="frm">
+
+                    <b:row>
+                        <b:column span="3" class="label-position data-size">
+                            <b:label value="Período:" severity="info" class="fire-label"/>
+                            <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+                                        showOn="button" size="15"
+                                        required="true" requiredMessage="Data: Campo obrigatório!"
+                                        value="#{AgendaController.agenda.dataAtendimento}" id="dataInicio"
+                                        locale="pt">
+                            </p:calendar>
+
+                            <p:outputLabel value="à"/>
+
+                            <p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
+                                        showOn="button" size="15"
+                                        required="true" requiredMessage="Data: Campo obrigatório!"
+                                        value="#{AgendaController.agenda.dataAtendimento}" id="dataFinal"
+                                        locale="pt">
+                            </p:calendar>
+
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+
+                            <p:outputPanel>
+                                <b:label value="Unidade:" severity="info" class="fire-label"/>
+
+                                <b:selectOneMenu class="select-agendaEquipe2" required="true"
+                                                 requiredMessage="Unidade: Campo obrigatório!"
+                                                 value="#{AlteracaoPacienteController.insercao.agenda.horario}">
+                                    <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                                    <f:selectItems
+                                            value="#{UnidadeController.listarUnidadesDoFuncionario()}" var="unidade"
+                                            itemLabel="#{unidade.nomeUnidade}" itemValue="#{sis.id}"/>
+                                </b:selectOneMenu>
+                            </p:outputPanel>
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Programa:" severity="info"/>
+
+                            <p:outputPanel id="outProg">
+                                <p:autoComplete value="#{AgendaController.agenda.programa}"
+                                                size="31" converter="conPrograma"
+                                                class="select-agendaEquipe4"
+
+                                                disabled="#{AgendaController.agenda.paciente==null}"
+                                                completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descPrograma}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.selectPrograma}"
+                                            update="outProg,  outGrupo"/>
+
+
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusPr" immediate="true"
+                                                 disabled="#{AgendaController.agenda.paciente==null}"
+                                                 icon="ui-icon-search"
+                                                 action="#{AgendaController.limparNaBuscaPrograma()}"
+                                                 actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
+                                                 update=":formConsuProg" oncomplete="PF('dlgConsuProg').show();"/>
+                            </p:outputPanel>
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Grupo" severity="info"/>
+
+                            <p:outputPanel id="outGrupo">
+                                <p:autoComplete value="#{AgendaController.agenda.grupo}"
+                                                size="31" converter="conGrupo"
+                                                class="select-agendaEquipe4"
+                                                disabled="#{AgendaController.agenda.programa.idPrograma == null}"
+                                                completeMethod="#{AgendaController.listaGrupoAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descGrupo}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.selectGrupo}"
+                                            update=" outGrupo"/>
+
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusGr" immediate="true"
+                                                 icon="ui-icon-search"
+                                                 disabled="#{AgendaController.agenda.programa.idPrograma == null}"
+                                                 actionListener="#{AgendaController.limparNaBuscaGrupo()}"
+                                                 action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
+                                                 update=":frm formConsuGrop" oncomplete="PF('dlgConsuGrop').show();"/>
+                            </p:outputPanel>
+                        </b:column>
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="3"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Tipo Atendimento" severity="info"/>
+
+                            <p:outputPanel id="outTipoAt">
+                                <p:autoComplete value="#{AgendaController.agenda.tipoAt}"
+                                                size="31" converter="conTipoAtendimento" required="true"
+                                                requiredMessage="Tipo Atendimento: Campo obrigatório!"
+                                                class="select-agendaEquipe4"
+                                                disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
+                                                completeMethod="#{AgendaController.listaTipoAtAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descTipoAt}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.validarTipoAtendimentoNaAgenda}"
+                                            update=""/>
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusTi" immediate="true"
+                                                 icon="ui-icon-search"
+                                                 disabled="#{AgendaController.agenda.grupo.idGrupo == null}"
+                                                 action="#{AgendaController.limparNaBuscaTipo()}"
+                                                 update=""
+                                                 onclick="PF('dlgConsuTipoAt').show();"/>
+                            </p:outputPanel>
+                        </b:column>
+
+                    </b:row>
+
+                    <b:row>
+
+                        <b:column span="2"
+                                  class="label-position new-data-size new-comple1">
+                            <b:label value="Equipe" severity="info"/>
+
+                            <p:outputPanel id="outEquipe">
+                                <p:autoComplete value="#{AgendaController.agenda.equipe}"
+                                                size="31" converter="conEquipe" required="true"
+                                                requiredMessage="Equipe: Campo obrigatório!"
+                                                class="select-agendaEquipe4"
+                                                completeMethod="#{AgendaController.listaEquipeAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descEquipe}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento}"
+                                            update=""></p:ajax>
+
+                                </p:autoComplete>
+
+                                <p:commandButton id="btBusEqui" immediate="true"
+                                                 disabled="#{AgendaController.agenda.tipoAt==null}"
+                                                 icon="ui-icon-search"
+                                                 oncomplete="PF('dlgConsuEquipe').show();"
+                                                 action="#{AgendaController.carregaListaEquipePorTipoAtendimento()}"
+                                                 update=""/>
+                            </p:outputPanel>
+                        </b:column>
+
+                    </b:row>
+
+
+                    <br/>
+
+                    <p:commandButton icon="ui-icon-print" value="Imprimir"
+                                     target="_blank" style="font-size: 12px;  text-align: right;" update="grw"
+                                     actionListener="#{RelatoriosController.geraFrequencia(RelatoriosController.pacienteInstituicao, AgendaController.agenda.programa, AgendaController.agenda.grupo)}"
+                                     ajax="false"/>
+
+
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+                  dynamic="true"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formConsuProg">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{ProgramaController.listaProgramasUsuario}" var="prog"
+                             display="Nenhum Programa">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Programa
+                        </f:facet>
+                        <p:outputLabel value="#{prog.descPrograma}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":frm:outProg, :frm:outGrupo"
+                                class="new-btn-acao-table acao-editar" icon="ui-icon-check"
+                                title="Selecionar"
+                                action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
+                                actionListener="#{AgendaController.limparNaBuscaPrograma()}"
+                                oncomplete="PF('dlgConsuProg').hide();">
+                            <f:setPropertyActionListener value="#{prog}"
+                                                         target="#{AgendaController.agenda.programa}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+                  modal="true" styleClass="topDialog" dynamic="true">
+            <h:form id="formConsuGrop">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             ajax="true"
+                             responsive="true"
+                             save-state="false"
+                             saveState="false"
+                             value="#{AgendaController.listaGruposProgramas}" id="dtGrupo"
+                             var="grupo" display="Nenhum Grupo">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Grupo
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.descGrupo}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Quantidade Frequência
+                        </f:facet>
+                        <p:outputLabel value="#{grupo.qtdFrequencia}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":frm:outGrupo"
+                                icon="ui-icon-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                onclick="PF('dlgConsuGrop').hide();"
+                                action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}">
+                            <f:setPropertyActionListener value="#{grupo}"
+                                                         target="#{AgendaController.agenda.grupo}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Tipos de Atendimento" dynamic="true"
+                  widgetVar="dlgConsuTipoAt" modal="true" responsive="true">
+            <h:form id="formConsuTipoAt">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{AgendaController.listaTipos}" id="dtTipoAt" var="tipo"
+                             display="Nenhum Tipo de Atendimento">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Tipo de Atendimento
+                        </f:facet>
+                        <p:outputLabel value="#{tipo.descTipoAt}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                update=":formAgendaMedica:outTipoAt, :formAgendaMedica"
+                                icon="ui-icon-check" title="Selecionar"
+                                class="new-btn-acao-table acao-editar"
+                                onclick="PF('dlgConsuTipoAt').hide();">
+                            <f:setPropertyActionListener value="#{tipo}"
+                                                         target="#{AgendaController.agenda.tipoAt}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
+                  dynamic="true" modal="true" responsive="true">
+            <h:form id="formConsuEquipe">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{AgendaController.listaEquipePorTipoAtendimento}"
+                             id="dtEquipe" var="equipe" display="Nenhuma Equipe">
+
+                    <h:column>
+                        <f:facet name="header">
+                            Equipe
+                        </f:facet>
+                        <p:outputLabel value="#{equipe.descEquipe}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Adicionar
+                        </f:facet>
+                        <p:commandButton
+                                action="#{AgendaController.preparaVerificarDisponibilidadeDataECarregarDiasAtendimento()}"
+                                update=":formAgendaMedica" icon="ui-icon-check"
+                                title="Selecionar" class="new-btn-acao-table acao-editar"
+                                oncomplete="PF('dlgConsuEquipe').hide();">
+                            <f:setPropertyActionListener value="#{equipe}"
+                                                         target="#{AgendaController.agenda.equipe}"/>
+                        </p:commandButton>
+                    </h:column>
+
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
+</html>
