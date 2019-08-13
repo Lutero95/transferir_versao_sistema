@@ -475,10 +475,12 @@ public class OrteseProteseDAO {
     private Boolean gravarHistoricoMovimentacaoOrteseIhProtese(String statusMovimentacao, Integer codOrteseIhProtese, Connection conAuxiliar) {
 
         Boolean retorno = false;
-        String sql = "INSERT INTO hosp.historico_movimentacao_ortese_protese (status, data_hora_acao, cod_operador, cod_ortese_protese) " +
-                "values (?,CURRENT_TIMESTAMP,?,?);";
 
         try {
+
+            String sql = "INSERT INTO hosp.historico_movimentacao_ortese_protese (status, data_hora_acao, cod_operador, cod_ortese_protese) " +
+                    "values (?,CURRENT_TIMESTAMP,?,?);";
+
             ps = conAuxiliar.prepareStatement(sql);
             ps.setString(1, statusMovimentacao);
             ps.setInt(2, user_session.getCodigo());
@@ -501,10 +503,20 @@ public class OrteseProteseDAO {
     private Boolean gravarUltimaSituacaoValidaOrteseIhProtese(Integer codOrteseIhProtese, String statusDecartar, Connection conAuxiliar) {
 
         Boolean retorno = false;
-        String sql = "UPDATE hosp.ortese_protese SET situacao = ? WHERE id = ?;";
+
+        String sql = "UPDATE hosp.historico_movimentacao_ortese_protese SET cancelado = TRUE " +
+                "WHERE status = ? AND cod_ortese_protese = ?";
 
         try {
+
             ps = conAuxiliar.prepareStatement(sql);
+            ps.setString(1, statusDecartar);
+            ps.setInt(2, codOrteseIhProtese);
+            ps.executeUpdate();
+
+            String sql2 = "UPDATE hosp.ortese_protese SET situacao = ? WHERE id = ?;";
+
+            ps = conAuxiliar.prepareStatement(sql2);
             ps.setString(1, retornarUltimaSituacaoValida(codOrteseIhProtese, statusDecartar, conAuxiliar));
             ps.setInt(2, codOrteseIhProtese);
             ps.execute();
@@ -526,9 +538,11 @@ public class OrteseProteseDAO {
     private Boolean gravarUltimaSituacaoIhStatusValidaOrteseIhProtese(Integer codOrteseIhProtese, String statusDecartar, Connection conAuxiliar) {
 
         Boolean retorno = false;
-        String sql = "UPDATE hosp.ortese_protese SET situacao = ?, status = ? WHERE id = ?;";
 
         try {
+
+            String sql = "UPDATE hosp.ortese_protese SET situacao = ?, status = ? WHERE id = ?;";
+
             ps = conAuxiliar.prepareStatement(sql);
             ps.setString(1, retornarUltimaSituacaoValida(codOrteseIhProtese, statusDecartar, conAuxiliar));
             ps.setString(2, StatusPadraoOrteseProtese.PENDENTE.getSigla());
