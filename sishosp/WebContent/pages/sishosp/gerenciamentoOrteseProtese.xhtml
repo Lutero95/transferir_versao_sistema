@@ -129,7 +129,7 @@
                     <b:column span="12" class="label-position1">
 
                         <p:dataTable emptyMessage="Sem Órtese/Prótese" responsive="true"
-                                     styleClass="table table-hover" id="dtNovosAg"
+                                     styleClass="table table-hover" id="dtOrteseProtese"
                                      value="#{OrteseProteseController.listOrteseProtese}" var="opm"
                                      paginator="true" paginatorPosition="bottom" rows="12"
                                      resizableColumns="true" selectionMode="single"
@@ -148,7 +148,7 @@
                             </p:column>1
 
                             <p:column width="20%">
-                                <f:facet name="header">
+                                <f:facet name="header">r
                                     <h:outputText style="font-size: 14px;" value="Laudo"/>
                                 </f:facet>
                                 <h:outputText value="#{opm.laudo.id}"></h:outputText>
@@ -158,7 +158,8 @@
                                 <f:facet name="header">
                                     <h:outputText style="font-size: 14px;" value="Status"/>
                                 </f:facet>
-                                <h:outputText value="#{opm.statusPadrao}"></h:outputText>
+                                <h:outputText value="Pendente" rendered="#{opm.statusPadrao=='P'}" />
+                                <h:outputText value="Entregue" rendered="#{opm.statusPadrao=='E'}" />
                             </p:column>
 
                             <p:column width="20%">
@@ -354,7 +355,7 @@
                     <p:separator/>
                     <p:commandButton look="success" value="Sim" style="float:left;"
                                      action="#{OrteseProteseController.gravarEntregaOrteseIhProtese}"
-                                     ajax="true" update="formGerenOrteseEProtese:msgPagina"
+                                     ajax="true" update="formGerenOrteseEProtese:msgPagina, formGerenOrteseEProtese:dtOrteseProtese"
                                      class="btn-sim" icon="glyphicon-ok"/>
 
                     <p:commandButton value="Não"
@@ -378,7 +379,7 @@
                     <p:separator/>
                     <p:commandButton look="success" value="Sim" style="float:left;"
                                      action="#{OrteseProteseController.cancelarEntregaOrteseIhProtese}"
-                                     ajax="true" update="formGerenOrteseEProtese:msgPagina"
+                                     ajax="true" update="formGerenOrteseEProtese:msgPagina, :formGerenOrteseEProtese:dtOrteseProtese"
                                      class="btn-sim" icon="glyphicon-ok"/>
 
                     <p:commandButton value="Não"
