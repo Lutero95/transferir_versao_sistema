@@ -288,8 +288,7 @@ public class InsercaoPacienteDAO {
     }
 
     public boolean gravarInsercaoProfissional(InsercaoPacienteBean insercao,
-                                              ArrayList<InsercaoPacienteBean> listaAgendamento)
-            throws ProjetoException {
+                                              ArrayList<InsercaoPacienteBean> listaAgendamento) {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
