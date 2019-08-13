@@ -29,7 +29,7 @@ public class OrteseProteseDAO {
                 "FROM hosp.parametro pa " +
                 "JOIN hosp.programa pr ON (pr.id_programa = pa.programa_ortese_protese) " +
                 "JOIN hosp.grupo g ON (g.id_grupo = pa.grupo_ortese_protese) " +
-                "WHERE pa.cod_empresa = ?;";
+                "WHERE pa.codunidade = ?;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -101,7 +101,7 @@ public class OrteseProteseDAO {
                 "FROM hosp.ortese_protese o " +
                 "LEFT JOIN hosp.tipoaparelho t ON (o.cod_equipamento = t.id) " +
                 "LEFT JOIN hosp.fornecedor f ON (f.id_fornecedor = o.cod_fornecedor) " +
-                "JOIN hosp.parametro pa ON (pa.cod_empresa = o.cod_empresa) " +
+                "JOIN hosp.parametro pa ON (pa.codunidade = o.cod_unidade) " +
                 "JOIN hosp.programa pr ON (pr.id_programa = pa.programa_ortese_protese) " +
                 "JOIN hosp.grupo g ON (g.id_grupo = pa.grupo_ortese_protese) " +
                 "WHERE o.id = ? ";
@@ -142,7 +142,7 @@ public class OrteseProteseDAO {
 
         List<OrteseProtese> lista = new ArrayList<>();
 
-        String sql = "SELECT id, status, nota_fiscal, cod_laudo, situacao FROM hosp.ortese_protese WHERE cod_empresa = ? ORDER BY id;";
+        String sql = "SELECT id, status, nota_fiscal, cod_laudo, situacao FROM hosp.ortese_protese WHERE cod_unidade = ? ORDER BY id;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -176,8 +176,8 @@ public class OrteseProteseDAO {
 
         Boolean retorno = false;
         String sql = "INSERT INTO hosp.ortese_protese (status, nota_fiscal, cod_programa, cod_grupo, cod_equipamento, cod_laudo, cod_fornecedor, " +
-                "data_hora_acao, cod_operador, cod_empresa) " +
-                "values (?,?,?,?,?,?,?,CURRENT_TIMESTAMP ,?,?) RETURNING id;";
+                "data_hora_acao, cod_operador, situacao, cod_unidade) " +
+                "values (?,?,?,?,?,?,?,CURRENT_TIMESTAMP ,?,?,?) RETURNING id;";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -207,7 +207,9 @@ public class OrteseProteseDAO {
 
             ps.setInt(8, user_session.getCodigo());
 
-            ps.setInt(9, user_session.getUnidade().getId());
+            ps.setString(9, StatusMovimentacaoOrteseProtese.INSERCAO_DE_SOLICITACAO.getSigla());
+
+            ps.setInt(10, user_session.getUnidade().getId());
 
             Integer codOrteseIhProtese = null;
             ResultSet rs = ps.executeQuery();
@@ -218,10 +220,8 @@ public class OrteseProteseDAO {
             retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.INSERCAO_DE_SOLICITACAO.getSigla(), codOrteseIhProtese, con);
 
             if (retorno) {
-                retorno = alterarSituacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.INSERCAO_DE_SOLICITACAO.getSigla(), orteseProtese.getId(), con);
-                if (retorno) {
-                    con.commit();
-                }
+                con.commit();
+
             }
 
         } catch (Exception ex) {
@@ -284,8 +284,8 @@ public class OrteseProteseDAO {
     public Boolean gravarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) {
 
         Boolean retorno = false;
-        String sql = "INSERT INTO hosp.encaminhamento_opm (cod_fornecedor, especificacao, data_encaminhamento, usuario_encaminhamento, id_ortese_protese) " +
-                "values (?,?,?,?,?);";
+        String sql = "INSERT INTO hosp.encaminhamento_opm (cod_fornecedor, especificacao, data_encaminhamento, usuario_encaminhamento, id_ortese_protese, cod_unidade) " +
+                " values (?,?,?,?,?,?);";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -300,6 +300,8 @@ public class OrteseProteseDAO {
             ps.setInt(4, user_session.getCodigo());
 
             ps.setInt(5, orteseProtese.getId());
+
+            ps.setInt(6, user_session.getUnidade().getId());
 
             ps.execute();
 
@@ -375,6 +377,7 @@ public class OrteseProteseDAO {
 
             ps.executeUpdate();
 
+            retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.ENCAMINHAMENTO_CANCELADO.getSigla(), orteseProtese.getId(), con);
             if (retorno) {
                 retorno = gravarUltimaSituacaoValidaOrteseIhProtese(orteseProtese.getId(), StatusMovimentacaoOrteseProtese.ENCAMINHAMENTO_FORNECEDOR.getSigla(), con);
                 if (retorno) {

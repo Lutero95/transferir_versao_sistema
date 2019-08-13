@@ -117,7 +117,7 @@ public class OrteseProteseController implements Serializable {
         boolean cadastrou = oDao.gravarInsercaoOrteseIhProtese(this.orteseProtese);
 
         if (cadastrou == true) {
-            JSFUtil.adicionarMensagemSucesso("Alterado com sucesso!", "Sucesso");
+            JSFUtil.adicionarMensagemSucesso("Inserido com sucesso!", "Sucesso");
             limparInsercao();
             JSFUtil.atualizarComponente("formInsercao");
         } else {
