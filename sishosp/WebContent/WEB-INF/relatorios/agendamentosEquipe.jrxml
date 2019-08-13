@@ -15,13 +15,14 @@
 	<parameter name="dt_final" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="cod_equipe" class="java.lang.Integer">
+	<parameter name="cod_equipe" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="cod_tipo_atend" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="cod_empresa" class="java.lang.Integer"/>
+	<parameter name="codequipe" class="java.util.Collection"/>
 	<queryString>
 		<![CDATA[select  empresa.nome_principal nomeinstituicao,empresa.logomarca,programa.id_programa,programa.descprograma,  
 case when at.avaliacao is true then 0 else g.id_grupo end idgrupo,
@@ -42,8 +43,8 @@ join hosp.equipe e on e.id_equipe = at.codequipe
 join hosp.pacientes p on (at.codpaciente = p.id_paciente)
 inner join hosp.tipoatendimento t on (at.codtipoatendimento = t.id)
 where at.dtaatende between $P{dt_inicial} and $P{dt_final}
-and(  ($P{cod_equipe} is not null and at.codequipe = $P{cod_equipe})
-or   ($P{cod_equipe} is null and at.codequipe > 0))
+and(  ($P{cod_equipe} is not null and $X{IN, at.codequipe,cod_equipe})
+or   ($P{cod_equipe} is null ))
 order by programa.descprograma, g.descgrupo, dt_atend, p.nome]]>
 	</queryString>
 	<field name="nomeinstituicao" class="java.lang.String">
