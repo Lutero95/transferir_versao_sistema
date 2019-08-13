@@ -101,7 +101,7 @@ public class OrteseProteseDAO {
                 "FROM hosp.ortese_protese o " +
                 "LEFT JOIN hosp.tipoaparelho t ON (o.cod_equipamento = t.id) " +
                 "LEFT JOIN hosp.fornecedor f ON (f.id_fornecedor = o.cod_fornecedor) " +
-                "JOIN hosp.parametro pa ON (pa.cod_empresa = o.cod_empresa) " +
+                "JOIN hosp.parametro pa ON (pa.codunidade = o.cod_unidade) " +
                 "JOIN hosp.programa pr ON (pr.id_programa = pa.programa_ortese_protese) " +
                 "JOIN hosp.grupo g ON (g.id_grupo = pa.grupo_ortese_protese) " +
                 "WHERE o.id = ? ";
