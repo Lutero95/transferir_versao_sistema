@@ -284,8 +284,8 @@ public class OrteseProteseDAO {
     public Boolean gravarEncaminhamentoOrteseIhProtese(OrteseProtese orteseProtese) {
 
         Boolean retorno = false;
-        String sql = "INSERT INTO hosp.encaminhamento_opm (cod_fornecedor, especificacao, data_encaminhamento, usuario_encaminhamento, id_ortese_protese) " +
-                "values (?,?,?,?,?);";
+        String sql = "INSERT INTO hosp.encaminhamento_opm (cod_fornecedor, especificacao, data_encaminhamento, usuario_encaminhamento, id_ortese_protese, cod_unidade) " +
+                " values (?,?,?,?,?,?);";
 
         try {
             con = ConnectionFactory.getConnection();
@@ -300,6 +300,8 @@ public class OrteseProteseDAO {
             ps.setInt(4, user_session.getCodigo());
 
             ps.setInt(5, orteseProtese.getId());
+
+            ps.setInt(6, user_session.getUnidade().getId());
 
             ps.execute();
 
@@ -375,6 +377,7 @@ public class OrteseProteseDAO {
 
             ps.executeUpdate();
 
+            retorno = gravarHistoricoMovimentacaoOrteseIhProtese(StatusMovimentacaoOrteseProtese.ENCAMINHAMENTO_CANCELADO.getSigla(), orteseProtese.getId(), con);
             if (retorno) {
                 retorno = gravarUltimaSituacaoValidaOrteseIhProtese(orteseProtese.getId(), StatusMovimentacaoOrteseProtese.ENCAMINHAMENTO_FORNECEDOR.getSigla(), con);
                 if (retorno) {
