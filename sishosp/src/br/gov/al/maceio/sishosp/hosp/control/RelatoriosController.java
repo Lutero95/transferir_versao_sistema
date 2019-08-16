@@ -27,13 +27,12 @@ import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.GrupoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.RelatorioDAO;
-import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.PacienteBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.hosp.model.TipoAtendimentoBean;
+import br.gov.al.maceio.sishosp.hosp.dao.TipoAtendimentoDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
+import br.gov.al.maceio.sishosp.hosp.model.*;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -42,6 +41,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import org.primefaces.event.SelectEvent;
 
 @ManagedBean(name = "RelatoriosController")
 @ViewScoped
@@ -53,12 +53,16 @@ public class RelatoriosController implements Serializable {
     private GrupoBean grupo;
     private GerenciarPacienteBean pacienteInstituicao;
     private TipoAtendimentoBean tipo;
+    private EquipeBean equipe;
     private ProcedimentoBean procedimento;
     private FuncionarioBean prof;
     private List<GrupoBean> listaGrupos;
     private List<TipoAtendimentoBean> listaTipos;
     private String atributoGenerico1;
     private String atributoGenerico2;
+    private UnidadeBean unidade;
+    private List<GrupoBean> listaGruposProgramas;
+    private List<EquipeBean> listaEquipePorTipoAtendimento;
 
     private Date dataInicial;
     private Date dataFinal;
@@ -93,6 +97,10 @@ public class RelatoriosController implements Serializable {
         this.dataDia = new String("DS");
         this.dataEspec = null;
         pacienteInstituicao = new GerenciarPacienteBean();
+        unidade = new UnidadeBean();
+        listaGruposProgramas = new ArrayList<>();
+        equipe = new EquipeBean();
+        listaEquipePorTipoAtendimento = new ArrayList<>();
 
     }
 
@@ -132,6 +140,77 @@ public class RelatoriosController implements Serializable {
 
     public void preparaRelFrequencia() {
         atributoGenerico1 = "P";
+    }
+
+    public void selectPrograma(SelectEvent event) throws ProjetoException {
+        this.programa = (ProgramaBean) event.getObject();
+        atualizaListaGrupos(programa);
+    }
+
+    public void atualizaListaGrupos(ProgramaBean p) throws ProjetoException {
+        this.programa = p;
+        GrupoDAO gDao = new GrupoDAO();
+        this.listaGruposProgramas = gDao.listarGruposPorPrograma(p
+                .getIdPrograma());
+
+        listaTipos = new ArrayList<>();
+
+    }
+
+    // LISTAS E AUTOCOMPLETES INICIO
+    public List<GrupoBean> listaGrupoAutoComplete(String query)
+            throws ProjetoException {
+
+        if (programa.getIdPrograma() != null) {
+            GrupoDAO gDao = new GrupoDAO();
+            return gDao.listarGruposNoAutoComplete(query,
+                    programa.getIdPrograma());
+        } else {
+            return null;
+        }
+
+    }
+
+    public void selectGrupo(SelectEvent event) throws ProjetoException {
+        this.grupo = (GrupoBean) event.getObject();
+        atualizaListaTipos(grupo);
+    }
+
+    public void atualizaListaTipos(GrupoBean g) throws ProjetoException {
+        this.grupo = g;
+        TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+        this.listaTipos = tDao.listarTipoAtPorGrupo(g.getIdGrupo(), TipoAtendimento.TODOS.getSigla());
+    }
+
+    public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
+            throws ProjetoException {
+        List<TipoAtendimentoBean> lista = new ArrayList<>();
+
+        if (grupo != null) {
+            TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
+            lista = tDao.listarTipoAtAutoComplete(query, this.grupo, TipoAtendimento.TODOS.getSigla());
+        } else
+            return null;
+        return lista;
+    }
+
+    public void carregaListaEquipePorTipoAtendimento()
+            throws ProjetoException {
+        if (tipo != null) {
+            if (grupo.getIdGrupo() != null) {
+                EquipeDAO eDao = new EquipeDAO();
+                listaEquipePorTipoAtendimento = eDao
+                        .listarEquipePorGrupo(grupo.getIdGrupo());
+            }
+        }
+    }
+
+    public List<EquipeBean> listaEquipeAutoComplete(String query)
+            throws ProjetoException {
+        EquipeDAO eDao = new EquipeDAO();
+        List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
+                grupo.getIdGrupo());
+        return result;
     }
 
     public void geraLaudoVencer(ProgramaBean programa, GrupoBean grupo) throws IOException,
@@ -736,6 +815,26 @@ public class RelatoriosController implements Serializable {
         return str;
     }
 
+    public void gerarAgendamentosPorEquipe() throws IOException,
+            ParseException, ProjetoException {
+
+        String caminho = "/WEB-INF/relatorios/";
+        String relatorio = "";
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        relatorio = caminho + "agendamentosEquipe.jasper";
+        map.put("img_adefal",
+                this.getServleContext().getRealPath(
+                        "/WEB-INF/relatorios/adefal.png"));
+        map.put("dt_inicial", this.dataInicial);
+        map.put("dt_final", this.dataFinal);
+        map.put("cod_tipo_atend", this.tipo.getIdTipo());
+        map.put("cod_equipe", this.equipe.getCodEquipe());
+        map.put("cod_empresa", this.unidade.getId());
+
+        this.executeReport(relatorio, map, "Agendamentos por Equipe.pdf");
+    }
+
     private FacesContext getFacesContext() {
         FacesContext context = FacesContext.getCurrentInstance();
         return context;
@@ -923,4 +1022,35 @@ public class RelatoriosController implements Serializable {
         this.pacienteInstituicao = pacienteInstituicao;
     }
 
+    public UnidadeBean getUnidade() {
+        return unidade;
+    }
+
+    public void setUnidade(UnidadeBean unidade) {
+        this.unidade = unidade;
+    }
+
+    public List<GrupoBean> getListaGruposProgramas() {
+        return listaGruposProgramas;
+    }
+
+    public void setListaGruposProgramas(List<GrupoBean> listaGruposProgramas) {
+        this.listaGruposProgramas = listaGruposProgramas;
+    }
+
+    public EquipeBean getEquipe() {
+        return equipe;
+    }
+
+    public void setEquipe(EquipeBean equipe) {
+        this.equipe = equipe;
+    }
+
+    public List<EquipeBean> getListaEquipePorTipoAtendimento() {
+        return listaEquipePorTipoAtendimento;
+    }
+
+    public void setListaEquipePorTipoAtendimento(List<EquipeBean> listaEquipePorTipoAtendimento) {
+        this.listaEquipePorTipoAtendimento = listaEquipePorTipoAtendimento;
+    }
 }
