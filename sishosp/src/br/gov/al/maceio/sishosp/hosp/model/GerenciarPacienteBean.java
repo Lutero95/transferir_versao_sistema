@@ -20,7 +20,6 @@ public class GerenciarPacienteBean implements Serializable {
 	// HERDADOS
 	private GrupoBean grupo;
 	private ProgramaBean programa;
-	private PacienteBean paciente;
 	private FuncionarioBean funcionario;
 	private EquipeBean equipe;
 	private LaudoBean laudo;
@@ -29,7 +28,6 @@ public class GerenciarPacienteBean implements Serializable {
 	public GerenciarPacienteBean() {
 		grupo = new GrupoBean();
 		programa = new ProgramaBean();
-		paciente = new PacienteBean();
 		funcionario = new FuncionarioBean();
 		equipe = new EquipeBean();
 		laudo = new LaudoBean();
@@ -92,13 +90,6 @@ public class GerenciarPacienteBean implements Serializable {
 		this.programa = programa;
 	}
 
-	public PacienteBean getPaciente() {
-		return paciente;
-	}
-
-	public void setPaciente(PacienteBean paciente) {
-		this.paciente = paciente;
-	}
 
 	public FuncionarioBean getFuncionario() {
 		return funcionario;

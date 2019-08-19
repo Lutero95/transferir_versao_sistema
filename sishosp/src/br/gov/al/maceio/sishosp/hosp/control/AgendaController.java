@@ -153,7 +153,7 @@ public class AgendaController implements Serializable {
 
 
     public void carregarHorarioOuTurno() throws ProjetoException, ParseException {
-        opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoEmpresa();
+        opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
 
         if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
             gerarHorariosAtendimento();

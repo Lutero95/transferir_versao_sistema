@@ -29,7 +29,7 @@ public class AlteracaoPacienteDAO {
         final Integer limitadorHorarioParaStringInicio = 0;
         final Integer limitadorHorarioParaStringFinal = 5;
 
-        String sql = "select pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, pi.codpaciente, "
+        String sql = "select pi.id, pi.codprograma, p.descprograma, p.cod_procedimento, pi.codgrupo, g.descgrupo, l.codpaciente, "
                 + " pi.codequipe, e.descequipe, a.turno, a.horario, a.situacao, l.mes_final, l.ano_final,  "
                 + " pi.codprofissional, f.descfuncionario, pi.observacao, a.codtipoatendimento, t.desctipoatendimento, pi.codlaudo, pi.data_solicitacao "
                 + " from hosp.paciente_instituicao pi "
@@ -72,6 +72,7 @@ public class AlteracaoPacienteDAO {
                 ip.getAgenda().getTipoAt()
                         .setDescTipoAt(rs.getString("desctipoatendimento"));
                 ip.getAgenda().setTurno(rs.getString("turno"));
+                if (user_session.getUnidade().getParametro().getOpcaoAtendimento().equals("H"))
                 ip.getAgenda().setHorario(StringUtil.quebrarStringPorQuantidade(rs.getString("horario"), limitadorHorarioParaStringInicio,limitadorHorarioParaStringFinal));
                 ip.getAgenda().setSituacao(rs.getString("situacao"));
                 ip.getLaudo().setId(rs.getInt("codlaudo"));
@@ -106,14 +107,13 @@ public class AlteracaoPacienteDAO {
                 + " when dia_semana = 5 then 'Quinta' when dia_semana = 6 then 'Sexta' when dia_semana = 7 then 'Sábado' "
                 + " end as dia from hosp.profissional_dia_atendimento p "
                 + " left join acl.funcionarios f on (f.id_funcionario = p.id_profissional) "
-                + " where p.id_paciente_instituicao = ? and p.cod_empresa = ? "
+                + " where p.id_paciente_instituicao = ? "
                 + " order by id_profissional";
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stm = conexao.prepareStatement(sql);
 
             stm.setInt(1, id);
-            stm.setInt(2, user_session.getUnidade().getId());
 
             ResultSet rs = stm.executeQuery();
 
@@ -191,7 +191,7 @@ public class AlteracaoPacienteDAO {
                 return retorno;
             }
 
-            String sql6 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, cod_empresa) VALUES  (?, ?, ?, ?)";
+            String sql6 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
             PreparedStatement ps6 = null;
             ps6 = conexao.prepareStatement(sql6);
 
@@ -201,13 +201,12 @@ public class AlteracaoPacienteDAO {
                 for (int j = 0; j < listaProfissionais.get(i).getListDiasSemana().size(); j++) {
                     ps6.setInt(3,
                             Integer.parseInt(listaProfissionais.get(i).getListDiasSemana().get(j)));
-                    ps6.setInt(4, user_session.getUnidade().getId());
                     ps6.executeUpdate();
                 }
             }
 
             String sql7 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
-                    + " observacao, ativo, id_paciente_instituicao, cod_empresa, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
+                    + " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
                     + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
 
             PreparedStatement ps7 = null;
@@ -357,7 +356,7 @@ public class AlteracaoPacienteDAO {
             ps4.setLong(1, id_paciente);
             ps4.execute();
 
-            String sql5 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana, cod_empresa) VALUES  (?, ?, ?, ?)";
+            String sql5 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
             PreparedStatement ps5 = null;
             ps5 = conexao.prepareStatement(sql5);
 
@@ -377,7 +376,7 @@ public class AlteracaoPacienteDAO {
             if (!verificarSeAtendimentoExistePorProfissional(insercao, conexao)) {
 
                 String sql6 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtamarcacao, codtipoatendimento, turno, "
-                        + "observacao, ativo, id_paciente_instituicao, cod_empresa)"
+                        + "observacao, ativo, id_paciente_instituicao, cod_unidade)"
                         + " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?) RETURNING id_atendimento;";
 
                 PreparedStatement ps6 = null;

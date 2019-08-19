@@ -58,7 +58,7 @@
 			<![CDATA[]]>
 		</queryString>
 	</subDataset>
-	<parameter name="codusuario" class="java.lang.Integer"/>
+	<parameter name="codunidade" class="java.lang.Integer"/>
 	<parameter name="codpacienteinstituicao" class="java.lang.Integer"/>
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
@@ -77,7 +77,7 @@ select
 	where t1.id_paciente = p.id_paciente order by t1.id limit 1 ) tel_id1 , 
 	 lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0') vencimentolaudo,
 	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes, l.data_solicitacao, l.obs, f.descfuncionario AS nomeprofissional,
-p.id_paciente, f.cns as cns_profissional, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.genero, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
+p.id_paciente, f.cns as cns_profissional, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
  p.logradouro|| ' '||COALESCE('',''||p.numero,'')|| ''||COALESCE('',''||p.complemento,'') AS endereco, 
  m.nome descmunicipio, b.descbairro, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
 l.codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
@@ -96,8 +96,8 @@ LEFT JOIN hosp.proc prs3 ON prs3.id = l.codprocedimento_secundario3
 LEFT JOIN hosp.proc prs4 ON prs4.id = l.codprocedimento_secundario4
 LEFT JOIN hosp.proc prs5 ON prs5.id = l.codprocedimento_secundario5
 LEFT JOIN acl.funcionarios f ON f.id_funcionario = l.cod_profissional
-join acl.funcionarios funclogado on funclogado.id_funcionario =   $P{codusuario} 
-join hosp.empresa on empresa.cod_empresa = funclogado.cod_empresa
+join hosp.unidade u on u.id =  $P{codunidade} 
+join hosp.empresa  on empresa.cod_empresa = u.cod_empresa
 LEFT JOIN hosp.profissao prof ON prof.id_profissao = p.id_profissao
 LEFT JOIN hosp.municipio m ON p.codmunicipio = m.id_municipio
 LEFT JOIN hosp.bairros b ON p.codbairro = b.id_bairro
@@ -187,8 +187,8 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 		<property name="com.jaspersoft.studio.field.label" value="complemento"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
 	</field>
-	<field name="genero" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="genero"/>
+	<field name="sexo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="sexo"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="pacientes"/>
 	</field>
 	<field name="cns" class="java.lang.String">
@@ -516,7 +516,7 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{genero}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{sexo}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="2" y="90" width="202" height="14" uuid="e8250164-22a4-40ef-80d2-b6725e5e601d"/>

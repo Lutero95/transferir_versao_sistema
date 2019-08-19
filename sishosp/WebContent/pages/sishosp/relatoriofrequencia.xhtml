@@ -45,7 +45,7 @@
                                   class="label-position new-data-size new-comple1">
                             <b:label value="Paciente:" severity="info"/>
         <p:outputPanel id="outPa">
-                                <p:inputText value="#{RelatoriosController.pacienteInstituicao.paciente.nome}"
+                                <p:inputText value="#{RelatoriosController.pacienteInstituicao.laudo.paciente.nome}"
                                                 size="31" disabled="true"
                                                 class="select-agendaEquipe4"
                                               
@@ -238,7 +238,7 @@
             </h:form>
         </p:dialog>
         
-         <p:dialog header="Consultar Pacientes na Rede" widgetVar="dlgConsuPac" dynamic="true"
+         <p:dialog header="Consultar Pacientes Em Terapia" widgetVar="dlgConsuPac" dynamic="true"
                   modal="true" width="750px" height="400px" styleClass="topDialog">
             <h:form id="formConsuPac">
                 <p:growl id="msgC"/>
@@ -257,21 +257,21 @@
                             Nome
                         </f:facet>
 
-                        <p:outputLabel value="#{pacie.paciente.nome}"/>
+                        <p:outputLabel value="#{pacie.laudo.paciente.nome}"/>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">
                             Cpf
                         </f:facet>
-                        <p:outputLabel value="#{pacie.paciente.cpf}"/>
+                        <p:outputLabel value="#{pacie.laudo.paciente.cpf}"/>
                     </h:column>
                     
                                         <h:column>
                         <f:facet name="header">
                             Cns
                         </f:facet>
-                        <p:outputLabel value="#{pacie.paciente.cns}"/>
+                        <p:outputLabel value="#{pacie.laudo.paciente.cns}"/>
                     </h:column>
                     
                     <h:column>
@@ -297,8 +297,8 @@
                                 icon="ui-icon-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
                                 onclick="PF('dlgConsuPac').hide();">
-                            <f:setPropertyActionListener value="#{pacie.paciente}"
-                                                         target="#{RelatoriosController.pacienteInstituicao.paciente}"/>
+                            <f:setPropertyActionListener value="#{pacie.laudo.paciente}"
+                                                         target="#{RelatoriosController.pacienteInstituicao.laudo.paciente}"/>
                             <f:setPropertyActionListener value="#{pacie.laudo.procedimentoPrimario}"
                                                          target="#{RelatoriosController.procedimento}"/>     
                             <f:setPropertyActionListener value="#{pacie.grupo}"

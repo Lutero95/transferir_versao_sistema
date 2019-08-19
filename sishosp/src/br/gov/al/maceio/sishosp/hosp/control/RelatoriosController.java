@@ -189,7 +189,7 @@ public class RelatoriosController implements Serializable {
         rDao.popularTabelaTemporariaFrequencia(randomico, pacienteInstituicao.getGrupo().getQtdFrequencia());
 
         JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(lista);
-        if ((pacienteInstituicao.getPrograma() == null) && (pacienteInstituicao.getPaciente() == null)) {
+        if ((pacienteInstituicao.getPrograma() == null) && (pacienteInstituicao.getLaudo().getPaciente() == null)) {
             JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
         } else {
             String caminho = "/WEB-INF/relatorios/";

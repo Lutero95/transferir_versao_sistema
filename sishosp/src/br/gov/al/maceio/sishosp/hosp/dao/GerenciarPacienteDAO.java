@@ -27,12 +27,12 @@ public class GerenciarPacienteDAO {
     public List<GerenciarPacienteBean> carregarPacientesInstituicao()
             throws ProjetoException {
 
-        String sql = "select p.id, p.codprograma,programa.descprograma, p.codgrupo, g.descgrupo, p.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
+        String sql = "select p.id, p.codprograma,programa.descprograma, p.codgrupo, g.descgrupo, l.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
                 + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, "
                 + " pr.codproc, pr.nome nomeproc from hosp.paciente_instituicao p "
                 + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
-                + " left join hosp.pacientes pa on (p.codpaciente = pa.id_paciente) "
+                + " left join hosp.pacientes pa on (l.codpaciente = pa.id_paciente) "
                 + " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo)"
@@ -57,15 +57,15 @@ public class GerenciarPacienteDAO {
                 gp.getGrupo().setDescGrupo(rs.getString("descgrupo"));
                 gp.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 gp.getPrograma().setDescPrograma(rs.getString("descprograma"));
-                gp.getPaciente().setId_paciente(rs.getInt("codpaciente"));
-                gp.getPaciente().setNome(rs.getString("nome"));
-                gp.getPaciente().setCns(rs.getString("cns"));
                 gp.getEquipe().setCodEquipe(rs.getInt("codequipe"));
                 gp.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 gp.getFuncionario().setId(rs.getLong("codprofissional"));
                 gp.getFuncionario().setNome(rs.getString("descfuncionario"));
                 gp.setStatus(rs.getString("status"));
                 gp.getLaudo().setId(rs.getInt("codlaudo"));
+                gp.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
+                gp.getLaudo().getPaciente().setNome(rs.getString("nome"));
+                gp.getLaudo().getPaciente().setCns(rs.getString("cns"));
                 gp.setData_solicitacao(rs.getDate("data_solicitacao"));
                 gp.setObservacao(rs.getString("observacao"));
                 gp.setData_cadastro(rs.getDate("data_cadastro"));
@@ -92,12 +92,12 @@ public class GerenciarPacienteDAO {
     public List<GerenciarPacienteBean> carregarPacientesInstituicaoBusca(
             GerenciarPacienteBean gerenciar) throws ProjetoException {
 
-        String sql = "select p.id, p.codprograma, p.codgrupo, g.descgrupo, p.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
+        String sql = "select p.id, p.codprograma, p.codgrupo, g.descgrupo, l.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
                 + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento "
                 + " from hosp.paciente_instituicao p "
                 + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
-                + " left join hosp.pacientes pa on (p.codpaciente = pa.id_paciente) "
+                + " left join hosp.pacientes pa on (l.codpaciente = pa.id_paciente) "
                 + " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo) "
@@ -129,15 +129,15 @@ public class GerenciarPacienteDAO {
                 gp.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 gp.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 gp.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-                gp.getPaciente().setId_paciente(rs.getInt("codpaciente"));
-                gp.getPaciente().setNome(rs.getString("nome"));
-                gp.getPaciente().setCns(rs.getString("cns"));
                 gp.getEquipe().setCodEquipe(rs.getInt("codequipe"));
                 gp.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 gp.getFuncionario().setId(rs.getLong("codprofissional"));
                 gp.getFuncionario().setNome(rs.getString("descfuncionario"));
                 gp.setStatus(rs.getString("status"));
                 gp.getLaudo().setId(rs.getInt("codlaudo"));
+                gp.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
+                gp.getLaudo().getPaciente().setNome(rs.getString("nome"));
+                gp.getLaudo().getPaciente().setCns(rs.getString("cns"));
                 gp.setData_solicitacao(rs.getDate("data_solicitacao"));
                 gp.setObservacao(rs.getString("observacao"));
                 gp.setData_cadastro(rs.getDate("data_cadastro"));
@@ -172,7 +172,7 @@ public class GerenciarPacienteDAO {
             conexao = ConnectionFactory.getConnection();
             
             GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
-                    if(!gerenciarPacienteDAO.apagarAtendimentos(gerenciarRow.getPaciente().getId_paciente(), conexao, false)){
+                    if(!gerenciarPacienteDAO.apagarAtendimentos(gerenciarRow.getLaudo().getPaciente().getId_paciente(), conexao, false)){
 
                         conexao.close();
 
@@ -231,7 +231,7 @@ public class GerenciarPacienteDAO {
             String sql2 = "INSERT INTO hosp.historico_paciente_instituicao (codpaciente_instituicao, data_operacao, motivo_desligamento, tipo, observacao,id_funcionario_gravacao) "
                     + " VALUES  (?, current_timestamp, (select motivo_padrao_desligamento_opm from hosp.parametro), ?, ?, ?)";
             stmt = conexao.prepareStatement(sql2);
-            stmt.setLong(1, row.getPaciente().getId_paciente());
+            stmt.setLong(1, row.getLaudo().getPaciente().getId_paciente());
             stmt.setString(2, "D");
             stmt.setString(3, gerenciar.getObservacao());
             stmt.setInt(4, user_session.getCodigo());

@@ -82,7 +82,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void carregarHorarioOuTurnoInsercao() throws ProjetoException, ParseException {
-        opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoEmpresa();
+        opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
 
         if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
             gerarHorariosAtendimento();
@@ -90,7 +90,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public String carregarHorarioOuTurno() throws ProjetoException, ParseException {
-        opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoEmpresa();
+        opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
 
         if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
             gerarHorariosAtendimento();

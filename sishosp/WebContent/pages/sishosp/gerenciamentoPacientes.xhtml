@@ -202,7 +202,7 @@
 
                     <b:column span="12" class="label-position1">
 
-                        <p:dataTable emptyMessage="Nenhum Paciente" responsive="true"
+                        <p:dataTable emptyMessage="Nenhum Paciente em Terapia" responsive="true"
                                      styleClass="table table-hover" id="dtNovosAg"
                                      value="#{GerenciarPacienteController.listaPacientes}" var="pacie"
                                      paginator="true" paginatorPosition="bottom" rows="12"
@@ -218,14 +218,14 @@
                                 <f:facet name="header">
                                     <h:outputText style="font-size: 14px;" value="Paciente"/>
                                 </f:facet>
-                                <h:outputText value="#{pacie.paciente.nome}"></h:outputText>
+                                <h:outputText value="#{pacie.laudo.paciente.nome}"></h:outputText>
                             </p:column>
 
                             <p:column width="10%">
                                 <f:facet name="header">
                                     <h:outputText style="font-size: 14px;" value="CNS"/>
                                 </f:facet>
-                                <h:outputText value="#{pacie.paciente.cns}"></h:outputText>
+                                <h:outputText value="#{pacie.laudo.paciente.cns}"></h:outputText>
                             </p:column>
 
                             <p:column width="20%">

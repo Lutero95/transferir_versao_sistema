@@ -47,47 +47,47 @@
                     </div>
 
 
-                    <b:dataTable customLangUrl="#{resource['pt-br.json']}" id="tabela"
+                    <p:dataTable rows="20" paginator="true" id="tabela"
                                  value="#{LaudoController.listaLaudo}" var="tab" responsive="true">
 
                        
 
-                        <h:column>
+                        <p:column>
                             <f:facet name="header">
                                 Paciente
                             </f:facet>
                             <h:outputText value="#{tab.paciente.nome}"/>
-                        </h:column>
+                        </p:column>
 
-                        <h:column>
+                        <p:column>
                             <f:facet name="header">
                                 Procedimento Primário
                             </f:facet>
                             <h:outputText value="#{tab.procedimentoPrimario.nomeProc}"/>
-                        </h:column>
+                        </p:column>
 
-                        <h:column>
+                        <p:column>
                             <f:facet name="header">
                                 Cid Primário
                             </f:facet>
                             <h:outputText value="#{tab.cid1.descCid}"/>
-                        </h:column>
+                        </p:column>
 
-                        <h:column>
+                        <p:column>
                             <f:facet name="header">
                                 Vencimento
                             </f:facet>
                             <h:outputText value="#{tab.vencimento}"/>
-                        </h:column>
+                        </p:column>
 
-                        <h:column>
+                        <p:column>
                             <f:facet name="header">
                                 Situação
                             </f:facet>
                             <h:outputText value="#{tab.situacao}"/>
-                        </h:column>
+                        </p:column>
 
-                        <h:column>
+                        <p:column>
                             <f:facet name="header">
                                 Ação
                             </f:facet>
@@ -119,9 +119,9 @@
                                                              target="#{LaudoController.laudo}"/>
                             </b:commandButton>
 
-                        </h:column>
+                        </p:column>
 
-                    </b:dataTable>
+                    </p:dataTable>
                 </h:form>
             </div>
         </div>

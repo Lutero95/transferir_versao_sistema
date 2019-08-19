@@ -79,7 +79,7 @@ public class FuncionarioDAO {
 
 		String sql = "select us.id_funcionario, us.descfuncionario, us.senha, us.email, permite_liberacao, permite_encaixe, "
 				+ "pf.descricao as descperfil, us.codunidade, p.tipo_atendimento_terapia,  case when us.ativo = 'S' "
-				+ "then true else false end as usuarioativo, "
+				+ "then true else false end as usuarioativo, p.opcao_atendimento, "
 				+ "pf.id as idperfil, u.id codunidade,u.nome nomeunidade, e.nome_principal, e.nome_fantasia  from acl.funcionarios us "
 				+ "join acl.perfil pf on (pf.id = us.id_perfil) "
 				+ " left join hosp.parametro p ON (p.codunidade = us.codunidade) "
@@ -110,6 +110,7 @@ public class FuncionarioDAO {
 				ub.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 				ub.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
 				ub.getUnidade().getParametro().getTipoAtendimento().setIdTipo(rs.getInt("tipo_atendimento_terapia"));
+				ub.getUnidade().getParametro().setOpcaoAtendimento(rs.getString("opcao_atendimento"));
 
 				// ACL
 				ub.setId(rs.getLong("id_funcionario"));

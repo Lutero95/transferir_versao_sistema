@@ -15,7 +15,7 @@ import java.util.GregorianCalendar;
 
 public final class HorarioOuTurnoUtil {
 
-    public static String retornarOpcaoAtendimentoEmpresa() throws ProjetoException {
+    public static String retornarOpcaoAtendimentoUnidade() throws ProjetoException {
         	 UnidadeDAO unidadeDAO = new UnidadeDAO();
 
         String opcaoAtendimento = unidadeDAO.carregarOpcaoAtendimentoDaUnidade();

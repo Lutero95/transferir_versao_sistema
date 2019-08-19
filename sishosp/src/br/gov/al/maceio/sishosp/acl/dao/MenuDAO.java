@@ -179,7 +179,7 @@ public class MenuDAO {
 	public List<Menu> buscarMenuDesc(String valor) throws ProjetoException {
 
 		String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
-				+ "me.ativo, me.diretorio, me.desc_pagina, me.extensao, me.id_rotina, "
+				+ "me.ativo, me.diretorio, me.desc_pagina, me.extensao,  "
 				+ "me.action_rel, me.onclick_rel, diretorio, desc_pagina, extensao from "
 				+ "acl.menu me  where "
 				+ "upper(me.descricao) like ? order by me.ativo desc, me.descricao, me.tipo";
@@ -552,7 +552,7 @@ public class MenuDAO {
 				+ "join acl.sistema si on si.id = ms.id_sistema "
 				+ "join acl.perm_perfil pp on pp.id_permissao = pg.id_permissao "
 				+ "join acl.perfil pf on pf.id = pp.id_perfil "
-				+ "where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel') "
+				+ "where (me.tipo = 'menuItem' or me.tipo = 'menuItemRel' or me.tipo = 'rotinaInterna') "
 				+ "and pf.id = ? order by me.descricao;";
 
 		ArrayList<Menu> lista = new ArrayList<>();
