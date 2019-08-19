@@ -16,19 +16,18 @@ public class ConnectionFactory {
         String nomeBancoAcesso = (String) SessionUtil.resgatarDaSessao("nomeBancoAcesso");
 
         //LOCAL
-        /*
+
         String url = "jdbc:postgresql://localhost:5432/";
         String usuario = "postgres";
+        String senha = "post";
         //String senha = "engetron";
-        String senha = "engetron";
 
-*/
         //PRODUÇÃO
-  
+        /*
         String url = "jdbc:postgresql://72.55.172.244:5432/";
         String usuario = "postgres";
         String senha = "E2@spwxlmQo";
-  
+        */
 
         url = url + nomeBancoAcesso;
 
