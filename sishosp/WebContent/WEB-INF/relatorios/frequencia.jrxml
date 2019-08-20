@@ -67,14 +67,14 @@
 	<queryString>
 		<![CDATA[select v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
 select u.*
-	, (select t1.id from hosp.telefone_paciente t1
+	, (select min(t1.id) id from hosp.telefone_paciente t1
 	where t1.id_paciente = u.id_paciente and t1.id<>u.tel_id1 and t1.id<>u.tel_id2  ) tel_id3
 	from (
-	select t.*, (select t1.id from hosp.telefone_paciente t1
+	select t.*, (select min(t1.id) id from hosp.telefone_paciente t1
 	where t1.id_paciente = t.id_paciente and t1.id<>t.tel_id1  ) tel_id2 from (
 select
-	(select t1.id from hosp.telefone_paciente t1
-	where t1.id_paciente = p.id_paciente order by t1.id limit 1 ) tel_id1 , 
+	(select min(t1.id) id from hosp.telefone_paciente t1
+	where t1.id_paciente = p.id_paciente ) tel_id1 , 
 	 lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0') vencimentolaudo,
 	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes, l.data_solicitacao, l.obs, f.descfuncionario AS nomeprofissional,
 p.id_paciente, f.cns as cns_profissional, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,

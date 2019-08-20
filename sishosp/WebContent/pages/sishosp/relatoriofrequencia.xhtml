@@ -81,11 +81,11 @@
                             <b:label value="Programa:" severity="info"/>
 
                             <p:outputPanel id="outProg">
-                                <p:autoComplete value="#{AgendaController.agenda.programa}"
+                                <p:autoComplete value="#{RelatoriosController.pacienteInstituicao.programa}"
                                                 size="31" converter="conPrograma"
                                                 class="select-agendaEquipe4"
                                                 
-                                                disabled="#{AgendaController.agenda.paciente==null}"
+                                                disabled="#{RelatoriosController.pacienteInstituicao.laudo.paciente==null}"
                                                 completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
@@ -98,7 +98,7 @@
                                 </p:autoComplete>
 
                                 <p:commandButton id="btBusPr" immediate="true"
-                                                 disabled="#{AgendaController.agenda.paciente==null}"
+                                                 disabled="#{RelatoriosController.pacienteInstituicao.laudo.paciente==null}"
                                                  icon="ui-icon-search"
                                                  action="#{AgendaController.limparNaBuscaPrograma()}"
                                                  actionListener="#{ProgramaController.carregaListaProgramasUsuario()}"
@@ -115,10 +115,10 @@
                             <b:label value="Grupo" severity="info"/>
 
                             <p:outputPanel id="outGrupo">
-                                <p:autoComplete value="#{AgendaController.agenda.grupo}"
+                                <p:autoComplete value="#{RelatoriosController.pacienteInstituicao.grupo}"
                                                 size="31" converter="conGrupo" 
                                                 class="select-agendaEquipe4"
-                                                disabled="#{AgendaController.agenda.programa.idPrograma == null}"
+                                                disabled="#{RelatoriosController.pacienteInstituicao.programa.idPrograma == null}"
                                                 completeMethod="#{AgendaController.listaGrupoAutoComplete}"
                                                 effect="fade" var="theme" forceSelection="true"
                                                 minQueryLength="1" itemValue="#{theme}"
@@ -131,9 +131,9 @@
 
                                 <p:commandButton id="btBusGr" immediate="true"
                                                  icon="ui-icon-search"
-                                                 disabled="#{AgendaController.agenda.programa.idPrograma == null}"
+                                                 disabled="#{RelatoriosController.pacienteInstituicao.programa.idPrograma == null}"
                                                  actionListener="#{AgendaController.limparNaBuscaGrupo()}"
-                                                 action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
+                                                 action="#{AgendaController.atualizaListaGrupos(RelatoriosController.pacienteInstituicao.programa)}"
                                                  update=":frm formConsuGrop" oncomplete="PF('dlgConsuGrop').show();"/>
                             </p:outputPanel>
                         </b:column>
@@ -152,7 +152,7 @@
 					
 							<p:commandButton  icon="ui-icon-print" value="Imprimir"
 								target="_blank" style="font-size: 12px;  text-align: right;" update="grw"
-								actionListener="#{RelatoriosController.geraFrequencia(RelatoriosController.pacienteInstituicao, AgendaController.agenda.programa, AgendaController.agenda.grupo)}" ajax="false" />
+								actionListener="#{RelatoriosController.geraFrequencia(RelatoriosController.pacienteInstituicao, RelatoriosController.pacienteInstituicao.programa, RelatoriosController.pacienteInstituicao.grupo)}" ajax="false" />
 						
 					
 				</h:form>
@@ -182,11 +182,11 @@
                                 update=":frm:outProg, :frm:outGrupo"
                                 class="new-btn-acao-table acao-editar" icon="ui-icon-check"
                                 title="Selecionar"
-                                action="#{AgendaController.atualizaListaGrupos(AgendaController.agenda.programa)}"
+                                action="#{AgendaController.atualizaListaGrupos(RelatoriosController.pacienteInstituicao.programa)}"
                                 actionListener="#{AgendaController.limparNaBuscaPrograma()}"
                                 oncomplete="PF('dlgConsuProg').hide();">
                             <f:setPropertyActionListener value="#{prog}"
-                                                         target="#{AgendaController.agenda.programa}"/>
+                                                         target="#{RelatoriosController.pacienteInstituicao.programa}"/>
                         </p:commandButton>
                     </h:column>
 
@@ -228,7 +228,7 @@
                                 icon="ui-icon-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
                                 onclick="PF('dlgConsuGrop').hide();"
-                                action="#{AgendaController.atualizaListaTipos(AgendaController.agenda.grupo)}">
+                                action="#{AgendaController.atualizaListaTipos(RelatoriosController.pacienteInstituicao.grupo)}">
                             <f:setPropertyActionListener value="#{grupo}"
                                                          target="#{AgendaController.agenda.grupo}"/>
                         </p:commandButton>
@@ -239,7 +239,7 @@
         </p:dialog>
         
          <p:dialog header="Consultar Pacientes Em Terapia" widgetVar="dlgConsuPac" dynamic="true"
-                  modal="true" width="750px" height="400px" styleClass="topDialog">
+                  modal="true" width="750px" height="400px" responsive="true">
             <h:form id="formConsuPac">
                 <p:growl id="msgC"/>
 
@@ -304,7 +304,10 @@
                             <f:setPropertyActionListener value="#{pacie.grupo}"
                                                          target="#{RelatoriosController.pacienteInstituicao.grupo}"/>      
                             <f:setPropertyActionListener value="#{pacie.programa}"
-                                                         target="#{RelatoriosController.pacienteInstituicao.programa}"/>                                                                                                                                                                   
+                                                         target="#{RelatoriosController.pacienteInstituicao.programa}"/>   
+                                                         
+                                                         <f:setPropertyActionListener value="#{pacie.id}"
+                                                         target="#{RelatoriosController.pacienteInstituicao.id}"/>                                                                                                                                                                  
                         </p:commandButton>
 
                     </h:column>

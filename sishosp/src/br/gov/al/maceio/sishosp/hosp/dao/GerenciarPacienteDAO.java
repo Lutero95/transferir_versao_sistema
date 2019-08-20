@@ -27,7 +27,7 @@ public class GerenciarPacienteDAO {
     public List<GerenciarPacienteBean> carregarPacientesInstituicao()
             throws ProjetoException {
 
-        String sql = "select p.id, p.codprograma,programa.descprograma, p.codgrupo, g.descgrupo, l.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
+        String sql = "select p.id, p.codprograma,programa.descprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, l.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
                 + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, "
                 + " pr.codproc, pr.nome nomeproc from hosp.paciente_instituicao p "
                 + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
@@ -55,6 +55,7 @@ public class GerenciarPacienteDAO {
                 gp.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 gp.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 gp.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+                gp.getGrupo().setQtdFrequencia(rs.getInt("qtdfrequencia"));
                 gp.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 gp.getPrograma().setDescPrograma(rs.getString("descprograma"));
                 gp.getEquipe().setCodEquipe(rs.getInt("codequipe"));
@@ -92,7 +93,7 @@ public class GerenciarPacienteDAO {
     public List<GerenciarPacienteBean> carregarPacientesInstituicaoBusca(
             GerenciarPacienteBean gerenciar) throws ProjetoException {
 
-        String sql = "select p.id, p.codprograma, p.codgrupo, g.descgrupo, l.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
+        String sql = "select p.id, p.codprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, l.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
                 + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento "
                 + " from hosp.paciente_instituicao p "
                 + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
@@ -129,6 +130,7 @@ public class GerenciarPacienteDAO {
                 gp.getPrograma().setIdPrograma(rs.getInt("codprograma"));
                 gp.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 gp.getGrupo().setDescGrupo(rs.getString("descgrupo"));
+                gp.getGrupo().setQtdFrequencia(rs.getInt("qtdfrequencia"));
                 gp.getEquipe().setCodEquipe(rs.getInt("codequipe"));
                 gp.getEquipe().setDescEquipe(rs.getString("descequipe"));
                 gp.getFuncionario().setId(rs.getLong("codprofissional"));

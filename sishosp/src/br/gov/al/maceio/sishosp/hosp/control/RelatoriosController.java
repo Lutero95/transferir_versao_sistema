@@ -260,14 +260,10 @@ public class RelatoriosController implements Serializable {
         //lista criada para ser populada e mostrar as linhas na frequencia
         pacienteInstituicao.setPrograma(programa);
         pacienteInstituicao.setGrupo(grupo);
-        List<Integer> lista = new ArrayList<Integer>();
-        lista.add(1);
-        lista.add(2);
         int randomico = JSFUtil.geraNumeroRandomico();
         RelatorioDAO rDao = new RelatorioDAO();
         rDao.popularTabelaTemporariaFrequencia(randomico, pacienteInstituicao.getGrupo().getQtdFrequencia());
 
-        JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(lista);
         if ((pacienteInstituicao.getPrograma() == null) && (pacienteInstituicao.getLaudo().getPaciente() == null)) {
             JSFUtil.adicionarMensagemErro("Informe o Programa ou Paciente obrigatoriamente!", "Erro!");
         } else {
@@ -276,7 +272,7 @@ public class RelatoriosController implements Serializable {
             relatorio = caminho + "frequencia.jasper";
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("chave", randomico);
-            map.put("codusuario", user_session.getCodigo());
+            map.put("codunidade", user_session.getUnidade().getId());
             if (pacienteInstituicao.getPrograma() != null)
                 map.put("codprograma", pacienteInstituicao.getPrograma().getIdPrograma());
 
@@ -288,9 +284,9 @@ public class RelatoriosController implements Serializable {
 
             map.put("SUBREPORT_DIR", this.getServleContext().getRealPath(caminho)
                     + File.separator);
-            //this.executeReport(relatorio, map, "relatorio.pdf");
-            this.executeReportNewTab(relatorio, "frequencia.pdf",
-                    map);
+            this.executeReport(relatorio, map, "relatorio.pdf");
+            //this.executeReportNewTab(relatorio, "frequencia.pdf",
+//                    map);
             rDao.limparTabelaTemporariaFrequencia(randomico);
 
 
