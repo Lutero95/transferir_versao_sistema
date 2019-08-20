@@ -826,7 +826,7 @@ public class FuncionarioDAO {
 		}
 	}
 
-	// INÍCIO PROFISSIONALDAO
+	// INÃ�CIO PROFISSIONALDAO
 
 	public boolean gravarProfissional(FuncionarioBean profissional, ArrayList<ProgramaBean> lista) {
 
@@ -1150,7 +1150,8 @@ public class FuncionarioDAO {
 				prof.setCns(rs.getString("cns"));
 				prof.setAtivo(rs.getString("ativo"));
 				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
-				prof.getProc1.set procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
+				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+				prof.getProc1().setNomeProc(rs.getString("descprocpadrao"));
 				prof.getPerfil().setId(rs.getLong("id_perfil"));
 				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
