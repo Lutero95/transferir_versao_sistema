@@ -1128,9 +1128,10 @@ public class FuncionarioDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, ativo, codcbo, "
-				+ " codprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe "
-				+ " from acl.funcionarios where codunidade = ? AND realiza_atendimento IS TRUE order by descfuncionario";
+		String sql = "select distinct id_funcionario, descfuncionario, codespecialidade,e.descespecialidade, cns, ativo, codcbo, "
+				+ " codprocedimentopadrao, p.nome descprocpadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe "
+				+ " from acl.funcionarios join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade "
+				+ "left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao where funcionarios.codunidade = ? AND realiza_atendimento IS TRUE order by descfuncionario";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -1144,11 +1145,12 @@ public class FuncionarioDAO {
 				prof.setSenha(rs.getString("senha"));
 				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
 				prof.setNome(rs.getString("descfuncionario"));
-				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
+				prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+				prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				prof.setCns(rs.getString("cns"));
 				prof.setAtivo(rs.getString("ativo"));
 				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
-				prof.setProc1(procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
+				prof.getProc1.set procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
 				prof.getPerfil().setId(rs.getLong("id_perfil"));
 				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));
