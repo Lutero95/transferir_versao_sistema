@@ -35,6 +35,8 @@ public class LaudoController implements Serializable {
     private CidDAO cDao = new CidDAO();
     private Boolean renderizarDataAutorizacao;
     private Integer idLaudoGerado = null;
+	private String tipoBusca;
+	private String campoBusca;
 
     //CONSTANTES
     private static final String ENDERECO_CADASTRO = "cadastroLaudoDigita?faces-redirect=true";
@@ -169,8 +171,8 @@ public class LaudoController implements Serializable {
         return result;
     }
 
-    public void listarCids() throws ProjetoException {
-        listaCids = cDao.listarCidsBusca();
+    public void listarCids(String campoBusca) throws ProjetoException {
+        listaCids = cDao.listarCidsBusca(campoBusca);
     }
 
     public LaudoBean getLaudo() {
@@ -233,4 +235,20 @@ public class LaudoController implements Serializable {
     public void setIdLaudoGerado(Integer idLaudoGerado) {
         this.idLaudoGerado = idLaudoGerado;
     }
+
+	public String getTipoBusca() {
+		return tipoBusca;
+	}
+
+	public void setTipoBusca(String tipoBusca) {
+		this.tipoBusca = tipoBusca;
+	}
+
+	public String getCampoBusca() {
+		return campoBusca;
+	}
+
+	public void setCampoBusca(String campoBusca) {
+		this.campoBusca = campoBusca;
+	}
 }

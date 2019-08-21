@@ -206,12 +206,13 @@ public class CidDAO {
 
 	public List<CidBean> listarCidsBusca(String descricao) throws ProjetoException {
 		List<CidBean> lista = new ArrayList<>();
-		String sql = "select cod, desccid, cid from hosp.cid where desccid LIKE ?";
+		String sql = "select cod, desccid, cid from hosp.cid where desccidabrev LIKE ? or cid like ?";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setString(1, "%" + descricao.toUpperCase() + "%");
+			stm.setString(2, "%" + descricao.toUpperCase() + "%");
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {
