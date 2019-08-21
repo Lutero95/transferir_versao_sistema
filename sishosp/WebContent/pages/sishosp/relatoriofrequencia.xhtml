@@ -224,13 +224,13 @@
                             Adicionar
                         </f:facet>
                         <p:commandButton
-                                update=":frm:outGrupo"
+                                 update=":frm:outProg, :frm:outGrupo"
                                 icon="ui-icon-check" title="Selecionar"
                                 class="new-btn-acao-table acao-editar"
                                 onclick="PF('dlgConsuGrop').hide();"
-                                action="#{AgendaController.atualizaListaTipos(RelatoriosController.pacienteInstituicao.grupo)}">
+                              >
                             <f:setPropertyActionListener value="#{grupo}"
-                                                         target="#{AgendaController.agenda.grupo}"/>
+                                                         target="#{RelatoriosController.pacienteInstituicao.grupo}"/>
                         </p:commandButton>
                     </h:column>
 

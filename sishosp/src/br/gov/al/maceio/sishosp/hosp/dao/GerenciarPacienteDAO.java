@@ -29,7 +29,7 @@ public class GerenciarPacienteDAO {
 
         String sql = "select p.id, p.codprograma,programa.descprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, l.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
                 + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, "
-                + " pr.codproc, pr.nome nomeproc from hosp.paciente_instituicao p "
+                + " pr.codproc, pr.nome nomeproc from hosp.paciente_instituicao p " 
                 + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
                 + " left join hosp.pacientes pa on (l.codpaciente = pa.id_paciente) "
@@ -37,7 +37,7 @@ public class GerenciarPacienteDAO {
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo)"
                 + " left join hosp.programa  on (programa.id_programa = p.codprograma)"
-                + " where p.cod_unidade = ? AND p.status = 'A' ";
+                + " where p.cod_unidade = ? AND p.status = 'A' order by pa.nome";
 
         List<GerenciarPacienteBean> lista = new ArrayList<>();
 
@@ -111,6 +111,7 @@ public class GerenciarPacienteDAO {
         if (gerenciar.getStatus().equals("D")) {
             sql = sql + " and status = 'D'";
         }
+        sql = sql + " order by pa.nome";
 
         List<GerenciarPacienteBean> lista = new ArrayList<>();
 

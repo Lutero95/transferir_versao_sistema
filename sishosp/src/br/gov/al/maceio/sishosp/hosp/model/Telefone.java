@@ -6,7 +6,7 @@ public class Telefone implements Serializable {
 
 	private Integer idTelefone;
 	private Integer ddd;
-	private Integer telefone;
+	private String telefone;
 	private Boolean whatsapp;
 	private String responsavel;
 	private Parentesco parentesco;
@@ -31,14 +31,6 @@ public class Telefone implements Serializable {
 
 	public void setDdd(Integer ddd) {
 		this.ddd = ddd;
-	}
-
-	public Integer getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(Integer telefone) {
-		this.telefone = telefone;
 	}
 
 	public Boolean getWhatsapp() {
@@ -71,5 +63,13 @@ public class Telefone implements Serializable {
 
 	public void setOperadora(Operadora operadora) {
 		this.operadora = operadora;
+	}
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
 	}
 }

@@ -1,5 +1,20 @@
 package br.gov.al.maceio.sishosp.acl.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.context.FacesContext;
+
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
+import br.gov.al.maceio.sishosp.acl.model.Menu;
+import br.gov.al.maceio.sishosp.acl.model.Permissao;
+import br.gov.al.maceio.sishosp.acl.model.Permissoes;
+import br.gov.al.maceio.sishosp.acl.model.Sistema;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactory;
 import br.gov.al.maceio.sishosp.comum.util.ConnectionFactoryPublico;
@@ -11,24 +26,9 @@ import br.gov.al.maceio.sishosp.hosp.dao.ProcedimentoDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.ProgramaDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.ValidacaoSenha;
 import br.gov.al.maceio.sishosp.hosp.model.CboBean;
-import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
 import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.acl.model.Menu;
-import br.gov.al.maceio.sishosp.acl.model.Permissao;
-import br.gov.al.maceio.sishosp.acl.model.Permissoes;
-import br.gov.al.maceio.sishosp.acl.model.Sistema;
-import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.faces.context.FacesContext;
+import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
 
 public class FuncionarioDAO {
 
@@ -1175,12 +1175,14 @@ public class FuncionarioDAO {
 
 		List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
 
-		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
-				.getSessionMap().get("obj_funcionario");
 
-		String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, cns, funcionarios.ativo, codcbo, "
-				+ " codprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe, unidade.nome nomeunidade "
-				+ " from acl.funcionarios join hosp.unidade on unidade.id = funcionarios.codunidade where coalesce(admin,false) is false order by descfuncionario";
+		String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, e.descespecialidade,  cns, funcionarios.ativo, codcbo, c.descricao desccbo, "
+				+ " codprocedimentopadrao, p.nome descprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe, unidade.nome nomeunidade "
+				+ " from acl.funcionarios join hosp.unidade on unidade.id = funcionarios.codunidade "
+				+ " left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade "
+				+ " left join hosp.cbo c on c.id = funcionarios.codcbo "
+				+ " left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao"
+				+" where coalesce(admin,false) is false  order by descfuncionario";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -1193,11 +1195,14 @@ public class FuncionarioDAO {
 				prof.setSenha(rs.getString("senha"));
 				prof.setRealizaAtendimento(rs.getBoolean("realiza_atendimento"));
 				prof.setNome(rs.getString("descfuncionario"));
-				prof.setEspecialidade(espDao.listarEspecialidadePorId(rs.getInt("codespecialidade")));
+				prof.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+				prof.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				prof.setCns(rs.getString("cns"));
 				prof.setAtivo(rs.getString("ativo"));
-				prof.setCbo(cDao.listarCboPorId(rs.getInt("codcbo")));
-				prof.setProc1(procDao.listarProcedimentoPorId(rs.getInt("codprocedimentopadrao")));
+				prof.getCbo().setCodCbo(rs.getInt("codcbo"));
+				prof.getCbo().setDescCbo(rs.getString("desccbo"));
+				prof.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
+				prof.getProc1().setNomeProc(rs.getString("descprocedimentopadrao"));
 				prof.getPerfil().setId(rs.getLong("id_perfil"));
 				prof.setRealizaLiberacoes(rs.getBoolean("permite_liberacao"));
 				prof.setRealizaEncaixes(rs.getBoolean("permite_encaixe"));

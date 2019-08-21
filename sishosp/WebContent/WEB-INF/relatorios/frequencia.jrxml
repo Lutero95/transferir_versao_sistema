@@ -76,11 +76,11 @@ select
 	(select min(t1.id) id from hosp.telefone_paciente t1
 	where t1.id_paciente = p.id_paciente ) tel_id1 , 
 	 lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0') vencimentolaudo,
-	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes, l.data_solicitacao, l.obs, f.descfuncionario AS nomeprofissional,
+	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes,empresa.logomarca, l.data_solicitacao, l.obs, f.descfuncionario AS nomeprofissional,
 p.id_paciente, f.cns as cns_profissional, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
  p.logradouro|| ' '||COALESCE('',''||p.numero,'')|| ''||COALESCE('',''||p.complemento,'') AS endereco, 
  m.nome descmunicipio, b.descbairro, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
-l.codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
+prp.codproc codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
 l.codprocedimento_secundario2, prs2.nome AS nomeprocedimento_secundario2, l.codprocedimento_secundario3, prs3.nome AS nomeprocedimento_secundario3,
 l.codprocedimento_secundario4, prs4.nome AS nomeprocedimento_secundario4, l.codprocedimento_secundario5, prs5.nome AS nomeprocedimento_secundario5,
 programa.descprograma, grupo.descgrupo, p.matricula
@@ -115,7 +115,8 @@ and ((   $P{codgrupo}   is not null and pi.codgrupo=  $P{codgrupo}) or (( $P{cod
 )v
 left join hosp.telefone_paciente tp1 on tp1.id = v.tel_id1
 left join hosp.telefone_paciente tp2 on tp2.id = v.tel_id2
-left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
+left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3
+order by nome]]>
 	</queryString>
 	<field name="tel_id1" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id1"/>
@@ -141,6 +142,10 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 	</field>
 	<field name="cnes" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="cnes"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="logomarca" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="logomarca"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
 	</field>
 	<field name="data_solicitacao" class="java.sql.Date">
@@ -238,9 +243,9 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 		<property name="com.jaspersoft.studio.field.label" value="cid3"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="cid"/>
 	</field>
-	<field name="codprocedimento_primario" class="java.lang.Integer">
+	<field name="codprocedimento_primario" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="codprocedimento_primario"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
 	<field name="nomeprocedimento" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeprocedimento"/>
@@ -304,39 +309,47 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 	<field name="tel_id3" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id3"/>
 	</field>
-	<field name="tel1" class="java.lang.Integer">
+	<field name="tel1" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="tel1"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
-	<field name="tel2" class="java.lang.Integer">
+	<field name="tel2" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="tel2"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
-	<field name="tel3" class="java.lang.Integer">
+	<field name="tel3" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="tel3"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
 	<pageHeader>
-		<band height="44">
+		<band height="79">
 			<textField>
-				<reportElement x="4" y="-5" width="566" height="20" uuid="9030f283-33e0-4172-8b16-560f4a584f4f"/>
+				<reportElement x="80" y="-5" width="400" height="20" uuid="9030f283-33e0-4172-8b16-560f4a584f4f"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nomeinstituicao}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="4" y="15" width="566" height="14" uuid="0d4139fb-2a84-40bb-991a-c63116c85d15"/>
+				<reportElement x="80" y="15" width="400" height="14" uuid="0d4139fb-2a84-40bb-991a-c63116c85d15"/>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans" size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[CONTROLE DE FREQUÊNCIA INDIVIDUAL]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="30" width="571" height="13" uuid="a81e7b5a-b186-41b9-bb58-9061c27cee09"/>
+				<reportElement x="80" y="30" width="400" height="13" uuid="a81e7b5a-b186-41b9-bb58-9061c27cee09"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{descprograma}+" - "+$F{descgrupo}]]></textFieldExpression>
 			</textField>
+			<image>
+				<reportElement x="0" y="0" width="80" height="74" uuid="0b6b7762-b34f-40a0-8ac2-57e8d37e34d8"/>
+				<imageExpression><![CDATA[$F{logomarca}]]></imageExpression>
+			</image>
+			<image scaleImage="FillFrame">
+				<reportElement x="480" y="2" width="80" height="74" uuid="dcd5e938-70ad-474c-b0f5-78079b7231b6"/>
+				<imageExpression><![CDATA["C:/Users/Walter/Desktop/sus-logo.jpg"]]></imageExpression>
+			</image>
 		</band>
 	</pageHeader>
 	<detail>
@@ -644,7 +657,7 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<reportElement x="381" y="155" width="1" height="23" uuid="926d4579-7dcf-4b8a-821d-0d030c990c6e"/>
 			</line>
 			<staticText>
-				<reportElement x="1" y="5" width="570" height="13" uuid="54f7e873-301c-49c0-b5d7-1ae49837a1b2"/>
+				<reportElement x="80" y="5" width="400" height="13" uuid="54f7e873-301c-49c0-b5d7-1ae49837a1b2"/>
 				<textElement textAlignment="Center">
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -815,14 +828,14 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<reportElement x="491" y="57" width="1" height="24" uuid="21e5d988-d572-4e09-9815-906da761e455"/>
 			</line>
 			<staticText>
-				<reportElement x="491" y="61" width="75" height="16" uuid="1b9899f0-cfe4-4988-84d4-db81be9574b6"/>
+				<reportElement x="491" y="58" width="75" height="16" uuid="1b9899f0-cfe4-4988-84d4-db81be9574b6"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[MATRÍLCULA]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="492" y="70" width="69" height="14" uuid="b1637507-e191-42d2-a513-1f976590b252"/>
+				<reportElement x="492" y="67" width="69" height="14" uuid="b1637507-e191-42d2-a513-1f976590b252"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>

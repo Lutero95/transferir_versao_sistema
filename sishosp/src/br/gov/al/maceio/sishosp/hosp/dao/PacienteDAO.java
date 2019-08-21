@@ -956,7 +956,7 @@ public class PacienteDAO {
                 if (rs.getString("id")!= null)               
                 	t.setIdTelefone(rs.getInt("id"));
                 if (rs.getString("telefone")!= null)
-                	t.setTelefone(rs.getInt("telefone"));
+                	t.setTelefone(rs.getString("telefone"));
                 t.setWhatsapp(rs.getBoolean("whatsapp"));
                 t.setResponsavel(rs.getString("responsavel"));
                 if (rs.getString("id_parentesco")!= null)
@@ -1158,7 +1158,7 @@ public class PacienteDAO {
                 else
                 	stmt.setNull(1, Types.NULL);
                 if (lista.get(i).getTelefone() != null) 
-                stmt.setInt(2, lista.get(i).getTelefone());
+                stmt.setString(2, lista.get(i).getTelefone());
                 else
                 	stmt.setNull(2, Types.NULL);
                 stmt.setBoolean(3, lista.get(i).getWhatsapp());
