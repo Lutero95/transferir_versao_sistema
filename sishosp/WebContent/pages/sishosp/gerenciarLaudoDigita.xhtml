@@ -10,7 +10,7 @@
 
         <f:metadata>
             <f:viewAction
-                    action="#{LaudoController.listarLaudo('T')}"/>
+                    action="#{LaudoController.listarLaudo('P', LaudoController.campoBusca, LaudoController.tipoBusca)}"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
@@ -45,7 +45,27 @@
                     <div align="center">
                         <b:messages value="Error" id="msgPagina"></b:messages>
                     </div>
+<p:row>
 
+						<p:panelGrid columns="4">
+
+							<p:selectOneMenu value="#{LaudoController.tipoBusca}"
+								style="margin-top: -13px">
+								<f:selectItem itemLabel="Paciente" itemValue="paciente" />
+							</p:selectOneMenu>
+
+							<p:inputText value="#{LaudoController.campoBusca}"
+								placeholder="Digite aqui o que deseja buscar" style="margin-left: 10px;width:300px" />
+
+							<p:commandButton
+								action="#{LaudoController.listarLaudo(LaudoController.laudo.situacao, LaudoController.campoBusca, LaudoController.tipoBusca)}"
+								update="tabela msgPagina" icon="ui-icon-search"
+								style="margin-left: 10px;" />
+
+
+						</p:panelGrid>
+
+					</p:row>
 
                     <p:dataTable rows="20" paginator="true" id="tabela"
                                  value="#{LaudoController.listaLaudo}" var="tab" responsive="true">

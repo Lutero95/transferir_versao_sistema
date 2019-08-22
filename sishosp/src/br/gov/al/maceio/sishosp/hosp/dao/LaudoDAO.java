@@ -334,7 +334,7 @@ public class LaudoDAO {
         }
     }
 
-    public ArrayList<LaudoBean> listaLaudos(String situacao) throws ProjetoException {
+    public ArrayList<LaudoBean> listaLaudos(String situacao, String campoBusca, String tipoBusca) throws ProjetoException {
 
         String sql = "select id_laudo,  l.codpaciente, p.nome, " +
                 "l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, l.periodo, " +
@@ -351,8 +351,12 @@ public class LaudoDAO {
         if (!situacao.equals(SituacaoLaudo.TODOS.getSigla())) {
             sql = sql + " AND l.situacao = ? ";
         }
-
-        sql = sql + "order by id_laudo ";
+        
+		if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))){
+			sql = sql + " and p.nome ilike ?";
+		}
+		
+        sql = sql + "order by p.nome ";
 
         ArrayList<LaudoBean> lista = new ArrayList();
 
@@ -363,6 +367,11 @@ public class LaudoDAO {
 
             if (!situacao.equals(SituacaoLaudo.TODOS.getSigla())) {
                 stm.setString(2, situacao);
+            }
+                
+                if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))){
+                	stm.setString(3, "%" + campoBusca.toUpperCase() + "%");
+                	
             }
 
             ResultSet rs = stm.executeQuery();

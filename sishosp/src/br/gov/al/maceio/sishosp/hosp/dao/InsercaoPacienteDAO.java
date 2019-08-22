@@ -150,20 +150,19 @@ public class InsercaoPacienteDAO {
 
         GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
-        String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codpaciente, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
-                + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING id;";
+        String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
+                + " values (?, ?,  ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setInt(1, insercao.getPrograma().getIdPrograma());
             ps.setInt(2, insercao.getGrupo().getIdGrupo());
-            ps.setInt(3, insercao.getLaudo().getPaciente().getId_paciente());
-            ps.setInt(4, insercao.getEquipe().getCodEquipe());
-            ps.setString(5, "A");
-            ps.setInt(6, insercao.getLaudo().getId());
-            ps.setString(7, insercao.getObservacao());
-            ps.setInt(8, user_session.getUnidade().getId());
-            ps.setDate(9, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
+            ps.setInt(3, insercao.getEquipe().getCodEquipe());
+            ps.setString(4, "A");
+            ps.setInt(5, insercao.getLaudo().getId());
+            ps.setString(6, insercao.getObservacao());
+            ps.setInt(7, user_session.getUnidade().getId());
+            ps.setDate(8, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
             ResultSet rs = ps.executeQuery();
             int id = 0;
             if (rs.next()) {
