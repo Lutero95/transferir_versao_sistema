@@ -23,6 +23,7 @@ public class AtendimentoBean implements Serializable {
     private PacienteBean paciente;
     private ProcedimentoBean procedimento;
     private ProgramaBean programa;
+    private GrupoBean grupo;
     private TipoAtendimentoBean tipoAt;
     private FuncionarioBean funcionario;
     private EquipeBean equipe;
@@ -42,6 +43,7 @@ public class AtendimentoBean implements Serializable {
         this.unidade = new UnidadeBean();
         this.insercaoPacienteBean = new InsercaoPacienteBean();
         this.grupoAvaliacao = new GrupoBean();
+        this.grupo = new GrupoBean();
     }
 
     public Integer getId() {
@@ -210,5 +212,13 @@ public class AtendimentoBean implements Serializable {
 
 	public void setUnidade(UnidadeBean unidade) {
 		this.unidade = unidade;
+	}
+
+	public GrupoBean getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(GrupoBean grupo) {
+		this.grupo = grupo;
 	}
 }

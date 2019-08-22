@@ -1022,7 +1022,7 @@ public class PacienteDAO {
 
         try {
             conexao = ConnectionFactory.getConnection();
-            String sql = " select id_paciente, nome, cpf, cns from hosp.pacientes where ";
+            String sql = " select id_paciente, nome, cpf, cns, codprontuario_anterior, matricula from hosp.pacientes where ";
 
             if(tipo.equals("nome")){
                 sql = sql + "nome like ?";
@@ -1033,11 +1033,20 @@ public class PacienteDAO {
             else if(tipo.equals("cns")){
                 sql = sql + "cns like ?";
             }
+            else if(tipo.equals("prontuario")){
+                sql = sql + "id_paciente = ?";
+            }
+            else if(tipo.equals("matricula")){
+                sql = sql + "matricula like ?";
+            }
 
             sql = sql + " order by nome";
 
             ps = conexao.prepareStatement(sql);
+            if ((tipo.equals("nome")) || (tipo.equals("cpf")) || (tipo.equals("cns")) || (tipo.equals("matricula")))
             ps.setString(1, "%" + campoBusca.toUpperCase() + "%");
+            else
+            	ps.setInt(1,Integer.valueOf(campoBusca));
             ResultSet rs = ps.executeQuery();
 
             List<PacienteBean> lista = new ArrayList<PacienteBean>();
