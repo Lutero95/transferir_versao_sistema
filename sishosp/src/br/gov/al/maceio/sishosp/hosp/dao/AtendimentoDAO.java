@@ -229,7 +229,11 @@ public class AtendimentoDAO {
                     stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
                 }
                 stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
+                System.out.println("lista.get(i).getStatus()"+lista.get(i).getStatus());
+                if ((lista.get(i).getStatus()!=null) &&(!lista.get(i).getStatus().equals(""))  )
                 stmt2.setString(5, lista.get(i).getStatus());
+                else
+                	 stmt2.setNull(5, Types.NULL);
                 stmt2.setString(6, lista.get(i).getEvolucao());
                 stmt2.setString(7, lista.get(i).getPerfil());
                 stmt2.executeUpdate();
@@ -507,7 +511,7 @@ public class AtendimentoDAO {
         String sql = "SELECT a1.evolucao, a1.dtaatendido, f.descfuncionario, p.nome " +
                 "FROM hosp.atendimentos1 a1 " +
                 "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " +
-                "LEFT JOIN hosp.proc p ON (p.codproc = a1.codprocedimento) " +
+                "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) " +
                 "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) " +
                 "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? " +
                 "ORDER BY a1.dtaatendido DESC ";
