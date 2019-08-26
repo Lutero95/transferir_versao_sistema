@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.swing.plaf.synth.SynthScrollPaneUI;
 
 import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.hosp.enums.*;
@@ -60,8 +61,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private Boolean liberacao;
     private Boolean ehAvaliacao;
     private ArrayList<Liberacao> listaLiberacao;
+	private String tipoBusca;
+	private String campoBusca;
 
     public InsercaoPacienteController() throws ProjetoException {
+    	System.out.println("construror InsercaoPacienteController");
         this.insercao = new InsercaoPacienteBean();
         listaHorariosDaEquipe = new ArrayList<AgendaBean>();
         programaSelecionado = new ProgramaBean();
@@ -82,6 +86,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void carregarHorarioOuTurnoInsercao() throws ProjetoException, ParseException {
+    	System.out.println("insercao carregarHorarioOuTurnoInsercao");
         opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
 
         if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
@@ -90,6 +95,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public String carregarHorarioOuTurno() throws ProjetoException, ParseException {
+    	System.out.println("isnercao carregarHorarioOuTurno");
         opcaoAtendimento = HorarioOuTurnoUtil.retornarOpcaoAtendimentoUnidade();
 
         if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()) || opcaoAtendimento.equals(OpcaoAtendimento.AMBOS.getSigla())) {
@@ -101,6 +107,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void limparDados() {
+    	System.out.println("insercao limparDados");
         this.insercao = new InsercaoPacienteBean();
         renderizarAposLaudo = false;
         listaProfissionaisEquipe = new ArrayList<>();
@@ -109,26 +116,31 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void limparDias() {
+    	System.out.println("insercao limparDias");
         funcionario.setListDiasSemana(new ArrayList<String>());
     }
 
-    public void listarLaudosVigentes()
+    public void listarLaudosVigentes(String campoBusca, String tipoBusca)
             throws ProjetoException {
-        listaLaudosVigentes = iDao.listarLaudosVigentes();
+    	System.out.println("insercao listarLaudosVigentes");
+        listaLaudosVigentes = iDao.listarLaudosVigentes(campoBusca, tipoBusca);
     }
 
     public void limparNaBuscaPrograma() {
+    	System.out.println("insercao");
         this.insercao.setGrupo(new GrupoBean());
         this.insercao.setEquipe(new EquipeBean());
     }
 
     public void selectPrograma(SelectEvent event) throws ProjetoException {
+    	System.out.println("insercao selectPrograma");
         this.programaSelecionado = (ProgramaBean) event.getObject();
         atualizaListaGrupos(programaSelecionado);
         limparNaBuscaPrograma();
     }
 
     public void atualizaListaGrupos(ProgramaBean p) throws ProjetoException {
+    	System.out.println("isnercao atualizaListaGrupos");
         GrupoDAO gDao = new GrupoDAO();
         this.programaSelecionado = p;
         this.listaGruposProgramas = gDao.listarGruposPorPrograma(p
@@ -140,6 +152,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void carregaListaEquipePorTipoAtendimento()
             throws ProjetoException {
+    	System.out.println("insercao carregaListaEquipePorTipoAtendimento");
         if (insercao.getGrupo().getIdGrupo() != null) {
             listaEquipePorGrupo = eDao
                     .listarEquipePorGrupo(insercao.getGrupo().getIdGrupo());
@@ -148,6 +161,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
 
     public void validarCarregarLaudoPaciente() throws ProjetoException {
+    	System.out.println("insercao validarCarregarLaudoPaciente");
         int id = insercao.getLaudo().getId();
 
         if (validarCarregamentoDoLaudo(id)) {
@@ -157,6 +171,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     private void carregarLaudoPaciente(int id) throws ProjetoException {
+    	System.out.println("isnercao carregarLaudoPaciente");
         limparDados();
         insercao = iDao.carregarLaudoPaciente(id);
         renderizarAposLaudo = true;
@@ -167,6 +182,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     private void carregarDadosAvaliacao(){
+    	System.out.println("insercao carregarDadosAvaliacao");
         AvaliacaoInsercaoDTO avaliacaoInsercaoDTO = iDao.carregarAtendimentoAvaliacao(insercao.getLaudo().getId());
         insercao.setPrograma(avaliacaoInsercaoDTO.getProgramaBean());
         insercao.setGrupo(avaliacaoInsercaoDTO.getGrupoBean());
@@ -175,7 +191,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public Boolean validarCarregamentoDoLaudo(Integer idLaudo) throws ProjetoException {
-
+    	System.out.println("insercao validarCarregamentoDoLaudo");
         Boolean retorno = true;
 
         if (iDao.verificarSeLaudoConstaNoAtendimento(idLaudo)) {
@@ -197,6 +213,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void validarSenhaIhRealizarLiberacao() throws ProjetoException {
+    	System.out.println("insercao validarSenhaIhRealizarLiberacao");
         FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 
         Integer idFuncionario = funcionarioDAO.validarCpfIhSenha(funcionario.getCpf(), funcionario.getSenha(), ValidacaoSenha.LIBERACAO_PACIENTES_SEM_PERFIL.getSigla());
@@ -213,16 +230,19 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public Liberacao montarLiberacao(String motivo, Integer idUsuarioLiberacao, String rotina){
+    	System.out.println("insercao montarLiberacao");
         Liberacao liberacao = null;
         return liberacao = new Liberacao(motivo, idUsuarioLiberacao, DataUtil.retornarDataIhHoraAtual(), rotina);
     }
 
     public void adicionarLiberacaoNaLista(Liberacao liberacao){
+    	System.out.println("isnercao adicionarLiberacaoNaLista");
         listaLiberacao.add(liberacao);
     }
 
     // VALIDAÇÃO DE NÃO REPETIR O PROFISSIONAL
     public void validarAdicionarFuncionario() {
+    	System.out.println("insercao validarAdicionarFuncionario");
         Boolean existe = false;
         if (listaProfissionaisAdicionados.size() == 0) {
             adicionarFuncionario();
@@ -252,11 +272,13 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void excluirFuncionarioIhDiasDeAtendimento() {
+    	System.out.println("insercao excluirFuncionarioIhDiasDeAtendimento");
         funcionario.getListDiasSemana().remove(funcionario);
         listaProfissionaisAdicionados.remove(funcionario);
     }
 
     public void adicionarFuncionario() {
+    	System.out.println("insercao adicionarFuncionario");
         String dias = "";
 
         for (int i = 0; i < funcionario.getListDiasSemana().size(); i++) {
@@ -320,7 +342,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void gerarListaAgendamentosProfissional() throws ProjetoException {
-
+    	System.out.println("insercao gerarListaAgendamentosProfissional");
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
         Date d1 = insercao.getDataSolicitacao();
@@ -366,6 +388,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void gerarListaAgendamentosEquipe() throws ProjetoException {
+    	System.out.println("insercao gerarListaAgendamentosEquipe");
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
@@ -416,7 +439,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void validarInsercaoPaciente() throws ProjetoException {
-
+    	System.out.println("insercao validarInsercaoPaciente");
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
         Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
         insercao.setDataSolicitacao(dataSolicitacaoCorreta);
@@ -441,7 +464,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public ArrayList<InsercaoPacienteBean> validarDatas(ArrayList<InsercaoPacienteBean> listaAgendamentos, String turno) throws ProjetoException {
-
+    	System.out.println("insercao validarDatas");
         ArrayList<InsercaoPacienteBean> listaAgendamentosAux = new ArrayList<>();
 
         for (int i = 0; i < listaAgendamentos.size(); i++) {
@@ -462,6 +485,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public Boolean verificarSeEhFeriadoData(Date data) throws ProjetoException {
+    	System.out.println("insercao verificarSeEhFeriadoData");
         Boolean retorno = false;
 
         retorno = new FeriadoDAO().verificarSeEhFeriadoDataUnica(data);
@@ -470,6 +494,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public Boolean verificarSeTemBloqueioData(InsercaoPacienteBean insercaoBean, String turno) throws ProjetoException {
+    	System.out.println("insercao verificarSeTemBloqueioData");
         Boolean retorno = false;
 
         retorno = new BloqueioDAO().verificarBloqueioProfissionalDataUnica
@@ -479,7 +504,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void gravarInsercaoPaciente() throws ProjetoException {
-
+    	System.out.println("insercao gravarInsercaoPaciente");
         if (insercao.getLaudo().getId() != null) {
 
             Boolean cadastrou = null;
@@ -520,10 +545,12 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     private void gerarHorariosAtendimento() throws ParseException {
+    	System.out.println("insercao gerarHorariosAtendimento");
         listaHorarios = HorarioOuTurnoUtil.gerarHorariosAtendimento();
     }
 
     public void visualizarHorariosEquipe() {
+    	System.out.println("insercao visualizarHorariosEquipe");
         listaHorariosDaEquipe = agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
     }
 
@@ -531,13 +558,14 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public List<EquipeBean> listaEquipeAutoComplete(String query)
             throws ProjetoException {
-
+    	System.out.println("insercao listaEquipeAutoComplete");
         List<EquipeBean> result = eDao.listarEquipePorGrupoAutoComplete(query,
                 insercao.getGrupo().getIdGrupo());
         return result;
     }
 
     public void listarProfissionaisEquipe() throws ProjetoException {
+    	System.out.println("insercao listarProfissionaisEquipe");
         if (insercao.getLaudo().getId() != null) {
             if (insercao.getEquipe() != null) {
                 if (insercao.getEquipe().getCodEquipe() != null) {
@@ -556,12 +584,14 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void listarProfissionais() throws ProjetoException {
+    	System.out.println("insercao listarProfissionais");
         FuncionarioDAO fDao = new FuncionarioDAO();
         listaProfissionais = fDao.listarProfissionalAtendimento();
     }
 
     public List<GrupoBean> listaGrupoAutoComplete(String query)
             throws ProjetoException {
+    	System.out.println("inserfcao listaGrupoAutoComplete");
 
         GrupoDAO gDao = new GrupoDAO();
 
@@ -576,6 +606,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public List<FuncionarioBean> listaProfissionalAutoComplete(String query)
             throws ProjetoException {
+    	System.out.println("insercao listaProfissionalAutoComplete");
         FuncionarioDAO fDao = new FuncionarioDAO();
         List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
         return result;
@@ -583,6 +614,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public List<TipoAtendimentoBean> listaTipoAtAutoComplete(String query)
             throws ProjetoException {
+    	System.out.println("iusnercao listaTipoAtAutoComplete");
         TipoAtendimentoDAO tDao = new TipoAtendimentoDAO();
         return tDao.listarTipoAtBusca(query, 1);
 
@@ -650,6 +682,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public ArrayList<String> getListaHorarios() throws ParseException {
+    	System.out.println("isnercao getListaHorarios");
         gerarHorariosAtendimento();
         return listaHorarios;
     }
@@ -713,4 +746,20 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     public void setEhAvaliacao(Boolean ehAvaliacao) {
         this.ehAvaliacao = ehAvaliacao;
     }
+
+	public String getTipoBusca() {
+		return tipoBusca;
+	}
+
+	public void setTipoBusca(String tipoBusca) {
+		this.tipoBusca = tipoBusca;
+	}
+
+	public String getCampoBusca() {
+		return campoBusca;
+	}
+
+	public void setCampoBusca(String campoBusca) {
+		this.campoBusca = campoBusca;
+	}
 }

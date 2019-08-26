@@ -21,7 +21,7 @@ public class InsercaoPacienteDAO {
     Connection con = null;
     PreparedStatement ps = null;
 
-    public ArrayList<InsercaoPacienteBean> listarLaudosVigentes()
+    public ArrayList<InsercaoPacienteBean> listarLaudosVigentes( String campoBusca, String tipoBusca)
             throws ProjetoException {
 
         ArrayList<InsercaoPacienteBean> lista = new ArrayList<>();
@@ -38,14 +38,28 @@ public class InsercaoPacienteDAO {
                 + " left join hosp.pacientes p on (l.codpaciente = p.id_paciente) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
                 + " left join hosp.cid ci on (l.cid1 = cast(ci.cod as integer)) "
-                + " where 1=1 "
+                + " where 1=1 ";
+        		if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        			sql = sql + " and p.nome ilike ?";
+        		}
+
+        		if ((tipoBusca.equals("codproc") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+        			sql = sql + " and pr.codproc = ?";
+        		}
                 //current_date >= to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') "
                 //+ " and current_date <= (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) "
            //     + " AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo)"
-                + " ) a";
+                sql = sql+ " ) a";
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
+			if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+				stm.setString(1, "%" + campoBusca.toUpperCase() + "%");
+			}
+
+			if ((tipoBusca.equals("codproc") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+				stm.setString(1, campoBusca);
+			}
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

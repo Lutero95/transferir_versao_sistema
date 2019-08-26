@@ -32,7 +32,7 @@
 							<p:commandButton size="sm" style="margin-left: 20px;"
 								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
 								update=":formConsuLaudo"
-								action="#{InsercaoController.listarLaudosVigentes()}"
+								action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}"
 								oncomplete="PF('dlgConsuLaudo').show();" />
 						</b:column>
 
@@ -504,7 +504,8 @@
 								<b:column span="3" class="label-position">
 									<b:label value="Turno:" severity="info" class="fire-label" />
 
-									<b:selectOneMenu class="select-agendaEquipe2" required="true" requiredMessage="Informe o Turno"
+									<b:selectOneMenu class="select-agendaEquipe2" required="true"
+										requiredMessage="Informe o Turno"
 										value="#{InsercaoController.insercao.agenda.turno}">
 										<f:selectItem itemLabel="Selecione" itemValue="" />
 										<f:selectItem itemLabel="Manhã" itemValue="M" />
@@ -539,8 +540,31 @@
 
 
 		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
-			modal="true" id="laudo-id" styleClass="topDialog" height="250">
+			modal="true" id="laudo-id" styleClass="topDialog" dynamic="true"
+			responsive="true">
 			<h:form id="formConsuLaudo">
+				<p:row>
+
+					<p:panelGrid columns="4">
+
+						<p:selectOneMenu value="#{InsercaoController.tipoBusca}"
+							style="margin-top: -13px">
+							<f:selectItem itemLabel="Paciente" itemValue="paciente" />
+						</p:selectOneMenu>
+
+						<p:inputText value="#{InsercaoController.campoBusca}"
+							placeholder="Digite aqui o que deseja buscar"
+							style="margin-left: 10px;width:300px" />
+
+						<p:commandButton
+							action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}"
+							update="dtLaudo msgPagina" icon="ui-icon-search"
+							style="margin-left: 10px;" />
+
+
+					</p:panelGrid>
+
+				</p:row>
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					page-length="5" page-length-menu="5,10,20"
 					value="#{InsercaoController.listaLaudosVigentes}" id="dtLaudo"
@@ -597,7 +621,7 @@
 		</p:dialog>
 
 		<p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
-			modal="true" styleClass="topDialog">
+			dynamic="true" responsive="true" modal="true" styleClass="topDialog">
 			<h:form id="formDiasAtendimento">
 				<p:selectManyCheckbox layout="grid" columns="7" required="true"
 					requiredMessage="Escolha ao menos um dia da semana!"
@@ -617,15 +641,16 @@
 				<div align="center">
 					<b:commandButton value="Adicionar" style="margin-top:5px;"
 						class="btn-acao-table acao-confirmar"
-						update=":formInsercao2:dtAdicionados, :msgPagina"
-						id="b2" icon="glyphicon-ok"
+						update=":formInsercao2:dtAdicionados, :msgPagina" id="b2"
+						icon="glyphicon-ok"
 						action="#{InsercaoController.validarAdicionarFuncionario()}" />
 				</div>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Quantidade de Agendamentos" styleClass="topDialog"
-			widgetVar="dlgQtdAgendamentos" modal="true">
+			dynamic="true" responsive="true" widgetVar="dlgQtdAgendamentos"
+			modal="true">
 			<h:form id="formQtdAgendamentos">
 				<p:dataTable id="dtAgendamentosEquipe" resizableColumns="true"
 					value="#{InsercaoController.listaHorariosDaEquipe}" var="ag"
@@ -681,7 +706,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
-			modal="true" styleClass="topDialog">
+			dynamic="true" responsive="true" modal="true" styleClass="topDialog">
 			<h:form id="formConsuProg">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					value="#{ProgramaController.listaProgramasUsuario}" var="prog"
@@ -714,8 +739,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
-			modal="true" styleClass="topDialog" dynamic="true" width="auto"
-			height="auto">
+			dynamic="true" responsive="true" modal="true" styleClass="topDialog">
 			<h:form id="formConsuGrop">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}" ajax="true"
 					responsive="true" save-state="false" saveState="false"
@@ -755,7 +779,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Equipes" widgetVar="dlgConsuEquipe"
-			dynamic="true" modal="true" styleClass="topDialog">
+			dynamic="true" responsive="true" modal="true" styleClass="topDialog">
 			<h:form id="formConsuEquipe">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					value="#{InsercaoController.listaEquipePorGrupo}" id="dtEquipe"
@@ -786,7 +810,7 @@
 		</p:dialog>
 
 		<p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
-			dynamic="true" modal="true" styleClass="topDialog">
+			dynamic="true" responsive="true" modal="true" styleClass="topDialog">
 			<h:form id="formConsuProf">
 				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
 					value="#{InsercaoController.listaProfissionais}" id="dtProf"
@@ -817,7 +841,7 @@
 		</p:dialog>
 
 		<p:dialog header="Digite a senha para liberação" widgetVar="dlgSenha"
-			modal="true" styleClass="topDialog" dynamic="true">
+			responsive="true" modal="true" styleClass="topDialog" dynamic="true">
 			<h:form id="frmSenha">
 				<p:growl id="grwSenha"></p:growl>
 				<h:panelGrid columns="1" cellpadding="3">
