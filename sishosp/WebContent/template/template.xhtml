@@ -61,7 +61,7 @@
 
 </h:head>
 <h:body>
-	<p:dialog header="Alteração de senha" widgetVar="dlgAlterarSenha"
+	<p:dialog header="Alteração de senha" widgetVar="dlgAlterarSenha" style="z-index: 2000080 !important;"
 		modal="true" styleClass="topDialog" dynamic="true">
 		<h:form id="frmAlterarSenha">
 			<p:growl id="msgAlterarSenha"></p:growl>
@@ -109,9 +109,9 @@
 	<p:growl id="msgPagina" />
 	<p:ajaxStatus onstart="PF('statusDialog').show();"
 		onsuccess="PF('statusDialog').hide();" />
-	<p:dialog id="myDialogId" styleClass="process_msg" modal="true"
+	<p:dialog id="myDialogId"  modal="true"
 		showHeader="true" header="Processando..."
-		style="width:40px; height:20px; border:0;" resizable="false"
+		style="width:40px; height:20px; border:0;z-index: 2000080 !important;" resizable="false"
 		widgetVar="statusDialog" draggable="false" closable="false">
 		<center>
 			<p:graphicImage value="../../imgs/ajax_loading_bar.gif" />

@@ -7,7 +7,6 @@
 	template="../../template/template.xhtml">
 
 	<ui:define name="content">
-
 		<f:metadata>
 			<f:viewAction
 				action="#{InsercaoController.carregarHorarioOuTurnoInsercao()}" />
@@ -32,7 +31,6 @@
 							<p:commandButton size="sm" style="margin-left: 20px;"
 								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
 								update=":formConsuLaudo"
-								action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}"
 								oncomplete="PF('dlgConsuLaudo').show();" />
 						</b:column>
 
@@ -539,18 +537,23 @@
 		</div>
 
 
+
+
+
 		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
-			modal="true" id="laudo-id" styleClass="topDialog" dynamic="true"
-			responsive="true">
+			modal="true" width="900" styleClass="topDialog" height="400">
 			<h:form id="formConsuLaudo">
 				<p:row>
 
 					<p:panelGrid columns="4">
 
-						<p:selectOneMenu value="#{InsercaoController.tipoBusca}"
-							style="margin-top: -13px">
-							<f:selectItem itemLabel="Paciente" itemValue="paciente" />
-						</p:selectOneMenu>
+							<h:selectOneMenu value="#{InsercaoController.tipoBusca}" style="padding:10px"
+								>
+								<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
+								<f:selectItem itemLabel="Protuário Paciente" itemValue="prontpaciente" />
+								<f:selectItem itemLabel="Matrícula Paciente" itemValue="matpaciente" />
+								<f:selectItem itemLabel="Cód. Procedimento" itemValue="codproc" />
+							</h:selectOneMenu>
 
 						<p:inputText value="#{InsercaoController.campoBusca}"
 							placeholder="Digite aqui o que deseja buscar"
@@ -565,46 +568,51 @@
 					</p:panelGrid>
 
 				</p:row>
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					page-length="5" page-length-menu="5,10,20"
+				<p:dataTable rows="8" paginator="true" style="font-size:13px"
 					value="#{InsercaoController.listaLaudosVigentes}" id="dtLaudo"
-					var="insercao" display="Nenhum Laudo">
+					var="insercao" emptyMessage="Nenhum Laudo">
 
-					<h:column>
+					<p:column width="80">
+						<f:facet name="header">
+                            Prontuário
+                        </f:facet>
+						<p:outputLabel value="#{insercao.laudo.paciente.id_paciente}" />
+					</p:column>
+
+					<p:column width="200">
 						<f:facet name="header">
                             Paciente
                         </f:facet>
 						<p:outputLabel value="#{insercao.laudo.paciente.nome}" />
-					</h:column>
+					</p:column>
 
-					<h:column>
+					<p:column width="80">
 						<f:facet name="header">
-                            CNS
+                            Matrícula
                         </f:facet>
-						<p:outputLabel value="#{insercao.laudo.paciente.cns}" />
-					</h:column>
+						<p:outputLabel value="#{insercao.laudo.paciente.matricula}" />
+					</p:column>
 
-					<h:column>
+					<p:column width="200">
 						<f:facet name="header">
-                            Vigência Inicial
-                        </f:facet>
-						<p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</p:outputLabel>
-					</h:column>
+                                Procedimento Primário
+                            </f:facet>
+						<h:outputText
+							value="#{insercao.laudo.procedimentoPrimario.codProc}" />-<h:outputText
+							value="#{insercao.laudo.procedimentoPrimario.nomeProc}" />
+					</p:column>
 
-					<h:column>
-						<f:facet name="header">
-                            Vigência Final
-                        </f:facet>
-						<p:outputLabel value="#{insercao.laudo.vigenciaFinal}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</p:outputLabel>
-					</h:column>
 
-					<h:column>
+					<p:column width="100">
 						<f:facet name="header">
-                            Adicionar
+                                Vencimento
+                            </f:facet>
+						<h:outputText value="#{insercao.laudo.vencimento}" />
+					</p:column>
+
+					<p:column width="80">
+						<f:facet name="header">
+                            Selecionar
                         </f:facet>
 						<p:commandButton update=":formInsercao, :formInsercao2"
 							icon="ui-icon-check" title="Selecionar"
@@ -614,9 +622,9 @@
 							<f:setPropertyActionListener value="#{insercao}"
 								target="#{InsercaoController.insercao}" />
 						</p:commandButton>
-					</h:column>
+					</p:column>
 
-				</b:dataTable>
+				</p:dataTable>
 			</h:form>
 		</p:dialog>
 

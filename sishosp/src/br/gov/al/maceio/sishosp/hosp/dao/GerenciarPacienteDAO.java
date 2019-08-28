@@ -24,77 +24,12 @@ public class GerenciarPacienteDAO {
             .getCurrentInstance().getExternalContext().getSessionMap()
             .get("obj_usuario");
 
-    public List<GerenciarPacienteBean> carregarPacientesInstituicao()
-            throws ProjetoException {
-
-        String sql = "select p.id, p.codprograma,programa.descprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, l.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
-                + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, "
-                + " pr.codproc, pr.nome nomeproc from hosp.paciente_instituicao p " 
-                + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
-                + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
-                + " left join hosp.pacientes pa on (l.codpaciente = pa.id_paciente) "
-                + " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
-                + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
-                + " left join hosp.grupo g on (g.id_grupo = p.codgrupo)"
-                + " left join hosp.programa  on (programa.id_programa = p.codprograma)"
-                + " where p.cod_unidade = ? AND p.status = 'A' order by pa.nome";
-
-        List<GerenciarPacienteBean> lista = new ArrayList<>();
-
-        try {
-            conexao = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conexao.prepareStatement(sql);
-            stmt.setInt(1, user_session.getUnidade().getId());
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                GerenciarPacienteBean gp = new GerenciarPacienteBean();
-
-                gp.setId(rs.getInt("id"));
-                gp.getPrograma().setIdPrograma(rs.getInt("codprograma"));
-                gp.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
-                gp.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-                gp.getGrupo().setQtdFrequencia(rs.getInt("qtdfrequencia"));
-                gp.getPrograma().setIdPrograma(rs.getInt("codprograma"));
-                gp.getPrograma().setDescPrograma(rs.getString("descprograma"));
-                gp.getEquipe().setCodEquipe(rs.getInt("codequipe"));
-                gp.getEquipe().setDescEquipe(rs.getString("descequipe"));
-                gp.getFuncionario().setId(rs.getLong("codprofissional"));
-                gp.getFuncionario().setNome(rs.getString("descfuncionario"));
-                gp.setStatus(rs.getString("status"));
-                gp.getLaudo().setId(rs.getInt("codlaudo"));
-                gp.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
-                gp.getLaudo().getPaciente().setNome(rs.getString("nome"));
-                gp.getLaudo().getPaciente().setCns(rs.getString("cns"));
-                gp.setData_solicitacao(rs.getDate("data_solicitacao"));
-                gp.setObservacao(rs.getString("observacao"));
-                gp.setData_cadastro(rs.getDate("data_cadastro"));
-                gp.getLaudo().getProcedimentoPrimario().setUtilizaEquipamento(rs.getBoolean("utiliza_equipamento"));
-                gp.getLaudo().getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
-                gp.getLaudo().getProcedimentoPrimario().setNomeProc(rs.getString("nomeproc"));
-
-                lista.add(gp);
-
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        } finally {
-            try {
-                conexao.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return lista;
-    }
-
+   
     public List<GerenciarPacienteBean> carregarPacientesInstituicaoBusca(
-            GerenciarPacienteBean gerenciar) throws ProjetoException {
+            GerenciarPacienteBean gerenciar, String campoBusca, String tipoBusca) throws ProjetoException {
 
-        String sql = "select p.id, p.codprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, l.codpaciente, pa.nome, pa.cns, p.codequipe, e.descequipe, "
-                + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento "
+        String sql = "select p.id, p.codprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, l.codpaciente, pa.nome, pa.matricula, pa.cns, p.codequipe, e.descequipe, "
+                + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, pr.codproc , pr.nome as procedimento "
                 + " from hosp.paciente_instituicao p "
                 + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
@@ -102,7 +37,30 @@ public class GerenciarPacienteDAO {
                 + " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo) "
-                + " where p.codprograma = ? and p.codgrupo = ? ";
+                + " where 1=1";
+                        if ((gerenciar.getPrograma()!=null) && (gerenciar.getPrograma().getIdPrograma()!=null)) {
+                        	sql = sql + " and  p.codprograma = ?";
+                            }
+                            if ((gerenciar.getGrupo()!=null) && (gerenciar.getGrupo().getIdGrupo()!=null)) {            
+                            	sql = sql + " and  p.codgrupo = ?";
+                            }
+                		
+		if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+			sql = sql + " and pa.nome ilike ?";
+		}
+
+		if ((tipoBusca.equals("codproc") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+			sql = sql + " and pr.codproc = ?";
+		}
+		
+		if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+			sql = sql + " and pa.matricula = ?";
+		}
+		
+		if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+			sql = sql + " and pa.id_paciente = ?";
+		}
+		
 
         if (gerenciar.getStatus().equals("A")) {
             sql = sql + " and status = 'A'";
@@ -118,9 +76,29 @@ public class GerenciarPacienteDAO {
         try {
             conexao = ConnectionFactory.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(sql);
+            int i = 1;
+            if ((gerenciar.getPrograma()!=null) && (gerenciar.getPrograma().getIdPrograma()!=null)) {
+            stmt.setInt(i, gerenciar.getPrograma().getIdPrograma());
+            i = i+1;
+            }
+            if ((gerenciar.getGrupo()!=null) && (gerenciar.getGrupo().getIdGrupo()!=null)) {            
+            stmt.setInt(i, gerenciar.getGrupo().getIdGrupo());
+            i = i+1;
+            }
+			if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+				stmt.setString(i, "%" + campoBusca.toUpperCase() + "%");
+	            i = i+1;
+			}
 
-            stmt.setInt(1, gerenciar.getPrograma().getIdPrograma());
-            stmt.setInt(2, gerenciar.getGrupo().getIdGrupo());
+			if (((tipoBusca.equals("codproc") || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+				stmt.setString(i, campoBusca);
+	            i = i+1;
+			}
+			
+			if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+				stmt.setInt(i,Integer.valueOf((campoBusca.toUpperCase())));
+	            i = i+1;
+			}
 
             ResultSet rs = stmt.executeQuery();
 
@@ -138,9 +116,12 @@ public class GerenciarPacienteDAO {
                 gp.getFuncionario().setNome(rs.getString("descfuncionario"));
                 gp.setStatus(rs.getString("status"));
                 gp.getLaudo().setId(rs.getInt("codlaudo"));
+                gp.getLaudo().getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
+                gp.getLaudo().getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
                 gp.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 gp.getLaudo().getPaciente().setNome(rs.getString("nome"));
                 gp.getLaudo().getPaciente().setCns(rs.getString("cns"));
+                gp.getLaudo().getPaciente().setMatricula(rs.getString("matricula"));
                 gp.setData_solicitacao(rs.getDate("data_solicitacao"));
                 gp.setObservacao(rs.getString("observacao"));
                 gp.setData_cadastro(rs.getDate("data_cadastro"));

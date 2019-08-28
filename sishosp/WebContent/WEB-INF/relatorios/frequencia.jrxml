@@ -76,7 +76,7 @@ select
 	(select min(t1.id) id from hosp.telefone_paciente t1
 	where t1.id_paciente = p.id_paciente ) tel_id1 , 
 	 lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0') vencimentolaudo,
-	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes,empresa.logomarca, l.data_solicitacao, l.obs, f.descfuncionario AS nomeprofissional,
+	M.codigo codibgemun,l.id_laudo, empresa.nome_principal nomeinstituicao,  empresa.nome_fantasia, empresa.cnes,empresa.logomarca,empresa.logomarca2, l.data_solicitacao, l.obs, f.descfuncionario AS nomeprofissional,
 p.id_paciente, f.cns as cns_profissional, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
  p.logradouro|| ' '||COALESCE('',''||p.numero,'')|| ''||COALESCE('',''||p.complemento,'') AS endereco, 
  m.nome descmunicipio, b.descbairro, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
@@ -146,6 +146,10 @@ order by nome]]>
 	</field>
 	<field name="logomarca" class="java.lang.Object">
 		<property name="com.jaspersoft.studio.field.label" value="logomarca"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="logomarca2" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="logomarca2"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
 	</field>
 	<field name="data_solicitacao" class="java.sql.Date">
@@ -346,9 +350,9 @@ order by nome]]>
 				<reportElement x="0" y="0" width="80" height="74" uuid="0b6b7762-b34f-40a0-8ac2-57e8d37e34d8"/>
 				<imageExpression><![CDATA[$F{logomarca}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame">
-				<reportElement x="480" y="2" width="80" height="74" uuid="dcd5e938-70ad-474c-b0f5-78079b7231b6"/>
-				<imageExpression><![CDATA["C:/Users/Walter/Desktop/sus-logo.jpg"]]></imageExpression>
+			<image>
+				<reportElement x="482" y="0" width="80" height="74" uuid="d0ef7868-e5ec-4005-838a-e48cc9fd618f"/>
+				<imageExpression><![CDATA[$F{logomarca2}]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>

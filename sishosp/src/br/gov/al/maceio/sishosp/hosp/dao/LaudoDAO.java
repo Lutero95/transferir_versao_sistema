@@ -324,15 +324,12 @@ public class LaudoDAO {
 	public ArrayList<LaudoBean> listaLaudos(String situacao, String campoBusca, String tipoBusca)
 			throws ProjetoException {
 
-		String sql = "select id_laudo,  l.codpaciente, p.nome, "
-				+ "l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, l.periodo, "
-				+ "l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, l.codprocedimento_secundario2, "
-				+ "l.codprocedimento_secundario3, l.codprocedimento_secundario4, l.codprocedimento_secundario5, "
-				+ "c.desccid, l.cid1, l.cid2, l.cid3, l.obs, l.mes_final, l.ano_final, "
+		String sql = "select id_laudo, p.nome, "
+				+ "pr.codproc , pr.nome as procedimento, l.mes_final, l.ano_final, "
 				+ "CASE WHEN l.situacao = 'A' THEN 'Autorizado' ELSE 'Pendente' END AS situacao " + "from hosp.laudo l "
 				+ "left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
 				+ "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
-				+ "LEFT JOIN hosp.cid c ON (c.cod = l.cid1) " + "where l.ativo is true and l.cod_unidade = ? ";
+				+ " where l.ativo is true and l.cod_unidade = ? ";
 
 		if (!situacao.equals(SituacaoLaudo.TODOS.getSigla())) {
 			sql = sql + " AND l.situacao = ? ";
@@ -346,6 +343,15 @@ public class LaudoDAO {
 			sql = sql + " and pr.codproc = ?";
 		}
 
+		
+		if ((tipoBusca.equals("matpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+			sql = sql + " and p.matricula = ?";
+		}
+		
+		if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+			sql = sql + " and p.id_paciente = ?";
+		}
+		
 		sql = sql + "order by p.nome ";
 
 		ArrayList<LaudoBean> lista = new ArrayList();
@@ -359,12 +365,16 @@ public class LaudoDAO {
 				stm.setString(2, situacao);
 			}
 
-			if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+			if (((tipoBusca.equals("paciente")) && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+				stm.setString(3, "%" + campoBusca.toUpperCase() + "%");
+			}
+			
+			if ( ((tipoBusca.equals("codproc")) || (tipoBusca.equals("matpaciente"))) && (!campoBusca.equals(null)) && (!campoBusca.equals(""))) {
 				stm.setString(3, "%" + campoBusca.toUpperCase() + "%");
 			}
 
-			if ((tipoBusca.equals("codproc") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
-				stm.setString(3, campoBusca);
+			if ((tipoBusca.equals("prontpaciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
+				stm.setInt(3, Integer.valueOf(campoBusca));
 			}
 
 			ResultSet rs = stm.executeQuery();
@@ -373,26 +383,11 @@ public class LaudoDAO {
 				LaudoBean l = new LaudoBean();
 
 				l.setId(rs.getInt("id_laudo"));
-				l.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				l.getPaciente().setNome(rs.getString("nome"));
-				l.setDataSolicitacao(rs.getDate("data_solicitacao"));
-				l.setMesInicio(rs.getInt("mes_inicio"));
-				l.setAnoInicio(rs.getInt("ano_inicio"));
 				l.setMesFinal(rs.getInt("mes_final"));
 				l.setAnoFinal(rs.getInt("ano_final"));
-				l.setPeriodo(rs.getInt("periodo"));
-				l.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
+				l.getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
 				l.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
-				l.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
-				l.getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
-				l.getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
-				l.getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
-				l.getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
-				l.getCid1().setDescCid(rs.getString("desccid"));
-				l.getCid1().setIdCid(rs.getInt("cid1"));
-				l.getCid2().setIdCid(rs.getInt("cid2"));
-				l.getCid3().setIdCid(rs.getInt("cid3"));
-				l.setObs(rs.getString("obs"));
 				l.setSituacao(rs.getString("situacao"));
 				l.setMesFinal(rs.getInt("mes_final"));
 				l.setAnoFinal(rs.getInt("ano_final"));

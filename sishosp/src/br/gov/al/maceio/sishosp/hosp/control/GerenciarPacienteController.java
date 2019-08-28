@@ -38,6 +38,8 @@ public class GerenciarPacienteController implements Serializable {
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
     private InsercaoPacienteDAO iDao;
     private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
+	private String tipoBusca;
+	private String campoBusca;
 
     //CONSTANTES
     private static final String ENDERECO_RENOVACAO = "renovacaoPaciente?faces-redirect=true";
@@ -112,12 +114,8 @@ public class GerenciarPacienteController implements Serializable {
 
     public void carregarPacientesInstituicao() throws ProjetoException {
     	System.out.println("gertpaciente carregarPacientesInstituicao");
-        if (busca.equals("N")) {
-            listaPacientes = gDao.carregarPacientesInstituicao();
-        } else {
-            listaPacientes = gDao
-                    .carregarPacientesInstituicaoBusca(gerenciarpaciente);
-        }
+        listaPacientes = gDao
+                    .carregarPacientesInstituicaoBusca(gerenciarpaciente, campoBusca, tipoBusca);
     }
 
     public void desligarPaciente() throws ProjetoException {
@@ -130,7 +128,7 @@ public class GerenciarPacienteController implements Serializable {
 
             JSFUtil.fecharDialog("dlgDeslPac");
 
-            listaPacientes = gDao.carregarPacientesInstituicao();
+            listaPacientes = gDao.carregarPacientesInstituicaoBusca(gerenciarpaciente, campoBusca, tipoBusca);
 
             JSFUtil.adicionarMensagemSucesso("Paciente desligado com sucesso!", "Sucesso");
 
@@ -148,7 +146,7 @@ public class GerenciarPacienteController implements Serializable {
 
         if (cadastrou) {
 
-            listaPacientes = gDao.carregarPacientesInstituicao();
+            listaPacientes = gDao.carregarPacientesInstituicaoBusca(gerenciarpaciente,campoBusca, tipoBusca);
 
             JSFUtil.adicionarMensagemSucesso("Encaminhamento gerado com sucesso!", "Sucesso");
 
@@ -247,6 +245,22 @@ public class GerenciarPacienteController implements Serializable {
 
 	public void setListaGrupos(List<GrupoBean> listaGrupos) {
 		this.listaGrupos = listaGrupos;
+	}
+
+	public String getTipoBusca() {
+		return tipoBusca;
+	}
+
+	public String getCampoBusca() {
+		return campoBusca;
+	}
+
+	public void setTipoBusca(String tipoBusca) {
+		this.tipoBusca = tipoBusca;
+	}
+
+	public void setCampoBusca(String campoBusca) {
+		this.campoBusca = campoBusca;
 	}
 
 	
