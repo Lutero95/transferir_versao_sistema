@@ -243,34 +243,59 @@
 			<h:form id="formConsuPac">
 				<p:growl id="msgC" />
 
-				<p:row>
+				<b:row>
+					<b:column>
+						<p:panelGrid columns="4">
 
-					<p:panelGrid columns="4">
+							<p:selectOneMenu value="#{GerenciarPacienteController.tipoBusca}"
+								style="margin-top: -13px">
+								<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
+								<f:selectItem itemLabel="Protuário Paciente"
+									itemValue="prontpaciente" />
+								<f:selectItem itemLabel="Matrícula Paciente"
+									itemValue="matpaciente" />
+								<f:selectItem itemLabel="Cód. Procedimento" itemValue="codproc" />
+							</p:selectOneMenu>
 
-						<p:selectOneMenu value="#{GerenciarPacienteController.tipoBusca}"
-							style="margin-top: -13px">
-							<f:selectItem itemLabel="Nome Paciente" itemValue="paciente" />
-							<f:selectItem itemLabel="Protuário Paciente"
-								itemValue="prontpaciente" />
-							<f:selectItem itemLabel="Matrícula Paciente"
-								itemValue="matpaciente" />
-							<f:selectItem itemLabel="Cód. Procedimento" itemValue="codproc" />
-						</p:selectOneMenu>
+							<p:inputText value="#{GerenciarPacienteController.campoBusca}"
+								placeholder="Digite aqui o que deseja buscar"
+								style="margin-left: 10px;width:300px" />
 
-						<p:inputText value="#{GerenciarPacienteController.campoBusca}"
-							placeholder="Digite aqui o que deseja buscar"
-							style="margin-left: 10px;width:300px" />
-
-						<p:commandButton
-							action="#{GerenciarPacienteController.buscarPacientesInstituicao()}"
-							update="dt msgPagina" icon="ui-icon-search"
-							style="margin-left: 10px;" />
+							<p:commandButton
+								action="#{GerenciarPacienteController.buscarPacientesInstituicao()}"
+								update="dt msgPagina" icon="ui-icon-search"
+								style="margin-left: 10px;" />
 
 
-					</p:panelGrid>
+						</p:panelGrid>
+					</b:column>
+</b:row>
+<b:row>
 
-				</p:row>
+					<b:column span="1">
 
+						<p:outputLabel value="Situação:"
+							style="margin-top: 8px;color:#2e84ce;">
+						</p:outputLabel>
+
+					</b:column>
+
+
+
+					<b:column span="1"
+						style="width:140px;color: #4682B4;margin-top: -8px;">
+						<p:selectOneRadio required="true" style="margin-top: 10px"
+							 requiredMessage="Escolha a situação!"
+							layout="pageDirection"
+							value="#{GerenciarPacienteController.gerenciarpaciente.status}">
+
+							<f:selectItem itemLabel="Ativos" itemValue="A" />
+
+						</p:selectOneRadio>
+					</b:column>
+
+				</b:row>
+<br/>
 				<p:dataTable rows="8" paginator="true" paginatorPosition="bottom"
 					id="dt" var="pacie"
 					value="#{GerenciarPacienteController.listaPacientes}"

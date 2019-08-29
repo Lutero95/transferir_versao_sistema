@@ -53,7 +53,7 @@ public class GerenciarPacienteController implements Serializable {
         gerenciarpaciente = new GerenciarPacienteBean();
         gerenciarpaciente.setPrograma(null);
         listaGrupos = new ArrayList();
-        gerenciarpaciente.setStatus("T");
+        gerenciarpaciente.setStatus("A");
         listaPacientes = new ArrayList<GerenciarPacienteBean>();
         apenasLeitura = false;
         rowBean = new GerenciarPacienteBean();
