@@ -60,6 +60,10 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     private Boolean liberacao;
     private Boolean ehAvaliacao;
     private ArrayList<Liberacao> listaLiberacao;
+    private List<HorarioAtendimento> listaHorarioAtendimentos;
+    private List<HorarioAtendimento> listaHorarioAtendimentosAuxiliar;
+    private List<HorarioAtendimento> listaHorarioFinal = new ArrayList<>();
+    List<Integer> listaDias;
 
     public InsercaoPacienteController() throws ProjetoException {
         this.insercao = new InsercaoPacienteBean();
@@ -79,6 +83,9 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         liberacao = false;
         ehAvaliacao = false;
         listaLiberacao = new ArrayList<>();
+        listaHorarioAtendimentos = new ArrayList<>();
+        listaHorarioAtendimentosAuxiliar = new ArrayList<>();
+        listaDias = new ArrayList<>();
     }
 
     public void carregarHorarioOuTurnoInsercao() throws ProjetoException, ParseException {
@@ -161,12 +168,12 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         insercao = iDao.carregarLaudoPaciente(id);
         renderizarAposLaudo = true;
 
-        if(ehAvaliacao){
+        if (ehAvaliacao) {
             carregarDadosAvaliacao();
         }
     }
 
-    private void carregarDadosAvaliacao(){
+    private void carregarDadosAvaliacao() {
         AvaliacaoInsercaoDTO avaliacaoInsercaoDTO = iDao.carregarAtendimentoAvaliacao(insercao.getLaudo().getId());
         insercao.setPrograma(avaliacaoInsercaoDTO.getProgramaBean());
         insercao.setGrupo(avaliacaoInsercaoDTO.getGrupoBean());
@@ -212,12 +219,12 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         }
     }
 
-    public Liberacao montarLiberacao(String motivo, Integer idUsuarioLiberacao, String rotina){
+    public Liberacao montarLiberacao(String motivo, Integer idUsuarioLiberacao, String rotina) {
         Liberacao liberacao = null;
         return liberacao = new Liberacao(motivo, idUsuarioLiberacao, DataUtil.retornarDataIhHoraAtual(), rotina);
     }
 
-    public void adicionarLiberacaoNaLista(Liberacao liberacao){
+    public void adicionarLiberacaoNaLista(Liberacao liberacao) {
         listaLiberacao.add(liberacao);
     }
 
@@ -248,12 +255,47 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
     }
 
     public void abrirDialog() {
-        JSFUtil.abrirDialog("dlgDiasAtendimento");
+        if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
+            JSFUtil.abrirDialog("dlgDiasAtendimentoTurno");
+        } else {
+            limparHorariosProfissional();
+            JSFUtil.abrirDialog("dlgDiasAtendimento");
+        }
+    }
+
+    private void limparHorariosProfissional() {
+        insercao.setHorarioAtendimento(new HorarioAtendimento());
+        listaHorarioAtendimentos = new ArrayList<>();
     }
 
     public void excluirFuncionarioIhDiasDeAtendimento() {
         funcionario.getListDiasSemana().remove(funcionario);
         listaProfissionaisAdicionados.remove(funcionario);
+    }
+
+    public void excluirDiasHorariosDoFuncionario(HorarioAtendimento horarioAtendimento) {
+        listaHorarioAtendimentos.remove(horarioAtendimento);
+    }
+
+    private Boolean validarAdicionarFuncionarioDiaHorario() {
+        Boolean retorno = false;
+        for (int i = 0; i < listaHorarioAtendimentos.size(); i++) {
+            if (listaHorarioAtendimentos.get(i).getDiaSemana() == insercao.getHorarioAtendimento().getDiaSemana()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void adicionarFuncionarioDiaHorario() {
+        if (validarAdicionarFuncionarioDiaHorario()) {
+            insercao.getHorarioAtendimento().setFuncionario(funcionario);
+            listaHorarioAtendimentos.add(insercao.getHorarioAtendimento());
+            insercao.setHorarioAtendimento(new HorarioAtendimento());
+        } else {
+            JSFUtil.adicionarMensagemAdvertencia("Esse dia já foi adicionado!", "Advertência");
+        }
     }
 
     public void adicionarFuncionario() {
@@ -317,6 +359,159 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         listaProfissionaisAdicionados.add(funcionario);
 
         JSFUtil.fecharDialog("dlgDiasAtendimento");
+    }
+
+    public void verificarAdicionarFuncionarioHorarioDia() {
+        if (listaHorarioAtendimentos.size() == 0) {
+            JSFUtil.adicionarMensagemAdvertencia("Adicione ao menos 1 dia e horário!", "Advertência");
+        } else if (verificarSeHorariosDoFuncionarioJaForamAdicionados()) {
+            JSFUtil.adicionarMensagemAdvertencia("Esse funcionário já teve seus horários adicionados!", "Advertência");
+        } else {
+            adicionarFuncionarioHorarioDia();
+        }
+    }
+
+    private Boolean verificarSeHorariosDoFuncionarioJaForamAdicionados() {
+        if (listaProfissionaisAdicionados.size() == 0) {
+            return false;
+        } else {
+            for (int i = 0; i < listaProfissionaisAdicionados.size(); i++) {
+                if (listaProfissionaisAdicionados.get(i).getId().equals(funcionario.getId())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private void adicionarFuncionarioHorarioDia() {
+
+        String dias = "";
+
+        for (int i = 0; i < listaHorarioAtendimentos.size(); i++) {
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.DOMINGO.getSigla())) {
+                dias = dias + "Domingo " + listaHorarioAtendimentos.get(i).getHorario();
+
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.SEGUNDA.getSigla())) {
+                dias = dias + "Segunda " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.TERCA.getSigla())) {
+                dias = dias + "Terça " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.QUARTA.getSigla())) {
+                dias = dias + "Quarta " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.QUINTA.getSigla())) {
+                dias = dias + "Quinta " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.SEXTA.getSigla())) {
+                dias = dias + "Sexta " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+            if (listaHorarioAtendimentos.get(i).getDiaSemana().toString().equals(DiasDaSemana.SABADO.getSigla())) {
+                dias = dias + "Sábado " + listaHorarioAtendimentos.get(i).getHorario();
+                if (listaHorarioAtendimentos.size() > 1 && listaHorarioAtendimentos.size() != i + 1) {
+                    dias = dias + ", ";
+                }
+            }
+
+        }
+        dias = dias + ".";
+
+        funcionario.setDiasSemana(dias);
+        listaProfissionaisAdicionados.add(funcionario);
+
+        listaHorarioAtendimentosAuxiliar = new ArrayList<>();
+        for (int i = 0; i < listaHorarioAtendimentos.size(); i++) {
+            listaHorarioAtendimentosAuxiliar.add(listaHorarioAtendimentos.get(i));
+        }
+
+        adicionarProfissionalIhHorarioNaLista();
+
+        JSFUtil.fecharDialog("dlgDiasAtendimento");
+    }
+
+    private void adicionarProfissionalIhHorarioNaLista() {
+
+        if (listaHorarioFinal.size() == 0) {
+            for (int i = 0; i < listaHorarioAtendimentosAuxiliar.size(); i++) {
+                listaHorarioFinal.add(listaHorarioAtendimentosAuxiliar.get(i));
+            }
+            for (int i = 0; i < listaHorarioFinal.size(); i++) {
+                listaHorarioFinal.get(i).getListaFuncionarios().add(funcionario);
+            }
+
+        } else {
+            List<HorarioAtendimento> listaClonada = new ArrayList<>();
+            for (int i = 0; i < listaHorarioFinal.size(); i++) {
+                listaClonada.add(listaHorarioFinal.get(i));
+            }
+
+            for (int j = 0; j < listaHorarioFinal.size(); j++) {
+                for (int i = 0; i < listaHorarioAtendimentosAuxiliar.size(); i++) {
+
+                    if (listaHorarioFinal.get(j).getDiaSemana().equals(listaHorarioAtendimentosAuxiliar.get(i).getDiaSemana())
+                            && listaHorarioFinal.get(j).getHorario().equals(listaHorarioAtendimentosAuxiliar.get(i).getHorario())) {
+
+                    } else {
+                        listaClonada.add(listaHorarioAtendimentosAuxiliar.get(i));
+
+
+                    }
+                }
+            }
+
+            listaHorarioFinal = new ArrayList<>();
+            listaHorarioFinal = listaClonada;
+
+            for (int j = 0; j < listaHorarioFinal.size(); j++) {
+                for (int i = 0; i < listaHorarioAtendimentosAuxiliar.size(); i++) {
+
+                    if (listaHorarioFinal.get(j).getDiaSemana().equals(listaHorarioAtendimentosAuxiliar.get(i).getDiaSemana())
+                            && listaHorarioFinal.get(j).getHorario().equals(listaHorarioAtendimentosAuxiliar.get(i).getHorario())
+                    ) {
+
+                    } else {
+                        if (!listaHorarioFinal.get(j).getListaFuncionarios().contains(listaHorarioAtendimentosAuxiliar.get(i).getFuncionario().getId())) {
+                            listaHorarioFinal.get(j).getListaFuncionarios().add(listaHorarioAtendimentosAuxiliar.get(i).getFuncionario());
+                        }
+
+                    }
+                }
+            }
+        }
+
+
+        for (int i = 0; i < listaHorarioFinal.size(); i++) {
+            if (!listaDias.contains(listaHorarioFinal.get(i).getDiaSemana())) {
+                listaDias.add(listaHorarioFinal.get(i).getDiaSemana());
+            }
+        }
     }
 
     public void gerarListaAgendamentosProfissional() throws ProjetoException {
@@ -387,31 +582,27 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             int diaSemana = c.get(Calendar.DAY_OF_WEEK);
             ArrayList<Date> listaDatasDeAtendimento = new ArrayList<Date>();
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
-                for (int j = 0; j < listaProfissionaisAdicionados.size(); j++) {
-                    for (int h = 0; h < listaProfissionaisAdicionados.get(j).getListDiasSemana().size(); h++) {
-                        if (!listaDatasDeAtendimento.contains(c.getTime())) {
-                            if (diaSemana == Integer.parseInt(listaProfissionaisAdicionados.get(j).getListDiasSemana().get(h))) {
+                for (int h = 0; h < listaDias.size(); h++) {
+                    if (!listaDatasDeAtendimento.contains(c.getTime())) {
+                        if (diaSemana == listaDias.get(h)) {
 
-                                InsercaoPacienteBean ins = new InsercaoPacienteBean();
+                            InsercaoPacienteBean ins = new InsercaoPacienteBean();
 
-                                ins.getAgenda().setPaciente(
-                                        insercao.getLaudo().getPaciente());
+                            ins.getAgenda().setPaciente(
+                                    insercao.getLaudo().getPaciente());
 
-                                ins.getAgenda().setDataMarcacao(c.getTime());
+                            ins.getAgenda().setDataMarcacao(c.getTime());
 
-                                ins.getAgenda().setProfissional(listaProfissionaisAdicionados.get(j));
+                            listAgendamentoProfissional.add(ins);
+                            listaDatasDeAtendimento.add(c.getTime());
 
-                                listAgendamentoProfissional.add(ins);
-                                listaDatasDeAtendimento.add(c.getTime());
-
-                            }
                         }
                     }
                 }
-
             }
 
         }
+
 
     }
 
@@ -448,9 +639,10 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
             if (verificarSeEhFeriadoData(listaAgendamentos.get(i).getAgenda().getDataMarcacao())) {
                 listaAgendamentosAux.add(listaAgendamentos.get(i));
-            } else if (verificarSeTemBloqueioData(listaAgendamentos.get(i), turno)) {
-                listaAgendamentosAux.add(listaAgendamentos.get(i));
             }
+            //else if (verificarSeTemBloqueioData(listaAgendamentos.get(i), turno)) {
+              //  listaAgendamentosAux.add(listaAgendamentos.get(i));
+            //}
         }
 
         //Adicionei esse FOR pois não estava indo com remove nas condições acima, então adicionei em uma lista e depois removi nesse for abaixo.
@@ -484,6 +676,8 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
             Boolean cadastrou = null;
 
+            gerarListaAgendamentosEquipe();
+
             ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
 
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
@@ -491,8 +685,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                 gerarListaAgendamentosEquipe();
 
 
-                cadastrou = iDao.gravarInsercaoEquipe(insercao,
-                        listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal, listaLiberacao);
+                cadastrou = iDao.gravarInsercaoEquipe(insercao, listaAgendamentosProfissionalFinal, listaLiberacao, listaHorarioFinal);
             }
             if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
@@ -712,5 +905,13 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void setEhAvaliacao(Boolean ehAvaliacao) {
         this.ehAvaliacao = ehAvaliacao;
+    }
+
+    public List<HorarioAtendimento> getListaHorarioAtendimentos() {
+        return listaHorarioAtendimentos;
+    }
+
+    public void setListaHorarioAtendimentos(List<HorarioAtendimento> listaHorarioAtendimentos) {
+        this.listaHorarioAtendimentos = listaHorarioAtendimentos;
     }
 }

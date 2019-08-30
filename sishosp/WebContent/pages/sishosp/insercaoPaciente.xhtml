@@ -10,7 +10,7 @@
 
         <f:metadata>
             <f:viewAction
-                    action="#{InsercaoController.carregarHorarioOuTurnoInsercao()}" />
+                    action="#{InsercaoController.carregarHorarioOuTurnoInsercao()}"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
@@ -205,7 +205,8 @@
                                              class="fire-label"
                                              rendered="#{InsercaoController.tipo == 'E'}" severity="info"/>
 
-                                    <p:autoComplete value="#{InsercaoController.insercao.grupo}" readonly="#{InsercaoController.ehAvaliacao == true}"
+                                    <p:autoComplete value="#{InsercaoController.insercao.grupo}"
+                                                    readonly="#{InsercaoController.ehAvaliacao == true}"
                                                     rendered="#{InsercaoController.tipo == 'E'}" size="31"
                                                     converter="conGrupo" class="select-agendaEquipe4"
                                                     disabled="#{InsercaoController.insercao.programa==null}"
@@ -461,22 +462,6 @@
 
                         </b:row>
 
-                        <b:row rendered="#{InsercaoController.opcaoAtendimento == 'H'}">
-                            <p:outputPanel>
-                                <b:column span="3" class="label-position">
-                                    <b:label value="Horário:" severity="info" class="fire-label"/>
-
-                                    <b:selectOneMenu class="select-agendaEquipe2" required="true"
-                                                     requiredMessage="Horário: Campo obrigatório!"
-                                                     value="#{InsercaoController.insercao.agenda.horario}">
-                                        <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-                                        <f:selectItems
-                                                value="#{InsercaoController.listaHorarios}"/>
-                                    </b:selectOneMenu>
-                                </b:column>
-                            </p:outputPanel>
-                        </b:row>
-
                         <b:row>
 
                             <b:column span="3" class="label-position">
@@ -515,7 +500,8 @@
                         <div align="center">
 
                             <b:commandButton value="Gravar" look="success" size="sm" id="b1"
-                                             icon="glyphicon-ok" update=":formInsercao:msgPagina, :formInsercao2, :formInsercao"
+                                             icon="glyphicon-ok"
+                                             update=":formInsercao:msgPagina, :formInsercao2, :formInsercao"
                                              class="btn-incluir"
                                              action="#{InsercaoController.validarInsercaoPaciente()}"/>
 
@@ -531,11 +517,11 @@
         </div>
 
 
-        <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo" 
-                  modal="true" id="laudo-id" styleClass="topDialog" >
+        <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo"
+                  modal="true" id="laudo-id" styleClass="topDialog">
             <h:form id="formConsuLaudo">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}" page-length="5"
-               page-length-menu="5,10,20"
+                             page-length-menu="5,10,20"
                              value="#{InsercaoController.listaLaudosVigentes}" id="dtLaudo"
                              var="insercao" display="Nenhum Laudo">
 
@@ -589,9 +575,117 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
+        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento" width="600px"
                   modal="true" styleClass="topDialog">
             <h:form id="formDiasAtendimento">
+
+                <p:growl id="grwDias"></p:growl>
+
+                <b:row>
+
+                    <b:column span="3" class="label-position">
+                        <b:label value="Dias:" severity="info" class="fire-label"/>
+                        <b:selectOneMenu required="true" class="select-agendaEquipe2"
+                                         requiredMessage="Escolha ao menos um dia da semana!"
+                                         value="#{InsercaoController.insercao.horarioAtendimento.diaSemana}">
+                            <f:selectItem itemLabel="Domingo" itemValue="1"/>
+                            <f:selectItem itemLabel="Segunda" itemValue="2"/>
+                            <f:selectItem itemLabel="Terça" itemValue="3"/>
+                            <f:selectItem itemLabel="Quarta" itemValue="4"/>
+                            <f:selectItem itemLabel="Quinta" itemValue="5"/>
+                            <f:selectItem itemLabel="Sexta" itemValue="6"/>
+                            <f:selectItem itemLabel="Sábado" itemValue="7"/>
+                        </b:selectOneMenu>
+                    </b:column>
+
+                </b:row>
+
+                <b:row>
+
+                    <p:outputPanel>
+                        <b:column span="3" class="label-position">
+                            <b:label value="Horário:" severity="info" class="fire-label"/>
+
+                            <b:selectOneMenu class="select-agendaEquipe2" required="true"
+                                             requiredMessage="Horário: Campo obrigatório!"
+                                             value="#{InsercaoController.insercao.horarioAtendimento.horario}">
+                                <f:selectItems
+                                        value="#{InsercaoController.listaHorarios}"/>
+                            </b:selectOneMenu>
+                        </b:column>
+                    </p:outputPanel>
+
+                </b:row>
+
+                <div align="center">
+                    <div align="center">
+                        <b:commandButton value="Adicionar" style="margin-top:5px;"
+                                         class="btn-acao-table acao-confirmar"
+                                         update="formDiasAtendimento"
+                                         id="btnAdicionarFuncionarioHorarioDia" icon="glyphicon-ok"
+                                         action="#{InsercaoController.adicionarFuncionarioDiaHorario()}"/>
+                    </div>
+                </div>
+
+                <br></br>
+
+                <b:row>
+
+                    <p:dataTable id="dtHorariosDias" resizableColumns="true"
+                                 value="#{InsercaoController.listaHorarioAtendimentos}" var="var"
+                                 emptyMessage="Sem registros.">
+
+                        <p:column headerText="Dia">
+                            <h:outputLabel value="Domingo"
+                                           rendered="#{var.diaSemana == 1}"/>
+                            <h:outputLabel value="Segunda"
+                                           rendered="#{var.diaSemana == 2}"/>
+                            <h:outputLabel value="Terça"
+                                           rendered="#{var.diaSemana == 3}"/>
+                            <h:outputLabel value="Quarta"
+                                           rendered="#{var.diaSemana == 4}"/>
+                            <h:outputLabel value="Quinta"
+                                           rendered="#{var.diaSemana == 5}"/>
+                            <h:outputLabel value="Sexta"
+                                           rendered="#{var.diaSemana == 6}"/>
+                            <h:outputLabel value="Sábado"
+                                           rendered="#{var.diaSemana == 7}"/>
+                        </p:column>
+
+                        <p:column headerText="Horário">
+                            <h:outputLabel value="#{var.horario}"/>
+                        </p:column>
+
+                        <p:column headerText="Excluir" width="12%">
+                            <div align="center">
+                                <p:commandButton icon="ui-icon-trash" immediate="true"
+                                                 actionListener="#{InsercaoController.excluirDiasHorariosDoFuncionario(var)}"
+                                                 title="Excluir" class="new-btn-acao-table acao-editar"
+                                                 update="dtHorariosDias">
+                                </p:commandButton>
+                            </div>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </b:row>
+
+                <br></br>
+                <br></br>
+
+                <div align="center">
+                    <p:commandButton value="Salvar" style="margin-top:5px;"
+                                     class="btn-acao-table acao-confirmar"
+                                     update=":formInsercao2:dtAdicionados, :formInsercao:msgPagina, grwDias"
+                                     id="b2" icon="glyphicon-ok" immediate="true"
+                                     action="#{InsercaoController.verificarAdicionarFuncionarioHorarioDia()}"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimentoTurno"
+                  modal="true" styleClass="topDialog">
+            <h:form id="formDiasAtendimentoTurno">
                 <p:selectManyCheckbox layout="grid" columns="7" required="true"
                                       requiredMessage="Escolha ao menos um dia da semana!"
                                       value="#{InsercaoController.funcionario.listDiasSemana}">
@@ -612,7 +706,7 @@
                                      class="btn-acao-table acao-confirmar"
                                      update=":formInsercao2:dtAdicionados, :formInsercao:msgPagina"
                                      id="b2" icon="glyphicon-ok"
-                                     action="#{InsercaoController.validarAdicionarFuncionario()}"/>
+                                     action="#{InsercaoController.adicionarFuncionarioHorarioDia()}"/>
                 </div>
             </h:form>
         </p:dialog>
@@ -819,13 +913,13 @@
                     <b:inputText mask="999-999-999-99" style="padding:10px;"
                                  required="true" value="#{InsercaoController.funcionario.cpf}"
                                  placeholder="Digite o CPF" render-label="true"
-                                 requiredMessage="CPF obrigatório" />
-                    <b:message for="@previous" />
+                                 requiredMessage="CPF obrigatório"/>
+                    <b:message for="@previous"/>
 
                     <b:inputSecret style="padding:10px;margin-top:10px" required="true"
                                    placeholder="Digite a Senha" requiredMessage="Senha obrigatório"
                                    value="#{InsercaoController.funcionario.senha}"></b:inputSecret>
-                    <b:message for="@previous" />
+                    <b:message for="@previous"/>
 
                 </h:panelGrid>
 
@@ -833,7 +927,7 @@
                     <p:commandButton value="Liberar" look="success" size="sm" id="b1"
                                      style="margin-top:10px" icon="ui-icon-check"
                                      update=":formInsercao, :formInsercao2, grwSenha"
-                                     action="#{InsercaoController.validarSenhaIhRealizarLiberacao()}" />
+                                     action="#{InsercaoController.validarSenhaIhRealizarLiberacao()}"/>
                 </div>
 
             </h:form>

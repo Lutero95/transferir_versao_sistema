@@ -473,12 +473,12 @@ public class EquipeDAO {
 		String sql = "";
 
 		if (todosOsProfissionais) {
-			sql = "select distinct e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo "
+			sql = "select distinct e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo, f.codprocedimentopadrao "
 					+ "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
 					+ "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
 					+ " where cod_unidade = ? order by f.descfuncionario ";
 		} else {
-			sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo "
+			sql = "select e.medico, f.descfuncionario, f.codespecialidade, es.descespecialidade, f.codcbo, f.codprocedimentopadrao "
 					+ "from hosp.equipe_medico e left join acl.funcionarios f on (e.medico = f.id_funcionario) "
 					+ "left join hosp.especialidade es on (f.codespecialidade = es.id_especialidade) "
 					+ " where equipe = ? order by f.descfuncionario ";
@@ -502,6 +502,7 @@ public class EquipeDAO {
 				func.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
 				func.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
 				func.getCbo().setCodCbo(rs.getInt("codcbo"));
+				func.getProc1().setIdProc(rs.getInt("codprocedimentopadrao"));
 
 				lista.add(func);
 			}

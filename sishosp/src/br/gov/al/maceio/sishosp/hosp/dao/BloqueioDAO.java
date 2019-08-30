@@ -234,14 +234,16 @@ public class BloqueioDAO {
                 "f.descfuncionario, f.cpf, f.cns, f.codprocedimentopadrao " +
                 "FROM hosp.bloqueio_agenda b " +
                 "LEFT JOIN acl.funcionarios f ON (b.codmedico = f.id_funcionario) " +
-                "WHERE codmedico = ? AND turno = ? AND dataagenda = ?";
+                "WHERE codmedico = ? " +
+                //"AND turno = ? " +
+                "AND dataagenda = ?";
 
         try {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setLong(1, codProfissional);
-            stm.setString(2, turno.toUpperCase());
-            stm.setDate(3, new java.sql.Date(dataAtendimento.getTime()));
+            //stm.setString(2, turno.toUpperCase());
+            stm.setDate(2, new java.sql.Date(dataAtendimento.getTime()));
 
             ResultSet rs = stm.executeQuery();
 

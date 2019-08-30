@@ -8,12 +8,7 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.hosp.model.CboBean;
-import br.gov.al.maceio.sishosp.hosp.model.EspecialidadeBean;
-import br.gov.al.maceio.sishosp.hosp.model.GrupoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProcedimentoBean;
-import br.gov.al.maceio.sishosp.hosp.model.ProgramaBean;
-import br.gov.al.maceio.sishosp.hosp.model.UnidadeBean;
+import br.gov.al.maceio.sishosp.hosp.model.*;
 
 public class FuncionarioBean implements Serializable {
 
@@ -37,6 +32,7 @@ public class FuncionarioBean implements Serializable {
     private Integer diaSemana;
     private UnidadeBean unidadeExtra;
     private String nomeBancoAcesso;
+    private List<HorarioAtendimento> listaHorarioAtendimentos;
 
     // LISTAS
     private List<ProgramaBean> programa;
@@ -90,6 +86,7 @@ public class FuncionarioBean implements Serializable {
         senha = "";
         novaSenha = "";
         confirmacaoNovaSenha = "";
+        listaHorarioAtendimentos = new ArrayList<>();
     }
 
     public Integer getCodigo() {
@@ -477,4 +474,11 @@ public class FuncionarioBean implements Serializable {
         this.confirmacaoNovaSenha = confirmacaoNovaSenha;
     }
 
+    public List<HorarioAtendimento> getListaHorarioAtendimentos() {
+        return listaHorarioAtendimentos;
+    }
+
+    public void setListaHorarioAtendimentos(List<HorarioAtendimento> listaHorarioAtendimentos) {
+        this.listaHorarioAtendimentos = listaHorarioAtendimentos;
+    }
 }

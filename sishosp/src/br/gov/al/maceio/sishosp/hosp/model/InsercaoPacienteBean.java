@@ -21,6 +21,8 @@ public class InsercaoPacienteBean implements Serializable {
     private String OpcaoAtendimento;
     private Boolean encaixe;
     private Date dataSolicitacao;
+    private HorarioAtendimento horarioAtendimento;
+    private List<HorarioAtendimento> listaHorarioAtendimento;
 
     public InsercaoPacienteBean() {
         laudo = new LaudoBean();
@@ -29,6 +31,8 @@ public class InsercaoPacienteBean implements Serializable {
         equipe = new EquipeBean();
         funcionario = new FuncionarioBean();
         agenda = new AgendaBean();
+        horarioAtendimento = new HorarioAtendimento();
+        listaHorarioAtendimento = new ArrayList<>();
     }
 
     public LaudoBean getLaudo() {
@@ -119,4 +123,20 @@ public class InsercaoPacienteBean implements Serializable {
 	public void setDataSolicitacao(Date dataSolicitacao) {
 		this.dataSolicitacao = dataSolicitacao;
 	}
+
+    public HorarioAtendimento getHorarioAtendimento() {
+        return horarioAtendimento;
+    }
+
+    public void setHorarioAtendimento(HorarioAtendimento horarioAtendimento) {
+        this.horarioAtendimento = horarioAtendimento;
+    }
+
+    public List<HorarioAtendimento> getListaHorarioAtendimento() {
+        return listaHorarioAtendimento;
+    }
+
+    public void setListaHorarioAtendimento(List<HorarioAtendimento> listaHorarioAtendimento) {
+        this.listaHorarioAtendimento = listaHorarioAtendimento;
+    }
 }

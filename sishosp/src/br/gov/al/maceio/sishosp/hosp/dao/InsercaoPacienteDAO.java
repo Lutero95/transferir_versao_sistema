@@ -41,7 +41,7 @@ public class InsercaoPacienteDAO {
                 + " where 1=1 "
                 //current_date >= to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') "
                 //+ " and current_date <= (SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) "
-           //     + " AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo)"
+                //     + " AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo)"
                 + " ) a";
         try {
             con = ConnectionFactory.getConnection();
@@ -138,9 +138,8 @@ public class InsercaoPacienteDAO {
         return insercao;
     }
 
-    public boolean gravarInsercaoEquipe(InsercaoPacienteBean insercao,
-                                        List<FuncionarioBean> lista, ArrayList<InsercaoPacienteBean> listaAgendamento,
-                                        ArrayList<Liberacao> listaLiberacao) throws ProjetoException {
+    public boolean gravarInsercaoEquipe(InsercaoPacienteBean insercao, ArrayList<InsercaoPacienteBean> listaAgendamento,
+                                        ArrayList<Liberacao> listaLiberacao, List<HorarioAtendimento> listaHorarioFinal) throws ProjetoException {
 
         FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("obj_funcionario");
@@ -150,20 +149,19 @@ public class InsercaoPacienteDAO {
 
         GerenciarPacienteDAO gerenciarPacienteDAO = new GerenciarPacienteDAO();
 
-        String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codpaciente, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
-                + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING id;";
+        String sql = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
+                + " values (?, ?, ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING id;";
         try {
             con = ConnectionFactory.getConnection();
             ps = con.prepareStatement(sql);
             ps.setInt(1, insercao.getPrograma().getIdPrograma());
             ps.setInt(2, insercao.getGrupo().getIdGrupo());
-            ps.setInt(3, insercao.getLaudo().getPaciente().getId_paciente());
-            ps.setInt(4, insercao.getEquipe().getCodEquipe());
-            ps.setString(5, "A");
-            ps.setInt(6, insercao.getLaudo().getId());
-            ps.setString(7, insercao.getObservacao());
-            ps.setInt(8, user_session.getUnidade().getId());
-            ps.setDate(9, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
+            ps.setInt(3, insercao.getEquipe().getCodEquipe());
+            ps.setString(4, "A");
+            ps.setInt(5, insercao.getLaudo().getId());
+            ps.setString(6, insercao.getObservacao());
+            ps.setInt(7, user_session.getUnidade().getId());
+            ps.setDate(8, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
             ResultSet rs = ps.executeQuery();
             int id = 0;
             if (rs.next()) {
@@ -173,14 +171,11 @@ public class InsercaoPacienteDAO {
             String sql2 = "INSERT INTO hosp.profissional_dia_atendimento (id_paciente_instituicao, id_profissional, dia_semana) VALUES  (?, ?, ?)";
             ps = con.prepareStatement(sql2);
 
-            for (int i = 0; i < lista.size(); i++) {
-                ps.setLong(1, id);
-                ps.setLong(2, lista.get(i).getId());
-                for (int j = 0; j < lista.get(i).getListDiasSemana().size(); j++) {
-                    ps.setInt(
-                            3,
-                            Integer.parseInt(lista.get(i).getListDiasSemana()
-                                    .get(j)));
+            for (int i = 0; i < listaHorarioFinal.size(); i++) {
+                for (int j = 0; j < listaHorarioFinal.get(i).getListaFuncionarios().size(); j++) {
+                    ps.setLong(1, id);
+                    ps.setLong(2, listaHorarioFinal.get(i).getListaFuncionarios().get(j).getId());
+                    ps.setInt(3, listaHorarioFinal.get(i).getDiaSemana());
                     ps.executeUpdate();
                 }
             }
@@ -231,27 +226,26 @@ public class InsercaoPacienteDAO {
                     idAtendimento = rs.getInt("id_atendimento");
                 }
 
-                for (int j = 0; j < lista.size(); j++) {
 
-                    for (int h = 0; h < lista.get(j).getListDiasSemana().size(); h++) {
+                for (int h = 0; h < listaHorarioFinal.size(); h++) {
+                    for (int l = 0; l < listaHorarioFinal.get(h).getListaFuncionarios().size(); l++) {
 
                         if (DataUtil.extrairDiaDeData(listaAgendamento.get(i).getAgenda().getDataMarcacao()) ==
-                                Integer.parseInt(lista.get(j).getListDiasSemana().get(h))) {
+                                listaHorarioFinal.get(h).getDiaSemana()) {
 
                             String sql4 = "INSERT INTO hosp.atendimentos1 (codprofissionalatendimento, id_atendimento, cbo, codprocedimento) VALUES  (?, ?, ?, ?)";
 
                             PreparedStatement ps4 = null;
                             ps4 = con.prepareStatement(sql4);
 
-                            ps4.setLong(1, lista.get(j).getId());
+                            ps4.setLong(1, listaHorarioFinal.get(h).getListaFuncionarios().get(l).getId());
                             ps4.setInt(2, idAtendimento);
-                            if(VerificadorUtil.verificarSeObjetoNuloOuZero(lista.get(j).getCbo().getCodCbo())){
+                            if (VerificadorUtil.verificarSeObjetoNuloOuZero(listaHorarioFinal.get(h).getListaFuncionarios().get(l).getCbo().getCodCbo())) {
                                 ps4.setNull(3, Types.NULL);
+                            } else {
+                                ps4.setLong(3, listaHorarioFinal.get(h).getListaFuncionarios().get(l).getCbo().getCodCbo());
                             }
-                            else {
-                                ps4.setInt(3, lista.get(j).getCbo().getCodCbo());
-                            }
-                            ps4.setInt(4, insercao.getPrograma().getProcedimento().getIdProc());
+                            ps4.setInt(4, listaHorarioFinal.get(h).getListaFuncionarios().get(l).getProc1().getIdProc());
 
                             ps4.executeUpdate();
                         }
@@ -600,13 +594,13 @@ public class InsercaoPacienteDAO {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-               FuncionarioBean funcionarioBean = new FuncionarioBean();
-               funcionarioBean.setNome(rs.getString("descfuncionario"));
-               funcionarioBean.setId(rs.getLong("codprofissionalatendimento"));
-               funcionarioBean.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
-               funcionarioBean.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
+                FuncionarioBean funcionarioBean = new FuncionarioBean();
+                funcionarioBean.setNome(rs.getString("descfuncionario"));
+                funcionarioBean.setId(rs.getLong("codprofissionalatendimento"));
+                funcionarioBean.getEspecialidade().setDescEspecialidade(rs.getString("descespecialidade"));
+                funcionarioBean.getEspecialidade().setCodEspecialidade(rs.getInt("codespecialidade"));
 
-               lista.add(funcionarioBean);
+                lista.add(funcionarioBean);
             }
 
         } catch (Exception ex) {
