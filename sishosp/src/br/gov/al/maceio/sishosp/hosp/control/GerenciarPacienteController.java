@@ -38,6 +38,8 @@ public class GerenciarPacienteController implements Serializable {
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
     private InsercaoPacienteDAO iDao;
     private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
+	private String tipoBusca;
+	private String campoBusca;
 
     //CONSTANTES
     private static final String ENDERECO_RENOVACAO = "renovacaoPaciente?faces-redirect=true";
@@ -47,10 +49,11 @@ public class GerenciarPacienteController implements Serializable {
     private static final String ENDERECO_ID = "&amp;id=";
 
     public GerenciarPacienteController() {
+    	System.out.println("gerpaciente construtor");
         gerenciarpaciente = new GerenciarPacienteBean();
         gerenciarpaciente.setPrograma(null);
         listaGrupos = new ArrayList();
-        gerenciarpaciente.setStatus("T");
+        gerenciarpaciente.setStatus("A");
         listaPacientes = new ArrayList<GerenciarPacienteBean>();
         apenasLeitura = false;
         rowBean = new GerenciarPacienteBean();
@@ -62,6 +65,7 @@ public class GerenciarPacienteController implements Serializable {
     }
 
     public void buscarPacientesInstituicao() throws ProjetoException {
+    	System.out.println("gerpaciente buscarPacientesInstituicao");
         busca = "S";
         carregarPacientesInstituicao();
         apenasLeitura = true;
@@ -69,6 +73,7 @@ public class GerenciarPacienteController implements Serializable {
     }
 
     public void limparBusca() throws ProjetoException {
+    	System.out.println("gerpaciente limparBusca");
         apenasLeitura = false;
         gerenciarpaciente = new GerenciarPacienteBean();
         busca = "N";
@@ -77,7 +82,7 @@ public class GerenciarPacienteController implements Serializable {
 
     public List<GrupoBean> listaGrupoAutoComplete(String query)
             throws ProjetoException {
-
+    	System.out.println("gerpaciente listaGrupoAutoComplete");
         GrupoDAO grDao = new GrupoDAO();
 
         if (gerenciarpaciente.getPrograma().getIdPrograma() != null) {
@@ -90,7 +95,7 @@ public class GerenciarPacienteController implements Serializable {
     }
 
     public void carregaGruposDoPrograma() throws ProjetoException {
-
+    	System.out.println("gerparciente carregaGruposDoPrograma");
         GrupoDAO grDao = new GrupoDAO();
         if (gerenciarpaciente.getPrograma() != null) {
             if (gerenciarpaciente.getPrograma().getIdPrograma() != null) {
@@ -102,21 +107,19 @@ public class GerenciarPacienteController implements Serializable {
     }
 
     public void inicioDesligar() {
+    	System.out.println("gerpaciente inicioDesligar");
         gerenciarpaciente = new GerenciarPacienteBean();
         JSFUtil.abrirDialog("dlgDeslPac");
     }
 
     public void carregarPacientesInstituicao() throws ProjetoException {
-        if (busca.equals("N")) {
-            listaPacientes = gDao.carregarPacientesInstituicao();
-        } else {
-            listaPacientes = gDao
-                    .carregarPacientesInstituicaoBusca(gerenciarpaciente);
-        }
+    	System.out.println("gertpaciente carregarPacientesInstituicao");
+        listaPacientes = gDao
+                    .carregarPacientesInstituicaoBusca(gerenciarpaciente, campoBusca, tipoBusca);
     }
 
     public void desligarPaciente() throws ProjetoException {
-
+    	System.out.println("gerpaciente desligarPaciente");
         Boolean cadastrou = false;
 
         cadastrou = gDao.desligarPaciente(rowBean, gerenciarpaciente);
@@ -125,7 +128,7 @@ public class GerenciarPacienteController implements Serializable {
 
             JSFUtil.fecharDialog("dlgDeslPac");
 
-            listaPacientes = gDao.carregarPacientesInstituicao();
+            listaPacientes = gDao.carregarPacientesInstituicaoBusca(gerenciarpaciente, campoBusca, tipoBusca);
 
             JSFUtil.adicionarMensagemSucesso("Paciente desligado com sucesso!", "Sucesso");
 
@@ -136,14 +139,14 @@ public class GerenciarPacienteController implements Serializable {
     }
 
     public void gerarEncaminhamento() throws ProjetoException {
-
+    	System.out.println("gerenca gerarEncaminhamento");
         Boolean cadastrou = false;
 
         cadastrou = gDao.encaminharPaciente(rowBean, gerenciarpaciente);
 
         if (cadastrou) {
 
-            listaPacientes = gDao.carregarPacientesInstituicao();
+            listaPacientes = gDao.carregarPacientesInstituicaoBusca(gerenciarpaciente,campoBusca, tipoBusca);
 
             JSFUtil.adicionarMensagemSucesso("Encaminhamento gerado com sucesso!", "Sucesso");
 
@@ -154,6 +157,7 @@ public class GerenciarPacienteController implements Serializable {
     }
 
     public Date ajustarDataDeSolicitacao(Date dataSolicitacao, Integer codLaudo) throws ProjetoException {
+    	System.out.println("gerpaciente ajustarDataDeSolicitacao");
         LaudoDAO laudoDAO = new LaudoDAO();
         LaudoBean laudoBean = laudoDAO.recuperarPeriodosLaudo(codLaudo);
         Date dataInicioLaudo = DataUtil.montarDataCompleta(1, laudoBean.getMesInicio(), laudoBean.getAnoInicio());
@@ -241,6 +245,22 @@ public class GerenciarPacienteController implements Serializable {
 
 	public void setListaGrupos(List<GrupoBean> listaGrupos) {
 		this.listaGrupos = listaGrupos;
+	}
+
+	public String getTipoBusca() {
+		return tipoBusca;
+	}
+
+	public String getCampoBusca() {
+		return campoBusca;
+	}
+
+	public void setTipoBusca(String tipoBusca) {
+		this.tipoBusca = tipoBusca;
+	}
+
+	public void setCampoBusca(String campoBusca) {
+		this.campoBusca = campoBusca;
 	}
 
 	

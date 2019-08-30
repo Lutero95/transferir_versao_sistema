@@ -14,16 +14,17 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import br.gov.al.maceio.sishosp.comum.util.HorarioOuTurnoUtil;
-import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
-import br.gov.al.maceio.sishosp.hosp.dao.*;
-import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
-import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
-import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
-
 import br.gov.al.maceio.sishosp.acl.dao.FuncionarioDAO;
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
+import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
+import br.gov.al.maceio.sishosp.hosp.dao.AgendaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.AlteracaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
+import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
+import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
+import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
@@ -45,6 +46,7 @@ public class AlteracaoPacienteController implements Serializable {
     private Integer id_paciente_insituicao;
     private String opcaoAtendimento;
     private ArrayList<FuncionarioBean> listaProfissionaisEquipe;
+    private List<AgendaBean> listaHorariosEquipe;
     private EquipeDAO eDao = new EquipeDAO();
     private FuncionarioBean funcionario;
     private EmpresaDAO empresaDAO = new EmpresaDAO();
@@ -60,10 +62,12 @@ public class AlteracaoPacienteController implements Serializable {
         iDao = new InsercaoPacienteDAO();
         listaDiasProfissional = new ArrayList<GerenciarPacienteBean>();
         listAgendamentoProfissional = new ArrayList<InsercaoPacienteBean>();
+        listaHorariosEquipe = new ArrayList<AgendaBean>();
         todosOsProfissionais = false;
     }
 
     public void carregaAlteracao() throws ProjetoException, ParseException {
+    	System.out.println("alteracao carregaAlteracao");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
@@ -452,8 +456,10 @@ public class AlteracaoPacienteController implements Serializable {
         }
     }
 
-    public List<AgendaBean> visualizarHorariosEquipe() {
-        return agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
+    public void visualizarHorariosEquipe() {
+    	System.out.println("alteracao visualizarHorariosEquipe");
+    	listaHorariosEquipe = agendaDAO.quantidadeDeAgendamentosDaEquipePorTurno();
+         
     }
 
     public InsercaoPacienteBean getInsercao() {
@@ -530,4 +536,12 @@ public class AlteracaoPacienteController implements Serializable {
     public void setTodosOsProfissionais(Boolean todosOsProfissionais) {
         this.todosOsProfissionais = todosOsProfissionais;
     }
+
+	public List<AgendaBean> getListaHorariosEquipe() {
+		return listaHorariosEquipe;
+	}
+
+	public void setListaHorariosEquipe(ArrayList<AgendaBean> listaHorariosEquipe) {
+		this.listaHorariosEquipe = listaHorariosEquipe;
+	}
 }

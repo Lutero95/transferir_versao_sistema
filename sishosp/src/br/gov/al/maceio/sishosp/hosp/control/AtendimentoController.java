@@ -46,6 +46,8 @@ public class AtendimentoController implements Serializable {
     private Boolean renderizarDialogLaudo;
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
     private List<GrupoBean> listaGrupos;
+	private String tipoBusca;
+	private String campoBusca;
 
     //CONSTANTES
     private static final String ENDERECO_EQUIPE = "atendimentoEquipe?faces-redirect=true";
@@ -81,7 +83,7 @@ public class AtendimentoController implements Serializable {
             JSFUtil.adicionarMensagemErro("Selecione as datas para filtrar os atendimentos!", "Erro");
             return;
         }
-        listarAtendimentos();
+        listarAtendimentos(campoBusca, tipoBusca);
     }
 
     public String redirectAtendimento() {
@@ -191,9 +193,9 @@ public class AtendimentoController implements Serializable {
         }
     }
 
-    public void listarAtendimentos() throws ProjetoException {
+    public void listarAtendimentos(String campoBusca, String tipo) throws ProjetoException {
         this.listAtendimentos = aDao
-                .carregaAtendimentos(atendimento);
+                .carregaAtendimentos(atendimento, campoBusca, tipo);
     }
 
     public void chamarMetodoTabelaAtendimentoEquipe() throws ProjetoException {
@@ -486,4 +488,24 @@ public class AtendimentoController implements Serializable {
     public void setListaGrupos(List<GrupoBean> listaGrupos) {
         this.listaGrupos = listaGrupos;
     }
+
+
+	public String getTipoBusca() {
+		return tipoBusca;
+	}
+
+
+	public void setTipoBusca(String tipoBusca) {
+		this.tipoBusca = tipoBusca;
+	}
+
+
+	public String getCampoBusca() {
+		return campoBusca;
+	}
+
+
+	public void setCampoBusca(String campoBusca) {
+		this.campoBusca = campoBusca;
+	}
 }

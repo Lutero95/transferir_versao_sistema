@@ -229,7 +229,11 @@ public class AtendimentoDAO {
                     stmt2.setInt(3, lista.get(i).getCbo().getCodCbo());
                 }
                 stmt2.setInt(4, lista.get(i).getProcedimento().getIdProc());
+                System.out.println("lista.get(i).getStatus()"+lista.get(i).getStatus());
+                if ((lista.get(i).getStatus()!=null) &&(!lista.get(i).getStatus().equals(""))  )
                 stmt2.setString(5, lista.get(i).getStatus());
+                else
+                	 stmt2.setNull(5, Types.NULL);
                 stmt2.setString(6, lista.get(i).getEvolucao());
                 stmt2.setString(7, lista.get(i).getPerfil());
                 stmt2.executeUpdate();
@@ -295,7 +299,7 @@ public class AtendimentoDAO {
         }
     }
 
-    public List<AtendimentoBean> carregaAtendimentos(AtendimentoBean atendimento)
+    public List<AtendimentoBean> carregaAtendimentos(AtendimentoBean atendimento, String campoBusca, String tipo)
             throws ProjetoException {
 
         String sql = "select a.id_atendimento, a.dtaatende, a.codpaciente, p.nome, p.cns, a.turno, a.codmedico, f.descfuncionario,"
@@ -320,8 +324,25 @@ public class AtendimentoDAO {
                 + " left join hosp.programa pr on (pr.id_programa = a.codprograma)"
                 + " left join hosp.tipoatendimento t on (t.id = a.codtipoatendimento)"
                 + " left join hosp.equipe e on (e.id_equipe = a.codequipe)"
-                + " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?"
-                + " order by a.dtaatende";
+                + " where a.dtaatende >= ? and a.dtaatende <= ? and a.cod_unidade = ?";
+
+		        if(tipo.equals("nome")){
+		            sql = sql + " and p.nome like ?";
+		        }
+		        else if(tipo.equals("cpf")){
+		            sql = sql + " and p.cpf like ?";
+		        }
+		        else if(tipo.equals("cns")){
+		            sql = sql + " and p.cns like ?";
+		        }
+		        else if(tipo.equals("prontuario")){
+		            sql = sql + " and p.id_paciente = ?";
+		        }
+		        else if(tipo.equals("matricula")){
+		            sql = sql + " and p.matricula like ?";
+		        }        
+        
+                sql = sql + " order by a.dtaatende";
 
         ArrayList<AtendimentoBean> lista = new ArrayList<AtendimentoBean>();
 
@@ -336,6 +357,13 @@ public class AtendimentoDAO {
             stm.setDate(2, new java.sql.Date(atendimento
                     .getDataAtendimentoFinal().getTime()));
             stm.setInt(3, user_session.getUnidade().getId());
+            
+            if (!campoBusca.equals(null)) {
+                if ((tipo.equals("nome")) || (tipo.equals("cpf")) || (tipo.equals("cns")) || (tipo.equals("matricula")))
+                	stm.setString(4, "%" + campoBusca.toUpperCase() + "%");
+                    else
+                    	stm.setInt(4,Integer.valueOf(campoBusca));
+            }
 
             ResultSet rs = stm.executeQuery();
 
@@ -483,7 +511,7 @@ public class AtendimentoDAO {
         String sql = "SELECT a1.evolucao, a1.dtaatendido, f.descfuncionario, p.nome " +
                 "FROM hosp.atendimentos1 a1 " +
                 "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " +
-                "LEFT JOIN hosp.proc p ON (p.codproc = a1.codprocedimento) " +
+                "LEFT JOIN hosp.proc p ON (p.id = a1.codprocedimento) " +
                 "LEFT JOIN acl.funcionarios f ON (f.id_funcionario = a1.codprofissionalatendimento) " +
                 "WHERE a1.evolucao IS NOT NULL AND a.codpaciente = ? " +
                 "ORDER BY a1.dtaatendido DESC ";

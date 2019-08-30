@@ -26,6 +26,7 @@ public class PacienteBean implements Serializable {
     private Boolean necessitaNomeSocial;
     private String nomeSocial;
     private String sexo;
+    private String matricula;
 
     // ENCAMINHADO ATRIBUTOS
     private Integer codEnchaminhado;
@@ -638,5 +639,13 @@ public class PacienteBean implements Serializable {
 
 	public void setSerie(String serie) {
 		this.serie = serie;
+	}
+
+	public String getMatricula() {
+		return matricula;
+	}
+
+	public void setMatricula(String matricula) {
+		this.matricula = matricula;
 	}
 }

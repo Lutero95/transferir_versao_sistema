@@ -9,8 +9,10 @@
     <ui:define name="content">
 
         <f:metadata>
-            <f:viewAction
-                    action="#{AlteracaoPacienteController.carregaAlteracao()}"/>
+        
+                                <f:event
+                                listener="#{AlteracaoPacienteController.carregaAlteracao()}"
+                                type="preRenderView"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
@@ -198,7 +200,9 @@
                                                  id="btnVisualizarAgendaEquipe" icon="ui-icon-search"
                                                  rendered="#{AlteracaoPacienteController.tipo == 'E'}"
                                                  class="btn-agendaBusca btn-acao-table acao-buscar"
-                                                 immediate="true" onclick="PF('dlgQtdAgendamentos').show();"/>
+                                                 update=":formQtdAgendamentos"
+                                                 action="#{AlteracaoPacienteController.visualizarHorariosEquipe()}"
+                                                 immediate="true" oncomplete="PF('dlgQtdAgendamentos').show();"/>
                             </b:column>
 
                         </p:outputPanel>
@@ -284,7 +288,7 @@
                             <b:column span="5" style="margin-bottom:15px;">
                                 <p:dataTable id="dtEquipe" resizableColumns="true"
                                              rendered="#{AlteracaoPacienteController.tipo == 'E'}"
-                                             responsive="true"
+                                             responsive="true" 
                                              value="#{AlteracaoPacienteController.listaProfissionaisEquipe}"
                                              var="func" emptyMessage="Sem registros.">
 
@@ -421,7 +425,7 @@
             </div>
         </div>
 
-        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
+        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento" dynamic="true" responsive="true"
                   modal="true">
             <h:form id="formDiasAtendimento">
                 <p:selectManyCheckbox layout="grid" columns="7" required="true"
@@ -450,10 +454,10 @@
         </p:dialog>
 
         <p:dialog header="Quantidade de Agendamentos" styleClass="topDialog"
-                  widgetVar="dlgQtdAgendamentos" modal="true">
+                  widgetVar="dlgQtdAgendamentos" modal="true" dynamic="true" responsive="true">
             <h:form id="formQtdAgendamentos">
                 <p:dataTable id="dtAgendamentosEquipe" resizableColumns="true"
-                             value="#{AlteracaoPacienteController.visualizarHorariosEquipe()}" var="ag"
+                             value="#{AlteracaoPacienteController.listaHorariosEquipe}" var="ag"
                              emptyMessage="Sem registros.">
 
                     <p:column headerText="Equipe">

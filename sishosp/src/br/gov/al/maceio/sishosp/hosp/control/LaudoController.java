@@ -161,8 +161,8 @@ public class LaudoController implements Serializable {
 
     }
 
-    public void listarLaudo(String situacao) throws ProjetoException {
-        listaLaudo = lDao.listaLaudos(situacao);
+    public void listarLaudo(String situacao, String campoBusca, String tipoBusca) throws ProjetoException {
+        listaLaudo = lDao.listaLaudos(situacao, campoBusca, tipoBusca);
     }
 
     public List<CidBean> listaCidAutoCompletePorProcedimento(String query)
