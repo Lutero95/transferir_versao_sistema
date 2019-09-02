@@ -26,12 +26,12 @@ public class InsercaoPacienteDAO {
 
         ArrayList<InsercaoPacienteBean> lista = new ArrayList<>();
 
-        String sql = " select codpaciente,nome,matricula, cns, id_laudo, codproc, procedimento,\n" +
-        		"mes_final, ano_final\n" +
-        		"from ( \n" +
-        		" select l.id_laudo, l.codpaciente, p.nome, p.cns,p.matricula,  l.data_solicitacao, l.mes_final, l.ano_final,\n" +
-        		" pr.codproc, pr.nome as procedimento from hosp.laudo l \n" +
-        		" left join hosp.pacientes p on (l.codpaciente = p.id_paciente) \n" +
+        String sql = " select codpaciente,nome,matricula, cns, id_laudo, codproc, procedimento, " +
+        		"mes_final, ano_final " +
+        		"from ( " +
+        		" select l.id_laudo, l.codpaciente, p.nome, p.cns,p.matricula,  l.data_solicitacao, l.mes_final, l.ano_final, " +
+        		" pr.codproc, pr.nome as procedimento from hosp.laudo l " +
+        		" left join hosp.pacientes p on (l.codpaciente = p.id_paciente) " +
         		" left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
                 + " where 1=1 ";
         		if ((tipoBusca.equals("paciente") && (!campoBusca.equals(null)) && (!campoBusca.equals("")))) {
@@ -74,8 +74,8 @@ public class InsercaoPacienteDAO {
                 insercao.getLaudo().setId(rs.getInt("id_laudo"));
                 insercao.getLaudo().getPaciente().setNome(rs.getString("nome"));
                 insercao.getLaudo().getPaciente().setCns(rs.getString("cns"));
-                insercao.getLaudo().setVigenciaInicial(rs.getDate("datainicio"));
-                insercao.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
+                //insercao.getLaudo().setVigenciaInicial(rs.getDate("datainicio"));
+                //insercao.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
 
                 lista.add(insercao);
             }
