@@ -32,7 +32,7 @@
                             <p:commandButton size="sm" style="margin-left: 20px;"
                                              class="new-btn-acao-table acao-editar" icon="ui-icon-search"
                                              update=":formConsuLaudo"
-                                             action="#{InsercaoController.listarLaudosVigentes()}"
+                                             action="#{InsercaoController.listarLaudosVigentes(InsercaoController.campoBusca, InsercaoController.tipoBusca)}"
                                              oncomplete="PF('dlgConsuLaudo').show();"/>
                         </b:column>
 

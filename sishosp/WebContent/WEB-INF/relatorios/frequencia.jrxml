@@ -743,13 +743,6 @@ order by nome]]>
 				</textElement>
 				<text><![CDATA[VALIDADE LAUDO]]></text>
 			</staticText>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="13" y="302" width="101" height="14" uuid="5e3d80e2-782b-430a-a713-02da93229538"/>
-				<textElement>
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{vencimentolaudo}]]></textFieldExpression>
-			</textField>
 			<rectangle>
 				<reportElement x="130" y="292" width="341" height="24" uuid="bc5f1b99-9530-433d-b70c-6abac1a24765"/>
 			</rectangle>
@@ -760,13 +753,6 @@ order by nome]]>
 				</textElement>
 				<text><![CDATA[PROFISSIONAL SOLICITANTE]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="132" y="302" width="334" height="14" uuid="3779b085-54a8-4de9-91f9-5e095645998e"/>
-				<textElement>
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nomeprofissional}]]></textFieldExpression>
-			</textField>
 			<rectangle>
 				<reportElement x="480" y="292" width="81" height="24" uuid="de913849-1ebb-435c-80d6-dbf4de7debe3"/>
 			</rectangle>
@@ -779,19 +765,6 @@ order by nome]]>
 				</textElement>
 				<text><![CDATA[CID]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="482" y="302" width="73" height="14" uuid="7f78e728-6a08-4c11-8847-3f62b8783250"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement>
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cid1}]]></textFieldExpression>
-			</textField>
 			<rectangle>
 				<reportElement x="10" y="319" width="160" height="28" uuid="addc81f3-33b7-4697-9ff0-bfd0d639e612"/>
 			</rectangle>
