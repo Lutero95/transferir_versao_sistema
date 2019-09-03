@@ -361,6 +361,10 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         JSFUtil.fecharDialog("dlgDiasAtendimento");
     }
 
+    public void excluirDiasHorariosDoFuncionario(HorarioAtendimento horarioAtendimento) {
+        listaHorarioAtendimentos.remove(horarioAtendimento);
+    }
+
     private void adicionarProfissionalIhHorarioNaLista() {
 
         if (listaHorarioFinal.size() == 0) {
@@ -687,8 +691,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
-                gerarListaAgendamentosEquipe();
-
+                //gerarListaAgendamentosEquipe();
 
                 cadastrou = iDao.gravarInsercaoEquipe(insercao, listaAgendamentosProfissionalFinal, listaLiberacao, listaHorarioFinal);
             }
