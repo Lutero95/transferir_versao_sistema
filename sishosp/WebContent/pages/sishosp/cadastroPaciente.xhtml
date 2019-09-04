@@ -541,6 +541,15 @@
 									<f:validateLength minimum="15" maximum="15" />
 								</p:inputText>
 							</b:column>
+							
+							<b:column span="2" class="label-position">
+								<b:label for="matricula" value="Matrícula" severity="info" />
+
+								<b:inputText value="#{PacienteController.paciente.matricula}"
+									class="form-control" id="matricula">
+								</b:inputText>
+							</b:column>
+							
 
 							<b:column span="2" class="label-position">
 								<b:label for="protant" value="Prot.Ant" severity="info" />
