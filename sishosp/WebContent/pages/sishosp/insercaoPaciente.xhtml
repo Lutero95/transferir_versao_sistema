@@ -606,7 +606,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento" width="600px"
+        <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimentoHorario" width="600px"
                   modal="true" styleClass="topDialog">
             <h:form id="formDiasAtendimento">
 
@@ -738,7 +738,7 @@
                                      class="btn-acao-table acao-confirmar"
                                      update=":formInsercao2:dtAdicionados, :msgPagina"
                                      id="b2" icon="glyphicon-ok"
-                                     action="#{InsercaoController.adicionarFuncionarioHorarioDia()}"/>
+                                     action="#{InsercaoController.validarAdicionarFuncionarioTurno()}"/>
                 </div>
             </h:form>
         </p:dialog>
