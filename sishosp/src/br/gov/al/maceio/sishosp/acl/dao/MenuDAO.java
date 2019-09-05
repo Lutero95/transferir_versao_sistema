@@ -474,7 +474,7 @@ public class MenuDAO {
 		return lista;
 	}
 
-	public ArrayList<Menu> listarMenuItemSourcerEdit(Integer idPerfil)
+	public ArrayList<Menu> listarMenuItemSourcerEdit(Long idPerfil)
 			throws ProjetoException {
 
 		String sql = "select me.id, me.descricao, me.codigo, me.indice, me.tipo, "
@@ -498,7 +498,7 @@ public class MenuDAO {
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setInt(1, idPerfil);
+			stmt.setLong(1, idPerfil);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
@@ -540,7 +540,7 @@ public class MenuDAO {
 	}
 
 	// LISTA OK
-	public ArrayList<Menu> listarMenuItemTargetEdit(Integer idPerfil)
+	public ArrayList<Menu> listarMenuItemTargetEdit(Long idPerfil)
 			throws ProjetoException {
 
 		String sql = "select distinct me.id, me.descricao, me.codigo, me.indice, me.tipo, "
@@ -559,7 +559,7 @@ public class MenuDAO {
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setInt(1, idPerfil);
+			stmt.setLong(1, idPerfil);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {

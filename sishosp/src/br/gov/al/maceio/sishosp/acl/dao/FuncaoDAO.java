@@ -215,7 +215,7 @@ public class FuncaoDAO {
 		return lista;
 	}
 
-	public List<Funcao> listarFuncoesSourceEdit(Integer idPerfil)
+	public List<Funcao> listarFuncoesSourceEdit(Long idPerfil)
 			throws ProjetoException {
 
 		String sql = "select fu.id, fu.descricao, fu.codigo,  fu.ativa, "
@@ -236,7 +236,7 @@ public class FuncaoDAO {
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setInt(1, idPerfil);
+			stmt.setLong(1, idPerfil);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
@@ -265,7 +265,7 @@ public class FuncaoDAO {
 		return lista;
 	}
 
-	public List<Funcao> listarFuncoesTargetEdit(Integer idPerfil)
+	public List<Funcao> listarFuncoesTargetEdit(Long idPerfil)
 			throws ProjetoException {
 
 		String sql = "select fu.id, fu.descricao, fu.codigo,  fu.ativa, "
@@ -281,7 +281,7 @@ public class FuncaoDAO {
 		try {
 			conexao = ConnectionFactory.getConnection();
 			PreparedStatement stmt = conexao.prepareStatement(sql);
-			stmt.setInt(1, idPerfil);
+			stmt.setLong(1, idPerfil);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {

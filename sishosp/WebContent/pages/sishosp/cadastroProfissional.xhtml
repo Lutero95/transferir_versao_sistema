@@ -409,7 +409,7 @@
 					</p:tab>
 
 
-					<p:tab title="Permissões Extras">
+					<p:tab title="Permissões Extras" rendered="#{MBFuncionarios.tipo == 1}">
 
 						<p:outputPanel id="outPermissoes">
 							<div align="center">
@@ -432,10 +432,10 @@
 											filterMatchMode="contains" converter="conPickListMenu">
 
 											<f:facet name="sourceCaption">
-												<font color="#227ac6">Menus não associadas</font>
+												<font color="#227ac6">Menus não associados</font>
 											</f:facet>
 											<f:facet name="targetCaption">
-												<font color="#227ac6">Menus associadas</font>
+												<font color="#227ac6">Menus associados</font>
 											</f:facet>
 
 											<p:ajax event="transfer"
@@ -470,7 +470,69 @@
 						</p:outputPanel>
 					</p:tab>
 
-				</p:tabView>
+
+				<p:tab title="Permissões Extras" rendered="#{MBFuncionarios.tipo == 2}">
+
+					<p:outputPanel id="outPermissoesAlterar">
+						<div align="center">
+							<p:outputLabel
+									value="Selecione um perfil para exibir as permissões que não estão associadas."
+									style="font-size:18px !important;"
+									rendered="#{MBFuncionarios.renderizarPermissoes == false}" />
+						</div>
+
+						<p:tabView id="tabvPermsAlterar" class="tab-style"
+								   rendered="#{MBFuncionarios.renderizarPermissoes == true}">
+
+							<p:tab title="Associar Menus">
+								<p:panelGrid styleClass="semBorda" columns="2">
+									<p:pickList id="pickMenuAlterar"
+												value="#{MBFuncionarios.listaMenusDualEdit}" var="menu"
+												itemLabel="#{menuMB.verificarTipoRel(menu.descricao, menu.tipo)} - #{menu.descSistema} (#{menu.siglaSistema})"
+												itemValue="#{menu}" showCheckbox="true"
+												showSourceFilter="true" showTargetFilter="true"
+												filterMatchMode="contains" converter="conPickListMenu">
+
+										<f:facet name="sourceCaption">
+											<font color="#227ac6">Menus não associados</font>
+										</f:facet>
+										<f:facet name="targetCaption">
+											<font color="#227ac6">Menus associados</font>
+										</f:facet>
+
+										<p:ajax event="transfer"
+												listener="#{MBFuncionarios.onTransferMenu}" />
+									</p:pickList>
+								</p:panelGrid>
+							</p:tab>
+
+							<p:tab title="Associar Funções">
+								<p:panelGrid styleClass="semBorda" columns="2">
+									<p:pickList id="pickFuncaoAlterar"
+												value="#{MBFuncionarios.listaFuncoesDualEdit}" var="funcao"
+												itemLabel="#{funcao.descricao} - #{funcao.descSistema} (#{funcao.siglaSistema})"
+												itemValue="#{funcao}" showCheckbox="true"
+												showSourceFilter="true" showTargetFilter="true"
+												filterMatchMode="contains" converter="conPickListFuncao">
+
+										<f:facet name="sourceCaption">
+											<font color="#227ac6">Funções não associadas</font>
+										</f:facet>
+										<f:facet name="targetCaption">
+											<font color="#227ac6">Funções associadas</font>
+										</f:facet>
+
+										<p:ajax event="transfer"
+												listener="#{MBFuncionarios.onTransferFuncao}" />
+									</p:pickList>
+								</p:panelGrid>
+							</p:tab>
+
+						</p:tabView>
+					</p:outputPanel>
+				</p:tab>
+
+			</p:tabView>
 
 
 

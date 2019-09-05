@@ -66,9 +66,17 @@ public class FuncionarioController implements Serializable {
 	private List<Menu> listaMenusSource;
 	private List<Menu> listaMenusTarget;
 
+	private DualListModel<Menu> listaMenusDualEdit;
+	private List<Menu> listaMenusSourceEdit;
+	private List<Menu> listaMenusTargetEdit;
+
 	private DualListModel<Funcao> listaFuncoesDual;
 	private List<Funcao> listaFuncoesSource;
 	private List<Funcao> listaFuncoesTarget;
+
+	private DualListModel<Funcao> listaFuncoesDualEdit;
+	private List<Funcao> listaFuncoesSourceEdit;
+	private List<Funcao> listaFuncoesTargetEdit;
 
 	private Boolean renderizarPermissoes;
 
@@ -111,6 +119,10 @@ public class FuncionarioController implements Serializable {
 		listaMenusSource = new ArrayList<>();
 		listaMenusTarget = new ArrayList<>();
 
+		listaMenusDualEdit = null;
+		listaMenusSourceEdit = new ArrayList<>();
+		listaMenusTargetEdit = new ArrayList<>();
+
 		listaSistemasDual = new DualListModel<Sistema>();
 		listaSistemasSoucer = new ArrayList<>();
 		listaSistemasTarget = new ArrayList<>();
@@ -119,6 +131,10 @@ public class FuncionarioController implements Serializable {
 		listaFuncoesDual = null;
 		listaFuncoesSource = new ArrayList<>();
 		listaFuncoesTarget = new ArrayList<>();
+
+		listaFuncoesDualEdit = null;
+		listaFuncoesSourceEdit = new ArrayList<>();
+		listaFuncoesTargetEdit = new ArrayList<>();
 	}
 
 	public boolean verificarPermComp(String codigo, Integer idSistema) {
@@ -585,8 +601,10 @@ public class FuncionarioController implements Serializable {
 		} else {
 			List<Integer> listaSis = new ArrayList<>();
 			List<Long> permissoes = new ArrayList<>();
-			List<Menu> listaMenusAux = listaMenusDual.getTarget();
-			List<Funcao> listaFuncoesAux = listaFuncoesDual.getTarget();
+			List<Menu> listaMenusAux = new ArrayList<>();
+			List<Funcao> listaFuncoesAux = new ArrayList<>();
+			listaMenusAux = (tipo==1) ? listaMenusDual.getTarget() : listaMenusDualEdit.getTarget();
+			listaFuncoesAux = (tipo==1) ? listaFuncoesDual.getTarget() : listaFuncoesDualEdit.getTarget();
 
 			MenuDAO mdao = new MenuDAO();
 			List<Menu> menusPerfil = mdao.listarMenusPerfil((profissional.getPerfil().getId()));
@@ -969,6 +987,19 @@ public class FuncionarioController implements Serializable {
 		return listaMenusDual;
 	}
 
+	public DualListModel<Menu> getListaMenusDualEdit()
+			throws NumberFormatException, ProjetoException {
+		if (listaMenusDualEdit == null) {
+			listaMenusSourceEdit = null;
+			listaMenusTargetEdit = null;
+			getListaMenusSourceEdit();
+			getListaMenusTargetEdit();
+			listaMenusDualEdit = new DualListModel<>(listaMenusSourceEdit,
+					listaMenusTargetEdit);
+		}
+		return listaMenusDualEdit;
+	}
+
 	public void setListaMenusDual(DualListModel<Menu> listaMenusDual) {
 		this.listaMenusDual = listaMenusDual;
 	}
@@ -1001,6 +1032,80 @@ public class FuncionarioController implements Serializable {
 			listaFuncoesSource = fdao.listarFuncaoItemSourcerUser(profissional.getPerfil().getId());
 		}
 		return listaFuncoesSource;
+	}
+
+	public void setListaMenusDualEdit(DualListModel<Menu> listaMenusDualEdit) {
+		this.listaMenusDualEdit = listaMenusDualEdit;
+	}
+
+	public List<Menu> getListaMenusSourceEdit() throws NumberFormatException,
+			ProjetoException {
+		if (listaMenusSourceEdit == null) {
+			MenuDAO mdao = new MenuDAO();
+			listaMenusSourceEdit = mdao.listarMenuItemSourcerEdit(profissional.getPerfil().getId());
+		}
+		return listaMenusSourceEdit;
+	}
+
+	public void setListaMenusSourceEdit(List<Menu> listaMenusSourceEdit) {
+		this.listaMenusSourceEdit = listaMenusSourceEdit;
+	}
+
+	public List<Menu> getListaMenusTargetEdit() throws NumberFormatException,
+			ProjetoException {
+		if (listaMenusTargetEdit == null) {
+			MenuDAO mdao = new MenuDAO();
+			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(profissional.getPerfil().getId());
+		}
+		return listaMenusTargetEdit;
+	}
+
+	public void setListaMenusTargetEdit(List<Menu> listaMenusTargetEdit) {
+		this.listaMenusTargetEdit = listaMenusTargetEdit;
+	}
+
+	public DualListModel<Funcao> getListaFuncoesDualEdit()
+			throws NumberFormatException, ProjetoException {
+		if (listaFuncoesDualEdit == null) {
+			listaFuncoesSourceEdit = null;
+			listaFuncoesTargetEdit = null;
+			getListaFuncoesSourceEdit();
+			getListaFuncoesTargetEdit();
+			listaFuncoesDualEdit = new DualListModel<>(listaFuncoesSourceEdit,
+					listaFuncoesTargetEdit);
+		}
+		return listaFuncoesDualEdit;
+	}
+
+	public void setListaFuncoesDualEdit(
+			DualListModel<Funcao> listaFuncoesDualEdit) {
+		this.listaFuncoesDualEdit = listaFuncoesDualEdit;
+	}
+
+	public List<Funcao> getListaFuncoesSourceEdit()
+			throws NumberFormatException, ProjetoException {
+		if (listaFuncoesSourceEdit == null) {
+			FuncaoDAO fdao = new FuncaoDAO();
+			listaFuncoesSourceEdit = fdao.listarFuncoesSourceEdit(profissional.getPerfil().getId());
+		}
+		return listaFuncoesSourceEdit;
+	}
+
+	public void setListaFuncoesSourceEdit(List<Funcao> listaFuncoesSourceEdit) {
+		this.listaFuncoesSourceEdit = listaFuncoesSourceEdit;
+	}
+
+	public List<Funcao> getListaFuncoesTargetEdit()
+			throws NumberFormatException, ProjetoException {
+		if (listaFuncoesTargetEdit == null) {
+			FuncaoDAO fdao = new FuncaoDAO();
+			listaFuncoesTargetEdit = fdao.listarFuncoesTargetEdit(profissional.getPerfil().getId());
+		}
+		return listaFuncoesTargetEdit;
+	}
+
+	public void setListaFuncoesTargetEdit(List<Funcao> listaFuncoesTargetEdit) {
+		this.listaFuncoesTargetEdit = listaFuncoesTargetEdit;
 	}
 
 	public void setListaFuncoesSource(List<Funcao> listaFuncoesSource) {

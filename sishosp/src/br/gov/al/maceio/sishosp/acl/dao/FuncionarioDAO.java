@@ -826,7 +826,7 @@ public class FuncionarioDAO {
 		}
 	}
 
-	// INÃ�CIO PROFISSIONALDAO
+	// INÍCIO PROFISSIONALDAO
 
 	public boolean gravarProfissional(FuncionarioBean profissional, ArrayList<ProgramaBean> lista) {
 

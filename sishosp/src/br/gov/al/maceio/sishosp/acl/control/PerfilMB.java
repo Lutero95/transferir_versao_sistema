@@ -479,8 +479,8 @@ public class PerfilMB implements Serializable {
 			ProjetoException {
 		if (listaMenusSourceEdit == null) {
 			MenuDAO mdao = new MenuDAO();
-			listaMenusSourceEdit = mdao.listarMenuItemSourcerEdit(Integer
-					.parseInt(perfilSelecionado));
+			listaMenusSourceEdit = mdao.listarMenuItemSourcerEdit(Long
+					.parseLong(perfilSelecionado));
 		}
 		return listaMenusSourceEdit;
 	}
@@ -493,8 +493,8 @@ public class PerfilMB implements Serializable {
 			ProjetoException {
 		if (listaMenusTargetEdit == null) {
 			MenuDAO mdao = new MenuDAO();
-			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(Integer
-					.parseInt(perfilSelecionado));
+			listaMenusTargetEdit = mdao.listarMenuItemTargetEdit(Long
+					.parseLong(perfilSelecionado));
 		}
 		return listaMenusTargetEdit;
 	}
@@ -525,8 +525,8 @@ public class PerfilMB implements Serializable {
 			throws NumberFormatException, ProjetoException {
 		if (listaFuncoesSourceEdit == null) {
 			FuncaoDAO fdao = new FuncaoDAO();
-			listaFuncoesSourceEdit = fdao.listarFuncoesSourceEdit(Integer
-					.parseInt(perfilSelecionado));
+			listaFuncoesSourceEdit = fdao.listarFuncoesSourceEdit(Long
+					.parseLong(perfilSelecionado));
 		}
 		return listaFuncoesSourceEdit;
 	}
@@ -539,8 +539,8 @@ public class PerfilMB implements Serializable {
 			throws NumberFormatException, ProjetoException {
 		if (listaFuncoesTargetEdit == null) {
 			FuncaoDAO fdao = new FuncaoDAO();
-			listaFuncoesTargetEdit = fdao.listarFuncoesTargetEdit(Integer
-					.parseInt(perfilSelecionado));
+			listaFuncoesTargetEdit = fdao.listarFuncoesTargetEdit(Long
+					.parseLong(perfilSelecionado));
 		}
 		return listaFuncoesTargetEdit;
 	}
