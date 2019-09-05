@@ -424,8 +424,13 @@ public class PacienteDAO {
             } else {
                 stmt.setNull(18, Types.DATE);
             }
-
-            stmt.setString(19, paciente.getCpf().replaceAll("[^0-9]", ""));
+            
+            if (paciente.getReligiao().getId() == null) {
+                stmt.setNull(19, Types.NULL);
+            } else {
+            	stmt.setString(19, paciente.getCpf().replaceAll("[^0-9]", ""));
+            }
+            
             stmt.setString(20, paciente.getCns());
 
             if (paciente.getProtant() == null) {

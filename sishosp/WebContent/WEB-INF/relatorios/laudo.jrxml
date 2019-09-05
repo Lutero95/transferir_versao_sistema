@@ -4,7 +4,7 @@
 	<property name="ireport.zoom" value="1.1269722013523664"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Ehosp"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -45,10 +45,10 @@
 	<queryString>
 		<![CDATA[select v.*, tp1.telefone tel1, tp2.telefone tel2, tp3.telefone tel3 from (
 select u.*
-	, (select t1.id from hosp.telefone_paciente t1
+	, (select min(t1.id) from hosp.telefone_paciente t1
 	where t1.id_paciente = u.id_paciente and t1.id<>u.tel_id1 and t1.id<>u.tel_id2  ) tel_id3
 	from (
-	select t.*, (select t1.id from hosp.telefone_paciente t1
+	select t.*, (select min(t1.id) from hosp.telefone_paciente t1
 	where t1.id_paciente = t.id_paciente and t1.id<>t.tel_id1  ) tel_id2 from (
 select
 	(select t1.id from hosp.telefone_paciente t1
@@ -57,9 +57,9 @@ select
 p.id_paciente, f.cns as cns_medico, p.dtanascimento, p.nome, p.cpf, p.rg, p.cep, p.complemento, p.sexo, p.cns, p.mae, p.nomeresp, p.codraca, r.descraca,
  p.logradouro|| ' '||COALESCE('',''||p.numero,'')|| ''||COALESCE('',''||p.complemento,'') AS endereco, 
  m.nome descmunicipio, b.descbairro, prof.descprofissao, c1.cid as cid1, c2.cid as cid2, c3.cid as cid3, 
-l.codprocedimento_primario, prp.nome AS nomeprocedimento, l.codprocedimento_secundario1, prs1.nome AS nomeprocedimento_secundario1,
-l.codprocedimento_secundario2, prs2.nome AS nomeprocedimento_secundario2, l.codprocedimento_secundario3, prs3.nome AS nomeprocedimento_secundario3,
-l.codprocedimento_secundario4, prs4.nome AS nomeprocedimento_secundario4, l.codprocedimento_secundario5, prs5.nome AS nomeprocedimento_secundario5
+prp.codproc codproc, prp.nome AS nomeprocedimento,prs1.codproc codproc1, prs1.nome AS nomeprocedimento_secundario1,
+prs2.codproc codproc2, prs2.nome AS nomeprocedimento_secundario2,prs3.codproc codproc3, prs3.nome AS nomeprocedimento_secundario3,
+prs4.codproc codproc4, prs4.nome AS nomeprocedimento_secundario4, prs5.codproc codproc5, prs5.nome AS nomeprocedimento_secundario5
 FROM  hosp.laudo l  
 JOIN hosp.pacientes p ON p.id_paciente = l.codpaciente
 LEFT JOIN hosp.proc prp ON prp.id = l.codprocedimento_primario
@@ -205,49 +205,49 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 		<property name="com.jaspersoft.studio.field.label" value="cid3"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="cid"/>
 	</field>
-	<field name="codprocedimento_primario" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="codprocedimento_primario"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+	<field name="codproc" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="codproc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
 	<field name="nomeprocedimento" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeprocedimento"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
-	<field name="codprocedimento_secundario1" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="codprocedimento_secundario1"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+	<field name="codproc1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="codproc1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
 	<field name="nomeprocedimento_secundario1" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeprocedimento_secundario1"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
-	<field name="codprocedimento_secundario2" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="codprocedimento_secundario2"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+	<field name="codproc2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="codproc2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
 	<field name="nomeprocedimento_secundario2" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeprocedimento_secundario2"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
-	<field name="codprocedimento_secundario3" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="codprocedimento_secundario3"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+	<field name="codproc3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="codproc3"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
 	<field name="nomeprocedimento_secundario3" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeprocedimento_secundario3"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
-	<field name="codprocedimento_secundario4" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="codprocedimento_secundario4"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+	<field name="codproc4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="codproc4"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
 	<field name="nomeprocedimento_secundario4" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeprocedimento_secundario4"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
-	<field name="codprocedimento_secundario5" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="codprocedimento_secundario5"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="laudo"/>
+	<field name="codproc5" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="codproc5"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="proc"/>
 	</field>
 	<field name="nomeprocedimento_secundario5" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeprocedimento_secundario5"/>
@@ -259,15 +259,15 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 	<field name="tel_id3" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="tel_id3"/>
 	</field>
-	<field name="tel1" class="java.lang.Integer">
+	<field name="tel1" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="tel1"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
-	<field name="tel2" class="java.lang.Integer">
+	<field name="tel2" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="tel2"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
-	<field name="tel3" class="java.lang.Integer">
+	<field name="tel3" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="tel3"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="telefone_paciente"/>
 	</field>
@@ -807,7 +807,7 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{codprocedimento_primario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{codproc}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="111" y="197" width="451" height="14" uuid="fdd2da39-601b-4439-8c75-187fff81259a"/>
@@ -929,35 +929,35 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{codprocedimento_secundario1}==null?null:1)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{codproc1}==null?null:1)]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="476" y="254" width="92" height="14" uuid="253832fc-12f6-453f-919a-f152c6a5e5fb"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{codprocedimento_secundario2}==null?"":"1")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{codproc2}==null?"":"1")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="476" y="275" width="92" height="14" uuid="b33a5d8a-17d6-4415-89b1-eb393560efa3"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{codprocedimento_secundario3}==null?"":"1")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{codproc3}==null?"":"1")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="476" y="294" width="92" height="14" uuid="83835be4-838a-4864-aea8-46396dd9dcda"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{codprocedimento_secundario4}==null?"":"1")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{codproc4}==null?"":"1")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="476" y="316" width="92" height="14" uuid="44eb7e77-51d6-438d-8249-9abdd75b2eef"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{codprocedimento_secundario5}==null?"":"1")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{codproc5}==null?"":"1")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="2" y="544" width="229" height="14" uuid="8c9e89fb-e68f-4413-8a8a-11a647dc46a0"/>

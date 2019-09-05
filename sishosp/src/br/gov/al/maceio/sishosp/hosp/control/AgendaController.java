@@ -55,6 +55,8 @@ public class AgendaController implements Serializable {
     private String cnsC;
     private Integer protuarioC;
     private AgendaBean rowBean;
+	private String tipoBusca;
+	private String campoBusca;
 
     public AgendaBean getRowBean() {
         return rowBean;
@@ -773,7 +775,7 @@ public class AgendaController implements Serializable {
             return;
         }
         this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC,
-                dataAtendimentoFinalC, agenda.getUnidade().getId(), situacao);
+                dataAtendimentoFinalC, agenda.getUnidade().getId(), situacao, campoBusca, tipoBusca);
     }
 
     public void resetaParametrosConsultaAgenda() {
@@ -1324,5 +1326,21 @@ public class AgendaController implements Serializable {
 
 	public void setListaConfigAgendaMesAtual(List<ConfigAgendaParte1Bean> listaConfigAgendaMesAtual) {
 		this.listaConfigAgendaMesAtual = listaConfigAgendaMesAtual;
+	}
+
+	public String getTipoBusca() {
+		return tipoBusca;
+	}
+
+	public String getCampoBusca() {
+		return campoBusca;
+	}
+
+	public void setTipoBusca(String tipoBusca) {
+		this.tipoBusca = tipoBusca;
+	}
+
+	public void setCampoBusca(String campoBusca) {
+		this.campoBusca = campoBusca;
 	}
 }

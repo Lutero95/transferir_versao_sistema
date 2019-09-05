@@ -26,11 +26,11 @@
 
 					<b:row>
 						<p:outputPanel class="data-size5">
-							<b:column span="2" class="label-position data-size">
+							<b:column span="1" class="label-position data-size">
 								<b:label value="Data da Marcação:" severity="info"  />
 
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									showOn="button" size="15" class="select-agendaEquipe2"
+									showOn="button" size="7" class="select-agendaEquipe2"
 									value="#{AgendaController.dataAtendimentoC}" />
 							</b:column>
 
@@ -41,19 +41,16 @@
 								</p:outputLabel>
 							</b:column>
 
-							<b:column span="2" class="label-position data-size3">
+							<b:column span="1" class="label-position data-size3">
 								<p:calendar pattern="dd/MM/yyyy" mask="true" navigator="true"
-									class="select-agendaEquipe2" showOn="button" size="15"
+									class="select-agendaEquipe2" showOn="button" size="7"
 									id="dtagen3" locale="pt" value="#{AgendaController.dataAtendimentoFinalC}">
 									
 								</p:calendar>
 							</b:column>
 						</p:outputPanel>
-
-					</b:row>
-					<b:row>
-
-                        <p:outputPanel>
+						
+						 <p:outputPanel>
                             <b:column span="2" class="new-data-size3" style="width: 100px !important">
 
                                 <p:outputLabel value="Situação:"
@@ -73,8 +70,31 @@
                             </b:column>
                         </p:outputPanel>
 
-                        <br></br>
+					</b:row>
+					<b:row>
 
+                       
+
+                        <br></br>
+<b:column span="3">
+			
+						<p:panelGrid columns="2">
+
+							<p:selectOneMenu value="#{AgendaController.tipoBusca}"
+								style="margin-top: -13px">
+								<f:selectItem itemLabel="Nome" itemValue="nome" />
+								<f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+								<f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+								<f:selectItem itemLabel="CPF" itemValue="cpf" />
+								<f:selectItem itemLabel="CNS" itemValue="cns" />
+							</p:selectOneMenu>
+
+							<p:inputText value="#{AgendaController.campoBusca}"
+								placeholder="Digite aqui a busca" style="margin-left: 10px;" />
+
+
+						</p:panelGrid>
+						</b:column>
 
                         <b:column span="2" class="col-md-2-new new-span1"
                                   style="margin-bottom:10px;">
@@ -125,7 +145,7 @@
                     </b:row>  
 					
 					<br />
-					
+				
                         <p:dataTable emptyMessage="Nenhum Paciente" responsive="true"
                                      styleClass="table table-hover" id="dtConsultas"
                                      value="#{AgendaController.listaConsulta}" var="agenda"

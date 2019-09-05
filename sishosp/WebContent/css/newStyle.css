@@ -1166,7 +1166,7 @@ table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_des
 }
 
 .data-size {
-	width: 216px;
+	width: 151px;
 }
 
 @media ( min-width :1441px) {
