@@ -425,7 +425,7 @@ public class PacienteDAO {
                 stmt.setNull(18, Types.DATE);
             }
             
-            if (paciente.getReligiao().getId() == null) {
+            if ((paciente.getCpf() == null) || (paciente.getCpf() .equals(""))) {
                 stmt.setNull(19, Types.NULL);
             } else {
             	stmt.setString(19, paciente.getCpf().replaceAll("[^0-9]", ""));
@@ -1077,6 +1077,7 @@ public class PacienteDAO {
                 PacienteBean p = new PacienteBean();
                 p.setId_paciente(rs.getInt("id_paciente"));
                 p.setNome(rs.getString("nome").toUpperCase());
+                p.setMatricula(rs.getString("matricula"));
                 p.setCpf(rs.getString("cpf"));
                 p.setCns(rs.getString("cns"));
 
