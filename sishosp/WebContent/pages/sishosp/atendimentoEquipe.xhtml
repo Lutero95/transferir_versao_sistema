@@ -232,7 +232,7 @@
             </div>
         </div>
 
-        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsultProfi"
+        <p:dialog header="Consultar Profissionais" widgetVar="dlgConsultProfi" dynamic="true"
                   modal="true" width="750px" styleClass="topDialog">
             <h:form id="formConsultProf">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -269,7 +269,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Consultar Procedimentos" widgetVar="dlgConsulProc1"
+        <p:dialog header="Consultar Procedimentos" widgetVar="dlgConsulProc1" dynamic="true"
                   modal="true" width="750px" styleClass="topDialog">
             <h:form id="formConsulProc1">
                 <b:dataTable customLangUrl="#{resource['pt-br.json']}"
@@ -300,7 +300,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Digite a evolução" widgetVar="dlgEvolucao"
+        <p:dialog header="Digite a evolução" widgetVar="dlgEvolucao" dynamic="true"
                   modal="true" width="750px" styleClass="topDialog">
             <h:form id="formEvolucao">
                 <p:editor widgetVar="editor2"
@@ -321,6 +321,7 @@
         </p:dialog>
 
         <p:dialog header="Consultar Evoluções" widgetVar="dlgConsultaEvolucoes" width="850px" height="500px"
+        dynamic="true"
                   styleClass="topDialog">
 
             <h:form id="frmPrincipal">
@@ -361,6 +362,7 @@
         </p:dialog>
 
         <p:dialog header="Consultar PTS" widgetVar="dlgConsultaPTS" width="1100px" height="500px"
+        dynamic="true"
                   styleClass="topDialog">
 
             <h:form id="frmPrincipalPts">
@@ -539,7 +541,7 @@
         </p:dialog>
 
         <p:dialog header="Escolha o laudo" widgetVar="dlgEscolherLaudo" closable="false" draggable="false"
-                  visible="#{AtendimentoController.renderizarDialogLaudo == true}"
+                  visible="#{AtendimentoController.renderizarDialogLaudo == true}" dynamic="true"
                   modal="true" width="750px" styleClass="topDialog">
             <h:form id="formEscolherLaudo">
 

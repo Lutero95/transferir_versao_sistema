@@ -128,17 +128,19 @@ public class AtendimentoController implements Serializable {
     }
 
     private void verificarSeRenderizaDialogDeLaudo() throws ProjetoException {
-        if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getInsercaoPacienteBean().getLaudo().getId()) && atendimento.getAvaliacao()){
+        if(VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getInsercaoPacienteBean().getLaudo().getId()) && (VerificadorUtil.verificarSeObjetoNuloOuZero(atendimento.getAvaliacao()))){
             renderizarDialogLaudo = true;
             listarLaudosVigentesPaciente();
         }
         else{
+        	if (atendimento.getInsercaoPacienteBean().getLaudo().getId()!=null)
             carregarDadosLaudo();
         }
     }
 
     private void carregarDadosLaudo() throws ProjetoException {
-        LaudoDAO laudoDAO = new LaudoDAO();
+
+    	LaudoDAO laudoDAO = new LaudoDAO();
         atendimento.getInsercaoPacienteBean().setLaudo(laudoDAO.listarLaudosVigentesPorId(atendimento.getInsercaoPacienteBean().getLaudo().getId()));
     }
 

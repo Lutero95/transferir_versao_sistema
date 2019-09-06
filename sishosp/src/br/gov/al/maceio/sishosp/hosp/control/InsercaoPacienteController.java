@@ -451,7 +451,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             if (existe == false) {
             	adicionarFuncionarioTurno();
             } else {
-                JSFUtil.fecharDialog("dlgDiasAtendimento");
+                JSFUtil.fecharDialog("dlgDiasAtendimentoTurno");
 
                 JSFUtil.adicionarMensagemSucesso("Esse profissional já foi adicionado!", "Sucesso");
             }
@@ -540,7 +540,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         funcionario.setDiasSemana(dias);
         listaProfissionaisAdicionados.add(funcionario);
 
-        JSFUtil.fecharDialog("dlgDiasAtendimento");
+        JSFUtil.fecharDialog("dlgDiasAtendimentoTurno");
     }
 
     public void gerarListaAgendamentosProfissional() throws ProjetoException {
@@ -771,8 +771,11 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
                 //gerarListaAgendamentosEquipe();
-
-                cadastrou = iDao.gravarInsercaoEquipe(insercao, listaAgendamentosProfissionalFinal, listaLiberacao, listaHorarioFinal);
+            	if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
+                cadastrou = iDao.gravarInsercaoEquipeDiaHorario(insercao, listaAgendamentosProfissionalFinal, listaLiberacao, listaHorarioFinal);
+            	else
+                    cadastrou = iDao.gravarInsercaoEquipeTurno(insercao,
+                            listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal, listaLiberacao);
             }
             if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 
