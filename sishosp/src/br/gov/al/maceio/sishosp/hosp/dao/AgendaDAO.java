@@ -1418,7 +1418,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 		return lista;
 	}
 
-	public List<AgendaBean> consultarAgenda(Date dataAgenda, Date dataAgendaFinal, Integer codEmpresa, String situacao)
+	public List<AgendaBean> consultarAgenda(Date dataAgenda, Date dataAgendaFinal, Integer codEmpresa, String situacao, String campoBusca, String tipo)
 			throws ProjetoException {
 		List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
@@ -1432,6 +1432,23 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 				+ " WHERE a.cod_unidade = ? AND a.dtaatende >= ? AND a.dtaatende <= ?";
 		if (!situacao.equals("T"))
 			sql = sql + " and coalesce(a.presenca,'N')=?";
+		
+		 if(tipo.equals("nome")){
+	            sql = sql + " and p.nome like ?";
+	        }
+	        else if(tipo.equals("cpf")){
+	            sql = sql + " and p.cpf like ?";
+	        }
+	        else if(tipo.equals("cns")){
+	            sql = sql + " and p.cns like ?";
+	        }
+	        else if(tipo.equals("prontuario")){
+	            sql = sql + " and p.id_paciente = ?";
+	        }
+	        else if(tipo.equals("matricula")){
+	            sql = sql + " and p.matricula like ?";
+	        }       
+		 
 		sql = sql + " order by a.dtaatende, p.nome";
 
 		try {
@@ -1442,8 +1459,19 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 			stm.setInt(1, codEmpresa);
 			stm.setDate(2, new java.sql.Date(dataAgenda.getTime()));
 			stm.setDate(3, new java.sql.Date(dataAgendaFinal.getTime()));
-			if (!situacao.equals("T"))
-				stm.setString(4, situacao);
+			int i = 4;
+			if (!situacao.equals("T")) {
+				stm.setString(i, situacao);
+				i = i+1;
+			}
+			
+            if (!campoBusca.equals(null)) {
+                if ((tipo.equals("nome")) || (tipo.equals("cpf")) || (tipo.equals("cns")) || (tipo.equals("matricula")))
+                	stm.setString(4, "%" + campoBusca.toUpperCase() + "%");
+                    else
+                    	stm.setInt(4,Integer.valueOf(campoBusca));
+                i = i+1;
+            }
 
 			ResultSet rs = stm.executeQuery();
 

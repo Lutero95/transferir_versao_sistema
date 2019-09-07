@@ -227,7 +227,8 @@ public class RelatoriosController implements Serializable {
                 relatorio = caminho + "laudovencer.jasper";
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("periodolaudovencer", this.atributoGenerico2);
-            map.put("codusuario", user_session.getUnidade().getId());
+            map.put("codunidade", user_session.getUnidade().getId());
+            map.put("codempresa", user_session.getUnidade().getCodEmpresa());
             if (programa != null)
                 map.put("codprograma", programa.getIdPrograma());
 

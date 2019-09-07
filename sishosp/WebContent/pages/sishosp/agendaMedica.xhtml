@@ -83,7 +83,6 @@
 								</p:autoComplete>
 
 								<p:commandButton id="btBPa" immediate="true"
-									actionListener="#{PacienteController.listarTodosPaciente()}"
 									icon="ui-icon-search" update=":formConsuPac"
 									oncomplete="PF('dlgConsuPac').show();" />
 							</p:outputPanel>
@@ -763,37 +762,66 @@
 					<div class="col-sm-2"></div>
 				</div>
 
+    <p:row>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}" id="dt"
-					var="pacie" value="#{PacienteController.listaPacientesAgenda}"
-					display="Nenhum Paciente">
+                        <p:panelGrid columns="4">
 
-					<h:column>
+                            <p:selectOneMenu value="#{PacienteController.tipoBusca}" style="margin-top: -13px">
+                                <f:selectItem itemLabel="Nome" itemValue="nome" />
+                                <f:selectItem itemLabel="Prontuário" itemValue="prontuario" />
+                                <f:selectItem itemLabel="Matrícula" itemValue="matricula" />
+                                <f:selectItem itemLabel="CPF" itemValue="cpf" />
+                                <f:selectItem itemLabel="CNS" itemValue="cns" />
+                            </p:selectOneMenu>
+
+                            <p:inputText value="#{PacienteController.campoBusca}" placeholder="Digite aqui a busca" style="margin-left: 10px;"/>
+
+                            <p:commandButton action="#{PacienteController.buscarPacientesPorTipo()}" update="tabelapacientes"
+                                             icon="ui-icon-search" style="margin-left: 10px;"/>
+
+                            <p:commandButton action="#{PacienteController.listarPacientes()}" update="tabelapacientes"
+                                             icon="limpar" style="margin-left: 10px;"/>
+
+                        </p:panelGrid>
+
+                    </p:row>
+				<p:dataTable paginator="true"  rows="10"  id="tabelapacientes"
+					var="pacie" value="#{PacienteController.listaPacientes}"
+					emptyMessage="Nenhum Paciente">
+
+					<p:column width="100">
 						<f:facet name="header">
-                            Código
+                            Prontuário
                         </f:facet>
 
 						<p:outputLabel value="#{pacie.id_paciente}" />
-					</h:column>
+					</p:column>
 
-					<h:column>
+					<p:column>
 						<f:facet name="header">
                             Nome
                         </f:facet>
 
 						<p:outputLabel value="#{pacie.nome}" />
-					</h:column>
+					</p:column>
 
-					<h:column>
+					<p:column>
 						<f:facet name="header">
-                            Cpf
+                            Matrícula
                         </f:facet>
-						<p:outputLabel value="#{pacie.cpf}" />
-					</h:column>
+						<p:outputLabel value="#{pacie.matricula}" />
+					</p:column>
 
-					<h:column>
+					<p:column>
 						<f:facet name="header">
-                            Ação
+                            CNS
+                        </f:facet>
+						<p:outputLabel value="#{pacie.cns}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+                            Selecionar
                         </f:facet>
 						<p:commandButton
 							update=":formAgendaMedica:outPa, :formAgendaMedica:btBusPr, :formAgendaMedica:outProg"
@@ -804,10 +832,10 @@
 								target="#{AgendaController.agenda.paciente}" />
 						</p:commandButton>
 
-					</h:column>
+					</p:column>
 
 
-				</b:dataTable>
+				</p:dataTable>
 			</h:form>
 		</p:dialog>
 

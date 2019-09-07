@@ -4,8 +4,8 @@
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="hosp"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Apae_maceio_nuvem"/>
 	<parameter name="periodolaudovencer" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -14,19 +14,21 @@
 	</parameter>
 	<parameter name="codprograma" class="java.lang.Integer"/>
 	<parameter name="codgrupo" class="java.lang.Integer"/>
+	<parameter name="codunidade" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select distinct  empresa.nome_principal nomeinstituicao, matricula,p.id_paciente, p.nome nomepaciente,lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0') vencto, 
 l.codprocedimento_primario codproced, proc.nome nomeprocedimento,
     p.id_paciente
  	from hosp.paciente_instituicao pl
-    join hosp.pacientes p on p.id_paciente = pl.codpaciente
-     left join hosp.laudo l on l.id_laudo = pl.codlaudo
+      join hosp.laudo l on l.id_laudo = pl.codlaudo
+     join hosp.pacientes p on p.id_paciente = l.codpaciente     
     left join hosp.proc on proc.id = l.codprocedimento_primario
-	 join hosp.empresa on empresa.cod_empresa =  1
-    where 1=1
+	 join hosp.empresa on empresa.cod_empresa = $P{codempresa} 
+    where l.cod_unidade=$P{codunidade} 
     and ((   $P{codprograma}   is not null and pl.codprograma=  $P{codprograma}) or (( $P{codprograma} =0 ) OR ( $P{codprograma} is null )))
 and ((   $P{codgrupo}   is not null and pl.codgrupo=  $P{codgrupo}) or (( $P{codgrupo} =0 ) OR ( $P{codgrupo} is null )))
-and lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0')= $P{periodolaudovencer}  and pl.status='A']]>
+and lpad( trim(cast (mes_final as varchar(2))),2,'0')||'/'||lpad( trim(cast (ano_final as varchar(4))),4,'0')= $P{periodolaudovencer}  and pl.status='A'
+order by p.nome]]>
 	</queryString>
 	<field name="nomeinstituicao" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="nomeinstituicao"/>
