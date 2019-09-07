@@ -24,6 +24,7 @@ import br.gov.al.maceio.sishosp.hosp.dao.EmpresaDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.EquipeDAO;
 import br.gov.al.maceio.sishosp.hosp.dao.InsercaoPacienteDAO;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
+import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.EquipeBean;
@@ -39,6 +40,7 @@ public class AlteracaoPacienteController implements Serializable {
     private InsercaoPacienteBean insercao;
     private InsercaoPacienteBean insercaoParaLaudo;
     private String tipo;
+    private List<Integer> listaDias;
     private InsercaoPacienteDAO iDao;
     private ArrayList<FuncionarioBean> listaProfissionaisAdicionados;
     private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
@@ -105,18 +107,21 @@ public class AlteracaoPacienteController implements Serializable {
 
     }
 
-    public void gerarListaAgendamentosEquipe() throws ProjetoException {
+    public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
+    	System.out.println("insercao gerarListaAgendamentosEquipe");
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
-        Date d1 = insercao.getDataSolicitacao();
+        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
+        Date d1 = periodoInicial;
         Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         Long dt = (d2.getTime() - d1.getTime());
 
         dt = (dt / 86400000L);
 
         Calendar c = Calendar.getInstance();
-        c.setTime(insercao.getDataSolicitacao());
+        c.setTime(periodoInicial);
 
         for (int i = 0; i <= dt; i++) {
 
@@ -152,6 +157,54 @@ public class AlteracaoPacienteController implements Serializable {
             }
 
         }
+
+    }
+
+    public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException {
+
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        df.setLenient(false);
+        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
+        Date d1 = periodoInicial;
+        Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
+        Long dt = (d2.getTime() - d1.getTime());
+
+        dt = (dt / 86400000L);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(periodoInicial);
+
+        for (int i = 0; i <= dt; i++) {
+
+            if (i > 0) {
+                c.add(Calendar.DAY_OF_MONTH, 1);
+            }
+
+            int diaSemana = c.get(Calendar.DAY_OF_WEEK);
+            ArrayList<Date> listaDatasDeAtendimento = new ArrayList<Date>();
+            if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
+                for (int h = 0; h < listaDias.size(); h++) {
+                    if (!listaDatasDeAtendimento.contains(c.getTime())) {
+                        if (diaSemana == listaDias.get(h)) {
+
+                            InsercaoPacienteBean ins = new InsercaoPacienteBean();
+
+                            ins.getAgenda().setPaciente(
+                                    insercao.getLaudo().getPaciente());
+
+                            ins.getAgenda().setDataMarcacao(c.getTime());
+
+                            listAgendamentoProfissional.add(ins);
+                            listaDatasDeAtendimento.add(c.getTime());
+
+                        }
+                    }
+                }
+            }
+
+        }
+
 
     }
 
@@ -239,10 +292,22 @@ public class AlteracaoPacienteController implements Serializable {
 
         if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
-            gerarListaAgendamentosEquipe();
+            if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())){
+            	gerarListaAgendamentosEquipeTurno();	
+            }
+            
+            if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
+            	gerarListaAgendamentosEquipeDiaHorario();
+            }
+            
+            if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
+            	cadastrou = aDao.gravarAlteracaoEquipeDiaHorario(insercao, insercaoParaLaudo,
+                        listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
+            	else
+                    cadastrou = aDao.gravarAlteracaoEquipeTurno(insercao, insercaoParaLaudo,
+                            listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
 
-            cadastrou = aDao.gravarAlteracaoEquipe(insercao, insercaoParaLaudo,
-                    listaAgendamentosProfissionalFinal, id_paciente_insituicao, listaProfissionaisAdicionados);
+
         }
         if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 

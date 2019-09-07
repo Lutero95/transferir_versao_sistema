@@ -18,14 +18,12 @@ public class UnidadeBean extends EmpresaBean{
     private Date horarioInicial;
     private Date horarioFinal;
     private Integer intervalo;
-    private TipoAtendimentoBean tipoAtendimento;
     private OrteseProtese orteseProtese;
     private ParametroBean parametro;
     private EmpresaBean empresa;
 
 
     public UnidadeBean() {
-         tipoAtendimento = new TipoAtendimentoBean();
         orteseProtese = new OrteseProtese();
         parametro = new ParametroBean();
         empresa = new EmpresaBean();
@@ -90,9 +88,7 @@ public class UnidadeBean extends EmpresaBean{
 		return intervalo;
 	}
 
-	public TipoAtendimentoBean getTipoAtendimento() {
-		return tipoAtendimento;
-	}
+
 
 	public OrteseProtese getOrteseProtese() {
 		return orteseProtese;
@@ -126,9 +122,6 @@ public class UnidadeBean extends EmpresaBean{
 		this.intervalo = intervalo;
 	}
 
-	public void setTipoAtendimento(TipoAtendimentoBean tipoAtendimento) {
-		this.tipoAtendimento = tipoAtendimento;
-	}
 
 	public void setOrteseProtese(OrteseProtese orteseProtese) {
 		this.orteseProtese = orteseProtese;

@@ -162,7 +162,7 @@ public class GerenciarPacienteController implements Serializable {
         LaudoBean laudoBean = laudoDAO.recuperarPeriodosLaudo(codLaudo);
         Date dataInicioLaudo = DataUtil.montarDataCompleta(1, laudoBean.getMesInicio(), laudoBean.getAnoInicio());
 
-        if(dataSolicitacao.after(dataInicioLaudo) || dataSolicitacao.equals(dataInicioLaudo)){
+        if((dataSolicitacao.after(dataInicioLaudo))) {// || (dataSolicitacao.equals(dataInicioLaudo))){
             return dataSolicitacao;
         }
         else{

@@ -30,7 +30,7 @@ public final class VerificadorUtil {
     public static Boolean verificarSeObjetoNuloOuZero(Object object) {
         Boolean retorno = true;
 
-        if((object == null) || (object != null && !object.equals(0))){
+        if((object != null) && (object != null && !object.equals(0))){
             retorno = false;
         }
 

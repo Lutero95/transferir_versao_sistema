@@ -236,6 +236,7 @@ public class InsercaoPacienteDAO {
 				ps3.setLong(12, insercao.getPrograma().getIdPrograma());
 
 				ps3.setLong(13, insercao.getGrupo().getIdGrupo());
+				
 
 				rs = ps3.executeQuery();
 

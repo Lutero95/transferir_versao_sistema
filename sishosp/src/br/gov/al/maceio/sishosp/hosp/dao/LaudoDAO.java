@@ -265,7 +265,7 @@ public class LaudoDAO {
 
 			stmt.setString(18, laudo.getSituacao().toUpperCase());
 
-			if (laudo.getSituacao() == null) {
+			if (laudo.getDataAutorizacao() == null) {
 				stmt.setNull(19, Types.NULL);
 			} else {
 				stmt.setDate(19, DataUtil.converterDateUtilParaDateSql(laudo.getDataAutorizacao()));
@@ -500,7 +500,7 @@ public class LaudoDAO {
 				// current_date <= (SELECT * FROM
 				// hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01',
 				// 'YYYY-MM-DD'))) "
-				+ " AND l.codpaciente = ?  AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo)"
+				+ " AND l.codpaciente = ?  "//AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac WHERE pac.codlaudo = l.id_laudo)"
 				+ " ) a";
 		try {
 			conexao = ConnectionFactory.getConnection();

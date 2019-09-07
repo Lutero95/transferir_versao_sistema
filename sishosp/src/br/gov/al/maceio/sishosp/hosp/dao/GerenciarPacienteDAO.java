@@ -28,8 +28,9 @@ public class GerenciarPacienteDAO {
     public List<GerenciarPacienteBean> carregarPacientesInstituicaoBusca(
             GerenciarPacienteBean gerenciar, String campoBusca, String tipoBusca) throws ProjetoException {
 
-        String sql = "select p.id, p.codprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, l.codpaciente, pa.nome, pa.matricula, pa.cns, p.codequipe, e.descequipe, "
-                + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, pr.codproc , pr.nome as procedimento "
+        String sql = "select p.id, p.codprograma,prog.descprograma, p.codgrupo, g.descgrupo,coalesce(g.qtdfrequencia,0) qtdfrequencia, l.codpaciente, pa.nome, pa.matricula, pa.cns, p.codequipe, e.descequipe, "
+                + " p.codprofissional, f.descfuncionario, p.status, p.codlaudo, p.data_solicitacao, p.observacao, p.data_cadastro, pr.utiliza_equipamento, pr.codproc , pr.nome as procedimento, "
+                + "(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal "
                 + " from hosp.paciente_instituicao p "
                 + " left join hosp.laudo l on (l.id_laudo = p.codlaudo) "
                 + " left join hosp.proc pr on (l.codprocedimento_primario = pr.id) "
@@ -37,6 +38,7 @@ public class GerenciarPacienteDAO {
                 + " left join hosp.equipe e on (p.codequipe = e.id_equipe) "
                 + " left join acl.funcionarios f on (p.codprofissional = f.id_funcionario) "
                 + " left join hosp.grupo g on (g.id_grupo = p.codgrupo) "
+                + " left join hosp.programa prog on (prog.id_programa = p.codprograma) "
                 + " where 1=1";
                         if ((gerenciar.getPrograma()!=null) && (gerenciar.getPrograma().getIdPrograma()!=null)) {
                         	sql = sql + " and  p.codprograma = ?";
@@ -107,6 +109,7 @@ public class GerenciarPacienteDAO {
 
                 gp.setId(rs.getInt("id"));
                 gp.getPrograma().setIdPrograma(rs.getInt("codprograma"));
+                gp.getPrograma().setDescPrograma(rs.getString("descprograma"));
                 gp.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
                 gp.getGrupo().setDescGrupo(rs.getString("descgrupo"));
                 gp.getGrupo().setQtdFrequencia(rs.getInt("qtdfrequencia"));
@@ -121,7 +124,7 @@ public class GerenciarPacienteDAO {
                 gp.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
                 gp.getLaudo().getPaciente().setNome(rs.getString("nome"));
                 gp.getLaudo().getPaciente().setCns(rs.getString("cns"));
-                gp.getLaudo().getPaciente().setMatricula(rs.getString("matricula"));
+                gp.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
                 gp.setData_solicitacao(rs.getDate("data_solicitacao"));
                 gp.setObservacao(rs.getString("observacao"));
                 gp.setData_cadastro(rs.getDate("data_cadastro"));

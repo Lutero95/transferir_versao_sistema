@@ -192,7 +192,7 @@ public final class DataUtil {
     public static Date montarDataCompleta(Integer dia, Integer mes, Integer ano){
 
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, ajustarAno(ano));
+        cal.set(Calendar.YEAR, (ano));
         cal.set(Calendar.MONTH, ajustarMes(mes));
         cal.set(Calendar.DAY_OF_MONTH, dia);
         Date data = cal.getTime();

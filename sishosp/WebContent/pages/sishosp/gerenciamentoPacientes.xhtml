@@ -25,7 +25,7 @@
 							<b:label value="Programa" severity="info" />
 
 							<p:outputPanel id="outProg">
-								<p:autoComplete required="true"
+								<p:autoComplete required="false"
 									requiredMessage="Escolha um programa!"
 									readonly="#{GerenciarPacienteController.apenasLeitura}"
 									value="#{GerenciarPacienteController.gerenciarpaciente.programa}"
@@ -53,7 +53,7 @@
 							<b:label value="Grupo" severity="info" />
 
 							<p:outputPanel id="outGrupo">
-								<p:autoComplete required="true"
+								<p:autoComplete required="false"
 									requiredMessage="Escolha um grupo!"
 									value="#{GerenciarPacienteController.gerenciarpaciente.grupo}"
 									size="31" converter="conGrupo" class="select-agendaEquipe4"
@@ -72,7 +72,8 @@
 									icon="ui-icon-search" process="@this"
 									action="#{GerenciarPacienteController.carregaGruposDoPrograma()}"
 									disabled="#{GerenciarPacienteController.gerenciarpaciente.programa==null}"
-									update=":formConsuGrop	" oncomplete="PF('dlgConsuGrop').show();" />
+									update=":formConsuGrop	"
+									oncomplete="PF('dlgConsuGrop').show();" />
 							</p:outputPanel>
 						</b:column>
 
@@ -251,6 +252,13 @@
 
 						<p:column width="15%">
 							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Programa" />
+							</f:facet>
+							<h:outputText value="#{pacie.programa.descPrograma}"></h:outputText>
+						</p:column>
+
+						<p:column width="15%">
+							<f:facet name="header">
 								<h:outputText style="font-size: 14px;" value="Grupo" />
 							</f:facet>
 							<h:outputText value="#{pacie.grupo.descGrupo}"></h:outputText>
@@ -268,6 +276,15 @@
 								<h:outputText style="font-size: 14px;" value="Profissional" />
 							</f:facet>
 							<h:outputText value="#{pacie.funcionario.nome}"></h:outputText>
+						</p:column>
+
+						<p:column width="20%">
+							<f:facet name="header">
+								<h:outputText style="font-size: 14px;" value="Vigência Final" />
+							</f:facet>
+							<h:outputText value="#{pacie.laudo.vigenciaFinal}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
 						</p:column>
 
 						<p:column width="8%">
@@ -328,10 +345,11 @@
 			</div>
 		</div>
 
-		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg" responsive="true"
-			modal="true" dynamic="true" styleClass="topDialog">
+		<p:dialog header="Consultar Programas" widgetVar="dlgConsuProg"
+			responsive="true" modal="true" dynamic="true" styleClass="topDialog">
 			<h:form id="formConsuProg">
-				<p:dataTable paginator="true" rows="5" style="width:450px !important"
+				<p:dataTable paginator="true" rows="5"
+					style="width:450px !important"
 					value="#{ProgramaController.listaProgramas}" var="prog"
 					emptyMessage="Nenhum Programa">
 
@@ -360,15 +378,14 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop" dynamic="true" styleClass="topDialog"
-		responsive="true"
-			modal="true">
+		<p:dialog header="Consultar Grupos" widgetVar="dlgConsuGrop"
+			dynamic="true" styleClass="topDialog" responsive="true" modal="true">
 			<h:form id="formConsuGrop">
-			<p:dataTable paginator="true" rows="5" style="width:450px !important"
-			paginatorPosition="bottom"
+				<p:dataTable paginator="true" rows="5"
+					style="width:450px !important" paginatorPosition="bottom"
 					value="#{GerenciarPacienteController.listaGrupos}" id="dtGrupo"
 					var="grupo" emptyMessage="Nenhum Grupo">
-					
+
 
 
 					<p:column filterBy="#{grupo.descGrupo}" filterMatchMode="contains">
@@ -397,8 +414,9 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Desligar Paciente" widgetVar="dlgDeslPac" dynamic="true" styleClass="topDialog"
-			width="400" height="auto" modal="true" responsive="true">
+		<p:dialog header="Desligar Paciente" widgetVar="dlgDeslPac"
+			dynamic="true" styleClass="topDialog" width="400" height="auto"
+			modal="true" responsive="true">
 
 			<h:form id="formDeslPac">
 				<p:growl id="grwdesligamento" />

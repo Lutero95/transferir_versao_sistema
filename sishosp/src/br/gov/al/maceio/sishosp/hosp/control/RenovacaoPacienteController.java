@@ -16,10 +16,12 @@ import br.gov.al.maceio.sishosp.comum.util.DataUtil;
 import br.gov.al.maceio.sishosp.comum.util.JSFUtil;
 import br.gov.al.maceio.sishosp.hosp.dao.*;
 import br.gov.al.maceio.sishosp.hosp.enums.DiasDaSemana;
+import br.gov.al.maceio.sishosp.hosp.enums.OpcaoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.enums.RetornoLaudoRenovacao;
 import br.gov.al.maceio.sishosp.hosp.enums.TipoAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.AgendaBean;
 import br.gov.al.maceio.sishosp.hosp.model.GerenciarPacienteBean;
+import br.gov.al.maceio.sishosp.hosp.model.HorarioAtendimento;
 import br.gov.al.maceio.sishosp.hosp.model.InsercaoPacienteBean;
 import br.gov.al.maceio.sishosp.hosp.model.LaudoBean;
 
@@ -33,6 +35,7 @@ public class RenovacaoPacienteController implements Serializable {
     private InsercaoPacienteBean insercaoParaLaudo;
     private String tipo;
     private InsercaoPacienteDAO iDao;
+    private List<HorarioAtendimento> listaHorarioFinal = new ArrayList<>();
     private ArrayList<GerenciarPacienteBean> listaDiasProfissional;
     private ArrayList<InsercaoPacienteBean> listaLaudosVigentes;
     private ArrayList<InsercaoPacienteBean> listAgendamentoProfissional;
@@ -40,6 +43,7 @@ public class RenovacaoPacienteController implements Serializable {
     private ArrayList<FuncionarioBean> listaProfissionaisAdicionados;
     private Integer id_paciente_insituicao;
     private String opcaoAtendimento;
+    private List<Integer> listaDias;
     private EmpresaDAO empresaDAO = new EmpresaDAO();
     private AgendaDAO agendaDAO = new AgendaDAO();
     private AlteracaoPacienteDAO aDao = new AlteracaoPacienteDAO();
@@ -101,19 +105,22 @@ public class RenovacaoPacienteController implements Serializable {
         }
 
     }
-
-    public void gerarListaAgendamentosEquipe() throws ProjetoException {
+    
+    public void gerarListaAgendamentosEquipeTurno() throws ProjetoException {
+    	System.out.println("insercao gerarListaAgendamentosEquipe");
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
-        Date d1 = insercao.getDataSolicitacao();
+        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId());
+        Date d1 = periodoInicial;
         Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
         Long dt = (d2.getTime() - d1.getTime());
 
         dt = (dt / 86400000L);
 
         Calendar c = Calendar.getInstance();
-        c.setTime(insercao.getDataSolicitacao());
+        c.setTime(periodoInicial);
 
         for (int i = 0; i <= dt; i++) {
 
@@ -122,25 +129,27 @@ public class RenovacaoPacienteController implements Serializable {
             }
 
             int diaSemana = c.get(Calendar.DAY_OF_WEEK);
-
+            ArrayList<Date> listaDatasDeAtendimento = new ArrayList<Date>();
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
-                for (int j = 0; j < listaDiasProfissional.size(); j++) {
+                for (int j = 0; j < listaProfissionaisAdicionados.size(); j++) {
+                    for (int h = 0; h < listaProfissionaisAdicionados.get(j).getListDiasSemana().size(); h++) {
+                        if (!listaDatasDeAtendimento.contains(c.getTime())) {
+                            if (diaSemana == Integer.parseInt(listaProfissionaisAdicionados.get(j).getListDiasSemana().get(h))) {
 
-                    if (diaSemana == listaDiasProfissional.get(j)
-                            .getFuncionario().getDiaSemana()) {
+                                InsercaoPacienteBean ins = new InsercaoPacienteBean();
 
-                        InsercaoPacienteBean ins = new InsercaoPacienteBean();
+                                ins.getAgenda().setPaciente(
+                                        insercao.getLaudo().getPaciente());
 
-                        ins.getAgenda().setPaciente(
-                                insercao.getLaudo().getPaciente());
+                                ins.getAgenda().setDataMarcacao(c.getTime());
 
-                        ins.getAgenda().setDataMarcacao(c.getTime());
+                                ins.getAgenda().setProfissional(listaProfissionaisAdicionados.get(j));
 
-                        ins.getAgenda().setProfissional(
-                                listaDiasProfissional.get(j).getFuncionario());
+                                listAgendamentoProfissional.add(ins);
+                                listaDatasDeAtendimento.add(c.getTime());
 
-                        listAgendamentoProfissional.add(ins);
-
+                            }
+                        }
                     }
                 }
 
@@ -149,6 +158,57 @@ public class RenovacaoPacienteController implements Serializable {
         }
 
     }
+
+    public void gerarListaAgendamentosEquipeDiaHorario() throws ProjetoException {
+
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        df.setLenient(false);
+        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId());
+        Date d1 = periodoInicial;
+        Date d2 = iDao.dataFinalLaudo(insercaoParaLaudo.getLaudo().getId());
+        Long dt = (d2.getTime() - d1.getTime());
+
+        dt = (dt / 86400000L);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(periodoInicial);
+
+        for (int i = 0; i <= dt; i++) {
+
+            if (i > 0) {
+                c.add(Calendar.DAY_OF_MONTH, 1);
+            }
+
+            int diaSemana = c.get(Calendar.DAY_OF_WEEK);
+            ArrayList<Date> listaDatasDeAtendimento = new ArrayList<Date>();
+            if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
+                for (int h = 0; h < listaDias.size(); h++) {
+                    if (!listaDatasDeAtendimento.contains(c.getTime())) {
+                        if (diaSemana == listaDias.get(h)) {
+
+                            InsercaoPacienteBean ins = new InsercaoPacienteBean();
+
+                            ins.getAgenda().setPaciente(
+                                    insercao.getLaudo().getPaciente());
+
+                            ins.getAgenda().setDataMarcacao(c.getTime());
+
+                            listAgendamentoProfissional.add(ins);
+                            listaDatasDeAtendimento.add(c.getTime());
+
+                        }
+                    }
+                }
+            }
+
+        }
+
+
+    }
+    
+
+
 
     public void gerarListaAgendamentosProfissional() throws ProjetoException {
 
@@ -277,17 +337,27 @@ public class RenovacaoPacienteController implements Serializable {
             Boolean cadastrou = null;
 
             GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
-            Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
+            Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercaoParaLaudo.getLaudo().getId());
             insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 
             ArrayList<InsercaoPacienteBean> listaAgendamentosProfissionalFinal = insercaoPacienteController.validarDatas(listAgendamentoProfissional, insercao.getAgenda().getTurno());
 
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
 
-                gerarListaAgendamentosEquipe();
+                if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())){
+                	gerarListaAgendamentosEquipeTurno();	
+                }
+                
+                if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla())) {
+                	gerarListaAgendamentosEquipeDiaHorario();
+                }
 
-                cadastrou = rDao.gravarRenovacaoEquipe(insercao, insercaoParaLaudo,
-                        listaAgendamentosProfissionalFinal, listaProfissionaisAdicionados);
+            	if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_HORARIO.getSigla()))
+                    cadastrou = rDao.gravarRenovacaoEquipeDiaHorario(insercao,insercaoParaLaudo, listaAgendamentosProfissionalFinal,  listaHorarioFinal);
+                	else
+                        cadastrou = rDao.gravarRenovacaoEquipeTurno(insercao,insercaoParaLaudo,
+                                listaProfissionaisAdicionados, listaAgendamentosProfissionalFinal);
+                
             }
             if (tipo.equals(TipoAtendimento.PROFISSIONAL.getSigla())) {
 

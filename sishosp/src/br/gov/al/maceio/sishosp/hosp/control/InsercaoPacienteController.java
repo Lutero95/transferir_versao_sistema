@@ -594,14 +594,16 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
-        Date d1 = insercao.getDataSolicitacao();
+        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
+        Date d1 = periodoInicial;
         Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         Long dt = (d2.getTime() - d1.getTime());
 
         dt = (dt / 86400000L);
 
         Calendar c = Calendar.getInstance();
-        c.setTime(insercao.getDataSolicitacao());
+        c.setTime(periodoInicial);
 
         for (int i = 0; i <= dt; i++) {
 
@@ -644,14 +646,16 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         df.setLenient(false);
-        Date d1 = insercao.getDataSolicitacao();
+        GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
+        Date periodoInicial = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
+        Date d1 = periodoInicial;
         Date d2 = iDao.dataFinalLaudo(insercao.getLaudo().getId());
         Long dt = (d2.getTime() - d1.getTime());
 
         dt = (dt / 86400000L);
 
         Calendar c = Calendar.getInstance();
-        c.setTime(insercao.getDataSolicitacao());
+        c.setTime(periodoInicial);
 
         for (int i = 0; i <= dt; i++) {
 
@@ -686,11 +690,12 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     }
 
+
     public void validarInsercaoPaciente() throws ProjetoException {
     	System.out.println("insercao validarInsercaoPaciente");
         GerenciarPacienteController gerenciarPacienteController = new GerenciarPacienteController();
         Date dataSolicitacaoCorreta = gerenciarPacienteController.ajustarDataDeSolicitacao(insercao.getDataSolicitacao(), insercao.getLaudo().getId());
-        insercao.setDataSolicitacao(dataSolicitacaoCorreta);
+     //   insercao.setDataSolicitacao(dataSolicitacaoCorreta);
 
         if (insercao.getEncaixe()) {
             gravarInsercaoPaciente();
