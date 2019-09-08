@@ -24,7 +24,7 @@ public class TransferenciaPacienteDAO {
 
 	public InsercaoPacienteBean carregarPacientesInstituicaoAlteracao(Integer id) throws ProjetoException {
 
-		String sql = "select pi.id, pi.codprograma, p.descprograma, pi.codgrupo, g.descgrupo, pi.codpaciente, pi.codequipe, e.descequipe, a.turno, a.situacao, "
+		String sql = "select pi.id, pi.codprograma, p.descprograma, pi.codgrupo, g.descgrupo,  pi.codequipe, e.descequipe, a.turno, a.situacao, "
 				+ " pi.codprofissional, f.descfuncionario, pi.observacao, a.codtipoatendimento, t.desctipoatendimento, pi.codlaudo, pi.data_solicitacao "
 				+ " from hosp.paciente_instituicao pi "
 				+ " left join hosp.programa p on (p.id_programa = pi.codprograma) "
@@ -52,7 +52,6 @@ public class TransferenciaPacienteDAO {
 				ip.getPrograma().setDescPrograma(rs.getString("descprograma"));
 				ip.getGrupo().setIdGrupo(rs.getInt("codgrupo"));
 				ip.getGrupo().setDescGrupo(rs.getString("descgrupo"));
-				ip.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				// ip.getEquipe().setCodEquipe(rs.getInt("codequipe"));
 				// ip.getEquipe().setDescEquipe(rs.getString("descequipe"));
 				ip.getFuncionario().setId(rs.getLong("codprofissional"));
@@ -79,6 +78,65 @@ public class TransferenciaPacienteDAO {
 		return ip;
 	}
 
+    public Boolean apagarAtendimentosNaRenovacao(Integer idPacienteInstituicao,java.util.Date dataTransferencia, Connection conAuxiliar) {
+
+        Boolean retorno = false;
+        ArrayList<Integer> lista = new ArrayList<Integer>();
+
+        try {
+
+            String sql = "SELECT DISTINCT a1.id_atendimento FROM hosp.atendimentos1 a1 " +
+                    "LEFT JOIN hosp.atendimentos a ON (a.id_atendimento = a1.id_atendimento) " +
+                    "WHERE a.id_paciente_instituicao = ? AND a.dtaatende >= ? AND  " +
+                    "(SELECT count(*) FROM hosp.atendimentos1 aa1 WHERE aa1.id_atendimento = a1.id_atendimento) = " +
+                    "(SELECT count(*) FROM hosp.atendimentos1 aaa1 WHERE aaa1.id_atendimento = a1.id_atendimento AND situacao IS NULL) " +
+                    "ORDER BY a1.id_atendimento;";
+
+
+            ps = null;
+            ps = conAuxiliar.prepareStatement(sql);
+            ps.setLong(1, idPacienteInstituicao);
+            ps.setDate(2, new java.sql.Date(dataTransferencia.getTime()));
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                lista.add(rs.getInt("id_atendimento"));
+            }
+
+            for (int i = 0; i < lista.size(); i++) {
+                String sql2 = "delete from hosp.atendimentos1 where id_atendimento = ?";
+
+                PreparedStatement ps2 = null;
+                ps2 = conAuxiliar.prepareStatement(sql2);
+                ps2.setLong(1, lista.get(i));
+                ps2.execute();
+            }
+
+            for (int i = 0; i < lista.size(); i++) {
+                String sql3 = "delete from hosp.atendimentos where id_atendimento = ?";
+
+                PreparedStatement ps3 = null;
+                ps3 = conAuxiliar.prepareStatement(sql3);
+                ps3.setLong(1, lista.get(i));
+                ps3.execute();
+            }
+
+            retorno = true;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return retorno;
+    }
+	
+	
 	public boolean gravarTransferenciaEquipeDiaHorario(InsercaoPacienteBean insercao, InsercaoPacienteBean insercaoParaLaudo,
 			List<InsercaoPacienteBean> listaAgendamento, Integer id_paciente,
 			List<HorarioAtendimento> listaHorarioFinal) throws ProjetoException {
@@ -352,18 +410,17 @@ public class TransferenciaPacienteDAO {
 
 			ps6.executeUpdate();
 
-			String sql7 = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codpaciente, codequipe, status, codlaudo, observacao, cod_unidade) "
-					+ " values (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
+			String sql7 = "insert into hosp.paciente_instituicao (codprograma, codgrupo,  codequipe, status, codlaudo, observacao, cod_unidade) "
+					+ " values (?, ?, ?, ?,  ?, ?, ?) RETURNING id;";
 
 			ps = conexao.prepareStatement(sql7);
 			ps.setInt(1, insercao.getPrograma().getIdPrograma());
 			ps.setInt(2, insercao.getGrupo().getIdGrupo());
-			ps.setInt(3, insercao.getLaudo().getPaciente().getId_paciente());
-			ps.setInt(4, insercao.getEquipe().getCodEquipe());
-			ps.setString(5, "A");
-			ps.setInt(6, insercao.getLaudo().getId());
-			ps.setString(7, insercao.getObservacao());
-			ps.setInt(8, user_session.getUnidade().getId());
+			ps.setInt(3, insercao.getEquipe().getCodEquipe());
+			ps.setString(4, "A");
+			ps.setInt(5, insercao.getLaudo().getId());
+			ps.setString(6, insercao.getObservacao());
+			ps.setInt(7, user_session.getUnidade().getId());
 
 			rs = ps.executeQuery();
 			int idPacienteInstituicaoNovo = 0;
