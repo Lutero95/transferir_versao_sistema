@@ -9,10 +9,8 @@
     <ui:define name="content">
 
         <f:metadata>
-        
-                                <f:event
-                                listener="#{AlteracaoPacienteController.carregaAlteracao()}"
-                                type="preRenderView"/>
+            <f:viewAction
+                    action="#{AlteracaoPacienteController.carregaAlteracao()}"/>
         </f:metadata>
 
         <div class="panel panel-primary top-primary">
@@ -288,7 +286,7 @@
                             <b:column span="5" style="margin-bottom:15px;">
                                 <p:dataTable id="dtEquipe" resizableColumns="true"
                                              rendered="#{AlteracaoPacienteController.tipo == 'E'}"
-                                             responsive="true" 
+                                             responsive="true"
                                              value="#{AlteracaoPacienteController.listaProfissionaisEquipe}"
                                              var="func" emptyMessage="Sem registros.">
 
@@ -446,7 +444,7 @@
                 <div align="center">
                     <b:commandButton value="Adicionar" style="margin-top:5px;"
                                      class="btn-acao-table acao-confirmar"
-                                     update=":formInsercao2:dtAdicionados, :formInsercao2:msgPagina"
+                                     update=":formInsercao2:dtAdicionados, :msgPagina"
                                      id="b2" icon="glyphicon-ok"
                                      action="#{AlteracaoPacienteController.validarAdicionarFuncionario()}"/>
                 </div>
