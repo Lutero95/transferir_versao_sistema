@@ -116,7 +116,7 @@ public final class DataUtil {
         mes = mes - 1;
 
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, ajustarAno(ano));
+        cal.set(Calendar.YEAR, ano);
         cal.set(Calendar.MONTH, ajustarMes(mes));
 
         if(!ultimoDiaDoMes){
@@ -198,10 +198,6 @@ public final class DataUtil {
         Date data = cal.getTime();
 
         return data;
-    }
-
-    private static Integer ajustarAno(Integer ano){
-        return ano - 1900;
     }
 
     private static Integer ajustarMes(Integer mes){
