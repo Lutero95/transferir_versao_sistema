@@ -1393,7 +1393,7 @@ public class TituloPagarDao {
 				bean.setMulta(set.getDouble("vlrmulta"));
 				bean.setDesconto(set.getDouble("vlrdesc"));
 				bean.setTipoBaixaString(set.getString("tpbaixa"));
-				bean.getFunc().setCodigo(set.getInt("opcad"));
+				bean.getFunc().setId(set.getLong("opcad"));
 				bean.setVlrAtual(set.getDouble("valoratual"));
 				bean.setValorBaixado(set.getDouble("valorpago"));
 				banco.setBanco(set.getString("banco"));

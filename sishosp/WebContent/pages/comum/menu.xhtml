@@ -16,7 +16,7 @@
         <p:panelGrid columns="1" style="border:none !important;">
             <p:outputLabel class="user-index"
                            value="Perfil: #{MBFuncionarios.usuarioLogado.perfil.descricao}"
-                           rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
+                           rendered="#{MBFuncionarios.usuarioLogado.id != null}"
                            style="cursor: default !important;margin-top: 10px"/>
             <p:commandButton value="Alterar Senha" icon="ui-icon-key" action="#{MBFuncionarios.abrirDialogAlterarSenha()}"
                              style="margin-top: 10px"/>

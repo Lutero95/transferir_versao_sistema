@@ -308,7 +308,7 @@ public class PtsDAO {
 
             ps = conexao.prepareStatement(sql1);
             ps.setDate(1, DataUtil.converterDateUtilParaDateSql(pts.getData()));
-            ps.setInt(2, user_session.getCodigo());
+            ps.setLong(2, user_session.getId());
             ps.setDate(3, DataUtil.converterDateUtilParaDateSql(DataUtil.adicionarDiasAData(pts.getData(), SEIS_MESES_VENCIMENTO)));
             ps.setInt(4, pts.getPrograma().getIdPrograma());
             ps.setInt(5, pts.getGrupo().getIdGrupo());

@@ -44,6 +44,7 @@ public class LaudoController implements Serializable {
     private static final String ENDERECO_ID = "&amp;id=";
     private static final String CABECALHO_INCLUSAO = "Inclusão de Laudo";
     private static final String CABECALHO_ALTERACAO = "Alteração de Laudo";
+    private static final String CABECALHO_RENOVACAO = "Renovação de Laudo";
 
     public LaudoController() {
         this.laudo = new LaudoBean();
@@ -68,7 +69,12 @@ public class LaudoController implements Serializable {
         if ((params.get("id") != null)) {
             Integer id = Integer.parseInt(params.get("id"));
             tipo = Integer.parseInt(params.get("tipo"));
+            if (tipo==2)
             this.laudo = lDao.buscarLaudosPorId(id);
+            if (tipo==3) {
+            this.laudo = lDao.carregaLaudoParaRenovacao(id);
+            calcularPeriodoLaudo();
+            }
             
             renderizarDadosDeAutorizacao();
 
@@ -189,6 +195,9 @@ public class LaudoController implements Serializable {
             cabecalho = CABECALHO_INCLUSAO;
         } else if (this.tipo.equals(TipoCabecalho.ALTERACAO.getSigla())) {
             cabecalho = CABECALHO_ALTERACAO;
+        }
+        else if (this.tipo.equals(TipoCabecalho.RENOVACAO.getSigla())) {
+            cabecalho = CABECALHO_RENOVACAO;
         }
         return cabecalho;
     }

@@ -250,7 +250,7 @@ public class RelatoriosController implements Serializable {
         String relatorio = "";
         relatorio = caminho + "laudo.jasper";
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("codempresa", user_session.getUnidade().getId());
+        map.put("codempresa", user_session.getUnidade().getCodEmpresa());
         map.put("cod_laudo", idLaudo);
         this.executeReport(relatorio, map, "laudo.pdf");
 

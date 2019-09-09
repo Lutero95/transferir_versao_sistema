@@ -179,7 +179,7 @@ public class GerenciarPacienteDAO {
             stmt.setInt(2, gerenciar.getMotivo_desligamento());
             stmt.setString(3, DESLIGADO);
             stmt.setString(4, gerenciar.getObservacao());
-            stmt.setInt(5, user_session.getCodigo());
+            stmt.setLong(5, user_session.getId());
             stmt.setDate(6, new java.sql.Date(gerenciar.getDataDesligamento().getTime()));
             stmt.executeUpdate();
 
@@ -221,7 +221,7 @@ public class GerenciarPacienteDAO {
             stmt.setLong(1, row.getLaudo().getPaciente().getId_paciente());
             stmt.setString(2, "D");
             stmt.setString(3, gerenciar.getObservacao());
-            stmt.setInt(4, user_session.getCodigo());
+            stmt.setLong(4, user_session.getId());
 
             stmt.executeUpdate();
 
@@ -289,7 +289,7 @@ public class GerenciarPacienteDAO {
             ps.setLong(1, idPacienteInstituicao);
             ps.setString(2, observacao);
             ps.setString(3, tipo);
-            ps.setInt(4, user_session.getCodigo());
+            ps.setLong(4, user_session.getId());
 
             ps.executeUpdate();
 

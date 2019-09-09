@@ -207,7 +207,7 @@ public class TransferenciaPacienteDAO {
 			ps6.setLong(1, id_paciente);
 			ps6.setString(2, insercao.getObservacao());
 			ps6.setString(3, "T");
-			ps6.setInt(4, user_session.getCodigo());
+			ps6.setLong(4, user_session.getId());
 
 			ps6.executeUpdate();
 
@@ -278,7 +278,7 @@ public class TransferenciaPacienteDAO {
 
 				ps9.setInt(11, insercao.getEquipe().getCodEquipe());
 
-				ps9.setInt(12, user_session.getCodigo());
+				ps9.setLong(12, user_session.getId());
 
 				rs = ps9.executeQuery();
 
@@ -406,7 +406,7 @@ public class TransferenciaPacienteDAO {
 			ps6.setLong(1, id_paciente);
 			ps6.setString(2, insercao.getObservacao());
 			ps6.setString(3, "T");
-			ps6.setInt(4, user_session.getCodigo());
+			ps6.setLong(4, user_session.getId());
 
 			ps6.executeUpdate();
 
@@ -476,7 +476,7 @@ public class TransferenciaPacienteDAO {
 
 				ps9.setInt(11, insercao.getEquipe().getCodEquipe());
 
-				ps9.setInt(12, user_session.getCodigo());
+				ps9.setLong(12, user_session.getId());
 
 				rs = ps9.executeQuery();
 

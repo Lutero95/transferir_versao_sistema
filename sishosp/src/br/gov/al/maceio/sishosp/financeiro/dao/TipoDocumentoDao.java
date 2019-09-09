@@ -100,7 +100,7 @@ public class TipoDocumentoDao {
 			con = ConnectionFactory.getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setString(1, t.getDescricao().toUpperCase());
-			ps.setInt(2, user_session.getCodigo());
+			ps.setLong(2, user_session.getId());
 			/*
 			ps.setBoolean(3, t.getDevolucao_venda());
 			ps.setBoolean(4, t.getCheque());

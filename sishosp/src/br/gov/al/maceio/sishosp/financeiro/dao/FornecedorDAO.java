@@ -43,7 +43,7 @@ public class FornecedorDAO {
 			ps.setString(5, bean.getCep().replaceAll("[^0-9]", ""));
 			ps.setString(6, bean.getTelefone().replaceAll("[^0-9]", ""));
 			ps.setString(7, bean.getCnpj().replaceAll("[^0-9]", ""));
-			ps.setInt(8, user_session.getCodigo());
+			ps.setLong(8, user_session.getId());
 			ps.setString(9, bean.getSite());
 			ps.setString(10, bean.getEmail());
 			ps.setString(11, bean.getInscest());

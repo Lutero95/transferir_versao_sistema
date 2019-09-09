@@ -585,7 +585,36 @@
                         <f:facet name="header">
                             Vencimento
                         </f:facet>
-                        <h:outputText value="#{insercao.laudo.vencimento}" />
+                        <h:outputLabel
+										value="Janeiro/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 1}" />
+									<h:outputLabel
+										value="Fevereiro/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 2}" />
+									<h:outputLabel value="Março/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 3}" />
+									<h:outputLabel value="Abril/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 4}" />
+									<h:outputLabel value="Maio/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 5}" />
+									<h:outputLabel value="Junho/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 6}" />
+									<h:outputLabel value="Julho/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 7}" />
+									<h:outputLabel value="Agosto/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 8}" />
+									<h:outputLabel
+										value="Setembro/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 9}" />
+									<h:outputLabel
+										value="Outubro/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 10}" />
+									<h:outputLabel
+										value="Novembro/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 11}" />
+									<h:outputLabel
+										value="Dezembro/#{insercao.laudo.anoFinal}"
+										rendered="#{insercao.laudo.mesFinal == 12}" />
                     </p:column>
 
                     <p:column width="80">

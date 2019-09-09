@@ -58,7 +58,7 @@ public class TesourariaDAO {
 				e.setValor(rs.getDouble("valor"));
 				e.setComplemento(rs.getString("complemento"));
 				e.setTipo(rs.getString("tipo"));
-				e.getFunc().setCodigo(rs.getInt("opcad"));
+				e.getFunc().setId(rs.getLong("opcad"));
 				e.setCodreceber(rs.getInt("codreceber"));
 				e.setCodpagar(rs.getInt("codpagar"));
 				e.setSeqcaixadiario(rs.getInt("seqcaixadiario"));
@@ -409,7 +409,7 @@ public class TesourariaDAO {
 					.getSessionMap().get("obj_usuario");
 			ps = con.prepareStatement(sql);
 
-			ps.setInt(1, user_session.getCodigo());
+			ps.setLong(1, user_session.getId());
 
 
 			ps.executeUpdate();
@@ -650,7 +650,7 @@ public class TesourariaDAO {
 			ps.setDouble(6, cheque.getValor());
 			ps.setString(7, cheque.getNominal());
 			ps.setString(8, cheque.getCompensado());
-			ps.setInt(9, user_session.getCodigo());
+			ps.setLong(9, user_session.getId());
 			ps.setString(10, cheque.getStatus());
 			ps.setDate(11, new java.sql.Date(cheque.getDtemissao().getTime()));
 			ps.setInt(12, cheque.getCaixa().getSeqcaixadiario());
@@ -718,7 +718,7 @@ public class TesourariaDAO {
 				psbx.setDouble(12, cheque.getBanco().getId());
 				psbx.setString(13, lst.get(x).getTitulobaixa().getNumcheque());
 				psbx.setDouble(14, retornoid);
-				psbx.setDouble(15, user_session.getCodigo());
+				psbx.setDouble(15, user_session.getId());
 
 				psbx.execute();
 				psbx.close();
@@ -745,7 +745,7 @@ public class TesourariaDAO {
 			pstes.setInt(4, retornoid);
 			pstes.setString(5, "Cheque N° " + cheque.getNumcheque());
 			pstes.setInt(6, cheque.getCaixa().getSeqcaixadiario());
-			pstes.setInt(7, user_session.getCodigo());
+			pstes.setLong(7, user_session.getId());
 
 			pstes.execute();
 			con.commit();
@@ -814,7 +814,7 @@ public class TesourariaDAO {
 			ps.setDouble(3, baixa.getValorBaixado());
 			ps.setString(4, complemento);
 			ps.setInt(5, cheque.getCaixa().getSeqcaixadiario());
-			ps.setInt(7, user_session.getCodigo());
+			ps.setLong(7, user_session.getId());
 
 			ps.execute();
 			ps.close();
@@ -888,7 +888,7 @@ public class TesourariaDAO {
 			ps.setInt(4, cheque.getCodcheque());
 			ps.setString(5, complemento);
 			ps.setInt(6, cheque.getCaixa().getSeqcaixadiario());
-			ps.setInt(7, user_session.getCodigo());
+			ps.setLong(7, user_session.getId());
 
 			ps.execute();
 			ps.close();
@@ -1303,7 +1303,7 @@ public class TesourariaDAO {
 
 			ps.setString(6, lancto.getObs());
 			ps.setInt(7, lancto.getCaixa().getSeqcaixadiario());
-			ps.setInt(10, user_session.getCodigo());
+			ps.setLong(10, user_session.getId());
 
 			ps.execute();
 
@@ -1386,7 +1386,7 @@ public class TesourariaDAO {
 				}
 
 				ps.setString(6, "REFERENTE AO ACERTO DA CONTA");
-				ps.setInt(7, user_session.getCodigo());
+				ps.setLong(7, user_session.getId());
 				ps.setBoolean(8, true);
 
 				ps.execute();
@@ -1440,7 +1440,7 @@ public class TesourariaDAO {
 				ps.setDouble(2, tesouraria.getValor());
 				ps.setString(3, "Trasferido para: " + tesouraria2.getBanco().getDescricao() + " N° conta: "
 						+ tesouraria2.getBanco().getConta());
-				ps.setInt(5, user_session.getCodigo());
+				ps.setLong(5, user_session.getId());
 				ps.setString(6, tesouraria.getOperacao());
 				ps.setDate(7, (java.sql.Date) tesouraria.getCaixa().getDataCaixaAbertura());
 				ps.setInt(8, tesouraria.getCaixa().getSeqcaixadiario());
@@ -1462,7 +1462,7 @@ public class TesourariaDAO {
 				ps.setDouble(2, tesouraria.getValor());
 				ps.setString(3, "Recebido de: " + tesouraria.getBanco().getDescricao() + " N° conta: "
 						+ tesouraria.getBanco().getConta());
-				ps.setInt(4, user_session.getCodigo());
+				ps.setLong(4, user_session.getId());
 				ps.setString(5, tesouraria.getOperacao());
 				ps.setDate(6, (java.sql.Date) tesouraria2.getCaixa().getDataCaixaAbertura());
 				ps.setInt(7, tesouraria2.getCaixa().getSeqcaixadiario());

@@ -344,7 +344,7 @@ public class PacienteDAO {
                 stmt.setInt(57, paciente.getGenero().getId());
             }
 
-            stmt.setInt(58, user_session.getCodigo());
+            stmt.setLong(58, user_session.getId());
             
             if (paciente.getMatricula() == null) {
                 stmt.setNull(59, Types.CHAR);

@@ -54,7 +54,7 @@ public class InsercaoPacienteDAO {
 		// 'YYYY-MM-DD'))) "
 		// + " AND NOT EXISTS (SELECT pac.codlaudo FROM hosp.paciente_instituicao pac
 		// WHERE pac.codlaudo = l.id_laudo)"
-		sql = sql + " ) a";
+		sql = sql + " ) a order by ano_final desc, mes_final desc";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
@@ -75,10 +75,14 @@ public class InsercaoPacienteDAO {
 			while (rs.next()) {
 				InsercaoPacienteBean insercao = new InsercaoPacienteBean();
 				insercao.getLaudo().setId(rs.getInt("id_laudo"));
+				insercao.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				insercao.getLaudo().getPaciente().setNome(rs.getString("nome"));
+				insercao.getLaudo().getPaciente().setMatricula(rs.getString("matricula"));
 				insercao.getLaudo().getPaciente().setCns(rs.getString("cns"));
-				// insercao.getLaudo().setVigenciaInicial(rs.getDate("datainicio"));
-				// insercao.getLaudo().setVigenciaFinal(rs.getDate("datafinal"));
+				insercao.getLaudo().getProcedimentoPrimario().setCodProc(rs.getString("codproc"));
+				insercao.getLaudo().getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
+				 insercao.getLaudo().setMesFinal(rs.getInt("mes_final"));
+				 insercao.getLaudo().setAnoFinal(rs.getInt("ano_final"));
 
 				lista.add(insercao);
 			}
@@ -231,7 +235,7 @@ public class InsercaoPacienteDAO {
 
 				ps3.setBoolean(10, insercao.getEncaixe());
 
-				ps3.setInt(11, user_session.getCodigo());
+				ps3.setLong(11, user_session.getId());
 
 				ps3.setLong(12, insercao.getPrograma().getIdPrograma());
 
@@ -376,7 +380,7 @@ public class InsercaoPacienteDAO {
 
 				ps3.setBoolean(10, insercao.getEncaixe());
 
-				ps3.setInt(11, user_session.getCodigo());
+				ps3.setLong(11, user_session.getId());
 
 				ps3.setLong(12, insercao.getPrograma().getIdPrograma());
 

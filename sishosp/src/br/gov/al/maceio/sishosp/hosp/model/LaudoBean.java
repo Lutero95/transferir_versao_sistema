@@ -1,5 +1,6 @@
 package br.gov.al.maceio.sishosp.hosp.model;
 
+import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.hosp.enums.SituacaoLaudo;
 
 import java.io.Serializable;
@@ -33,6 +34,9 @@ public class LaudoBean implements Serializable {
     private CidBean cid1;
     private CidBean cid2;
     private CidBean cid3;
+    private Integer codProfissional; 
+    private String descProfissional;
+    private FuncionarioBean profissionalLaudo;
 
     public LaudoBean() {
         paciente = new PacienteBean();
@@ -244,6 +248,30 @@ public class LaudoBean implements Serializable {
 
 	public void setCodUnidade(Integer codUnidade) {
 		this.codUnidade = codUnidade;
+	}
+
+	public FuncionarioBean getProfissionalLaudo() {
+		return profissionalLaudo;
+	}
+
+	public void setProfissionalLaudo(FuncionarioBean profissionalLaudo) {
+		this.profissionalLaudo = profissionalLaudo;
+	}
+
+	public Integer getCodProfissional() {
+		return codProfissional;
+	}
+
+	public void setCodProfissional(Integer codProfissional) {
+		this.codProfissional = codProfissional;
+	}
+
+	public String getDescProfissional() {
+		return descProfissional;
+	}
+
+	public void setDescProfissional(String descProfissional) {
+		this.descProfissional = descProfissional;
 	}
 
 	

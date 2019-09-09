@@ -81,7 +81,7 @@ public class BuscaDAO {
 
 			while (set.next()) {
 
-				funcionarioBean.setCodigo(set.getInt("codfunc"));
+				funcionarioBean.setId(set.getLong("codfunc"));
 				funcionarioBean.setNome(set.getString("nome"));
 			}
 

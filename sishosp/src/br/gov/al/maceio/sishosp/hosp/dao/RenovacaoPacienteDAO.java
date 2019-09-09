@@ -256,7 +256,7 @@ public class RenovacaoPacienteDAO {
 					ps3.setNull(12, Types.NULL);
 				}
 
-				ps3.setInt(13, user_session.getCodigo());
+				ps3.setLong(13, user_session.getId());
 
 				rs = ps3.executeQuery();
 
@@ -427,7 +427,7 @@ public class RenovacaoPacienteDAO {
 					ps3.setNull(12, Types.NULL);
 				}
 
-				ps3.setInt(13, user_session.getCodigo());
+				ps3.setLong(13, user_session.getId());
 
 				rs = ps3.executeQuery();
 

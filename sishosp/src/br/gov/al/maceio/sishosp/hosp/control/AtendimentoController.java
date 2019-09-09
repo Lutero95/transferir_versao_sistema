@@ -67,7 +67,7 @@ public class AtendimentoController implements Serializable {
         listaProcedimentos = new ArrayList<ProcedimentoBean>();
         primeiraVez = true;
         listaEvolucoes = new ArrayList<>();
-        atendimento.getUnidade().setId(user_session.getCodigo());
+        atendimento.getUnidade().setId(user_session.getUnidade().getId());
         atendimento.setDataAtendimentoInicio(DataUtil.retornarDataAtual());
         atendimento.setDataAtendimentoFinal(DataUtil.retornarDataAtual());
         paciente = new PacienteBean();

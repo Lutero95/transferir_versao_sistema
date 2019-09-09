@@ -721,6 +721,11 @@ public class FuncionarioController implements Serializable {
 		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 1);
 		return result;
 	}
+	
+	public List<FuncionarioBean> listaTodosProfissionaisAutoComplete(String query) throws ProjetoException {
+		List<FuncionarioBean> result = fDao.listarProfissionalBusca(query, 2);
+		return result;
+	}
 
 	public void rendermedico() {
 		if (profissional.getRealizaAtendimento() == true) {

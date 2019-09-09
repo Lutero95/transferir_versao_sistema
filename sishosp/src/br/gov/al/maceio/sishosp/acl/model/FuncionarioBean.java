@@ -13,7 +13,6 @@ import br.gov.al.maceio.sishosp.hosp.model.*;
 public class FuncionarioBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Integer codigo;
     private String nome;
     private String senha;
     private String novaSenha;
@@ -89,13 +88,6 @@ public class FuncionarioBean implements Serializable {
         listaHorarioAtendimentos = new ArrayList<>();
     }
 
-    public Integer getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(Integer codigo) {
-        this.codigo = codigo;
-    }
 
     public String getNome() {
         return nome;

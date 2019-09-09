@@ -126,14 +126,14 @@
 					<h:outputText
 						style="position:absolute;z-index:1000;margin-top:20px;color:white;font-weight:bold"
 						value="#{MBFuncionarios.usuarioLogado.nome}"
-						rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
+						rendered="#{MBFuncionarios.usuarioLogado.id != null}" />
 				</p:column>
 				<p:column>
 
 					<h:outputText
 						style="position:absolute;z-index:1000;margin-top:35px;color:white;position:absolute; font-weight:bold"
 						value="#{MBFuncionarios.usuarioLogado.unidade.nomeFantasia}"
-						rendered="#{MBFuncionarios.usuarioLogado.codigo != null}" />
+						rendered="#{MBFuncionarios.usuarioLogado.id != null}" />
 				</p:column>
 				</p:row>
 				<p:commandLink styleClass="editUSer"

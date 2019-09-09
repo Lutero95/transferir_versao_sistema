@@ -13,7 +13,7 @@
 
 
 		<div class="navbar navbar-inverse navbar-fixed-top"
-			rendered="#{MBFuncionarios.usuarioLogado.codigo == null}">
+			rendered="#{MBFuncionarios.usuarioLogado.id == null}">
 			<div class="container">
 				<div class="navbar-header">
 					<a class="navbar-brand texto" href="#">EHosp</a>
@@ -22,7 +22,7 @@
 		</div>
 
 		<b:navBar brand="EHosp" fixed="top" inverse="true" class="texto"
-			rendered="#{MBFuncionarios.usuarioLogado.codigo != null}">
+			rendered="#{MBFuncionarios.usuarioLogado.id != null}">
 			
 
 				<p:outputPanel autoUpdate="true">
@@ -32,18 +32,18 @@
 
 							<b:navLink class="user-index"
 								value="#{MBFuncionarios.usuarioLogado.nome}" iconAwesome="user"
-								rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
+								rendered="#{MBFuncionarios.usuarioLogado.id != null}"
 								style="cursor: default !important;" />
 
 							<b:navLink class="user-index"
 								value="Perfil: #{MBFuncionarios.usuarioLogado.perfil.descricao}"
-								rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
+								rendered="#{MBFuncionarios.usuarioLogado.id != null}"
 								style="cursor: default !important;" />
 
 
 							<b:commandButton value="Sair" iconAwesome="sign-out"
 								look="primary" class="menu-sair"
-								rendered="#{MBFuncionarios.usuarioLogado.codigo != null}"
+								rendered="#{MBFuncionarios.usuarioLogado.id != null}"
 								action="#{MBFuncionarios.logout()}" />
 
 						</b:navbarLinks>

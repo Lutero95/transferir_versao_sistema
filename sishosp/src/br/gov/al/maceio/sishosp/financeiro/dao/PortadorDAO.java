@@ -138,7 +138,7 @@ public class PortadorDAO {
 			
 			ps = con.prepareStatement(sql);
 			ps.setString(1, e.getDescricao().toUpperCase());
-			ps.setInt(2, user_session.getCodigo());
+			ps.setLong(2, user_session.getId());
 
 			ps.executeUpdate();
 			con.commit();

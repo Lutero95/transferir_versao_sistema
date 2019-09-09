@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import br.gov.al.maceio.sishosp.acl.model.FuncionarioBean;
 import br.gov.al.maceio.sishosp.comum.exception.ProjetoException;
@@ -35,8 +37,8 @@ public class LaudoDAO {
 		String sql = "insert into hosp.laudo "
 				+ "(codpaciente,  data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "
 				+ "codprocedimento_secundario1, codprocedimento_secundario2, codprocedimento_secundario3, codprocedimento_secundario4, codprocedimento_secundario5, "
-				+ "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao ) "
-				+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?) returning id_laudo";
+				+ "cid1, cid2, cid3, obs, ativo, cod_unidade, data_hora_operacao, situacao, cod_profissional ) "
+				+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, ?, CURRENT_TIMESTAMP, ?, ?) returning id_laudo";
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -138,6 +140,8 @@ public class LaudoDAO {
 			stmt.setInt(18, user_session.getUnidade().getId());
 
 			stmt.setString(19, SituacaoLaudo.PENDENTE.getSigla());
+			
+			stmt.setLong(20, laudo.getProfissionalLaudo().getId());
 
 			ResultSet rs = stmt.executeQuery();
 
@@ -164,7 +168,7 @@ public class LaudoDAO {
 		String sql = "update hosp.laudo set codpaciente = ?,  data_solicitacao = ?, mes_inicio = ?, ano_inicio = ?, mes_final = ?, ano_final = ?, "
 				+ "periodo = ?, codprocedimento_primario = ?, codprocedimento_secundario1 = ?, codprocedimento_secundario2 = ?, codprocedimento_secundario3 = ?, "
 				+ "codprocedimento_secundario4 = ?, codprocedimento_secundario5 = ?, cid1 = ?, cid2 = ?, cid3 = ?, obs = ?, "
-				+ "situacao = ?, data_autorizacao = ?, usuario_autorizou = ?, data_hora_operacao = CURRENT_TIMESTAMP where id_laudo = ?";
+				+ "situacao = ?, data_autorizacao = ?, usuario_autorizou = ?, data_hora_operacao = CURRENT_TIMESTAMP, cod_profissional=? where id_laudo = ?";
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -271,9 +275,11 @@ public class LaudoDAO {
 				stmt.setDate(19, DataUtil.converterDateUtilParaDateSql(laudo.getDataAutorizacao()));
 			}
 
-			stmt.setInt(20, user_session.getCodigo());
+			stmt.setLong(20, user_session.getId());
+			
+			stmt.setLong(21, laudo.getProfissionalLaudo().getId());
 
-			stmt.setInt(21, laudo.getId());
+			stmt.setInt(22, laudo.getId());
 
 			stmt.executeUpdate();
 
@@ -326,9 +332,10 @@ public class LaudoDAO {
 
 		String sql = "select id_laudo, p.nome, "
 				+ "pr.codproc , pr.nome as procedimento, l.mes_final, l.ano_final, "
-				+ "CASE WHEN l.situacao = 'A' THEN 'Autorizado' ELSE 'Pendente' END AS situacao " + "from hosp.laudo l "
+				+ "CASE WHEN l.situacao = 'A' THEN 'Autorizado' ELSE 'Pendente' END AS situacao, func.id_funcionario, func.descfuncionario " + "from hosp.laudo l "
 				+ "left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
 				+ "left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
+				+ "left join acl.funcionarios func on (func.id_funcionario = l.cod_profissional) "
 				+ " where l.ativo is true and l.cod_unidade = ? ";
 
 		if (!situacao.equals(SituacaoLaudo.TODOS.getSigla())) {
@@ -391,6 +398,10 @@ public class LaudoDAO {
 				l.setSituacao(rs.getString("situacao"));
 				l.setMesFinal(rs.getInt("mes_final"));
 				l.setAnoFinal(rs.getInt("ano_final"));
+				FuncionarioBean func = new FuncionarioBean();
+				func.setId(rs.getLong("id_funcionario"));
+				func.setNome(rs.getString("descfuncionario"));
+				l.setProfissionalLaudo(func);
 				l.setVencimento(DataUtil.mostraMesPorExtenso(l.getMesFinal()) + "/" + l.getAnoFinal().toString());
 
 				lista.add(l);
@@ -417,7 +428,7 @@ public class LaudoDAO {
 				+ " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, "
 				+ " l.codprocedimento_secundario4, ps4.nome as nome4, "
 				+ " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1, l.cid2, c2.desccid as desccid2, "
-				+ " l.cid3, c3.desccid as desccid3, l.obs, data_autorizacao, situacao "
+				+ " l.cid3, c3.desccid as desccid3, l.obs, data_autorizacao, situacao , func.id_funcionario, func.descfuncionario "
 				+ " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
 				+ " left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
 				+ " left join hosp.proc ps1 on (ps1.id = l.codprocedimento_secundario1) "
@@ -426,7 +437,7 @@ public class LaudoDAO {
 				+ " left join hosp.proc ps4 on (ps4.id = l.codprocedimento_secundario4) "
 				+ " left join hosp.proc ps5 on (ps5.id = l.codprocedimento_secundario5) "
 				+ " left join hosp.cid c1 on (c1.cod = l.cid1) " + " left join hosp.cid c2 on (c2.cod = l.cid2) "
-				+ " left join hosp.cid c3 on (c3.cod = l.cid3) " + "  where id_laudo = ?";
+				+ " left join hosp.cid c3 on (c3.cod = l.cid3) left join acl.funcionarios func on func.id_funcionario = l.cod_profissional " + "  where id_laudo = ?";
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -466,6 +477,12 @@ public class LaudoDAO {
 				l.getCid3().setDescCid(rs.getString("desccid3"));
 				l.setObs(rs.getString("obs"));
 				l.setSituacao(rs.getString("situacao"));
+				FuncionarioBean func = new FuncionarioBean();
+				func.setId(rs.getLong("id_funcionario"));
+				func.setNome(rs.getString("descfuncionario"));
+				l.setProfissionalLaudo(func);
+				//l.getProfissionalLaudo().setCodigo(rs.getInt("id_funcionario"));
+				//l.getProfissionalLaudo().setNome(rs.getString("descfuncionario"));
 
 			}
 		} catch (Exception ex) {
@@ -490,7 +507,7 @@ public class LaudoDAO {
 				+ " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, "
 				+ " l.codprocedimento_secundario4, ps4.nome as nome4, "
 				+ " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1, l.cid2, c2.desccid as desccid2, "
-				+ " l.cid3, c3.desccid as desccid3, l.obs, data_autorizacao, situacao "
+				+ " l.cid3, c3.desccid as desccid3, l.obs, data_autorizacao, situacao, func.id_funcionario, func.descfuncionario  "
 				+ " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
 				+ " left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
 				+ " left join hosp.proc ps1 on (ps1.id = l.codprocedimento_secundario1) "
@@ -499,7 +516,7 @@ public class LaudoDAO {
 				+ " left join hosp.proc ps4 on (ps4.id = l.codprocedimento_secundario4) "
 				+ " left join hosp.proc ps5 on (ps5.id = l.codprocedimento_secundario5) "
 				+ " left join hosp.cid c1 on (c1.cod = l.cid1) " + " left join hosp.cid c2 on (c2.cod = l.cid2) "
-				+ " left join hosp.cid c3 on (c3.cod = l.cid3) " + "  where id_laudo = ?";
+				+ " left join hosp.cid c3 on (c3.cod = l.cid3) left join acl.funcionarios func on func.id_funcionario = l.cod_profissional " + "  where id_laudo = ?";
 
 		try {
 			conexao = ConnectionFactory.getConnection();
@@ -511,7 +528,14 @@ public class LaudoDAO {
 
 				l.getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				l.getPaciente().setNome(rs.getString("nome"));
-				l.setDataSolicitacao(rs.getDate("data_solicitacao"));
+				Date d = DataUtil.montarDataCompleta(1,rs.getInt("mes_final"),rs.getInt("ano_final"));
+
+				Calendar c = Calendar.getInstance();
+				c.setTime(d);
+				c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
+
+
+				l.setDataSolicitacao(c.getTime());
 				l.setDataAutorizacao(rs.getDate("data_autorizacao"));
 				l.setMesInicio(rs.getInt("mes_final"));
 				l.setAnoInicio(rs.getInt("ano_final"));
@@ -536,6 +560,10 @@ public class LaudoDAO {
 				l.getCid3().setDescCid(rs.getString("desccid3"));
 				l.setObs(rs.getString("obs"));
 				l.setSituacao(rs.getString("situacao"));
+				FuncionarioBean func = new FuncionarioBean();
+				func.setId(rs.getLong("id_funcionario"));
+				func.setNome(rs.getString("descfuncionario"));
+				l.setProfissionalLaudo(func);
 
 			}
 		} catch (Exception ex) {

@@ -99,7 +99,7 @@ public class FuncionarioDAO {
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				ub = new FuncionarioBean();
-				ub.setCodigo(rs.getInt("id_funcionario"));
+				ub.setId(rs.getLong("id_funcionario"));
 				ub.setNome(rs.getString("descfuncionario"));
 				ub.setSenha(rs.getString("senha"));
 				ub.setEmail(rs.getString("email"));
@@ -153,7 +153,7 @@ public class FuncionarioDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, usuario.getCodigo());
+			stmt.setLong(1, usuario.getId());
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
@@ -231,10 +231,10 @@ public class FuncionarioDAO {
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, u.getCodigo());
-			stmt.setLong(2, u.getCodigo());
-			stmt.setLong(3, u.getCodigo());
-			stmt.setLong(4, u.getCodigo());
+			stmt.setLong(1, u.getId());
+			stmt.setLong(2, u.getId());
+			stmt.setLong(3, u.getId());
+			stmt.setLong(4, u.getId());
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
@@ -301,35 +301,35 @@ public class FuncionarioDAO {
 			stmt.setLong(5, usuario.getPerfil().getId());
 			stmt.setString(6, usuario.getAtivo());
 			stmt.setInt(7, usuario.getUnidade().getId());
-			stmt.setLong(8, usuario.getCodigo());
+			stmt.setLong(8, usuario.getId());
 			stmt.executeUpdate();
 
 			FuncionarioBean u = usuario;
 
 			sql = "delete from acl.perm_sistema where id_usuario = ?";
 			stmt = con.prepareStatement(sql);
-			stmt.setLong(1, usuario.getCodigo());
+			stmt.setLong(1, usuario.getId());
 			stmt.execute();
 
 			sql = "insert into acl.perm_sistema (id_usuario, id_sistema) values (?, ?)";
 			List<Integer> listaId = usuario.getListaIdSistemas();
 			stmt = con.prepareStatement(sql);
 			for (Integer idSistema : listaId) {
-				stmt.setLong(1, usuario.getCodigo());
+				stmt.setLong(1, usuario.getId());
 				stmt.setInt(2, idSistema);
 				stmt.execute();
 			}
 
 			sql = "delete from acl.perm_usuario where id_usuario = ?";
 			stmt = con.prepareStatement(sql);
-			stmt.setLong(1, usuario.getCodigo());
+			stmt.setLong(1, usuario.getId());
 			stmt.execute();
 
 			sql = "insert into acl.perm_usuario (id_usuario, id_permissao) values (?, ?)";
 			List<Long> listaPerm = usuario.getListaIdPermissoes();
 			stmt = con.prepareStatement(sql);
 			for (Long idPerm : listaPerm) {
-				stmt.setLong(1, usuario.getCodigo());
+				stmt.setLong(1, usuario.getId());
 				stmt.setLong(2, idPerm);
 				stmt.execute();
 			}
@@ -363,21 +363,21 @@ public class FuncionarioDAO {
 			stmt.setString(4, usuario.getSenha());
 			stmt.setLong(5, usuario.getPerfil().getId());
 			stmt.setString(6, usuario.getAtivo());
-			stmt.setLong(7, usuario.getCodigo());
+			stmt.setLong(7, usuario.getId());
 
 			stmt.executeUpdate();
 			FuncionarioBean u = usuario;
 
 			boolean associouSis = false;
 
-			if (u.getCodigo() != null) {
+			if (u.getId() != null) {
 				sql = "delete from acl.perm_sistema where id_usuario = ?";
 				String sql2 = "insert into acl.perm_sistema (id_usuario, id_sistema) values (?, ?)";
 				List<Integer> listaId = usuario.getListaIdSistemas();
 				PreparedStatement stmt2;
 				try {
 					stmt2 = con.prepareStatement(sql);
-					stmt2.setLong(1, usuario.getCodigo());
+					stmt2.setLong(1, usuario.getId());
 					stmt2.execute();
 				} catch (Exception ex) {
 					ex.getMessage();
@@ -387,7 +387,7 @@ public class FuncionarioDAO {
 					try {
 						stmt2 = con.prepareStatement(sql2);
 						for (Integer idSistema : listaId) {
-							stmt2.setLong(1, usuario.getCodigo());
+							stmt2.setLong(1, usuario.getId());
 							stmt2.setInt(2, idSistema);
 							stmt2.execute();
 						}
@@ -403,7 +403,7 @@ public class FuncionarioDAO {
 				sql = "delete from acl.perm_usuario where id_usuario = ?";
 				try {
 					PreparedStatement stmt3 = con.prepareStatement(sql);
-					stmt3.setLong(1, usuario.getCodigo());
+					stmt3.setLong(1, usuario.getId());
 					stmt3.execute();
 					associouPerm = true;
 				} catch (Exception ex) {
@@ -562,7 +562,7 @@ public class FuncionarioDAO {
 			while (rs.next()) {
 				FuncionarioBean n = new FuncionarioBean();
 				n = new FuncionarioBean();
-				n.setCodigo(rs.getInt("id_funcionario"));
+				n.setId(rs.getLong("id_funcionario"));
 				n.setNome(rs.getString("descfuncionario"));
 				n.setSenha(rs.getString("senha"));
 				n.setAtivo(rs.getString("ativo"));
@@ -849,7 +849,7 @@ public class FuncionarioDAO {
 
 			ps.setString(3, profissional.getSenha());
 
-			ps.setInt(4, user_session.getCodigo());
+			ps.setLong(4, user_session.getId());
 
 			if (profissional.getEspecialidade() != null) {
 				if (profissional.getEspecialidade().getCodEspecialidade() != null) {
@@ -1022,6 +1022,12 @@ public class FuncionarioDAO {
 			sql += " where upper(f.id_funcionario ||' - '|| f.descfuncionario) LIKE ? and f.realiza_atendimento is true and f.codunidade = ? "
 					+ "order by f.descfuncionario";
 		}
+		
+
+		if (tipoBuscar == 2) {
+			sql += " where upper(f.id_funcionario ||' - '|| f.descfuncionario) LIKE ? and f.codunidade = ? "
+					+ "order by f.descfuncionario";
+		}
 
 		try {
 			con = ConnectionFactory.getConnection();
@@ -1175,7 +1181,8 @@ public class FuncionarioDAO {
 	public List<FuncionarioBean> listarTodosOsProfissional() throws ProjetoException {
 
 		List<FuncionarioBean> listaProf = new ArrayList<FuncionarioBean>();
-
+		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
+				.getSessionMap().get("obj_usuario");
 
 		String sql = "select distinct id_funcionario, descfuncionario, codespecialidade, e.descespecialidade,  cns, funcionarios.ativo, codcbo, c.descricao desccbo, "
 				+ " codprocedimentopadrao, p.nome descprocedimentopadrao, cpf, senha, realiza_atendimento, id_perfil, permite_liberacao, permite_encaixe, unidade.nome nomeunidade "
@@ -1183,10 +1190,11 @@ public class FuncionarioDAO {
 				+ " left join hosp.especialidade e on e.id_especialidade = funcionarios.codespecialidade "
 				+ " left join hosp.cbo c on c.id = funcionarios.codcbo "
 				+ " left join hosp.proc p on p.id = funcionarios.codprocedimentopadrao"
-				+" where coalesce(admin,false) is false  order by descfuncionario";
+				+" where coalesce(admin,false) is false and unidade.id=? order by descfuncionario";
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setLong(1, user_session.getUnidade().getId());
 			ResultSet rs = stm.executeQuery();
 
 			while (rs.next()) {

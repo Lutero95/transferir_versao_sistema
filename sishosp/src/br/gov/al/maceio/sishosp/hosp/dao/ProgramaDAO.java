@@ -274,7 +274,7 @@ public class ProgramaDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement stm = con.prepareStatement(sql);
 
-            stm.setInt(1, user_session.getCodigo());
+            stm.setLong(1, user_session.getId());
             stm.setString(2, "%" + descricao.toUpperCase() + "%");
 
             ResultSet rs = stm.executeQuery();

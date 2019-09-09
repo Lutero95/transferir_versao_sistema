@@ -92,7 +92,7 @@ public class UnidadeDAO {
             ps.setString(15, unidade.getNomeUnidade());
             
 
-            ps.setInt(16, unidade.getEmpresa().getCodEmpresa());
+            ps.setInt(16, unidade.getCodEmpresa());
             
 
             ResultSet rs = ps.executeQuery();
@@ -208,8 +208,8 @@ public class UnidadeDAO {
                 UnidadeBean unidade = new UnidadeBean();
                 unidade.setId(rs.getInt("id"));
                 unidade.setNomeUnidade(rs.getString("nome"));
-                unidade.getEmpresa().setNomeEmpresa(rs.getString("nome_principal"));
-                unidade.getEmpresa().setNomeFantasia(rs.getString("nome_fantasia"));
+                unidade.setNomeEmpresa(rs.getString("nome_principal"));
+                unidade.setNomeFantasia(rs.getString("nome_fantasia"));
                 unidade.setCnpj(rs.getString("cnpj"));
                 unidade.setRua(rs.getString("rua"));
                 unidade.setBairro(rs.getString("bairro"));
@@ -302,7 +302,7 @@ public class UnidadeDAO {
             ps.setBoolean(13, unidade.getMatriz());
             ps.setString(14, unidade.getComplemento());
             ps.setString(15, unidade.getNomeUnidade());
-            ps.setInt(16, unidade.getEmpresa().getCodEmpresa());
+            ps.setInt(16, unidade.getCodEmpresa());
             ps.setInt(17, unidade.getId());
             ps.executeUpdate();
 
@@ -407,9 +407,9 @@ public class UnidadeDAO {
 
             	unidade.setId(rs.getInt("id"));
             	unidade.setNomeUnidade(rs.getString("nome"));
-            	unidade.getEmpresa().setNomeEmpresa(rs.getString("nome_principal"));
-            	unidade.getEmpresa().setNomeFantasia(rs.getString("nome_fantasia"));
-            	unidade.getEmpresa().setCodEmpresa(rs.getInt("cod_empresa"));            	
+            	unidade.setNomeEmpresa(rs.getString("nome_principal"));
+            	unidade.setNomeFantasia(rs.getString("nome_fantasia"));
+            	unidade.setCodEmpresa(rs.getInt("cod_empresa"));            	
             	unidade.setCnpj(rs.getString("cnpj"));
                 unidade.setRua(rs.getString("rua"));
                 unidade.setBairro(rs.getString("bairro"));

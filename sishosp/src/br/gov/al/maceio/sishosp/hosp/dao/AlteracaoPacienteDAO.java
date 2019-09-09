@@ -250,7 +250,7 @@ public class AlteracaoPacienteDAO {
 						ps7.setNull(12, Types.NULL);
 					}
 
-					ps7.setInt(13, user_session.getCodigo());
+					ps7.setLong(13, user_session.getId());
 
 					rs = ps7.executeQuery();
 
@@ -397,7 +397,7 @@ public class AlteracaoPacienteDAO {
 						ps7.setNull(12, Types.NULL);
 					}
 
-					ps7.setInt(13, user_session.getCodigo());
+					ps7.setLong(13, user_session.getId());
 
 					rs = ps7.executeQuery();
 

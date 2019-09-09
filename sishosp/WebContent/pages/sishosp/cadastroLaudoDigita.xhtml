@@ -67,6 +67,34 @@
 
 					</b:row>
 
+					<b:row>
+						<b:column span="3"
+							class="label-position new-data-size new-comple1">
+							<b:label value="Profissional" severity="info"/>
+
+							<p:outputPanel id="outProf"
+								>
+								<p:autoComplete value="#{LaudoController.laudo.profissionalLaudo}"
+									id="autoCompleteProfissional" size="31"
+									converter="conFuncionario" required="true"
+									requiredMessage="Profissional: Campo obrigatório!"
+									class="select-agendaEquipe4"
+									completeMethod="#{MBFuncionarios.listaTodosProfissionaisAutoComplete}"
+									effect="fade" var="theme" forceSelection="true"
+									minQueryLength="1" itemValue="#{theme}"
+									itemLabel="#{theme.nome}">
+								</p:autoComplete>
+
+								<p:commandButton id="btBusProf" icon="ui-icon-search"
+									immediate="true"
+									disabled="#{AgendaController.agenda.tipoAt==null}"
+									action="#{MBFuncionarios.listarProfissionais()}"
+									update=":formConsuProf" onclick="PF('dlgConsuProf').show();"
+									 />
+							</p:outputPanel>
+						</b:column>
+					</b:row>
+
 					<br></br>
 
 					<b:row>
@@ -356,8 +384,7 @@
 							<b:label value="CID 2:" severity="info" />
 
 							<p:outputPanel id="outCid2">
-								<p:autoComplete
-									value="#{LaudoController.laudo.cid2}" size="25"
+								<p:autoComplete value="#{LaudoController.laudo.cid2}" size="25"
 									converter="conCid" id="descCid2" class="select-agendaEquipe4"
 									completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
 									effect="fade" var="theme" forceSelection="true"
@@ -377,8 +404,7 @@
 							<b:label value="CID 3:" severity="info" />
 
 							<p:outputPanel id="outCid3">
-								<p:autoComplete
-									value="#{LaudoController.laudo.cid3}" size="25"
+								<p:autoComplete value="#{LaudoController.laudo.cid3}" size="25"
 									converter="conCid" id="descCid3" class="select-agendaEquipe4"
 									completeMethod="#{LaudoController.listaCidAutoCompletePorProcedimento}"
 									effect="fade" var="theme" forceSelection="true"
@@ -425,7 +451,7 @@
 						<p:commandButton action="#{LaudoController.gravarLaudo()}"
 							update="msgPagina, formLaudo" icon="glyphicon-ok" size="sm"
 							look="success" value="Gravar" class="btn-incluir"
-							rendered="#{LaudoController.tipo  == 1}" />
+							rendered="#{LaudoController.tipo  == 1 or LaudoController.tipo  == 3}" />
 
 						<p:commandButton action="#{LaudoController.alterarLaudo()}"
 							update="msgPagina" icon="ui-icon-check" size="sm" value="Alterar"
@@ -827,29 +853,28 @@
 		<p:dialog header="Consultar CID 3" widgetVar="dlgConsulCid3"
 			responsive="true" height="550" modal="true">
 			<h:form id="formConsulCid3">
-					<p:row>
+				<p:row>
 
-						<p:panelGrid columns="4">
+					<p:panelGrid columns="4">
 
-							<p:selectOneMenu value="#{LaudoController.tipoBusca}"
-								style="margin-top: -13px">
-								<f:selectItem itemLabel="Descrição ou CID" itemValue="desccid" />
-							</p:selectOneMenu>
+						<p:selectOneMenu value="#{LaudoController.tipoBusca}"
+							style="margin-top: -13px">
+							<f:selectItem itemLabel="Descrição ou CID" itemValue="desccid" />
+						</p:selectOneMenu>
 
-							<p:inputText value="#{LaudoController.campoBusca}"
-								required="true"
-								requiredMessage="Informe a descrição da doença ou o Código do CID"
-								placeholder="Digite aqui a busca" style="margin-left: 10px;" />
+						<p:inputText value="#{LaudoController.campoBusca}" required="true"
+							requiredMessage="Informe a descrição da doença ou o Código do CID"
+							placeholder="Digite aqui a busca" style="margin-left: 10px;" />
 
-							<p:commandButton
-								action="#{LaudoController.listarCids(LaudoController.campoBusca)}"
-								update="tabelacid3 msgPagina" icon="ui-icon-search"
-								style="margin-left: 10px;" />
+						<p:commandButton
+							action="#{LaudoController.listarCids(LaudoController.campoBusca)}"
+							update="tabelacid3 msgPagina" icon="ui-icon-search"
+							style="margin-left: 10px;" />
 
 
-						</p:panelGrid>
+					</p:panelGrid>
 
-					</p:row>			
+				</p:row>
 				<p:outputPanel autoUpdate="true">
 					<p:dataTable emptyMessage="Nenhum Cid Cadastrado" rows="10"
 						paginator="true" id="tabelacid3" style="width:500px"
@@ -914,6 +939,37 @@
 						icon="glyphicon-remove" class="btn-nao"
 						style="margin-left:5px;float:right;" />
 				</div>
+			</h:form>
+		</p:dialog>
+		
+				<p:dialog header="Consultar Profissionais" widgetVar="dlgConsuProf"
+			dynamic="true" modal="true" responsive="true">
+			<h:form id="formConsuProf">
+				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
+					value="#{MBFuncionarios.listaProfissional}" id="dtProf"
+					var="profi" display="Nenhum Profissional">
+
+					<h:column>
+						<f:facet name="header">
+                            Profissional
+                        </f:facet>
+						<p:outputLabel value="#{profi.nome}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+                            Adicionar
+                        </f:facet>
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							class="new-btn-acao-table acao-editar" update=":formLaudo:outProf"
+							oncomplete="PF('dlgConsuProf').hide();">
+
+							<f:setPropertyActionListener value="#{profi}"
+								target="#{LaudoController.laudo.profissionalLaudo}" />
+						</p:commandButton>
+					</h:column>
+
+				</b:dataTable>
 			</h:form>
 		</p:dialog>
 	</ui:define>

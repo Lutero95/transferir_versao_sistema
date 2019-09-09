@@ -205,7 +205,7 @@ public class OrteseProteseDAO {
                 ps.setNull(7, Types.NULL);
             }
 
-            ps.setInt(8, user_session.getCodigo());
+            ps.setLong(8, user_session.getId());
 
             ps.setString(9, StatusMovimentacaoOrteseProtese.INSERCAO_DE_SOLICITACAO.getSigla());
 
@@ -297,7 +297,7 @@ public class OrteseProteseDAO {
 
             ps.setDate(3, DataUtil.converterDateUtilParaDateSql(orteseProtese.getDataEncaminhamento()));
 
-            ps.setInt(4, user_session.getCodigo());
+            ps.setLong(4, user_session.getId());
 
             ps.setInt(5, orteseProtese.getId());
 
@@ -371,7 +371,7 @@ public class OrteseProteseDAO {
             con = ConnectionFactory.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
 
-            ps.setInt(1, user_session.getCodigo());
+            ps.setLong(1, user_session.getId());
 
             ps.setInt(2, orteseProtese.getIdEncaminhamento());
 
@@ -483,7 +483,7 @@ public class OrteseProteseDAO {
 
             ps = conAuxiliar.prepareStatement(sql);
             ps.setString(1, statusMovimentacao);
-            ps.setInt(2, user_session.getCodigo());
+            ps.setLong(2, user_session.getId());
             ps.setInt(3, codOrteseIhProtese);
             ps.execute();
 

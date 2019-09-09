@@ -101,7 +101,7 @@ public class TituloReceberDao {
 				cs.setInt(16, tituloReceber.getCaixaloja().getCodCaixaLoja());
 			}
 
-			cs.setInt(17, usuarioLogado.getCodigo());
+			cs.setLong(17, usuarioLogado.getId());
 			cs.setString(18, "A");
 			cs.execute();
 
@@ -393,7 +393,7 @@ public class TituloReceberDao {
 				ps.setDouble(6, baixa.getMulta());
 			}
 
-			ps.setInt(7, user_session.getCodigo());
+			ps.setLong(7, user_session.getId());
 			ps.setDouble(8, baixa.getValorAtual());
 			ps.setInt(9, baixa.getCodSeqCaixa());
 
@@ -426,7 +426,7 @@ public class TituloReceberDao {
 			ps.setDouble(2, baixa.getValorBaixado());
 			ps.setString(3, "");
 			ps.setString(4, "CD");
-			ps.setInt(5, user_session.getCodigo());
+			ps.setLong(5, user_session.getId());
 			ps.setInt(6, baixa.getDuplicata());
 			ps.setString(7, "");
 			ps.setInt(8, baixa.getCodSeqCaixa());
@@ -507,7 +507,7 @@ public class TituloReceberDao {
 				ps.setDouble(6, baixa.getMulta());
 			}
 
-			ps.setInt(7, user_session.getCodigo());
+			ps.setLong(7, user_session.getId());
 
 			double valorAtual = valorAbertoRecdupBxNpParcial(baixa.getDuplicata(), con);
 			ps.setDouble(8, valorAtual);
@@ -1064,7 +1064,7 @@ public class TituloReceberDao {
 			stmt.setDouble(5, a.getEncargos());
 			stmt.setString(6, "CD");
 			stmt.setString(7, "CRED");
-			stmt.setInt(8, user_session.getCodigo());
+			stmt.setLong(8, user_session.getId());
 			stmt.setDate(9, new java.sql.Date(a.getDataRecebimento().getTime()));
 
 			ResultSet rs = stmt.executeQuery();
@@ -1590,7 +1590,7 @@ public class TituloReceberDao {
 				bx.setMulta(rs.getDouble("vlrmulta"));
 				bx.setValorAtual(rs.getDouble("vlratual"));
 				bx.getBanco().setCodbanco(rs.getString("codbanco"));
-				bx.getFunc().setCodigo(rs.getInt("opcad"));
+				bx.getFunc().setId(rs.getLong("opcad"));
 				bx.setDtRecebimento(rs.getDate("dtpag"));
 
 				lista.add(bx);

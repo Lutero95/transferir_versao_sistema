@@ -20,13 +20,15 @@ public class UnidadeBean extends EmpresaBean{
     private Integer intervalo;
     private OrteseProtese orteseProtese;
     private ParametroBean parametro;
-    private EmpresaBean empresa;
+    private Integer codEmpresa;
+    private String nomeFantasia;
+    private String nomeEmpresa;
 
 
     public UnidadeBean() {
         orteseProtese = new OrteseProtese();
         parametro = new ParametroBean();
-        empresa = new EmpresaBean();
+    //    empresa = new EmpresaBean();
     }
 
 	public Integer getId() {
@@ -135,13 +137,31 @@ public class UnidadeBean extends EmpresaBean{
 		this.parametro = parametro;
 	}
 
-	public EmpresaBean getEmpresa() {
-		return empresa;
+	public Integer getCodEmpresa() {
+		return codEmpresa;
 	}
 
-	public void setEmpresa(EmpresaBean empresa) {
-		this.empresa = empresa;
+	public void setCodEmpresa(Integer codEmpresa) {
+		this.codEmpresa = codEmpresa;
 	}
+
+	public String getNomeFantasia() {
+		return nomeFantasia;
+	}
+
+	public void setNomeFantasia(String nomeFantasia) {
+		this.nomeFantasia = nomeFantasia;
+	}
+
+	public String getNomeEmpresa() {
+		return nomeEmpresa;
+	}
+
+	public void setNomeEmpresa(String nomeEmpresa) {
+		this.nomeEmpresa = nomeEmpresa;
+	}
+
+	
 
 	
 
