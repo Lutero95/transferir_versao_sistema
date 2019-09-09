@@ -1418,7 +1418,7 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 		return lista;
 	}
 
-	public List<AgendaBean> consultarAgenda(Date dataAgenda, Date dataAgendaFinal, Integer codEmpresa, String situacao, String campoBusca, String tipo)
+	public List<AgendaBean> consultarAgenda(Date dataAgenda, Date dataAgendaFinal, Integer codUnidade, String situacao, String campoBusca, String tipo)
 			throws ProjetoException {
 		List<AgendaBean> lista = new ArrayList<AgendaBean>();
 
@@ -1429,8 +1429,10 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 				+ " LEFT JOIN acl.funcionarios m ON (m.id_funcionario = a.codmedico) "
 				+ " LEFT JOIN hosp.equipe e ON (e.id_equipe = a.codequipe) "
 				+ " LEFT JOIN hosp.tipoatendimento t ON (t.id = a.codtipoatendimento) "
-				+ " WHERE a.cod_unidade = ? AND a.dtaatende >= ? AND a.dtaatende <= ?";
-		if (!situacao.equals("T"))
+				+ " WHERE a.cod_unidade = ? "; 
+				if (dataAgenda!=null)	
+					sql = sql + " AND a.dtaatende >= ? AND a.dtaatende <= ?";
+						if (!situacao.equals("T"))
 			sql = sql + " and coalesce(a.presenca,'N')=?";
 		
 		 if(tipo.equals("nome")){
@@ -1449,17 +1451,23 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 	            sql = sql + " and p.matricula like ?";
 	        }       
 		 
-		sql = sql + " order by a.dtaatende, p.nome";
+		sql = sql + " order by a.dtaatende , p.nome";
 
 		try {
 			con = ConnectionFactory.getConnection();
 			PreparedStatement stm = null;
 			stm = con.prepareStatement(sql);
 
-			stm.setInt(1, codEmpresa);
-			stm.setDate(2, new java.sql.Date(dataAgenda.getTime()));
+			stm.setInt(1, codUnidade);
+			int i = 2;
+			if (dataAgenda!=null) {	
+			stm.setDate(i, new java.sql.Date(dataAgenda.getTime()));
+			i = i+1;
 			stm.setDate(3, new java.sql.Date(dataAgendaFinal.getTime()));
-			int i = 4;
+			i = i+1;
+			}
+			
+			
 			if (!situacao.equals("T")) {
 				stm.setString(i, situacao);
 				i = i+1;
@@ -1467,9 +1475,9 @@ public class AgendaDAO extends VetorDiaSemanaAbstract {
 			
             if (!campoBusca.equals(null)) {
                 if ((tipo.equals("nome")) || (tipo.equals("cpf")) || (tipo.equals("cns")) || (tipo.equals("matricula")))
-                	stm.setString(4, "%" + campoBusca.toUpperCase() + "%");
+                	stm.setString(i, "%" + campoBusca.toUpperCase() + "%");
                     else
-                    	stm.setInt(4,Integer.valueOf(campoBusca));
+                    	stm.setInt(i,Integer.valueOf(campoBusca));
                 i = i+1;
             }
 

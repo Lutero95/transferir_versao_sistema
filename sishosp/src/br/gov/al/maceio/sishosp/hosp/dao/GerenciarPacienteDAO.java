@@ -246,7 +246,9 @@ public class GerenciarPacienteDAO {
 
         Boolean retorno = false;
 
-        String sql = "SELECT id FROM hosp.paciente_instituicao WHERE status = 'A' AND codpaciente = ?;";
+        String sql = " SELECT id FROM hosp.paciente_instituicao pi " + 
+        		" join hosp.laudo l on l.id_laudo = pi.codlaudo" + 
+        		" WHERE pi.status = 'A' AND l.codpaciente = ?";
 
         try {
             conexao = ConnectionFactory.getConnection();

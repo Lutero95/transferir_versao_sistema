@@ -192,7 +192,7 @@
 							</b:column>
 
 							<b:column span="2" class="new-span2">
-								<b:commandButton value="Transferir" style="margin-top:5px;"
+								<b:commandButton value="Transferir" style="margin-top:5px;" rendered="false"
 									disabled="#{GerenciarPacienteController.rowBean.status != 'A'
 												 or GerenciarPacienteController.rowBean.equipe.codEquipe == 0}"
 									id="btnTransferir" immediate="true"

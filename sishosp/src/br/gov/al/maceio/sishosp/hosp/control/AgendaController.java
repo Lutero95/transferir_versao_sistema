@@ -770,10 +770,13 @@ public class AgendaController implements Serializable {
 
 
     public void consultarAgenda(String situacao) throws ProjetoException {
-        if (this.dataAtendimentoC == null) {
+       
+    	/*
+    	if (this.dataAtendimentoC == null) {
             JSFUtil.adicionarMensagemErro("Selecione uma data de atendimento!", "Erro");
             return;
         }
+        */
         this.listaConsulta = aDao.consultarAgenda(this.dataAtendimentoC,
                 dataAtendimentoFinalC, agenda.getUnidade().getId(), situacao, campoBusca, tipoBusca);
     }
