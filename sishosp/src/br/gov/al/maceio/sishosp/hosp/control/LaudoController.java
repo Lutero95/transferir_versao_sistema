@@ -65,10 +65,11 @@ public class LaudoController implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Map<String, String> params = facesContext.getExternalContext()
                 .getRequestParameterMap();
-        if (params.get("id") != null) {
+        if ((params.get("id") != null)) {
             Integer id = Integer.parseInt(params.get("id"));
-            this.laudo = lDao.buscarLaudosPorId(id);
             tipo = Integer.parseInt(params.get("tipo"));
+            this.laudo = lDao.buscarLaudosPorId(id);
+            
             renderizarDadosDeAutorizacao();
 
         } else {

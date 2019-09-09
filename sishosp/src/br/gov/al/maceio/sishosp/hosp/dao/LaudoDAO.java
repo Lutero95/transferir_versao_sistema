@@ -480,6 +480,77 @@ public class LaudoDAO {
 		}
 		return l;
 	}
+	
+	public LaudoBean carregaLaudoParaRenovacao(Integer id) throws ProjetoException {
+
+		LaudoBean l = new LaudoBean();
+
+		String sql = "select l.codpaciente, p.nome, l.data_solicitacao, l.mes_inicio, l.ano_inicio, l.mes_final, l.ano_final, "
+				+ " l.periodo, l.codprocedimento_primario, pr.nome as procedimento, l.codprocedimento_secundario1, ps1.nome as nome1, "
+				+ " l.codprocedimento_secundario2, ps2.nome as nome2, l.codprocedimento_secundario3, ps3.nome as nome3, "
+				+ " l.codprocedimento_secundario4, ps4.nome as nome4, "
+				+ " l.codprocedimento_secundario5, ps5.nome as nome5, l.cid1, c1.desccid as desccid1, l.cid2, c2.desccid as desccid2, "
+				+ " l.cid3, c3.desccid as desccid3, l.obs, data_autorizacao, situacao "
+				+ " from hosp.laudo l left join hosp.pacientes p on (p.id_paciente = l.codpaciente) "
+				+ " left join hosp.proc pr on (pr.id = l.codprocedimento_primario) "
+				+ " left join hosp.proc ps1 on (ps1.id = l.codprocedimento_secundario1) "
+				+ " left join hosp.proc ps2 on (ps2.id = l.codprocedimento_secundario2) "
+				+ " left join hosp.proc ps3 on (ps3.id = l.codprocedimento_secundario3) "
+				+ " left join hosp.proc ps4 on (ps4.id = l.codprocedimento_secundario4) "
+				+ " left join hosp.proc ps5 on (ps5.id = l.codprocedimento_secundario5) "
+				+ " left join hosp.cid c1 on (c1.cod = l.cid1) " + " left join hosp.cid c2 on (c2.cod = l.cid2) "
+				+ " left join hosp.cid c3 on (c3.cod = l.cid3) " + "  where id_laudo = ?";
+
+		try {
+			conexao = ConnectionFactory.getConnection();
+			PreparedStatement stm = conexao.prepareStatement(sql);
+			stm.setInt(1, id);
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+
+				l.getPaciente().setId_paciente(rs.getInt("codpaciente"));
+				l.getPaciente().setNome(rs.getString("nome"));
+				l.setDataSolicitacao(rs.getDate("data_solicitacao"));
+				l.setDataAutorizacao(rs.getDate("data_autorizacao"));
+				l.setMesInicio(rs.getInt("mes_final"));
+				l.setAnoInicio(rs.getInt("ano_final"));
+				l.setPeriodo(rs.getInt("periodo"));
+				l.getProcedimentoPrimario().setIdProc(rs.getInt("codprocedimento_primario"));
+				l.getProcedimentoPrimario().setNomeProc(rs.getString("procedimento"));
+				l.getProcedimentoSecundario1().setIdProc(rs.getInt("codprocedimento_secundario1"));
+				l.getProcedimentoSecundario1().setNomeProc(rs.getString("nome1"));
+				l.getProcedimentoSecundario2().setIdProc(rs.getInt("codprocedimento_secundario2"));
+				l.getProcedimentoSecundario2().setNomeProc(rs.getString("nome2"));
+				l.getProcedimentoSecundario3().setIdProc(rs.getInt("codprocedimento_secundario3"));
+				l.getProcedimentoSecundario3().setNomeProc(rs.getString("nome3"));
+				l.getProcedimentoSecundario4().setIdProc(rs.getInt("codprocedimento_secundario4"));
+				l.getProcedimentoSecundario4().setNomeProc(rs.getString("nome4"));
+				l.getProcedimentoSecundario5().setIdProc(rs.getInt("codprocedimento_secundario5"));
+				l.getProcedimentoSecundario5().setNomeProc(rs.getString("nome5"));
+				l.getCid1().setIdCid(rs.getInt("cid1"));
+				l.getCid1().setDescCid(rs.getString("desccid1"));
+				l.getCid2().setIdCid(rs.getInt("cid2"));
+				l.getCid2().setDescCid(rs.getString("desccid2"));
+				l.getCid3().setIdCid(rs.getInt("cid3"));
+				l.getCid3().setDescCid(rs.getString("desccid3"));
+				l.setObs(rs.getString("obs"));
+				l.setSituacao(rs.getString("situacao"));
+
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				conexao.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return l;
+	}
+	
 
 	public ArrayList<InsercaoPacienteBean> listarLaudosVigentesParaPaciente(Integer codPaciente)
 			throws ProjetoException {
