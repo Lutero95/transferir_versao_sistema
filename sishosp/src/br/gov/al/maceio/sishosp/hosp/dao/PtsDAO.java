@@ -91,8 +91,9 @@ public class PtsDAO {
             throws ProjetoException {
 
         String sql = "SELECT pi.id, pi.codprograma, p.descprograma, pi.codgrupo, g.descgrupo, " +
-                "pi.codpaciente, pa.nome, pa.cns, pa.cpf " +
+                "laudo.codpaciente, pa.nome, pa.cns, pa.cpf " +
                 "FROM hosp.paciente_instituicao pi " +
+                "LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo) " +
                 "LEFT JOIN hosp.programa p ON (p.id_programa = pi.codprograma) " +
                 "LEFT JOIN hosp.grupo g ON (pi.codgrupo = g.id_grupo) " +
                 "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = pi.codpaciente) " +
@@ -145,8 +146,10 @@ public class PtsDAO {
                 "LEFT JOIN hosp.programa pr ON (pr.id_programa = p.cod_programa) " +
                 "LEFT JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo) " +
                 "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = p.cod_paciente) " +
-                "LEFT JOIN hosp.paciente_instituicao pi ON (pi.codgrupo = p.cod_grupo AND pi.codprograma = p.cod_programa AND p.cod_paciente = pi.codpaciente) " +
-                "WHERE pi.status = 'A' AND p.id = ?;";
+                "LEFT JOIN hosp.paciente_instituicao pi ON (pi.codgrupo = p.cod_grupo AND pi.codprograma = p.cod_programa) " +
+                "LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo) " +
+                "WHERE pi.status = 'A' and laudo.codpaciente = p.cod_paciente AND p.id = ?;";
+        
 
         Pts pts = new Pts();
 
@@ -296,8 +299,8 @@ public class PtsDAO {
         String sql1 = "INSERT INTO hosp.pts (data, id_funcionario, data_hora_operacao, data_vencimento, cod_programa, cod_grupo, cod_paciente, status, " +
                 "incapacidades_funcionais, capacidades_funcionais, objetivos_familiar_paciente, objetivos_gerais_multidisciplinar, " +
                 "objetivos_gerais_curto_prazo, objetivos_gerais_medio_prazo, objetivos_gerais_longo_prazo, analise_resultados_objetivos_gerais, " +
-                "novas_estrategias_tratamento, condulta_alta) " +
-                "values (?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
+                "novas_estrategias_tratamento, condulta_alta, cod_unidade) " +
+                "values (?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id;";
 
         try {
             conexao = ConnectionFactory.getConnection();
@@ -324,6 +327,7 @@ public class PtsDAO {
             ps.setString(15, pts.getAnaliseDosResultadosDosObjetivosGerias());
             ps.setString(16, pts.getNovasEstrategiasDeTratamento());
             ps.setString(17, pts.getCondultaAlta());
+            ps.setInt(18, user_session.getUnidade().getId());
 
             ResultSet rs = ps.executeQuery();
             Integer codPts = null;
@@ -536,15 +540,16 @@ public class PtsDAO {
         Integer contadorParametros = 2;
 
         String sql = "SELECT p.id, pi.id as id_paciente_instituicao, p.data, p.data_vencimento, g.descgrupo, pr.descprograma, pa.nome, p.status, " +
-                "pi.codgrupo, pi.codprograma, pi.codpaciente, pa.cpf, pa.cns, " +
+                "pi.codgrupo, pi.codprograma, laudo.codpaciente, pa.cpf, pa.cns, " +
                 "CASE WHEN p.status = 'A' THEN 'Ativo' WHEN p.status = 'C' THEN 'Cancelado' " +
                 "WHEN p.status = 'R' THEN 'Renovado' END AS status_por_extenso " +
                 "FROM hosp.paciente_instituicao pi " +
+                "LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo) " +
                 "LEFT JOIN hosp.programa pr ON (pr.id_programa = pi.codprograma) " +
                 "LEFT JOIN hosp.grupo g ON (g.id_grupo = pi.codgrupo) " +
-                "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = pi.codpaciente) " +
+                "LEFT JOIN hosp.pacientes pa ON (pa.id_paciente = laudo.codpaciente) " +
                 "LEFT JOIN hosp.pts p ON " +
-                "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente = pi.codpaciente) " +
+                "(p.cod_grupo = pi.codgrupo) AND (p.cod_programa = pi.codprograma) AND (p.cod_paciente = laudo.codpaciente) " +
                 "WHERE pi.status = 'A' AND pi.codgrupo = ? AND pi.codprograma = ?  AND coalesce(p.status,'') <> 'I' ";
 
         if (tipoFiltroVencimento.equals(FiltroBuscaVencimentoPTS.VINGENTES.getSigla())) {
@@ -625,7 +630,8 @@ public class PtsDAO {
                 "novas_estrategias_tratamento, condulta_alta " +
                 "FROM hosp.pts p " +
                 "LEFT JOIN hosp.paciente_instituicao pi ON (pi.id = p.id_paciente_instituicao) " +
-                "WHERE pi.codpaciente = ?";
+                "LEFT JOIN hosp.laudo  ON (laudo.id_laudo = pi.codlaudo) " +
+                "WHERE laudo.codpaciente = ?";
 
         Pts pts = new Pts();
 

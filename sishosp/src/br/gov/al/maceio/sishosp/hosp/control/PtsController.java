@@ -37,7 +37,7 @@ public class PtsController implements Serializable {
     private String statusPts;
 
     //CONSTANTES
-    private static final String ENDERECO_PTS = "pts?faces-redirect=true";
+    private static final String ENDERECO_PTS = "cadastropts?faces-redirect=true";
     private static final String ENDERECO_RENOVACAO = "ptsrenovacao?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
     private static final String ENDERECO_ID_GER_PAC_INSTITUICAO = "&amp;idgerpaciente=";    

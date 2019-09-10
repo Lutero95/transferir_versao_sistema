@@ -203,9 +203,6 @@
 
                     <br></br>
 
-                    <div align="center">
-                        <b:messages value="Error" id="msgPagina"></b:messages>
-                    </div>
 
                     <b:row>
 
@@ -293,7 +290,7 @@
                     <div align="center">
 
                         <b:commandButton value="Gravar" look="success" size="sm" id="b1"
-                                         icon="glyphicon-ok" update=":formPts:msgPagina, formPts"
+                                         icon="glyphicon-ok" update=":msgPagina, formPts"
                                          class="btn-incluir"
                                          action="#{PtsController.gravarPts()}"/>
 
