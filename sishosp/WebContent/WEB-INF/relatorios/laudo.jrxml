@@ -959,20 +959,6 @@ left join hosp.telefone_paciente tp3 on tp3.id = v.tel_id3]]>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{codproc5}==null?"":"1")]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="2" y="544" width="229" height="14" uuid="8c9e89fb-e68f-4413-8a8a-11a647dc46a0"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nomemedico}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="2" y="571" width="230" height="14" uuid="9f13b863-67eb-4401-bcf2-9d1c555246d2"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cns_medico}]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement x="453" y="44" width="1" height="22" uuid="1a4f7edf-1b14-4e49-a7a1-62aa3cf7ddff"/>
 			</line>
