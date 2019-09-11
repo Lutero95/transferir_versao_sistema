@@ -176,20 +176,19 @@ public class RenovacaoPacienteDAO {
 
 			ps.executeUpdate();
 
-			String sql2 = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codpaciente, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
-					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING id;";
+			String sql2 = "insert into hosp.paciente_instituicao (codprograma, codgrupo,  codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
+					+ " values (?, ?, ?, ?, ?, ?, ?, ?,  current_timestamp) RETURNING id;";
 
 			PreparedStatement ps2 = null;
 			ps2 = conexao.prepareStatement(sql2);
 			ps2.setInt(1, insercao.getPrograma().getIdPrograma());
 			ps2.setInt(2, insercao.getGrupo().getIdGrupo());
-			ps2.setInt(3, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
-			ps2.setInt(4, insercao.getEquipe().getCodEquipe());
-			ps2.setString(5, "A");
-			ps2.setInt(6, insercaoParaLaudo.getLaudo().getId());
-			ps2.setString(7, insercao.getObservacao());
-			ps2.setInt(8, user_session.getUnidade().getId());
-			ps2.setDate(9, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
+			ps2.setInt(3, insercao.getEquipe().getCodEquipe());
+			ps2.setString(4, "A");
+			ps2.setInt(5, insercaoParaLaudo.getLaudo().getId());
+			ps2.setString(6, insercao.getObservacao());
+			ps2.setInt(7, user_session.getUnidade().getId());
+			ps2.setDate(8, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
 			rs = ps2.executeQuery();
 			int idPacienteInstituicao = 0;
 			if (rs.next()) {
@@ -511,20 +510,19 @@ public class RenovacaoPacienteDAO {
 
 			ps.executeUpdate();
 
-			String sql2 = "insert into hosp.paciente_instituicao (codprograma, codgrupo, codpaciente, codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
-					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING id;";
+			String sql2 = "insert into hosp.paciente_instituicao (codprograma, codgrupo,  codequipe, status, codlaudo, observacao, cod_unidade, data_solicitacao, data_cadastro) "
+					+ " values (?, ?, ?, ?, ?, ?, ?, ?,  current_timestamp) RETURNING id;";
 
 			PreparedStatement ps2 = null;
 			ps2 = conexao.prepareStatement(sql2);
 			ps2.setInt(1, insercao.getPrograma().getIdPrograma());
 			ps2.setInt(2, insercao.getGrupo().getIdGrupo());
-			ps2.setInt(3, insercao.getLaudo().getPaciente().getId_paciente());
-			ps2.setInt(4, insercao.getEquipe().getCodEquipe());
-			ps2.setString(5, "A");
-			ps2.setInt(6, insercaoParaLaudo.getLaudo().getId());
-			ps2.setString(7, insercao.getObservacao());
-			ps2.setInt(8, user_session.getUnidade().getId());
-			ps2.setDate(9, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
+			ps2.setInt(3, insercao.getEquipe().getCodEquipe());
+			ps2.setString(4, "A");
+			ps2.setInt(5, insercaoParaLaudo.getLaudo().getId());
+			ps2.setString(6, insercao.getObservacao());
+			ps2.setInt(7, user_session.getUnidade().getId());
+			ps2.setDate(8, new java.sql.Date(insercao.getDataSolicitacao().getTime()));
 			rs = ps2.executeQuery();
 			int idPacienteInstituicao = 0;
 			if (rs.next()) {

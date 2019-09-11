@@ -359,7 +359,7 @@ public class LaudoDAO {
 			sql = sql + " and p.id_paciente = ?";
 		}
 		
-		sql = sql + "order by p.nome ";
+		sql = sql + " order by ano_final desc, mes_final desc, nome ";
 
 		ArrayList<LaudoBean> lista = new ArrayList();
 
@@ -585,7 +585,7 @@ public class LaudoDAO {
 
 		ArrayList<InsercaoPacienteBean> lista = new ArrayList<>();
 
-		String sql = "select nome, cns, id_laudo,mes_inicio, ano_inicio, mes_final, ano_final, "
+		String sql = "select codpaciente,nome, cns, id_laudo,mes_inicio, ano_inicio, mes_final, ano_final, "
 				+ "to_date(ano_inicio||'-'||'0'||''||mes_inicio||'-'||'01', 'YYYY-MM-DD') as datainicio, "
 				+ "(SELECT * FROM hosp.fn_GetLastDayOfMonth(to_date(ano_final||'-'||'0'||''||mes_final||'-'||'01', 'YYYY-MM-DD'))) as datafinal "
 				+ "from ( "
@@ -610,6 +610,7 @@ public class LaudoDAO {
 			while (rs.next()) {
 				InsercaoPacienteBean insercao = new InsercaoPacienteBean();
 				insercao.getLaudo().setId(rs.getInt("id_laudo"));
+				insercao.getLaudo().getPaciente().setId_paciente(rs.getInt("codpaciente"));
 				insercao.getLaudo().getPaciente().setNome(rs.getString("nome"));
 				insercao.getLaudo().getPaciente().setCns(rs.getString("cns"));
 				insercao.getLaudo().setVigenciaInicial(rs.getDate("datainicio"));

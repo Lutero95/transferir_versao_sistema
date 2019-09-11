@@ -118,7 +118,7 @@ public final class DataUtil {
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, ano);
-        cal.set(Calendar.MONTH, ajustarMes(mes));
+        cal.set(Calendar.MONTH, (mes));
 
         if(!ultimoDiaDoMes){
             Calendar calendar = Calendar.getInstance();
