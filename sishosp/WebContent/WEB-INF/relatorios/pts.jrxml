@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="agendamentosEquipe" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
+	<property name="ireport.zoom" value="1.3310000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="EHosp"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
+	<parameter name="img_adefal" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pts" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT p.id, pa.nome,  p.data, p.capacidades_funcionais, p.objetivos_familiar_paciente, p.cod_grupo, g.descgrupo, p.cod_programa, pr.descprograma, 
+(SELECT extract(year from age(pa.dtanascimento))) AS idade,
+'' as logomarca
+FROM hosp.pts p 
+JOIN hosp.pacientes pa ON (p.cod_paciente = pa.id_paciente) 
+JOIN hosp.grupo g ON (p.cod_grupo = g.id_grupo)
+JOIN hosp.programa pr ON (p.cod_programa = pr.id_programa)
+WHERE p.id = $P{pts}]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+	</field>
+	<field name="data" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="data"/>
+	</field>
+	<field name="capacidades_funcionais" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="capacidades_funcionais"/>
+	</field>
+	<field name="objetivos_familiar_paciente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="objetivos_familiar_paciente"/>
+	</field>
+	<field name="cod_grupo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="cod_grupo"/>
+	</field>
+	<field name="descgrupo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descgrupo"/>
+	</field>
+	<field name="cod_programa" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="cod_programa"/>
+	</field>
+	<field name="descprograma" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descprograma"/>
+	</field>
+	<field name="idade" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="idade"/>
+	</field>
+	<field name="logomarca" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="logomarca"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="344" splitType="Stretch">
+			<staticText>
+				<reportElement x="100" y="30" width="577" height="25" uuid="dae12b4f-f2bc-4713-b8d9-3987f10f5c8a"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROJETO TERAPÊUTICO SINGULAR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="512" y="308" width="242" height="30" uuid="65207d33-764c-47c1-bcc1-3f1ba348b20a"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[FAMÍLIA E/OU RESPONSÁVEL]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="125">
+			<staticText>
+				<reportElement x="20" y="-286" width="190" height="25" uuid="f0699f81-a2cc-4664-b800-17e3ebaf47bc"/>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1 - DADOS GERAIS DO PACIENTE]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="20" y="-261" width="122" height="15" uuid="7fcea90a-af11-48ce-86bf-706d594321e3"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Nome do Paciente: "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="551" y="-261" width="55" height="15" uuid="5cf93941-dbd6-46da-82f2-11299598b5bc"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Idade: "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="20" y="-246" width="50" height="18" uuid="00352539-075f-4863-b83a-85e19c72d291"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Data: "]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="72" y="-246" width="70" height="18" uuid="253698da-5ece-4007-a639-a82428252d40"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="-246" width="80" height="18" uuid="60b44772-4168-4f43-87fc-f51cb5a33264"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Reabilitação: "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="310" y="-246" width="420" height="18" uuid="b84fc2b5-2d1f-4cf0-bf74-1443cffb7d5e"/>
+				<textFieldExpression><![CDATA[$F{descprograma} + "/" + $F{descgrupo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="-216" width="190" height="25" uuid="6ac07bb6-1f7a-4152-b479-74beb02ff49e"/>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2 - VISÃO GERAL DO PACIENTE]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="20" y="-191" width="590" height="18" uuid="41c3758c-357e-42ba-9c73-66567f99e66d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["a) Diagnóstico funcional (capacidades, objetivos alcançados, vulnerabilidades, dificuldades): "]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="20" y="-173" width="720" height="36" uuid="b82c2695-c196-4c55-a170-046c9728fcc5"/>
+				<textFieldExpression><![CDATA[$F{capacidades_funcionais}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="20" y="-134" width="590" height="18" uuid="00eef34c-7d9a-49b8-9cfb-9eef4b094e1c"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["b) Necessidades e desejos do paciente e/ou família: "]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="20" y="-112" width="720" height="36" uuid="7a6bda74-f822-4d84-bec5-00c739df1cbc"/>
+				<textFieldExpression><![CDATA[$F{objetivos_familiar_paciente}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###;(#,##0.###-)">
+				<reportElement x="601" y="-261" width="85" height="15" uuid="5dc05403-3022-4f9c-a4b2-4430fcce25dd"/>
+				<textFieldExpression><![CDATA[$F{idade}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="145" y="-261" width="395" height="15" uuid="e271e4fb-4ec6-4cb1-85d6-6c402d7eafee"/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="490" y="-47" width="291" height="5" uuid="75cc93b8-8c2b-4ed4-b1fb-2fb3b78aaf95"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="671" y="34" width="23" height="20" uuid="15f84572-ac4a-4c66-8876-44bb0b50595d"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="694" y="34" width="40" height="20" uuid="c1372d7b-71cf-463e-86cc-9c7c9ee3ccfc"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="734" y="34" width="68" height="20" uuid="01f98f07-30c9-45ac-ba2e-a03a2bae96c3"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
