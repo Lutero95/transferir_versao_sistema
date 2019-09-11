@@ -32,7 +32,7 @@ public class LaudoDAO {
 		FuncionarioBean user_session = (FuncionarioBean) FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get("obj_funcionario");
 
-		Integer idLaudoGerado = 0;
+		Integer idLaudoGerado = null;
 
 		String sql = "insert into hosp.laudo "
 				+ "(codpaciente,  data_solicitacao, mes_inicio, ano_inicio, mes_final, ano_final, periodo, codprocedimento_primario, "

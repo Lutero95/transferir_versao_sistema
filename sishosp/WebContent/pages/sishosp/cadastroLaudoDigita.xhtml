@@ -71,7 +71,6 @@
 						<b:column span="3"
 							class="label-position new-data-size new-comple1">
 							<b:label value="Profissional" severity="info"/>
-
 							<p:outputPanel id="outProf"
 								>
 								<p:autoComplete value="#{LaudoController.laudo.profissionalLaudo}"
@@ -87,7 +86,6 @@
 
 								<p:commandButton id="btBusProf" icon="ui-icon-search"
 									immediate="true"
-									disabled="#{AgendaController.agenda.tipoAt==null}"
 									action="#{MBFuncionarios.listarProfissionais()}"
 									update=":formConsuProf" onclick="PF('dlgConsuProf').show();"
 									 />

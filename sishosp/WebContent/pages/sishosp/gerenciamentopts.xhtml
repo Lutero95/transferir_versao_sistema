@@ -137,7 +137,7 @@
                             <b:commandButton value="Buscar" icon="glyphicon-search"
                                              class="btn-acao-table acao-buscar" id="btnBusca"
                                              action="#{PtsController.buscarPtsPacientesAtivos}"
-                                             update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmMsg:msgPagina, :frmTabela:dtNovosAg, btnInserir"></b:commandButton>
+                                             update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :msgPagina, :frmTabela:dtNovosAg, btnInserir"></b:commandButton>
 
                         </b:column>
 
@@ -146,7 +146,7 @@
                             <b:commandButton value="Limpar" icon="glyphicon-trash"
                                              class="btn-acao-table acao-limpar2"
                                              action="#{PtsController.limparBusca()}"
-                                             update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :frmMsg:msgPagina, :frmTabela:dtNovosAg"></b:commandButton>
+                                             update=":formGerenPaci:outProg, :formGerenPaci:outGrupo, :formGerenPaci:btBusPr, :formGerenPaci:btBusGr, :msgPagina, :frmTabela:dtNovosAg"></b:commandButton>
                         </b:column>
 
                     </b:row>
@@ -163,7 +163,7 @@
                                                  id="btnInserir" immediate="true"
                                                  disabled="#{PtsController.renderizarBotaoNovo == false}"
                                                  class="btn-acao-table acao-confirmar btn-new-padding2"
-                                                 update=":formGerenPaci, :frmMsg:msgPagina"
+                                                 update=":formGerenPaci, :msgPagina"
                                                  icon="glyphicon-plus"
                                                  action="#{PtsController.redirectInsert}"/>
                             </b:column>
@@ -173,7 +173,7 @@
                                                  disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
                                                  id="btnAlterar" immediate="true"
                                                  class="btn-acao-table acao-altera2 btn-new-padding2"
-                                                 update=":formGerenPaci, :frmMsg:msgPagina"
+                                                 update=":formGerenPaci, :msgPagina"
                                                  icon="glyphicon-pencil"
                                                  action="#{PtsController.redirectEdit()}"/>
                             </b:column>
@@ -183,7 +183,7 @@
                                                  disabled="#{PtsController.rowBean.status != 'A'}"
                                                  id="btnRenovar" immediate="true"
                                                  class="btn-acao-table acao-limpar btn-new-padding2"
-                                                 update=":formGerenPaci, :frmMsg:msgPagina"
+                                                 update=":formGerenPaci, :msgPagina"
                                                  icon="glyphicon glyphicon-refresh"
                                                  action="#{PtsController.redirectRenovacao()}"/>
                             </b:column>
@@ -193,7 +193,7 @@
                                                  disabled="#{PtsController.rowBean.status != 'A' and PtsController.rowBean.status != 'R'}"
                                                  id="btnExcluir" immediate="true"
                                                  class="btn-acao-table acao-desligar btn-new-padding2"
-                                                 update=":formGerenPaci, :frmMsg:msgPagina"
+                                                 update=":formGerenPaci, :msgPagina"
                                                  icon="glyphicon glyphicon-remove"
                                                  action="#{PtsController.abrirDialogCancelarPts()}"/>
                             </b:column>
@@ -273,13 +273,6 @@
 
                 </h:form>
 
-                <h:form id="frmMsg">
-
-                    <div align="center" class="new-padding-top">
-                        <b:messages value="Error" id="msgPagina"></b:messages>
-                    </div>
-
-                </h:form>
             </div>
         </div>
 
@@ -365,7 +358,7 @@
 
                     <b:commandButton look="success" value="Sim" style="float:left;"
                                      action="#{PtsController.cancelarPts}" ajax="true"
-                                     class="btn-sim" icon="glyphicon-ok" update=":formGerenPaci, :frmTabela, :frmMsg:msgPagina" />
+                                     class="btn-sim" icon="glyphicon-ok" update=":formGerenPaci, :frmTabela, :msgPagina" />
 
                     <b:commandButton value="Não" oncomplete="PF('dlgCancelarPts').hide();"
                                      look="info" ajax="true" icon="glyphicon-remove" class="btn-nao"

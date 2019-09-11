@@ -37,7 +37,7 @@ public class PtsController implements Serializable {
     private String statusPts;
 
     //CONSTANTES
-    private static final String ENDERECO_PTS = "pts?faces-redirect=true";
+    private static final String ENDERECO_PTS = "cadastropts?faces-redirect=true";
     private static final String ENDERECO_RENOVACAO = "ptsrenovacao?faces-redirect=true";
     private static final String ENDERECO_ID = "&amp;id=";
     private static final String ENDERECO_ID_GER_PAC_INSTITUICAO = "&amp;idgerpaciente=";    
@@ -88,6 +88,12 @@ public class PtsController implements Serializable {
                 this.pts = pDao.ptsCarregarPtsPorId(id);
             } else {
                 pts = (Pts) SessionUtil.resgatarDaSessao("pts");
+
+				Calendar c = Calendar.getInstance();
+				c.setTime(pts.getDataVencimento());
+				c.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
+				c.set(Calendar.DAY_OF_MONTH, 1);
+				pts.setData(c.getTime());
             }
             listaEspecialidadesEquipe = eDao.listarEspecialidadesEquipe(pts.getGerenciarPaciente().getId());
 
@@ -235,7 +241,7 @@ public class PtsController implements Serializable {
             JSFUtil.adicionarMensagemSucesso("PTS renovado com sucesso!", "Sucesso");
 
             if (!VerificadorUtil.verificarSeObjetoNuloOuZero(idParametroEndereco)) {
-                retorno = redirectEditAposGravar(novoIdPts, null);
+                retorno = redirectEditAposGravar(novoIdPts, pts.getGerenciarPaciente().getId());
             }
 
         } else {
