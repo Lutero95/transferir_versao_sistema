@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="agendamentosEquipe" pageWidth="842" pageHeight="250" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="agendamentosEquipe" pageWidth="842" pageHeight="500" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b9885dd9-99b4-4d6c-8e68-709e9a1c9747">
 	<property name="ireport.zoom" value="1.3310000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -37,7 +37,7 @@ WHERE p.id_pts =  $P{pts}]]>
 	<field name="descespecialidade" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="descespecialidade"/>
 	</field>
-	<group name="GroupArea">
+	<group name="GroupArea" keepTogether="true">
 		<groupExpression><![CDATA[$F{descespecialidade}]]></groupExpression>
 		<groupHeader>
 			<band height="22"/>
@@ -50,7 +50,7 @@ WHERE p.id_pts =  $P{pts}]]>
 		<band splitType="Stretch"/>
 	</title>
 	<detail>
-		<band height="230">
+		<band height="144">
 			<textField>
 				<reportElement x="20" y="-19" width="60" height="15" uuid="0cec14e5-ad0d-4494-89a2-841017b7dad1"/>
 				<textElement>
@@ -107,30 +107,30 @@ WHERE p.id_pts =  $P{pts}]]>
 				<textFieldExpression><![CDATA[$F{plano_medio}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="20" y="145" width="120" height="15" uuid="c72c941d-1d57-4191-a1b6-ad2c7f51d4a7"/>
+				<reportElement x="20" y="65" width="120" height="15" uuid="c72c941d-1d57-4191-a1b6-ad2c7f51d4a7"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Prazo Longo: "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="160" y="123" width="290" height="48" uuid="b6e2dae9-0fd6-4309-afa9-421591552c6f"/>
+				<reportElement x="160" y="43" width="290" height="48" uuid="b6e2dae9-0fd6-4309-afa9-421591552c6f"/>
 				<textFieldExpression><![CDATA[$F{objetivo_longo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="480" y="123" width="290" height="48" uuid="8f420438-0c10-4f7f-8110-956db2f0ad90"/>
+				<reportElement x="480" y="43" width="290" height="48" uuid="8f420438-0c10-4f7f-8110-956db2f0ad90"/>
 				<textFieldExpression><![CDATA[$F{plano_longo}]]></textFieldExpression>
 			</textField>
 			<line direction="BottomUp">
-				<reportElement x="1" y="212" width="801" height="1" uuid="57507679-d53a-42cb-bbf7-09aa957a2c89"/>
+				<reportElement x="1" y="132" width="801" height="1" uuid="57507679-d53a-42cb-bbf7-09aa957a2c89"/>
 			</line>
 			<staticText>
-				<reportElement x="512" y="182" width="242" height="30" uuid="0f87c3f6-0f21-47ee-bcd1-6cf467a12d8f"/>
+				<reportElement x="512" y="102" width="242" height="30" uuid="0f87c3f6-0f21-47ee-bcd1-6cf467a12d8f"/>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[Assinatura e Carimbo do Profissional]]></text>
 			</staticText>
 			<line>
-				<reportElement x="490" y="173" width="291" height="1" uuid="6bcacd06-3fc5-468b-849d-0cd09b71f493">
+				<reportElement x="490" y="93" width="291" height="1" uuid="6bcacd06-3fc5-468b-849d-0cd09b71f493">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</line>
