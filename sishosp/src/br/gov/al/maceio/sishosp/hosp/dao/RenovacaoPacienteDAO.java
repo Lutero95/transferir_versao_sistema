@@ -208,9 +208,9 @@ public class RenovacaoPacienteDAO {
 				}
 			}
 
-			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente, codmedico, situacao, dtaatende, codtipoatendimento, turno, "
+			String sql3 = "INSERT INTO hosp.atendimentos(codpaciente,  situacao, dtaatende, codtipoatendimento, turno, "
 					+ " observacao, ativo, id_paciente_instituicao, cod_unidade, horario, dtamarcacao, codprograma, codgrupo, codequipe, codatendente)"
-					+ " VALUES (?, ?, 'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
+					+ " VALUES (?,  'A', ?, ?, ?, ?, 'S', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?) RETURNING id_atendimento;";
 
 			PreparedStatement ps3 = null;
 			rs = null;
@@ -219,46 +219,45 @@ public class RenovacaoPacienteDAO {
 			for (int i = 0; i < listAgendamentoProfissional.size(); i++) {
 
 				ps3.setInt(1, insercaoParaLaudo.getLaudo().getPaciente().getId_paciente());
-				ps3.setLong(2, listAgendamentoProfissional.get(i).getAgenda().getProfissional().getId());
-				ps3.setDate(3,
+				ps3.setDate(2,
 						new java.sql.Date(listAgendamentoProfissional.get(i).getAgenda().getDataMarcacao().getTime()));
-				ps3.setInt(4, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
+				ps3.setInt(3, user_session.getUnidade().getParametro().getTipoAtendimento().getIdTipo());
 
 				if (insercao.getAgenda().getTurno() != null) {
-					ps3.setString(5, insercao.getAgenda().getTurno());
+					ps3.setString(4, insercao.getAgenda().getTurno());
 				} else {
-					ps3.setNull(5, Types.NULL);
+					ps3.setNull(4, Types.NULL);
 				}
 
-				ps3.setString(6, insercao.getObservacao());
-				ps3.setInt(7, idPacienteInstituicao);
-				ps3.setInt(8, user_session.getUnidade().getId());
+				ps3.setString(5, insercao.getObservacao());
+				ps3.setInt(6, idPacienteInstituicao);
+				ps3.setInt(7, user_session.getUnidade().getId());
 
 				if (insercao.getAgenda().getHorario() != null) {
-					ps3.setTime(9, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+					ps3.setTime(8, DataUtil.retornarHorarioEmTime(insercao.getAgenda().getHorario()));
+				} else {
+					ps3.setNull(8, Types.NULL);
+				}
+
+				if (insercao.getPrograma().getIdPrograma() != null) {
+					ps3.setInt(9, insercao.getPrograma().getIdPrograma());
 				} else {
 					ps3.setNull(9, Types.NULL);
 				}
 
-				if (insercao.getPrograma().getIdPrograma() != null) {
-					ps3.setInt(10, insercao.getPrograma().getIdPrograma());
+				if (insercao.getGrupo().getIdGrupo() != null) {
+					ps3.setInt(10, insercao.getGrupo().getIdGrupo());
 				} else {
 					ps3.setNull(10, Types.NULL);
 				}
 
-				if (insercao.getGrupo().getIdGrupo() != null) {
-					ps3.setInt(11, insercao.getGrupo().getIdGrupo());
+				if (insercao.getEquipe().getCodEquipe() != null) {
+					ps3.setInt(11, insercao.getEquipe().getCodEquipe());
 				} else {
 					ps3.setNull(11, Types.NULL);
 				}
 
-				if (insercao.getEquipe().getCodEquipe() != null) {
-					ps3.setInt(12, insercao.getEquipe().getCodEquipe());
-				} else {
-					ps3.setNull(12, Types.NULL);
-				}
-
-				ps3.setLong(13, user_session.getId());
+				ps3.setLong(12, user_session.getId());
 
 				rs = ps3.executeQuery();
 
