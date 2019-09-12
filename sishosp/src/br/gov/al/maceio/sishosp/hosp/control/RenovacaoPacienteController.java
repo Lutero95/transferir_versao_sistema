@@ -369,6 +369,7 @@ public class RenovacaoPacienteController implements Serializable {
 
             if (cadastrou == true) {
                 JSFUtil.adicionarMensagemSucesso("Renovação de Paciente cadastrada com sucesso!", "Sucesso");
+                JSFUtil.abrirDialog("dlgRenovacaoEfetuada");
             } else {
                 JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
             }

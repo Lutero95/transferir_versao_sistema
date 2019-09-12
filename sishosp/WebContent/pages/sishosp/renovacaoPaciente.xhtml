@@ -1,453 +1,455 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="../../template/template.xhtml">
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../template/template.xhtml">
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-		<f:metadata>
-			<f:viewAction
-				action="#{RenovarPacienteController.carregaRenovacao()}" />
-		</f:metadata>
+        <f:metadata>
+            <f:viewAction
+                    action="#{RenovarPacienteController.carregaRenovacao()}"/>
+        </f:metadata>
 
-		<div class="panel panel-primary top-primary">
-			<div class="panel-heading top-heading">
-				<h4 class="panel-title">Renovação de Paciente na Instituição</h4>
-			</div>
+        <div class="panel panel-primary top-primary">
+            <div class="panel-heading top-heading">
+                <h4 class="panel-title">Renovação de Paciente na Instituição</h4>
+            </div>
 
-			<div class="panel-body table-body sub-table-body">
+            <div class="panel-body table-body sub-table-body">
 
-				<h:form id="formInsercao">
+                <h:form id="formInsercao">
 
-					<b:row>
+                    <b:row>
 
-						<b:column span="2" class="label-position">
-							<p:outputLabel value="Laudo:" style="margin-left:-15px; margin-top: 8px;
+                        <b:column span="2" class="label-position">
+                            <p:outputLabel value="Laudo:" style="margin-left:-15px; margin-top: 8px;
     									margin-bottom: 15px;color:#2e84ce;"></p:outputLabel>
 
-							<p:commandButton size="sm" style="margin-left: 20px;"
-								class="new-btn-acao-table acao-editar" icon="ui-icon-search"
-								update=":formConsuLaudo" actionListener="#{RenovarPacienteController.listarLaudosVigentes()}"
-								oncomplete="PF('dlgConsuLaudo').show();"  />
-						</b:column>
+                            <p:commandButton size="sm" style="margin-left: 20px;"
+                                             class="new-btn-acao-table acao-editar" icon="ui-icon-search"
+                                             update=":formConsuLaudo"
+                                             actionListener="#{RenovarPacienteController.listarLaudosVigentes()}"
+                                             oncomplete="PF('dlgConsuLaudo').show();"/>
+                        </b:column>
 
-					</b:row>
+                    </b:row>
 
-					<b:row>
+                    <b:row>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Paciente:" severity="info" class="fire-label" />
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Paciente:" severity="info" class="fire-label"/>
 
-							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.paciente.nome}"
-								class="campo-laudoDig3" />
-						</b:column>
+                            <h:outputLabel
+                                    value="#{RenovarPacienteController.insercaoParaLaudo.laudo.paciente.nome}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Procedimento:" severity="info" class="fire-label"/>
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Procedimento:" severity="info" class="fire-label"/>
 
-							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
-								class="campo-laudoDig3" />
-						</b:column>
+                            <h:outputLabel
+                                    value="#{RenovarPacienteController.insercaoParaLaudo.laudo.procedimentoPrimario.nomeProc}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
 
-					</b:row>
+                    </b:row>
 
-					<b:row>
+                    <b:row>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="CID:" severity="info" class="fire-label"/>
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="CID:" severity="info" class="fire-label"/>
 
-							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.cid1.descCid}"
-								class="campo-laudoDig3" />
-						</b:column>
+                            <h:outputLabel
+                                    value="#{RenovarPacienteController.insercaoParaLaudo.laudo.cid1.descCid}"
+                                    class="campo-laudoDig3"/>
+                        </b:column>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Vigência Inicial:" severity="info" class="fire-label"/>
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Vigência Inicial:" severity="info" class="fire-label"/>
 
-							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigenciaInicial}"
-								class="campo-laudoDig3">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputLabel>
-						</b:column>
+                            <h:outputLabel
+                                    value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigenciaInicial}"
+                                    class="campo-laudoDig3">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </b:column>
 
-						<b:column span="2" class="label-position inserPacient">
-							<b:label value="Vigência Final" severity="info" class="fire-label"/>
+                        <b:column span="2" class="label-position inserPacient">
+                            <b:label value="Vigência Final" severity="info" class="fire-label"/>
 
-							<h:outputLabel
-								value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigenciaFinal}"
-								class="campo-laudoDig3">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputLabel>
-						</b:column>
+                            <h:outputLabel
+                                    value="#{RenovarPacienteController.insercaoParaLaudo.laudo.vigenciaFinal}"
+                                    class="campo-laudoDig3">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </b:column>
 
-					</b:row>
+                    </b:row>
 
-					<br></br>
+                    <br></br>
 
-				</h:form>
+                </h:form>
 
-				<h:form id="formInsercao2">
+                <h:form id="formInsercao2">
 
-					<b:row>
+                    <b:row>
 
-						<b:column span="2" class="label-position data-size">
+                        <b:column span="2" class="label-position data-size">
 
-							<b:label value="Data de Solicitação:" id="datasoli"
-								severity="info" class="fire-label"/>
+                            <b:label value="Data de Solicitação:" id="datasoli"
+                                     severity="info" class="fire-label"/>
 
-							<p:calendar
-								value="#{RenovarPacienteController.insercao.dataSolicitacao}"
-								id="dtagen" locale="pt" navigator="true" mask="true"
-								class="select-agendaEquipe2" showOn="button"
-								pattern="dd/MM/yyyy" size="15">
-							</p:calendar>
+                            <p:calendar
+                                    value="#{RenovarPacienteController.insercao.dataSolicitacao}"
+                                    id="dtagen" locale="pt" navigator="true" mask="true"
+                                    class="select-agendaEquipe2" showOn="button"
+                                    pattern="dd/MM/yyyy" size="15">
+                            </p:calendar>
 
-						</b:column>
+                        </b:column>
 
-					</b:row>
+                    </b:row>
 
-					<br></br>
+                    <br></br>
 
-					<b:row>
-						<p:outputPanel id="outProg">
+                    <b:row>
+                        <p:outputPanel id="outProg">
 
-							<b:column span="5"
-								class="label-position new-data-size new-comple1">
-								<b:label for="prog" value="Programa:" id="prog" class="fire-label"
-									rendered="#{RenovarPacienteController.tipo == 'E'}" severity="info" />
+                            <b:column span="5"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label for="prog" value="Programa:" id="prog" class="fire-label"
+                                         rendered="#{RenovarPacienteController.tipo == 'E'}" severity="info"/>
 
-								<p:autoComplete value="#{RenovarPacienteController.insercao.programa}"
-									rendered="#{RenovarPacienteController.tipo == 'E'}" size="31" readonly="true"
-									converter="conPrograma" class="select-agendaEquipe4"
-									completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descPrograma}">
-									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectPrograma}" update="" />
-
-								</p:autoComplete>
-
-							</b:column>
-						</p:outputPanel>
-
-					</b:row>
-
-					<br></br>
-
-					<b:row>
-						<p:outputPanel id="outGrupo">
-
-							<b:column span="5"
-								class="label-position new-data-size4 new-comple1">
-								<b:label for="prog" value="Grupo:" id="grupo" class="fire-label"
-									rendered="#{RenovarPacienteController.tipo == 'E'}" severity="info" />
-
-								<p:autoComplete value="#{RenovarPacienteController.insercao.grupo}"
-									readonly="true"
-									rendered="#{RenovarPacienteController.tipo == 'E'}" size="31"
-									converter="conGrupo" class="select-agendaEquipe4"
-									disabled="#{RenovarPacienteController.insercao.programa==null}"
-									completeMethod="#{InsercaoPacienteController.listaGrupoAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descGrupo}">
-									<p:ajax event="itemSelect"
-										listener="#{AgendaController.selectGrupo}" update="" />
-
-								</p:autoComplete>
-
-							</b:column>
-
-						</p:outputPanel>
-
-					</b:row>
-
-					<br></br>
-
-					<b:row>
-						<p:outputPanel id="outEquipe">
-
-							<b:column span="5"
-								class="label-position new-data-size new-comple1">
-								<b:label for="equipe" value="Equipe:" id="equipe" class="fire-label"
-									rendered="#{RenovarPacienteController.tipo == 'E'}" severity="info" />
-
-								<p:autoComplete value="#{RenovarPacienteController.insercao.equipe}"
-									readonly="true"
-									size="31" converter="conEquipe" class="select-agendaEquipe4"
-									rendered="#{RenovarPacienteController.tipo == 'E'}"
-									disabled="#{RenovarPacienteController.insercao.grupo==null}"
-									completeMethod="#{InsercaoPacienteController.listaEquipeAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.descEquipe}">
-									<p:ajax event="itemSelect" update="" />
-								</p:autoComplete>
-							</b:column>
-						</p:outputPanel>
-
-					</b:row>
-
-					<br></br>
-
-					<b:row>
-						<p:outputPanel id="outProf">
-
-							<b:column span="5"
-								class="label-position new-data-size new-comple1">
-								<b:label value="Profissional" id="prof" class="fire-label"
-									rendered="#{RenovarPacienteController.tipo == 'P'}" severity="info" />
-
-								<p:autoComplete rendered="#{RenovarPacienteController.tipo == 'P'}"
-									value="#{RenovarPacienteController.insercao.funcionario}" size="31"
-									converter="conFuncionario" class="select-agendaEquipe4"
-									completeMethod="#{InsercaoController.listaProfissionalAutoComplete}"
-									effect="fade" var="theme" forceSelection="true"
-									minQueryLength="1" itemValue="#{theme}"
-									itemLabel="#{theme.nome}">
-									<p:ajax event="itemSelect" update="outDetalhes" />
-								</p:autoComplete>
-
-							</b:column>
-						</p:outputPanel>
-					</b:row>
-
-					<b:row>
-						<p:outputPanel id="outDetalhes">
-
-							<b:column span="2" class="label-position">
-								<b:label value="Especialidade:" severity="info" class="fire-label"
-									rendered="#{RenovarPacienteController.tipo == 'P'}" />
-
-								<h:outputLabel
-									value="#{RenovarPacienteController.insercao.funcionario.especialidade.descEspecialidade}"
-									rendered="#{RenovarPacienteController.tipo == 'P'}"
-									class="campo-laudoDig" />
-							</b:column>
-
-							<b:column span="2" class="label-position">
-								<b:label value="CNS:" severity="info" class="fire-label"
-									rendered="#{RenovarPacienteController.tipo == 'P'}" />
-
-								<h:outputLabel
-									value="#{RenovarPacienteController.insercao.funcionario.cns}"
-									rendered="#{RenovarPacienteController.tipo == 'P'}" 
-									class="campo-laudoDig" />
-							</b:column>
-
-						</p:outputPanel>
-					</b:row>
-
-					<b:row>
-						<p:outputPanel id="outDias">
-							<b:column span="4" class="btn-radio-table">
-								<p:selectManyCheckbox layout="grid" columns="3" required="true"
-									rendered="#{RenovarPacienteController.tipo == 'P'}"
-									requiredMessage="Escolha ao menos um dia da semana!"
-									value="#{RenovarPacienteController.insercao.funcionario.listDiasSemana}">
-									<f:selectItem itemLabel="Domingo" itemValue="1" />
-									<f:selectItem itemLabel="Segunda" itemValue="2" />
-									<f:selectItem itemLabel="Terça" itemValue="3" />
-									<f:selectItem itemLabel="Quarta" itemValue="4" />
-									<f:selectItem itemLabel="Quinta" itemValue="5" />
-									<f:selectItem itemLabel="Sexta" itemValue="6" />
-									<f:selectItem itemLabel="Sábado" itemValue="7" />
-								</p:selectManyCheckbox>
-							</b:column>
-						</p:outputPanel>
-
-					</b:row>
-
-					<br></br>
-
-					<b:row>
-						<p:outputPanel id="outTabelas">
-							<b:column span="5" style="margin-bottom:15px;">
-								<p:dataTable id="dtEquipe" resizableColumns="true"
-											 rendered="#{RenovarPacienteController.tipo == 'E'}"
-											 responsive="true"
-											 value="#{RenovarPacienteController.listaProfissionaisEquipe}"
-											 var="func" emptyMessage="Sem registros.">
-
-									<p:column headerText="Profissional">
-										<h:outputLabel value="#{func.nome}"/>
-									</p:column>
-
-									<p:column headerText="Especialidade">
-										<h:outputLabel value="#{func.especialidade.descEspecialidade}"/>
-									</p:column>
-
-									<p:column headerText="Adicionar">
-										<div align="center">
-											<p:commandButton icon="ui-icon-check" immediate="true"
-															 title="Selecionar" class="new-btn-acao-table acao-editar"
-															 actionListener="#{RenovarPacienteController.abrirDialog}"
-															 update=":formDiasAtendimento">
-												<f:setPropertyActionListener value="#{func}"
-																			 target="#{RenovarPacienteController.funcionario}"/>
-											</p:commandButton>
-										</div>
-									</p:column>
-
-								</p:dataTable>
-							</b:column>
-
-							<b:column span="1">
-							</b:column>
-
-							<b:column span="6">
-								<p:dataTable id="dtAdicionados" resizableColumns="true"
-											 rendered="#{RenovarPacienteController.tipo == 'E'}"
-											 responsive="true"
-											 value="#{RenovarPacienteController.listaProfissionaisAdicionados}"
-											 var="funcionario" emptyMessage="Sem registros.">
-
-									<p:column headerText="Profissional" width="30%">
-										<h:outputLabel value="#{funcionario.nome}"/>
-									</p:column>
-
-									<p:column headerText="Especialidade" width="20%">
-										<h:outputLabel
-												value="#{funcionario.especialidade.descEspecialidade}"/>
-									</p:column>
-
-									<p:column headerText="Dias Atendimento" width="38%">
-										<h:outputLabel value="#{funcionario.diasSemana}"/>
-									</p:column>
-
-									<p:column headerText="Excluir" width="12%">
-										<div align="center">
-											<p:commandButton icon="ui-icon-trash" immediate="true"
-															 action="#{RenovarPacienteController.excluirFuncionarioIhDiasDeAtendimento()}"
-															 title="Excluir" class="new-btn-acao-table acao-editar"
-															 update=":formInsercao2:dtAdicionados">
-												<f:setPropertyActionListener value="#{funcionario}"
-																			 target="#{RenovarPacienteController.funcionario}"/>
-											</p:commandButton>
-										</div>
-									</p:column>
-
-								</p:dataTable>
-							</b:column>
-						</p:outputPanel>
-
-					</b:row>
-
-					<br></br>
-					<br></br>
-
-					<b:row>
-
-						<b:column span="12" class="label-position">
-							<b:label for="obs" value="Observação" severity="info" class="fire-label"/>
-
-							<b:inputTextarea id="obs" rows="1"
-								value="#{RenovarPacienteController.insercao.observacao}"
-								autoResize="false" class="select-agendaEquipe2">
-							</b:inputTextarea>
-						</b:column>
-
-					</b:row>
-
-					<br></br>
-
-					<b:row rendered="#{RenovarPacienteController.opcaoAtendimento == 'H'}">
-						<p:outputPanel>
-							<b:column span="3" class="label-position">
-								<b:label value="Horário:" severity="info" class="fire-label"/>
-
-								<b:selectOneMenu class="select-agendaEquipe2" required="true"
-												 requiredMessage="Horário: Campo obrigatório!"
-												 value="#{RenovarPacienteController.insercao.agenda.horario}">
-									<f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
-									<f:selectItems
-											value="#{InsercaoController.listaHorarios}"/>
-								</b:selectOneMenu>
-							</b:column>
-						</p:outputPanel>
-					</b:row>
-
-					<b:row rendered="#{RenovarPacienteController.opcaoAtendimento == 'T'}">
-
-						<p:outputPanel>
-							<b:column span="3" class="label-position">
-								<b:label value="Turno:" severity="info" class="fire-label"/>
-
-								<b:selectOneMenu class="select-agendaEquipe2"
-									value="#{RenovarPacienteController.insercao.agenda.turno}">
-									<f:selectItem itemLabel="Manhã" itemValue="M" />
-									<f:selectItem itemLabel="Tarde" itemValue="T" />
-								</b:selectOneMenu>
-							</b:column>
-						</p:outputPanel>
-					</b:row>
-
-					<br></br>
-
-					<div align="center">
-						<b:messages value="Error" id="msgPagina"></b:messages>
-					</div>
-
-					<br></br>
-
-					<div align="center">
-
-						<b:commandButton value="Gravar" look="success" size="sm" id="b1"
-							icon="glyphicon-ok" update=":formInsercao2:msgPagina"
-							class="btn-incluir"
-							action="#{RenovarPacienteController.gravarRenovacaoPaciente()}" />
-
-						<b:commandButton value="Voltar" icon="glyphicon-arrow-left"
-							size="sm" immediate="true" look="info" class="btn-voltar"
-							action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true">
-						</b:commandButton>
-
-					</div>
-				</h:form>
-			</div>
-
-		</div>
-
-
-		<p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo" dynamic="true"
-			modal="true" id="laudo-id">
-			<h:form id="formConsuLaudo">
+                                <p:autoComplete value="#{RenovarPacienteController.insercao.programa}"
+                                                rendered="#{RenovarPacienteController.tipo == 'E'}" size="31"
+                                                readonly="true"
+                                                converter="conPrograma" class="select-agendaEquipe4"
+                                                completeMethod="#{ProgramaController.listaProgramaAutoCompleteUsuario}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descPrograma}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.selectPrograma}" update=""/>
+
+                                </p:autoComplete>
+
+                            </b:column>
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+                        <p:outputPanel id="outGrupo">
+
+                            <b:column span="5"
+                                      class="label-position new-data-size4 new-comple1">
+                                <b:label for="prog" value="Grupo:" id="grupo" class="fire-label"
+                                         rendered="#{RenovarPacienteController.tipo == 'E'}" severity="info"/>
+
+                                <p:autoComplete value="#{RenovarPacienteController.insercao.grupo}"
+                                                readonly="true"
+                                                rendered="#{RenovarPacienteController.tipo == 'E'}" size="31"
+                                                converter="conGrupo" class="select-agendaEquipe4"
+                                                disabled="#{RenovarPacienteController.insercao.programa==null}"
+                                                completeMethod="#{InsercaoPacienteController.listaGrupoAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descGrupo}">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{AgendaController.selectGrupo}" update=""/>
+
+                                </p:autoComplete>
+
+                            </b:column>
+
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+                        <p:outputPanel id="outEquipe">
+
+                            <b:column span="5"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label for="equipe" value="Equipe:" id="equipe" class="fire-label"
+                                         rendered="#{RenovarPacienteController.tipo == 'E'}" severity="info"/>
+
+                                <p:autoComplete value="#{RenovarPacienteController.insercao.equipe}"
+                                                readonly="true"
+                                                size="31" converter="conEquipe" class="select-agendaEquipe4"
+                                                rendered="#{RenovarPacienteController.tipo == 'E'}"
+                                                disabled="#{RenovarPacienteController.insercao.grupo==null}"
+                                                completeMethod="#{InsercaoPacienteController.listaEquipeAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.descEquipe}">
+                                    <p:ajax event="itemSelect" update=""/>
+                                </p:autoComplete>
+                            </b:column>
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+                        <p:outputPanel id="outProf">
+
+                            <b:column span="5"
+                                      class="label-position new-data-size new-comple1">
+                                <b:label value="Profissional" id="prof" class="fire-label"
+                                         rendered="#{RenovarPacienteController.tipo == 'P'}" severity="info"/>
+
+                                <p:autoComplete rendered="#{RenovarPacienteController.tipo == 'P'}"
+                                                value="#{RenovarPacienteController.insercao.funcionario}" size="31"
+                                                converter="conFuncionario" class="select-agendaEquipe4"
+                                                completeMethod="#{InsercaoController.listaProfissionalAutoComplete}"
+                                                effect="fade" var="theme" forceSelection="true"
+                                                minQueryLength="1" itemValue="#{theme}"
+                                                itemLabel="#{theme.nome}">
+                                    <p:ajax event="itemSelect" update="outDetalhes"/>
+                                </p:autoComplete>
+
+                            </b:column>
+                        </p:outputPanel>
+                    </b:row>
+
+                    <b:row>
+                        <p:outputPanel id="outDetalhes">
+
+                            <b:column span="2" class="label-position">
+                                <b:label value="Especialidade:" severity="info" class="fire-label"
+                                         rendered="#{RenovarPacienteController.tipo == 'P'}"/>
+
+                                <h:outputLabel
+                                        value="#{RenovarPacienteController.insercao.funcionario.especialidade.descEspecialidade}"
+                                        rendered="#{RenovarPacienteController.tipo == 'P'}"
+                                        class="campo-laudoDig"/>
+                            </b:column>
+
+                            <b:column span="2" class="label-position">
+                                <b:label value="CNS:" severity="info" class="fire-label"
+                                         rendered="#{RenovarPacienteController.tipo == 'P'}"/>
+
+                                <h:outputLabel
+                                        value="#{RenovarPacienteController.insercao.funcionario.cns}"
+                                        rendered="#{RenovarPacienteController.tipo == 'P'}"
+                                        class="campo-laudoDig"/>
+                            </b:column>
+
+                        </p:outputPanel>
+                    </b:row>
+
+                    <b:row>
+                        <p:outputPanel id="outDias">
+                            <b:column span="4" class="btn-radio-table">
+                                <p:selectManyCheckbox layout="grid" columns="3" required="true"
+                                                      rendered="#{RenovarPacienteController.tipo == 'P'}"
+                                                      requiredMessage="Escolha ao menos um dia da semana!"
+                                                      value="#{RenovarPacienteController.insercao.funcionario.listDiasSemana}">
+                                    <f:selectItem itemLabel="Domingo" itemValue="1"/>
+                                    <f:selectItem itemLabel="Segunda" itemValue="2"/>
+                                    <f:selectItem itemLabel="Terça" itemValue="3"/>
+                                    <f:selectItem itemLabel="Quarta" itemValue="4"/>
+                                    <f:selectItem itemLabel="Quinta" itemValue="5"/>
+                                    <f:selectItem itemLabel="Sexta" itemValue="6"/>
+                                    <f:selectItem itemLabel="Sábado" itemValue="7"/>
+                                </p:selectManyCheckbox>
+                            </b:column>
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row>
+                        <p:outputPanel id="outTabelas">
+                            <b:column span="5" style="margin-bottom:15px;">
+                                <p:dataTable id="dtEquipe" resizableColumns="true"
+                                             rendered="#{RenovarPacienteController.tipo == 'E'}"
+                                             responsive="true"
+                                             value="#{RenovarPacienteController.listaProfissionaisEquipe}"
+                                             var="func" emptyMessage="Sem registros.">
+
+                                    <p:column headerText="Profissional">
+                                        <h:outputLabel value="#{func.nome}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Especialidade">
+                                        <h:outputLabel value="#{func.especialidade.descEspecialidade}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Adicionar">
+                                        <div align="center">
+                                            <p:commandButton icon="ui-icon-check" immediate="true"
+                                                             title="Selecionar" class="new-btn-acao-table acao-editar"
+                                                             actionListener="#{RenovarPacienteController.abrirDialog}"
+                                                             update=":formDiasAtendimento">
+                                                <f:setPropertyActionListener value="#{func}"
+                                                                             target="#{RenovarPacienteController.funcionario}"/>
+                                            </p:commandButton>
+                                        </div>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </b:column>
+
+                            <b:column span="1">
+                            </b:column>
+
+                            <b:column span="6">
+                                <p:dataTable id="dtAdicionados" resizableColumns="true"
+                                             rendered="#{RenovarPacienteController.tipo == 'E'}"
+                                             responsive="true"
+                                             value="#{RenovarPacienteController.listaProfissionaisAdicionados}"
+                                             var="funcionario" emptyMessage="Sem registros.">
+
+                                    <p:column headerText="Profissional" width="30%">
+                                        <h:outputLabel value="#{funcionario.nome}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Especialidade" width="20%">
+                                        <h:outputLabel
+                                                value="#{funcionario.especialidade.descEspecialidade}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Dias Atendimento" width="38%">
+                                        <h:outputLabel value="#{funcionario.diasSemana}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Excluir" width="12%">
+                                        <div align="center">
+                                            <p:commandButton icon="ui-icon-trash" immediate="true"
+                                                             action="#{RenovarPacienteController.excluirFuncionarioIhDiasDeAtendimento()}"
+                                                             title="Excluir" class="new-btn-acao-table acao-editar"
+                                                             update=":formInsercao2:dtAdicionados">
+                                                <f:setPropertyActionListener value="#{funcionario}"
+                                                                             target="#{RenovarPacienteController.funcionario}"/>
+                                            </p:commandButton>
+                                        </div>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </b:column>
+                        </p:outputPanel>
+
+                    </b:row>
+
+                    <br></br>
+                    <br></br>
+
+                    <b:row>
+
+                        <b:column span="12" class="label-position">
+                            <b:label for="obs" value="Observação" severity="info" class="fire-label"/>
+
+                            <b:inputTextarea id="obs" rows="1"
+                                             value="#{RenovarPacienteController.insercao.observacao}"
+                                             autoResize="false" class="select-agendaEquipe2">
+                            </b:inputTextarea>
+                        </b:column>
+
+                    </b:row>
+
+                    <br></br>
+
+                    <b:row rendered="#{RenovarPacienteController.opcaoAtendimento == 'H'}">
+                        <p:outputPanel>
+                            <b:column span="3" class="label-position">
+                                <b:label value="Horário:" severity="info" class="fire-label"/>
+
+                                <b:selectOneMenu class="select-agendaEquipe2" required="true"
+                                                 requiredMessage="Horário: Campo obrigatório!"
+                                                 value="#{RenovarPacienteController.insercao.agenda.horario}">
+                                    <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                                    <f:selectItems
+                                            value="#{InsercaoController.listaHorarios}"/>
+                                </b:selectOneMenu>
+                            </b:column>
+                        </p:outputPanel>
+                    </b:row>
+
+                    <b:row rendered="#{RenovarPacienteController.opcaoAtendimento == 'T'}">
+
+                        <p:outputPanel>
+                            <b:column span="3" class="label-position">
+                                <b:label value="Turno:" severity="info" class="fire-label"/>
+
+                                <b:selectOneMenu class="select-agendaEquipe2"
+                                                 value="#{RenovarPacienteController.insercao.agenda.turno}">
+                                    <f:selectItem itemLabel="Manhã" itemValue="M"/>
+                                    <f:selectItem itemLabel="Tarde" itemValue="T"/>
+                                </b:selectOneMenu>
+                            </b:column>
+                        </p:outputPanel>
+                    </b:row>
+
+                    <br></br>
+
+                    <div align="center">
+                        <b:messages value="Error" id="msgPagina"></b:messages>
+                    </div>
+
+                    <br></br>
+
+                    <div align="center">
+
+                        <b:commandButton value="Gravar" look="success" size="sm" id="b1"
+                                         icon="glyphicon-ok" update=":formInsercao2:msgPagina"
+                                         class="btn-incluir"
+                                         action="#{RenovarPacienteController.gravarRenovacaoPaciente()}"/>
+
+                        <b:commandButton value="Voltar" icon="glyphicon-arrow-left"
+                                         size="sm" immediate="true" look="info" class="btn-voltar"
+                                         action="/pages/sishosp/gerenciamentoPacientes.xhtml?faces-redirect=true">
+                        </b:commandButton>
+
+                    </div>
+                </h:form>
+            </div>
+
+        </div>
+
+
+        <p:dialog header="Consultar Laudos" widgetVar="dlgConsuLaudo" dynamic="true"
+                  modal="true" id="laudo-id">
+            <h:form id="formConsuLaudo">
 
                 <p:growl id="msgLaudo"></p:growl>
 
-				<b:dataTable customLangUrl="#{resource['pt-br.json']}"
-					value="#{RenovarPacienteController.listaLaudosVigentes}" id="dtLaudo"
-					var="insercao" display="Nenhum Laudo">
+                <b:dataTable customLangUrl="#{resource['pt-br.json']}"
+                             value="#{RenovarPacienteController.listaLaudosVigentes}" id="dtLaudo"
+                             var="insercao" display="Nenhum Laudo">
 
-					<h:column>
-						<f:facet name="header">
+                    <h:column>
+                        <f:facet name="header">
                             Paciente
                         </f:facet>
-						<p:outputLabel value="#{insercao.laudo.paciente.nome}" />
-					</h:column>
+                        <p:outputLabel value="#{insercao.laudo.paciente.nome}"/>
+                    </h:column>
 
-					<h:column>
-						<f:facet name="header">
+                    <h:column>
+                        <f:facet name="header">
                             CNS
                         </f:facet>
-						<p:outputLabel value="#{insercao.laudo.paciente.cns}" />
-					</h:column>
+                        <p:outputLabel value="#{insercao.laudo.paciente.cns}"/>
+                    </h:column>
 
-					<h:column>
-						<f:facet name="header">
-							Vigência Inicial
-						</f:facet>
-						<p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
+                    <h:column>
+                        <f:facet name="header">
+                            Vigência Inicial
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.vigenciaInicial}">
                             <f:convertDateTime pattern="dd/MM/yyyy"/>
                         </p:outputLabel>
-					</h:column>
+                    </h:column>
 
                     <h:column>
                         <f:facet name="header">
@@ -458,36 +460,36 @@
                         </p:outputLabel>
                     </h:column>
 
-					<h:column rendered="false">
-						<f:facet name="header">
-							Paciente
-						</f:facet>
-						<p:outputLabel value="#{insercao.laudo.mesFinal}" />
-					</h:column>
+                    <h:column rendered="false">
+                        <f:facet name="header">
+                            Paciente
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.mesFinal}"/>
+                    </h:column>
 
-					<h:column rendered="false">
-						<f:facet name="header">
-							Paciente
-						</f:facet>
-						<p:outputLabel value="#{insercao.laudo.anoFinal}" />
-					</h:column>
+                    <h:column rendered="false">
+                        <f:facet name="header">
+                            Paciente
+                        </f:facet>
+                        <p:outputLabel value="#{insercao.laudo.anoFinal}"/>
+                    </h:column>
 
-					<h:column>
-						<f:facet name="header">
+                    <h:column>
+                        <f:facet name="header">
                             Adicionar
                         </f:facet>
-						<p:commandButton update=":formInsercao, formConsuLaudo:msgLaudo" icon="ui-icon-check"
-							title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
-							class="new-btn-acao-table acao-editar"
-							action="#{RenovarPacienteController.carregarLaudoPaciente()}">
-							<f:setPropertyActionListener value="#{insercao}"
-								target="#{RenovarPacienteController.insercao}" />
-						</p:commandButton>
-					</h:column>
+                        <p:commandButton update=":formInsercao, formConsuLaudo:msgLaudo" icon="ui-icon-check"
+                                         title="Selecionar" onclick="PF('dlgConsuLaudo').hide();"
+                                         class="new-btn-acao-table acao-editar"
+                                         action="#{RenovarPacienteController.carregarLaudoPaciente()}">
+                            <f:setPropertyActionListener value="#{insercao}"
+                                                         target="#{RenovarPacienteController.insercao}"/>
+                        </p:commandButton>
+                    </h:column>
 
-				</b:dataTable>
-			</h:form>
-		</p:dialog>
+                </b:dataTable>
+            </h:form>
+        </p:dialog>
 
         <p:dialog header="Dias de Atendimento" widgetVar="dlgDiasAtendimento"
                   modal="true" dynamic="true">
@@ -573,6 +575,20 @@
             </h:form>
         </p:dialog>
 
-	</ui:define>
+        <p:dialog header="Renovação Efeturada com Sucesso" styleClass="topDialog"
+                  widgetVar="dlgRenovacaoEfetuada" modal="true" dynamic="true" closable="false">
+            <h:form id="formRenovacaoEfetuada">
+
+                <div align="center">
+                    <b:commandButton value="Fechar" class="btn-fechar"
+                                     look="info" ajax="true"
+                                     action="#{GerenciarPacienteController.redirectGerenciamento}"
+                                     icon="glyphicon-remove"/>
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
 
 </ui:composition>

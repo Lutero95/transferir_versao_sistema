@@ -320,6 +320,7 @@ public class AlteracaoPacienteController implements Serializable {
 
         if (cadastrou) {
             JSFUtil.adicionarMensagemSucesso("Alteração de Equipe cadastrada com sucesso!", "Sucesso");
+            JSFUtil.abrirDialog("dlgAlteracaoEfetuada");
         } else {
             JSFUtil.adicionarMensagemErro("Ocorreu um erro durante o cadastro!", "Erro");
         }

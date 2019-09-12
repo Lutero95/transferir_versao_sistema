@@ -507,6 +507,20 @@
             </h:form>
         </p:dialog>
 
+        <p:dialog header="Alteração Efeturada com Sucesso" styleClass="topDialog"
+                  widgetVar="dlgAlteracaoEfetuada" modal="true" dynamic="true" closable="false">
+            <h:form id="formAlteracaoEfetuada">
+
+                <div align="center">
+                    <b:commandButton value="Fechar" class="btn-fechar"
+                                     look="info" ajax="true"
+                                     action="#{GerenciarPacienteController.redirectGerenciamento}"
+                                     icon="glyphicon-remove"/>
+                </div>
+
+            </h:form>
+        </p:dialog>
+
     </ui:define>
 
 </ui:composition>
