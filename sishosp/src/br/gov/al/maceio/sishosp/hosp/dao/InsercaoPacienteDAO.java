@@ -778,4 +778,37 @@ public class InsercaoPacienteDAO {
 		return lista;
 	}
 
+	public Boolean verificarSeExisteLaudoAtivoParaProgramaIhGrupo(int codPrograma, int codGrupo) {
+
+		Boolean retorno = false;
+
+		String sql = "SELECT * FROM hosp.paciente_instituicao WHERE status = 'A' AND codprograma = ? AND codgrupo = ?;";
+
+		try {
+
+			con = ConnectionFactory.getConnection();
+			PreparedStatement stm = con.prepareStatement(sql);
+
+			stm.setInt(1, codPrograma);
+			stm.setInt(2, codGrupo);
+
+			ResultSet rs = stm.executeQuery();
+
+			while (rs.next()) {
+				retorno = true;
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		} finally {
+			try {
+				con.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return retorno;
+	}
+
 }
