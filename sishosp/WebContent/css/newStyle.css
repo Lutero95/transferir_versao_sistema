@@ -93,18 +93,12 @@ body {
 }
 
 @keyframes cor_fonte {
-	from {
-	 filter:drop-shadow(000var ( --cor-neon));
-	
+	from { filter:drop-shadow(000var ( --cor-neon));}
+	to { filter: drop-shadow(0 0 10px var(--cor-neon));}
 }
 
-to {
-	filter: drop-shadow(0 0 10px var(- -cor-neon));
-}
-
-}
-.texto { -
-	-cor-neon: #fff;
+.texto { 
+	--cor-neon: #fff;
 }
 
 /*--------- Menu ------------*/
@@ -203,6 +197,10 @@ to {
 	height: 100%;
 }
 
+.process_msg {
+	z-index: 1090 !important;
+}
+
 /* -------- Footer ----------- */
 #foot {
 	bottom: 0;
@@ -262,6 +260,9 @@ to {
 	font-size: 16px;
 	border-radius: 7px;
 	margin-top: 15px;
+	-webkit-box-shadow: 0 3px 4px 0 #0000007d;
+	-moz-box-shadow: 0 3px 4px 0 #0000007d;
+	box-shadow: 0 3px 4px 0 #0000007d;
 }
 
 .btnLogin:hover, .btnLogin:focus, .btnLogin:active {
@@ -288,9 +289,9 @@ to {
 	margin: auto;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	-webkit-box-shadow: 0 3px 8px 0 #cccccc;
-	-moz-box-shadow: 0 3px 8px 0 #cccccc;
-	box-shadow: 0 3px 8px 0 #cccccc;
+	-webkit-box-shadow: 0 3px 8px 0 #000000b8;
+	-moz-box-shadow: 0 3px 8px 0 #000000b8;
+	box-shadow: 0 3px 8px 0 #000000b8;
 	background: white;
 	height: auto;
 }
@@ -314,6 +315,19 @@ to {
 
 .image-form {
 	padding: 15px 64px 0;
+}
+
+
+@media ( max-width : 823px) {
+	.login-content {
+		top: 52%;
+	}
+	.image-form {
+		padding: 21px 56px;
+	}
+	.pull-size {
+		padding: 25px 20px;
+	}
 }
 
 @media ( min-width :768px) {
@@ -343,19 +357,8 @@ to {
 	}
 }
 
-@media ( max-width : 823px) {
-	.login-content {
-		top: 52%;
-	}
-	.image-form {
-		padding: 21px 56px;
-	}
-	.pull-size {
-		padding: 25px 20px;
-	}
-}
 
-@media ( max-width : 736px) {
+@media ( max-width : 767px) {
 	.login-content {
 		width: 100%;
 		max-width: 620px;
@@ -382,7 +385,7 @@ to {
 	}
 }
 
-@media ( max-width : 667px) {
+@media ( max-width : 730px) {
 	.login-content {
 		max-width: 562px;
 		top: 53%;
@@ -402,7 +405,7 @@ to {
 	}
 }
 
-@media ( max-width : 568px) {
+@media ( max-width : 676px) {
 	.login-content {
 		max-width: 496px;
 		top: 54%;
@@ -422,7 +425,7 @@ to {
 	}
 }
 
-@media ( max-width : 414px) {
+@media ( max-width : 596px) {
 	.login-content {
 		top: 52%;
 		max-width: 250px;
