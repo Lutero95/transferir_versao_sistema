@@ -463,7 +463,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
 
     public void abrirDialog() {
         if (opcaoAtendimento.equals(OpcaoAtendimento.SOMENTE_TURNO.getSigla())) {
-            funcionario.setListDiasSemana(new ArrayList<>());
+            //funcionario.setListDiasSemana(new ArrayList<>());
             JSFUtil.atualizarComponente("formDiasAtendimentoTurno");
             JSFUtil.abrirDialog("dlgDiasAtendimentoTurno");
         } else {
