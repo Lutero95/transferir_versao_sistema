@@ -618,10 +618,6 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         
         for (int i = 0; i <= dt; i++) {
 
-            if (i > 0) {
-                c.add(Calendar.DAY_OF_MONTH, 1);
-            }
-
             int diaSemana = c.get(Calendar.DAY_OF_WEEK);
             ArrayList<Date> listaDatasDeAtendimento = new ArrayList<Date>();
             if (tipo.equals(TipoAtendimento.EQUIPE.getSigla())) {
@@ -648,6 +644,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
                 }
 
             }
+            c.add(Calendar.DAY_OF_MONTH, 1);
 
         }
 
@@ -736,7 +733,7 @@ public class InsercaoPacienteController extends VetorDiaSemanaAbstract implement
         ArrayList<InsercaoPacienteBean> listaAgendamentosAux = new ArrayList<>();
 
         for (int i = 0; i < listaAgendamentos.size(); i++) {
-
+        	System.out.println("listaAgendamentos.get(i).getAgenda().getDataMarcacao() "+listaAgendamentos.get(i).getAgenda().getDataMarcacao());
             if (verificarSeEhFeriadoData(listaAgendamentos.get(i).getAgenda().getDataMarcacao())) {
                 listaAgendamentosAux.add(listaAgendamentos.get(i));
             }
